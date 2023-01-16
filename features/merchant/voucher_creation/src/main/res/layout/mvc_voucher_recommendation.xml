@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/mvc_dimen_14dp"
-    android:layout_marginStart="@dimen/spacing_lvl4"
-    android:layout_marginEnd="@dimen/spacing_lvl4"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
     android:background="@drawable/mvc_recommendation_bg"
     android:orientation="vertical"
     android:padding="12dp">
@@ -23,7 +23,7 @@
         android:id="@+id/iv_recommendation_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_recommendation_title"
         app:srcCompat="@drawable/ic_mvc_voucher_img" />
@@ -32,7 +32,7 @@
         android:id="@+id/tv_recommendation_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="@dimen/mvc_dimen_11dp"
         android:text="@string/mvc_voucher_recommendation"
         app:layout_constraintLeft_toRightOf="@id/iv_recommendation_icon"

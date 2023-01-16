@@ -23,9 +23,15 @@ import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegat
 import com.tokopedia.search.result.product.broadmatch.BroadMatchView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
+import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenterDelegate
+import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterView
+import com.tokopedia.search.result.product.filter.dynamicfilter.MutableDynamicFilterModelProviderDelegate
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDynamicProductView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenterDelegate
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcView
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDynamicProductView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselView
+import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetPresenterDelegate
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicator
@@ -36,7 +42,11 @@ import com.tokopedia.search.result.product.safesearch.SafeSearchView
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPreference
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
+import com.tokopedia.search.result.product.tdn.TopAdsImageViewPresenterDelegate
 import com.tokopedia.search.result.product.ticker.TickerPresenterDelegate
+import com.tokopedia.search.result.product.visitable.VisitableFactory
+import com.tokopedia.search.result.product.wishlist.WishlistPresenterDelegate
+import com.tokopedia.search.result.product.wishlist.WishlistView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.applinkmodifier.ApplinkModifier
@@ -86,6 +96,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val chooseAddressView = mockk<ChooseAddressView>(relaxed = true)
     protected val bannedProductsView = mockk<BannedProductsView>(relaxed = true)
     protected val broadMatchView = mockk<BroadMatchView>(relaxed = true)
+    protected val wishlistView = mockk<WishlistView>(relaxed = true)
     protected val inspirationCarouselDynamicProductView =
         mockk<InspirationCarouselDynamicProductView>(relaxed = true)
     protected val testSchedulersProvider = object : SchedulersProvider {
@@ -111,14 +122,26 @@ internal open class ProductListPresenterTestFixtures {
     protected val applinkModifier = mockk<ApplinkModifier>(relaxed = true)
     protected val safeSearchPreference = mockk<MutableSafeSearchPreference>(relaxed = true)
     protected val safeSearchView = mockk<SafeSearchView>(relaxed = true)
+    protected val inspirationCarouselView = mockk<InspirationCarouselView>(relaxed = true)
+    protected val bottomSheetFilterView = mockk<BottomSheetFilterView>(relaxed = true)
 
+    private val dynamicFilterModel = MutableDynamicFilterModelProviderDelegate()
+    private val pagination = PaginationImpl()
+    private val chooseAddressPresenterDelegate = ChooseAddressPresenterDelegate(chooseAddressView)
+    private val requestParamsGenerator = RequestParamsGenerator(userSession, pagination)
+    protected val bottomSheetFilterPresenter = BottomSheetFilterPresenterDelegate(
+        bottomSheetFilterView,
+        queryKeyProvider,
+        requestParamsGenerator,
+        chooseAddressPresenterDelegate,
+        { getProductCountUseCase },
+        { getDynamicFilterUseCase },
+        dynamicFilterModel,
+    )
     protected lateinit var productListPresenter: ProductListPresenter
 
     @Before
     open fun setUp() {
-        val pagination = PaginationImpl()
-        val chooseAddressPresenterDelegate = ChooseAddressPresenterDelegate(chooseAddressView)
-        val requestParamsGenerator = RequestParamsGenerator(userSession, pagination)
         val sameSessionRecommendationPresenterDelegate = SameSessionRecommendationPresenterDelegate(
             viewUpdater,
             requestParamsGenerator,
@@ -127,7 +150,11 @@ internal open class ProductListPresenterTestFixtures {
             queryKeyProvider,
             productFilterIndicator,
         )
-        val suggestionPresenter = SuggestionPresenter()
+        val tickerPresenter = TickerPresenterDelegate()
+        val safeSearchPresenter = SafeSearchPresenterDelegate(
+            safeSearchPreference,
+            safeSearchView,
+        )
 
         val inspirationListAtcPresenterDelegate = InspirationListAtcPresenterDelegate(
             addToCartUseCase,
@@ -135,10 +162,38 @@ internal open class ProductListPresenterTestFixtures {
             inspirationListAtcView,
             searchParameterProvider,
         )
-        val tickerPresenter = TickerPresenterDelegate()
-        val safeSearchPresenter = SafeSearchPresenterDelegate(
-            safeSearchPreference,
-            safeSearchView,
+        val suggestionPresenter = SuggestionPresenter()
+        val bannerPresenterDelegate = BannerPresenterDelegate(pagination)
+        val broadMatchPresenterDelegate = BroadMatchPresenterDelegate(
+            broadMatchView,
+            inspirationCarouselDynamicProductView,
+            viewUpdater,
+            topAdsUrlHitter,
+            classNameProvider,
+            applinkModifier,
+            pagination,
+            suggestionPresenter,
+        )
+        val inspirationCarouselPresenterDelegate = InspirationCarouselPresenterDelegate(
+            inspirationCarouselView,
+            inspirationListAtcPresenterDelegate,
+            topAdsUrlHitter,
+            classNameProvider,
+            requestParamsGenerator,
+            { getInspirationCarouselChipsProductsUseCase },
+            chooseAddressPresenterDelegate,
+            viewUpdater,
+        )
+        val visitableFactory = VisitableFactory(
+            suggestionPresenter = suggestionPresenter,
+            performanceMonitoringProvider = { performanceMonitoring },
+            topAdsHeadlineHelper = topAdsHeadlineHelper,
+            inspirationCarouselPresenter = inspirationCarouselPresenterDelegate,
+            inspirationWidgetPresenter = InspirationWidgetPresenterDelegate(),
+            bannerDelegate = bannerPresenterDelegate,
+            broadMatchDelegate = broadMatchPresenterDelegate,
+            topAdsImageViewPresenterDelegate = TopAdsImageViewPresenterDelegate(),
+            pagination = pagination,
         )
 
         productListPresenter = ProductListPresenter(
@@ -152,12 +207,13 @@ internal open class ProductListPresenterTestFixtures {
             { getLocalSearchRecommendationUseCase },
             { getInspirationCarouselChipsProductsUseCase },
             { saveLastFilterUseCase },
+            addToCartUseCase,
             topAdsUrlHitter,
             testSchedulersProvider,
             topAdsHeadlineHelper,
             { performanceMonitoring },
             chooseAddressPresenterDelegate,
-            BannerPresenterDelegate(pagination),
+            bannerPresenterDelegate,
             requestParamsGenerator,
             pagination,
             LastFilterPresenterDelegate(
@@ -167,20 +223,15 @@ internal open class ProductListPresenterTestFixtures {
             sameSessionRecommendationPresenterDelegate,
             BannedProductsPresenterDelegate(bannedProductsView, viewUpdater),
             inspirationListAtcPresenterDelegate,
-            BroadMatchPresenterDelegate(
-                broadMatchView,
-                inspirationCarouselDynamicProductView,
-                viewUpdater,
-                topAdsUrlHitter,
-                classNameProvider,
-                applinkModifier,
-                pagination,
-                suggestionPresenter,
-            ),
+            broadMatchPresenterDelegate,
             suggestionPresenter,
             tickerPresenter,
             safeSearchPresenter,
-            addToCartUseCase,
+            WishlistPresenterDelegate(wishlistView),
+            dynamicFilterModel,
+            bottomSheetFilterPresenter,
+            visitableFactory,
+            inspirationCarouselPresenterDelegate,
         )
         productListPresenter.attachView(productListView)
     }

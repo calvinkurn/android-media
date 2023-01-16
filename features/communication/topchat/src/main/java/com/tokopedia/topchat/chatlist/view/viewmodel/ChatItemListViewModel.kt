@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatlist.view.viewmodel
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -11,7 +12,11 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.topchat.R
@@ -30,10 +35,12 @@ import com.tokopedia.topchat.chatlist.domain.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.BlastSellerMetaDataResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.ChatBlastSellerMetadata
+import com.tokopedia.topchat.chatlist.domain.pojo.chatlistticker.ChatListTickerResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.chatlist.domain.usecase.ChatBanedSellerUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListMessageUseCase
+import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListTickerUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatWhitelistFeature
 import com.tokopedia.topchat.chatlist.domain.usecase.GetOperationalInsightUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.MutationPinChatUseCase
@@ -81,8 +88,10 @@ class ChatItemListViewModel @Inject constructor(
     private val authorizeAccessUseCase: AuthorizeAccessUseCase,
     private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
     private val operationalInsightUseCase: GetOperationalInsightUseCase,
+    private val getChatListTickerUseCase: GetChatListTickerUseCase,
     private val sharedPref: SharedPreferences,
     private val userSession: UserSessionInterface,
+    private val abTestPlatform: AbTestPlatform,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main), ChatItemListContract {
 
@@ -123,6 +132,10 @@ class ChatItemListViewModel @Inject constructor(
     private val _chatOperationalInsight = MutableLiveData<Result<ShopChatTicker>>()
     val chatOperationalInsight: LiveData<Result<ShopChatTicker>>
         get()= _chatOperationalInsight
+
+    private val _chatListTicker = MutableLiveData<Result<ChatListTickerResponse.ChatListTicker>>()
+    val chatListTicker: LiveData<Result<ChatListTickerResponse.ChatListTicker>>
+        get()= _chatListTicker
 
     private var getChatAdminAccessJob: Job? = null
 
@@ -394,6 +407,15 @@ class ChatItemListViewModel @Inject constructor(
         })
     }
 
+    fun getChatListTicker() {
+        launchCatchError(block =  {
+            val response = getChatListTickerUseCase(Unit).chatlistTicker
+            _chatListTicker.value = Success(response)
+        }, onError = {
+            _chatListTicker.value = Fail(it)
+        })
+    }
+
     private fun shouldShowOperationalInsightTicker(): Boolean {
         val nextMonday = sharedPref.getLong(getTickerPrefName(), 0)
         val todayTimeMillis = System.currentTimeMillis()
@@ -411,10 +433,33 @@ class ChatItemListViewModel @Inject constructor(
         return "${OPERATIONAL_INSIGHT_NEXT_MONDAY}_${userSession.userId}"
     }
 
+    fun shouldShowBubbleTicker(): Boolean {
+        return sharedPref.getBoolean(BUBBLE_TICKER_PREF_NAME, true) &&
+            (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) &&
+            getRollenceIsBubbleChatEnabled()
+    }
+
+    fun saveTickerPref(prefName: String) {
+        sharedPref.edit()
+            .putBoolean(prefName, false)
+            .apply()
+    }
+
+    private fun getRollenceIsBubbleChatEnabled(): Boolean {
+        return try {
+            abTestPlatform.getString(
+                RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, String.EMPTY
+            ) == RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
+        } catch (e: Exception) {
+            true
+        }
+    }
+
     companion object {
         private const val SELLER_FILTER_THRESHOLD = 3
         private const val ONE_MILLION = 1_000_000L
         const val OPERATIONAL_INSIGHT_NEXT_MONDAY = "topchat_operational_insight_next_monday"
+        const val BUBBLE_TICKER_PREF_NAME = "topchat_seller_bubble_chat_ticker"
         val arrayFilterParam = arrayListOf(
                 PARAM_FILTER_ALL,
                 PARAM_FILTER_UNREAD,

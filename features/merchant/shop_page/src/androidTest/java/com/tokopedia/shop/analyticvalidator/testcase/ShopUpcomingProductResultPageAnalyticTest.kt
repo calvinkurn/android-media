@@ -10,8 +10,8 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_PRODUCT
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
@@ -31,7 +31,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-
 class ShopUpcomingProductResultPageAnalyticTest {
 
     companion object {
@@ -42,6 +41,7 @@ class ShopUpcomingProductResultPageAnalyticTest {
 
     @get:Rule
     var activityRule: IntentsTestRule<ShopProductListResultActivity> = IntentsTestRule(ShopProductListResultActivity::class.java, false, false)
+
     @get:Rule
     var cassavaRule = CassavaTestRule()
 
@@ -49,15 +49,16 @@ class ShopUpcomingProductResultPageAnalyticTest {
     fun beforeTest() {
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
         setupGraphqlMockResponse(ShopProductResultPageMockResponseConfig(TYPE_UPCOMING_PRODUCT))
-        activityRule.launchActivity(Intent().apply {
-            putExtra(ShopParamConstant.EXTRA_SHOP_ID, SAMPLE_SHOP_ID)
-            putExtra(ShopParamConstant.EXTRA_ETALASE_ID, SAMPLE_ETALASE_ID_CAMPAIGN)
-        })
+        activityRule.launchActivity(
+            Intent().apply {
+                putExtra(ShopParamConstant.EXTRA_SHOP_ID, SAMPLE_SHOP_ID)
+                putExtra(ShopParamConstant.EXTRA_ETALASE_ID, SAMPLE_ETALASE_ID_CAMPAIGN)
+            }
+        )
     }
 
     @Test
     fun testShopPageUpcomingProductResultJourney() {
-
         waitForData(5000)
         testProductCard()
         validateTrackerUpcomingProduct()
@@ -86,24 +87,26 @@ class ShopUpcomingProductResultPageAnalyticTest {
         val clickedItemPosition = 2
         val sampleProductIdWishlist = "23151232"
         val mockIntentData = Intent().apply {
-            putExtra(PRODUCT_CARD_OPTION_RESULT_PRODUCT, ProductCardOptionsModel(
+            putExtra(
+                PRODUCT_CARD_OPTION_RESULT_PRODUCT,
+                ProductCardOptionsModel(
                     isWishlisted = true,
                     productId = sampleProductIdWishlist
-            ).apply {
-                wishlistResult = ProductCardOptionsModel.WishlistResult(
+                ).apply {
+                    wishlistResult = ProductCardOptionsModel.WishlistResult(
                         isUserLoggedIn = true,
                         isAddWishlist = true,
                         isSuccess = true
-                )
-            })
+                    )
+                }
+            )
         }
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST, mockIntentData))
         Espresso.onView(firstView(withId(R.id.recycler_view))).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, click())
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, click())
         )
         Espresso.onView(firstView(withId(R.id.recycler_view))).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, CommonActions.clickChildViewWithId(R.id.imageThreeDots))
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, CommonActions.clickChildViewWithId(R.id.imageThreeDots))
         )
     }
-
 }

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/mvc_rectangle_grey_f8fafc_radius_4dp"
-    android:layout_margin="@dimen/layout_lvl2">
+    android:layout_margin="16dp">
 
     <com.tokopedia.vouchercreation.common.view.voucherticker.VoucherTickerView
         android:id="@+id/tickerView"

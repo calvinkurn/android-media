@@ -16,7 +16,7 @@
             "tracking": [
               {
                 "action": "impression",
-                "data": "{\"event\":\"view_item\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"impression swipe banner\",\"eventLabel\":\"933 - non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"17211181\",\"promotions\":[{\"item_id\":\"2277\",\"item_name\":\"\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2021/10/29/b8ffa9df-3216-4abc-b517-1a4cf5efc0fe.png\",\"creative_slot\":\"0\"},{\"item_id\":\"2278\",\"item_name\":\"\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2021/10/29/48cda68c-ead1-4787-a4fd-dc11ac1387ac.png\",\"creative_slot\":\"1\"},{\"item_id\":\"2279\",\"item_name\":\"\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2021/10/29/8f288a2d-bb84-43f3-8778-e7eec69744d2.png\",\"creative_slot\":\"2\"}]}"
+                "data": "{\"event\":\"view_item\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"impression swipe banner\",\"eventLabel\":\"933 - non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"17211181\",\"promotions\":[{\"item_id\":\"2277\",\"item_name\":\"\",\"creative_name\":\"https://images.tokopedia.net/img/AtBaCW/2021/10/29/b8ffa9df-3216-4abc-b517-1a4cf5efc0fe.png\",\"creative_slot\":\"0\"},{\"item_id\":\"2278\",\"item_name\":\"\",\"creative_name\":\"https://images.tokopedia.net/img/AtBaCW/2021/10/29/48cda68c-ead1-4787-a4fd-dc11ac1387ac.png\",\"creative_slot\":\"1\"},{\"item_id\":\"2279\",\"item_name\":\"\",\"creative_name\":\"https://images.tokopedia.net/img/AtBaCW/2021/10/29/8f288a2d-bb84-43f3-8778-e7eec69744d2.png\",\"creative_slot\":\"2\"}]}"
               }
             ],
             "items": [
@@ -28,14 +28,14 @@
                 "tracking": [
                   {
                     "action": "click",
-                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click swipe banner\",\"eventLabel\":\"swipe banner - 0 - 933 - non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"17211181\",\"promotions\":[{\"item_id\":\"2277\",\"item_name\":\"\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2021/10/29/b8ffa9df-3216-4abc-b517-1a4cf5efc0fe.png\",\"creative_slot\":\"0\"}]}"
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click swipe banner\",\"eventLabel\":\"swipe banner - 0 - 933 - non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"17211181\",\"promotions\":[{\"item_id\":\"2277\",\"item_name\":\"\",\"creative_name\":\"https://images.tokopedia.net/img/AtBaCW/2021/10/29/b8ffa9df-3216-4abc-b517-1a4cf5efc0fe.png\",\"creative_slot\":\"0\"}]}"
                   }
                 ],
                 "content": "",
                 "app_link": "tokopedia://digital/form?category_id\u003d6\u0026menu_id\u003d4\u0026template\u003dvoucher",
                 "web_link": "https://www.tokopedia.com/",
                 "text_link": "",
-                "media_url": "https://ecs7.tokopedia.net/img/AtBaCW/2021/10/29/b8ffa9df-3216-4abc-b517-1a4cf5efc0fe.png",
+                "media_url": "https://images.tokopedia.net/img/AtBaCW/2021/10/29/b8ffa9df-3216-4abc-b517-1a4cf5efc0fe.png",
                 "template": "",
                 "button_type": "",
                 "label_1": "",
@@ -52,14 +52,14 @@
                 "tracking": [
                   {
                     "action": "click",
-                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click swipe banner\",\"eventLabel\":\"swipe banner - 1 - 933 - non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"17211181\",\"promotions\":[{\"item_id\":\"2277\",\"item_name\":\"\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2021/10/29/b8ffa9df-3216-4abc-b517-1a4cf5efc0fe.png\",\"creative_slot\":\"0\"}]}"
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click swipe banner\",\"eventLabel\":\"swipe banner - 1 - 933 - non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"17211181\",\"promotions\":[{\"item_id\":\"2277\",\"item_name\":\"\",\"creative_name\":\"https://images.tokopedia.net/img/AtBaCW/2021/10/29/b8ffa9df-3216-4abc-b517-1a4cf5efc0fe.png\",\"creative_slot\":\"0\"}]}"
                   }
                 ],
                 "content": "",
                 "app_link": "tokopedia://digital/form?category_id\u003d6\u0026menu_id\u003d4\u0026template\u003dvoucher",
                 "web_link": "https://www.tokopedia.com/",
                 "text_link": "",
-                "media_url": "https://ecs7.tokopedia.net/img/AtBaCW/2021/10/29/48cda68c-ead1-4787-a4fd-dc11ac1387ac.png",
+                "media_url": "https://images.tokopedia.net/img/AtBaCW/2021/10/29/48cda68c-ead1-4787-a4fd-dc11ac1387ac.png",
                 "template": "",
                 "button_type": "",
                 "label_1": "",
@@ -76,14 +76,14 @@
                 "tracking": [
                   {
                     "action": "click",
-                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click swipe banner\",\"eventLabel\":\"swipe banner - 0 - 933 - non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"17211181\",\"promotions\":[{\"item_id\":\"2277\",\"item_name\":\"\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2021/10/29/b8ffa9df-3216-4abc-b517-1a4cf5efc0fe.png\",\"creative_slot\":\"0\"}]}"
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click swipe banner\",\"eventLabel\":\"swipe banner - 0 - 933 - non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"17211181\",\"promotions\":[{\"item_id\":\"2277\",\"item_name\":\"\",\"creative_name\":\"https://images.tokopedia.net/img/AtBaCW/2021/10/29/b8ffa9df-3216-4abc-b517-1a4cf5efc0fe.png\",\"creative_slot\":\"0\"}]}"
                   }
                 ],
                 "content": "",
                 "app_link": "tokopedia://digital/form?category_id\u003d6\u0026menu_id\u003d4\u0026template\u003dvoucher",
                 "web_link": "https://www.tokopedia.com/",
                 "text_link": "",
-                "media_url": "https://ecs7.tokopedia.net/img/AtBaCW/2021/10/29/8f288a2d-bb84-43f3-8778-e7eec69744d2.png",
+                "media_url": "https://images.tokopedia.net/img/AtBaCW/2021/10/29/8f288a2d-bb84-43f3-8778-e7eec69744d2.png",
                 "template": "",
                 "button_type": "",
                 "label_1": "",

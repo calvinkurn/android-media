@@ -39,7 +39,7 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
         if (!content.cta.isEmpty) {
             btnSeeAll.visibility = View.VISIBLE
             btnSeeAll.text = content.cta.text
-            btnSeeAll.setOnClickListener { v: View? ->
+            btnSeeAll.setOnClickListener {
                 handledClick(content.cta.appLink, content.cta.url,
                         AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, "")
             }

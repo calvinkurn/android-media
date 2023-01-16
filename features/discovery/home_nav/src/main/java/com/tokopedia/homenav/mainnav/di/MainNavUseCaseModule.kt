@@ -18,6 +18,8 @@ import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
 import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusUseCase
 import dagger.Module
@@ -71,9 +73,11 @@ class MainNavUseCaseModule {
     @Provides
     fun provideGetCategoryGroupUseCase(
             buListMapper: BuListMapper,
-            graphqlRepository: GraphqlRepository): GetCategoryGroupUseCase {
+            graphqlRepository: GraphqlRepository,
+            remoteConfig: RemoteConfig): GetCategoryGroupUseCase {
         val useCase = GraphqlUseCase<DynamicHomeIconEntity>(graphqlRepository)
-        return GetCategoryGroupUseCase(buListMapper, useCase)
+        val isUsingV2 = remoteConfig.getBoolean(RemoteConfigKey.HOME_USE_GQL_FED_QUERY, true)
+        return GetCategoryGroupUseCase(buListMapper, useCase, isUsingV2)
     }
 
     @MainNavScope

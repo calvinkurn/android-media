@@ -32,7 +32,7 @@
     <string name="tv_pinpoint_location">Pinpoint Lokasi</string>
     <string name="tv_pinpoint_desc">Tandai lokasi agar bisa gunakan layanan &lt;b&gt;Dijemput Kurir&lt;/b&gt;</string>
     <string name="change_pinpoint">Ubah Pinpoint</string>
-    <string name="tv_transaction_desc">Transaksi yang sedang diproses akan menggunakan almaat lama. Alamat baru berlaku di transaksi berikutnya.</string>
+    <string name="tv_transaction_desc">Transaksi yang sedang diproses akan menggunakan alamat lama. Alamat baru berlaku di transaksi berikutnya.</string>
     <string name="save_changes">Simpan Perubahan</string>
     <string name="pointer">Map Pointer</string>
     <string name="et_nama_lokasi_label">Nama Lokasi</string>
@@ -88,10 +88,12 @@
     <string name="toaster_cpl_error">Harap pilih min. 1 layanan pengiriman untuk produk ini.</string>
     <string name="antar_ke_agen">Antar ke Kantor Agen</string>
 
-    <!--    Gocar Integration-->
-    <string name="description_gocar_instan"><![CDATA[Dengan kurir instan, kamu bisa pakai GoSend Car dan GoSend Bike (pengiriman maks. 3 jam & berat maks. 150kg). Setelah aktif, GoSend Car dan GoSend Bike otomatis masuk pilihan kurir, tidak ditampilkan di menu ini.]]></string>
-    <string name="button_info_gocar">Mengerti</string>
-    <string name="gocar_info_bottomsheet_title"><![CDATA[GoSend Car & GoSend Bike]]></string>
-    <string name="gocar_instan_title_coachmark">Sekarang, kamu bisa pakai motor atau mobil untuk kurir instan GoSend!</string>
-    <string name="gocar_instan_description_coachmark">Aktifkan layanan ini untuk mengaktifkan kurir motor / mobil instan GoSend (maks. 150kg).</string>
+    <!--    Whitelabel Instan-->
+    <string name="whitelabel_instan_title_coachmark">Ada yang baru di kurir instan, nih!</string>
+    <string name="whitelabel_instan_description_coachmark">Pengaturan pengiriman kini lebih mudah karena Penjual cukup aktifkan layanan pengiriman saja.</string>
+    <string name="whitelabel_onboarding_title_coachmark">Pilih tipe kurir yang kamu inginkan</string>
+    <string name="whitelabel_onboarding_description_coachmark">Saat memilih kurir, kamu bisa lihat detail informasi untuk mengecek tipe kurir apa saja yang tersedia.</string>
+    <string name="img_courier_content_description">placeholder courier logo</string>
+
+    <string name="maps_preview_unavailable_ticker_desc">Yaah, perangkat kamu belum bisa pinpoint. Tenang, kamu bisa atur di perangkat lain, pakai alamat lain yang sudah pinpoint, atau lanjutkan transaksi dengan kurir selain instan/same day.</string>
 </resources>

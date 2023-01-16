@@ -110,7 +110,7 @@ class TopAdsSheetViewModelTest {
 
         coEvery { topAdsGetGroupProductDataUseCase.execute(any()) } returns expected
 
-        viewModel.getGroupProductData(0) {
+        viewModel.getGroupProductData("0") {
             actual = it
         }
 
@@ -124,7 +124,7 @@ class TopAdsSheetViewModelTest {
         coEvery {
             topAdsGetGroupProductDataUseCase.execute(any())
         } throws exception
-        viewModel.getGroupProductData(0) {}
+        viewModel.getGroupProductData("0") {}
 
         verify {
             exception.printStackTrace()

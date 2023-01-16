@@ -148,8 +148,30 @@ class PreviewViewModelTest {
         }
     }
 
+    @Test
+    fun `it should ignore save to gallery on cache file when editor is true`() = runBlocking {
+        viewModel.result.test {
+            // Given
+            `file format by mime type is`(true)
+            `image compression is`(true)
+            `param manager get param detail with editor`()
+
+            // When
+            viewModel.files(mediaUiModelList)
+
+            // Then
+            assert(awaitItem().compressedImages.isNotEmpty())
+        }
+    }
+
     private fun `param manager get param detail`() {
         every { paramCache.get() } returns PickerParam()
+    }
+
+    private fun `param manager get param detail with editor`() {
+        every { paramCache.get() } returns PickerParam().apply {
+            withEditor {  }
+        }
     }
 
     private fun `file format by mime type is`(value: Boolean) {

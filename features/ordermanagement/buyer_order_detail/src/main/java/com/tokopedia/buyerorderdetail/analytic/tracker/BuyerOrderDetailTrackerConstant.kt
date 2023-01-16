@@ -38,6 +38,7 @@ object BuyerOrderDetailTrackerConstant {
         "on finished order confirmation"
     const val EVENT_ACTION_CLICK_SEE_ORDER_HISTORY_DETAIL = "click lihat detail"
     const val EVENT_ACTION_CLICK_SEE_ORDER_INVOICE = "click lihat invoice"
+    const val EVENT_ACTION_CLICK_POD_PREVIEW = "click lihat - bukti pengiriman"
     const val EVENT_ACTION_CLICK_COPY_ORDER_INVOICE = "click copy invoice number"
     const val EVENT_ACTION_CLICK_SHOP_NAME = "click shop name"
     const val EVENT_ACTION_CLICK_PRODUCT = "click product section"
@@ -49,6 +50,7 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_ACTION_CLICK_BUY_AGAIN = "attempt click beli lagi"
     const val EVENT_ACTION_CLICK_BUY_AGAIN_SUCCESS = "click beli lagi success"
     const val EVENT_ACTION_CLICK_INSURANCE_WIDGET = "click on insurance button"
+    const val EVENT_ACTION_CLICK_RESOLUTION_WIDGET = "click on resolution widget"
 
     // event labels
     const val EVENT_LABEL_ATTEMPT_BUY_AGAIN = "attempt - order_id: "
@@ -90,7 +92,7 @@ object BuyerOrderDetailTrackerConstant {
     // others
     const val MARKER_ORDER_LIST_DETAIL_MARKETPLACE = "/order list detail - marketplace"
 
-    //buyer order extension
+    // buyer order extension
     const val EVENT_ACTION_CONFIRMATION_ORDER_EXTENSION =
         "click on confirmation order extension button"
     const val EVENT_ACTION_REQUEST_ACTION_ORDER_EXTENSION =

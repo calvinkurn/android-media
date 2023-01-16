@@ -216,12 +216,6 @@ object ApplinkConstInternalUserPlatform {
     const val ADD_NAME_REGISTER = "${NEW_INTERNAL_USER}/add-name-register"
 
     /**
-     * AddNameRegisterPhoneActivity
-     * @Applink : tokopedia-android-internal://user/add-name-register/clean-view
-     **/
-    const val ADD_NAME_REGISTER_CLEAN_VIEW = "${NEW_INTERNAL_USER}/add-name-register/clean-view"
-
-    /**
      * ChangeGenderActivity
      * @Applink : tokopedia-android-internal://user/change-gender
      **/
@@ -341,6 +335,7 @@ object ApplinkConstInternalUserPlatform {
      * */
     const val GROUP_ID = "groupId"
     const val CONSENT_WITHDRAWAL = "$NEW_INTERNAL_USER/consent/withdrawal?$GROUP_ID={groupId}"
+    const val CONSENT_WITHDRAWAL_NEW = "$NEW_INTERNAL_USER/consent/withdrawal/new?$GROUP_ID={groupId}"
 
     /**
      * com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivity
@@ -459,4 +454,52 @@ object ApplinkConstInternalUserPlatform {
      **/
     const val KYC_LIVENESS_BASE = "${NEW_INTERNAL_USER}/liveness-detection"
     const val KYC_LIVENESS = "$KYC_LIVENESS_BASE?$PARAM_PROJECT_ID={$PARAM_PROJECT_ID}"
+
+    /**
+     * com.tokopedia.privacyaccount.PrivacyCenterActivity
+     * @Applink : tokopedia-android-internal://user/privacy-center
+     **/
+    const val PRIVACY_CENTER = "$NEW_INTERNAL_USER/privacy-center"
+
+    /**
+     * com.tokopedia.privacyaccount.accountlinking.LinkAccountWebViewActivity
+     * @Applink : tokopedia-android-internal://user/account-linking-webview
+     * @param   : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_LD]
+     **/
+    const val ACCOUNT_LINKING_WEBVIEW = "${NEW_INTERNAL_USER}/account-linking-webview"
+
+    /**
+     * com.tokopedia.privacycenter.dsar.ui.DsarActivity
+     * @Applink : tokopedia-android-internal://user/dsar
+     **/
+    const val DSAR = "$NEW_INTERNAL_USER/dsar"
+
+    /**
+     * com.tokopedia.privacycenter.dsar.ui.DsarAddEmailActivity
+     * @Applink : tokopedia-android-internal://user/dsar/add-email
+     **/
+    const val DSAR_ADD_EMAIL = "$NEW_INTERNAL_USER/dsar/add-email"
+
+    /**
+     * com.tokopedia.privacyaccount.searchhistory.SearchHistoryActivity
+     * @Applink : tokopedia-android-internal://user/search-history
+     **/
+    const val SEARCH_HISTORY = "$NEW_INTERNAL_USER/search-history"
+
+    /**
+     * # Sharing wishlist
+     *
+     * @class       : SharingWishlistActivity
+     * @Applink     : tokopedia-android-internal://user/sharing-wishlist?tab={tab}
+     * @param
+     *  - tab       : optional | string | ref: [PARAM_TAB]
+     */
+    const val PARAM_TAB = "tab"
+
+    /** param value for [PARAM_TAB] */
+    const val TAB_PUBLIC = "public"
+    const val TAB_PRIVATE = "private"
+
+    const val SHARING_WISHLIST = "$NEW_INTERNAL_USER/sharing-wishlist?tab={$PARAM_TAB}"
+
 }

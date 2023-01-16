@@ -124,7 +124,7 @@
     <string name="product_detail_ask_discussion_label">Tanya di Diskusi</string>
 
     <!--Ticker-->
-    <string name="ticker_href_builder">&lt;a href="#"&gt;%s&lt;/a&gt;</string>
+    <string name="ticker_href_builder">&lt;b&gt;&lt;a href="#"&gt;%s&lt;/a&gt;&lt;/b&gt;</string>
 
     <!--New Shop Info-->
     <string name="shop_online_days_ago"><![CDATA[Online <b>%1d hari lalu</b>]]></string>
@@ -200,7 +200,4 @@
     <string name="pdp_general_info_see">Lihat</string>
     <string name="text_info_shop_moderated">Fitur tidak dapat diakses karena toko sedang ditangguhkan</string>
 
-    <!-- One Liners -->
-    <string name="pdp_oneliners_ims100_coachmark_title">Stok terpantau aman oleh Tokopedia!</string>
-    <string name="pdp_oneliners_ims100_coachmark_description">Nggak perlu chat tokonya lagi untuk nanya stok, deh. Yuk, langsung beli aja.</string>
 </resources>

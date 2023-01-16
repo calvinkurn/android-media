@@ -36,6 +36,13 @@ class IconBuilder(val builderFlags: IconBuilderFlag = IconBuilderFlag()) {
 
             //Animated vector drawable
             IconList.ID_NAV_ANIMATED_WISHLIST -> listIcon.add(IconList.AnimatedWishlistIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
+
+            // icon share for A/B testing
+            IconList.ID_SHARE_AB_TEST -> listIcon.add(
+                IconList.ShareAbTestIcon.get(
+                    builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick
+                )
+            )
         }
         useCentralizedIconNotification[iconId] = true
         return this

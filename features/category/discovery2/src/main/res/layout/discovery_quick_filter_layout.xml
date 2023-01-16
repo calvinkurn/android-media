@@ -13,7 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:sort_filter_relationship="AND"
-        app:sort_filter_type="advanced"
-        android:background="@color/Unify_N0" />
+        app:sort_filter_type="advanced" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

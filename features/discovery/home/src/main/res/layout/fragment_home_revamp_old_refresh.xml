@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.home.widget.ToggleableSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:descendantFocusability="blocksDescendants"
+    android:id="@+id/home_swipe_refresh_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <include
+      android:id="@+id/root"
+      layout="@layout/layout_home_revamp"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
+
+</com.tokopedia.home.widget.ToggleableSwipeRefreshLayout>

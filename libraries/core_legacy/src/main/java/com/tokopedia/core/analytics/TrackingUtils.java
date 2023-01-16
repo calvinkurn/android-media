@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.legacy.CommonUtils;
+import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.track.TrackApp;
 
@@ -101,6 +102,8 @@ public class TrackingUtils{
 
             if(!isValid){
                 Log.d("TrackingUtils", "Invalid Campaign Data = "+maps.toString());
+            }else {
+                GTMAnalytics.setUTMParamsForSession(maps);
             }
         }
 
