@@ -33,7 +33,6 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
         ViewModelProvider(this, viewModelFactory).get(DisplayVoucherViewModel::class.java)
     }
 
-    private var voucher: Voucher? = null
     private var voucherConfiguration: VoucherConfiguration? = null
 
     override fun onCreateView(
@@ -142,9 +141,13 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
     companion object {
         @JvmStatic
         fun newInstance(voucher: Voucher): DisplayVoucherBottomSheet {
+            return newInstance(voucher.toVoucherConfiguration())
+        }
+
+        @JvmStatic
+        fun newInstance(voucherConfiguration: VoucherConfiguration): DisplayVoucherBottomSheet {
             return DisplayVoucherBottomSheet().apply {
-                this.voucher = voucher
-                this.voucherConfiguration = voucher.toVoucherConfiguration()
+                this.voucherConfiguration = voucherConfiguration
             }
         }
 
