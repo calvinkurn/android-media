@@ -38,6 +38,7 @@ import javax.inject.Inject
 class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListener {
 
     private var globalError: GlobalError? = null
+    private var categoryIdentifierStr = ""
     private var categoryName = ""
     private var catalogLandingRecyclerView: RecyclerView? = null
 
@@ -68,12 +69,11 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
         }
 
     companion object {
-        const val CATALOG_LANDING_PAGE_FRAGMENT_TAG = "CATALOG_LANDING_PAGE_FRAGMENT_TAG"
-        const val ARG_CATEGORY_NAME = "ARG_CATEGORY_NAME"
-        fun newInstance(categoryName: String?): CatalogLandingPageFragment {
+        const val ARG_CATEGORY_IDENTIFIER = "ARG_CATEGORY_IDENTIFIER"
+        fun newInstance(categoryIdentifier: String?): CatalogLandingPageFragment {
             return CatalogLandingPageFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_CATEGORY_NAME, categoryName)
+                    putString(ARG_CATEGORY_IDENTIFIER, categoryIdentifier)
                 }
             }
         }
@@ -106,18 +106,17 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
         super.onViewCreated(view, savedInstanceState)
         extractArguments()
         initViews(view)
-        setCategory(categoryName)
+        setCategory(categoryIdentifierStr)
         setUpBase()
         initData()
     }
 
     private fun extractArguments() {
-        categoryName = arguments?.getString(ARG_CATEGORY_NAME, "") ?: ""
+        categoryIdentifierStr = arguments?.getString(ARG_CATEGORY_IDENTIFIER, "") ?: ""
     }
 
     private fun initViews(view: View) {
         globalError = view.findViewById(R.id.global_error_page)
-        initHeaderTitle(view)
         setupRecyclerView(view)
     }
 
@@ -150,6 +149,10 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
                 is Fail -> {
                     onError(it.throwable)
                 }
+            }
+            landingPageViewModel.categoryName.observe(viewLifecycleOwner) { categoryName ->
+                this.categoryName = categoryName
+                view?.let { v -> initHeaderTitle(v) }
             }
         }
     }
@@ -195,12 +198,12 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
 
     private fun getDataFromViewModel() {
         landingPageViewModel.getCatalogTopFiveData(
-            categoryName,
+            categoryIdentifierStr,
             SORT_TYPE_TOP_FIVE,
             TOTAL_ROWS_TOP_FIVE
         )
         landingPageViewModel.getCatalogMostViralData(
-            categoryName,
+            categoryIdentifierStr,
             SORT_TYPE_VIRAL,
             TOTAL_ROWS_VIRAL
         )

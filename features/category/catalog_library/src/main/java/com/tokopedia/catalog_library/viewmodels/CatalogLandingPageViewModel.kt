@@ -20,7 +20,11 @@ class CatalogLandingPageViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _catalogLandingPageLiveData = MutableLiveData<Result<CatalogLibraryDataModel>>()
-    val catalogLandingPageLiveDataResponse: LiveData<Result<CatalogLibraryDataModel>> = _catalogLandingPageLiveData
+    val catalogLandingPageLiveDataResponse: LiveData<Result<CatalogLibraryDataModel>> =
+        _catalogLandingPageLiveData
+
+    private val _categoryName = MutableLiveData<String>()
+    val categoryName: LiveData<String> = _categoryName
 
     private val listOfComponents = mutableListOf<BaseCatalogLibraryDataModel>()
 
@@ -54,17 +58,18 @@ class CatalogLandingPageViewModel @Inject constructor(
         )
     }
 
-    private fun onAvailableCatalogTopFiveData(catalogListResponse: CatalogListResponse,page : Int = 1) {
+    private fun onAvailableCatalogTopFiveData(catalogListResponse: CatalogListResponse, page: Int = 1) {
         if (catalogListResponse.catalogGetList.catalogsProduct.isEmpty()) {
             onFailLandingPageData(IllegalStateException("No Catalog Landing Page Data"))
         } else {
             catalogListResponse.let {
                 _catalogLandingPageLiveData.postValue(Success(mapCatalogTopFiveData(it)))
+                _categoryName.postValue(it.catalogGetList.categoryName)
             }
         }
     }
 
-    private fun onAvailableCatalogMostViralData(catalogListResponse: CatalogListResponse, page : Int = 1) {
+    private fun onAvailableCatalogMostViralData(catalogListResponse: CatalogListResponse, page: Int = 1) {
         if (catalogListResponse.catalogGetList.catalogsProduct.isEmpty()) {
             onFailLandingPageData(IllegalStateException("No Catalog Landing Page Data"))
         } else {

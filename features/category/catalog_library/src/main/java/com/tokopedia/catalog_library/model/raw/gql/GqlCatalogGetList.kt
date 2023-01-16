@@ -7,6 +7,7 @@ const val GQL_CATALOG_LIST: String =
           code
           message
         }
+        category_name
         catalogs{
           id
           name
