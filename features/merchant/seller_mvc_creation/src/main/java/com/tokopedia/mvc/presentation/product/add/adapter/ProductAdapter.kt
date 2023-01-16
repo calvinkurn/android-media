@@ -16,7 +16,6 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcItemProductBinding
 import com.tokopedia.mvc.domain.entity.Product
-import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.mvc.util.extension.grayscale
 import com.tokopedia.mvc.util.extension.resetGrayscale
 import com.tokopedia.unifyprinciples.Typography
@@ -66,7 +65,6 @@ class ProductAdapter(
                 tpgIneligibleReason.setIneligibleReason(item)
 
                 imgProduct.loadRemoteImageUrl(item)
-                imgProduct.cornerRadius = NumberConstant.IMAGE_VIEW_CORNER_RADIUS
 
                 tpgProductName.text = item.name
                 tpgProductName.isEnabled = item.isEligible

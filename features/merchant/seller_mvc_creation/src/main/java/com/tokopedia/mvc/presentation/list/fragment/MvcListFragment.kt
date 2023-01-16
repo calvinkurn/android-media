@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.presentation.list.fragment
 
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -33,6 +34,7 @@ import com.tokopedia.mvc.R
 import com.tokopedia.mvc.common.util.PaginationConstant.INITIAL_PAGE
 import com.tokopedia.mvc.common.util.PaginationConstant.PAGE_SIZE
 import com.tokopedia.mvc.common.util.SharedPreferencesUtil
+import com.tokopedia.mvc.common.util.UrlConstant.URL_MAIN_ARTICLE
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListBinding
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListFooterBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -57,6 +59,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
 import com.tokopedia.mvc.presentation.download.DownloadVoucherImageBottomSheet
+import com.tokopedia.mvc.presentation.intro.MvcIntroActivity
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
 import com.tokopedia.mvc.presentation.list.constant.PageState
@@ -102,7 +105,7 @@ class MvcListFragment :
     private var voucherEditPeriodBottomSheet: VoucherEditPeriodBottomSheet? = null
     private var displayVoucherBottomSheet: DisplayVoucherBottomSheet? = null
     private var voucherPeriodBottomSheet: VoucherPeriodBottomSheet? = null
-
+    private var otherPeriodBottomSheet: OtherPeriodBottomSheet? = null
     private var eduCenterBottomSheet: EduCenterBottomSheet? = null
     private var stopVoucherDialog: StopVoucherConfirmationDialog? = null
 
@@ -183,6 +186,7 @@ class MvcListFragment :
                 showDownloadVoucherBottomSheet(voucher)
             }
             is MoreMenuUiModel.Clear -> {
+                deleteVoucher(voucher)
             }
             is MoreMenuUiModel.Share -> {
             }
@@ -273,6 +277,7 @@ class MvcListFragment :
                 voucher.imagePortrait
             )
             bottomSheet.setOnDownloadSuccess {
+                otherPeriodBottomSheet?.dismiss()
                 binding?.footer?.root?.showToaster(
                     getString(
                         R.string.smvc_placeholder_download_voucher_image_success,
@@ -335,9 +340,9 @@ class MvcListFragment :
             binding?.footer?.setupVoucherQuota(it)
         }
         viewModel.voucherChilds.observe(viewLifecycleOwner) {
-            val bottomSheet = OtherPeriodBottomSheet.newInstance(it)
-            bottomSheet.setListener(this)
-            bottomSheet.show(this, it.size)
+            otherPeriodBottomSheet = OtherPeriodBottomSheet.newInstance(it)
+            otherPeriodBottomSheet?.setListener(this)
+            otherPeriodBottomSheet?.show(this, it.size)
         }
         viewModel.pageState.observe(viewLifecycleOwner) {
             when (it) {
@@ -558,7 +563,15 @@ class MvcListFragment :
     }
 
     override fun onMenuClicked(menu: EduCenterMenuModel) {
-        routeToUrl(menu.urlRoute.toString())
+        when(menu.urlRoute){
+            URL_MAIN_ARTICLE ->{
+                routeToUrl(menu.urlRoute.toString())
+            }
+            else-> {
+                val introPage = Intent(context, MvcIntroActivity::class.java)
+                startActivity(introPage)
+            }
+        }
     }
 
     private fun deleteVoucher(voucher: Voucher) {
@@ -609,7 +622,7 @@ class MvcListFragment :
                 }
                 show(
                     getTitleStopVoucherDialog(voucherStatus),
-                    getStringDescStopVoucherDialog(voucherStatus),
+                    getStringDescStopVoucherDialog(voucherStatus, voucher.name),
                     getStringPositiveCtaStopVoucherDialog(voucherStatus)
                 )
             }
@@ -624,11 +637,11 @@ class MvcListFragment :
         }
     }
 
-    private fun getStringDescStopVoucherDialog(voucherStatus: VoucherStatus): String {
+    private fun getStringDescStopVoucherDialog(voucherStatus: VoucherStatus, voucherName : String): String {
         return if (voucherStatus == VoucherStatus.NOT_STARTED) {
             getString(R.string.smvc_delete_voucher_confirmation_body_dialog)
         } else {
-            getString(R.string.smvc_canceled_voucher_confirmation_body_dialog, voucherStatus.name)
+            getString(R.string.smvc_canceled_voucher_confirmation_body_dialog, voucherName)
         }
     }
 

@@ -8,10 +8,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetFilterShowcaseBinding
 import com.tokopedia.mvc.domain.entity.ShopShowcase
 import com.tokopedia.mvc.presentation.product.add.adapter.filter.ShopShowcaseFilterAdapter
+import com.tokopedia.mvc.util.constant.ImageUrlConstant
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -76,7 +79,11 @@ class ShowcaseFilterBottomSheet: BottomSheetUnify() {
     }
 
     private fun setupEmptyState(showcases: List<ShopShowcase>) {
-        binding?.emptyState?.isVisible = showcases.isEmpty()
+        if (showcases.isEmpty()) {
+            binding?.groupEmptyState?.visible()
+            binding?.imgNoShowcase?.loadImage(ImageUrlConstant.IMAGE_URL_EMPTY_SHOWCASE)
+        }
+
         binding?.btnApply?.isVisible = showcases.isNotEmpty()
     }
 

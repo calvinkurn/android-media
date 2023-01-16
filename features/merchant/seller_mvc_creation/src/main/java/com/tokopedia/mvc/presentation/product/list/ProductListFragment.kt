@@ -275,7 +275,7 @@ class ProductListFragment : BaseDaggerFragment() {
     }
 
     private fun renderBulkDeleteIcon(selectedProductCount: Int) {
-        binding?.iconBulkDelete?.isVisible = selectedProductCount > ONE_PRODUCT
+        binding?.iconBulkDelete?.isVisible = selectedProductCount.isMoreThanZero()
     }
 
     private fun renderProductCounter(productCount: Int, selectedProductCount: Int, pageMode: PageMode) {
