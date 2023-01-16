@@ -45,5 +45,7 @@ data class VoucherValidationPartialRequest(
     @SerializedName("hour_start")
     val startHour: String,
     @SerializedName("hour_end")
-    val endHour: String
+    val endHour: String,
+    @SerializedName("quota")
+    val quota: Long
 )

@@ -209,7 +209,8 @@ class AddProductViewModel @Inject constructor(
             startDate = voucherConfiguration.startPeriod.formatTo(DateConstant.DATE_MONTH_YEAR_BASIC),
             endDate = voucherConfiguration.endPeriod.formatTo(DateConstant.DATE_MONTH_YEAR_BASIC),
             startHour = voucherConfiguration.startPeriod.formatTo(DateConstant.TIME_MINUTE_PRECISION),
-            endHour = voucherConfiguration.endPeriod.formatTo(DateConstant.TIME_MINUTE_PRECISION)
+            endHour = voucherConfiguration.endPeriod.formatTo(DateConstant.TIME_MINUTE_PRECISION),
+            quota = voucherConfiguration.quota
         )
 
         val validatedProducts = voucherValidationPartialUseCase.execute(voucherValidationParam).validationProduct

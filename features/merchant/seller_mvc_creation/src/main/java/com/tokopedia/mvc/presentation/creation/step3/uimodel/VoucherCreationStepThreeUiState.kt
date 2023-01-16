@@ -4,12 +4,15 @@ import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 
 data class VoucherCreationStepThreeUiState(
     val isLoading: Boolean = true,
     val originalPageMode: PageMode = PageMode.CREATE,
     val pageMode: PageMode = PageMode.CREATE,
     val voucherConfiguration: VoucherConfiguration = VoucherConfiguration(),
+    val availableTargetBuyer: List<VoucherTargetBuyer> = listOf(VoucherTargetBuyer.ALL_BUYER, VoucherTargetBuyer.NEW_FOLLOWER),
+    val spendingEstimation: Long = 0,
     val isNominalError: Boolean = false,
     val nominalErrorMsg: String = "",
     val isPercentageError: Boolean = false,

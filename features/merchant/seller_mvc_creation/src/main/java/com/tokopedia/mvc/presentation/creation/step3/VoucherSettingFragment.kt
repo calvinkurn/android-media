@@ -9,6 +9,8 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.campaign.utils.extension.disable
+import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentCreationVoucherSettingBinding
@@ -24,6 +26,7 @@ import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeAction
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeEvent
@@ -142,6 +145,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 renderDiscountQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
             }
         }
+        renderAvailableTargetBuyer(state.availableTargetBuyer, state.voucherConfiguration)
     }
 
     private fun handleAction(action: VoucherCreationStepThreeAction) {
@@ -181,6 +185,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             setupHeader()
             setupPromoTypeSection()
             setupTargetBuyerSection()
+            setupSpendingEstimationSection()
             setupButtonSection()
         }
     }
@@ -446,7 +451,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 tfCahsbackMaxDeduction.visible()
                 appendText(getString(R.string.smvc_percent_symbol))
                 prependText("")
-                labelText.text = getString(R.string.smvc_percentage_cashback_label)
+                labelText.text = getString(R.string.smvc_percentage_label)
                 editText.setText(currentVoucherConfiguration.benefitPercent.toString())
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
@@ -648,7 +653,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 tfDiscountMaxDeduction.visible()
                 appendText(getString(R.string.smvc_percent_symbol))
                 prependText("")
-                labelText.text = getString(R.string.smvc_percentage_discount_label)
+                labelText.text = getString(R.string.smvc_percentage_label)
                 editText.setText(currentVoucherConfiguration.benefitPercent.toString())
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
@@ -783,7 +788,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         buyerTargetSectionBinding?.run {
             val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
             rgBuyerTarget.apply {
-                check(currentVoucherConfiguration.targetBuyer.id)
                 setOnCheckedChangeListener { _, position ->
                     val target = if (position == VoucherTargetBuyer.ALL_BUYER.id) {
                         VoucherTargetBuyer.ALL_BUYER
@@ -791,6 +795,42 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                         VoucherTargetBuyer.NEW_FOLLOWER
                     }
                     viewModel.processEvent(VoucherCreationStepThreeEvent.ChooseTargetBuyer(target))
+                }
+            }
+            setTargetBuyerRadioButton(currentVoucherConfiguration)
+        }
+    }
+
+    private fun setTargetBuyerRadioButton(voucherConfiguration: VoucherConfiguration) {
+        buyerTargetSectionBinding?.run {
+            if (voucherConfiguration.targetBuyer == VoucherTargetBuyer.ALL_BUYER) {
+                radioAllBuyer.isChecked = true
+            } else {
+                radioNewFollower.isChecked = true
+            }
+        }
+    }
+
+    private fun renderAvailableTargetBuyer(availableTargetBuyer: List<VoucherTargetBuyer>, voucherConfiguration: VoucherConfiguration) {
+        buyerTargetSectionBinding?.run {
+            radioAllBuyer.disable()
+            radioNewFollower.disable()
+            for (id in availableTargetBuyer) {
+                rgBuyerTarget.getChildAt(id.id).enable()
+            }
+            setTargetBuyerRadioButton(voucherConfiguration)
+        }
+    }
+
+    //Spending estimation section
+    private fun setupSpendingEstimationSection() {
+        binding?.run {
+            labelSpendingEstimation.apply {
+                titleText = getString(R.string.smvc_spending_estimation_title_1)
+                descriptionText = getString(R.string.smvc_spending_estimation_description_1)
+                spendingEstimationText = "-"
+                iconInfo?.setOnClickListener {
+                    ExpenseEstimationBottomSheet.newInstance().show(childFragmentManager)
                 }
             }
         }

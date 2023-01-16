@@ -9,7 +9,10 @@ import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
+import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
+import com.tokopedia.mvc.presentation.VoucherBuyerFinder
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeAction
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeEvent
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeUiState
@@ -20,6 +23,7 @@ import javax.inject.Inject
 class VoucherSettingViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase,
+    private val voucherBuyerFinder: VoucherBuyerFinder,
     private val sharedPreferences: SharedPreferences
 ) : BaseViewModel(dispatchers.main) {
 
@@ -39,10 +43,18 @@ class VoucherSettingViewModel @Inject constructor(
             }
             is VoucherCreationStepThreeEvent.ChoosePromoType -> handlePromoTypeSelection(event.promoType)
             is VoucherCreationStepThreeEvent.ChooseBenefitType -> handleBenefitTypeSelection(event.benefitType)
-            is VoucherCreationStepThreeEvent.OnInputNominalChanged -> handleNominalInputChanges(event.nominal)
-            is VoucherCreationStepThreeEvent.OnInputPercentageChanged -> handlePercentageInputChanges(event.percentage)
-            is VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged -> handleMaxDeductionInputChanges(event.maxDeduction)
-            is VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged -> handleMinimumBuyInputChanges(event.minimumBuy)
+            is VoucherCreationStepThreeEvent.OnInputNominalChanged -> handleNominalInputChanges(
+                event.nominal
+            )
+            is VoucherCreationStepThreeEvent.OnInputPercentageChanged -> handlePercentageInputChanges(
+                event.percentage
+            )
+            is VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged -> handleMaxDeductionInputChanges(
+                event.maxDeduction
+            )
+            is VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged -> handleMinimumBuyInputChanges(
+                event.minimumBuy
+            )
             is VoucherCreationStepThreeEvent.OnInputQuotaChanged -> handleQuotaInputChanges(event.quota)
             is VoucherCreationStepThreeEvent.ChooseTargetBuyer -> {}
             is VoucherCreationStepThreeEvent.HandleCoachMark -> {}
@@ -70,12 +82,18 @@ class VoucherSettingViewModel @Inject constructor(
     }
 
     private fun handlePromoTypeSelection(promoType: PromoType) {
+        val voucherServiceType =
+            getVoucherServiceType(currentState.voucherConfiguration.isVoucherProduct)
+        val voucherTarget = getVoucherTarget(currentState.voucherConfiguration.isVoucherPublic)
+        val availableTargetBuyer =
+            voucherBuyerFinder.findBuyerTarget(voucherServiceType, voucherTarget, promoType)
         _uiState.update {
             it.copy(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
                     promoType = promoType
-                )
+                ),
+                availableTargetBuyer = availableTargetBuyer
             )
         }
     }
@@ -176,7 +194,8 @@ class VoucherSettingViewModel @Inject constructor(
                     startDate = voucherConfiguration.startPeriod.formatTo(DateConstant.DATE_MONTH_YEAR_BASIC),
                     endDate = voucherConfiguration.endPeriod.formatTo(DateConstant.DATE_MONTH_YEAR_BASIC),
                     startHour = voucherConfiguration.startPeriod.formatTo(DateConstant.TIME_MINUTE_PRECISION),
-                    endHour = voucherConfiguration.endPeriod.formatTo(DateConstant.TIME_MINUTE_PRECISION)
+                    endHour = voucherConfiguration.endPeriod.formatTo(DateConstant.TIME_MINUTE_PRECISION),
+                    quota = voucherConfiguration.quota
                 )
                 val validationResult =
                     voucherValidationPartialUseCase.execute(voucherValidationParam)
@@ -198,5 +217,21 @@ class VoucherSettingViewModel @Inject constructor(
             },
             onError = { }
         )
+    }
+
+    private fun getVoucherServiceType(isVoucherProduct: Boolean): VoucherServiceType {
+        return if (isVoucherProduct) {
+            VoucherServiceType.PRODUCT_VOUCHER
+        } else {
+            VoucherServiceType.SHOP_VOUCHER
+        }
+    }
+
+    private fun getVoucherTarget(isPublic: Boolean): VoucherTarget {
+        return if (isPublic) {
+            VoucherTarget.PUBLIC
+        } else {
+            VoucherTarget.PRIVATE
+        }
     }
 }
