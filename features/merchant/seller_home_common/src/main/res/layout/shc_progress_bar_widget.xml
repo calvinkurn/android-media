@@ -7,7 +7,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcProgressTitle"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/shc_line_spacing_6"
         android:textColor="@color/Unify_N700_96"
@@ -46,7 +46,7 @@
     <View
         android:id="@+id/shcProgressBarBase"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl1"
+        android:layout_height="8dp"
         android:background="@drawable/shc_base_progress_bar"
         app:layout_constraintBottom_toBottomOf="@id/shcProgressBarCurrent"
         app:layout_constraintTop_toTopOf="@id/shcProgressBarCurrent" />

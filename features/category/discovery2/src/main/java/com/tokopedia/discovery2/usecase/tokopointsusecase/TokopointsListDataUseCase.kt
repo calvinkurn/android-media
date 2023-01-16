@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.usecase.tokopointsusecase
 
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.datamapper.getMapWithoutRpc
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
 import javax.inject.Inject
 
@@ -12,8 +13,9 @@ class TokopointsListDataUseCase @Inject constructor(private val tokopointsReposi
 
     suspend fun getTokopointsDataUseCase(componentId: String, pageEndPoint: String): Boolean {
         val componentsItem = getComponent(componentId, pageEndPoint)
+        val paramWithoutRpc = getMapWithoutRpc(pageEndPoint)
         componentsItem?.let { component ->
-            component?.setComponentsItem(tokopointsRepository.getTokopointsData(componentId, getQueryParameterMap(1.toString(), 6), pageEndPoint), component.tabName)
+            component?.setComponentsItem(tokopointsRepository.getTokopointsData(componentId, getQueryParameterMap(1.toString(), 6, paramWithoutRpc), pageEndPoint), component.tabName)
             component?.noOfPagesLoaded = 1
             return true
         }
@@ -22,10 +24,13 @@ class TokopointsListDataUseCase @Inject constructor(private val tokopointsReposi
 
     }
 
-    private fun getQueryParameterMap(pageNum: String, productPerPage: Int): MutableMap<String, Any> {
+    private fun getQueryParameterMap(pageNum: String, productPerPage: Int, queryParameterMapWithoutRpc: Map<String, String>?): MutableMap<String, Any> {
         val queryParameterMap = mutableMapOf<String, Any>()
         queryParameterMap[RPC_PAGE_NUMBER_KEY] = pageNum
         queryParameterMap[RPC_PAGE_SIZE] = productPerPage
+        queryParameterMapWithoutRpc?.let {
+            queryParameterMap.putAll(it)
+        }
         return queryParameterMap
     }
 }

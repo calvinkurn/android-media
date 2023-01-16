@@ -5,13 +5,13 @@
     android:layout_height="wrap_content"
     android:foreground="?android:attr/selectableItemBackground"
     android:orientation="horizontal"
-    android:padding="@dimen/spacing_lvl4">
+    android:padding="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_option"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginEnd="8dp"
         android:layout_weight="1"
         android:text="@string/oke"
         android:textColor="@color/Unify_N700_96"
@@ -19,8 +19,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_option"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:src="@drawable/ic_check_green" />
 
 </LinearLayout>

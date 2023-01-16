@@ -91,6 +91,7 @@ class GetRecommendationPostUseCase @Inject constructor(
                   price
                   priceFmt
                   mods
+                  shopID
                 }
                 hashtagAppLinkFmt
                 hashtagWebLinkFmt
@@ -207,6 +208,7 @@ class GetRecommendationPostUseCase @Inject constructor(
                       bebasOngkirStatus
                       bebasOngkirURL
                       mods
+                      shopID
                     }
                     like {
                       label
@@ -307,6 +309,7 @@ class GetRecommendationPostUseCase @Inject constructor(
                   price
                   priceFmt
                   mods
+                  shopID
                 }
                 hashtagAppLinkFmt
                 hashtagWebLinkFmt

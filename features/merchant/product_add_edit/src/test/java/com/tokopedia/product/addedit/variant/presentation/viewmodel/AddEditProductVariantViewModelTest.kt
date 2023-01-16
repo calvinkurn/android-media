@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.variant.presentation.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.product.addedit.detail.domain.model.BlacklistKeyword
 import com.tokopedia.product.addedit.detail.domain.model.GetProductTitleValidation
 import com.tokopedia.product.addedit.detail.domain.model.GetProductTitleValidationResponse
@@ -27,6 +28,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertFalse
 
@@ -1010,5 +1012,29 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
             assertEquals(1, it.products[1].combination[0])
             assertEquals(0, it.products[1].combination[1])
         }
+    }
+
+    @Test
+    fun `cleanUrlOrPathPicture with expected output is on edited url`(){
+        val editedPhotoAddress = arrayListOf("/0/tkpd/1")
+        val originalPhotoAddress = arrayListOf("")
+        val params = PickerResult(editedImages = editedPhotoAddress, originalPaths = originalPhotoAddress)
+        val actualResult = viewModel.cleanUrlOrPathPicture(params)
+        assertEquals(actualResult, "/0/tkpd/1")
+    }
+
+    @Test
+    fun `cleanUrlOrPathPicture with expected output is on original url`(){
+        val editedPhotoAddress = arrayListOf("")
+        val originalPhotoAddress = arrayListOf("0/tkpd/chace/1")
+        val params = PickerResult(editedImages = editedPhotoAddress,originalPaths= originalPhotoAddress)
+        val actualResult = viewModel.cleanUrlOrPathPicture(params)
+        assertEquals("0/tkpd/chace/1",actualResult)
+    }
+    @Test
+    fun `cleanUrlOrPathPicture when it is null`(){
+        val params = PickerResult()
+        val actualResult = viewModel.cleanUrlOrPathPicture(params)
+        assertEquals(null,actualResult)
     }
 }

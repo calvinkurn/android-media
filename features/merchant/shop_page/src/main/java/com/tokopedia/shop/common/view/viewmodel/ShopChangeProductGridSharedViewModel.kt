@@ -11,7 +11,7 @@ class ShopChangeProductGridSharedViewModel : ViewModel() {
         get() = _sharedProductGridType
     private val _sharedProductGridType = MutableLiveData<ShopProductViewGridType>()
 
-    fun changeSharedProductGridType(gridType: ShopProductViewGridType){
+    fun changeSharedProductGridType(gridType: ShopProductViewGridType) {
         _sharedProductGridType.postValue(gridType)
     }
 }

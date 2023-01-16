@@ -82,6 +82,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             date = it.date,
             duration = it.duration,
             isEligiblePostVideo = it.isEligiblePostVideo,
+            author = it.author,
         )
     }
 
@@ -265,6 +266,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                                         convertDate(channel.basic.timestamp.publishedAt),
                                         reportChannelSummary.duration,
                                         isEligiblePostVideo(reportChannelSummary.duration),
+                                        hydraConfigStore.getAuthor(),
                                     )
             getSellerLeaderboardUseCase.setRequestParams(GetSellerLeaderboardUseCase.createParams(channelId))
             val leaderboard = getSellerLeaderboardUseCase.executeOnBackground()

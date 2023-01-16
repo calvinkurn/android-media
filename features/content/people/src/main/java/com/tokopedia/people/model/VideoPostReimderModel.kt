@@ -4,12 +4,12 @@ import com.google.gson.annotations.SerializedName
 
 data class VideoPostReimderModel(
     @SerializedName("playToggleChannelReminder")
-    val playToggleChannelReminder: PlayToggleChannelReminderData
+    val playToggleChannelReminder: PlayToggleChannelReminderData,
 )
 
 data class PlayToggleChannelReminderData(
     @SerializedName("header")
-    val header: ChannelReminderDataHeader
+    val header: ChannelReminderDataHeader,
 )
 
 data class ChannelReminderDataHeader(
@@ -17,6 +17,5 @@ data class ChannelReminderDataHeader(
     val message: String,
 
     @SerializedName("status")
-    val status: Int
+    val status: Int,
 )
-

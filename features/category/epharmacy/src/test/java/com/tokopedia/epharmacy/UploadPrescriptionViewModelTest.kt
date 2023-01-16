@@ -38,7 +38,6 @@ class UploadPrescriptionViewModelTest {
     private val fetchFailedErrorMessage = "Fetch Failed"
     private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
 
-
     @Before
     fun setUp() {
         viewModel = UploadPrescriptionViewModel(
@@ -46,20 +45,20 @@ class UploadPrescriptionViewModelTest {
             getEPharmacyCheckoutDetailUseCase,
             uploadPrescriptionUseCase,
             postPrescriptionIdUseCase,
-            dispatcherBackground)
+            dispatcherBackground
+        )
     }
 
     @Test
-    fun orderDetailSuccessTest()
-    {
+    fun orderDetailSuccessTest() {
         val product = mockk<EPharmacyProduct>(relaxed = true)
         val responseDetail = EPharmacyDataResponse(
             EPharmacyDataResponse.EPharmacyOrderDetailData(
                 EPharmacyDataResponse.EPharmacyOrderDetailData.EPharmacyDataForm(
-            null, null,null,"",
-            "","",null,
-            arrayListOf(product),0L,"","","","",
-            false,"",""
+                    null, null, null, "",
+                    "", "", null,
+                    arrayListOf(product), 0L, "", "", "", "",
+                    false, "", ""
                 )
             )
         )
@@ -74,16 +73,15 @@ class UploadPrescriptionViewModelTest {
     }
 
     @Test
-    fun orderDetailSuccessTestReUpload()
-    {
+    fun orderDetailSuccessTestReUpload() {
         val product = mockk<EPharmacyProduct>(relaxed = true)
         val responseDetail = EPharmacyDataResponse(
             EPharmacyDataResponse.EPharmacyOrderDetailData(
                 EPharmacyDataResponse.EPharmacyOrderDetailData.EPharmacyDataForm(
-                    null, null,null,"",
-                    "","",null,
-                    arrayListOf(product),0L,"","","","",
-                    true,"",""
+                    null, null, null, "",
+                    "", "", null,
+                    arrayListOf(product), 0L, "", "", "", "",
+                    true, "", ""
                 )
             )
         )
@@ -98,15 +96,14 @@ class UploadPrescriptionViewModelTest {
     }
 
     @Test
-    fun `orderDetail fetch success but condition fail`()
-    {
+    fun `orderDetail fetch success but condition fail`() {
         val responseDetail = EPharmacyDataResponse(
             EPharmacyDataResponse.EPharmacyOrderDetailData(
                 EPharmacyDataResponse.EPharmacyOrderDetailData.EPharmacyDataForm(
-            null, null,null,"",
-            "","",null,
-            arrayListOf(),0L,"","","","",
-            false,"",""
+                    null, null, null, "",
+                    "", "", null,
+                    arrayListOf(), 0L, "", "", "", "",
+                    false, "", ""
                 )
             )
         )
@@ -123,8 +120,7 @@ class UploadPrescriptionViewModelTest {
     }
 
     @Test
-    fun `orderDetail fetch failed throws exception`()
-    {
+    fun `orderDetail fetch failed throws exception`() {
         coEvery {
             getEPharmacyOrderDetailUseCase.getEPharmacyOrderDetail(any(), any(), 1)
         } coAnswers {
@@ -138,70 +134,69 @@ class UploadPrescriptionViewModelTest {
     }
 
     @Test
-    fun checkoutDetailSuccessTest()
-    {
+    fun checkoutDetailSuccessTest() {
         val product = mockk<EPharmacyProduct>(relaxed = true)
         val responseDetail = EPharmacyDataResponse(
             EPharmacyDataResponse.EPharmacyOrderDetailData(
                 EPharmacyDataResponse.EPharmacyOrderDetailData.EPharmacyDataForm(
-            null, null,null,"",
-            "","",null,
-            arrayListOf(product),0L,"","","","",
-            false,"","")
+                    null, null, null, "",
+                    "", "", null,
+                    arrayListOf(product), 0L, "", "", "", "",
+                    false, "", ""
+                )
             )
         )
 
         coEvery {
-            getEPharmacyCheckoutDetailUseCase.getEPharmacyCheckoutDetail(any(), any(), "")
+            getEPharmacyCheckoutDetailUseCase.getEPharmacyCheckoutDetail(any(), any(), "", "")
         } coAnswers {
             firstArg<(EPharmacyDataResponse) -> Unit>().invoke(responseDetail)
         }
-        viewModel.getEPharmacyCheckoutDetail("")
+        viewModel.getEPharmacyCheckoutDetail("", "")
         assert(viewModel.productDetailLiveDataResponse.value is Success)
     }
 
     @Test
-    fun checkoutDetailSuccessTestReUpload()
-    {
+    fun checkoutDetailSuccessTestReUpload() {
         val product = mockk<EPharmacyProduct>(relaxed = true)
         val responseDetail = EPharmacyDataResponse(
             EPharmacyDataResponse.EPharmacyOrderDetailData(
                 EPharmacyDataResponse.EPharmacyOrderDetailData.EPharmacyDataForm(
-                    null, null,null,"",
-                    "","",null,
-                    arrayListOf(product),0L,"","","","",
-                    true,"","")
+                    null, null, null, "",
+                    "", "", null,
+                    arrayListOf(product), 0L, "", "", "", "",
+                    true, "", ""
+                )
             )
         )
 
         coEvery {
-            getEPharmacyCheckoutDetailUseCase.getEPharmacyCheckoutDetail(any(), any(), "")
+            getEPharmacyCheckoutDetailUseCase.getEPharmacyCheckoutDetail(any(), any(), "", "")
         } coAnswers {
             firstArg<(EPharmacyDataResponse) -> Unit>().invoke(responseDetail)
         }
-        viewModel.getEPharmacyCheckoutDetail("")
+        viewModel.getEPharmacyCheckoutDetail("", "")
         assert(viewModel.productDetailLiveDataResponse.value is Success)
     }
 
     @Test
-    fun `checkout fetch success but condition fail`()
-    {
+    fun `checkout fetch success but condition fail`() {
         val responseDetail = EPharmacyDataResponse(
             EPharmacyDataResponse.EPharmacyOrderDetailData(
                 EPharmacyDataResponse.EPharmacyOrderDetailData.EPharmacyDataForm(
-                    null, null,null,"",
-                    "","",null,
-                    arrayListOf(),0L,"","","","",
-                    false,"",""
+                    null, null, null, "",
+                    "", "", null,
+                    arrayListOf(), 0L, "", "", "", "",
+                    false, "", ""
                 )
             )
         )
         coEvery {
-            getEPharmacyCheckoutDetailUseCase.getEPharmacyCheckoutDetail(any(), any(), "")
+            getEPharmacyCheckoutDetailUseCase.getEPharmacyCheckoutDetail(any(), any(), "", "")
         } coAnswers {
             firstArg<(EPharmacyDataResponse) -> Unit>().invoke(responseDetail)
         }
-        viewModel.getEPharmacyCheckoutDetail("")
+        viewModel.getEPharmacyCheckoutDetail("", "")
         Assert.assertEquals(
             (viewModel.productDetailLiveDataResponse.value as Fail).throwable.localizedMessage,
             "Data invalid"
@@ -209,14 +204,13 @@ class UploadPrescriptionViewModelTest {
     }
 
     @Test
-    fun `checkoutDetail fetch failed throws exception`()
-    {
+    fun `checkoutDetail fetch failed throws exception`() {
         coEvery {
-            getEPharmacyCheckoutDetailUseCase.getEPharmacyCheckoutDetail(any(), any(), "")
+            getEPharmacyCheckoutDetailUseCase.getEPharmacyCheckoutDetail(any(), any(), "", "")
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.getEPharmacyCheckoutDetail("")
+        viewModel.getEPharmacyCheckoutDetail("", "")
         Assert.assertEquals(
             (viewModel.productDetailLiveDataResponse.value as Fail).throwable,
             mockThrowable
@@ -224,11 +218,10 @@ class UploadPrescriptionViewModelTest {
     }
 
     @Test
-    fun uploadIdsSuccessTestOrder()
-    {
+    fun uploadIdsSuccessTestOrder() {
         val response = EPharmacyUploadPrescriptionIdsResponse(EPharmacyUploadPrescriptionIdsResponse.EPharmacyUploadPrescriptionData(true))
         coEvery {
-            postPrescriptionIdUseCase.postPrescriptionIdsOrder(any(),any(), any(),any())
+            postPrescriptionIdUseCase.postPrescriptionIdsOrder(any(), any(), any(), any())
         } coAnswers {
             firstArg<(EPharmacyUploadPrescriptionIdsResponse) -> Unit>().invoke(response)
         }
@@ -237,11 +230,10 @@ class UploadPrescriptionViewModelTest {
     }
 
     @Test
-    fun `upload prescription ids Order success but condition fail`()
-    {
+    fun `upload prescription ids Order success but condition fail`() {
         val response = EPharmacyUploadPrescriptionIdsResponse(EPharmacyUploadPrescriptionIdsResponse.EPharmacyUploadPrescriptionData(false))
         coEvery {
-            postPrescriptionIdUseCase.postPrescriptionIdsOrder(any(), any(), any(),any())
+            postPrescriptionIdUseCase.postPrescriptionIdsOrder(any(), any(), any(), any())
         } coAnswers {
             firstArg<(EPharmacyUploadPrescriptionIdsResponse) -> Unit>().invoke(response)
         }
@@ -250,11 +242,10 @@ class UploadPrescriptionViewModelTest {
     }
 
     @Test
-    fun uploadIdsSuccessTestCheckout()
-    {
+    fun uploadIdsSuccessTestCheckout() {
         val response = EPharmacyUploadPrescriptionIdsResponse(EPharmacyUploadPrescriptionIdsResponse.EPharmacyUploadPrescriptionData(true))
         coEvery {
-            postPrescriptionIdUseCase.postPrescriptionIdsCheckout(any(), any(),any(), any())
+            postPrescriptionIdUseCase.postPrescriptionIdsCheckout(any(), any(), any(), any())
         } coAnswers {
             firstArg<(EPharmacyUploadPrescriptionIdsResponse) -> Unit>().invoke(response)
         }
@@ -263,11 +254,10 @@ class UploadPrescriptionViewModelTest {
     }
 
     @Test
-    fun `upload prescription ids Checkout success but condition fail`()
-    {
+    fun `upload prescription ids Checkout success but condition fail`() {
         val response = EPharmacyUploadPrescriptionIdsResponse(EPharmacyUploadPrescriptionIdsResponse.EPharmacyUploadPrescriptionData(false))
         coEvery {
-            postPrescriptionIdUseCase.postPrescriptionIdsCheckout(any(), any(), any(),any())
+            postPrescriptionIdUseCase.postPrescriptionIdsCheckout(any(), any(), any(), any())
         } coAnswers {
             firstArg<(EPharmacyUploadPrescriptionIdsResponse) -> Unit>().invoke(response)
         }
@@ -285,12 +275,11 @@ class UploadPrescriptionViewModelTest {
 
     @Test
     fun reUploadPrescriptionImage() {
-        viewModel.reUploadPrescriptionImage(0,"")
+        viewModel.reUploadPrescriptionImage(0, "")
     }
 
     @Test
-    fun addSelectedPrescriptionImages(){
-        viewModel.addSelectedPrescriptionImages(arrayListOf("",""))
+    fun addSelectedPrescriptionImages() {
+        viewModel.addSelectedPrescriptionImages(arrayListOf("", ""))
     }
-
 }

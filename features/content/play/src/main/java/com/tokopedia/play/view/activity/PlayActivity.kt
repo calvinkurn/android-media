@@ -11,7 +11,7 @@ import androidx.lifecycle.*
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
@@ -49,6 +49,7 @@ import javax.inject.Inject
  *
  * Example: tokopedia://play/12345?source_type=SHOP&source_id=123
  */
+@Suppress("LateinitUsage")
 class PlayActivity : BaseActivity(),
         PlayNavigation,
         PlayPiPCoordinator,
@@ -68,6 +69,9 @@ class PlayActivity : BaseActivity(),
 
     @Inject
     lateinit var playPreference: PlayPreference
+
+    @Inject
+    lateinit var router: Router
 
     private lateinit var orientationManager: PlaySensorOrientationManager
 
@@ -268,9 +272,14 @@ class PlayActivity : BaseActivity(),
                     ivLoading.hide()
                     fragmentUpcomingView.safeInit((it.state as PageResultState.Upcoming).channelId)
                 }
+                is PageResultState.Archived -> {
+                    pageMonitoring.invalidate()
+                    ivLoading.hide()
+                    fragmentErrorViewOnStateChanged(shouldShow = true)
+                }
             }
 
-            if(it.state !is PageResultState.Upcoming) {
+            if(it.state is PageResultState.Success) {
                 fragmentUpcomingView.safeRelease()
                 swipeContainerView.setChannelIds(it.currentValue)
             }
@@ -309,7 +318,7 @@ class PlayActivity : BaseActivity(),
     }
 
     private fun gotoHome() {
-        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+        val intent = router.getIntent(this, ApplinkConst.HOME)
         startActivity(intent)
         finish()
     }

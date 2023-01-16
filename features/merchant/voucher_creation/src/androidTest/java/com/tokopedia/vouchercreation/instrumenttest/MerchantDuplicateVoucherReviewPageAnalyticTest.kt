@@ -2,8 +2,8 @@ package com.tokopedia.vouchercreation.instrumenttest
 
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -41,8 +41,8 @@ class MerchantDuplicateVoucherReviewPageAnalyticTest {
             name = "nama voucher",
             type = 3,
             typeFormatted = "Cashback",
-            image = "https://ecs7.tokopedia.net/img/attachment/2021/5/25/128068031/128068031_62782f5b-87cb-4880-a82d-6e642f9d6978.jpg",
-            imageSquare = "https://ecs7.tokopedia.net/img/attachment/2021/5/25/128068031/128068031_99b2d51e-7632-489e-a84d-7c2a8a38e14b.jpg",
+            image = "https://images.tokopedia.net/img/attachment/2021/5/25/128068031/128068031_62782f5b-87cb-4880-a82d-6e642f9d6978.jpg",
+            imageSquare = "https://images.tokopedia.net/img/attachment/2021/5/25/128068031/128068031_99b2d51e-7632-489e-a84d-7c2a8a38e14b.jpg",
             status = 3, discountTypeFormatted = "idr",
             discountAmt = 20000,
             discountAmtFormatted = "20rb",

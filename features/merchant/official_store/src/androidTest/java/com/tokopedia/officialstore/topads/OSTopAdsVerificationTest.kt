@@ -30,7 +30,6 @@ import com.tokopedia.officialstore.environment.InstrumentationOfficialStoreTestF
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialProductRecommendationViewHolder
-import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelMixTopViewHolder
 import com.tokopedia.officialstore.util.OSRecyclerViewIdlingResource
 import com.tokopedia.officialstore.util.preloadRecomOnOSPage
 import com.tokopedia.officialstore.util.removeProgressBarOnOsPage
@@ -159,9 +158,6 @@ class OSTopAdsVerificationTest {
             }
             is MixLeftComponentViewHolder -> {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
-            }
-            is DynamicChannelMixTopViewHolder -> {
-                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
             }
             is OfficialProductRecommendationViewHolder -> {
                 Espresso.onView(firstView(withId(R.id.os_child_recycler_view)))

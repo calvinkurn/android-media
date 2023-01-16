@@ -70,7 +70,7 @@ object PlayAnimationUtil {
             onCancel: (Animator) -> Unit = {},
             onEnd: (Animator) -> Unit = {}
     ) = object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {}
+        override fun onAnimationRepeat(animation: Animator) {}
         override fun onAnimationEnd(animation: Animator) { onEnd(animation) }
         override fun onAnimationCancel(animation: Animator) { onCancel(animation) }
         override fun onAnimationStart(animation: Animator) { onStart(animation) }

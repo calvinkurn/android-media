@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dsar_item_selector"
+    android:padding="12dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imageUnify"
+        android:padding="2dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_people" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:text="@string/dsar_personal_info_title"
+        app:layout_constraintBottom_toBottomOf="@+id/imageUnify"
+        app:layout_constraintStart_toEndOf="@+id/imageUnify"
+        app:layout_constraintTop_toTopOf="@+id/imageUnify"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/dsar_personal_info_description"
+        app:layout_constraintEnd_toStartOf="@+id/checkIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageUnify"
+        app:typographyType="paragraph_3" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:visibility="invisible"
+        android:id="@+id/checkIcon"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_selected" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

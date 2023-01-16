@@ -39,6 +39,7 @@ class GetQuestionUseCase @Inject constructor(
                           caption
                           message
                           applink
+                          textApplink
                         }
                       }
                     }

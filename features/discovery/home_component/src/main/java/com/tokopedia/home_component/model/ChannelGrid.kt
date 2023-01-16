@@ -7,6 +7,7 @@ data class ChannelGrid(
         val id: String = "",
         val warehouseId: String = "",
         val parentProductId: String = "",
+        val maxOrder: Int = 0,
         val minOrder: Int = 0,
         val stock: Int = 0,
         val price: String = "0",
@@ -17,6 +18,7 @@ data class ChannelGrid(
         val discount: String = "",
         val slashedPrice: String = "",
         val label: String = "",
+        val labelTextColor: String = "",
         val soldPercentage: Int = 0,
         val attribution: String = "",
         val impression: String = "",
@@ -46,6 +48,7 @@ data class ChannelGrid(
         val categoryPersona: String = "",
         val brandId: String = "",
         val categoryId: String = "",
+        val categoryBreadcrumbs: String = "",
         val param: String = "",
         val expiredTime: String = ""
 ): ImpressHolder()

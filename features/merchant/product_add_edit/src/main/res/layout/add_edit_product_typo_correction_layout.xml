@@ -8,15 +8,15 @@
 
     <com.tokopedia.unifycomponents.ChipsUnify
         android:id="@+id/chips_hide"
-        android:layout_width="@dimen/layout_lvl6"
-        android:layout_height="@dimen/layout_lvl4"
+        android:layout_width="48dp"
+        android:layout_height="32dp"
         app:chipType="disabled"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.tokopedia.iconunify.IconUnify
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/layout_lvl2"
+        android:layout_height="16dp"
         app:icon_name="CLOSE"
         app:layout_constraintBottom_toBottomOf="@+id/chips_hide"
         app:layout_constraintEnd_toEndOf="@+id/chips_hide"
@@ -27,7 +27,7 @@
         android:id="@+id/rv_typos"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginStart="4dp"
         app:layout_constraintBottom_toBottomOf="@+id/chips_hide"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/chips_hide"

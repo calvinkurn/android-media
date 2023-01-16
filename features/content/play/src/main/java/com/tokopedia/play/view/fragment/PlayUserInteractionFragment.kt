@@ -17,7 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
@@ -41,12 +41,15 @@ import com.tokopedia.play.databinding.FragmentPlayInteractionBinding
 import com.tokopedia.play.extensions.*
 import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.component.UiComponent
+import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.util.changeConstraint
+import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.measureWithTimeout
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.util.withCache
+import com.tokopedia.play.view.bottomsheet.PlayFollowBottomSheet
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayFullscreenManager
@@ -72,6 +75,7 @@ import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.interactive.InteractiveStateUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
+import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewcomponent.interactive.*
@@ -83,7 +87,7 @@ import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.eventbus.EventBus
 import com.tokopedia.play_common.lifecycle.lifecycleBound
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.util.ActivityResultHelper
 import com.tokopedia.play_common.util.PerformanceClassConfig
 import com.tokopedia.play_common.util.event.EventObserver
@@ -115,7 +119,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private val castAnalyticHelper: CastAnalyticHelper,
     private val performanceClassConfig: PerformanceClassConfig,
     private val newAnalytic: PlayNewAnalytic,
-    analyticManagerFactory: PlayChannelAnalyticManager.Factory,
+    private val analyticManager: PlayChannelAnalyticManager,
+    private val router: Router,
 ) :
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
@@ -134,9 +139,9 @@ class PlayUserInteractionFragment @Inject constructor(
         PiPViewComponent.Listener,
         CastViewComponent.Listener,
         ProductSeeMoreViewComponent.Listener,
-        InteractiveActiveViewComponent.Listener,
         InteractiveGameResultViewComponent.Listener,
-        ChooseAddressViewComponent.Listener
+        ChooseAddressViewComponent.Listener,
+        EngagementCarouselViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -168,12 +173,11 @@ class PlayUserInteractionFragment @Inject constructor(
     ) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
     private val chooseAddressView by viewComponentOrNull { ChooseAddressViewComponent(it, this, childFragmentManager) }
+    private val engagementCarouselView by viewComponentOrNull { EngagementCarouselViewComponent(listener = this, resId = R.id.v_engagement_widget, scope = viewLifecycleOwner.lifecycleScope, container = it) }
 
     /**
      * Interactive
      */
-    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, this) }
-    private val interactiveFinishView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
     private val interactiveResultView by viewComponentOrNull(isEagerInit = true) { InteractiveGameResultViewComponent(it, this, viewLifecycleOwner.lifecycleScope) }
 
     private val activityResultHelper by lifecycleBound({
@@ -239,14 +243,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private lateinit var onStatsInfoGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
 
-    private val productAnalyticHelper = ProductAnalyticHelper(analytic, newAnalytic)
-
-    private val analyticManager by lazy(LazyThreadSafetyMode.NONE) {
-        analyticManagerFactory.create(
-            productAnalyticHelper = productAnalyticHelper,
-        )
-    }
-
     private var localCache: LocalCacheModel = LocalCacheModel()
 
     /**
@@ -305,13 +301,7 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onPause() {
         super.onPause()
         isOpened = false
-        productAnalyticHelper.sendImpressedFeaturedProducts(
-            partner = playViewModel.latestCompleteChannelData.partnerInfo.type
-        )
         analytic.getTrackingQueue().sendAll()
-        analyticManager.sendPendingTrackers(
-            partnerType = playViewModel.latestCompleteChannelData.partnerInfo.type
-        )
     }
 
     override fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet) {
@@ -558,16 +548,6 @@ class PlayUserInteractionFragment @Inject constructor(
         openProductSheet()
         analytic.clickFeaturedProductSeeMore()
     }
-
-    /**
-     * Interactive Active Listener
-     */
-    override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
-        playViewModel.submitAction(
-            PlayViewerNewAction.StartPlayingInteractive)
-            newAnalytic.clickActiveInteractive(interactiveId = playViewModel.interactiveData.id, shopId = playViewModel.partnerId.toString(), interactiveType = playViewModel.interactiveData, channelId = playViewModel.channelId)
-    }
-    //endregion
 
     fun maxTopOnChatMode(maxTopPosition: Int) {
         mMaxTopChatMode = maxTopPosition
@@ -862,12 +842,6 @@ class PlayUserInteractionFragment @Inject constructor(
                 val state = cachedState.value
                 val prevState = cachedState.prevValue
 
-                renderInteractiveView(
-                    prevState?.interactive,
-                    state.interactive,
-                    prevState?.bottomInsets,
-                    state.bottomInsets
-                )
                 renderToolbarView(state.title)
                 renderShareView(state.channel, state.bottomInsets, state.status)
                 renderPartnerInfoView(prevState?.partner, state.partner)
@@ -883,14 +857,24 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderWinnerBadge(state = state.winnerBadge)
 
                 handleStatus(state.status)
+                renderEngagement(prevState?.engagement, state.engagement)
 
                 if (prevState?.tagItems?.product != state.tagItems.product &&
                         prevState?.tagItems?.voucher != state.tagItems.voucher) {
 
                     viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) { invalidateChatListBounds() }
                 }
+
+                if(cachedState.isChanged { it.followPopUp }) renderFollowPopUp(state.followPopUp)
             }
         }
+    }
+
+    private fun renderEngagement(prevState: EngagementUiState?, currState: EngagementUiState){
+        if(prevState?.shouldShow != currState.shouldShow)
+            engagementCarouselView?.rootView?.showWithCondition(currState.shouldShow)
+        if(prevState?.data != currState.data)
+            engagementCarouselView?.setData(currState.data)
     }
 
     private fun observeUiEvent() {
@@ -900,7 +884,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     is ShowWinningDialogEvent -> {
                         if (container.alpha != VISIBLE_ALPHA) return@collect
                         getInteractiveWinningDialog().apply {
-                            setData(imageUrl = event.userImageUrl, title = event.dialogTitle, subtitle = event.dialogSubtitle, interactive = event.interactiveType)
+                            setData(imageUrl = event.userImageUrl, title = event.dialogTitle, subtitle = event.dialogSubtitle, game = event.gameType)
                         }.showNow(childFragmentManager)
                     }
                     is OpenPageEvent -> {
@@ -947,9 +931,10 @@ class PlayUserInteractionFragment @Inject constructor(
                                 errCode
                             )
                         }
+
                         doShowToaster(
                             toasterType = Toaster.TYPE_ERROR,
-                            message = errMessage
+                            message = errMessage,
                         )
                     }
                     is CopyToClipboardEvent -> copyToClipboard(event.content)
@@ -994,6 +979,17 @@ class PlayUserInteractionFragment @Inject constructor(
                     }
                     HideCoachMarkWinnerEvent -> {
                         interactiveResultView?.hideCoachMark()
+                    }
+                    FailedFollow -> {
+                        doShowToaster(
+                            toasterType = Toaster.TYPE_ERROR,
+                            message = getString(R.string.play_failed_follow),
+                            actionText = getString(commonR.string.play_interactive_retry),
+                            clickListener = {
+                                newAnalytic.clickRetryToasterPopUp(channelId, channelType = playViewModel.channelType.value)
+                                playViewModel.submitAction(PlayViewerNewAction.FollowInteractive)
+                            }
+                        )
                     }
                 }
             }
@@ -1204,9 +1200,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun openApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false) {
         if (requestCode == null) {
-            RouteManager.route(context, applink, *params)
+            router.route(context, applink, *params)
         } else {
-            val intent = RouteManager.getIntent(context, applink, *params)
+            val intent = router.getIntent(context, applink, *params)
             startActivityForResult(intent, requestCode)
         }
         activity?.overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
@@ -1225,7 +1221,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
     fun hideBottomSheet() {
         val bottomSheet = getBottomSheetInstance()
-        if (bottomSheet.isVisible) bottomSheet.dismiss()
+        if (bottomSheet.isVisible) {
+            bottomSheet.dismiss()
+        }
     }
 
     private fun showInteractionIfWatchMode() {
@@ -1235,7 +1233,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun openProductSheet() {
         interactiveResultView?.hideCoachMark()
         playViewModel.onShowProductSheet(bottomSheetMaxHeight)
-        productAnalyticHelper.sendImpressedProductSheets()
     }
 
     private fun pushParentPlayByKeyboardHeight(estimatedKeyboardHeight: Int) {
@@ -1313,8 +1310,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun doShowToaster(
             toasterType: Int = Toaster.TYPE_NORMAL,
-            actionText: String = "",
             message: String,
+            actionText: String = "",
+            clickListener: View.OnClickListener = View.OnClickListener {},
     ) {
         if (toasterBottomMargin == 0) {
             val likeAreaView = likeView.rootView
@@ -1327,7 +1325,8 @@ class PlayUserInteractionFragment @Inject constructor(
                 container,
                 message,
                 type = toasterType,
-                actionText = actionText
+                actionText = actionText,
+                clickListener = clickListener
         ).show()
     }
 
@@ -1474,10 +1473,18 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun endLiveInfoViewOnStateChanged(
             event: PlayStatusUiModel
     ) {
-        if(event.channelStatus.statusType.isFreeze) {
-            endLiveInfoView.setInfo(title = event.config.freezeModel.title)
-            endLiveInfoView.show()
-        } else endLiveInfoView.hide()
+        when (event.channelStatus.statusType) {
+            PlayStatusType.Freeze -> {
+                endLiveInfoView.setInfo(title = event.config.freezeModel.title)
+                endLiveInfoView.show()
+            }
+            PlayStatusType.Archived -> {
+                endLiveInfoView.setInfo(title = getString(R.string.play_archived_title))
+                endLiveInfoView.showToaster(text = getString(R.string.play_archived_description))
+                endLiveInfoView.show()
+            }
+            else -> endLiveInfoView.hide()
+        }
     }
 
     private fun pipViewOnStateChanged(
@@ -1493,120 +1500,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
         if (!bottomInsets.isAnyShown) pipView?.show()
         else pipView?.hide()
-    }
-
-    private fun renderInteractiveView(
-        prevState: InteractiveStateUiModel?,
-        state: InteractiveStateUiModel,
-        prevBottomInsets: Map<BottomInsetsType, BottomInsetsState>?,
-        bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
-    ) {
-        if (state.isPlaying) {
-            interactiveActiveView?.hide()
-            interactiveFinishView?.hide()
-            return
-        }
-
-        val isAnyInsetsShown = bottomInsets.isAnyShown
-        /**
-         * Invisible to reduce the amount of conditions
-         * for square [com.tokopedia.unifycomponents.timer.TimerUnifySingle] to appear
-         */
-        if (isAnyInsetsShown) {
-            interactiveActiveView?.invisible()
-            interactiveFinishView?.invisible()
-            return
-        }
-
-        val prevIsAnyInsetsShown = prevBottomInsets?.isAnyShown
-
-        /**
-         * Render:
-         * - if interactive has changed <b>or</b>
-         * - if isPlaying state has changed to not playing
-         * - if any bottom insets shown state has changed to false
-         */
-        if (prevState?.interactive != state.interactive ||
-            ((prevState.isPlaying != state.isPlaying) && !state.isPlaying) ||
-            (prevIsAnyInsetsShown != isAnyInsetsShown) && !isAnyInsetsShown) {
-
-            when (state.interactive) {
-                is InteractiveUiModel.Giveaway -> renderGiveawayView(state.interactive)
-                is InteractiveUiModel.Quiz -> renderQuizView(state.interactive)
-                InteractiveUiModel.Unknown -> {
-                    interactiveActiveView?.hide()
-                    interactiveFinishView?.hide()
-                }
-            }
-        }
-    }
-
-    private fun renderGiveawayView(
-        state: InteractiveUiModel.Giveaway,
-    ) {
-        when (val status = state.status) {
-            is InteractiveUiModel.Giveaway.Status.Upcoming -> {
-                interactiveActiveView?.setUpcomingGiveaway(
-                    desc = state.title,
-                    targetTime = status.startTime,
-                    onDurationEnd = {
-                        playViewModel.submitAction(PlayViewerNewAction.GiveawayUpcomingEnded)
-                    }
-                )
-                interactiveActiveView?.show()
-                interactiveFinishView?.hide()
-            }
-            is InteractiveUiModel.Giveaway.Status.Ongoing -> {
-                interactiveActiveView?.setOngoingGiveaway(
-                    desc = state.title,
-                    targetTime = status.endTime,
-                    onDurationEnd = {
-                        playViewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)
-                    }
-                )
-                interactiveActiveView?.show()
-                interactiveFinishView?.hide()
-
-                playViewModel.submitAction(PlayViewerNewAction.AutoOpenInteractive)
-            }
-            InteractiveUiModel.Giveaway.Status.Finished -> {
-                interactiveActiveView?.hide()
-
-                interactiveFinishView?.setupGiveaway()
-                interactiveFinishView?.show()
-            }
-            InteractiveUiModel.Giveaway.Status.Unknown -> {
-                interactiveActiveView?.hide()
-                interactiveFinishView?.hide()
-            }
-        }
-    }
-
-    private fun renderQuizView(state: InteractiveUiModel.Quiz) {
-        when (val status = state.status) {
-            is InteractiveUiModel.Quiz.Status.Ongoing -> {
-                interactiveActiveView?.setQuiz(
-                    question = state.title,
-                    targetTime = status.endTime,
-                    onDurationEnd = {
-                        playViewModel.submitAction(PlayViewerNewAction.QuizEnded)
-                    }
-                )
-                interactiveActiveView?.show()
-                interactiveFinishView?.hide()
-                newAnalytic.impressActiveInteractive(shopId = playViewModel.partnerId.toString(), interactiveId = state.id, channelId = playViewModel.channelId)
-            }
-            InteractiveUiModel.Quiz.Status.Finished -> {
-                interactiveActiveView?.hide()
-
-                interactiveFinishView?.setupQuiz()
-                interactiveFinishView?.show()
-            }
-            InteractiveUiModel.Quiz.Status.Unknown -> {
-                interactiveActiveView?.hide()
-                interactiveFinishView?.hide()
-            }
-        }
     }
 
     private fun renderInteractiveDialog(
@@ -1632,8 +1525,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderWinnerBadge(state: PlayWinnerBadgeUiState){
         if (state.shouldShow) {
             interactiveResultView?.show()
-            if(playViewModel.interactiveData is InteractiveUiModel.Unknown) return
-            newAnalytic.impressWinnerBadge(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id, channelId = playViewModel.channelId)
+            if(playViewModel.gameData is GameUiModel.Unknown) return
+            newAnalytic.impressWinnerBadge(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.gameData.id, channelId = playViewModel.channelId)
         }
         else interactiveResultView?.hide()
     }
@@ -1757,7 +1650,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun handleStatus(status: PlayStatusUiModel) {
         getBottomSheetInstance().setState(status.channelStatus.statusType.isFreeze)
 
-        if (status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned) {
+        if (status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned || status.channelStatus.statusType.isArchive) {
             gradientBackgroundView.hide()
             likeCountView.hide()
             likeView.hide()
@@ -1870,8 +1763,8 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.submitAction(InteractiveGameResultBadgeClickedAction(bottomSheetMaxHeight))
         newAnalytic.clickWinnerBadge(
             shopId = playViewModel.partnerId.toString(),
-            interactiveId = playViewModel.interactiveData.id,
-            interactiveType = playViewModel.interactiveData,
+            interactiveId = playViewModel.gameData.id,
+            gameType = playViewModel.gameData,
             channelId = playViewModel.channelId,
             channelType = playViewModel.channelType
         )
@@ -1882,35 +1775,30 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     private fun onProductCarouselEvent(event: ProductCarouselUiComponent.Event) {
         when (event) {
-            is ProductCarouselUiComponent.Event.OnBuyClicked -> {
+            is ProductCarouselUiComponent.Event.OnTransactionClicked -> {
                 //TODO("Temporary, maybe best to combine bottom sheet into this fragment")
                 if (event.product.isVariantAvailable) {
                     playFragment.openVariantBottomSheet(
-                        ProductAction.Buy,
+                        event.action,
                         event.product
                     )
                 }
 
                 playViewModel.submitAction(
-                    PlayViewerNewAction.BuyProduct(
-                        event.product,
-                        isProductFeatured = true,
-                    ),
-                )
-            }
-            is ProductCarouselUiComponent.Event.OnAtcClicked -> {
-                if (event.product.isVariantAvailable) {
-                    playFragment.openVariantBottomSheet(
-                        ProductAction.AddToCart,
-                        event.product
-                    )
-                }
-
-                playViewModel.submitAction(
-                    PlayViewerNewAction.AtcProduct(
-                        event.product,
-                        isProductFeatured = true,
-                    )
+                    when (event.action) {
+                        ProductAction.Buy -> PlayViewerNewAction.BuyProduct(
+                            event.product,
+                            isProductFeatured = true,
+                        )
+                        ProductAction.AddToCart -> PlayViewerNewAction.AtcProduct(
+                            event.product,
+                            isProductFeatured = true,
+                        )
+                        ProductAction.OCC -> PlayViewerNewAction.OCCProduct(
+                            event.product,
+                            isProductFeatured = true,
+                        )
+                    }
                 )
             }
             is ProductCarouselUiComponent.Event.OnClicked -> {
@@ -1928,6 +1816,91 @@ class PlayUserInteractionFragment @Inject constructor(
         when (event) {
             KebabIconUiComponent.Event.OnClicked -> {
                 playViewModel.submitAction(OpenKebabAction)
+            }
+        }
+    }
+
+    private fun renderFollowPopUp(shouldShow: Boolean) {
+        if (shouldShow)
+            PlayFollowBottomSheet.getOrCreate(
+                childFragmentManager,
+                classLoader = requireActivity().classLoader
+            )
+                .show(childFragmentManager)
+    }
+
+    /**
+     * Engagement Listener
+     */
+    override fun onWidgetGameEnded(
+        view: EngagementCarouselViewComponent,
+        engagement: EngagementUiModel.Game
+    ) {
+        when (engagement.game){
+            is GameUiModel.Giveaway -> {
+                handleGiveaway(game = engagement.game)
+            }
+            is GameUiModel.Quiz -> {
+                handleQuiz(game = engagement.game)
+            }
+        }
+    }
+
+    /**
+     * When game ended
+     */
+    private fun handleGiveaway(game: GameUiModel.Giveaway) {
+        when(game.status) {
+            is GameUiModel.Giveaway.Status.Upcoming -> {
+                playViewModel.submitAction(PlayViewerNewAction.GiveawayUpcomingEnded)
+            }
+            is GameUiModel.Giveaway.Status.Ongoing ->
+                playViewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)
+        }
+    }
+
+    /**
+     * When game ended
+     */
+    private fun handleQuiz(game: GameUiModel.Quiz) {
+        when(game.status) {
+            is GameUiModel.Quiz.Status.Ongoing ->
+                playViewModel.submitAction(PlayViewerNewAction.QuizEnded)
+        }
+    }
+
+    override fun onWidgetClicked(
+        view: EngagementCarouselViewComponent,
+        engagement: EngagementUiModel
+    ) {
+        when (engagement){
+            is EngagementUiModel.Promo -> {
+                playViewModel.showCouponSheet(bottomSheetMaxHeight)
+                newAnalytic.clickVoucherWidget(engagement.info.id)
+            }
+            is EngagementUiModel.Game -> {
+                playViewModel.submitAction(PlayViewerNewAction.StartPlayingInteractive)
+                newAnalytic.clickActiveInteractive(interactiveId = playViewModel.gameData.id,
+                    shopId = playViewModel.partnerId.toString(),
+                    gameType = playViewModel.gameData, channelId = playViewModel.channelId)
+            }
+        }
+    }
+
+    override fun onWidgetSwipe(view: EngagementCarouselViewComponent, id: String) {
+        newAnalytic.swipeWidget(id)
+    }
+
+    override fun onWidgetImpressed(
+        view: EngagementCarouselViewComponent,
+        engagement: EngagementUiModel
+    ) {
+        when (engagement){
+            is EngagementUiModel.Promo -> {
+                newAnalytic.impressVoucherWidget(engagement.info.id)
+            }
+            is EngagementUiModel.Game -> {
+                newAnalytic.impressActiveInteractive(shopId = playViewModel.partnerId.toString(), interactiveId = engagement.game.id, channelId = playViewModel.channelId)
             }
         }
     }
@@ -1955,5 +1928,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
         object OnScrubStarted : Event
         object OnScrubEnded : Event
+        object OnProductUpdate: Event
     }
 }

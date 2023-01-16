@@ -99,6 +99,7 @@
     <string name="content_desc_search_back_button">button back</string>
     <string name="content_desc_search_icon_search">search icon</string>
     <string name="content_desc_search_optionListCardImageSalesRatingFloat">inspiration carousel option rating</string>
+    <string name="content_desc_search_carousel_icon_subtitle">subtitle icon</string>
 
     <string name="search_add_to_cart_success">Sukses menambah ke keranjang</string>
     <string name="search_see_cart">Lihat</string>

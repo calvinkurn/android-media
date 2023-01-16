@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.FragmentMyShopProductBinding
 import com.tokopedia.content.common.producttag.analytic.coordinator.ProductImpressionCoordinator
-import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.util.extension.getVisibleItems
 import com.tokopedia.content.common.producttag.util.extension.isProductFound
 import com.tokopedia.content.common.producttag.util.extension.withCache
@@ -37,16 +36,16 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on April 25, 2022
  */
 class MyShopProductFragment @Inject constructor(
     private val userSession: UserSessionInterface,
-    private val impressionCoordinator: ProductImpressionCoordinator,
+    private val impressionCoordinator: ProductImpressionCoordinator
 ) : BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "MyShopProductFragment"
@@ -71,7 +70,7 @@ class MyShopProductFragment @Inject constructor(
         )
     }
     private lateinit var layoutManager: StaggeredGridLayoutManager
-    private val scrollListener = object: RecyclerView.OnScrollListener(){
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) impressProduct()
         }
@@ -104,7 +103,7 @@ class MyShopProductFragment @Inject constructor(
 
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
-        when(childFragment) {
+        when (childFragment) {
             is SortBottomSheet -> {
                 childFragment.setListener(object : SortBottomSheet.Listener {
                     override fun onSortSelected(sort: SortUiModel) {
@@ -119,8 +118,9 @@ class MyShopProductFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        if(viewModel.myShopStateUnknown)
+        if (viewModel.myShopStateUnknown) {
             viewModel.submitAction(ProductTagAction.LoadMyShopProduct)
+        }
     }
 
     override fun onPause() {
@@ -138,7 +138,7 @@ class MyShopProductFragment @Inject constructor(
         impressionCoordinator.setInitialData(
             mAnalytic,
             viewModel.selectedTagSource,
-            isEntryPoint = true,
+            isEntryPoint = true
         )
     }
 
@@ -163,32 +163,34 @@ class MyShopProductFragment @Inject constructor(
         }
 
         binding.sbShopProduct.searchBarPlaceholder = requireContext().getString(
-            R.string.cc_product_tag_search_hint_template, userSession.shopName
+            R.string.cc_product_tag_search_hint_template,
+            userSession.shopName
         )
-
+        binding.sbShopProduct.searchBarContainer.fitsSystemWindows = false
         binding.sbShopProduct.searchBarTextField.setOnTouchListener { _, motionEvent ->
-            if(motionEvent.action == MotionEvent.ACTION_UP) {
+            if (motionEvent.action == MotionEvent.ACTION_UP) {
                 mAnalytic?.clickSearchBar(viewModel.selectedTagSource)
             }
             false
         }
 
         binding.sbShopProduct.searchBarTextField.setOnEditorActionListener { textView, actionId, keyEvent ->
-            if(actionId == EditorInfo.IME_ACTION_SEARCH) {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 val query = binding.sbShopProduct.searchBarTextField.text.toString()
 
                 impressionCoordinator.sendProductImpress()
                 impressionCoordinator.setInitialData(
                     mAnalytic,
                     viewModel.selectedTagSource,
-                    isEntryPoint = query.isEmpty(),
+                    isEntryPoint = query.isEmpty()
                 )
 
                 submitQuery(query)
 
                 true
+            } else {
+                false
             }
-            else false
         }
 
         binding.sbShopProduct.clearListener = {
@@ -211,7 +213,7 @@ class MyShopProductFragment @Inject constructor(
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect {
-                when(it) {
+                when (it) {
                     ProductTagUiEvent.OpenMyShopSortBottomSheet -> {
                         SortBottomSheet.getFragment(
                             childFragmentManager,
@@ -224,47 +226,48 @@ class MyShopProductFragment @Inject constructor(
     }
 
     private fun renderMyShopProducts(prev: ProductTagUiState?, curr: ProductTagUiState) {
-
         fun updateAdapterData(products: List<ProductUiModel>, hasNextPage: Boolean) {
             val finalProducts = products.map { product ->
-                if(viewModel.isMultipleSelectionProduct) {
+                if (viewModel.isMultipleSelectionProduct) {
                     MyShopProductAdapter.Model.ProductWithCheckbox(
                         product = product,
                         isSelected = curr.selectedProduct.isProductFound(product)
                     )
-                }
-                else {
+                } else {
                     MyShopProductAdapter.Model.Product(product = product)
                 }
+            } + if (hasNextPage) listOf(MyShopProductAdapter.Model.Loading) else emptyList()
 
-            } + if(hasNextPage) listOf(MyShopProductAdapter.Model.Loading) else emptyList()
-
-            if(binding.rvMyShopProduct.isComputingLayout.not())
+            if (binding.rvMyShopProduct.isComputingLayout.not()) {
                 adapter.setItemsAndAnimateChanges(finalProducts)
+            }
 
             binding.rvMyShopProduct.show()
             binding.globalError.hide()
             impressProduct()
         }
 
-        if(prev?.myShopProduct?.products == curr.myShopProduct.products &&
+        if (prev?.myShopProduct?.products == curr.myShopProduct.products &&
             prev.myShopProduct.state == curr.myShopProduct.state &&
             prev.selectedProduct == curr.selectedProduct
-        ) return
+        ) {
+            return
+        }
 
         val currState = curr.myShopProduct.state
         val currProducts = curr.myShopProduct.products
 
-        when(currState) {
+        when (currState) {
             is PagedState.Loading -> {
                 updateAdapterData(currProducts, true)
             }
             is PagedState.Success -> {
-                if(currProducts.isEmpty()) {
+                if (currProducts.isEmpty()) {
                     binding.rvMyShopProduct.hide()
                     showEmptyState(curr.myShopProduct.hasFilter())
+                } else {
+                    updateAdapterData(currProducts, currState.hasNextPage)
                 }
-                else updateAdapterData(currProducts, currState.hasNextPage)
             }
             is PagedState.Error -> {
                 updateAdapterData(currProducts, false)
@@ -283,12 +286,12 @@ class MyShopProductFragment @Inject constructor(
     }
 
     private fun renderChip(prev: MyShopProductUiState?, curr: MyShopProductUiState) {
-        if(prev?.param == curr.param) return
+        if (prev?.param == curr.param) return
 
-        val selectedSort = viewModel.myShopSortList.firstOrNull{ it.isSelected }
+        val selectedSort = viewModel.myShopSortList.firstOrNull { it.isSelected }
 
         binding.chipSort.chipText = selectedSort?.text ?: getString(R.string.cc_product_tag_sort_label)
-        binding.chipSort.chipType = if(selectedSort != null) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+        binding.chipSort.chipType = if (selectedSort != null) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
     }
 
     private fun submitQuery(query: String) {
@@ -304,12 +307,18 @@ class MyShopProductFragment @Inject constructor(
     private fun showEmptyState(hasFilter: Boolean) {
         binding.globalError.apply {
             errorTitle.text = getString(
-                if(hasFilter) R.string.cc_no_my_shop_product_filter_title
-                else R.string.cc_no_my_shop_product_title
+                if (hasFilter) {
+                    R.string.cc_no_my_shop_product_filter_title
+                } else {
+                    R.string.cc_no_my_shop_product_title
+                }
             )
             errorDescription.text = getString(
-                if(hasFilter) R.string.cc_no_my_shop_product_filter_desc
-                else R.string.cc_no_my_shop_product_desc
+                if (hasFilter) {
+                    R.string.cc_no_my_shop_product_filter_desc
+                } else {
+                    R.string.cc_no_my_shop_product_desc
+                }
             )
             show()
         }
@@ -323,10 +332,11 @@ class MyShopProductFragment @Inject constructor(
     }
 
     private fun impressProduct() {
-        if(this::layoutManager.isInitialized) {
+        if (this::layoutManager.isInitialized) {
             val visibleProducts = layoutManager.getVisibleItems(adapter, viewModel.isMultipleSelectionProduct)
-            if(visibleProducts.isNotEmpty())
+            if (visibleProducts.isNotEmpty()) {
                 impressionCoordinator.saveProductImpress(visibleProducts)
+            }
         }
     }
 
@@ -335,14 +345,14 @@ class MyShopProductFragment @Inject constructor(
 
         fun getFragmentPair(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
-        ) : Pair<BaseProductTagChildFragment, String> {
+            classLoader: ClassLoader
+        ): Pair<BaseProductTagChildFragment, String> {
             return Pair(getFragment(fragmentManager, classLoader), TAG)
         }
 
         private fun getFragment(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
+            classLoader: ClassLoader
         ): MyShopProductFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? MyShopProductFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(

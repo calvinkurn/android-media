@@ -16,48 +16,92 @@ import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 const val PARAM_ADDRESS_USECASE: String = "input"
+const val PARAM_ADDRESS_LIMIT: Int = 10
 
 /**
  * Created by fajarnuha on 2019-05-21.
  */
 class GetAddressCornerUseCase
-@Inject constructor(@ApplicationContext val context: Context, val usecase: GraphqlUseCaseInterface, val mapper: AddressCornerMapper) {
+@Inject constructor(
+    @ApplicationContext val context: Context,
+    val usecase: GraphqlUseCaseInterface,
+    val mapper: AddressCornerMapper
+) {
 
-    fun execute(query: String, prevState: Int?, localChosenAddrId: Long?, isWhitelistChosenAddress: Boolean): Observable<AddressListModel> =
-            this.getObservable(query = query, page = 1, isAddress = true, isCorner = false, limit = 10,
-                    prevState = prevState, localChosenAddrId = localChosenAddrId, isWhitelistChosenAddress)
+    fun execute(
+        query: String,
+        prevState: Int?,
+        localChosenAddrId: Long?,
+        isWhitelistChosenAddress: Boolean,
+        excludeSharedAddress: Boolean = false
+    ): Observable<AddressListModel> =
+        this.getObservable(
+            query = query,
+            page = 1,
+            prevState = prevState,
+            localChosenAddrId = localChosenAddrId,
+            isWhitelistChosenAddress = isWhitelistChosenAddress,
+            excludeSharedAddress = excludeSharedAddress
+        )
 
-    fun getAll(query: String, prevState: Int, localChosenAddrId: Long, isWhitelistChosenAddress: Boolean): Observable<AddressListModel> =
-            this.getObservable(query = query, page = 1, isAddress = true, isCorner = false, limit = 0,
-                    prevState = prevState, localChosenAddrId = localChosenAddrId, isWhitelistChosenAddress = isWhitelistChosenAddress)
+    fun loadMore(
+        query: String,
+        page: Int,
+        prevState: Int?,
+        localChosenAddrId: Long?,
+        isWhitelistChosenAddress: Boolean,
+        excludeSharedAddress: Boolean = false
+    ): Observable<AddressListModel> =
+        this.getObservable(
+            query = query,
+            page = page,
+            prevState = prevState,
+            localChosenAddrId = localChosenAddrId,
+            isWhitelistChosenAddress = isWhitelistChosenAddress,
+            excludeSharedAddress = excludeSharedAddress
+        )
 
-    fun loadMore(query: String, page: Int, prevState: Int?, localChosenAddrId: Long?, isWhitelistChosenAddress: Boolean): Observable<AddressListModel> =
-            this.getObservable(query = query, page = page, isAddress = true, isCorner = false, limit = 10,
-                    prevState = prevState, localChosenAddrId = localChosenAddrId, isWhitelistChosenAddress = isWhitelistChosenAddress)
-
-    private fun getObservable(query: String, page: Int, isAddress: Boolean, isCorner: Boolean, limit: Int,
-                              prevState: Int?, localChosenAddrId: Long?, isWhitelistChosenAddress: Boolean):
-            Observable<AddressListModel> {
-        val request = AddressRequest(searchKey = query, page = page, showAddress = isAddress,
-                showCorner = isCorner, limit = limit, whitelistChosenAddress = isWhitelistChosenAddress, previousState = prevState,
-                localStateChosenAddressId = localChosenAddrId)
+    private fun getObservable(
+        query: String,
+        page: Int,
+        prevState: Int?,
+        localChosenAddrId: Long?,
+        isWhitelistChosenAddress: Boolean,
+        excludeSharedAddress: Boolean
+    ): Observable<AddressListModel> {
+        val request = AddressRequest(
+            searchKey = query,
+            page = page,
+            showAddress = true,
+            showCorner = false,
+            limit = PARAM_ADDRESS_LIMIT,
+            whitelistChosenAddress = isWhitelistChosenAddress,
+            previousState = prevState,
+            localStateChosenAddressId = localChosenAddrId,
+            excludeSharedAddress = excludeSharedAddress
+        )
         val param = mapOf<String, Any>(PARAM_ADDRESS_USECASE to request)
-        val gqlRequest = GraphqlRequest(KeroLogisticQuery.addressCorner, GetPeopleAddressResponse::class.java, param)
+        val gqlRequest = GraphqlRequest(
+            KeroLogisticQuery.addressCorner,
+            GetPeopleAddressResponse::class.java,
+            param
+        )
 
         usecase.clearRequest()
         usecase.addRequest(gqlRequest)
 
 
         return usecase.getExecuteObservable(null)
-                .map { graphqlResponse ->
-                    val response: GetPeopleAddressResponse? =
-                            graphqlResponse.getData(GetPeopleAddressResponse::class.java)
-                    response ?: throw MessageErrorException(
-                            graphqlResponse.getError(GetPeopleAddressResponse::class.java)[0].message)
-                }
-                .map(mapper)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+            .map { graphqlResponse ->
+                val response: GetPeopleAddressResponse? =
+                    graphqlResponse.getData(GetPeopleAddressResponse::class.java)
+                response ?: throw MessageErrorException(
+                    graphqlResponse.getError(GetPeopleAddressResponse::class.java)[0].message
+                )
+            }
+            .map(mapper)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     fun unsubscribe() {

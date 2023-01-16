@@ -15,7 +15,7 @@ class MixTopComponentCallback(val homeCategoryListener: HomeCategoryListener)
     override fun onMixTopImpressed(channel: ChannelModel, parentPos: Int) {
     }
 
-    override fun onSeeAllBannerClicked(channel: ChannelModel, applink: String) {
+    override fun onSeeAllHeaderClicked(channel: ChannelModel, applink: String) {
         homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllClick(channel.id, channel.channelHeader.name, homeCategoryListener.userId) as HashMap<String, Any>)
         homeCategoryListener.onDynamicChannelClicked(channel.channelHeader.applink)
     }

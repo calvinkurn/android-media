@@ -12,7 +12,9 @@ data class TransactionNotification(
         @Nullable @ColumnInfo(name = "message") var message: String? = "",
         @Nullable @ColumnInfo(name = "notification_type") var notificationType: Int? = 0,
         @Nullable @ColumnInfo(name = "notification_id") var notificationId: Int? = 0,
-        @Nullable @ColumnInfo(name = "transaction_id") var transactionId: String? = ""
+        @Nullable @ColumnInfo(name = "transaction_id") var transactionId: String? = "",
+        @Nullable @ColumnInfo(name = "avatar_url") var avatarUrl: String? = "",
+        @Nullable @ColumnInfo(name = "applink") var appLink: String?
 ) {
     @ColumnInfo(name = "id") @PrimaryKey(autoGenerate = true) var id: Int = 0
 }

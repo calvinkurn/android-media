@@ -13,6 +13,8 @@ data class EditAddressParam(
     val receiverName: String,
     @SerializedName("address_1")
     val address1: String,
+    @SerializedName("address_1_notes")
+    val address1Notes: String,
     @SerializedName("address_2")
     val address2: String,
     @SerializedName("postal_code")

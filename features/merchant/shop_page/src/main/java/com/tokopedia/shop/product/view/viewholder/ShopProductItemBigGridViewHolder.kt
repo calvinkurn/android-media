@@ -16,11 +16,11 @@ import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopProductItemBigGridViewHolder(
-        itemView: View,
-        private val shopProductClickedListener: ShopProductClickedListener?,
-        private val shopProductImpressionListener: ShopProductImpressionListener?,
-        private val shopTrackType: Int,
-        private val isShowTripleDot: Boolean
+    itemView: View,
+    private val shopProductClickedListener: ShopProductClickedListener?,
+    private val shopProductImpressionListener: ShopProductImpressionListener?,
+    private val shopTrackType: Int,
+    private val isShowTripleDot: Boolean
 ) : AbstractViewHolder<ShopProductUiModel>(itemView) {
 
     companion object {
@@ -29,7 +29,7 @@ class ShopProductItemBigGridViewHolder(
         val LAYOUT = R.layout.item_shop_newproduct_big_grid
     }
 
-    private val viewBinding : ItemShopNewproductBigGridBinding? by viewBinding()
+    private val viewBinding: ItemShopNewproductBigGridBinding? by viewBinding()
     private val productCard: ProductCardGridView? = viewBinding?.productCard
 
     override fun bind(shopProductUiModel: ShopProductUiModel) {
@@ -47,21 +47,24 @@ class ShopProductItemBigGridViewHolder(
             shopProductClickedListener?.onProductClicked(shopProductUiModel, shopTrackType, adapterPosition)
         }
 
-        productCard?.setImageProductViewHintListener(shopProductUiModel, object : ViewHintListener {
-            override fun onViewHint() {
-                shopProductImpressionListener?.onProductImpression(
-                    shopProductUiModel,
-                    shopTrackType,
-                    adapterPosition
-                )
-                if (productCardModel.isButtonAtcShown()) {
-                    shopProductImpressionListener?.onImpressionProductAtc(
+        productCard?.setImageProductViewHintListener(
+            shopProductUiModel,
+            object : ViewHintListener {
+                override fun onViewHint() {
+                    shopProductImpressionListener?.onProductImpression(
                         shopProductUiModel,
+                        shopTrackType,
                         adapterPosition
                     )
+                    if (productCardModel.isButtonAtcShown()) {
+                        shopProductImpressionListener?.onImpressionProductAtc(
+                            shopProductUiModel,
+                            adapterPosition
+                        )
+                    }
                 }
             }
-        })
+        )
 
         productCard?.setAddToCartNonVariantClickListener(object : ATCNonVariantListener {
             override fun onQuantityChanged(quantity: Int) {
@@ -85,5 +88,4 @@ class ShopProductItemBigGridViewHolder(
             )
         }
     }
-
 }
