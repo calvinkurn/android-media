@@ -31,7 +31,8 @@ class QuotaInfoBottomSheet: BottomSheetUnify() {
 
     private fun initBottomSheet() {
         clearContentPadding = true
-        setTitle(getString(R.string.smvc_quota_info_bottomsheet_title))
+        val title = context?.getString(R.string.smvc_quota_info_bottomsheet_title).orEmpty()
+        setTitle(title)
         setAction(getString(R.string.smvc_quota_info_bottomsheet_action_text)) { dismiss() }
         binding = SmvcBottomsheetQuotaInfoBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)

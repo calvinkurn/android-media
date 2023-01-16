@@ -142,10 +142,10 @@ private fun View?.showToasterWithCta(message: String, ctaText: String) {
 //endregion
 
 //region View background drawing
-fun View.applyRoundedRectangle(@ColorRes colorId: Int) {
+fun View.applyRoundedRectangle(@ColorRes colorId: Int, cornerRadius: Float = CORNER_RADIUS) {
     val colorBg = MethodChecker.getColor(context, colorId)
     val drawable = GradientDrawable()
-    val corner = CORNER_RADIUS.dpToPx()
+    val corner = cornerRadius.dpToPx()
     drawable.setColor(colorBg)
     drawable.cornerRadius = corner
     background = drawable

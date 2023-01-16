@@ -16,7 +16,7 @@ class QuotaInfoViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
-        const val SHORT_QUOTA_LIST_NUMBER = 3
+        private const val SHORT_QUOTA_LIST_NUMBER = 3
     }
 
     private val _quotaInfo = MutableLiveData<VoucherCreationQuota>()

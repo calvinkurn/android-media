@@ -18,6 +18,7 @@ import com.tokopedia.mvc.domain.usecase.CreateCouponProductUseCase
 import com.tokopedia.mvc.domain.usecase.GenerateImageUseCase
 import com.tokopedia.mvc.domain.usecase.GetCouponImagePreviewFacadeUseCase
 import com.tokopedia.mvc.domain.usecase.UpdateCouponUseCase
+import com.tokopedia.mvc.util.constant.Source
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.utils.date.DateUtil.DEFAULT_VIEW_FORMAT
 import com.tokopedia.utils.date.DateUtil.HH_MM
@@ -33,7 +34,6 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
         private const val FORMATTED_RATIO_SQUARE = "square"
         private const val FORMATTED_RATIO_VERTICAL = "vertical"
         private const val FORMATTED_RATIO_HORIZONTAL = "horizontal"
-        private const val CREATION_SOURCE = "android-sellerapp"
         private const val SERVER_VALUE_TRUE = 1
         private const val SERVER_VALUE_FALSE = 0
         private const val DEFAULT_DELIMITER = ","
@@ -142,7 +142,7 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
                 minPurchase = voucherConfiguration.minPurchase,
                 quota = voucherConfiguration.quota,
                 token = token,
-                source = CREATION_SOURCE,
+                source = Source.SOURCE,
                 targetBuyer = voucherConfiguration.targetBuyer.id,
                 isLockToProduct = isVoucherProduct,
                 productIds = couponProducts.joinToString(DEFAULT_DELIMITER) { it.parentProductId.toString() },
@@ -190,7 +190,7 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
                 minPurchase = voucherConfiguration.minPurchase,
                 quota = voucherConfiguration.quota,
                 token = token,
-                source = CREATION_SOURCE,
+                source = Source.SOURCE,
                 targetBuyer = voucherConfiguration.targetBuyer.id,
                 isLockToProduct = isVoucherProduct,
                 productIds = couponProducts.joinToString(DEFAULT_DELIMITER) { it.parentProductId.toString() },
