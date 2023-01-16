@@ -15,7 +15,6 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.values
-import androidx.core.view.postDelayed
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
@@ -951,7 +950,9 @@ class DetailEditorFragment @Inject constructor(
                         }
                     } else {
                         implementedBaseBitmap = bitmap
-                        setOverlaySize(getDisplayedImageSize(viewBinding?.imgViewPreview, bitmap))
+                        viewBinding?.imgViewPreview?.post {
+                            setOverlaySize(getDisplayedImageSize(viewBinding?.imgViewPreview, bitmap))
+                        }
                     }
 
                     if (data.isToolWatermark()) {
@@ -979,6 +980,7 @@ class DetailEditorFragment @Inject constructor(
                 layoutParams = lp
 
                 post {
+                    if (data.isToolAddLogo()) return@post
                     this.loadImage(data.addLogoValue.overlayLogoUrl) {
                         setPlaceHolder(-1)
                     }
