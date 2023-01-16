@@ -84,6 +84,7 @@ import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
+import com.tokopedia.webview.jsinterface.PrintWebPageInterface;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
@@ -118,6 +119,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String REGISTER_APPLINK = "tokopedia://registration";
     private static final String CLEAR_CACHE_PREFIX = "/clear-cache";
     private static final String KEY_CLEAR_CACHE = "android_webview_clear_cache";
+    private static final String KEY_ENABLE_WEBVIEW_PRINT_JS_INTERFACE = "android_enable_webview_print_jsinterface";
     private static final String LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment";
     private static final String GOJEK_APP_LINK = "https://gojek.link/goclub/membership?source=toko_status_match";
 
@@ -139,6 +141,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public static final String CUST_OVERLAY_URL = "imgurl";
     private static final String CUST_HEADER = "header_text";
     private static final String HELP_URL = "tokopedia.com/help";
+    private static final String ANDROID_PRINT_JS_INTERFACE = "AndroidPrint";
 
     @NonNull
     protected String url = "";
@@ -264,9 +267,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             swipeRefreshLayout.setOnRefreshListener(this::reloadPage);
         }
 
+        Boolean isEnablePrintJsInterface = remoteConfig.getBoolean(KEY_ENABLE_WEBVIEW_PRINT_JS_INTERFACE, false);
+
         webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");
-        webView.addJavascriptInterface(new PrintWebPageInterface(getActivity()), "Android Print");
+        if (isEnablePrintJsInterface) {
+            webView.addJavascriptInterface(new PrintWebPageInterface(getActivity(), webView), ANDROID_PRINT_JS_INTERFACE);
+        }
         WebSettings webSettings = webView.getSettings();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " Mobile webview ");
         webSettings.setJavaScriptEnabled(true);
@@ -352,43 +359,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 }
             });
 
-        }
-    }
-
-    private final class PrintWebPageInterface {
-
-        private WeakReference<Activity> mContextRef;
-
-        public PrintWebPageInterface(Activity context) {
-            this.mContextRef = new WeakReference<Activity>(context);
-        }
-
-        @JavascriptInterface
-        public void printCurrentScreen() {
-            if (mContextRef.get() == null) {
-                return;
-            }
-            try {
-                String jobName = "Current Page";
-                PrintManager printManager = ContextCompat.getSystemService(mContextRef.get(), PrintManager.class);
-                PrintDocumentAdapter adapter;
-                PrintAttributes.Builder printAttrBuilder = new PrintAttributes.Builder();
-                PrintAttributes printAttr = printAttrBuilder.setMediaSize(
-                        PrintAttributes.MediaSize.ISO_A4
-                ).build();
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    adapter = webView.createPrintDocumentAdapter(jobName);
-                } else {
-                    adapter = webView.createPrintDocumentAdapter();
-                }
-
-                if (printManager != null) {
-                    printManager.print(jobName, adapter, printAttr);
-                }
-            } catch (Throwable e) {
-                e.printStackTrace();
-            }
         }
     }
 
