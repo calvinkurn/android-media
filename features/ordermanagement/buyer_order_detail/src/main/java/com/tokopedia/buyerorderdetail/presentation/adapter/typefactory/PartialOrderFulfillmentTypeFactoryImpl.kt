@@ -3,6 +3,7 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.PartialOrderFulfillmentListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofAvailableLabelViewHolder
@@ -12,10 +13,10 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofHeaderI
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofProductFulfilledViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofProductUnfulfilledViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofRefundEstimateViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofShimmerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofThickDividerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofThinDividerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.model.PofAvailableLabelUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.PofDetailRefundedUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofFulfilledToggleUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofHeaderInfoUiModel
@@ -41,8 +42,13 @@ class PartialOrderFulfillmentTypeFactoryImpl(
             PofRefundEstimateViewHolder.LAYOUT -> PofRefundEstimateViewHolder(parent, partialOrderFulfillmentListener)
             PofThickDividerViewHolder.LAYOUT -> PofThickDividerViewHolder(parent)
             PofThinDividerViewHolder.LAYOUT -> PofThinDividerViewHolder(parent)
+            PofShimmerViewHolder.LAYOUT -> PofShimmerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
+    }
+
+    override fun type(viewModel: LoadingModel): Int {
+        return PofShimmerViewHolder.LAYOUT
     }
 
     override fun type(pofAvailableLabelUiModel: PofAvailableLabelUiModel): Int {
@@ -80,5 +86,4 @@ class PartialOrderFulfillmentTypeFactoryImpl(
     override fun type(pofThinDividerUiModel: PofThinDividerUiModel): Int {
         return PofThinDividerViewHolder.LAYOUT
     }
-
 }
