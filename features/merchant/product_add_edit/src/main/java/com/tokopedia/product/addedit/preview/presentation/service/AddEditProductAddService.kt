@@ -34,6 +34,7 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import java.net.URL
 import java.net.URLConnection
+import java.net.URLEncoder
 
 /**
  * Created by faisalramd on 2020-04-05.
@@ -228,7 +229,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             val downloadsDir =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
             val file = File(downloadsDir, outputFileName)
-            val downloadUrl = URL(url)
+            val downloadUrl = URL(URLEncoder.encode(url, "UTF-8"))
             val ucon: URLConnection = downloadUrl.openConnection()
             ucon.connect()
             val inputStream: InputStream = ucon.getInputStream()
