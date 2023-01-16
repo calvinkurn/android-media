@@ -3401,10 +3401,7 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onThumbnailVariantSelected(variantId: String, categoryKey: String) {
-        pdpUiUpdater?.updateThumbVariantSelected(
-            variantId = variantId,
-            variantKey = categoryKey
-        )
+        pdpUiUpdater?.updateVariantSelected(variantId, categoryKey)
         viewModel.onThumbnailVariantSelected(pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant.orEmpty())
     }
 
@@ -3507,6 +3504,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun determineInitialOptionId(productId: String?): MutableMap<String, String> {
+        // thumbnail variant not auto-select when first open pdp or refresh event
         if (pdpUiUpdater?.productSingleVariant?.isThumbnailType == true) {
             return mutableMapOf()
         }
