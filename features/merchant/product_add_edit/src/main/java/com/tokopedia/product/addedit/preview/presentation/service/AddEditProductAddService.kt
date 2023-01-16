@@ -82,17 +82,20 @@ open class AddEditProductAddService : AddEditProductBaseService() {
 
     private fun saveProductToDraftAsync() {
         launchCatchError(block = {
-            asyncCatchError( coroutineContext,
-                    block = {
-                        saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(
-                                mapProductInputModelDetailToDraft(productInputModel),
-                                productInputModel.draftId, false)
-                        saveProductDraftUseCase.executeOnBackground()
-                    },
-                    onError = { throwable ->
-                        logError(TITLE_ERROR_SAVING_DRAFT, throwable)
-                        0L
-                    }
+            asyncCatchError(
+                coroutineContext,
+                block = {
+                    saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(
+                        mapProductInputModelDetailToDraft(productInputModel),
+                        productInputModel.draftId,
+                        false
+                    )
+                    saveProductDraftUseCase.executeOnBackground()
+                },
+                onError = { throwable ->
+                    logError(TITLE_ERROR_SAVING_DRAFT, throwable)
+                    0L
+                }
             ).await().let {
                 productDraftId = it ?: 0L
 
@@ -102,13 +105,13 @@ open class AddEditProductAddService : AddEditProductBaseService() {
                 uploadProductImages(detailInputModel.imageUrlOrPathList, variantInputModel)
             }
         }, onError = { throwable ->
-            logError(TITLE_ERROR_SAVING_DRAFT, throwable)
-        })
+                logError(TITLE_ERROR_SAVING_DRAFT, throwable)
+            })
     }
 
     override fun onUploadProductImagesSuccess(
-            uploadIdList: ArrayList<String>,
-            variantInputModel: VariantInputModel
+        uploadIdList: ArrayList<String>,
+        variantInputModel: VariantInputModel
     ) {
         // (3)
         addProduct(uploadIdList, variantInputModel)
@@ -116,8 +119,9 @@ open class AddEditProductAddService : AddEditProductBaseService() {
 
     override fun onUploadProductImagesFailed(errorMessage: String) {
         ProductAddUploadTracking.uploadImageFailed(
-                userSession.shopId,
-                AddEditProductUploadErrorHandler.getUploadImageErrorName(errorMessage))
+            userSession.shopId,
+            AddEditProductUploadErrorHandler.getUploadImageErrorName(errorMessage)
+        )
     }
 
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
@@ -133,8 +137,12 @@ open class AddEditProductAddService : AddEditProductBaseService() {
 
             override fun getFailedIntent(errorMessage: String): PendingIntent {
                 val draftId = productDraftId.toString()
-                val intent = AddEditProductPreviewActivity.createInstance(context, draftId,
-                        isFromSuccessNotif = false, isFromNotifEditMode = false)
+                val intent = AddEditProductPreviewActivity.createInstance(
+                    context,
+                    draftId,
+                    isFromSuccessNotif = false,
+                    isFromNotifEditMode = false
+                )
                 return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
                 } else {
@@ -147,12 +155,13 @@ open class AddEditProductAddService : AddEditProductBaseService() {
     private fun addProduct(uploadIdList: ArrayList<String>, variantInputModel: VariantInputModel) {
         val shopId = userSession.shopId
         val param = addProductInputMapper.mapInputToParam(
-                shopId,
-                uploadIdList,
-                productInputModel.detailInputModel,
-                productInputModel.descriptionInputModel,
-                productInputModel.shipmentInputModel,
-                variantInputModel)
+            shopId,
+            uploadIdList,
+            productInputModel.detailInputModel,
+            productInputModel.descriptionInputModel,
+            productInputModel.shipmentInputModel,
+            variantInputModel
+        )
         launchCatchError(block = {
             val result = withContext(Dispatchers.IO) {
                 productAddUseCase.params = ProductAddUseCase.createRequestParams(param)
@@ -164,27 +173,29 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             addFlagOnUploadProductSuccess()
             ProductAddUploadTracking.uploadProductFinish(shopId, true)
         }, onError = { throwable ->
-            val errorMessage = getErrorMessage(throwable)
-            setUploadProductDataError(errorMessage)
+                val errorMessage = getErrorMessage(throwable)
+                setUploadProductDataError(errorMessage)
 
-            logError(productAddUseCase.params, throwable)
-            if (AddEditProductUploadErrorHandler.isServerTimeout(throwable)) {
-                ProductAddUploadTracking.uploadGqlTimeout(
+                logError(productAddUseCase.params, throwable)
+                if (AddEditProductUploadErrorHandler.isServerTimeout(throwable)) {
+                    ProductAddUploadTracking.uploadGqlTimeout(
                         ProductAddUseCase.QUERY_NAME,
                         shopId,
-                        AddEditProductUploadErrorHandler.getErrorName(throwable))
-            } else {
-                ProductAddUploadTracking.uploadProductFinish(
+                        AddEditProductUploadErrorHandler.getErrorName(throwable)
+                    )
+                } else {
+                    ProductAddUploadTracking.uploadProductFinish(
                         shopId,
                         false,
                         AddEditProductUploadErrorHandler.isValidationError(throwable),
-                        AddEditProductUploadErrorHandler.getErrorName(throwable))
-            }
-        })
+                        AddEditProductUploadErrorHandler.getErrorName(throwable)
+                    )
+                }
+            })
     }
 
     private suspend fun clearProductDraft() {
-        if(productDraftId > 0) {
+        if (productDraftId > 0) {
             deleteProductDraftUseCase.params = DeleteProductDraftUseCase.createRequestParams(productDraftId)
             deleteProductDraftUseCase.executeOnBackground()
         }
@@ -204,10 +215,10 @@ open class AddEditProductAddService : AddEditProductBaseService() {
                 }
             }
         }, onError = { throwable ->
-            AddEditProductErrorHandler.logMessage(path)
-            AddEditProductErrorHandler.logExceptionToCrashlytics(throwable)
-            // TODO notify user about the error
-        })
+                AddEditProductErrorHandler.logMessage(path)
+                AddEditProductErrorHandler.logExceptionToCrashlytics(throwable)
+                // TODO notify user about the error
+            })
     }
 
     private fun reDownloadProductImages(productImageData: List<PictureInputModel>): List<PictureInputModel> {
@@ -215,7 +226,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         val downloadsDir =
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
         mutableData.forEach { data ->
-            var path = downloadsDir + data.fileName
+            var path = downloadsDir + "/" + data.fileName
             downloadFile(url = data.urlOriginal, path = path)
             data.filePath = path
         }
@@ -228,7 +239,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
         mutableData.forEach { data ->
             data.pictures.forEach { picture ->
-                var path = downloadsDir + picture.fileName
+                var path = downloadsDir + "/" + picture.fileName
                 downloadFile(url = picture.urlOriginal, path = path)
                 picture.filePath = path
             }
@@ -239,7 +250,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
     private fun reDownloadVariantSizeChart(variantSizeChart: PictureVariantInputModel) {
         val downloadsDir =
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-        var path = downloadsDir + variantSizeChart.fileName
+        var path = downloadsDir + "/" + variantSizeChart.fileName
         downloadFile(
             url = variantSizeChart.urlOriginal,
             path = path
