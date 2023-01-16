@@ -10,6 +10,7 @@ import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.*
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.PlayGetContentSlot
 import com.tokopedia.people.model.UserPostModel
@@ -28,6 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class UserProfileViewModel @AssistedInject constructor(
     @Assisted private val username: String,
@@ -441,6 +443,16 @@ class UserProfileViewModel @AssistedInject constructor(
         if (profileType == ProfileType.Self) {
             _profileWhitelist.update { repo.getWhitelist() }
             if (isRefresh) loadShopRecom()
+        }
+
+        if (_profileInfo.value.isBlocking) {
+            _feedPostsContent.value = UserFeedPostsUiModel()
+            viewModelScope.launch {
+                _uiEvent.emit(UserProfileUiEvent.BlockingUserState(
+                    MessageErrorException("User ini diblokir")
+                ))
+            }
+            return
         }
 
         if (isRefresh) loadProfileTab()
