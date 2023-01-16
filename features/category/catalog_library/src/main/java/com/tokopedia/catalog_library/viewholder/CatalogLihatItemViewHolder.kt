@@ -1,12 +1,12 @@
 package com.tokopedia.catalog_library.viewholder
 
 import android.view.View
-import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDataModel
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.LazyThreadSafetyMode.NONE
@@ -25,8 +25,8 @@ class CatalogLihatItemViewHolder(
         view.findViewById(R.id.lihat_item_title)
     }
 
-    private val lihatExpandedItemLayout: LinearLayout? by lazy(NONE) {
-        view.findViewById(R.id.lihat_expanded_item_layout)
+    private val lihatExpandedItemLayout: CardUnify2? by lazy(NONE) {
+        view.findViewById(R.id.img_card)
     }
 
     companion object {
@@ -39,6 +39,13 @@ class CatalogLihatItemViewHolder(
             lihatItemIcon?.loadImage(it)
         }
         lihatItemTitle?.text = childDataItem?.categoryName ?: ""
+        lihatItemTitle?.setOnClickListener {
+            it.setOnClickListener {
+                catalogLibraryListener.onCategoryItemClicked(
+                    childDataItem?.categoryIdentifier ?: ""
+                )
+            }
+        }
         lihatExpandedItemLayout?.setOnClickListener {
             catalogLibraryListener.onCategoryItemClicked(
                 childDataItem?.categoryIdentifier ?: ""
