@@ -147,6 +147,12 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         setupNavToolbar()
     }
 
+    private fun setupHeaderBackground() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            binding?.imgShadowBackground?.setBackgroundResource(R.drawable.ic_gradient_ar)
+        }
+    }
+
     private fun setupCoachMark() {
         val shouldShowCoachmark = coachMarkSharedPref?.getCoachMarkState() == false
 
