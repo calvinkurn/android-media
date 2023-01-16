@@ -2566,6 +2566,8 @@ open class DynamicProductDetailFragment :
 
         viewModel.updateDynamicProductInfoData(updatedDynamicProductInfo)
         productId = updatedDynamicProductInfo?.basic?.productID
+        productIdThumbnailSelected = productId
+
         val boeData = viewModel.getBebasOngkirDataByProductId()
         productId?.let { productId ->
             pdpUiUpdater?.updateFintechDataWithProductId(
