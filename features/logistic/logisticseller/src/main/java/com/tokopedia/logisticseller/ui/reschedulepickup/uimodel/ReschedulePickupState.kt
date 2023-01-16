@@ -3,6 +3,7 @@ package com.tokopedia.logisticseller.ui.reschedulepickup.uimodel
 import com.tokopedia.logisticseller.data.model.RescheduleDayOptionModel
 import com.tokopedia.logisticseller.data.model.RescheduleReasonOptionModel
 import com.tokopedia.logisticseller.data.model.RescheduleTimeOptionModel
+import com.tokopedia.logisticseller.data.model.SaveRescheduleModel
 
 data class ReschedulePickupState(
     val info: ReschedulePickupInfo = ReschedulePickupInfo(),
@@ -12,7 +13,8 @@ data class ReschedulePickupState(
     val isCustomReason: Boolean = false,
     val reason: String = "",
     val customReasonError: String? = null,
-    val bottomSheet: RescheduleBottomSheetState = RescheduleBottomSheetState.NONE
+    val bottomSheet: RescheduleBottomSheetState = RescheduleBottomSheetState.NONE,
+    val saveRescheduleModel: SaveRescheduleModel? = null
 )
 
 enum class RescheduleBottomSheetState {

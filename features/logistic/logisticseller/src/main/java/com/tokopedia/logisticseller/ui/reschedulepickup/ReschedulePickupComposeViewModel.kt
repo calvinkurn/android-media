@@ -120,15 +120,32 @@ class ReschedulePickupComposeViewModel @Inject constructor(
     fun saveReschedule(
         orderId: String
     ) {
-//        launchCatchError(
-//            block = {
-//                val response = saveReschedulePickup(ReschedulePickupMapper.mapToSaveReschedulePickupParam(orderId, date, time.time, reason))
-//                _saveRescheduleDetail.value = Success(ReschedulePickupMapper.mapToSaveRescheduleModel(response, time.etaPickup, orderId))
-//            },
-//            onError = {
-//                _saveRescheduleDetail.value = Fail(it)
-//            }
-//        )
+        launchCatchError(
+            block = {
+                val response = saveReschedulePickup(
+                    ReschedulePickupMapper.mapToSaveReschedulePickupParam(
+                        orderId,
+                        input.day,
+                        input.time,
+                        input.reason
+                    )
+                )
+                val state = _uiState.value
+                _uiState.value = state.copy(
+                    saveRescheduleModel = ReschedulePickupMapper.mapToSaveRescheduleModel(
+                        response,
+                        state.info.summary,
+                        orderId
+                    )
+                )
+            },
+            onError = {
+                val state = _uiState.value
+                _uiState.value = state.copy(
+                    error = it.message.orEmpty()
+                )
+            }
+        )
     }
 
     fun closeBottomSheetState() {
