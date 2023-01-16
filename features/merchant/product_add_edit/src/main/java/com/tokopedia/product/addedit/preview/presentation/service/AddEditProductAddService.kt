@@ -342,7 +342,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         val mutableData = productVariantData.toMutableList()
         var index = 0
 
-        downloadProductVariantImages(productInputModel)
+        downloadVariantSizeChart(productInputModel)
 
 //        // Find the start index
 //        for (data in productVariantData) {
