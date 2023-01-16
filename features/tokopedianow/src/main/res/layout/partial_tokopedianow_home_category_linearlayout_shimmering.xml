@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:tools="http://schemas.android.com/tools"
-    android:paddingStart="8dp"
-    android:paddingLeft="8dp"
+    android:paddingStart="16dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -11,22 +10,21 @@
     <include
         layout="@layout/partial_tokopedianow_home_category_shimmering"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="4dp"
-        android:layout_marginStart="8dp"
         android:layout_height="wrap_content"
-        android:layout_width="96dp"/>
+        android:layout_width="wrap_content"/>
     <include
         layout="@layout/partial_tokopedianow_home_category_shimmering"
         android:layout_marginEnd="8dp"
         android:layout_height="wrap_content"
-        android:layout_width="96dp"/>
+        android:layout_width="wrap_content"/>
     <include
         layout="@layout/partial_tokopedianow_home_category_shimmering"
         android:layout_marginEnd="8dp"
         android:layout_height="wrap_content"
-        android:layout_width="96dp"/>
+        android:layout_width="wrap_content"/>
     <include
         layout="@layout/partial_tokopedianow_home_category_shimmering"
+        android:layout_marginEnd="8dp"
         android:layout_height="wrap_content"
-        android:layout_width="96dp"/>
+        android:layout_width="wrap_content"/>
 </LinearLayout>

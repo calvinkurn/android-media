@@ -5,13 +5,17 @@ import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel
 
 class TokoNowCategoryGridDiffer : BaseTokopediaNowDiffer() {
-    private var oldList: List<TokoNowCategoryMenuItemUiModel> = emptyList()
-    private var newList: List<TokoNowCategoryMenuItemUiModel> = emptyList()
+    private var oldList: List<Visitable<*>> = emptyList()
+    private var newList: List<Visitable<*>> = emptyList()
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
-        return oldItem.id == newItem.id
+        return  if (oldItem is TokoNowCategoryMenuItemUiModel && newItem is TokoNowCategoryMenuItemUiModel) {
+            oldItem.id == newItem.id
+        } else {
+            oldItem == newItem
+        }
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
@@ -26,8 +30,8 @@ class TokoNowCategoryGridDiffer : BaseTokopediaNowDiffer() {
         oldList: List<Visitable<*>>,
         newList: List<Visitable<*>>
     ): BaseTokopediaNowDiffer {
-        this.oldList = oldList as List<TokoNowCategoryMenuItemUiModel>
-        this.newList = newList as List<TokoNowCategoryMenuItemUiModel>
+        this.oldList = oldList
+        this.newList = newList
         return this
     }
 }
