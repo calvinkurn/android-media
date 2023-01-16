@@ -123,7 +123,7 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
         when (data.goldOS?.shopTier) {
             0 -> {
                 nominalList.clear()
-                nominalList.addAll(createCreditList(credit, 5.0f))
+                nominalList.addAll(createCreditList(credit, 0.0f))
 
             }
             1 -> {
@@ -207,10 +207,10 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
 
     }
 
-    fun getAutoTopUpCreditHistoryData(data: AutoTopUpStatus): Triple<String, Double, Pair<String, Int>> {
+    fun getAutoTopUpCreditHistoryData(data: AutoTopUpStatus): Triple<String, String, Pair<String, Int>> {
         val autoTopUpItem = data.selectedPrice
         val nominalPrice = autoTopUpItem.priceFmt
-        val bonus = data.statusBonus
+        val bonus = Utils.convertToCurrencyString((Utils.convertMoneyToValue(nominalPrice) * data.statusBonus / 100).toLong())
         val maxCredit = autoTopUpItem.minCreditFmt
         val frequency = data.frequency
         return Triple(nominalPrice, bonus, Pair(maxCredit, frequency))

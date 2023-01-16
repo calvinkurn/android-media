@@ -29,7 +29,7 @@ class TopAdsGetSelectedTopUpType @Inject constructor(
     init {
         setTypeClass(GetPersonalisedCopyResponse::class.java)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
-        setGraphqlQuery(GetPersonalisedCopyQuery.GQL_QUERY)
+        setGraphqlQuery(GetPersonalisedCopyQuery())
         setParams()
     }
 

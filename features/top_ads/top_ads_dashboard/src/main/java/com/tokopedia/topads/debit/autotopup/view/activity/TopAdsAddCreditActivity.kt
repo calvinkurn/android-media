@@ -136,7 +136,7 @@ class TopAdsAddCreditActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
         return intent?.extras?.getBoolean(IS_AUTO_TOP_UP_ACTIVE, false) ?: false
     }
     private fun isAutoTopUpSelected(): Boolean {
-        return intent?.extras?.getBoolean(IS_AUTO_TOP_UP_ACTIVE, false) ?: false
+        return intent?.extras?.getBoolean(IS_AUTO_TOP_UP_SELECTED, false) ?: false
     }
 
     companion object {

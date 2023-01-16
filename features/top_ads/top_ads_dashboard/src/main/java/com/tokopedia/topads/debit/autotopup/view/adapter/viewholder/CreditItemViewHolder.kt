@@ -2,10 +2,12 @@ package com.tokopedia.topads.debit.autotopup.view.adapter.viewholder
 
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.debit.autotopup.data.model.TopUpCreditItemData
 import com.tokopedia.topads.debit.autotopup.view.adapter.TopAdsCreditListAdapter
@@ -20,13 +22,15 @@ class CreditItemViewHolder(
     private val creditItemText: Typography = itemView.findViewById(R.id.creditItemText)
     private val creditItemBonus: Typography = itemView.findViewById(R.id.creditItemBonus)
     private val nominalShimmer: LoaderUnify = itemView.findViewById(R.id.nominalShimmer)
-    private val creditItem: View = itemView.findViewById(R.id.creditItem)
+    private val creditItem: ConstraintLayout = itemView.findViewById(R.id.creditOptionChipItem)
     fun bind(list: ArrayList<TopUpCreditItemData>, position: Int) {
         if (list[position].productPrice.isEmpty()){
             nominalShimmer.show()
         }else{
             nominalShimmer.hide()
             creditItemText.text = list[position].productPrice
+
+            creditItemBonus.showWithCondition(list[position].bonus != "Bonus Rp0")
             creditItemBonus.text = list[position].bonus
             changeCreditItemState(list[position].clicked)
             creditItem.setOnClickListener {

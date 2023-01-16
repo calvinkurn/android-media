@@ -491,6 +491,8 @@
     <string name="top_ads_auto_top_up_tnc_prefix">Otomatis tambah kredit dari Saldo Penghasilan, saat kredit kurang dari </string>
     <string name="top_ads_auto_top_up_tnc_suffix">agar iklanmu terus aktif.</string>
     <string name="top_ads_auto_top_up_save_btn">Aktifkan Tambah Kredit Otomatis</string>
+    <string name="topads_dash_auto_topup_bonus"><![CDATA["(<font color='#6D7588'>Bonus</font><font color='#00AA5B'><b> Rp%s </b></font>)]]></string>
+    <string name="topads_dash_auto_topup_frequency"><![CDATA["%s (<font color='#6D7588'>maks. %s kali/hari</font>)]]></string>
 
 </resources>
 

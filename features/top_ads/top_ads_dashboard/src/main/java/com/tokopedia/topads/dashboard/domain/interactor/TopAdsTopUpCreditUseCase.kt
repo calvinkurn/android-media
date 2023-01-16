@@ -42,7 +42,7 @@ class TopAdsTopUpCreditUseCase @Inject constructor(
         val params = mutableMapOf(
             "shopIds" to listOf(userSessionInterface.shopId.toIntOrZero()),
             "fields" to listOf("other-goldos"),
-            "source" to "confluence testing"
+            "source" to "top_ads_dashboard"
         )
         setRequestParams(params)
     }

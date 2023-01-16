@@ -42,7 +42,7 @@ class TopAdsAutoTopUpUSeCase @Inject constructor(graphqlRepository: GraphqlRepos
     }
 
     fun setQuery(query: String = TopUpStatus.GQL_QUERY) {
-        setGraphqlQuery(query)
+        setGraphqlQuery(TopUpStatus())
     }
 
     fun setParams() {

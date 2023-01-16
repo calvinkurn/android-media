@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.RadioGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
+import androidx.core.text.HtmlCompat
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.FragmentManager
@@ -35,7 +36,7 @@ const val INVALID_NOMINAL_INDEX = -1
 
 class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
     TopAdsCreditListAdapter.NominalClickListener {
-    private var autoTopUpCreditHistoryTriple: Triple<String, Double, Pair<String, Int>>? = null
+    private var autoTopUpCreditHistoryTriple: Triple<String, String, Pair<String, Int>>? = null
     private var creditItemRecyclerView: RecyclerView? = null
     private var textPilihNominal: com.tokopedia.unifyprinciples.Typography? = null
     private val adapter by lazy { TopAdsCreditListAdapter() }
@@ -368,13 +369,24 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         creditItemRecyclerView?.hide()
         selectedNominal = TopUpCreditItemData(
             autoTopUpCreditHistoryTriple?.first ?: "",
-            autoTopUpCreditHistoryTriple?.second.toString()
+            autoTopUpCreditHistoryTriple?.second ?: ""
         )
         selectedPrice?.text = selectedNominal?.productPrice
-        selectedBonus?.text = selectedNominal?.bonus
+        selectedBonus?.text = HtmlCompat.fromHtml(
+            String.format(
+                getString(R.string.topads_dash_auto_topup_bonus),
+                selectedNominal?.bonus
+            ), HtmlCompat.FROM_HTML_MODE_LEGACY
+        )
         maxCreditLimit?.text = autoTopUpCreditHistoryTriple?.third?.first
-        autoTopUpFrequencySelected = autoTopUpCreditHistoryTriple?.third?.second ?: 0
-        selectedFrequncyTambahCredit?.text = autoTopUpFrequencySelected.toString()
+        val autoTopUpFrequencySelectedText = getTextFromFrequency(autoTopUpCreditHistoryTriple?.third?.second)
+        selectedFrequncyTambahCredit?.text = HtmlCompat.fromHtml(
+            String.format(
+                getString(R.string.topads_dash_auto_topup_frequency),
+                autoTopUpFrequencySelectedText,
+                autoTopUpCreditHistoryTriple?.third?.second
+            ), HtmlCompat.FROM_HTML_MODE_LEGACY
+        )
         autoTopUpMaxCreditLimit = viewModel?.getAutoTopUpMaxCreditLimit(
             autoTopUpFrequencySelected,
             autoTopUpCreditHistoryTriple?.first
@@ -392,6 +404,15 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
                 selectedFrequncyTambahCredit?.id!!
         }
         autoTopUpCreditTips?.showWithCondition(isCreditHistoryReceived)
+    }
+
+    private fun getTextFromFrequency(autoTopUpFrequencySelected: Int?): String {
+        return when (autoTopUpFrequencySelected) {
+            4 -> "Jarang"
+            6 -> "Normal"
+            8 -> "Sering"
+            else -> "Normal"
+        }
     }
 
     private fun resetManualState() {
