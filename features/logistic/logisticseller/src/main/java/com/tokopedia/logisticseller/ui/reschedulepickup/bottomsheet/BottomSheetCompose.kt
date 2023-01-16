@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
@@ -44,4 +45,13 @@ fun BottomSheetCompose(
         }
         content()
     }
+}
+
+fun BottomSheetRoundedCorner(): RoundedCornerShape {
+    return RoundedCornerShape(
+        topStart = 20.dp,
+        topEnd = 20.dp,
+        bottomEnd = 0.dp,
+        bottomStart = 0.dp
+    )
 }

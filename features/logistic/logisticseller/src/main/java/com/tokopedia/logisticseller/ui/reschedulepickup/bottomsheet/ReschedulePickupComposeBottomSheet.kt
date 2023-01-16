@@ -4,10 +4,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.tokopedia.common_compose.principles.NestTypography
+import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.data.model.RescheduleDayOptionModel
 import com.tokopedia.logisticseller.data.model.RescheduleReasonOptionModel
@@ -72,7 +73,12 @@ fun <T> RescheduleBottomSheetContent(
                     onBottomSheetClosed()
                 },
                 text = {
-                    Text(text = "$item")
+                    NestTypography(
+                        "$item",
+                        textStyle = NestTheme.typography.paragraph3.copy(
+                            color = NestTheme.colors.NN._950
+                        )
+                    )
                 }
             )
         }
