@@ -26,6 +26,7 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_NAME_CLICK_PURCHASE_LIST = "clickPurchaseList"
     const val EVENT_NAME_ADD_TO_CART = "add_to_cart"
     const val EVENT_NAME_CLICK_PG = "clickPG"
+    const val EVENT_NAME_VIEW_PG_IRIS = "viewPGIris"
 
     // event categories
     const val EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP = "my purchase list detail - mp"
@@ -49,6 +50,7 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_ACTION_CLICK_SIMILAR_PRODUCT = "click on product serupa"
     const val EVENT_ACTION_CLICK_BUY_AGAIN = "attempt click beli lagi"
     const val EVENT_ACTION_CLICK_BUY_AGAIN_SUCCESS = "click beli lagi success"
+    const val EVENT_ACTION_IMPRESSION_INSURANCE_WIDGET = "impression - proteksi transaksi"
     const val EVENT_ACTION_CLICK_INSURANCE_WIDGET = "click on insurance button"
     const val EVENT_ACTION_CLICK_RESOLUTION_WIDGET = "click on resolution widget"
 
@@ -87,6 +89,7 @@ object BuyerOrderDetailTrackerConstant {
     // tracker ID
     const val TRACKER_ID_RE_UPLOAD_PRESCRIPTION = "32743"
     const val TRACKER_ID_CHECK_PRESCRIPTION = "32744"
+    const val TRACKER_ID_IMPRESSION_INSURANCE_WIDGET = "40081"
     const val TRACKER_ID_CLICK_INSURANCE_WIDGET = "37322"
 
     // others

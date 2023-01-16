@@ -306,6 +306,20 @@ object BuyerOrderDetailTracker {
             .sendEnhancedEcommerce(BuyerOrderDetailTrackerConstant.EVENT_NAME_ADD_TO_CART)
     }
 
+    fun eventImpressionInsuranceWidget(
+        trackerData: OrderInsuranceUiModel.TrackerData
+    ) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_VIEW_PG_IRIS,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_IMPRESSION_INSURANCE_WIDGET,
+            eventLabel = "${trackerData.orderStatusCode}${BuyerOrderDetailTrackerConstant.SEPARATOR_STRIP}${trackerData.orderId}"
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_IMPRESSION_INSURANCE_WIDGET)
+            .sendGeneralEvent()
+    }
+
     fun eventClickInsuranceWidget(
         trackerData: OrderInsuranceUiModel.TrackerData
     ) {
