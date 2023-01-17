@@ -5,6 +5,7 @@ import com.tokopedia.feedcomponent.domain.model.ShopFollowingEntity
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import javax.inject.Inject
 
 /**
@@ -23,7 +24,7 @@ open class GetShopFollowingUseCase @Inject constructor(
     private fun generateParam(shopIds: List<String>): Map<String, Any> {
         val inputFields = listOf(DEFAULT_FAVORITE)
         return mapOf<String, Any>(
-            PARAM_SHOP_IDS to shopIds,
+            PARAM_SHOP_IDS to shopIds.map { it.toIntSafely() }.toList(),
             PARAM_INPUT_FIELDS to inputFields
         )
     }
