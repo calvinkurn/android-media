@@ -174,7 +174,7 @@ fun ReschedulePickupScreenLayout(
             InputCustomReason(
                 customReason = input.reason,
                 onOtherReasonChanged = { onOtherReasonChanged(it) },
-                isError = state.value.customReasonError != null
+                error = state.value.customReasonError
             )
         }
         NestButton(
@@ -347,7 +347,7 @@ private fun InputReason(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit,
 private fun InputCustomReason(
     customReason: String,
     onOtherReasonChanged: (String) -> Unit,
-    isError: Boolean
+    error: String?
 ) {
     NestTextField(
         value = customReason,
@@ -358,7 +358,8 @@ private fun InputCustomReason(
             NestTypography(text = stringResource(id = R.string.label_detail_reason_reschedule_pickup))
         },
         onValueChanged = { onOtherReasonChanged(it) },
-        isError = isError
+        isError = !error.isNullOrEmpty(),
+        supportingText = { error?.let { NestTypography(text = it) } }
     )
 }
 
