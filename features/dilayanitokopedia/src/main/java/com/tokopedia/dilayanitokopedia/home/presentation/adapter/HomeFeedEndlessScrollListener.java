@@ -114,8 +114,7 @@ public abstract class HomeFeedEndlessScrollListener extends RecyclerView.OnScrol
                     = ((LinearLayoutManager) getLayoutManager()).findLastVisibleItemPosition();
         }
 
-        if ((lastVisibleItemPosition + visibleThreshold) > totalItemCount &&
-                hasNextPage) {
+        if ((lastVisibleItemPosition + visibleThreshold) > totalItemCount && hasNextPage) {
             loadMoreNextPage();
         }
     }
