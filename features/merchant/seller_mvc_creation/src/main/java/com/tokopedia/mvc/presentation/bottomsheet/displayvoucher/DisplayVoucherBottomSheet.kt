@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.media.loader.clearImage
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadBitmapWithoutPlaceHolder
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetCouponDisplayBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -34,6 +36,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
     }
 
     private var voucherConfiguration: VoucherConfiguration? = null
+    private var currentVoucherSize = ImageRatio.HORIZONTAL
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,18 +50,20 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
         )
         initInjector()
         initObservers()
-        viewModel.setSelectedVoucherChip(ImageRatio.HORIZONTAL)
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.setSelectedVoucherChip(ImageRatio.HORIZONTAL)
+    //    changeImageViewHeight()
         setOnClickListeners()
     }
 
     private fun initObservers() {
         viewModel.selectedDisplayVoucherType.observe(viewLifecycleOwner) { voucherType ->
+            currentVoucherSize = voucherType
             when (voucherType) {
                 ImageRatio.HORIZONTAL -> {
                     binding?.apply {
@@ -66,7 +71,6 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
                         squareChip.chipType = ChipsUnify.TYPE_NORMAL
                         verticalChip.chipType = ChipsUnify.TYPE_NORMAL
                         setUpImage(ImageRatio.HORIZONTAL)
-                        changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_FULL)
                     }
                 }
                 ImageRatio.SQUARE -> {
@@ -75,7 +79,6 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
                         squareChip.chipType = ChipsUnify.TYPE_SELECTED
                         verticalChip.chipType = ChipsUnify.TYPE_NORMAL
                         setUpImage(ImageRatio.SQUARE)
-                        changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_ONE_HALF)
                     }
                 }
                 ImageRatio.VERTICAL -> {
@@ -84,14 +87,22 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
                         squareChip.chipType = ChipsUnify.TYPE_NORMAL
                         verticalChip.chipType = ChipsUnify.TYPE_SELECTED
                         setUpImage(ImageRatio.VERTICAL)
-                        changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_MULTIPLIED)
                     }
                 }
             }
+            changeImageViewHeight()
         }
 
         viewModel.couponImage.observe(viewLifecycleOwner) {
-            binding?.voucherImage?.loadImage(it)
+            binding?.apply {
+                voucherImage.loadBitmapWithoutPlaceHolder(it)
+                voucherLoader.hide()
+            }
+            when(currentVoucherSize) {
+                ImageRatio.HORIZONTAL -> changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_FULL)
+                ImageRatio.SQUARE -> changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_ONE_HALF)
+                ImageRatio.VERTICAL -> changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_MULTIPLIED)
+            }
         }
     }
 
@@ -102,6 +113,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
 
     private fun setUpImage(imageRatio: ImageRatio) {
         binding?.voucherImage?.clearImage()
+        binding?.voucherLoader?.show()
         voucherConfiguration?.let {
             viewModel.previewImage(
                 isCreateMode = false,
@@ -133,7 +145,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
             .inject(this)
     }
 
-    private fun changeImageViewHeight(height: Float) {
+    private fun changeImageViewHeight(height: Float = getDeviceHeight() * SCREEN_HEIGHT_FULL) {
         binding?.voucherImage?.layoutParams?.height = height.toInt()
         binding?.voucherImage?.requestLayout()
     }
@@ -153,6 +165,9 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
 
         private const val SCREEN_HEIGHT_FULL = 0.5f
         private const val SCREEN_HEIGHT_ONE_HALF = 1f
-        private const val SCREEN_HEIGHT_MULTIPLIED = 1.5f
+        private const val SCREEN_HEIGHT_MULTIPLIED = 2f
     }
 }
+
+
+
