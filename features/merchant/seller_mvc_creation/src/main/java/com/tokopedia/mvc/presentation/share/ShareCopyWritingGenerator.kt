@@ -2,6 +2,7 @@ package com.tokopedia.mvc.presentation.share
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
@@ -45,6 +46,7 @@ class ShareCopyWritingGenerator @Inject constructor(@ApplicationContext private 
         val amountMax = param.discountAmountMax.amount()
         val symbol = param.discountAmount.symbol()
         val discountPercentage = param.discountPercentage
+        val shopName = MethodChecker.fromHtml(param.shopName)
 
         val endDate = param.voucherEndDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
         val endHour = param.voucherEndDate.formatTo(DateConstant.TIME_MINUTE_PRECISION)
@@ -56,33 +58,33 @@ class ShareCopyWritingGenerator @Inject constructor(@ApplicationContext private 
         }
 
         return when {
-            voucherType.isProductVoucher() && voucherTarget.isAllBuyer() && promoType.isCashback() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_product_cashback_nominal, amount, symbol, param.shopName, endDate, endHour) //"1"
-            voucherType.isProductVoucher() && voucherTarget.isAllBuyer() && promoType.isCashback() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_product_cashback_percentage, discountPercentage, amountMax, symbol, param.shopName, endDate, endHour) //"2"
-            voucherType.isProductVoucher() && voucherTarget.isAllBuyer() && promoType.isFreeShipping() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_product_free_shipping_nominal, amount, symbol, param.shopName, endDate, endHour) //"3"
-            voucherType.isProductVoucher() && voucherTarget.isAllBuyer() && promoType.isFreeShipping() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_product_free_shipping_percentage, discountPercentage, amountMax, symbol, param.shopName, endDate, endHour) //"4"
-            voucherType.isProductVoucher() && voucherTarget.isAllBuyer() && promoType.isDiscount() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_product_discount_nominal, amount, symbol,param.shopName, endDate, endHour) //"5"
-            voucherType.isProductVoucher() && voucherTarget.isAllBuyer() && promoType.isDiscount() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_product_discount_percentage, discountPercentage, amountMax, symbol, param.shopName, endDate, endHour) //"6"
+            voucherType.isProductVoucher() && voucherTarget.isAllBuyer() && promoType.isCashback() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_product_cashback_nominal, amount, symbol,  shopName, endDate, endHour) //"1"
+            voucherType.isProductVoucher() && voucherTarget.isAllBuyer() && promoType.isCashback() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_product_cashback_percentage, discountPercentage, amountMax, symbol,  shopName, endDate, endHour) //"2"
+            voucherType.isProductVoucher() && voucherTarget.isAllBuyer() && promoType.isFreeShipping() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_product_free_shipping_nominal, amount, symbol,  shopName, endDate, endHour) //"3"
+            voucherType.isProductVoucher() && voucherTarget.isAllBuyer() && promoType.isFreeShipping() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_product_free_shipping_percentage, discountPercentage, amountMax, symbol,  shopName, endDate, endHour) //"4"
+            voucherType.isProductVoucher() && voucherTarget.isAllBuyer() && promoType.isDiscount() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_product_discount_nominal, amount, symbol, shopName, endDate, endHour) //"5"
+            voucherType.isProductVoucher() && voucherTarget.isAllBuyer() && promoType.isDiscount() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_product_discount_percentage, discountPercentage, amountMax, symbol,  shopName, endDate, endHour) //"6"
 
-            voucherType.isShopVoucher() && voucherTarget.isAllBuyer() && promoType.isCashback() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_shop_cashback_nominal, amount, symbol,param.shopName, endDate, endHour) //"7"
-            voucherType.isShopVoucher() && voucherTarget.isAllBuyer() && promoType.isCashback() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_shop_cashback_percentage, discountPercentage, amountMax, symbol, param.shopName, endDate, endHour) //"8"
-            voucherType.isShopVoucher() && voucherTarget.isAllBuyer() && promoType.isFreeShipping() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_shop_free_shipping_nominal, amount, symbol,param.shopName, endDate, endHour)//"9"
-            voucherType.isShopVoucher() && voucherTarget.isAllBuyer() && promoType.isFreeShipping() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_shop_free_shipping_percentage, discountPercentage, amountMax, symbol, param.shopName, endDate, endHour)//"10"
-            voucherType.isShopVoucher() && voucherTarget.isAllBuyer() && promoType.isDiscount() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_shop_discount_nominal, amount, symbol, param.shopName, endDate, endHour)//"11"
-            voucherType.isShopVoucher() && voucherTarget.isAllBuyer() && promoType.isDiscount() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_shop_discount_percentage, discountPercentage, amountMax, symbol, param.shopName, endDate, endHour)//"12"
+            voucherType.isShopVoucher() && voucherTarget.isAllBuyer() && promoType.isCashback() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_shop_cashback_nominal, amount, symbol, shopName, endDate, endHour) //"7"
+            voucherType.isShopVoucher() && voucherTarget.isAllBuyer() && promoType.isCashback() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_shop_cashback_percentage, discountPercentage, amountMax, symbol,  shopName, endDate, endHour) //"8"
+            voucherType.isShopVoucher() && voucherTarget.isAllBuyer() && promoType.isFreeShipping() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_shop_free_shipping_nominal, amount, symbol, shopName, endDate, endHour)//"9"
+            voucherType.isShopVoucher() && voucherTarget.isAllBuyer() && promoType.isFreeShipping() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_shop_free_shipping_percentage, discountPercentage, amountMax, symbol,  shopName, endDate, endHour)//"10"
+            voucherType.isShopVoucher() && voucherTarget.isAllBuyer() && promoType.isDiscount() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_shop_discount_nominal, amount, symbol,  shopName, endDate, endHour)//"11"
+            voucherType.isShopVoucher() && voucherTarget.isAllBuyer() && promoType.isDiscount() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_shop_discount_percentage, discountPercentage, amountMax, symbol,  shopName, endDate, endHour)//"12"
 
-            voucherType.isProductVoucher() && voucherTarget.isNewFollower() && promoType.isCashback() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_product_nf_cashback_nominal, amount, symbol, param.shopName, endDate, endHour)//"13"
-            voucherType.isProductVoucher() && voucherTarget.isNewFollower() && promoType.isCashback() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_product_nf_cashback_percentage, discountPercentage, amountMax, symbol, param.shopName, endDate, endHour)//"14"
-            voucherType.isProductVoucher() && voucherTarget.isNewFollower() && promoType.isFreeShipping() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_product_nf_free_shipping_nominal, amount, symbol, param.shopName, endDate, endHour)//"15"
-            voucherType.isProductVoucher() && voucherTarget.isNewFollower() && promoType.isFreeShipping() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_product_nf_free_shipping_percentage, discountPercentage, amountMax, symbol, param.shopName, endDate, endHour)//"16"
-            voucherType.isProductVoucher() && voucherTarget.isNewFollower() && promoType.isDiscount() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_product_nf_discount_nominal, amount, symbol, param.shopName, endDate, endHour)//"17"
-            voucherType.isProductVoucher() && voucherTarget.isNewFollower() && promoType.isDiscount() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_product_nf_discount_percentage, discountPercentage, amountMax, symbol, param.shopName, endDate, endHour)//"18"
+            voucherType.isProductVoucher() && voucherTarget.isNewFollower() && promoType.isCashback() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_product_nf_cashback_nominal, amount, symbol,  shopName, endDate, endHour)//"13"
+            voucherType.isProductVoucher() && voucherTarget.isNewFollower() && promoType.isCashback() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_product_nf_cashback_percentage, discountPercentage, amountMax, symbol,  shopName, endDate, endHour)//"14"
+            voucherType.isProductVoucher() && voucherTarget.isNewFollower() && promoType.isFreeShipping() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_product_nf_free_shipping_nominal, amount, symbol,  shopName, endDate, endHour)//"15"
+            voucherType.isProductVoucher() && voucherTarget.isNewFollower() && promoType.isFreeShipping() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_product_nf_free_shipping_percentage, discountPercentage, amountMax, symbol,  shopName, endDate, endHour)//"16"
+            voucherType.isProductVoucher() && voucherTarget.isNewFollower() && promoType.isDiscount() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_product_nf_discount_nominal, amount, symbol,  shopName, endDate, endHour)//"17"
+            voucherType.isProductVoucher() && voucherTarget.isNewFollower() && promoType.isDiscount() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_product_nf_discount_percentage, discountPercentage, amountMax, symbol,  shopName, endDate, endHour)//"18"
 
-            voucherType.isShopVoucher() && voucherTarget.isNewFollower() && promoType.isCashback() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_shop_nf_cashback_nominal, amount, symbol, param.shopName, endDate, endHour)//"19"
-            voucherType.isShopVoucher() && voucherTarget.isNewFollower() && promoType.isCashback() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_shop_nf_cashback_percentage, discountPercentage, amountMax, symbol, param.shopName, endDate, endHour)//"20"
-            voucherType.isShopVoucher() && voucherTarget.isNewFollower() && promoType.isFreeShipping() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_shop_nf_free_shipping_nominal, amount, symbol, param.shopName, endDate, endHour) //"21"
-            voucherType.isShopVoucher() && voucherTarget.isNewFollower() && promoType.isFreeShipping() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_shop_nf_free_shipping_percentage, discountPercentage, amountMax, symbol, param.shopName, endDate, endHour)//"22"
-            voucherType.isShopVoucher() && voucherTarget.isNewFollower() && promoType.isDiscount() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_shop_nf_discount_nominal,amount, symbol,  param.shopName, endDate, endHour)//"23"
-            voucherType.isShopVoucher() && voucherTarget.isNewFollower() && promoType.isDiscount() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_shop_nf_discount_percentage, discountPercentage, amountMax, symbol, param.shopName, endDate, endHour)//"24"
+            voucherType.isShopVoucher() && voucherTarget.isNewFollower() && promoType.isCashback() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_shop_nf_cashback_nominal, amount, symbol,  shopName, endDate, endHour)//"19"
+            voucherType.isShopVoucher() && voucherTarget.isNewFollower() && promoType.isCashback() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_shop_nf_cashback_percentage, discountPercentage, amountMax, symbol,  shopName, endDate, endHour)//"20"
+            voucherType.isShopVoucher() && voucherTarget.isNewFollower() && promoType.isFreeShipping() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_shop_nf_free_shipping_nominal, amount, symbol,  shopName, endDate, endHour) //"21"
+            voucherType.isShopVoucher() && voucherTarget.isNewFollower() && promoType.isFreeShipping() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_shop_nf_free_shipping_percentage, discountPercentage, amountMax, symbol,  shopName, endDate, endHour)//"22"
+            voucherType.isShopVoucher() && voucherTarget.isNewFollower() && promoType.isDiscount() && benefitType.isNominal() -> context.getString(R.string.smvc_outgoing_text_description_shop_nf_discount_nominal,amount, symbol,   shopName, endDate, endHour)//"23"
+            voucherType.isShopVoucher() && voucherTarget.isNewFollower() && promoType.isDiscount() && benefitType.isPercentage() -> context.getString(R.string.smvc_outgoing_text_description_shop_nf_discount_percentage, discountPercentage, amountMax, symbol,  shopName, endDate, endHour)//"24"
 
             else -> fallbackCopyWriting
         }
