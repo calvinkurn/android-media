@@ -10,27 +10,27 @@ object MePageRollenceController {
     private var rollenceMePageValue: String = ""
 
     fun fetchMePageRollenceValue() {
-        rollenceMePageValue = try{
+        rollenceMePageValue = try {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.ME_PAGE_EXP)
-        } catch (e: Exception){
+        } catch (e: Exception) {
             RollenceKey.ME_PAGE_CONTROL
         }
     }
 
-    private fun getMePageRollenceValue(): String {
+    fun getMePageRollenceValue(): String {
         return rollenceMePageValue.ifEmpty { RollenceKey.ME_PAGE_CONTROL }
     }
 
-    fun isUsingMePageRollenceVariant() : Boolean {
+    fun isUsingMePageRollenceVariant(): Boolean {
         return getMePageRollenceValue() == RollenceKey.ME_PAGE_VARIANT_1 ||
             getMePageRollenceValue() == RollenceKey.ME_PAGE_VARIANT_2
     }
 
-    fun isUsingMePageRollenceVariant1() : Boolean {
+    fun isUsingMePageRollenceVariant1(): Boolean {
         return getMePageRollenceValue() == RollenceKey.ME_PAGE_VARIANT_1
     }
 
-    fun isUsingMePageRollenceVariant2() : Boolean {
+    fun isUsingMePageRollenceVariant2(): Boolean {
         return getMePageRollenceValue() == RollenceKey.ME_PAGE_VARIANT_2
     }
 }
