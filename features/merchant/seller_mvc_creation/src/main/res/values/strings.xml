@@ -126,7 +126,7 @@
 
     <!--Share Component: Outgoing product voucher description for all buyer. No 1-6 -->
     <string name="smvc_outgoing_text_description_product_cashback_nominal">Cek kupon ini, deh! Ada cashback %d %s khusus produk pilihan dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
-    <string name="smvc_outgoing_text_description_product_cashback_percentage">Cek kupon ini, deh! Ada cashback %s%% hingga %d %s khusus produk pilihan dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_product_cashback_percentage">Cek kupon ini, deh! Ada cashback %d%% hingga %d %s khusus produk pilihan dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
     <string name="smvc_outgoing_text_description_product_free_shipping_nominal">Cek kupon ini, deh! Ada gratis ongkir %d %s buat belanja produk pilihan dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
     <string name="smvc_outgoing_text_description_product_free_shipping_percentage">Cek kupon ini, deh! Ada gratis ongkir %d%% hingga %d %s buat belanja produk pilihan dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
     <string name="smvc_outgoing_text_description_product_discount_nominal">Cek kupon ini, deh! Ada diskon %d %s buat belanja produk pilihan dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
@@ -134,7 +134,7 @@
 
     <!--Share Component: Outgoing shop voucher description for all buyer. No 7-12 -->
     <string name="smvc_outgoing_text_description_shop_cashback_nominal">Cek kupon ini, deh! Ada cashback %d %s buat semua produk dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
-    <string name="smvc_outgoing_text_description_shop_cashback_percentage">Cek kupon ini, deh! Ada cashback %s%% hingga %d %s buat semua produk dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_shop_cashback_percentage">Cek kupon ini, deh! Ada cashback %d%% hingga %d %s buat semua produk dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
     <string name="smvc_outgoing_text_description_shop_free_shipping_nominal">Cek kupon ini, deh! Ada gratis ongkir %d %s buat semua produk dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
     <string name="smvc_outgoing_text_description_shop_free_shipping_percentage">Cek kupon ini, deh! Ada gratis ongkir %d%% hingga %d %s buat semua produk dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
     <string name="smvc_outgoing_text_description_shop_discount_nominal">Cek kupon ini, deh! Ada diskon %d %s buat semua produk dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
@@ -142,7 +142,7 @@
 
     <!--Share Component: Outgoing product voucher description for new follower. No. 13 - 18 -->
     <string name="smvc_outgoing_text_description_product_nf_cashback_nominal">Cek kupon ini, deh! Ada cashback %d %s khusus produk pilihan buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
-    <string name="smvc_outgoing_text_description_product_nf_cashback_percentage">Cek kupon ini, deh! Ada cashback %s%% hingga %d %s khusus produk pilihan buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_product_nf_cashback_percentage">Cek kupon ini, deh! Ada cashback %d%% hingga %d %s khusus produk pilihan buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
     <string name="smvc_outgoing_text_description_product_nf_free_shipping_nominal">Cek kupon ini, deh! Ada gratis ongkir %d %s buat belanja produk pilihan buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
     <string name="smvc_outgoing_text_description_product_nf_free_shipping_percentage">Cek kupon ini, deh! Ada gratis ongkir %d%% hingga %d %s buat belanja produk pilihan buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
     <string name="smvc_outgoing_text_description_product_nf_discount_nominal">Cek kupon ini, deh! Ada diskon %d %s buat belanja produk pilihan buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
@@ -150,7 +150,7 @@
 
     <!--Share Component: Outgoing shop voucher description for new follower. 19 - 24 -->
     <string name="smvc_outgoing_text_description_shop_nf_cashback_nominal">Cek kupon ini, deh! Ada cashback %d %s buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
-    <string name="smvc_outgoing_text_description_shop_nf_cashback_percentage">Cek kupon ini, deh! Ada cashback %s%% hingga %d %s buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_shop_nf_cashback_percentage">Cek kupon ini, deh! Ada cashback %d%% hingga %d %s buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
     <string name="smvc_outgoing_text_description_shop_nf_free_shipping_nominal">Cek kupon ini, deh! Ada gratis ongkir %d %s buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
     <string name="smvc_outgoing_text_description_shop_nf_free_shipping_percentage">Cek kupon ini, deh! Ada gratis ongkir %d%% hingga %d %s buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
     <string name="smvc_outgoing_text_description_shop_nf_discount_nominal">Cek kupon ini, deh! Ada diskon %d %s buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
