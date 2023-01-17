@@ -19,6 +19,12 @@ data class FeedXProfileHeader(
 
     @SerializedName("shouldSeoIndex")
     val shouldSeoIndex: Boolean,
+
+    @SerializedName("isBlocking")
+    val isBlocking: Boolean = false,
+
+    @SerializedName("isBlockedBy")
+    val isBlockedBy: Boolean = false,
 )
 
 data class Profile(

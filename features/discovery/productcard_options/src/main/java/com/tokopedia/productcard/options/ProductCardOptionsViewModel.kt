@@ -4,15 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase.Companion.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.WishlistResult
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.productcard.options.divider.ProductCardOptionsItemDivider
 import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
@@ -201,8 +199,8 @@ internal class ProductCardOptionsViewModel(
             requestParams.putObject(
                     REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
                     AddToCartRequestParams(
-                            productId = productCardOptionsModel.productId.toLongOrZero(),
-                            shopId = productCardOptionsModel.shopId.toIntOrZero(),
+                            productId = productCardOptionsModel.productId,
+                            shopId = productCardOptionsModel.shopId,
                             quantity = productCardOptionsModel.addToCartParams?.quantity ?: 0,
                             productName = productCardOptionsModel.productName,
                             category = productCardOptionsModel.categoryName,
