@@ -375,6 +375,10 @@
     <string name="smvc_free_shipping_nominal_label">Nominal Gratis Ongkir</string>
     <string name="smvc_minimum_buy_desc_label">Nominal harus lebih tinggi dari potongan harga.</string>
     <string name="smvc_follower_baru_label">Follower Baru</string>
+    <string name="smvc_voucher_creation_step_three_first_coachmark_title">Pilih tipe promo untuk kuponmu</string>
+    <string name="smvc_voucher_creation_step_three_first_coachmark_description">Tentukan mau kasih promo berupa potongan ongkir, cashback, atau potongan harga langsung saat checkout, ke pembeli yang pakai kuponmu.</string>
+    <string name="smvc_voucher_creation_step_three_second_coachmark_title">Tepat sasaran dengan target pembeli yang sesuai</string>
+    <string name="smvc_voucher_creation_step_three_second_coachmark_description">Tentukan target pembeli yang bisa pakai kuponmu agar kupon lebih tepat sasaran.</string>
 
     <!--Success Upload Bottomsheet-->
     <string name="smvc_success_upload_title">Yay, kupon berhasil dibuat!</string>

@@ -9,9 +9,11 @@ import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.*
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.VoucherBuyerFinder
+import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoAction
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeAction
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeEvent
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeUiState
+import com.tokopedia.mvc.util.constant.CommonConstant
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -53,7 +55,7 @@ class VoucherSettingViewModel @Inject constructor(
             )
             is VoucherCreationStepThreeEvent.OnInputQuotaChanged -> handleQuotaInputChanges(event.quota)
             is VoucherCreationStepThreeEvent.ChooseTargetBuyer -> {}
-            is VoucherCreationStepThreeEvent.HandleCoachMark -> {}
+            is VoucherCreationStepThreeEvent.HandleCoachMark -> handleCoachmark()
             is VoucherCreationStepThreeEvent.TapBackButton -> handleBackToPreviousStep()
             is VoucherCreationStepThreeEvent.NavigateToNextStep -> handleNavigateToNextStep()
         }
@@ -273,6 +275,25 @@ class VoucherSettingViewModel @Inject constructor(
             BenefitType.NOMINAL -> currentConfiguration.benefitIdr * currentConfiguration.quota
             else -> currentConfiguration.benefitMax * currentConfiguration.quota
         }
+    }
+
+    private fun handleCoachmark() {
+        if (!isCoachMarkShown()) {
+            _uiAction.tryEmit(VoucherCreationStepThreeAction.ShowCoachmark)
+        }
+    }
+
+    private fun isCoachMarkShown(): Boolean {
+        return sharedPreferences.getBoolean(
+            CommonConstant.SHARED_PREF_VOUCHER_CREATION_STEP_THREE_COACH_MARK,
+            false
+        )
+    }
+
+    fun setSharedPrefCoachMarkAlreadyShown() {
+        sharedPreferences.edit()
+            .putBoolean(CommonConstant.SHARED_PREF_VOUCHER_CREATION_STEP_THREE_COACH_MARK, true)
+            .apply()
     }
 
     private fun getFieldValidated(field: VoucherCreationStepThreeFieldValidation): VoucherCreationStepThreeFieldValidation {

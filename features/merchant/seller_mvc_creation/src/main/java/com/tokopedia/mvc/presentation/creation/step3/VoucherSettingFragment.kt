@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.extension.enable
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentCreationVoucherSettingBinding
@@ -35,6 +37,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
+import java.util.ArrayList
 import javax.inject.Inject
 
 @FlowPreview
@@ -81,6 +84,13 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             ?: VoucherConfiguration()
     }
 
+    // coachmark
+    private val coachMark by lazy {
+        context?.let {
+            CoachMark2(it)
+        }
+    }
+
     override fun getScreenName(): String =
         VoucherSettingFragment::class.java.canonicalName.orEmpty()
 
@@ -110,6 +120,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         setupView()
         observeUiState()
         observeUiAction()
+        viewModel.processEvent(VoucherCreationStepThreeEvent.HandleCoachMark)
     }
 
     private fun observeUiState() {
@@ -266,9 +277,36 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         when (action) {
             is VoucherCreationStepThreeAction.BackToPreviousStep -> backToPreviousStep(action.voucherConfiguration)
             is VoucherCreationStepThreeAction.ContinueToNextStep -> continueToNextStep(action.voucherConfiguration)
-            is VoucherCreationStepThreeAction.ShowCoachmark -> TODO()
+            is VoucherCreationStepThreeAction.ShowCoachmark -> showCoachmark()
             is VoucherCreationStepThreeAction.ShowError -> TODO()
         }
+    }
+
+    private fun showCoachmark() {
+        val coachMarkItem = ArrayList<CoachMark2Item>()
+        promoTypeSectionBinding?.run {
+            coachMarkItem.add(
+                CoachMark2Item(
+                    chipFreeShipping,
+                    getString(R.string.smvc_voucher_creation_step_three_first_coachmark_title),
+                    getString(R.string.smvc_voucher_creation_step_three_first_coachmark_description),
+                    CoachMark2.POSITION_BOTTOM
+                )
+            )
+        }
+        buyerTargetSectionBinding?.run {
+            coachMarkItem.add(
+                CoachMark2Item(
+                    tpgDiscountDeductionTypeLabel,
+                    getString(R.string.smvc_voucher_creation_step_three_second_coachmark_title),
+                    getString(R.string.smvc_voucher_creation_step_three_second_coachmark_description),
+                    CoachMark2.POSITION_TOP
+                )
+            )
+        }
+        coachMark?.showCoachMark(coachMarkItem)
+        coachMark?.onDismissListener = { viewModel.setSharedPrefCoachMarkAlreadyShown() }
+        coachMark?.onFinishListener = { viewModel.setSharedPrefCoachMarkAlreadyShown() }
     }
 
     private fun setupView() {
