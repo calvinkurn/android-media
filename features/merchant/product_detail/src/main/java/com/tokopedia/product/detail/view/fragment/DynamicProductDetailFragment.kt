@@ -79,6 +79,7 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hasValue
@@ -3273,6 +3274,9 @@ open class DynamicProductDetailFragment :
                 reData.action.firstOrNull()?.buttonLink?.let {
                     goToApplink(it)
                 }
+            }
+            reData.restrictionLocationType() -> {
+                goToShipmentErrorAddressOrChat(Int.ZERO)
             }
         }
     }
