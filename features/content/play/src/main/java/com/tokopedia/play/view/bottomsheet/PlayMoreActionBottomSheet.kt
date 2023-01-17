@@ -314,9 +314,10 @@ class PlayMoreActionBottomSheet @Inject constructor(
     private val listOfAction = mutableListOf<PlayMoreActionUiModel>()
 
     private fun buildListAction(action: PlayMoreActionUiModel) {
-        if (!listOfAction.contains(action) && action != PlayMoreActionUiModel.Empty) listOfAction.add(action)
         if (!listOfAction.contains(reportAction)) listOfAction.add(reportAction) // Report
         if (!listOfAction.contains(watchAction)) listOfAction.add(watchAction) //Watch Mode
+        if (action == PlayMoreActionUiModel.Empty) return
+        if (!listOfAction.contains(action)) listOfAction.add(action)
     }
 
     private fun removeAction(action: PlayMoreActionUiModel) {
