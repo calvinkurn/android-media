@@ -57,7 +57,6 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.setSelectedVoucherChip(ImageRatio.HORIZONTAL)
-    //    changeImageViewHeight()
         setOnClickListeners()
     }
 
@@ -98,7 +97,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
                 voucherImage.loadBitmapWithoutPlaceHolder(it)
                 voucherLoader.hide()
             }
-            when(currentVoucherSize) {
+            when (currentVoucherSize) {
                 ImageRatio.HORIZONTAL -> changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_FULL)
                 ImageRatio.SQUARE -> changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_ONE_HALF)
                 ImageRatio.VERTICAL -> changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_MULTIPLIED)
@@ -168,6 +167,3 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
         private const val SCREEN_HEIGHT_MULTIPLIED = 2f
     }
 }
-
-
-
