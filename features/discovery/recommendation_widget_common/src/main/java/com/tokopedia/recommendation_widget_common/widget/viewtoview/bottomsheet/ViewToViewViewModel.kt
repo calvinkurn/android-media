@@ -10,7 +10,7 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetViewToViewRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -23,7 +23,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class ViewToViewViewModel @Inject constructor(
-    private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
+    private val getRecommendationUseCase: Lazy<GetViewToViewRecommendationUseCase>,
     private val addToCartUseCase: Lazy<AddToCartUseCase>,
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers,
@@ -46,12 +46,10 @@ class ViewToViewViewModel @Inject constructor(
     fun getViewToViewProductRecommendation(
         queryParams: String,
         hasAtcButton: Boolean,
-        districtId: String,
     ) {
         launchCatchError(block = {
-            val requestQueryParams = "$queryParams&user_districtId=$districtId"
             val requestParam = GetRecommendationRequestParam(
-                queryParam = requestQueryParams,
+                queryParam = queryParams,
             )
             val loadingList = List(PRODUCT_COUNT) { ViewToViewDataModel.Loading(hasAtcButton) }
             _viewToViewRecommendationLiveData.postValue(Success(loadingList))
@@ -73,9 +71,8 @@ class ViewToViewViewModel @Inject constructor(
     fun retryViewToViewProductRecommendation(
         queryParams: String,
         hasAtcButton: Boolean,
-        districtId: String,
     ) {
-        getViewToViewProductRecommendation(queryParams, hasAtcButton, districtId)
+        getViewToViewProductRecommendation(queryParams, hasAtcButton)
     }
 
     private fun RecommendationItem.toViewToViewDataModelProduct(

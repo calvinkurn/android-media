@@ -32,7 +32,7 @@ object ViewToViewBottomSheetTracker {
             putString("productId", anchorProductId)
             putString("userId", userId)
         }
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent("addToCart", itemBundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent("productView", itemBundle)
     }
 
     fun eventProductClick(
@@ -109,7 +109,7 @@ object ViewToViewBottomSheetTracker {
             putInt("shop_id", shopId)
             putString("shop_name", shopName)
             putString("shop_type", shopType)
-            putInt("position", position)
+            putInt("index", position)
         }
     }
 }

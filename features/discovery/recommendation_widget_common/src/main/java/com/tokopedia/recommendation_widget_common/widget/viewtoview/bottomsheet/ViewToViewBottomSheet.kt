@@ -16,7 +16,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.BottomSheetViewToViewBinding
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
@@ -54,14 +53,11 @@ class ViewToViewBottomSheet @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, viewModelFactory).get()
-        initView()
-        val context = context ?: return
-        val districtId = ChooseAddressUtils.getLocalizingAddressData(context).district_id
         viewModel.getViewToViewProductRecommendation(
             queryParams,
             hasAtcButton,
-            districtId,
         )
+        initView()
     }
 
     private fun initView() {
@@ -105,14 +101,10 @@ class ViewToViewBottomSheet @Inject constructor(
                 it.geViewToView.hide()
                 it.rvViewToViewRecommendation.visible()
             }
-            context?.let {
-                val districtId = ChooseAddressUtils.getLocalizingAddressData(it).district_id
-                viewModel.retryViewToViewProductRecommendation(
-                    queryParams,
-                    hasAtcButton,
-                    districtId,
-                )
-            }
+            viewModel.retryViewToViewProductRecommendation(
+                queryParams,
+                hasAtcButton,
+            )
         }
     }
 
@@ -152,24 +144,19 @@ class ViewToViewBottomSheet @Inject constructor(
     }
 
     private fun handleATCStatus(atcStatus: ViewToViewATCStatus) {
-        val isSuccess = when(atcStatus) {
-            is ViewToViewATCStatus.Success -> {
-                ViewToViewBottomSheetTracker.eventAddToCart(
-                    atcStatus.product.recommendationItem,
-                    headerTitle,
-                    viewModel.getUserId(),
-                    productAnchorId,
-                )
-                true
-            }
-            else -> false
+        if (atcStatus is ViewToViewATCStatus.Success) {
+            ViewToViewBottomSheetTracker.eventAddToCart(
+                atcStatus.product.recommendationItem,
+                headerTitle,
+                viewModel.getUserId(),
+                productAnchorId,
+            )
         }
-        showATCToaster(atcStatus.message, isSuccess)
+        showATCToaster(atcStatus.message)
     }
 
     private fun showATCToaster(
         message: String,
-        isSuccess: Boolean,
     ) {
         val view = view?.rootView ?: return
         Toaster.build(
