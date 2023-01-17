@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="8dp"
+    xmlns:tool="http://schemas.android.com/tools">
+
+    <View
+        android:id="@+id/viewBg"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="paragraph_3"
+        tool:text="Text content title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfQuotaTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="12dp"
+        android:text="Sisa Kuota:"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tfText"
+        app:typographyType="small" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfQuotaUsage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toEndOf="@+id/tfQuotaTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tfText"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tool:text="0" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfQuotaTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toEndOf="@+id/tfQuotaUsage"
+        app:layout_constraintTop_toBottomOf="@+id/tfText"
+        app:typographyType="small"
+        tool:text="/ 10" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divQuota"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tfQuotaUsage"
+        app:layout_constraintStart_toEndOf="@+id/tfQuotaTotal"
+        app:layout_constraintTop_toTopOf="@+id/tfQuotaUsage" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfDateTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
+        android:text="Kedaluwarsa:"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toEndOf="@+id/divQuota"
+        app:layout_constraintTop_toBottomOf="@+id/tfText"
+        app:typographyType="small" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="2dp"
+        tool:text="12 Desember 2022"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toEndOf="@+id/tfDateTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tfText"
+        app:typographyWeight="bold"
+        app:typographyType="small" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

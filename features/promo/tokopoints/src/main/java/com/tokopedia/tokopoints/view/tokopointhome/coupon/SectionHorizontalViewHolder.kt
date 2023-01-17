@@ -33,8 +33,7 @@ class SectionHorizontalViewHolder(val view: View)
             CustomConstraintProvider.setCustomConstraint(view, R.id.parent_layout, R.id.text_see_all, R.id.text_title, ConstraintSet.BASELINE)
         }
 
-        if (content.countdownAttr != null &&
-                content.countdownAttr.isShowTimer && content.countdownAttr.expiredCountDown > 0) {
+        if (content.countdownAttr.isShowTimer && content.countdownAttr.expiredCountDown > 0) {
             val countDownView = view.findViewById<TimerUnify>(R.id.tp_count_down_view)
             countDownView.findViewById<View>(R.id.tp_count_down_view)?.visibility = View.VISIBLE
             countDownView.remainingMilliseconds = content.countdownAttr.expiredCountDown * 1000
@@ -48,7 +47,7 @@ class SectionHorizontalViewHolder(val view: View)
             val btnSeeAll = view.findViewById<TextView>(R.id.text_see_all)
             btnSeeAll.visibility = View.VISIBLE
             btnSeeAll.text = content.cta.text
-            btnSeeAll.setOnClickListener { v: View? ->
+            btnSeeAll.setOnClickListener {
                 handledClick(content.cta.appLink, content.cta.url, content.sectionTitle)
             }
         }

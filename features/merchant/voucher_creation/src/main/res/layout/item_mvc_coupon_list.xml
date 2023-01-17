@@ -14,20 +14,20 @@
         android:layout_marginLeft="@dimen/mvc_dimen_12dp"
         android:layout_marginEnd="@dimen/mvc_dimen_12dp"
         android:layout_marginRight="@dimen/mvc_dimen_12dp"
-        android:layout_marginBottom="@dimen/spacing_lvl2">
+        android:layout_marginBottom="4dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/transparent"
-            android:paddingStart="@dimen/layout_lvl0"
-            android:paddingTop="@dimen/layout_lvl1"
-            android:paddingEnd="@dimen/layout_lvl1"
-            android:paddingBottom="@dimen/layout_lvl1">
+            android:paddingStart="0dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp">
 
             <View
                 android:id="@+id/viewMvcVoucherStatus"
-                android:layout_width="@dimen/spacing_lvl2"
+                android:layout_width="4dp"
                 android:layout_height="@dimen/mvc_dimen_20dp"
                 android:background="@drawable/mvc_view_voucher_status_green"
                 app:layout_constraintStart_toStartOf="parent"
@@ -37,10 +37,10 @@
                 android:id="@+id/tvMvcVoucherStatus"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/layout_lvl1"
-                android:layout_marginLeft="@dimen/layout_lvl0"
-                android:layout_marginEnd="@dimen/layout_lvl1"
-                android:layout_marginRight="@dimen/layout_lvl0"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="0dp"
                 android:textColor="@color/light_G500"
                 android:textSize="@dimen/mvc_voucher_item_header_text_size"
                 android:textStyle="bold"
@@ -54,7 +54,7 @@
                 android:id="@+id/tvMvcVoucherDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/spacing_lvl2"
+                android:layout_marginEnd="4dp"
                 android:textColor="@color/Neutral_N700_68"
                 android:textSize="@dimen/mvc_voucher_item_header_text_size"
                 android:textStyle="bold"
@@ -65,8 +65,8 @@
 
             <ImageView
                 android:id="@+id/imgMvcVoucherType"
-                android:layout_width="@dimen/layout_lvl6"
-                android:layout_height="@dimen/layout_lvl6"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_marginTop="@dimen/mvc_dimen_12dp"
                 android:contentDescription="@string/mvc_voucher_type_image_content_desc"
                 app:layout_constraintStart_toEndOf="@+id/tvMvcVoucherStatus"
@@ -146,7 +146,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="@dimen/layout_lvl1"
+                android:layout_marginEnd="8dp"
                 android:text="@string/mvc_remaining_quota"
                 android:textColor="@color/light_N700_96"
                 app:layout_constraintBottom_toTopOf="@+id/tvMvcRemainingVoucher"
@@ -158,7 +158,7 @@
                 android:id="@+id/tvMvcRemainingVoucher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/layout_lvl1"
+                android:layout_marginEnd="8dp"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintBottom_toBottomOf="@+id/btnMvcVoucherCta"
                 app:layout_constraintStart_toStartOf="@+id/imgMvcVoucherType"
@@ -203,8 +203,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/mvc_dimen_12dp"
-                android:layout_marginEnd="@dimen/layout_lvl1"
-                android:layout_marginBottom="@dimen/spacing_lvl2"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="4dp"
                 android:gravity="center"
                 android:minWidth="100dp"
                 android:text="@string/mvc_share"
@@ -216,8 +216,8 @@
 
             <ImageView
                 android:id="@+id/btnMvcMore"
-                android:layout_width="@dimen/layout_lvl3"
-                android:layout_height="@dimen/layout_lvl4"
+                android:layout_width="24dp"
+                android:layout_height="32dp"
                 android:background="@drawable/mvc_rectangle_white_radius_4dp"
                 android:contentDescription="@string/mvc_btn_mvc_more_content_desc"
                 android:scaleType="centerInside"

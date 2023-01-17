@@ -89,7 +89,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
 
     companion object {
-        private const val PRODUCTS_WITHOUT_GROUP = -2
+        private const val PRODUCTS_WITHOUT_GROUP = "-2"
 
         fun createInstance(bundle: Bundle): TopAdsDashWithoutGroupFragment {
             val fragment = TopAdsDashWithoutGroupFragment()

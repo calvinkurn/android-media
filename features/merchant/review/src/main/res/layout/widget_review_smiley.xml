@@ -7,8 +7,8 @@
 
     <RelativeLayout
         android:id="@+id/image_container"
-        android:layout_width="@dimen/layout_lvl6"
-        android:layout_height="@dimen/layout_lvl6"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_centerHorizontal="true">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -29,7 +29,7 @@
         android:id="@+id/reviewEditableText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginTop="8dp"
         android:animateLayoutChanges="true"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/image_container"

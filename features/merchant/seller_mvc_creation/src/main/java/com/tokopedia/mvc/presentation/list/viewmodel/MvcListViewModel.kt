@@ -52,13 +52,14 @@ class MvcListViewModel @Inject constructor(
     val error: LiveData<Throwable> get() = _error
 
     val pageState = Transformations.map(voucherList) {
-        MvcListPageStateHelper.getPageState(it, filter)
+        MvcListPageStateHelper.getPageState(it, filter, page)
     }
 
     private val _deleteUIEffect = MutableSharedFlow<DeleteVoucherUiEffect>(replay = 1)
     val deleteUIEffect = _deleteUIEffect.asSharedFlow()
 
     var filter = FilterModel()
+    var page: Int = 0
 
     fun setFilterKeyword(keyword: String) {
         filter = filter.copy(
@@ -73,6 +74,7 @@ class MvcListViewModel @Inject constructor(
     }
 
     fun getVoucherList(page: Int, pageSize: Int) {
+        this.page = page
         launchCatchError(
             dispatchers.io,
             block = {
@@ -112,7 +114,12 @@ class MvcListViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val result = getVoucherListChildUseCase.execute(voucherId)
+                val result = getVoucherListChildUseCase.execute(
+                    voucherId, arrayListOf(
+                        VoucherStatus.NOT_STARTED,
+                        VoucherStatus.ONGOING
+                    )
+                )
                 _voucherChilds.postValue(result)
             },
             onError = {
@@ -141,19 +148,39 @@ class MvcListViewModel @Inject constructor(
             block = {
                 _deleteUIEffect.emit(DeleteVoucherUiEffect.OnProgressToDeletedVoucherList)
                 val detailVoucherParam = MerchantPromotionGetMVDataByIDUseCase.Param(voucher.id)
-                val detailVoucherDeffer = async { merchantPromotionGetMVDataByIDUseCase.execute(detailVoucherParam) }
+                val detailVoucherDeffer =
+                    async { merchantPromotionGetMVDataByIDUseCase.execute(detailVoucherParam) }
                 val detailVoucher = detailVoucherDeffer.await()
-                val metadataParam = GetInitiateVoucherPageUseCase.Param(VoucherAction.UPDATE, detailVoucher.voucherType, detailVoucher.isVoucherProduct)
-                val metadataDeferred = async { getInitiateVoucherPageUseCase.execute(metadataParam) }
+                val metadataParam = GetInitiateVoucherPageUseCase.Param(
+                    VoucherAction.UPDATE,
+                    detailVoucher.voucherType,
+                    detailVoucher.isVoucherProduct
+                )
+                val metadataDeferred =
+                    async { getInitiateVoucherPageUseCase.execute(metadataParam) }
                 val token = metadataDeferred.await()
-                val couponStatus = if (voucherStatus == VoucherStatus.NOT_STARTED) UpdateVoucherAction.DELETE else UpdateVoucherAction.STOP
-                val idCancelVoucher = cancelVoucherUseCase.execute(voucher.id.toInt(), couponStatus, token.token)
+                val couponStatus =
+                    if (voucherStatus == VoucherStatus.NOT_STARTED) UpdateVoucherAction.DELETE else UpdateVoucherAction.STOP
+                val idCancelVoucher =
+                    cancelVoucherUseCase.execute(voucher.id.toInt(), couponStatus, token.token)
                 if (idCancelVoucher.updateStatusVoucherData.voucherId.isNotEmpty()) {
-                    _deleteUIEffect.emit(DeleteVoucherUiEffect.SuccessDeletedVoucher(idCancelVoucher.updateStatusVoucherData.voucherId.toIntOrZero(), voucher.name, voucherStatus))
+                    _deleteUIEffect.emit(
+                        DeleteVoucherUiEffect.SuccessDeletedVoucher(
+                            idCancelVoucher.updateStatusVoucherData.voucherId.toIntOrZero(),
+                            voucher.name,
+                            voucherStatus
+                        )
+                    )
                 }
             },
             onError = { error ->
-                _deleteUIEffect.emit(DeleteVoucherUiEffect.ShowToasterErrorDelete(error, voucher.name, voucherStatus))
+                _deleteUIEffect.emit(
+                    DeleteVoucherUiEffect.ShowToasterErrorDelete(
+                        error,
+                        voucher.name,
+                        voucherStatus
+                    )
+                )
             }
         )
     }

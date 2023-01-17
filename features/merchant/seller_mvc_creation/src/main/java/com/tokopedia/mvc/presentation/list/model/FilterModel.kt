@@ -12,7 +12,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class FilterModel (
     val keyword: String = "",
-    val status: MutableList<VoucherStatus> = mutableListOf(VoucherStatus.NOT_STARTED, VoucherStatus.ONGOING),
+    val status: MutableList<VoucherStatus> = mutableListOf(VoucherStatus.NOT_STARTED, VoucherStatus.ONGOING, VoucherStatus.ENDED, VoucherStatus.STOPPED),
     val voucherType: MutableList<VoucherServiceType> = mutableListOf(VoucherServiceType.SHOP_VOUCHER, VoucherServiceType.PRODUCT_VOUCHER),
     val promoType: MutableList<PromoType> = mutableListOf(),
     val source: MutableList<VoucherSource> = mutableListOf(),

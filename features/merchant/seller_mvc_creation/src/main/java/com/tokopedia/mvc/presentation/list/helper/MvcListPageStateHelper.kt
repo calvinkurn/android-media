@@ -1,21 +1,22 @@
 package com.tokopedia.mvc.presentation.list.helper
 
 import android.content.Context
+import com.tokopedia.mvc.R
+import com.tokopedia.mvc.common.util.PaginationConstant
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.presentation.list.constant.PageState
 import com.tokopedia.mvc.presentation.list.model.FilterModel
-import com.tokopedia.mvc.R
 
 object MvcListPageStateHelper {
-    fun getPageState(vouchers: List<Voucher>, filter: FilterModel): PageState {
+    fun getPageState(vouchers: List<Voucher>, filter: FilterModel, page: Int): PageState {
         val isVoucherNoData = vouchers.isEmpty()
         val isKeywordEmpty = filter.keyword.isEmpty()
         if (isKeywordEmpty) {
-            if (isVoucherNoData) {
+            if (isVoucherNoData && page == PaginationConstant.INITIAL_PAGE) {
                 return PageState.NO_DATA_PAGE
             }
         } else {
-            if (isVoucherNoData) {
+            if (isVoucherNoData && page == PaginationConstant.INITIAL_PAGE) {
                 return PageState.NO_DATA_SEARCH_PAGE
             }
         }

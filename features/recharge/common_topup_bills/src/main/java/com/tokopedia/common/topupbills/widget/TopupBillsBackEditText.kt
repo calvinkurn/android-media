@@ -11,7 +11,7 @@ import com.tokopedia.unifyprinciples.Typography
  * Copied from tkpddesign
  */
 class TopupBillsBackEditText(context: Context?, attrs: AttributeSet?) :
-    AppCompatEditText(context, attrs) {
+    AppCompatEditText(context!!, attrs) {
 
     var keyImeChangeListener: KeyImeChange? = null
 

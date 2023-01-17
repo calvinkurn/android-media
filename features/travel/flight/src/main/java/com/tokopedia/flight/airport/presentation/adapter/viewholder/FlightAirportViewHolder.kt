@@ -37,14 +37,14 @@ class FlightAirportViewHolder(val binding: ItemFlightAirportBinding,
                 airport.cityName, airport.countryName
             )
             city.text = getSpandableBoldText(cityStr, filterText)
-            if (!TextUtils.isEmpty(airport.airportCode)) {
+            if (airport.cityCode.isEmpty()) {
                 val airportString = context.getString(
                     R.string.flight_label_airport,
                     airport.airportCode, airport.airportName
                 )
                 this.airport.text = getSpandableBoldText(airportString, filterText)
             } else {
-                val airportString = context.getString(R.string.flight_labe_all_airport)
+                val airportString = context.getString(R.string.flight_labe_all_airport, airport.cityName)
                 this.airport.text = airportString
             }
             root.setOnClickListener { filterTextListener.airportClicked(airport) }

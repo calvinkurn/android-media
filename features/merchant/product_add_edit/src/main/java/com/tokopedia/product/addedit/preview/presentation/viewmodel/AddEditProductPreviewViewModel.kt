@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PREFIX_CACHE
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.TEMP_IMAGE_EXTENSION
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
@@ -284,6 +285,31 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
             this.mImageUrlOrPathList.value = imageUrlOrPathList.toMutableList()
         }
+    }
+
+    fun updateProductPhotos(
+        imagePickerResult: ArrayList<String>,
+        originalImageUrl: ArrayList<String>
+    ) {
+        val cleanResult = clearProductPhotoUrl(imagePickerResult, originalImageUrl)
+        val addressPicture = cleanResult.first
+        val isPictureEdited = cleanResult.second
+        productInputModel.value?.let {
+            val productModel = it
+            val imageUrlOrPathList = addressPicture.mapIndexed { index, urlOrPath ->
+                if (!isPictureEdited[index]) {
+                    //took url from model instead from params because originalUrl in params was edited by media picker
+                    productModel.detailInputModel.pictureList[index].urlOriginal
+                } else {
+                    urlOrPath
+                }
+            }
+            this.mImageUrlOrPathList.value = imageUrlOrPathList.toMutableList()
+        }
+    }
+
+    fun saveImageListToDetailInput(imageList : MutableList<String>){
+        productInputModel.value?.detailInputModel?.imageUrlOrPathList = imageList
     }
 
     fun updateProductPhotos(
@@ -616,5 +642,44 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }
         }
     }
+
+    /**
+     *  @param imagePickerResult is the list of product photo paths that returned from imagePicker
+     *  @param originalImageUrl is the list of original product photo paths
+     *  @param listModelPhotoProduct is the list of url from model object
+     * This method is for decide whats link should be add to model with the rule is
+     * If imagePicker result is not empty (picture is edited) use the imagePicker result and add true
+     * If imagePicker result is empty (picture is not edited) and originalImageUrl is prefix http use the originalImageUrl and add false
+     * If imagePicker result is empty (picture is not edited) and originalImageUrl is not prefix http use the originalImageUrl and add true
+     * */
+    fun clearProductPhotoUrl(
+        imagePickerResult: ArrayList<String>,
+        originalImageUrl: ArrayList<String>,
+    ): Pair<ArrayList<String>, ArrayList<Boolean>> {
+        val resultCleaner = arrayListOf<String>()
+        val isEdited = arrayListOf<Boolean>()
+        imagePickerResult.forEachIndexed { index, uriEditImage ->
+            when {
+                uriEditImage.isNotEmpty() -> {
+                    resultCleaner.add(uriEditImage)
+                    isEdited.add(true)
+                }
+                isPictureFromInternet(originalImageUrl[index]) -> {
+                    resultCleaner.add(originalImageUrl[index])
+                    isEdited.add(false)
+                }
+                else -> {
+                    resultCleaner.add(originalImageUrl[index])
+                    isEdited.add(true)
+                }
+            }
+        }
+        return Pair(resultCleaner, isEdited)
+    }
+
+    private fun isPictureFromInternet(urlOrPath: String): Boolean {
+        return urlOrPath.contains(PREFIX_CACHE)
+    }
+
 
 }

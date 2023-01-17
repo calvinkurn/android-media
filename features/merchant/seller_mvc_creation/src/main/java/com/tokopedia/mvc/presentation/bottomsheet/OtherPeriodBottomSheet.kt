@@ -18,7 +18,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class OtherPeriodBottomSheet: BottomSheetUnify() {
 
     interface OtherPeriodBottomSheetListener {
-        fun onOtherPeriodMoreMenuClicked(voucher: Voucher)
+        fun onOtherPeriodMoreMenuClicked(dialog : OtherPeriodBottomSheet, voucher: Voucher)
     }
 
     companion object {
@@ -65,7 +65,7 @@ class OtherPeriodBottomSheet: BottomSheetUnify() {
         adapter = OtherPeriodAdapter().apply {
             setDataList(voucherChildren ?: return)
             setOnItemClickListerner{
-                listener?.onOtherPeriodMoreMenuClicked(it)
+                listener?.onOtherPeriodMoreMenuClicked( this@OtherPeriodBottomSheet, it)
             }
         }
     }

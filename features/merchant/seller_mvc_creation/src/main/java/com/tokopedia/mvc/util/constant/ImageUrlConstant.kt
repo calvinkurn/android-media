@@ -12,4 +12,6 @@ object ImageUrlConstant {
     //voucher creation step 2
     const val IMAGE_URL_PUBLIC_VOUCHER = "https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/illustration%20-%20kupon%20publik.png"
     const val IMAGE_URL_PRIVATE_VOUCHER = "https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/illustration%20-%20kupon%20privat.png"
+
+    const val IMAGE_URL_EMPTY_SHOWCASE = "https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/ic_empty_state_no_showcase.png"
 }

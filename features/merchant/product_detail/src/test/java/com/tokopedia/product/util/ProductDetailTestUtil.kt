@@ -88,6 +88,7 @@ object ProductDetailTestUtil {
             p2UiData.rating = rating
             p2UiData.ticker = ticker
             p2UiData.shopFinishRate = responseData.shopFinishRate.finishRate
+            p2UiData.arInfo = arInfo
         }
         return p2UiData
     }

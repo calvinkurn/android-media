@@ -107,7 +107,6 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
         setupSearchBar()
         setupCategorySelection()
         setupFilterData()
-        viewModel.getMaxProductSubmission()
         recyclerView?.attachOnScrollListener(onScrollDown = {
             binding?.layoutSearch?.slideDown()
         }, onScrollUp = {

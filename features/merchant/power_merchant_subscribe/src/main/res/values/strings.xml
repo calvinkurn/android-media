@@ -115,15 +115,15 @@
     <string name="pm_benefits_that_you_can_get">Keuntungan yang bisa kamu dapatkan</string>
     <string name="pm_get_exclusive_benefit_of_being_pm_pro_new_seller">Berbagai keuntungan eksklusif Power Merchant PRO:</string>
     <string name="pm_get_exclusive_benefit_of_being_pm_pro">Tingkatkan performa toko sesuai target dan nikmati keuntungannya!</string>
-    <string name="pm_pro_general_benefit_1">Biaya Bebas Ongkir lebih murah, hanya %1$s</string>
-    <string name="pm_pro_general_benefit_2">Badge PM PRO untuk menambah kepercayaan</string>
+    <string name="pm_pro_general_benefit_1">Badge PM PRO untuk menambah kepercayaan</string>
+    <string name="pm_pro_general_benefit_2">Kuota penggunaan fitur lebih banyak</string>
     <string name="pm_pro_general_benefit_3">Akses eksklusif ke semua fitur promosi</string>
     <string name="pm_be_selected_shop_by_buyer">Menjadi toko pilihan pembeli</string>
     <string name="pm_get_extra_topads_credit">Dapat tambahan kredit TopAds</string>
     <string name="pm_get_free_shipping_benefit">Punya layanan Bebas Ongkir</string>
     <string name="pm_get_excellent_feature">Fitur-fitur unggulan lainnya</string>
 
-    <string name="pm_deactivation_bottom_sheet_message">Regular Merchant dengan jumlah transaksi di atas <b>100</b> transaksi akan dikenakan biaya layanan <b>0,5% - 2,5%</b> berdasarkan kategori produk.</string>
+    <string name="pm_deactivation_bottom_sheet_message">Regular Merchant dengan jumlah transaksi di atas <b>100</b> transaksi akan dikenakan biaya layanan berdasarkan kategori produk.</string>
     <string name="pm_pm_deactivation_be_rm_tnc">Agar pengajuanmu terkirim, lanjut beri masukan dulu, ya.</string>
     <string name="pm_stop_pm">Berhenti dari PM</string>
     <string name="pm_regular_merchant">Regular Merchant</string>
@@ -156,7 +156,6 @@
     <string name="pm_coachmark_title_2">Pelajari detail biaya layanan 👍</string>
     <string name="pm_coachmark_description_2">Jalan pintas untuk mengetahui biaya layanan Power Merchant ada di sini, ya.</string>
 
-    <string name="pm_fee_service_category">Detail Grup Kategori</string>
     <string name="pm_achievement_target">Target Capaian</string>
     <string name="pm_completed_order"><![CDATA[Pesanan Selesai: <font color="%1$s"><b>%2$s</b></font>]]></string>
     <string name="pm_net_income"><![CDATA[Pendapatan Bersih: <font color="%1$s"><b>Rp%2$s</b></font>]]></string>
@@ -167,8 +166,6 @@
 
     <string name="pm_benefit_flash_sale">Fitur eksklusif promosi Flash Sale Toko</string>
     <string name="pm_benefit_flash_sale_and_discount">Fitur eksklusif promosi Flash Sale Toko dan Diskon Toko</string>
-    <string name="pm_benefit_free_delivery_pm"><![CDATA[Biaya Bebas Ongkir sebesar <b>%1$s</b>]]></string>
-    <string name="pm_benefit_free_delivery_pm_pro"><![CDATA[Biaya Bebas Ongkir lebih murah, hanya <b>%1$s</b>]]></string>
     <string name="pm_benefit_product_bundling"><![CDATA[<b>%1$d</b> kuota Paket Bundling]]></string>
     <string name="pm_benefit_special_release"><![CDATA[Gabung Rilisan Spesial <b>%1$d kali</b>/bulan]]></string>
     <string name="pm_benefit_top_ads"><![CDATA[Ekstra kredit TopAds <b>%1$s</b> dan Broadcast Chat hingga <b>%2$s</b>]]></string>

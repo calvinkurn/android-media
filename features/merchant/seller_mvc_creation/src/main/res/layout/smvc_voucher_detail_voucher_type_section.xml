@@ -66,12 +66,25 @@
 
     </LinearLayout>
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_type_editing_disabled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:descriptionText="@string/smvc_voucher_type_editing_disabled"
+        app:closeButtonVisibility="gone"
+        app:tickerType="announcement"
+        app:tickerShapeType="loose"
+        app:layout_constraintTop_toBottomOf="@+id/ll_content" />
+
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_content" />
+        app:layout_constraintTop_toBottomOf="@+id/ticker_type_editing_disabled" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

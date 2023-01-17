@@ -32,7 +32,7 @@ interface UserProfileTracker {
         live: Boolean,
         activityId: String,
         imageUrl: String,
-        videoPosition: Int
+        videoPosition: Int,
     )
 
     fun clickVideo(
@@ -41,7 +41,7 @@ interface UserProfileTracker {
         live: Boolean,
         activityId: String,
         imageUrl: String,
-        videoPosition: Int
+        videoPosition: Int,
     )
 
     fun clickFeedTab(userId: String, self: Boolean)
@@ -52,7 +52,7 @@ interface UserProfileTracker {
         activityId: String,
         imageUrl: String,
         postPosition: Int,
-        mediaType: String
+        mediaType: String,
     )
 
     fun clickPost(
@@ -61,7 +61,7 @@ interface UserProfileTracker {
         activityId: String,
         imageUrl: String,
         postPosition: Int,
-        mediaType: String
+        mediaType: String,
     )
 
     fun openFollowersTab(userId: String)
@@ -87,14 +87,14 @@ interface UserProfileTracker {
     fun impressionProfileRecommendation(
         userId: String,
         shops: ShopRecomUiModelItem,
-        postPosition: Int
+        postPosition: Int,
     )
 
     fun clickProfileRecommendation(
         userId: String,
         shopId: String,
         imageUrl: String,
-        postPosition: Int
+        postPosition: Int,
     )
 
     fun clickFollowProfileRecommendation(userId: String, shopId: String)
@@ -128,5 +128,4 @@ interface UserProfileTracker {
     fun clickAccessMedia(userId: String, self: Boolean, allow: String)
 
     fun sendAll()
-
 }

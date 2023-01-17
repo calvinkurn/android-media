@@ -74,12 +74,12 @@
 
         <LinearLayout
             android:id="@+id/linearLayoutMerchantVoucher"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginStart="8dp"
             android:layout_marginTop="6dp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintStart_toEndOf="@id/shop_image"
             app:layout_constraintTop_toBottomOf="@id/shop_name"
             app:layout_constraintBottom_toBottomOf="parent" />
@@ -102,6 +102,22 @@
             app:unifyButtonType="main"
             tools:text="Follow"
             tools:visibility="visible"/>
+
+        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+            android:id="@+id/topAdsFlashSaleTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/linearLayoutMerchantVoucher"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/linearLayoutMerchantVoucher"
+            app:timer_unify_single_showClockIcon="true"
+            app:timer_unify_single_textWidth="wrap"
+            app:timer_unify_single_text="@string/topads_sdk_sale_ends_in"
+            app:timer_unify_single_type="auto"
+            app:timer_unify_single_variant="main"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

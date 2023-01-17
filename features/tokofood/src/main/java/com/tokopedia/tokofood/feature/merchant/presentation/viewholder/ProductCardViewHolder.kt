@@ -7,7 +7,9 @@ import android.text.TextWatcher
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.util.TokofoodExt
+import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.common.util.TokofoodExt.setupEditText
 import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
@@ -16,7 +18,8 @@ import com.tokopedia.unifycomponents.CardUnify
 
 class ProductCardViewHolder(
     private val binding: TokofoodProductCardLayoutBinding,
-    private val clickListener: OnProductCardItemClickListener
+    private val clickListener: OnProductCardItemClickListener,
+    private val tokofoodScrollChangedListener: TokofoodScrollChangedListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     interface OnProductCardItemClickListener {
@@ -196,20 +199,9 @@ class ProductCardViewHolder(
         productListItem: ProductListItem,
         dataSetPosition: Int
     ) {
-        binding.root.addOnImpressionListener(
-            productListItem,
-            createViewHintListener(productListItem, dataSetPosition)
-        )
-    }
-
-    private fun createViewHintListener(
-        productListItem: ProductListItem,
-        dataSetPosition: Int
-    ): ViewHintListener {
-        return object : ViewHintListener {
-            override fun onViewHint() {
-                clickListener.onImpressProductCard(productListItem, dataSetPosition)
-            }
+        binding.root.addAndReturnImpressionListener(productListItem, tokofoodScrollChangedListener) {
+            clickListener.onImpressProductCard(productListItem, dataSetPosition)
         }
     }
+
 }

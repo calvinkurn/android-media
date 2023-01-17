@@ -2,12 +2,12 @@ package com.tokopedia.people.model
 
 import com.google.gson.annotations.SerializedName
 
-data class ProfileHeaderBase (
+data class ProfileHeaderBase(
     @SerializedName("feedXProfileHeader")
-    val profileHeader: FeedXProfileHeader
+    val profileHeader: FeedXProfileHeader,
 )
 
-data class FeedXProfileHeader (
+data class FeedXProfileHeader(
     @SerializedName("profile")
     val profile: Profile,
 
@@ -18,10 +18,10 @@ data class FeedXProfileHeader (
     val hasAcceptTnC: Boolean,
 
     @SerializedName("shouldSeoIndex")
-    val shouldSeoIndex: Boolean
+    val shouldSeoIndex: Boolean,
 )
 
-data class Profile (
+data class Profile(
     @SerializedName("userID")
     val userID: String,
 
@@ -44,13 +44,13 @@ data class Profile (
     val sharelink: Link,
 
     @SerializedName("badges")
-    val badges: List<Any?>,
+    val badges: List<String>,
 
     @SerializedName("liveplaychannel")
-    val liveplaychannel: Liveplaychannel
+    val liveplaychannel: Liveplaychannel,
 )
 
-data class Liveplaychannel (
+data class Liveplaychannel(
     @SerializedName("islive")
     val islive: Boolean,
 
@@ -58,18 +58,18 @@ data class Liveplaychannel (
     val liveplaychannelid: String,
 
     @SerializedName("liveplaychannellink")
-    val liveplaychannellink: Link
+    val liveplaychannellink: Link,
 )
 
-data class Link (
+data class Link(
     @SerializedName("applink")
     val applink: String,
 
     @SerializedName("weblink")
-    val weblink: String
+    val weblink: String,
 )
 
-data class Stats (
+data class Stats(
     @SerializedName("totalPost")
     val totalPost: Long,
 
@@ -86,6 +86,5 @@ data class Stats (
     val totalFollowing: Long,
 
     @SerializedName("totalFollowingFmt")
-    val totalFollowingFmt: String
+    val totalFollowingFmt: String,
 )
-

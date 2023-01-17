@@ -9,10 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
@@ -41,7 +43,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, TokofoodSearchErrorStateViewHolder.Listener {
+class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener,
+    TokofoodSearchErrorStateViewHolder.Listener, TokofoodScrollChangedListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -53,7 +56,7 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
     lateinit var userSession: UserSessionInterface
 
     private val initialSearchAdapterTypeFactory by lazy(LazyThreadSafetyMode.NONE) {
-        InitialStateTypeFactoryImpl(this, this)
+        InitialStateTypeFactoryImpl(this, this, this)
     }
 
     private val initialSearchAdapter by lazy(LazyThreadSafetyMode.NONE) {
@@ -71,6 +74,8 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
     private var initialStateViewUpdateListener: InitialStateViewUpdateListener? = null
     private var localCacheModel: LocalCacheModel? = null
     private var keyword: String = ""
+    private var onScrollChangedListenerList: MutableList<ViewTreeObserver.OnScrollChangedListener> =
+        mutableListOf()
     private var cuisineScrollChangedListenerList: MutableList<ViewTreeObserver.OnScrollChangedListener> =
         mutableListOf()
     private var recentSearchScrollChangedListenerList: MutableList<ViewTreeObserver.OnScrollChangedListener> =
@@ -177,8 +182,8 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
         )
     }
 
-    override fun onSetRecentSearchImpression(listener: ViewTreeObserver.OnScrollChangedListener) {
-        recentSearchScrollChangedListenerList.add(listener)
+    override fun onScrollChangedListenerAdded(onScrollChangedListener: ViewTreeObserver.OnScrollChangedListener) {
+        onScrollChangedListenerList.add(onScrollChangedListener)
     }
 
     override fun onSeeMoreCuisineBtnClicked(element: SeeMoreCuisineUiModel) {
@@ -261,7 +266,7 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
     }
 
     private fun navigateToNewFragment(fragment: Fragment) {
-        (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
+        (activity as? BaseMultiFragActivity)?.navigateToNewFragment(fragment)
     }
 
     private fun logExceptionToServerLogger(
@@ -279,14 +284,10 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
     }
 
     private fun removeScrollChangedListener() {
-        cuisineScrollChangedListenerList.forEach {
+        onScrollChangedListenerList.forEach {
             view?.viewTreeObserver?.removeOnScrollChangedListener(it)
         }
-        recentSearchScrollChangedListenerList.forEach {
-            view?.viewTreeObserver?.removeOnScrollChangedListener(it)
-        }
-        cuisineScrollChangedListenerList.clear()
-        recentSearchScrollChangedListenerList.clear()
+        onScrollChangedListenerList.clear()
     }
 
     companion object {

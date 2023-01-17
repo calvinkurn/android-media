@@ -184,7 +184,7 @@
                         android:background="@drawable/cm_background_buy"
                         android:gravity="center"
                         android:layout_toEndOf="@+id/btn_icon"
-                        android:textColor="@color/white"
+                        android:textColor="@color/Unify_Static_White"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         tools:text="Beli Sekarang" />

@@ -19,6 +19,7 @@ import com.tokopedia.mvc.presentation.product.add.AddProductViewModel
 import com.tokopedia.mvc.presentation.product.list.ProductListViewModel
 import com.tokopedia.mvc.presentation.product.variant.review.ReviewVariantViewModel
 import com.tokopedia.mvc.presentation.product.variant.select.SelectVariantViewModel
+import com.tokopedia.mvc.presentation.quota.viewmodel.QuotaInfoViewModel
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap
@@ -90,7 +91,6 @@ abstract class MerchantVoucherCreationViewModelModule {
     @ViewModelKey(SummaryViewModel::class)
     internal abstract fun provideSummaryViewModel(viewModel: SummaryViewModel): ViewModel
 
-
     @Binds
     @IntoMap
     @ViewModelKey(VoucherTypeViewModel::class)
@@ -105,4 +105,9 @@ abstract class MerchantVoucherCreationViewModelModule {
     @IntoMap
     @ViewModelKey(VoucherSettingViewModel::class)
     internal abstract fun provideVoucherCreationStepThreeViewModel(viewModel: VoucherSettingViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(QuotaInfoViewModel::class)
+    internal abstract fun provideQuotaInfoViewModel(viewModel: QuotaInfoViewModel): ViewModel
 }

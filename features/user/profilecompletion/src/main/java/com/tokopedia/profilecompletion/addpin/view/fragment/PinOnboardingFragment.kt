@@ -200,7 +200,7 @@ class PinOnboardingFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_ADD_PHONE = 100
 
         const val ONBOARD_PICT_URL =
-            "https://ecs7.tokopedia.net/android/user/high_onboard_create_pin.png"
+            "https://images.tokopedia.net/android/user/high_onboard_create_pin.png"
 
         fun createInstance(bundle: Bundle): PinOnboardingFragment {
             val fragment = PinOnboardingFragment()

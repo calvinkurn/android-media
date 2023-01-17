@@ -46,7 +46,9 @@ data class CreateAffiliateCookieRequest(
         @SerializedName("TrackerID")
         var trackerID: String?,
         @SerializedName("VisitorID")
-        var visitorID: String?
+        var visitorID: String?,
+        @SerializedName("ATCSource")
+        var atcSource: String?
     )
 
     data class LinkDetail(

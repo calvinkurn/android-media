@@ -13,6 +13,7 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
 
     companion object {
         private const val TRUE = 1
+        private const val MIN_VALUE_TOTAL_PERIOD = 1
     }
 
     fun map(response: MerchantPromotionGetMVDataByIDResponse): VoucherDetailData {
@@ -69,7 +70,7 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
                 voucherMinimumAmountType = voucherMinimumAmountType,
                 voucherMinimumAmountTypeFormatted = voucherMinimumAmountTypeFormatted,
                 isPeriod = isPeriod,
-                totalPeriod = totalPeriod,
+                totalPeriod = totalPeriod.coerceAtLeast(MIN_VALUE_TOTAL_PERIOD),
                 voucherLockType = voucherLockType,
                 voucherLockId = voucherLockId,
                 productIds = toProductIds()

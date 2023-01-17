@@ -20,7 +20,10 @@ import androidx.annotation.StringDef
     TokoNowLayoutType.SHARING_REFERRAL,
     TokoNowLayoutType.MAIN_QUEST,
     TokoNowLayoutType.MIX_LEFT_CAROUSEL,
-    TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC
+    TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC,
+    TokoNowLayoutType.PRODUCT_RECOM_OOC,
+    TokoNowLayoutType.MEDIUM_PLAY_WIDGET,
+    TokoNowLayoutType.SMALL_PLAY_WIDGET
 )
 annotation class TokoNowLayoutType {
     companion object {
@@ -29,6 +32,7 @@ annotation class TokoNowLayoutType {
         const val LEGO_3_IMAGE = "lego_3_image"
         const val LEGO_6_IMAGE = "6_image"
         const val PRODUCT_RECOM = "top_carousel_tokonow"
+        const val PRODUCT_RECOM_OOC = "product_recom_ooc"
         const val REPURCHASE_PRODUCT = "recent_purchase_tokonow"
         const val EDUCATIONAL_INFORMATION = "tokonow_usp"
         const val SHARING_EDUCATION = "tokonow_share"

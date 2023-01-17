@@ -4,6 +4,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeTicker.HOME_TICKER_QUERY
 import com.tokopedia.home.beranda.di.module.query.QueryHomeTicker.HOME_TICKER_QUERY_NAME
 
+@Deprecated("Has been migrated to QueryHomeTickerV2")
 @GqlQuery(HOME_TICKER_QUERY_NAME, HOME_TICKER_QUERY)
 internal object QueryHomeTicker {
     const val HOME_TICKER_QUERY_NAME = "HomeTickerQuery"

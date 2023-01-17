@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/spacing_lvl2"
-    android:paddingLeft="@dimen/spacing_lvl2"
-    android:paddingEnd="@dimen/spacing_lvl2"
-    android:paddingRight="@dimen/spacing_lvl2">
+    android:paddingStart="4dp"
+    android:paddingLeft="4dp"
+    android:paddingEnd="4dp"
+    android:paddingRight="4dp">
 
     <View
         android:layout_width="match_parent"

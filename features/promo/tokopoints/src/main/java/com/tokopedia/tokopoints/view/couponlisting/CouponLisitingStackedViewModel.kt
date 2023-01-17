@@ -31,9 +31,7 @@ class CouponLisitingStackedViewModel @Inject constructor(private val respositor:
             category?.let {
                 val catalogListingOuter = respositor.getCouponList(pageNumber, category as Int).getData<TokoPointPromosEntity>(TokoPointPromosEntity::class.java)
                 if (catalogListingOuter != null) {
-                    if (catalogListingOuter.coupon.coupons != null) {
-                        startAdapter.value = Success(catalogListingOuter)
-                    } else throw NullPointerException()
+                    startAdapter.value = Success(catalogListingOuter)
                 } else throw NullPointerException()
             } ?: throw NullPointerException("category no available")
         }) {
@@ -46,9 +44,7 @@ class CouponLisitingStackedViewModel @Inject constructor(private val respositor:
             //handling the catalog listing and tabs
             val catalogListingOuter = respositor.getInStackedCouponList(stackId).getData<TokoPointPromosEntity>(TokoPointPromosEntity::class.java)
             if (catalogListingOuter != null) {
-                if (catalogListingOuter.coupon.coupons != null) {
-                    inStackedAdapter.value = catalogListingOuter
-                }
+                inStackedAdapter.value = catalogListingOuter
             } else throw NullPointerException()
         }) {
         }

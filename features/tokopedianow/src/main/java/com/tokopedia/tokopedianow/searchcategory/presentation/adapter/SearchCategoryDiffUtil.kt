@@ -3,7 +3,7 @@ package com.tokopedia.tokopedianow.searchcategory.presentation.adapter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -48,7 +48,7 @@ open class SearchCategoryDiffUtil: BaseTokopediaNowDiffer() {
     }
 
     private fun areProductItemTheSame(oldItem: ProductItemDataView, newItem: ProductItemDataView) =
-            oldItem.id == newItem.id
+            oldItem.productCardModel.productId == newItem.productCardModel.productId
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
             safeGuardPosition(oldItemPosition, newItemPosition) { oldItem, newItem ->
@@ -64,7 +64,7 @@ open class SearchCategoryDiffUtil: BaseTokopediaNowDiffer() {
                     oldItem.chooseAddressData == newItem.chooseAddressData
                 } else if (oldItem is TitleDataView && newItem is TitleDataView) {
                     oldItem.serviceType == newItem.serviceType && oldItem.is15mAvailable == newItem.is15mAvailable
-                } else if (oldItem is TokoNowRecommendationCarouselUiModel && newItem is TokoNowRecommendationCarouselUiModel) {
+                } else if (oldItem is TokoNowProductRecommendationOocUiModel && newItem is TokoNowProductRecommendationOocUiModel) {
                     oldItem.pageName == newItem.pageName
                 } else {
                     oldItem == newItem
