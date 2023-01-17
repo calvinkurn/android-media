@@ -47,6 +47,7 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) :
         }
     }
 
+
     private fun loadImageTopAds(
         recommendationBannerTopAdsDataModelDataModel: HomeRecommendationBannerTopAdsDataModel,
         listener: HomeRecommendationListener

@@ -93,6 +93,10 @@ dependencies {
     //-------------------------------------------------------------------//
 
 
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+
     //-------------------------------------------------------------------//
 }
 
