@@ -1,10 +1,14 @@
 package com.tokopedia.home_component.viewholders
 
+import android.os.SystemClock.uptimeMillis
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.MotionEvent.ACTION_DOWN
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +21,7 @@ import com.tokopedia.home_component.model.DynamicIconComponent
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -120,16 +125,21 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
     internal class DynamicIconItemViewHolder(itemView: View, private val listener: DynamicIconComponentListener): RecyclerView.ViewHolder(itemView){
         var iconTvName: Typography? = null
         var iconImageView: ImageUnify? = null
-        var iconContainer: LinearLayout? = null
+        var iconContainer: CardUnify2? = null
+        var iconContainerImage: CardUnify2? = null
         companion object{
             @LayoutRes
             val LAYOUT = R.layout.home_component_dynamic_icon_item
         }
 
+        fun View.performTouchDown() = dispatchTouchEvent(
+            MotionEvent.obtain(uptimeMillis(), uptimeMillis() + 700, ACTION_DOWN, 0f, 0f, 0))
+
         fun bind(item: DynamicIconComponent.DynamicIcon, isScrollable: Boolean, parentPosition: Int, type: Int, isCache: Boolean){
             iconTvName = itemView.findViewById(R.id.dynamic_icon_typography)
             iconImageView = itemView.findViewById(R.id.dynamic_icon_image_view)
             iconContainer = itemView.findViewById(R.id.dynamic_icon_container)
+            iconContainerImage = itemView.findViewById(R.id.dynamic_icon_image_container)
 
             iconTvName?.text = item.name
             iconImageView?.setImageUrl(item.imageUrl)
@@ -137,10 +147,20 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
                     if(isScrollable) ViewGroup.LayoutParams.WRAP_CONTENT else ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            iconTvName?.maxLines = if(item.withBackground) 2 else 1
+            iconTvName?.minLines = 2
+            iconContainer?.cardType = CardUnify2.TYPE_CLEAR
+            iconContainer?.animateOnPress = CardUnify2.ANIMATE_OVERLAY
+            iconContainerImage?.cardType = CardUnify2.TYPE_CLEAR
+            iconContainerImage?.animateOnPress = CardUnify2.ANIMATE_BOUNCE
+            iconContainer?.setOnTouchListener { view, motionEvent ->
+                iconContainerImage?.performTouchDown()
+                false
+            }
             itemView.setOnClickListener {
                 listener.onClickIcon(item, parentPosition,adapterPosition, type)
             }
+
+            iconContainer?.setCardBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
 
             if (!isCache) {
                 itemView.addOnImpressionListener(item) {
