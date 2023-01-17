@@ -28,8 +28,8 @@ import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceT
 import com.tokopedia.tokopedianow.datefilter.presentation.fragment.TokoNowDateFilterFragment.Companion.ALL_DATE_TRANSACTION_POSITION
 import com.tokopedia.tokopedianow.datefilter.presentation.fragment.TokoNowDateFilterFragment.Companion.LAST_ONE_MONTH_POSITION
 import com.tokopedia.tokopedianow.datefilter.presentation.fragment.TokoNowDateFilterFragment.Companion.LAST_THREE_MONTHS_POSITION
-import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
-import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.APPLINK_PARAM_WAREHOUSE_ID
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.SORT_FILTER
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseProductMapper.mapToProductListUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.factory.RepurchaseSortFilterFactory
@@ -108,7 +108,7 @@ object RepurchaseLayoutMapper {
         warehouseId: String = "",
         @TokoNowLayoutState state: Int
     ) {
-        val categoryListUiModel = HomeCategoryMapper.mapToCategoryList(response, warehouseId, CATEGORY_GRID_TITLE)
+        val categoryListUiModel = CategoryMenuMapper.mapToCategoryList(response, warehouseId, CATEGORY_GRID_TITLE)
         add(
             TokoNowCategoryMenuUiModel(
                 id = "",
@@ -128,7 +128,7 @@ object RepurchaseLayoutMapper {
             if (item is TokoNowCategoryMenuUiModel) {
                 val newItem = if (!response.isNullOrEmpty()) {
                     val seeAllAppLink = ApplinkConstInternalTokopediaNow.CATEGORY_MENU + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
-                    val categoryList = HomeCategoryMapper.mapToCategoryList(response, item.title, seeAllAppLink)
+                    val categoryList = CategoryMenuMapper.mapToCategoryList(response, item.title, seeAllAppLink)
                     item.copy(categoryListUiModel = categoryList, state = TokoNowLayoutState.SHOW, seeAllAppLink = seeAllAppLink)
                 } else {
                     item.copy(categoryListUiModel = null, state = TokoNowLayoutState.HIDE)

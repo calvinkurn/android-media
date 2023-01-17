@@ -5,7 +5,7 @@ import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.categorylist.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
-import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_LIST_DEPTH
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
@@ -51,7 +51,7 @@ class CategoryGetCategoryGridTest: CategoryTestFixtures() {
     }
 
     private fun `Then assert category grid ui model state show`() {
-        val expectedCategoryList = HomeCategoryMapper.mapToCategoryList(categoryList.response.data, CATEGORY_GRID_TITLE)
+        val expectedCategoryList = CategoryMenuMapper.mapToCategoryList(categoryList.response.data, CATEGORY_GRID_TITLE)
         val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
         val categoryGridUiModel = visitableList.findIndexedCategoryGridUIModel()
 

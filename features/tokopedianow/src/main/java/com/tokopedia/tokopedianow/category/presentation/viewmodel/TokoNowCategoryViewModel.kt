@@ -35,8 +35,8 @@ import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
-import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
-import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.APPLINK_PARAM_WAREHOUSE_ID
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
@@ -248,7 +248,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         val seeAllAppLink = ApplinkConstInternalTokopediaNow.CATEGORY_MENU + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
 
         updateCategoryUIModel(
-                categoryItemListUIModel = HomeCategoryMapper.mapToCategoryList(response = categoryList, headerName = CATEGORY_GRID_TITLE, seeAllAppLink = seeAllAppLink),
+                categoryItemListUIModel = CategoryMenuMapper.mapToCategoryList(response = categoryList, headerName = CATEGORY_GRID_TITLE, seeAllAppLink = seeAllAppLink),
                 categoryUIModelState = TokoNowLayoutState.SHOW,
                 seeAllAppLink = seeAllAppLink
         )

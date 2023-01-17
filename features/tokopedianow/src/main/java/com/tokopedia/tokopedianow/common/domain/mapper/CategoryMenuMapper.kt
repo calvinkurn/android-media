@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.home.domain.mapper
+package com.tokopedia.tokopedianow.common.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
@@ -10,8 +10,7 @@ import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel
 
-object HomeCategoryMapper {
-
+object CategoryMenuMapper {
     const val APPLINK_PARAM_WAREHOUSE_ID = "?warehouse_id="
 
     private const val MAX_CATEGORY_ITEM_COUNT = 9
