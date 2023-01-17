@@ -170,35 +170,34 @@ class FeedViewModel @Inject constructor(
 
     fun updateCurrentFollowState(list: List<Visitable<*>>) {
         list.map { item ->
-            {
-                if (item is DynamicPostModel) {
-                    currentFollowState[item.header.followCta.authorID] =
-                        item.header.followCta.isFollow
-                } else if (item is DynamicPostUiModel) {
-                    currentFollowState[item.feedXCard.shopId] = item.feedXCard.followers.isFollowed
-                }
+            if (item is DynamicPostModel) {
+                currentFollowState[item.header.followCta.authorID] =
+                    item.header.followCta.isFollow
+            } else if (item is DynamicPostUiModel) {
+                currentFollowState[item.feedXCard.shopId] = item.feedXCard.followers.isFollowed
             }
         }
     }
 
     fun updateFollowStatus() {
         val authorIds = currentFollowState.keys.toList()
-        viewModelScope.launchCatchError(block = {
-            val shopIdsToUpdate = mutableMapOf<String, Boolean>()
-            val response = withContext(baseDispatcher.io) {
-                getShopFollowingUseCase(authorIds)
-            }
-            response.shopInfoById.result.map { item ->
-                {
-                    if (currentFollowState[item.ownerInfo.id] != null && item.favoriteData.isFollowing != currentFollowState[item.ownerInfo.id]) {
-                        shopIdsToUpdate[item.ownerInfo.id] = item.favoriteData.isFollowing
+        if (authorIds.isNotEmpty())
+            viewModelScope.launchCatchError(block = {
+                val shopIdsToUpdate = mutableMapOf<String, Boolean>()
+                val response = withContext(baseDispatcher.io) {
+                    getShopFollowingUseCase(authorIds)
+                }
+                response.shopInfoById.result.map { item ->
+                    {
+                        if (currentFollowState[item.ownerInfo.id] != null && item.favoriteData.isFollowing != currentFollowState[item.ownerInfo.id]) {
+                            shopIdsToUpdate[item.ownerInfo.id] = item.favoriteData.isFollowing
+                        }
                     }
                 }
+                _shopIdsFollowStatusToUpdateData.value = Success(shopIdsToUpdate)
+            }) {
+                _shopIdsFollowStatusToUpdateData.value = Fail(it)
             }
-            _shopIdsFollowStatusToUpdateData.value = Success(shopIdsToUpdate)
-        }) {
-            _shopIdsFollowStatusToUpdateData.value = Fail(it)
-        }
     }
 
     fun sendReport(
