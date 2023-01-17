@@ -448,11 +448,11 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             chipCashback.chipType = ChipsUnify.TYPE_NORMAL
             chipDiscount.chipType = ChipsUnify.TYPE_NORMAL
         }
-        binding?.run {
-            viewFreeShippingInput.visible()
-            viewCashbackInput.gone()
-            viewDiscountInput.gone()
-        }
+
+        freeShippingInputSectionBinding?.parentFreeShipping?.visible()
+        cashbackInputSectionBinding?.parentCashback?.gone()
+        discountInputSectionBinding?.parentDiscount?.gone()
+
         setFreeShippingNominalInput()
         setFreeShippingMinimumBuyInput()
         setFreeShippingQuotaInput()
@@ -552,11 +552,11 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             chipCashback.chipType = ChipsUnify.TYPE_SELECTED
             chipDiscount.chipType = ChipsUnify.TYPE_NORMAL
         }
-        binding?.run {
-            viewFreeShippingInput.gone()
-            viewCashbackInput.visible()
-            viewDiscountInput.gone()
-        }
+
+        freeShippingInputSectionBinding?.parentFreeShipping?.gone()
+        cashbackInputSectionBinding?.parentCashback?.visible()
+        discountInputSectionBinding?.parentDiscount?.gone()
+
         setCashbackSwitchPriceInput(currentVoucherConfiguration)
         setCashbackMaxDeductionInput()
         setCashbackMinimumBuyInput()
@@ -749,11 +749,11 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             chipCashback.chipType = ChipsUnify.TYPE_NORMAL
             chipDiscount.chipType = ChipsUnify.TYPE_SELECTED
         }
-        binding?.run {
-            viewFreeShippingInput.gone()
-            viewCashbackInput.gone()
-            viewDiscountInput.visible()
-        }
+
+        freeShippingInputSectionBinding?.parentFreeShipping?.gone()
+        cashbackInputSectionBinding?.parentCashback?.gone()
+        discountInputSectionBinding?.parentDiscount?.visible()
+
         setDiscountSwitchPriceInput(currentVoucherConfiguration)
         setDiscountMaxDeductionInput()
         setDiscountMinimumBuyInput()

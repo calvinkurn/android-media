@@ -397,7 +397,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun setVoucherPublicSelected() {
         binding?.run {
-            viewVoucherCode.gone()
+            voucherCodeSectionBinding?.apply {
+                tpgVoucherCodeTitle.gone()
+                tfVoucherCode.gone()
+            }
         }
         voucherTargetSectionBinding?.run {
             viewVoucherTargetPublic.isActive = true
@@ -407,7 +410,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun setVoucherPrivateSelected() {
         binding?.run {
-            viewVoucherCode.visible()
+            voucherCodeSectionBinding?.apply {
+                tpgVoucherCodeTitle.visible()
+                tfVoucherCode.visible()
+            }
         }
         voucherTargetSectionBinding?.run {
             viewVoucherTargetPublic.isActive = false
