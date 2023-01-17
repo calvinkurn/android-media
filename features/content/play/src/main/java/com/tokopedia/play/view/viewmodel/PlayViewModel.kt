@@ -435,6 +435,9 @@ class PlayViewModel @AssistedInject constructor(
             return statusType.isFreeze || statusType.isBanned
         }
 
+    val hasNoMedia : Boolean
+        get() = _videoProperty.value.state.hasNoData
+
     /**
      * Temporary
      */
@@ -1610,7 +1613,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleAutoOpen(){
-        if(_autoOpenInteractive.value && !repo.hasJoined(_interactive.value.game.id) && !bottomInsets.isAnyShown && !_interactive.value.isPlaying){
+        if(_autoOpenInteractive.value && !repo.hasJoined(_interactive.value.game.id) && !bottomInsets.isAnyShown && !_interactive.value.isPlaying && !_exploreWidget.value.isOpened){
             _autoOpenInteractive.setValue { false }
             handlePlayingInteractive(shouldPlay = true)
         }
@@ -2743,7 +2746,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun fetchWidgets() {
         viewModelScope.launchCatchError(block = {
-            _exploreWidget.update { it.copy(state = ResultState.Loading, chips = it.chips.copy(state = ResultState.Loading)) }
+            _exploreWidget.update { it.copy(state = WidgetState.Loading, chips = it.chips.copy(state = ResultState.Loading)) }
             val data = getWidgets()
             val chips = data.getChips
 
@@ -2759,11 +2762,11 @@ class PlayViewModel @AssistedInject constructor(
                     it.copy(
                         param = it.param.copy(cursor = widgets.getConfig.cursor),
                         widgets = newList.getChannelBlocks,
-                        state = ResultState.Success
+                        state = if(newList.isEmpty()) WidgetState.Empty else WidgetState.Success
                     )
             }
         }) { exception ->
-            _exploreWidget.update { it.copy(state = ResultState.Fail(exception)) }
+            _exploreWidget.update { it.copy(state = WidgetState.Fail(exception)) }
         }
     }
 
@@ -2773,7 +2776,7 @@ class PlayViewModel @AssistedInject constructor(
     private fun onActionWidget(isNextPage : Boolean = false) {
         if(!_exploreWidget.value.param.hasNextPage && isNextPage) return
         viewModelScope.launchCatchError( block = {
-            _exploreWidget.update { it.copy(state = ResultState.Loading, param = it.param.copy(cursor = if (isNextPage) it.param.cursor else "")) }
+            _exploreWidget.update { it.copy(state = if(isNextPage) it.state else WidgetState.Loading, param = it.param.copy(cursor = if (isNextPage) it.param.cursor else "")) }
 
             val widgets = getWidgets()
 
@@ -2783,11 +2786,11 @@ class PlayViewModel @AssistedInject constructor(
                 it.copy(
                     widgets = newList.getChannelBlocks,
                     param = it.param.copy(cursor = widgets.getConfig.cursor),
-                    state = ResultState.Success
+                    state = if(newList.isEmpty()) WidgetState.Empty else WidgetState.Success
                 )
             }
         }){
-                exception -> _exploreWidget.update { it.copy(state = ResultState.Fail(exception)) }
+                exception -> _exploreWidget.update { it.copy(state = WidgetState.Fail(exception)) }
         }
     }
 

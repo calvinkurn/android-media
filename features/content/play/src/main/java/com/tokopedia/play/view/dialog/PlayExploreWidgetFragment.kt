@@ -18,16 +18,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.Router
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
 import com.tokopedia.play.ui.explorewidget.ChipItemDecoration
 import com.tokopedia.play.ui.explorewidget.ChipsViewHolder
 import com.tokopedia.play.ui.explorewidget.ChipsWidgetAdapter
+import com.tokopedia.play.util.isAnyChanged
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
@@ -44,6 +43,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
+import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import com.tokopedia.play.R as playR
@@ -179,10 +179,10 @@ class PlayExploreWidgetFragment @Inject constructor(
                         cachedState.value.exploreWidget.data.chips
                     )
 
-                if (cachedState.isChanged {
-                        it.exploreWidget.data.widgets
-                        it.exploreWidget.data.state
-                    })
+                if (cachedState.isAnyChanged (
+                        { it.exploreWidget.data.widgets },
+                        { it.exploreWidget.data.state }
+                    ))
                     renderWidgets(
                         cachedState.value.exploreWidget.data.state,
                         cachedState.value.exploreWidget.data.widgets.getChannelBlock
@@ -217,18 +217,21 @@ class PlayExploreWidgetFragment @Inject constructor(
         }
     }
 
-    private fun renderWidgets(state: ResultState, widget: WidgetItemUiModel) {
+    private fun renderWidgets(state: WidgetState, widget: WidgetItemUiModel) {
         when (state) {
-            ResultState.Success -> {
-                showEmpty(widget.item.items.isEmpty())
+            WidgetState.Success -> {
+                showEmpty(false)
                 widgetAdapter.setItemsAndAnimateChanges(widget.item.items)
             }
-            ResultState.Loading -> {
+            WidgetState.Empty -> {
+                showEmpty(true)
+            }
+            WidgetState.Loading -> {
                 widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
             }
-            is ResultState.Fail -> {
+            is WidgetState.Fail -> {
                 analytic?.impressToasterGlobalError()
-                val errMessage = if (state.error is MessageErrorException) getString(playR.string.play_explore_widget_noconn_errmessage) else getString(playR.string.play_explore_widget_default_errmessage)
+                val errMessage = if (state.error is UnknownHostException) getString(playR.string.play_explore_widget_noconn_errmessage) else getString(playR.string.play_explore_widget_default_errmessage)
                 Toaster.build(
                     view = requireView(),
                     text = errMessage,
@@ -261,12 +264,14 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     private fun setupDraggable() {
         view?.setOnTouchListener { vw, motionEvent ->
+            var newX = vw.x
             if(vw.x >= 700) {
                 dismiss()
                 return@setOnTouchListener false
             }
             if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                if(motionEvent.x < 10) vw.x = vw.x - 100 else vw.x = vw.x + 100
+                newX = if(motionEvent.x < 10) newX - 100 else newX + 100
+                vw.animate().xBy(newX)
                 true
             }
             false
