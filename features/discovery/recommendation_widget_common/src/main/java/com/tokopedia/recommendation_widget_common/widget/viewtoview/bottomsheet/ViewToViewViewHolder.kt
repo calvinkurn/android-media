@@ -2,7 +2,6 @@ package com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -57,11 +56,9 @@ sealed class ViewToViewViewHolder(
 
                     }
                 })
-                addOnImpressionListener(data, object : ViewHintListener {
-                    override fun onViewHint() {
-                        listener.onProductImpressed(data, bindingAdapterPosition)
-                    }
-                })
+                addOnImpressionListener(data) {
+                    listener.onProductImpressed(data, bindingAdapterPosition)
+                }
                 setOnClickListener {
                     listener.onProductClicked(data, bindingAdapterPosition)
                 }

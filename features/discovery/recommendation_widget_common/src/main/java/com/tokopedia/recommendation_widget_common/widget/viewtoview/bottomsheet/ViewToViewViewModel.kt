@@ -111,18 +111,21 @@ class ViewToViewViewModel @Inject constructor(
                 val useCase = addToCartUseCase.get()
                 useCase.setParams(product.createAddToCartRequestParams())
                 useCase?.execute(
-                    onSuccess = ::handleATCSuccess,
+                    onSuccess = { handleATCSuccess(it, product) },
                     onError = ::handleATCError,
                 )
             }, onError = ::handleATCError
         )
     }
 
-    private fun handleATCSuccess(atcData: AddToCartDataModel) {
+    private fun handleATCSuccess(
+        atcData: AddToCartDataModel,
+        product: ViewToViewDataModel.Product,
+    ) {
         val atcStatus = if (atcData.isStatusError()) {
             ViewToViewATCStatus.Failure(atcData.getAtcErrorMessage() ?: "")
         } else {
-            ViewToViewATCStatus.Success("")
+            ViewToViewATCStatus.Success(atcData.data.message.firstOrNull() ?: "", product)
         }
 
         _viewToViewATCStatusLiveData.postValue(atcStatus)

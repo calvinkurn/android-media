@@ -34,7 +34,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import com.tokopedia.track.builder.Tracker
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import org.json.JSONObject
@@ -2362,37 +2361,39 @@ object DynamicProductDetailTracking {
             pageName: String,
             pageTitle: String,
             productInfo: DynamicProductInfoP1?,
+            userId: String,
         ) {
-            Tracker.Builder()
-                .setEvent(ProductTrackingConstant.Action.VIEW_ITEM)
-                .setEventAction("impression on banner v2v widget")
-                .setEventCategory(ProductTrackingConstant.Category.PDP)
-                .setEventLabel(pageTitle)
-                .setCustomProperty("trackerId", "40439")
-                .setBusinessUnit("home & browse")
-                .setCurrentSite("tokopediamarketplace")
-                .setCustomProperty("productId", productInfo?.basic?.productID ?: "")
-                .setCustomProperty(
-                    "promotions",
-                    widget.recommendationItemList.mapIndexed { index, item ->
-                        item.asPromotion(index, pageTitle)
-                    }
-                )
-                .setUserId("userId")
-                .build()
-                .send()
+            val itemBundle = Bundle().apply {
+                putString(ProductTrackingConstant.Tracking.KEY_EVENT, ProductTrackingConstant.Action.VIEW_ITEM)
+                putString(ProductTrackingConstant.Tracking.KEY_ACTION, "impression on banner v2v widget")
+                putString(ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP)
+                putString(ProductTrackingConstant.Tracking.KEY_LABEL, pageTitle)
+                putString(ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.CURRENT_SITE)
+                putString(ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, "home & browse")
+                putString(ProductTrackingConstant.Tracking.KEY_TRACKER_ID, "40439")
+
+                //promotion
+                val bundlePromotions = widget.recommendationItemList.mapIndexed { index, item ->
+                    item.asPromotionBundle(index, pageTitle)
+                }
+                val list = ArrayList(bundlePromotions)
+                putParcelableArrayList(ProductTrackingConstant.Tracking.KEY_PROMOTIONS, list)
+
+                putString(ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productInfo?.basic?.productID ?: "")
+                putString(ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT, userId)
+
+            }
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ProductTrackingConstant.Tracking.PROMO_VIEW, itemBundle)
         }
 
-        private fun RecommendationItem.asPromotion(
+        private fun RecommendationItem.asPromotionBundle(
             position: Int,
             headerName: String,
-        ) : Map<String, Any> {
-            return mapOf(
-                "creative_name" to "null",
-                "creative_slot" to "null",
-                "item_id" to asItemId(),
-                "item_name" to asItemName(position, headerName),
-            )
+        ) = Bundle().apply {
+            putString("creative_name", "null")
+            putInt("creative_slot", position)
+            putString("item_id", asItemId())
+            putString("item_name", asItemName(position,headerName))
         }
 
         private fun RecommendationItem.asItemId(): String {
@@ -2400,7 +2401,7 @@ object DynamicProductDetailTracking {
             val bannerId = "null"
             val targettingType = "null"
             val targgetingValue = "null"
-            return "${channelId}_${bannerId}_${targettingType}_${targgetingValue}_${departmentId}_${type}"
+            return "${channelId}_${bannerId}_${targettingType}_${targgetingValue}_${departmentId}_${recommendationType}"
         }
 
         private fun RecommendationItem.asItemName(
@@ -2416,20 +2417,27 @@ object DynamicProductDetailTracking {
             pageName: String,
             pageTitle: String,
             productInfo: DynamicProductInfoP1?,
+            userId: String,
         ) {
-            Tracker.Builder()
-                .setEvent("select_content")
-                .setEventAction("click on banner v2v widget")
-                .setEventCategory(ProductTrackingConstant.Category.PDP)
-                .setEventLabel(pageTitle)
-                .setCustomProperty("trackerId", "40441")
-                .setBusinessUnit("home & browse")
-                .setCurrentSite("tokopediamarketplace")
-                .setCustomProperty("productId", productInfo?.basic?.productID ?: "")
-                .setCustomProperty("promotions", listOf(product.asPromotion(position, pageTitle)))
-                .setUserId("userId")
-                .build()
-                .send()
+            val itemBundle = Bundle().apply {
+                putString(ProductTrackingConstant.Tracking.KEY_EVENT, ProductTrackingConstant.Tracking.SELECT_CONTENT)
+                putString(ProductTrackingConstant.Tracking.KEY_ACTION, "click on banner v2v widget")
+                putString(ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP)
+                putString(ProductTrackingConstant.Tracking.KEY_LABEL, pageTitle)
+                putString(ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.CURRENT_SITE)
+                putString(ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, "home & browse")
+                putString(ProductTrackingConstant.Tracking.KEY_TRACKER_ID, "40441")
+
+                //promotion
+                val bundlePromotion = product.asPromotionBundle(position, pageTitle)
+                val list = arrayListOf(bundlePromotion)
+                putParcelableArrayList(ProductTrackingConstant.Tracking.KEY_PROMOTIONS, list)
+
+                putString(ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productInfo?.basic?.productID ?: "")
+                putString(ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT, userId)
+
+            }
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ProductTrackingConstant.Tracking.PROMO_CLICK, itemBundle)
         }
     }
 }

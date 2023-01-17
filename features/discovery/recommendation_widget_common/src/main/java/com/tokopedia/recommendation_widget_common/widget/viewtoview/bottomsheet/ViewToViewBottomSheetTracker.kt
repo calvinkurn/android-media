@@ -1,7 +1,8 @@
 package com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet
 
+import android.os.Bundle
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.track.builder.Tracker
+import com.tokopedia.track.TrackApp
 
 object ViewToViewBottomSheetTracker {
 
@@ -10,21 +11,28 @@ object ViewToViewBottomSheetTracker {
         headerTitle: String,
         userId: String,
         position: Int,
+        anchorProductId: String,
     ) {
-        Tracker.Builder()
-            .setEvent("view_item_list")
-            .setEventAction("impression on product bottom sheet v2v widget")
-            .setEventCategory("product detail page")
-            .setEventLabel(headerTitle)
-            .setCustomProperty("trackerId", "40440")
-            .setBusinessUnit("home & browse")
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty("item_list", product.asItemList())
-            .setCustomProperty("items", product.asBundle(position))
-            .setCustomProperty("productId", product.productId)
-            .setUserId(userId)
-            .build()
-            .send()
+
+        val itemBundle = Bundle().apply {
+            putString("event", "view_item_list")
+            putString("eventAction", "impression on product bottom sheet v2v widget")
+            putString("eventCategory", "product detail page")
+            putString("eventLabel", headerTitle)
+            putString("businessUnit", "home & browse")
+            putString("currentSite", "tokopediamarketplace")
+            putString("trackerId", "40440")
+            putString("item_list", product.asItemList())
+
+            //promotion
+            val bundlePromotion = product.asBundle(product.position)
+            val list = arrayListOf(bundlePromotion)
+            putParcelableArrayList("items", list)
+
+            putString("productId", anchorProductId)
+            putString("userId", userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent("addToCart", itemBundle)
     }
 
     fun eventProductClick(
@@ -32,64 +40,76 @@ object ViewToViewBottomSheetTracker {
         headerTitle: String,
         userId: String,
         position: Int,
+        anchorProductId: String,
     ) {
-        Tracker.Builder()
-            .setEvent("select_content")
-            .setEventAction("click on product bottom sheet v2v widget")
-            .setEventCategory("product detail page")
-            .setEventLabel(headerTitle)
-            .setCustomProperty("trackerId", "40442")
-            .setBusinessUnit("home & browse")
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty("item_list", product.asItemList())
-            .setCustomProperty("items", product.asBundle(position))
-            .setCustomProperty("productId", product.productId)
-            .setUserId(userId)
-            .build()
-            .send()
+        val itemBundle = Bundle().apply {
+            putString("event", "select_content")
+            putString("eventAction", "click on product bottom sheet v2v widget")
+            putString("eventCategory", "product detail page")
+            putString("eventLabel", headerTitle)
+            putString("businessUnit", "home & browse")
+            putString("currentSite", "tokopediamarketplace")
+            putString("trackerId", "40442")
+            putString("item_list", product.asItemList())
+
+            //promotion
+            val bundlePromotion = product.asBundle(position)
+            val list = arrayListOf(bundlePromotion)
+            putParcelableArrayList("items", list)
+
+            putString("productId", anchorProductId)
+            putString("userId", userId)
+
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent("productClick", itemBundle)
     }
 
     fun eventAddToCart(
         product: RecommendationItem,
         headerTitle: String,
         userId: String,
-        position: Int,
+        anchorProductId: String,
     ) {
-        Tracker.Builder()
-            .setEvent("add_to_cart")
-            .setEventAction("click keranjang on product bottom sheet v2v widget")
-            .setEventCategory("product detail page")
-            .setEventLabel(headerTitle)
-            .setCustomProperty("trackerId", "40443")
-            .setBusinessUnit("home & browse")
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty("items", product.asBundle(position))
-            .setCustomProperty("productId", product.productId)
-            .setUserId(userId)
-            .build()
-            .send()
+        val itemBundle = Bundle().apply {
+            putString("event", "add_to_cart")
+            putString("eventAction", "click keranjang on product bottom sheet v2v widget")
+            putString("eventCategory", "product detail page")
+            putString("eventLabel", headerTitle)
+            putString("businessUnit", "home & browse")
+            putString("currentSite", "tokopediamarketplace")
+            putString("trackerId", "40443")
+            putString("item_list", product.asItemList())
+
+            //promotion
+            val bundlePromotion = product.asBundle(product.position)
+            val list = arrayListOf(bundlePromotion)
+            putParcelableArrayList("items", list)
+
+            putString("productId", anchorProductId)
+            putString("userId", userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent("addToCart", itemBundle)
     }
 
     private fun RecommendationItem.asItemList(): String {
         val isTopAds = if (isTopAds) "topads" else "nontopads"
-        return "/product - v2v widget - rekomendasi untuk anda - $type - product $isTopAds"
+        return "/product - v2v widget - rekomendasi untuk anda - $recommendationType - product $isTopAds"
     }
 
-    private fun RecommendationItem.asBundle(position: Int) : Map<String, Any> {
-        return mapOf(
-            "category_id" to departmentId,
-            "dimension40" to this.asItemList(),
-            "dimension45" to cartId,
-            "item_brand" to "",
-            "item_category" to categoryBreadcrumbs,
-            "item_id" to productId,
-            "item_name" to name,
-            "price" to price,
-            "quantity" to quantity,
-            "shop_id" to shopId,
-            "shop_name" to shopName,
-            "shop_type" to shopType,
-            "position" to position,
-        )
+    private fun RecommendationItem.asBundle(position: Int) : Bundle {
+        return Bundle().apply {
+            putInt("category_id" , departmentId)
+            putString("dimension40", asItemList())
+            putString("dimension45", cartId)
+            putString("item_brand", "null")
+            putString("item_category", categoryBreadcrumbs)
+            putLong("item_id", productId)
+            putInt("price", priceInt)
+            putInt("quantity", quantity)
+            putInt("shop_id", shopId)
+            putString("shop_name", shopName)
+            putString("shop_type", shopType)
+            putInt("position", position)
+        }
     }
 }

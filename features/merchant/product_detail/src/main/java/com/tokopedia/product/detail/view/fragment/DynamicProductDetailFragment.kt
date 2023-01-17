@@ -5785,6 +5785,7 @@ open class DynamicProductDetailFragment :
             pageName = data.pageName,
             pageTitle = title,
             viewModel.getDynamicProductInfoP1,
+            viewModel.userId,
         )
     }
 
@@ -5800,6 +5801,7 @@ open class DynamicProductDetailFragment :
             pageName = data.recommendationData.pageName,
             pageTitle = title,
             viewModel.getDynamicProductInfoP1,
+            viewModel.userId,
         )
         val activity = activity ?: return
         ViewToViewBottomSheet.show(
@@ -5807,6 +5809,7 @@ open class DynamicProductDetailFragment :
             fragmentFactory,
             childFragmentManager,
             data,
+            viewModel.getDynamicProductInfoP1?.basic?.productID ?: "",
         )
     }
 

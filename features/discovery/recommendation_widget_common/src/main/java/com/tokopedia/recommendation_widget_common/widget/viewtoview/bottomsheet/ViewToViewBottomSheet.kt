@@ -46,6 +46,9 @@ class ViewToViewBottomSheet @Inject constructor(
     private val departmentId: String
         get() = arguments?.getString(KEY_RECOMMENDATION_DEPARTMENT_ID) ?: ""
 
+    private val productAnchorId: String
+        get() = arguments?.getString(KEY_PRODUCT_ANCHOR_ID) ?: ""
+
     private val hasAtcButton: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,7 +121,7 @@ class ViewToViewBottomSheet @Inject constructor(
             renderRecommendationResult(it)
         }
         viewModel.viewToViewATCStatusLiveData.observe(viewLifecycleOwner) {
-            showATCToaster(it)
+            handleATCStatus(it)
         }
     }
 
@@ -148,21 +151,34 @@ class ViewToViewBottomSheet @Inject constructor(
         }
     }
 
-    private fun showATCToaster(atcStatus: ViewToViewATCStatus) {
+    private fun handleATCStatus(atcStatus: ViewToViewATCStatus) {
+        val isSuccess = when(atcStatus) {
+            is ViewToViewATCStatus.Success -> {
+                ViewToViewBottomSheetTracker.eventAddToCart(
+                    atcStatus.product.recommendationItem,
+                    headerTitle,
+                    viewModel.getUserId(),
+                    productAnchorId,
+                )
+                true
+            }
+            else -> false
+        }
+        showATCToaster(atcStatus.message, isSuccess)
+    }
+
+    private fun showATCToaster(
+        message: String,
+        isSuccess: Boolean,
+    ) {
         val view = view?.rootView ?: return
-        val isSuccess = atcStatus is ViewToViewATCStatus.Success
-        val actionText = if (isSuccess)
-            view.context.resources.getString(R.string.view_to_view_toaster_atc_see_cart)
-        else ""
         Toaster.build(
             view,
-            atcStatus.message,
+            message,
             Snackbar.LENGTH_SHORT,
             Toaster.TYPE_NORMAL,
-            actionText,
-        ) {
-            if (isSuccess) RouteManager.route(context, ApplinkConst.CART)
-        }.show()
+            "",
+        ) {}.show()
     }
 
     private fun initRecyclerView() {
@@ -185,6 +201,7 @@ class ViewToViewBottomSheet @Inject constructor(
             headerTitle,
             viewModel.getUserId(),
             position,
+            productAnchorId,
         )
     }
 
@@ -194,6 +211,7 @@ class ViewToViewBottomSheet @Inject constructor(
             headerTitle,
             viewModel.getUserId(),
             position,
+            productAnchorId,
         )
 
         RouteManager.route(context, ApplinkConst.PRODUCT_INFO, product.id)
@@ -201,12 +219,6 @@ class ViewToViewBottomSheet @Inject constructor(
 
     override fun onAddToCartClicked(product: ViewToViewDataModel.Product, position: Int) {
         if(viewModel.isUserSessionActive) {
-            ViewToViewBottomSheetTracker.eventAddToCart(
-                product.recommendationItem,
-                headerTitle,
-                viewModel.getUserId(),
-                position,
-            )
             viewModel.addToCart(product)
         } else {
             activity?.let {
@@ -223,16 +235,19 @@ class ViewToViewBottomSheet @Inject constructor(
         private const val KEY_RECOMMENDATION_NAME = "RECOMMENDATION_NAME"
         private const val KEY_RECOMMENDATION_PARAMS = "RECOMMENDATION_PARAMS"
         private const val KEY_RECOMMENDATION_DEPARTMENT_ID = "RECOMMENDATION_DEPARTMENT_ID"
+        private const val KEY_PRODUCT_ANCHOR_ID = "PRODUCT_ANCHOR_ID"
 
         const val REQUEST_CODE_LOGIN = 561
 
         private fun createBundle(
             data: ViewToViewItemData,
+            productAnchorId: String,
         ): Bundle {
             return Bundle().apply {
                 putString(KEY_RECOMMENDATION_NAME, data.name)
                 putString(KEY_RECOMMENDATION_PARAMS, data.url)
                 putString(KEY_RECOMMENDATION_DEPARTMENT_ID, data.departmentId)
+                putString(KEY_PRODUCT_ANCHOR_ID, productAnchorId)
             }
         }
 
@@ -241,12 +256,13 @@ class ViewToViewBottomSheet @Inject constructor(
             fragmentFactory: FragmentFactory,
             fragmentManager: FragmentManager,
             data: ViewToViewItemData,
+            productAnchorId: String,
         ): ViewToViewBottomSheet {
             val fragment = fragmentFactory.instantiate(
                 classLoader,
                 ViewToViewBottomSheet::class.java.name,
             ) as ViewToViewBottomSheet
-            fragment.arguments = createBundle(data)
+            fragment.arguments = createBundle(data, productAnchorId)
             fragment.show(fragmentManager, TAG)
             return fragment
         }
