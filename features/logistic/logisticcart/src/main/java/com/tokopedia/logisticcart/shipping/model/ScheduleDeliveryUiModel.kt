@@ -73,7 +73,7 @@ data class ScheduleDeliveryUiModel(
         else if (validationMetadata.isNotEmpty()) {
             deliveryServices.forEach { service ->
                 val selectedDeliveryProduct = service.deliveryProducts.find { product ->
-                    product.validationMetadata == validationMetadata
+                    product.validationMetadata == validationMetadata && product.available
                 }
                 if (selectedDeliveryProduct != null) {
                     deliveryService = service
