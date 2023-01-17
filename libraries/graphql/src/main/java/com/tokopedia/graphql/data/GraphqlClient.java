@@ -160,7 +160,7 @@ public class GraphqlClient {
     @NotNull
     public static TkpdOkHttpBuilder getTkpdOkHttpBuilder(@NonNull Context context) {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
-        if (GlobalConfig.ENABLE_MACROBENCHMARK_UTIL) {
+        if (false) {
             try {
                 tkpdOkHttpBuilder.addInterceptor(new MockInterceptor(context));
             } catch (Exception e) {
