@@ -114,7 +114,7 @@ class TokoNowCategoryMenuViewHolder(
         header.setListener(this@TokoNowCategoryMenuViewHolder)
         header.setModel(
             model = TokoNowDynamicHeaderUiModel(
-                title = data.title.ifEmpty { root.context.getString(R.string.tokopedianow_repurchase_category_grid_title) },
+                title = data.title.ifEmpty { root.context.getString(R.string.tokopedianow_repurchase_category_menu_title) },
                 ctaText = root.context.getString(R.string.tokopedianow_see_all),
                 ctaTextLink = data.seeAllAppLink
             )

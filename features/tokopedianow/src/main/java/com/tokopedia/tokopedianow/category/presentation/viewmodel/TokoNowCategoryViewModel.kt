@@ -42,7 +42,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitl
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
-import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_GRID_TITLE
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_LIST_DEPTH
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
@@ -211,9 +210,6 @@ class TokoNowCategoryViewModel @Inject constructor (
 
         val categoryMenuIndex = minOf(visitableList.size, 2)
         val categoryMenuUIModel = TokoNowCategoryMenuUiModel(
-                id = "",
-                title = CATEGORY_GRID_TITLE,
-                categoryListUiModel = null,
                 state = TokoNowLayoutState.LOADING,
         )
         visitableList.add(categoryMenuIndex, categoryMenuUIModel)
@@ -248,7 +244,10 @@ class TokoNowCategoryViewModel @Inject constructor (
         val seeAllAppLink = ApplinkConstInternalTokopediaNow.CATEGORY_MENU + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
 
         updateCategoryUIModel(
-                categoryItemListUIModel = CategoryMenuMapper.mapToCategoryList(response = categoryList, headerName = CATEGORY_GRID_TITLE, seeAllAppLink = seeAllAppLink),
+                categoryItemListUIModel = CategoryMenuMapper.mapToCategoryList(
+                    response = categoryList,
+                    seeAllAppLink = seeAllAppLink
+                ),
                 categoryUIModelState = TokoNowLayoutState.SHOW,
                 seeAllAppLink = seeAllAppLink
         )

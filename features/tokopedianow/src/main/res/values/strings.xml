@@ -85,7 +85,7 @@
     <string name="tokopedianow_repurchase_empty_state_no_history_desc_filter">Coba ubah filter, atau cari barang di Tokopedia NOW!.</string>
     <string name="tokopedianow_repurchase_empty_state_no_history_desc_search">Coba ubah kata kuncimu, atau cari barang di Tokopedia NOW!.</string>
     <string name="tokopedianow_repurchase_empty_state_no_history_button">Belanja di Tokopedia NOW!</string>
-    <string name="tokopedianow_repurchase_category_grid_title">Mau belanja apa?</string>
+    <string name="tokopedianow_repurchase_category_menu_title">Cek kategori lainnya</string>
     <string name="tokopedianow_repurchase_title_page">Beli Lagi</string>
     <string name="tokopedianow_repurchase_no_result_title">Belum pernah belanja di Tokopedia NOW!</string>
     <string name="tokopedianow_repurchase_no_result_description_two_hours">Belanja sekarang, pesanan tiba dalam 2 jam!</string>

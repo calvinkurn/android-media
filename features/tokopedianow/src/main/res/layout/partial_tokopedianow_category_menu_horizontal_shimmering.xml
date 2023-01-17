@@ -8,22 +8,22 @@
     tools:ignore="RtlHardcoded,RtlSymmetry">
 
     <include
-        layout="@layout/partial_tokopedianow_home_category_shimmering"
+        layout="@layout/partial_tokopedianow_category_menu_item_shimmering"
         android:layout_marginEnd="8dp"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"/>
     <include
-        layout="@layout/partial_tokopedianow_home_category_shimmering"
+        layout="@layout/partial_tokopedianow_category_menu_item_shimmering"
         android:layout_marginEnd="8dp"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"/>
     <include
-        layout="@layout/partial_tokopedianow_home_category_shimmering"
+        layout="@layout/partial_tokopedianow_category_menu_item_shimmering"
         android:layout_marginEnd="8dp"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"/>
     <include
-        layout="@layout/partial_tokopedianow_home_category_shimmering"
+        layout="@layout/partial_tokopedianow_category_menu_item_shimmering"
         android:layout_marginEnd="8dp"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"/>

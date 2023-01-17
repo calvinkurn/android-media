@@ -217,7 +217,11 @@ object HomeLayoutMapper {
             val item = it.layout as TokoNowCategoryMenuUiModel
             val newItem = if (!response.isNullOrEmpty()) {
                 val seeAllAppLink = ApplinkConstInternalTokopediaNow.CATEGORY_MENU + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
-                val categoryList = mapToCategoryList(response, item.title, seeAllAppLink)
+                val categoryList = mapToCategoryList(
+                    response = response,
+                    headerName = item.title,
+                    seeAllAppLink = seeAllAppLink
+                )
                 val layout = it.layout.copy(categoryListUiModel = categoryList, state = TokoNowLayoutState.SHOW, seeAllAppLink = seeAllAppLink)
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             } else {

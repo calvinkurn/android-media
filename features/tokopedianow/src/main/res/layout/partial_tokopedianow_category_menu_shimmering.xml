@@ -7,7 +7,7 @@
     android:paddingBottom="4dp"
     android:orientation="vertical">
 
-    <com.tokopedia.unifycomponents.LoaderUnify android:id="@+id/siv_category"
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="242dp"
         android:layout_height="20dp"
         android:layout_marginTop="12dp"
@@ -16,7 +16,7 @@
         app:loader_type="rect" />
 
     <include
-        layout="@layout/partial_tokopedianow_home_category_linearlayout_shimmering"
+        layout="@layout/partial_tokopedianow_category_menu_horizontal_shimmering"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content" />
 

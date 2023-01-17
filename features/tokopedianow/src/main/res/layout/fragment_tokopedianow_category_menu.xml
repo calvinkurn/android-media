@@ -21,15 +21,17 @@
         android:id="@+id/rv_category_menu"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:clipToPadding="true"
+        android:paddingBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/hu_category_menu"
-        tools:listitem="@layout/item_tokopedianow_recipe_bookmark" />
+        tools:listitem="@layout/item_tokopedianow_see_all_categories" />
 
     <include
         android:id="@+id/loading_state"
-        layout="@layout/layout_tokopedianow_recipe_bookmark_shimmering"
+        layout="@layout/layout_tokopedianow_see_all_categories_shimmering"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"

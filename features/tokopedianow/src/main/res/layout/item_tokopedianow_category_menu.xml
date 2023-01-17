@@ -35,7 +35,7 @@
         android:visibility="gone" />
 
     <include
-        layout="@layout/partial_tokopedianow_home_category_multiple_linearlayout_shimmering"
+        layout="@layout/partial_tokopedianow_category_menu_shimmering"
         android:id="@+id/category_shimmering"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

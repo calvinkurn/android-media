@@ -26,7 +26,11 @@ object CategoryMenuMapper {
         return HomeLayoutItemUiModel(categoryMenuUiModel, state)
     }
 
-    fun mapToCategoryList(response: List<GetCategoryListResponse.CategoryListResponse.CategoryResponse>?, headerName: String, seeAllAppLink: String): List<Visitable<*>> {
+    fun mapToCategoryList(
+        response: List<GetCategoryListResponse.CategoryListResponse.CategoryResponse>?,
+        headerName: String = "",
+        seeAllAppLink: String = ""
+    ): List<Visitable<*>> {
         val newCategoryList = mutableListOf<Visitable<*>>()
         val responseCategoryList = response?.take(MAX_CATEGORY_ITEM_COUNT).orEmpty()
 

@@ -43,7 +43,6 @@ import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSort
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.RepurchaseSortFilterType.SORT
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedDateFilter
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedSortFilter
-import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_GRID_TITLE
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
 import com.tokopedia.unifycomponents.ChipsUnify
 
@@ -105,14 +104,13 @@ object RepurchaseLayoutMapper {
 
     fun MutableList<Visitable<*>>.addCategoryMenu(
         response: List<GetCategoryListResponse.CategoryListResponse.CategoryResponse>? = null,
-        warehouseId: String = "",
         @TokoNowLayoutState state: Int
     ) {
-        val categoryListUiModel = CategoryMenuMapper.mapToCategoryList(response, warehouseId, CATEGORY_GRID_TITLE)
+        val categoryListUiModel = CategoryMenuMapper.mapToCategoryList(
+            response = response,
+        )
         add(
             TokoNowCategoryMenuUiModel(
-                id = "",
-                title = "",
                 categoryListUiModel = categoryListUiModel,
                 state = state
             )
@@ -128,7 +126,11 @@ object RepurchaseLayoutMapper {
             if (item is TokoNowCategoryMenuUiModel) {
                 val newItem = if (!response.isNullOrEmpty()) {
                     val seeAllAppLink = ApplinkConstInternalTokopediaNow.CATEGORY_MENU + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
-                    val categoryList = CategoryMenuMapper.mapToCategoryList(response, item.title, seeAllAppLink)
+                    val categoryList = CategoryMenuMapper.mapToCategoryList(
+                        response = response,
+                        headerName = item.title,
+                        seeAllAppLink = seeAllAppLink
+                    )
                     item.copy(categoryListUiModel = categoryList, state = TokoNowLayoutState.SHOW, seeAllAppLink = seeAllAppLink)
                 } else {
                     item.copy(categoryListUiModel = null, state = TokoNowLayoutState.HIDE)
