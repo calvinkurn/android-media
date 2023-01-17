@@ -1,5 +1,6 @@
 package com.tokopedia.logisticseller.ui.reschedulepickup
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,6 +26,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -32,6 +34,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.tokopedia.common_compose.principles.NestButton
 import com.tokopedia.common_compose.principles.NestTextField
 import com.tokopedia.common_compose.principles.NestTicker
@@ -126,14 +129,14 @@ fun ReschedulePickupScreenLayout(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        ReschedulePickupTitle()
-        ReschedulePickupOrderInfo(
+        Title()
+        OrderInfo(
             courier = state.value.info.courier,
             invoice = state.value.info.invoice
         )
         Divider(thickness = 8.dp)
-        ReschedulePickupInputSectionTitle()
-        ReschedulePickupInputSectionSubtitle(
+        InputSectionTitle()
+        InputSectionSubtitle(
             onSubtitleClicked = onSubtitleClicked,
             applink = state.value.info.applink
         )
@@ -180,7 +183,7 @@ fun ReschedulePickupScreenLayout(
 }
 
 @Composable
-private fun ReschedulePickupTitle() {
+private fun Title() {
     NestTypography(
         text = stringResource(id = R.string.label_title_order_detail_reschedule_pick_up),
         textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._950),
@@ -189,7 +192,7 @@ private fun ReschedulePickupTitle() {
 }
 
 @Composable
-private fun ReschedulePickupOrderInfo(courier: String, invoice: String) {
+private fun OrderInfo(courier: String, invoice: String) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -236,7 +239,7 @@ private fun OrderInfoItem(title: String, value: String, icon: ImageVector) {
 }
 
 @Composable
-private fun ReschedulePickupInputSectionTitle() {
+private fun InputSectionTitle() {
     NestTypography(
         text = stringResource(id = R.string.label_title_reschedule_pick_up),
         textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._950),
@@ -245,12 +248,12 @@ private fun ReschedulePickupInputSectionTitle() {
 }
 
 @Composable
-private fun ReschedulePickupInputSectionSubtitle(
+private fun InputSectionSubtitle(
     onSubtitleClicked: (String) -> Unit,
     applink: String
 ) {
     NestTypography(
-        text = constructRescheduleSubtitle(),
+        text = Subtitle(),
         textStyle = NestTheme.typography.body3,
         modifier = Modifier
             .padding(horizontal = 16.dp)
@@ -285,7 +288,7 @@ private fun InputDay(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit, da
         placeholder = {
             NestTypography(text = stringResource(id = R.string.placeholder_day_reschedule_pick_up))
         },
-        trailingIcon = { TrailingIconTextField() }
+        trailingIcon = { DropDownIcon() }
     )
 }
 
@@ -308,7 +311,7 @@ private fun InputTime(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit, t
         placeholder = {
             NestTypography(text = stringResource(id = R.string.placeholder_time_reschedule_pick_up))
         },
-        trailingIcon = { TrailingIconTextField() }
+        trailingIcon = { DropDownIcon() }
     )
 }
 
@@ -324,7 +327,7 @@ private fun InputReason(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit,
             NestTypography(text = stringResource(id = R.string.label_reason_reschedule_pickup))
         },
         enabled = false,
-        trailingIcon = { TrailingIconTextField() }
+        trailingIcon = { DropDownIcon() }
     )
 }
 
@@ -357,7 +360,7 @@ private fun ReschedulePickupSummary(summary: String) {
 }
 
 @Composable
-private fun constructRescheduleSubtitle(): AnnotatedString {
+private fun Subtitle(): AnnotatedString {
     return buildAnnotatedString {
         withStyle(style = SpanStyle(color = NestTheme.colors.NN._600)) {
             append(stringResource(id = R.string.label_subtitle_reschedule_pick_up_annotate))
@@ -374,7 +377,7 @@ private fun constructRescheduleSubtitle(): AnnotatedString {
 }
 
 @Composable
-fun TrailingIconTextField() {
+fun DropDownIcon() {
     IconButton(
         onClick = {}
     ) {
@@ -382,5 +385,68 @@ fun TrailingIconTextField() {
             imageVector = Icons.Filled.ArrowDropDown,
             contentDescription = "drop down"
         )
+    }
+}
+
+@Composable
+private fun ResultDialog(
+    title: String,
+    subtitle: String,
+    imageId: Int,
+    buttonText: String,
+    onDismiss: () -> Unit,
+    onDialogButtonClicked: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = onDismiss
+    ) {
+        Column() {
+            Image(painterResource(id = imageId), contentDescription = "result reschedule pickup")
+            NestTypography(
+                text = title,
+                textStyle = NestTheme.typography.heading2.copy(NestTheme.colors.NN._950)
+            )
+            NestTypography(
+                text = subtitle,
+                textStyle = NestTheme.typography.body2.copy(NestTheme.colors.NN._950)
+            )
+            NestButton(text = buttonText) {
+                onDialogButtonClicked()
+            }
+        }
+    }
+}
+
+@Composable
+private fun SuccessDialog(
+    etaPickup: String,
+    onDialogDismiss: () -> Unit,
+    onDialogButtonClicked: () -> Unit
+) {
+    ResultDialog(
+        title = stringResource(id = R.string.title_reschedule_pickup_success_dialog),
+        subtitle = stringResource(id = R.string.template_success_reschedule_pickup, etaPickup),
+        imageId = R.drawable.ic_logisticseller_recshedulepickup_success,
+        buttonText = stringResource(id = R.string.title_reschedule_pickup_button_dialog),
+        onDismiss = onDialogDismiss
+    ) {
+        onDialogButtonClicked()
+    }
+}
+
+@Composable
+private fun FailedDialog(
+    error: String,
+    onDialogDismiss: () -> Unit,
+    onDialogButtonClicked: () -> Unit
+) {
+    ResultDialog(
+        title = stringResource(id = R.string.title_failed_reschedule_pickup_dialog),
+        subtitle = error,
+        imageId = R.drawable.ic_logisticseller_reschedulepickup_fail,
+        buttonText = stringResource(id = R.string.title_cta_error_reschedule_pickup),
+        onDismiss = onDialogDismiss
+    ) {
+        onDialogButtonClicked()
     }
 }
