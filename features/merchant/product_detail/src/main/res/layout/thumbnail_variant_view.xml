@@ -62,6 +62,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
         android:layout_marginEnd="2dp"
-        app:srcCompat="@drawable/ic_promo"
+        app:srcCompat="@drawable/ic_pdp_promo"
         tools:visibility="visible" />
 </FrameLayout>
