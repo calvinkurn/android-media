@@ -41,6 +41,7 @@ import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
@@ -99,6 +100,7 @@ import org.junit.Test
 import org.mockito.Matchers.anyInt
 import org.mockito.Matchers.anyString
 import rx.Observable
+import java.util.concurrent.TimeoutException
 
 @ExperimentalCoroutinesApi
 open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
@@ -1589,6 +1591,26 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         `get variant selected child`(null, variantData)
     }
 
+    @Test
+    fun `get variant selected child with variant options and single variant is null`() {
+        `on success get pdp layout mini variants options`()
+        val childVariant = viewModel.getVariantSelectedChild(
+            singleVariant = null,
+            optionalVariant = null
+        )
+        Assert.assertTrue(childVariant == null)
+    }
+
+    @Test
+    fun `get variant select child with single variant selected before is null`() {
+        `on success get pdp layout mini variants options`()
+        val childVariant = viewModel.getVariantSelectedChild(
+            singleVariant = ProductSingleVariantDataModel(),
+            optionalVariant = VariantDataModel()
+        )
+        Assert.assertTrue(childVariant == null)
+    }
+
     private fun `get variant selected child`(
         singleVariant: ProductSingleVariantDataModel?,
         optionalVariant: VariantDataModel?
@@ -1611,7 +1633,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `get variant selected child with single variant only and return null`() {
+    fun `get variant select child with single variant only and return null`() {
         val singleVariant = ProductSingleVariantDataModel()
         `on success get pdp layout mini variants options`()
 
@@ -1674,7 +1696,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `don't select variant thumbnail when variant id is empty`() {
+    fun `don't select variant thumbnail when select variant id is empty`() {
         val categoryKeyLvl1 = "28323838"
         val categoryKeyLvl2 = "28323839"
         val singleVariant = ProductSingleVariantDataModel(
@@ -1697,6 +1719,54 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val variantLvl2Selected = result?.mapOfSelectedVariant.orEmpty()[categoryKeyLvl2]
         Assert.assertTrue(variantLvl1Selected.orEmpty().isEmpty())
         Assert.assertTrue(variantLvl2Selected.orEmpty().isNotEmpty())
+    }
+
+    @Test
+    fun `variant level one is empty when select variant two on thumbnail changes`() {
+        val categoryKeyLvl1 = "28323838"
+        val categoryKeyLvl2 = "28323839"
+        val singleVariant = ProductSingleVariantDataModel(
+            mapOfSelectedVariant = mutableMapOf(
+                categoryKeyLvl1 to "94748049",
+                categoryKeyLvl2 to "94748052"
+            )
+        )
+
+        `on success get pdp layout mini variants options`()
+
+        // give empty variant data to be expected
+        viewModel.variantData = viewModel.variantData?.copy(variants = listOf(Variant(pv = null)))
+
+        viewModel.onThumbnailVariantSelected(
+            uiData = singleVariant,
+            variantId = "",
+            categoryKey = ""
+        )
+
+        try {
+            viewModel.onThumbnailVariantSelectedData.getOrAwaitValue()
+        } catch (e: Throwable) {
+            Assert.assertTrue(e is TimeoutException)
+        }
+    }
+
+    @Test
+    fun `no impact when select variant thumbnail with ui-data is null `() {
+        val expectSelected = "94748050"
+        val expectCategory = "28323838"
+        `on success get pdp layout mini variants options`()
+        viewModel.variantData = null
+        viewModel.onThumbnailVariantSelected(
+            uiData = null,
+            variantId = expectSelected,
+            categoryKey = expectCategory
+        )
+
+        try {
+            viewModel.onThumbnailVariantSelectedData.getOrAwaitValue()
+        } catch (e: Throwable) {
+            Assert.assertTrue(e is TimeoutException)
+        }
     }
 
     private fun `on success get pdp layout mini variants options`() {

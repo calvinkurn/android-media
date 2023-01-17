@@ -1352,16 +1352,21 @@ open class DynamicProductDetailViewModel @Inject constructor(
         categoryKey: String
     ) {
         val variantSelected = uiData?.mapOfSelectedVariant.orEmpty()
-        val variants = selectVariantTwoOnThumbnailVariantSelected(variantSelected, variantId, categoryKey)
         val variantDataNonNull = variantData ?: ProductVariant()
+        val variants = selectVariantTwoOnThumbnailVariantSelected(
+            productVariant = variantDataNonNull,
+            variantsSelected = variantSelected,
+            newVariantId = variantId,
+            newVariantCategoryKey = categoryKey
+        )
         val variantLevelOneUpdated = ProductDetailVariantLogic.determineVariant(
             variants,
             variantDataNonNull
         )
 
-        if (variantLevelOneUpdated != null) {
+        if (variantLevelOneUpdated != null && uiData != null) {
             _onThumbnailVariantSelectedData.postValue(
-                uiData?.copy(
+                uiData.copy(
                     mapOfSelectedVariant = variants,
                     variantLevelOne = variantLevelOneUpdated
                 )
@@ -1370,26 +1375,30 @@ open class DynamicProductDetailViewModel @Inject constructor(
     }
 
     private fun selectVariantTwoOnThumbnailVariantSelected(
+        productVariant: ProductVariant,
         variantsSelected: Map<String, String>,
         newVariantId: String,
         newVariantCategoryKey: String
     ): MutableMap<String, String> {
         val variants = variantsSelected.toMutableMap()
-        val variantDataNonNull = variantData ?: ProductVariant()
-        val variantLevelTwo = variantDataNonNull.variants.getOrNull(VARIANT_LEVEL_TWO_INDEX)
+        val variantLevelTwo = productVariant.variants.getOrNull(VARIANT_LEVEL_TWO_INDEX)
 
         // in case, when swipe media but media is not variant
         if (newVariantId.isEmpty()) {
-            // remove variant level 1, and keep variant level2 if available
-            val variantLevelOne = variantDataNonNull.variants.getOrNull(Int.ZERO)
-            variants[variantLevelOne?.pv.orEmpty()] = ""
+            // set empty to variant level 1, and keep variant level2 if available
+            val variantLevelOne = productVariant.variants.getOrNull(Int.ZERO)
+
+            if (variantLevelOne != null) {
+                variants[variantLevelOne.pv.orEmpty()] = ""
+            }
+
             return variants
         }
 
         // don't move this order, because level 1 always on top and level 2 always below lvl1 in map
         variants[newVariantCategoryKey] = newVariantId
 
-        // if mapOfSelected still don't select yet variant lvl two, so set default lvl2 with fist lvl2 item
+        // if mapOfSelected still don't select yet with variant lvl two, so set default lvl2 with fist lvl2 item
         if (variantLevelTwo != null && variantsSelected.size < MAX_VARIANT_LEVEL) {
             // in case, thumb variant selected but variant two never select from vbs
             val variantLevelTwoId = variantLevelTwo.options.firstOrNull()?.id
