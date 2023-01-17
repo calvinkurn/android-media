@@ -3,6 +3,7 @@ package com.tokopedia.logisticcart.shipping.features.shippingcourier.view
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticcart.shipping.model.*
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 /**
  * Created by Irfan Khoirul on 08/08/18.
@@ -28,7 +29,7 @@ class ShippingCourierConverter @Inject constructor() {
         courierItemData.maxEtd = shippingCourierUiModel.productData.etd.maxEtd
         courierItemData.shipperPrice = shippingCourierUiModel.productData.price.price
         courierItemData.shipperFormattedPrice = shippingCourierUiModel.productData.price.formattedPrice
-        courierItemData.insurancePrice = shippingCourierUiModel.productData.insurance.insurancePrice
+        courierItemData.insurancePrice = shippingCourierUiModel.productData.insurance.insurancePrice.roundToInt()
         courierItemData.insuranceType = shippingCourierUiModel.productData.insurance.insuranceType
         courierItemData.insuranceUsedType = shippingCourierUiModel.productData.insurance.insuranceUsedType
         courierItemData.insuranceUsedInfo = shippingCourierUiModel.productData.insurance.insuranceUsedInfo
@@ -65,12 +66,13 @@ class ShippingCourierConverter @Inject constructor() {
         if (shippingCourierUiModel.productData.features.ontimeDeliveryGuarantee != null) {
             val otdPrev = shippingCourierUiModel.productData.features.ontimeDeliveryGuarantee
             val otd = OntimeDelivery(
-                    otdPrev.available,
-                    otdPrev.textLabel,
-                    otdPrev.textDetail,
-                    otdPrev.urlDetail,
-                    otdPrev.value,
-                    otdPrev.iconUrl
+                otdPrev.available,
+                otdPrev.textLabel,
+                otdPrev.textDetail,
+                otdPrev.urlDetail,
+                otdPrev.value,
+                otdPrev.iconUrl,
+                otdPrev.urlText
             )
             courierItemData.ontimeDelivery = otd
         }
@@ -79,9 +81,9 @@ class ShippingCourierConverter @Inject constructor() {
         if (shippingCourierUiModel.productData.features.merchantVoucherProductData != null) {
             val merchantVoucherProductData = shippingCourierUiModel.productData.features.merchantVoucherProductData
             val mvc = MerchantVoucherProductModel(
-                    merchantVoucherProductData.isMvc,
-                    merchantVoucherProductData.mvcLogo,
-                    merchantVoucherProductData.mvcErrorMessage
+                merchantVoucherProductData.isMvc,
+                merchantVoucherProductData.mvcLogo,
+                merchantVoucherProductData.mvcErrorMessage
             )
             courierItemData.merchantVoucherProductModel = mvc
         }
@@ -90,12 +92,12 @@ class ShippingCourierConverter @Inject constructor() {
         if (shippingCourierUiModel.productData.codProductData != null) {
             val codProductData = shippingCourierUiModel.productData.codProductData
             val codProduct = CashOnDeliveryProduct(
-                    codProductData.isCodAvailable,
-                    codProductData.codText,
-                    codProductData.codPrice,
-                    codProductData.formattedPrice,
-                    codProductData.tncText,
-                    codProductData.tncLink
+                codProductData.isCodAvailable,
+                codProductData.codText,
+                codProductData.codPrice.roundToInt(),
+                codProductData.formattedPrice,
+                codProductData.tncText,
+                codProductData.tncLink
             )
             courierItemData.codProductData = codProduct
         }

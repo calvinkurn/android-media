@@ -11,9 +11,9 @@ import com.tokopedia.unifyorderhistory.view.bottomsheet.UohKebabMenuBottomSheet
 /**
  * Created by fwidjaja on 05/07/20.
  */
-class UohBottomSheetKebabMenuAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()  {
-    var uohKebabMenuList = mutableListOf<UohListOrder.Data.UohOrders.Order.Metadata.DotMenu>()
-    var _orderData: UohListOrder.Data.UohOrders.Order? = null
+class UohBottomSheetKebabMenuAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    var uohKebabMenuList = mutableListOf<UohListOrder.UohOrders.Order.Metadata.DotMenu>()
+    var _orderData: UohListOrder.UohOrders.Order? = null
     var _orderIndex: Int = -1
     private var actionListener: UohKebabMenuBottomSheet.UohKebabMenuBottomSheetListener? = null
 
@@ -26,7 +26,7 @@ class UohBottomSheetKebabMenuAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
         return uohKebabMenuList.size
     }
 
-    fun addList(orderData: UohListOrder.Data.UohOrders.Order) {
+    fun addList(orderData: UohListOrder.UohOrders.Order) {
         _orderData = orderData
         uohKebabMenuList.clear()
         uohKebabMenuList.addAll(orderData.metadata.dotMenus)

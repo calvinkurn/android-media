@@ -1,6 +1,7 @@
 package com.tokopedia.chatbot.view.activity
 
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
@@ -63,6 +64,9 @@ class ChatbotActivity : BaseChatToolbarActivity() {
 
     override fun setupToolbar() {
         super.setupToolbar()
+        supportActionBar?.run {
+            setBackgroundDrawable(ColorDrawable(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)))
+        }
         val userAvatar = findViewById<ImageView>(R.id.user_avatar)
         userAvatar.apply {
             if (userAvatar.isInDarkMode()) {

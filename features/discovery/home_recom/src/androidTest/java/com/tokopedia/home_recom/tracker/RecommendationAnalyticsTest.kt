@@ -10,7 +10,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.home_recom.HomeRecommendationActivity
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.ui.HomeRecomMockValueHelper
@@ -38,7 +38,11 @@ class RecommendationAnalyticsTest {
     }
 
     @get:Rule
-    var activityRule = IntentsTestRule<HomeRecommendationActivity>(HomeRecommendationActivity::class.java, false, false)
+    var activityRule = IntentsTestRule<HomeRecommendationActivity>(
+        HomeRecommendationActivity::class.java,
+        false,
+        false
+    )
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
@@ -50,7 +54,10 @@ class RecommendationAnalyticsTest {
         HomeRecomMockValueHelper.setupRemoteConfig()
         setupGraphqlMockResponse(RecommendationMockResponseConfig())
         activityRule.launchActivity(
-            HomeRecommendationActivity.newInstance(InstrumentationRegistry.getInstrumentation().targetContext, "547113763").apply {
+            HomeRecommendationActivity.newInstance(
+                InstrumentationRegistry.getInstrumentation().targetContext,
+                "547113763"
+            ).apply {
                 data = Uri.parse("tokopedia://rekomendasi/547113763/?ref=googleshopping")
             }
         )
@@ -112,13 +119,23 @@ class RecommendationAnalyticsTest {
                 val holderName = "ProductInfoViewHolder"
                 logTestMessage("VH $holderName")
                 Espresso.onView(ViewMatchers.withId(R.id.recycler_view))
-                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
+                    .perform(
+                        RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                            i,
+                            ViewActions.click()
+                        )
+                    )
             }
             is RecommendationItemViewHolder -> {
                 val holderName = "RecommendationItemViewHolder"
                 logTestMessage("VH $holderName")
                 Espresso.onView(ViewMatchers.withId(R.id.recycler_view))
-                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
+                    .perform(
+                        RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                            i,
+                            ViewActions.click()
+                        )
+                    )
             }
             is RecommendationCarouselViewHolder -> {
                 val recyclerCarousel = viewHolder.view.findViewById<RecyclerView>(R.id.list)
@@ -126,7 +143,12 @@ class RecommendationAnalyticsTest {
                 for (child in 0 until itemCount) {
                     scrollRecyclerViewToPosition(homeRecyclerView, child)
                     Espresso.onView(ViewMatchers.withId(R.id.list))
-                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(child, ViewActions.click()))
+                        .perform(
+                            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                                child,
+                                ViewActions.click()
+                            )
+                        )
                 }
             }
         }

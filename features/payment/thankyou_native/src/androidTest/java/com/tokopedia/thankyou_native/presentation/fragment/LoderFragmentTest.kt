@@ -6,8 +6,8 @@ import android.net.Uri
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.thankyou_native.TkpdIdlingResource
 import com.tokopedia.thankyou_native.TkpdIdlingResourceProvider

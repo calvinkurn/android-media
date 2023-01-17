@@ -14,7 +14,7 @@ import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderPaym
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderProductRevampViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.review.ReviewItemViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions
-import org.hamcrest.Matchers
+import org.hamcrest.CoreMatchers
 
 /**
  * Created by dhaba
@@ -106,7 +106,7 @@ fun clickOnEachItemRecyclerViewOrderHistory(
         }
     }
     Espresso.onView(
-        Matchers.allOf(
+        CoreMatchers.allOf(
             ViewMatchers.withId(recyclerViewId)
         )
     )

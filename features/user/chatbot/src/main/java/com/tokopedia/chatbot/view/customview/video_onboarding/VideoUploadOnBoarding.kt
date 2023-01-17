@@ -48,8 +48,8 @@ class VideoUploadOnBoarding @Inject constructor(
                 )
             )
             coachMark?.showCoachMark(coachMarkItem)
+            markAsShowed()
             coachMark?.setOnDismissListener {
-                markAsShowed()
                 onboardingDismissListener?.dismissVideoUploadOnBoarding()
             }
         }
