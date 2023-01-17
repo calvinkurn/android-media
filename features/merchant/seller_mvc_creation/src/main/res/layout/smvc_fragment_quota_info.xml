@@ -106,12 +106,10 @@
                 android:id="@+id/tickerQuotaInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_marginHorizontal="13dp"
                 app:closeButtonVisibility="gone"
-                app:layout_constraintTop_toBottomOf="@+id/cardVoucherInfo"
                 app:tickerShapeType="loose"
-                app:tickerType="announcement"
-                tool:layout_editor_absoluteX="16dp" />
+                app:tickerType="announcement" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnAction"
@@ -119,9 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 tool:text="Upgrade ke PM"
-                app:unifyButtonVariant="ghost"
-                app:layout_constraintTop_toBottomOf="@+id/tickerQuotaInfo" />
-
+                app:unifyButtonVariant="ghost" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
