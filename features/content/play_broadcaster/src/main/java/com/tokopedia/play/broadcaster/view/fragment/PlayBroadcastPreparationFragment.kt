@@ -288,7 +288,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 setOnAccountClickListener {
                     analytic.onClickAccountDropdown()
                     hideCoachMarkSwitchAccount()
-                    showAccountBottomSheet()
+                    openAccountBottomSheet()
                 }
             } else setOnAccountClickListener(null)
         }
@@ -517,7 +517,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             eventBus.subscribe().collect { event ->
                 when (event) {
                     Event.ClickSetSchedule -> {
-                        requireTitleAndCover { showScheduleBottomSheet() }
+                        requireTitleAndCover { openScheduleBottomSheet() }
                     }
                     is Event.SaveSchedule -> {
                         parentViewModel.submitAction(
@@ -634,7 +634,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun getSetupCoverBottomSheet() = PlayBroadcastSetupCoverBottomSheet
         .getFragment(childFragmentManager, requireActivity().classLoader)
 
-    private fun showScheduleBottomSheet() {
+    private fun openScheduleBottomSheet() {
         val schedule = parentViewModel.uiState.value.schedule
         schedulePicker.show(
             minDate = GregorianCalendar().apply {
@@ -657,13 +657,19 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         )
     }
 
-    private fun showAccountBottomSheet() {
+    private fun openAccountBottomSheet() {
         try {
             ContentAccountTypeBottomSheet
                 .getFragment(childFragmentManager, requireActivity().classLoader)
                 .show(childFragmentManager)
         }
         catch (e: Exception) {}
+    }
+
+    private fun openSetupProductBottomSheet() {
+        childFragmentManager.beginTransaction()
+            .add(ProductSetupFragment::class.java, null, null)
+            .commit()
     }
 
     /** Callback Preparation Menu */
@@ -679,10 +685,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     override fun onClickSetProduct() {
         analytic.clickSetupProductMenu()
-
-        childFragmentManager.beginTransaction()
-            .add(ProductSetupFragment::class.java, null, null)
-            .commit()
+        openSetupProductBottomSheet()
     }
 
     override fun onClickSetSchedule() {
@@ -696,7 +699,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     /** Callback Cover Form */
-    // TODO add cover callback here
+    override fun onSetupProductClickedFromSetupCover() {
+        openSetupProductBottomSheet()
+    }
 
     /** Others */
     private fun showMainComponent(isShow: Boolean) {
