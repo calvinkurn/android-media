@@ -18,22 +18,9 @@
         android:id="@+id/fragment_container_setup_cover"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/btn_setup_cover"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/csu_setup_cover" />
-
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_setup_cover"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:textSize="14sp"
-        android:enabled="false"
-        android:text="@string/play_label_save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_weight="1" />
+        app:layout_constraintTop_toBottomOf="@id/csu_setup_cover" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
