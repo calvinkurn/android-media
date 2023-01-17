@@ -1,5 +1,6 @@
 package com.tokopedia.homenav.mainnav.view.presenter
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -356,25 +357,17 @@ class MainNavViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
-                // if bu cache is already exist in list
-                // then error state is not needed
-                val isBuExist = findExistingEndBuIndexPosition()
-                if (isBuExist == null) {
-                    findBuStartIndexPosition()?.let {
-                        updateWidget(ErrorStateBuDataModel(), it)
-                    }
-                }
-
                 val buShimmering = _mainNavListVisitable.find {
                     it is InitialShimmerDataModel
                 }
                 buShimmering?.let {
-                    updateWidget(
-                        ErrorStateBuDataModel(),
-                        _mainNavListVisitable.indexOf(it)
-                    )
+                    if (allCategoriesCache.isNotEmpty()) {
+                        addWidgetList(allCategoriesCache, _mainNavListVisitable.indexOf(it))
+                        deleteWidget(buShimmering)
+                    } else {
+                        updateWidget(ErrorStateBuDataModel(), _mainNavListVisitable.indexOf(it))
+                    }
                 }
-                e.printStackTrace()
             }
         }
     }
@@ -487,7 +480,7 @@ class MainNavViewModel @Inject constructor(
         }
         try {
             val paymentList = getPaymentOrdersNavUseCase.get().executeOnBackground()
-            getUohOrdersNavUseCase.get().setIsMePageUsingRollenceVariant(isUsingMePageRollenceVariant())
+            getUohOrdersNavUseCase.get().setIsMePageUsingRollenceVariant(true)
             val orderList = getUohOrdersNavUseCase.get().executeOnBackground()
 
             if (paymentList.isNotEmpty() || orderList.isNotEmpty()) {
@@ -524,11 +517,24 @@ class MainNavViewModel @Inject constructor(
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
         } catch (e: Exception) {
+            Log.e("", "getOnGoingTransactionRevamp: ", e)
             // find shimmering and change with result value
             findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
                 updateWidget(ErrorStateOngoingTransactionModel(), it)
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
+        }
+    }
+
+    fun refreshReviewData() {
+        val reviewPlaceholder = _mainNavListVisitable.withIndex().find {
+            it.value is ErrorStateReviewDataModel || it.value is ReviewListDataModel
+        }
+        reviewPlaceholder?.let {
+            updateWidget(ShimmerReviewDataModel(), reviewPlaceholder.index)
+        }
+        launch {
+            getReview()
         }
     }
 
@@ -832,7 +838,7 @@ class MainNavViewModel @Inject constructor(
                         it.getSectionTitle(IDENTIFIER_TITLE_REVIEW),
                         ReviewListDataModel(reviewList = listOf()),
                         it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
-                        WishlistDataModel(collections = listOf()),
+                        WishlistDataModel(collections = listOf(), isEmptyState = true),
                         it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
                         FavoriteShopListDataModel(favoriteShops = listOf()),
                         SeparatorDataModel(isUsingRollence = true)
