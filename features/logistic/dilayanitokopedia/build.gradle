@@ -107,7 +107,7 @@ project.ext {
     artifactName = "dilayanitokopedia-release"
 }
 
-apply from: '../../publish_local.gradle'
-apply from: '../../jacoco_task.gradle'
-apply from: '../../sonar_config.gradle'
+apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
 apply plugin: 'org.jetbrains.kotlin.android'

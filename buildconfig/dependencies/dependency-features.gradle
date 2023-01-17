@@ -120,6 +120,7 @@ ext {
 
             logisticCommon                  : ":features:logistic:logisticCommon",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
+            dilayaniTokopedia               : ":features:logistic:dilayanitokopedia",
             dropOff                         : ":features:logistic:dropoff",
             logisticorder                   : ":features:logistic:logisticorder",
             logisticseller		          : ":features:logistic:logisticseller",
@@ -129,8 +130,6 @@ ext {
             activation                      : ":features:logistic:activation",
             localizationchooseaddress       : ":features:logistic:localizationchooseaddress",
             localizationchooseaddress_common: ":features:logistic:localizationchooseaddress_common",
-
-            dilayaniTokopedia                : ":features:dilayanitokopedia",
 
             mediauploader                   : ":features:media:mediauploader",
             mediaCommon                     : ":features:media:media-common",

@@ -2,7 +2,6 @@ package com.tokopedia.dilayanitokopedia.home.domain.mapper.recommendationforyou
 
 import com.tokopedia.dilayanitokopedia.home.domain.model.GetHomeRecommendationProductV2
 import com.tokopedia.dilayanitokopedia.home.domain.model.Product
-import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.BannerRecommendationDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationItemDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.HomeRecommendationVisitable
