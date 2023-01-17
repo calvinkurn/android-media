@@ -85,9 +85,8 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
                 view,
                 catalogLibraryListener
             )
-            CatalogProductLoadMoreViewHolder.LAYOUT -> CatalogContainerItemViewHolder(
-                view,
-                catalogLibraryListener
+            CatalogProductLoadMoreViewHolder.LAYOUT -> CatalogProductLoadMoreViewHolder(
+                view
             )
             CatalogShimmerViewHolder.LAYOUT -> CatalogShimmerViewHolder(view)
             else -> super.createViewHolder(view, type)

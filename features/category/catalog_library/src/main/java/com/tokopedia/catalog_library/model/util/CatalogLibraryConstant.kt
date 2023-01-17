@@ -22,7 +22,6 @@ object CatalogLibraryConstant {
     const val CATALOG_SHIMMER_VIRAL = 2
     const val CATALOG_SHIMMER_PRODUCTS = 3
     const val CATALOG_SHIMMER_LIHAT_SEMUA = 4
-    const val CATALOG_PRODUCT_LOAD_MORE = 5
 
     const val SORT_TYPE_CATALOG = 0
     const val SORT_TYPE_VIRAL = 5
@@ -33,4 +32,6 @@ object CatalogLibraryConstant {
     const val TOTAL_ROWS_CATALOG = 10
 
     const val APP_LINK_KATEGORI = "tokopedia://catalog-library/kategori"
+    const val CATALOG_HOME_PRODUCT_TITLE = "Katalog lainnya buat inspirasimu"
+
 }

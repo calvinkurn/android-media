@@ -27,8 +27,6 @@ class ProductsBaseViewModel @Inject constructor(
     val shimmerLiveData: LiveData<Boolean> =
         _shimmerLiveData
 
-    private val listOfProducts = mutableListOf<BaseCatalogLibraryDataModel>()
-
     fun getCatalogListData(
         categoryIdentifier: String,
         sortType: Int,
@@ -52,13 +50,13 @@ class ProductsBaseViewModel @Inject constructor(
     }
 
     private fun onAvailableCatalogListData(
-        catalogListResponse: CatalogListResponse, page : Int = 1
+        catalogListResponse: CatalogListResponse, page: Int = 1
     ) {
         if (catalogListResponse.catalogGetList.catalogsProduct.isNullOrEmpty()) {
             onFailHomeData(IllegalStateException("No Catalog List Response Data"))
         } else {
             catalogListResponse.let {
-                _catalogProductsLiveData.postValue(Success(mapCatalogProductData(it,page)))
+                _catalogProductsLiveData.postValue(Success(mapCatalogProductData(it, page)))
             }
         }
     }
@@ -67,17 +65,28 @@ class ProductsBaseViewModel @Inject constructor(
         _catalogProductsLiveData.postValue(Fail(throwable))
     }
 
-    private fun mapCatalogProductData(data: CatalogListResponse, page : Int = 1): CatalogLibraryDataModel {
-        return CatalogLibraryDataModel(getProductsVisitableList(data.catalogGetList.catalogsProduct))
+    private fun mapCatalogProductData(
+        data: CatalogListResponse,
+        page: Int = 1
+    ): CatalogLibraryDataModel {
+        return CatalogLibraryDataModel(
+            getProductsVisitableList(
+                data.catalogGetList.catalogsProduct,
+                page
+            )
+        )
     }
 
-    private fun getProductsVisitableList(catalogsProduct: ArrayList<CatalogListResponse.CatalogGetList.CatalogsProduct>, page : Int = 1): ArrayList<BaseCatalogLibraryDataModel> {
+    private fun getProductsVisitableList(
+        catalogsProduct: ArrayList<CatalogListResponse.CatalogGetList.CatalogsProduct>,
+        page: Int = 1
+    ): ArrayList<BaseCatalogLibraryDataModel> {
         val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
-        if(page == 1){
+        if (page == 1) {
             val productHeaderModel = CatalogContainerDataModel(
-            CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
-            CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
-            "Katalog lainnya buat inspirasimu",null
+                CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
+                CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
+                CatalogLibraryConstant.CATALOG_HOME_PRODUCT_TITLE, null
             )
             visitableList.add(productHeaderModel)
         }

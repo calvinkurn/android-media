@@ -16,6 +16,7 @@ import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFacto
 import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
+import com.tokopedia.catalog_library.model.datamodel.CatalogProductLoadMoreDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDataModel
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.SORT_TYPE_TOP_FIVE
@@ -236,15 +237,23 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
 
     override fun onProductsLoaded(productsList: MutableList<BaseCatalogLibraryDataModel>) {
         catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT)
+        catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT_LOAD)
         productsList.forEach { component ->
             catalogLibraryUiUpdater.updateModel(component)
         }
-        val shimmerDataModel = CatalogShimmerDataModel(
-            CatalogLibraryConstant.CATALOG_PRODUCT,
-            CatalogLibraryConstant.CATALOG_PRODUCT,
-            CatalogLibraryConstant.CATALOG_SHIMMER_PRODUCTS
-        )
-        catalogLibraryUiUpdater.updateModel(shimmerDataModel)
+
+        if(productsList.isEmpty()){
+            catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT_LOAD)
+        }else {
+            catalogLibraryUiUpdater.updateModel(CatalogProductLoadMoreDataModel())
+        }
+
+//        val shimmerDataModel = CatalogShimmerDataModel(
+//            CatalogLibraryConstant.CATALOG_PRODUCT,
+//            CatalogLibraryConstant.CATALOG_PRODUCT,
+//            CatalogLibraryConstant.CATALOG_SHIMMER_PRODUCTS
+//        )
+//        catalogLibraryUiUpdater.updateModel(shimmerDataModel)
         updateUi()
     }
 

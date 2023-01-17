@@ -189,20 +189,22 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
 
     override fun onProductsLoaded(productsList: MutableList<BaseCatalogLibraryDataModel>) {
         catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT)
+        catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT_LOAD)
         productsList.forEach { component ->
             catalogLibraryUiUpdater.updateModel(component)
+        }
+
+        if(productsList.isEmpty()){
+            catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT_LOAD)
+        }else {
+            catalogLibraryUiUpdater.updateModel(CatalogProductLoadMoreDataModel())
         }
 //        val shimmerDataModel = CatalogShimmerDataModel(
 //            CatalogLibraryConstant.CATALOG_PRODUCT,
 //            CatalogLibraryConstant.CATALOG_PRODUCT,
 //            CatalogLibraryConstant.CATALOG_PRODUCT_LOAD_MORE
 //        )
-
-        val shimmerDataModel = CatalogProductLoadMoreDataModel(
-            CatalogLibraryConstant.CATALOG_PRODUCT_LOAD,
-                CatalogLibraryConstant.CATALOG_PRODUCT_LOAD
-        )
-        catalogLibraryUiUpdater.updateModel(shimmerDataModel)
+//        catalogLibraryUiUpdater.updateModel(shimmerDataModel)
         updateUi()
     }
 
