@@ -1650,7 +1650,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `select variant thumbnail is successful when first selected`() {
+    fun `select variant thumbnail is successful when first open pdp`() {
         val expectLvl1Category = "28323838"
         val expectLvl1Selected = "94748050"
         val expectLvl2Category = "28323839"
@@ -1697,6 +1697,70 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
+    fun `select variant two on thumbnail variant selected when variant have level one only`() {
+        val expectSelected = "94748050"
+        val expectCategory = "28323838"
+        val singleVariant = ProductSingleVariantDataModel(
+            mapOfSelectedVariant = mutableMapOf(
+                expectCategory to "94748049",
+                "28323839" to "94748052"
+            )
+        )
+
+        `on success get pdp layout mini variants options`()
+        // give variant one only to variant data
+        val variantLvl1 = viewModel.variantData?.variants?.firstOrNull() ?: Variant()
+        viewModel.variantData = viewModel.variantData?.copy(
+            variants = listOf(variantLvl1)
+        )
+        viewModel.onThumbnailVariantSelected(
+            uiData = singleVariant,
+            variantId = expectSelected,
+            categoryKey = expectCategory
+        )
+
+        val result = viewModel.onThumbnailVariantSelectedData.getOrAwaitValue()
+        val variantLevelOneSelected = result?.mapOfSelectedVariant.orEmpty()[expectCategory]
+        Assert.assertTrue(variantLevelOneSelected == expectSelected)
+    }
+
+    @Test
+    fun `select variant two on thumbnail variant selected when variant option is empty`() {
+        val variantLvl1 = "94748050"
+        val categoryLvl1 = "28323838"
+        val categoryLvl2 = "28323839"
+        val singleVariant = ProductSingleVariantDataModel(
+            mapOfSelectedVariant = mutableMapOf(
+                categoryLvl1 to "94748049"
+            )
+        )
+
+        `on success get pdp layout mini variants options`()
+
+        // give variant two with variant options is empty
+        val variants = viewModel.variantData?.variants.orEmpty().toMutableList()
+            .map {
+                if (it.pv == categoryLvl2) {
+                    it.copy(options = emptyList())
+                } else {
+                    it
+                }
+            }
+        viewModel.variantData = viewModel.variantData?.copy(
+            variants = variants
+        )
+        viewModel.onThumbnailVariantSelected(
+            uiData = singleVariant,
+            variantId = variantLvl1,
+            categoryKey = categoryLvl1
+        )
+
+        val result = viewModel.onThumbnailVariantSelectedData.getOrAwaitValue()
+        val variantLvl2Selected = result?.mapOfSelectedVariant.orEmpty()[categoryLvl2]
+        Assert.assertTrue(variantLvl2Selected?.isEmpty() == true)
+    }
+
+    @Test
     fun `don't select variant thumbnail when select variant id is empty`() {
         val categoryKeyLvl1 = "28323838"
         val categoryKeyLvl2 = "28323839"
@@ -1723,7 +1787,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `variant level one is empty when select variant two on thumbnail changes`() {
+    fun `variant level one is empty when select thumbnail changes`() {
         val categoryKeyLvl1 = "28323838"
         val categoryKeyLvl2 = "28323839"
         val singleVariant = ProductSingleVariantDataModel(
@@ -1752,7 +1816,48 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `variant level one is empty when select variant two on thumbnail changes2`() {
+    fun `variant level one is empty when select variant two on thumbnail changes`() {
+        val selectVariant1 = "94748050"
+        val categoryKeyLvl1 = "28323838"
+        val categoryKeyLvl2 = "28323839"
+        val singleVariant = ProductSingleVariantDataModel(
+            mapOfSelectedVariant = mutableMapOf(
+                categoryKeyLvl1 to "94748049"
+            )
+        )
+
+        `on success get pdp layout mini variants options`()
+
+        // give variant two with pv is null
+        val variants = viewModel.variantData?.variants.orEmpty().toMutableList()
+            .map {
+                if (it.pv == categoryKeyLvl2) {
+                    it.copy(pv = null)
+                } else {
+                    it
+                }
+            }
+        viewModel.variantData = viewModel.variantData?.copy(
+            variants = variants
+        )
+
+        viewModel.onThumbnailVariantSelected(
+            uiData = singleVariant,
+            variantId = selectVariant1,
+            categoryKey = categoryKeyLvl1
+        )
+
+        val result = viewModel.onThumbnailVariantSelectedData.getOrAwaitValue()
+        val variantLvl1Selected = result?.mapOfSelectedVariant.orEmpty()[categoryKeyLvl1]
+        val variantLvl2Selected = result?.mapOfSelectedVariant.orEmpty()[categoryKeyLvl2]
+        val variantLvl2Actual = result?.mapOfSelectedVariant.orEmpty()[""]
+        Assert.assertTrue(variantLvl1Selected == selectVariant1)
+        Assert.assertTrue(variantLvl2Selected == null)
+        Assert.assertFalse(variantLvl2Actual.isNullOrEmpty())
+    }
+
+    @Test
+    fun `no impact when select variant thumbnail with variant data is null`() {
         val categoryKeyLvl1 = "28323838"
         val categoryKeyLvl2 = "28323839"
         val singleVariant = ProductSingleVariantDataModel(
