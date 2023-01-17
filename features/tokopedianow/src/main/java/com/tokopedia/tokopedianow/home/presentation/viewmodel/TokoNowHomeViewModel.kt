@@ -299,6 +299,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 )
                 channelToken = homeLayoutResponse.first().token
 
+                homeLayoutItemList.removeProgressBar()
                 homeLayoutItemList.addMoreHomeLayout(
                     homeLayoutResponse,
                     removeAbleWidgets,
@@ -307,8 +308,6 @@ class TokoNowHomeViewModel @Inject constructor(
                 )
 
                 getLayoutComponentData(localCacheModel)
-
-                homeLayoutItemList.removeProgressBar()
 
                 val data = HomeLayoutListUiModel(
                     items = getHomeVisitableList(),
@@ -1135,10 +1134,16 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private fun shouldLoadMore(lastVisibleItemIndex: Int): Boolean {
         val allItemsLoaded = channelToken.isEmpty()
-        val layoutList = getHomeVisitableList()
-        val isLoading = layoutList.firstOrNull { it == HomeProgressBarUiModel } != null
-        val scrolledToBottom = lastVisibleItemIndex == layoutList.count() - DEFAULT_INDEX
-        return scrolledToBottom && !isLoading && !allItemsLoaded
+        val scrolledToBottom = scrolledToBottom(lastVisibleItemIndex)
+        return if (allItemsLoaded || !scrolledToBottom) false else !isLoading()
+    }
+
+    private fun scrolledToBottom(lastVisibleItemIndex: Int): Boolean {
+        return lastVisibleItemIndex == homeLayoutItemList.count() - DEFAULT_INDEX
+    }
+
+    private fun isLoading(): Boolean {
+        return getHomeVisitableList().firstOrNull { it == HomeProgressBarUiModel } != null
     }
 
     private fun showProgressBar() {
@@ -1151,7 +1156,8 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun getHomeVisitableList(): List<Visitable<*>> {
-        return homeLayoutItemList.filterNotNull().mapNotNull { it.layout }
+        val layoutItemsList = homeLayoutItemList.toMutableList()
+        return layoutItemsList.filterNotNull().mapNotNull { it.layout }
     }
 
     private fun getQuestUiModel(): HomeQuestSequenceWidgetUiModel? {
