@@ -68,6 +68,7 @@ import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.mvc.util.constant.VoucherTargetConstant.VOUCHER_TARGET_PUBLIC
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.constants.BroadcastChannelType
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -799,10 +800,6 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             targetBuyer = voucherDetail.targetBuyer
         )
 
-        val endDate = shareComponentParam.voucherEndDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
-        val endHour =
-            shareComponentParam.voucherEndDate.formatTo(DateConstant.TIME_MINUTE_PRECISION)
-
         val formattedShopName = MethodChecker.fromHtml(shareComponentParam.shopName).toString()
 
         val titleTemplate = if (shareComponentParam.isVoucherProduct) {
@@ -811,42 +808,34 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             getString(R.string.smvc_placeholder_share_component_outgoing_title_shop_voucher)
         }
 
-        val descriptionTemplate = if (shareComponentParam.isVoucherProduct) {
-            getString(R.string.smvc_placeholder_share_component_text_description_product_voucher)
-        } else {
-            getString(R.string.smvc_placeholder_share_component_text_description_shop_voucher)
-        }
-
         val title = String.format(
             titleTemplate,
             formattedShopName
         )
-        val description = String.format(
-            descriptionTemplate,
-            formattedShopName,
-            endDate,
-            endHour
+
+        val copyWritingParam = ShareCopyWritingGenerator.Param(
+            voucherStartDate,
+            voucherEndDate,
+            voucherImageMetadata.shopData.name,
+            voucherDetail.voucherDiscountAmount,
+            voucherDetail.voucherDiscountAmountMax,
+            voucherDetail.voucherDiscountAmount.toInt()
+        )
+
+        val description = shareCopyWritingGenerator.findOutgoingDescription(
+            voucherDetail.isVoucherProduct,
+            voucherDetail.targetBuyer,
+            voucherDetail.voucherType,
+            voucherDetail.voucherDiscountType,
+            copyWritingParam
         )
 
         universalShareBottomSheet = shareComponentInstanceBuilder.build(
             shareComponentParam,
             title,
             onShareOptionsClicked = { shareModel ->
-                val copyWritingParam = ShareCopyWritingGenerator.Param(
-                    voucherStartDate,
-                    voucherEndDate,
-                    voucherImageMetadata.shopData.name,
-                    voucherDetail.voucherDiscountAmount,
-                    voucherDetail.voucherDiscountAmountMax,
-                    voucherDetail.voucherDiscountAmount.toInt()
-                )
-
                 handleShareOptionSelection(
                     voucherDetail.isVoucherProduct,
-                    voucherDetail.targetBuyer,
-                    voucherDetail.voucherType,
-                    voucherDetail.voucherDiscountType,
-                    copyWritingParam,
                     shareComponentParam.voucherId,
                     shareModel,
                     title,
@@ -858,15 +847,17 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         )
 
 
+        universalShareBottomSheet?.setBroadcastChannel(
+            activity ?: return,
+            BroadcastChannelType.BLAST_PROMO,
+            voucherDetail.voucherId.toString()
+        )
+
         universalShareBottomSheet?.show(childFragmentManager, universalShareBottomSheet?.tag)
     }
 
     private fun handleShareOptionSelection(
         isProductVoucher: Boolean,
-        voucherTarget: VoucherTargetBuyer,
-        promoType: PromoType,
-        benefitType: BenefitType,
-        param: ShareCopyWritingGenerator.Param,
         voucherId: Long,
         shareModel: ShareModel,
         title: String,
@@ -889,14 +880,11 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             override fun onError(linkerError: LinkerError?) {}
         }
 
-
-        val outgoingDescription = shareCopyWritingGenerator.findOutgoingDescription(
-            isProductVoucher,
-            voucherTarget,
-            promoType,
-            benefitType,
-            param
-        )
+        val outgoingDescription = if (isProductVoucher) {
+            getString(R.string.smvc_share_component_outgoing_text_description_product_voucher)
+        } else {
+            getString(R.string.smvc_share_component_outgoing_text_description_shop_voucher)
+        }
 
         val linkerDataGenerator = LinkerDataGenerator()
         val linkerShareData = linkerDataGenerator.generate(

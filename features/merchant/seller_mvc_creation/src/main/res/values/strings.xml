@@ -119,9 +119,6 @@
     <string name="smvc_placeholder_share_component_outgoing_title_product_voucher">Kupon Produk %s</string>
     <string name="smvc_placeholder_share_component_outgoing_title_shop_voucher">Kupon Toko %s</string>
 
-    <string name="smvc_placeholder_share_component_text_description_product_voucher">Dapatkan Kupon Produk %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
-    <string name="smvc_placeholder_share_component_text_description_shop_voucher">Dapatkan Kupon Toko %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
-
     <string name="smvc_share_component_outgoing_text_description_product_voucher">Yuk, belanja dan pakai Kupon Produknya sekarang!</string>
     <string name="smvc_share_component_outgoing_text_description_shop_voucher">Yuk, belanja dan pakai Kupon Tokonya sekarang!</string>
 
