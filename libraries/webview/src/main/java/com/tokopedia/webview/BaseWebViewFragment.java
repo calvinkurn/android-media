@@ -64,7 +64,6 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.RouteManagerKt;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.globalerror.GlobalError;
@@ -302,8 +301,23 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (isTokopediaUrl) {
             webView.requestFocus();
             webView.loadAuthUrl(url, new UserSession(getContext()));
+        } else if(isWhitelisted(url)) {
+            webView.requestFocus();
+            webView.loadAuthUrl(url, null);
         } else {
             redirectToNativeBrowser();
+        }
+    }
+
+    private boolean isWhitelisted(String mUrl) {
+        try {
+            if (getActivity() instanceof BaseSimpleWebViewActivity) {
+                BaseSimpleWebViewActivity baseSimpleWebViewActivity = (BaseSimpleWebViewActivity) getActivity();
+                return baseSimpleWebViewActivity.isDomainWhitelisted(baseSimpleWebViewActivity.getBaseDomain(mUrl));
+            }
+            return false;
+        } catch (Exception ex) {
+            return false;
         }
     }
 
