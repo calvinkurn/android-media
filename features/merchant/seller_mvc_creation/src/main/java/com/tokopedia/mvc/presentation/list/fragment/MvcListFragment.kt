@@ -42,6 +42,7 @@ import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
@@ -75,6 +76,7 @@ import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.ClipboardHandler
@@ -99,6 +101,8 @@ class MvcListFragment :
 
     private val filterList = ArrayList<SortFilterItem>()
     private val filterItem by lazy { SortFilterItem(getString(R.string.smvc_bottomsheet_filter_voucher_all)) }
+    private val filterItem2 by lazy { SortFilterItem("Kupon Toko", ChipsUnify.TYPE_SELECTED) }
+    private val filterItem3 by lazy { SortFilterItem("Kupon Produk", ChipsUnify.TYPE_SELECTED) }
     private var binding by autoClearedNullable<SmvcFragmentMvcListBinding>()
     private var moreMenuBottomSheet: MoreMenuBottomSheet? = null
     private var voucherEditPeriodBottomSheet: VoucherEditPeriodBottomSheet? = null
@@ -468,6 +472,8 @@ class MvcListFragment :
 
     private fun SortFilter.setupFilter() {
         filterList.add(filterItem)
+        filterList.add(filterItem2)
+        filterList.add(filterItem3)
         addItem(filterList)
         parentListener = {
             filterItem.selectedItem = arrayListOf()
@@ -483,7 +489,25 @@ class MvcListFragment :
             bottomSheet.setListener(this@MvcListFragment)
             bottomSheet.show(childFragmentManager, "")
         }
+        filterItem2.listener = {
+            filterItem2.toggleSelected()
+            viewModel.setFilterType(VoucherServiceType.SHOP_VOUCHER, filterItem2.isSelected())
+            viewModel.setFilterType(VoucherServiceType.PRODUCT_VOUCHER, filterItem3.isSelected())
+            loadInitialDataList()
+            resetPaging()
+        }
+        filterItem3.listener = {
+            filterItem3.toggleSelected()
+            viewModel.setFilterType(VoucherServiceType.SHOP_VOUCHER, filterItem2.isSelected())
+            viewModel.setFilterType(VoucherServiceType.PRODUCT_VOUCHER, filterItem3.isSelected())
+            loadInitialDataList()
+            resetPaging()
+        }
         filterItem.refChipUnify.setChevronClickListener { filterItem.listener.invoke() }
+    }
+
+    fun SortFilterItem.isSelected(): Boolean {
+        return type == ChipsUnify.TYPE_SELECTED
     }
 
     private fun loadInitialDataList() {
