@@ -23,7 +23,7 @@ import com.tokopedia.media.picker.ui.component.ParentContainerComponent
 import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
-import com.tokopedia.media.picker.utils.delegates.permissionGranted
+import com.tokopedia.media.picker.utils.permission.hasPermissionRequiredGranted
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
 import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.basecomponent.uiComponent
@@ -38,23 +38,26 @@ import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.picker.common.utils.VideoDurationRetriever
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 import com.tokopedia.utils.image.ImageProcessingUtil
 import javax.inject.Inject
 
-open class PickerActivity : BaseActivity()
-    , PermissionFragment.Listener
-    , NavToolbarComponent.Listener
-    , PickerActivityContract
-    , BottomNavComponent.Listener {
+open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
+    NavToolbarComponent.Listener, PickerActivityContract, BottomNavComponent.Listener {
 
-    @Inject lateinit var fragmentFactory: FragmentFactory
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject lateinit var param: ParamCacheManager
-    @Inject lateinit var pickerAnalytics: PickerAnalytics
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
 
-    private val hasPermissionGranted: Boolean by permissionGranted()
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var param: ParamCacheManager
+
+    @Inject
+    lateinit var pickerAnalytics: PickerAnalytics
 
     protected val medias = arrayListOf<MediaUiModel>()
 
@@ -87,6 +90,8 @@ open class PickerActivity : BaseActivity()
             listener = this
         )
     }
+
+    private var editorParam: EditorParam? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -121,6 +126,12 @@ open class PickerActivity : BaseActivity()
                     onFinishIntent(it)
                 }
             }
+        } else if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_EDITOR_PAGE && data != null) {
+            data.getParcelableExtra<EditorResult>(RESULT_INTENT_EDITOR)?.let {
+                onFinishIntent(
+                    PickerResult(it.originalPaths, editedImages = it.editedImages)
+                )
+            }
         }
     }
 
@@ -138,9 +149,20 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun setupParamQueryAndDataIntent() {
-        val pickerParam = intent?.getParcelableExtra(EXTRA_PICKER_PARAM)?: PickerParam()
+        val pickerParam = intent?.getParcelableExtra(EXTRA_PICKER_PARAM) ?: PickerParam()
 
         onPageSourceNotFound(pickerParam)
+
+        if (pickerParam.isEditorEnabled()) {
+            val isEditorAllowed =
+                RemoteConfigInstance.getInstance().abTestPlatform.getString(PICKER_TO_EDITOR_ROLLENCE) == PICKER_TO_EDITOR_ROLLENCE
+
+            if (!isEditorAllowed) {
+                pickerParam.withoutEditor()
+            } else {
+                editorParam = pickerParam.getEditorParam() ?: EditorParam()
+            }
+        }
 
         // get data from uri query parameter
         intent?.data?.let {
@@ -151,12 +173,7 @@ open class PickerActivity : BaseActivity()
         param.setParam(pickerParam)
 
         // get pre-included media items
-        param.get().includeMedias()
-            .map { it.asPickerFile() }
-            .map { it.toUiModel() }
-            .also {
-                stateOnChangePublished(it)
-            }
+        viewModel.preSelectedMedias()
     }
 
     private fun restoreDataState(savedInstanceState: Bundle?) {
@@ -172,7 +189,7 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun initView() {
-        if (hasPermissionGranted) {
+        if (isRootPermissionGranted()) {
             onPageViewByType()
         } else {
             onPermissionPageView()
@@ -204,6 +221,17 @@ open class PickerActivity : BaseActivity()
                     medias.isNotEmpty() && param.get().isMultipleSelectionType()
                 )
             }
+        }
+
+        viewModel.includeMedias.observe(this) { files ->
+            if (files.isEmpty()) return@observe
+
+            val fileToUiModel = files.mapNotNull {
+                val mPickerFile = it?.asPickerFile()
+                mPickerFile?.toUiModel()
+            }
+
+            stateOnChangePublished(fileToUiModel)
         }
     }
 
@@ -246,11 +274,10 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun onEditorIntent(data: PickerResult) {
-        /*
-        * TODO: we didn't supported the editor yet,
-        *  need to change after editor developed on Q3.
-        *  */
-        onFinishIntent(data)
+        editorParam?.let {
+            val intent = MediaEditor.intent(this, data.originalPaths, it)
+            startActivityForResult(intent, REQUEST_EDITOR_PAGE)
+        }
     }
 
     private fun onPermissionPageView() {
@@ -270,6 +297,13 @@ open class PickerActivity : BaseActivity()
 
     override fun onPermissionGranted() {
         onPageViewByType()
+    }
+
+    override fun isRootPermissionGranted(): Boolean {
+        val page = param.get().pageType()
+        val mode = param.get().modeType()
+
+        return hasPermissionRequiredGranted(this, page, mode)
     }
 
     override fun onGetVideoDuration(media: MediaUiModel): Int {
@@ -294,7 +328,7 @@ open class PickerActivity : BaseActivity()
         }
     }
 
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         if (!param.get().isIncludeVideoFile()) {
             return super.dispatchTouchEvent(ev)
         }
@@ -509,6 +543,7 @@ open class PickerActivity : BaseActivity()
 
     companion object {
         const val REQUEST_PREVIEW_PAGE = 123
+        const val REQUEST_EDITOR_PAGE = 456
 
         private const val LAST_MEDIA_SELECTION = "last_media_selection"
 

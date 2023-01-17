@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.domain.usecase
 
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.play.broadcaster.util.handler.DefaultUseCaseHandler
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
@@ -90,7 +91,7 @@ class PlayBroadcastUpdateChannelUseCase @Inject constructor(private val updateCh
         ): QueryParams {
             val params = mapOf(
                     PARAMS_CHANNEL_ID to channelId,
-                    FieldsToUpdate.Status.fieldName to status.value.toInt(),
+                    FieldsToUpdate.Status.fieldName to status.value.toIntOrZero(),
                     FieldsToUpdate.Schedule.fieldName to date,
             )
             return QueryParamBuilder()
@@ -104,7 +105,7 @@ class PlayBroadcastUpdateChannelUseCase @Inject constructor(private val updateCh
         ): QueryParams {
             val params = mapOf(
                     PARAMS_CHANNEL_ID to channelId,
-                    FieldsToUpdate.Status.fieldName to PlayChannelStatusType.Draft.value.toInt()
+                    FieldsToUpdate.Status.fieldName to PlayChannelStatusType.Draft.value.toIntOrZero()
             )
             return QueryParamBuilder()
                     .setParams(params)

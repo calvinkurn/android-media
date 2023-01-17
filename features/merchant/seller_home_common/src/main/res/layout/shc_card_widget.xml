@@ -5,14 +5,14 @@
     android:id="@+id/cardWidgetContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/layout_lvl1">
+    app:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/containerCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/layout_lvl1">
+        android:paddingBottom="8dp">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imgShcCardState"
@@ -61,7 +61,7 @@
             android:maxLines="1"
             android:minHeight="@dimen/shc_dimen_18dp"
             android:textColor="@color/Unify_N700_96"
-            android:textSize="@dimen/fontSize_lvl3"
+            android:textSize="14sp"
             android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@+id/notifTagCard"
             app:layout_constraintHorizontal_bias="0"
@@ -111,7 +111,7 @@
             android:maxLines="1"
             android:minHeight="@dimen/shc_dimen_22dp"
             android:textColor="@color/Unify_N700_96"
-            android:textSize="@dimen/fontSize_lvl4"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="@+id/glShcCardEnd"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="@+id/glShcCardStart"
@@ -151,15 +151,15 @@
             android:maxLines="1"
             android:minHeight="@dimen/shc_dimen_18dp"
             android:textColor="@color/Unify_N700_68"
-            android:textSize="@dimen/fontSize_lvl2"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@+id/glShcCardEnd"
             app:layout_constraintStart_toStartOf="@+id/glShcCardStart"
             app:layout_constraintTop_toBottomOf="@+id/tvCardValue" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/shimmerCardTitle"
-            android:layout_width="@dimen/layout_lvl8"
-            android:layout_height="@dimen/layout_lvl2"
+            android:layout_width="96dp"
+            android:layout_height="16dp"
             android:layout_marginTop="12dp"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@+id/glShcCardStart"
@@ -169,9 +169,9 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/shimmerCardValue"
-            android:layout_width="@dimen/layout_lvl6"
-            android:layout_height="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_width="48dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="18dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"

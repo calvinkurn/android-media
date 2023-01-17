@@ -6,14 +6,10 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant.BO_PLUS
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant.BO_PLUS_DT
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant.BO_TOKONOW
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant.BO_TOKONOW_15
 import com.tokopedia.product.detail.data.util.getSuccessData
 import com.tokopedia.product.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.product.estimasiongkir.di.RatesEstimationScope
-import com.tokopedia.product.info.model.productdetail.response.BottomSheetProductDetailInfoResponse
+import com.tokopedia.product.info.data.response.BottomSheetProductDetailInfoResponse
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -111,6 +107,11 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                                   service_id
                                   service_order
                                   status
+                                  service_based_shipment {
+                                      is_available
+                                      text_price
+                                      text_eta
+                                  }
                                   range_price {
                                       min_price
                                       max_price

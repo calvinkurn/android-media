@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="13dp"
+    android:layout_marginTop="8dp"
     android:orientation="vertical">
 
     <com.tokopedia.product.info.widget.TitleAnimatedChevron
@@ -17,11 +17,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="13dp"
+        android:orientation="vertical"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:orientation="vertical"
-        tools:src="@tools:sample/avatars"
         android:visibility="gone"
+        tools:src="@tools:sample/avatars"
         tools:visibility="visible">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -34,12 +34,10 @@
 
     </LinearLayout>
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/expandable_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="10dp"
-        android:background="@color/Unify_N75"
-        app:layout_constraintTop_toBottomOf="@+id/loader_detail_item_title_1" />
-
+        android:background="@color/Unify_NN50" />
 </LinearLayout>

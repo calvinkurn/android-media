@@ -1,6 +1,7 @@
 package com.tokopedia.thankyou_native.domain.model
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.RawValue
 
 data class FeatureEngineRequest (
         @SerializedName("merchant_code")
@@ -12,35 +13,13 @@ data class FeatureEngineRequest (
         @SerializedName("limit")
         val limit : Int,
         @SerializedName("parameters")
-        val parameters : FeatureEngineRequestParameters,
+        val parameters: @RawValue Map<String, Any?>? = null,
         @SerializedName("operators")
         val operators : FeatureEngineRequestOperators,
         @SerializedName("thresholds")
         val thresholds : FeatureEngineRequestThresholds
 )
 
-data class FeatureEngineRequestParameters(
-        @SerializedName("static")
-        val static : String,
-        @SerializedName("amount")
-        val amount : String,
-        @SerializedName("gateway_code")
-        val gatewayCode : String,
-        @SerializedName("egold")
-        val eGold : String,
-        @SerializedName("donation")
-        val donation : String,
-        @SerializedName("user_id")
-        val userId : String,
-        @SerializedName("is_RM")
-        val isRM : String,
-        @SerializedName("is_PM")
-        val isPM : String,
-        @SerializedName("is_OS")
-        val isOS : String,
-        @SerializedName("is_enjoy_plus_benefit")
-        val isPlus: String
-)
 
 class FeatureEngineRequestOperators
 class FeatureEngineRequestThresholds

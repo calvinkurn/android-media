@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -13,7 +14,9 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cartcommon.domain.data.RemoveFromCartDomainModel
 import com.tokopedia.cartcommon.domain.data.UndoDeleteCartDomainModel
 import com.tokopedia.dialog.DialogUnify
@@ -40,6 +43,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
 import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
@@ -56,7 +60,7 @@ import javax.inject.Inject
 class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecoration: MiniCartListDecoration,
                                                   var summaryTransactionBottomSheet: SummaryTransactionBottomSheet,
                                                   var analytics: MiniCartAnalytics)
-    : MiniCartListActionListener {
+    : MiniCartListActionListener, MiniCartBottomSheetUnifyListener {
 
     companion object {
         const val STATE_PRODUCT_BUNDLE_RECOM_ATC = "product_bundle_recom_atc"
@@ -71,6 +75,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         private const val KEY_OLD_BUNDLE_ID = "old_bundle_id"
         private const val KEY_NEW_BUNLDE_ID = "new_bundle_id"
         private const val KEY_IS_CHANGE_VARIANT = "is_variant_changed"
+
+        private const val BSP_PAGE_SOURCE = "minicart"
     }
 
     private var viewBinding: LayoutBottomsheetMiniCartListBinding? = null
@@ -152,13 +158,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     }
 
     private fun initializeBottomSheet(viewBinding: LayoutBottomsheetMiniCartListBinding, fragmentManager: FragmentManager) {
-        bottomSheet = MiniCartBottomSheetUnify(object : MiniCartBottomSheetUnifyListener {
-            override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-                if (requestCode == REQUEST_EDIT_BUNDLE) {
-                    onResultFromEditBundle(resultCode, data)
-                }
-            }
-        }).apply {
+        bottomSheet = MiniCartBottomSheetUnify().apply {
+            listener = this@MiniCartListBottomSheet
             showCloseIcon = false
             showHeader = true
             isDragable = true
@@ -271,19 +272,23 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             widgetLayout: ShopHomeWidgetLayout,
             bundleGroupId: String
         ) {
-            showProgressLoading()
+            if (selectedMultipleBundle.isProductsHaveVariant) {
+                goToBundlingSelectionPage(selectedMultipleBundle.bundleId)
+            } else {
+                showProgressLoading()
 
-            viewModel?.addBundleToCart(
-                shopId = shopId,
-                warehouseId = warehouseId,
-                bundleId = selectedMultipleBundle.bundleId,
-                bundleName = bundleName,
-                bundleType = bundleType,
-                bundlePosition = bundlePosition,
-                priceCut = selectedMultipleBundle.displayPrice,
-                productDetails = productDetails,
-                productQuantity = selectedMultipleBundle.minOrder
-            )
+                viewModel?.addBundleToCart(
+                    shopId = shopId,
+                    warehouseId = warehouseId,
+                    bundleId = selectedMultipleBundle.bundleId,
+                    bundleName = bundleName,
+                    bundleType = bundleType,
+                    bundlePosition = bundlePosition,
+                    priceCut = selectedMultipleBundle.displayPrice,
+                    productDetails = productDetails,
+                    productQuantity = selectedMultipleBundle.minOrder
+                )
+            }
         }
 
         override fun impressionProductBundleMultiple(
@@ -358,19 +363,23 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             widgetLayout: ShopHomeWidgetLayout,
             bundleGroupId: String
         ) {
-            showProgressLoading()
+            if (selectedBundle.isProductsHaveVariant) {
+                goToBundlingSelectionPage(selectedBundle.bundleId)
+            } else {
+                showProgressLoading()
 
-            viewModel?.addBundleToCart(
-                shopId = shopId,
-                warehouseId = warehouseId,
-                bundleId = selectedBundle.bundleId,
-                bundleName = bundleName,
-                bundleType = bundleType,
-                bundlePosition = bundlePosition,
-                priceCut = selectedBundle.displayPrice,
-                productDetails = listOf(bundleProducts),
-                productQuantity = selectedBundle.minOrder
-            )
+                viewModel?.addBundleToCart(
+                    shopId = shopId,
+                    warehouseId = warehouseId,
+                    bundleId = selectedBundle.bundleId,
+                    bundleName = bundleName,
+                    bundleType = bundleType,
+                    bundlePosition = bundlePosition,
+                    priceCut = selectedBundle.displayPrice,
+                    productDetails = listOf(bundleProducts),
+                    productQuantity = selectedBundle.minOrder
+                )
+            }
         }
 
         override fun onTrackSingleVariantChange(
@@ -818,6 +827,22 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         bottomSheetListener?.showProgressLoading()
     }
 
+    private fun goToBundlingSelectionPage(bundleId: String) {
+        val bundlingSelectionPageAppLink = UriUtil.buildUri(
+            ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE,
+            ShopHomeProductBundleItemUiModel.DEFAULT_BUNDLE_PRODUCT_PARENT_ID
+        )
+        val bundleAppLinkWithParams = Uri.parse(bundlingSelectionPageAppLink).buildUpon()
+            .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_BUNDLE_ID, bundleId)
+            .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_PAGE_SOURCE, BSP_PAGE_SOURCE)
+            .build()
+            .toString()
+        bottomSheet?.context?.let {
+            val bspIntent = RouteManager.getIntent(it, bundleAppLinkWithParams)
+            bottomSheet?.startActivityForResult(bspIntent, REQUEST_EDIT_BUNDLE)
+        }
+    }
+
     private fun hideProgressLoading() {
         bottomSheetListener?.hideProgressLoading()
     }
@@ -951,6 +976,12 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             analytics.eventClickChangeProductBundle()
             toBeDeletedBundleGroupId = element.bundleGroupId
             bottomSheet?.startActivityForResult(intent, REQUEST_EDIT_BUNDLE)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_EDIT_BUNDLE) {
+            onResultFromEditBundle(resultCode, data)
         }
     }
 }

@@ -12,6 +12,7 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.databinding.ItemMvcCouponListBinding
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import timber.log.Timber
+import java.util.Locale
 
 class CouponListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -113,7 +114,7 @@ class CouponListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             tvLblCode.isVisible = isVisible
             tvVoucherCode.isVisible = isVisible
             iconCopyCode.isVisible = isVisible
-            tvVoucherCode.text = String.format(" %s", voucherCode)
+            tvVoucherCode.text = String.format(Locale.getDefault()," %s", voucherCode)
         }
     }
 
@@ -125,7 +126,7 @@ class CouponListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         if (isActiveVoucher) {
             val startTime = DateTimeUtils.reformatUnsafeDateTime(coupon.startTime, newFormat)
             val finishTime = DateTimeUtils.reformatUnsafeDateTime(coupon.finishTime, newFormat)
-            binding?.tvMvcVoucherDuration?.text = String.format("%s - %s", startTime, finishTime)
+            binding?.tvMvcVoucherDuration?.text = String.format(Locale.getDefault(), "%s - %s", startTime, finishTime)
         } else {
             val createdTime = DateTimeUtils.reformatUnsafeDateTime(coupon.createdTime, newFormat)
             binding?.tvMvcVoucherDuration?.text = createdTime

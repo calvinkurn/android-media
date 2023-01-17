@@ -13,7 +13,11 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.util.TypedValue
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -36,7 +40,13 @@ import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
@@ -90,7 +100,11 @@ import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
 import com.tokopedia.sellerorder.databinding.DialogAcceptOrderFreeShippingSomBinding
 import com.tokopedia.sellerorder.databinding.FragmentSomDetailBinding
 import com.tokopedia.sellerorder.detail.analytic.performance.SomDetailLoadTimeMonitoring
-import com.tokopedia.sellerorder.detail.data.model.*
+import com.tokopedia.sellerorder.detail.data.model.GetResolutionTicketStatusResponse
+import com.tokopedia.sellerorder.detail.data.model.SetDelivered
+import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
+import com.tokopedia.sellerorder.detail.data.model.SomDynamicPriceResponse
+import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity
@@ -98,7 +112,12 @@ import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticI
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailAddOnViewHolder
-import com.tokopedia.sellerorder.detail.presentation.bottomsheet.*
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.BottomSheetManager
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBaseRejectOrderBottomSheet
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectOrderAdapter
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectReasonsAdapter
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetSetDelivered
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomConfirmShippingBottomSheet
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
 import com.tokopedia.sellerorder.detail.presentation.mapper.SomDetailMapper
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
@@ -385,7 +404,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     isDetailChanged = if (detailResponse == null) false else detailResponse != it.data.getSomDetail
                     detailResponse = it.data.getSomDetail
                     dynamicPriceResponse = it.data.somDynamicPriceResponse
-                    renderDetail(it.data.getSomDetail, it.data.somDynamicPriceResponse)
+                    renderDetail(it.data.getSomDetail, it.data.somDynamicPriceResponse, it.data.somResolution)
                 }
                 is Fail -> {
                     it.throwable.showGlobalError()
@@ -544,7 +563,9 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     protected open fun renderDetail(
         somDetail: SomDetailOrder.Data.GetSomDetail?,
-        somDynamicPriceResponse: SomDynamicPriceResponse.GetSomDynamicPrice?
+        somDynamicPriceResponse: SomDynamicPriceResponse.GetSomDynamicPrice?,
+        resolutionTicketStatusResponse: GetResolutionTicketStatusResponse
+                                            .ResolutionGetTicketStatus.ResolutionData?
     ) {
         showSuccessState()
         renderButtons()
@@ -553,7 +574,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
         somDetailAdapter.setElements(
             SomDetailMapper.mapSomGetOrderDetailResponseToVisitableList(
-                somDetail, somDynamicPriceResponse
+                somDetail, somDynamicPriceResponse, resolutionTicketStatusResponse
             )
         )
     }
@@ -707,6 +728,8 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     }
                 }
                 setChild(dialogView)
+
+                setAcceptOrderFreeShippingDialogDismissListener()
             }
             dialogUnify.show()
         }
@@ -950,6 +973,11 @@ open class SomDetailFragment : BaseDaggerFragment(),
         showCommonToaster(getString(R.string.som_detail_add_on_description_copied_message))
     }
 
+    override fun onResoClicked(redirectPath: String) {
+        SomNavigator.openAppLink(context, redirectPath)
+        SomAnalytics.sendClickOnResolutionWidgetEvent(userSession.userId)
+    }
+
     private fun doRejectOrder(orderRejectRequestParam: SomRejectRequestParam) {
         activity?.resources?.let {
             somDetailViewModel.rejectOrder(orderRejectRequestParam)
@@ -958,7 +986,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observingRejectOrder() {
-        somDetailViewModel.rejectOrderResult.observe(viewLifecycleOwner, {
+        somDetailViewModel.rejectOrderResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessRejectOrder(it.data.rejectOrder)
                 is Fail -> {
@@ -973,7 +1001,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     it.throwable.showErrorToaster()
                 }
             }
-        })
+        }
     }
 
     override fun onDialPhone(strPhoneNo: String) {
@@ -1269,6 +1297,12 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     show()
                 }
             }
+        }
+    }
+
+    private fun DialogUnify.setAcceptOrderFreeShippingDialogDismissListener() {
+        setOnDismissListener {
+            binding?.btnPrimary?.isLoading = false
         }
     }
 

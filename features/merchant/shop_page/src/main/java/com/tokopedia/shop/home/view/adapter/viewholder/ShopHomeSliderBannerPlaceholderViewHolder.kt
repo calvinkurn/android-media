@@ -7,7 +7,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 
 class ShopHomeSliderBannerPlaceholderViewHolder(
-        view: View?
+    view: View?
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view) {
 
     companion object {
@@ -16,5 +16,4 @@ class ShopHomeSliderBannerPlaceholderViewHolder(
     }
 
     override fun bind(shopHomeDisplayWidgetUiModel: ShopHomeDisplayWidgetUiModel) {}
-
 }

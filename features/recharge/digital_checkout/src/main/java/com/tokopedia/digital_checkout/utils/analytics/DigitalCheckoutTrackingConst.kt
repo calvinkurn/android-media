@@ -20,6 +20,7 @@ object DigitalCheckoutTrackingConst {
     object Category {
         const val DIGITAL_CHECKOUT = "digital - checkout"
         const val DIGITAL_CHECKOUT_PAGE = "digital - checkout page"
+        const val ERROR_PAGE = "digital - error page"
     }
 
     object Action {
@@ -46,6 +47,9 @@ object DigitalCheckoutTrackingConst {
         const val SUBSCRIPTION_CLICK_INFO_BUTTON = "click on info button"
         const val SUBSCRIPTION_CLICK_CLOSE_MORE_INFO = "click x info bottom sheet"
         const val SUBSCRIPTION_VIEW_MORE_INFO_BOTTOM_SHEET = "view info bottom sheet"
+
+        const val OPEN_ERROR_PAGE = "view error page"
+        const val CLICK_ERROR_PAGE = "click error action button"
     }
 
     object Label {
@@ -71,6 +75,9 @@ object DigitalCheckoutTrackingConst {
 
         const val REGULAR_PRODUCT = "regular product"
         const val SPECIAL_PROMO = "special product promo"
+
+        const val TRACKER_ID_OPEN_ERROR_PAGE = "37045"
+        const val TRACKER_ID_CLICK_ERROR_PAGE = "37046"
     }
 
     object Misc {
@@ -78,6 +85,7 @@ object DigitalCheckoutTrackingConst {
         const val ACTION_FIELD_STEP2 = "click payment option button"
 
         const val ACTION_FIELD_STEP2_TEBUS_MURAH = "click proceed to payment"
+        const val TRACKER_ID = "trackerId"
     }
 
     object CurrencyCode {

@@ -369,7 +369,7 @@ class HotelBookingViewModelTest {
         promoData.apply {
             promoCode = "TOPED"
             description = "Potensi Cashback senilai Rp. 10.000"
-            amount = 1000
+            amount = 1000L
         }
 
         //when

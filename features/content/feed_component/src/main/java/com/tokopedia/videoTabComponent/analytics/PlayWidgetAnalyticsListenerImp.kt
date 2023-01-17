@@ -7,7 +7,6 @@ import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker
 import javax.inject.Inject
 
@@ -15,7 +14,6 @@ import javax.inject.Inject
 
 class PlayWidgetAnalyticsListenerImp @Inject constructor(
     private val tracker: PlayAnalyticsTracker,
-    private val userSession: UserSessionInterface
 ) : PlayWidgetAnalyticListener {
 
     var filterCategory: String = ""
@@ -108,21 +106,37 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
         channelPositionInList: Int,
     ) {
         if (item.channelType == PlayWidgetChannelType.Upcoming) {
-            if (channelPositionInList == 0)
-                tracker.impressOnUpcomingContentCarouselWidget(filterCategory)
+            impressMediumUpcomingWidget(channelPositionInList)
             tracker.impressOnUpcomingCarouselContentCards(
                 item.channelId, item.partner.id, listOf(item.video.coverUrl),
                 item.channelType.toString().lowercase(), filterCategory, channelPositionInList
             )
         } else if (item.channelType == PlayWidgetChannelType.Live) {
-            if (channelPositionInList == 0)
-                tracker.impressOnLagiLiveContentCarouselWidget()
+            impressMediumLiveWidget(channelPositionInList)
             tracker.impressOnLagiLiveCarouselContentCards(
                 item.channelId,
                 item.partner.id,
                 listOf(item.video.coverUrl),
                 item.channelType.toString().lowercase(), channelPositionInList
             )
+        }
+    }
+
+    /**
+     * only send impression when the very first card is upcoming
+     */
+    private fun impressMediumUpcomingWidget(channelPositionInList: Int) {
+        if (channelPositionInList == FIRST_CHANNEL_POSITION_IN_LIST) {
+            tracker.impressOnUpcomingContentCarouselWidget(filterCategory)
+        }
+    }
+
+    /**
+     * only send impression when the very first card is live
+     */
+    private fun impressMediumLiveWidget(channelPositionInList: Int) {
+        if (channelPositionInList == FIRST_CHANNEL_POSITION_IN_LIST) {
+            tracker.impressOnLagiLiveContentCarouselWidget()
         }
     }
 
@@ -154,7 +168,6 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
     ) {
         super.onClickToggleReminderChannel(view, item, channelPositionInList, isRemindMe)
 
-
         if (item.channelType == PlayWidgetChannelType.Upcoming) {
             if (isRemindMe) {
                 tracker.clickOnRemindMeButtonOnPlayCardInUpcomingCarousel(
@@ -181,9 +194,7 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
         }
     }
 
-    override fun onClickViewAll(view: PlayWidgetMediumView) {
-        super.onClickViewAll(view)
-
-
+    companion object {
+        private const val FIRST_CHANNEL_POSITION_IN_LIST = 1
     }
 }

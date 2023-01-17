@@ -103,12 +103,13 @@ class UploadPrescriptionViewModel @Inject constructor(
         _productDetailLiveData.postValue(Fail(throwable))
     }
 
-    fun getEPharmacyCheckoutDetail(checkoutId: String) {
+    fun getEPharmacyCheckoutDetail(checkoutId: String,source: String) {
         getEPharmacyCheckoutDetailUseCase.cancelJobs()
         getEPharmacyCheckoutDetailUseCase.getEPharmacyCheckoutDetail(
             ::onAvailableEPharmacyCheckoutDetail,
             ::onFailEPharmacyDetail,
-            checkoutId
+            checkoutId,
+            source
         )
     }
 
@@ -346,9 +347,11 @@ class UploadPrescriptionViewModel @Inject constructor(
 
     fun removePrescriptionImageAt(index : Int){
         _prescriptionImages.value?.let {
-            it.removeAt(index)
-            _prescriptionImages.postValue(it)
-            checkPrescriptionImages()
+            if(index < it.size){
+                it.removeAt(index)
+                _prescriptionImages.postValue(it)
+                checkPrescriptionImages()
+            }
         }
     }
 

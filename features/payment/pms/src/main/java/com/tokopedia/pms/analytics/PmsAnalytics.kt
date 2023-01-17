@@ -1,5 +1,7 @@
 package com.tokopedia.pms.analytics
 
+import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
+import com.tokopedia.pms.paymentlist.domain.data.CreditCardPaymentModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -51,7 +53,24 @@ class PmsAnalytics @Inject constructor(
             is PmsEvents.InvokeChangeAccountDetailsEvent -> prepareCommonMap(
                 ACTION_CLICK_CHANGE_BANK_DETAIL
             )
+            is PmsEvents.CompletePayment -> prepareCompletePaymentAnalytics(
+                ACTION_COMPLETE_PAYMENT,
+                event.basePaymentModel
+            )
         }
+    }
+
+    private fun prepareCompletePaymentAnalytics(action: String, basePaymentModel: BasePaymentModel)
+    {
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME,
+            getCategoryName(),
+            action,
+            basePaymentModel.gatewayName
+        )
+        if(basePaymentModel is  CreditCardPaymentModel)
+            map[KEY_PAYMENT_ID] = basePaymentModel.transactionId
+        sendAnalytics(map)
     }
 
     private fun prepareCommonMap(action: String, label: String? = "") {
@@ -75,6 +94,7 @@ class PmsAnalytics @Inject constructor(
         private fun getCategoryName(): String = "pms page"
 
         const val KEY_USER_ID = "userId"
+        const val KEY_PAYMENT_ID = "paymentId"
         const val KEY_BUSINESS_UNIT = "businessUnit"
         const val KEY_CURRENT_SITE = "currentSite"
 
@@ -84,7 +104,6 @@ class PmsAnalytics @Inject constructor(
         const val SCREEN_NAME = "PMS page"
         const val EVENT_NAME = "clickPMS"
         const val ACTION_TAP_THREE_DOTS = "tap three dots"
-
         const val ACTION_CLICK_CANCEL_TRANSACTION = "click batalkan transaksi"
         const val ACTION_CLICK_CONFIRM_CANCEL_TRANSACTION = "click confirm batalkan transaksi"
         const val ACTION_CLICK_CANCEL_ON_TRANSACTION_DETAIL = "click batalkan on detail"
@@ -97,6 +116,7 @@ class PmsAnalytics @Inject constructor(
 
         const val ACTION_CLICK_CHANGE_BANK_DETAIL = "click ubah detail rekening"
         const val ACTION_CLICK_CONFIRM_BANK_DETAIL = "click confirm ubah detail rekening"
+        const val ACTION_COMPLETE_PAYMENT = "click lanjut bayar"
 
         const val ACTION_CLICK_SELECT_IMAGE = "click pilih gambar"
         const val ACTION_CLICK_SELECT_ANOTHER_IMAGE = "click pilih gambar lain"

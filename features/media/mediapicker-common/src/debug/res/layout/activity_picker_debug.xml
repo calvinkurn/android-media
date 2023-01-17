@@ -29,16 +29,57 @@
         android:text="OPEN PICKER"
         app:unifyButtonSize="medium" />
 
-    <EditText
-        android:id="@+id/edt_config"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="20dp"
-        android:background="@null"
-        android:textSize="12sp"
-        android:gravity="start|top"
+    <ScrollView
         android:layout_below="@+id/btn_action"
-        android:layout_above="@+id/drawer_selector" />
+        android:layout_above="@+id/drawer_selector"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:padding="20dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:text="Picker config param"
+                app:typographyType="heading_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:background="@null"
+                tools:text="Text 1"
+                android:id="@+id/picker_config"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:gravity="start|top" />
+
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:text="Editor config param"
+                app:typographyType="heading_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:background="@null"
+                tools:text="Text 2"
+                android:id="@+id/editor_config"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:gravity="start|top" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
     <com.tokopedia.picker.widget.drawerselector.DebugDrawerSelectionWidget
         android:id="@+id/drawer_selector"

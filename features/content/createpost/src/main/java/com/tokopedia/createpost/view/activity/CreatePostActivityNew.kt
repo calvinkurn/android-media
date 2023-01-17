@@ -1,7 +1,6 @@
 package com.tokopedia.createpost.view.activity
 
 import android.app.Activity
-import android.app.Application
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -15,28 +14,28 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.createpost.common.SHOP_ID_PARAM
 import com.tokopedia.createpost.common.USER_ID_PARAM
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
-import com.tokopedia.createpost.common.view.service.SubmitPostServiceNew
+import com.tokopedia.createpost.common.view.service.SubmitPostService
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
-import com.tokopedia.createpost.domain.usecase.UploadMultipleImageUsecaseNew
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
 import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepicker_insta.common.BundleData
-import com.tokopedia.imagepicker_insta.common.ui.analytic.FeedAccountTypeAnalytic
-import com.tokopedia.imagepicker_insta.common.ui.bottomsheet.FeedAccountTypeBottomSheet
-import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
-import com.tokopedia.imagepicker_insta.common.ui.toolbar.ImagePickerCommonToolbar
+import com.tokopedia.content.common.types.BundleData
+import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
+import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -46,7 +45,7 @@ import javax.inject.Inject
 class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListener {
 
     /** View */
-    private lateinit var toolbarCommon: ImagePickerCommonToolbar
+    private lateinit var toolbarCommon: ContentAccountToolbar
 
     @Inject
     lateinit var createPostAnalytics: CreatePostAnalytics
@@ -57,31 +56,30 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     @Inject
     lateinit var feedAccountAnalytic: FeedAccountTypeAnalytic
 
-    var selectedFeedAccount: FeedAccountUiModel = FeedAccountUiModel.Empty
-    var isOpenFrom: Int = 0
+    var selectedContentAccount: ContentAccountUiModel = ContentAccountUiModel.Empty
+    var isOpenFrom: String = ""
 
-    protected val mFeedAccountList = mutableListOf<FeedAccountUiModel>()
+    protected val mFeedAccountList = mutableListOf<ContentAccountUiModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
-        UploadMultipleImageUsecaseNew.mContext = applicationContext as Application?
     }
 
     override fun onAttachFragment(fragment: Fragment) {
         super.onAttachFragment(fragment)
         when(fragment) {
-            is FeedAccountTypeBottomSheet -> {
+            is ContentAccountTypeBottomSheet -> {
                 fragment.setData(mFeedAccountList)
                 fragment.setAnalytic(feedAccountAnalytic)
-                fragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
-                    override fun onAccountClick(feedAccount: FeedAccountUiModel) {
-                        if(feedAccount.type != selectedFeedAccount.type && feedAccount.isShop) {
-                            showSwitchAccountDialog(feedAccount)
+                fragment.setOnAccountClickListener(object : ContentAccountTypeBottomSheet.Listener {
+                    override fun onAccountClick(contentAccount: ContentAccountUiModel) {
+                        if(contentAccount.type != selectedContentAccount.type && contentAccount.isShop) {
+                            showSwitchAccountDialog(contentAccount)
                             return
                         }
 
-                        changeSelectedFeedAccount(feedAccount)
+                        changeSelectedFeedAccount(contentAccount)
                     }
                 })
             }
@@ -111,8 +109,8 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     ) {
     }
 
-    override fun setFeedAccountList(feedAccountList: List<FeedAccountUiModel>) {
-        setupToolbar(feedAccountList)
+    override fun setContentAccountList(contentAccountList: List<ContentAccountUiModel>) {
+        setupToolbar(contentAccountList)
     }
 
     override fun openProductTaggingPageOnPreviewMediaClick(position: Int) {
@@ -162,6 +160,9 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         const val EXTRA_SELECTED_FEED_ACCOUNT_ID = "EXTRA_SELECTED_FEED_ACCOUNT_ID"
         private const val DEFAULT_CACHE_DURATION = 7L
 
+        const val PARAM_POST_ID = "post_id"
+        const val PARAM_TYPE = "author_type"
+
         var isEditState: Boolean = false
         var isOpenedFromPreview: Boolean = false
         fun createIntent(
@@ -208,8 +209,8 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
         }
 
-        if(selectedFeedAccount.id.isNotEmpty())
-            intent.putExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID, selectedFeedAccount.id)
+        if(selectedContentAccount.id.isNotEmpty())
+            intent.putExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID, selectedContentAccount.id)
 
         return when (intent.extras?.get(PARAM_TYPE)) {
             TYPE_CONTENT_TAGGING_PAGE -> CreatePostPreviewFragmentNew.createInstance(intent.extras
@@ -259,10 +260,10 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             createPostAnalytics.eventClickBackOnProductTaggingPage()
 
             val dialog = DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(getString(R.string.feed_content_dialog_title))
-            dialog.setDescription(getString(R.string.feed_content_dialog_desc))
-            dialog.setPrimaryCTAText(getString(R.string.feed_content_primary_cta_text))
-            dialog.setSecondaryCTAText(getString(R.string.feed_content_sec_cta_text))
+            dialog.setTitle(getString(com.tokopedia.content.common.R.string.feed_content_dialog_title))
+            dialog.setDescription(getString(com.tokopedia.content.common.R.string.feed_content_dialog_desc))
+            dialog.setPrimaryCTAText(getString(com.tokopedia.content.common.R.string.feed_content_primary_cta_text))
+            dialog.setSecondaryCTAText(getString(com.tokopedia.content.common.R.string.feed_content_sec_cta_text))
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
                 createPostAnalytics.eventClickContinueOnConfirmationPopup()
@@ -288,16 +289,19 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         KeyboardHandler.hideSoftKeyboard(this)
         val cacheManager = SaveInstanceCacheManager(this, true)
         val createPostViewModel = (fragment as? BaseCreatePostFragmentNew)?.getLatestCreatePostData()
-        createPostViewModel?.authorType = selectedFeedAccount.type
+        createPostViewModel?.authorType = selectedContentAccount.type
         cacheManager.put(
             CreatePostViewModel.TAG,
             createPostViewModel,
             TimeUnit.DAYS.toMillis(DEFAULT_CACHE_DURATION)
         )
-        SubmitPostServiceNew.startService(applicationContext, cacheManager.id!!)
+        cacheManager.id?.let { draftId ->
+            SubmitPostService.startService(applicationContext, draftId)
+        }
 
-        when (intent.extras?.getInt(BundleData.KEY_IS_OPEN_FROM, 0)) {
+        when (isOpenFrom) {
             BundleData.VALUE_IS_OPEN_FROM_USER_PROFILE -> goToUserProfile()
+            BundleData.VALUE_IS_OPEN_FROM_SHOP_PAGE -> goToShopPage()
             else -> createPostViewModel?.let { goToFeed(it) }
         }
     }
@@ -319,7 +323,15 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     private fun goToUserProfile() {
         val appLink = ApplinkConst.PROFILE_SUCCESS_POST.replace(USER_ID_PARAM, userSession.userId)
         val intent = RouteManager.getIntent(this, appLink)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        startActivity(intent)
+        finish()
+    }
+
+    private fun goToShopPage() {
+        val appLink = ApplinkConst.SHOP.replace(SHOP_ID_PARAM, userSession.shopId)
+        val intent = RouteManager.getIntent(this, appLink)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         startActivity(intent)
         finish()
     }
@@ -328,36 +340,36 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         toolbarCommon = findViewById(R.id.toolbar_common)
     }
 
-    private fun setupToolbar(feedAccountList: List<FeedAccountUiModel>) {
+    private fun setupToolbar(contentAccountList: List<ContentAccountUiModel>) {
         mFeedAccountList.clear()
-        mFeedAccountList.addAll(feedAccountList)
+        mFeedAccountList.addAll(contentAccountList)
 
         val selectedFeedAccountId = intent.getStringExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID) ?: ""
-        isOpenFrom = intent.extras?.getInt(BundleData.KEY_IS_OPEN_FROM, 0) ?: 0
-        selectedFeedAccount = if (mFeedAccountList.isEmpty()) FeedAccountUiModel.Empty
+        isOpenFrom = intent.extras?.getString(BundleData.KEY_IS_OPEN_FROM, "") ?: ""
+        selectedContentAccount = if (mFeedAccountList.isEmpty()) ContentAccountUiModel.Empty
         else mFeedAccountList.firstOrNull { it.id == selectedFeedAccountId }
             ?: mFeedAccountList.first()
 
         val createPostViewModel = (intent?.extras?.get(CreatePostViewModel.TAG) as CreatePostViewModel?)
         createPostViewModel?.let {
                if (it.isEditState){
-                   selectedFeedAccount = findAccountByAuthorIdOfPost(mFeedAccountList, it.editAuthorId)
+                   selectedContentAccount = findAccountByAuthorIdOfPost(mFeedAccountList, it.editAuthorId)
             }
         }
 
         toolbarCommon.apply {
-            icon = selectedFeedAccount.iconUrl
-            title = getString(R.string.feed_content_post_sebagai)
-            subtitle = selectedFeedAccount.name
+            icon = selectedContentAccount.iconUrl
+            title = getString(com.tokopedia.content.common.R.string.feed_content_post_sebagai)
+            subtitle = selectedContentAccount.name
             createPostViewModel?.let {
                 val isAllowSwitchAccount = mFeedAccountList.size > 1 && mFeedAccountList.find { acc -> acc.isUserPostEligible } != null
 
                 if (!it.isEditState && isAllowSwitchAccount)
                     setOnAccountClickListener {
                         feedAccountAnalytic.clickAccountInfo()
-                        FeedAccountTypeBottomSheet
+                        ContentAccountTypeBottomSheet
                             .getFragment(supportFragmentManager, classLoader)
-                            .showNow(supportFragmentManager)
+                            .show(supportFragmentManager)
                     }
                 else setOnAccountClickListener(null)
             }
@@ -373,25 +385,25 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     }
 
     private fun findAccountByAuthorIdOfPost(
-        feedAccountList: List<FeedAccountUiModel>,
+        contentAccountList: List<ContentAccountUiModel>,
         authorId: String
-    ): FeedAccountUiModel {
-        val acc = feedAccountList.find {
+    ): ContentAccountUiModel {
+        val acc = contentAccountList.find {
             it.id == authorId
         }
-        return acc ?: FeedAccountUiModel.Empty
+        return acc ?: ContentAccountUiModel.Empty
     }
 
     private fun backWithActionResult() {
         val intent = Intent().apply {
-            putExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID, selectedFeedAccount.id)
+            putExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID, selectedContentAccount.id)
             putExtra(BundleData.KEY_IS_OPEN_FROM, isOpenFrom)
         }
         setResult(Activity.RESULT_OK, intent)
         finish()
     }
 
-    private fun showSwitchAccountDialog(feedAccount: FeedAccountUiModel) {
+    private fun showSwitchAccountDialog(contentAccount: ContentAccountUiModel) {
         DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
             setTitle(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_title))
             setDescription(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_desc))
@@ -412,17 +424,17 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
                     }
                 }
 
-                changeSelectedFeedAccount(feedAccount)
+                changeSelectedFeedAccount(contentAccount)
             }
         }.show()
     }
 
-    private fun changeSelectedFeedAccount(feedAccount: FeedAccountUiModel) {
-        selectedFeedAccount = feedAccount
+    private fun changeSelectedFeedAccount(contentAccount: ContentAccountUiModel) {
+        selectedContentAccount = contentAccount
 
         toolbarCommon.apply {
-            subtitle = selectedFeedAccount.name
-            icon = selectedFeedAccount.iconUrl
+            subtitle = selectedContentAccount.name
+            icon = selectedContentAccount.iconUrl
         }
     }
 }

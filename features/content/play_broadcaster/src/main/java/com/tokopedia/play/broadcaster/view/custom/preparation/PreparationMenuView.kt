@@ -3,11 +3,12 @@ package com.tokopedia.play.broadcaster.view.custom.preparation
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat.getColor
+import com.tokopedia.content.common.R.color.Unify_Static_White
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroPreparationMenuBinding
-import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.content.common.R.color.content_dms_white_disable
 
 /**
  * Created By : Jonathan Darwin on January 25, 2022
@@ -36,25 +37,40 @@ class PreparationMenuView : ConstraintLayout {
 
     init {
         binding.clBroSetTitle.setOnClickListener { mListener?.onClickSetTitle() }
-        binding.clBroSetCover.setOnClickListener { mListener?.onClickSetCover() }
-        binding.clBroSetProduct.setOnClickListener { mListener?.onClickSetProduct() }
-        binding.clBroSetSchedule.setOnClickListener { mListener?.onClickSetSchedule() }
     }
 
-    fun isSetTitleChecked(isChecked: Boolean) {
-        binding.icBroTitleChecked.visibility = if(isChecked) View.VISIBLE else View.INVISIBLE
+    fun isSetTitleChecked(isChecked: Boolean) = with(binding) {
+        icBroTitleChecked.showWithCondition(isChecked)
+        val stateColor = if (isChecked) {
+            clBroSetCover.setOnClickListener { mListener?.onClickSetCover() }
+            clBroSetProduct.setOnClickListener { mListener?.onClickSetProduct() }
+            clBroSetSchedule.setOnClickListener { mListener?.onClickSetSchedule() }
+            getColor(context, Unify_Static_White)
+        }
+        else {
+            clBroSetCover.setOnClickListener(null)
+            clBroSetProduct.setOnClickListener(null)
+            clBroSetSchedule.setOnClickListener(null)
+            getColor(context, content_dms_white_disable)
+        }
+        icBroSetCover.setImage(newLightEnable = stateColor, newDarkEnable = stateColor)
+        tvBroSetCover.setTextColor(stateColor)
+        icBroSetProduct.setImage(newLightEnable = stateColor, newDarkEnable = stateColor)
+        tvBroSetProduct.setTextColor(stateColor)
+        icBroSetSchedule.setImage(newLightEnable = stateColor, newDarkEnable = stateColor)
+        tvBroSetSchedule.setTextColor(stateColor)
     }
 
     fun isSetCoverChecked(isChecked: Boolean) {
-        binding.icBroCoverChecked.visibility = if(isChecked) View.VISIBLE else View.INVISIBLE
+        binding.icBroCoverChecked.showWithCondition(isChecked)
     }
 
     fun isSetProductChecked(isChecked: Boolean) {
-        binding.icBroProductChecked.visibility = if(isChecked) View.VISIBLE else View.INVISIBLE
+        binding.icBroProductChecked.showWithCondition(isChecked)
     }
 
     fun isSetScheduleChecked(isChecked: Boolean) {
-        binding.icBroScheduleChecked.visibility = if(isChecked) View.VISIBLE else View.INVISIBLE
+        binding.icBroScheduleChecked.showWithCondition(isChecked)
     }
 
     fun showScheduleMenu(shouldShow: Boolean) {

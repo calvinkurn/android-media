@@ -43,7 +43,7 @@ class ProductSetupUiModelBuilder {
         id: String = "1",
         name: String = "Product 1",
         imageUrl: String = "",
-        stock: Int = 10,
+        stock: Long = 10,
         price: ProductPrice = OriginalPrice("Rp 12.000", 12000.0),
     ) = ProductUiModel(id, name, imageUrl, stock, price)
 

@@ -1,12 +1,14 @@
 package com.tokopedia.play.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
+import com.tokopedia.play.domain.repository.PlayViewerChannelRepository
+import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.model.PlayResponseBuilder
 import com.tokopedia.play.robot.parent.andWhen
 import com.tokopedia.play.robot.parent.givenParentViewModelRobot
 import com.tokopedia.play.robot.parent.thenVerify
+import com.tokopedia.play.view.storage.PagingChannel
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -14,7 +16,6 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
-import java.lang.IllegalStateException
 
 /**
  * Created by jegul on 10/02/21
@@ -28,13 +29,18 @@ class PlayParentViewModelTest {
     private val classBuilder = ClassBuilder()
     private val mapper = classBuilder.getPlayChannelDetailsRecomMapper()
 
+    private val repo: PlayViewerRepository = mockk(relaxed = true)
+
     @Test
     fun `given there are available channels, when first init, then channels can be retrieved`() {
-        val mockUseCase: GetChannelDetailsWithRecomUseCase = mockk(relaxed = true)
-        coEvery { mockUseCase.executeOnBackground() } returns responseBuilder.buildChannelDetailsWithRecomResponse()
+        val response = responseBuilder.buildChannelDetailsWithRecomResponse()
+        coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
+            channelList = mapper.map(response, classBuilder.getMapperExtraParams()),
+            cursor = response.channelDetails.meta.cursor,
+        )
 
         givenParentViewModelRobot(
-                getChannelDetailsWithRecomUseCase = mockUseCase,
+            repo = repo,
         ) thenVerify {
             channelIdResult
                     .isSuccess()
@@ -44,11 +50,10 @@ class PlayParentViewModelTest {
 
     @Test
     fun `given retrieving channel is error, when first init, then channels can not be retrieved`() {
-        val mockUseCase: GetChannelDetailsWithRecomUseCase = mockk(relaxed = true)
-        coEvery { mockUseCase.executeOnBackground() } throws IllegalStateException("Channel is error")
+        coEvery { repo.getChannels(any(), any()) } throws IllegalStateException("Channel is error")
 
         givenParentViewModelRobot(
-                getChannelDetailsWithRecomUseCase = mockUseCase,
+            repo = repo,
         ) thenVerify {
             channelIdResult
                     .isFailure()
@@ -72,30 +77,31 @@ class PlayParentViewModelTest {
 
     @Test
     fun `given channel data is already stored, when retrieved existing channel id data, then it should return the correct data`() {
-        val mockResponse = responseBuilder.buildChannelDetailsWithRecomResponse()
-
-        val mockUseCase: GetChannelDetailsWithRecomUseCase = mockk(relaxed = true)
-        coEvery { mockUseCase.executeOnBackground() } returns mockResponse
-
-        val mappedData = mapper.map(mockResponse, classBuilder.getMapperExtraParams())
+        val response = responseBuilder.buildChannelDetailsWithRecomResponse()
+        val channelData = mapper.map(response, classBuilder.getMapperExtraParams())
+        coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
+            channelList = channelData,
+            cursor = response.channelDetails.meta.cursor,
+        )
 
         givenParentViewModelRobot(
-                getChannelDetailsWithRecomUseCase = mockUseCase
+            repo = repo,
         ) thenVerify {
-            channelDataResult(mappedData.first().id)
+            channelDataResult(channelData.first().id)
                     .isAvailable()
         }
     }
 
     @Test
     fun `given channel data is already stored, when retrieved invalid channel id data, then it should return error`() {
-        val mockResponse = responseBuilder.buildChannelDetailsWithRecomResponse()
-
-        val mockUseCase: GetChannelDetailsWithRecomUseCase = mockk(relaxed = true)
-        coEvery { mockUseCase.executeOnBackground() } returns mockResponse
+        val response = responseBuilder.buildChannelDetailsWithRecomResponse()
+        coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
+            channelList = mapper.map(response, classBuilder.getMapperExtraParams()),
+            cursor = response.channelDetails.meta.cursor,
+        )
 
         givenParentViewModelRobot(
-                getChannelDetailsWithRecomUseCase = mockUseCase
+            repo = repo,
         ) thenVerify {
             channelDataResult("invalid channel id")
                     .isError()
@@ -104,18 +110,19 @@ class PlayParentViewModelTest {
 
     @Test
     fun `given channel data is already stored, when data is overridden, then it should return newest data`() {
-        val mockResponse = responseBuilder.buildChannelDetailsWithRecomResponse()
+        val response = responseBuilder.buildChannelDetailsWithRecomResponse()
+        val mappedData = mapper.map(response, classBuilder.getMapperExtraParams())
+        coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
+            channelList = mappedData,
+            cursor = response.channelDetails.meta.cursor,
+        )
 
-        val mockUseCase: GetChannelDetailsWithRecomUseCase = mockk(relaxed = true)
-        coEvery { mockUseCase.executeOnBackground() } returns mockResponse
-
-        val mappedData = mapper.map(mockResponse, classBuilder.getMapperExtraParams())
         val oldData = mappedData.first()
 
         val newData: PlayChannelData = mockk(relaxed = true)
 
         givenParentViewModelRobot(
-                getChannelDetailsWithRecomUseCase = mockUseCase
+            repo = repo,
         ) thenVerify {
 //            channelDataResult(oldData.id)
 //                    .isDataEqualTo(oldData)

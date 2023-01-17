@@ -5,6 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.usecase.shopcardusecase.ShopCardUseCase
 import io.mockk.*
@@ -28,6 +29,10 @@ class CarouselErrorLoadViewModelTest {
     }
 
     private val shopCardUseCase: ShopCardUseCase by lazy {
+        mockk()
+    }
+
+    private val merchantVoucherUseCase: MerchantVoucherUseCase by lazy {
         mockk()
     }
 
@@ -155,6 +160,46 @@ class CarouselErrorLoadViewModelTest {
         every { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
         coEvery {
             productCardUseCase.getCarouselPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
+        } returns true
+
+        viewModel.loadData()
+
+        TestCase.assertEquals(viewModel.syncData.value, true)
+
+    }
+    @Test
+    fun `test for loadData for MerchantVoucherCarousel when getCarouselPaginatedData returns error`() {
+        viewModel.merchantVoucherUseCase = merchantVoucherUseCase
+        every { componentsItem.parentComponentName } returns ComponentNames.MerchantVoucherCarousel.componentName
+        coEvery {
+            merchantVoucherUseCase.getCarouselPaginatedData(
+                    componentsItem.id, componentsItem.pageEndPoint)
+        } throws Exception("Error")
+
+        viewModel.loadData()
+
+        TestCase.assertEquals(viewModel.getShowLoaderStatus().value, false)
+    }
+
+    @Test
+    fun `test for loadData for MerchantVoucherCarousel when getCarouselPaginatedData returns false`() {
+        viewModel.merchantVoucherUseCase = merchantVoucherUseCase
+        every { componentsItem.parentComponentName } returns ComponentNames.MerchantVoucherCarousel.componentName
+        coEvery {
+            merchantVoucherUseCase.getCarouselPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
+        } returns false
+
+        viewModel.loadData()
+
+        TestCase.assertEquals(viewModel.syncData.value, false)
+    }
+
+    @Test
+    fun `test for loadData for MerchantVoucherCarousel when getCarouselPaginatedData returns true`() {
+        viewModel.merchantVoucherUseCase = merchantVoucherUseCase
+        every { componentsItem.parentComponentName } returns ComponentNames.MerchantVoucherCarousel.componentName
+        coEvery {
+            merchantVoucherUseCase.getCarouselPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
         } returns true
 
         viewModel.loadData()

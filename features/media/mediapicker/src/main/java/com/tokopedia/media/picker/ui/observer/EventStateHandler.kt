@@ -19,6 +19,7 @@ fun stateOnChangePublished(elements: List<MediaUiModel>) {
 }
 
 fun stateOnAddPublished(element: MediaUiModel) {
+    if (element.file?.exists() == false) return
     statePublished(EventPickerState.SelectionAdded(element))
 }
 

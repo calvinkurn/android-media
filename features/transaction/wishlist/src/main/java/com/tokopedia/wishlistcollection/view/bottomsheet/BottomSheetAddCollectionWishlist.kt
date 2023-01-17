@@ -30,6 +30,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.databinding.BottomsheetAddWishlistCollectionBinding
+import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.model.BottomSheetWishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionsBottomSheetParams
@@ -39,7 +40,7 @@ import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SOURCE_PDP
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_BULK_ADD
-import com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter
+import com.tokopedia.wishlistcollection.view.adapter.BottomSheetWishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionHostBottomSheetFragment
 import com.tokopedia.wishlistcollection.view.viewmodel.BottomSheetAddCollectionViewModel
@@ -56,11 +57,12 @@ import javax.inject.Inject
 class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tokopedia.wishlistcollection.di.WishlistCollectionComponent> {
     private var binding by autoClearedNullable<BottomsheetAddWishlistCollectionBinding>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
-    private val collectionAdapter = BottomSheetCollectionWishlistAdapter()
+    private val collectionAdapter = BottomSheetWishlistCollectionAdapter()
     private var actionListener: ActionListener? = null
     private var isProductActive: Boolean = true
     private var toasterErrorMessage: String = ""
     private var source: String = ""
+    private var productId: String = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -170,7 +172,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
     }
 
     private fun loadData() {
-        val productId = arguments?.get(PRODUCT_IDs).toString()
+        productId = arguments?.get(PRODUCT_IDs).toString()
         isProductActive = arguments?.get(IS_PRODUCT_ACTIVE) as Boolean
         source = arguments?.get(SOURCE).toString()
         var sourceParam = source
@@ -246,6 +248,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
         setAction(dataGetBottomSheetCollections.titleButton.text) {
             if (dataGetBottomSheetCollections.titleButton.action == OPEN_WISHLIST_COLLECTION) {
                 context?.let { c ->
+                    WishlistCollectionAnalytics.sendClickCheckWishlistEvent(productId, source)
                     dismiss()
                     goToWishlistPage(c) }
             }
@@ -254,12 +257,14 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
 
     private fun mapDataCollectionsBottomSheet(data: com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet.Data): ArrayList<BottomSheetWishlistCollectionTypeLayoutData> {
         val listData = arrayListOf<BottomSheetWishlistCollectionTypeLayoutData>()
-        listData.add(
-            BottomSheetWishlistCollectionTypeLayoutData(
-                data.mainSection.text,
-                TYPE_COLLECTION_MAIN_SECTION
+        if (data.mainSection.text.isNotEmpty()) {
+            listData.add(
+                BottomSheetWishlistCollectionTypeLayoutData(
+                    data.mainSection.text,
+                    TYPE_COLLECTION_MAIN_SECTION
+                )
             )
-        )
+        }
 
         data.mainSection.collections.forEach { mainSectionItem ->
             listData.add(

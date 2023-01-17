@@ -6,7 +6,11 @@ import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutReques
 import com.tokopedia.checkout.data.model.request.checkout.old.ProductDataCheckoutRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckoutRequest
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
@@ -25,13 +29,14 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData.Companion.DEFAULT_VALUE_NONE_OTHER
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData.Companion.VALUE_BEBAS_ONGKIR
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData.Companion.VALUE_BEBAS_ONGKIR_EXTRA
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.AdditionalInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
@@ -475,5 +480,52 @@ class ShipmentPresenterEnhancedEcommerceTest {
         // Then
         assert(newDataCheckoutRequest.firstOrNull()?.shopProducts?.firstOrNull()?.productData?.firstOrNull()?.promoCode == promoCodes)
         assert(newDataCheckoutRequest.firstOrNull()?.shopProducts?.firstOrNull()?.productData?.firstOrNull()?.promoDetails == promoDetails)
+    }
+
+    @Test
+    fun `WHEN update enhanced ecommerce promo data with null data checkout request THEN data checkout request should be generated`() {
+        // Given
+        val cartString = "1"
+        val productId = 1L
+        val promoCodes = "a"
+        val promoDetails = "aaa"
+
+        val dataCheckoutRequests = arrayListOf<DataCheckoutRequest>().apply {
+            add(DataCheckoutRequest().apply {
+                shopProducts = arrayListOf<ShopProductCheckoutRequest>().apply {
+                    add(ShopProductCheckoutRequest().apply {
+                        this.cartString = cartString
+                        productData = arrayListOf<ProductDataCheckoutRequest>().apply {
+                            add(ProductDataCheckoutRequest().apply {
+                                this.productId = productId
+                            })
+                        }
+                    })
+                }
+            })
+        }
+
+        val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>().apply {
+            add(ShipmentCartItemModel().apply {
+                this.cartString = cartString
+                cartItemModels = arrayListOf<CartItemModel>().apply {
+                    add(CartItemModel().apply {
+                        this.productId = productId
+                        analyticsProductCheckoutData = AnalyticsProductCheckoutData().apply {
+                            this.promoCode = promoCodes
+                            this.promoDetails = promoDetails
+                        }
+                    })
+                }
+            })
+        }
+
+        every { view.generateNewCheckoutRequest(any(), any()) } returns dataCheckoutRequests
+
+        // When
+        val newDataCheckoutRequest = presenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentCartItemModelList)
+
+        // Then
+        verify { view.generateNewCheckoutRequest(any(), any()) }
     }
 }

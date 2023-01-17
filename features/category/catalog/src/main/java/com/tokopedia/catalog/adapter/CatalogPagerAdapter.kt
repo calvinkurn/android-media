@@ -16,7 +16,9 @@ class CatalogPagerAdapter(private val catalogProductsContainerDataModel: Catalog
             catalogProductsContainerDataModel.catalogName,
             catalogProductsContainerDataModel.catalogUrl,
             catalogProductsContainerDataModel.categoryId,
-            catalogProductsContainerDataModel.catalogBrand)
+            catalogProductsContainerDataModel.catalogBrand,
+            catalogProductsContainerDataModel.productSortingStatus
+            )
     }
 
     override fun getCount(): Int {

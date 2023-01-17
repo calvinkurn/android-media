@@ -6,15 +6,15 @@ import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoa
 import com.tokopedia.kotlin.extensions.view.orZero
 
 data class PaymentInfoUiModel(
-        val headerUiModel: PlainHeaderUiModel,
-        val paymentGrandTotal: PaymentGrandTotalUiModel,
-        val paymentInfoItems: List<PaymentInfoItemUiModel>,
-        val paymentMethodInfoItem: PaymentInfoItemUiModel,
-        val ticker: TickerUiModel
+    val headerUiModel: PlainHeaderUiModel,
+    val paymentGrandTotal: PaymentGrandTotalUiModel,
+    val paymentInfoItems: List<PaymentInfoItemUiModel>,
+    val paymentMethodInfoItem: PaymentInfoItemUiModel,
+    val ticker: TickerUiModel
 ) {
     data class PaymentInfoItemUiModel(
-            val label: String,
-            val value: String
+        val label: String,
+        val value: String
     ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
@@ -30,8 +30,8 @@ data class PaymentInfoUiModel(
     }
 
     data class PaymentGrandTotalUiModel(
-            val label: String,
-            val value: String
+        val label: String,
+        val value: String
     ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()

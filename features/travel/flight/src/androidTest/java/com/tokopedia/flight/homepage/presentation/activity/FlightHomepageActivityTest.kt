@@ -19,16 +19,17 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.carousel.CarouselUnify
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.flight.R
 import com.tokopedia.graphql.GraphqlCacheManager
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.hamcrest.Matchers
+import org.hamcrest.CoreMatchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -55,29 +56,44 @@ class FlightHomepageActivityTest {
         graphqlCacheManager.deleteAll()
         setupGraphqlMockResponse {
             addMockResponse(
-                    KEY_CONTAINS_HOMEPAGE_BANNER,
-                    InstrumentationMockHelper.getRawString(context, com.tokopedia.flight.test.R.raw.response_mock_data_flight_homepage_banner),
-                    MockModelConfig.FIND_BY_CONTAINS
+                KEY_CONTAINS_HOMEPAGE_BANNER,
+                InstrumentationMockHelper.getRawString(
+                    context,
+                    com.tokopedia.flight.test.R.raw.response_mock_data_flight_homepage_banner
+                ),
+                MockModelConfig.FIND_BY_CONTAINS
             )
             addMockResponse(
-                    KEY_CONTAINS_HOMEPAGE_TRAVEL_VIDEO,
-                    InstrumentationMockHelper.getRawString(context, com.tokopedia.flight.test.R.raw.response_mock_data_flight_homepage_travel_video),
-                    MockModelConfig.FIND_BY_CONTAINS
+                KEY_CONTAINS_HOMEPAGE_TRAVEL_VIDEO,
+                InstrumentationMockHelper.getRawString(
+                    context,
+                    com.tokopedia.flight.test.R.raw.response_mock_data_flight_homepage_travel_video
+                ),
+                MockModelConfig.FIND_BY_CONTAINS
             )
             addMockResponse(
-                    KEY_CONTAINS_FLIGHT_POPULAR_CITY,
-                    InstrumentationMockHelper.getRawString(context, com.tokopedia.flight.test.R.raw.response_mock_data_flight_popular_city),
-                    MockModelConfig.FIND_BY_CONTAINS
+                KEY_CONTAINS_FLIGHT_POPULAR_CITY,
+                InstrumentationMockHelper.getRawString(
+                    context,
+                    com.tokopedia.flight.test.R.raw.response_mock_data_flight_popular_city
+                ),
+                MockModelConfig.FIND_BY_CONTAINS
             )
             addMockResponse(
-                    KEY_CONTAINS_FLIGHT_FARE,
-                    InstrumentationMockHelper.getRawString(context, com.tokopedia.flight.test.R.raw.response_mock_data_flight_calendar_fare),
-                    MockModelConfig.FIND_BY_CONTAINS
+                KEY_CONTAINS_FLIGHT_FARE,
+                InstrumentationMockHelper.getRawString(
+                    context,
+                    com.tokopedia.flight.test.R.raw.response_mock_data_flight_calendar_fare
+                ),
+                MockModelConfig.FIND_BY_CONTAINS
             )
             addMockResponse(
-                    KEY_CONTAINS_CALENDAR_HOLIDAY,
-                    InstrumentationMockHelper.getRawString(context, com.tokopedia.flight.test.R.raw.response_mock_data_flight_calendar_holiday),
-                    MockModelConfig.FIND_BY_CONTAINS
+                KEY_CONTAINS_CALENDAR_HOLIDAY,
+                InstrumentationMockHelper.getRawString(
+                    context,
+                    com.tokopedia.flight.test.R.raw.response_mock_data_flight_calendar_holiday
+                ),
+                MockModelConfig.FIND_BY_CONTAINS
             )
         }
 
@@ -120,10 +136,10 @@ class FlightHomepageActivityTest {
             Thread.sleep(1000)
             if (getBannerItemCount() > 1)
                 onView(withId(R.id.flightHomepageBanner)).perform(swipeLeft())
-                onView(withId(R.id.flightHomepageBanner)).perform(click())
+            onView(withId(R.id.flightHomepageBanner)).perform(click())
         } else {
             Thread.sleep(1000)
-            onView(withId(R.id.flightHomepageBanner)).check(matches(Matchers.not(isDisplayed())))
+            onView(withId(R.id.flightHomepageBanner)).check(matches(CoreMatchers.not(isDisplayed())))
         }
     }
 
@@ -137,8 +153,9 @@ class FlightHomepageActivityTest {
     }
 
     private fun getBannerItemCount(): Int {
-        val carousel = activityRule.activity.findViewById(R.id.flightHomepageBanner) as CarouselUnify
-        return carousel.indicatorCount.toInt()
+        val carousel =
+            activityRule.activity.findViewById(R.id.flightHomepageBanner) as CarouselUnify
+        return carousel.indicatorCount.toIntSafely()
     }
 
     @Test
@@ -256,8 +273,10 @@ class FlightHomepageActivityTest {
     }
 
     companion object {
-        private const val ANALYTIC_VALIDATOR_QUERY_P1 = "tracker/travel/flight/flight_homepage_p1.json"
-        private const val ANALYTIC_VALIDATOR_QUERY_ALL = "tracker/travel/flight/flight_homepage_all.json"
+        private const val ANALYTIC_VALIDATOR_QUERY_P1 =
+            "tracker/travel/flight/flight_homepage_p1.json"
+        private const val ANALYTIC_VALIDATOR_QUERY_ALL =
+            "tracker/travel/flight/flight_homepage_all.json"
 
         private const val KEY_CONTAINS_HOMEPAGE_BANNER = "\"product\": \"FLIGHT\""
         private const val KEY_CONTAINS_HOMEPAGE_TRAVEL_VIDEO = "\"product\": \"FLIGHTPROMOTIONAL\""

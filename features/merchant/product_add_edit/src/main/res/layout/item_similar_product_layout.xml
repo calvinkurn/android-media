@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/du_top"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/Unify_NN200"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iu_product_image"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintCircleRadius="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/du_top" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_product_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toEndOf="@id/iu_product_image"
+        app:layout_constraintTop_toBottomOf="@id/du_top"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="Rp12.478.000 " />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/product_statistic_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/grey_nn100_rounded_corner"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@id/tpg_product_price"
+        app:layout_constraintStart_toEndOf="@id/tpg_product_price"
+        app:layout_constraintTop_toTopOf="@id/tpg_product_price">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="6dp"
+            app:srcCompat="@drawable/aep_ic_star" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpg_product_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            android:layout_marginStart="4dp"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="small"
+            tools:text="4.5" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            app:srcCompat="@drawable/ic_separator" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpg_product_statistic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="small"
+            tools:text="Terjual 16,7 rb" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_product_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="10dp"
+        android:maxLines="2"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tpg_product_price"
+        app:layout_constraintTop_toBottomOf="@id/product_statistic_layout"
+        app:typographyType="small"
+        tools:text="Sepeda Lipat Police Milan 16 Folding Bike" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

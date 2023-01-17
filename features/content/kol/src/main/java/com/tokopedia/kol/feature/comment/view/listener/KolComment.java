@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserModel;
 import com.tokopedia.kol.feature.comment.domain.model.SendKolCommentDomain;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments;
 
@@ -58,9 +58,9 @@ public interface KolComment {
 
         void disableSendComment();
 
-        void showMentionUserSuggestionList(List<MentionableUserViewModel> userList);
+        void showMentionUserSuggestionList(List<MentionableUserModel> userList);
 
-        void replyToUser(MentionableUserViewModel user);
+        void replyToUser(MentionableUserModel user);
 
         void onHashTagClicked(String hashTag);
 
@@ -74,11 +74,11 @@ public interface KolComment {
 
             void onClickMentionedProfile(String id);
 
-            void replyToUser(MentionableUserViewModel user);
+            void replyToUser(MentionableUserModel user);
 
             boolean onDeleteCommentKol(String id, boolean canDeleteComment, int adapterPosition);
 
-            void onMenuClicked(String id, boolean canDeleteComment, int adapterPosition);
+            void onMenuClicked(String id, boolean canDeleteComment, boolean canReportComment, int adapterPosition);
         }
 
         interface SeeAll {
@@ -87,15 +87,15 @@ public interface KolComment {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void getCommentFirstTime(int postId);
+        void getCommentFirstTime(long postId);
 
-        void loadMoreComments(int postId);
+        void loadMoreComments(long postId);
 
         void updateCursor(String lastcursor);
 
         void deleteComment(String id, int adapterPosition);
 
-        void sendComment(int id, String comment);
+        void sendComment(long id, String comment);
 
         void getMentionableUserByKeyword(String keyword);
 

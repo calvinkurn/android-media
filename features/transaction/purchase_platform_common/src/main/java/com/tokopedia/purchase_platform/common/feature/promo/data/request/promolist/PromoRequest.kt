@@ -49,7 +49,9 @@ data class Order(
         @SerializedName("is_insurance_price")
         var isInsurancePrice: Int = 0,
         @SerializedName("free_shipping_metadata")
-        var freeShippingMetadata: String = ""
+        var freeShippingMetadata: String = "",
+        @Transient
+        var boType: Int = 0,
 ) : Parcelable
 
 @Parcelize

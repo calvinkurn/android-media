@@ -5,13 +5,13 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.BroadMatch
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchProduct
+import com.tokopedia.search.result.product.broadmatch.BroadMatch
+import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchItemDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchProduct
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.model.SuggestionDataView
+import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.separator.VerticalSeparable
 import com.tokopedia.search.result.product.separator.VerticalSeparator
@@ -109,7 +109,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
         `When Load Data`()
 
-        `Then assert view will show product list`()
+        `Then assert view updater will show product list`()
 
         val visitableList = visitableListSlot.captured
         `Then assert visitable list contains SuggestionViewModel as first item`(visitableList)
@@ -130,9 +130,9 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         assertFalse(visitableList.any { it is VerticalSeparable && it.verticalSeparator !is VerticalSeparator.None })
     }
 
-    private fun `Then assert view will show product list`() {
+    private fun `Then assert view updater will show product list`() {
         verify {
-            productListView.setProductList(capture(visitableListSlot))
+            viewUpdater.setItems(capture(visitableListSlot))
             productListView.updateScrollListener()
             productListView.hideRefreshLayout()
         }
@@ -246,7 +246,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
         `When Load Data`()
 
-        `Then assert view will show product list`()
+        `Then assert view updater will show product list`()
 
         val visitableList = visitableListSlot.captured
         `Then assert visitable list contains BroadMatchViewModel`(
@@ -310,6 +310,14 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
             searchProductModel,
             keyword,
         )
+    }
+
+    private fun `Then assert view will show product list`() {
+        verify {
+            productListView.setProductList(capture(visitableListSlot))
+            productListView.updateScrollListener()
+            productListView.hideRefreshLayout()
+        }
     }
 
     private fun `Then assert suggestion view model is positioned under product list and has top separator`(visitableList: List<Visitable<*>>) {
@@ -615,7 +623,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
     private fun `Then verify tracking event impression not hit`() {
         verify(exactly = 0) {
-            productListView.trackEventImpressionBroadMatchItem(any())
+            broadMatchView.trackEventImpressionBroadMatchItem(any())
         }
     }
 }

@@ -11,10 +11,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.loginfingerprint.constant.BiometricConstant
 import com.tokopedia.loginfingerprint.data.model.SignatureData
-import java.security.KeyFactory
-import java.security.KeyPairGenerator
-import java.security.KeyStore
-import java.security.Signature
+import java.security.*
 import java.security.interfaces.RSAPublicKey
 import java.security.spec.X509EncodedKeySpec
 
@@ -47,6 +44,7 @@ class RsaSignatureUtils {
                     KeyGenParameterSpec.Builder(BiometricConstant.FINGERPRINT, KeyProperties.PURPOSE_SIGN)
                         .setDigests(KeyProperties.DIGEST_SHA256)
                         .setKeySize(KEY_SIZE)
+                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
                         .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
                         .build()
 
@@ -129,7 +127,8 @@ class RsaSignatureUtils {
     private fun log(type: String, throwable: Exception) {
         val msg = mapOf(
             "method" to type,
-            "exception" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH)
+            "exception" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH),
+            "caused" to Log.getStackTraceString(throwable.cause).take(Const.GQL_ERROR_MAX_LENGTH)
         )
 
         ServerLogger.log(

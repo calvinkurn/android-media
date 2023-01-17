@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="12dp"
+    xmlns:tool="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/Unify_NN300"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:labelType="general_light_red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tool:text="Diterima" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfLocationName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="small"
+        tool:text="Jakarta" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tfLocationName"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tool:text="Rp75.000.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfSlashPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toEndOf="@+id/labelDiscount"
+        app:layout_constraintTop_toBottomOf="@+id/tfPrice"
+        app:typographyType="small"
+        tool:text="Rp100.000.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfSubsidiary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tfSlashPrice"
+        app:typographyType="small"
+        tool:text="Menerima subsidi sebesar Rp25.000 dari Tokopedia" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelDiscount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:labelType="general_light_red"
+        app:layout_constraintBottom_toBottomOf="@+id/tfSlashPrice"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tfSlashPrice"
+        tool:text="30%" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfCampaignStock"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tfSubsidiary"
+        app:typographyType="small"
+        tool:text="Stok Campaign: 999" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfSoldCount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tfCampaignStock"
+        app:typographyType="small"
+        tool:text="Terjual: 888" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfRefused"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tfSoldCount"
+        app:typographyType="small"
+        tool:text="Ditolak" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

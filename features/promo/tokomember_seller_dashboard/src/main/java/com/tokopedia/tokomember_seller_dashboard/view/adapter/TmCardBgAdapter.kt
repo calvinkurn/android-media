@@ -17,6 +17,7 @@ class TmCardBgAdapter(private val visitableList: ArrayList<Visitable<*>>,
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
     }
+
 }
 
 interface TokomemberCardBgAdapterListener {

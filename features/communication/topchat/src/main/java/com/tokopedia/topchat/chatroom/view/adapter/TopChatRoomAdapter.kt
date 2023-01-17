@@ -596,25 +596,25 @@ class TopChatRoomAdapter constructor(
         notifyItemChanged(srwModelPosition, SrwBubbleViewHolder.Signal.EXPANDED)
     }
 
-    fun findSrwTickerPosition(regexMessage: String): Int {
+    fun findTickerPosition(replyId: String): Int {
         for (idx in visitables.indices) {
-            if (isNextMsgProduct(idx) && isRegexMatch(idx, regexMessage)) {
+            if (isReplyIdMatch(idx, replyId)) {
                 return idx
             }
         }
         return RecyclerView.NO_POSITION
     }
 
-    private fun isRegexMatch(idx: Int, regexMessage: String): Boolean {
+    private fun isReplyIdMatch(idx: Int, replyId: String): Boolean {
         val currentItem = visitables.getOrNull(idx)
-        if (currentItem == null || currentItem !is MessageUiModel) return false
-        val rgx = regexMessage.toRegex(setOf(RegexOption.IGNORE_CASE))
-        return rgx.containsMatchIn(currentItem.message)
-    }
-
-    private fun isNextMsgProduct(idx: Int): Boolean {
-        return visitables.getOrNull(idx + 1) is ProductAttachmentUiModel ||
-                visitables.getOrNull(idx + 1) is ProductCarouselUiModel
+        return if (currentItem == null || currentItem !is MessageUiModel) {
+            false
+        } else {
+            /**
+             * Check if replyId or localId same as ticker reminder replyId
+             */
+            currentItem.replyId == replyId || currentItem.localId == replyId
+        }
     }
 
     private fun getUpToDateSrwUiModelPosition(

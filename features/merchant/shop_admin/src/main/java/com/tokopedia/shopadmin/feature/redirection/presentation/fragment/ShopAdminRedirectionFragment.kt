@@ -89,9 +89,7 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
     }
 
     private fun setShopId(shopId: String) {
-        if (shopId.isNotBlank() && shopId != DEFAULT_SHOP_ID_NOT_OPEN) {
-            userSession.shopId = shopId
-        }
+        userSession.shopId = shopId
     }
 
     private fun redirectCreateShopIfFail() {
@@ -157,8 +155,8 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
 
     private fun isShopAdminMA(adminTypeUiModel: AdminTypeUiModel): Boolean {
         return adminTypeUiModel.shopID != DEFAULT_SHOP_ID_NOT_OPEN &&
-                adminTypeUiModel.shopID.isNotBlank() &&
-                adminTypeUiModel.status != AdminStatus.ACTIVE
+            adminTypeUiModel.shopID.isNotBlank() &&
+            adminTypeUiModel.status != AdminStatus.ACTIVE
     }
 
     companion object {

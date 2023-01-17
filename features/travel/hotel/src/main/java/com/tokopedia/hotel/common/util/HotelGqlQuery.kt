@@ -557,7 +557,7 @@ internal object HotelOrderDetailQuery{
 @GqlQuery("QueryHotelRecentSearchData", RECENT_SEARCH_DATA)
 internal object HotelRecentSearchDataQuery{
     const val RECENT_SEARCH_DATA = """
-        query{
+        query TravelCollectiveRecentSearches() {
           TravelCollectiveRecentSearches(product:HOTEL, platform: HOTELPAGE){
             items {
               product

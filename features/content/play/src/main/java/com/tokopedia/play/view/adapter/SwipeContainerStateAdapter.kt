@@ -34,8 +34,8 @@ class SwipeContainerStateAdapter(
     }
 
     class SwipeContainerDiffUtil(
-            private val oldList: List<String>,
-            private val newList: List<String>
+        private val oldList: List<String>,
+        private val newList: List<String>
     ) : DiffUtil.Callback() {
 
         override fun getOldListSize(): Int {

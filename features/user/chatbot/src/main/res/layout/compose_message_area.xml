@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="8dp"
-    android:background="@color/chatbot_chat_background">
+    android:background="@color/chatbot_dms_compose_bg">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/reply_box"
@@ -18,6 +18,12 @@
         app:layout_constraintEnd_toStartOf="@id/send_but"
         app:layout_constraintTop_toTopOf="parent">
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_reply_bubble"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+
         <com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
             android:id="@+id/reply_bubble_container"
             android:layout_width="match_parent"
@@ -28,29 +34,21 @@
             app:layout_constraintTop_toTopOf="parent"
             />
 
-        <View
-            android:id="@+id/view_border_radius"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginBottom="20dp"
-            app:layout_constraintEnd_toEndOf="@+id/new_comment_container"
-            app:layout_constraintStart_toStartOf="@+id/new_comment_container"
-            app:layout_constraintTop_toBottomOf="@id/reply_bubble_container"
-            />
-
         <LinearLayout
             android:id="@+id/new_comment_container"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            app:layout_constraintTop_toBottomOf="@id/reply_bubble_container"
-            app:layout_constraintBottom_toBottomOf="@id/reply_bubble_container"
+            android:gravity="center"
             android:paddingStart="12dp"
             android:paddingTop="10dp"
             android:paddingEnd="48dp"
             android:paddingBottom="10dp"
-            android:gravity="center">
+            android:background="@color/chatbot_dms_compose_bg"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guideline_reply_bubble">
 
             <EditText
                 android:id="@+id/new_comment"
@@ -60,6 +58,7 @@
                 android:hint="@string/cb_bot_reply_text"
                 android:inputType="textMultiLine"
                 android:maxLines="5"
+                android:textColorHint="@color/chatbot_dms_compose_msg_hint"
                 android:textSize="@dimen/sp_chatbot_16"
                 tools:text="@tools:sample/lorem/random" />
 

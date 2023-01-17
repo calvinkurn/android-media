@@ -4,8 +4,8 @@
         <path android:pathData="M-249.227 324.476l530.378 56.4 68.519-644.34-530.378-56.4">
             <aapt:attr name="android:fillColor">
                 <gradient android:endX="77.25" android:endY="29" android:startX="25.75" android:startY="29" android:type="linear">
-                    <item android:color="#82EF95" android:offset="0.189"/>
-                    <item android:color="#FFFFFF" android:offset="1"/>
+                    <item android:color="@color/top_ads_management_common_dms_green_bg" android:offset="0.189"/>
+                    <item android:color="@color/Unify_NN0" android:offset="1"/>
                 </gradient>
             </aapt:attr>
         </path>

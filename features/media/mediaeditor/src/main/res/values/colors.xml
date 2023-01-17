@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="dms_me_drawer_divider">#F3F4F5</color>
+    <color name="dms_watermark_text_light">#4C00AA5B</color>
+    <color name="dms_watermark_text_dark">#4CD6DFEB</color>
+    <color name="dms_undo_bg_color">#662E3137</color>
+</resources>

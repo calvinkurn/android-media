@@ -4,6 +4,7 @@ import androidx.lifecycle.MediatorLiveData
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PREFIX_CACHE
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
@@ -25,6 +26,7 @@ import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantIn
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
+import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.StatusInfo
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
 import com.tokopedia.usecase.coroutines.Fail
@@ -409,6 +411,54 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
+    fun `When updatePhotos expect not any update photo`(){
+        val originalImage = arrayListOf("www.blank.com/cache/", "www.blank.com/cache/", "www.blank.com/cache/")
+        val imagePickerResult = arrayListOf("","","")
+        val product = inputProductModelDummy()
+        viewModel.productInputModel.value = product
+        viewModel.productInputModel.getOrAwaitValue()
+
+        viewModel.updateProductPhotos(imagePickerResult, originalImage)
+        assert(viewModel.imageUrlOrPathList.getOrAwaitValue().isNotEmpty())
+        assertEquals(viewModel.imageUrlOrPathList.getOrAwaitValue(), originalImage)
+    }
+
+    @Test
+    fun `When updatePhotos expect have update photo`(){
+        val originalImage = arrayListOf("0/tkpd/cache/${PREFIX_CACHE}1", "0/tkpd/cache/${PREFIX_CACHE}2", "0/tkpd/cache/${PREFIX_CACHE}3")
+        val imagePickerResult = arrayListOf("a/0/tkpd/102012.jpg","","")
+        val product = inputProductModelDummy()
+        val expectedResult = arrayListOf("a/0/tkpd/102012.jpg","www.blank.com/cache/", "www.blank.com/cache/")
+        viewModel.productInputModel.value = product
+        viewModel.productInputModel.getOrAwaitValue()
+
+        viewModel.updateProductPhotos(imagePickerResult, originalImage)
+        assert(viewModel.imageUrlOrPathList.getOrAwaitValue().isNotEmpty())
+        assertEquals(viewModel.imageUrlOrPathList.getOrAwaitValue(), expectedResult)
+    }
+
+    @Test
+    fun `When updatePhotos expect have new photo but not edited and edited photo`(){
+        val originalImage = arrayListOf("0/tkpd/cache/${PREFIX_CACHE}1", "0/tkpd/cache/${PREFIX_CACHE}2", "0/tkpd/cache/${PREFIX_CACHE}3", "a/0/tkpd/102013.jpg")
+        val imagePickerResult = arrayListOf("a/0/tkpd/102012.jpg","", "","")
+        val product = inputProductModelDummy()
+        val expectedResult = arrayListOf("a/0/tkpd/102012.jpg","www.blank.com/cache/", "www.blank.com/cache/", "a/0/tkpd/102013.jpg")
+        viewModel.productInputModel.value = product
+        viewModel.productInputModel.getOrAwaitValue()
+
+        viewModel.updateProductPhotos(imagePickerResult, originalImage)
+        assert(viewModel.imageUrlOrPathList.getOrAwaitValue().isNotEmpty())
+        assertEquals(viewModel.imageUrlOrPathList.getOrAwaitValue(), expectedResult)
+    }
+
+    @Test
+    fun `When updatePhotos but productInputModel is null`(){
+        val originalImage = arrayListOf("0/tkpd/cache/1", "0/tkpd/cache/2", "0/tkpd/cache/3", "a/0/tkpd/102013.jpg")
+        val imagePickerResult = arrayListOf("a/0/tkpd/102012.jpg","", "","")
+        viewModel.updateProductPhotos(imagePickerResult, originalImage)
+    }
+
+    @Test
     fun `When update product status Expect should update product status`() {
         val product = MediatorLiveData<ProductInputModel>()
         product.value = null
@@ -457,12 +507,24 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun  `When validate shop location should be true`() = runBlocking {
+
         onGetShopInfoLocation_thenReturn()
 
         viewModel.validateShopLocation(121313)
 
         viewModel.locationValidation.getOrAwaitValue()
         verifyValidateShopLocation()
+    }
+
+    @Test
+    fun `When validate shop location should be false`() = runBlocking {
+
+        onGetShopInfoLocation_thenReturn_false()
+
+        viewModel.validateShopLocation(121313)
+
+        viewModel.locationValidation.getOrAwaitValue()
+        verifyValidateShopLocationIsFlase()
     }
 
     @Test
@@ -882,6 +944,72 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.mustFillParentWeight.getOrAwaitValue()
     }
 
+    @Test
+    fun  `When validate shop isModerate should be false`() = runBlocking {
+        val shopStatus = StatusInfo(
+            shopStatus = "1",
+            statusTitle= "Open",
+            statusMessage = "",
+            tickerType ="warning"
+        )
+        onGetShopStatus_thenReturn(shopStatus)
+
+        viewModel.validateShopIsOnModerated(121313)
+
+        viewModel.isOnModerationMode.getOrAwaitValue()
+        verifyValidateShopIsNotModerate()
+    }
+
+    @Test
+    fun  `When validate shop isModerate should be true`() = runBlocking {
+        val shopStatus = StatusInfo(
+            shopStatus = "3",
+            statusTitle= "Moderate",
+            statusMessage = "Your shope is on moderate status",
+            tickerType ="warning"
+        )
+        onGetShopStatus_thenReturn(shopStatus)
+
+        viewModel.validateShopIsOnModerated(121313)
+
+        viewModel.isOnModerationMode.getOrAwaitValue()
+        verifyValidateShopIsModerate()
+    }
+
+    @Test
+    fun  `When validate shop isModerate error, should post error to observer`() = runBlocking {
+        coEvery { getStatusShopUseCase.executeOnBackground() } throws MessageErrorException("")
+
+        viewModel.validateShopIsOnModerated(121313)
+
+        coVerify {
+            getStatusShopUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.isOnModerationMode.value is Fail)
+    }
+
+    @Test
+    fun `when update image list`(){
+        val inputAndTarget = arrayListOf("/adasdsad", "/1234", "20123123")
+        val product = inputProductModelDummy()
+        viewModel.productInputModel.value = product
+        viewModel.saveImageListToDetailInput(inputAndTarget)
+        viewModel.productInputModel.getOrAwaitValue()
+        val imageListActual = viewModel.productInputModel.getOrAwaitValue()
+        assertEquals(inputAndTarget, imageListActual.detailInputModel.imageUrlOrPathList)
+    }
+
+    @Test
+    fun `when update image list when model is null for the 1st place`(){
+        val inputAndTarget = arrayListOf("/adasdsad", "/1234", "20123123")
+        viewModel.productInputModel.value = null
+        viewModel.saveImageListToDetailInput(inputAndTarget)
+        viewModel.productInputModel.getOrAwaitValue()
+        val imageListActual = viewModel.productInputModel.getOrAwaitValue()
+        assertEquals(null, imageListActual)
+    }
+
     private fun onGetProductLimitation_thenReturn(successResponse: ProductAddRuleResponse) {
         coEvery { productLimitationUseCase.executeOnBackground() } returns successResponse
     }
@@ -904,6 +1032,14 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     private fun onGetShopInfoLocation_thenReturn() {
         coEvery { getShopInfoLocationUseCase.executeOnBackground() } returns true
+    }
+
+    private fun onGetShopInfoLocation_thenReturn_false() {
+        coEvery { getShopInfoLocationUseCase.executeOnBackground() } returns false
+    }
+
+    private fun onGetShopStatus_thenReturn(statusInfo: StatusInfo) {
+        coEvery { getStatusShopUseCase.executeOnBackground() } returns statusInfo
     }
 
     private fun onSaveShopShipmentLocation_thenReturn() {
@@ -1036,6 +1172,10 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         assertTrue(viewModel.locationValidation.value == Success(true))
     }
 
+    private fun verifyValidateShopLocationIsFlase() {
+        assertTrue(viewModel.locationValidation.value == Success(false))
+    }
+
     private fun verifyGetAdminProductPermissionFailed() {
         val result = viewModel.isProductManageAuthorized.value
         assertTrue(result is Fail)
@@ -1055,5 +1195,27 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
                 viewModel.isEditing.value == true -> AccessId.PRODUCT_EDIT
                 else -> AccessId.PRODUCT_ADD
             }
+
+    private fun verifyValidateShopIsModerate() {
+        assertTrue(viewModel.isOnModerationMode.value == Success(true))
+    }
+
+    private fun verifyValidateShopIsNotModerate() {
+        assertTrue(viewModel.isOnModerationMode.value == Success(false))
+    }
+
+    private fun inputProductModelDummy() : ProductInputModel{
+        var pictureInputModel = PictureInputModel().apply {
+            urlOriginal = "www.blank.com/cache/"
+            fileName = "apa"
+            urlThumbnail = "www.gmail.com"
+        }
+        var product = ProductInputModel().apply {
+            detailInputModel.pictureList = listOf(pictureInputModel, pictureInputModel, pictureInputModel)
+            detailInputModel.imageUrlOrPathList = listOf("ada", "apa", "ada")
+        }
+
+        return product
+    }
 
 }

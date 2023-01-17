@@ -60,7 +60,7 @@
                     android:maxWidth="@dimen/dp_topchat_270"
                     android:text="@string/caption_switch_template"
                     android:textColor="@color/Unify_N700_44"
-                    app:typographyType="display_2" />
+                    app:typographyType="body_2" />
 
                 <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
                     android:id="@+id/switch_chat_template"

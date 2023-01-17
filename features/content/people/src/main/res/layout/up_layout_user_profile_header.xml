@@ -4,20 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_user_profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_Background"
-        app:elevation="0dp">
+        android:background="@color/Unify_Background">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="@dimen/unify_space_48"
-            app:layout_scrollFlags="scroll">
+            android:minHeight="@dimen/unify_space_40"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -26,7 +25,6 @@
                 android:background="@color/Unify_Background"
                 android:measureAllChildren="false"
                 android:paddingTop="@dimen/user_profile_margin_8"
-                android:paddingBottom="@dimen/unify_space_8"
                 android:visibility="visible">
 
                 <View
@@ -217,14 +215,12 @@
                     android:layout_marginEnd="@dimen/unify_space_16"
                     android:ellipsize="end"
                     android:gravity="start"
-                    android:visibility="gone"
                     android:textColor="@color/Unify_NN950"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_user_name"
-                    app:typographyType="body_2" />
+                    app:typographyType="body_2"
+                    tools:text="Bio apa aja"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_see_more"
@@ -264,15 +260,34 @@
                         android:layout_marginHorizontal="@dimen/unify_space_16"
                         android:visibility="gone" />
 
-                    <com.tokopedia.unifycomponents.UnifyButton
-                        android:id="@+id/btn_action"
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/unify_space_16"
-                        android:layout_marginEnd="@dimen/unify_space_16"
-                        android:textColor="@color/Unify_NN300"
-                        app:unifyButtonSize="small"
-                        app:unifyButtonVariant="text" />
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        >
+
+                        <com.tokopedia.unifycomponents.UnifyButton
+                            android:id="@+id/btn_action"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_toStartOf="@id/btn_kebab_option"
+                            app:unifyButtonSize="small"
+                            app:unifyButtonVariant="text"
+                            />
+
+                        <com.tokopedia.unifycomponents.UnifyButton
+                            android:id="@+id/btn_kebab_option"
+                            android:layout_width="32dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            app:unifyButtonSize="small"
+                            app:unifyButtonType="alternate"
+                            app:unifyButtonVariant="ghost"
+                            />
+
+                    </RelativeLayout>
 
                     <View
                         android:id="@+id/view_line"
@@ -285,12 +300,10 @@
 
                 </LinearLayout>
 
-                <include
+                <com.tokopedia.feedcomponent.shoprecom.ShopRecomWidget
                     android:id="@+id/shop_recommendation"
-                    layout="@layout/layout_shop_recommendation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/unify_space_4"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linear_button" />
@@ -305,22 +318,18 @@
         android:id="@+id/user_post_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="top"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_post"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_12"
-            android:layout_marginEnd="@dimen/unify_space_12"
-            android:clipToPadding="false"
-            android:paddingBottom="@dimen/user_profile_margin_8"
-            tools:listitem="@layout/up_item_user_post" />
+        <include
+            android:id="@+id/profile_tabs"
+            layout="@layout/up_layout_user_profile_tabs" />
 
-        <include layout="@layout/up_shimmer_user_post" />
+        <include layout="@layout/up_shimmer_user_feed" />
 
         <com.tokopedia.unifycomponents.LocalLoad
-            android:id="@+id/global_error_post"
+            android:id="@+id/global_error_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/unify_space_16"
@@ -334,6 +343,15 @@
 
     </ViewFlipper>
 
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+        android:id="@+id/fab_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        app:backgroundTint="@color/Unify_GN500"
+        app:srcCompat="@drawable/ic_feed_post_plus"
+        app:fbType="circle" />
+
     <com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
         android:id="@+id/fab_user_profile"
         android:layout_width="wrap_content"
@@ -341,6 +359,6 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/unify_space_16"
         android:visibility="gone"
-        app:fab_text="@string/feed_fab_create_post" />
+        app:fab_text="@string/feed_fab_create_content" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

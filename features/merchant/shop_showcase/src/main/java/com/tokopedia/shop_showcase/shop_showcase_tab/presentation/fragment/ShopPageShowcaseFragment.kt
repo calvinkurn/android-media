@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.annotation.Keep
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -54,6 +55,7 @@ import javax.inject.Inject
 /**
  * Created by Rafli Syam on 05/03/2021
  */
+@Keep
 class ShopPageShowcaseFragment : BaseDaggerFragment(),
         HasComponent<ShopPageShowcaseComponent>,
     ShopPageFeaturedShowcaseListener,

@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/Unify_Background">
+    android:layout_height="match_parent">
 
-    <com.tokopedia.imagepicker_insta.common.ui.toolbar.ImagePickerCommonToolbar
+    <com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
         android:id="@+id/toolbar_common"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="0dp"
+        android:background="@color/Unify_NN0"
         android:layout_height="wrap_content"/>
 
     <com.tokopedia.imagepicker_insta.views.NoPermissionsView

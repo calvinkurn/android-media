@@ -84,7 +84,8 @@ class HeadLineAdItemsItemViewHolder(
                 checkBox?.visibility = View.VISIBLE
             } else {
                 cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                    R.color.topads_dash_white))
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                ))
                 imgMenu?.visibility = View.VISIBLE
                 checkBox?.visibility = View.GONE
                 checkBox?.isChecked = false
@@ -93,10 +94,10 @@ class HeadLineAdItemsItemViewHolder(
             checkBox?.isChecked = it.isChecked
             if (checkBox?.isChecked == false) {
                 cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                    R.color.topads_dash_white))
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0))
             } else {
                 cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                    R.color.topads_select_color))
+                    R.color.Unify_B400_20))
             }
             when (it.data.groupStatusDesc) {
                 ACTIVE -> label?.setLabelType(Label.GENERAL_DARK_GREEN)
@@ -141,17 +142,17 @@ class HeadLineAdItemsItemViewHolder(
                     it.isChecked = checkBox?.isChecked == true
                     if (checkBox?.isChecked == true)
                         cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                            R.color.topads_select_color))
+                            R.color.Unify_B400_20))
                     else
                         cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                            R.color.topads_dash_white))
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN0))
                 }
             }
             itemCard?.setOnLongClickListener {
                 item.isChecked = true
                 checkBox?.isChecked = true
                 cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                    R.color.topads_select_color))
+                    R.color.Unify_B400_20))
                 selectMode.invoke(true)
                 true
             }

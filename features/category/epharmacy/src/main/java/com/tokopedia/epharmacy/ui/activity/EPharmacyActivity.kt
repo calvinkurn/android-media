@@ -34,6 +34,7 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
     private var orderId = DEFAULT_ZERO_VALUE
     private var checkoutId = ""
     private var entryPoint = ""
+    private var source = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ePharmacyComponent.inject(this)
@@ -41,8 +42,11 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
             this.finish()
         }
         super.onCreate(savedInstanceState)
+        setPageTitle()
+    }
+
+    private fun setPageTitle() {
         updateTitle(getString(R.string.epharmacy_upload_title))
-        userViewUploadPrescriptionPage()
     }
 
     override fun getLayoutRes() = R.layout.epharmacy_activity
@@ -52,11 +56,14 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
     override fun getNewFragment(): Fragment {
         extractOrderId()
         extractCheckoutId()
+        extractSource()
         extractEntryPoint()
+
         return UploadPrescriptionFragment.newInstance(Bundle().apply {
             putLong(EXTRA_ORDER_ID_LONG, orderId)
             putString(EXTRA_CHECKOUT_ID_STRING, checkoutId)
             putString(EXTRA_ENTRY_POINT_STRING, entryPoint)
+            putString(EXTRA_SOURCE_STRING, source)
         })
     }
 
@@ -76,10 +83,16 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
         } else ""
     }
 
+    private fun extractSource() {
+       source = intent.getStringExtra(EXTRA_SOURCE_STRING) ?: ENTRY_POINT_CHECKOUT.lowercase()
+    }
+
     private fun extractEntryPoint() {
         entryPoint = if(orderId == DEFAULT_ZERO_VALUE){
+            userViewUploadPrescriptionPage(ENTRY_POINT_CHECKOUT, checkoutId)
             ENTRY_POINT_CHECKOUT
         }else {
+            userViewUploadPrescriptionPage(ENTRY_POINT_ORDER, orderId.toString())
             ENTRY_POINT_ORDER
         }
     }
@@ -104,7 +117,7 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
                 .baseAppComponent
         ).build()
 
-    private fun userViewUploadPrescriptionPage() {
+    private fun userViewUploadPrescriptionPage(ep : String , id  : String) {
         Tracker.Builder()
             .setEvent(EventKeys.OPEN_SCREEN)
             .setCustomProperty(EventKeys.TRACKER_ID, OPEN_SCREEN_ID)
@@ -112,7 +125,7 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .setCustomProperty(EventKeys.IS_LOGGED_IN, userSession.isLoggedIn.toString())
             .setCustomProperty(EventKeys.PAGE_PATH, "")
-            .setCustomProperty(EventKeys.SCREEN_NAME, "view upload prescription page - $entryPoint - new flow")
+            .setCustomProperty(EventKeys.SCREEN_NAME, "view upload prescription page - $ep - new flow - $id")
             .setUserId(userSession.userId)
             .build()
             .send()

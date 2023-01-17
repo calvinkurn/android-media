@@ -1,19 +1,20 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 
 data class OrderProduct(
         var cartId: String = "",
-        var productId: Long = 0,
+        var productId: String = "",
         var parentId: String = "",
         var productName: String = "",
-        var productPrice: Long = 0,
-        var finalPrice: Long = 0,
-        var wholesalePrice: Long = 0,
+        var productPrice: Double = 0.0,
+        var finalPrice: Double = 0.0,
+        var wholesalePrice: Double = 0.0,
         var wholesalePriceList: List<WholesalePrice> = arrayListOf(),
-        var originalPrice: Long = 0,
-        var initialPrice: Long = 0,
+        var originalPrice: Double = 0.0,
+        var initialPrice: Double = 0.0,
         var isSlashPrice: Boolean = false,
         var productImageUrl: String = "",
         var minOrderQuantity: Int = 0,
@@ -30,7 +31,7 @@ data class OrderProduct(
         var placeholderNote: String = "",
         var isEditingNotes: Boolean = false,
         var cashback: String = "",
-        var warehouseId: Long = 0,
+        var warehouseId: String = "",
         var isPreOrder: Int = 0,
         var preOrderDuration: Int = 0,
         var categoryId: String = "",
@@ -49,7 +50,7 @@ data class OrderProduct(
         var errorMessage: String = "",
         var isError: Boolean = false,
         var addOn: AddOnsDataModel = AddOnsDataModel(),
-
+        var ethicalDrug: EthicalDrugDataModel = EthicalDrugDataModel(),
         // Analytics
         var hasTriggerViewErrorProductLevelTicker: Boolean = false
 ) {
@@ -65,7 +66,7 @@ data class WholesalePrice(
         val prdPrcFmt: String = "",
         val qtyMin: Int = 0,
         val qtyMax: Int = 0,
-        val prdPrc: Long = 0
+        val prdPrc: Double = 0.0
 )
 
 data class ProductTrackerData(

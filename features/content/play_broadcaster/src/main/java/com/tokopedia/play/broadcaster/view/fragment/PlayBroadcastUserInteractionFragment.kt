@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -17,7 +16,6 @@ import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.producttag.ProductTagAnalyticHelper
@@ -27,6 +25,7 @@ import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerState
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
+import com.tokopedia.play.broadcaster.ui.manager.PlayBroadcastToasterManager
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
@@ -41,7 +40,6 @@ import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
 import com.tokopedia.play.broadcaster.ui.state.QuizFormUiState
 import com.tokopedia.play.broadcaster.util.extension.getDialog
-import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
@@ -64,7 +62,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewMo
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.detachableview.detachableView
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.hideKeyboard
@@ -81,7 +79,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.tokopedia.play_common.R as commonR
 
 /**
  * Created by mzennis on 25/05/20.
@@ -188,11 +185,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private val fragmentViewContainer = FragmentViewContainer()
 
-    private var toasterBottomMargin = 0
-
     private lateinit var productTagAnalyticHelper: ProductTagAnalyticHelper
 
     private var isPausedFragment = false
+
+    private val toasterManager = PlayBroadcastToasterManager(this)
 
     override fun getScreenName(): String = "Play Broadcast Interaction"
 
@@ -259,7 +256,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun setupView() {
         observeTitle()
-        actionBarLiveView.setShopIcon(parentViewModel.getShopIconUrl())
+        actionBarLiveView.setAuthorImage(parentViewModel.getAuthorImage())
 
         ivShareLink.setOnClickListener{
             doCopyShareLink()
@@ -300,7 +297,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         is QuizFormView.Event.TitleChanged -> PlayBroadcastAction.InputQuizTitle(it.title)
                         is QuizFormView.Event.OptionChanged -> PlayBroadcastAction.InputQuizOption(it.order, it.text)
                         is QuizFormView.Event.SelectQuizOption -> PlayBroadcastAction.SelectQuizOption(it.order)
-                        is QuizFormView.Event.GiftChanged -> PlayBroadcastAction.InputQuizGift(it.gift)
                         is QuizFormView.Event.SaveQuizData -> PlayBroadcastAction.SaveQuizData(it.quizFormData)
                         is QuizFormView.Event.SelectDuration -> PlayBroadcastAction.SelectQuizDuration(it.duration)
                         QuizFormView.Event.Submit -> PlayBroadcastAction.SubmitQuizForm
@@ -313,16 +309,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun trackQuizFormEvent(event: QuizFormView.Event) {
         when (event) {
-            QuizFormView.Event.GiftClicked ->
-                analytic.onClickQuizGift(
-                    parentViewModel.channelId,
-                    parentViewModel.channelTitle,
-                )
-            QuizFormView.Event.GiftClosed ->
-                analytic.onClickCloseQuizGift(
-                    parentViewModel.channelId,
-                    parentViewModel.channelTitle,
-                )
             QuizFormView.Event.Submit ->
                 analytic.onClickStartQuiz(
                     parentViewModel.channelId,
@@ -382,7 +368,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
         if (isPausedFragment) {
-            resumeBroadcast()
+            resumeBroadcast(false)
             isPausedFragment = false
         }
     }
@@ -392,11 +378,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         isPausedFragment = true
         pauseBroadcast()
         productTagAnalyticHelper.sendTrackingProduct()
-    }
-
-    override fun onDestroy() {
-        try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
-        super.onDestroy()
+        parentViewModel.sendLogs()
     }
 
     /**
@@ -406,6 +388,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     override fun onDestroyView() {
         if (::exitDialog.isInitialized) getExitDialog().dismiss()
         if (::forceStopDialog.isInitialized) forceStopDialog.dismiss()
+
+        toasterManager.dismissActiveToaster()
 
         super.onDestroyView()
     }
@@ -502,6 +486,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         if (!forceStopDialog.isShowing) {
             analytic.viewDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
             forceStopDialog.show()
+            dismissPauseDialog()
         }
     }
 
@@ -518,7 +503,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         parentViewModel.channelId,
                         parentViewModel.channelTitle
                     )
-                    broadcaster.resume(shouldContinue = true)
+                    resumeBroadcast(shouldContinue = true)
                 },
                 secondaryCta = getString(R.string.play_broadcast_end),
                 secondaryListener = { dialog ->
@@ -535,6 +520,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
+    private fun dismissPauseDialog() {
+        if (pauseLiveDialog?.isShowing == true) pauseLiveDialog?.dismiss()
+    }
+
     private fun showErrorToaster(
         err: Throwable,
         customErrMessage: String? = null,
@@ -542,25 +531,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         actionLabel: String = "",
         actionListener: View.OnClickListener = View.OnClickListener {  }
     ) {
-        val errMessage = if (customErrMessage == null) {
-            ErrorHandler.getErrorMessage(
-                context, err, ErrorHandler.Builder()
-                    .className(this::class.java.simpleName)
-                    .build()
-            )
-        } else {
-            val (_, errCode) = ErrorHandler.getErrorMessagePair(
-                context, err, ErrorHandler.Builder()
-                    .className(this::class.java.simpleName)
-                    .build()
-            )
-            getString(
-                commonR.string.play_custom_error_handler_msg,
-                customErrMessage,
-                errCode
-            )
-        }
-        showToaster(errMessage, Toaster.TYPE_ERROR, duration, actionLabel, actionListener)
+        toasterManager.showErrorToaster(
+            err = err,
+            customErrMessage = customErrMessage,
+            duration = duration,
+            actionLabel = actionLabel,
+            actionListener = actionListener,
+        )
     }
 
     @SuppressLint("ResourceFragmentDetector")
@@ -571,19 +548,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             actionLabel: String = "",
             actionListener: View.OnClickListener = View.OnClickListener { }
     ) {
-        if (toasterBottomMargin == 0) {
-            val offset24 = resources.getDimensionPixelOffset(
-                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5
-            )
-            toasterBottomMargin = ivShareLink.height + offset24
-        }
-        view?.showToaster(
-                message = message,
-                duration = duration,
-                type = type,
-                actionLabel = actionLabel,
-                actionListener = actionListener,
-                bottomMargin = toasterBottomMargin
+        toasterManager.showToaster(
+            message = message,
+            type = type,
+            duration = duration,
+            actionLabel = actionLabel,
+            actionListener = actionListener,
         )
     }
 
@@ -622,7 +592,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     reconnectLiveStreaming()
                 }
                 BroadcasterErrorType.AuthFailed,
-                BroadcasterErrorType.UrlEmpty -> {
+                BroadcasterErrorType.UrlEmpty,
+                BroadcasterErrorType.ServiceNotReady, -> {
                     showErrorToaster(error, getString(R.string.play_live_broadcast_connect_fail),
                         duration = Toaster.LENGTH_INDEFINITE,
                         actionLabel = getString(R.string.play_broadcast_try_again),
@@ -630,7 +601,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                             parentViewModel.doResumeBroadcaster(shouldContinue = true)
                         })
                 }
-                BroadcasterErrorType.ServiceNotReady,
                 BroadcasterErrorType.StartFailed -> {
                     showErrorToaster(error, getString(R.string.play_broadcaster_default_error),
                         duration = Toaster.LENGTH_INDEFINITE,
@@ -711,10 +681,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     prevState?.interactiveConfig,
                     state.interactiveConfig
                 )
-                renderInteractiveView(prevState?.interactive, state.interactive)
+                renderInteractiveView(prevState?.game, state.game)
                 renderGameIconView(
-                    prevState?.interactive,
-                    state.interactive,
+                    prevState?.game,
+                    state.game,
                     prevState?.interactiveConfig,
                     state.interactiveConfig,
                     prevState?.onBoarding,
@@ -726,8 +696,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 renderSetupDialog(
                     prevState?.interactiveSetup,
                     state.interactiveSetup,
-                    prevState?.interactive,
-                    state.interactive,
+                    prevState?.game,
+                    state.game,
                 )
 
                 if (::exitDialog.isInitialized) {
@@ -772,7 +742,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         else showErrorToaster(event.throwable)
                     }
                     PlayBroadcastEvent.ShowLoading -> showLoading(true)
-                    PlayBroadcastEvent.ShowLiveEndedDialog -> showForceStopDialog()
+                    PlayBroadcastEvent.ShowLiveEndedDialog -> {
+                        stopBroadcast()
+                        showForceStopDialog()
+                    }
                     PlayBroadcastEvent.ShowResumeLiveDialog -> showDialogContinueLive()
                     is PlayBroadcastEvent.ShowError -> {
                         if (event.onRetry == null) showErrorToaster(event.error)
@@ -876,19 +849,19 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun renderInteractiveView(
-        prevState: InteractiveUiModel?,
-        state: InteractiveUiModel,
+        prevState: GameUiModel?,
+        state: GameUiModel,
     ) {
         /**
          * Render:
-         * - if interactive has changed <b>or</b>
+         * - if game has changed <b>or</b>
          * - if isPlaying state has changed to not playing
          */
         if (prevState != state) {
             when (state) {
-                is InteractiveUiModel.Giveaway -> renderGiveawayView(state)
-                is InteractiveUiModel.Quiz -> renderQuizView(state)
-                InteractiveUiModel.Unknown -> {
+                is GameUiModel.Giveaway -> renderGiveawayView(state)
+                is GameUiModel.Quiz -> renderQuizView(state)
+                GameUiModel.Unknown -> {
                     interactiveActiveView?.hide()
                     interactiveFinishedView?.hide()
                 }
@@ -897,8 +870,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun renderGameIconView(
-        prevState: InteractiveUiModel?,
-        state: InteractiveUiModel,
+        prevState: GameUiModel?,
+        state: GameUiModel,
         prevConfig: InteractiveConfigUiModel?,
         config: InteractiveConfigUiModel,
         prevOnboarding: OnboardingUiModel?,
@@ -908,7 +881,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             prevConfig == config &&
             prevOnboarding?.firstInteractive == onboarding.firstInteractive) return
 
-        if (state !is InteractiveUiModel.Unknown || config.isNoGameActive() || config.availableGameList().isEmpty()) {
+        if (state !is GameUiModel.Unknown || config.isNoGameActive() || config.availableGameList().isEmpty()) {
             gameIconView.hide()
         }
         else {
@@ -937,11 +910,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         } else clInteraction.invisible()
     }
 
-    private fun renderGiveawayView(state: InteractiveUiModel.Giveaway) {
+    private fun renderGiveawayView(state: GameUiModel.Giveaway) {
         when (val status = state.status) {
-            is InteractiveUiModel.Giveaway.Status.Upcoming -> {
+            is GameUiModel.Giveaway.Status.Upcoming -> {
                 interactiveActiveView?.setUpcomingGiveaway(
-                    desc = state.title,
+                    title = state.title,
                     targetTime = status.startTime,
                     onDurationEnd = {
                         parentViewModel.submitAction(PlayBroadcastAction.GiveawayUpcomingEnded)
@@ -950,9 +923,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 interactiveActiveView?.show()
                 interactiveFinishedView?.hide()
             }
-            is InteractiveUiModel.Giveaway.Status.Ongoing -> {
+            is GameUiModel.Giveaway.Status.Ongoing -> {
                 interactiveActiveView?.setOngoingGiveaway(
-                    desc = state.title,
+                    title = state.title,
                     targetTime = status.endTime,
                     onDurationEnd = {
                         parentViewModel.submitAction(PlayBroadcastAction.GiveawayOngoingEnded)
@@ -961,22 +934,22 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 interactiveActiveView?.show()
                 interactiveFinishedView?.hide()
             }
-            InteractiveUiModel.Giveaway.Status.Finished -> {
+            GameUiModel.Giveaway.Status.Finished -> {
                 interactiveActiveView?.hide()
 
                 interactiveFinishedView?.setupGiveaway()
                 interactiveFinishedView?.show()
             }
-            InteractiveUiModel.Giveaway.Status.Unknown -> {
+            GameUiModel.Giveaway.Status.Unknown -> {
                 interactiveActiveView?.hide()
                 interactiveFinishedView?.hide()
             }
         }
     }
 
-    private fun renderQuizView(state: InteractiveUiModel.Quiz) {
+    private fun renderQuizView(state: GameUiModel.Quiz) {
         when (val status = state.status) {
-            is InteractiveUiModel.Quiz.Status.Ongoing -> {
+            is GameUiModel.Quiz.Status.Ongoing -> {
                 interactiveActiveView?.setQuiz(
                     question = state.title,
                     targetTime = status.endTime,
@@ -993,13 +966,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 )
                 interactiveFinishedView?.hide()
             }
-            InteractiveUiModel.Quiz.Status.Finished -> {
+            GameUiModel.Quiz.Status.Finished -> {
                 interactiveActiveView?.hide()
 
                 interactiveFinishedView?.setupQuiz()
                 interactiveFinishedView?.show()
             }
-            InteractiveUiModel.Quiz.Status.Unknown -> {
+            GameUiModel.Quiz.Status.Unknown -> {
                 interactiveActiveView?.hide()
                 interactiveFinishedView?.hide()
             }
@@ -1009,16 +982,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun renderSetupDialog(
         prevSetup: InteractiveSetupUiModel?,
         setup: InteractiveSetupUiModel,
-        prevInteractive: InteractiveUiModel?,
-        interactive: InteractiveUiModel,
+        prevGame: GameUiModel?,
+        game: GameUiModel,
     ) {
-        if (prevSetup == setup && prevInteractive == interactive) return
+        if (prevSetup == setup && prevGame == game) return
 
-        //If seller is not going to setup or if there is active interactive
+        //If seller is not going to setup or if there is active game
         //then hide the setup dialog
         if (setup.type == GameType.Unknown ||
             setup.type == GameType.Quiz ||
-            interactive !is InteractiveUiModel.Unknown) {
+            game !is GameUiModel.Unknown) {
             val dialog = InteractiveSetupDialogFragment.get(childFragmentManager)
             if (dialog?.isAdded == true) dialog.dismiss()
         } else {
@@ -1144,13 +1117,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun pauseBroadcast() {
+        if (parentViewModel.isBroadcastStopped) return
         showLoading(false)
         errorLiveNetworkLossView.hide()
         broadcaster.pause()
     }
 
-    private fun resumeBroadcast() {
-        broadcaster.resume(shouldContinue = false)
+    private fun resumeBroadcast(shouldContinue: Boolean) {
+        if (parentViewModel.isBroadcastStopped) return
+        broadcaster.resume(shouldContinue)
     }
 
     private fun reconnectLiveStreaming() {

@@ -4,13 +4,17 @@ import android.graphics.Paint
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.databinding.FragmentProductInfoBinding
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.util.RecomServerLogger
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.RECOM_PAGE_DISABLE_VIEWPORT_DS_TOPADS
 import com.tokopedia.utils.view.binding.viewBinding
@@ -47,7 +51,9 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
             if (productDetailData.badges.isNotEmpty()) {
                 binding?.badge?.show()
                 itemView.context?.let{
-                    ImageHandler.loadImageFitCenter(it, binding?.badge, productDetailData.badges[0].imageUrl)
+                    if (productDetailData.badges.isNotEmpty()) {
+                        binding?.badge?.setImageUrl(productDetailData.badges[0].imageUrl)
+                    }
                 }
             } else {
                 binding?.badge?.hide()
@@ -58,7 +64,7 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
             }
             setRatingReviewCount(productDetailData.rating, productDetailData.countReview)
             itemView.context?.let{
-                ImageHandler.loadImageRounded2(it, binding?.productImage, productDetailData.imageUrl)
+                binding?.productImage?.setImageUrl(productDetailData.imageUrl)
             }
             setStatusStock(productDetailData)
             handleDiscount(productDetailData.discountPercentage, productDetailData.slashedPrice)
@@ -172,7 +178,7 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
     }
 
     private fun impressWithoutViewportValidation(productInfoDataModel: ProductInfoDataModel) {
-        if (!productInfoDataModel.isInvoke) {
+        if (!productInfoDataModel.isInvoke && productInfoDataModel.isGetTopAds) {
             if (productInfoDataModel.productDetailData?.isTopads == true) {
                 listener?.onProductAnchorImpression(productInfoDataModel)
             } else {
@@ -209,11 +215,9 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
     private fun onClickWishlist(productInfoDataModel: ProductInfoDataModel){
         binding?.fabDetail?.setOnClickListener {
             val fabDetailActivated = binding?.fabDetail?.isActivated == true
-            listener?.onProductAnchorClickWishlist(productInfoDataModel, !fabDetailActivated) { state, throwable ->
-                if (state) {
-                    binding?.fabDetail?.isActivated = !fabDetailActivated
-                    updateWishlist(fabDetailActivated)
-                }
+            binding?.fabDetail?.isActivated = !fabDetailActivated
+            listener?.onProductAnchorClickWishlist(productInfoDataModel, !fabDetailActivated) { state, _ ->
+                updateWishlist(state)
             }
         }
     }

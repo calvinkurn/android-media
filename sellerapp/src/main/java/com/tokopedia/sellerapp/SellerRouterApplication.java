@@ -435,12 +435,12 @@ public abstract class SellerRouterApplication extends MainApplication implements
     @Override
     public Fragment getSomListFragment(@NotNull Context context, @Nullable String tabPage, @NotNull String orderType, @NotNull String searchKeyword, @NotNull String orderId) {
         Bundle bundle = new Bundle();
-        tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_ALL_ORDER : tabPage;
+        tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_NEW_ORDER : tabPage;
         bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
         bundle.putString(SomConsts.FILTER_ORDER_TYPE, orderType);
         bundle.putString(QUERY_PARAM_SEARCH, searchKeyword);
         if (DeviceScreenInfo.isTablet(context)) {
-            if (orderId != null && orderId.trim().length() > 0) {
+            if (orderId.trim().length() > 0) {
                 bundle.putString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID, orderId);
             }
             return SomContainerFragment.newInstance(bundle);

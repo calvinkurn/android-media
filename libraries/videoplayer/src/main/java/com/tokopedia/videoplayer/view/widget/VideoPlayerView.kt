@@ -6,15 +6,15 @@ import android.net.Uri
 import android.util.AttributeSet
 import android.view.View
 import android.widget.VideoView
-import com.google.gson.reflect.TypeToken
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.videoplayer.R
 import kotlinx.coroutines.*
-import java.lang.reflect.Type
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 /**
  * @author by yfsx on 20/03/19.
  */
+@Deprecated("Disabled due to a lot of crash happened. should have used ExoPlayer instead.")
 class VideoPlayerView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : VideoView(context, attrs, defStyleAttr) {
@@ -46,23 +46,28 @@ class VideoPlayerView @JvmOverloads constructor(
     }
 
     override fun setVideoURI(uri: Uri?) {
-        try {
-            if (autoSize) {
-                scope.launch {
-                    withContext(Dispatchers.IO) {
-                        val retriever = MediaMetadataRetriever()
-                        retriever.setDataSource(uri.toString(), emptyMap())
-                        yield()
-                        mVideoWidth =
-                            retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
-                                ?.toInt() ?: 0
-                        mVideoHeight =
-                            retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
-                                ?.toInt() ?: 0
-                    }
-                    super.setVideoURI(uri)
+        if (uri == null) return
+        if (autoSize) {
+            scope.launch {
+                withContext(Dispatchers.IO) {
+                    val retriever = MediaMetadataRetriever()
+                    safeExecute { retriever.setDataSource(uri.toString(), emptyMap()) }
+                    yield()
+                    mVideoWidth = retriever
+                        .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
+                        .toIntOrZero()
+                    mVideoHeight = retriever
+                        .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
+                        .toIntOrZero()
                 }
-            } else super.setVideoURI(uri)
+                super.setVideoURI(uri)
+            }
+        } else super.setVideoURI(uri)
+    }
+
+    private fun safeExecute(execute: () -> Unit ) {
+        try {
+            execute()
         } catch (e: Exception) {
             FirebaseCrashlytics.getInstance().log("E/${TAG}: ${e.localizedMessage}")
         }
@@ -89,5 +94,10 @@ class VideoPlayerView @JvmOverloads constructor(
     override fun onDetachedFromWindow() {
         job.cancelChildren()
         super.onDetachedFromWindow()
+    }
+
+    private fun String?.toIntOrZero(): Int {
+        return this?.toIntOrZero {
+        } ?: 0
     }
 }

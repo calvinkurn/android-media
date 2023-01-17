@@ -88,7 +88,9 @@ class CameraViewComponent(
         cameraView.takePicture()
     }
 
-    fun onStartTakeVideo(file: File) {
+    fun onStartTakeVideo(file: File?) {
+        if (file == null) return
+
         cameraView.set(Audio.ON)
         cameraView.takeVideoSnapshot(file, param.maxVideoDuration())
     }

@@ -32,7 +32,7 @@ class ProductItemViewHolder(
                 override fun onViewHint() {
                     impressionListener?.onImpressionProductAdsItem(
                         adapterPosition,
-                        item.cpmData.cpm.cpmShop.products[adapterPosition - 1],
+                        item.cpmData.cpm.cpmShop.products.getOrNull(adapterPosition - 1),
                         item.cpmData
                     )
                     impressionListener?.onImpressionHeadlineAdsItem(adapterPosition, item.cpmData)

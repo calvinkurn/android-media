@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -38,6 +37,7 @@ import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -88,11 +88,13 @@ class FlightHomepageFragment : BaseDaggerFragment(),
 
         val displayMetrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-        bannerWidthInPixels = (displayMetrics.widthPixels / BANNER_SHOW_SIZE).toInt()
-        bannerWidthInPixels -= resources.getDimensionPixelSize(R.dimen.banner_offset)
+        bannerWidthInPixels = (displayMetrics.widthPixels / BANNER_SHOW_SIZE).toIntSafely()
+        context?.let {
+            bannerWidthInPixels -= it.resources.getDimensionPixelSize(R.dimen.banner_offset)
+        }
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             flightHomepageViewModel = viewModelProvider.get(FlightHomepageViewModel::class.java)
             flightHomepageViewModel.init()
 
@@ -207,7 +209,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
             }
         }
         fragmentManager?.let {
-            flightAirportPickerBottomSheet.show(it, FlightAirportPickerBottomSheet.TAG_FLIGHT_AIRPORT_PICKER)
+            flightAirportPickerBottomSheet.show(it, FlightAirportPickerBottomSheet.TAG_FLIGHT_DEPARTURE_AIRPORT_PICKER)
         }
     }
 
@@ -220,7 +222,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         }
         flightAirportPickerBottomSheet.setShowListener { flightAirportPickerBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
         fragmentManager?.let {
-            flightAirportPickerBottomSheet.show(it, FlightAirportPickerBottomSheet.TAG_FLIGHT_AIRPORT_PICKER)
+            flightAirportPickerBottomSheet.show(it, FlightAirportPickerBottomSheet.TAG_FLIGHT_DESTINATION_AIRPORT_PICKER)
         }
     }
 
@@ -581,7 +583,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     }
 
     private fun measureBannerHeightBasedOnRatio(): Int =
-        (bannerWidthInPixels * BANNER_HEIGHT_RATIO / BANNER_WIDTH_RATIO).toInt()
+        (bannerWidthInPixels * BANNER_HEIGHT_RATIO / BANNER_WIDTH_RATIO).toIntSafely()
 
 
     override fun onDestroyView() {

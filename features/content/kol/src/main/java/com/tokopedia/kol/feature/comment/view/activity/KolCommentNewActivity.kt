@@ -13,15 +13,14 @@ import com.tokopedia.kol.feature.comment.di.KolCommentModule
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentNewFragment
 import com.tokopedia.kol.feature.postdetail.view.analytics.ContentDetailNewPageAnalytics
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailPageAnalyticsDataModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_AUTHOR_TYPE
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_ID
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_IS_POST_FOLLOWED
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_POST_TYPE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_VIDEO
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARG_IS_FROM_CONTENT_DETAIL_PAGE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.COMMENT_ARGS_POSITION
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailPageAnalyticsDataModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import javax.inject.Inject
 
 /**
@@ -30,7 +29,6 @@ import javax.inject.Inject
  */
 
 class KolCommentNewActivity : BaseSimpleActivity() {
-    private var kolId: Int = 0
     private var fromApplink = false
     var postId: String? = ""
 
@@ -59,7 +57,7 @@ class KolCommentNewActivity : BaseSimpleActivity() {
         val bundle = Bundle()
         postId = intent.data?.lastPathSegment
         if (!postId.isNullOrEmpty()) {
-            bundle.putInt(KolCommentActivity.ARGS_ID, postId.toIntOrZero())
+            bundle.putLong(ARGS_ID, postId.toLongOrZero())
         }
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
@@ -76,8 +74,7 @@ class KolCommentNewActivity : BaseSimpleActivity() {
 
     private fun getDataFromIntent() {
         intent.data?.let {
-            kolId = it.lastPathSegment?.toIntOrNull() ?: 0
-            it.getQueryParameter(KolCommentActivity.ARGS_FROM_APPLINK)?.let { isAppLink ->
+            it.getQueryParameter(ARGS_FROM_APPLINK)?.let { isAppLink ->
                 fromApplink = isAppLink == "true"
             }
         }
@@ -105,17 +102,27 @@ class KolCommentNewActivity : BaseSimpleActivity() {
                 intent.getStringExtra(ARGS_AUTHOR_TYPE) ?: "",
                 intent.getBooleanExtra(ARGS_VIDEO, false),
                 intent.getBooleanExtra(ARGS_IS_POST_FOLLOWED, true),
-                intent.getStringExtra(ARGS_POST_TYPE) ?: ""
+                intent.getStringExtra(ARGS_POST_TYPE) ?: "",
+                authorType = ""
             )
         super.onBackPressed()
     }
 
     companion object {
         private const val ARGS_POSITION_COLUMN = "ARGS_POSITION_COLUMN"
+        const val ARGS_FROM_APPLINK = "isFromApplink"
+        const val ARGS_ID = "ARGS_ID"
 
 
         @JvmStatic
-        fun getCallingIntent(context: Context, id: Int, rowNumber: Int, authorId: String?, isFollowed: Boolean? = true, postType: String?): Intent {
+        fun getCallingIntent(
+            context: Context,
+            id: Int,
+            rowNumber: Int,
+            authorId: String?,
+            isFollowed: Boolean? = true,
+            postType: String?
+        ): Intent {
             val intent = Intent(context, KolCommentNewActivity::class.java)
             val bundle = Bundle()
             bundle.putInt(ARGS_ID, id)

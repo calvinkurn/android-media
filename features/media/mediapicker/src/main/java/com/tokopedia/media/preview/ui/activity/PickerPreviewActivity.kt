@@ -1,5 +1,6 @@
 package com.tokopedia.media.preview.ui.activity
 
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -37,10 +38,15 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import javax.inject.Inject
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
+import com.tokopedia.media.picker.utils.goToSettings
+import com.tokopedia.media.picker.utils.permission.PermissionManager
+import com.tokopedia.media.picker.utils.permission.PermissionRequestCallback
+import com.tokopedia.media.picker.utils.permission.isGranted
 
-open class PickerPreviewActivity : BaseActivity()
-    , NavToolbarComponent.Listener
-    , DrawerSelectionWidget.Listener {
+open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
+    DrawerSelectionWidget.Listener {
 
     @Inject
     lateinit var param: ParamCacheManager
@@ -72,6 +78,24 @@ open class PickerPreviewActivity : BaseActivity()
         PreviewPagerComponent(
             parent = it
         )
+    }
+
+    private val permissionManager: PermissionManager by lazy {
+        PermissionManager.init(
+            this,
+            object : PermissionRequestCallback {
+            override fun onDenied(permissions: List<String>) {}
+
+            override fun onPermissionPermanentlyDenied(permissions: List<String>) {
+                if (permissions.isNotEmpty()) {
+                    startActivity(goToSettings())
+                }
+            }
+
+            override fun onGranted(permissions: List<String>) {
+                viewModel.files(uiModel)
+            }
+        })
     }
 
     private val viewModel by lazy {
@@ -161,7 +185,26 @@ open class PickerPreviewActivity : BaseActivity()
     }
 
     override fun onContinueClicked() {
-        viewModel.files(uiModel)
+        checkPermission()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            permissionManager.onRequestPermissionsResult(permissions, grantResults)
+        }
+    }
+
+    private fun checkPermission() {
+        if (isGranted(this, WRITE_EXTERNAL_STORAGE) && SDK_INT <= VERSION_CODES.P) {
+            permissionManager.requestPermission(WRITE_EXTERNAL_STORAGE, PERMISSION_REQUEST_CODE)
+        } else {
+            viewModel.files(uiModel)
+        }
     }
 
     private fun initObservable() {
@@ -235,8 +278,16 @@ open class PickerPreviewActivity : BaseActivity()
         showContinueButtonAs(true)
         onToolbarThemeChanged(ToolbarTheme.Solid)
 
-        if (!param.get().isEditorEnabled()) {
-            navToolbar.setContinueTitle(getString(R.string.picker_button_upload))
+        param.get().apply {
+            if (!isEditorEnabled()) {
+                navToolbar.setContinueTitle(
+                    if (previewActionText().isNotEmpty()) {
+                        previewActionText()
+                    } else {
+                        getString(R.string.picker_button_upload)
+                    }
+                )
+            }
         }
     }
 
@@ -325,6 +376,7 @@ open class PickerPreviewActivity : BaseActivity()
 
     companion object {
         private const val CACHE_LAST_SELECTION = "cache_last_selection"
+        private const val PERMISSION_REQUEST_CODE = 135
 
         fun start(activity: ComponentActivity, medias: ArrayList<MediaUiModel>, reqCode: Int) {
             activity.startActivityForResult(

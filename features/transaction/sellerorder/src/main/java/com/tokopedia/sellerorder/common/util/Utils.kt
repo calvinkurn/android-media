@@ -2,7 +2,6 @@ package com.tokopedia.sellerorder.common.util
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
 import android.graphics.drawable.Drawable
@@ -31,6 +30,7 @@ import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
 import com.tokopedia.shop.common.constant.admin_roles.AdminPermissionUrl
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import java.text.SimpleDateFormat
 import java.util.*
@@ -68,8 +68,7 @@ object Utils {
     }
 
     fun getColoredIndicator(context: Context, colorHex: String): Drawable? {
-        val color = if (colorHex.length > 1) Color.parseColor(colorHex)
-        else MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        val color = parseUnifyColorHex(context, colorHex, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         val drawable = MethodChecker.getDrawable(context, R.drawable.ic_order_status_indicator)
         val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
         drawable.colorFilter = filter
@@ -77,12 +76,16 @@ object Utils {
     }
 
     fun getColoredDeadlineBackground(context: Context, colorHex: String, defaultColor: Int): Drawable? {
-        val color = try {
-            Color.parseColor(colorHex)
-        } catch (t: Throwable) {
-            defaultColor
-        }
+        val color = parseUnifyColorHex(context, colorHex, defaultColor)
         val drawable = MethodChecker.getDrawable(context, R.drawable.bg_order_deadline)
+        val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
+        drawable.colorFilter = filter
+        return drawable
+    }
+
+    fun getColoredResoDeadlineBackground(context: Context, colorHex: String, defaultColor: Int): Drawable? {
+        val color = parseUnifyColorHex(context, colorHex, defaultColor)
+        val drawable = MethodChecker.getDrawable(context, R.drawable.bg_due_response)
         val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
         drawable.colorFilter = filter
         return drawable
@@ -218,5 +221,13 @@ object Utils {
 
     fun String.stripLastDot(): String {
         return removeSuffix(".")
+    }
+
+    fun parseUnifyColorHex(context: Context, colorHex: String, defaultColor: Int): Int {
+        return try {
+            stringToUnifyColor(context, colorHex).run { this.unifyColor ?: this.defaultColor }
+        } catch (t: Throwable) {
+            defaultColor
+        }
     }
 }

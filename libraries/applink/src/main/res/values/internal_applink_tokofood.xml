@@ -12,4 +12,5 @@
     <string name="path_tokofood_merchant" translatable="false">/merchant</string>
     <string name="path_tokofood_purchase" translatable="false">/purchase</string>
     <string name="path_tokofood_post_purchase" translatable="false">/postpurchase</string>
+    <string name="path_tokofood_search" translatable="false">/search</string>
 </resources>

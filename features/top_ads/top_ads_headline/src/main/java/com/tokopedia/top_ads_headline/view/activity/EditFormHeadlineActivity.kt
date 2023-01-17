@@ -173,8 +173,8 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
     }
 
     private fun fetchAdDetails() {
-        sharedEditHeadlineViewModel.getHeadlineAdId(groupId.toIntOrZero(),
-            userSession.shopId.toIntOrZero(),
+        sharedEditHeadlineViewModel.getHeadlineAdId(groupId,
+            userSession.shopId,
             this::onError)
     }
 
@@ -200,7 +200,7 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
     }
 
     private fun renderTabAndViewPager() {
-        val bundle = intent.extras
+        val bundle = intent?.extras
         viewPager?.adapter = getViewPagerAdapter()
         viewPager?.offscreenPageLimit = VP_OFF_SCREEN_PAGE_LIMIT
         tabLayout?.addNewTab(AD_CONTENT)

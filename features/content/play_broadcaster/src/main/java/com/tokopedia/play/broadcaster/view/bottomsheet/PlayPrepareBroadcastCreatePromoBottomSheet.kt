@@ -8,6 +8,7 @@ import android.util.DisplayMetrics
 import android.view.View
 import androidx.core.text.HtmlCompat
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -151,16 +152,16 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
         btnPlayPrepareBroadcastNext.setOnClickListener {
             dialog?.window?.decorView?.animate()?.setDuration(ANIMATION_DURATION)?.translationX((screenWidth * -1).toFloat())
                 ?.setListener(object : Animator.AnimatorListener {
-                    override fun onAnimationRepeat(p0: Animator?) {}
+                    override fun onAnimationRepeat(p0: Animator) {}
 
-                    override fun onAnimationEnd(p0: Animator?) {
+                    override fun onAnimationEnd(p0: Animator) {
                         listener.onVoucherSaved(radioPlayPrepareBroadcastWithPromo.isChecked, promoPercentage, promoQuota)
                         dismiss()
                     }
 
-                    override fun onAnimationCancel(p0: Animator?) {}
+                    override fun onAnimationCancel(p0: Animator) {}
 
-                    override fun onAnimationStart(p0: Animator?) {}
+                    override fun onAnimationStart(p0: Animator) {}
 
                 })
         }
@@ -195,15 +196,15 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
                         ?.setDuration(ANIMATION_DURATION)
                         ?.translationX(screenWidth.toFloat())
                         ?.setListener(object : Animator.AnimatorListener {
-                            override fun onAnimationRepeat(p0: Animator?) {}
+                            override fun onAnimationRepeat(p0: Animator) {}
 
-                            override fun onAnimationEnd(p0: Animator?) {
+                            override fun onAnimationEnd(p0: Animator) {
                                 dismiss()
                             }
 
-                            override fun onAnimationCancel(p0: Animator?) {}
+                            override fun onAnimationCancel(p0: Animator) {}
 
-                            override fun onAnimationStart(p0: Animator?) {}
+                            override fun onAnimationStart(p0: Animator) {}
                         })
                 } else {
                     dismiss()
@@ -353,7 +354,7 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
         btnPlayPrepareBroadcasatInputButton.setOnClickListener {
             tvPlayPrepareBroadcastInputField.textFieldInput.removeTextChangedListener(percentageTextWatcher)
             try {
-                promoPercentage = tvPlayPrepareBroadcastInputField.textFieldInput.text.toString().toInt()
+                promoPercentage = tvPlayPrepareBroadcastInputField.textFieldInput.text.toString().toIntOrZero()
                 showQuotaView()
             } catch (t: Throwable) {
                 t.printStackTrace()
@@ -400,7 +401,7 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
         btnPlayPrepareBroadcasatInputButton.setOnClickListener {
             tvPlayPrepareBroadcastInputField.textFieldInput.removeTextChangedListener(quotaTextWatcher)
             try {
-                promoQuota = tvPlayPrepareBroadcastInputField.textFieldInput.text.toString().toInt()
+                promoQuota = tvPlayPrepareBroadcastInputField.textFieldInput.text.toString().toIntOrZero()
                 hidePercetagePromoView()
                 showMainStateView()
             } catch (t: Throwable) {
@@ -416,7 +417,7 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
 
         override fun onTextChanged(text: CharSequence, p1: Int, p2: Int, p3: Int) {
             try {
-                val percent = text.toString().toInt()
+                val percent = text.toString().toIntOrZero()
                 when {
                     percent < MIN_PERCENT_QUOTA_VALUE -> {
                         tvPlayPrepareBroadcastInputField.setError(true)
@@ -450,7 +451,7 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
 
         override fun onTextChanged(text: CharSequence, p1: Int, p2: Int, p3: Int) {
             try {
-                val quota = text.toString().toInt()
+                val quota = text.toString().toIntOrZero()
                 when {
                     quota < MIN_PERCENT_QUOTA_VALUE -> {
                         tvPlayPrepareBroadcastInputField.setError(true)

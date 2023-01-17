@@ -4,9 +4,10 @@
 
     <string name="product_detail_courier">Pengiriman</string>
     <string name="label_product_info">Informasi Produk</string>
-    <string name="merchant_product_detail_label_product_detail">Detail Produk</string>
+    <string name="merchant_product_detail_label_product_detail">Detail produk</string>
     <string name="merchant_product_detail_shipping">Detail pengiriman</string>
     <string name="label_read_detail">Baca Selengkapnya</string>
+    <string name="pdp_product_info_description_title">Deskripsi produk</string>
     <string name="merchant_product_detail_label_selengkapnya">Selengkapnya</string>
     <string name="label_image_preview_pdp">Gambar produk</string>
     <string name="title_activity_product_detail">Rincian Produk</string>
@@ -123,7 +124,7 @@
     <string name="product_detail_ask_discussion_label">Tanya di Diskusi</string>
 
     <!--Ticker-->
-    <string name="ticker_href_builder">&lt;a href="#"&gt;%s&lt;/a&gt;</string>
+    <string name="ticker_href_builder">&lt;b&gt;&lt;a href="#"&gt;%s&lt;/a&gt;&lt;/b&gt;</string>
 
     <!--New Shop Info-->
     <string name="shop_online_days_ago"><![CDATA[Online <b>%1d hari lalu</b>]]></string>
@@ -147,8 +148,6 @@
     <string name="shop_chat_speed_in_hours_with_icon">± %1d jam</string>
 
     <string name="shop_chat_speed_in_minute">%1d menit</string>
-
-    <string name="label_go_apotik">Go-Apotik</string>
 
     <string name="pdp_tradein_text_permission_description">Izinkan Tokopedia mengakses IMEI, WiFi, dan lainnya untuk tes fungsi HP</string>
     <string name="pdp_tradein_text_request_access">Izin akses ke HP-mu</string>
@@ -199,4 +198,6 @@
 
     <string name="pdp_media_label_builder">%1$s • %2$s </string>
     <string name="pdp_general_info_see">Lihat</string>
+    <string name="text_info_shop_moderated">Fitur tidak dapat diakses karena toko sedang ditangguhkan</string>
+
 </resources>

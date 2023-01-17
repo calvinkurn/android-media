@@ -41,7 +41,7 @@
     <string name="shop_close_note">Catatan</string>
     <string name="closed_note_information">Penutupan Toko akan berlaku mulai pukul 00:00 dan berakhir pada pukul 23:59 sesuai tanggal yang telah ditentukan.</string>
     <string name="hint_date">Day, dd/mm/yyyy</string>
-    <string name="shop_operational_hour_ops_hour_holiday_illustration">https://ecs7.tokopedia.net/img/android/shop/ops_hour_holiday_dialog_image.png</string>
+    <string name="shop_operational_hour_ops_hour_holiday_illustration">https://images.tokopedia.net/img/android/shop/ops_hour_holiday_dialog_image.png</string>
     <string name="shop_operational_hour_title_set_hour">Atur jam operasional toko</string>
     <string name="shop_operational_hour_title_holiday">Atur tanggal toko libur</string>
     <string name="shop_operational_hour_desc_holiday">Kamu bisa atur tanggal toko libur jika ada tanggal merah atau keperluan mendesak. Selama menggunakan fitur ini, produk-produk di tokomu tidak bisa dibeli, ya.</string>
@@ -90,7 +90,7 @@
     <string name="shop_operational_hour_holiday_warning_dialog_desc">Libur rutin tidak bisa diterapkan setiap hari,\nya. Pengaturan tidak tersimpan, tapi kamu\nbisa jadwalkan di pengaturan tanggal libur.</string>
     <string name="shop_operational_hour_label_set_holiday_sch">Atur Libur</string>
     <string name="shop_operational_hour_label_back">Balik</string>
-    <string name="shop_operational_hour_image_ongoing_holiday_container_url">https://ecs7.tokopedia.net/img/android/shop/ops_hour_ongoing_holiday_image.png</string>
+    <string name="shop_operational_hour_image_ongoing_holiday_container_url">https://images.tokopedia.net/img/android/shop/ops_hour_ongoing_holiday_image.png</string>
 
     <string name="title_dialog_delete_shop_note">Hapus Catatan</string>
     <string name="desc_dialog_delete_shop_note">Hapus Catatan “%1$s”?</string>
@@ -187,6 +187,7 @@
 
     <string name="error_get_os_merchant">Error getting OS merchant type. Please retry</string>
     <string name="error_get_shop_status">Error getting shop status. Please retry</string>
+    <string name="error_get_shop_operational_hour_list">Error getting shop operational hours. Please retry</string>
     <string name="error_not_found_message">Waduh, tujuanmu ngga ada. Ayo kembali!</string>
     <string name="error_under_maintenance_message">Kami sedang melakukan perbaikan. Balik lagi nanti, ya.</string>
     <string name="error_full_visitor_message">Tokopedia lagi banyak pengunjung, nih. Balik lagi nanti, ya.</string>

@@ -23,6 +23,7 @@ class AffiliateCookieHelper @Inject constructor(
     private val checkCookieUseCase: CheckCookieUseCase,
     private val userSession: UserSessionInterface
 ) {
+
     private var affiliateUUID: String = ""
 
     /**
@@ -32,6 +33,7 @@ class AffiliateCookieHelper @Inject constructor(
      * @param[affiliateChannel] required and pass it from url query params
      * @param[affiliatePageDetail] [AffiliatePageDetail]
      * @param[uuid] random UUID generated every time user land on PDP page. (Required for Product)
+     * @param[isATC] mandatory for Direct ATC attribution
      * @param[additionalParam] some additional params of type [AdditionalParam]
      *
      */
@@ -40,7 +42,7 @@ class AffiliateCookieHelper @Inject constructor(
         affiliateChannel: String,
         affiliatePageDetail: AffiliatePageDetail,
         uuid: String = "",
-        additionalParam: List<AdditionalParam> = emptyList(),
+        additionalParam: List<AdditionalParam> = emptyList()
     ) {
         val params = AffiliateCookieParams(
             affiliateUUID,
@@ -50,8 +52,9 @@ class AffiliateCookieHelper @Inject constructor(
             additionalParam
         )
         when (affiliatePageDetail.source) {
-            is AffiliateSdkPageSource.PDP -> {
-                if (affiliateUUID.isNotEmpty()) {
+            is AffiliateSdkPageSource.PDP,
+            is AffiliateSdkPageSource.DirectATC -> {
+                if (params.affiliateUUID.isNotEmpty()) {
                     createCookieUseCase.createCookieRequest(
                         params,
                         userSession.deviceId
@@ -60,14 +63,15 @@ class AffiliateCookieHelper @Inject constructor(
             }
             else -> {
                 this.affiliateUUID = params.affiliateUUID
-                if (affiliateUUID.isNotEmpty()) {
+                if (params.affiliateUUID.isNotEmpty()) {
                     createCookieUseCase.createCookieRequest(
                         params,
                         userSession.deviceId
                     )
                 } else {
                     try {
-                        val checkAffiliateResponse = checkCookieUseCase.checkAffiliateCookie(params,userSession.deviceId)
+                        val checkAffiliateResponse =
+                            checkCookieUseCase.checkAffiliateCookie(params, userSession.deviceId)
                         this.affiliateUUID = checkAffiliateResponse.response.affiliateUuId ?: ""
                     } catch (e: Exception) {
                         Timber.e(e)
@@ -81,18 +85,23 @@ class AffiliateCookieHelper @Inject constructor(
      * Helper function to create affiliate link of an url.
      *
      * @param[productUrl] url of product of which affiliate link is needed
+     * @param[trackerId] trackerId to be included in affiliate link
      *
      * @return appends an affiliate UUID query to param to your AppLink or URL. if the cookie not recorded, will return the same [productUrl]
      */
-    fun createAffiliateLink(productUrl: String): String {
+    fun createAffiliateLink(productUrl: String, trackerId: String? = null): String {
         if (affiliateUUID.isNotEmpty()) {
-            return Uri.parse(productUrl)
+            val affiliateLink = Uri.parse(productUrl)
                 .buildUpon()
                 .appendQueryParameter(AffiliateSdkConstant.AFFILIATE_UUID, affiliateUUID)
-                .build()
-                .toString()
+            if (trackerId?.isNotEmpty() == true) {
+                affiliateLink.appendQueryParameter(
+                    AffiliateSdkConstant.AFFILIATE_TRACKER_ID,
+                    trackerId
+                )
+            }
+            return affiliateLink.build().toString()
         }
         return productUrl
     }
-
 }

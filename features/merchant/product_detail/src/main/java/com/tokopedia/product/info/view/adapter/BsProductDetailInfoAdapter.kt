@@ -1,7 +1,7 @@
 package com.tokopedia.product.info.view.adapter
 
 import androidx.recyclerview.widget.AsyncDifferConfig
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVisitable
+import com.tokopedia.product.info.view.models.ProductDetailInfoVisitable
 
 /**
  * Created by Yehezkiel on 13/10/20

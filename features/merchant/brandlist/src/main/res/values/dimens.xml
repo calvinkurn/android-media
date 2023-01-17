@@ -2,8 +2,5 @@
 <resources>
     <dimen name="bl_tab_min_height">44dp</dimen>
     <dimen name="bl_tab_max_height">75dp</dimen>
-    <dimen name="dp_33">33dp</dimen>
-    <dimen name="dp_66">66dp</dimen>
     <dimen name="dp_70">70dp</dimen>
-    <dimen name="dp_77">77dp</dimen>
 </resources>

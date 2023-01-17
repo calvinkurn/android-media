@@ -1,3 +1,4 @@
+// ktlint-disable filename
 package com.tokopedia.product.manage.data
 
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
@@ -21,10 +22,14 @@ fun createProductVariantResponse(
     price: Double = 100.0,
     sku: String = "sku",
     stock: Int = 0,
-    stockAlertStatus: String = "2",
-    stockAlertCount: Int = 5,
+    stockAlertStatus: Int = 1,
+    stockAlertCount: String = "0",
     pictures: List<Picture> = emptyList(),
-    isCampaign: Boolean = false
+    isCampaign: Boolean = false,
+    hasStockAlert: Boolean = false,
+    notifyMeOOSCount: Int = 0,
+    isBelowStockAlert: Boolean = false,
+    isEmptyStock: Boolean = false
 ): Product {
     return Product(
         productID,
@@ -35,9 +40,13 @@ fun createProductVariantResponse(
         price,
         sku,
         stock,
-        stockAlertStatus,
         stockAlertCount,
-        pictures
+        stockAlertStatus,
+        pictures,
+        hasStockAlert = hasStockAlert,
+        isEmptyStock = isEmptyStock,
+        isBelowStockAlert = isBelowStockAlert,
+        notifymeCount = notifyMeOOSCount
     )
 }
 
@@ -74,7 +83,11 @@ fun createProductVariant(
     isAllStockEmpty: Boolean = true,
     access: ProductManageAccess = createShopOwnerAccess(),
     campaignTypeList: List<CampaignType>? = emptyList(),
-    maxStock: Int? = null
+    maxStock: Int? = null,
+    notifyMeOOSCount: Int = 0,
+    stockAlertStatus: Int = 1,
+    stockAlertCount: Int = 0,
+    isBelowStockAlert: Boolean = false
 ): ProductVariant {
     return ProductVariant(
         id,
@@ -90,7 +103,11 @@ fun createProductVariant(
         isAllStockEmpty,
         access,
         campaignTypeList,
-        maxStock
+        maxStock,
+        notifyMeOOSCount,
+        stockAlertStatus,
+        stockAlertCount,
+        isBelowStockAlert
     )
 }
 
@@ -102,7 +119,8 @@ fun createGetVariantResponse(
     stock: Int = 10,
     products: List<Product> = emptyList(),
     selections: List<Selection> = emptyList(),
-    sizeCharts: List<Picture> = emptyList()
+    sizeCharts: List<Picture> = emptyList(),
+    notifyMeOOSCount: Int = 0
 ): GetProductVariantResponse {
     val variantResponse = Variant(products, selections, sizeCharts)
     val getProductV3Response = GetProductV3(
@@ -111,6 +129,7 @@ fun createGetVariantResponse(
         stockAlertCount,
         stockAlertStatus,
         stock,
+        notifyMeOOSCount,
         variantResponse
     )
     return GetProductVariantResponse(getProductV3Response)

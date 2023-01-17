@@ -53,7 +53,8 @@ object HomeScreenshotTestHelper {
                 ScreenshotModel(name = "CueWidgetCategory2x2"),
                 ScreenshotModel(name = "CueWidgetCategory3x2"),
                 ScreenshotModel(name = "VpsWidget"),
-                ScreenshotModel(name = "MissionWidget")
+                ScreenshotModel(name = "MissionWidget"),
+                ScreenshotModel(name = "Lego4Product")
         )
     }
 

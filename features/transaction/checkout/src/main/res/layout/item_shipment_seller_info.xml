@@ -149,11 +149,12 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_free_shipping"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="20dp"
+            android:adjustViewBounds="true"
             android:gravity="center_vertical"
             android:scaleType="fitStart"
-            app:unify_image_corner_radius="0"
+            app:layout_maxWidth="100dp"
             tools:src="@color/Unify_G500" />
 
     </com.google.android.flexbox.FlexboxLayout>

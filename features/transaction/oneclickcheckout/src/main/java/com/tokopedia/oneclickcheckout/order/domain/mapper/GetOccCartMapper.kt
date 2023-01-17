@@ -7,6 +7,10 @@ import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.CourierSelectionError
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EthicalDrugResponse
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.ImageUploadResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
@@ -35,6 +39,7 @@ class GetOccCartMapper @Inject constructor() {
     fun mapGetOccCartDataToOrderData(data: GetOccCartData): OrderData {
         val groupShop = data.groupShop.first()
         val orderCart = OrderCart().apply {
+            cartData = data.cartData
             cartString = groupShop.cartString
             paymentProfile = groupShop.paymentProfile
             shop = generateOrderShop(groupShop)
@@ -56,7 +61,8 @@ class GetOccCartMapper @Inject constructor() {
                 popUpMessage = data.popUpMessage,
                 totalProductPrice = data.totalProductPrice,
                 profileCode = data.paymentAdditionalData.profileCode,
-                popUp = mapPopUp(data.popUp)
+                popUp = mapPopUp(data.popUp),
+                imageUpload = mapImageUpload(data.imageUpload)
         )
     }
 
@@ -67,7 +73,7 @@ class GetOccCartMapper @Inject constructor() {
                 val shopShipmentResult = ShopShipment().apply {
                     isDropshipEnabled = shopShipment.isDropshipEnabled == 1
                     shipCode = shopShipment.shipCode
-                    shipId = shopShipment.shipId
+                    shipId = shopShipment.shipId.toIntOrZero()
                     shipLogo = shopShipment.shipLogo
                     shipName = shopShipment.shipName
                 }
@@ -77,9 +83,9 @@ class GetOccCartMapper @Inject constructor() {
                         val shipProdResult = com.tokopedia.logisticcart.shipping.model.ShipProd().apply {
                             additionalFee = shipProd.additionalFee
                             minimumWeight = shipProd.minimumWeight
-                            shipGroupId = shipProd.shipGroupId
+                            shipGroupId = shipProd.shipGroupId.toIntOrZero()
                             shipGroupName = shipProd.shipGroupName
-                            shipProdId = shipProd.shipProdId
+                            shipProdId = shipProd.shipProdId.toIntOrZero()
                             shipProdName = shipProd.shipProdName
                         }
                         shipProdListResult.add(shipProdResult)
@@ -197,6 +203,7 @@ class GetOccCartMapper @Inject constructor() {
             errorMessage = product.errors.firstOrNull() ?: ""
             isError = errorMessage.isNotEmpty() || shop.isError
             addOn = mapAddOns(product.addOns)
+            ethicalDrug = mapEthicalDrug(product.ethicalDrug)
         }
         return orderProduct
     }
@@ -567,6 +574,24 @@ class GetOccCartMapper @Inject constructor() {
                 packagingAndGreetingCard = addOnWording.packagingAndGreetingCard,
                 onlyGreetingCard = addOnWording.onlyGreetingCard,
                 invoiceNotSendToRecipient = addOnWording.invoiceNotSendToRecipient
+        )
+    }
+
+    private fun mapEthicalDrug(ethicalDrugResponse: EthicalDrugResponse): EthicalDrugDataModel {
+        return EthicalDrugDataModel(
+            needPrescription = ethicalDrugResponse.needPrescription,
+            iconUrl = ethicalDrugResponse.iconUrl,
+            text = ethicalDrugResponse.text
+        )
+    }
+
+    private fun mapImageUpload(imageUploadResponse: ImageUploadResponse): ImageUploadDataModel {
+        return ImageUploadDataModel(
+            showImageUpload = imageUploadResponse.showImageUpload,
+            text = imageUploadResponse.text,
+            leftIconUrl = imageUploadResponse.leftIconUrl,
+            checkoutId = imageUploadResponse.checkoutId,
+            frontEndValidation = imageUploadResponse.frontEndValidation,
         )
     }
 }

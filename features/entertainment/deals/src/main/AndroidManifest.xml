@@ -7,7 +7,7 @@
         <activity
             android:name=".home.ui.activity.DealsHomeActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
+            android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize"
             android:exported="false">
             <intent-filter>
@@ -25,7 +25,7 @@
         <activity
             android:name="com.tokopedia.deals.search.ui.activity.DealsSearchActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
+            android:theme="@style/Theme.White"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -42,7 +42,7 @@
         <activity
             android:name=".category.ui.activity.DealsCategoryActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
+            android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan"
             android:exported="false">
             <intent-filter>
@@ -61,7 +61,7 @@
             android:name=".brand.ui.activity.DealsBrandActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
-            android:theme="@style/Theme.WhiteUnify"
+            android:theme="@style/Theme.White"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -79,7 +79,7 @@
             android:name=".brand_detail.ui.activity.DealsBrandDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
-            android:theme="@style/Theme.WhiteUnify"
+            android:theme="@style/Theme.White"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -92,6 +92,30 @@
                     android:host="@string/host_deals"
                     android:path="/brand-detail-new" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".pdp.ui.activity.DealsPDPActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/Theme.White"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_deals"
+                    android:path="/pdp-new" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".checkout.ui.activity.DealsCheckoutActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/Theme.White">
         </activity>
     </application>
 </manifest>

@@ -42,7 +42,6 @@ import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiMode
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
-import com.tokopedia.shop.home.view.model.ShopPageHomeWidgetLayoutUiModel
 import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
@@ -168,7 +167,8 @@ class ShopPageCampaignFragment :
                     isOwner,
                     isLogin,
                     isThematicWidgetShown,
-                    isEnableDirectPurchase
+                    isEnableDirectPurchase,
+                    shopId
                 )
             shopCampaignTabAdapter.setCampaignLayoutData(shopHomeWidgetContentData)
         }
@@ -182,7 +182,7 @@ class ShopPageCampaignFragment :
     }
 
     override fun onSuccessGetShopHomeWidgetContentData(mapWidgetContentData: Map<Pair<String, String>, Visitable<*>?>) {
-        if(shopCampaignTabAdapter.isAllWidgetLoading()){
+        if (shopCampaignTabAdapter.isAllWidgetLoading()) {
             setCampaignTabBackgroundGradient()
             checkShowCampaignTabConfetti()
         }
@@ -190,7 +190,7 @@ class ShopPageCampaignFragment :
     }
 
     private fun checkShowCampaignTabConfetti() {
-        if(isShowConfetti()){
+        if (isShowConfetti()) {
             setConfettiAlreadyShown()
             showConfetti()
         }
@@ -204,7 +204,7 @@ class ShopPageCampaignFragment :
         return (parentFragment as? NewShopPageFragment)?.isShowConfetti().orFalse()
     }
 
-    private fun setConfettiAlreadyShown(){
+    private fun setConfettiAlreadyShown() {
         (parentFragment as? NewShopPageFragment)?.setConfettiAlreadyShown()
     }
 
@@ -282,7 +282,7 @@ class ShopPageCampaignFragment :
             VALUE_MULTIPLE_BUNDLING,
             selectedMultipleBundle.bundleId
         )
-        goToPDP(selectedProduct.productId)
+        goToPDP(selectedProduct.productAppLink)
     }
 
     override fun onSingleBundleProductClicked(
@@ -309,7 +309,7 @@ class ShopPageCampaignFragment :
             VALUE_SINGLE_BUNDLING,
             selectedSingleBundle.bundleId
         )
-        goToPDP(selectedProduct.productId)
+        goToPDP(selectedProduct.productAppLink)
     }
 
     override fun impressionProductItemBundleMultiple(
@@ -383,7 +383,7 @@ class ShopPageCampaignFragment :
             widgetModel.header.title,
             ShopUtil.getActualPositionFromIndex(position)
         )
-        goToPDP(model.id ?: "")
+        goToPDP(model.productUrl)
     }
 
     override fun onFlashSaleProductImpression(
@@ -430,7 +430,7 @@ class ShopPageCampaignFragment :
             )
         }
         shopHomeProductViewModel?.let {
-            goToPDP(it.id ?: "")
+            goToPDP(it.productUrl)
         }
     }
 
@@ -548,7 +548,7 @@ class ShopPageCampaignFragment :
                 campaignId = campaignId,
                 campaignName = campaignName,
                 shopId = shopId,
-                userId = userId,
+                userId = userId
             )
             RouteManager.route(context, appLink)
         }
@@ -558,7 +558,7 @@ class ShopPageCampaignFragment :
                 campaignId = campaignId,
                 campaignName = campaignName,
                 shopId = shopId,
-                userId = userId,
+                userId = userId
             )
             RouteManager.route(context, appLink)
         }

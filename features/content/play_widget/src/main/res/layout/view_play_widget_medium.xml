@@ -38,8 +38,8 @@
             android:id="@+id/play_widget_overlay_image"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:scaleType="fitStart" />
+            android:layout_marginStart="-2dp"
+            android:scaleType="fitCenter" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/play_widget_recycler_view"
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:clipToPadding="false"
-            android:paddingStart="@dimen/spacing_lvl4"
+            android:paddingStart="@dimen/unify_space_12"
             android:paddingEnd="@dimen/spacing_lvl3"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"

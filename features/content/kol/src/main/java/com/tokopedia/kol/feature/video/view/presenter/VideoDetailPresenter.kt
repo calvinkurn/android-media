@@ -85,25 +85,18 @@ class VideoDetailPresenter
         followKolPostGqlUseCase.execute(FollowSubscriber(view))
     }
 
-    override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener) {
+    override fun likeKol(id: Long, rowNumber: Int, likeListener: KolPostLikeListener) {
         likeKolPostUseCase.execute(
                 LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
                 LikeSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Like)
         )
     }
 
-    override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener) {
+    override fun unlikeKol(id: Long, rowNumber: Int, likeListener: KolPostLikeListener) {
         likeKolPostUseCase.execute(
                 LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
                 LikeSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Unlike)
         )
     }
-    private fun getUserId(): String {
-        var userId = "0"
-        if (view.userSession.userId.isNotEmpty()) {
-            userId = view.userSession.userId
-        }
 
-        return userId
-    }
 }

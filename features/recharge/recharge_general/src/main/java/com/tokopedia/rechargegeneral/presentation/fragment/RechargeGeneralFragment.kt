@@ -45,6 +45,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -59,6 +60,8 @@ import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.rechargegeneral.R
+import com.tokopedia.rechargegeneral.databinding.FragmentRechargeGeneralBinding
+import com.tokopedia.rechargegeneral.databinding.ViewRechargeGeneralProductInputInfoBottomSheetBinding
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
 import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicInput
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
@@ -84,14 +87,16 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_recharge_general.*
-import kotlinx.android.synthetic.main.view_recharge_general_product_input_info_bottom_sheet.view.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class RechargeGeneralFragment : BaseTopupBillsFragment(),
-        OnInputListener,
-        RechargeGeneralAdapter.LoaderListener,
-        RechargeGeneralCheckoutBottomSheet.CheckoutListener {
+class RechargeGeneralFragment :
+    BaseTopupBillsFragment(),
+    OnInputListener,
+    RechargeGeneralAdapter.LoaderListener,
+    RechargeGeneralCheckoutBottomSheet.CheckoutListener {
+
+    private var binding by autoClearedNullable<FragmentRechargeGeneralBinding>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -117,6 +122,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     var rechargeProductFromSlice: String = ""
 
     private var isAddSBM: Boolean = false
+    private var isFromSBM: Boolean = false
 
     private var operatorId: Int = 0
         set(value) {
@@ -157,7 +163,8 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     private lateinit var checkoutBottomSheet: BottomSheetUnify
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_recharge_general, container, false)
+        binding = FragmentRechargeGeneralBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -177,6 +184,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
 
             arguments?.let {
                 isAddSBM = it.getBoolean(EXTRA_PARAM_IS_ADD_BILLS, false)
+                isFromSBM = it.getBoolean(EXTRA_ADD_BILLS_IS_FROM_SBM, false)
             }
 
             adapter = RechargeGeneralAdapter(it, RechargeGeneralAdapterFactory(this, isAddSBM), this)
@@ -200,74 +208,88 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel.operatorCluster.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    loading_view.hide()
-                    renderInitialData()
-                }
-                is Fail -> {
-                    hideLoading()
-                    showGetListError(it.throwable)
+        viewModel.operatorCluster.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        binding?.loadingView?.hide()
+                        renderInitialData()
+                    }
+                    is Fail -> {
+                        hideLoading()
+                        showGetListError(it.throwable)
+                    }
                 }
             }
-        })
+        )
 
-        viewModel.productList.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    setupInputAndProduct(it.data)
-                    updateFavoriteNumberInputField()
-                    if (needProductDataUpdate) updateProductData()
-                    hideLoading()
-                }
-                is Fail -> {
-                    val previousOperatorId = operatorId
-                    resetInputData()
-                    // Get default operator & compare previous operator;
-                    // If they're different fetch product data
-                    val defaultOperatorId = getDefaultOperatorId()
-                    if (previousOperatorId != defaultOperatorId) {
-                        operatorId = defaultOperatorId
-                        val defaultOperatorName = getOperatorData(operatorId)?.attributes?.name
-                                ?: ""
-                        operator_select.setInputText(defaultOperatorName, false)
-                        getProductList(menuId, operatorId.toString())
-                    } else {
+        viewModel.productList.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        setupInputAndProduct(it.data)
+                        updateFavoriteNumberInputField()
+                        if (needProductDataUpdate) updateProductData()
                         hideLoading()
                     }
-
-                    view?.let { v ->
-                        var throwable = it.throwable
-                        if (throwable.message.isNullOrEmpty()) {
-                            throwable = MessageErrorException(getString(R.string.selection_null_product_error))
+                    is Fail -> {
+                        val previousOperatorId = operatorId
+                        resetInputData()
+                        // Get default operator & compare previous operator;
+                        // If they're different fetch product data
+                        val defaultOperatorId = getDefaultOperatorId()
+                        if (previousOperatorId != defaultOperatorId) {
+                            operatorId = defaultOperatorId
+                            val defaultOperatorName = getOperatorData(operatorId)?.attributes?.name
+                                ?: ""
+                            binding?.operatorSelect?.setInputText(defaultOperatorName, false)
+                            getProductList(menuId, operatorId.toString())
+                        } else {
+                            hideLoading()
                         }
-                        val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
-                            requireContext(),
-                            throwable,
-                            ErrorHandler.Builder()
-                                .className(this::class.java.simpleName)
-                                .build()
-                        )
-                        Toaster.build(v, errorMessage.orEmpty(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+
+                        view?.let { v ->
+                            var throwable = it.throwable
+                            if (throwable.message.isNullOrEmpty()) {
+                                throwable = MessageErrorException(getString(R.string.selection_null_product_error))
+                            }
+                            val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                                requireContext(),
+                                throwable,
+                                ErrorHandler.Builder()
+                                    .className(this::class.java.simpleName)
+                                    .build()
+                            )
+                            Toaster.build(
+                                v,
+                                errorMessage.orEmpty(),
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                            ).show()
+                        }
                     }
                 }
             }
-        })
+        )
 
-        sharedViewModel.recommendationItem.observe(viewLifecycleOwner, Observer {
-            val operatorClusters = viewModel.operatorCluster.value
-            if (operatorClusters is Success) {
-                rechargeGeneralAnalytics.eventClickRecentIcon(it, categoryName, it.position)
-                operatorId = it.operatorId.toIntOrZero()
-                productId = it.productId.toIntOrZero()
-                inputData[PARAM_CLIENT_NUMBER] = it.clientNumber
-                renderInitialData()
-                // Enquire & navigate to checkout
-                enquire()
+        sharedViewModel.recommendationItem.observe(
+            viewLifecycleOwner,
+            Observer {
+                val operatorClusters = viewModel.operatorCluster.value
+                if (operatorClusters is Success) {
+                    rechargeGeneralAnalytics.eventClickRecentIcon(it, categoryName, it.position)
+                    operatorId = it.operatorId.toIntOrZero()
+                    productId = it.productId.toIntOrZero()
+                    inputData[PARAM_CLIENT_NUMBER] = it.clientNumber
+                    renderInitialData()
+                    // Enquire & navigate to checkout
+                    enquire()
+                }
             }
-        })
+        )
 
         observe(viewModel.addBills) {
             when (it) {
@@ -277,16 +299,24 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     if (!errorMessage.isNullOrEmpty()) {
                         commonTopupBillsAnalytics.clickViewErrorToasterTelcoAddBills(categoryName, errorMessage)
                         view?.let {
-                            Toaster.build(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                            Toaster.build(
+                                it,
+                                errorMessage,
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                            ).show()
                         }
                     } else {
                         val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.SMART_BILLS)
                         intent.putExtra(EXTRA_ADD_BILLS_MESSAGE, message)
                         intent.putExtra(EXTRA_ADD_BILLS_CATEGORY, categoryName)
-                        activity?.setResult(Activity.RESULT_OK, intent)
+                        if (isFromSBM) {
+                            activity?.setResult(Activity.RESULT_OK, intent)
+                        } else {
+                            startActivity(intent)
+                        }
                         activity?.finish()
-
                     }
                 }
 
@@ -303,9 +333,13 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                         errorMessage?.let {
                             commonTopupBillsAnalytics.clickViewErrorToasterTelcoAddBills(categoryName, errorMessage)
                         }
-                        Toaster.build(v, errorMessage.orEmpty(),
-                                Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                        Toaster.build(
+                            v,
+                            errorMessage.orEmpty(),
+                            Toaster.LENGTH_LONG,
+                            Toaster.TYPE_ERROR,
+                            getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                        ).show()
                     }
                 }
             }
@@ -321,40 +355,41 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             operatorId = savedInstanceState.getInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
             productId = savedInstanceState.getInt(EXTRA_PARAM_PRODUCT_ID)
             inputData = (savedInstanceState.getSerializable(EXTRA_PARAM_INPUT_DATA) as? HashMap<String, String>)
-                    ?: inputData
+                ?: inputData
             inputDataKeys = savedInstanceState.getStringArrayList(EXTRA_PARAM_INPUT_DATA_KEYS)?.toMutableList()
-                    ?: inputDataKeys
+                ?: inputDataKeys
         }
 
         if (rechargeProductFromSlice.isNotEmpty()) {
             rechargeGeneralAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
             rechargeGeneralAnalytics.onOpenPageFromSlice()
-
         }
 
-        rv_digital_product.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        rv_digital_product.adapter = adapter
-        while (rv_digital_product.itemDecorationCount > 0) rv_digital_product.removeItemDecorationAt(0)
-        rv_digital_product.addItemDecoration(object : RecyclerView.ItemDecoration() {
-            override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-                super.getItemOffsets(outRect, view, parent, state)
-                // Add offset to all items except the last one
-                if (parent.getChildAdapterPosition(view) < adapter.dataSize - 1) {
-                    context?.resources?.getDimension(ITEM_DECORATOR_SIZE)?.toInt()?.let { dimen -> outRect.bottom = dimen }
+        binding?.run {
+            rvDigitalProduct.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            rvDigitalProduct.adapter = adapter
+            while (rvDigitalProduct.itemDecorationCount > 0) rvDigitalProduct.removeItemDecorationAt(0)
+            rvDigitalProduct.addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+                    super.getItemOffsets(outRect, view, parent, state)
+                    // Add offset to all items except the last one
+                    if (parent.getChildAdapterPosition(view) < adapter.dataSize - 1) {
+                        context?.resources?.getDimension(ITEM_DECORATOR_SIZE)?.toInt()?.let { dimen -> outRect.bottom = dimen }
+                    }
                 }
+            })
+            rechargeGeneralEnquiryButton.isEnabled = false
+            rechargeGeneralEnquiryButton.setOnClickListener {
+                enquire()
             }
-        })
-        recharge_general_enquiry_button.isEnabled = false
-        recharge_general_enquiry_button.setOnClickListener {
-            enquire()
-        }
 
-        recharge_general_swipe_refresh_layout.setOnRefreshListener {
-            recharge_general_swipe_refresh_layout.isRefreshing = true
+            rechargeGeneralSwipeRefreshLayout.setOnRefreshListener {
+                rechargeGeneralSwipeRefreshLayout.isRefreshing = true
+                loadData()
+            }
+
             loadData()
         }
-
-        loadData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -413,7 +448,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                 if (operatorId == 0) operatorId = getFirstOperatorId(operatorClusters)
                 if (operatorId > 0) {
                     operatorCluster = getClusterOfOperatorId(operatorClusters, operatorId)?.name
-                            ?: ""
+                        ?: ""
                     renderOperatorCluster(operatorClusters)
 
                     val operatorGroup = groups.firstOrNull { it.name == operatorCluster }
@@ -430,103 +465,107 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
 
     private fun renderOperatorCluster(cluster: RechargeGeneralOperatorCluster) {
         cluster.operatorGroups?.let { groups ->
-            if (groups.size == 1) {
-                operator_cluster_select.hide()
-            } else if (groups.size > 1) {
-                operator_cluster_select.show()
-                operator_cluster_select.setLabel(getString(R.string.operator_cluster_select_label))
-                operator_cluster_select.setHint("")
-                operator_cluster_select.actionListener = object : TopupBillsInputFieldWidget.ActionListener {
-                    override fun onFinishInput(input: String) {
-                        if (operatorCluster != input) {
-                            resetInputData()
-                            operatorCluster = input
-                            // Remove selected operator
-                            operator_select.setInputText("", false)
+            binding?.run {
+                if (groups.size == 1) {
+                    operatorClusterSelect.hide()
+                } else if (groups.size > 1) {
+                    operatorClusterSelect.show()
+                    operatorClusterSelect.setLabel(getString(R.string.operator_cluster_select_label))
+                    operatorClusterSelect.setHint("")
+                    operatorClusterSelect.actionListener = object : TopupBillsInputFieldWidget.ActionListener {
+                        override fun onFinishInput(input: String) {
+                            if (operatorCluster != input) {
+                                resetInputData()
+                                operatorCluster = input
+                                // Remove selected operator
+                                operatorSelect.setInputText("", false)
+                                if (!isAddSBM) {
+                                    rechargeGeneralAnalytics.eventChooseOperatorCluster(categoryName, operatorCluster)
+                                }
+
+                                val isOperatorHidden = cluster.style == OPERATOR_TYPE_HIDDEN
+                                groups.find { it.name == input }?.let {
+                                    renderOperatorList(it, isOperatorHidden, cluster.text)
+                                }
+                            }
+                        }
+
+                        override fun onCustomInputClick() {
                             if (!isAddSBM) {
-                                rechargeGeneralAnalytics.eventChooseOperatorCluster(categoryName, operatorCluster)
+                                rechargeGeneralAnalytics.eventClickOperatorClusterDropdown(categoryName)
                             }
 
-                            val isOperatorHidden = cluster.style == OPERATOR_TYPE_HIDDEN
-                            groups.find { it.name == input }?.let {
-                                renderOperatorList(it, isOperatorHidden, cluster.text)
-                            }
-                        }
-                    }
-
-                    override fun onCustomInputClick() {
-                        if (!isAddSBM) {
-                            rechargeGeneralAnalytics.eventClickOperatorClusterDropdown(categoryName)
+                            val dropdownData = groups.map { TopupBillsInputDropdownData(it.name) }
+                            showOperatorSelectDropdown(operatorClusterSelect, dropdownData, cluster.text)
                         }
 
-                        val dropdownData = groups.map { TopupBillsInputDropdownData(it.name) }
-                        showOperatorSelectDropdown(operator_cluster_select, dropdownData, cluster.text)
+                        override fun onTextChangeInput() {
+                            // do nothing
+                        }
                     }
+                    operatorClusterSelect.show()
 
-                    override fun onTextChangeInput() {
-                        //do nothing
-                    }
+                    // Set cluster name
+                    if (operatorCluster.isNotEmpty()) operatorClusterSelect.setInputText(operatorCluster, false)
                 }
-                operator_cluster_select.show()
-
-                // Set cluster name
-                if (operatorCluster.isNotEmpty()) operator_cluster_select.setInputText(operatorCluster, false)
             }
         }
         if (cluster.operatorGroups == null) showGetListError(MessageErrorException(getString(R.string.selection_null_product_error)))
     }
 
     private fun renderOperatorList(operatorGroup: RechargeGeneralOperatorCluster.CatalogOperatorGroup, isHidden: Boolean, label: String) {
-        if (operatorGroup.operators.isNotEmpty()) {
-            operator_select.show()
-            operator_select.setLabel(label)
-            operator_select.setHint("")
-            operator_select.actionListener = object : TopupBillsInputFieldWidget.ActionListener {
-                override fun onFinishInput(input: String) {
-                    operatorGroup.operators.find { it.attributes.name == input }?.let {
-                        if (operatorId != it.id.toIntSafely()) {
-                            // Save operator id for enquiry
-                            resetInputData()
-                            operatorId = it.id.toIntSafely()
-                            if (!isAddSBM) {
-                                rechargeGeneralAnalytics.eventChooseOperator(categoryName, operatorName)
-                            }
+        binding?.run {
+            if (operatorGroup.operators.isNotEmpty()) {
+                operatorSelect.show()
+                operatorSelect.setLabel(label)
+                operatorSelect.setHint("")
+                operatorSelect.actionListener = object : TopupBillsInputFieldWidget.ActionListener {
+                    override fun onFinishInput(input: String) {
+                        operatorGroup.operators.find { it.attributes.name == input }?.let {
+                            if (operatorId != it.id.toIntSafely()) {
+                                // Save operator id for enquiry
+                                resetInputData()
+                                operatorId = it.id.toIntSafely()
+                                if (!isAddSBM) {
+                                    rechargeGeneralAnalytics.eventChooseOperator(categoryName, operatorName)
+                                }
 
-                            adapter.showLoading()
-                            getProductList(menuId, it.id)
+                                adapter.showLoading()
+                                getProductList(menuId, it.id)
+                            }
                         }
                     }
-                }
 
-                override fun onCustomInputClick() {
-                    if (!isAddSBM) {
-                        rechargeGeneralAnalytics.eventClickOperatorListDropdown(categoryName)
+                    override fun onCustomInputClick() {
+                        if (!isAddSBM) {
+                            rechargeGeneralAnalytics.eventClickOperatorListDropdown(categoryName)
+                        }
+
+                        val dropdownData = operatorGroup.operators.map {
+                            TopupBillsInputDropdownData(it.attributes.name, it.attributes.imageUrl)
+                        }
+                        showOperatorSelectDropdown(operatorSelect, dropdownData)
                     }
 
-                    val dropdownData = operatorGroup.operators.map {
-                        TopupBillsInputDropdownData(it.attributes.name, it.attributes.imageUrl)
+                    override fun onTextChangeInput() {
+                        // do nothing
                     }
-                    showOperatorSelectDropdown(operator_select, dropdownData)
                 }
 
-                override fun onTextChangeInput() {
-                    //do nothing
+                if (operatorGroup.operators.size == 1) {
+                    if (isHidden) operatorSelect.hide()
+                    // Get product data based on operator id
+                    operatorId = operatorGroup.operators.firstOrNull()?.id.toIntSafely()
+                    adapter.showLoading()
+                    getProductList(menuId, operatorId.toString())
                 }
             }
 
-            if (operatorGroup.operators.size == 1) {
-                if (isHidden) operator_select.hide()
-                // Get product data based on operator id
-                operatorId = operatorGroup.operators.firstOrNull()?.id.toIntSafely()
-                adapter.showLoading()
-                getProductList(menuId, operatorId.toString())
-            }
-        }
-
-        // Set operator name
-        if (operatorId > 0) {
-            operatorGroup.operators.find { it.id == operatorId.toString() }?.attributes?.name?.let { name ->
-                operator_select.setInputText(name, false)
+            // Set operator name
+            if (operatorId > 0) {
+                operatorGroup.operators.find { it.id == operatorId.toString() }?.attributes?.name?.let { name ->
+                    operatorSelect.setInputText(name, false)
+                }
             }
         }
     }
@@ -535,7 +574,6 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         val dataList: MutableList<Visitable<RechargeGeneralAdapterFactory>> = mutableListOf()
 
         if (productData.enquiryFields.isNotEmpty()) {
-
             val enquiryFields = productData.enquiryFields.toMutableList()
             val enquiryInfo = productData.enquiryFields.find { it.style == INPUT_TYPE_ENQUIRY_INFO }
             if (enquiryInfo != null) {
@@ -553,7 +591,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     if (productData.isShowingProduct) {
                         val productSelectData = it
                         productSelectData?.apply {
-                            if (productId == 0){
+                            if (productId == 0) {
                                 productId = rechargeGeneralProductItemData.dataCollections.firstOrNull()?.products?.firstOrNull()?.id.toIntOrZero()
                             }
                             productId = getIdFromProduct(rechargeGeneralProductItemData.dataCollections, productId.toString()).toIntSafely()
@@ -570,7 +608,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                         }
                     }
                 } else {
-                    //processing enquiry fields
+                    // processing enquiry fields
                     if (productData.needEnquiry) {
                         val enquiryField = mapper.mapDynamicInputToProductData(it)
                         if (inputData.containsKey(it.name)) {
@@ -595,13 +633,15 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         productId = 0
         inputData = hashMapOf()
         // Reset product info ticker
-        ticker_recharge_general_product_info?.hide()
+        binding?.tickerRechargeGeneralProductInfo?.hide()
         toggleEnquiryButton()
     }
 
-    private fun showOperatorSelectDropdown(field: TopupBillsInputFieldWidget,
-                                           data: List<TopupBillsInputDropdownData>,
-                                           title: String = "") {
+    private fun showOperatorSelectDropdown(
+        field: TopupBillsInputFieldWidget,
+        data: List<TopupBillsInputDropdownData>,
+        title: String = ""
+    ) {
         context?.let { context ->
             val dropdownBottomSheet = BottomSheetUnify()
             dropdownBottomSheet.setTitle(title)
@@ -611,12 +651,16 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                 dropdownBottomSheet.dismiss()
             }
 
-            val dropdownView = TopupBillsInputDropdownWidget(context, listener = object : TopupBillsInputDropdownWidget.OnClickListener {
-                override fun onItemClicked(item: TopupBillsInputDropdownData) {
-                    dropdownBottomSheet.dismiss()
-                    field.setInputText(item.label)
-                }
-            }, selected = field.getInputText())
+            val dropdownView = TopupBillsInputDropdownWidget(
+                context,
+                listener = object : TopupBillsInputDropdownWidget.OnClickListener {
+                    override fun onItemClicked(item: TopupBillsInputDropdownData) {
+                        dropdownBottomSheet.dismiss()
+                        field.setInputText(item.label)
+                    }
+                },
+                selected = field.getInputText()
+            )
             dropdownView.setData(data)
             dropdownBottomSheet.setChild(dropdownView)
 
@@ -631,9 +675,11 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         }
     }
 
-    private fun showProductSelectDropdown(field: TopupBillsInputFieldWidget,
-                                          data: List<RechargeGeneralProductSelectData>,
-                                          title: String = "") {
+    private fun showProductSelectDropdown(
+        field: TopupBillsInputFieldWidget,
+        data: List<RechargeGeneralProductSelectData>,
+        title: String = ""
+    ) {
         if (!isAddSBM) {
             rechargeGeneralAnalytics.eventClickProductListDropdown(categoryName, operatorName)
         }
@@ -650,35 +696,40 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                 }
             }
 
-            val dropdownView = RechargeGeneralProductSelectBottomSheet(context,
-                    listener = object : RechargeGeneralProductSelectBottomSheet.OnClickListener {
-                        override fun onItemClicked(item: RechargeGeneralProductSelectData) {
-                            dropdownBottomSheet.dismiss()
+            val dropdownView = RechargeGeneralProductSelectBottomSheet(
+                context,
+                listener = object : RechargeGeneralProductSelectBottomSheet.OnClickListener {
+                    override fun onItemClicked(item: RechargeGeneralProductSelectData) {
+                        dropdownBottomSheet.dismiss()
 
-                            // Show label & store id for enquiry
-                            field.setInputText(item.title, false)
-                            productId = item.id.toIntSafely()
-                            if (!isAddSBM) {
-                                rechargeGeneralAnalytics.eventClickProductCard(categoryName, operatorName, item.title.toLowerCase())
-                            }
-                            toggleEnquiryButton()
+                        // Show label & store id for enquiry
+                        field.setInputText(item.title, false)
+                        productId = item.id.toIntSafely()
+                        if (!isAddSBM) {
+                            rechargeGeneralAnalytics.eventClickProductCard(categoryName, operatorName, item.title.toLowerCase())
                         }
-                    })
+                        toggleEnquiryButton()
+                    }
+                }
+            )
             dropdownView.dropdownData = data
             dropdownBottomSheet.setChild(dropdownView)
             if (isAddSBM) {
-                commonTopupBillsAnalytics.viewBottomSheetAddBills(userSession.userId,
-                        categoryName,
-                        field.getLabel(),
-                        viewModel.createProductAddBills(data, categoryName, operatorName)
+                commonTopupBillsAnalytics.viewBottomSheetAddBills(
+                    userSession.userId,
+                    categoryName,
+                    field.getLabel(),
+                    viewModel.createProductAddBills(data, categoryName, operatorName)
                 )
             }
             fragmentManager?.run { dropdownBottomSheet.show(this, "Product select dropdown bottom sheet") }
         }
     }
 
-    private fun showFavoriteNumbersPage(favoriteNumbers: List<TopupBillsSearchNumberDataModel>,
-                                        enquiryData: RechargeGeneralProductInput) {
+    private fun showFavoriteNumbersPage(
+        favoriteNumbers: List<TopupBillsSearchNumberDataModel>,
+        enquiryData: RechargeGeneralProductInput
+    ) {
         if (favoriteNumbers.isNotEmpty()) {
             val clientNumberType = when (enquiryData.style) {
                 TopupBillsInputFieldWidget.INPUT_NUMERIC -> ClientNumberType.TYPE_INPUT_NUMERIC.value
@@ -689,10 +740,14 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
 
             context?.run {
                 startActivityForResult(
-                        TopupBillsSearchNumberActivity.getCallingIntent(this,
-                                clientNumberType,
-                                inputData[PARAM_CLIENT_NUMBER] ?: "",
-                                favoriteNumbers), REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
+                    TopupBillsSearchNumberActivity.getCallingIntent(
+                        this,
+                        clientNumberType,
+                        inputData[PARAM_CLIENT_NUMBER] ?: "",
+                        favoriteNumbers
+                    ),
+                    REQUEST_CODE_DIGITAL_SEARCH_NUMBER
+                )
             }
         }
     }
@@ -702,14 +757,12 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     }
 
     private fun showInfoBottomSheets(helpText: String) {
-        val infoTextView = View.inflate(context, R.layout.view_recharge_general_product_input_info_bottom_sheet, null)
-        with(infoTextView) {
-            info_text.text = helpText
-        }
+        val infoTextView = ViewRechargeGeneralProductInputInfoBottomSheetBinding.inflate(LayoutInflater.from(context))
+        infoTextView.infoText.text = helpText
 
         val moreInfoBottomSheet = BottomSheetUnify()
         moreInfoBottomSheet.setTitle("Info")
-        moreInfoBottomSheet.setChild(infoTextView)
+        moreInfoBottomSheet.setChild(infoTextView.root)
         moreInfoBottomSheet.clearAction()
         moreInfoBottomSheet.setCloseClickListener {
             moreInfoBottomSheet.dismiss()
@@ -729,64 +782,78 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     }
 
     private fun renderTickers(tickers: List<TopupBillsTicker>) {
-        if (tickers.isNotEmpty() || isAddSBM) {
-            val messages = mutableListOf<TickerData>()
-            if (isAddSBM) {
-                messages.add(TickerData(getString(R.string.add_bills_ticker_desc), Ticker.TYPE_ANNOUNCEMENT))
-            }
-            for (item in tickers) {
-                var description: String = item.content
-                if (item.actionText.isNotEmpty() && item.actionLink.isNotEmpty()) {
-                    description += " [${item.actionText}]{${item.actionLink}}"
+        binding?.run {
+            if (tickers.isNotEmpty() || isAddSBM) {
+                val messages = mutableListOf<TickerData>()
+                if (isAddSBM) {
+                    messages.add(TickerData(getString(R.string.add_bills_ticker_desc), Ticker.TYPE_ANNOUNCEMENT))
                 }
-                messages.add(TickerData(item.name, description,
-                        when (item.type) {
-                            TopupBillsTicker.TYPE_WARNING -> Ticker.TYPE_WARNING
-                            TopupBillsTicker.TYPE_INFO -> Ticker.TYPE_INFORMATION
-                            TopupBillsTicker.TYPE_SUCCESS -> Ticker.TYPE_ANNOUNCEMENT
-                            TopupBillsTicker.TYPE_ERROR -> Ticker.TYPE_ERROR
-                            else -> Ticker.TYPE_INFORMATION
-                        }))
-            }
-
-
-            if (messages.size == 1) {
-                with(messages.first()) {
-                    recharge_general_ticker.tickerTitle = title
-                    recharge_general_ticker.setHtmlDescription(description)
-                    recharge_general_ticker.tickerType = type
-                }
-                recharge_general_ticker.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                for (item in tickers) {
+                    var description: String = item.content
+                    if (item.actionText.isNotEmpty() && item.actionLink.isNotEmpty()) {
+                        description += " [${item.actionText}]{${item.actionLink}}"
                     }
+                    messages.add(
+                        TickerData(
+                            item.name,
+                            description,
+                            when (item.type) {
+                                TopupBillsTicker.TYPE_WARNING -> Ticker.TYPE_WARNING
+                                TopupBillsTicker.TYPE_INFO -> Ticker.TYPE_INFORMATION
+                                TopupBillsTicker.TYPE_SUCCESS -> Ticker.TYPE_ANNOUNCEMENT
+                                TopupBillsTicker.TYPE_ERROR -> Ticker.TYPE_ERROR
+                                else -> Ticker.TYPE_INFORMATION
+                            }
+                        )
+                    )
+                }
 
-                    override fun onDismiss() {
-                        if (isAddSBM) {
-                            commonTopupBillsAnalytics.clickCloseTickerTelcoAddBills(categoryName)
+                if (messages.size == 1) {
+                    with(messages.first()) {
+                        rechargeGeneralTicker.tickerTitle = title
+                        rechargeGeneralTicker.setHtmlDescription(description)
+                        rechargeGeneralTicker.tickerType = type
+                    }
+                    rechargeGeneralTicker.setDescriptionClickEvent(object : TickerCallback {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                            if (linkUrl.startsWith(PREFIX_LINK)) {
+                                RouteManager.route(context, linkUrl.toString())
+                            } else {
+                                RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$linkUrl")
+                            }
                         }
-                    }
-                })
-            } else {
-                context?.let { context ->
-                    val tickerAdapter = TickerPagerAdapter(context, messages)
-                    tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
-                        override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                            RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+
+                        override fun onDismiss() {
+                            if (isAddSBM) {
+                                commonTopupBillsAnalytics.clickCloseTickerTelcoAddBills(categoryName)
+                            }
                         }
                     })
-                    tickerAdapter.onDismissListener = {
-                        if (isAddSBM) {
-                            commonTopupBillsAnalytics.clickCloseTickerTelcoAddBills(categoryName)
+                } else {
+                    context?.let { context ->
+                        val tickerAdapter = TickerPagerAdapter(context, messages)
+                        tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                            override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                                if (linkUrl.startsWith(PREFIX_LINK)) {
+                                    RouteManager.route(context, linkUrl.toString())
+                                } else {
+                                    RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$linkUrl")
+                                }
+                            }
+                        })
+                        tickerAdapter.onDismissListener = {
+                            if (isAddSBM) {
+                                commonTopupBillsAnalytics.clickCloseTickerTelcoAddBills(categoryName)
+                            }
                         }
+                        rechargeGeneralTicker.addPagerView(tickerAdapter, messages)
                     }
-                    recharge_general_ticker.addPagerView(tickerAdapter, messages)
                 }
-            }
 
-            recharge_general_ticker.visibility = View.VISIBLE
-        } else {
-            recharge_general_ticker.visibility = View.GONE
+                rechargeGeneralTicker.visibility = View.VISIBLE
+            } else {
+                rechargeGeneralTicker.visibility = View.GONE
+            }
         }
     }
 
@@ -807,71 +874,70 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             listProductTab.add(TopupBillsTabItem(promoListFragment, PROMO_LIST_LABEL))
         }
 
-        if (listProductTab.isNotEmpty()) {
-            val pagerAdapter = TopupBillsProductTabAdapter(this, listProductTab)
-            product_view_pager.adapter = pagerAdapter
-            product_view_pager.offscreenPageLimit = listProductTab.size
-            tab_layout.customTabMode = TabLayout.MODE_FIXED
-            tab_layout.customTabGravity = TabLayout.GRAVITY_FILL
+        binding?.run {
+            if (listProductTab.isNotEmpty()) {
+                val pagerAdapter = TopupBillsProductTabAdapter(this@RechargeGeneralFragment, listProductTab)
+                productViewPager.adapter = pagerAdapter
+                productViewPager.offscreenPageLimit = listProductTab.size
+                tabLayout.customTabMode = TabLayout.MODE_FIXED
+                tabLayout.customTabGravity = TabLayout.GRAVITY_FILL
 
-            if (listProductTab.size > 1) {
-                tab_layout.getUnifyTabLayout().removeAllTabs()
-                for (item in listProductTab) {
-                    tab_layout.addNewTab(item.title)
-                }
-                tab_layout.getUnifyTabLayout().addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                    override fun onTabSelected(tab: TabLayout.Tab) {
-                        product_view_pager.setCurrentItem(tab.position, true)
-                        val promoListIndex = listProductTab.indexOfFirst { it.title == getString(R.string.promo_tab_title) }
-                        if (tab.position == promoListIndex) {
-                            rechargeGeneralAnalytics.eventClickPromoTab(categoryName, operatorName)
+                if (listProductTab.size > 1) {
+                    tabLayout.getUnifyTabLayout().removeAllTabs()
+                    for (item in listProductTab) {
+                        tabLayout.addNewTab(item.title)
+                    }
+                    tabLayout.getUnifyTabLayout().addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                        override fun onTabSelected(tab: TabLayout.Tab) {
+                            productViewPager.setCurrentItem(tab.position, true)
+                            val promoListIndex = listProductTab.indexOfFirst { it.title == getString(R.string.promo_tab_title) }
+                            if (tab.position == promoListIndex) {
+                                rechargeGeneralAnalytics.eventClickPromoTab(categoryName, operatorName)
+                            }
                         }
-                    }
 
-                    override fun onTabUnselected(tab: TabLayout.Tab?) {
-
-                    }
-
-                    override fun onTabReselected(tab: TabLayout.Tab?) {
-
-                    }
-
-                })
-                product_view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                    override fun onPageSelected(position: Int) {
-                        tab_layout.getUnifyTabLayout().getTabAt(position)?.let {
-                            it.select()
+                        override fun onTabUnselected(tab: TabLayout.Tab?) {
                         }
-                        super.onPageSelected(position)
-                        val myFragment = childFragmentManager.findFragmentByTag("f$position")
-                        myFragment?.view?.let { updatePagerHeightForChild(it, product_view_pager) }
-                    }
 
-                    private fun updatePagerHeightForChild(view: View, pager: ViewPager2) {
-                        view.post {
-                            if (view != null) {
-                                val wMeasureSpec =
+                        override fun onTabReselected(tab: TabLayout.Tab?) {
+                        }
+                    })
+                    productViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                        override fun onPageSelected(position: Int) {
+                            tabLayout.getUnifyTabLayout().getTabAt(position)?.let {
+                                it.select()
+                            }
+                            super.onPageSelected(position)
+                            val myFragment = childFragmentManager.findFragmentByTag("f$position")
+                            myFragment?.view?.let { updatePagerHeightForChild(it, productViewPager) }
+                        }
+
+                        private fun updatePagerHeightForChild(view: View, pager: ViewPager2) {
+                            view.post {
+                                if (view != null) {
+                                    val wMeasureSpec =
                                         View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.EXACTLY)
-                                val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-                                view.measure(wMeasureSpec, hMeasureSpec)
+                                    val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                                    view.measure(wMeasureSpec, hMeasureSpec)
 
-                                if (pager.layoutParams.height != view.measuredHeight) {
-                                    pager.layoutParams = (pager.layoutParams)
+                                    if (pager.layoutParams.height != view.measuredHeight) {
+                                        pager.layoutParams = (pager.layoutParams)
                                             .also { lp ->
                                                 lp.height = view.measuredHeight
                                             }
+                                    }
                                 }
                             }
                         }
-                    }
-                })
-                tab_layout.show()
+                    })
+                    tabLayout.show()
+                } else {
+                    tabLayout.hide()
+                }
+                productViewPager.show()
             } else {
-                tab_layout.hide()
+                hideFooterView()
             }
-            product_view_pager.show()
-        } else {
-            hideFooterView()
         }
     }
 
@@ -894,49 +960,64 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     }
 
     private fun showGetListError(e: Throwable) {
-        loading_view.hide()
+        binding?.loadingView?.hide()
         hideInputView()
         hideFooterView()
         adapter.showGetListError(e)
     }
 
     private fun hideInputView() {
-        operator_cluster_select.hide()
-        operator_select.hide()
-        recharge_general_enquiry_button.hide()
+        binding?.run {
+            operatorClusterSelect.hide()
+            operatorSelect.hide()
+            rechargeGeneralEnquiryButton.hide()
+        }
     }
 
     private fun hideFooterView() {
-        tab_layout.hide()
-        product_view_pager.hide()
+        binding?.run {
+            tabLayout.hide()
+            productViewPager.hide()
+        }
     }
 
     override fun loadData() {
-        recharge_general_enquiry_button.show()
-        loading_view.show()
+        binding?.run {
+            rechargeGeneralEnquiryButton.show()
+            loadingView.show()
+        }
 
-        getMenuDetail(menuId)
+        if (isAddSBM) {
+            getMenuDetail(menuId, PLATFORM_ID_ADD_SBM)
+        } else {
+            getMenuDetail(menuId)
+        }
+
         getFavoriteNumbers(categoryId)
         getCatalogPluginData(operatorId, categoryId)
         getOperatorCluster(menuId)
     }
 
     private fun getOperatorCluster(menuId: Int) {
-        viewModel.getOperatorCluster(
+        binding?.run {
+            viewModel.getOperatorCluster(
                 RechargeGeneralGqlQuery.catalogOperatorSelectGroup,
                 viewModel.createOperatorClusterParams(menuId),
-                recharge_general_swipe_refresh_layout.isRefreshing,
+                rechargeGeneralSwipeRefreshLayout.isRefreshing,
                 getString(R.string.selection_null_product_error)
-        )
+            )
+        }
     }
 
     private fun getProductList(menuId: Int, operator: String) {
-        viewModel.getProductList(
+        binding?.run {
+            viewModel.getProductList(
                 com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery.rechargeCatalogDynamicProductInput,
                 viewModel.createProductListParams(menuId, operator),
-                recharge_general_swipe_refresh_layout.isRefreshing,
+                rechargeGeneralSwipeRefreshLayout.isRefreshing,
                 getString(R.string.selection_null_product_error)
-        )
+            )
+        }
     }
 
     private fun addBills(productId: Int, clientNumber: String) {
@@ -955,13 +1036,14 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     }
 
     override fun onTextChangeInput() {
-        recharge_general_enquiry_button.isEnabled = false
+        binding?.rechargeGeneralEnquiryButton?.isEnabled = false
     }
 
-    override fun onCustomInputClick(field: TopupBillsInputFieldWidget,
-                                    enquiryData: RechargeGeneralProductInput?,
-                                    productData: List<RechargeGeneralProductSelectData>?,
-                                    position: Int
+    override fun onCustomInputClick(
+        field: TopupBillsInputFieldWidget,
+        enquiryData: RechargeGeneralProductInput?,
+        productData: List<RechargeGeneralProductSelectData>?,
+        position: Int
     ) {
         // If there is data open product select bottom sheet, else open favorite number activity
         if (productData != null) {
@@ -987,21 +1069,25 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     }
 
     private fun toggleEnquiryButton() {
-        recharge_general_enquiry_button.isEnabled = validateEnquiry()
-        if (enquiryLabel.isNotEmpty() && !isAddSBM) recharge_general_enquiry_button.text = enquiryLabel
+        binding?.run {
+            rechargeGeneralEnquiryButton.isEnabled = validateEnquiry()
+            if (enquiryLabel.isNotEmpty() && !isAddSBM) rechargeGeneralEnquiryButton.text = enquiryLabel
+        }
     }
 
     private fun setEnquiryButtonLabel(label: String) {
         if (label.isNotEmpty() && !isAddSBM) {
             enquiryLabel = label
-            recharge_general_enquiry_button.text = enquiryLabel
+            binding?.rechargeGeneralEnquiryButton?.text = enquiryLabel
         }
     }
 
     private fun validateEnquiry(): Boolean {
-        return operatorId > 0 && productId > 0
-                && (inputDataKeys.isEmpty()
-                || inputData.keys.toList().sorted() == inputDataKeys.sorted())
+        return operatorId > 0 && productId > 0 &&
+            (
+                inputDataKeys.isEmpty() ||
+                    inputData.keys.toList().sorted() == inputDataKeys.sorted()
+                )
     }
 
     private fun enquire() {
@@ -1041,7 +1127,8 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         with(data.catalog) {
             // if using isAddSBM then we use title from sbm
             (activity as? BaseSimpleActivity)?.updateTitle(
-                    if (isAddSBM) getString(R.string.add_bills_title) else label)
+                if (isAddSBM) getString(R.string.add_bills_title) else label
+            )
             if (!isAddSBM) {
                 rechargeAnalytics.eventOpenScreen(
                     userSession.userId,
@@ -1067,7 +1154,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     }
 
     override fun onLoadingAtc(showLoading: Boolean) {
-        recharge_general_enquiry_button.isLoading = showLoading
+        binding?.rechargeGeneralEnquiryButton?.isLoading = showLoading
     }
 
     override fun processFavoriteNumbers(data: List<TopupBillsSearchNumberDataModel>) {
@@ -1084,9 +1171,18 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     .className(this::class.java.simpleName)
                     .build()
             )
-            Toaster.build(v, errorMessage.orEmpty()
-                ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            Toaster.build(
+                v,
+                errorMessage.orEmpty()
+                    ?: "",
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).show()
         }
+    }
+
+    override fun redirectErrorUnVerifiedNumber(error: ErrorAtc) {
+        /*no op*/
     }
 
     private fun updateFavoriteNumberInputField() {
@@ -1110,10 +1206,15 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     .className(this::class.java.simpleName)
                     .build()
             )
-            Toaster.build(v, errorMessage.orEmpty(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+            Toaster.build(
+                v,
+                errorMessage.orEmpty(),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+            ).show()
 
-            if (isAddSBM){
+            if (isAddSBM) {
                 errorMessage?.let {
                     commonTopupBillsAnalytics.clickViewErrorToasterTelcoAddBills(categoryName, errorMessage)
                 }
@@ -1122,15 +1223,12 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     }
 
     override fun onMenuDetailError(error: Throwable) {
-
     }
 
     override fun onCatalogPluginDataError(error: Throwable) {
-
     }
 
     override fun onFavoriteNumbersError(error: Throwable) {
-
     }
 
     override fun onCheckVoucherError(error: Throwable) {
@@ -1142,8 +1240,13 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     .className(this::class.java.simpleName)
                     .build()
             )
-            Toaster.build(v, errorMessage.orEmpty(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+            Toaster.build(
+                v,
+                errorMessage.orEmpty(),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+            ).show()
         }
     }
 
@@ -1156,8 +1259,13 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     .className(this::class.java.simpleName)
                     .build()
             )
-            Toaster.build(v, errorMessage.orEmpty(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+            Toaster.build(
+                v,
+                errorMessage.orEmpty(),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+            ).show()
         }
     }
 
@@ -1220,7 +1328,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     }
 
     override fun onClickCheckout(data: TopupBillsEnquiry) {
-        if (!isAddSBM){
+        if (!isAddSBM) {
             rechargeGeneralAnalytics.eventClickCheckBills(categoryName, operatorName, productName)
             rechargeGeneralAnalytics.eventClickBuy(categoryName, operatorName, false, data)
         }
@@ -1233,11 +1341,11 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         if (validateEnquiry()) {
             if (productId > 0) {
                 var checkoutPassDataBuilder = getDefaultCheckoutPassDataBuilder()
-                        .categoryId(categoryId.toString())
-                        .isPromo(if (isPromo) "1" else "0")
-                        .operatorId(operatorId.toString())
-                        .productId(productId.toString())
-                        .utmCampaign(categoryId.toString())
+                    .categoryId(categoryId.toString())
+                    .isPromo(if (isPromo) "1" else "0")
+                    .operatorId(operatorId.toString())
+                    .productId(productId.toString())
+                    .utmCampaign(categoryId.toString())
 
                 if (inputData.containsKey(PARAM_CLIENT_NUMBER)) {
                     checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber(inputData[PARAM_CLIENT_NUMBER]!!)
@@ -1315,7 +1423,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     // Show product info ticker
                     val description = attributes.detailCompact
                     if (description.isNotEmpty()) {
-                        ticker_recharge_general_product_info?.let {
+                        binding?.tickerRechargeGeneralProductInfo?.let {
                             it.show()
                             it.setHtmlDescription(description)
                             it.setDescriptionClickEvent(object : TickerCallback {
@@ -1328,11 +1436,10 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                                 override fun onDismiss() {
                                     // no op
                                 }
-
                             })
                         }
                     } else {
-                        ticker_recharge_general_product_info?.hide()
+                        binding?.tickerRechargeGeneralProductInfo?.hide()
                     }
                 }
             }
@@ -1350,9 +1457,11 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     }
 
     private fun hideLoading() {
-        recharge_general_swipe_refresh_layout.isEnabled = true
-        recharge_general_swipe_refresh_layout.isRefreshing = false
-        adapter.hideLoading()
+        binding?.run {
+            rechargeGeneralSwipeRefreshLayout.isEnabled = true
+            rechargeGeneralSwipeRefreshLayout.isRefreshing = false
+            adapter.hideLoading()
+        }
     }
 
     override fun processSeamlessFavoriteNumbers(
@@ -1385,6 +1494,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     }
 
     companion object {
+        private const val PREFIX_LINK = "tokopedia"
         const val EXTRA_PARAM_MENU_ID = "EXTRA_PARAM_MENU_ID"
         const val EXTRA_PARAM_CATEGORY_ID = "EXTRA_PARAM_CATEGORY_ID"
         const val EXTRA_PARAM_OPERATOR_ID = "EXTRA_PARAM_OPERATOR_ID"
@@ -1393,6 +1503,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         const val EXTRA_PARAM_INPUT_DATA_KEYS = "EXTRA_PARAM_INPUT_DATA_KEYS"
         const val EXTRA_PARAM_ENQUIRY_DATA = "EXTRA_PARAM_ENQUIRY_DATA"
         const val EXTRA_PARAM_IS_ADD_BILLS = "EXTRA_PARAM_IS_ADD_BILLS"
+        const val EXTRA_ADD_BILLS_IS_FROM_SBM = "IS_FROM_SBM"
         const val EXTRA_ADD_BILLS_MESSAGE = "MESSAGE"
         const val EXTRA_ADD_BILLS_CATEGORY = "CATEGORY"
 
@@ -1410,14 +1521,18 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
 
         const val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 77
 
+        const val PLATFORM_ID_ADD_SBM = 48
+
         val ITEM_DECORATOR_SIZE = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3
 
-        fun newInstance(categoryId: Int,
-                        menuId: Int,
-                        operatorId: Int = 0,
-                        productId: Int = 0,
-                        rechargeProductFromSlice: String = "",
-                        isAddSBM: Boolean = false
+        fun newInstance(
+            categoryId: Int,
+            menuId: Int,
+            operatorId: Int = 0,
+            productId: Int = 0,
+            rechargeProductFromSlice: String = "",
+            isAddSBM: Boolean = false,
+            isFromSBM: Boolean = false
         ): RechargeGeneralFragment {
             val fragment = RechargeGeneralFragment()
             val bundle = Bundle()
@@ -1426,6 +1541,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             bundle.putInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
             bundle.putInt(EXTRA_PARAM_PRODUCT_ID, productId)
             bundle.putBoolean(EXTRA_PARAM_IS_ADD_BILLS, isAddSBM)
+            bundle.putBoolean(EXTRA_ADD_BILLS_IS_FROM_SBM, isFromSBM)
             bundle.putString(RECHARGE_PRODUCT_EXTRA, rechargeProductFromSlice)
             fragment.arguments = bundle
             return fragment

@@ -3,15 +3,16 @@ package com.tokopedia.applink.user
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.FirebaseRemoteConfigInstance
+import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 object DeeplinkMapperUser {
+
+    const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_2"
 
     fun getRegisteredNavigationUser(context: Context, deeplink: String): String {
         val uri = Uri.parse(deeplink)
@@ -26,8 +27,29 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.SETTING_PROFILE -> ApplinkConstInternalUserPlatform.SETTING_PROFILE
             deeplink == ApplinkConst.INPUT_INACTIVE_NUMBER -> ApplinkConstInternalUserPlatform.INPUT_OLD_PHONE_NUMBER
             deeplink == ApplinkConst.ADD_PHONE -> ApplinkConstInternalUserPlatform.ADD_PHONE
+            deeplink == ApplinkConst.PRIVACY_CENTER -> getApplinkPrivacyCenter()
             else -> deeplink
         }
+    }
+
+    private fun getApplinkPrivacyCenter(): String {
+        return if (isRollencePrivacyCenterActivated()) {
+            ApplinkConstInternalUserPlatform.PRIVACY_CENTER
+        } else {
+            ApplinkConsInternalHome.HOME_NAVIGATION
+        }
+    }
+
+    private fun isRollencePrivacyCenterActivated(): Boolean {
+        return getAbTestPlatform()
+            .getString(ROLLENCE_PRIVACY_CENTER)
+            .isNotEmpty()
+    }
+
+    fun getRegisteredUserNavigation(deeplink: String): String {
+        return deeplink.replace(
+            DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH,
+            ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER+"/")
     }
 
     private fun getAbTestPlatform(): AbTestPlatform =

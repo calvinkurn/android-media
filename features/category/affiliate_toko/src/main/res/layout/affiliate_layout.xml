@@ -31,7 +31,7 @@
         android:layout_height="@dimen/unify_space_48"
         tools:layout_height="100dp"
         app:buttonColor="@color/Unify_N500"
-        app:buttonContainerBackgroundColor="@color/Unify_N0"
+        app:buttonContainerBackgroundColor="@color/Unify_Background"
         app:buttonsHeight="@dimen/unify_space_48"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

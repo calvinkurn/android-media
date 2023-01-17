@@ -36,6 +36,9 @@ object Tracker {
         const val TM_DASHBOARD_CREATE_COUPON = "tokomember dashboard - buat kupon"
         const val TM_DASHBOARD_DAFTAR = "tokomember dashboard - daftar tokomember"
         const val TM_DASHBOARD_INTRO = "tokomember dashboard - introduction"
+        const val TM_DASHBOARD_KUPON_DETAIL = "tokomember dashboard - detail kupon"
+        const val TM_DASHBOARD_MEMBER_LIST = "tokomember dashboard - member list page"
+        const val TM_DASHBOARD_EDIT_CARD = "tokomember dashboard - ubah kartu"
     }
 
     object Action {
@@ -57,6 +60,9 @@ object Tracker {
         const val CLICK_CARD_CANCEL_SECONDARY = "popup_cancel_card_ - click batalkan kartu"
         const val CLICK_POPUP_CANCEL_PRIMARY = "popup_cancel_registration - click lanjut"
         const val CLICK_POPUP_CANCEL_SECONDARY = "popup_cancel_registration - click batalkan pengaturan"
+
+        //Edit Card
+        const val CLICK_EDIT_CARD_SIMPAN = "card_edit - click simpan"
 
         //Confusing tracker 12,13
 
@@ -86,12 +92,14 @@ object Tracker {
         const val VIEW_HOME_BOTTOM_SHEET = "homepage_bottomsheet - view bottomsheet"
         const val CLICK_DISMISS_HOME_BOTTOM_SHEET = "homepage_bottomsheet - click balik or close"
         const val VIEW_HOME_TAB_SECTION = "home_tab - view section"
+        const val VIEW_HOME_CLICK_EDIT_CARD = "home_tab - click ubah kartu"
+        const val VIEW_HOME_CLICK_FEEDBACK_SURVEY = "home_tab - click feedback survey"
 
         //Program List
         const val VIEW_PROGRAM_LIST_TAB_SECTION = "program_tab - view section"
         const val CLICK_PROGRAM_LIST_BUTTON = "program_tab - click buat program"
         const val CLICK_PROGRAM_ACTIVE_THREE_DOT = "program_tab - click 3 dots (active program)"
-        const val CLICK_PROGRAM_WAITING_THREE_DOT = "program_tab - click 3 dots (active program)"
+        const val CLICK_PROGRAM_WAITING_THREE_DOT = "program_tab - click 3 dots (waiting program)"
 
         //Program Edit
         const val CLICK_PROGRAM_EDIT = "program_tab - click ubah program (waiting program)"
@@ -123,6 +131,7 @@ object Tracker {
         const val CLICK_COUPON_ITEM_BUTTON = "coupon_tab - click tambah kuota (kuota habis)"
         const val CLICK_COUPON_ADD_QUOTA_BUTTON = "coupon_tab - click tambah kuota (kuota habis)"
         const val CLICK_ADD_QUOTA_CTA = "bottomsheet_add_coupon_quota - click simpan"
+        const val CLICK_SPECIFIC_COUPON = "coupon_tab - click specific coupon"
 
         //Coupon List + Single Coupon creation
         const val CLICK_COUPON_CANCEL_POP_UP_PRIMARY = "popup_cancel_coupon - click lanjut buat"
@@ -131,6 +140,14 @@ object Tracker {
         //Program Detail
         const val CLICK_PROGRAM_ITEM = "program_tab - click specific program"
         const val VIEW_PROGRAM_DETAIL = "detail_program_page - view page"
+
+        //Coupon Detail
+        const val VIEW_KUPON_DETAIL = "detail_coupon_page - view page"
+        const val CLICK_TAMBAH_KUOTA = "detail_coupon_page - click tambah kuota"
+        const val CLICK_SIMPAN_KUPON_DETAIL = "bottomsheet_add_coupon_quota - click simpan"
+
+        //Member List
+        const val VIEW_MEMBER_LIST = "member_list_page - view page"
 
     }
 

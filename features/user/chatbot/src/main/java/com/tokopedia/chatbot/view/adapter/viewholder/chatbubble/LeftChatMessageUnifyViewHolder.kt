@@ -1,6 +1,5 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.chatbubble
 
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import com.google.gson.GsonBuilder
@@ -12,6 +11,7 @@ import com.tokopedia.chatbot.domain.pojo.senderinfo.SenderInfoData
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
+import com.tokopedia.chatbot.view.util.isInDarkMode
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
@@ -31,7 +31,7 @@ class LeftChatMessageUnifyViewHolder(
 
     private val backgroundForChat = ViewUtil.generateBackgroundWithShadow(
         customChatLayout?.fxChat,
-        com.tokopedia.unifyprinciples.R.color.Unify_N0,
+        R.color.chatbot_dms_left_chat_message_bg,
         R.dimen.dp_chatbot_0,
         R.dimen.dp_chatbot_20,
         R.dimen.dp_chatbot_20,
@@ -54,7 +54,6 @@ class LeftChatMessageUnifyViewHolder(
 
         if (message.parentReply != null) {
             val senderName = mapSenderName(message)
-            Log.d("FATAL", "bind: senderName $senderName")
             customChatLayout?.fxChat?.background = backgroundForChat
             customChatLayout?.fxChat?.bringToFront()
             customChatLayout?.background = null
@@ -63,7 +62,6 @@ class LeftChatMessageUnifyViewHolder(
             bindBackground()
             customChatLayout?.replyBubbleContainer?.hide()
         }
-
     }
 
     private fun mapSenderName(messageUiModel: MessageUiModel): String {
@@ -92,9 +90,18 @@ class LeftChatMessageUnifyViewHolder(
     }
 
     private fun bindSenderInfo(senderInfoData: SenderInfoData) {
+
+        senderInfoData.iconUrl?.let {
+            senderAvatar?.setImageUrl(it)
+        }
+        if (itemView.isInDarkMode()) {
+            senderInfoData.iconDarkUrl?.let {
+                senderAvatar?.setImageUrl(it)
+            }
+        }
+
         senderAvatar?.show()
         senderName?.show()
-        ImageHandler.loadImageCircle2(itemView.context, senderAvatar, senderInfoData.iconUrl)
         senderName?.text = senderInfoData.name
     }
 

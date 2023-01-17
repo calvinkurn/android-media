@@ -58,6 +58,8 @@
     
     <string name="shop_product_search_empty_state_title">Produk tidak ditemukan</string>
     <string name="shop_product_search_empty_state_desc">Mohon coba kata kunci yang lain atau yang lebih umum</string>
+    <string name="shop_page_search_dynamic_result_image">Product Search Dynamic Result Image</string>
+    <string name="shop_page_search_fixed_result_image">Product Search Fixed Result Image</string>
 
     <string name="shop_product_search_empty_state_btn_primary">Coba kata lain</string>
     <string name="shop_product_search_empty_state_btn_secondary">Cari di Tokopedia</string>
@@ -68,6 +70,7 @@
     <string name="shop_product_showcase_empty_state_desc">Cek Etalase lainnya, ya.</string>
 
     <string name="shop_product_showcase_empty_state_btn_primary">Kembali</string>
+    <string name="shop_showcase_product_carousel_badge">Shop showcase carousel widget bagde content description</string>
 
     <string name="favorited_shop_title">Followers Toko</string>
     <string name="shop_product_title">Produk</string>
@@ -127,7 +130,7 @@
     <string name="shop_page_play_widget_sgc_performance">Lihat Performa</string>
     <string name="shop_sort_filter_default_label">Urutkan</string>
     <string name="shop_etalase_filter_default_label">Etalase Toko</string>
-    <string name="shop_page_lottie_sgc_url">https://ecs7.tokopedia.net/android/hydra/sgc_entry_point.json</string>
+    <string name="shop_page_lottie_sgc_url">https://images.tokopedia.net/android/hydra/sgc_entry_point.json</string>
 
     <string name="shop_string_ok">OK</string>
     <string name="shop_change_grid_section_total_product">%s Produk</string>
@@ -150,8 +153,9 @@
     <string name="shop_page_share_telegram">Telegram</string>
     <string name="shop_page_share_action_more">Lainnya</string>
     <string name="shop_page_share_action_copy_success">Teks berhasil disalin</string>
-    <string name="shop_page_share_text_with_link">Semakin mudah belanja produk %1$s di Tokopedia. Cek aja, pasti ada yang kamu suka\n%2$s</string>
+    <string name="shop_page_share_text_with_link">Hai kamu! Belanja produk dari %1$s jadi makin mudah di Tokopedia! Cek barang-barang yang kamu suka, yuk. \n%2$s</string>
     <string name="label_close">Tutup</string>
+    <string name="shop_page_share_chat_bubble_operational_hour_format">Buka %1s WIB</string>
 
     <!-- content description shop page -->
     <string name="content_desc_shop_page_main_profile_image">image gambar toko</string>
@@ -179,5 +183,11 @@
     <string name="shop_page_product_bundle_failed_oos_dialog_desc_no_alt">Kamu tetap bisa beli barang dalam paket\nsecara satuan</string>
     <string name="shop_page_product_bundle_failed_oos_cta_text">Kembali</string>
     <string name="shop_page_product_bundle_failed_oos_cta_text_with_alt">Lihat Paket Lain</string>
+    <string name="store_problem_question">Toko bermasalah?</string>
+    <string name="label_report">Laporkan</string>
+    <string name="label_report_success">Laporan berhasil terkirim.</string>
 
+    <!-- operational hours -->
+    <string name="shop_ops_hour_open_all_day">Buka 24 jam</string>
+    <string name="shop_ops_hour_holiday">Libur</string>
 </resources>

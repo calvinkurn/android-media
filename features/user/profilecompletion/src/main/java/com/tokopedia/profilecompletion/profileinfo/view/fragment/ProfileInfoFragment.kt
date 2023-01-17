@@ -7,10 +7,12 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -26,12 +28,10 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addphone.data.analitycs.AddPhoneNumberTracker
@@ -39,11 +39,8 @@ import com.tokopedia.profilecompletion.changebiousername.view.ChangeBioUsernameF
 import com.tokopedia.profilecompletion.common.webview.ProfileSettingWebViewActivity
 import com.tokopedia.profilecompletion.databinding.FragmentProfileInfoBinding
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
-import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoConstants
-import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoData
-import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoError
-import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoUiModel
-import com.tokopedia.profilecompletion.profileinfo.data.Detail
+import com.tokopedia.profilecompletion.profileinfo.data.*
+import com.tokopedia.profilecompletion.profileinfo.domain.UrlSettingProfileConst
 import com.tokopedia.profilecompletion.profileinfo.tracker.CloseAccountTracker
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker.Companion.LABEL_ENTRY_POINT_USER_ID
@@ -56,7 +53,6 @@ import com.tokopedia.profilecompletion.profileinfo.view.uimodel.ProfileInfoTitle
 import com.tokopedia.profilecompletion.profileinfo.view.viewholder.ProfileInfoItemViewHolder
 import com.tokopedia.profilecompletion.profileinfo.view.viewholder.ProfileInfoTitleViewHolder
 import com.tokopedia.profilecompletion.profileinfo.viewmodel.ProfileViewModel
-import com.tokopedia.profilecompletion.profileinfo.domain.UrlSettingProfileConst
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -68,8 +64,13 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.datastore.UserSessionDataStore
+import com.tokopedia.user.session.datastore.toBlocking
+import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
 import com.tokopedia.utils.phonenumber.PhoneNumberUtil
 import com.tokopedia.utils.view.binding.viewBinding
+import dagger.Lazy
+import kotlinx.coroutines.launch
 import java.io.File
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -91,6 +92,8 @@ class ProfileInfoFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var closeAccountTracker: CloseAccountTracker
+
+    @Inject lateinit var userSessionDataStore: Lazy<UserSessionDataStore>
 
     private val binding: FragmentProfileInfoBinding? by viewBinding()
 
@@ -147,17 +150,42 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         binding?.fragmentProfileInfoRv?.adapter = adapter
 
         binding?.profileInfoImageSubtitle?.setOnClickListener(editPhotoListener)
-        binding?.profileInfoImageUnify?.setImageUrl(userSession.profilePicture)
+        setProfilePicture()
+        initListener()
+    }
 
-        val isUsingRollenceCloseAccount = isUsingRollenceCloseAccount()
-        binding?.dividerCloseAccount?.showWithCondition(isUsingRollenceCloseAccount)
-        binding?.tgCloseAccount?.showWithCondition(isUsingRollenceCloseAccount)
-        if (isUsingRollenceCloseAccount) {
-            binding?.tgCloseAccount?.setOnClickListener {
-                closeAccountTracker.trackClickCloseAccount(CloseAccountTracker.LABEL_KLIK)
-                checkFinancialAssets()
+    private fun initListener() {
+        binding?.textCloseAccount?.setOnClickListener {
+            closeAccountTracker.trackClickCloseAccount(CloseAccountTracker.LABEL_KLIK)
+            checkFinancialAssets()
+        }
+    }
+
+    private fun setProfilePicture() {
+        lifecycleScope.launch {
+            try {
+                var profilePicture = userSessionDataStore.get().getProfilePicture().toBlocking().ifEmpty { userSession.profilePicture  }
+                if(profilePicture != userSession.profilePicture) {
+                    profilePicture = userSession.profilePicture
+                    logDataStoreError("profilePicture", DIFFERENT_EXCEPTION)
+                }
+                binding?.profileInfoImageUnify?.setImageUrl(profilePicture)
+            } catch (e: Exception) {
+                binding?.profileInfoImageUnify?.setImageUrl(userSession.phoneNumber)
+                logDataStoreError("profilePicture", e)
             }
         }
+}
+
+    private fun logDataStoreError(field: String, e: Throwable) {
+        ServerLogger.log(
+            Priority.P2, DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG,
+            mapOf(
+                "method" to "error_access_field",
+                "field_name" to field,
+                "error" to Log.getStackTraceString(e).take(LIMIT_STACKTRACE),
+            )
+        )
     }
 
     private fun setupObserver() {
@@ -290,7 +318,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
     }
 
     private fun setProfileData(data: ProfileInfoUiModel) {
-        binding?.shimmerProfileInfo?.root?.visible()
+        binding?.shimmerProfileInfo?.root?.gone()
         if (binding?.containerProfileInfo?.visibility == View.GONE) binding?.containerProfileInfo?.visible()
 
         val listItem = listOf(
@@ -346,7 +374,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
             },
             ProfileInfoItemUiModel(
                 ProfileInfoConstants.PHONE,
-                title = getString(R.string.title_phone),
+                title = getString(R.string.add_phone_title_phone),
                 itemValue = data.profileInfoData.msisdn,
                 showVerifiedTag = showVerifiedTag(data),
                 placeholder = getString(R.string.profile_info_placeholder_phone)
@@ -742,14 +770,6 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         )
     }
 
-    private fun isUsingRollenceCloseAccount(): Boolean {
-        val newCloseAccountAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
-            ROLLENCE_KEY_CLOSE_ACCOUNT,
-            ""
-        ).orEmpty()
-        return newCloseAccountAbTestKey.isNotEmpty()
-    }
-
     companion object {
         const val REQUEST_CODE_EDIT_PHONE = 203
         const val REQUEST_CODE_EDIT_BOD = 204
@@ -774,7 +794,8 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         private const val WEBVIEW_PARAM_HIDE_TITLEBAR = "${com.tokopedia.webview.KEY_TITLEBAR}=false"
         private const val WEBVIEW_PARAM_BACK_PRESSED_DISABLED = "${com.tokopedia.webview.KEY_BACK_PRESSED_ENABLED}=false"
         private const val TOKOPEDIA_CLOSE_ACCOUNT_PATH = "user/close-account"
-        private const val ROLLENCE_KEY_CLOSE_ACCOUNT = "close_account"
+        private const val LIMIT_STACKTRACE = 1000
+        private val DIFFERENT_EXCEPTION = Throwable(message = "Value is different from User Session")
 
         fun createInstance(): ProfileInfoFragment {
             return ProfileInfoFragment()

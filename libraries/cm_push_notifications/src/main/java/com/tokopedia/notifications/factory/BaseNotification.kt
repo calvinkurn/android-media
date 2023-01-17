@@ -22,6 +22,7 @@ import com.tokopedia.notifications.common.CMNotificationCacheHandler
 import com.tokopedia.notifications.factory.helper.NotificationChannelController
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.receiver.CMBroadcastReceiver
+import com.tokopedia.notifications.receiver.CMReceiverActivity
 import org.json.JSONObject
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
@@ -283,7 +284,7 @@ abstract class BaseNotification internal constructor(
     }
 
     internal fun createDismissPendingIntent(notificationId: Int, requestCode: Int): PendingIntent {
-        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel, true)
         intent.action = CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS
         return getPendingIntent(context, intent, requestCode)
     }
@@ -291,12 +292,21 @@ abstract class BaseNotification internal constructor(
 
     companion object {
         private const val CM_REQUEST_CODE = "cm_request_code"
-
+        private const val sdkLevel31 = 31
+        private const val ACTIVITY_RECEIVER = "CMReceiverActivity"
         fun getBaseBroadcastIntent(
             context: Context,
-            baseNotificationModel: BaseNotificationModel
+            baseNotificationModel: BaseNotificationModel,
+            isDismissIntent: Boolean = false
         ): Intent {
-            val intent = Intent(context, CMBroadcastReceiver::class.java)
+
+            val intent = if (Build.VERSION.SDK_INT >= sdkLevel31 && !isDismissIntent) {
+               Intent(context, CMReceiverActivity::class.java).apply {
+                   flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+               }
+            } else {
+                Intent(context, CMBroadcastReceiver::class.java)
+            }
             intent.putExtra(CMConstant.EXTRA_BASE_MODEL, baseNotificationModel)
             intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
             intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
@@ -304,12 +314,31 @@ abstract class BaseNotification internal constructor(
         }
 
         fun getPendingIntent(context: Context, intent: Intent, reqCode: Int): PendingIntent =
-            PendingIntent.getBroadcast(
-                context,
-                reqCode,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
+            if (Build.VERSION.SDK_INT >= sdkLevel31 && intent.component?.className?.contains(
+                    ACTIVITY_RECEIVER) == true) {
+                PendingIntent.getActivity(
+                    context,
+                    reqCode,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+            } else if (Build.VERSION.SDK_INT >= sdkLevel31 && intent.component?.className?.contains(
+                    ACTIVITY_RECEIVER) == false) {
+                PendingIntent.getBroadcast(
+                    context,
+                    reqCode,
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            }
+            else {
+                PendingIntent.getBroadcast(
+                    context,
+                    reqCode,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            }
 
         fun updateIntentWithCouponCode(
             baseNotificationModel: BaseNotificationModel,

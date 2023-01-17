@@ -21,6 +21,7 @@ import com.tokopedia.sellerhomecommon.databinding.ShcUnificationWidgetErrorBindi
 import com.tokopedia.sellerhomecommon.databinding.ShcUnificationWidgetLoadingBinding
 import com.tokopedia.sellerhomecommon.databinding.ShcUnificationWidgetSuccessBinding
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationTabUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetEmptyStateUiModel
@@ -223,9 +224,9 @@ class UnificationViewHolder(
             tableShcUnification.setOnSwipeListener { position, _, _ ->
                 shcTableViewPageControl.setCurrentIndicator(position)
             }
-            tableShcUnification.addOnHtmlClickListener { url, _ ->
+            tableShcUnification.addOnHtmlClickListener { url, text, meta, isEmpty ->
                 openAppLink(url)
-                listener.sendUnificationTableItemClickEvent(element)
+                listener.sendUnificationTableItemClickEvent(element, text, meta, isEmpty)
             }
             tableShcUnification.addOnImpressionListener(tab.impressHolder) {
                 listener.sendUnificationTabImpressionEvent(element)
@@ -330,7 +331,12 @@ class UnificationViewHolder(
 
         fun sendUnificationEmptyStateCtaClickEvent(element: UnificationWidgetUiModel) {}
 
-        fun sendUnificationTableItemClickEvent(element: UnificationWidgetUiModel) {}
+        fun sendUnificationTableItemClickEvent(
+            element: UnificationWidgetUiModel,
+            text: String,
+            meta: TableRowsUiModel.Meta,
+            isEmpty: Boolean
+        ) {}
 
         fun showUnificationWidgetCoachMark(anchor: View) {}
     }

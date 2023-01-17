@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.util.withCache
@@ -27,7 +28,7 @@ import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.view.game.GiveawayWidgetView
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
@@ -60,7 +61,7 @@ class InteractiveDialogFragment @Inject constructor(
         override fun onFollowImpressed(view: InteractiveFollowView) {
             analytic.impressFollowShopInteractive(
                 shopId = viewModel.partnerId.toString(),
-                interactiveType = viewModel.interactiveData,
+                gameType = viewModel.gameData,
                 channelId = viewModel.channelId
             )
         }
@@ -68,9 +69,9 @@ class InteractiveDialogFragment @Inject constructor(
         override fun onFollowClicked(view: InteractiveFollowView) {
             viewModel.submitAction(PlayViewerNewAction.FollowInteractive)
             analytic.clickFollowShopInteractive(
-                interactiveId = viewModel.interactiveData.id,
+                interactiveId = viewModel.gameData.id,
                 shopId = viewModel.partnerId.toString(),
-                interactiveType = viewModel.interactiveData,
+                gameType = viewModel.gameData,
                 channelId = viewModel.channelId,
                 channelType = viewModel.channelType
             )
@@ -81,7 +82,7 @@ class InteractiveDialogFragment @Inject constructor(
         override fun onTapTapClicked(view: GiveawayWidgetView) {
             viewModel.submitAction(PlayViewerNewAction.TapGiveaway)
             analytic.clickTapTap(
-                interactiveId = viewModel.interactiveData.id,
+                interactiveId = viewModel.gameData.id,
                 channelId = viewModel.channelId,
                 channelType = viewModel.channelType
             )
@@ -153,13 +154,13 @@ class InteractiveDialogFragment @Inject constructor(
                     return@collectLatest
                 }
 
-                when (state.interactive.interactive) {
-                    is InteractiveUiModel.Giveaway -> renderGiveawayDialog(
-                        state.interactive.interactive,
+                when (state.interactive.game) {
+                    is GameUiModel.Giveaway -> renderGiveawayDialog(
+                        state.interactive.game,
                         state.partner
                     )
-                    is InteractiveUiModel.Quiz -> renderQuizDialog(
-                        state.interactive.interactive,
+                    is GameUiModel.Quiz -> renderQuizDialog(
+                        state.interactive.game,
                         state.partner
                     )
                 }
@@ -202,7 +203,7 @@ class InteractiveDialogFragment @Inject constructor(
     }
 
     private fun renderGiveawayDialog(
-        giveaway: InteractiveUiModel.Giveaway,
+        giveaway: GameUiModel.Giveaway,
         partner: PlayPartnerInfo,
     ) {
         val giveawayStatus = giveaway.status
@@ -220,7 +221,7 @@ class InteractiveDialogFragment @Inject constructor(
                 setLoading(partner.isLoadingFollow)
                 getHeader().setupGiveaway(giveaway.title)
             }
-        } else if (giveawayStatus is InteractiveUiModel.Giveaway.Status.Ongoing) {
+        } else if (giveawayStatus is GameUiModel.Giveaway.Status.Ongoing) {
             setChildView { ctx ->
                 GiveawayWidgetView(ctx).apply {
                     setListener(giveawayViewListener)
@@ -236,7 +237,7 @@ class InteractiveDialogFragment @Inject constructor(
     }
 
     private fun renderQuizDialog(
-        quiz: InteractiveUiModel.Quiz,
+        quiz: GameUiModel.Quiz,
         partner: PlayPartnerInfo,
     ) {
         val status = quiz.status
@@ -255,7 +256,7 @@ class InteractiveDialogFragment @Inject constructor(
                     getHeader().setupQuiz(quiz.title)
                 }
             }
-            status is InteractiveUiModel.Quiz.Status.Ongoing -> {
+            status is GameUiModel.Quiz.Status.Ongoing -> {
                 setChildView { ctx ->
                     QuizWidgetView(ctx)
                 }.apply {
@@ -264,12 +265,11 @@ class InteractiveDialogFragment @Inject constructor(
                         viewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)
                     }
                     setupQuizForm(quiz.listOfChoices)
-                    setReward(quiz.reward)
                     setListener(object : QuizWidgetView.Listener {
                         override fun onQuizOptionClicked(item: QuizChoicesUiModel) {
                             viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(item))
                             analytic.clickQuizOption(
-                                interactiveId = viewModel.interactiveData.id,
+                                interactiveId = viewModel.gameData.id,
                                 shopId = viewModel.partnerId.toString(),
                                 choiceAlphabet = if (item.type is PlayQuizOptionState.Default) (item.type as PlayQuizOptionState.Default).alphabet.toString() else "",
                                 channelId = viewModel.channelId
@@ -279,7 +279,7 @@ class InteractiveDialogFragment @Inject constructor(
                         override fun onQuizImpressed() {
                             analytic.impressQuizOptions(
                                 shopId = viewModel.partnerId.toString(),
-                                interactiveId = viewModel.interactiveData.id,
+                                interactiveId = viewModel.gameData.id,
                                 channelId = viewModel.channelId
                             )
                         }
@@ -295,7 +295,6 @@ class InteractiveDialogFragment @Inject constructor(
         actionText: String = "",
         message: String,
     ) {
-
         Toaster.build(
             view = requireView(),
             message,
@@ -313,7 +312,7 @@ class InteractiveDialogFragment @Inject constructor(
             parent.removeAllViews()
             val view = viewCreator(parent.context)
             val lParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
+                (WIDTH_PERCENTAGE * getScreenWidth()).toInt(),
                 FrameLayout.LayoutParams.WRAP_CONTENT
             )
             lParams.gravity = Gravity.CENTER
@@ -339,6 +338,8 @@ class InteractiveDialogFragment @Inject constructor(
         private const val TAG = "InteractiveDialogFragment"
 
         private const val FADE_TRANSITION_DELAY = 3000L
+
+        private const val WIDTH_PERCENTAGE = 0.6
 
         fun get(fragmentManager: FragmentManager): InteractiveDialogFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? InteractiveDialogFragment

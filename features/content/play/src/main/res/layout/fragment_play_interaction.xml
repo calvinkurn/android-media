@@ -81,8 +81,8 @@
     <include
         android:id="@+id/view_share_experience"
         layout="@layout/view_share_experience"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_goneMarginEnd="0dp"
         app:layout_constraintBottom_toBottomOf="@id/view_like"
@@ -136,7 +136,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/view_share_experience"
-        app:layout_constraintBottom_toTopOf="@id/view_product_featured"
+        app:layout_constraintBottom_toTopOf="@id/view_play_widget_address"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@id/view_size"
         app:layout_constraintWidth_default="wrap"
@@ -156,28 +156,6 @@
         app:layout_constraintEnd_toStartOf="@id/view_like"
         app:layout_constraintStart_toStartOf="@id/view_size"
         tools:visibility="visible"
-        />
-
-    <FrameLayout
-        android:id="@+id/view_interactive"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/view_real_time_notification"
-        app:layout_constraintStart_toStartOf="@id/view_size"
-        tools:visibility="visible"
-        />
-
-    <View
-        android:id="@+id/v_winner_badge_bottom"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/play_anchor_size"
-        app:layout_constraintTop_toTopOf="@id/view_interactive"
-        app:layout_constraintBottom_toBottomOf="@id/view_interactive"
-        app:layout_constraintStart_toStartOf="@id/view_interactive"
-        app:layout_constraintVertical_bias="0.3"
         />
 
     <com.tokopedia.play.view.custom.video.PlayVideoControlView
@@ -290,36 +268,16 @@
         app:layout_constraintTop_toBottomOf="@id/view_partner_info"
         />
 
-    <FrameLayout
-        android:id="@+id/view_interactive_active"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        tools:visibility="visible"
-        app:layout_constraintEnd_toEndOf="@id/view_size"
-        app:layout_constraintTop_toTopOf="@id/view_stats_info"
-        />
-
-    <com.tokopedia.play_common.view.game.InteractiveFinishView
-        android:id="@+id/view_interactive_finish"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/view_size"
-        app:layout_constraintTop_toBottomOf="@id/view_interactive_active"
-        />
-
     <include
         android:id="@+id/view_game_interactive_result"
         layout="@layout/view_game_interactive_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/unify_space_4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/view_size"
-        app:layout_constraintTop_toBottomOf="@id/view_interactive_finish" />
+        app:layout_constraintTop_toBottomOf="@id/v_engagement_widget" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_quick_reply"
@@ -399,9 +357,21 @@
         android:layout_marginBottom="@dimen/unify_space_12"
         android:orientation="horizontal"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/rv_quick_reply"
+        app:layout_constraintBottom_toTopOf="@id/view_product_featured"
         app:layout_constraintEnd_toEndOf="@id/gl_like_bubble_start"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/view_size" />
+
+    <include
+        android:id="@+id/v_engagement_widget"
+        layout="@layout/view_small_engagement_widget"
+        android:layout_width="wrap_content"
+        android:layout_height="110dp"
+        android:maxHeight="110dp"
+        android:layout_marginEnd="@dimen/unify_space_4"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintTop_toTopOf="@id/view_stats_info"
+        android:visibility="visible"
+        tools:visibility="visible" />
 
 </com.tokopedia.play.view.custom.PlayInteractionConstraintLayout>

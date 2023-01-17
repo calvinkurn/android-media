@@ -99,6 +99,10 @@ open class GalleryFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
         binding?.drawerSelector?.setListener(this)
+
+        if (!param.get().isMultipleSelectionType()) {
+            adapter.removeAllSelectedSingleClick()
+        }
     }
 
     override fun onPause() {
@@ -258,10 +262,6 @@ open class GalleryFragment @Inject constructor(
             if (!isSelected && contract?.hasMediaLimitReached() == true) {
                 contract?.onShowMediaLimitReachedGalleryToast()
                 return false
-            }
-        } else {
-            if (contract?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty()) {
-                adapter.removeAllSelectedSingleClick()
             }
         }
 

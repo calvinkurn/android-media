@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductPictureViewHolder
@@ -15,9 +16,11 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
 /**
  * Created by Yehezkiel on 23/11/20
  */
-class VideoPictureAdapter(private val listener: DynamicProductDetailListener?,
-                          private val componentTrackDataModel: ComponentTrackDataModel?)
-    : RecyclerView.Adapter<AbstractViewHolder<MediaDataModel>>() {
+class VideoPictureAdapter(
+    private val listener: DynamicProductDetailListener?,
+    private val componentTrackDataModel: ComponentTrackDataModel?,
+    private val containerType: MediaContainerType
+) : RecyclerView.Adapter<AbstractViewHolder<MediaDataModel>>() {
 
     val currentList: MutableList<MediaDataModel> = mutableListOf()
 
@@ -29,14 +32,24 @@ class VideoPictureAdapter(private val listener: DynamicProductDetailListener?,
         diffResult.dispatchUpdatesTo(this)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<MediaDataModel> {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AbstractViewHolder<MediaDataModel> {
         return if (viewType == MEDIA_VIDEO_VIEW_TYPE) {
-            ProductVideoViewHolder(LayoutInflater.from(parent.context)
+            ProductVideoViewHolder(
+                LayoutInflater.from(parent.context)
                     .inflate(ProductVideoViewHolder.LAYOUT, parent, false),
-                    listener)
+                listener
+            )
         } else {
-            ProductPictureViewHolder(LayoutInflater.from(parent.context)
-                    .inflate(ProductPictureViewHolder.LAYOUT, parent, false), listener, componentTrackDataModel)
+            ProductPictureViewHolder(
+                LayoutInflater.from(parent.context)
+                    .inflate(ProductPictureViewHolder.LAYOUT, parent, false),
+                listener,
+                componentTrackDataModel,
+                containerType = containerType
+            )
         }
     }
 
@@ -61,8 +74,8 @@ class VideoPictureAdapter(private val listener: DynamicProductDetailListener?,
 }
 
 class VideoPictureDiffUtil(
-        private val oldList: List<MediaDataModel>,
-        private val newList: List<MediaDataModel>
+    private val oldList: List<MediaDataModel>,
+    private val newList: List<MediaDataModel>
 ) : DiffUtil.Callback() {
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return oldList[oldItemPosition].id == newList[newItemPosition].id

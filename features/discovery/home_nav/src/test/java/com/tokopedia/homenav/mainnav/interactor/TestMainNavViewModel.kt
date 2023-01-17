@@ -5,14 +5,14 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
-import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.homenav.base.datamodel.HomeNavExpandableDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
-import com.tokopedia.homenav.mainnav.MainNavConst
-import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
+import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
+import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.domain.model.*
 import com.tokopedia.homenav.mainnav.domain.usecases.*
@@ -22,7 +22,7 @@ import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ErrorStateFavor
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateWishlistDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
-import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.admin.AdminData
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
@@ -30,6 +30,8 @@ import com.tokopedia.sessioncommon.data.admin.AdminDetailInformation
 import com.tokopedia.sessioncommon.data.admin.AdminRoleType
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
 import com.tokopedia.sessioncommon.domain.usecase.RefreshShopBasicDataUseCase
+import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionShopData
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -53,16 +55,17 @@ class TestMainNavViewModel {
     @ApplicationContext
     lateinit var context: Context
 
-    private lateinit var viewModel : MainNavViewModel
+    private lateinit var viewModel: MainNavViewModel
     private val shopId = 1224
     private val mockListAllCategory = listOf(HomeNavMenuDataModel())
     private val MOCK_IS_ME_PAGE_ROLLENCE_DISABLE = false
     private val MOCK_IS_ME_PAGE_ROLLENCE_ENABLE = true
 
     @Before
-    fun setup(){
+    fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true)
     }
+
     @Test
     fun `test when nav page launched from page others with disabled me page rollence than homepage then show back to home icon`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
@@ -72,14 +75,14 @@ class TestMainNavViewModel {
         every { clientMenuGenerator.getTicker(menuId = any()) }
             .answers { HomeNavTickerDataModel() }
         every { clientMenuGenerator.getSectionTitle(identifier = any()) }
-            .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
+            .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
 
         viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.setPageSource(pageSource)
         Assert.assertEquals(pageSource, viewModel.getPageSource())
 
-        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
         val backToHomeMenu = visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuDataModel
 
         Assert.assertNotNull(backToHomeMenu)
@@ -94,13 +97,13 @@ class TestMainNavViewModel {
         every { clientMenuGenerator.getTicker(menuId = any()) }
             .answers { HomeNavTickerDataModel() }
         every { clientMenuGenerator.getSectionTitle(identifier = any()) }
-            .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
+            .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
 
         viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
         viewModel.setPageSource(pageSource)
         Assert.assertEquals(pageSource, viewModel.getPageSource())
 
-        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
         val backToHomeMenu = visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuDataModel?
 
         Assert.assertNull(backToHomeMenu)
@@ -115,13 +118,13 @@ class TestMainNavViewModel {
         every { clientMenuGenerator.getTicker(menuId = any()) }
             .answers { HomeNavTickerDataModel() }
         every { clientMenuGenerator.getSectionTitle(identifier = any()) }
-            .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
+            .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
 
         viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
         viewModel.setPageSource(pageSource)
         Assert.assertEquals(pageSource, viewModel.getPageSource())
 
-        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
         val backToHomeMenu = visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuDataModel?
 
         Assert.assertNull(backToHomeMenu)
@@ -130,20 +133,48 @@ class TestMainNavViewModel {
     @Test
     fun `test when nav page launched from wishlist page then do not show back to home icon`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
-        val pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST
+        val pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2
         every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
             .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
         every { clientMenuGenerator.getTicker(menuId = any()) }
             .answers { HomeNavTickerDataModel() }
         every { clientMenuGenerator.getSectionTitle(identifier = any()) }
-            .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
+            .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
 
         viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
         viewModel.setPageSource(pageSource)
         Assert.assertEquals(pageSource, viewModel.getPageSource())
 
-        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
         val backToHomeMenu = visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuDataModel?
+
+        Assert.assertNull(backToHomeMenu)
+    }
+
+    @Test
+    fun `test when nav page launched from wishlist collection page then do not show back to home icon`() {
+        val clientMenuGenerator = mockk<ClientMenuGenerator>()
+        val pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_COLLECTION
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
+            .answers {
+                HomeNavMenuDataModel(
+                    id = firstArg(),
+                    notifCount = secondArg(),
+                    sectionId = thirdArg()
+                )
+            }
+        every { clientMenuGenerator.getTicker(menuId = any()) }
+            .answers { HomeNavTickerDataModel() }
+        every { clientMenuGenerator.getSectionTitle(identifier = any()) }
+            .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
+
+        viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
+        viewModel.setPageSource(pageSource)
+        Assert.assertEquals(pageSource, viewModel.getPageSource())
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
+        val backToHomeMenu =
+            visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME }
 
         Assert.assertNull(backToHomeMenu)
     }
@@ -157,20 +188,20 @@ class TestMainNavViewModel {
         every { clientMenuGenerator.getTicker(menuId = any()) }
             .answers { HomeNavTickerDataModel() }
         every { clientMenuGenerator.getSectionTitle(identifier = any()) }
-            .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
+            .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
 
         viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.setPageSource()
         Assert.assertEquals(defaultPageSource, viewModel.getPageSource())
 
-        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
         val backToHomeMenu = visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuDataModel?
 
         Assert.assertNotNull(backToHomeMenu)
     }
 
-    //user menu section
+    // user menu section
     @Test
     fun `test when viewmodel created and user has no shop with disable me page rollence then viewmodel create at least 3 user menu`() {
         val defaultUserMenuCount = 3
@@ -181,7 +212,7 @@ class TestMainNavViewModel {
         every { clientMenuGenerator.getTicker(menuId = any()) }
             .answers { HomeNavTickerDataModel() }
         every { clientMenuGenerator.getSectionTitle(identifier = any()) }
-            .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
+            .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
 
         viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
@@ -193,7 +224,7 @@ class TestMainNavViewModel {
         Assert.assertEquals(defaultUserMenuCount, visitableList!!.size)
     }
 
-    //user menu section
+    // user menu section
     @Test
     fun `test when logged in user get complain notification with disable me page rollence then viewmodel update complain visitable with notification`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
@@ -206,7 +237,7 @@ class TestMainNavViewModel {
         every { clientMenuGenerator.getTicker(menuId = any()) }
             .answers { HomeNavTickerDataModel() }
         every { clientMenuGenerator.getSectionTitle(identifier = any()) }
-            .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
+            .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
         coEvery { getNavNotification.executeOnBackground() }.answers { NavNotificationModel(unreadCountComplain = mockUnreadCount) }
 
         viewModel = createViewModel(
@@ -216,13 +247,13 @@ class TestMainNavViewModel {
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
 
-        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
         val complainVisitable = visitableList.find { it is HomeNavMenuDataModel && it.id() == ClientMenuGenerator.ID_COMPLAIN } as HomeNavMenuDataModel
 
         Assert.assertEquals(mockUnreadCount.toString(), complainVisitable.notifCount)
     }
 
-    //test user profile cache
+    // test user profile cache
     @Test
     fun `test when set profile from cache with disabled me page rollence`() {
         val mainNavProfileCacheMock = mockk<MainNavProfileCache>()
@@ -243,19 +274,20 @@ class TestMainNavViewModel {
         viewModel.setProfileCache(mainNavProfileCacheMock)
         viewModel.getMainNavData(true)
 
-        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
 
         val accountHeaderDataModel = visitableList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
         Assert.assertTrue(visitableList.isNotEmpty())
         Assert.assertNotNull(accountHeaderDataModel)
         Assert.assertTrue(
-                 accountHeaderDataModel.profileDataModel.userName == mainNavProfileCacheMock.profileName
-                && accountHeaderDataModel.profileDataModel.userImage == mainNavProfileCacheMock.profilePicUrl
-                && accountHeaderDataModel.profileMembershipDataModel.badge == mainNavProfileCacheMock.memberStatusIconUrl
-                )
+            accountHeaderDataModel.profileDataModel.userName == mainNavProfileCacheMock.profileName &&
+                accountHeaderDataModel.profileDataModel.userImage == mainNavProfileCacheMock.profilePicUrl &&
+                accountHeaderDataModel.profileMembershipDataModel.badge == mainNavProfileCacheMock.memberStatusIconUrl
+        )
+        Assert.assertNull(viewModel.profileDataLiveData.value)
     }
 
-    //user menu section
+    // user menu section
     @Test
     fun `test when logged in user get inbox ticket notification with disable me page rollence then viewmodel update tokopedia care visitable with notification`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
@@ -268,7 +300,7 @@ class TestMainNavViewModel {
         every { clientMenuGenerator.getTicker(menuId = any()) }
             .answers { HomeNavTickerDataModel() }
         every { clientMenuGenerator.getSectionTitle(identifier = any()) }
-            .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
+            .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
         coEvery { getNavNotification.executeOnBackground() }.answers { NavNotificationModel(unreadCountInboxTicket = mockUnreadCount) }
 
         viewModel = createViewModel(
@@ -278,14 +310,13 @@ class TestMainNavViewModel {
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
 
-        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
         val complainVisitable = visitableList.find { it is HomeNavMenuDataModel && it.id() == ClientMenuGenerator.ID_TOKOPEDIA_CARE } as HomeNavMenuDataModel
 
         Assert.assertEquals(mockUnreadCount.toString(), complainVisitable.notifCount)
     }
 
-
-    //transaction section
+    // transaction section
     @Test
     fun `test when viewmodel created and user does not ongoing order and payment transaction with disable me page rollence then only create transaction menu item`() {
         val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
@@ -296,22 +327,23 @@ class TestMainNavViewModel {
 
         viewModel = createViewModel(
             getUohOrdersNavUseCase = getUohOrdersNavUseCase,
-            getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase)
+            getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase
+        )
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
 
         val menuList = viewModel.mainNavLiveData.value?.dataList?.filter {
             it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.ORDER
-        }?: listOf()
+        } ?: listOf()
 
         val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
             it is TransactionListItemDataModel
         }
 
-        Assert.assertFalse(menuList.isEmpty());
+        Assert.assertFalse(menuList.isEmpty())
         Assert.assertNull(transactionDataModel)
     }
 
-    //transaction section
+    // transaction section
     @Test
     fun `test when viewmodel created and logged in user only have ongoing order with disable me page rollence then create transaction menu item`() {
         val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
@@ -322,7 +354,7 @@ class TestMainNavViewModel {
         every { userSession.hasShop() } returns true
 
         coEvery { userSession.isShopOwner } returns true
-        coEvery { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE) }.answers {  }
+        coEvery { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE) }.answers { }
         coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf()
         coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf(NavPaymentOrder())
 
@@ -336,24 +368,24 @@ class TestMainNavViewModel {
 
         val menuList = viewModel.mainNavLiveData.value?.dataList?.filter {
             it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.ORDER
-        }?: listOf()
+        } ?: listOf()
 
         val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
             it is TransactionListItemDataModel
         }
 
-        Assert.assertFalse(menuList.isEmpty());
+        Assert.assertFalse(menuList.isEmpty())
         Assert.assertNotNull(transactionDataModel)
     }
 
-    //transaction section
+    // transaction section
     @Test
     fun `test when viewmodel created and loggedin user only have payment transaction with disable me page rollence then create transaction menu item`() {
         val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
         val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
         val userSession = mockk<UserSessionInterface>()
 
-        every { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE) }.answers {  }
+        every { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE) }.answers { }
         coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf(NavProductOrder())
         coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf()
         coEvery { userSession.isShopOwner } returns true
@@ -370,27 +402,14 @@ class TestMainNavViewModel {
 
         val menuList = viewModel.mainNavLiveData.value?.dataList?.filter {
             it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.ORDER
-        }?: listOf()
+        } ?: listOf()
 
         val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
             it is TransactionListItemDataModel
         }
 
-        Assert.assertFalse(menuList.isEmpty());
+        Assert.assertFalse(menuList.isEmpty())
         Assert.assertNotNull(transactionDataModel)
-    }
-
-    //user menu section
-    @Test
-    fun `test when data loaded complete with disabled me page rollence then check account header menu section is available`() {
-        viewModel = createViewModel(
-        )
-        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
-        viewModel.getMainNavData(true)
-
-        val headerModelPosition = viewModel.findHeaderModelPosition()
-
-        Assert.assertNotNull(headerModelPosition)
     }
 
     @Test
@@ -398,7 +417,7 @@ class TestMainNavViewModel {
         viewModel = createViewModel()
         viewModel.setInitialState()
 
-        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
         Assert.assertNotNull(visitableList)
     }
 
@@ -421,34 +440,32 @@ class TestMainNavViewModel {
         val userSession = mockk<UserSessionInterface>()
 
         every { userSession.isLoggedIn() } returns true
-        every { getNavOrderUseCase.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE) }.answers {  }
+        every { getNavOrderUseCase.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE) }.answers { }
         coEvery { getNavOrderUseCase.executeOnBackground() } returns listOf(NavProductOrder())
         coEvery { getPaymentUseCase.executeOnBackground() } returns listOf(NavPaymentOrder())
         viewModel = createViewModel(
             getPaymentOrdersNavUseCase = getPaymentUseCase,
-            getUohOrdersNavUseCase = getNavOrderUseCase)
+            getUohOrdersNavUseCase = getNavOrderUseCase
+        )
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.refreshTransactionListData()
 
-
         val menuList = viewModel.mainNavLiveData.value?.dataList?.filter {
             it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.ORDER
-        }?: listOf()
+        } ?: listOf()
 
         val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
             it is TransactionListItemDataModel
         }
 
-        Assert.assertFalse(menuList.isEmpty());
+        Assert.assertFalse(menuList.isEmpty())
         Assert.assertNotNull(transactionDataModel)
     }
 
     @Test
-    fun `test when success refresh data after login with disabled me page rollence then check data not null`(){
+    fun `test when success refresh data after login with disabled me page rollence then check data not null`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
-        coEvery {
-            getProfileDataUseCase.executeOnBackground()
-        } returns AccountHeaderDataModel(
+        val accountHeaderDataModel = AccountHeaderDataModel(
             profileDataModel = ProfileDataModel(
                 userName = "Joko",
                 userImage = "Tingkir"
@@ -461,6 +478,9 @@ class TestMainNavViewModel {
                 shopId = "1234"
             )
         )
+        coEvery {
+            getProfileDataUseCase.executeOnBackground()
+        } returns accountHeaderDataModel
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
@@ -470,16 +490,19 @@ class TestMainNavViewModel {
         val accountHeaderViewModel = dataList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
         Assert.assertTrue(dataList.isNotEmpty())
         Assert.assertNotNull(accountHeaderViewModel)
-        Assert.assertTrue(accountHeaderViewModel.profileDataModel.userName.isNotEmpty()
-                && accountHeaderViewModel.profileDataModel.userImage.isNotEmpty()
-                && accountHeaderViewModel.profileMembershipDataModel.badge.isNotEmpty()
-                && accountHeaderViewModel.profileSellerDataModel.shopId.isNotEmpty()
-                && accountHeaderViewModel.profileSellerDataModel.shopName.isNotEmpty()
-                && accountHeaderViewModel.profileDataModel.userName == "Joko"
-                && accountHeaderViewModel.profileDataModel.userImage == "Tingkir"
-                && accountHeaderViewModel.profileMembershipDataModel.badge == "kucing"
-                && accountHeaderViewModel.profileSellerDataModel.shopId == "1234"
-                && accountHeaderViewModel.profileSellerDataModel.shopName == "binatang")
+        Assert.assertTrue(
+            accountHeaderViewModel.profileDataModel.userName.isNotEmpty() &&
+                accountHeaderViewModel.profileDataModel.userImage.isNotEmpty() &&
+                accountHeaderViewModel.profileMembershipDataModel.badge.isNotEmpty() &&
+                accountHeaderViewModel.profileSellerDataModel.shopId.isNotEmpty() &&
+                accountHeaderViewModel.profileSellerDataModel.shopName.isNotEmpty() &&
+                accountHeaderViewModel.profileDataModel.userName == "Joko" &&
+                accountHeaderViewModel.profileDataModel.userImage == "Tingkir" &&
+                accountHeaderViewModel.profileMembershipDataModel.badge == "kucing" &&
+                accountHeaderViewModel.profileSellerDataModel.shopId == "1234" &&
+                accountHeaderViewModel.profileSellerDataModel.shopName == "binatang"
+        )
+        Assert.assertEquals(viewModel.profileDataLiveData.value, accountHeaderDataModel)
     }
 
     @Test
@@ -521,37 +544,44 @@ class TestMainNavViewModel {
                 shopName = "binatang",
                 hasShop = true,
                 shopId = "1234"
-            ))
+            )
+        )
 
         coEvery {
             shopInfoRefreshData.executeOnBackground()
-        } returns Success(ShopData(
-            ShopData.ShopInfoPojo(
-                ShopData.ShopInfoPojo.Info(
-                    shopName = newShopName,
-                    shopId = newShopId
-                )
-            ),
-            ShopData.NotificationPojo()))
+        } returns Success(
+            ShopData(
+                ShopData.ShopInfoPojo(
+                    ShopData.ShopInfoPojo.Info(
+                        shopName = newShopName,
+                        shopId = newShopId
+                    )
+                ),
+                ShopData.NotificationPojo()
+            )
+        )
         coEvery {
             accountAdminInfoUseCase.executeOnBackground()
         } returns accountInfoPair
         viewModel = createViewModel(
             getProfileDataUseCase = getProfileDataUseCase,
             getShopInfoUseCase = shopInfoRefreshData,
-            accountAdminInfoUseCase = accountAdminInfoUseCase)
+            accountAdminInfoUseCase = accountAdminInfoUseCase
+        )
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
         viewModel.refreshUserShopData()
 
-        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
         val accountHeaderViewModel = visitableList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
         Assert.assertTrue(visitableList.isNotEmpty())
         Assert.assertNotNull(accountHeaderViewModel)
-        Assert.assertTrue(accountHeaderViewModel.profileSellerDataModel.shopId.isNotEmpty()
-                && accountHeaderViewModel.profileSellerDataModel.shopId == newShopId
-                && accountHeaderViewModel.profileSellerDataModel.shopName.isNotEmpty()
-                && accountHeaderViewModel.profileSellerDataModel.shopName == newShopName)
+        Assert.assertTrue(
+            accountHeaderViewModel.profileSellerDataModel.shopId.isNotEmpty() &&
+                accountHeaderViewModel.profileSellerDataModel.shopId == newShopId &&
+                accountHeaderViewModel.profileSellerDataModel.shopName.isNotEmpty() &&
+                accountHeaderViewModel.profileSellerDataModel.shopName == newShopName
+        )
     }
 
     @Test
@@ -580,14 +610,15 @@ class TestMainNavViewModel {
                 shopId = "1234"
             ),
             profileAffiliateDataModel = ProfileAffiliateDataModel(isGetAffiliateError = true)
-            )
+        )
 
         viewModel = createViewModel(
             getProfileDataUseCase = getProfileDataUseCase,
-            getAffiliateUserUseCase = getAffiliateUserUseCase)
+            getAffiliateUserUseCase = getAffiliateUserUseCase
+        )
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
-        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
         val accountHeaderViewModel = visitableList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
         Assert.assertTrue(accountHeaderViewModel.profileAffiliateDataModel.isGetAffiliateError)
 
@@ -619,14 +650,15 @@ class TestMainNavViewModel {
                 shopId = "1234"
             ),
             profileAffiliateDataModel = ProfileAffiliateDataModel(isGetAffiliateError = true)
-            )
+        )
 
         viewModel = createViewModel(
             getProfileDataUseCase = getProfileDataUseCase,
-            getAffiliateUserUseCase = getAffiliateUserUseCase)
+            getAffiliateUserUseCase = getAffiliateUserUseCase
+        )
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
-        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
         val accountHeaderViewModel = visitableList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
         Assert.assertTrue(accountHeaderViewModel.profileAffiliateDataModel.isGetAffiliateError)
 
@@ -658,14 +690,15 @@ class TestMainNavViewModel {
                 shopId = "1234"
             ),
             profileAffiliateDataModel = ProfileAffiliateDataModel(isGetAffiliateError = true)
-            )
+        )
 
         viewModel = createViewModel(
             getProfileDataUseCase = getProfileDataUseCase,
-            getAffiliateUserUseCase = getAffiliateUserUseCase)
+            getAffiliateUserUseCase = getAffiliateUserUseCase
+        )
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
-        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
         val accountHeaderViewModel = visitableList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
         Assert.assertTrue(accountHeaderViewModel.profileAffiliateDataModel.isGetAffiliateError)
 
@@ -674,7 +707,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given disabled me page rollence then test Success getProfileFullData`(){
+    fun `given disabled me page rollence then test Success getProfileFullData`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
             getProfileDataUseCase.executeOnBackground()
@@ -689,7 +722,8 @@ class TestMainNavViewModel {
             profileSellerDataModel = ProfileSellerDataModel(
                 shopName = "binatang",
                 shopId = "1234"
-            ))
+            )
+        )
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
@@ -698,24 +732,24 @@ class TestMainNavViewModel {
         val accountHeaderViewModel = dataList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
         Assert.assertTrue(dataList.isNotEmpty())
         Assert.assertNotNull(accountHeaderViewModel)
-        Assert.assertTrue(accountHeaderViewModel.profileDataModel.userName.isNotEmpty()
-                && accountHeaderViewModel.profileDataModel.userImage.isNotEmpty()
-                && accountHeaderViewModel.profileMembershipDataModel.badge.isNotEmpty()
-                && accountHeaderViewModel.profileSellerDataModel.shopId.isNotEmpty()
-                && accountHeaderViewModel.profileSellerDataModel.shopName.isNotEmpty()
-                && accountHeaderViewModel.profileDataModel.userName == "Joko"
-                && accountHeaderViewModel.profileDataModel.userImage == "Tingkir"
-                && accountHeaderViewModel.profileMembershipDataModel.badge == "kucing"
-                && accountHeaderViewModel.profileSellerDataModel.shopId == "1234"
-                && accountHeaderViewModel.profileSellerDataModel.shopName == "binatang")
+        Assert.assertTrue(
+            accountHeaderViewModel.profileDataModel.userName.isNotEmpty() &&
+                accountHeaderViewModel.profileDataModel.userImage.isNotEmpty() &&
+                accountHeaderViewModel.profileMembershipDataModel.badge.isNotEmpty() &&
+                accountHeaderViewModel.profileSellerDataModel.shopId.isNotEmpty() &&
+                accountHeaderViewModel.profileSellerDataModel.shopName.isNotEmpty() &&
+                accountHeaderViewModel.profileDataModel.userName == "Joko" &&
+                accountHeaderViewModel.profileDataModel.userImage == "Tingkir" &&
+                accountHeaderViewModel.profileMembershipDataModel.badge == "kucing" &&
+                accountHeaderViewModel.profileSellerDataModel.shopId == "1234" &&
+                accountHeaderViewModel.profileSellerDataModel.shopName == "binatang"
+        )
     }
 
     @Test
-    fun `test when success refresh profile after login with disabled me page rollence then data not null and have exact result`(){
+    fun `test when success refresh profile after login with disabled me page rollence then data not null and have exact result`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
-        coEvery {
-            getProfileDataUseCase.executeOnBackground()
-        } returns AccountHeaderDataModel(
+        val accountHeaderDataModel = AccountHeaderDataModel(
             profileDataModel = ProfileDataModel(
                 userName = "Joko",
                 userImage = "Tingkir"
@@ -726,7 +760,11 @@ class TestMainNavViewModel {
             profileSellerDataModel = ProfileSellerDataModel(
                 shopName = "binatang",
                 shopId = "1234"
-            ))
+            )
+        )
+        coEvery {
+            getProfileDataUseCase.executeOnBackground()
+        } returns accountHeaderDataModel
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
@@ -736,20 +774,23 @@ class TestMainNavViewModel {
         val accountHeaderViewModel = dataList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
         Assert.assertTrue(dataList.isNotEmpty())
         Assert.assertNotNull(accountHeaderViewModel)
-        Assert.assertTrue(accountHeaderViewModel.profileDataModel.userName.isNotEmpty()
-                && accountHeaderViewModel.profileDataModel.userImage.isNotEmpty()
-                && accountHeaderViewModel.profileMembershipDataModel.badge.isNotEmpty()
-                && accountHeaderViewModel.profileSellerDataModel.shopId.isNotEmpty()
-                && accountHeaderViewModel.profileSellerDataModel.shopName.isNotEmpty()
-                && accountHeaderViewModel.profileDataModel.userName == "Joko"
-                && accountHeaderViewModel.profileDataModel.userImage == "Tingkir"
-                && accountHeaderViewModel.profileMembershipDataModel.badge == "kucing"
-                && accountHeaderViewModel.profileSellerDataModel.shopId == "1234"
-                && accountHeaderViewModel.profileSellerDataModel.shopName == "binatang")
+        Assert.assertTrue(
+            accountHeaderViewModel.profileDataModel.userName.isNotEmpty() &&
+                accountHeaderViewModel.profileDataModel.userImage.isNotEmpty() &&
+                accountHeaderViewModel.profileMembershipDataModel.badge.isNotEmpty() &&
+                accountHeaderViewModel.profileSellerDataModel.shopId.isNotEmpty() &&
+                accountHeaderViewModel.profileSellerDataModel.shopName.isNotEmpty() &&
+                accountHeaderViewModel.profileDataModel.userName == "Joko" &&
+                accountHeaderViewModel.profileDataModel.userImage == "Tingkir" &&
+                accountHeaderViewModel.profileMembershipDataModel.badge == "kucing" &&
+                accountHeaderViewModel.profileSellerDataModel.shopId == "1234" &&
+                accountHeaderViewModel.profileSellerDataModel.shopName == "binatang"
+        )
+        Assert.assertEquals(viewModel.profileDataLiveData.value, accountHeaderDataModel)
     }
 
     @Test
-    fun `given disabled me page rollence then test Success getUserNameAndPictureData`(){
+    fun `given disabled me page rollence then test Success getUserNameAndPictureData`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
             getProfileDataUseCase.executeOnBackground()
@@ -762,12 +803,14 @@ class TestMainNavViewModel {
         val accountHeaderViewModel = dataList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
         Assert.assertTrue(dataList.isNotEmpty())
         Assert.assertNotNull(accountHeaderViewModel)
-        Assert.assertTrue(accountHeaderViewModel.profileDataModel.userName.isNotEmpty()
-                && accountHeaderViewModel.profileDataModel.userImage.isNotEmpty())
+        Assert.assertTrue(
+            accountHeaderViewModel.profileDataModel.userName.isNotEmpty() &&
+                accountHeaderViewModel.profileDataModel.userImage.isNotEmpty()
+        )
     }
 
     @Test
-    fun `given disable me page rollence then Error getUserNameAndPictureData missing name`(){
+    fun `given disable me page rollence then Error getUserNameAndPictureData missing name`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
             getProfileDataUseCase.executeOnBackground()
@@ -780,12 +823,14 @@ class TestMainNavViewModel {
         val accountHeaderViewModel = dataList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
         Assert.assertTrue(dataList.isNotEmpty())
         Assert.assertNotNull(accountHeaderViewModel)
-        Assert.assertTrue(accountHeaderViewModel.profileDataModel.userName.isEmpty()
-                && accountHeaderViewModel.profileDataModel.userImage.isNotEmpty())
+        Assert.assertTrue(
+            accountHeaderViewModel.profileDataModel.userName.isEmpty() &&
+                accountHeaderViewModel.profileDataModel.userImage.isNotEmpty()
+        )
     }
 
     @Test
-    fun `given disabled me page rollence then test Error getUserNameAndPictureData missing profile picture`(){
+    fun `given disabled me page rollence then test Error getUserNameAndPictureData missing profile picture`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
             getProfileDataUseCase.executeOnBackground()
@@ -798,12 +843,14 @@ class TestMainNavViewModel {
         val accountHeaderViewModel = dataList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
         Assert.assertTrue(dataList.isNotEmpty())
         Assert.assertNotNull(accountHeaderViewModel)
-        Assert.assertTrue(accountHeaderViewModel.profileDataModel.userName.isNotEmpty()
-                && accountHeaderViewModel.profileDataModel.userImage.isEmpty())
+        Assert.assertTrue(
+            accountHeaderViewModel.profileDataModel.userName.isNotEmpty() &&
+                accountHeaderViewModel.profileDataModel.userImage.isEmpty()
+        )
     }
 
     @Test
-    fun `given disable rollence me page Error getUserNameAndPictureData missing all`(){
+    fun `given disable rollence me page Error getUserNameAndPictureData missing all`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
             getProfileDataUseCase.executeOnBackground()
@@ -816,8 +863,10 @@ class TestMainNavViewModel {
         val accountHeaderViewModel = dataList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
         Assert.assertTrue(dataList.isNotEmpty())
         Assert.assertNotNull(accountHeaderViewModel)
-        Assert.assertTrue(accountHeaderViewModel.profileDataModel.userName.isEmpty()
-                && accountHeaderViewModel.profileDataModel.userImage.isEmpty())
+        Assert.assertTrue(
+            accountHeaderViewModel.profileDataModel.userName.isEmpty() &&
+                accountHeaderViewModel.profileDataModel.userImage.isEmpty()
+        )
     }
 
     @Test
@@ -845,7 +894,8 @@ class TestMainNavViewModel {
 
         viewModel = createViewModel(
             accountAdminInfoUseCase = accountAdminInfoUseCase,
-            userSession = userSession)
+            userSession = userSession
+        )
         viewModel.getMainNavData(false)
 
         val mainNavDataModel = viewModel.mainNavLiveData.value
@@ -918,7 +968,8 @@ class TestMainNavViewModel {
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         val homeNavExpandableDataModel = dataList.find { it is HomeNavExpandableDataModel } as HomeNavExpandableDataModel
         val errorStateBuDataModel = homeNavExpandableDataModel.menus.find { it is ErrorStateBuDataModel } as ErrorStateBuDataModel
-        Assert.assertNotNull(errorStateBuDataModel) //error state bu data model existed
+        Assert.assertNotNull(errorStateBuDataModel) // error state bu data model existed
+        Assert.assertTrue(viewModel.networkProcessLiveData.value == false)
 
         coEvery {
             getBuListUseCase.executeOnBackground()
@@ -929,6 +980,7 @@ class TestMainNavViewModel {
         val homeNavExpandableDataModelRefreshed = dataListRefreshed.find { it is HomeNavExpandableDataModel } as HomeNavExpandableDataModel
         val errorStateBuDataModelRefreshed = homeNavExpandableDataModelRefreshed.menus.find { it is ErrorStateBuDataModel }
         Assert.assertNull(errorStateBuDataModelRefreshed)
+        Assert.assertTrue(viewModel.networkProcessLiveData.value == true)
     }
 
     @Test
@@ -972,9 +1024,9 @@ class TestMainNavViewModel {
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
 
         Assert.assertNotNull(viewModel.mainNavLiveData.value)
-        val wishlistModel = viewModel.mainNavLiveData.value?.dataList?.find{ it is WishlistDataModel } as WishlistDataModel?
-        Assert.assertTrue(wishlistModel!=null && wishlistModel.wishlist.isEmpty())
-        val favoriteShopModel = viewModel.mainNavLiveData.value?.dataList?.find{ it is FavoriteShopListDataModel } as FavoriteShopListDataModel?
+        val wishlistModel = viewModel.mainNavLiveData.value?.dataList?.find { it is WishlistDataModel } as? WishlistDataModel
+        Assert.assertTrue(wishlistModel != null && wishlistModel.wishlist.isEmpty())
+        val favoriteShopModel = viewModel.mainNavLiveData.value?.dataList?.find { it is FavoriteShopListDataModel } as? FavoriteShopListDataModel
         Assert.assertTrue(favoriteShopModel != null && favoriteShopModel.favoriteShops.isEmpty())
         val transactionListModel = viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel } as TransactionListItemDataModel?
         Assert.assertTrue(transactionListModel != null && transactionListModel.orderListModel.orderList.isEmpty())
@@ -988,7 +1040,7 @@ class TestMainNavViewModel {
         val wishlistUseCase = mockk<GetWishlistNavUseCase>()
 
         every { userSession.isLoggedIn } returns true
-        coEvery { wishlistUseCase.executeOnBackground() } returns Pair(listOf(NavWishlistModel()), true)
+        coEvery { wishlistUseCase.executeOnBackground() } returns Pair(listOf(NavWishlistModel(), NavWishlistModel()), false)
 
         viewModel = createViewModel(
             userSession = userSession,
@@ -997,6 +1049,7 @@ class TestMainNavViewModel {
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
         assert(viewModel.mainNavLiveData.value?.dataList?.any { it is WishlistDataModel } == true)
+        assert(viewModel.allProcessFinished.value?.peekContent() == true)
     }
 
     @Test
@@ -1005,9 +1058,13 @@ class TestMainNavViewModel {
         val favoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
 
         every { userSession.isLoggedIn } returns true
-        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns Pair(listOf(
-            NavFavoriteShopModel()
-        ), true)
+        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns Pair(
+            listOf(
+                NavFavoriteShopModel(),
+                NavFavoriteShopModel()
+            ),
+            false
+        )
 
         viewModel = createViewModel(
             userSession = userSession,
@@ -1016,6 +1073,7 @@ class TestMainNavViewModel {
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
         assert(viewModel.mainNavLiveData.value?.dataList?.any { it is FavoriteShopListDataModel } == true)
+        assert(viewModel.allProcessFinished.value?.peekContent() == true)
     }
 
     @Test
@@ -1033,7 +1091,7 @@ class TestMainNavViewModel {
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
         val wishlistModel = viewModel.mainNavLiveData.value?.dataList?.find { it is WishlistDataModel } as WishlistDataModel?
-        assert(wishlistModel!=null && wishlistModel.wishlist.isEmpty())
+        assert(wishlistModel != null && wishlistModel.wishlist.isEmpty())
     }
 
     @Test
@@ -1115,19 +1173,27 @@ class TestMainNavViewModel {
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
 
-        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is FavoriteShopListDataModel
-                && it.favoriteShops.contains(favoriteShop1) } == true)
+        assert(
+            viewModel.mainNavLiveData.value?.dataList?.any {
+                it is FavoriteShopListDataModel &&
+                    it.favoriteShops.contains(favoriteShop1)
+            } == true
+        )
 
         // Refresh data
         coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns Pair(listOf(favoriteShop2), true)
         viewModel.refreshFavoriteShopData()
 
-        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is FavoriteShopListDataModel
-                && it.favoriteShops.contains(favoriteShop2) } == true)
+        assert(
+            viewModel.mainNavLiveData.value?.dataList?.any {
+                it is FavoriteShopListDataModel &&
+                    it.favoriteShops.contains(favoriteShop2)
+            } == true
+        )
     }
 
     @Test
-    fun `test when refresh wishlist should update existing list`()  {
+    fun `test when refresh wishlist should update existing list`() {
         val userSession = mockk<UserSessionInterface>()
         val wishlistNavUseCase = mockk<GetWishlistNavUseCase>()
 
@@ -1153,15 +1219,23 @@ class TestMainNavViewModel {
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
 
-        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is WishlistDataModel
-                && it.wishlist.contains(wishlist1) } == true)
+        assert(
+            viewModel.mainNavLiveData.value?.dataList?.any {
+                it is WishlistDataModel &&
+                    it.wishlist.contains(wishlist1)
+            } == true
+        )
 
         // Refresh data
         coEvery { wishlistNavUseCase.executeOnBackground() } returns Pair(listOf(wishlist2), true)
         viewModel.refreshWishlistData()
 
-        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is WishlistDataModel
-                && it.wishlist.contains(wishlist2) } == true)
+        assert(
+            viewModel.mainNavLiveData.value?.dataList?.any {
+                it is WishlistDataModel &&
+                    it.wishlist.contains(wishlist2)
+            } == true
+        )
     }
 
     @Test
@@ -1186,8 +1260,12 @@ class TestMainNavViewModel {
 
         viewModel.refreshWishlistData()
 
-        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is WishlistDataModel
-                && it.wishlist.contains(wishlist) } == true)
+        Assert.assertTrue(
+            viewModel.mainNavLiveData.value?.dataList?.any {
+                it is WishlistDataModel &&
+                    it.wishlist.contains(wishlist)
+            } == true
+        )
     }
 
     @Test
@@ -1212,8 +1290,12 @@ class TestMainNavViewModel {
 
         viewModel.getMainNavData(true)
 
-        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is WishlistDataModel
-                && it.wishlist.contains(wishlist) } == true)
+        Assert.assertTrue(
+            viewModel.mainNavLiveData.value?.dataList?.any {
+                it is WishlistDataModel &&
+                    it.wishlist.contains(wishlist)
+            } == true
+        )
     }
 
     @Test
@@ -1238,8 +1320,12 @@ class TestMainNavViewModel {
 
         viewModel.refreshFavoriteShopData()
 
-        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is FavoriteShopListDataModel
-                && it.favoriteShops.contains(favoriteShop) } == true)
+        Assert.assertTrue(
+            viewModel.mainNavLiveData.value?.dataList?.any {
+                it is FavoriteShopListDataModel &&
+                    it.favoriteShops.contains(favoriteShop)
+            } == true
+        )
     }
 
     @Test
@@ -1264,8 +1350,12 @@ class TestMainNavViewModel {
 
         viewModel.getMainNavData(true)
 
-        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is FavoriteShopListDataModel
-                && it.favoriteShops.contains(favoriteShop) } == true)
+        Assert.assertTrue(
+            viewModel.mainNavLiveData.value?.dataList?.any {
+                it is FavoriteShopListDataModel &&
+                    it.favoriteShops.contains(favoriteShop)
+            } == true
+        )
     }
 
     @Test
@@ -1291,6 +1381,7 @@ class TestMainNavViewModel {
 
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         Assert.assertTrue(dataList.contains(successResult))
+        Assert.assertTrue(viewModel.networkProcessLiveData.value == true)
 
         coEvery {
             getBuListUseCase.executeOnBackground()
@@ -1299,7 +1390,7 @@ class TestMainNavViewModel {
         viewModel.refreshBuListData()
         val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         Assert.assertTrue(dataListRefreshed.contains(successResult))
-        Assert.assertFalse(dataListRefreshed.any { it is ErrorStateBuDataModel }) //error state bu data model existed
+        Assert.assertFalse(dataListRefreshed.any { it is ErrorStateBuDataModel }) // error state bu data model existed
     }
 
     @Test
@@ -1334,7 +1425,7 @@ class TestMainNavViewModel {
         viewModel.refreshBuListData()
         val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList?.find { it is HomeNavExpandableDataModel } as HomeNavExpandableDataModel
         Assert.assertTrue(dataListRefreshed.menus.contains(successResult))
-        Assert.assertFalse(dataListRefreshed.menus.any { it is ErrorStateBuDataModel }) //error state bu data model existed
+        Assert.assertFalse(dataListRefreshed.menus.any { it is ErrorStateBuDataModel }) // error state bu data model existed
     }
 
     @Test
@@ -1369,7 +1460,7 @@ class TestMainNavViewModel {
         viewModel.refreshBuListData()
         val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList?.find { it is HomeNavExpandableDataModel } as HomeNavExpandableDataModel
         Assert.assertFalse(dataListRefreshed.menus.contains(successResult))
-        Assert.assertTrue(dataListRefreshed.menus.any { it is ErrorStateBuDataModel }) //error state bu data model existed
+        Assert.assertTrue(dataListRefreshed.menus.any { it is ErrorStateBuDataModel }) // error state bu data model existed
     }
 
     @Test
@@ -1394,7 +1485,7 @@ class TestMainNavViewModel {
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
 
-        val dataList = viewModel.mainNavLiveData.value?.dataList?: mutableListOf()
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         Assert.assertFalse(dataList.contains(successResult))
 
         coEvery {
@@ -1404,7 +1495,7 @@ class TestMainNavViewModel {
         viewModel.refreshBuListData()
         val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         Assert.assertFalse(dataListRefreshed.contains(successResult))
-        Assert.assertTrue(dataListRefreshed.any { it is ErrorStateBuDataModel }) //error state bu data model existed
+        Assert.assertTrue(dataListRefreshed.any { it is ErrorStateBuDataModel }) // error state bu data model existed
     }
 
     @Test
@@ -1451,11 +1542,11 @@ class TestMainNavViewModel {
         )
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
-        val dataList = viewModel.mainNavLiveData.value?.dataList?: mutableListOf()
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         Assert.assertTrue(dataList.any { it is ErrorStateOngoingTransactionModel })
 
         viewModel.refreshTransactionListData()
-        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList?: mutableListOf()
+        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         Assert.assertTrue(dataListRefreshed.any { it is ErrorStateOngoingTransactionModel })
     }
 
@@ -1475,11 +1566,11 @@ class TestMainNavViewModel {
         )
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
-        val dataList = viewModel.mainNavLiveData.value?.dataList?: mutableListOf()
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         Assert.assertTrue(dataList.any { it is ErrorStateOngoingTransactionModel })
 
         viewModel.refreshTransactionListData()
-        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList?: mutableListOf()
+        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         Assert.assertTrue(dataListRefreshed.any { it is ErrorStateOngoingTransactionModel })
     }
 
@@ -1632,12 +1723,12 @@ class TestMainNavViewModel {
         )
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
-        val visitableListBefore = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val visitableListBefore = viewModel.mainNavLiveData.value?.dataList ?: listOf()
         val accountHeaderBefore = visitableListBefore.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
         Assert.assertNotNull(accountHeaderBefore.tokopediaPlusDataModel.tokopediaPlusError)
 
         viewModel.refreshTokopediaPlusData()
-        val visitableListAfter = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val visitableListAfter = viewModel.mainNavLiveData.value?.dataList ?: listOf()
         val accountHeaderAfter = visitableListAfter.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
         Assert.assertNull(accountHeaderAfter.tokopediaPlusDataModel.tokopediaPlusError)
         Assert.assertNotNull(accountHeaderAfter.tokopediaPlusDataModel.tokopediaPlusParam)
@@ -1678,14 +1769,171 @@ class TestMainNavViewModel {
         )
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
-        val visitableListBefore = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val visitableListBefore = viewModel.mainNavLiveData.value?.dataList ?: listOf()
         val accountHeaderBefore = visitableListBefore.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
         Assert.assertNotNull(accountHeaderBefore.tokopediaPlusDataModel.tokopediaPlusError)
 
         viewModel.refreshTokopediaPlusData()
-        val visitableListAfter = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val visitableListAfter = viewModel.mainNavLiveData.value?.dataList ?: listOf()
         val accountHeaderAfter = visitableListAfter.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
         Assert.assertNotNull(accountHeaderAfter.tokopediaPlusDataModel.tokopediaPlusError)
         Assert.assertTrue(accountHeaderAfter.tokopediaPlusDataModel.tokopediaPlusError?.message == error.message)
+    }
+
+    @Test
+    fun `given thrown exception when refresh shop data then isGetShopError should be true`() {
+        val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
+
+        val profileSeller = ProfileSellerDataModel(
+            shopName = "binatang",
+            hasShop = true,
+            shopId = "1234"
+        )
+
+        coEvery {
+            getProfileDataUseCase.executeOnBackground()
+        } returns AccountHeaderDataModel(
+            profileDataModel = ProfileDataModel(
+                userName = "Joko",
+                userImage = "Tingkir"
+            ),
+            profileMembershipDataModel = ProfileMembershipDataModel(
+                badge = "kucing"
+            ),
+            profileSellerDataModel = profileSeller
+        )
+
+        viewModel = createViewModel(
+            getProfileDataUseCase = getProfileDataUseCase
+        )
+
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
+        viewModel.getMainNavData(true)
+
+        every {
+            viewModel invoke "getTotalOrderCount" withArguments listOf(any<ShopData.NotificationPojo>())
+        } throws MessageErrorException()
+
+        viewModel.refreshUserShopData()
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
+        val accountHeaderViewModel = visitableList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
+        Assert.assertTrue(visitableList.isNotEmpty())
+        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertTrue(accountHeaderViewModel.profileSellerDataModel.shopId == profileSeller.shopId)
+        Assert.assertTrue(accountHeaderViewModel.profileSellerDataModel.shopName == profileSeller.shopName)
+        Assert.assertTrue(accountHeaderViewModel.profileSellerDataModel.isGetShopError)
+    }
+
+    @Test
+    fun `given failed when refresh shop data then isGetShopError should be true`() {
+        val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
+        val shopInfoRefreshData = mockk<GetShopInfoUseCase>()
+
+        val profileSeller = ProfileSellerDataModel(
+            shopName = "binatang",
+            hasShop = true,
+            shopId = "1234"
+        )
+
+        coEvery {
+            getProfileDataUseCase.executeOnBackground()
+        } returns AccountHeaderDataModel(
+            profileDataModel = ProfileDataModel(
+                userName = "Joko",
+                userImage = "Tingkir"
+            ),
+            profileMembershipDataModel = ProfileMembershipDataModel(
+                badge = "kucing"
+            ),
+            profileSellerDataModel = profileSeller
+        )
+
+        coEvery {
+            shopInfoRefreshData.executeOnBackground()
+        } returns Fail(MessageErrorException())
+        viewModel = createViewModel(
+            getProfileDataUseCase = getProfileDataUseCase,
+            getShopInfoUseCase = shopInfoRefreshData
+        )
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
+        viewModel.getMainNavData(true)
+        viewModel.refreshUserShopData()
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
+        val accountHeaderViewModel = visitableList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
+        Assert.assertTrue(visitableList.isNotEmpty())
+        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertTrue(accountHeaderViewModel.profileSellerDataModel.shopId == profileSeller.shopId)
+        Assert.assertTrue(accountHeaderViewModel.profileSellerDataModel.shopName == profileSeller.shopName)
+        Assert.assertTrue(accountHeaderViewModel.profileSellerDataModel.isGetShopError)
+    }
+
+    @Test
+    fun `given thrown exception when get notification then do nothing`() {
+        val getNavNotification = mockk<GetNavNotification>()
+        coEvery { getNavNotification.executeOnBackground() } throws MessageErrorException()
+        viewModel = createViewModel(getNavNotification = getNavNotification)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList
+        Assert.assertTrue((visitableList?.find { it is HomeNavVisitable && it.id() == ClientMenuGenerator.ID_COMPLAIN } as? HomeNavMenuDataModel)?.notifCount == "")
+        Assert.assertTrue((visitableList?.find { it is HomeNavVisitable && it.id() == ClientMenuGenerator.ID_TOKOPEDIA_CARE } as? HomeNavMenuDataModel)?.notifCount == "")
+    }
+
+    @Test
+    fun `given location admin role changed when getting admin data then do refreshUserSessionShopData using respective shopid`() {
+        val isLocationAdmin: Boolean = true
+        val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
+        val shopInfoRefreshData = mockk<GetShopInfoUseCase>()
+        val userSession = mockk<UserSessionInterface>(relaxed = true)
+        val expectedAdminRoleText = "Joko Tingkir"
+        val adminDataResponse =
+            AdminDataResponse(
+                data = AdminData(
+                    adminTypeText = expectedAdminRoleText,
+                    detail = AdminDetailInformation(
+                        roleType = AdminRoleType(
+                            isLocationAdmin = isLocationAdmin
+                        )
+                    ),
+                    status = "1"
+                )
+            )
+        val shopDataResponse = com.tokopedia.sessioncommon.data.profile.ShopData(shopId = "1")
+        val accountInfoPair = Pair(adminDataResponse, shopDataResponse)
+        val refreshShopBasicDataUseCase = mockk<RefreshShopBasicDataUseCase>()
+        val gqlRepository = mockk<GraphqlRepository>()
+        val accountAdminInfoUseCase = spyk(AccountAdminInfoUseCase(refreshShopBasicDataUseCase, gqlRepository))
+
+        coEvery {
+            accountAdminInfoUseCase.executeOnBackground()
+        } returns accountInfoPair
+
+        coEvery {
+            shopInfoRefreshData.executeOnBackground()
+        } returns Success(
+            ShopData(
+                ShopData.ShopInfoPojo(
+                    ShopData.ShopInfoPojo.Info(
+                        shopName = "Shop test",
+                        shopId = "123"
+                    )
+                ),
+                ShopData.NotificationPojo()
+            )
+        )
+
+        viewModel = createViewModel(
+            getProfileDataUseCase = getProfileDataUseCase,
+            getShopInfoUseCase = shopInfoRefreshData,
+            accountAdminInfoUseCase = accountAdminInfoUseCase,
+            userSession = userSession
+        )
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
+        viewModel.getMainNavData(true)
+        viewModel.refreshUserShopData()
+
+        coVerify { userSession.refreshUserSessionShopData(shopDataResponse) }
     }
 }

@@ -1,31 +1,37 @@
 package com.tokopedia.chatbot.domain.usecase
 
-import android.content.res.Resources
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import rx.Subscriber
+import com.tokopedia.chatbot.domain.gqlqueries.GetTickerDataQuery
+import com.tokopedia.chatbot.domain.gqlqueries.queries.GET_TICKER_DATA
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
 
-class GetTickerDataUseCase @Inject constructor(val resources: Resources,
-                                               private val graphqlUseCase: GraphqlUseCase) {
+@GqlQuery("chipGetActiveTickerV4", GET_TICKER_DATA)
+class GetTickerDataUseCase @Inject constructor(
+    graphqlRepository: GraphqlRepository
+) : GraphqlUseCase<TickerDataResponse>(graphqlRepository) {
 
-    fun execute(subscriber: Subscriber<GraphqlResponse>) {
-        val query = GraphqlHelper.loadRawString(resources, R.raw.query_chip_get_active_ticker)
-        val graphqlRequest = GraphqlRequest(query,
-                TickerDataResponse::class.java, false)
+    fun getTickerData(
+        onSuccess: (TickerDataResponse) -> Unit,
+        onError: kotlin.reflect.KFunction2<Throwable, String, Unit>,
+        messageId: String
+    ) {
+        try {
+            this.setTypeClass(TickerDataResponse::class.java)
+            this.setGraphqlQuery(GetTickerDataQuery())
 
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.execute(subscriber)
-    }
-
-
-    fun unsubscribe() {
-        graphqlUseCase.unsubscribe()
+            this.execute(
+                { result ->
+                    onSuccess(result)
+                }, { error ->
+                    onError(error, messageId)
+                }
+            )
+        } catch (throwable: Throwable) {
+            onError(throwable, messageId)
+        }
     }
 
 }

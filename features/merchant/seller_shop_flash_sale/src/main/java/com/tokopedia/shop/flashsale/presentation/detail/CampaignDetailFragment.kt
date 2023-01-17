@@ -262,7 +262,9 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         viewModel.cancelCampaignActionResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is CancelCampaignActionResult.ActionAllowed -> showCancelCampaignDialog(result.campaign)
-                is CancelCampaignActionResult.RegisteredEventCampaign -> showRegisteredEventCampaignCancelErrorMessage(result.campaign)
+                is CancelCampaignActionResult.RegisteredEventCampaign -> showRegisteredEventCampaignCancelErrorMessage(
+                    result.campaign
+                )
             }
         }
     }
@@ -371,6 +373,7 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         val campaign = data.campaign
         handleCampaignToolbar(campaign)
         handleCampaignInformation(campaign)
+        handlePackageInfo(campaign)
         handleCampaignPerformanceData(data)
         handleCampaignStatusIndicator(campaign)
         handleEventParticipation(campaign)
@@ -390,6 +393,15 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         binding.tgCampaignStartDate.text =
             campaign.startDate.formatTo(DateConstant.DATE_TIME_WITH_DAY)
         binding.tgCampaignEndDate.text = campaign.endDate.formatTo(DateConstant.DATE_TIME_WITH_DAY)
+    }
+
+    private fun handlePackageInfo(campaign: CampaignUiModel) {
+        val binding = binding ?: return
+
+        binding.tgPackageInfo.text =
+            getString(R.string.package_info_placeholder, campaign.packageInfo.packageName)
+        binding.tgPackageInfo.isVisible = campaign.packageInfo.packageName.isNotEmpty()
+        binding.tgPackageInfoLabel.isVisible = campaign.packageInfo.packageName.isNotEmpty()
     }
 
     private fun handleCampaignPerformanceData(data: CampaignDetailMeta) {

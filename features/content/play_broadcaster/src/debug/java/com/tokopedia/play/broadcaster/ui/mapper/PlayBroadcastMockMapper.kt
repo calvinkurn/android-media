@@ -1,12 +1,11 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
-import android.graphics.Typeface
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.StyleSpan
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
-import com.tokopedia.play.broadcaster.data.model.ProductData
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetSellerLeaderboardSlotResponse
@@ -17,8 +16,6 @@ import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessag
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
-import com.tokopedia.play.broadcaster.type.PriceUnknown
-import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.game.GameParticipantUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
@@ -27,13 +24,8 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.view.state.Selectable
-import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.*
-import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
-import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.util.*
 import kotlin.random.Random
 
@@ -42,87 +34,15 @@ import kotlin.random.Random
  */
 class PlayBroadcastMockMapper : PlayBroadcastMapper {
 
-    @Suppress("MagicNumber")
-    override fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel> {
-        return List(6) {
-            EtalaseContentUiModel(
-                    id = (it + 1L).toString(),
-                    name = "Etalase ${it + 1}",
-                    productMap = mutableMapOf(),
-                    totalProduct = (it + 1) * 100,
-                    stillHasProduct = false
-            )
-        }
-    }
-
-    @Suppress("MagicNumber")
-    override fun mapProductList(
-        productsResponse: GetProductsByEtalaseResponse.GetProductListData,
-        isSelectedHandler: (String) -> Boolean,
-        isSelectableHandler: (Boolean) -> SelectableState
-    ): List<ProductContentUiModel> {
-        return List(6) {
-            ProductContentUiModel(
-                    id = (12345L + it).toString(),
-                    name = "Product ${it + 1}",
-                    imageUrl = when (it) {
-                        1 -> "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,b_rgb:f5f5f5/oyhemtbkghuegy9gpo0i/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                        2 -> "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,b_rgb:f5f5f5/gueo3qthwrv8y5laemzs/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                        3 -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/rofxpoxehp6wznvzb1jk/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                        else -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/udglgfg9ozu3erd3fubg/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                    },
-                    originalImageUrl = when (it) {
-                        1 -> "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,b_rgb:f5f5f5/oyhemtbkghuegy9gpo0i/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                        2 -> "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,b_rgb:f5f5f5/gueo3qthwrv8y5laemzs/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                        3 -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/rofxpoxehp6wznvzb1jk/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                        else -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/udglgfg9ozu3erd3fubg/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                    },
-                    isSelectedHandler = { false },
-                    stock = StockAvailable((it % 2) * 10),
-                    isSelectable = { Selectable },
-                    price = PriceUnknown
-            )
-        }
-    }
-
-    @Suppress("MagicNumber")
-    override fun mapSearchSuggestionList(keyword: String, productsResponse: GetProductsByEtalaseResponse.GetProductListData): List<SearchSuggestionUiModel> {
-        return List(keyword.length) {
-            val suggestionText = " ${keyword.substring(0, it + 1)}"
-            val fullText = "$keyword$suggestionText"
-            SearchSuggestionUiModel(
-                    queriedText = keyword,
-                    suggestedId = "1",
-                    suggestedText = fullText,
-                    spannedSuggestion = SpannableStringBuilder(fullText).apply {
-                        setSpan(StyleSpan(Typeface.BOLD), fullText.indexOf(suggestionText), fullText.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-                    }
-            )
-        }
-    }
-
-    @Suppress("MagicNumber")
-    override fun mapLiveFollowers(response: GetLiveFollowersResponse): FollowerDataUiModel {
-        return FollowerDataUiModel(
-                List(3) {
-                    FollowerUiModel.Unknown(when (it) {
-                        0 -> com.tokopedia.unifyprinciples.R.color.Unify_Y500
-                        1 -> com.tokopedia.unifyprinciples.R.color.Unify_B600
-                        else -> com.tokopedia.unifyprinciples.R.color.Unify_Y300
-                    })
-                },
-                3
-        )
-    }
-
     override fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia): LiveStreamInfoUiModel {
         return LiveStreamInfoUiModel(
                 ingestUrl = LOCAL_RTMP_URL,
         )
     }
 
-    override fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel> {
-        return listOf(
+    override fun mapToLiveTrafficUiMetrics(authorType: String, metrics: LiveStats): List<TrafficMetricUiModel> {
+        return if (authorType == TYPE_SHOP) {
+            listOf(
                 TrafficMetricUiModel(TrafficMetricType.GameParticipants, "2000"),
                 TrafficMetricUiModel(TrafficMetricType.TotalViews, "2328"),
                 TrafficMetricUiModel(TrafficMetricType.VideoLikes, "1800"),
@@ -130,7 +50,17 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 TrafficMetricUiModel(TrafficMetricType.ProductVisit, "1042"),
                 TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, "320"),
                 TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, "200")
-        )
+            )
+        } else {
+            listOf(
+                TrafficMetricUiModel(TrafficMetricType.GameParticipants, "2000"),
+                TrafficMetricUiModel(TrafficMetricType.TotalViews, "2328"),
+                TrafficMetricUiModel(TrafficMetricType.VideoLikes, "1800"),
+                TrafficMetricUiModel(TrafficMetricType.ProductVisit, "1042"),
+                TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, "320"),
+                TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, "200")
+            )
+        }
     }
 
     override fun mapTotalView(totalView: TotalView): TotalViewUiModel {
@@ -151,10 +81,6 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                     interval = 3000
             )
         }
-    }
-
-    override fun mapProductTag(productTag: ProductTagging): List<ProductData> {
-        return emptyList()
     }
 
     @Suppress("MagicNumber")
@@ -196,17 +122,16 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 channelId = "1234",
                 title = "Klarifikasi Bisa Tebak Siapa?",
                 description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
-                coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
+                coverUrl = "https://images.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
                 ingestUrl = LOCAL_RTMP_URL,
                 status = ChannelStatus.Draft
         )
     }
 
-    override fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>): List<ProductData> {
-        return emptyList()
-    }
-
-    override fun mapChannelSchedule(timestamp: GetChannelResponse.Timestamp): BroadcastScheduleUiModel {
+    override fun mapChannelSchedule(
+        timestamp: GetChannelResponse.Timestamp,
+        status: GetChannelResponse.ChannelBasicStatus
+    ): BroadcastScheduleUiModel {
         return BroadcastScheduleUiModel.NoSchedule
     }
 
@@ -219,15 +144,15 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 id = "1234",
                 title = "Tokopedia PLAY seru!",
                 description = "Nonton siaran seru di Tokopedia PLAY!",
-                imageUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
+                imageUrl = "https://images.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
                 redirectUrl = "https://beta.tokopedia.com/play/channel/10140",
                 textContent =  "\"testing\"\nYuk, nonton siaran dari MRG Audio di Tokopedia PLAY! Bakal seru banget lho!\n${'$'}{url}",
                 shortenUrl = true
         )
     }
 
-    override fun mapChannelSummary(title: String, coverUrl: String, date: String, duration: String, isEligiblePostVideo: Boolean): ChannelSummaryUiModel {
-        return ChannelSummaryUiModel(title, coverUrl, date, duration, isEligiblePostVideo)
+    override fun mapChannelSummary(title: String, coverUrl: String, date: String, duration: String, isEligiblePostVideo: Boolean, author: ContentAccountUiModel): ChannelSummaryUiModel {
+        return ChannelSummaryUiModel(title, coverUrl, date, duration, isEligiblePostVideo, author)
     }
 
     override fun mapIncomingChat(chat: Chat): PlayChatUiModel {
@@ -258,9 +183,9 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     )
 
     @Suppress("MagicNumber")
-    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse) = InteractiveConfigUiModel(
+    override fun mapInteractiveConfig(authorType: String, response: GetInteractiveConfigResponse) = InteractiveConfigUiModel(
         giveawayConfig = GiveawayConfigUiModel(
-            isActive = true,
+            isActive = authorType == TYPE_SHOP,
             nameGuidelineHeader = "Mau kasih hadiah apa?",
             nameGuidelineDetail = "Contoh: Giveaway Sepatu, Tas Rp50 rb, Diskon 90%, Kupon Ongkir, HP Gratis, dll.",
             timeGuidelineHeader = "Kapan game-nya mulai?",
@@ -270,14 +195,13 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         ),
         quizConfig = QuizConfigUiModel(
             isActive = true,
+            isGiftActive = authorType == TYPE_SHOP,
             maxTitleLength = 30,
             maxChoicesCount = 3,
             minChoicesCount = 2,
-            maxRewardLength = 30,
             maxChoiceLength = 35,
             availableStartTimeInMs = listOf(3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
             eligibleStartTimeInMs = listOf(3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
-            showPrizeCoachMark = true,
         ),
     )
 
@@ -333,32 +257,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         }
     }
 
-    override fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel): PlayLeaderboardUiModel {
-        return PlayLeaderboardUiModel(
-            title = dataUiModel.question,
-            reward = dataUiModel.reward,
-            choices = dataUiModel.choices.mapIndexed { index, choice ->
-                QuizChoicesUiModel(
-                    index = index,
-                    id = choice.id,
-                    text = choice.text,
-                    type = PlayQuizOptionState.Participant(
-                        alphabet = generateAlphabetChoices(index),
-                        isCorrect = choice.isCorrectAnswer,
-                        count = choice.participantCount.toString(),
-                        showArrow = true
-                    ),
-                    interactiveId = dataUiModel.interactiveId,
-                    interactiveTitle = dataUiModel.question,
-                )
-            },
-            endsIn = dataUiModel.countDownEnd,
-            otherParticipant = 0,
-            otherParticipantText = "",
-            winners = emptyList(),
-            leaderBoardType = LeadeboardType.Quiz,
-            id = dataUiModel.interactiveId,
-        )
+    override fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel, endTime: Calendar?): List<LeaderboardGameUiModel> {
+        return emptyList()
     }
 
     override fun mapChoiceDetail(
@@ -406,51 +306,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     override fun mapLeaderBoardWithSlot(
         response: GetSellerLeaderboardSlotResponse,
         allowChat: Boolean
-    ): List<PlayLeaderboardUiModel> {
-        return response.data.slots.map { slot ->
-            PlayLeaderboardUiModel(
-                title = slot.getSlotTitle(),
-                winners = slot.winner.mapIndexed { index, winner ->
-                    PlayWinnerUiModel(
-                        rank = index + 1,
-                        id = winner.userID,
-                        name = winner.userName,
-                        imageUrl = winner.imageUrl,
-                        allowChat = { allowChat },
-                        topChatMessage =
-                        if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway)
-                            response.data.config.topchatMessage
-                            .replace(FORMAT_FIRST_NAME, winner.userName)
-                            .replace(FORMAT_TITLE, slot.getSlotTitle())
-                        else
-                            response.data.config.topchatMessageQuiz
-                                .replace(FORMAT_FIRST_NAME, winner.userName)
-                                .replace(FORMAT_TITLE, slot.getSlotTitle())
-                        ,
-                    )
-                },
-                choices = slot.choices.mapIndexed { index, choice ->
-                    QuizChoicesUiModel(
-                        index = index,
-                        id = choice.id,
-                        text = choice.text,
-                        type = PlayQuizOptionState.Participant(
-                            alphabet = generateAlphabetChoices(index),
-                            isCorrect = choice.isCorrectAnswer,
-                            count = choice.participantCount.toString(),
-                            showArrow = true
-                        ),
-                        interactiveId = slot.interactiveId,
-                        interactiveTitle = slot.getSlotTitle(),
-                    )
-                },
-                otherParticipantText = slot.otherParticipantCountText,
-                otherParticipant = slot.otherParticipantCount.toLong(),
-                reward = slot.reward,
-                leaderBoardType = getLeaderboardType(slot.type),
-                id = slot.interactiveId
-            )
-        }
+    ): List<LeaderboardGameUiModel> {
+        return emptyList()
     }
 
     /***
@@ -490,6 +347,10 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         videoBufferTimestamp = 0,
         audioBufferTimestamp = 0,
     )
+
+    override fun mapAuthorList(response: GetCheckWhitelistResponse): List<ContentAccountUiModel> {
+        return emptyList()
+    }
 
     companion object {
         const val LOCAL_RTMP_URL: String = "rtmp://192.168.0.110:1935/stream/"

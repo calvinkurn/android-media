@@ -33,7 +33,7 @@ import com.tokopedia.review.feature.createreputation.model.CreateReviewTemplate
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.model.ProductrevGetPostSubmitBottomSheetResponse
 import com.tokopedia.review.feature.createreputation.model.ProductrevSubmitReviewResponseWrapper
-import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.old.CreateReviewBottomSheet
+import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewBottomSheet
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewMediaUploadResult
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewProgressBarState
@@ -43,6 +43,7 @@ import com.tokopedia.review.feature.createreputation.presentation.uimodel.PostSu
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewBadRatingCategoryUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewTemplateItemUiModel
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewAnonymousInfoBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewAnonymousUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewBadRatingCategoriesUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewBadRatingCategoryUiState
@@ -149,9 +150,12 @@ class CreateReviewViewModel @Inject constructor(
         private const val SAVED_STATE_POST_SUBMIT_REVIEW_RESULT = "savedStatePostSubmitReviewResult"
         private const val SAVED_STATE_SHOULD_SHOW_INCENTIVE_BOTTOM_SHEET = "savedStateShowIncentiveBottomSheet"
         private const val SAVED_STATE_SHOULD_SHOW_TEXT_AREA_BOTTOM_SHEET = "savedStateShowTextAreaBottomSheet"
+        private const val SAVED_STATE_SHOULD_SHOW_ANONYMOUS_INFO_BOTTOM_SHEET = "savedStateShowAnonymousInfoBottomSheet"
         private const val CACHE_KEY_IS_REVIEW_TOPICS_PEEK_ANIMATION_ALREADY_RUN = "cacheKeyIsReviewTopicsPeekAnimationAlreadyRun"
 
         private const val REVIEW_INSPIRATION_ENABLED = "experiment_variant"
+
+        private const val MEDIA_UPLOAD_ERROR_MESSAGE = "Error when uploading %s. Cause: %s"
     }
 
     // region state that need to be saved and restored
@@ -177,6 +181,7 @@ class CreateReviewViewModel @Inject constructor(
     private val postSubmitReviewResult = MutableStateFlow<PostSubmitReviewRequestState>(RequestState.Idle)
     private val shouldShowIncentiveBottomSheet = MutableStateFlow(false)
     private val shouldShowTextAreaBottomSheet = MutableStateFlow(false)
+    private val shouldShowAnonymousInfoBottomSheet = MutableStateFlow(false)
     // endregion state that need to be saved and restored
 
     // region state that must not be saved nor restored
@@ -335,6 +340,12 @@ class CreateReviewViewModel @Inject constructor(
     val postSubmitBottomSheetUiState = postSubmitReviewResult.mapLatest(::mapPostSubmitUiState)
         .toStateFlow(PostSubmitUiState.Hidden)
     // endregion post submit bottom sheet state
+
+    // region anonymous info bottom sheet state
+    val anonymousInfoBottomSheetUiState = combine(
+        canRenderForm, shouldShowAnonymousInfoBottomSheet, ::mapAnonymousInfoBottomSheetUiState
+    ).toStateFlow(CreateReviewAnonymousInfoBottomSheetUiState.Hidden)
+    // endregion anonymous info bottom sheet state
 
     val toasterQueue: Flow<CreateReviewToasterUiModel>
         get() = _toasterQueue
@@ -685,17 +696,19 @@ class CreateReviewViewModel @Inject constructor(
                     )
                 }
             } else if (mediaItems.any { it.state == CreateReviewMediaUiModel.State.UPLOAD_FAILED }) {
+                val concatenatedErrorMessage = mediaItems.filter {
+                    it.state == CreateReviewMediaUiModel.State.UPLOAD_FAILED
+                }.joinToString("|") {
+                    String.format(MEDIA_UPLOAD_ERROR_MESSAGE, it.uri, it.message)
+                }
+                val errorCode = ErrorHandler.getErrorMessagePair(
+                    context = null,
+                    e = MessageErrorException(concatenatedErrorMessage),
+                    builder = ErrorHandler.Builder()
+                ).second
                 if (currentMediaPickerUiState is CreateReviewMediaPickerUiState.FailedUpload) {
                     currentMediaPickerUiState.copy(mediaItems = mediaItems)
                 } else {
-                    val concatenatedErrorMessage = mediaItems.filter {
-                        it.state == CreateReviewMediaUiModel.State.UPLOAD_FAILED
-                    }.joinToString("|") { it.message }
-                    val errorCode = ErrorHandler.getErrorMessagePair(
-                        context = null,
-                        e = MessageErrorException(concatenatedErrorMessage),
-                        builder = ErrorHandler.Builder()
-                    ).second
                     if (currentMediaPickerUiState.failedOccurrenceCount.isMoreThanZero()) {
                         enqueueErrorUploadMediaToaster(errorCode)
                     }
@@ -847,6 +860,15 @@ class CreateReviewViewModel @Inject constructor(
         } else {
             PostSubmitUiState.Hidden
         }
+    }
+
+    private fun mapAnonymousInfoBottomSheetUiState(
+        canRenderForm: Boolean,
+        shouldShowAnonymousInfoBottomSheet: Boolean
+    ): CreateReviewAnonymousInfoBottomSheetUiState {
+        return if (canRenderForm && shouldShowAnonymousInfoBottomSheet) {
+            CreateReviewAnonymousInfoBottomSheetUiState.Showing
+        } else CreateReviewAnonymousInfoBottomSheetUiState.Hidden
     }
 
     private suspend fun mapPostSubmitReviewRequestParams(
@@ -1412,6 +1434,14 @@ class CreateReviewViewModel @Inject constructor(
         shouldShowTextAreaBottomSheet.value = false
     }
 
+    fun showAnonymousInfoBottomSheet() {
+        shouldShowAnonymousInfoBottomSheet.value = true
+    }
+
+    fun dismissAnonymousInfoBottomSheet() {
+        shouldShowAnonymousInfoBottomSheet.value = false
+    }
+
     fun setBottomSheetBottomInset(inset: Int) {
         bottomSheetBottomInset.value = inset
     }
@@ -1550,6 +1580,7 @@ class CreateReviewViewModel @Inject constructor(
             putString(SAVED_STATE_UTM_SOURCE, utmSource.value)
             putBoolean(SAVED_STATE_SHOULD_SHOW_INCENTIVE_BOTTOM_SHEET, shouldShowIncentiveBottomSheet.value)
             putBoolean(SAVED_STATE_SHOULD_SHOW_TEXT_AREA_BOTTOM_SHEET, shouldShowTextAreaBottomSheet.value)
+            putBoolean(SAVED_STATE_SHOULD_SHOW_ANONYMOUS_INFO_BOTTOM_SHEET, shouldShowAnonymousInfoBottomSheet.value)
             putBoolean(SAVED_STATE_SENDING_REVIEW, sendingReview.value)
             putSerializable(SAVED_STATE_REVIEW_FORM, reviewForm.value)
             putSerializable(SAVED_STATE_INCENTIVE_OVO, incentiveOvo.value)
@@ -1578,6 +1609,7 @@ class CreateReviewViewModel @Inject constructor(
             utmSource.value = getSavedState(SAVED_STATE_UTM_SOURCE, utmSource.value)!!
             shouldShowIncentiveBottomSheet.value = getSavedState(SAVED_STATE_SHOULD_SHOW_INCENTIVE_BOTTOM_SHEET, shouldShowIncentiveBottomSheet.value)!!
             shouldShowTextAreaBottomSheet.value = getSavedState(SAVED_STATE_SHOULD_SHOW_TEXT_AREA_BOTTOM_SHEET, shouldShowTextAreaBottomSheet.value)!!
+            shouldShowAnonymousInfoBottomSheet.value = getSavedState(SAVED_STATE_SHOULD_SHOW_ANONYMOUS_INFO_BOTTOM_SHEET, shouldShowAnonymousInfoBottomSheet.value)!!
             sendingReview.value = getSavedState(SAVED_STATE_SENDING_REVIEW, sendingReview.value)!!
             reviewText.value = getSavedState(SAVED_STATE_REVIEW_TEXT, reviewText.value)!!.copy(source = CreateReviewTextAreaTextUiModel.Source.SAVED_INSTANCE_STATE)
             shopId.value = getSavedState(SAVED_STATE_SHOP_ID, shopId.value)!!

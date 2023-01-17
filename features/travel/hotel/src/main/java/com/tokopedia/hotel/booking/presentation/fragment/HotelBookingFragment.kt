@@ -669,11 +669,17 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     private fun validateData(): Boolean {
         var isValid = true
-        if ((binding?.tvRoomRequestInput?.getEditableValue().toString().length) > roomRequestMaxCharCount) isValid = false
-        if (binding?.radioButtonContactGuest?.isChecked == true && binding?.tvGuestInput?.getEditableValue()?.isEmpty() == true) {
+        val guestInputName = binding?.tvGuestInput?.getEditableValue() ?: ""
+        val roomRequestInput = binding?.tvRoomRequestInput?.getEditableValue()
+
+        if ((roomRequestInput.toString().length) > roomRequestMaxCharCount) isValid = false
+
+        if (binding?.radioButtonContactGuest?.isChecked == true && guestInputName.isEmpty()) {
             toggleGuestFormError(true)
             isValid = false
-        } else if (binding?.tvGuestInput?.getEditableValue()?.isNotEmpty() == true && !validateNameIsAlphabetOnly(binding?.tvGuestInput?.getEditableValue() ?: "")) {
+        } else if (binding?.radioButtonContactSelf?.isChecked == true) {
+            isValid = true
+        } else if (guestInputName.isNotEmpty() && !validateNameIsAlphabetOnly(guestInputName)) {
             toggleGuestFormError(true)
             isValid = false
         }

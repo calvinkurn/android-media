@@ -8,5 +8,6 @@ data class OrderCart(
         var products: MutableList<OrderProduct> = ArrayList(),
         var shop: OrderShop = OrderShop(),
         var kero: OrderKero = OrderKero(),
-        var addOnWordingData: AddOnWordingData = AddOnWordingData()
+        var addOnWordingData: AddOnWordingData = AddOnWordingData(),
+        var cartData: String = "",
 )

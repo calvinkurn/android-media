@@ -26,7 +26,7 @@ class PlayLogImpl @Inject constructor(private val logCollector: PlayLogCollector
             }
         }
 
-    override fun logTimeToFirstByte(timeToFirstByte: Int) {
+    override fun logTimeToFirstByte(timeToFirstByte: Long) {
         logCollector.collect(
             Pair("timeToFirstByte", timeToFirstByte)
         )

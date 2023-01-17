@@ -28,7 +28,7 @@ class ContentDetailPostViewHolder(
         const val IMAGE_ITEM_IMPRESSED = "image_item_impressed"
         const val VOD_ITEM_IMPRESSED = "vod_item_impressed"
         private const val IMAGE_ASGC_CTA_IMPRESSED = "image_asgc_cta_impressed"
-
+        const val PAYLOAD_REMINDER_BTN_STATUS_UPDATED = "reminder_btn_status_updated"
 
         fun create(
             parent: ViewGroup,
@@ -61,6 +61,8 @@ class ContentDetailPostViewHolder(
             }
         } else if (payloads.containsKey(IMAGE_ASGC_CTA_IMPRESSED)) {
             cdpView.onCTAVisible(feedXCard)
+        } else if (payloads.containsKey(PAYLOAD_REMINDER_BTN_STATUS_UPDATED)) {
+            cdpView.onFSTReminderStatusUpdated()
         } else if (payloads.containsKey(IMAGE_POST_LIKED_UNLIKED)) {
             cdpView.bindLike(feedXCard)
         } else if (payloads.containsKey(IMAGE_POST_COMMENT_ADD_DELETE)) {
@@ -75,7 +77,7 @@ class ContentDetailPostViewHolder(
         fun onLikeClicked(feedXCard: FeedXCard, postPosition: Int, isDoubleTap: Boolean = false)
         fun onCommentClicked(feedXCard: FeedXCard, postPosition: Int, isSeeMoreComment: Boolean = false)
         fun onSharePostClicked(feedXCard: FeedXCard, postPosition: Int)
-        fun onFollowUnfollowClicked(feedXCard: FeedXCard, postPosition: Int)
+        fun onFollowUnfollowClicked(feedXCard: FeedXCard, postPosition: Int, isFollowedFromRSRestrictionBottomSheet: Boolean = false)
         fun onClickOnThreeDots(feedXCard: FeedXCard, postPosition: Int)
         fun onFullScreenButtonClicked(
             feedXCard: FeedXCard,
@@ -118,6 +120,10 @@ class ContentDetailPostViewHolder(
         fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long)
         fun onSgcVideoTapped(feedXCard: FeedXCard)
         fun sendWatchVODTracker(feedXCard: FeedXCard, duration: Long)
+        fun onIngatkanSayaBtnImpressed(card: FeedXCard, positionInFeed: Int)
+        fun onIngatkanSayaBtnClicked(card: FeedXCard, positionInFeed: Int)
+        fun changeUpcomingWidgetToOngoing(card: FeedXCard, positionInFeed: Int)
+        fun removeOngoingCampaignSaleWidget(card: FeedXCard, positionInFeed: Int)
     }
 
 }

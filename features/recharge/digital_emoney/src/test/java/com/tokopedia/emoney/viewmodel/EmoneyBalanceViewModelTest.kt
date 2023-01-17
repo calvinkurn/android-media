@@ -77,7 +77,7 @@ class EmoneyBalanceViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } returnsMany listOf(gqlResponseGetInquirySuccess, gqlResponseWriteBalanceSuccess)
 
         //when
-        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0,0, "")
+        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
 
         //then
         assertNotNull(emoneyBalanceViewModel.issuerId.value)
@@ -107,7 +107,7 @@ class EmoneyBalanceViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } returnsMany listOf(gqlResponseGetInquirySuccess, gqlResponseError)
 
         //when
-        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0,0, "")
+        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
 
         //then
         assertNotNull(emoneyBalanceViewModel.issuerId.value)
@@ -131,7 +131,7 @@ class EmoneyBalanceViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseWriteBalanceSuccess
 
         //when
-        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0,0, "")
+        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
 
         //then
         assertNotNull(emoneyBalanceViewModel.issuerId.value)
@@ -156,7 +156,7 @@ class EmoneyBalanceViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseError
 
         //when
-        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0,0, "")
+        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
 
         //then
         assertNotNull(emoneyBalanceViewModel.issuerId.value)
@@ -180,7 +180,7 @@ class EmoneyBalanceViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseGetInquirySuccess
 
         //when
-        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0,0, "")
+        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
 
         //then
         assertNotNull(emoneyBalanceViewModel.issuerId.value)
@@ -197,7 +197,7 @@ class EmoneyBalanceViewModelTest {
         every { isoDep.transceive(any()) } answers { throw IOException() }
 
         //when
-        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0,0, "")
+        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
 
         //then
         assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
@@ -211,7 +211,7 @@ class EmoneyBalanceViewModelTest {
         every { NFCUtils.toHex(byteNfc) } returns "6700"
 
         //when
-        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0,0, "")
+        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
 
         //then
         assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)

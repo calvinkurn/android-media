@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_NN0"
     android:padding="@dimen/spacing_lvl4"
     tools:viewBindingIgnore="true">
 
@@ -28,7 +28,7 @@
             android:id="@+id/txt_date"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:textColor="@color/light_disabled"
+            android:textColor="@color/Unify_NN950"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_title"
             app:typographyType="small"

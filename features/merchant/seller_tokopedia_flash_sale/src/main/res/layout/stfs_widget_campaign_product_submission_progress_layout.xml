@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/container_header"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/Unify_NN900"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader"
+            android:layout_width="22dp"
+            android:layout_height="22dp" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N0"
+            app:typographyType="display_3"
+            tools:text="Sedang mengajukan produk di 2 campaign" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_chevron"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end"
+            app:icon_color_light_enable="@color/Unify_NN100"
+            app:icon_name="CHEVRON_DOWN" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/container_list_campaign_product_submission"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_Background"
+        android:padding="16dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_campaign_product_submission"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+</LinearLayout>

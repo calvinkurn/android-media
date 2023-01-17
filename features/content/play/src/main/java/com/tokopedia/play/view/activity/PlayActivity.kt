@@ -9,18 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.*
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.gms.cast.framework.CastContext
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.cast.PlayCastNotificationAction
-import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayInjector
-import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.util.PlayCastHelper
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.PlaySensorOrientationManager
@@ -53,6 +49,7 @@ import javax.inject.Inject
  *
  * Example: tokopedia://play/12345?source_type=SHOP&source_id=123
  */
+@Suppress("LateinitUsage")
 class PlayActivity : BaseActivity(),
         PlayNavigation,
         PlayPiPCoordinator,
@@ -72,6 +69,9 @@ class PlayActivity : BaseActivity(),
 
     @Inject
     lateinit var playPreference: PlayPreference
+
+    @Inject
+    lateinit var router: Router
 
     private lateinit var orientationManager: PlaySensorOrientationManager
 
@@ -213,7 +213,7 @@ class PlayActivity : BaseActivity(),
     }
 
     override fun onSwipeNextPage() {
-        playPreference.setOnboardingShown(viewModel.userId)
+        playPreference.setCoachMark(userId = viewModel.userId)
     }
 
     private fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -272,9 +272,14 @@ class PlayActivity : BaseActivity(),
                     ivLoading.hide()
                     fragmentUpcomingView.safeInit((it.state as PageResultState.Upcoming).channelId)
                 }
+                is PageResultState.Archived -> {
+                    pageMonitoring.invalidate()
+                    ivLoading.hide()
+                    fragmentErrorViewOnStateChanged(shouldShow = true)
+                }
             }
 
-            if(it.state !is PageResultState.Upcoming) {
+            if(it.state is PageResultState.Success) {
                 fragmentUpcomingView.safeRelease()
                 swipeContainerView.setChannelIds(it.currentValue)
             }
@@ -284,6 +289,7 @@ class PlayActivity : BaseActivity(),
     private fun observeFirstChannelEvent() {
         viewModel.observableFirstChannelEvent.observe(this, EventObserver {
             swipeContainerView.reset()
+            playPreference.setCoachMark(userId = viewModel.userId, isFirstChannel = true)
         })
     }
 
@@ -306,13 +312,14 @@ class PlayActivity : BaseActivity(),
                 gotoHome()
             } else {
                 fragmentUpcomingView.getActiveFragment()?.setResultBeforeFinish()
+                fragmentErrorView.activeFragment?.onBackPressed(startChannelId)
                 supportFinishAfterTransition()
             }
         }
     }
 
     private fun gotoHome() {
-        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+        val intent = router.getIntent(this, ApplinkConst.HOME)
         startActivity(intent)
         finish()
     }

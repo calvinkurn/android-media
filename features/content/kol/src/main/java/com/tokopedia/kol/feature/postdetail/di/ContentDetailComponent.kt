@@ -1,6 +1,7 @@
 package com.tokopedia.kol.feature.postdetail.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.feedcomponent.di.FeedComponentViewModelModule
 import com.tokopedia.kol.feature.postdetail.di.module.ContentDetailModule
 import com.tokopedia.kol.feature.postdetail.di.module.ContentDetailRepositoryModule
 import com.tokopedia.kol.feature.postdetail.di.module.ContentDetailViewModelModule
@@ -16,6 +17,7 @@ import dagger.Component
         ContentDetailModule::class,
         ContentDetailViewModelModule::class,
         ContentDetailRepositoryModule::class,
+        FeedComponentViewModelModule::class,
     ],
     dependencies = [BaseAppComponent::class]
 )

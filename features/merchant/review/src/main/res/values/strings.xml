@@ -125,7 +125,6 @@
     <string name="review_form_dismiss_form_dialog_title">Ulasanmu belum dikirim, lho</string>
     <string name="review_form_dismiss_form_dialog_body">Ulasanmu nggak akan tersimpan kalau kamu keluar dari halaman ini. Yakin tetap mau keluar?</string>
     <string name="review_form_dismiss_form_dialog_stay">Lanjutkan Ulasan</string>
-    <string name="review_form_templates_formatting">%s.&#160;</string>
     <string name="review_form_neutral_title">Apa yang bikin kamu kurang puas?</string>
     <string name="review_form_bad_title">Apa yang bikin kamu tidak puas?</string>
     <string name="review_form_good_helper">Yuk, ceritain kepuasanmu tentang kualitas barang &amp; pelayanan penjual.</string>
@@ -440,4 +439,9 @@
     <string name="image_review_content_description">Lampiran gambar</string>
 
     <string name="review_raw_string_format">%s</string>
+    <string name="create_review_anonymous_info_header">Privasi ulasan ini bisa diatur, lho!</string>
+    <string name="create_review_anonymous_info_description">Kalau kamu ingin sembunyikan nama, maka:</string>
+    <string name="bullet">•</string>
+    <string name="create_review_anonymous_info_description_point_one">Ulasan ini tidak akan ditampilkan di halaman Profil kamu.</string>
+    <string name="create_review_anonymous_info_description_point_two">Nama dan foto profil kamu tidak dapat dilihat di ulasan ini (saat ditampilkan di halaman produk dan halaman toko).</string>
 </resources>

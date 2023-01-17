@@ -49,7 +49,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
                 android:scaleType="centerCrop"
-                tools:src="@color/green_200" />
+                />
 
             <com.airbnb.lottie.LottieAnimationView
                 app:lottie_speed="1.5"
@@ -70,7 +70,6 @@
             android:alpha="0"
             tools:alpha="0.3"
             android:translationY="@dimen/gami_dp_75_n"
-            tools:background="@color/red_30"
             app:remoteFileName="ic_box_stage_glow.png" />
 
     </FrameLayout>
@@ -83,7 +82,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/gami_box_glow_top_margin"
         android:alpha="0"
-        app:srcCompat="@color/white"
+        app:srcCompat="@color/Unify_Static_White"
         tools:alpha="0" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -93,7 +92,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/gami_box_glow_top_margin"
         android:scaleType="fitCenter"
-        app:srcCompat="@color/white"
+        app:srcCompat="@color/Unify_Static_White"
         tools:alpha="0" />
 
 

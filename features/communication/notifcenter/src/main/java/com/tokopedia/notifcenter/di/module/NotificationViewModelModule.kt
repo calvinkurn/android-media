@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.notifcenter.di.scope.NotificationScope
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
+import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -21,5 +22,11 @@ import dagger.multibindings.IntoMap
     @NotificationScope
     @ViewModelKey(NotificationViewModel::class)
     internal abstract fun notificationViewModel(viewModel: NotificationViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @NotificationScope
+    @ViewModelKey(TopAdsHeadlineViewModel::class)
+    internal abstract fun provideTopAdsHeadlineViewModel(viewModel: TopAdsHeadlineViewModel): ViewModel
 
 }

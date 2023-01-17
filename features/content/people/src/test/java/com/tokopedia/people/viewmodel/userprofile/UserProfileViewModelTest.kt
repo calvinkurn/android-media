@@ -1,8 +1,8 @@
 package com.tokopedia.people.viewmodel.userprofile
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
-import com.tokopedia.people.domains.repository.UserProfileRepository
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
+import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
 import com.tokopedia.people.model.shoprecom.ShopRecomModelBuilder
 import com.tokopedia.people.model.userprofile.FollowInfoUiModelBuilder
@@ -19,6 +19,7 @@ import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
+import io.mockk.coJustRun
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
@@ -54,7 +55,8 @@ class UserProfileViewModelTest {
 
     private val mockOwnProfile = profileBuilder.buildProfile(userID = mockUserId)
     private val mockOtherProfile = profileBuilder.buildProfile(userID = mockOtherUserId)
-    private val mockShopRecom = shopRecomBuilder.buildModelIsShown()
+    private val mockOtherBlockedProfile = profileBuilder.buildProfile(userID = mockOtherUserId, isBlocking = true)
+    private val mockShopRecom = shopRecomBuilder.buildModelIsShown(nextCursor = "")
     private val mockEmptyShopRecom = shopRecomBuilder.buildEmptyModel()
 
     private val mockOwnFollow = followInfoBuilder.buildFollowInfo(userID = mockUserId, encryptedUserID = mockUserId, status = false)
@@ -62,6 +64,7 @@ class UserProfileViewModelTest {
     private val mockOtherNotFollow = followInfoBuilder.buildFollowInfo(userID = mockOtherUserId, encryptedUserID = mockOtherUserId, status = false)
 
     private val mockHasAcceptTnc = profileWhitelistBuilder.buildHasAcceptTnc()
+    private val mockHasNotAcceptTnc = profileWhitelistBuilder.buildHasNotAcceptTnc()
 
     @Before
     fun setUp() {
@@ -72,12 +75,11 @@ class UserProfileViewModelTest {
         coEvery { mockRepo.getProfile(mockOtherUsername) } returns mockOtherProfile
 
         coEvery { mockRepo.getFollowInfo(listOf(mockUserId)) } returns mockOwnFollow
-        coEvery { mockRepo.getShopRecom() } returns mockShopRecom
+        coEvery { mockRepo.getShopRecom("") } returns mockShopRecom
     }
 
     @Test
     fun `when non-login user load data successfully, it should emit data successfully with type NotLoggedIn`() {
-
         coEvery { mockUserSession.isLoggedIn } returns false
         coEvery { mockUserSession.userId } returns ""
 
@@ -97,13 +99,13 @@ class UserProfileViewModelTest {
                 profileType equalTo ProfileType.NotLoggedIn
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
                 shopRecom equalTo mockEmptyShopRecom
+                it.viewModel.profileUserEncryptedID equalTo mockOwnProfile.encryptedUserID
             }
         }
     }
 
     @Test
     fun `when user load own data, it should call and emit whitelist data`() {
-
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockUserSession.userId } returns mockUserId
         coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
@@ -129,8 +131,51 @@ class UserProfileViewModelTest {
     }
 
     @Test
-    fun `when user load others profile and hasnt follow, it should emit follow status unfollow`() {
+    fun `when user load own data, and need to onboarding`() {
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockUserSession.userId } returns mockUserId
+        coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
 
+        val robot = UserProfileViewModelRobot(
+            username = mockOwnUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+        )
+
+        robot.use {
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } andThen {
+                it.viewModel.needOnboarding equalTo false
+            }
+        }
+    }
+
+    @Test
+    fun `when user load own data, and no need to onboarding`() {
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockUserSession.userId } returns mockUserId
+        coEvery { mockRepo.getWhitelist() } returns mockHasNotAcceptTnc
+
+        val robot = UserProfileViewModelRobot(
+            username = mockOwnUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+        )
+
+        robot.use {
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } andThen {
+                it.viewModel.needOnboarding equalTo true
+            }
+        }
+    }
+
+    @Test
+    fun `when user load others profile and hasnt follow, it should emit follow status unfollow`() {
         coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherNotFollow
 
         val robot = UserProfileViewModelRobot(
@@ -149,13 +194,13 @@ class UserProfileViewModelTest {
                 profileType equalTo ProfileType.OtherUser
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
                 shopRecom equalTo mockEmptyShopRecom
+                it.viewModel.profileUserEncryptedID equalTo mockOtherProfile.encryptedUserID
             }
         }
     }
 
     @Test
     fun `when user load others profile and alr follow, it should emit status followed`() {
-
         coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherFollowed
 
         val robot = UserProfileViewModelRobot(
@@ -180,7 +225,6 @@ class UserProfileViewModelTest {
 
     @Test
     fun `when user load others profile and failed, it should emit empty profile and all related data`() {
-
         coEvery { mockRepo.getProfile(any()) } throws mockException
         coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherFollowed
 
@@ -206,7 +250,6 @@ class UserProfileViewModelTest {
 
     @Test
     fun `when user load follow status and but hasnt logged in, it should emit status not followed`() {
-
         coEvery { mockRepo.getProfile(any()) } returns mockOtherProfile
         coEvery { mockRepo.getFollowInfo(any()) } throws mockException
         coEvery { mockUserSession.isLoggedIn } returns false
@@ -227,6 +270,102 @@ class UserProfileViewModelTest {
                 profileType equalTo ProfileType.NotLoggedIn
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
                 shopRecom equalTo mockEmptyShopRecom
+            }
+        }
+    }
+
+    @Test
+    fun `when user block a creator and it is success, it should be blocked`() {
+        coEvery { mockRepo.getProfile(any()) } returns mockOtherProfile
+        coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherFollowed
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coJustRun { mockRepo.blockUser(any()) }
+
+        val robot = UserProfileViewModelRobot(
+            username = mockOtherUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+        )
+
+        robot.use {
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+                submitAction(UserProfileAction.BlockUser)
+            } andThen {
+                profileInfo.isBlocking equalTo true
+            }
+        }
+    }
+
+    @Test
+    fun `when user block a creator and it is failed, it should not be blocked`() {
+        coEvery { mockRepo.getProfile(any()) } returns mockOtherProfile
+        coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherFollowed
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.blockUser(any()) } throws mockException
+
+        val robot = UserProfileViewModelRobot(
+            username = mockOtherUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+        )
+
+        robot.use {
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+                submitAction(UserProfileAction.BlockUser)
+            } andThen {
+                profileInfo.isBlocking equalTo false
+            }
+        }
+    }
+
+    @Test
+    fun `when user unblock a creator and it is success, it should not be blocked`() {
+        coEvery { mockRepo.getProfile(any()) } returns mockOtherBlockedProfile
+        coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherFollowed
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coJustRun { mockRepo.unblockUser(any()) }
+
+        val robot = UserProfileViewModelRobot(
+            username = mockOtherUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+        )
+
+        robot.use {
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+                submitAction(UserProfileAction.UnblockUser)
+            } andThen {
+                profileInfo.isBlocking equalTo false
+            }
+        }
+    }
+
+    @Test
+    fun `when user unblock a creator and it is failed, it should stay blocked`() {
+        coEvery { mockRepo.getProfile(any()) } returns mockOtherBlockedProfile
+        coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherFollowed
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.unblockUser(any()) } throws mockException
+
+        val robot = UserProfileViewModelRobot(
+            username = mockOtherUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+        )
+
+        robot.use {
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+                submitAction(UserProfileAction.UnblockUser)
+            } andThen {
+                profileInfo.isBlocking equalTo true
             }
         }
     }

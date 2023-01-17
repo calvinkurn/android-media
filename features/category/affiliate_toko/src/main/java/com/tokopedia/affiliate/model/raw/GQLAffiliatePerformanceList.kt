@@ -28,6 +28,7 @@ val GQL_Affiliate_Performance_List: String = """query getAffiliatePerformanceLis
           ItemID
           ItemType
           ItemTitle
+          LinkGeneratedAt
           Status
           Image {
             DesktopURL

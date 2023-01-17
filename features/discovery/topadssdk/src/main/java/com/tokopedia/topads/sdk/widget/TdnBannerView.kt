@@ -7,11 +7,14 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_CAROUSEL
 import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_SINGLE
+import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_VERTICAL_CAROUSEL
+import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
 import com.tokopedia.topads.sdk.utils.TdnHelper
@@ -20,15 +23,27 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import timber.log.Timber
+import java.lang.ref.WeakReference
+import javax.inject.Inject
 
 class TdnBannerView : FrameLayout {
 
-    private val topAdsImageViewViewModel: TopAdsImageViewViewModel by lazy {
-        ViewModelProvider(context as AppCompatActivity).get(TopAdsImageViewViewModel::class.java)
-    }
     private var tdnCarouselView: TdnCarouselView? = null
     private var singleTdnView: SingleTdnView? = null
     private var tdnBannerResponseListener: TdnBannerResponseListener? = null
+
+    @JvmField @Inject
+    var viewModelFactory: ViewModelProvider.Factory? = null
+
+    private val topAdsImageViewViewModel by lazy {
+        val vm = viewModelFactory?.let {
+            ViewModelProvider(context as AppCompatActivity, it).get(
+                TopAdsImageViewViewModel::class.java
+            )
+        }
+        WeakReference(vm)
+    }
+
 
     constructor(context: Context) : super(context) {
         init()
@@ -50,6 +65,14 @@ class TdnBannerView : FrameLayout {
         val view = View.inflate(context, R.layout.layout_widget_tdn_view, this)
         tdnCarouselView = view.findViewById(R.id.tdnCarouselView)
         singleTdnView = view.findViewById(R.id.singleTdnView)
+
+
+        val application = context.applicationContext as BaseMainApplication
+        val component = DaggerTopAdsComponent.builder()
+            .baseAppComponent(application.baseAppComponent)
+            .build()
+        component.inject(this)
+
     }
 
     fun setTdnResponseListener(listener: TdnBannerResponseListener) {
@@ -66,7 +89,7 @@ class TdnBannerView : FrameLayout {
         productID: String = "",
         page: String = ""
     ) {
-        val qp = topAdsImageViewViewModel.getQueryParams(
+        val qp = topAdsImageViewViewModel.get()?.getQueryParams(
             query,
             source,
             pageToken,
@@ -76,9 +99,9 @@ class TdnBannerView : FrameLayout {
             productID,
             page
         )
-        topAdsImageViewViewModel.getImageData(qp)
+        qp?.let { topAdsImageViewViewModel.get()?.getImageData(it) }
 
-        topAdsImageViewViewModel.getResponse().observe(context as LifecycleOwner, {
+        topAdsImageViewViewModel.get()?.getResponse()?.observe(context as LifecycleOwner, {
             when (it) {
                 is Success -> {
                     val categoriesList = TdnHelper.categoriesTdnBanners(it.data)
@@ -101,7 +124,7 @@ class TdnBannerView : FrameLayout {
         onTdnBannerImpressed: () -> Unit = {}
     ) {
         val layoutType = tdnBanners.firstOrNull()?.layoutType
-        if (layoutType == TYPE_CAROUSEL) {
+        if (layoutType == TYPE_CAROUSEL || layoutType == TYPE_VERTICAL_CAROUSEL) {
             tdnCarouselView?.setCarouselModel(tdnBanners, onTdnBannerClicked, cornerRadius, onLoadFailed, onTdnBannerImpressed)
             tdnCarouselView?.show()
             singleTdnView?.hide()

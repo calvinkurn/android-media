@@ -26,11 +26,11 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@+id/button_back"
-        android:text="Pakai Promo"
+        android:text="@string/promo_checkout_toolbar_title_label"
         app:typographyType="heading_4" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/button_reset_promo"
+        android:id="@+id/button_input_promo"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignWithParentIfMissing="true"
@@ -38,7 +38,7 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="16dp"
         android:gravity="center_vertical"
-        android:text="Reset Promo"
+        android:text="@string/promo_checkout_toolbar_input_code_label"
         android:textColor="@color/Unify_G500"
         app:typographyType="heading_5" />
 

@@ -14,9 +14,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,15 +26,14 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
+import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -44,10 +43,13 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.mvcwidget.MvcData
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
@@ -55,11 +57,13 @@ import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
-import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
+import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
+import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
 import com.tokopedia.tokofood.common.util.TokofoodExt.setBackIconUnify
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
@@ -90,9 +94,11 @@ import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantShareC
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.VariantWrapperUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.mvc.TokofoodMerchantMvcTrackerImpl
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.MerchantCarouseItemViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.MerchantPageViewModel
+import com.tokopedia.tokofood.feature.purchase.promopage.presentation.TokoFoodPromoFragment
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -127,7 +133,8 @@ class MerchantPageFragment : BaseMultiFragment(),
     ProductDetailBottomSheet.OnProductDetailClickListener,
     ShareBottomsheetListener,
     ChangeMerchantBottomSheet.ChangeMerchantListener,
-    PhoneNumberVerificationBottomSheet.OnButtonCtaClickListener {
+    PhoneNumberVerificationBottomSheet.OnButtonCtaClickListener,
+    TokofoodScrollChangedListener {
 
     private var parentActivity: HasViewModel<MultipleFragmentsViewModel>? = null
 
@@ -172,6 +179,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     // TODO: move states to view model
     private var merchantId: String = ""
     private var productId: String = ""
+    private var currentPromoName: String? = null
 
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var merchantInfoBottomSheet: MerchantInfoBottomSheet? = null
@@ -184,6 +192,12 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private var cartDataUpdateJob: Job? = null
     private var uiEventUpdateJob: Job? = null
+    private var updateQuantityJob: Job? = null
+    private var onOffsetChangedListener: AppBarLayout.OnOffsetChangedListener? = null
+    private var onScrollChangedListenerList: MutableList<ViewTreeObserver.OnScrollChangedListener> = mutableListOf()
+
+    private var mvcImpressHolder: ImpressHolder? = null
+    private var mvcOnScrollChangeListener: ViewTreeObserver.OnScrollChangedListener? = null
 
     override fun getFragmentToolbar(): Toolbar? = binding?.toolbarMerchantPage
 
@@ -198,7 +212,6 @@ class MerchantPageFragment : BaseMultiFragment(),
         merchantId = uri.getQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID) ?: ""
         productId = uri.getQueryParameter(DeeplinkMapperTokoFood.PARAM_PRODUCT_ID) ?: ""
         setHasOptionsMenu(true)
-        initInjector()
         // handle negative case #1 non-login
         if (!userSession.isLoggedIn) {
             goToLoginPage()
@@ -206,7 +219,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     }
 
-    private fun initInjector() {
+    override fun initInjector() {
         activity?.let {
             DaggerMerchantPageComponent
                 .builder()
@@ -214,6 +227,10 @@ class MerchantPageFragment : BaseMultiFragment(),
                 .build()
                 .inject(this)
         }
+    }
+
+    override fun getLaunchMode(): BaseMultiFragmentLaunchMode {
+        return BaseMultiFragmentLaunchMode.SINGLE_TASK
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -255,6 +272,9 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+        currentPromoName = null
+        removeCurrentMvcScrollChangedListener()
+        removeListeners()
     }
 
     override fun onStart() {
@@ -265,6 +285,11 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
         uiEventUpdateJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             collectUiEventFlow()
+        }
+        if (getIsImplementDebounce()) {
+            updateQuantityJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                collectUpdateQuantity()
+            }
         }
     }
 
@@ -282,7 +307,6 @@ class MerchantPageFragment : BaseMultiFragment(),
         setToolbarBackIconUnify()
         setBackgroundDefaultColor()
         setHeaderBackground()
-        setupAppBarLayoutListener()
         setupMerchantLogo()
         setupMerchantProfileCarousel()
         setupProductList()
@@ -323,10 +347,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         super.onStop()
         cartDataUpdateJob?.cancel()
         uiEventUpdateJob?.cancel()
-    }
-
-    override fun navigateToNewFragment(fragment: Fragment) {
-        (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
+        updateQuantityJob?.cancel()
     }
 
     private fun setToolbarBackIconUnify() {
@@ -357,66 +378,66 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun setToolbarTransparentColor() {
-        binding?.toolbarMerchantPage?.let {
-            it.background = null
-        }
+        setHeaderBackground()
     }
 
     private fun setToolbarWhiteColor() {
-        binding?.toolbarMerchantPage?.let {
-            it.setBackgroundColor(
-                ContextCompat.getColor(
-                    it.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Background
-                )
-            )
-        }
+        try {
+            binding?.bgMerchantHeader?.setImageDrawable(null)
+        } catch (ignored: Exception) {}
     }
 
     private fun setupAppBarLayoutListener() {
-        binding?.toolbarParent?.addOnOffsetChangedListener(object :
-            AppBarLayout.OnOffsetChangedListener {
+        if (onOffsetChangedListener == null) {
+            onOffsetChangedListener = object :
+                AppBarLayout.OnOffsetChangedListener {
 
-            override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-                if (appBarLayout == null) return
-                val offset = abs(verticalOffset)
-                if (offset >= (appBarLayout.totalScrollRange - binding?.toolbarMerchantPage?.height.orZero())
-                ) {
-                    // show sticky filter
-                    binding?.cardUnifySticky?.show()
-                    setToolbarWhiteColor()
-                    viewModel.isStickyBarVisible = binding?.cardUnifySticky?.isVisible ?: false
-                } else {
-                    // hide stick filter
-                    binding?.cardUnifySticky?.hide()
-                    setToolbarTransparentColor()
-                    viewModel.isStickyBarVisible = binding?.cardUnifySticky?.isVisible ?: false
+                override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
+                    if (appBarLayout == null) return
+                    val offset = abs(verticalOffset)
+                    if (offset >= (appBarLayout.totalScrollRange - binding?.toolbarMerchantPage?.height.orZero())
+                    ) {
+                        // show sticky filter
+                        binding?.cardUnifySticky?.show()
+                        setToolbarWhiteColor()
+                        viewModel.isStickyBarVisible = binding?.cardUnifySticky?.isVisible ?: false
+                    } else {
+                        // hide stick filter
+                        binding?.cardUnifySticky?.hide()
+                        setToolbarTransparentColor()
+                        viewModel.isStickyBarVisible = binding?.cardUnifySticky?.isVisible ?: false
+                    }
                 }
             }
-        })
+            onOffsetChangedListener?.let {
+                binding?.toolbarParent?.addOnOffsetChangedListener(it)
+            }
+        }
     }
 
     private fun setupCardSticky() {
-        binding?.cardUnifySticky?.setOnClickListener {
-            hideKeyboard()
-            val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
-            val categoryFilter =
-                TokoFoodMerchantUiModelMapper.mapProductListItemToCategoryFilterUiModel(
-                    viewModel.filterList, viewModel.filterNameSelected
+        binding?.cardUnifySticky?.run {
+            setOnClickListener {
+                hideKeyboard()
+                val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+                val categoryFilter =
+                    TokoFoodMerchantUiModelMapper.mapProductListItemToCategoryFilterUiModel(
+                        viewModel.filterList, viewModel.filterNameSelected
+                    )
+                cacheManager?.put(
+                    CategoryFilterBottomSheet.KEY_CATEGORY_FILTER_LIST,
+                    categoryFilter
                 )
-            cacheManager?.put(
-                CategoryFilterBottomSheet.KEY_CATEGORY_FILTER_LIST,
-                categoryFilter
-            )
-            val bundle = Bundle().apply {
-                putString(
-                    CategoryFilterBottomSheet.KEY_CACHE_MANAGER_ID,
-                    cacheManager?.id.orEmpty()
-                )
+                val bundle = Bundle().apply {
+                    putString(
+                        CategoryFilterBottomSheet.KEY_CACHE_MANAGER_ID,
+                        cacheManager?.id.orEmpty()
+                    )
+                }
+                val bottomSheet = CategoryFilterBottomSheet.createInstance(bundle)
+                bottomSheet.setCategoryFilterListener(this@MerchantPageFragment)
+                bottomSheet.show(childFragmentManager)
             }
-            val bottomSheet = CategoryFilterBottomSheet.createInstance(bundle)
-            bottomSheet.setCategoryFilterListener(this)
-            bottomSheet.show(childFragmentManager)
         }
     }
 
@@ -472,16 +493,22 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private fun showLoader() {
         binding?.merchantInfoViewGroup?.hide()
+        binding?.geMerchantPageErrorView?.hide()
+        binding?.toolbarParent?.show()
+        binding?.productListLayout?.show()
         binding?.shimmeringMerchantPage?.root?.show()
     }
 
     private fun hideLoader() {
         binding?.shimmeringMerchantPage?.root?.hide()
+        binding?.geMerchantPageErrorView?.hide()
+        binding?.toolbarParent?.show()
+        binding?.productListLayout?.show()
         binding?.merchantInfoViewGroup?.show()
     }
 
-    private fun showGlobalError(errorType: Int) {
-        binding?.geMerchantPageErrorView?.setType(errorType)
+    private fun showGlobalError(throwable: Throwable) {
+        binding?.geMerchantPageErrorView?.setType(throwable.getGlobalErrorType())
         binding?.geMerchantPageErrorView?.setActionClickListener { fetchMerchantData() }
         binding?.geMerchantPageErrorView?.show()
     }
@@ -592,15 +619,14 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun observeLiveData() {
-        viewModel.getMerchantDataResult.observe(viewLifecycleOwner, { result ->
+        viewModel.getMerchantDataResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     val merchantData = result.data.tokofoodGetMerchantData
                     val isDeliverable = merchantData.merchantProfile.deliverable
                     if (isDeliverable) {
                         hideLoader()
-                        // hide global error
-                        binding?.geMerchantPageErrorView?.hide()
+                        setupAppBarLayoutListener()
                         // render ticker data if not empty
                         val tickerData = merchantData.ticker
                         if (!viewModel.isTickerDetailEmpty(tickerData)) {
@@ -613,7 +639,10 @@ class MerchantPageFragment : BaseMultiFragment(),
                         val name = merchantProfile.name
                         val address = merchantProfile.address
                         val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
-                        val merchantOpsHours = viewModel.mapOpsHourDetailsToMerchantOpsHours(today, merchantProfile.opsHourDetail)
+                        val merchantOpsHours = viewModel.mapOpsHourDetailsToMerchantOpsHours(
+                            today,
+                            merchantProfile.opsHourDetail
+                        )
                         setupMerchantInfoBottomSheet(name, address, merchantOpsHours)
                         // render product list
                         val isShopClosed = merchantProfile.opsHourFmt.isWarning
@@ -644,7 +673,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 is Fail -> {
                     binding?.toolbarParent?.hide()
                     binding?.productListLayout?.hide()
-                    showGlobalError(errorType = GlobalError.SERVER_ERROR)
+                    showGlobalError(result.throwable)
                     logExceptionToServerLogger(
                         result.throwable,
                         TokofoodErrorLogger.ErrorType.ERROR_PAGE,
@@ -652,9 +681,9 @@ class MerchantPageFragment : BaseMultiFragment(),
                     )
                 }
             }
-        })
+        }
 
-        viewModel.chooseAddress.observe(viewLifecycleOwner, {
+        viewModel.chooseAddress.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     setupChooseAddress(it.data)
@@ -669,7 +698,11 @@ class MerchantPageFragment : BaseMultiFragment(),
                     )
                 }
             }
-        })
+        }
+
+        viewModel.mvcLiveData.observe(viewLifecycleOwner) {
+            renderMvc(it)
+        }
     }
 
     private fun logExceptionToServerLogger(
@@ -739,11 +772,13 @@ class MerchantPageFragment : BaseMultiFragment(),
                                                 val cardPositions =
                                                     viewModel.productMap[requestParam.productId]
                                                 cardPositions?.run {
-                                                    productListAdapter?.updateProductUiModel(
-                                                        cartTokoFood = cartTokoFood,
-                                                        dataSetPosition = viewModel.getDataSetPosition(this),
-                                                        adapterPosition = viewModel.getAdapterPosition(this)
-                                                    )
+                                                    binding?.rvProductList?.post {
+                                                        productListAdapter?.updateProductUiModel(
+                                                            cartTokoFood = cartTokoFood,
+                                                            dataSetPosition = viewModel.getDataSetPosition(this),
+                                                            adapterPosition = viewModel.getAdapterPosition(this)
+                                                        )
+                                                    }
                                                 }
                                             }
                                     }
@@ -798,8 +833,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
                     if (it.source == SOURCE) {
                         (it.data as? Pair<*, *>)?.let { pair ->
-                            (pair.first as? UpdateParam)?.productList?.firstOrNull()
-                                ?.let { requestParam ->
+                            (pair.first as? UpdateParam)?.productList?.forEach { requestParam ->
                                     (pair.second as? CartTokoFoodData)?.let { cartTokoFoodData ->
                                         cartTokoFoodData.carts.firstOrNull { data -> data.productId == requestParam.productId }
                                             ?.let { cartTokoFood ->
@@ -814,13 +848,15 @@ class MerchantPageFragment : BaseMultiFragment(),
                                                             dataSetPosition = dataSetPosition
                                                         )
                                                     } else {
-                                                        productListAdapter?.updateProductUiModel(
-                                                            cartTokoFood = cartTokoFood,
-                                                            dataSetPosition = dataSetPosition,
-                                                            adapterPosition = viewModel.getAdapterPosition(
-                                                                this
+                                                        binding?.rvProductList?.post {
+                                                            productListAdapter?.updateProductUiModel(
+                                                                cartTokoFood = cartTokoFood,
+                                                                dataSetPosition = dataSetPosition,
+                                                                adapterPosition = viewModel.getAdapterPosition(
+                                                                    this
+                                                                )
                                                             )
-                                                        )
+                                                        }
                                                     }
                                                 }
                                             }
@@ -850,6 +886,12 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
+    private suspend fun collectUpdateQuantity() {
+        viewModel.updateQuantityParam.collect { updateParam ->
+            activityViewModel?.updateQuantity(updateParam, SOURCE)
+        }
+    }
+
     private fun initializeMiniCartWidget() {
         activityViewModel?.let {
             binding?.miniCartWidget?.initialize(it, viewLifecycleOwner.lifecycleScope, SOURCE)
@@ -873,7 +915,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun setupProductList() {
-        productListAdapter = ProductListAdapter(this)
+        productListAdapter = ProductListAdapter(this, this)
         binding?.rvProductList?.let {
             it.adapter = productListAdapter
             it.layoutManager = LinearLayoutManager(
@@ -917,6 +959,58 @@ class MerchantPageFragment : BaseMultiFragment(),
             this.setTextDescription(tickerData.subtitle)
             this.show()
         }
+    }
+
+    private fun renderMvc(mvcData: MvcData?) {
+        binding?.mvcTokofoodMerchantPage?.run {
+            if (mvcData == null) {
+                hide()
+            } else {
+                show()
+                renderMvcData(mvcData)
+                currentPromoName = mvcData.animatedInfoList?.firstOrNull()?.title
+                setMvcImpressionHandling(currentPromoName.orEmpty())
+                renderMvcImageBackground()
+            }
+        }
+    }
+
+    private fun renderMvcData(mvcData: MvcData) {
+        binding?.mvcTokofoodMerchantPage?.setData(
+            mvcData = mvcData,
+            shopId = merchantId,
+            source = MvcSource.TOKOFOOD,
+            startActivityForResultFunction = ::goToPromoPage,
+            mvcTrackerImpl = TokofoodMerchantMvcTrackerImpl()
+        )
+    }
+
+    private fun renderMvcImageBackground() {
+        try {
+            binding?.mvcTokofoodMerchantPage?.imageCouponBackground?.setImageResource(
+                com.tokopedia.tokofood.R.drawable.ic_mvc_tokofood_background
+            )
+        } catch (ex: Exception) {
+            Timber.e(ex)
+        }
+    }
+
+    private fun setMvcImpressionHandling(promoName: String) {
+        removeCurrentMvcScrollChangedListener()
+        mvcImpressHolder = ImpressHolder()
+        mvcImpressHolder?.let { impressHolder ->
+            binding?.mvcTokofoodMerchantPage?.addAndReturnImpressionListener(impressHolder, this) {
+                merchantPageAnalytics.impressPromoMvc(promoName, merchantId)
+            }
+        }
+    }
+
+    private fun removeCurrentMvcScrollChangedListener() {
+        mvcOnScrollChangeListener?.let {
+            binding?.mvcTokofoodMerchantPage?.viewTreeObserver?.removeOnScrollChangedListener(it)
+        }
+        mvcOnScrollChangeListener = null
+        mvcImpressHolder = null
     }
 
     private fun renderMerchantProfile(merchantProfile: TokoFoodMerchantProfile) {
@@ -969,20 +1063,22 @@ class MerchantPageFragment : BaseMultiFragment(),
                         cardPositions?.run {
                             val dataSetPosition = viewModel.getDataSetPosition(this)
                             val adapterPosition = viewModel.getAdapterPosition(this)
-                            productListAdapter?.updateProductUiModel(
-                                cartTokoFood = cartTokoFood,
-                                dataSetPosition = dataSetPosition,
-                                adapterPosition = adapterPosition,
-                                customOrderDetail = viewModel.mapCartTokoFoodToCustomOrderDetail(
+                            binding?.rvProductList?.post {
+                                productListAdapter?.updateProductUiModel(
                                     cartTokoFood = cartTokoFood,
-                                    productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
+                                    dataSetPosition = dataSetPosition,
+                                    adapterPosition = adapterPosition,
+                                    customOrderDetail = viewModel.mapCartTokoFoodToCustomOrderDetail(
+                                        cartTokoFood = cartTokoFood,
+                                        productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
+                                    )
                                 )
-                            )
-                            val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
-                            val isSameCustomProductExist = productUiModel.customOrderDetails.firstOrNull { it.qty > Int.ONE } != null
-                            val isMultipleCustomProductMade = productUiModel.customOrderDetails.size > Int.ONE
-                            if (isSameCustomProductExist || isMultipleCustomProductMade) {
-                                showCustomOrderDetailBottomSheet(productUiModel, this)
+                                val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
+                                val isSameCustomProductExist = productUiModel.customOrderDetails.firstOrNull { it.qty > Int.ONE } != null
+                                val isMultipleCustomProductMade = productUiModel.customOrderDetails.size > Int.ONE
+                                if (isSameCustomProductExist || isMultipleCustomProductMade) {
+                                    showCustomOrderDetailBottomSheet(productUiModel, this)
+                                }
                             }
                         }
                     }
@@ -1190,13 +1286,17 @@ class MerchantPageFragment : BaseMultiFragment(),
         viewModel.productMap[productId] = cardPositions
         val dataSetPosition = viewModel.getDataSetPosition(cardPositions)
         val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
-        productUiModel?.orderQty = quantity
         productUiModel?.run {
-            val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
+            orderQty = quantity
+            if (getIsImplementDebounce()) {
+                viewModel.updateQuantity(merchantId, this)
+            } else {
+                val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
                     shopId = merchantId,
                     productUiModel = productUiModel
-            )
-            activityViewModel?.updateQuantity(updateParam, SOURCE)
+                )
+                activityViewModel?.updateQuantity(updateParam, SOURCE)
+            }
         }
     }
 
@@ -1208,13 +1308,17 @@ class MerchantPageFragment : BaseMultiFragment(),
         viewModel.productMap[productId] = cardPositions
         val dataSetPosition = viewModel.getDataSetPosition(cardPositions)
         val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
-        productUiModel?.orderQty = quantity
         productUiModel?.run {
-            val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
-                shopId = merchantId,
-                productUiModel = productUiModel
-            )
-            activityViewModel?.updateQuantity(updateParam, SOURCE)
+            orderQty = quantity
+            if (getIsImplementDebounce()) {
+                viewModel.updateQuantity(merchantId, this)
+            } else {
+                val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
+                    shopId = merchantId,
+                    productUiModel = productUiModel
+                )
+                activityViewModel?.updateQuantity(updateParam, SOURCE)
+            }
         }
     }
 
@@ -1241,13 +1345,17 @@ class MerchantPageFragment : BaseMultiFragment(),
         viewModel.productMap[productId] = cardPositions
         val dataSetPosition = viewModel.getDataSetPosition(cardPositions)
         val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
-        productUiModel?.orderQty = quantity
         productUiModel?.run {
-            val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
-                shopId = merchantId,
-                productUiModel = productUiModel
-            )
-            activityViewModel?.updateQuantity(updateParam, SOURCE)
+            orderQty = quantity
+            if (getIsImplementDebounce()) {
+                viewModel.updateQuantity(merchantId, this)
+            } else {
+                val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
+                    shopId = merchantId,
+                    productUiModel = productUiModel
+                )
+                activityViewModel?.updateQuantity(updateParam, SOURCE)
+            }
         }
     }
 
@@ -1324,12 +1432,16 @@ class MerchantPageFragment : BaseMultiFragment(),
         customOrderDetail: CustomOrderDetail
     ) {
         customOrderDetail.qty = quantity
-        val updateParam = viewModel.mapCustomOrderDetailToAtcRequestParam(
-            shopId = merchantId,
-            productId = productId,
-            customOrderDetail = customOrderDetail
-        )
-        activityViewModel?.updateQuantity(updateParam, SOURCE)
+        if (getIsImplementDebounce()) {
+            viewModel.updateQuantity(merchantId, productId, customOrderDetail)
+        } else {
+            val updateParam = viewModel.mapCustomOrderDetailToAtcRequestParam(
+                shopId = merchantId,
+                productId = productId,
+                customOrderDetail = customOrderDetail
+            )
+            activityViewModel?.updateQuantity(updateParam, SOURCE)
+        }
     }
 
     override fun onButtonCtaClickListener(appLink: String) {
@@ -1338,6 +1450,10 @@ class MerchantPageFragment : BaseMultiFragment(),
         context?.run {
             TokofoodRouteManager.routePrioritizeInternal(this, applicationLink)
         }
+    }
+
+    override fun onScrollChangedListenerAdded(onScrollChangedListener: ViewTreeObserver.OnScrollChangedListener) {
+        onScrollChangedListenerList.add(onScrollChangedListener)
     }
 
     private fun showChangeMerchantBottomSheet(
@@ -1551,6 +1667,30 @@ class MerchantPageFragment : BaseMultiFragment(),
         } catch (ex: Exception) {
             Timber.e(ex)
         }
+    }
+
+    private fun removeListeners() {
+        onOffsetChangedListener?.let {
+            binding?.toolbarParent?.removeOnOffsetChangedListener(it)
+        }
+        onOffsetChangedListener = null
+        onScrollChangedListenerList.forEach {
+            view?.viewTreeObserver?.removeOnScrollChangedListener(it)
+        }
+    }
+
+    private fun goToPromoPage() {
+        merchantPageAnalytics.clickPromoMvc(currentPromoName.orEmpty(), merchantId)
+        navigateToNewFragment(
+            TokoFoodPromoFragment.createInstance(
+                SOURCE,
+                merchantId
+            )
+        )
+    }
+
+    private fun getIsImplementDebounce(): Boolean {
+        return true
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

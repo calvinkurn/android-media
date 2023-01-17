@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.data.util
 
+import android.os.Build
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
@@ -10,10 +11,11 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.product.detail.common.AtcVariantMapper
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirType
 import com.tokopedia.product.detail.common.data.model.pdplayout.Component
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.Content
@@ -27,17 +29,20 @@ import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
+import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.GlobalBundling
+import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
+import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoTitleDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
@@ -49,17 +54,25 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulRevie
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductReportDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoSeeMore
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.asUiData
 import com.tokopedia.product.detail.data.model.review.ReviewImage
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.GLOBAL_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRODUCT_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
 import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.product.share.ProductData
@@ -71,15 +84,14 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.R
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.track.TrackApp
+import com.tokopedia.universal_sharing.model.BoTypeImageGeneratorParam
+import com.tokopedia.universal_sharing.model.PdpParamModel
+import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
 
 object DynamicProductDetailMapper {
-
-    private const val PDP_SOURCE_AFFILIATE = "pdp"
-
     /**
      * Map network data into UI data by type, just assign type and name here. The data will be assigned in fragment
      * except info type
@@ -96,7 +108,7 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(ProductDiscussionMostHelpfulDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.PRODUCT_DETAIL -> {
-                    listOfComponent.add(ProductDetailInfoDataModel(type = component.type, name = component.componentName, dataContent = mapToProductDetailInfoContent(component.componentData.firstOrNull())))
+                    listOfComponent.add(mapToProductDetailInfo(component = component))
                 }
                 ProductDetailConstant.MINI_SOCIAL_PROOF -> {
                     listOfComponent.add(ProductMiniSocialProofDataModel(type = component.type, name = component.componentName))
@@ -128,6 +140,15 @@ object DynamicProductDetailMapper {
                         else ->
                             listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
                     }
+                }
+                ProductDetailConstant.PRODUCT_LIST_VERTICAL -> {
+                    listOfComponent.add(
+                        ProductRecommendationVerticalPlaceholderDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
+                    listOfComponent.add(LoadingDataModel())
                 }
                 ProductDetailConstant.VARIANT -> {
                     if (component.componentName == ProductDetailConstant.MINI_VARIANT_OPTIONS) {
@@ -176,25 +197,46 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.ONE_LINERS -> {
                     listOfComponent.add(
-                            OneLinersDataModel(type = component.type, name = component.componentName)
+                        OneLinersDataModel(type = component.type, name = component.componentName)
                     )
                 }
                 ProductDetailConstant.CATEGORY_CAROUSEL -> {
-                    //all data already provided in here (P1), so fill the data
+                    // all data already provided in here (P1), so fill the data
                     val carouselData = component.componentData.firstOrNull()
 
                     if (carouselData?.categoryCarouselList?.isNotEmpty() == true) {
                         listOfComponent.add(
-                                ProductCategoryCarouselDataModel(type = component.type,
-                                        name = component.componentName,
-                                        titleCarousel = carouselData.titleCarousel,
-                                        linkText = carouselData.linkText,
-                                        applink = carouselData.applink,
-                                        categoryList = carouselData.categoryCarouselList))
+                            ProductCategoryCarouselDataModel(
+                                type = component.type,
+                                name = component.componentName,
+                                titleCarousel = carouselData.titleCarousel,
+                                linkText = carouselData.linkText,
+                                applink = carouselData.applink,
+                                categoryList = carouselData.categoryCarouselList
+                            )
+                        )
                     }
                 }
-                ProductDetailConstant.PRODUCT_BUNDLING -> {
-                    listOfComponent.add(ProductBundlingDataModel(type = component.type, name = component.componentName))
+                PRODUCT_BUNDLING -> {
+                    if (component.componentName == GLOBAL_BUNDLING) {
+                        val bundlingData = component.componentData.firstOrNull()
+                        if (bundlingData != null) {
+                            listOfComponent.add(
+                                GlobalBundlingDataModel(
+                                    type = component.type,
+                                    name = component.componentName,
+                                    data = generateGlobalBundlingData(bundlingData)
+                                )
+                            )
+                        }
+                    } else if (component.componentName == PRODUCT_BUNDLING) {
+                        listOfComponent.add(
+                            ProductBundlingDataModel(
+                                type = component.type,
+                                name = component.componentName
+                            )
+                        )
+                    }
                 }
                 ProductDetailConstant.CONTENT_WIDGET -> {
                     listOfComponent.add(
@@ -204,7 +246,9 @@ object DynamicProductDetailMapper {
                         )
                     )
                 }
-
+                ProductDetailConstant.AR_BUTTON -> {
+                    listOfComponent.add(ArButtonDataModel(type = component.type, name = component.componentName))
+                }
                 ProductDetailConstant.FINTECH_WIDGET_TYPE -> {
                     listOfComponent.add(
                         FintechWidgetDataModel(
@@ -212,6 +256,20 @@ object DynamicProductDetailMapper {
                             name = component.componentName
                         )
                     )
+                }
+                ProductDetailConstant.PRODUCT_SHOP_ADDITIONAL -> {
+                    val shopAdditional = ProductShopAdditionalDataModel(
+                        name = component.componentName,
+                        type = component.type
+                    )
+                    listOfComponent.add(shopAdditional)
+                }
+                ProductDetailConstant.CUSTOM_INFO_TITLE -> {
+                    val customInfoTitle = mapToCustomInfoTitle(component = component)
+
+                    if (customInfoTitle != null) {
+                        listOfComponent.add(customInfoTitle)
+                    }
                 }
             }
         }
@@ -236,11 +294,20 @@ object DynamicProductDetailMapper {
             applink = contentData.applink,
             title = contentData.title,
             isApplink = contentData.isApplink,
-            parentIcon = contentData.icon ,
+            parentIcon = contentData.icon,
             subtitle = content.firstOrNull()?.subtitle.orEmpty(),
             lightIcon = contentData.lightIcon,
             darkIcon = contentData.darkIcon,
+            isPlaceholder = determinePlaceholder(name)
         )
+    }
+
+    /**
+     * Use for General Info
+     * component (name) should wait P2 data to render.
+     */
+    private fun determinePlaceholder(name: String): Boolean {
+        return name == ProductDetailConstant.INFO_OBAT_KERAS
     }
 
     /**
@@ -269,31 +336,33 @@ object DynamicProductDetailMapper {
         assignIdToMedia(newDataWithMedia.media)
 
         return DynamicProductInfoP1(
-                layoutName = data.generalName,
-                basic = data.basicInfo,
-                data = newDataWithMedia,
-                pdpSession = data.pdpSession,
-                bestSellerContent = bestSellerComponent,
-                stockAssuranceContent = stockAssuranceComponent
+            layoutName = data.generalName,
+            basic = data.basicInfo,
+            data = newDataWithMedia,
+            pdpSession = data.pdpSession,
+            bestSellerContent = bestSellerComponent,
+            stockAssuranceContent = stockAssuranceComponent,
+            requestId = data.requestId
         )
     }
 
     private fun mapToOneLinersComponent(
-            componentName: String,
-            data: PdpGetLayout
+        componentName: String,
+        data: PdpGetLayout
     ): Map<String, OneLinersContent>? {
         return data.components.find {
             it.componentName == componentName
         }?.componentData?.map {
             OneLinersContent(
-                    productID = it.productId,
-                    content = it.oneLinerContent,
-                    linkText = it.linkText,
-                    color = it.color,
-                    applink = it.applink,
-                    separator = it.separator,
-                    icon = it.icon,
-                    isVisible = it.isVisible
+                productID = it.productId,
+                content = it.oneLinerContent,
+                linkText = it.linkText,
+                color = it.color,
+                applink = it.applink,
+                separator = it.separator,
+                icon = it.icon,
+                isVisible = it.isVisible,
+                eduLink = it.eduLink
             )
         }?.associateBy { it.productID }
     }
@@ -320,13 +389,13 @@ object DynamicProductDetailMapper {
         }?.componentData?.firstOrNull() ?: return null
 
         return ProductVariant(
-                parentId = networkData.parentId,
-                errorCode = networkData.errorCode,
-                sizeChart = networkData.sizeChart,
-                defaultChild = networkData.defaultChild,
-                variants = networkData.variants,
-                children = networkData.children,
-                maxFinalPrice = networkData.maxFinalPrice
+            parentId = networkData.parentId,
+            errorCode = networkData.errorCode,
+            sizeChart = networkData.sizeChart,
+            defaultChild = networkData.defaultChild,
+            variants = networkData.variants,
+            children = networkData.children,
+            maxFinalPrice = networkData.maxFinalPrice
         )
     }
 
@@ -356,6 +425,22 @@ object DynamicProductDetailMapper {
         }
     }
 
+    private fun mapToProductDetailInfo(component: Component): ProductDetailInfoDataModel {
+        val data = component.componentData.firstOrNull()
+        val contents = mapToProductDetailInfoContent(data = data)
+        val catalog = data?.catalogBottomSheet?.asUiData()
+        val bottomSheet = data?.bottomSheet?.asUiData() ?: ProductDetailInfoSeeMore()
+
+        return ProductDetailInfoDataModel(
+            type = component.type,
+            name = component.componentName,
+            title = data?.title.orEmpty(),
+            catalogBottomSheet = catalog,
+            bottomSheet = bottomSheet,
+            dataContent = contents
+        )
+    }
+
     private fun mapToProductDetailInfoContent(data: ComponentData?): List<ProductDetailInfoContent> {
         if (data == null) return listOf()
         return data.content.map {
@@ -366,29 +451,32 @@ object DynamicProductDetailMapper {
                 applink = it.applink,
                 showAtFront = it.showAtFront,
                 isAnnotation = it.isAnnotation,
-                infoLink = it.infoLink
+                infoLink = it.infoLink,
+                showAtBottomSheet = it.showAtBottomSheet
             )
         }
     }
 
-    private fun mapToCustomInfoUiModel(componentData: ComponentData?,
-                                       componentName: String,
-                                       componentType: String): ProductCustomInfoDataModel? {
+    private fun mapToCustomInfoUiModel(
+        componentData: ComponentData?,
+        componentName: String,
+        componentType: String
+    ): ProductCustomInfoDataModel? {
         if (componentData == null) return null
 
         val label = componentData.labels.firstOrNull()
         return ProductCustomInfoDataModel(
-                name = componentName,
-                type = componentType,
-                title = componentData.title,
-                applink = if (componentData.isApplink) componentData.applink else "",
-                description = componentData.description,
-                icon = componentData.icon,
-                separator = componentData.separator,
-                labelColor = label?.color ?: "",
-                labelValue = label?.value ?: "",
-                lightIcon = componentData.lightIcon,
-                darkIcon = componentData.darkIcon
+            name = componentName,
+            type = componentType,
+            title = componentData.title,
+            applink = if (componentData.isApplink) componentData.applink else "",
+            description = componentData.description,
+            icon = componentData.icon,
+            separator = componentData.separator,
+            labelColor = label?.color ?: "",
+            labelValue = label?.value ?: "",
+            lightIcon = componentData.lightIcon,
+            darkIcon = componentData.darkIcon
         )
     }
 
@@ -503,14 +591,16 @@ object DynamicProductDetailMapper {
 
     fun generateUserLocationRequestRates(localData: LocalCacheModel): String {
         val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
-        return "${localData.district_id}|${localData.postal_code}|${latlong}"
+        return "${localData.district_id}|${localData.postal_code}|$latlong"
     }
 
-    fun determineSelectedOptionIds(variantData: ProductVariant,
-                                   selectedChild: VariantChild?): MutableMap<String, String> {
+    fun determineSelectedOptionIds(
+        variantData: ProductVariant,
+        selectedChild: VariantChild?
+    ): MutableMap<String, String> {
         return AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(
-                variantData,
-                selectedChild?.optionIds
+            variantData,
+            selectedChild?.optionIds
         )
     }
 
@@ -524,41 +614,78 @@ object DynamicProductDetailMapper {
 
     fun generateProductShareData(productInfo: DynamicProductInfoP1, userId: String, shopUrl: String, bundleId: String): ProductData {
         return ProductData(
-                userId,
-                productInfo.finalPrice.getCurrencyFormatted(),
-                "${productInfo.data.isCashback.percentage}%",
-                MethodChecker.fromHtml(productInfo.getProductName).toString(),
-                productInfo.data.price.currency,
-                productInfo.basic.url,
-                shopUrl,
-                productInfo.basic.shopName,
-                productInfo.basic.productID,
-                productInfo.data.getProductImageUrl() ?: "",
-                campaignId = zeroIfEmpty(productInfo.data.campaign.campaignID),
-                bundleId = zeroIfEmpty(bundleId)
+            userId,
+            productInfo.finalPrice.getCurrencyFormatted(),
+            "${productInfo.data.isCashback.percentage}%",
+            MethodChecker.fromHtml(productInfo.getProductName).toString(),
+            productInfo.data.price.currency,
+            productInfo.basic.url,
+            shopUrl,
+            productInfo.basic.shopName,
+            productInfo.basic.productID,
+            productInfo.data.getProductImageUrl() ?: "",
+            campaignId = zeroIfEmpty(productInfo.data.campaign.campaignID),
+            bundleId = zeroIfEmpty(bundleId)
         )
     }
 
-    fun generateAffiliateShareData(productInfo: DynamicProductInfoP1, shopInfo: ShopInfo?,
-                                   variantData: ProductVariant?): AffiliatePDPInput {
+    fun generateAffiliateShareData(
+        productInfo: DynamicProductInfoP1,
+        shopInfo: ShopInfo?,
+        variantData: ProductVariant?
+    ): AffiliatePDPInput {
         return AffiliatePDPInput(
-                pageType= "pdp",
-                product = Product(
-                        productID = productInfo.basic.productID,
-                        catLevel1 = productInfo.basic.category.detail.firstOrNull()?.id ?: "0",
-                        catLevel2 = productInfo.basic.category.detail.getOrNull(1)?.id ?: "0",
-                        catLevel3 = productInfo.basic.category.detail.getOrNull(2)?.id ?: "0",
-                        productPrice = productInfo.data.price.value.toString(),
-                        maxProductPrice = getMaxPriceVariant(productInfo, variantData).toString(), //to do
-                        productStatus = productInfo.basic.status
-                ),
-                shop = Shop(
-                        shopID = productInfo.basic.shopID,
-                        isOS = productInfo.data.isOS,
-                        isPM = productInfo.data.isPowerMerchant,
-                        shopStatus = shopInfo?.statusInfo?.shopStatus
-                )
+            pageType = PageType.PDP.value,
+            product = Product(
+                productID = productInfo.basic.productID,
+                catLevel1 = productInfo.basic.category.detail.firstOrNull()?.id ?: "0",
+                catLevel2 = productInfo.basic.category.detail.getOrNull(1)?.id ?: "0",
+                catLevel3 = productInfo.basic.category.detail.getOrNull(2)?.id ?: "0",
+                productPrice = productInfo.data.price.value.toString(),
+                maxProductPrice = getMaxPriceVariant(productInfo, variantData).toString(), // to do
+                productStatus = productInfo.basic.status
+            ),
+            shop = Shop(
+                shopID = productInfo.basic.shopID,
+                isOS = productInfo.data.isOS,
+                isPM = productInfo.data.isPowerMerchant,
+                shopStatus = shopInfo?.statusInfo?.shopStatus
+            )
         )
+    }
+
+    fun generateImageGeneratorData(product: DynamicProductInfoP1, bebasOngkir: BebasOngkirImage): PdpParamModel {
+        return PdpParamModel(
+            productId = product.basic.productID,
+            isBebasOngkir = isBebasOngkir(bebasOngkir.boType),
+            bebasOngkirType = mapBebasOngkirType(bebasOngkir.boType),
+            productPrice = getProductPrice(product),
+            productRating = product.basic.stats.rating,
+            productTitle = product.data.name,
+            hasCampaign = product.data.campaign.activeAndHasId.compareTo(false).toString(),
+            campaignName = product.data.campaign.campaignTypeName,
+            campaignDiscount = product.data.campaign.percentageAmount.toInt(),
+            newProductPrice = product.data.campaign.discountedPrice.toLong()
+
+        )
+    }
+
+    private fun getProductPrice(product: DynamicProductInfoP1): Long {
+        return if (product.data.campaign.activeAndHasId) {
+            product.data.campaign.originalPrice.toLong()
+        } else {
+            product.data.price.value.toLong()
+        }
+    }
+
+    private fun isBebasOngkir(type: Int) = type == BebasOngkirType.NON_BO.value
+
+    private fun mapBebasOngkirType(type: Int): String {
+        return when (type) {
+            BebasOngkirType.BO_REGULER.value -> BoTypeImageGeneratorParam.BEBAS_ONGKIR.value
+            BebasOngkirType.BO_EXTRA.value -> BoTypeImageGeneratorParam.BEBAS_ONGKIR_EXTRA.value
+            else -> BoTypeImageGeneratorParam.NONE.value
+        }
     }
 
     fun removeUnusedComponent(
@@ -571,26 +698,33 @@ object DynamicProductDetailMapper {
         val isOfficialStore = productInfo?.data?.isOS == true
         val isVariant = productInfo?.isProductVariant() ?: false
         val isVariantEmpty = variantData == null || !variantData.hasChildren
+        val higherThanLollipop = Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1
 
         return initialLayoutData.filterNot {
-            (it.name() == ProductDetailConstant.TRADE_IN && (!isTradein || isShopOwner))
-                    || (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO)
-                    || (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO)
-                    || (it.name() == ProductDetailConstant.VALUE_PROP && !isOfficialStore)
-                    || (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty))
-                    || (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty))
-                    || (it.type() == ProductDetailConstant.PRODUCT_LIST && GlobalConfig.isSellerApp())
-                    || (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner))
-                    || (it.name() == ProductDetailConstant.PLAY_CAROUSEL && GlobalConfig.isSellerApp())
-                    /***
-                     * remove palugada type with name
-                     * (value_prop, wholesale, fullfilment, payment later install, order priority, cod)
-                     */
-                    || (it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO)
-                    || (it.name() == ProductDetailConstant.PRODUCT_FULLFILMENT)
-                    || (it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO)
-                    || (it.name() == ProductDetailConstant.ORDER_PRIORITY)
-                    || (it.name() == ProductDetailConstant.COD)
+            (it.name() == ProductDetailConstant.TRADE_IN && (!isTradein || isShopOwner)) ||
+                (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO) ||
+                (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) ||
+                (it.name() == ProductDetailConstant.VALUE_PROP && !isOfficialStore) ||
+                (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) ||
+                (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) ||
+                (it.type() == ProductDetailConstant.PRODUCT_LIST && GlobalConfig.isSellerApp()) ||
+                (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner)) ||
+                (it.name() == ProductDetailConstant.PLAY_CAROUSEL && GlobalConfig.isSellerApp()) ||
+                /***
+                 * remove palugada type with name
+                 * (value_prop, wholesale, fullfilment, payment later install, order priority, cod)
+                 */
+                (it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO) ||
+                (it.name() == ProductDetailConstant.PRODUCT_FULLFILMENT) ||
+                (it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO) ||
+                (it.name() == ProductDetailConstant.ORDER_PRIORITY) ||
+                /**
+                 * Remove when lollipop and product of seller itself
+                 */
+                (
+                    it.name() == ProductDetailConstant.AR_BUTTON &&
+                        (GlobalConfig.isSellerApp() || !higherThanLollipop || isShopOwner)
+                    )
         }.toMutableList()
     }
 
@@ -614,6 +748,26 @@ object DynamicProductDetailMapper {
                     stockQty = productInfo.getFinalStock().toIntOrZero()
                 )
             )
+        )
+    }
+
+    private fun generateGlobalBundlingData(bundlingData: ComponentData): GlobalBundling {
+        return GlobalBundling(
+            title = bundlingData.title,
+            widgetType = bundlingData.widgetType,
+            productId = bundlingData.productId,
+            whId = bundlingData.whId
+        )
+    }
+
+    private fun mapToCustomInfoTitle(component: Component): ProductCustomInfoTitleDataModel? {
+        val data = component.componentData.firstOrNull() ?: return null
+
+        return ProductCustomInfoTitleDataModel(
+            name = component.componentName,
+            type = component.type,
+            title = data.title,
+            status = ProductCustomInfoTitleDataModel.Status.fromString(data.status)
         )
     }
 }

@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.managepassword.ManagePasswordWebViewActivity
 import com.tokopedia.managepassword.common.ManagePasswordConstant.KEY_IS_CONTAINS_LOGIN_APPLINK
@@ -20,6 +19,7 @@ import com.tokopedia.managepassword.di.DaggerManagePasswordComponent
 import com.tokopedia.managepassword.di.ManagePasswordComponent
 import com.tokopedia.managepassword.di.module.ManagePasswordModule
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.KEY_URL
 import javax.inject.Inject
@@ -157,7 +157,7 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
         private const val CLEAR_CACHE_PREFIX = "clear-cache"
 
         private const val SCREEN_FORGOT_PASSWORD = "Forgot password page"
-        private const val URL_FORGOT_PASSWORD = "https://m.tokopedia.com/reset-password"
+        private val URL_FORGOT_PASSWORD = "${TokopediaUrl.getInstance().WEB}reset-password"
         private const val REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW_URL = "android_forgot_password_webview_url"
     }
 }

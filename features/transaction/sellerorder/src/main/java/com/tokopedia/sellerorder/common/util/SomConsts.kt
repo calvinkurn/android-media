@@ -30,6 +30,7 @@ object SomConsts {
     const val STATUS_NAME_ALL_ORDER = "Semua Pesanan"
 
     const val DETAIL_HEADER_TYPE = "header"
+    const val DETAIL_RESO_TYPE = "reso"
     const val DETAIL_PRODUCTS_TYPE = "products"
     const val DETAIL_SHIPPING_TYPE = "shipping"
     const val DETAIL_PAYMENT_TYPE = "payment"
@@ -133,8 +134,8 @@ object SomConsts {
     const val SORT_BY_PAYMENT_DATE_DESCENDING = 2L
 
     // Som List Illustration
-    const val SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION = "https://ecs7.tokopedia.net/android/others/som_list_empty_state_illustration.png"
-    const val SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION = "https://ecs7.tokopedia.net/android/others/som_list_empty_state_with_filter_illustration.png"
+    const val SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION = "https://images.tokopedia.net/android/others/som_list_empty_state_illustration.png"
+    const val SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION = "https://images.tokopedia.net/android/others/som_list_empty_state_with_filter_illustration.png"
 
     // Som print awb
     const val PATH_PRINT_AWB = "shipping-label"

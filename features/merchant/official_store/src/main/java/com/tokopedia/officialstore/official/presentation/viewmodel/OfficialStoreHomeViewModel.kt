@@ -11,44 +11,40 @@ import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.officialstore.official.presentation.mapper.OfficialHomeMapper
 import com.tokopedia.officialstore.TopAdsHeadlineConstant.PAGE
 import com.tokopedia.officialstore.TopAdsHeadlineConstant.SEEN_ADS
 import com.tokopedia.officialstore.category.data.model.Category
-import com.tokopedia.officialstore.common.handleResult
 import com.tokopedia.officialstore.official.data.mapper.OfficialStoreDynamicChannelComponentMapper
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationTitleDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsHeadlineDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialStoreDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationWithTopAdsHeadline
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsHeadlineDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsBannerDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationTitleDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialFeaturedShopDataModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.officialstore.official.presentation.mapper.OfficialHomeMapper
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
-import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
 import com.tokopedia.topads.sdk.utils.VALUE_ITEM
 import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -63,12 +59,11 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private val getOfficialStoreDynamicChannelUseCase: GetOfficialStoreDynamicChannelUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val userSessionInterface: UserSessionInterface,
-        private val addWishListUseCase: AddWishListUseCase,
         private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
-        private val removeWishListUseCase: RemoveWishListUseCase,
         private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
         private val getDisplayHeadlineAds: GetDisplayHeadlineAds,
+        private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
         private val getRecommendationUseCaseCoroutine: com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase,
         private val bestSellerMapper: BestSellerMapper,
         private val getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
@@ -78,6 +73,9 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     companion object {
         private const val COUNTER_RECOM_TITLE_RENDERED = 1
+        const val TOP_ADS_SOURCE = "12"
+        const val TOP_ADS_COUNT = 3
+        const val TOP_ADS_DIMEN_ID = 3
     }
 
     var currentSlug: String = ""
@@ -99,13 +97,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
     val officialStoreError : LiveData<Throwable>
         get() = _officialStoreError
     private val _officialStoreError : MutableLiveData<Throwable> = MutableLiveData()
-
-    val topAdsWishlistResult: LiveData<Result<WishlistModel>>
-        get() = _topAdsWishlistResult
-
-    private val _topAdsWishlistResult by lazy {
-        MutableLiveData<Result<WishlistModel>>()
-    }
 
     private val _recomUpdated = MutableLiveData<Event<Boolean>>()
     val recomUpdated : LiveData<Event<Boolean>> get() = _recomUpdated
@@ -261,6 +252,11 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 else if (it.channel.layout == DynamicChannelLayout.LAYOUT_BEST_SELLING){
                     fetchRecomWidgetData(it.channel.pageName,  it.channel.widgetParam, it.channel.id)
                 }
+                else if(it.channel.layout == DynamicChannelLayout.LAYOUT_BANNER_ADS_CAROUSEL){
+                    getTopAdsBannerCarousel(
+                        OfficialTopAdsBannerDataModel(it.channel.header?.name)
+                    )
+                }
             }
         }) {
             _officialStoreError.postValue(it)
@@ -336,21 +332,44 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
+    private fun getTopAdsBannerCarousel(officialTopAdsBannerDataModel: OfficialTopAdsBannerDataModel) {
+        launchCatchError(coroutineContext, block = {
+            val results = topAdsImageViewUseCase.getImageData(
+                topAdsImageViewUseCase.getQueryMap(
+                    "",
+                    TOP_ADS_SOURCE,
+                    "",
+                    TOP_ADS_COUNT,
+                    TOP_ADS_DIMEN_ID,
+                    ""
+                )
+            )
+            if(results.isEmpty()){
+                _officialStoreListVisitable.run {
+                    removeAll {
+                        it is OfficialTopAdsBannerDataModel
+                    }
+                }
+            } else {
+                OfficialHomeMapper.updateTopAdsBanner(officialTopAdsBannerDataModel, results, _officialStoreListVisitable) {
+                    _officialStoreLiveData.postValue(it)
+                }
+            }
+        }) {
+            _officialStoreListVisitable.run {
+                removeAll {
+                    it is OfficialTopAdsBannerDataModel
+                }
+            }
+        }
+    }
+
     // ============================================================================================
     // ===================================== ADD/REMOVE WIDGET ====================================
     // ============================================================================================
     fun addLoadingMore(){
         _officialStoreListVisitable.add(OfficialLoadingMoreDataModel())
         _officialStoreLiveData.postValue()
-    }
-
-    fun removeRecomWidget(){
-        _officialStoreListVisitable.run {
-            removeAll {
-                it is BestSellerDataModel
-            }
-            _officialStoreLiveData.postValue(this)
-        }
     }
 
     fun removeFlashSale(){
@@ -360,21 +379,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
             }
             _officialStoreLiveData.postValue(this)
         }
-    }
-
-    fun removeRecommendation(){
-        _officialStoreListVisitable.run {
-            removeAll { it is ProductRecommendationDataModel || it is ProductRecommendationTitleDataModel }
-            _officialStoreLiveData.postValue(this)
-        }
-    }
-
-    fun removeTopAdsHeadlineWidget() {
-        _officialStoreListVisitable.run {
-            removeAll { it is OfficialTopAdsHeadlineDataModel }
-            _officialStoreLiveData.postValue(this)
-        }
-
     }
 
     fun resetState() {
@@ -396,38 +400,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
     // ============================================================================================
     // ===================================== WISHLIST SECTION =====================================
     // ============================================================================================
-    private suspend fun addTopAdsWishlist(model: RecommendationItem): Result<WishlistModel> {
-        return withContext(dispatchers.io) {
-            try {
-                val params = RequestParams.create().apply {
-                    putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
-                }
-                val dataTopAdsWishlist = topAdsWishlishedUseCase.createObservable(params).toBlocking()
-                val topAdsWishList = dataTopAdsWishlist.first()
-
-                Success(topAdsWishList)
-            } catch (t: Throwable) {
-                Fail(t)
-            }
-        }
-    }
-
-    fun addWishlist(
-        model: RecommendationItem,
-        callback: (Boolean, Throwable?) -> Unit
-    ) {
-        if (model.isTopAds) {
-            launchCatchError(block = {
-                _topAdsWishlistResult.value = addTopAdsWishlist(model)
-                _topAdsWishlistResult.value?.handleResult(callback)
-            }) {
-                callback.invoke(false, it)
-            }
-        } else {
-            doAddWishlist(model, callback)
-        }
-    }
-
     fun addWishlistV2(
         model: RecommendationItem,
         wishlistV2ActionListener: WishlistV2ActionListener
@@ -441,39 +413,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 wishlistV2ActionListener.onErrorAddWishList(result.throwable, model.productId.toString())
             }
         }
-    }
-
-    private fun doAddWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
-        addWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                callback.invoke(false, Throwable(errorMessage))
-            }
-
-            override fun onSuccessAddWishlist(productId: String?) {
-                callback.invoke(true, null)
-            }
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-
-            override fun onSuccessRemoveWishlist(productId: String?) {}
-
-        })
-    }
-
-    fun removeWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
-        removeWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
-
-            override fun onSuccessAddWishlist(productId: String?) {}
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                callback.invoke(false, Throwable(errorMessage))
-            }
-
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                callback.invoke(true, null)
-            }
-        })
     }
 
     fun removeWishlistV2(model: RecommendationItem, wishlistV2ActionListener: WishlistV2ActionListener) {
@@ -525,9 +464,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         getRecommendationUseCase.unsubscribe()
-        addWishListUseCase.unsubscribe()
         topAdsWishlishedUseCase.unsubscribe()
-        removeWishListUseCase.unsubscribe()
         getDisplayHeadlineAds.cancelJobs()
     }
 }

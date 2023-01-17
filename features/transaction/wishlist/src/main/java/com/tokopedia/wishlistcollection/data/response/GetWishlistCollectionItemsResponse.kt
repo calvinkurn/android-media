@@ -2,7 +2,6 @@ package com.tokopedia.wishlistcollection.data.response
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 
 data class GetWishlistCollectionItemsResponse(
 	@SerializedName("get_wishlist_collection_items")
@@ -40,8 +39,14 @@ data class GetWishlistCollectionItemsResponse(
 		@SerializedName("count_removable_items")
 		val countRemovableItems: Int = 0,
 
+        @SerializedName("description")
+        val description: String = "",
+
 		@SerializedName("empty_state")
 		val emptyState: EmptyState = EmptyState(),
+
+        @SerializedName("collection_type")
+        val collectionType: Int = 0,
 
 		@SerializedName("setting")
 		val setting: Setting = Setting(),
@@ -62,7 +67,10 @@ data class GetWishlistCollectionItemsResponse(
 		val page: Int = 0,
 
 		@SerializedName("items")
-		val items: List<ItemsItem> = emptyList()
+		val items: List<ItemsItem> = emptyList(),
+
+        @SerializedName("add_wishlist_bulk_config")
+        val addWishlistBulkConfig: AddWishlistBulkConfig = AddWishlistBulkConfig()
 	) {
 		data class Ticker(
 
@@ -90,26 +98,16 @@ data class GetWishlistCollectionItemsResponse(
 
 		data class EmptyState(
 
-			@SerializedName("buttons")
-			val buttons: List<ButtonEmptyState> = emptyList(),
+            @SerializedName("buttons")
+			val buttons: List<Setting.Button> = emptyList(),
 
-			@SerializedName("messages")
+            @SerializedName("messages")
 			val messages: List<MessageEmptyState> = emptyList(),
 
-			@SerializedName("type")
+            @SerializedName("type")
 			val type: String = ""
 		) {
-			data class ButtonEmptyState(
 
-				@SerializedName("action")
-				val action: String = "",
-
-				@SerializedName("text")
-				val text: String = "",
-
-				@SerializedName("url")
-				val url: String = ""
-			)
 
 			data class MessageEmptyState(
 				@SerializedName("title")
@@ -125,8 +123,20 @@ data class GetWishlistCollectionItemsResponse(
 
 		data class Setting(
 			@SerializedName("buttons")
-			val buttons: List<EmptyState.ButtonEmptyState> = emptyList()
-		)
+			val buttons: List<Button> = emptyList()
+		) {
+            data class Button(
+
+                @SerializedName("action")
+                val action: String = "",
+
+                @SerializedName("text")
+                val text: String = "",
+
+                @SerializedName("url")
+                val url: String = ""
+            )
+        }
 
 		data class StorageCleanerBottomsheet(
 
@@ -417,5 +427,18 @@ data class GetWishlistCollectionItemsResponse(
 				val minimum: String = ""
 			)
 		}
+
+        data class AddWishlistBulkConfig(
+            @SerializedName("max_bulk")
+            val maxBulk: Long = 0L,
+
+            @SerializedName("toaster")
+            val addWishlistBulkToaster: AddWishlistBulkToaster = AddWishlistBulkToaster()
+        ) {
+            data class AddWishlistBulkToaster(
+                @SerializedName("message")
+                val message: String = ""
+            )
+        }
 	}
 }

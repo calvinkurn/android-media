@@ -73,6 +73,8 @@ data class GetSellerCampaignListResponse(
             val thematicInfo: ThematicInfo,
             @SerializedName("use_upcoming_widget")
             val useUpcomingWidget: Boolean = false,
+            @SerializedName("package_info")
+            val packageInfo: PackageInfo = PackageInfo(),
         ) {
             data class GradientColor(
                 @SerializedName("first_color")
@@ -117,7 +119,12 @@ data class GetSellerCampaignListResponse(
                 @SerializedName("status_str")
                 val statusString: String,
             )
-
+            data class PackageInfo(
+                @SerializedName("package_id")
+                val packageId: Long = 0,
+                @SerializedName("package_name")
+                val packageName: String = "",
+            )
         }
     }
 }

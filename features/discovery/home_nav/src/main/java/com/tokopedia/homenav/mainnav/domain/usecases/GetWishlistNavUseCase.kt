@@ -1,11 +1,11 @@
 package com.tokopedia.homenav.mainnav.domain.usecases
 
-import android.util.Log
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.pojo.wishlist.*
 import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
+import com.tokopedia.homenav.mainnav.domain.usecases.query.GetWishlistQuery
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.asLowerCase
 import com.tokopedia.usecase.coroutines.Success
@@ -20,85 +20,7 @@ class GetWishlistNavUseCase @Inject constructor (
 ): UseCase<Pair<List<NavWishlistModel>, Boolean>>(){
 
     init {
-        val query = """
-            query GetWishlist(${'$'}params:WishlistV2Params){
-              wishlist_v2(params:${'$'}params){
-                has_next_page
-                items {
-                  id
-                  name
-                  url
-                  image_url
-                  price
-                  price_fmt
-                  available
-                  label_status
-                  preorder
-                  rating
-                  sold_count
-                  min_order
-                  shop {
-                    id
-                    name
-                    url
-                    location
-                    fulfillment{
-                      is_fulfillment
-                      text
-                    }
-                    is_tokonow
-                  }
-                  badges{
-                    title
-                    image_url
-                  }
-                  labels
-                  wholesale_price{
-                    minimum
-                    maximum
-                    price
-                  }
-                  default_child_id
-                  original_price
-                  original_price_fmt
-                  discount_percentage
-                  discount_percentage_fmt
-                  label_stock
-                  bebas_ongkir {
-                    type
-                    title
-                    image_url
-                  }
-                  label_group{
-                    position
-                    title
-                    type
-                    url
-                  }
-                  buttons{
-                    primary_button{
-                      text
-                      action
-                      url
-                    }
-                    additional_buttons{
-                      text
-                      action
-                      url
-                    }
-                  }
-                  wishlist_id
-                  variant_name
-                  category{
-                    category_id
-                    category_name
-                  }
-                }
-                error_message
-              }
-            }
-        """.trimIndent()
-        graphqlUseCase.setGraphqlQuery(query)
+        graphqlUseCase.setGraphqlQuery(GetWishlistQuery())
         graphqlUseCase.setRequestParams(generateParam(WishlistParam(sortFilters = constructFilter())))
         graphqlUseCase.setTypeClass(WishlistData::class.java)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())

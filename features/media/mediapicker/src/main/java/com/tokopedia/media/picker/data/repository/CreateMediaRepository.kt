@@ -11,7 +11,7 @@ import java.io.File
 
 interface CreateMediaRepository {
     fun image(captureSize: Size?, byteArray: ByteArray?): Flow<File?>
-    fun video(): File
+    fun video(): File?
 }
 
 class CreateMediaRepositoryImpl : CreateMediaRepository {
@@ -29,6 +29,7 @@ class CreateMediaRepositoryImpl : CreateMediaRepository {
                     nativeCaptureSize.height
                 )?: return@flow
 
+                // if process save is change, please check editor utils getTokopediaCacheDir() for path checker
                 emit(ImageProcessingUtil.writeImageToTkpdPath(bitmap, compressFormat))
             } catch (e: Throwable) {
                 emit(ImageProcessingUtil.writeImageToTkpdPath(byteArray, compressFormat))

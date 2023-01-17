@@ -13,12 +13,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentSelected
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentUnSelected
-import com.tokopedia.affiliate.AFFILIATE_HELP_URL
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.COACHMARK_TAG
 import com.tokopedia.affiliate.FIRST_TAB
 import com.tokopedia.affiliate.FOURTH_TAB
 import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
+import com.tokopedia.affiliate.PAGE_SEGMENT_ONBOARDING
 import com.tokopedia.affiliate.PAGE_SEGMENT_TRANSACTION_HISTORY
 import com.tokopedia.affiliate.SECOND_TAB
 import com.tokopedia.affiliate.THIRD_TAB
@@ -30,10 +30,10 @@ import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavbar
 import com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
 import com.tokopedia.affiliate.ui.custom.IBottomClickListener
 import com.tokopedia.affiliate.ui.custom.LottieBottomNavbar
-import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateIncomeFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
+import com.tokopedia.affiliate.ui.fragment.education.AffiliateEducationLandingPage
 import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
@@ -72,7 +72,16 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        afterViewCreated()
+        intent?.data?.let { data ->
+            if (data.pathSegments?.contains(PAGE_SEGMENT_ONBOARDING) == true) {
+                if (data.queryParameterNames.isNotEmpty())
+                    showLoginPortal(intent?.data?.getQueryParameter(data.queryParameterNames.first()))
+                else
+                    showLoginPortal()
+            } else {
+                afterViewCreated()
+            }
+        }
     }
 
     override fun getLayoutRes(): Int = R.layout.affiliate_layout
@@ -85,9 +94,14 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         super.onNewIntent(intent)
         Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()?.let {
             if (it.contains(PAGE_SEGMENT_HELP)) {
-                selectItem(HELP_MENU, R.id.menu_help_affiliate, true)
-            }else if(it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY)){
+                selectItem(EDUKASI_MENU, R.id.menu_edukasi_affiliate, true)
+            } else if (it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY)) {
                 selectItem(INCOME_MENU, R.id.menu_withdrawal_affiliate, true)
+            } else if (it.contains(PAGE_SEGMENT_ONBOARDING)) {
+                if (intent?.data?.queryParameterNames.isNullOrEmpty())
+                    showLoginPortal()
+                else
+                    showLoginPortal(intent?.data?.getQueryParameter(intent.data?.queryParameterNames?.first()))
             }
         }
     }
@@ -122,8 +136,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         else showLoginPortal()
     }
 
-    private fun showLoginPortal() {
-        AffiliateRegistrationActivity.newInstance(this)
+    private fun showLoginPortal(productId: String? = null) {
+        AffiliateRegistrationActivity.newInstance(this, productId = productId)
         finish()
     }
 
@@ -241,7 +255,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         var selectedTab =  HOME_MENU
         Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()?.let {
             if (it.contains(PAGE_SEGMENT_HELP)) {
-                selectedTab = HELP_MENU
+                selectedTab = EDUKASI_MENU
             } else if(it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY)){
                 selectedTab = INCOME_MENU
             }
@@ -266,7 +280,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
                     userSessionInterface.profilePicture, this
                 )
             )
-            HELP_MENU -> openFragment(AffiliateHelpFragment.getFragmentInstance(AFFILIATE_HELP_URL))
+            EDUKASI_MENU -> openFragment(AffiliateEducationLandingPage.getFragmentInstance())
         }
         if (!isNotFromBottom) sendBottomNavClickEvent(position)
         return true
@@ -332,7 +346,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         when (position) {
             HOME_MENU -> eventAction = AffiliateAnalytics.ActionKeys.HOME_NAV_BAR_CLICK
             PROMO_MENU -> eventAction = AffiliateAnalytics.ActionKeys.PROMOSIKAN_NAV_BAR_CLICK
-            HELP_MENU -> eventAction = AffiliateAnalytics.ActionKeys.BANUTAN_NAV_BAR_CLICK
+            EDUKASI_MENU -> eventAction = AffiliateAnalytics.ActionKeys.BANUTAN_NAV_BAR_CLICK
             INCOME_MENU -> eventAction = AffiliateAnalytics.ActionKeys.PENDAPATAN_NAV_BAR_CLICK
         }
         AffiliateAnalytics.sendEvent(
@@ -366,7 +380,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         var HOME_MENU = FIRST_TAB
         var PROMO_MENU = SECOND_TAB
         var INCOME_MENU = THIRD_TAB
-        var HELP_MENU = FOURTH_TAB
+        var EDUKASI_MENU = FOURTH_TAB
     }
 
     override fun selectItem(position: Int, id: Int, isNotFromBottom: Boolean) {
@@ -422,8 +436,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             AffiliateIncomeFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
                 INCOME_MENU
             )
-            BaseSessionWebViewFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
-                HELP_MENU
+            AffiliateEducationLandingPage::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
+                EDUKASI_MENU
             )
         }
     }

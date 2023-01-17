@@ -17,6 +17,7 @@ import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiState
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
+import com.tokopedia.play.broadcaster.ui.model.PagingType
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
@@ -40,9 +41,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.launch
+import kotlin.math.min
 
 /**
  * Created by kenny.hadisaputra on 26/01/22
@@ -104,7 +108,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     val uiEvent: SharedFlow<PlayBroProductChooserEvent>
         get() = _uiEvent
 
-    val uiState = combine(
+    val uiState: StateFlow<ProductChooserUiState> = combine(
         _campaignAndEtalase,
         _focusedProductList,
         _selectedProductList,
@@ -138,6 +142,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         )
     }
 
+    val selectedProducts: List<ProductUiModel>
+        get() = _selectedProductList.value
+
     init {
         getCampaignAndEtalaseList()
 
@@ -168,7 +175,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
         viewModelScope.launch {
             _productTagSectionList.collectLatest { sections ->
-                savedStateHandle[KEY_PRODUCT_SECTIONS] = sections
+                savedStateHandle.setProductSections(sections)
             }
         }
     }
@@ -178,7 +185,8 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             is ProductSetupAction.SetSort -> handleSetSort(action.sort)
             is ProductSetupAction.SelectEtalase -> handleSelectEtalase(action.etalase)
             is ProductSetupAction.SelectCampaign -> handleSelectCampaign(action.campaign)
-            is ProductSetupAction.SelectProduct -> handleSelectProduct(action.product)
+            is ProductSetupAction.ToggleSelectProduct -> handleSelectProduct(action.product)
+            is ProductSetupAction.SetProducts -> handleSetProducts(action.products)
             is ProductSetupAction.LoadProductList -> handleLoadProductList(
                 param = _loadParam.value,
                 resetList = false,
@@ -260,6 +268,11 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleSetProducts(products: List<ProductUiModel>) = whenProductsNotSaving {
+        val productsSize = min(configStore.getMaxProduct(), products.size)
+        _selectedProductList.value = products.subList(0, productsSize).filterNot { it.stock <= 0 }
+    }
+
     private fun handleLoadProductList(
         param: ProductListPaging.Param,
         resetList: Boolean,
@@ -277,9 +290,15 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             )
         }
         getProductListJob = viewModelScope.launchCatchError(dispatchers.io, block = {
-            val page = if (resetList) 1 else _focusedProductList.value.page + 1
+            val pagingType = _focusedProductList.value.pagingType
             when (val selectedEtalase = _loadParam.value.etalase) {
                 is SelectedEtalaseModel.Campaign -> {
+                    val page = when {
+                        resetList -> 1
+                        pagingType is PagingType.Page -> pagingType.page + 1
+                        else -> 1
+                    }
+
                     val pagedProductList = repo.getProductsInCampaign(
                         campaignId = selectedEtalase.campaign.id,
                         page = page
@@ -289,17 +308,23 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                         it.copy(
                             productList = it.productList + pagedProductList.dataList,
                             resultState = PageResultState.Success(pagedProductList.hasNextPage),
-                            page = page,
+                            pagingType = PagingType.Page(page),
                         )
                     }
                 }
                 is SelectedEtalaseModel.Etalase,
                 SelectedEtalaseModel.None -> {
+                    val cursor = when {
+                        resetList -> ""
+                        pagingType is PagingType.Cursor -> pagingType.cursor
+                        else -> ""
+                    }
+
                     val pagedProductList = repo.getProductsInEtalase(
                         etalaseId = if (selectedEtalase is SelectedEtalaseModel.Etalase) {
                             selectedEtalase.etalase.id
                         } else "",
-                        page = page,
+                        cursor = cursor,
                         keyword = param.keyword,
                         sort = param.sort ?: SortUiModel.supportedSortList.first(),
                     )
@@ -308,7 +333,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                         it.copy(
                             productList = it.productList + pagedProductList.dataList,
                             resultState = PageResultState.Success(pagedProductList.hasNextPage),
-                            page = page,
+                            pagingType = PagingType.Cursor(pagedProductList.cursor),
                         )
                     }
                 }
@@ -331,9 +356,11 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private fun handleSaveProducts() {
-        _saveState.update {
+        val currentState = _saveState.getAndUpdate {
             it.copy(isLoading = true)
         }
+        if (currentState.isLoading) return
+
         viewModelScope.launchCatchError(dispatchers.io, block = {
             repo.setProductTags(
                 channelId = configStore.getChannelId(),

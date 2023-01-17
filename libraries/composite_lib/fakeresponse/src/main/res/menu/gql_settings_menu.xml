@@ -48,4 +48,17 @@
 
     </item>
 
+    <item
+        android:id="@+id/notification"
+        android:title="@string/notification">
+        <menu>
+            <item
+                android:id="@+id/notification_on"
+                android:title="@string/text_notif_on" />
+            <item
+                android:id="@+id/notification_off"
+                android:title="@string/text_notif_off" />
+        </menu>
+
+    </item>
 </menu>

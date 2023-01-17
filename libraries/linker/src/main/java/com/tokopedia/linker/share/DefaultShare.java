@@ -106,10 +106,18 @@ public class DefaultShare implements ShareCallback {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             Intent receiver = new Intent(activity, ShareBroadcastReceiver.class);
             receiver.putExtra(ShareBroadcastReceiver.KEY_TYPE, shareData.getType());
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, 0,
-                    receiver, PendingIntent.FLAG_UPDATE_CURRENT);
-            activity.startActivity(Intent.createChooser(intent, TITLE_OTHER,
-                    pendingIntent.getIntentSender()));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, 0,
+                        receiver, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
+                activity.startActivity(Intent.createChooser(intent, TITLE_OTHER,
+                        pendingIntent.getIntentSender()));
+            } else {
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, 0,
+                        receiver, PendingIntent.FLAG_UPDATE_CURRENT);
+                activity.startActivity(Intent.createChooser(intent, TITLE_OTHER,
+                        pendingIntent.getIntentSender()));
+            }
 
         } else {
             activity.startActivity(Intent.createChooser(intent, TITLE_OTHER));

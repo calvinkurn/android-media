@@ -244,15 +244,14 @@ object PMActiveTermHelper {
     fun getBenefitList(context: Context): List<PMProBenefitUiModel> {
         return listOf(
             PMProBenefitUiModel(
-                description = context.getString(
-                    R.string.pm_pro_general_benefit_1,
-                    Constant.POWER_MERCHANT_PRO_CHARGING
-                ),
-                icon = IconUnify.COURIER_FAST
+                description = context.getString(R.string.pm_pro_general_benefit_1),
+                imgUrl = PMConstant.Images.PM_PRO_BADGE
             ),
             PMProBenefitUiModel(
-                description = context.getString(R.string.pm_pro_general_benefit_2),
-                imgUrl = PMConstant.Images.PM_PRO_BADGE
+                description = context.getString(
+                    R.string.pm_pro_general_benefit_2
+                ),
+                icon = IconUnify.PROMO_ADS
             ),
             PMProBenefitUiModel(
                 description = context.getString(R.string.pm_pro_general_benefit_3),

@@ -20,8 +20,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivVariantPhoto"
-            android:layout_width="@dimen/layout_lvl7"
-            android:layout_height="@dimen/layout_lvl7"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:scaleType="centerInside"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -32,9 +32,9 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/typographyVariantPhoto"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_lvl3"
+            android:layout_margin="8dp"
             android:ellipsize="end"
             android:gravity="center"
             android:lines="2"

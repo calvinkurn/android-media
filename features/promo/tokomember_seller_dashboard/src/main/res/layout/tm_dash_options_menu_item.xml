@@ -16,7 +16,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/tm_dash_dp_10"
-        android:textColor="@color/Unify_NN600"
-        app:typographyType="heading_5"/>
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="body_1"
+        app:typographyWeight="reguler"
+        />
 
 </LinearLayout>

@@ -4,8 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.transition.Fade
+import androidx.transition.TransitionManager
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -14,8 +17,7 @@ import com.tokopedia.review.databinding.WidgetCreateReviewTemplateBinding
 import com.tokopedia.review.feature.createreputation.model.CreateReviewTemplate
 import com.tokopedia.review.feature.createreputation.presentation.adapter.CreateReviewTemplateAdapter
 import com.tokopedia.review.feature.createreputation.presentation.adapter.typefactory.CreateReviewTemplateTypeFactory
-import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewItemAnimator
-import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.old.CreateReviewBottomSheet
+import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewBottomSheet
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewTemplateItemUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTemplateUiState
 import com.tokopedia.review.feature.createreputation.presentation.viewholder.CreateReviewTemplateItemViewHolder
@@ -28,9 +30,9 @@ class CreateReviewTemplate @JvmOverloads constructor(
     defStyleAttr: Int = Int.ZERO
 ) : BaseReviewCustomView<WidgetCreateReviewTemplateBinding>(context, attrs, defStyleAttr) {
 
+    private val transitionHandler = TransitionHandler()
     private val createReviewTemplateListener = CreateReviewTemplateListener()
     private val layoutManager = StaggeredGridLayoutManager(CreateReviewBottomSheet.TEMPLATES_ROW_COUNT, RecyclerView.HORIZONTAL)
-    private val itemAnimator = CreateReviewItemAnimator()
     private val typeFactory = CreateReviewTemplateTypeFactory(createReviewTemplateListener)
     private val adapter = CreateReviewTemplateAdapter(typeFactory)
 
@@ -38,21 +40,16 @@ class CreateReviewTemplate @JvmOverloads constructor(
 
     init {
         binding.rvTemplate.layoutManager = layoutManager
-        binding.rvTemplate.itemAnimator = itemAnimator
         binding.rvTemplate.adapter = adapter
     }
 
     private fun showLoading() {
-        binding.layoutTemplateLoading.show()
+        transitionHandler.transitionToShowLoading()
     }
 
     private fun showTemplate(templates: List<CreateReviewTemplateItemUiModel>) {
-        binding.layoutTemplateLoading.gone()
+        transitionHandler.transitionToShowTemplate()
         setupTemplate(templates)
-    }
-
-    private fun hideTemplate() {
-        binding.layoutTemplateLoading.gone()
     }
 
     private fun setupTemplate(templates: List<CreateReviewTemplateItemUiModel>) {
@@ -79,7 +76,6 @@ class CreateReviewTemplate @JvmOverloads constructor(
                 })
             }
             is CreateReviewTemplateUiState.Hidden -> {
-                hideTemplate()
                 animateHide(onAnimationEnd = {
                     continuation.resume(Unit)
                 })
@@ -104,6 +100,51 @@ class CreateReviewTemplate @JvmOverloads constructor(
 
         override fun onTemplateSelected(template: CreateReviewTemplate) {
             listener?.onTemplateSelected(template)
+        }
+    }
+
+    private inner class TransitionHandler {
+        private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
+            Fade().apply {
+                duration = ANIMATION_DURATION
+                interpolator = AccelerateInterpolator()
+            }
+        }
+
+        private fun WidgetCreateReviewTemplateBinding.showLoadingLayout() {
+            layoutTemplateLoading.show()
+        }
+
+        private fun WidgetCreateReviewTemplateBinding.hideLoadingLayout() {
+            layoutTemplateLoading.gone()
+        }
+
+        private fun WidgetCreateReviewTemplateBinding.showTemplateLayout() {
+            rvTemplate.show()
+        }
+
+        private fun WidgetCreateReviewTemplateBinding.hideTemplateLayout() {
+            rvTemplate.gone()
+        }
+
+        private fun WidgetCreateReviewTemplateBinding.beginDelayedTransition() {
+            TransitionManager.beginDelayedTransition(root, fadeTransition)
+        }
+
+        fun transitionToShowTemplate() {
+            with(binding) {
+                beginDelayedTransition()
+                hideLoadingLayout()
+                showTemplateLayout()
+            }
+        }
+
+        fun transitionToShowLoading() {
+            with(binding) {
+                beginDelayedTransition()
+                hideTemplateLayout()
+                showLoadingLayout()
+            }
         }
     }
 

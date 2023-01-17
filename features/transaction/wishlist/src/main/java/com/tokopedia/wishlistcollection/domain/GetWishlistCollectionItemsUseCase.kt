@@ -33,6 +33,12 @@ class GetWishlistCollectionItemsUseCase @Inject constructor(
         const val query = """
             query GetWishlistCollectionItems(${'$'}params:GetWishlistCollectionItemsParams) {
                  get_wishlist_collection_items(params:${'$'}params){
+                    add_wishlist_bulk_config {
+                      max_bulk
+                      toaster {
+                        message
+                      }
+                    }
                     page
                     limit
                     offset
@@ -40,7 +46,9 @@ class GetWishlistCollectionItemsUseCase @Inject constructor(
                     has_next_page
                     total_data
                     count_removable_items
+                    description
                     show_empty_state_on_bottomsheet
+                    collection_type
                     empty_state {
                       type
                       messages{

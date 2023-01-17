@@ -202,7 +202,7 @@ class RewardSummaryView : FrameLayout {
 
                 typography.layoutParams = lp
                 typography.background = ContextCompat.getDrawable(context, R.drawable.gf_bg_orange_3d)
-                typography.setTextColor(ContextCompat.getColor(context, android.R.color.white))
+                typography.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
             }
             GREEN -> {
                 val lp = LinearLayout.LayoutParams(0, heightLarge)
@@ -211,7 +211,7 @@ class RewardSummaryView : FrameLayout {
 
                 typography.layoutParams = lp
                 typography.background = ContextCompat.getDrawable(context, R.drawable.gf_bg_green_3d)
-                typography.setTextColor(ContextCompat.getColor(context, android.R.color.white))
+                typography.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
             }
             OUTLINE -> {
                 val lp = LinearLayout.LayoutParams(0, heightSmall)

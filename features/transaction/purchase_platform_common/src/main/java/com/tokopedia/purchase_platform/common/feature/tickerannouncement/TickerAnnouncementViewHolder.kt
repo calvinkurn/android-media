@@ -13,6 +13,7 @@ open class TickerAnnouncementViewHolder(itemView: View, val actionListener: Tick
         cartTicker?.tickerType = Ticker.TYPE_ANNOUNCEMENT
         cartTicker?.tickerShape = Ticker.SHAPE_FULL
         cartTicker?.closeButtonVisibility = View.GONE
+        cartTicker?.tickerTitle = tickerAnnouncementData.title
         cartTicker?.setHtmlDescription(tickerAnnouncementData.message)
 
         // Workaround for ticker not wrapping multiline content correctly

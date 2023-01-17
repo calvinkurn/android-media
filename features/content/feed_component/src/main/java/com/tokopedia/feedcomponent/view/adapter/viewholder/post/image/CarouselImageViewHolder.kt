@@ -12,10 +12,14 @@ import androidx.transition.TransitionManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.util.util.doOnLayout
 import com.tokopedia.feedcomponent.view.adapter.post.FeedPostCarouselAdapter
+import com.tokopedia.feedcomponent.view.widget.FlashSaleRilisanCampaignOngoingView
+import com.tokopedia.feedcomponent.view.widget.FlashSaleRilisanCampaignUpcomingView
 import com.tokopedia.feedcomponent.view.widget.PostTagView
+import com.tokopedia.feedcomponent.view.widget.listener.FeedCampaignListener
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 
@@ -27,12 +31,15 @@ class CarouselImageViewHolder(
     itemView: View,
     private val dataSource: FeedPostCarouselAdapter.DataSource,
     private val listener: Listener,
+    private val fstListener: FeedCampaignListener?
 ) : BaseViewHolder(itemView) {
 
     private val postImage = itemView.findViewById<ImageUnify>(R.id.post_image)
     private val postImageLayout = itemView.findViewById<ConstraintLayout>(R.id.post_image_layout)
     private val llLihatProduct = itemView.findViewById<LinearLayout>(R.id.ll_lihat_product)
     private val tvLihatProduct = itemView.findViewById<TextView>(R.id.tv_lihat_product)
+    private val flashSaleViewCardUpcoming = itemView.findViewById<FlashSaleRilisanCampaignUpcomingView>(R.id.feed_fst_upcoming)
+    private val flashSaleViewCardOngoing = itemView.findViewById<FlashSaleRilisanCampaignOngoingView>(R.id.feed_fst_ongoing)
     private val likeAnim = itemView.findViewById<ImageUnify>(R.id.like_anim)
 
     private val animationLike = AnimationUtils.loadAnimation(
@@ -43,7 +50,7 @@ class CarouselImageViewHolder(
     private val postGestureDetector = GestureDetector(
         itemView.context,
         object : GestureDetector.SimpleOnGestureListener() {
-            override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                 listener.onImageClicked(this@CarouselImageViewHolder)
 
                 animateLihatProduct(
@@ -54,7 +61,7 @@ class CarouselImageViewHolder(
                 return true
             }
 
-            override fun onDoubleTap(e: MotionEvent?): Boolean {
+            override fun onDoubleTap(e: MotionEvent): Boolean {
                 onPostTagViews {
                     it.hideExpandedViewIfShown()
                 }
@@ -69,11 +76,11 @@ class CarouselImageViewHolder(
                 return true
             }
 
-            override fun onDown(e: MotionEvent?): Boolean {
+            override fun onDown(e: MotionEvent): Boolean {
                 return true
             }
 
-            override fun onLongPress(e: MotionEvent?) {
+            override fun onLongPress(e: MotionEvent) {
                 listener.onImageLongClicked(this@CarouselImageViewHolder)
             }
         }
@@ -114,10 +121,10 @@ class CarouselImageViewHolder(
         })
 
         itemView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(v: View?) {
+            override fun onViewAttachedToWindow(v: View) {
             }
 
-            override fun onViewDetachedFromWindow(v: View?) {
+            override fun onViewDetachedFromWindow(v: View) {
                 removeAllPendingCallbacks()
             }
         })
@@ -154,6 +161,19 @@ class CarouselImageViewHolder(
 
         postImage.setImageUrl(item.mediaUrl)
         llLihatProduct.showWithCondition(item.tagProducts.isNotEmpty())
+        when {
+            card.campaign.isUpcoming -> {
+                updateAsgcButton()
+                showHideFlashSaleRsUpcomingCampaignCard(card)
+            }
+            card.campaign.isOngoing -> {
+                showHideFlashSaleRsOngoingCampaignCard(card, item)
+            }
+            else -> {
+                flashSaleViewCardUpcoming.hide()
+                flashSaleViewCardOngoing.hide()
+            }
+        }
 
         itemView.doOnLayout {
             removeExistingPostTags()
@@ -168,6 +188,7 @@ class CarouselImageViewHolder(
                     height = it.height,
                     positionInFeed = dataSource.getPositionInFeed(),
                     bitmap = postImage?.drawable?.toBitmap(),
+                    campaign = dataSource.getFeedXCard().campaign
                 )
                 postImageLayout.addView(tagView)
             }
@@ -180,6 +201,39 @@ class CarouselImageViewHolder(
         itemView.addOnImpressionListener(item.impressHolder) {
             listener.onImpressed(this)
         }
+    }
+
+    private fun showHideFlashSaleRsUpcomingCampaignCard(feedXCard: FeedXCard){
+        flashSaleViewCardUpcoming.setupTimer(feedXCard.campaign.endTime) {
+            fstListener?.onTimerFinishUpcoming()
+        }
+        flashSaleViewCardUpcoming.setData(
+            feedXCard = feedXCard,
+            positionInFeed = dataSource.getPositionInFeed()
+        )
+        fstListener?.let {
+            flashSaleViewCardUpcoming.setListener(fstListener)
+        }
+        flashSaleViewCardUpcoming.showWithCondition(feedXCard.isTypeProductHighlight)
+        flashSaleViewCardOngoing.hide()
+    }
+
+    private fun showHideFlashSaleRsOngoingCampaignCard(feedXCard: FeedXCard,  media: FeedXMedia){
+        flashSaleViewCardOngoing.setupTimer(feedXCard.campaign.endTime) {
+            fstListener?.onTimerFinishOngoing()
+        }
+        flashSaleViewCardOngoing.setData(
+            feedXCard = feedXCard,
+            positionInFeed = dataSource.getPositionInFeed(),
+            media = media
+        )
+        flashSaleViewCardOngoing.showWithCondition(feedXCard.isTypeProductHighlight)
+        flashSaleViewCardUpcoming.hide()
+
+    }
+
+    fun updateAsgcButton(){
+        flashSaleViewCardUpcoming.setReminderBtnState(dataSource.getFeedXCard().campaign.reminder, dataSource.getPositionInFeed())
     }
 
     private fun removeExistingPostTags() {
@@ -236,6 +290,7 @@ class CarouselImageViewHolder(
             parent: ViewGroup,
             dataSource: FeedPostCarouselAdapter.DataSource,
             listener: Listener,
+            fstListener: FeedCampaignListener?
         ) = CarouselImageViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(
@@ -245,6 +300,7 @@ class CarouselImageViewHolder(
                 ),
             dataSource,
             listener,
+            fstListener
         )
     }
 

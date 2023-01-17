@@ -1,21 +1,23 @@
 package com.tokopedia.chat_common.view
 
+import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.*
+import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.NonNull
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.EventsWatcher
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.chat_common.view.adapter.BaseChatAdapter
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -23,23 +25,25 @@ import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.util.IdentifierUtil
+import com.tokopedia.chat_common.view.adapter.BaseChatAdapter
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
+import com.tokopedia.media.loader.loadImageCircle
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Action1
-import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
 
 /**
  * @author : Steven 29/11/18
  */
 abstract class BaseChatViewStateImpl(
-        @NonNull open val view: View,
-        open val toolbar: Toolbar,
-        private val typingListener: TypingListener,
-        private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener
+    @NonNull open val view: View,
+    open val toolbar: Toolbar,
+    private val typingListener: TypingListener,
+    private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener
 ) : BaseChatViewState, ViewTreeObserver.OnGlobalLayoutListener {
 
     protected lateinit var rootView: ViewGroup
@@ -56,6 +60,7 @@ abstract class BaseChatViewStateImpl(
     protected lateinit var replyWatcher: Observable<String>
     protected lateinit var replyIsTyping: Observable<Boolean>
     var isTyping: Boolean = false
+    var isFromBubble: Boolean = false
 
     override fun initView() {
         rootView = view.findViewById(getRootViewId())
@@ -92,8 +97,8 @@ abstract class BaseChatViewStateImpl(
                 isTyping = false
             }
             replyIsTyping.debounce(2, TimeUnit.SECONDS)
-                    .skip(1)
-                    .subscribe(onChatDeBounceSubscriber, onError)
+                .skip(1)
+                .subscribe(onChatDeBounceSubscriber, onError)
         }
 
 
@@ -142,10 +147,13 @@ abstract class BaseChatViewStateImpl(
 
     }
 
+    @SuppressLint("ResourcePackage")
     override fun loadAvatar(avatarUrl: String) {
         val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
-        ImageHandler.loadImageCircle2(avatar.context, avatar, avatarUrl,
-                R.drawable.ic_default_avatar)
+        avatar.loadImageCircle(avatarUrl, properties = {
+            setPlaceHolder(R.drawable.ic_loading_toped)
+            setErrorDrawable(R.drawable.ic_loading_toped)
+        })
     }
 
     @DrawableRes
@@ -168,7 +176,13 @@ abstract class BaseChatViewStateImpl(
         scrollDownWhenInBottom()
     }
 
-    override fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String, startTime: String) {
+    override fun onSendingMessage(
+        messageId: String,
+        userId: String,
+        name: String,
+        sendMessage: String,
+        startTime: String
+    ) {
         val localId = IdentifierUtil.generateLocalId()
         val message = MessageUiModel.Builder()
             .withMsgId(messageId)
@@ -206,17 +220,32 @@ abstract class BaseChatViewStateImpl(
         when {
             labelText == SELLER_TAG && shouldShowSellerLabel() -> {
                 label.setBackgroundResource(R.drawable.topchat_seller_label)
-                label.setTextColor(MethodChecker.getColor(label.context, R.color.chatcommon_dms_g400))
+                label.setTextColor(
+                    MethodChecker.getColor(
+                        label.context,
+                        R.color.chatcommon_dms_g400
+                    )
+                )
                 label.visibility = View.VISIBLE
             }
             labelText == ADMIN_TAG -> {
                 label.setBackgroundResource(R.drawable.topchat_admin_label)
-                label.setTextColor(MethodChecker.getColor(label.context, R.color.chatcommon_dms_y400))
+                label.setTextColor(
+                    MethodChecker.getColor(
+                        label.context,
+                        R.color.chatcommon_dms_y400
+                    )
+                )
                 label.visibility = View.VISIBLE
             }
             labelText == OFFICIAL_TAG -> {
                 label.setBackgroundResource(R.drawable.topchat_admin_label)
-                label.setTextColor(MethodChecker.getColor(label.context, R.color.chatcommon_dms_y400))
+                label.setTextColor(
+                    MethodChecker.getColor(
+                        label.context,
+                        R.color.chatcommon_dms_y400
+                    )
+                )
                 label.visibility = View.VISIBLE
             }
             else -> label.visibility = View.GONE
@@ -235,8 +264,8 @@ abstract class BaseChatViewStateImpl(
         val onNext = Action1<Long> { recyclerView.scrollToPosition(0) }
         val onError = Action1<Throwable> { it.printStackTrace() }
         Observable.timer(SCROLL_DELAY, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(onNext, onError)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(onNext, onError)
     }
 
     open fun checkLastCompletelyVisibleItemIsFirst(): Boolean {
@@ -256,7 +285,7 @@ abstract class BaseChatViewStateImpl(
     }
 
     fun getList(): List<Visitable<*>> {
-        return (recyclerView.adapter as BaseChatAdapter).getList()
+        return (recyclerView.adapter as BaseChatAdapter).list
     }
 
     open fun clearEditText() {
@@ -275,13 +304,19 @@ abstract class BaseChatViewStateImpl(
     }
 
     override fun onGlobalLayout() {
+
         val screenHeight = getScreenHeight()
         val windowRect = Rect().apply {
             rootView.getWindowVisibleDisplayFrame(this)
         }
-        val windowHeight = windowRect.bottom - windowRect.top
-        val statusBarHeight = getStatusBarHeight()
 
+        val windowHeight = if (isFromBubble) {
+            ((windowRect.bottom - windowRect.top) * BUBBLE_UPSIZE_MULTIPLIER).roundToInt()
+        } else {
+            windowRect.bottom - windowRect.top
+        }
+
+        val statusBarHeight = getStatusBarHeight()
         val heightDifference = screenHeight - windowHeight - statusBarHeight
 
         if (heightDifference > KEYBOARD_OFFSET) {
@@ -319,7 +354,8 @@ abstract class BaseChatViewStateImpl(
 
     private fun getStatusBarHeight(): Int {
         var height = 0
-        val resourceId = view.context.resources.getIdentifier("status_bar_height", "dimen", "android")
+        val resourceId =
+            view.context.resources.getIdentifier("status_bar_height", "dimen", "android")
         if (resourceId > 0) {
             height = view.context.resources.getDimensionPixelSize(resourceId)
         }
@@ -355,6 +391,7 @@ abstract class BaseChatViewStateImpl(
 
     companion object {
         const val KEYBOARD_OFFSET = 100
+        const val BUBBLE_UPSIZE_MULTIPLIER = 1.235
         private const val SCROLL_DELAY: Long = 250
     }
 }

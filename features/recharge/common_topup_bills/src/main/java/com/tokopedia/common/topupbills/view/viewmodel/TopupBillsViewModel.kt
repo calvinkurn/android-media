@@ -10,8 +10,7 @@ import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressChec
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
 import com.tokopedia.common.topupbills.favoritepage.domain.usecase.RechargeFavoriteNumberUseCase
 import com.tokopedia.common.topupbills.favoritepage.util.FavoriteNumberDataMapper
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.FavoriteNumberActionType
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.FavoriteNumberActionType.*
+import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberActionType
 import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -64,18 +63,6 @@ class TopupBillsViewModel @Inject constructor(
     private val _seamlessFavNumberData = MutableLiveData<Result<Pair<TopupBillsSeamlessFavNumber, Boolean>>>()
     val seamlessFavNumberData: LiveData<Result<Pair<TopupBillsSeamlessFavNumber, Boolean>>>
         get() = _seamlessFavNumberData
-
-    private val _seamlessFavNumberUpdateData = MutableLiveData<Result<UpdateFavoriteDetail>>()
-    val seamlessFavNumberUpdateData: LiveData<Result<UpdateFavoriteDetail>>
-        get() = _seamlessFavNumberUpdateData
-
-    private val _seamlessFavNumberDeleteData = MutableLiveData<Result<UpdateFavoriteDetail>>()
-    val seamlessFavNumberDeleteData: LiveData<Result<UpdateFavoriteDetail>>
-        get() = _seamlessFavNumberDeleteData
-
-    private val _seamlessFavNumberUndoDeleteData = MutableLiveData<Result<UpdateFavoriteDetail>>()
-    val seamlessFavNumberUndoDeleteData: LiveData<Result<UpdateFavoriteDetail>>
-        get() = _seamlessFavNumberUndoDeleteData
 
     private val _checkVoucherData = MutableLiveData<Result<PromoData>>()
     val checkVoucherData: LiveData<Result<PromoData>>
@@ -184,45 +171,12 @@ class TopupBillsViewModel @Inject constructor(
             _seamlessFavNumberData.postValue(Success(data.seamlessFavoriteNumber to shouldRefreshInputNumber))
         }) {
             val errMsg = when (prevActionType) {
-                UPDATE -> ERROR_FETCH_AFTER_UPDATE
-                DELETE -> ERROR_FETCH_AFTER_DELETE
-                UNDO_DELETE -> ERROR_FETCH_AFTER_UNDO_DELETE
+                FavoriteNumberActionType.UPDATE -> ERROR_FETCH_AFTER_UPDATE
+                FavoriteNumberActionType.DELETE -> ERROR_FETCH_AFTER_DELETE
+                FavoriteNumberActionType.UNDO_DELETE -> ERROR_FETCH_AFTER_UNDO_DELETE
                 else -> it.message
             }
             _seamlessFavNumberData.postValue(Fail(Throwable(errMsg)))
-        }
-    }
-
-    fun modifySeamlessFavoriteNumber(
-        rawQuery: String,
-        mapParam: Map<String, Any>,
-        actionType: FavoriteNumberActionType,
-        onModifyCallback: (() -> Unit)? = null
-    ) {
-        launchCatchError(block = {
-            val data = withContext(dispatcher.io) {
-                val graphqlRequest = GraphqlRequest(
-                    rawQuery,
-                    TopupBillsSeamlessFavNumberModData::class.java,
-                    mapParam
-                )
-                graphqlRepository.response(listOf(graphqlRequest))
-            }.getSuccessData<TopupBillsSeamlessFavNumberModData>()
-
-            when (actionType) {
-                UPDATE -> _seamlessFavNumberUpdateData.postValue(Success(data.updateFavoriteDetail))
-                DELETE -> _seamlessFavNumberDeleteData.postValue(Success(data.updateFavoriteDetail))
-                UNDO_DELETE -> _seamlessFavNumberUndoDeleteData.postValue(Success(data.updateFavoriteDetail))
-            }
-        }) {
-            when (actionType) {
-                UPDATE -> _seamlessFavNumberUpdateData.postValue(Fail(it))
-                DELETE -> {
-                    _seamlessFavNumberDeleteData.postValue(Fail(it))
-                    onModifyCallback?.invoke()
-                }
-                UNDO_DELETE -> _seamlessFavNumberUndoDeleteData.postValue(Fail(it))
-            }
         }
     }
 
@@ -321,8 +275,8 @@ class TopupBillsViewModel @Inject constructor(
         return enquiryParams
     }
 
-    fun createMenuDetailParams(menuId: Int): Map<String, Any> {
-        return mapOf(PARAM_MENU_ID to menuId)
+    fun createMenuDetailParams(menuId: Int, platformId: Int = 5): Map<String, Any> {
+        return mapOf(PARAM_MENU_ID to menuId, PARAM_PLATFORM_ID to platformId)
     }
 
     fun createCatalogPluginParams(operatorId: Int, categoryId: Int): Map<String, Any> {
@@ -337,8 +291,8 @@ class TopupBillsViewModel @Inject constructor(
     }
 
     fun createSeamlessFavoriteNumberParams(categoryIds: List<String>): Map<String, Any> {
-        var paramSource = if (categoryIds.contains(CATEGORY_ID_PASCABAYAR.toString()))
-            FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID else FAVORITE_NUMBER_PARAM_SOURCE_PREPAID
+        val joinedCategoryIds = categoryIds.joinToString(separator = ",")
+        val paramSource = "${FAVORITE_NUMBER_PARAM_SOURCE_PERSO}$joinedCategoryIds"
 
         return mapOf(
             FAVORITE_NUMBER_PARAM_FIELDS to mapOf(
@@ -349,32 +303,6 @@ class TopupBillsViewModel @Inject constructor(
                 FAVORITE_NUMBER_PARAM_SERVICE_PLAN_TYPE to "",
                 FAVORITE_NUMBER_PARAM_SUBSCRIPTION to false,
                 FAVORITE_NUMBER_PARAM_LIMIT to FAVORITE_NUMBER_LIMIT
-            )
-        )
-    }
-
-    fun createSeamlessFavoriteNumberUpdateParams(
-        categoryId: Int,
-        productId: Int,
-        clientNumber: String,
-        totalTransaction: Int,
-        label: String,
-        isDelete: Boolean
-    ): Map<String, Any> {
-        var paramSource = if (categoryId == CATEGORY_ID_PASCABAYAR)
-            FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID else FAVORITE_NUMBER_PARAM_SOURCE_PREPAID
-
-        return mapOf(
-            FAVORITE_NUMBER_PARAM_UPDATE_REQUEST to mapOf(
-                FAVORITE_NUMBER_PARAM_CATEGORY_ID to categoryId,
-                FAVORITE_NUMBER_PARAM_CLIENT_NUMBER to clientNumber,
-                FAVORITE_NUMBER_PARAM_LAST_PRODUCT to productId,
-                FAVORITE_NUMBER_PARAM_LABEL to label,
-                FAVORITE_NUMBER_PARAM_TOTAL_TRANSACTION to totalTransaction,
-                FAVORITE_NUMBER_PARAM_UPDATE_LAST_ORDER_DATE to false,
-                FAVORITE_NUMBER_PARAM_SOURCE to paramSource,
-                FAVORITE_NUMBER_PARAM_UPDATE_STATUS to true,
-                FAVORITE_NUMBER_PARAM_WISHLIST to !isDelete
             )
         )
     }
@@ -417,6 +345,7 @@ class TopupBillsViewModel @Inject constructor(
         const val PARAM_FILTERS = "filters"
         const val PARAM_CART = "cart"
         const val PARAM_MENU_ID = "menuID"
+        const val PARAM_PLATFORM_ID = "platformID"
         const val PARAM_CATEGORY_ID = "categoryID"
 
         const val PLUGIN_PARAM_KEY = "Key"
@@ -453,17 +382,7 @@ class TopupBillsViewModel @Inject constructor(
         const val FAVORITE_NUMBER_PARAM_SUBSCRIPTION = "subscription"
 
         const val FAVORITE_NUMBER_PARAM_LIMIT = "limit"
-        const val FAVORITE_NUMBER_PARAM_UPDATE_REQUEST = "updateRequest"
-        const val FAVORITE_NUMBER_PARAM_CATEGORY_ID = "categoryID"
-        const val FAVORITE_NUMBER_PARAM_CLIENT_NUMBER = "clientNumber"
-        const val FAVORITE_NUMBER_PARAM_LAST_PRODUCT = "lastProduct"
-        const val FAVORITE_NUMBER_PARAM_LABEL = "label"
-        const val FAVORITE_NUMBER_PARAM_TOTAL_TRANSACTION = "totalTransaction"
-        const val FAVORITE_NUMBER_PARAM_UPDATE_LAST_ORDER_DATE = "updateLastOrderDate"
-        const val FAVORITE_NUMBER_PARAM_UPDATE_STATUS = "updateStatus"
-        const val FAVORITE_NUMBER_PARAM_WISHLIST = "wishlist"
-        const val FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID = "pdp_favorite_list_telco_postpaid"
-        const val FAVORITE_NUMBER_PARAM_SOURCE_PREPAID = "pdp_favorite_list_telco_prepaid"
+        const val FAVORITE_NUMBER_PARAM_SOURCE_PERSO = "digital-personalization"
 
         const val STATUS_DONE = "DONE"
         const val STATUS_PENDING = "PENDING"
@@ -474,13 +393,10 @@ class TopupBillsViewModel @Inject constructor(
 
         const val NULL_RESPONSE = "null response"
 
-        const val CATEGORY_ID_PASCABAYAR = 9
-
         const val CHECK_VOUCHER_DEBOUNCE_DELAY = 1000L
         const val FAVORITE_NUMBER_LIMIT = 10
         const val RETRY_DURATION = 0
         const val MS_TO_S_DURATION = 1000
         const val FIVE_MINS_CACHE_DURATION = 5
     }
-
 }

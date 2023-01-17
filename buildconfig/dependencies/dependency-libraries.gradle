@@ -4,13 +4,13 @@ ext {
     tkpdInternalLibDependencies = [
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24.5",
             globalconfig            : "com.tokopedia.config:global_config:1.0.17",
-            url                     : "com.tokopedia.url:url:1.0.13",
+            url                     : "com.tokopedia.url:url:1.0.15",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.6",
             williamchart            : "com.tokopedia.williamchart:williamchart:0.0.6",
             betaNotif               : "com.tokopedia.graphql:beta.notif:0.0.9",
             akamaiBMP               : "AkamaiBMP:AkamaiBMP:3.1.0@aar",
-            fakeresponse            : "com.tokopedia.fakeresponse:fakeresponse:0.0.10",
+            fakeresponse            : "com.tokopedia.fakeresponse:fakeresponse:0.0.11",
             fakeresponseNoOp        : "com.tokopedia.fakeresponse:fakeresponse_no_op:0.0.6",
             analyticAnnotation      : "com.tokopedia.analytic:annotation:0.0.3",
             analyticParam           : "com.tokopedia.analytic:param:0.0.3",
@@ -19,13 +19,16 @@ ext {
             analyticGTMUtil         : "com.tokopedia.analytic:gtmutil:0.0.2",
             gqlquery_annotation     : "com.tokopedia.gql_query_annotation:gqlquery_annotation:0.0.24",
             gqlquery_annotation_processor       : "com.tokopedia.gqlquery_annotation_processor:gqlquery_annotation_processor:0.0.24",
-            lint                    : "com.tokopedia.library:lint:0.0.45",
+            lint                    : "com.tokopedia.library:lint:0.0.48",
             dataVisor               : "com.tokopedia.sec:vangogh:0.0.2@aar",
             secUtil                 : "com.tokopedia.sec:java_util:0.0.1",
             secUtilObs              : "com.tokopedia.sec:tkpd_util_obs:0.0.2",
             brizzi                  : "com.tokopedia.brizzi:brizzi:1.3.1@aar",
             larixBroadcaster        : "com.wmspanel.libstream:libstream:1.0@aar",
-            logger                  : "com.tokopedia.library:logger:0.0.2"
+            logger                  : "com.tokopedia.library:logger:0.0.2",
+            cassava                 : "com.tokopedia.analyticsdebugger:cassava:1.3.4",
+            cassavaNoOp             : "com.tokopedia.analyticsdebugger:cassava-no-op:1.3.4",
+            cassavaTest             : "com.tokopedia.analyticsdebugger:cassavatest:1.3.4"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -43,7 +46,7 @@ ext {
             blockCanary             : ":libraries:blockcanary",
             blockCanaryNoOp         : "com.github.markzhai:blockcanary-no-op:1.5.0",
             bottomSheetBuilder      : ":libraries:bottom_sheet_builder",
-            cassavaTest             : ":libraries:cassavatest",
+            bubbles                 : ":libraries:bubbles",
             charts                  : ":libraries:charts",
             circularViewPager       : ":libraries:circular_view_pager",
             cmPushNotifications     : ":libraries:cm_push_notifications",
@@ -91,6 +94,8 @@ ext {
             pageInfoPusher          : ":libraries:page_info_pusher",
             preReleaseInspector     : ":libraries:pre_release_inspector",
             preReleaseInspectorNoop : ":libraries:pre_release_inspector_no_op",
+            journeyDebugger         : ":libraries:journey_debugger",
+            journeyDebuggerNoop     : ":libraries:journey_debugger_no_op",
             diffUtilRecycler        : ":libraries:smart_recycler_diffutil_helper",
             track                   : ":libraries:track",
             trackingOptimizer       : ":libraries:tracking_optimizer",
@@ -116,5 +121,7 @@ ext {
             screenRecorder          : ":libraries:screen_recorder",
             unitTest                : ":libraries:unit_test",
             telemetry               : ":libraries:telemetry",
+            sse                     : ":libraries:sse",
+            macrobenchmarkUtil      : ":libraries:macrobenchmark_util",
     ]
 }

@@ -27,4 +27,6 @@ class InvoiceSingleItemAttributes {
     var title: String = ""
     @SerializedName("total_amount")
     var amount: String = ""
+    @SerializedName("color")
+    var color: String = ""
 }

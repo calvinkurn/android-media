@@ -321,8 +321,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            tools:visibility="visible"
-            tools:srcCompat="@drawable/ic_hotel_booking_com_logo" />
+            tools:visibility="visible" />
 
     </LinearLayout>
     <include

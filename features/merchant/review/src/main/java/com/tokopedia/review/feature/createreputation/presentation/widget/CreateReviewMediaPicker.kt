@@ -34,7 +34,6 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
 ) : BaseReviewCustomView<WidgetCreateReviewMediaPickerBinding>(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val TRANSITION_DURATION = 300L
         const val MAX_MEDIA_COUNT = 5
         private const val MEDIA_SPAN_SIZE_SMALL = 1
         private const val MEDIA_SPAN_SIZE_BIG = MAX_MEDIA_COUNT
@@ -165,7 +164,7 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
     private inner class TransitionHandler {
         private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
             Fade().apply {
-                duration = TRANSITION_DURATION
+                duration = ANIMATION_DURATION
                 addTarget(binding.layoutMediaPicker.root)
                 addTarget(binding.layoutMediaPickerError.root)
                 addTarget(binding.layoutMediaPickerLoading.root)

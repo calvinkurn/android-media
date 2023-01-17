@@ -15,14 +15,6 @@ data class CreateReviewTemplateItemUiModel(
         return this == other
     }
 
-    override fun getChangePayload(other: Any?): List<String>? {
-        return null
-    }
-
-    override fun getSpanSize(): Int {
-        return 1
-    }
-
     override fun type(typeFactory: CreateReviewTemplateTypeFactory): Int {
         return typeFactory.type(this)
     }

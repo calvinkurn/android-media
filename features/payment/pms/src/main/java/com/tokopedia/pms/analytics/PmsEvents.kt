@@ -1,5 +1,7 @@
 package com.tokopedia.pms.analytics
 
+import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
+
 sealed class PmsEvents {
     data class ChevronTapClickEvent(val tag: Int) : PmsEvents()
     data class InvokeCancelTransactionBottomSheetEvent(val tag: Int) : PmsEvents()
@@ -20,4 +22,5 @@ sealed class PmsEvents {
 
     data class WaitingCardClickEvent(val paymentType: String) : PmsEvents()
     data class HowToPayRedirectionEvent(val tag: Int) : PmsEvents()
+    data class CompletePayment(val basePaymentModel: BasePaymentModel) : PmsEvents()
 }

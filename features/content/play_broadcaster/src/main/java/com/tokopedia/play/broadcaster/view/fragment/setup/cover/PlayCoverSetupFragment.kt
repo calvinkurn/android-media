@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.view.fragment.setup.cover
 
-import android.Manifest
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.RectF
@@ -149,8 +148,6 @@ class PlayCoverSetupFragment @Inject constructor(
     override fun getScreenName(): String = "Play Cover Title Setup"
 
     override fun onInterceptBackPressed(): Boolean {
-        try { Toaster.snackBar.dismiss() } catch (e: Throwable) {}
-
         val state = viewModel.cropState
         val coverChangeState = viewModel.coverChangeState()
         return when {
@@ -470,12 +467,12 @@ class PlayCoverSetupFragment @Inject constructor(
      */
     private fun isGalleryPermissionGranted(): Boolean {
         return permissionHelper.isAllPermissionsGranted(
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                arrayOf(PermissionHelper.READ_EXTERNAL_STORAGE)
         )
     }
 
     private fun requestGalleryPermission(requestCode: Int, isFullFlow: Boolean = true) {
-        val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        val permissions = arrayOf(PermissionHelper.READ_EXTERNAL_STORAGE)
         if (isFullFlow) {
             permissionHelper.requestMultiPermissionsFullFlow(
                     permissions = permissions,
@@ -542,6 +539,7 @@ class PlayCoverSetupFragment @Inject constructor(
                 override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                     return coverSetupViewModelFactory.create(
                         mDataSource?.getProductList().orEmpty(),
+                        mDataSource?.getAuthorId().orEmpty(),
                         mDataSource?.getChannelId().orEmpty(),
                     ) as T
                 }
@@ -659,6 +657,7 @@ class PlayCoverSetupFragment @Inject constructor(
 
     interface DataSource {
         fun getProductList(): List<ProductUiModel>
+        fun getAuthorId(): String
         fun getChannelId(): String
     }
 }

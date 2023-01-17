@@ -1,0 +1,20 @@
+package com.tokopedia.tkpd.flashsale.domain.entity.enums
+
+
+enum class FlashSaleStatus(val id: String) {
+    DEFAULT("DEFAULT_VALUE_PLACEHOLDER"),
+
+    UPCOMING("UPCOMING"),
+
+    NO_REGISTERED_PRODUCT("NO_REGISTERED_PRODUCT"),
+    WAITING_FOR_SELECTION("WAITING_FOR_REVIEW"),
+    ON_SELECTION_PROCESS("IN_REVIEW"),
+    SELECTION_FINISHED("READY"),
+
+    ONGOING("ONGOING"),
+
+    FINISHED("FINISHED"),
+    CANCELLED("CANCELLED"),
+    REJECTED("REJECTED"),
+    MISSED("MISSED"),
+}

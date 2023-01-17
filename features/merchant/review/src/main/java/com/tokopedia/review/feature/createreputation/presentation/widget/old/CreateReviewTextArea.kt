@@ -2,13 +2,10 @@ package com.tokopedia.review.feature.createreputation.presentation.widget.old
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View.OnTouchListener
-import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import com.tokopedia.review.R
 import com.tokopedia.review.databinding.OldWidgetCreateReviewTextAreaBinding
@@ -38,15 +35,6 @@ class CreateReviewTextArea : BaseCustomView {
 
     override fun clearFocus() {
         binding.createReviewEditText.clearFocus()
-    }
-
-    fun requestFocusForEditText() {
-        binding.createReviewEditText.apply {
-            requestFocus()
-            val imm: InputMethodManager? =
-                context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
-        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -88,28 +76,8 @@ class CreateReviewTextArea : BaseCustomView {
                     }
                 } else {
                     binding.createReviewTextAreaContainer.setBackgroundResource(R.drawable.bg_review_create_text_area_default)
-                    textAreaListener.hideText()
                 }
             }
-            addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                    // No Op
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    // No Op
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-                    textAreaListener.onTextChanged(s?.length ?: 0)
-                }
-
-            })
         }
     }
 
@@ -119,18 +87,6 @@ class CreateReviewTextArea : BaseCustomView {
 
     fun getText(): String {
         return binding.createReviewEditText.text.toString()
-    }
-
-    fun append(text: String) {
-        binding.createReviewEditText.append(text)
-    }
-
-    fun setPlaceHolder(text: String) {
-        binding.createReviewEditText.hint = text
-    }
-
-    fun getPlaceHolder(): String {
-        return binding.createReviewEditText.hint.toString()
     }
 
     fun isEmpty(): Boolean {

@@ -15,26 +15,23 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.NeedHelpAnalytics
 import com.tokopedia.loginregister.databinding.LayoutNeedHelpBottomsheetBinding
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
-import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class NeedHelpBottomSheet: BottomSheetUnify() {
 
     @Inject
     lateinit var needHelpAnalytics: NeedHelpAnalytics
-
-    private var _bindingChild: LayoutNeedHelpBottomsheetBinding? = null
-    private val bindingChild get() = _bindingChild!!
+    var viewBinding by autoClearedNullable<LayoutNeedHelpBottomsheetBinding>()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -46,8 +43,9 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _bindingChild = LayoutNeedHelpBottomsheetBinding.inflate(layoutInflater, container, false)
-        setChild(bindingChild.root)
+        viewBinding = LayoutNeedHelpBottomsheetBinding.inflate(inflater).also {
+            setChild(it.root)
+        }
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -62,14 +60,15 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
 
     private fun setListener() {
 
-        initTokopediaCareText(bindingChild.toNeedAnotherHelp)
+        viewBinding?.toNeedAnotherHelp?.let {
+            initTokopediaCareText(it) }
 
-        bindingChild.ubInactivePhoneNumber.setOnClickListener {
+        viewBinding?.ubInactivePhoneNumber?.setOnClickListener {
             needHelpAnalytics.trackPageBottomSheetClickInactivePhoneNumber()
             goToInactivePhoneNumber()
         }
 
-        bindingChild.ubForgotPassword.setOnClickListener {
+        viewBinding?.ubForgotPassword?.setOnClickListener {
             needHelpAnalytics.trackPageBottomSheetClickForgotPassword()
             goToForgotPassword()
         }
@@ -127,12 +126,6 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
     private fun goToInactivePhoneNumber(){
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.INPUT_OLD_PHONE_NUMBER)
         startActivity(intent)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        _bindingChild = null
     }
 
     companion object {

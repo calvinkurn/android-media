@@ -16,10 +16,9 @@ import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
-
 class ShopActionButtonWidgetNoteButtonComponentViewHolder(
-        itemView: View,
-        private val listener: Listener
+    itemView: View,
+    private val listener: Listener
 ) : AbstractViewHolder<ShopHeaderButtonComponentUiModel>(itemView) {
 
     companion object {
@@ -34,17 +33,17 @@ class ShopActionButtonWidgetNoteButtonComponentViewHolder(
             listener.onClickNoteButton(model.link)
         }
         imageButtonShopNote?.let {
-            setDrawable(it,model.icon)
+            setDrawable(it, model.icon)
         }
     }
 
     private fun setDrawable(button: UnifyButton, url: String) {
         if (url.isNotBlank()) {
             convertUrlToBitmapAndLoadImage(
-                    itemView.context,
-                    url,
-                    itemView.context.resources.getInteger(R.integer.header_button_shop_note_icon_size).toPx()
-            ){
+                itemView.context,
+                url,
+                itemView.context.resources.getInteger(R.integer.header_button_shop_note_icon_size).toPx()
+            ) {
                 try {
                     val drawableImage = BitmapDrawable(itemView.resources, it)
                     val right = drawableImage.intrinsicWidth
@@ -54,8 +53,8 @@ class ShopActionButtonWidgetNoteButtonComponentViewHolder(
                     val imageSpan = ImageSpan(drawableImage)
                     spannableString.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     button.text = spannableString
-                    button.setPadding(6.toDp(),4.toDp(),4.toDp(),6.toDp())
-                }catch (e: Throwable){}
+                    button.setPadding(6.toDp(), 4.toDp(), 4.toDp(), 6.toDp())
+                } catch (e: Throwable) {}
             }
         } else {
             removeCompoundDrawableButton()
@@ -71,5 +70,4 @@ class ShopActionButtonWidgetNoteButtonComponentViewHolder(
     interface Listener {
         fun onClickNoteButton(link: String)
     }
-
 }

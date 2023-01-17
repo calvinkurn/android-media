@@ -6,6 +6,8 @@ import com.tokopedia.mediauploader.common.data.consts.TRANSCODING_FAILED
 import com.tokopedia.mediauploader.common.data.consts.UPLOAD_ABORT
 import com.tokopedia.mediauploader.common.internal.LargeUploadStateManager
 import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
+import com.tokopedia.mediauploader.common.logger.DebugLog
+import com.tokopedia.mediauploader.common.logger.onShowDebugLogcat
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.isLessThanHoursOf
@@ -15,12 +17,7 @@ import com.tokopedia.mediauploader.video.data.params.ChunkCheckerParam
 import com.tokopedia.mediauploader.video.data.params.ChunkUploadParam
 import com.tokopedia.mediauploader.video.data.params.InitParam
 import com.tokopedia.mediauploader.video.data.params.LargeUploadCacheParam
-import com.tokopedia.mediauploader.video.domain.GetChunkCheckerUseCase
-import com.tokopedia.mediauploader.video.domain.GetChunkUploaderUseCase
-import com.tokopedia.mediauploader.video.domain.GetTranscodingStatusUseCase
-import com.tokopedia.mediauploader.video.domain.InitVideoUploaderUseCase
-import com.tokopedia.mediauploader.video.domain.SetAbortUploaderUseCase
-import com.tokopedia.mediauploader.video.domain.SetCompleteUploaderUseCase
+import com.tokopedia.mediauploader.video.domain.*
 import kotlinx.coroutines.delay
 import java.io.File
 import javax.inject.Inject
@@ -49,8 +46,8 @@ class LargeUploaderManager @Inject constructor(
         sourceId: String,
         withTranscode: Boolean
     ): UploadResult {
-        val policy = policyManager.policy()
-        val videoPolicy = policy.videoPolicy ?: return UploadResult.Error(POLICY_NOT_FOUND)
+        val policy = policyManager.get()
+        val videoPolicy = policy?.videoPolicy ?: return UploadResult.Error(POLICY_NOT_FOUND)
 
         // 1. init the uploader
         getLastState(sourceId, file.name) {
@@ -114,6 +111,16 @@ class LargeUploaderManager @Inject constructor(
         // 5. if the transcoding success, return the video url!
         updateProgressValue(chunkTotal)
         resetUpload()
+
+        onShowDebugLogcat(
+            DebugLog(
+                sourceId = sourceId,
+                sourceFile = file.path,
+                url = videoUrl,
+                uploadId = mUploadId,
+                sourcePolicy = policy
+            )
+        )
 
         return if (videoUrl.isNotEmpty()) {
             UploadResult.Success(
@@ -252,7 +259,6 @@ class LargeUploaderManager @Inject constructor(
 
     private fun resetUpload() {
         uploadStateManager.clear()
-        policyManager.clear()
 
         chunkTotal = 0
         partNumber = 1

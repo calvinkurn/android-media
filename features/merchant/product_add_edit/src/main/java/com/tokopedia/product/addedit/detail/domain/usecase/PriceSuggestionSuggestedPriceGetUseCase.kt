@@ -15,11 +15,18 @@ class PriceSuggestionSuggestedPriceGetUseCase @Inject constructor(
                 """
                 query PriceSuggestionSuggestedPriceGet(${'$'}id: String) {
                   PriceSuggestionSuggestedPriceGet(id: ${'$'}id) {
-                    productId
                     suggestedPrice
-                    suggestedPriceMax
                     suggestedPriceMin
+                    suggestedPriceMax
                     price
+                    productRecommendation {
+                      productID
+                      price
+                      imageURL
+                      sold
+                      rating
+                      title
+                    }
                   }
                 }
                 """.trimIndent()

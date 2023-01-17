@@ -1,25 +1,12 @@
 package com.tokopedia.product.addedit.tracking
 
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendAddProductClick
-import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendAddProductClickWithoutScreenAndUserId
 
 object ProductAddMainTracking {
     const val SCREEN = "/addproductpage - main"
 
     fun trackScreen() {
         ProductAddEditTracking.getTracker().sendScreenAuthenticated(SCREEN)
-    }
-
-    fun trackBack(shopId: String) {
-        sendAddProductClick(SCREEN, shopId, "click back on main page")
-    }
-
-    fun trackAddPhoto(shopId: String) {
-        sendAddProductClick(SCREEN, shopId, "click add product photo")
-    }
-
-    fun trackRemovePhoto(shopId: String) {
-        sendAddProductClick(SCREEN, shopId, "click remove product image")
     }
 
     fun trackDragPhoto(shopId: String) {
@@ -38,20 +25,12 @@ object ProductAddMainTracking {
         sendAddProductClick(SCREEN, shopId, "click choose other categories")
     }
 
-    fun clickWholesale(shopId: String) {
-        sendAddProductClick(SCREEN, shopId, "click wholesale button")
-    }
-
     fun clickRemoveWholesale(shopId: String) {
         sendAddProductClick(SCREEN, shopId, "click remove wholesale price")
     }
 
     fun clickAddWholesale(shopId: String) {
         sendAddProductClick(SCREEN, shopId, "click add wholesale price")
-    }
-
-    fun clickPreorderButton(shopId: String) {
-        sendAddProductClick(SCREEN, shopId, "click preorder button")
     }
 
     fun clickPreorderDropDownMenu(shopId: String) {
@@ -72,9 +51,5 @@ object ProductAddMainTracking {
 
     fun clickContinue(shopId: String) {
         sendAddProductClick(SCREEN, shopId, "click continue on main page")
-    }
-
-    fun clickPriceRecommendation() {
-        sendAddProductClickWithoutScreenAndUserId("click price recommendation")
     }
 }

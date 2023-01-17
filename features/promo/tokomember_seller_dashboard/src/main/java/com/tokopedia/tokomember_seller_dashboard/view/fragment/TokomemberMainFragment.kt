@@ -1,5 +1,6 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,27 +8,32 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType
+import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.CheckEligibility
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
+import com.tokopedia.tokomember_seller_dashboard.util.PATH_TOKOMEMBER_COUPON_CREATION
+import com.tokopedia.tokomember_seller_dashboard.util.PATH_TOKOMEMBER_PROGRAM_CREATION
+import com.tokopedia.tokomember_seller_dashboard.util.PATH_TOKOMEMBER_PROGRAM_EXTENSION
+import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH_PROGRAM_LIST
 import com.tokopedia.tokomember_seller_dashboard.util.TM_SELLER_NO_OS
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashHomeActivity
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmEligibilityViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.tm_dash_intro_new.*
 import kotlinx.android.synthetic.main.tm_layout_no_access.*
 import javax.inject.Inject
 
-class TokomemberMainFragment : BaseDaggerFragment() {
+class TokomemberMainFragment : BaseDaggerFragment(),TmCouponListRefreshCallback {
 
     private var shopId = 0
     private var shopName = ""
@@ -56,8 +62,8 @@ class TokomemberMainFragment : BaseDaggerFragment() {
         tmTracker = TmTracker()
         iv_error.loadImage(TM_SELLER_NO_OS)
         btn_error.setOnClickListener {
-            activity?.finish()
             tmTracker?.clickBackHomeBSNoAccess(shopId.toString())
+            activity?.finish()
         }
     }
 
@@ -84,7 +90,8 @@ class TokomemberMainFragment : BaseDaggerFragment() {
                       if (it.data.membershipGetSellerOnboarding?.sellerHomeContent?.isShowContent == true){
                           tmEligibilityViewModel.checkEligibility(shopId, true)
                       } else{
-                          TokomemberDashHomeActivity.openActivity(shopId,it.data.membershipGetSellerOnboarding?.cardID?.toIntOrZero()?:0, context)
+                          if(!routeToCreationScreen(it.data.membershipGetSellerOnboarding?.cardID?.toIntOrZero()?:0))
+                            TokomemberDashHomeActivity.openActivity(shopId,it.data.membershipGetSellerOnboarding?.cardID?.toIntOrZero()?:0, context)
                           activity?.finish()
                       }
                   } else{
@@ -129,6 +136,37 @@ class TokomemberMainFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun routeToCreationScreen(cardId:Int) : Boolean{
+        activity?.intent?.data?.let{
+            when(it.lastPathSegment){
+                PATH_TOKOMEMBER_PROGRAM_CREATION -> {
+                    TmDashCreateActivity.openActivity(
+                        shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_BUAT, REQUEST_CODE_REFRESH_PROGRAM_LIST, null, cardId
+                    )
+                    return true
+                }
+                PATH_TOKOMEMBER_COUPON_CREATION -> {
+                    TmDashCreateActivity.openActivity(
+                        activity,
+                        CreateScreenType.COUPON_SINGLE,
+                        null,
+                        this,
+                        edit = false
+                    )
+                    return true
+                }
+                else -> {
+                    val paths = it.pathSegments
+                    if(paths.size>=2 && paths[1]== PATH_TOKOMEMBER_PROGRAM_EXTENSION){
+                        TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.EXTEND, null, it.lastPathSegment.toIntOrZero())
+                        return true
+                    }
+                }
+            }
+        }
+        return false
+    }
+
     override fun getScreenName() = ""
 
     override fun initInjector() {
@@ -140,4 +178,6 @@ class TokomemberMainFragment : BaseDaggerFragment() {
             return TokomemberMainFragment()
         }
     }
+
+    override fun refreshCouponList(action: String) {}
 }

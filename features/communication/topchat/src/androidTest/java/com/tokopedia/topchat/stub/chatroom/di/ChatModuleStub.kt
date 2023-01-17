@@ -24,10 +24,16 @@ import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingRespon
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
-import com.tokopedia.topchat.common.websocket.*
+import com.tokopedia.topchat.common.websocket.DefaultWebSocketParser
+import com.tokopedia.topchat.common.websocket.DefaultWebSocketStateHandler
+import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
+import com.tokopedia.topchat.common.websocket.TopchatWebSocket
+import com.tokopedia.topchat.common.websocket.WebSocketParser
+import com.tokopedia.topchat.common.websocket.WebSocketStateHandler
+import com.tokopedia.topchat.common.websocket.WebsocketPayloadGenerator
+import com.tokopedia.topchat.stub.common.DefaultWebsocketPayloadFakeGenerator
 import com.tokopedia.topchat.stub.common.UserSessionStub
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -153,12 +159,6 @@ class ChatModuleStub {
 
     @ChatScope
     @Provides
-    internal fun provideRemoveWishListUseCase(@TopchatContext context: Context): RemoveWishListUseCase {
-        return RemoveWishListUseCase(context)
-    }
-
-    @ChatScope
-    @Provides
     internal fun provideTopchatSharedPrefs(@TopchatContext context: Context): SharedPreferences {
         return context.getSharedPreferences("topchat_prefs", Context.MODE_PRIVATE)
     }
@@ -202,9 +202,17 @@ class ChatModuleStub {
 
     @ChatScope
     @Provides
-    fun provideWebsocketPayloadGenerator(
+    fun provideWebsocketFakePayloadGenerator(
         userSession: UserSessionInterface
+    ): DefaultWebsocketPayloadFakeGenerator {
+        return DefaultWebsocketPayloadFakeGenerator(userSession)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideWebsocketPayloadGenerator(
+        fakeGenerator: DefaultWebsocketPayloadFakeGenerator
     ): WebsocketPayloadGenerator {
-        return DefaultWebsocketPayloadGenerator(userSession)
+        return fakeGenerator
     }
 }

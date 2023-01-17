@@ -85,6 +85,7 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.locationmanager.LocationDetectorHelper
+import com.tokopedia.locationmanager.RequestLocationType
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -1618,7 +1619,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         activity?.let {
             permissionCheckerHelper.checkPermission(it,
-                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION,
                 object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
                         permissionCheckerHelper.onPermissionDenied(it, permissionText)
@@ -1630,8 +1631,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
                     override fun onPermissionGranted() {
                         locationDetectorHelper.getLocation(
-                            hotelSearchMapViewModel.onGetLocation(), requireActivity(),
+                            hotelSearchMapViewModel.onGetLocation(),
+                            requireActivity(),
                             LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                            RequestLocationType.APPROXIMATE,
                             requireActivity().getString(R.string.hotel_destination_need_permission)
                         )
                     }

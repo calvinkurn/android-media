@@ -8,10 +8,12 @@
     <dimen name="dp_chatbot_1">1dp</dimen>
     <dimen name="dp_chatbot_2">2dp</dimen>
     <dimen name="dp_chatbot_3">3dp</dimen>
+    <dimen name="dp_chatbot_5">5dp</dimen>
     <dimen name="dp_chatbot_6">6dp</dimen>
     <dimen name="dp_chatbot_8">8dp</dimen>
     <dimen name="dp_chatbot_10">10dp</dimen>
     <dimen name="dp_chatbot_11">11dp</dimen>
+    <dimen name="dp_chatbot_14">14dp</dimen>
     <dimen name="dp_chatbot_12">12dp</dimen>
     <dimen name="dp_chatbot_15">15dp</dimen>
     <dimen name="dp_chatbot_16">16dp</dimen>
@@ -24,14 +26,21 @@
     <dimen name="dp_chatbot_28">28dp</dimen>
     <dimen name="dp_chatbot_30">30dp</dimen>
     <dimen name="dp_chatbot_36">36dp</dimen>
+    <dimen name="dp_chatbot_45">45dp</dimen>
     <dimen name="dp_chatbot_40">40dp</dimen>
     <dimen name="dp_chatbot_48">48dp</dimen>
+    <dimen name="dp_chatbot_42">42dp</dimen>
     <dimen name="dp_chatbot_50">50dp</dimen>
     <dimen name="dp_chatbot_60">60dp</dimen>
+    <dimen name="dp_chatbot_62">62dp</dimen>
+    <dimen name="dp_chatbot_80">80dp</dimen>
     <dimen name="dp_chatbot_87">87dp</dimen>
     <dimen name="dp_chatbot_110">110dp</dimen>
-    <dimen name="dp_chatbot_240">240dp</dimen>
+    <dimen name="dp_chatbot_130">130dp</dimen>
+    <dimen name="dp_chatbot_200">200dp</dimen>
     <dimen name="dp_chatbot_220">220dp</dimen>
-    <dimen name="dp_chatbot_80">80dp</dimen>
-    <dimen name="dp_chatbot_14">14dp</dimen>
+    <dimen name="dp_chatbot_240">240dp</dimen>
+
+    <dimen name="sp_chatbot_11">11sp</dimen>
+
 </resources>

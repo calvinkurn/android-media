@@ -28,6 +28,7 @@ import com.tokopedia.play.view.viewcomponent.PlayUserReportSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.PlayUserReportSubmissionViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -316,6 +317,12 @@ class PlayMoreActionBottomSheet @Inject constructor(
      */
     override fun onCloseButtonClicked(view: PlayUserReportSubmissionViewComponent) {
         playViewModel.hideUserReportSubmissionSheet()
+
+        /**
+         * Hacky but can be improved, this bottom sheet has it own keyboard because it overlayed the bottom sheet
+         */
+        playViewModel.onKeyboardHidden()
+        view.rootView.hideKeyboard()
     }
 
     override fun onFooterClicked(view: PlayUserReportSubmissionViewComponent) {

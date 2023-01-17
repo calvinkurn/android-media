@@ -20,10 +20,6 @@ class CreateReviewSubmitButton @JvmOverloads constructor(
     defStyleAttr: Int = Int.ZERO
 ) : BaseReviewCustomView<WidgetCreateReviewSubmitButtonBinding>(context, attrs, defStyleAttr) {
 
-    companion object {
-        private const val TRANSITION_DURATION = 300L
-    }
-
     private val transitionHandler = TransitionHandler()
     private var createReviewSubmitButtonListener: Listener? = null
 
@@ -87,7 +83,7 @@ class CreateReviewSubmitButton @JvmOverloads constructor(
     private inner class TransitionHandler {
         private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
             Fade().apply {
-                duration = TRANSITION_DURATION
+                duration = ANIMATION_DURATION
                 addTarget(binding.layoutSubmitButton.root)
                 addTarget(binding.layoutSubmitButtonLoading.root)
                 interpolator = AccelerateInterpolator()

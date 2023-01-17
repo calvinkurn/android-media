@@ -14,6 +14,7 @@
         android:id="@+id/item_parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/chatbot_dms_left_message_bg"
         android:minWidth="@dimen/chat_width">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -78,7 +79,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/chatbot_black_color_opacity_lvl_35"
+            android:textColor="@color/Unify_N700_44"
             app:layout_constraintStart_toStartOf="@id/tv_invoice_name"
             app:layout_constraintTop_toBottomOf="@id/tv_invoice_name"
             app:typographyType="small"
@@ -115,7 +116,7 @@
             android:gravity="top"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:textColor="@color/Unify_Y500"
+            android:textColor="@color/chatbot_dms_invoice_price"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/tv_price_prefix"
             app:layout_constraintTop_toBottomOf="@id/tv_invoice_desc"

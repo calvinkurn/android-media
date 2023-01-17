@@ -69,6 +69,13 @@
     <string name="message_change_category">Spesifikasi produkmu akan hilang jika kamu mengubah kategori produk ini.</string>
     <string name="action_change_category_positive">Ya, Lanjutkan</string>
     <string name="action_change_category_negative">Batal</string>
+    <string name="label_service_fee">Biaya layanan</string>
+    <string name="label_category_change">Perubahan kategori</string>
+    <string name="content_service_fee_bs">Biaya layanan per produk tergantung pada kategori yang kamu pilih. Jika pemilihan kategori kurang sesuai, maka kategori akan diubah oleh Tokopedia.</string>
+    <string name="content_category_change_bs">Kategori yang kamu pilih sebelumnya telah diubah secara otomatis oleh Tokopedia dan tidak bisa diubah lagi. Pelajari Selengkapnya</string>
+    <string name="label_additional_info">Pilih kategori yang sesuai karena biaya layanan akan tergantung pada kategori.</string>
+    <string name="text_service_fee_per_sold_product"><![CDATA[Biaya layanan per produk terjual: <b>%s&#37;</b>.\n<a href=link_place_holder>Selengkapnya</a>]]></string>
+    <string name="label_no_service_fee"><![CDATA[Bebas biaya layanan untuk 100 transaksi pertama.\n<a href=link_place_holder>Selengkapnya</a>]]></string>
 
     <!-- add edit product catalog -->
     <string name="add_product_catalog_header">Katalog</string>
@@ -82,6 +89,26 @@
     <string name="action_cancel">Batal</string>
     <string name="error_empty_product_price">Harga produk tidak boleh kosong</string>
     <string name="error_product_price_less_than_min_limit">Harga kurang dari batas min. Rp100</string>
+
+    <!-- add edit product price suggestion -->
+    <string name="label_price_suggestion_range">Kisaran rekomendasi</string>
+    <string name="label_price_range">Kisaran harga:</string>
+    <string name="price_suggestion_range">%1s - %2s</string>
+    <string name="label_check_detail">Lihat Detail</string>
+    <string name="label_is_competitive">Sudah kompetitif</string>
+    <string name="label_competitive_product_size">%s produk terkompetitif</string>
+    <string name="label_best_recommendation">Rekomendasi terbaik:</string>
+    <string name="label_price_recommendation">Rekomendasi Harga</string>
+    <string name="label_about_price_recommendation">Tentang rekomendasi harga</string>
+    <string name="action_apply_price_recommendation">Terapkan</string>
+    <string name="label_range_and_recommendation">Kisaran dan Rekomendasi</string>
+    <string name="content_range_and_recommendation">Rekomendasi berdasarkan kategori produk dan harga paling kompetitif 1 minggu terakhir.</string>
+    <string name="label_most_competitive_product">Produk Terkompetitif</string>
+    <string name="content_most_competitive_product">Info harga, ulasan, dan jumlah terjual diperoleh sesuai lamanya produk berikut ini dijual.</string>
+    <string name="label_learn_more">Pelajari Selengkapnya</string>
+    <string name="label_or">atau</string>
+    <string name="label_feedback">Beri Masukan</string>
+    <string name="label_sold_product">Terjual %s</string>
 
     <!-- add edit product price recommendation -->
     <string name="title_price_recommendation">Rekomendasi Harga Pasar</string>
@@ -502,6 +529,8 @@
     <string name="cpl_custom_on_demand_button">Ubah</string>
     <string name="cpl_custom_agen">Antar ke Kantor Agen</string>
     <string name="cpl_custom_agen_button">Ubah</string>
+    <string name="cpl_onboarding_title">Bisa atur sesukamu di bagian Custom</string>
+    <string name="cpl_onboarding_description">Semua layanan pengiriman yang ditampilkan akan dianggap aktif. Kalau ingin atur sendiri layanannya, klik “Ubah Pengiriman Custom” ya.</string>
 
     <!-- IMS validation error message -->
     <string name="error_empty_price">Harga wajib diisi</string>
@@ -512,5 +541,11 @@
     <string name="error_empty_weight">Berat wajib diisi</string>
     <string name="error_minimum_weight">Min.%d g</string>
     <string name="error_max_weight">Maks. %s g</string>
+    <string name="cpl_custom_label">Ubah Pengiriman Custom</string>
 
+    <string name="label_ineligble_access_warning">Oops, fitur ini belum \ndapat diakses</string>
+    <string name="label_body_ineligble_access_warning">Ini karena tokomu sedang ditangguhkan</string>
+    <string name="label_back_to_list_product">Kembali ke Daftar Produk</string>
+    <string name="label_learn_about_moderation">Pelajari Tentang Penangguhan</string>
+    <string name="format_web_page">%s?url=%s</string>
 </resources>

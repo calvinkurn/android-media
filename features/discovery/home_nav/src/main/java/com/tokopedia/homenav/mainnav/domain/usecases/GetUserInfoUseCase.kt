@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
+import com.tokopedia.homenav.mainnav.domain.usecases.query.GetProfileQuery
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -16,15 +17,7 @@ class GetUserInfoUseCase @Inject constructor(
         private val graphqlUseCase: GraphqlUseCase<UserPojo>
 ): UseCase<Result<UserPojo>>() {
     init {
-        val query =
-                """query getProfile(){
-                  profile {
-                    full_name
-                    profilePicture
-                  }
-            } """.trimIndent()
-
-        graphqlUseCase.setGraphqlQuery(query)
+        graphqlUseCase.setGraphqlQuery(GetProfileQuery())
         graphqlUseCase.setTypeClass(UserPojo::class.java)
     }
 

@@ -10,6 +10,7 @@ import com.tokopedia.pms.R
 import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
 import com.tokopedia.pms.paymentlist.domain.data.CreditCardPaymentModel
 import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment.Companion.ACTION_CHEVRON_ACTIONS
+import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment.Companion.ACTION_COMPLETE_PAYMENT
 import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment.Companion.ACTION_INVOICE_PAGE_REDIRECTION
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.credit_card_payment_list_item.view.*
@@ -20,10 +21,18 @@ class CreditCardTransferViewHolder(
 ) : RecyclerView.ViewHolder(view) {
 
     fun bind(element: CreditCardPaymentModel) {
+        setCompletePaymentButtonVisibility(element)
         setHeaderData(element)
         setGatewayData(element)
         setAmountData(element.amount)
         handleActionList(element.actionList.size == 0)
+    }
+
+    private fun setCompletePaymentButtonVisibility(element: CreditCardPaymentModel) {
+        if(element.paymentUrl.isNullOrEmpty())
+            view.completePaymentButton.gone()
+        else
+            view.completePaymentButton.visible()
     }
 
     private fun setHeaderData(element: CreditCardPaymentModel) {
@@ -33,6 +42,9 @@ class CreditCardTransferViewHolder(
             tvPaymentTransactionDate.text = element.expiryDate
             setOnClickListener { actionItemListener(ACTION_INVOICE_PAGE_REDIRECTION, element) }
             cardMenu.setOnClickListener { actionItemListener(ACTION_CHEVRON_ACTIONS, element) }
+            completePaymentButton.setOnClickListener{
+                actionItemListener(ACTION_COMPLETE_PAYMENT,element)
+            }
         }
         setTickerMessage(element.label)
     }
@@ -51,6 +63,7 @@ class CreditCardTransferViewHolder(
             ivGatewayImage.urlSrc = element.gatewayImage
             tvGatewayName.text = element.gatewayName
         }
+
     }
 
     private fun setAmountData(amount: Int) {
@@ -64,7 +77,7 @@ class CreditCardTransferViewHolder(
     companion object {
         private val LAYOUT_ID = R.layout.credit_card_payment_list_item
         private const val CARD_ICON_URL =
-            "https://ecs7.tokopedia.net/img/toppay/product/marketplace.png"
+            "https://images.tokopedia.net/img/toppay/product/marketplace.png"
 
         fun getViewHolder(
             inflater: LayoutInflater,

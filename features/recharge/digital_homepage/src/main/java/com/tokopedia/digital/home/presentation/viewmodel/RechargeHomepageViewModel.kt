@@ -18,12 +18,15 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
+import java.util.Locale
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class RechargeHomepageViewModel @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
-        private val dispatcher: CoroutineDispatchers)
-    : BaseViewModel(dispatcher.io) {
+    private val graphqlRepository: GraphqlRepository,
+    private val dispatcher: CoroutineDispatchers
+) :
+    BaseViewModel(dispatcher.io) {
 
     private val mutableRechargeHomepageSectionSkeleton = MutableLiveData<Result<RechargeHomepageSectionSkeleton>>()
     val rechargeHomepageSectionSkeleton: LiveData<Result<RechargeHomepageSectionSkeleton>>
@@ -49,8 +52,9 @@ class RechargeHomepageViewModel @Inject constructor(
         onRefreshData()
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
-                    QueryRechargeHomepageSkeleton(),
-                    RechargeHomepageSectionSkeleton.Response::class.java, mapParams
+                QueryRechargeHomepageSkeleton(),
+                RechargeHomepageSectionSkeleton.Response::class.java,
+                mapParams
             )
             val data = withContext(dispatcher.io) {
                 graphqlRepository.response(listOf(graphqlRequest))
@@ -67,15 +71,16 @@ class RechargeHomepageViewModel @Inject constructor(
 
     fun getRechargeHomepageSections(mapParams: Map<String, Any>) {
         val requestIDs = (mapParams[PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS] as? List<Int>)
-                ?: listOf()
+            ?: listOf()
 
         if (calledSectionIds.contains(requestIDs.firstOrNull() ?: 0)) return
         calledSectionIds.add(requestIDs.firstOrNull() ?: 0)
 
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
-                    QueryRechargeHomepageSection(),
-                    RechargeHomepageSections.Response::class.java, mapParams
+                QueryRechargeHomepageSection(),
+                RechargeHomepageSections.Response::class.java,
+                mapParams
             )
             val data = withContext(dispatcher.io) {
                 graphqlRepository.response(listOf(graphqlRequest))
@@ -94,8 +99,8 @@ class RechargeHomepageViewModel @Inject constructor(
             // Because error occured, remove sections
             withContext(dispatcher.main) {
                 localRechargeHomepageSections = RechargeHomepageSectionMapper.updateSectionsData(
-                        localRechargeHomepageSections,
-                        RechargeHomepageSections(requestIDs = requestIDs)
+                    localRechargeHomepageSections,
+                    RechargeHomepageSections(requestIDs = requestIDs)
                 )
                 mutableRechargeHomepageSections.value = localRechargeHomepageSections
             }
@@ -109,8 +114,9 @@ class RechargeHomepageViewModel @Inject constructor(
     fun triggerRechargeSectionAction(mapParams: Map<String, Any>) {
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
-                    QueryRechargeHomepageAction(),
-                    RechargeHomepageSectionAction.Response::class.java, mapParams
+                QueryRechargeHomepageAction(),
+                RechargeHomepageSectionAction.Response::class.java,
+                mapParams
             )
             val data = withContext(dispatcher.io) {
                 graphqlRepository.response(listOf(graphqlRequest))
@@ -125,8 +131,9 @@ class RechargeHomepageViewModel @Inject constructor(
     fun getTickerHomepageSection(mapParams: Map<String, Any>) {
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
-                    QueryRechargeHomepageTicker(),
-                    RechargeTickerHomepageModel::class.java, mapParams
+                QueryRechargeHomepageTicker(),
+                RechargeTickerHomepageModel::class.java,
+                mapParams
             )
             val data = withContext(dispatcher.io) {
                 graphqlRepository.response(listOf(graphqlRequest))
@@ -140,35 +147,41 @@ class RechargeHomepageViewModel @Inject constructor(
 
     fun createRechargeHomepageSectionSkeletonParams(platformId: Int, enablePersonalize: Boolean = false): Map<String, Any> {
         return mapOf(
-                PARAM_RECHARGE_HOMEPAGE_SECTIONS_PLATFORM_ID to platformId,
-                PARAM_RECHARGE_HOMEPAGE_SECTIONS_PERSONALIZE to enablePersonalize
+            PARAM_RECHARGE_HOMEPAGE_SECTIONS_PLATFORM_ID to platformId,
+            PARAM_RECHARGE_HOMEPAGE_SECTIONS_PERSONALIZE to enablePersonalize
         )
     }
 
     fun createRechargeHomepageSectionsParams(platformId: Int, sectionIDs: List<Int>, enablePersonalize: Boolean = false): Map<String, Any> {
         return mapOf(
-                PARAM_RECHARGE_HOMEPAGE_SECTIONS_PLATFORM_ID to platformId,
-                PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS to sectionIDs,
-                PARAM_RECHARGE_HOMEPAGE_SECTIONS_PERSONALIZE to enablePersonalize
+            PARAM_RECHARGE_HOMEPAGE_SECTIONS_PLATFORM_ID to platformId,
+            PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS to sectionIDs,
+            PARAM_RECHARGE_HOMEPAGE_SECTIONS_PERSONALIZE to enablePersonalize
         )
     }
 
     fun createRechargeHomepageTickerParams(categoryId: List<Int>, deviceId: Int): Map<String, Any> {
         return mapOf(
-                PARAM_RECHARGE_HOMEPAGE_SECTION_CATEGORY_ID to categoryId,
-                PARAM_RECHARGE_HOMEPAGE_SECTION_DEVICE_ID to deviceId
+            PARAM_RECHARGE_HOMEPAGE_SECTION_CATEGORY_ID to categoryId,
+            PARAM_RECHARGE_HOMEPAGE_SECTION_DEVICE_ID to deviceId
         )
     }
 
     fun createRechargeHomepageSectionActionParams(
-            sectionId: Int,
-            actionName: String,
-            sectionObjectId: String,
-            itemObjectId: String
+        sectionId: Int,
+        actionName: String,
+        sectionObjectId: String,
+        itemObjectId: String
     ): Map<String, Any> {
         return mapOf(
-                PARAM_RECHARGE_HOMEPAGE_SECTION_ID to sectionId,
-                PARAM_RECHARGE_HOMEPAGE_SECTION_ACTION to String.format("%s:%s:%s", actionName, sectionObjectId, itemObjectId)
+            PARAM_RECHARGE_HOMEPAGE_SECTION_ID to sectionId,
+            PARAM_RECHARGE_HOMEPAGE_SECTION_ACTION to String.format(
+                Locale.getDefault(),
+                "%s:%s:%s",
+                actionName,
+                sectionObjectId,
+                itemObjectId
+            )
         )
     }
 
@@ -177,9 +190,11 @@ class RechargeHomepageViewModel @Inject constructor(
             return if (it is Success) {
                 val dynamicIconSectionsIds = arrayListOf<String>()
                 it.data.sections.filter { it.template.equals(SECTION_DYNAMIC_ICONS) }
-                        .forEach { dynamicIconSectionsIds.add(it.id) }
+                    .forEach { dynamicIconSectionsIds.add(it.id) }
                 dynamicIconSectionsIds
-            } else arrayListOf()
+            } else {
+                arrayListOf()
+            }
         }
     }
 
@@ -190,8 +205,11 @@ class RechargeHomepageViewModel @Inject constructor(
     }
 
     fun getSearchBarScreenName(): String = rechargeHomepageSectionSkeleton.value.let {
-        if (it is Success) it.data.searchBarScreenName
-        else RechargeHomepageTrackingAdditionalConstant.SCREEN_NAME_TOPUP_BILLS
+        if (it is Success) {
+            it.data.searchBarScreenName
+        } else {
+            RechargeHomepageTrackingAdditionalConstant.SCREEN_NAME_TOPUP_BILLS
+        }
     }
 
     fun getSearchBarRedirection(): String = rechargeHomepageSectionSkeleton.value.let {
@@ -234,6 +252,8 @@ class RechargeHomepageViewModel @Inject constructor(
         const val SECTION_RECOMMENDATION_BANNER = "2X2_BANNER"
         const val SECTION_PRODUCT_CARD_CUSTOM_LAST_ITEM = "PRODUCT_CARD_CUSTOM_LAST_ITEM"
         const val SECTION_OFFERING_WIDGET = "OFFERING_WIDGET"
+        const val SECTION_MY_BILLS_WIDGET = "BILL_WIDGET"
+        const val SECTION_MY_BILLS_ENTRYPOINT_WIDGET = "MYBILLS_ENTRYPOINT"
 
         const val ALL_CATEGORY_PLATFORM_ID = 52
     }

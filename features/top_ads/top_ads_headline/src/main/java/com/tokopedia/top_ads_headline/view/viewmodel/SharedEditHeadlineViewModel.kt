@@ -58,7 +58,7 @@ class SharedEditHeadlineViewModel @Inject constructor(
         editHeadlineAdLiveData.value = stepperModel
     }
 
-    fun getHeadlineAdId(groupId: Int, shopId: Int, onError: (message: String) -> Unit) {
+    fun getHeadlineAdId(groupId: String, shopId: String, onError: (message: String) -> Unit) {
         viewModelScope.launchCatchError(block = {
             val requestParams = topAdsGetGroupProductUseCase.setParams(
                 groupId, 0, "", "", null, "", "", TYPE_BANNER)
@@ -68,7 +68,7 @@ class SharedEditHeadlineViewModel @Inject constructor(
 
             if (nonGroupResponse.data.isNotEmpty()) {
                 adId = nonGroupResponse.data.first().adId
-                getHeadlineAdDetail(nonGroupResponse.data.first().adId, shopId.toString(), onError)
+                getHeadlineAdDetail(nonGroupResponse.data.first().adId, shopId, onError)
             }
         }, onError = {
             it.printStackTrace()

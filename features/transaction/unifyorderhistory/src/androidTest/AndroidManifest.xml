@@ -1,12 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.unifyorderhistory"
     android:versionCode="1"
-    android:versionName="1.0.0"
-    package="com.tokopedia.unifyorderhistory.test">
+    android:versionName="1.0.0">
+
     <application
         android:label="Unify Order History Component Test"
-        tools:ignore="HardcodedDebugMode"
-        tools:replace="android:debuggable,android:label"
-        android:debuggable="false">
-    </application>
+        tools:replace="android:label" />
 </manifest>

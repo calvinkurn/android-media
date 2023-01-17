@@ -1,0 +1,40 @@
+{
+  "TokonowGetRecipe": {
+    "header": {
+      "success": true,
+      "processTime": 0.101196216,
+      "message": "Your request has been processed successfully",
+      "statusCode": "200"
+    },
+    "data": {
+      "id": "20",
+      "title": "Test Create Recipe UAM",
+      "status": "Published",
+      "instruction": "\u003cp\u003etest 123\u003c/p\u003e\n",
+      "portion": 32,
+      "duration": 13,
+      "isBookmarked": true,
+      "url": "https://www.tokopedia.com/now/recipe/recipe-3",
+      "category": {
+        "id": "2",
+        "name": "Test Category 1"
+      },
+      "tags": [],
+      "ingredients": [],
+      "images": [
+        {
+          "urlOriginal": "https://images-staging.tokopedia.net/img/DqYeeh/2022/8/25/31ee9868-090d-46e9-848d-40486c639198.png",
+          "urlThumbnail": ""
+        }
+      ],
+      "videos": [
+        {
+          "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id\u003d3be5201de4ef417087f8aaf7d15bfa7b",
+          "type": "Upload"
+        }
+      ],
+      "medias": [],
+      "products": []
+    }
+  }
+}

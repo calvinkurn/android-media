@@ -86,25 +86,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textAllCaps="false"
-            android:layout_marginEnd="4dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:id="@+id/old_inbox_btn"
-            android:text="@string/always_old_inbox"
-            app:unifyButtonType="alternate"
-            app:unifyButtonSize="medium"
-            app:unifyButtonVariant="ghost"/>
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAllCaps="false"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:id="@+id/new_inbox_btn"
-            android:text="@string/always_new_inbox"
+            android:id="@+id/skip_onboarding_user_session_btn"
+            android:text="@string/skip_onboarding_user_session"
             app:unifyButtonType="alternate"
             app:unifyButtonSize="medium"
             app:unifyButtonVariant="ghost"/>

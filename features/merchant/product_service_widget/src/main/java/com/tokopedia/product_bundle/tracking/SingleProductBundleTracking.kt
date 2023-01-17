@@ -1,6 +1,8 @@
 package com.tokopedia.product_bundle.tracking
 
 import com.tokopedia.common.ProductServiceWidgetConstant.TrackerId.ADD_TO_CART_BUNDLING
+import com.tokopedia.common.ProductServiceWidgetConstant.TrackerId.CLICK_BACK
+import com.tokopedia.common.ProductServiceWidgetConstant.TrackerId.CLICK_BUNDLE_OPTIONS
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductDetailBundleTracker
 
 object SingleProductBundleTracking: BaseProductBundleTracking() {
@@ -17,7 +19,8 @@ object SingleProductBundleTracking: BaseProductBundleTracking() {
             val productId = selectedProductId ?: parentProductId
             super.trackBundleOptionClick(
                 "bundling_id:$bundleId; bundling_type:$BUNDLING_TYPE;",
-                productId
+                productId,
+                CLICK_BUNDLE_OPTIONS
             )
         }
     }
@@ -60,7 +63,8 @@ object SingleProductBundleTracking: BaseProductBundleTracking() {
             val productId = selectedProductId ?: parentProductId
             super.trackBackClick(
                 "bundling_id:$bundleId; bundling_type:$BUNDLING_TYPE;",
-                productId
+                productId,
+                CLICK_BACK
             )
         }
     }

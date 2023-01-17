@@ -2,7 +2,6 @@ package com.tokopedia.loginregister.registerinitial.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterEmailFragment
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment
 import dagger.Component
@@ -18,6 +17,6 @@ import dagger.Component
     RegisterInitialViewModelModule::class
 ], dependencies = [BaseAppComponent::class])
 interface RegisterInitialComponent {
-    fun inject(fragment: RegisterInitialFragment?)
-    fun inject(fragment: RegisterEmailFragment?)
+    fun inject(fragment: RegisterInitialFragment)
+    fun inject(fragment: RegisterEmailFragment)
 }

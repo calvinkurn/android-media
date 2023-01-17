@@ -79,5 +79,26 @@
         tools:ignore="PxUsage"
         />
 
+    <com.tokopedia.feedcomponent.view.widget.FlashSaleRilisanCampaignUpcomingView
+        android:id="@+id/feed_fst_upcoming"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/post_image"
+        app:layout_constraintEnd_toEndOf="@id/post_image"
+        app:layout_constraintTop_toBottomOf="@id/separator"
+        />
+
+    <com.tokopedia.feedcomponent.view.widget.FlashSaleRilisanCampaignOngoingView
+        android:id="@+id/feed_fst_ongoing"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/post_image"
+        app:layout_constraintEnd_toEndOf="@id/post_image"
+        app:layout_constraintTop_toBottomOf="@id/separator"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+
 

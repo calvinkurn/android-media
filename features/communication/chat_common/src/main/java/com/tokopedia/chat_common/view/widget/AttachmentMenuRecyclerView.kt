@@ -95,4 +95,10 @@ class AttachmentMenuRecyclerView : RecyclerView, AttachmentItemViewHolder.Attach
         }
     }
 
+    fun addVideoAttachmentMenu() {
+        if (!adapter.alreadyHasVideoMenu()) {
+            adapter.addVideoAttachmentMenu()
+        }
+    }
+
 }

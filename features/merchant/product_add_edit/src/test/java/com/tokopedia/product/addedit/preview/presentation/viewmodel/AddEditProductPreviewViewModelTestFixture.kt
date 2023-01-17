@@ -14,6 +14,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampS
 import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.productlimitation.domain.usecase.ProductLimitationUseCase
+import com.tokopedia.product.manage.common.feature.getstatusshop.domain.GetStatusShopUseCase
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Result
@@ -62,6 +63,9 @@ abstract class AddEditProductPreviewViewModelTestFixture {
     lateinit var productLimitationUseCase: ProductLimitationUseCase
 
     @RelaxedMockK
+    lateinit var getStatusShopUseCase: GetStatusShopUseCase
+
+    @RelaxedMockK
     lateinit var getProductMapper: GetProductMapper
 
     @RelaxedMockK
@@ -83,20 +87,22 @@ abstract class AddEditProductPreviewViewModelTestFixture {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = AddEditProductPreviewViewModel(
-                getProductMapper,
-                resourceProvider,
-                getProductUseCase,
-                getProductDraftUseCase,
-                saveProductDraftUseCase,
-                validateProductNameUseCase,
-                getShopInfoLocationUseCase,
-                saveShopShipmentLocationUseCase,
-                authorizeAccessUseCase,
-                authorizeEditStockUseCase,
-                annotationCategoryUseCase,
-                productLimitationUseCase,
-                userSession,
-                CoroutineTestDispatchersProvider)
+            getProductMapper,
+            resourceProvider,
+            getProductUseCase,
+            getProductDraftUseCase,
+            saveProductDraftUseCase,
+            validateProductNameUseCase,
+            getShopInfoLocationUseCase,
+            getStatusShopUseCase,
+            saveShopShipmentLocationUseCase,
+            authorizeAccessUseCase,
+            authorizeEditStockUseCase,
+            annotationCategoryUseCase,
+            productLimitationUseCase,
+            userSession,
+            CoroutineTestDispatchersProvider
+        )
 
         viewModel.getProductResult.observeForever(getProductResultObserver)
         viewModel.productInputModel.observeForever(productInputModelObserver)

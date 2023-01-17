@@ -16,14 +16,17 @@ class PromoListHeaderUiModel(
             var title: String = "",
             var subTitle: String = "",
             var iconUnify: String = "",
+            var iconUrl: String = "",
             var identifierId: Int = 0,
-            var tabId: String = ""
+            var tabId: String = "",
+            var selectablePromoMessage: String = "Hanya bisa pilih 1",
+            var maximumSelectedPromo: Int = 1,
     )
 
     data class UiState(
             var isEnabled: Boolean = false,
             var hasSelectedPromoItem: Boolean = false,
-            var isFirstPromoHeader: Boolean = false
+            var isFirstPromoHeader: Boolean = false,
     )
 
 }

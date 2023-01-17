@@ -1,5 +1,5 @@
-query ShopInfo($shopId: Int!){
-  topAdsGetShopInfo(shop_id:$shopId){
+query topAdsGetShopInfoV1_1($shopId: String!, $source: String!){
+  topAdsGetShopInfoV1_1(shop_id: $shopId, source: $source){
     data {
       category
       category_desc

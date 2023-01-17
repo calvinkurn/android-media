@@ -19,24 +19,6 @@ public interface SearchConstant {
     int CPM_TEMPLATE_ID = 4;
     int GENERAL_SEARCH_TRACKING_PRODUCT_COUNT = 3;
 
-    interface RecyclerView {
-        int VIEW_LIST = 3;
-        int VIEW_PRODUCT_BIG_GRID = 12;
-        int VIEW_PRODUCT_SMALL_GRID = 13;
-    }
-
-    enum ViewType {
-        LIST, SMALL_GRID, BIG_GRID
-    }
-
-    interface DefaultViewType {
-        int SMALL_GRID = 1;
-        int LIST = 2;
-        String VIEW_TYPE_NAME_SMALL_GRID = "grid 2";
-        String VIEW_TYPE_NAME_BIG_GRID = "grid 1";
-        String VIEW_TYPE_NAME_LIST = "list";
-    }
-
     interface Wishlist {
         String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
         String WISHLIST_STATUS_IS_WISHLIST = "isWishlist";
@@ -84,6 +66,7 @@ public interface SearchConstant {
         String GET_PRODUCT_COUNT_USE_CASE = "get_product_count_use_case";
         String GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE = "get_local_search_recommendation_use_case";
         String SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE = "search_product_inspiration_carousel_chips_use_case";
+        String SEARCH_SAME_SESSION_RECOMMENDATION_USE_CASE = "search_product_inspiration_carousel_chips_use_case";
         String SEARCH_PRODUCT_PARAMS = "params";
         String SEARCH_PRODUCT_SKIP_PRODUCT_ADS = "skip_product_ads";
         String SEARCH_PRODUCT_SKIP_HEADLINE_ADS = "skip_headline_ads";
@@ -174,15 +157,11 @@ public interface SearchConstant {
     }
 
     interface InspirationCarousel {
-        String LAYOUT_INSPIRATION_CAROUSEL_LIST = "list";
-        String LAYOUT_INSPIRATION_CAROUSEL_INFO = "info";
-        String LAYOUT_INSPIRATION_CAROUSEL_GRID = "grid";
-        String LAYOUT_INSPIRATION_CAROUSEL_CHIPS = "chips";
-        String LAYOUT_INSPIRATION_CAROUSEL_VIDEO = "video";
-        String LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT = "product_list";
-        String LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER = "gridBanner";
         String TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS = "annotation_product_color_chips";
         String TYPE_INSPIRATION_CAROUSEL_KEYWORD = "keyword";
+        String TYPE_INSPIRATION_CAROUSEL_SINGLE_BUNDLING = "single_bundling";
+        String TYPE_INSPIRATION_CAROUSEL_MULTIPLE_BUNDLING = "multiple_bundling";
+        String TYPE_SAME_SESSION_RECOMMENDATION = "same_session";
     }
 
     interface TopAdsComponent {

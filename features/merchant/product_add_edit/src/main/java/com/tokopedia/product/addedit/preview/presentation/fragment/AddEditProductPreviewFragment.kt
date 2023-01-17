@@ -21,9 +21,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.PRODUCT_MANAGE
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
@@ -40,6 +40,8 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.picker.common.MediaPicker
+import com.tokopedia.picker.common.PageSource
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_PREVIEW_PLT_NETWORK_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_PREVIEW_PLT_PREPARE_METRICS
@@ -61,6 +63,7 @@ import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE_IMPROVEMENT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_SHOP_LOCATION
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_DETAIL_DIALOG_EDIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_DIALOG_EDIT
@@ -101,6 +104,8 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHOP_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TIMBER_PREFIX_LOCATION_VALIDATION
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TIMBER_PREFIX_PRODUCT_NAME_VALIDATION
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.URL_ARTICLE_SELLER_EDU
+import com.tokopedia.product.addedit.preview.presentation.dialog.IneligibleAccessWarningBottomSheet
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductAddService
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductEditService
@@ -111,6 +116,7 @@ import com.tokopedia.product.addedit.productlimitation.presentation.model.Produc
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
+import com.tokopedia.product.addedit.tracking.MediaImprovementTracker
 import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductLimitationTracking
@@ -140,7 +146,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
-import java.util.*
+import java.net.URLEncoder
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -306,9 +312,11 @@ class AddEditProductPreviewFragment :
         observeGetShopInfoLocation()
         observeSaveShipmentLocationData()
         observeAdminPermission()
-        observeProductLimitationData()
         observeMustFillParentWeight()
+        observeIsShopModerated()
 
+        //validate shop status information
+        validateShopStatus()
         // validate whether shop has location
         validateShopLocationWhenPageOpened()
         // stop prepare page PLT monitoring
@@ -347,6 +355,7 @@ class AddEditProductPreviewFragment :
         if (resultCode == RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_IMAGE -> updateImageListFromIntentData(data)
+                REQUEST_CODE_IMAGE_IMPROVEMENT -> updateImageListFromPicker(data)
                 REQUEST_CODE_VARIANT_DIALOG_EDIT -> updateVariantFromIntentData(data)
                 REQUEST_CODE_VARIANT_DETAIL_DIALOG_EDIT -> updateVariantFromIntentData(data)
                 REQUEST_CODE_SHOP_LOCATION -> updateShopLocationFromIntentData(data)
@@ -385,9 +394,7 @@ class AddEditProductPreviewFragment :
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {
         viewModel.setIsDataChanged(true)
-        if (isAdding()) {
-            ProductAddStepperTracking.trackRemoveProductImage(shopId)
-        } else {
+        if (!isAdding()) {
             ProductEditStepperTracking.trackRemoveProductImage(shopId)
         }
     }
@@ -533,9 +540,6 @@ class AddEditProductPreviewFragment :
             }
         }
         addProductPhotoTipsLayout?.setOnClickListener {
-            if (!isEditing()) {
-                ProductAddStepperTracking.trackHelpProductQuality(shopId)
-            }
             showPhotoTips()
         }
     }
@@ -652,7 +656,7 @@ class AddEditProductPreviewFragment :
 
     private fun setupDoneButton(view: View) {
         doneButton?.setOnClickListener {
-            updateImageList()
+            updateProductImage()
             if (isEditing()) {
                 ProductEditStepperTracking.trackFinishButton(shopId)
             }
@@ -755,12 +759,6 @@ class AddEditProductPreviewFragment :
                 disableShipmentEdit()
             }
         }
-    }
-
-    private fun moveToManageProduct() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
-        startActivity(intent)
-        activity?.finish()
     }
 
     private fun saveProductToDraft() {
@@ -1030,6 +1028,7 @@ class AddEditProductPreviewFragment :
     private fun observeImageUrlOrPathList() {
         viewModel.imageUrlOrPathList.observe(viewLifecycleOwner, {
             productPhotoAdapter?.setProductPhotoPaths(it)
+            viewModel.saveImageListToDetailInput(it)
         })
     }
 
@@ -1191,6 +1190,25 @@ class AddEditProductPreviewFragment :
         })
     }
 
+    private fun observeIsShopModerated() {
+        viewModel.isOnModerationMode.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    val status = it.data
+                    if (status) {
+                        showBottomSheet()
+                    } else {
+                        observeProductLimitationData()
+                    }
+                }
+                is Fail -> {
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    AddEditProductErrorHandler.logMessage("$TIMBER_PREFIX_LOCATION_VALIDATION: ${it.throwable.message}")
+                }
+            }
+        }
+    }
+
     private fun removeObservers() {
         viewModel.isEditing.removeObservers(this)
         viewModel.getProductResult.removeObservers(this)
@@ -1200,6 +1218,7 @@ class AddEditProductPreviewFragment :
         viewModel.isLoading.removeObservers(this)
         viewModel.saveProductDraftResultLiveData.removeObservers(this)
         viewModel.validationResult.removeObservers(this)
+        viewModel.isOnModerationMode.removeObservers(this)
         getNavigationResult(REQUEST_KEY_ADD_MODE)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DETAIL)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DESCRIPTION)?.removeObservers(this)
@@ -1227,6 +1246,27 @@ class AddEditProductPreviewFragment :
         }
         if (isEditted.any { true }) {
             viewModel.setIsDataChanged(true)
+        }
+    }
+
+    private fun updateImageListFromPicker(data: Intent) {
+        val result = MediaPicker.result(data)
+        val imagePickerResult = result.editedImages as ArrayList
+        val originalImageUrl = result.originalPaths as ArrayList
+        if (imagePickerResult.size > 0) {
+            val shouldUpdatePhotosInsteadMoveToDetail = isEditing() ||
+                viewModel.isDuplicate ||
+                viewModel.productInputModel.value != null
+            // update the product pictures in the preview page
+            // this should be executed when the user press "Ubah" on stepper in add or edit or duplicate product
+            if (shouldUpdatePhotosInsteadMoveToDetail) {
+                viewModel.updateProductPhotos(imagePickerResult, originalImageUrl)
+            } else {
+                // this only executed when we came from empty stepper page (add product)
+                val clearUrlOrPathImage = viewModel.clearProductPhotoUrl(imagePickerResult, originalImageUrl)
+                val newProductInputModel = viewModel.getNewProductInputModel(clearUrlOrPathImage.first)
+                moveToDetailFragment(newProductInputModel, true)
+            }
         }
     }
 
@@ -1348,19 +1388,38 @@ class AddEditProductPreviewFragment :
             val isAdding = viewModel.isAdding || !isEditing()
             val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
                 if (urlOrPath.startsWith(HTTP_PREFIX)) viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal
-                        ?: urlOrPath
+                    ?: urlOrPath
                 else urlOrPath
             }.orEmpty()
-            val intent = ImagePickerAddEditNavigation.getIntent(
+
+            if (Rollence.getImagePickerRollence()) {
+                val pageSource = if(!isEditing()) PageSource.AddProduct else PageSource.EditProduct
+                doTracking(isEditing())
+                val intent = ImagePickerAddEditNavigation.getIntentMultiplePicker(
+                    requireContext(), maxProductPhotoCount,
+                    pageSource,
+                    ArrayList(imageUrlOrPathList)
+                )
+                startActivityForResult(intent, REQUEST_CODE_IMAGE_IMPROVEMENT)
+            } else {
+                val intent = ImagePickerAddEditNavigation.getIntent(
                     requireContext(), ArrayList(imageUrlOrPathList), maxProductPhotoCount,
-                    isAdding)
-            startActivityForResult(intent, REQUEST_CODE_IMAGE)
+                    isAdding
+                )
+                startActivityForResult(intent, REQUEST_CODE_IMAGE)
+            }
         }
+    }
+
+    private fun doTracking(isEdit : Boolean){
+        val userId = UserSession(context).userId
+        val shopId = UserSession(context).shopId
+        MediaImprovementTracker.sendProductActionTracker(isEdit, userId, shopId)
     }
 
     private fun moveToDetailFragment(productInputModel: ProductInputModel, isFirstMoved: Boolean) {
         context?.run {
-            updateImageList()
+            updateProductImage()
             val cacheManager = SaveInstanceCacheManager(this, true).apply {
                 put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
                 put(EXTRA_IS_EDITING_PRODUCT, isEditing())
@@ -1425,11 +1484,21 @@ class AddEditProductPreviewFragment :
         }
     }
 
+    private fun updateProductImage(){
+        if(Rollence.getImagePickerRollence()){
+            updateProductImageList()
+        } else {
+            updateImageList()
+        }
+    }
+
     private fun updateImageList() {
         // fillter product pictureList, so that edited image will be reuploaded and changed (removed from pictureList) and than reorder the picture if necessary
         val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths().orEmpty()
         val pictureList = viewModel.productInputModel.value?.detailInputModel?.pictureList?.filter {
-            imageUrlOrPathList.contains(it.urlThumbnail)
+            val model = it
+            val valueContains = imageUrlOrPathList.contains(model.urlThumbnail)
+            valueContains
         }.orEmpty()
         val newPictureList = mutableListOf<PictureInputModel>()
         imageUrlOrPathList.forEach { urlOrPath ->
@@ -1438,6 +1507,22 @@ class AddEditProductPreviewFragment :
             }
         }
         viewModel.productInputModel.value?.detailInputModel?.pictureList = newPictureList
+        viewModel.productInputModel.value?.detailInputModel?.imageUrlOrPathList = imageUrlOrPathList
+    }
+
+    private fun updateProductImageList() {
+        // fillter product pictureList, so that edited image will be reuploaded and changed (removed from pictureList) and than reorder the picture if necessary
+        val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths().orEmpty()
+        val pictureList = viewModel.productInputModel.value?.detailInputModel?.pictureList?.filter { pictureInput ->
+            imageUrlOrPathList.contains(pictureInput.urlOriginal) || imageUrlOrPathList.contains(pictureInput.urlThumbnail)
+        }.orEmpty()
+        val notEditedPictures = mutableListOf<PictureInputModel>()
+        imageUrlOrPathList.forEach { urlOrPath ->
+            pictureList.find { it.urlThumbnail == urlOrPath || it.urlOriginal == urlOrPath }?.run {
+                notEditedPictures.add(this)
+            }
+        }
+        viewModel.productInputModel.value?.detailInputModel?.pictureList = notEditedPictures
         viewModel.productInputModel.value?.detailInputModel?.imageUrlOrPathList = imageUrlOrPathList
     }
 
@@ -1555,7 +1640,7 @@ class AddEditProductPreviewFragment :
                 setDescription(getString(R.string.label_description_on_dialog))
                 setSecondaryCTAClickListener {
                     saveProductToDraft()
-                    moveToManageProduct()
+                    activity?.finish()
                     ProductAddStepperTracking.trackDraftYes(shopId)
                 }
                 setPrimaryCTAClickListener {
@@ -1696,6 +1781,10 @@ class AddEditProductPreviewFragment :
         }
     }
 
+    private fun validateShopStatus(){
+        viewModel.validateShopIsOnModerated(userSession.shopId.toIntOrZero())
+    }
+
     private fun saveShippingLocation() {
         val shopId = userSession.shopId.toIntOrZero()
         if (shopId != 0 &&
@@ -1797,7 +1886,7 @@ class AddEditProductPreviewFragment :
                     activity?.finish()
                 }
                 urlResult.startsWith(HTTP_PREFIX) -> {
-                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlResult))
+                    RouteManager.route(context, String.format(getString(R.string.format_web_page), ApplinkConst.WEBVIEW, urlResult))
                 }
                 else -> {
                     val intent = RouteManager.getIntent(context, urlResult)
@@ -1810,5 +1899,26 @@ class AddEditProductPreviewFragment :
         if (!isProductLimitEligible && isFragmentFirstTimeLoaded) {
             showProductLimitationBottomSheet()
         }
+    }
+
+    private fun showBottomSheet(){
+        val bottomSheet = IneligibleAccessWarningBottomSheet.newInstance()
+        bottomSheet.setOnButtonBackClicked { goToManageProduct() }
+        bottomSheet.setOnButtonLearningProblemClicked { routeToArticle() }
+        bottomSheet.setDismissListener { goToManageProduct() }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun goToManageProduct(){
+        activity?.let {
+            RouteManager.route(it, PRODUCT_MANAGE)
+            it.finish()
+        }
+    }
+
+    private fun routeToArticle(){
+        val encodedUrl = URLEncoder.encode(URL_ARTICLE_SELLER_EDU, "UTF-8")
+        val route = String.format(getString(R.string.format_web_page), ApplinkConst.WEBVIEW, encodedUrl)
+        RouteManager.route(activity ?: return, route)
     }
 }

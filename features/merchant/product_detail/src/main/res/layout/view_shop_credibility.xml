@@ -2,17 +2,18 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:paddingBottom="16dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/shop_credibility_ava"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/shop_credibility_name"
+        app:layout_constraintBottom_toBottomOf="@+id/shop_credibility_location"
         tools:src="@tools:sample/avatars" />
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -37,8 +38,9 @@
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toRightOf="@id/shop_credibility_badge"
-        app:layout_constraintRight_toLeftOf="@id/shop_credibility_feature"
-        app:layout_constraintTop_toTopOf="@id/shop_credibility_ava"
+        app:layout_constraintRight_toLeftOf="@id/shop_credibility_partner"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="16dp"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_goneMarginEnd="16dp"
         app:layout_goneMarginLeft="8dp"
@@ -46,22 +48,19 @@
         app:typographyWeight="bold"
         tools:text="Chupacup Indonesia Rayaaa" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/shop_credibility_feature"
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/shop_credibility_partner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/bg_rounded_grey_250"
         android:maxLines="1"
-        android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
+        app:labelType="highlight_light_grey"
         app:layout_constraintBottom_toBottomOf="@id/shop_credibility_name"
         app:layout_constraintLeft_toRightOf="@id/shop_credibility_name"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/shop_credibility_name"
-        app:typographyType="small"
-        app:typographyWeight="bold"
         tools:text="Go-Apotik"
         tools:visibility="visible" />
 
@@ -77,21 +76,21 @@
         app:layout_constraintTop_toBottomOf="@id/shop_credibility_name"
         app:typographyType="display_3"
         tools:text="• Online"
-        tools:textColor="@color/Unify_G500"
+        tools:textColor="@color/Unify_GN500"
         tools:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/shop_credibility_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
         android:layout_marginEnd="16dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:layout_marginTop="2dp"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN600"
         app:layout_constrainedWidth="true"
-        app:layout_constraintStart_toStartOf="@id/shop_credibility_last_active"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="@id/shop_credibility_last_active"
         app:layout_constraintTop_toBottomOf="@+id/shop_credibility_last_active"
         app:typographyType="body_3"
         tools:text="• Kota Tangerang Selatan" />
@@ -101,11 +100,11 @@
         android:layout_width="14dp"
         android:layout_height="14dp"
         android:layout_marginStart="4dp"
-        app:icon_name="INFORMATION"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="@+id/shop_credibility_location"
+        app:icon_name="INFORMATION"
         app:layout_constraintBottom_toBottomOf="@+id/shop_credibility_location"
         app:layout_constraintStart_toEndOf="@+id/shop_credibility_location"
+        app:layout_constraintTop_toTopOf="@+id/shop_credibility_location"
         tools:visibility="visible" />
 
     <com.tokopedia.iconunify.IconUnify
@@ -136,7 +135,7 @@
         android:layout_marginStart="4dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="@id/shop_credibility_info_title_1"
         app:layout_constraintLeft_toRightOf="@id/shop_credibility_info_title_1"
         app:typographyType="display_3"
@@ -173,7 +172,7 @@
         android:layout_marginStart="4dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="@id/shop_credibility_info_title_2"
         app:layout_constraintLeft_toRightOf="@id/shop_credibility_info_title_2"
         app:typographyType="display_3"
@@ -192,23 +191,16 @@
         app:unifyButtonType="main"
         app:unifyButtonVariant="ghost" />
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/shop_credibility_info_ticker"
+    <ViewStub
+        android:id="@+id/shop_credibility_ticker_stub"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="12dp"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone"
-        app:closeButtonVisibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_goneMarginTop="8dp"
+        android:layout="@layout/view_credibility_ticker"
         app:layout_constraintTop_toBottomOf="@id/shop_credibility_info_desc_2"
-        app:layout_constraintVertical_bias="0"
-        app:tickerShapeType="loose"
-        app:tickerType="announcement"
-        tools:descriptionText="Toko sedang libur. Ada potensi keterlambatan dalam pengiriman. Cek Jadwal"
-        tools:layout_editor_absoluteX="12dp"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

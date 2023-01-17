@@ -146,7 +146,7 @@
         android:layout_width="@dimen/edit_icon_size"
         android:layout_height="@dimen/edit_icon_size"
         android:layout_marginStart="@dimen/edit_icon_left_spacing"
-        android:tint="@color/black"
+        android:tint="@color/Unify_NN1000"
         app:layout_constraintBottom_toBottomOf="@id/txtSubTitle2Value"
         app:layout_constraintStart_toEndOf="@id/txtSubTitle2Value"
         app:layout_constraintTop_toTopOf="@id/txtSubTitle2Value"

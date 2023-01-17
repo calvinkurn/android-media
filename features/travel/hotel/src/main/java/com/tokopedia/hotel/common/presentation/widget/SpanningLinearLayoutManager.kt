@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlin.math.roundToInt
 
 class SpanningLinearLayoutManager : LinearLayoutManager {
 
@@ -41,9 +42,9 @@ class SpanningLinearLayoutManager : LinearLayoutManager {
 
     private fun spanLayoutSize(layoutParams: RecyclerView.LayoutParams): RecyclerView.LayoutParams {
         if (orientation == HORIZONTAL) {
-            layoutParams.width = Math.round(horizontalSpace / itemCount.toDouble()).toInt() - itemSpacing
+            layoutParams.width = (horizontalSpace / itemCount.toDouble()).roundToInt() - itemSpacing
         } else if (orientation == VERTICAL) {
-            layoutParams.height = Math.round(verticalSpace / itemCount.toDouble()).toInt() - itemSpacing
+            layoutParams.height = (verticalSpace / itemCount.toDouble()).roundToInt() - itemSpacing
         }
         return layoutParams
     }

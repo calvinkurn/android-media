@@ -66,6 +66,7 @@
     <string name="sale_from_top_ads">Penjualan dari TopAds</string>
     <string name="sale_from_broadcast_chat">Penjualan dari Broadcast Chat</string>
     <string name="som_detail_product_note_format"><![CDATA[<i>%1$s</i>]]></string>
+    <string name="som_response_deadline">Batas respons</string>
 
     <string name="chat">Chat</string>
 
@@ -362,5 +363,9 @@
     <string name="som_request_cancellation_desc_continue_send_order_dialog">Untuk menghindari komplain, pastikan pengiriman pesanan sudah dapat persetujuan dari pembeli.</string>
     <string name="som_request_cancellation_btn_primary_continue_send_order_dialog">Lanjut Kirim</string>
     <string name="som_request_cancellation_desc_confirm_cancellation_order_dialog">Pastikan pesanan belum diserahkan ke kurir sebelum membatalkan. Skor Performa Toko tidak dikurangi.</string>
+
+<!--   invoice-->
+    <string name="click_to_copy_icon_content_description">Tombol salin nomor invoice</string>
+    <string name="success_invoice_copied">Nomor invoice berhasil tersalin</string>
 
 </resources>

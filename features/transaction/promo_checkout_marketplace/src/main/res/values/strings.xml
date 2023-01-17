@@ -3,6 +3,7 @@
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Kupon/Promo</string>
     <string name="promo_checkout_label_promo_recommendation_title">Ada %d promo terbaik untukmu</string>
     <string name="promo_checkout_label_promo_recommendation_title_after_apply">%d promo terbaik dipilih</string>
+    <string name="promo_checkout_title_bottom_sheet_input_promo_code">Kode Promo</string>
     <string name="promo_checkout_label_recommendation_benefit">Kamu bisa hemat %s</string>
     <string name="promo_checkout_label_button_apply_promo">Pakai Promo (%d)</string>
     <string name="label_error_global_promo_checkout">Oops, terjadi kesalahan. Coba pilih promo lagi.</string>
@@ -15,17 +16,21 @@
     <string name="label_subtitle_promo_eligibility_header">Kamu bisa gabungkan promo biar makin hemat</string>
     <string name="label_title_promo_eligibility_header">Pilih promo</string>
     <string name="label_promo_input_hint">Masukkan kode promo</string>
+    <string name="label_promo_input_bottom_sheet_hint">Masukin kode promo</string>
     <string name="label_button_apply_manual_input_promo">Terapkan</string>
     <string name="label_prefix_attempted_promo_code">Kode promo:&#160;</string>
     <string name="label_promo_recommendation_select">Pilih</string>
     <string name="label_promo_recommendation_selected">Dipilih</string>
     <string name="label_subtitle_promo_selected">Promo dipilih</string>
-    <string name="label_subtitle_only_one_promo">Hanya bisa pilih 1</string>
     <string name="label_promo_show_detail">Lihat Detail</string>
     <string name="label_promo_suggestion_title">Promo terakhir dilihat</string>
     <string name="label_promo_code">Kode promo:&#160;</string>
     <string name="content_description_image_coupon_sub_section">image coupon sub section</string>
     <string name="content_description_image_arrow_coupon_sub_section">image arrow coupon sub section</string>
     <string name="label_button_close">Tutup</string>
+    <string name="label_promo_selectable_template">• %1$s</string>
+    <string name="promo_checkout_toolbar_input_code_label">Masukin Kode</string>
+    <string name="label_has_already_selected_bo_promo">Kamu perlu pilih ulang pengirimanmu, ya!</string>
+    <string name="promo_checkout_toolbar_title_label">Pakai Promo</string>
 
 </resources>

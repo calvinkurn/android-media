@@ -1,37 +1,35 @@
 package com.tokopedia.unifyorderhistory.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_INPUT
-import com.tokopedia.unifyorderhistory.data.model.UohListParam
-import com.tokopedia.unifyorderhistory.data.model.UohListOrder
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.unifyorderhistory.data.model.UohListOrder
+import com.tokopedia.unifyorderhistory.data.model.UohListParam
+import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_INPUT
 import javax.inject.Inject
 
-/**
- * Created by fwidjaja on 03/07/20.
- */
-class UohListUseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) {
-    suspend fun executeSuspend(param: UohListParam): Result<UohListOrder.Data.UohOrders> {
-        return try {
-            val request = GraphqlRequest(QUERY, UohListOrder.Data::class.java, generateParam(param))
-            val response = gqlRepository.response(listOf(request)).getSuccessData<UohListOrder.Data>()
-            Success(response.uohOrders)
-        } catch (e: Exception) {
-            Fail(e)
-        }
+@GqlQuery("GetOrderHistoryQuery", UohListUseCase.query)
+class UohListUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+) :
+    CoroutineUseCase<UohListParam, UohListOrder>(dispatchers.io) {
+
+    override fun graphqlQuery(): String = query
+
+    override suspend fun execute(params: UohListParam): UohListOrder {
+        return repository.request(GetOrderHistoryQuery(), createVariables(params))
     }
 
-    private fun generateParam(param: UohListParam): Map<String, Any?> {
+    private fun createVariables(param: UohListParam): Map<String, Any> {
         return mapOf(PARAM_INPUT to param)
     }
 
     companion object {
-        val QUERY = """
+        const val query = """
             query GetOrderHistory(${'$'}input:UOHOrdersRequest!){
                 uohOrders(input:${'$'}input) {
                     orders {
@@ -125,15 +123,6 @@ class UohListUseCase @Inject constructor(@ApplicationContext private val gqlRepo
                       updateTime
                       updateBy
                     }
-                    filtersV2 {
-                      label
-                      value
-                      isPrimary
-                    }
-                    categories {
-                      value
-                      label
-                    }
                     next
                     dateLimit
                     tickers {
@@ -152,6 +141,6 @@ class UohListUseCase @Inject constructor(@ApplicationContext private val gqlRepo
                     }
                   }
                 }
-        """.trimIndent()
+            """
     }
 }

@@ -71,27 +71,30 @@ abstract class BaseProductBundleTracking {
         return gtmTracker!!
     }
 
-    fun trackBundleOptionClick(label: String, productId: String) {
+    fun trackBundleOptionClick(label: String, productId: String, trackerId: String) {
         initializeTracker().sendBundleClickEvent(
             EA_BUNDLE_OPTION,
             label,
-            productId
+            productId,
+            trackerId
         )
     }
 
-    fun trackPreviewProductClick(label: String, productId: String) {
+    fun trackPreviewProductClick(label: String, productId: String, trackerId: String) {
         initializeTracker().sendBundleClickEvent(
             EA_PREVIEW_PRODUCT,
             label,
-            productId
+            productId,
+            trackerId
         )
     }
 
-    fun trackSelectVariantClick(label: String, productId: String) {
+    fun trackSelectVariantClick(label: String, productId: String, trackerId: String) {
         initializeTracker().sendBundleClickEvent(
             EA_SELECT_VARIANT,
             label,
-            productId
+            productId,
+            trackerId
         )
     }
 
@@ -119,18 +122,20 @@ abstract class BaseProductBundleTracking {
         )
     }
 
-    fun trackBackClick(label: String, productId: String) {
+    fun trackBackClick(label: String, productId: String, trackerId: String) {
         initializeTracker().sendBundleClickEvent(
             EA_BACK,
             label,
-            productId
+            productId,
+            trackerId
         )
     }
 
     private fun ContextAnalytics.sendBundleClickEvent(
         action: String,
         label: String,
-        productId: String) {
+        productId: String,
+        trackerId: String) {
 
         val map: Map<String, String> = mutableMapOf(
             KEY_EVENT to VALUE_EVENT,
@@ -139,7 +144,8 @@ abstract class BaseProductBundleTracking {
             KEY_LABEL to label,
             KEY_BUSINESS_UNIT to VALUE_BUSINESS_UNIT,
             KEY_CURRENT_SITE to VALUE_CURRENT_SITE,
-            KEY_PRODUCT_ID to productId
+            KEY_PRODUCT_ID to productId,
+            KEY_TRACKER_ID to trackerId
         )
         sendGeneralEvent(map)
     }
@@ -157,7 +163,7 @@ abstract class BaseProductBundleTracking {
     ) {
         val bundle = Bundle()
         val itemBundle = arrayListOf<Bundle>()
-        productDetails.forEachIndexed { index, productDetailMultipleBundleTracker ->
+        productDetails.forEachIndexed { _, productDetailMultipleBundleTracker ->
             itemBundle.add(
                     getItemsBundlingAtc(
                             bundleId = bundleId,

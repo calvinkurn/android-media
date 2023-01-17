@@ -2,7 +2,8 @@ package com.tokopedia.product.addedit.preview.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.product.addedit.description.presentation.model.*
+import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
+import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
@@ -25,7 +26,6 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.shipment.presentation.model.CPLModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.*
-import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import javax.inject.Inject
 
@@ -223,7 +223,9 @@ class GetProductMapper @Inject constructor() {
             convertToGram(product.weight, product.weightUnit),
             UNIT_GRAM,
             product.mustInsurance,
-            CPLModel(),
+            CPLModel(
+                cplParam = product.cpl.shipperServices
+            ),
             product.variant.products.isEmpty()
         )
     }

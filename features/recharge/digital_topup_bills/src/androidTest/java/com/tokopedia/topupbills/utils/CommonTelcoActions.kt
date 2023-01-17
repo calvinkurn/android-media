@@ -3,11 +3,9 @@ package com.tokopedia.topupbills.utils
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -17,17 +15,14 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivity
+import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
+import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
-import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.topupbills.R
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.TypeSafeMatcher
 import org.hamcrest.core.AllOf
 
 object CommonTelcoActions {
@@ -67,7 +62,7 @@ object CommonTelcoActions {
     ) {
         Intents.intending(
             IntentMatchers.hasComponent(
-            ComponentNameMatchers.hasClassName(TopupBillsSavedNumberActivity::class.java.name)))
+            ComponentNameMatchers.hasClassName(TopupBillsPersoSavedNumberActivity::class.java.name)))
             .respondWith(createOrderNumberWithType(number, type, categoryId))
     }
 

@@ -169,6 +169,7 @@ class OrderSummaryPageActivityTokonowTest {
             }
 
             logisticInterceptor.customRatesResponsePath = RATES_TOKONOW_NO_DISCOUNT_RESPONSE_PATH
+            promoInterceptor.customValidateUseResponsePath = null
             clickAddProductQuantity(1, 1)
 
             assertShipmentRevamp(

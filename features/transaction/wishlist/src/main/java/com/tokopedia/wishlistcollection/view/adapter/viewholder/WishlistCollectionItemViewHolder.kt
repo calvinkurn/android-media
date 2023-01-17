@@ -25,7 +25,7 @@ class WishlistCollectionItemViewHolder(
     private val actionListener: WishlistCollectionAdapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
     var isAllWishlist = false
-        fun bind(item: WishlistCollectionTypeLayoutData) {
+        fun bind(item: WishlistCollectionTypeLayoutData, position: Int) {
             if (item.dataObject is GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.CollectionsItem) {
                 binding.root.clickWithDebounce {
                     actionListener?.onCollectionItemClicked(item.dataObject.id)
@@ -36,16 +36,30 @@ class WishlistCollectionItemViewHolder(
                 binding.cardCollectionItem.cardType = CardUnify2.TYPE_SHADOW
                 binding.collectionTitle.text = item.dataObject.name
                 binding.collectionDesc.text = "${item.dataObject.totalItem} ${item.dataObject.itemText}"
+                if (item.dataObject.indicator.title.isNotEmpty()) {
+                    binding.labelDesc.visible()
+                    binding.labelDesc.text = item.dataObject.indicator.title
+                } else {
+                    binding.labelDesc.gone()
+                }
                 if (item.dataObject.name == SEMUA_WISHLIST) {
                     isAllWishlist = true
                     binding.collectionKebabMenu.gone()
-                }
-            else {
-                binding.collectionKebabMenu.visible()
-                binding.collectionKebabMenu.setOnClickListener {
+                } else {
+                    if (position == 1) actionListener?.onFirstCollectionItemBind(
+                        binding.collectionKebabMenu,
+                        item.dataObject.id,
+                        item.dataObject.name,
+                        item.dataObject.actions,
+                        item.dataObject.indicator.title
+                    )
+                    binding.collectionKebabMenu.visible()
+                    binding.collectionKebabMenu.setOnClickListener {
                     actionListener?.onKebabMenuClicked(
                         item.dataObject.id,
-                        item.dataObject.name
+                        item.dataObject.name,
+                        item.dataObject.actions,
+                        item.dataObject.indicator.title
                     )
                 }
             }
@@ -63,6 +77,7 @@ class WishlistCollectionItemViewHolder(
                     TOTAL_IMG_4 -> {
                         binding.singleCollectionItem.gone()
                         binding.glCollectionItem.visible()
+                        binding.imgCollection1.layout(0, 0, 0, 0)
                         val params1: GridLayout.LayoutParams =
                             GridLayout.LayoutParams(binding.imgCollection1.layoutParams)
                         params1.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
@@ -78,6 +93,7 @@ class WishlistCollectionItemViewHolder(
                             }
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
+                        binding.imgCollection2.layout(0, 0, 0, 0)
                         val params2: GridLayout.LayoutParams =
                             GridLayout.LayoutParams(binding.imgCollection2.layoutParams)
                         params2.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
@@ -93,6 +109,7 @@ class WishlistCollectionItemViewHolder(
                             }
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
+                        binding.imgCollection3.layout(0, 0, 0, 0)
                         val params3: GridLayout.LayoutParams =
                             GridLayout.LayoutParams(binding.imgCollection3.layoutParams)
                         params3.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
@@ -108,6 +125,7 @@ class WishlistCollectionItemViewHolder(
                             }
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
+                        binding.imgCollection4.layout(0, 0, 0, 0)
                         val params4: GridLayout.LayoutParams =
                             GridLayout.LayoutParams(binding.imgCollection4.layoutParams)
                         params4.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
@@ -127,6 +145,7 @@ class WishlistCollectionItemViewHolder(
                     TOTAL_IMG_3 -> {
                         binding.singleCollectionItem.gone()
                         binding.glCollectionItem.visible()
+                        binding.imgCollection1.layout(0, 0, 0, 0)
                         val params1: GridLayout.LayoutParams =
                             GridLayout.LayoutParams(binding.imgCollection1.layoutParams)
                         params1.rowSpec = GridLayout.spec(SPEC_0, SPEC_2, 1.0F)
@@ -142,6 +161,7 @@ class WishlistCollectionItemViewHolder(
                             }
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
+                        binding.imgCollection2.layout(0, 0, 0, 0)
                         val params2: GridLayout.LayoutParams =
                             GridLayout.LayoutParams(binding.imgCollection2.layoutParams)
                         params2.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
@@ -157,6 +177,7 @@ class WishlistCollectionItemViewHolder(
                             }
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
+                        binding.imgCollection3.layout(0, 0, 0, 0)
                         val params3: GridLayout.LayoutParams =
                             GridLayout.LayoutParams(binding.imgCollection2.layoutParams)
                         params3.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
@@ -174,6 +195,7 @@ class WishlistCollectionItemViewHolder(
                         binding.imgCollection4.gone()
                     }
                     TOTAL_IMG_2 -> {
+                        binding.imgCollection1.layout(0, 0, 0, 0)
                         binding.singleCollectionItem.gone()
                         binding.glCollectionItem.visible()
                         val params1: GridLayout.LayoutParams =
@@ -192,6 +214,7 @@ class WishlistCollectionItemViewHolder(
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
 
+                        binding.imgCollection2.layout(0, 0, 0, 0)
                         val params2: GridLayout.LayoutParams =
                             GridLayout.LayoutParams(binding.imgCollection2.layoutParams)
                         params2.rowSpec = GridLayout.spec(SPEC_0, SPEC_2, 1.0F)

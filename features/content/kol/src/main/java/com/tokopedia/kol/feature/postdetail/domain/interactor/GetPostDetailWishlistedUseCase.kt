@@ -1,15 +1,16 @@
 package com.tokopedia.kol.feature.postdetail.domain.interactor
 
-import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.PostDetailUiModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
-import com.tokopedia.wishlist.common.domain.interactor.GetProductIsWishlistedUseCase
+import com.tokopedia.wishlistcommon.domain.GetProductIsWishlistedUseCase
 import rx.Observable
 import javax.inject.Inject
 
 class GetPostDetailWishlistedUseCase @Inject constructor(private val detailUseCase: GetPostDetailUseCaseSeller,
-                                                         private val isProductWishlistedUseCase: GetProductIsWishlistedUseCase)
+                                                         private val isProductWishlistedUseCase: GetProductIsWishlistedUseCase
+)
     : UseCase<PostDetailUiModel>() {
 
 
@@ -19,7 +20,7 @@ class GetPostDetailWishlistedUseCase @Inject constructor(private val detailUseCa
     }
 
     private fun checkWishListObservable(postDetailViewModel: PostDetailUiModel): Observable<PostDetailUiModel> {
-        val dynamicPost = postDetailViewModel.dynamicPostViewModel.postList.firstOrNull() as? DynamicPostViewModel?
+        val dynamicPost = postDetailViewModel.dynamicPostViewModel.postList.firstOrNull() as? DynamicPostModel?
         return if (dynamicPost == null)
             Observable.just(dynamicPost)
         else {
