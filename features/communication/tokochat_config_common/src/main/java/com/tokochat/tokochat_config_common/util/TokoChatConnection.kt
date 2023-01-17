@@ -74,7 +74,7 @@ object TokoChatConnection {
         }
     }
 
-    private fun isTokoChatActive(): Boolean {
+    fun isTokoChatActive(): Boolean {
         return try {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 RollenceKey.KEY_ROLLENCE_TOKOCHAT,

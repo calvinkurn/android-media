@@ -50,13 +50,13 @@ class FollowingListingFragment @Inject constructor(
     private var isLoggedIn: Boolean = false
     private var isSwipeRefresh: Boolean? = null
 
-    private val mPresenter: FollowerFollowingViewModel by lazy {
+    private val viewModel: FollowerFollowingViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(FollowerFollowingViewModel::class.java)
     }
 
     private val mAdapter: ProfileFollowingAdapter by lazy {
         ProfileFollowingAdapter(
-            mPresenter,
+            viewModel,
             this,
             userSession,
             this,
@@ -87,21 +87,23 @@ class FollowingListingFragment @Inject constructor(
     }
 
     private fun initMainUi() {
+        viewModel.username = arguments?.getString(UserProfileFragment.EXTRA_USER_ID).orEmpty()
+
         val rvFollowers = view?.findViewById<RecyclerView>(R.id.rv_followers)
         rvFollowers?.adapter = mAdapter
         mAdapter.resetAdapter()
-        mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_ID))
+        mAdapter.startDataLoading("")
 
         view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.setOnRefreshListener {
             isSwipeRefresh = true
             mAdapter.cursor = ""
-            mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_ID))
+            mAdapter.startDataLoading("")
         }
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun addListObserver() =
-        mPresenter.profileFollowingsListLiveData.observe(
+        viewModel.profileFollowingsListLiveData.observe(
             viewLifecycleOwner,
             Observer {
                 it?.let {
@@ -115,12 +117,10 @@ class FollowingListingFragment @Inject constructor(
                                 view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
                                     false
                                 isSwipeRefresh = !isSwipeRefresh!!
-                                mAdapter.clear()
-                                mAdapter.items.addAll(it.data.profileFollowings.profileFollower)
-                                mAdapter.notifyDataSetChanged()
-                            } else {
-                                mAdapter.onSuccess(it.data)
+                                mAdapter.resetAdapter()
                             }
+
+                            mAdapter.onSuccess(it.data)
                         }
                         is ErrorMessage -> {
                             mAdapter.onError()
@@ -131,7 +131,7 @@ class FollowingListingFragment @Inject constructor(
         )
 
     private fun addFollowersErrorObserver() =
-        mPresenter.followersErrorLiveData.observe(
+        viewModel.followersErrorLiveData.observe(
             viewLifecycleOwner,
             Observer {
                 if (isSwipeRefresh == true) {
@@ -231,7 +231,7 @@ class FollowingListingFragment @Inject constructor(
     private fun refreshMainUi() {
         mAdapter.resetAdapter()
         mAdapter.cursor = ""
-        mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_ID))
+        mAdapter.startDataLoading("")
     }
 
     override fun onRetryPageLoad(pageNumber: Int) {

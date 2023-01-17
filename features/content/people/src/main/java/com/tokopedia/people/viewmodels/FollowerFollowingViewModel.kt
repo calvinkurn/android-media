@@ -33,8 +33,9 @@ class FollowerFollowingViewModel @Inject constructor(
     private val followersError = MutableLiveData<Throwable>()
     val followersErrorLiveData: LiveData<Throwable> get() = followersError
 
+    var username: String = ""
+
     fun getFollowers(
-        username: String,
         cursor: String,
         limit: Int,
     ) {
@@ -48,7 +49,6 @@ class FollowerFollowingViewModel @Inject constructor(
     }
 
     fun getFollowings(
-        username: String,
         cursor: String,
         limit: Int,
     ) {

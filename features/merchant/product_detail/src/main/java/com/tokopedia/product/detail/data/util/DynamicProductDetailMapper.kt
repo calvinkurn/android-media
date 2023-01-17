@@ -662,12 +662,26 @@ object DynamicProductDetailMapper {
 
     fun generateImageGeneratorData(product: DynamicProductInfoP1, bebasOngkir: BebasOngkirImage): PdpParamModel {
         return PdpParamModel(
+            productId = product.basic.productID,
             isBebasOngkir = isBebasOngkir(bebasOngkir.boType),
             bebasOngkirType = mapBebasOngkirType(bebasOngkir.boType),
-            productPrice = product.data.price.value.toLong(),
+            productPrice = getProductPrice(product),
             productRating = product.basic.stats.rating,
-            productTitle = MethodChecker.fromHtml(product.getProductName).toString()
+            productTitle = product.data.name,
+            hasCampaign = product.data.campaign.activeAndHasId.compareTo(false).toString(),
+            campaignName = product.data.campaign.campaignTypeName,
+            campaignDiscount = product.data.campaign.percentageAmount.toInt(),
+            newProductPrice = product.data.campaign.discountedPrice.toLong()
+
         )
+    }
+
+    private fun getProductPrice(product: DynamicProductInfoP1): Long {
+        return if (product.data.campaign.activeAndHasId) {
+            product.data.campaign.originalPrice.toLong()
+        } else {
+            product.data.price.value.toLong()
+        }
     }
 
     private fun isBebasOngkir(type: Int) = type == BebasOngkirType.NON_BO.value

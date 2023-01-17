@@ -22,7 +22,8 @@ object ProductCardResult {
     fun hasVariantLabel(@IdRes variantResourceId: Int, variantText: String, position: Int) {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom)
-            .atPositionOnView(position, variantResourceId))
+                .atPositionOnView(position, variantResourceId)
+        )
             .check(matches(withText(variantText)))
     }
 
@@ -42,4 +43,11 @@ object ProductCardResult {
             .check(matches(withText(buttonText)))
     }
 
+    fun hasProductWishlistButtonWithText(buttonText: String, position: Int) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(position, R.id.tv_wishlist)
+        )
+            .check(matches(withText(buttonText)))
+    }
 }
