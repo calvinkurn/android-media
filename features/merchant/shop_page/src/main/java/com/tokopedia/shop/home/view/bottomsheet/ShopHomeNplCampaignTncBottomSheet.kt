@@ -14,7 +14,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -40,7 +39,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
@@ -51,7 +49,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
         private const val KEY_SHOP_ID = "key_shop_id"
         private const val KEY_IS_OFFICIAL_STORE = "key_is_official_store"
         private const val KEY_IS_GOLD_MERCHANT = "key_is_gold_merchant"
-        private const val KEY_RULE_ID = "key_rule_id"
+        private const val KEY_LIST_RULE_ID = "key_list_rule_id"
         private const val RULE_ID_33 = 33
 
         fun createInstance(
@@ -60,7 +58,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
             shopId: String,
             isOfficialStore: Boolean,
             isGoldMerchant: Boolean,
-            ruleId: String
+            listRuleId: List<String>
         ) = ShopHomeNplCampaignTncBottomSheet().apply {
             arguments = Bundle().apply {
                 putString(KEY_CAMPAIGN_ID, campaignId)
@@ -68,7 +66,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
                 putString(KEY_SHOP_ID, shopId)
                 putBoolean(KEY_IS_OFFICIAL_STORE, isOfficialStore)
                 putBoolean(KEY_IS_GOLD_MERCHANT, isGoldMerchant)
-                putString(KEY_RULE_ID, ruleId)
+                putStringArrayList(KEY_LIST_RULE_ID, ArrayList(listRuleId))
             }
         }
     }
@@ -85,7 +83,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
     private var shopId = ""
     private var isOfficialStore = false
     private var isGoldMerchant = false
-    private var ruleId: String = ""
+    private var listRuleId: List<String> = listOf()
     private var shopHomeCampaignNplTncAdapter: ShopHomeCampaignNplTncAdapter? = null
     val isOwner: Boolean
         get() = ShopUtil.isMyShop(shopId, viewModel?.userSessionShopId ?: "")
@@ -182,7 +180,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
             Observer {
                 when (it) {
                     is Success -> {
-                        if (!isLoggedIn || !isRuleId33(ruleId)) {
+                        if (!isLoggedIn || !isRuleId33(listRuleId)) {
                             hideFollowButton()
                         } else {
                             isFollowShop = it.data.status?.userIsFollowing == true
@@ -331,7 +329,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
             shopId = it.getString(KEY_SHOP_ID, "")
             isOfficialStore = it.getBoolean(KEY_IS_OFFICIAL_STORE, false)
             isGoldMerchant = it.getBoolean(KEY_IS_GOLD_MERCHANT, false)
-            ruleId = it.getString(KEY_RULE_ID, "")
+            listRuleId = it.getStringArrayList(KEY_LIST_RULE_ID)?.toList().orEmpty()
         }
     }
 
@@ -343,8 +341,8 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
         loaderUnify?.hide()
     }
 
-    private fun isRuleId33(ruleId: String): Boolean {
-        return ruleId.toIntOrZero() == RULE_ID_33
+    private fun isRuleId33(listRuleId: List<String>): Boolean {
+        return listRuleId.any { it.toIntOrZero() == RULE_ID_33 }
     }
 
     private fun getHalfDeviceScreen(): Int = getScreenHeight() / 2

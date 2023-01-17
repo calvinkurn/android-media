@@ -3311,7 +3311,7 @@ open class ShopPageHomeFragment :
             showNplCampaignTncBottomSheet(
                 it.campaignId,
                 it.statusCampaign,
-                it.dynamicRule.dynamicRoleData.ruleID
+                it.dynamicRule.listDynamicRoleData.map { it.ruleID }
             )
         }
     }
@@ -3347,7 +3347,7 @@ open class ShopPageHomeFragment :
     private fun showNplCampaignTncBottomSheet(
         campaignId: String,
         statusCampaign: String,
-        ruleID: String
+        listRuleId: List<String>
     ) {
         val bottomSheet = ShopHomeNplCampaignTncBottomSheet.createInstance(
             campaignId,
@@ -3355,7 +3355,7 @@ open class ShopPageHomeFragment :
             shopId,
             isOfficialStore,
             isGoldMerchant,
-            ruleID
+            listRuleId
         )
         bottomSheet.show(childFragmentManager, "")
     }

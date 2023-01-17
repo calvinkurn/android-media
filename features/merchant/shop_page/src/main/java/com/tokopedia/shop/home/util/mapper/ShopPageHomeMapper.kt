@@ -634,10 +634,12 @@ object ShopPageHomeMapper {
     private fun mapToDynamicRule(dynamicRule: ShopLayoutWidget.Widget.Data.DynamicRule): ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule {
         return ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule(
             dynamicRule.descriptionHeader,
-            ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule.DynamicRoleData(
-                ruleID = dynamicRule.dynamicRoleData.firstOrNull()?.ruleID.orEmpty(),
-                isActive = dynamicRule.dynamicRoleData.firstOrNull()?.isActive.orFalse()
-            )
+            dynamicRule.dynamicRoleData.map {
+                ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule.DynamicRoleData(
+                    ruleID = it.ruleID,
+                    isActive = it.isActive
+                )
+            }
         )
     }
 

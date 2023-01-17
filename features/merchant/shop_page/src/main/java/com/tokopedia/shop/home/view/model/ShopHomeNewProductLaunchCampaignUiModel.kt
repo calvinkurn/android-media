@@ -49,7 +49,7 @@ data class ShopHomeNewProductLaunchCampaignUiModel(
 
         data class DynamicRule(
             val descriptionHeader: String = "",
-            val dynamicRoleData: DynamicRoleData = DynamicRoleData()
+            val listDynamicRoleData: List<DynamicRoleData> = listOf()
         ) {
             data class DynamicRoleData(
                     val ruleID: String = "",

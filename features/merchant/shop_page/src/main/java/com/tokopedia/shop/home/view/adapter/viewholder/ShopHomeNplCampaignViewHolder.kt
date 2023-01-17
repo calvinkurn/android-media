@@ -14,6 +14,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
@@ -34,7 +35,6 @@ import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
-import com.tokopedia.unifycomponents.timer.TimerUnifySingle.Companion.FORMAT_AUTO
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.view.binding.viewBinding
@@ -128,9 +128,14 @@ class ShopHomeNplCampaignViewHolder(
     }
 
     private fun setFollowersOnlyView(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        val dynamicRoleData = model.data?.firstOrNull()?.dynamicRule?.dynamicRoleData
-        val isExclusiveForFollowers = (dynamicRoleData?.ruleID == NPL_RULE_ID_FOLLOWERS_ONLY) && dynamicRoleData.isActive
-        textFollowersOnly?.showWithCondition(isExclusiveForFollowers)
+        textFollowersOnly?.showWithCondition(isExclusiveForFollowers(model))
+    }
+
+    private fun isExclusiveForFollowers(model: ShopHomeNewProductLaunchCampaignUiModel): Boolean {
+        val dynamicRoleData = model.data?.firstOrNull()?.dynamicRule?.listDynamicRoleData
+        return (dynamicRoleData?.any {
+            it.ruleID == NPL_RULE_ID_FOLLOWERS_ONLY && it.isActive
+        }).orFalse()
     }
 
     private fun setProductCarousel(model: ShopHomeNewProductLaunchCampaignUiModel) {
