@@ -5,11 +5,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.kotlin.extensions.view.formatTo
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.*
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.VoucherBuyerFinder
-import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoAction
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeAction
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeEvent
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeUiState
@@ -41,18 +41,10 @@ class VoucherSettingViewModel @Inject constructor(
             }
             is VoucherCreationStepThreeEvent.ChoosePromoType -> handlePromoTypeSelection(event.promoType)
             is VoucherCreationStepThreeEvent.ChooseBenefitType -> handleBenefitTypeSelection(event.benefitType)
-            is VoucherCreationStepThreeEvent.OnInputNominalChanged -> handleNominalInputChanges(
-                event.nominal
-            )
-            is VoucherCreationStepThreeEvent.OnInputPercentageChanged -> handlePercentageInputChanges(
-                event.percentage
-            )
-            is VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged -> handleMaxDeductionInputChanges(
-                event.maxDeduction
-            )
-            is VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged -> handleMinimumBuyInputChanges(
-                event.minimumBuy
-            )
+            is VoucherCreationStepThreeEvent.OnInputNominalChanged -> handleNominalInputChanges(event.nominal)
+            is VoucherCreationStepThreeEvent.OnInputPercentageChanged -> handlePercentageInputChanges(event.percentage)
+            is VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged -> handleMaxDeductionInputChanges(event.maxDeduction)
+            is VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged -> handleMinimumBuyInputChanges(event.minimumBuy)
             is VoucherCreationStepThreeEvent.OnInputQuotaChanged -> handleQuotaInputChanges(event.quota)
             is VoucherCreationStepThreeEvent.ChooseTargetBuyer -> {}
             is VoucherCreationStepThreeEvent.HandleCoachMark -> handleCoachmark()
@@ -101,6 +93,7 @@ class VoucherSettingViewModel @Inject constructor(
                 voucherConfiguration = it.voucherConfiguration.copy(
                     promoType = promoType
                 ),
+                spendingEstimation = 0,
                 availableTargetBuyer = availableTargetBuyer
             )
         }
@@ -115,14 +108,15 @@ class VoucherSettingViewModel @Inject constructor(
                 )
             )
         }
+        setSpendingEstimation()
     }
 
-    private fun handleNominalInputChanges(nominal: Long) {
+    private fun handleNominalInputChanges(nominal: String) {
         _uiState.update {
             it.copy(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
-                    benefitIdr = nominal
+                    benefitIdr = nominal.toLong()
                 ),
                 fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.NOMINAL)
             )
@@ -131,12 +125,12 @@ class VoucherSettingViewModel @Inject constructor(
         setSpendingEstimation()
     }
 
-    private fun handlePercentageInputChanges(percentage: Int) {
+    private fun handlePercentageInputChanges(percentage: String) {
         _uiState.update {
             it.copy(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
-                    benefitPercent = percentage
+                    benefitPercent = percentage.toIntOrZero()
                 ),
                 fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.PERCENTAGE)
             )
@@ -145,12 +139,12 @@ class VoucherSettingViewModel @Inject constructor(
         setSpendingEstimation()
     }
 
-    private fun handleMaxDeductionInputChanges(maxDeduction: Long) {
+    private fun handleMaxDeductionInputChanges(maxDeduction: String) {
         _uiState.update {
             it.copy(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
-                    benefitMax = maxDeduction
+                    benefitMax = maxDeduction.toLong()
                 ),
                 fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.MAX_DEDUCTION)
             )
@@ -159,12 +153,12 @@ class VoucherSettingViewModel @Inject constructor(
         setSpendingEstimation()
     }
 
-    private fun handleMinimumBuyInputChanges(minimumBuy: Long) {
+    private fun handleMinimumBuyInputChanges(minimumBuy: String) {
         _uiState.update {
             it.copy(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
-                    minPurchase = minimumBuy
+                    minPurchase = minimumBuy.toLong()
                 ),
                 fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.MINIMUM_BUY)
             )
@@ -172,12 +166,12 @@ class VoucherSettingViewModel @Inject constructor(
         handleVoucherInputValidation()
     }
 
-    private fun handleQuotaInputChanges(quota: Long) {
+    private fun handleQuotaInputChanges(quota: String) {
         _uiState.update {
             it.copy(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
-                    quota = quota
+                    quota = quota.toLong()
                 ),
                 fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.QUOTA)
             )

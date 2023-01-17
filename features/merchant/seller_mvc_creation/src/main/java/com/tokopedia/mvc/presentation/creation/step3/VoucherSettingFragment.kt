@@ -423,16 +423,16 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 }
             }
             chipFreeShipping.chip_container.setOnClickListener {
-                setFreeShippingSelected()
                 setPromoType(PromoType.FREE_SHIPPING)
+                setFreeShippingSelected()
             }
             chipCashback.chip_container.setOnClickListener {
-                setCashbackSelected()
                 setPromoType(PromoType.CASHBACK)
+                setCashbackSelected()
             }
             chipDiscount.chip_container.setOnClickListener {
-                setDiscountSelected()
                 setPromoType(PromoType.DISCOUNT)
+                setDiscountSelected()
             }
         }
     }
@@ -466,13 +466,18 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setFreeShippingNominalInput() {
         freeShippingInputSectionBinding?.run {
             tfFreeShippingNominal.apply {
+                if (editText.text.isNotEmpty()) {
+                    viewModel.processEvent(
+                        VoucherCreationStepThreeEvent.OnInputNominalChanged(editText.text.toString())
+                    )
+                }
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
                         viewModel.processEvent(
-                            VoucherCreationStepThreeEvent.OnInputNominalChanged(it.toLong())
+                            VoucherCreationStepThreeEvent.OnInputNominalChanged(it)
                         )
                     }
                     .launchIn(lifecycleScope)
@@ -483,13 +488,18 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setFreeShippingMinimumBuyInput() {
         freeShippingInputSectionBinding?.run {
             tfFreeShippingMinimumBuy.apply {
+                if (editText.text.isNotEmpty()) {
+                    viewModel.processEvent(
+                        VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(editText.text.toString())
+                    )
+                }
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
                         viewModel.processEvent(
-                            VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(it.toLong())
+                            VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(it)
                         )
                     }
                     .launchIn(lifecycleScope)
@@ -500,13 +510,18 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setFreeShippingQuotaInput() {
         freeShippingInputSectionBinding?.run {
             tfFreeShippingQuota.apply {
+                if (editText.text.isNotEmpty()) {
+                    viewModel.processEvent(
+                        VoucherCreationStepThreeEvent.OnInputQuotaChanged(editText.text.toString())
+                    )
+                }
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
                         viewModel.processEvent(
-                            VoucherCreationStepThreeEvent.OnInputQuotaChanged(it.toLong())
+                            VoucherCreationStepThreeEvent.OnInputQuotaChanged(it)
                         )
                     }
                     .launchIn(lifecycleScope)
@@ -595,6 +610,11 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setCashbackNominalInput() {
         cashbackInputSectionBinding?.run {
             tfCashbackNominal.apply {
+                if (editText.text.isNotEmpty()) {
+                    viewModel.processEvent(
+                        VoucherCreationStepThreeEvent.OnInputNominalChanged(editText.text.toString())
+                    )
+                }
                 visible()
                 tpgCashbackMaxDeductionLabel.gone()
                 tfCahsbackMaxDeduction.gone()
@@ -607,7 +627,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     .distinctUntilChanged()
                     .onEach {
                         viewModel.processEvent(
-                            VoucherCreationStepThreeEvent.OnInputNominalChanged(it.toLong())
+                            VoucherCreationStepThreeEvent.OnInputNominalChanged(it)
                         )
                     }
                     .launchIn(lifecycleScope)
@@ -619,6 +639,11 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setCashbackPercentageInput() {
         cashbackInputSectionBinding?.run {
             tfCashbackPercentage.apply {
+                if (editText.text.isNotEmpty()) {
+                    viewModel.processEvent(
+                        VoucherCreationStepThreeEvent.OnInputPercentageChanged(editText.text.toString())
+                    )
+                }
                 visible()
                 tpgCashbackMaxDeductionLabel.visible()
                 tfCahsbackMaxDeduction.visible()
@@ -631,7 +656,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     .distinctUntilChanged()
                     .onEach {
                         viewModel.processEvent(
-                            VoucherCreationStepThreeEvent.OnInputPercentageChanged(it.toIntOrZero())
+                            VoucherCreationStepThreeEvent.OnInputPercentageChanged(it)
                         )
                     }
                     .launchIn(lifecycleScope)
@@ -643,13 +668,18 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setCashbackMaxDeductionInput() {
         cashbackInputSectionBinding?.run {
             tfCahsbackMaxDeduction.apply {
+                if (editText.text.isNotEmpty()) {
+                    viewModel.processEvent(
+                        VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged(editText.text.toString())
+                    )
+                }
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
                         viewModel.processEvent(
-                            VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged(it.toLong())
+                            VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged(it)
                         )
                     }
                     .launchIn(lifecycleScope)
@@ -660,13 +690,18 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setCashbackMinimumBuyInput() {
         cashbackInputSectionBinding?.run {
             tfCashbackMinimumBuy.apply {
+                if (editText.text.isNotEmpty()) {
+                    viewModel.processEvent(
+                        VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(editText.text.toString())
+                    )
+                }
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
                         viewModel.processEvent(
-                            VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(it.toLong())
+                            VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(it)
                         )
                     }
                     .launchIn(lifecycleScope)
@@ -677,13 +712,18 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setCashbackQuotaInput() {
         cashbackInputSectionBinding?.run {
             tfCashbackQuota.apply {
+                if (editText.text.isNotEmpty()) {
+                    viewModel.processEvent(
+                        VoucherCreationStepThreeEvent.OnInputQuotaChanged(editText.text.toString())
+                    )
+                }
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
                         viewModel.processEvent(
-                            VoucherCreationStepThreeEvent.OnInputQuotaChanged(it.toLong())
+                            VoucherCreationStepThreeEvent.OnInputQuotaChanged(it)
                         )
                     }
                     .launchIn(lifecycleScope)
@@ -792,6 +832,11 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountNominalInput() {
         discountInputSectionBinding?.run {
             tfDiscountNominal.apply {
+                if (editText.text.isNotEmpty()) {
+                    viewModel.processEvent(
+                        VoucherCreationStepThreeEvent.OnInputNominalChanged(editText.text.toString())
+                    )
+                }
                 visible()
                 tpgDiscountMaxDeductionLabel.gone()
                 tfDiscountMaxDeduction.gone()
@@ -804,7 +849,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     .distinctUntilChanged()
                     .onEach {
                         viewModel.processEvent(
-                            VoucherCreationStepThreeEvent.OnInputNominalChanged(it.toLong())
+                            VoucherCreationStepThreeEvent.OnInputNominalChanged(it)
                         )
                     }
                     .launchIn(lifecycleScope)
@@ -816,6 +861,11 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountPercentageInput() {
         discountInputSectionBinding?.run {
             tfDiscountPercentage.apply {
+                if (editText.text.isNotEmpty()) {
+                    viewModel.processEvent(
+                        VoucherCreationStepThreeEvent.OnInputPercentageChanged(editText.text.toString())
+                    )
+                }
                 visible()
                 tpgDiscountMaxDeductionLabel.visible()
                 tfDiscountMaxDeduction.visible()
@@ -828,7 +878,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     .distinctUntilChanged()
                     .onEach {
                         viewModel.processEvent(
-                            VoucherCreationStepThreeEvent.OnInputPercentageChanged(it.toIntOrZero())
+                            VoucherCreationStepThreeEvent.OnInputPercentageChanged(it)
                         )
                     }
                     .launchIn(lifecycleScope)
@@ -840,13 +890,18 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountMaxDeductionInput() {
         discountInputSectionBinding?.run {
             tfDiscountMaxDeduction.apply {
+                if (editText.text.isNotEmpty()) {
+                    viewModel.processEvent(
+                        VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged(editText.text.toString())
+                    )
+                }
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
                         viewModel.processEvent(
-                            VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged(it.toLong())
+                            VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged(it)
                         )
                     }
                     .launchIn(lifecycleScope)
@@ -857,13 +912,18 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountMinimumBuyInput() {
         discountInputSectionBinding?.run {
             tfDiscountMinimumBuy.apply {
+                if (editText.text.isNotEmpty()) {
+                    viewModel.processEvent(
+                        VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(editText.text.toString())
+                    )
+                }
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
                         viewModel.processEvent(
-                            VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(it.toLong())
+                            VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(it)
                         )
                     }
                     .launchIn(lifecycleScope)
@@ -874,13 +934,18 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountQuotaInput() {
         discountInputSectionBinding?.run {
             tfDiscountQuota.apply {
+                if (editText.text.isNotEmpty()) {
+                    viewModel.processEvent(
+                        VoucherCreationStepThreeEvent.OnInputQuotaChanged(editText.text.toString())
+                    )
+                }
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
                         viewModel.processEvent(
-                            VoucherCreationStepThreeEvent.OnInputQuotaChanged(it.toLong())
+                            VoucherCreationStepThreeEvent.OnInputQuotaChanged(it)
                         )
                     }
                     .launchIn(lifecycleScope)
