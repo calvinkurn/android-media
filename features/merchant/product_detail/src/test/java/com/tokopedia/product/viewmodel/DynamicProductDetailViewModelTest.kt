@@ -47,6 +47,8 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -1563,6 +1565,168 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(viewModel.onVariantClickedData.value == null)
         Assert.assertTrue(viewModel.updatedImageVariant.value != null)
         Assert.assertTrue(viewModel.updatedImageVariant.value?.second == variantOptionId)
+    }
+
+    @Test
+    fun `get variant selected child with single variant only and return variant child`() {
+        val singleVariant = ProductSingleVariantDataModel(
+            mapOfSelectedVariant = mutableMapOf(
+                "28323838" to "94748049",
+                "28323839" to "94748052"
+            )
+        )
+        `get variant selected child`(singleVariant, null)
+    }
+
+    @Test
+    fun `get variant selected child with variant options only and return variant child`() {
+        val variantData = VariantDataModel(
+            mapOfSelectedVariant = mutableMapOf(
+                "28323838" to "94748049",
+                "28323839" to "94748052"
+            )
+        )
+        `get variant selected child`(null, variantData)
+    }
+
+    private fun `get variant selected child`(
+        singleVariant: ProductSingleVariantDataModel?,
+        optionalVariant: VariantDataModel?
+    ) {
+        `on success get pdp layout mini variants options`()
+
+        val p1Result = (viewModel.productLayout.value as Success).data
+        val childVariant = viewModel.getVariantSelectedChild(
+            singleVariant = singleVariant,
+            optionalVariant = optionalVariant
+        )
+
+        Assert.assertTrue(
+            p1Result.any {
+                it.type() == ProductDetailConstant.PRODUCT_VARIANT_INFO &&
+                    it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS
+            }
+        )
+        Assert.assertTrue(childVariant?.optionIds?.firstOrNull() != null)
+    }
+
+    @Test
+    fun `get variant selected child with single variant only and return null`() {
+        val singleVariant = ProductSingleVariantDataModel()
+        `on success get pdp layout mini variants options`()
+
+        viewModel.variantData = null
+
+        val childVariant = viewModel.getVariantSelectedChild(
+            singleVariant = singleVariant,
+            optionalVariant = null
+        )
+
+        Assert.assertTrue(viewModel.variantData == null)
+        Assert.assertTrue(childVariant == null)
+    }
+
+    @Test
+    fun `select variant thumbnail is successful when first selected`() {
+        val expectLvl1Category = "28323838"
+        val expectLvl1Selected = "94748050"
+        val expectLvl2Category = "28323839"
+        val expectLvl2Selected = "94748052"
+        val singleVariant = ProductSingleVariantDataModel()
+
+        `on success get pdp layout mini variants options`()
+
+        viewModel.onThumbnailVariantSelected(
+            uiData = singleVariant,
+            variantId = expectLvl1Selected,
+            categoryKey = expectLvl1Category
+        )
+
+        val result = viewModel.onThumbnailVariantSelectedData.getOrAwaitValue()
+        val variantLvl1Selected = result?.mapOfSelectedVariant.orEmpty()[expectLvl1Category]
+        val variantLvl2Selected = result?.mapOfSelectedVariant.orEmpty()[expectLvl2Category]
+        Assert.assertTrue(variantLvl1Selected == expectLvl1Selected)
+        Assert.assertTrue(variantLvl2Selected == expectLvl2Selected)
+    }
+
+    @Test
+    fun `change select variant thumbnail is successful after selected before`() {
+        val expectSelected = "94748050"
+        val expectCategory = "28323838"
+        val singleVariant = ProductSingleVariantDataModel(
+            mapOfSelectedVariant = mutableMapOf(
+                expectCategory to "94748049",
+                "28323839" to "94748052"
+            )
+        )
+
+        `on success get pdp layout mini variants options`()
+
+        viewModel.onThumbnailVariantSelected(
+            uiData = singleVariant,
+            variantId = expectSelected,
+            categoryKey = expectCategory
+        )
+
+        val result = viewModel.onThumbnailVariantSelectedData.getOrAwaitValue()
+        val variantLevelOneSelected = result?.mapOfSelectedVariant.orEmpty()[expectCategory]
+        Assert.assertTrue(variantLevelOneSelected == expectSelected)
+    }
+
+    @Test
+    fun `don't select variant thumbnail when variant id is empty`() {
+        val categoryKeyLvl1 = "28323838"
+        val categoryKeyLvl2 = "28323839"
+        val singleVariant = ProductSingleVariantDataModel(
+            mapOfSelectedVariant = mutableMapOf(
+                categoryKeyLvl1 to "94748049",
+                categoryKeyLvl2 to "94748052"
+            )
+        )
+
+        `on success get pdp layout mini variants options`()
+
+        viewModel.onThumbnailVariantSelected(
+            uiData = singleVariant,
+            variantId = "",
+            categoryKey = ""
+        )
+
+        val result = viewModel.onThumbnailVariantSelectedData.getOrAwaitValue()
+        val variantLvl1Selected = result?.mapOfSelectedVariant.orEmpty()[categoryKeyLvl1]
+        val variantLvl2Selected = result?.mapOfSelectedVariant.orEmpty()[categoryKeyLvl2]
+        Assert.assertTrue(variantLvl1Selected.orEmpty().isEmpty())
+        Assert.assertTrue(variantLvl2Selected.orEmpty().isNotEmpty())
+    }
+
+    private fun `on success get pdp layout mini variants options`() {
+        val dataP1 = ProductDetailTestUtil.getMockPdpLayoutMiniVariant()
+        val productParams = ProductParams(productId = "1589853923")
+
+        every {
+            viewModel.userId
+        } returns "123"
+
+        every {
+            userSessionInterface.isLoggedIn
+        } returns true
+
+        every {
+            viewModel.isUserSessionActive
+        } returns true
+
+        every {
+            getProductInfoP2LoginUseCase.setErrorLogListener(captureLambda())
+        }.answers {
+            val onError = lambda<(Throwable) -> Unit>()
+            onError.invoke(Throwable(""))
+        }
+
+        `co every p1 success`(dataP1, true)
+
+        viewModel.getProductP1(productParams, true, "", userLocationLocal = getUserLocationCache())
+
+        `co verify p1 success`()
     }
 
     /**
