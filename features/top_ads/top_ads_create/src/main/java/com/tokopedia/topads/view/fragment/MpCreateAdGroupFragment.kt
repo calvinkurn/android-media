@@ -1,16 +1,27 @@
 package com.tokopedia.topads.view.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.topads.common.data.response.TopAdsProductResponse
+import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.create.databinding.FragmentMpCreateAdGroupBinding
 import com.tokopedia.topads.view.sheet.MpCreateGroupBudgetHelpSheet
 import com.tokopedia.topads.create.R
+import com.tokopedia.topads.di.CreateAdsComponent
+import com.tokopedia.topads.view.model.MpAdsCreateGroupViewModel
+import javax.inject.Inject
 
-class MpCreateAdGroupFragment : Fragment() {
+private const val GROUP_DETAIL_PAGE = "android.group_detail"
+
+class MpCreateAdGroupFragment : BaseDaggerFragment() {
 
     private lateinit var binding : FragmentMpCreateAdGroupBinding
 
@@ -20,6 +31,12 @@ class MpCreateAdGroupFragment : Fragment() {
         fun newInstance(): MpCreateAdGroupFragment {
             return MpCreateAdGroupFragment()
         }
+    }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    private val createGroupViewModel : MpAdsCreateGroupViewModel by lazy {
+        ViewModelProvider(this,viewModelFactory).get(MpAdsCreateGroupViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -32,8 +49,35 @@ class MpCreateAdGroupFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        init()
         setupToolbar()
         attachClickListeners()
+    }
+
+    override fun getScreenName() = ""
+
+    override fun initInjector() {
+        getComponent(CreateAdsComponent::class.java).inject(this)
+    }
+
+    private fun init(){
+        binding.btnSubmit.isLoading = true
+        val suggestions = java.util.ArrayList<DataSuggestions>()
+        suggestions.add(DataSuggestions("", listOf()))
+        createGroupViewModel.getBidInfo(suggestions, GROUP_DETAIL_PAGE,  this::onSuccessBidSuggestion)
+        createGroupViewModel.getProduct("2150857075", this::onSuccessNameSuggestion)
+    }
+
+    private fun onSuccessBidSuggestion(data: List<TopadsBidInfo.DataItem>) {
+        data.firstOrNull()?.let {
+            binding.dailyBudget.editText.text = Editable.Factory().newEditable(it.minDailyBudget.toString())
+        }
+    }
+
+    private fun onSuccessNameSuggestion(response : TopAdsProductResponse){
+        response.data?.product.let {
+            binding.groupName.editText.text = Editable.Factory().newEditable(it?.productName)
+        }
     }
 
     private fun setupToolbar(){
@@ -49,7 +93,7 @@ class MpCreateAdGroupFragment : Fragment() {
         }
 
         binding.btnSubmit.setOnClickListener{
-            openSuccessDialog()
+
         }
     }
 

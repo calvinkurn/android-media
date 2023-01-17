@@ -24,5 +24,6 @@ interface CreateAdsComponent {
     fun inject(creationOnboardingFragScreen: CreationOnboardingFragScreen3)
     fun inject(mpAdCreationActivity:MpAdCreationActivity)
     fun inject(mpAdsGroupsFragment: MpAdGroupFragment)
+    fun inject(mpCreateAdGroupFragment: MpCreateAdGroupFragment)
 
 }
