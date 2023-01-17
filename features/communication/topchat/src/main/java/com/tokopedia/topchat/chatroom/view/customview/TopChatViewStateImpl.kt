@@ -837,11 +837,11 @@ open class TopChatViewStateImpl constructor(
         val index = replyEditText.getSelectionStart()
         replyEditText.setText(
             String.format(
+                Locale.getDefault(),
                 "%s %s %s",
                 text.substring(0, index),
                 message,
-                text
-                    .substring(index)
+                text.substring(index)
             )
         )
         replyEditText.setSelection(message.length + text.substring(0, index).length + 1)
