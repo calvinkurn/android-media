@@ -3,7 +3,12 @@ package com.tokopedia.topchat.chatlist.activity
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.Visibility
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.withItemCount
@@ -12,13 +17,13 @@ import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeature
 import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withTotalItem
 import com.tokopedia.topchat.stub.common.UserSessionStub
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.not
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
 @UiTest
-class ChatListActivityTest: ChatListTest() {
+class ChatListActivityTest : ChatListTest() {
 
     @Test
     fun empty_chat_list_buyer_only() {
@@ -31,13 +36,13 @@ class ChatListActivityTest: ChatListTest() {
 
         // Then
         onView(withId(R.id.thumbnail_empty_chat_list))
-                .check(matches(isDisplayed()))
+            .check(matches(isDisplayed()))
         onView(withId(R.id.title_empty_chat_list))
-                .check(matches(withText("Belum ada chat, nih")))
+            .check(matches(withText("Belum ada chat, nih")))
         onView(withId(R.id.subtitle))
-                .check(matches(withText("Coba ngobrol dengan teman penjual, yuk!")))
+            .check(matches(withText("Coba ngobrol dengan teman penjual, yuk!")))
         onView(withId(R.id.btnCta))
-                .check(matches(not(isDisplayed())))
+            .check(matches(not(isDisplayed())))
     }
 
     @Test
@@ -51,7 +56,7 @@ class ChatListActivityTest: ChatListTest() {
 
         // Then
         onView(withId(R.id.recycler_view))
-                .check(matches(withTotalItem(2)))
+            .check(matches(withTotalItem(2)))
     }
 
     @Test
@@ -67,13 +72,13 @@ class ChatListActivityTest: ChatListTest() {
         onView(allOf(withId(R.id.thumbnail_empty_chat_list), isCompletelyDisplayed()))
             .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
         onView(allOf(withId(R.id.title_empty_chat_list), isCompletelyDisplayed()))
-                .check(matches(withText("Belum ada chat, nih")))
+            .check(matches(withText("Belum ada chat, nih")))
         onView(allOf(withId(R.id.subtitle), isCompletelyDisplayed()))
-                .check(matches(withText("Yuk, bikin tokomu ramai pengunjung dengan beriklan dan promosikan produk-produkmu.")))
+            .check(matches(withText("Yuk, bikin tokomu ramai pengunjung dengan beriklan dan promosikan produk-produkmu.")))
         onView(allOf(withId(R.id.btnCta), isCompletelyDisplayed()))
-                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
         onView(allOf(withId(R.id.btnCta), isCompletelyDisplayed()))
-                .check(matches(withText("Coba Iklan dan Promosi")))
+            .check(matches(withText("Coba Iklan dan Promosi")))
     }
 
     @Test
@@ -87,7 +92,7 @@ class ChatListActivityTest: ChatListTest() {
 
         // Then
         onView(withIndex(withId(R.id.recycler_view), 0))
-                .check(matches(withTotalItem(5)))
+            .check(matches(withTotalItem(5)))
     }
 
     @Test

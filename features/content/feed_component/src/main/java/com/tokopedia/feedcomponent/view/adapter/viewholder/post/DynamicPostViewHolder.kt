@@ -1,13 +1,14 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post
 
+import android.annotation.SuppressLint
 import android.os.Handler
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.TextView
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -32,9 +33,8 @@ import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateHeader
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateTitle
-import com.tokopedia.feedcomponent.util.ColorUtil
-import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
+import com.tokopedia.feedcomponent.util.caption.FeedCaption
 import com.tokopedia.feedcomponent.view.adapter.post.PostPagerAdapter
 import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagAdapter
 import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagTypeFactoryImpl
@@ -375,72 +375,48 @@ open class DynamicPostViewHolder(
             || template.avatarTitle || template.followCta || template.report
     }
 
+    @SuppressLint("PII Data Exposure")
     open fun bindCaption(
         caption: Caption,
         template: TemplateBody,
         trackingPostModel: TrackingPostModel
     ) {
-        val tagConverter = TagConverter()
         itemView.caption.shouldShowWithAction(template.caption) {
-            if (caption.text.isEmpty()) {
-                itemView.caption.visibility = View.GONE
-            } else if (caption.text.length > MAX_CHAR ||
-                hasSecondLine(caption)
-            ) {
-                itemView.caption.visibility = View.VISIBLE
-                val captionEnd = if (findSubstringSecondLine(caption) < CAPTION_END)
-                    findSubstringSecondLine(caption)
-                else
-                    CAPTION_END
-                val captionText = caption.text.substring(0, captionEnd)
-                    .replace("\n", "<br/>")
-                    .replace(NEWLINE, "<br/>")
-                    .plus("... ")
-                    .plus(
-                        "<font color='${
-                            ColorUtil.getColorFromResToString(
-                                itemView.context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_G400
-                            )
-                        }'>" + "<b>"
-                    )
-                    .plus(caption.buttonName)
-                    .plus("</b></font>")
+            val tagCaption = FeedCaption.Tag(
+                colorRes = MethodChecker.getColor(
+                    itemView.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                ),
+                clickListener = {
+                    onHashtagClicked(it, trackingPostModel)
+                }
+            )
 
-                itemView.caption.text = tagConverter.convertToLinkifyHashtag(
-                    SpannableString(MethodChecker.fromHtml(captionText)), colorLinkHashtag
-                ) { hashtag -> onHashtagClicked(hashtag, trackingPostModel) }
-                itemView.caption.setOnClickListener {
-                    if (!TextUtils.isEmpty(caption.appLink)) {
-                        listener.onCaptionClick(adapterPosition, caption.appLink)
-                    } else {
-                        if (itemView.caption.text.endsWith(caption.buttonName)) listener.onReadMoreClicked(
-                            trackingPostModel
+            val captionBody = FeedCaption.Builder(caption.text)
+                .withTag(tagCaption)
+                .build(
                         )
 
-                        itemView.caption.text = tagConverter.convertToLinkifyHashtag(
-                            SpannableString(caption.text),
-                            colorLinkHashtag
-                        ) { hashtag -> onHashtagClicked(hashtag, trackingPostModel) }
-                    }
+            val readMoreCaption = FeedCaption.ReadMore(
+                maxTrimChar = MAX_CHAR,
+                label = caption.buttonName,
+                colorRes = MethodChecker.getColor(
+                    itemView.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N400
+                ),
+                clickListener = {
+                    itemView.caption.setText(captionBody, TextView.BufferType.SPANNABLE)
                 }
-                itemView.caption.movementMethod = LinkMovementMethod.getInstance()
-            } else {
-                itemView.caption.text = tagConverter
-                    .convertToLinkifyHashtag(
-                        SpannableString(caption.text.replace(NEWLINE, " ")),
-                        colorLinkHashtag
-                    ) { hashtag -> onHashtagClicked(hashtag, trackingPostModel) }
-                itemView.caption.movementMethod = LinkMovementMethod.getInstance()
-            }
+            )
+            val trimmedCaption = FeedCaption.Builder(caption.text)
+                .withTag(tagCaption)
+                .trimCaption(readMoreCaption)
+                .build()
+
+            itemView.caption.setText(trimmedCaption, TextView.BufferType.SPANNABLE)
+            itemView.caption.movementMethod = LinkMovementMethod.getInstance()
         }
     }
-
-    private val colorLinkHashtag: Int
-        get() = ContextCompat.getColor(
-            itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_G400
-        )
 
     private fun onHashtagClicked(hashtag: String, trackingPostModel: TrackingPostModel) {
         val encodeHashtag = URLEncoder.encode(hashtag)
@@ -452,26 +428,11 @@ open class DynamicPostViewHolder(
         listener.onHashtagClicked(hashtag, trackingPostModel)
     }
 
-    private fun hasSecondLine(caption: Caption): Boolean {
-        val firstIndex = caption.text.indexOf("\n", 0)
-        return caption.text.indexOf("\n", firstIndex + 1) != -1
-    }
-
-    private fun findSubstringSecondLine(caption: Caption): Int {
-        val firstIndex = caption.text.indexOf("\n", 0)
-        return if (hasSecondLine(caption)) caption.text.indexOf(
-            "\n",
-            firstIndex + 1
-        ) else caption.text.length
-    }
-
-    private fun bindContentList(
-        postId: String,
-        contentList: MutableList<BasePostModel>,
-        template: TemplateBody,
-        feedType: String
-    ) {
-        itemView.contentLayout.shouldShowWithAction(template.media && contentList.size != 0) {
+    private fun bindContentList(postId: String,
+                                contentList: MutableList<BasePostModel>,
+                                template: TemplateBody,
+                                feedType: String) {
+        itemView.contentLayout.shouldShowWithAction(template.media && contentList.size !=0) {
             contentList.forEach { it.postId = postId }
             contentList.forEach { it.positionInFeed = adapterPosition }
 

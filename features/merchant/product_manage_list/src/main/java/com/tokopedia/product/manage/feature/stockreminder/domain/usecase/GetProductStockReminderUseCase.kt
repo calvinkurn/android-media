@@ -1,20 +1,23 @@
 package com.tokopedia.product.manage.feature.stockreminder.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
+import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.query.StockReminderQuery
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
+@GqlQuery("GetProductStockReminderGqlQuery", GetProductStockReminderUseCase.QUERY)
 class GetProductStockReminderUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
-): GraphqlUseCase<GetProductVariantResponse>(graphqlRepository) {
+) : GraphqlUseCase<GetProductVariantResponse>(graphqlRepository) {
 
     companion object {
 
-        val QUERY = """
+        const val QUERY = """
         query getProductV3(${'$'}productID:String!, ${'$'}options:OptionV3!, ${'$'}extraInfo:ExtraInfoV3!, ${'$'}warehouseID:String){
           getProductV3(productID:${'$'}productID, options:${'$'}options, extraInfo:${'$'}extraInfo, warehouseID:${'$'}warehouseID){
             productID
@@ -45,7 +48,7 @@ class GetProductStockReminderUseCase @Inject constructor(
             }
           }
         }
-    """.trimIndent()
+    """
 
         private const val PARAM_PRODUCT_ID = "productID"
         private const val PARAM_OPTIONS = "options"
@@ -55,9 +58,11 @@ class GetProductStockReminderUseCase @Inject constructor(
         private const val PARAM_STOCK_ALERT = "stockAlert"
         private const val PARAM_AGGREGATE = "aggregate"
 
-        fun createRequestParams(productId: String,
-                                paramEdit: Boolean = true,
-                                warehouseId: String? = null, ): RequestParams {
+        fun createRequestParams(
+            productId: String,
+            paramEdit: Boolean = true,
+            warehouseId: String? = null,
+        ): RequestParams {
             val optionsParam = RequestParams().apply {
                 putBoolean(PARAM_EDIT, paramEdit)
             }.parameters
@@ -77,7 +82,7 @@ class GetProductStockReminderUseCase @Inject constructor(
     }
 
     init {
-        setGraphqlQuery(QUERY)
+        setGraphqlQuery(GetProductStockReminderGqlQuery())
         setTypeClass(GetProductVariantResponse::class.java)
     }
 

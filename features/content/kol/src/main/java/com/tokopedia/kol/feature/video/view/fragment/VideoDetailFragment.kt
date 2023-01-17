@@ -447,7 +447,7 @@ class VideoDetailFragment :
                         String.format(
                             "%s",
                             desc?.replace("%s", feedXCard.author.name),
-                        ), feedXCard.author.name + " `post"
+                        ), feedXCard.author.name + " post"
                     )
                 }
             shareText.setOnClickListener {
@@ -455,7 +455,7 @@ class VideoDetailFragment :
                         String.format(
                                 "%s",
                                 desc?.replace("%s", feedXCard.author.name),
-                        ), feedXCard.author.name + " `post"
+                        ), feedXCard.author.name + " post"
                 )
             }
 
