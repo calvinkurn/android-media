@@ -45,6 +45,9 @@ class CatalogLihatViewHolder(
         accordionView.run {
             accordionData.clear()
             removeAllViews()
+            onItemClick = { _, isExpanded ->
+                element.catalogLibraryDataList?.accordionExpandedState = isExpanded
+            }
         }
         getAccordionData(element.catalogLibraryDataList)
     }
@@ -74,7 +77,7 @@ class CatalogLihatViewHolder(
         return AccordionDataUnify(
             title = catalogLibraryData?.rootCategoryName.toString(),
             expandableView = expandableLayout,
-            isExpanded = true
+            isExpanded = catalogLibraryData?.accordionExpandedState ?: true,
         )
     }
 

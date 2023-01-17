@@ -1,5 +1,6 @@
 package com.tokopedia.catalog_library.model.raw
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -25,6 +26,9 @@ data class CatalogLibraryResponse(
             @SerializedName("RootCategoryName")
             @Expose
             val rootCategoryName: String? = "",
+
+            @SuppressLint("ResponseFieldAnnotation")
+            var accordionExpandedState: Boolean = true,
 
             @SerializedName("ChildCategoryList")
             @Expose

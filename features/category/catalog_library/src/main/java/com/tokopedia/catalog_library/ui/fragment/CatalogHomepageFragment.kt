@@ -36,7 +36,6 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
     private var globalError: GlobalError? = null
 
     companion object {
-        const val CATALOG_HOME_PAGE_FRAGMENT_TAG = "CATALOG_HOME_PAGE_FRAGMENT_TAG"
         fun getInstance(): CatalogHomepageFragment {
             return CatalogHomepageFragment()
         }
