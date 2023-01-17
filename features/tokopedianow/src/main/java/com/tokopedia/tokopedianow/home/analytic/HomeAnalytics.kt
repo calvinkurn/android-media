@@ -324,7 +324,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             promotions = arrayListOf(
                 ecommerceDataLayerCategoryClicked(
                     categoryId = categoryId,
-                    position = position,
+                    position = position.getTrackerPosition(),
                     headerName = headerName
                 )
             )
