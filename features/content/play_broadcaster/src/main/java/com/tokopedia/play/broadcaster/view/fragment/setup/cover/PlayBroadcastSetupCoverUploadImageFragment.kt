@@ -69,8 +69,7 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
             is PlayBroadcastSetupBottomSheet -> {
                 childFragment.setListener(object : PlayBroadcastSetupBottomSheet.Listener {
                     override fun onCoverChanged(cover: PlayCoverUiModel) {
-                        // TODO handle save cover data
-                        // TODO update the cover preview and upload will be from button
+                        parentViewModel.submitAction(PlayBroadcastAction.SetCover(cover))
                     }
                 })
                 childFragment.setDataSource(object : PlayBroadcastSetupBottomSheet.DataSource {
@@ -103,8 +102,7 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
             openCoverSetupFragment()
         }
         btnSetupCoverUploadImage.setOnClickListener {
-            // TODO do the cover save mechanism
-            // parentViewModel.submitAction(PlayBroadcastAction.SetCover(cover))
+            if (btnSetupCoverUploadImage.isEnabled) mListener?.setupCoverButtonSaveClicked()
         }
     }
 
@@ -116,10 +114,13 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
                         croppedCover.coverImage.toString().contains(HTTP)
                     ) {
                         binding.clCoverFormPreview.setCover(croppedCover.coverImage.toString())
+                        binding.btnSetupCoverUploadImage.isEnabled = true
                     } else if (!croppedCover.localImage?.toString().isNullOrEmpty()) {
                         binding.clCoverFormPreview.setCover(croppedCover.localImage.toString())
+                        binding.btnSetupCoverUploadImage.isEnabled = true
                     } else {
                         binding.clCoverFormPreview.setInitialCover()
+                        binding.btnSetupCoverUploadImage.isEnabled = false
                     }
                 }
                 else -> {}

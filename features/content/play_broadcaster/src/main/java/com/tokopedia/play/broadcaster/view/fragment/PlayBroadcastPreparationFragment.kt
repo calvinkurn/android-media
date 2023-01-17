@@ -699,8 +699,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     /** Callback Cover Form */
-    override fun onSetupProductClickedFromSetupCover() {
+    override fun setupCoverProductClicked() {
         openSetupProductBottomSheet()
+    }
+
+    override fun setupCoverButtonSaveClicked() {
+        if (getSetupCoverBottomSheet().isAdded) getSetupCoverBottomSheet().dismiss()
     }
 
     /** Others */
