@@ -50,6 +50,10 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
         return CatalogContainerItemViewHolder.LAYOUT
     }
 
+    override fun type(data: CatalogProductLoadMoreDataModel): Int {
+        return CatalogProductLoadMoreViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             CatalogTopFiveItemViewHolder.LAYOUT -> CatalogTopFiveItemViewHolder(
@@ -78,6 +82,10 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
                 catalogLibraryListener
             )
             CatalogContainerItemViewHolder.LAYOUT -> CatalogContainerItemViewHolder(
+                view,
+                catalogLibraryListener
+            )
+            CatalogProductLoadMoreViewHolder.LAYOUT -> CatalogContainerItemViewHolder(
                 view,
                 catalogLibraryListener
             )

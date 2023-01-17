@@ -69,6 +69,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     api projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
 
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner

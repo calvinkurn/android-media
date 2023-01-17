@@ -16,6 +16,7 @@ import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFacto
 import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
+import com.tokopedia.catalog_library.model.datamodel.CatalogProductLoadMoreDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDataModel
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.model.util.CatalogLibraryUiUpdater
@@ -191,10 +192,15 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
         productsList.forEach { component ->
             catalogLibraryUiUpdater.updateModel(component)
         }
-        val shimmerDataModel = CatalogShimmerDataModel(
-            CatalogLibraryConstant.CATALOG_PRODUCT,
-            CatalogLibraryConstant.CATALOG_PRODUCT,
-            CatalogLibraryConstant.CATALOG_SHIMMER_PRODUCTS
+//        val shimmerDataModel = CatalogShimmerDataModel(
+//            CatalogLibraryConstant.CATALOG_PRODUCT,
+//            CatalogLibraryConstant.CATALOG_PRODUCT,
+//            CatalogLibraryConstant.CATALOG_PRODUCT_LOAD_MORE
+//        )
+
+        val shimmerDataModel = CatalogProductLoadMoreDataModel(
+            CatalogLibraryConstant.CATALOG_PRODUCT_LOAD,
+                CatalogLibraryConstant.CATALOG_PRODUCT_LOAD
         )
         catalogLibraryUiUpdater.updateModel(shimmerDataModel)
         updateUi()

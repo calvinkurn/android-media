@@ -7,7 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
 
-@GqlQuery("GQL_CATALOG_LIST", GQL_CATALOG_LIST)
+@GqlQuery("GqlCatalogList", GQL_CATALOG_LIST)
 class CatalogProductsUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<CatalogListResponse>(graphqlRepository) {
 
@@ -29,7 +29,7 @@ class CatalogProductsUseCase @Inject constructor(graphqlRepository: GraphqlRepos
                     page
                 )
             )
-            this.setGraphqlQuery(GQL_CATALOG_LIST)
+            this.setGraphqlQuery(GqlCatalogList())
             this.execute(
                 { result ->
                     onSuccess(result,page)

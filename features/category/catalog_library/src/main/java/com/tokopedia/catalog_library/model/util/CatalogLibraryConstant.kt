@@ -4,6 +4,7 @@ object CatalogLibraryConstant {
     const val CATALOG_SPECIAL = "catalog_special"
     const val CATALOG_RELEVANT = "catalog_relevant"
     const val CATALOG_PRODUCT = "catalog_product"
+    const val CATALOG_PRODUCT_LOAD = "catalog_product_load_more"
 
     const val CATALOG_LIHAT_SEMUA = "catalog_lihat_semua"
     const val CATALOG_LIHAT_SEMUA_ITEM = "catalog_lihat_semua_item"
@@ -21,6 +22,7 @@ object CatalogLibraryConstant {
     const val CATALOG_SHIMMER_VIRAL = 2
     const val CATALOG_SHIMMER_PRODUCTS = 3
     const val CATALOG_SHIMMER_LIHAT_SEMUA = 4
+    const val CATALOG_PRODUCT_LOAD_MORE = 5
 
     const val SORT_TYPE_CATALOG = 0
     const val SORT_TYPE_VIRAL = 5

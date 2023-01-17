@@ -8,7 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-@GqlQuery("GQL_CATALOG_SPECIAL", GQL_CATALOG_SPECIAL)
+@GqlQuery("GqlCatalogSpecial", GQL_CATALOG_SPECIAL)
 class CatalogSpecialUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository,
     private val userSession: UserSessionInterface
@@ -22,7 +22,7 @@ class CatalogSpecialUseCase @Inject constructor(
         try {
             this.setTypeClass(CatalogSpecialResponse::class.java)
             this.setRequestParams(getRequestParams(userSession.userId))
-            this.setGraphqlQuery(GQL_CATALOG_SPECIAL)
+            this.setGraphqlQuery(GqlCatalogSpecial())
             this.execute(
                 { result ->
                     onSuccess(result)
