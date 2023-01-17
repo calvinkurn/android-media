@@ -167,7 +167,7 @@ class BulkReviewViewModel @Inject constructor(
     private val reviewItemImpressEventInboxID = MutableSharedFlow<String>(extraBufferCapacity = 50)
     private val bulkReviewToasterCtaKeyEvents = MutableSharedFlow<CreateReviewToasterUiModel<Any>>(extraBufferCapacity = 50)
     private val reviewItemsProductInfoUiState = getFormRequestState.mapLatest(
-        ::mapProductInfoUiState
+        bulkReviewProductInfoUiStateMapper::map
     ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_TIMEOUT_MILLIS),
@@ -176,7 +176,7 @@ class BulkReviewViewModel @Inject constructor(
     private val reviewItemsRatingUiState = combine(
         getFormRequestState,
         reviewItemsRating,
-        ::mapRatingUiState
+        bulkReviewRatingUiStateMapper::map
     ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_TIMEOUT_MILLIS),
@@ -185,7 +185,7 @@ class BulkReviewViewModel @Inject constructor(
     private val reviewItemsBadRatingCategoryUiState = combine(
         getFormRequestState,
         reviewItemsBadRatingCategory,
-        ::mapBadRatingCategoryUiState
+        bulkReviewBadRatingCategoryUiStateMapper::map
     ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_TIMEOUT_MILLIS),
@@ -196,7 +196,7 @@ class BulkReviewViewModel @Inject constructor(
         reviewItemsTestimony,
         reviewItemsBadRatingCategoryUiState,
         reviewItemsRatingUiState,
-        ::mapTextAreaUiState
+        bulkReviewTextAreaUiStateMapper::map
     ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_TIMEOUT_MILLIS),
@@ -243,7 +243,7 @@ class BulkReviewViewModel @Inject constructor(
         getFormRequestState,
         reviewItemsTextAreaUiState,
         reviewItemsMediaPickerUiState,
-        ::mapMiniActionsUiState
+        bulkReviewMiniActionsUiStateMapper::map
     ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_TIMEOUT_MILLIS),
@@ -268,7 +268,7 @@ class BulkReviewViewModel @Inject constructor(
     private val bulkReviewStickyButtonUiState = combine(
         bulkReviewVisitableList,
         anonymous,
-        ::mapBulkReviewStickyButtonUiState
+        bulkReviewStickyButtonMapper::map
     ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_TIMEOUT_MILLIS),
@@ -761,46 +761,6 @@ class BulkReviewViewModel @Inject constructor(
         bulkReviewToasterCtaKeyEvents.tryEmit(data)
     }
 
-    private fun mapProductInfoUiState(
-        getFormRequestState: BulkReviewGetFormRequestState
-    ): Map<String, BulkReviewProductInfoUiState> {
-        return bulkReviewProductInfoUiStateMapper.map(getFormRequestState)
-    }
-
-    private fun mapRatingUiState(
-        getFormRequestState: BulkReviewGetFormRequestState,
-        reviewItemsRating: List<BulkReviewItemRatingUiModel>
-    ): Map<String, BulkReviewRatingUiState> {
-        return bulkReviewRatingUiStateMapper.map(
-            getFormRequestState = getFormRequestState,
-            reviewItemsRating = reviewItemsRating
-        )
-    }
-
-    private fun mapBadRatingCategoryUiState(
-        getFormRequestState: BulkReviewGetFormRequestState,
-        reviewItemsBadRatingCategory: List<BulkReviewItemBadRatingCategoryUiModel>
-    ): Map<String, BulkReviewBadRatingCategoryUiState> {
-        return bulkReviewBadRatingCategoryUiStateMapper.map(
-            getFormRequestState = getFormRequestState,
-            reviewItemsBadRatingCategory = reviewItemsBadRatingCategory
-        )
-    }
-
-    private fun mapTextAreaUiState(
-        getFormRequestState: BulkReviewGetFormRequestState,
-        reviewItemsTestimony: List<BulkReviewItemTestimonyUiModel>,
-        bulkReviewBadRatingCategoryUiState: Map<String, BulkReviewBadRatingCategoryUiState>,
-        bulkReviewRatingUiState: Map<String, BulkReviewRatingUiState>
-    ): Map<String, BulkReviewTextAreaUiState> {
-        return bulkReviewTextAreaUiStateMapper.map(
-            getFormRequestState = getFormRequestState,
-            reviewItemsTestimony = reviewItemsTestimony,
-            bulkReviewBadRatingCategoryUiState = bulkReviewBadRatingCategoryUiState,
-            bulkReviewRatingUiState = bulkReviewRatingUiState
-        )
-    }
-
     private fun mapMediaItems(
         reviewItemsMediaUris: List<BulkReviewItemMediaUrisUiModel>,
         reviewItemsMediaUploadResults: List<BulkReviewItemMediaUploadResultsUiModel>,
@@ -854,18 +814,6 @@ class BulkReviewViewModel @Inject constructor(
         )
     }
 
-    private fun mapMiniActionsUiState(
-        getFormRequestState: BulkReviewGetFormRequestState,
-        bulkReviewTextAreaUiState: Map<String, BulkReviewTextAreaUiState>,
-        bulkReviewMediaPickerUiState: Map<String, CreateReviewMediaPickerUiState>
-    ): Map<String, BulkReviewMiniActionsUiState> {
-        return bulkReviewMiniActionsUiStateMapper.map(
-            getFormRequestState = getFormRequestState,
-            bulkReviewTextAreaUiState = bulkReviewTextAreaUiState,
-            bulkReviewMediaPickerUiState = bulkReviewMediaPickerUiState
-        )
-    }
-
     private fun mapBulkReviewVisitableList(
         getFormRequestState: BulkReviewGetFormRequestState,
         removedReviewItem: Set<String>,
@@ -891,16 +839,6 @@ class BulkReviewViewModel @Inject constructor(
             )
             else -> bulkReviewVisitableList.value
         }
-    }
-
-    private fun mapBulkReviewStickyButtonUiState(
-        bulkReviewVisitableList: List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>,
-        anonymous: Boolean
-    ): BulkReviewStickyButtonUiState {
-        return bulkReviewStickyButtonMapper.map(
-            bulkReviewVisitableList = bulkReviewVisitableList,
-            anonymous = anonymous
-        )
     }
 
     private fun observeMediaUrisForUpload() {
