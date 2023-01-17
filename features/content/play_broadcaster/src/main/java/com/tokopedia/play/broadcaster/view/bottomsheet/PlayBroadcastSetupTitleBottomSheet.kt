@@ -74,7 +74,7 @@ class PlayBroadcastSetupTitleBottomSheet : BottomSheetUnify() {
                 }
             })
             editText.setOnEditorActionListener { _, _, _ ->
-                hideKeyboard()
+                hideSetupCoverKeyboard()
                 return@setOnEditorActionListener false
             }
             clearIconView.setOnClickListener {
@@ -83,7 +83,7 @@ class PlayBroadcastSetupTitleBottomSheet : BottomSheetUnify() {
             }
         }
         btnSetupTitle.setOnClickListener {
-            hideKeyboard()
+            hideSetupCoverKeyboard()
 
             mListener?.submitTitle(tvSetupTitleField.editText.text.trim().toString())
             setLoading(true)
@@ -118,7 +118,7 @@ class PlayBroadcastSetupTitleBottomSheet : BottomSheetUnify() {
         binding.btnSetupTitle.isLoading = isLoading
     }
 
-    private fun hideKeyboard() {
+    private fun hideSetupCoverKeyboard() {
         binding.tvSetupTitleField.editText.apply {
             requestFocus()
             hideKeyboard()
