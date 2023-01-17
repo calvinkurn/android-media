@@ -34,6 +34,7 @@ class SellerHomeWidgetSSEImpl(
     private val context: Context,
     private val userSession: UserSessionInterface,
     private val widgetSseMapper: WidgetSSEMapper,
+    private val sseOkHttpClient: OkHttpClient,
     private val dispatchers: CoroutineDispatchers
 ) : SellerHomeWidgetSSE {
 
@@ -48,7 +49,6 @@ class SellerHomeWidgetSSEImpl(
             "https://sse-staging.tokopedia.com/seller-dashboard/sse/datakeys?page=%s&datakeys=%s"
         private const val SSE_PRODUCTION_URL =
             "https://sse.tokopedia.com/seller-dashboard/sse/datakeys?page=%s&datakeys=%s"
-        private const val READ_TIME_OUT = 0L
     }
 
     private var sse: ServerSentEvent? = null
@@ -71,8 +71,7 @@ class SellerHomeWidgetSSEImpl(
         closeSse()
         printLog("SSE Connecting...$url")
 
-        val okHttpClient = getOkHttpClient()
-        sse = OkSse(okHttpClient).newServerSentEvent(request, getSseEventListener(request))
+        sse = OkSse(sseOkHttpClient).newServerSentEvent(request, getSseEventListener(request))
     }
 
     override fun closeSse() {
@@ -86,25 +85,6 @@ class SellerHomeWidgetSSEImpl(
             .map {
                 widgetSseMapper.mappingWidget(it.event, it.message)
             }
-    }
-
-    private fun getOkHttpClient(): OkHttpClient {
-        val authenticator = getAuthenticator()
-        val builder = OkHttpClient.Builder()
-            .readTimeout(READ_TIME_OUT, TimeUnit.SECONDS)
-            .retryOnConnectionFailure(true)
-        if (authenticator != null) {
-            builder.authenticator(authenticator)
-        }
-        return builder.build()
-    }
-
-    private fun getAuthenticator(): TkpdAuthenticator? {
-        return try {
-            TkpdAuthenticator(context, context as NetworkRouter, userSession as UserSession)
-        } catch (e: ClassCastException) {
-            null
-        }
     }
 
     private fun getBaseSseUrl(): String {
