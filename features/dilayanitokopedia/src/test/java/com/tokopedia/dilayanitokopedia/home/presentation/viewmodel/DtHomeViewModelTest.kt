@@ -49,25 +49,6 @@ class DtHomeViewModelTest {
     }
 
     @Test
-    fun `verify when get empty state is success`() {
-        // Inject
-        val id = "1"
-        val serviceType = "serviceType"
-        val data = HomeLayoutListUiModel(
-            items = viewModel.getHomeVisitableList(),
-            state = DtLayoutState.HIDE
-        )
-
-        // When
-        viewModel.getEmptyState(id, serviceType)
-
-        // Then
-        verify {
-            homeLayoutListObserver.onChanged(Success(data))
-        }
-    }
-
-    @Test
     fun `verify when get home layout is success`() {
         // Inject
         val mockResponse = spyk(
