@@ -1077,19 +1077,8 @@ class AddEditProductPreviewFragment :
                         }
                     } else {
                         viewModel.productInputModel.value?.let { productInputModel ->
-
                             if (viewModel.isDuplicate) {
-                                // 1. check download / write external storage permission
-                                // 2. re-download product images for url duplication
                                 checkDownloadPermission()
-//                                // 3.make sure all the files are downloaded before starting the service
-//                                if (viewModel.isDownloadImageComplete(viewModel.downloadImageStatusMap)) {
-//                                    // TODO : 4. update paths
-//                                    startProductAddService(productInputModel)
-//                                    activity?.setResult(RESULT_OK)
-//                                } else {
-//                                    // TODO : toast error message
-//                                }
                             } else {
                                 startProductAddService(productInputModel)
                                 activity?.setResult(RESULT_OK)
@@ -1590,10 +1579,6 @@ class AddEditProductPreviewFragment :
         productInputModel.run {
             // increment wholesale min order by one because of > symbol
             this.detailInputModel.wholesaleList = viewModel.incrementWholeSaleMinOrder(this.detailInputModel.wholesaleList)
-//            // in case of product duplication update the image paths to create new urls
-//            val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-//            this.detailInputModel.imageUrlOrPathList = viewModel.getNewProductImagePaths(downloadsDir, this.detailInputModel.pictureList)
-//            viewModel.updateVariantImagePaths(this.variantInputModel)
         }
 
         context?.let {
@@ -1973,54 +1958,6 @@ class AddEditProductPreviewFragment :
         RouteManager.route(activity ?: return, route)
     }
 
-//    private fun duplicateProductImageUrl(productImageData: List<PictureInputModel>) {
-//        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-//        productImageData.forEach { data ->
-//            // check if file is already downloaded into downloads directory
-//            val imageFile = File(downloadsDir + data.fileName)
-//            if (!imageFile.isFile) {
-//                // download if the file is not exist
-//                if (ActivityCompat.checkSelfPermission(
-//                        requireActivity(),
-//                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-//                    ) == PackageManager.PERMISSION_GRANTED
-//                ) { downloadFile(uri = data.urlOriginal, filename = data.fileName) }
-//            }
-//        }
-//    }
-
-//    private fun duplicateProductVariantImageUrl(productVariantData: List<ProductVariantInputModel>) {
-//        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-//        productVariantData.forEach { data ->
-//            data.pictures.forEach { picture ->
-//                // check if file is already downloaded into downloads directory
-//                val imageFile = File(downloadsDir + picture.fileName)
-//                if (!imageFile.isFile) {
-//                    // download if the file is not exist
-//                    if (ActivityCompat.checkSelfPermission(
-//                            requireActivity(),
-//                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-//                        ) == PackageManager.PERMISSION_GRANTED
-//                    ) { downloadFile(uri = picture.urlOriginal, filename = picture.fileName) }
-//                }
-//            }
-//        }
-//    }
-
-//    private fun duplicateVariantSizeChart(variantSizeChart: PictureVariantInputModel) {
-//        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-//        // check if file is already downloaded into downloads directory
-//        val imageFile = File(downloadsDir + variantSizeChart.fileName)
-//        if (!imageFile.isFile) {
-//            // download if the file is not exist
-//            if (ActivityCompat.checkSelfPermission(
-//                    requireActivity(),
-//                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-//                ) == PackageManager.PERMISSION_GRANTED
-//            ) { downloadFile(uri = variantSizeChart.urlOriginal, filename = variantSizeChart.fileName) }
-//        }
-//    }
-
     private fun checkDownloadPermission() {
         val listener = object : PermissionCheckerHelper.PermissionCheckListener {
             override fun onPermissionDenied(permissionText: String) {
@@ -2030,17 +1967,6 @@ class AddEditProductPreviewFragment :
                 permissionCheckerHelper.onNeverAskAgain(requireActivity(), permissionText)
             }
             override fun onPermissionGranted() {
-//                // re download main product images
-//                val productData = viewModel.productInputModel.value ?: ProductInputModel()
-//                val productImageData = productData.detailInputModel.pictureList
-//                duplicateProductImageUrl(productImageData)
-//                // re download product variant images
-//                val productVariantData = productData.variantInputModel.products
-//                duplicateProductVariantImageUrl(productVariantData)
-//                // re download product variant size chart
-//                val variantSizeChart = productData.variantInputModel.sizecharts
-//                duplicateVariantSizeChart(variantSizeChart)
-
                 viewModel.productInputModel.value?.let { productInputModel ->
                     productInputModel.isDuplicate = true
                     startProductAddService(productInputModel)
@@ -2054,33 +1980,4 @@ class AddEditProductPreviewFragment :
             listener = listener
         )
     }
-
-//    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//    private fun downloadFile(uri: String, filename: String) {
-//        val downloadCompleteListener = object : DownloadHelper.DownloadHelperListener {
-//            override fun onDownloadComplete() {
-//                // track image download status
-//                viewModel.updatedDownloadImageStatusMap(filename, true)
-//            }
-//        }
-//
-//        try {
-//            val helper = DownloadHelper(
-//                context = requireActivity(),
-//                uri = uri,
-//                filename = filename,
-//                listener = downloadCompleteListener
-//            )
-//            helper.downloadFile { true }
-//        } catch (se: SecurityException) {
-//            AddEditProductErrorHandler.logMessage(filename)
-//            AddEditProductErrorHandler.logExceptionToCrashlytics(se)
-//        } catch (iae: IllegalArgumentException) {
-//            AddEditProductErrorHandler.logMessage(filename)
-//            AddEditProductErrorHandler.logExceptionToCrashlytics(iae)
-//        } catch (ex: Exception) {
-//            AddEditProductErrorHandler.logMessage(filename)
-//            AddEditProductErrorHandler.logExceptionToCrashlytics(ex)
-//        }
-//    }
 }
