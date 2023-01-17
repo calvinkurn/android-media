@@ -10,6 +10,7 @@ object HomeComponentRollenceController {
     private var rollenceLego24BannerValue: String = ""
     private var rollenceHPBDurationValue: String = ""
     private var rollenceHPBDotsInfiniteValue: String = ""
+    private var rollenceDynamicIcons: String = ""
     private const val HPB_DURATION_4S = 4000L
     private const val HPB_DURATION_5S = 5000L
     private const val HPB_DURATION_6S = 6000L
@@ -18,6 +19,7 @@ object HomeComponentRollenceController {
         rollenceLego24BannerValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_LEGO24BANNER_EXP, RollenceKey.HOME_COMPONENT_LEGO24BANNER_OLD)
         rollenceHPBDurationValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_HPB_DURATION_EXP, RollenceKey.HOME_COMPONENT_HPB_DURATION_CONTROL)
         rollenceHPBDotsInfiniteValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_HPB_DOTS_INFINITE_EXP, RollenceKey.HOME_COMPONENT_HPB_DOTS_INFINITE_CONTROL)
+        rollenceDynamicIcons = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_DYNAMIC_ICON_EXP, RollenceKey.HOME_COMPONENT_DYNAMIC_ICON_VARIANT)
     }
 
     private fun getRollenceValueLego24Banner(): String {
@@ -38,6 +40,10 @@ object HomeComponentRollenceController {
 
     fun isHPBUsingDotsAndInfiniteScroll(): Boolean {
         return getRollenceValueHPBDotsInfinite() == RollenceKey.HOME_COMPONENT_HPB_DOTS_INFINITE_VARIANT
+    }
+
+    fun isHomeComponentDynamicIconsUsingRollenceVariant(): Boolean {
+        return rollenceDynamicIcons == RollenceKey.HOME_COMPONENT_DYNAMIC_ICON_VARIANT
     }
 
     fun getHPBDuration(): Long {
