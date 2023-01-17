@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.BannerRecommendationDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationBannerTopAdsDataModel
+import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationEmpty
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationError
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationItemDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationLoadMore
@@ -61,6 +62,8 @@ class HomeRecommendationForYouAdapter(
             is HomeRecommendationLoading -> layout.isFullSpan = true
             is HomeRecommendationError -> layout.isFullSpan = true
             is HomeRecommendationLoadMore -> layout.isFullSpan = true
+            is HomeRecommendationEmpty -> layout.isFullSpan = true
+
             else -> layout.isFullSpan = false
         }
     }
