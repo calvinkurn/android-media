@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroSetupCoverBinding
-import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayBroadcastSetupCoverChooseTemplateFragment
 import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayBroadcastSetupCoverUploadImageFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
