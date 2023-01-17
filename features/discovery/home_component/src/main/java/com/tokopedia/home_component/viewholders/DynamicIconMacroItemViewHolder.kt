@@ -116,7 +116,7 @@ class DynamicIconMacroItemViewHolder(
                     longPressHandler.removeCallbacks(onLongPress)
                     Handler().postDelayed(
                         {
-                            animateScaling(0.8125f, 1.01f, UnifyMotion.T1, UnifyMotion.EASE_OUT)
+                            animateScaling(0.8125f, 1.00f, UnifyMotion.T1, UnifyMotion.EASE_OUT)
 
                             scaleAnimator.addListener(object : Animator.AnimatorListener {
                                 override fun onAnimationRepeat(p0: Animator) {
@@ -130,7 +130,7 @@ class DynamicIconMacroItemViewHolder(
 
                                 override fun onAnimationEnd(p0: Animator) {
                                     animateScaling(
-                                        1.01f,
+                                        1.00f,
                                         1f,
                                         UnifyMotion.T1,
                                         UnifyMotion.EASE_IN_OUT
@@ -156,7 +156,7 @@ class DynamicIconMacroItemViewHolder(
                         ViewConfiguration.getLongPressTimeout().toLong()
                     )
 
-                    animateScaling(1f, 0.95f, UnifyMotion.T1, UnifyMotion.EASE_OUT)
+                    animateScaling(1f, 0.8125f, UnifyMotion.T1, UnifyMotion.EASE_OUT)
 
                     true
                 }
