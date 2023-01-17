@@ -98,24 +98,6 @@ object VariantMapper {
         )
     }
 
-    fun updateProductInfoByThumbVariant(oldData: DynamicProductInfoP1?, newData: VariantChild?): DynamicProductInfoP1? {
-        val basic = oldData?.basic?.copy(
-            productID = newData?.productId.orEmpty(),
-            sku = newData?.sku.orEmpty(),
-            minOrder = newData?.getFinalMinOrder().orZero(),
-            status = if (newData?.isBuyable == true) {
-                ProductStatusTypeDef.ACTIVE
-            } else {
-                ProductStatusTypeDef.WAREHOUSE
-            },
-            url = newData?.url.orEmpty()
-        ) ?: return oldData
-
-        return oldData.copy(
-            basic = basic
-        )
-    }
-
     fun generateVariantString(variantData: ProductVariant?): String {
         return try {
             variantData?.variants?.map { it.name }?.joinToString(separator = ", ") ?: ""
