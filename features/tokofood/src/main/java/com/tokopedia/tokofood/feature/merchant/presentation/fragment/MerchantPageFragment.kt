@@ -772,11 +772,13 @@ class MerchantPageFragment : BaseMultiFragment(),
                                                 val cardPositions =
                                                     viewModel.productMap[requestParam.productId]
                                                 cardPositions?.run {
-                                                    productListAdapter?.updateProductUiModel(
-                                                        cartTokoFood = cartTokoFood,
-                                                        dataSetPosition = viewModel.getDataSetPosition(this),
-                                                        adapterPosition = viewModel.getAdapterPosition(this)
-                                                    )
+                                                    binding?.rvProductList?.post {
+                                                        productListAdapter?.updateProductUiModel(
+                                                            cartTokoFood = cartTokoFood,
+                                                            dataSetPosition = viewModel.getDataSetPosition(this),
+                                                            adapterPosition = viewModel.getAdapterPosition(this)
+                                                        )
+                                                    }
                                                 }
                                             }
                                     }
@@ -831,8 +833,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
                     if (it.source == SOURCE) {
                         (it.data as? Pair<*, *>)?.let { pair ->
-                            (pair.first as? UpdateParam)?.productList?.firstOrNull()
-                                ?.let { requestParam ->
+                            (pair.first as? UpdateParam)?.productList?.forEach { requestParam ->
                                     (pair.second as? CartTokoFoodData)?.let { cartTokoFoodData ->
                                         cartTokoFoodData.carts.firstOrNull { data -> data.productId == requestParam.productId }
                                             ?.let { cartTokoFood ->
@@ -847,13 +848,15 @@ class MerchantPageFragment : BaseMultiFragment(),
                                                             dataSetPosition = dataSetPosition
                                                         )
                                                     } else {
-                                                        productListAdapter?.updateProductUiModel(
-                                                            cartTokoFood = cartTokoFood,
-                                                            dataSetPosition = dataSetPosition,
-                                                            adapterPosition = viewModel.getAdapterPosition(
-                                                                this
+                                                        binding?.rvProductList?.post {
+                                                            productListAdapter?.updateProductUiModel(
+                                                                cartTokoFood = cartTokoFood,
+                                                                dataSetPosition = dataSetPosition,
+                                                                adapterPosition = viewModel.getAdapterPosition(
+                                                                    this
+                                                                )
                                                             )
-                                                        )
+                                                        }
                                                     }
                                                 }
                                             }
@@ -1060,20 +1063,22 @@ class MerchantPageFragment : BaseMultiFragment(),
                         cardPositions?.run {
                             val dataSetPosition = viewModel.getDataSetPosition(this)
                             val adapterPosition = viewModel.getAdapterPosition(this)
-                            productListAdapter?.updateProductUiModel(
-                                cartTokoFood = cartTokoFood,
-                                dataSetPosition = dataSetPosition,
-                                adapterPosition = adapterPosition,
-                                customOrderDetail = viewModel.mapCartTokoFoodToCustomOrderDetail(
+                            binding?.rvProductList?.post {
+                                productListAdapter?.updateProductUiModel(
                                     cartTokoFood = cartTokoFood,
-                                    productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
+                                    dataSetPosition = dataSetPosition,
+                                    adapterPosition = adapterPosition,
+                                    customOrderDetail = viewModel.mapCartTokoFoodToCustomOrderDetail(
+                                        cartTokoFood = cartTokoFood,
+                                        productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
+                                    )
                                 )
-                            )
-                            val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
-                            val isSameCustomProductExist = productUiModel.customOrderDetails.firstOrNull { it.qty > Int.ONE } != null
-                            val isMultipleCustomProductMade = productUiModel.customOrderDetails.size > Int.ONE
-                            if (isSameCustomProductExist || isMultipleCustomProductMade) {
-                                showCustomOrderDetailBottomSheet(productUiModel, this)
+                                val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
+                                val isSameCustomProductExist = productUiModel.customOrderDetails.firstOrNull { it.qty > Int.ONE } != null
+                                val isMultipleCustomProductMade = productUiModel.customOrderDetails.size > Int.ONE
+                                if (isSameCustomProductExist || isMultipleCustomProductMade) {
+                                    showCustomOrderDetailBottomSheet(productUiModel, this)
+                                }
                             }
                         }
                     }
@@ -1685,7 +1690,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun getIsImplementDebounce(): Boolean {
-        return false
+        return true
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

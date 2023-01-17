@@ -42,6 +42,8 @@ import com.tokopedia.play.extensions.*
 import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.component.UiComponent
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
+import com.tokopedia.play.util.*
+import com.tokopedia.play.util.CachedState
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.measureWithTimeout
@@ -838,7 +840,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderInteractiveDialog(prevState?.interactive, state.interactive)
                 renderWinnerBadge(state = state.winnerBadge)
 
-                handleStatus(state.status)
+                handleStatus(cachedState)
                 renderEngagement(prevState?.engagement, state.engagement)
                 if(cachedState.isChanged { it.exploreWidget.shouldShow }) renderExploreView(state.exploreWidget.shouldShow)
 
@@ -1600,7 +1602,27 @@ class PlayUserInteractionFragment @Inject constructor(
         chooseAddressView?.rootView?.showWithCondition(addressUiState.shouldShow)
     }
 
+<<<<<<< HEAD
     private fun handleStatus(status: PlayStatusUiModel) {
+=======
+    private fun castViewOnStateChanged(
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+    ) {
+        if(playViewModel.isCastAllowed && !bottomInsets.isAnyShown) {
+            val currentVisibility = castView?.isHidden() ?: true
+            if(currentVisibility)
+                analytic.impressCast(playViewModel.latestCompleteChannelData.channelDetail.channelInfo.id, playViewModel.channelType)
+
+            castView?.show()
+        }
+        else castView?.hide()
+    }
+    //endregion
+
+    private fun handleStatus(state: CachedState<PlayViewerNewUiState>) {
+        if(state.isNotChanged { it.status.channelStatus.statusType }) return
+
+        val status = state.value.status
         getBottomSheetInstance().setState(status.channelStatus.statusType.isFreeze)
 
         if (status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned || status.channelStatus.statusType.isArchive) {
