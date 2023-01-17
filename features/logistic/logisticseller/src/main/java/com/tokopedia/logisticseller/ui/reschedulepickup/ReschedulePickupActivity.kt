@@ -1,5 +1,7 @@
 package com.tokopedia.logisticseller.ui.reschedulepickup
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -53,12 +55,22 @@ class ReschedulePickupActivity : AppCompatActivity() {
                     onOtherReasonChanged = { viewModel.setCustomReason(it) },
                     onSaveReschedule = { viewModel.saveReschedule(orderId) },
                     onBottomSheetClosed = { viewModel.closeBottomSheetState() },
-                    onOpenBottomSheet = { viewModel.openBottomSheetState(it) }
+                    onOpenBottomSheet = { viewModel.openBottomSheetState(it) },
+                    onCloseDialog = { onClickDialogButton(it) },
+                    onClickDialogButton = { onClickDialogButton(it) }
                 )
             }
         }
 
         getInitialData()
+    }
+
+    private fun onClickDialogButton(success: Boolean) {
+        viewModel.setDialogState(false)
+        if (success) {
+            setResult(Activity.RESULT_OK, Intent())
+            finish()
+        }
     }
 
     private fun getInitialData() {
@@ -77,37 +89,6 @@ class ReschedulePickupActivity : AppCompatActivity() {
         viewModel.setTime(timeChosen)
     }
 
-//    private fun showResultDialog(
-//        bodyText: String,
-//        isSuccess: Boolean
-//    ) {
-//        context?.let {
-//            ReschedulePickupResultDialog(it, setResultDialogListener(isSuccess)).apply {
-//                init()
-//                if (isSuccess) {
-//                    setSuccessMessage(bodyText)
-//                } else {
-//                    setErrorMessage(bodyText)
-//                }
-//                show()
-//            }
-//        }
-//    }
-//
-//    private fun setResultDialogListener(isSuccess: Boolean): ReschedulePickupResultDialog.ReschedulePickupResultDialogListener {
-//        return object : ReschedulePickupResultDialog.ReschedulePickupResultDialogListener {
-//            override fun onClickDialog() {
-//                super.onClickDialog()
-//                if (isSuccess) {
-//                    activity?.run {
-//                        setResult(Activity.RESULT_OK, Intent())
-//                        finish()
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
 //    private fun showErrorToaster(
 //        message: String,
 //        onClick: () -> Unit

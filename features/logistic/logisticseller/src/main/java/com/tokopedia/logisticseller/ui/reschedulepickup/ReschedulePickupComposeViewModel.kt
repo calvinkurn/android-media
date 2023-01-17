@@ -89,6 +89,12 @@ class ReschedulePickupComposeViewModel @Inject constructor(
         validateInput()
     }
 
+    fun setDialogState(open: Boolean) {
+        val state = _uiState.value
+        _uiState.value =
+            state.copy(saveRescheduleModel = state.saveRescheduleModel?.copy(openDialog = open))
+    }
+
     private fun validateInput() {
         val isValid =
             input.day.isNotEmpty() && input.time.isNotEmpty() && validateReason(input.reason)

@@ -1,14 +1,14 @@
 package com.tokopedia.logisticseller.domain.mapper
 
-import com.tokopedia.logisticseller.data.param.GetReschedulePickupParam
-import com.tokopedia.logisticseller.data.response.GetReschedulePickupResponse
 import com.tokopedia.logisticseller.data.model.RescheduleDayOptionModel
 import com.tokopedia.logisticseller.data.model.RescheduleDetailModel
 import com.tokopedia.logisticseller.data.model.RescheduleOptionsModel
 import com.tokopedia.logisticseller.data.model.RescheduleReasonOptionModel
 import com.tokopedia.logisticseller.data.model.RescheduleTimeOptionModel
 import com.tokopedia.logisticseller.data.model.SaveRescheduleModel
+import com.tokopedia.logisticseller.data.param.GetReschedulePickupParam
 import com.tokopedia.logisticseller.data.param.SaveReschedulePickupParam
+import com.tokopedia.logisticseller.data.response.GetReschedulePickupResponse
 import com.tokopedia.logisticseller.data.response.SaveReschedulePickupResponse
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupInfo
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupOptions
@@ -48,11 +48,11 @@ object ReschedulePickupMapper {
                 invoice = orderData.firstOrNull()?.invoice ?: "",
                 guide = data.orderDetailTicker,
                 applink = data.appLink
-            ),
+            )
         )
     }
 
-    private fun mapOrderDataToOptionState(orderData: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData) : ReschedulePickupOptions {
+    private fun mapOrderDataToOptionState(orderData: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData): ReschedulePickupOptions {
         return ReschedulePickupOptions(
             dayOptions = mapDayOptionToModel(orderData.chooseDay),
             reasonOptions = mapReasonOptionToModel(orderData.chooseReason)
@@ -111,13 +111,16 @@ object ReschedulePickupMapper {
             message = mapSaveRescheduleMessage(data, orderId),
             status = data.mpLogisticInsertReschedulePickup.status,
             etaPickup = etaPickup,
-            errors = data.mpLogisticInsertReschedulePickup.errors
+            errors = data.mpLogisticInsertReschedulePickup.errors,
+            openDialog = true
         )
     }
 
-    private fun mapSaveRescheduleMessage(data: SaveReschedulePickupResponse.Data, orderId: String) : String {
+    private fun mapSaveRescheduleMessage(data: SaveReschedulePickupResponse.Data, orderId: String): String {
         return if (data.mpLogisticInsertReschedulePickup.status == INSERT_SUCCESS_STATUS && data.mpLogisticInsertReschedulePickup.errors.isNotEmpty()) {
             data.mpLogisticInsertReschedulePickup.errors.first().replaceFirst("$orderId: ", "")
-        } else data.mpLogisticInsertReschedulePickup.message
+        } else {
+            data.mpLogisticInsertReschedulePickup.message
+        }
     }
 }

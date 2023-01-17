@@ -1,6 +1,5 @@
 package com.tokopedia.logisticseller.ui.reschedulepickup
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
@@ -26,7 +27,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -34,7 +34,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import com.tokopedia.common_compose.principles.NestButton
 import com.tokopedia.common_compose.principles.NestTextField
 import com.tokopedia.common_compose.principles.NestTicker
@@ -47,6 +46,7 @@ import com.tokopedia.logisticseller.data.model.RescheduleReasonOptionModel
 import com.tokopedia.logisticseller.data.model.RescheduleTimeOptionModel
 import com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet.NestBottomSheetShape
 import com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet.RescheduleBottomSheetLayout
+import com.tokopedia.logisticseller.ui.reschedulepickup.dialog.RescheduleResultDialog
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleBottomSheetState
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupInput
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupState
@@ -64,7 +64,9 @@ fun ReschedulePickupScreen(
     onOtherReasonChanged: (String) -> Unit,
     onSaveReschedule: () -> Unit,
     onBottomSheetClosed: () -> Unit,
-    onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit
+    onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit,
+    onClickDialogButton: (Boolean) -> Unit,
+    onCloseDialog: (Boolean) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(
@@ -111,7 +113,9 @@ fun ReschedulePickupScreen(
             onSubtitleClicked = onSubtitleClicked,
             onOtherReasonChanged = onOtherReasonChanged,
             onSaveReschedule = onSaveReschedule,
-            onOpenBottomSheet = openSheet
+            onOpenBottomSheet = openSheet,
+            onClickDialogButton = onClickDialogButton,
+            onCloseDialog = onCloseDialog
         )
     }
 }
@@ -123,11 +127,14 @@ fun ReschedulePickupScreenLayout(
     onSubtitleClicked: (String) -> Unit,
     onOtherReasonChanged: (String) -> Unit,
     onSaveReschedule: () -> Unit,
-    onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit
+    onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit,
+    onClickDialogButton: (Boolean) -> Unit,
+    onCloseDialog: (Boolean) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
         Title()
         OrderInfo(
@@ -179,6 +186,11 @@ fun ReschedulePickupScreenLayout(
         ) {
             onSaveReschedule()
         }
+        RescheduleResultDialog(
+            saveRescheduleModel = state.value.saveRescheduleModel,
+            onClickDialogButton = onClickDialogButton,
+            onCloseDialog = onCloseDialog
+        )
     }
 }
 
@@ -385,68 +397,5 @@ fun DropDownIcon() {
             imageVector = Icons.Filled.ArrowDropDown,
             contentDescription = "drop down"
         )
-    }
-}
-
-@Composable
-private fun ResultDialog(
-    title: String,
-    subtitle: String,
-    imageId: Int,
-    buttonText: String,
-    onDismiss: () -> Unit,
-    onDialogButtonClicked: () -> Unit
-) {
-    Dialog(
-        onDismissRequest = onDismiss
-    ) {
-        Column() {
-            Image(painterResource(id = imageId), contentDescription = "result reschedule pickup")
-            NestTypography(
-                text = title,
-                textStyle = NestTheme.typography.heading2.copy(NestTheme.colors.NN._950)
-            )
-            NestTypography(
-                text = subtitle,
-                textStyle = NestTheme.typography.body2.copy(NestTheme.colors.NN._950)
-            )
-            NestButton(text = buttonText) {
-                onDialogButtonClicked()
-            }
-        }
-    }
-}
-
-@Composable
-private fun SuccessDialog(
-    etaPickup: String,
-    onDialogDismiss: () -> Unit,
-    onDialogButtonClicked: () -> Unit
-) {
-    ResultDialog(
-        title = stringResource(id = R.string.title_reschedule_pickup_success_dialog),
-        subtitle = stringResource(id = R.string.template_success_reschedule_pickup, etaPickup),
-        imageId = R.drawable.ic_logisticseller_recshedulepickup_success,
-        buttonText = stringResource(id = R.string.title_reschedule_pickup_button_dialog),
-        onDismiss = onDialogDismiss
-    ) {
-        onDialogButtonClicked()
-    }
-}
-
-@Composable
-private fun FailedDialog(
-    error: String,
-    onDialogDismiss: () -> Unit,
-    onDialogButtonClicked: () -> Unit
-) {
-    ResultDialog(
-        title = stringResource(id = R.string.title_failed_reschedule_pickup_dialog),
-        subtitle = error,
-        imageId = R.drawable.ic_logisticseller_reschedulepickup_fail,
-        buttonText = stringResource(id = R.string.title_cta_error_reschedule_pickup),
-        onDismiss = onDialogDismiss
-    ) {
-        onDialogButtonClicked()
     }
 }
