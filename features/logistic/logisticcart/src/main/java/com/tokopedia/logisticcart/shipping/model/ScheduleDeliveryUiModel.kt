@@ -26,17 +26,21 @@ data class ScheduleDeliveryUiModel(
 ) : Parcelable {
 
     fun setScheduleDateAndTimeslotId(
-        scheduleDate: String,
-        timeslotId: Long
+        scheduleDate: String = "",
+        timeslotId: Long = 0L,
+        validationMetadata: String = ""
     ) {
         getSelectedDeliveryServices(
             scheduleDate,
-            timeslotId
+            timeslotId,
+            validationMetadata
         ) { selectedScheduleDate, selectedDeliveryProduct, isSelectedProduct ->
             this.isSelected = isSelectedProduct
-            this.scheduleDate = selectedScheduleDate
-            this.timeslotId = selectedDeliveryProduct.timeslotId
-            this.deliveryProduct = selectedDeliveryProduct
+            if (selectedScheduleDate != null && selectedDeliveryProduct != null) {
+                this.scheduleDate = selectedScheduleDate
+                this.timeslotId = selectedDeliveryProduct.timeslotId
+                this.deliveryProduct = selectedDeliveryProduct
+            }
         }
     }
 
@@ -55,19 +59,30 @@ data class ScheduleDeliveryUiModel(
     private fun getSelectedDeliveryServices(
         scheduleDate: String,
         timeslotId: Long,
-        callback: (selectedScheduleDate: String, selectedDeliveryProduct: DeliveryProduct, isSelectedProduct: Boolean) -> Unit
+        validationMetadata: String,
+        callback: (selectedScheduleDate: String?, selectedDeliveryProduct: DeliveryProduct?, isSelectedProduct: Boolean) -> Unit
     ) {
-        if (scheduleDate != "" && timeslotId != 0L) {
-            val deliveryService = deliveryServices.find { it.id == scheduleDate }
-            val deliveryProduct = deliveryService?.deliveryProducts?.find {
+        var deliveryService: DeliveryService? = null
+        var deliveryProduct: DeliveryProduct? = null
+        if (scheduleDate.isNotEmpty() && timeslotId != 0L) {
+            deliveryService = deliveryServices.find { it.id == scheduleDate }
+            deliveryProduct = deliveryService?.deliveryProducts?.find {
                 it.timeslotId == timeslotId && it.available
             }
-
-            if (deliveryService != null && deliveryProduct != null) {
-                callback(deliveryService.id, deliveryProduct, true)
-            } else {
-                getSelectedDeliveryServicesRecommend(callback)
+        }
+        else if (validationMetadata.isNotEmpty()) {
+            deliveryServices.forEach { service ->
+                deliveryProduct = service.deliveryProducts.find { product ->
+                    product.validationMetadata == validationMetadata
+                }
+                if (deliveryProduct != null) {
+                    deliveryService = service
+                    return@forEach
+                }
             }
+        }
+        if (deliveryService != null && deliveryProduct != null) {
+            callback(deliveryService?.id, deliveryProduct, true)
         } else {
             getSelectedDeliveryServicesRecommend(callback)
         }

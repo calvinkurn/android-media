@@ -119,8 +119,7 @@ class ShippingCourierConverter @Inject constructor() {
         /*Schedule Delivery*/
         courierItemData.setScheduleDeliveryUiModel(
             scheduleDeliveryData = shippingRecommendationData?.scheduleDeliveryData,
-            scheduleDate = shipmentCartItemModel?.scheduleDate,
-            timeslotId = shipmentCartItemModel?.timeslotId
+            validationMetadata = shipmentCartItemModel?.validationMetadata,
         )
 
         return courierItemData
@@ -128,14 +127,12 @@ class ShippingCourierConverter @Inject constructor() {
 
     private fun CourierItemData.setScheduleDeliveryUiModel(
         scheduleDeliveryData: ScheduleDeliveryData?,
-        scheduleDate: String?,
-        timeslotId: Long?
+        validationMetadata: String?
     ) {
         scheduleDeliveryData?.takeIf { it.hidden.not() && it.deliveryServices.isNotEmpty() }
             ?.apply {
                 scheduleDeliveryUiModel = convertToScheduleDeliveryUiModel(
-                    scheduleDate ?: "",
-                    timeslotId ?: 0L,
+                    validationMetadata ?: ""
                 )
             }
     }
@@ -161,8 +158,7 @@ class ShippingCourierConverter @Inject constructor() {
     }
 
     private fun ScheduleDeliveryData.convertToScheduleDeliveryUiModel(
-        scheduleDate: String,
-        timeslotId: Long
+        validationMetadata: String
     ): ScheduleDeliveryUiModel {
 
         return ScheduleDeliveryUiModel(
@@ -175,7 +171,9 @@ class ShippingCourierConverter @Inject constructor() {
             notice = notice,
             deliveryServices = deliveryServices
         ).apply {
-            setScheduleDateAndTimeslotId(scheduleDate, timeslotId)
+             setScheduleDateAndTimeslotId(
+                 validationMetadata = validationMetadata
+             )
         }
     }
 }
