@@ -7,15 +7,17 @@
       "eventAction": "impression on banner dynamic channel mission widget",
       "eventCategory": "homepage",
       "eventLabel": "",
-      "trackerId": "32076",
+      "trackerId": "40379",
       "businessUnit": "home & browse",
+      "channelId": ".*",
       "currentSite": "tokopediamarketplace",
       "promotions": [
         {
           "creative_name": ".*",
           "creative_slot": ".*",
-          "item_id": ".*_.*_.*_.*",
-          "item_name": "/ - p.* - dynamic channel mission widget - banner - .*"
+          "item_id": ".*_.*_.*_.*_.*_.*",
+          "item_name": "/ - p.* - dynamic channel mission widget - banner - .*",
+          "creative_url": ""
         }
       ],
       "userId": ".*",
@@ -26,7 +28,7 @@
       "eventAction": "click on banner dynamic channel mission widget",
       "eventCategory": "homepage",
       "eventLabel": ".* - .*",
-      "trackerId": "32188",
+      "trackerId": "40381",
       "businessUnit": "home & browse",
       "campaignCode": ".*",
       "channelId": ".*",
@@ -35,7 +37,7 @@
         {
           "creative_name": ".*",
           "creative_slot": ".*",
-          "item_id": ".*_.*_.*_.*",
+          "item_id": ".*_.*_.*_.*_.*_.*",
           "item_name": "/ - p.* - dynamic channel mission widget - banner - .*"
         }
       ],
@@ -48,24 +50,54 @@
       "eventAction": "click on product dynamic channel mission widget",
       "eventCategory": "homepage",
       "eventLabel": ".* - .*",
-      "trackerId": "34629",
+      "trackerId": "40380",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "item_list": "/ - p.* - dynamic channel mission widget - product - .* - .* - .* - .* - .* - .*",
       "items": [
         {
+          "dimension40": "/ - p.* - dynamic channel mission widget - product - .* - .* - .* - .* - .* - .*",
+          "dimension84": ".*",
+          "dimension96": ".*_.*",
           "index": ".*",
           "item_brand": ".*",
-          "item_category": ".*",
+          "item_category": ".* / .* / .*",
           "item_id": ".*",
           "item_name": ".*",
           "item_variant": ".*",
-          "price": "0"
+          "price": ".*"
         }
       ],
       "userId": ".*",
       "sessionIris": ".*",
       "clientId": ".*"
+    },
+    {
+      "event": "view_item_list",
+      "eventAction": "impression on product dynamic channel mission widget",
+      "eventCategory": "homepage",
+      "eventLabel": "",
+      "trackerId": "40378",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/ - p.* - dynamic channel mission widget - product - .* - .* - .* - .* - .* - .*",
+      "items": [
+        {
+          "dimension40": "/ - p.* - dynamic channel mission widget - product - .* - .* - .* - .* - .* - .*",
+          "dimension84": ".*",
+          "dimension96": ".*_.*",
+          "dimension83": ".*",
+          "index": ".*",
+          "item_brand": ".*",
+          "item_category": ".* / .* / .*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_variant": ".*",
+          "price": ".*"
+        }
+      ],
+      "userId": ".*",
+      "sessionIris": ".*"
     }
   ]
 }
