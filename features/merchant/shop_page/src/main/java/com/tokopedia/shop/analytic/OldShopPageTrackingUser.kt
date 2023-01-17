@@ -1,5 +1,14 @@
 package com.tokopedia.shop.analytic
 
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ATTRIBUTION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_ACTION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_CATEGORY
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_LABEL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEMS_PAGE_TYPE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEMS_PRODUCT_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEMS_SHOP_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEMS_SHOP_TYPE
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
@@ -34,17 +43,17 @@ open class OldShopPageTrackingUser(
         customDimensionShopPage: CustomDimensionShopPage?
     ): HashMap<String?, Any?> {
         val eventMap = HashMap<String?, Any?>()
-        eventMap[OldShopPageTrackingConstant.EVENT] = event
-        eventMap[OldShopPageTrackingConstant.EVENT_CATEGORY] = category
-        eventMap[OldShopPageTrackingConstant.EVENT_ACTION] = action
-        eventMap[OldShopPageTrackingConstant.EVENT_LABEL] = label
+        eventMap[EVENT] = event
+        eventMap[EVENT_CATEGORY] = category
+        eventMap[EVENT_ACTION] = action
+        eventMap[EVENT_LABEL] = label
         if (customDimensionShopPage != null) {
             addCustomDimension(eventMap, customDimensionShopPage)
             if (customDimensionShopPage is CustomDimensionShopPageProduct) {
-                eventMap[OldShopPageTrackingConstant.PRODUCT_ID] = customDimensionShopPage.productId
+                eventMap[ITEMS_PRODUCT_ID] = customDimensionShopPage.productId
             }
             if (customDimensionShopPage is CustomDimensionShopPageAttribution) {
-                eventMap[OldShopPageTrackingConstant.ATTRIBUTION] = customDimensionShopPage.attribution
+                eventMap[ATTRIBUTION] = customDimensionShopPage.attribution
             }
         }
         return eventMap
@@ -55,16 +64,15 @@ open class OldShopPageTrackingUser(
         eventMap: HashMap<String?, Any?>,
         customDimensionShopPage: CustomDimensionShopPage
     ) {
-        eventMap[OldShopPageTrackingConstant.SHOP_ID] = customDimensionShopPage.shopId
-        eventMap[OldShopPageTrackingConstant.SHOP_TYPE] = customDimensionShopPage.shopType
-        eventMap[OldShopPageTrackingConstant.PAGE_TYPE] = SHOPPAGE
+        eventMap[ITEMS_SHOP_ID] = customDimensionShopPage.shopId
+        eventMap[ITEMS_SHOP_TYPE] = customDimensionShopPage.shopType
+        eventMap[ITEMS_PAGE_TYPE] = ShopPageTracking.SHOPPAGE
     }
 
 
 
 
     companion object {
-        const val SHOPPAGE = "/shoppage"
         const val SHOP_PAGE = "Shop page"
     }
 }
