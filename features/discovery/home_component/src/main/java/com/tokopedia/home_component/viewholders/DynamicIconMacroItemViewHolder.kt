@@ -9,14 +9,13 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.listener.DynamicIconComponentListener
 import com.tokopedia.home_component.model.DynamicIconComponent
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
@@ -30,8 +29,9 @@ class DynamicIconMacroItemViewHolder(
 ) : RecyclerView.ViewHolder(itemView) {
     var iconTvName: Typography? = null
     var iconImageView: ImageUnify? = null
-    var iconContainer: CardUnify2? = null
-    var iconContainerImage: CardUnify2? = null
+    var iconContainer: LinearLayout? = null
+
+//    var iconContainerImage: CardUnify2? = null
     val longPressHandler = Handler()
     private var isLongPress = false
     private var scaleAnimator = ValueAnimator.ofFloat()
@@ -50,8 +50,12 @@ class DynamicIconMacroItemViewHolder(
 
     fun View.performTouchDown() = dispatchTouchEvent(
         MotionEvent.obtain(
-            SystemClock.uptimeMillis(), SystemClock.uptimeMillis() + 700,
-            MotionEvent.ACTION_DOWN, 0f, 0f, 0
+            SystemClock.uptimeMillis(),
+            SystemClock.uptimeMillis() + 700,
+            MotionEvent.ACTION_DOWN,
+            0f,
+            0f,
+            0
         )
     )
 
@@ -66,8 +70,8 @@ class DynamicIconMacroItemViewHolder(
         scaleAnimator.removeAllListeners()
         scaleAnimator.removeAllUpdateListeners()
         scaleAnimator.addUpdateListener {
-            iconContainerImage?.scaleX = it.animatedValue as Float
-            iconContainerImage?.scaleY = it.animatedValue as Float
+            iconImageView?.scaleX = it.animatedValue as Float
+            iconImageView?.scaleY = it.animatedValue as Float
         }
         scaleAnimator.duration = duration
         scaleAnimator.interpolator = interpolator
@@ -92,20 +96,20 @@ class DynamicIconMacroItemViewHolder(
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
         iconTvName?.minLines = 2
-        iconContainer?.cardType = CardUnify2.TYPE_CLEAR
-        iconContainer?.animateOnPress = CardUnify2.ANIMATE_OVERLAY
-        iconContainerImage?.cardType = CardUnify2.TYPE_CLEAR
+//        iconContainer?.cardType = CardUnify2.TYPE_CLEAR
+//        iconContainer?.animateOnPress = CardUnify2.ANIMATE_OVERLAY
+//        iconContainerImage?.cardType = CardUnify2.TYPE_CLEAR
 
-        iconContainer?.setCardUnifyBackgroundColor(
-            ContextCompat.getColor(
-                itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Background
-            )
-        )
+//        iconContainer?.setCardUnifyBackgroundColor(
+//            ContextCompat.getColor(
+//                itemView.context,
+//                com.tokopedia.unifyprinciples.R.color.Unify_Background
+//            )
+//        )
 
 //            iconContainerImage?.animateOnPress = CardUnify2.ANIMATE_BOUNCE
         iconContainer?.setOnTouchListener { view, event ->
-            iconContainerImage?.performTouchDown()
+            iconImageView?.performTouchDown()
 
             when (event?.action) {
                 MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
@@ -164,12 +168,12 @@ class DynamicIconMacroItemViewHolder(
             listener.onClickIcon(item, parentPosition, adapterPosition, type)
         }
 
-        iconContainer?.setCardBackgroundColor(
-            ContextCompat.getColor(
-                itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Background
-            )
-        )
+//        iconContainer?.setCardBackgroundColor(
+//            ContextCompat.getColor(
+//                itemView.context,
+//                com.tokopedia.unifyprinciples.R.color.Unify_Background
+//            )
+//        )
 
         if (!isCache) {
             itemView.addOnImpressionListener(item) {
@@ -184,4 +188,3 @@ class DynamicIconMacroItemViewHolder(
         }
     }
 }
-

@@ -1,16 +1,8 @@
 package com.tokopedia.home_component.viewholders
 
-import android.animation.Animator
-import android.animation.TimeInterpolator
-import android.animation.ValueAnimator
-import android.graphics.Paint
-import android.os.Handler
-import android.os.SystemClock.uptimeMillis
 import android.view.*
-import android.view.MotionEvent.ACTION_DOWN
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,10 +16,8 @@ import com.tokopedia.home_component.model.DynamicIconComponent
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -37,15 +27,16 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
     AbstractViewHolder<DynamicIconComponentDataModel>(itemView) {
 
     private var binding: HomeComponentDynamicIconBinding? by viewBinding()
-    private var isUsingMacroInteraction : Boolean = false
+    private var isUsingMacroInteraction: Boolean = false
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_dynamic_icon
-        private const val SCROLLABLE_ITEM = 5
+        const val SCROLLABLE_ITEM = 5
     }
 
     private val adapter = DynamicIconAdapter(listener)
+    private val adapterMacro = DynamicIconMacroAdapter(listener)
     private var iconRecyclerView: RecyclerView? = null
 
     override fun bind(element: DynamicIconComponentDataModel) {
@@ -61,6 +52,9 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
             adapter.submitList(element)
             adapter.updatePosition(adapterPosition)
             adapter.setType(element.type)
+            adapterMacro.submitList(element)
+            adapterMacro.updatePosition(adapterPosition)
+            adapterMacro.setType(element.type)
             if (iconRecyclerView?.itemDecorationCount == 0) {
                 iconRecyclerView?.addItemDecoration(
                     CommonSpacingDecoration(
@@ -68,7 +62,7 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
                     )
                 )
             }
-            iconRecyclerView?.adapter = adapter
+            iconRecyclerView?.adapter = if (isUsingMacroInteraction) adapterMacro else adapter
             setupLayoutManager(
                 isScrollItem = icons.size > SCROLLABLE_ITEM,
                 spanCount = icons.size
@@ -99,14 +93,22 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         }
     }
 
-    internal inner class DynamicIconAdapter (private val listener: DynamicIconComponentListener) : RecyclerView.Adapter<DynamicIconItemViewHolder>() {
+    internal inner class DynamicIconAdapter(private val listener: DynamicIconComponentListener) : RecyclerView.Adapter<DynamicIconItemViewHolder>() {
         private val categoryList = mutableListOf<DynamicIconComponent.DynamicIcon>()
         private var position: Int = 0
         private var type: Int = 1
         private var isCache: Boolean = false
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicIconItemViewHolder {
-            return DynamicIconItemViewHolder(LayoutInflater.from(parent.context).inflate(if (isUsingMacroInteraction) DynamicIconMacroItemViewHolder.LAYOUT else DynamicIconItemViewHolder.LAYOUT, parent, false), listener)
+            return DynamicIconItemViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    if (isUsingMacroInteraction) DynamicIconItemViewHolder.LAYOUT else DynamicIconItemViewHolder.LAYOUT_EXPERIMENT,
+                    parent,
+                    false
+                ),
+                listener,
+                isUsingMacroInteraction
+            )
         }
 
         override fun onBindViewHolder(holder: DynamicIconItemViewHolder, position: Int) {
@@ -117,31 +119,32 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
             return categoryList.size
         }
 
-        fun setType(type: Int){
+        fun setType(type: Int) {
             this.type = type
         }
 
-        fun updatePosition(position: Int){
+        fun updatePosition(position: Int) {
             this.position = position
         }
 
-        fun submitList(list: DynamicIconComponentDataModel){
+        fun submitList(list: DynamicIconComponentDataModel) {
             categoryList.clear()
             categoryList.addAll(list.dynamicIconComponent.dynamicIcon)
             this.isCache = list.isCache
         }
     }
 
-    internal class DynamicIconItemViewHolder(itemView: View, private val listener: DynamicIconComponentListener): RecyclerView.ViewHolder(itemView){
+    internal class DynamicIconItemViewHolder(itemView: View, private val listener: DynamicIconComponentListener, private val isUsingMicroInteraction: Boolean) : RecyclerView.ViewHolder(itemView) {
         var iconTvName: Typography? = null
         var iconImageView: ImageUnify? = null
         var iconContainer: LinearLayout? = null
-        companion object{
+        companion object {
             @LayoutRes
             val LAYOUT = R.layout.home_component_dynamic_icon_item
+            val LAYOUT_EXPERIMENT = R.layout.home_component_dynamic_icon_item_interaction
         }
 
-        fun bind(item: DynamicIconComponent.DynamicIcon, isScrollable: Boolean, parentPosition: Int, type: Int, isCache: Boolean){
+        fun bind(item: DynamicIconComponent.DynamicIcon, isScrollable: Boolean, parentPosition: Int, type: Int, isCache: Boolean) {
             iconTvName = itemView.findViewById(R.id.dynamic_icon_typography)
             iconImageView = itemView.findViewById(R.id.dynamic_icon_image_view)
             iconContainer = itemView.findViewById(R.id.dynamic_icon_container)
@@ -149,26 +152,25 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
             iconTvName?.text = item.name
             iconImageView?.setImageUrl(item.imageUrl)
             iconContainer?.layoutParams = ViewGroup.LayoutParams(
-                    if(isScrollable) ViewGroup.LayoutParams.WRAP_CONTENT else ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
+                if (isScrollable) ViewGroup.LayoutParams.WRAP_CONTENT else ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            iconTvName?.maxLines = if(item.withBackground) 2 else 1
+            iconTvName?.maxLines = if (item.withBackground) 2 else 1
             itemView.setOnClickListener {
-                listener.onClickIcon(item, parentPosition,adapterPosition, type)
+                listener.onClickIcon(item, parentPosition, adapterPosition, type)
             }
 
             if (!isCache) {
                 itemView.addOnImpressionListener(item) {
                     listener.onImpressIcon(
-                            dynamicIcon = item,
-                            iconPosition = adapterPosition,
-                            parentPosition = parentPosition,
-                            type = type,
-                            view = itemView
+                        dynamicIcon = item,
+                        iconPosition = adapterPosition,
+                        parentPosition = parentPosition,
+                        type = type,
+                        view = itemView
                     )
                 }
             }
         }
     }
-
 }
