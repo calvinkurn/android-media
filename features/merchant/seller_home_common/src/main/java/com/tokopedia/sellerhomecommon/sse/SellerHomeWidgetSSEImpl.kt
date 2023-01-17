@@ -4,6 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticsdebugger.debugger.SSELogger
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.network.NetworkRouter
+import com.tokopedia.network.interceptor.TkpdAuthenticator
 import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
 import com.tokopedia.sellerhomecommon.sse.mapper.WidgetSSEMapper
 import com.tokopedia.sellerhomecommon.sse.model.WidgetSSEModel
@@ -11,6 +13,7 @@ import com.tokopedia.sse.OkSse
 import com.tokopedia.sse.ServerSentEvent
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,8 +21,10 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by @ilhamsuaib on 10/10/22.
@@ -39,8 +44,11 @@ class SellerHomeWidgetSSEImpl(
         private const val HEADER_X_DEVICE = "X-Device"
         private const val BEARER = "Bearer %s"
         private const val ANDROID_VERSION = "android-%s"
-        private const val SSE_STAGING_URL = "https://sse-staging.tokopedia.com/seller-dashboard/sse/datakeys?page=%s&datakeys=%s"
-        private const val SSE_PRODUCTION_URL = "https://sse.tokopedia.com/seller-dashboard/sse/datakeys?page=%s&datakeys=%s"
+        private const val SSE_STAGING_URL =
+            "https://sse-staging.tokopedia.com/seller-dashboard/sse/datakeys?page=%s&datakeys=%s"
+        private const val SSE_PRODUCTION_URL =
+            "https://sse.tokopedia.com/seller-dashboard/sse/datakeys?page=%s&datakeys=%s"
+        private const val READ_TIME_OUT = 0L
     }
 
     private var sse: ServerSentEvent? = null
@@ -62,7 +70,9 @@ class SellerHomeWidgetSSEImpl(
 
         closeSse()
         printLog("SSE Connecting...$url")
-        sse = OkSse().newServerSentEvent(request, getSseEventListener(request))
+
+        val okHttpClient = getOkHttpClient()
+        sse = OkSse(okHttpClient).newServerSentEvent(request, getSseEventListener(request))
     }
 
     override fun closeSse() {
@@ -76,6 +86,25 @@ class SellerHomeWidgetSSEImpl(
             .map {
                 widgetSseMapper.mappingWidget(it.event, it.message)
             }
+    }
+
+    private fun getOkHttpClient(): OkHttpClient {
+        val authenticator = getAuthenticator()
+        val builder = OkHttpClient.Builder()
+            .readTimeout(READ_TIME_OUT, TimeUnit.SECONDS)
+            .retryOnConnectionFailure(true)
+        if (authenticator != null) {
+            builder.authenticator(authenticator)
+        }
+        return builder.build()
+    }
+
+    private fun getAuthenticator(): TkpdAuthenticator? {
+        return try {
+            TkpdAuthenticator(context, context as NetworkRouter, userSession as UserSession)
+        } catch (e: ClassCastException) {
+            null
+        }
     }
 
     private fun getBaseSseUrl(): String {
