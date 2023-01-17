@@ -2778,7 +2778,7 @@ class PlayViewModel @AssistedInject constructor(
                 it.copy(
                     widgets = newList.getChannelBlocks,
                     param = it.param.copy(cursor = widgets.getConfig.cursor),
-                    state = WidgetState.Success
+                    state = if(newList.isEmpty()) WidgetState.Empty else WidgetState.Success
                 )
             }
         }){
