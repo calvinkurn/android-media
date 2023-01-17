@@ -336,7 +336,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         runCollectingBulkReviewPageUiState {
             runCollectingBulkReviewBadRatingCategoryBottomSheetUiState { uiStates ->
                 val reviewItem = getFirstReviewItem()
-                val badRatingCategory = getFirstBadRatingCategory()
+                val badRatingCategory = getBadRatingCategory()
                 val initialRating = 2
                 val newRating = 1
 
@@ -367,7 +367,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
     fun `onRatingChanged should hide bad rating category widget when changing rating to good rating`() =
         runCollectingBulkReviewPageUiState { uiStates ->
             val reviewItem = getFirstReviewItem()
-            val badRatingCategory = getFirstBadRatingCategory()
+            val badRatingCategory = getBadRatingCategory()
             val initialRating = 2
             val newRating = 5
 
@@ -557,7 +557,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
     fun `onBadRatingCategorySelectionChanged should execute BulkWriteReviewTracker#trackReviewItemBadRatingCategorySelected once when selected is true`() =
         runCollectingBulkReviewPageUiState {
             val reviewItem = getFirstReviewItem()
-            val badRatingCategory = getFirstBadRatingCategory()
+            val badRatingCategory = getBadRatingCategory()
 
             doSuccessGetInitialData()
 
@@ -587,7 +587,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
     fun `onBadRatingCategorySelectionChanged should not execute BulkWriteReviewTracker#trackReviewItemBadRatingCategorySelected when selected is false`() =
         runCollectingBulkReviewPageUiState {
             val reviewItem = getFirstReviewItem()
-            val badRatingCategory = getFirstBadRatingCategory()
+            val badRatingCategory = getBadRatingCategory()
 
             doSuccessGetInitialData()
 
@@ -618,7 +618,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         runCollectingBulkReviewPageUiState {
             runCollectingBulkReviewBadRatingCategoryBottomSheetUiState { uiStates ->
                 val reviewItem = getFirstReviewItem()
-                val badRatingCategory = getFirstBadRatingCategory()
+                val badRatingCategory = getBadRatingCategory()
 
                 doSuccessGetInitialData()
 
@@ -702,7 +702,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             runCollectingBulkReviewBadRatingCategoryBottomSheetUiState {
                 runCollectingBulkReviewExpandedTextAreaBottomSheetUiState { uiStates ->
                     val reviewItem = getFirstReviewItem()
-                    val badRatingCategory = getFirstBadRatingCategory()
+                    val badRatingCategory = getBadRatingCategory()
 
                     doSuccessGetInitialData()
 
@@ -764,7 +764,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
     fun `onApplyBadRatingCategory should apply bad rating category to the review item`() =
         runCollectingBulkReviewPageUiState { uiStates ->
             val reviewItem = getFirstReviewItem()
-            val badRatingCategory = getFirstBadRatingCategory()
+            val badRatingCategory = getBadRatingCategory()
 
             doSuccessGetInitialData()
             // change rating to bad rating to show the bad rating category bottom sheet
@@ -796,7 +796,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         runCollectingBulkReviewPageUiState {
             runCollectingBulkReviewBadRatingCategoryBottomSheetUiState { uiStates ->
                 val reviewItem = getFirstReviewItem()
-                val badRatingCategory = getFirstBadRatingCategory()
+                val badRatingCategory = getBadRatingCategory()
 
                 doSuccessGetInitialData()
                 // change rating to bad rating to show the bad rating category bottom sheet
@@ -815,11 +815,56 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         }
 
     @Test
+    fun `onApplyBadRatingCategory should keep previously selected bad rating category`() =
+        runCollectingBulkReviewPageUiState { uiStates ->
+            runCollectingBulkReviewBadRatingCategoryBottomSheetUiState {
+                val reviewItem = getFirstReviewItem()
+                val firstBadRatingCategoryToSelect = getBadRatingCategory()
+                val secondBadRatingCategoryToSelect = getBadRatingCategory(Int.ONE)
+
+                doSuccessGetInitialData()
+                // change rating to bad rating to show the bad rating category bottom sheet
+                viewModel.onRatingChanged(reviewItem.inboxID, 2)
+                viewModel.onBadRatingCategorySelectionChanged(
+                    position = Int.ZERO,
+                    badRatingCategoryID = firstBadRatingCategoryToSelect.id,
+                    reason = firstBadRatingCategoryToSelect.description,
+                    selected = true
+                )
+                viewModel.onApplyBadRatingCategory()
+                assertEquals(
+                    listOf(firstBadRatingCategoryToSelect.id),
+                    (uiStates.last() as BulkReviewPageUiState.Showing)
+                        .items
+                        .filterIsInstance<BulkReviewItemUiModel>()
+                        .first { it.inboxID == reviewItem.inboxID }
+                        .getReviewItemSelectedBadRatingCategoryIds()
+                )
+                viewModel.onChangeBadRatingCategory(reviewItem.inboxID)
+                viewModel.onBadRatingCategorySelectionChanged(
+                    position = Int.ONE,
+                    badRatingCategoryID = secondBadRatingCategoryToSelect.id,
+                    reason = secondBadRatingCategoryToSelect.description,
+                    selected = true
+                )
+                viewModel.onApplyBadRatingCategory()
+                assertEquals(
+                    listOf(firstBadRatingCategoryToSelect.id, secondBadRatingCategoryToSelect.id),
+                    (uiStates.last() as BulkReviewPageUiState.Showing)
+                        .items
+                        .filterIsInstance<BulkReviewItemUiModel>()
+                        .first { it.inboxID == reviewItem.inboxID }
+                        .getReviewItemSelectedBadRatingCategoryIds()
+                )
+            }
+        }
+
+    @Test
     fun `onChangeBadRatingCategory should show bad rating category bottom sheet`() =
         runCollectingBulkReviewPageUiState {
             runCollectingBulkReviewBadRatingCategoryBottomSheetUiState { uiStates ->
                 val reviewItem = getFirstReviewItem()
-                val badRatingCategory = getFirstBadRatingCategory()
+                val badRatingCategory = getBadRatingCategory()
 
                 doSuccessGetInitialData()
                 // change rating to bad rating to show the bad rating category bottom sheet
@@ -1491,6 +1536,39 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         }
 
     @Test
+    fun `onRetryUploadClicked should increase upload batch number by one each time`() =
+        runCollectingBulkReviewPageUiState { uiStates ->
+            runCollectingBulkReviewPageToasterQueue {
+                val reviewItem = getFirstReviewItem()
+                var previousUploadBatchNumber = Int.ZERO
+                var passed = false
+
+                mockErrorUploadMedia()
+                doSuccessGetInitialData()
+
+                viewModel.getAndUpdateActiveMediaPickerInboxID(reviewItem.inboxID)
+                viewModel.onReceiveMediaPickerResult(listOf("1.mp4", "2.jpg", "3.jpg", "4.jpg", "5.jpg"))
+
+                mockErrorUploadMedia {
+                    (uiStates.last() as BulkReviewPageUiState.Showing)
+                        .items
+                        .filterIsInstance<BulkReviewItemUiModel>()
+                        .first { it.inboxID == reviewItem.inboxID }
+                        .uiState
+                        .mediaPickerUiState.let { mediaPickerUiState ->
+                            val currentUploadBatchNumber = (mediaPickerUiState as CreateReviewMediaPickerUiState.Uploading).currentUploadBatchNumber
+                            passed = (currentUploadBatchNumber - previousUploadBatchNumber) == Int.ONE
+                        }
+                }
+
+                viewModel.onRetryUploadClicked(reviewItem.inboxID)
+                previousUploadBatchNumber = Int.ONE
+                viewModel.onRetryUploadClicked(reviewItem.inboxID)
+                assertTrue(passed)
+            }
+        }
+
+    @Test
     fun `onRemoveMedia should remove review item media item`() =
         runCollectingBulkReviewPageUiState { uiStates ->
             val reviewItem = getFirstReviewItem()
@@ -1637,7 +1715,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
     fun `onSubmitReviews should execute submitUseCase exactly once`() =
         runCollectingBulkReviewPageUiState {
             val reviewItem = getFirstReviewItem()
-            val badRatingCategory = getFirstBadRatingCategory()
+            val badRatingCategory = getBadRatingCategory()
 
             mockSuccessUploadMedia()
             mockAllSuccessSubmitBulkReview()
@@ -1662,7 +1740,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
     fun `onSubmitReviews should change ui state to Submitted when submitUseCase return all success`() =
         runCollectingBulkReviewPageUiState { uiStates ->
             val reviewItem = getFirstReviewItem()
-            val badRatingCategory = getFirstBadRatingCategory()
+            val badRatingCategory = getBadRatingCategory()
 
             mockSuccessUploadMedia()
             mockAllSuccessSubmitBulkReview()
@@ -1687,7 +1765,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
     fun `onSubmitReviews should change ui state to Showing when submitUseCase return partial success`() =
         runCollectingBulkReviewPageUiState { uiStates ->
             val reviewItem = getFirstReviewItem()
-            val badRatingCategory = getFirstBadRatingCategory()
+            val badRatingCategory = getBadRatingCategory()
 
             mockSuccessUploadMedia()
             mockPartialSuccessSubmitBulkReview()
@@ -1712,7 +1790,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
     fun `onSubmitReviews should change ui state to Showing when submitUseCase return error`() =
         runCollectingBulkReviewPageUiState { uiStates ->
             val reviewItem = getFirstReviewItem()
-            val badRatingCategory = getFirstBadRatingCategory()
+            val badRatingCategory = getBadRatingCategory()
 
             mockSuccessUploadMedia()
             mockErrorSubmitBulkReview()
@@ -2116,7 +2194,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         runCollectingBulkReviewPageUiState {
             runCollectingBulkReviewBadRatingCategoryBottomSheetUiState {
                 val reviewItem = getFirstReviewItem()
-                val badRatingCategory = getFirstBadRatingCategory()
+                val badRatingCategory = getBadRatingCategory()
 
                 doSuccessGetInitialData()
                 viewModel.onRatingChanged(reviewItem.inboxID, 2)

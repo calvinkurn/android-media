@@ -831,9 +831,6 @@ class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listen
     }
 
     private inner class BadRatingCategoryBottomSheetListener : BulkReviewBadRatingCategoryBottomSheet.Listener {
-        override fun onDismiss() {
-            viewModel.onDismissBadRatingCategoryBottomSheet()
-        }
 
         override fun onApplyBadRatingCategory() {
             viewModel.onApplyBadRatingCategory()

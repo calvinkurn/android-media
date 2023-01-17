@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.utils.ErrorHandler
@@ -221,8 +222,13 @@ abstract class BulkReviewViewModelTestFixture {
         }
     }
 
-    protected fun mockErrorUploadMedia() {
-        coEvery { uploaderUseCase(any()) } returns UploadResult.Error("")
+    protected fun mockErrorUploadMedia(
+        actionBeforeReturnError: () -> Unit = {}
+    ) {
+        coEvery { uploaderUseCase(any()) } answers {
+            actionBeforeReturnError()
+            UploadResult.Error("")
+        }
     }
 
     protected fun mockAllSuccessSubmitBulkReview(
@@ -526,11 +532,10 @@ abstract class BulkReviewViewModelTestFixture {
         return getFormUseCaseResultSuccess.reviewForm.first()
     }
 
-    protected fun getFirstBadRatingCategory(): BadRatingCategory {
+    protected fun getBadRatingCategory(index: Int = Int.ZERO): BadRatingCategory {
         return getBadRatingCategoryUseCaseResultSuccessNonEmpty
             .productrevGetBadRatingCategory
-            .list
-            .first()
+            .list[index]
     }
 
     protected fun getOtherBadRatingCategory(): BadRatingCategory {

@@ -343,7 +343,7 @@ class BulkReviewViewModel @Inject constructor(
     }
 
     fun onRatingSet(inboxID: String) {
-        reviewItemsRating.getAndUpdate {
+        reviewItemsRating.update {
             it.toMutableList().apply {
                 find { reviewItemRating ->
                     reviewItemRating.inboxID == inboxID
@@ -363,10 +363,6 @@ class BulkReviewViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    fun onDismissBadRatingCategoryBottomSheet() {
-        dismissBadRatingCategoryBottomSheet()
     }
 
     fun onDismissExpandedTextAreaBottomSheet(text: String) {

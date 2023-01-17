@@ -82,7 +82,6 @@ class BulkReviewBadRatingCategoryBottomSheet :
     fun setListener(newListener: Listener) {
         listener = newListener
         setupListener()
-        setOnDismissListener { listener?.onDismiss() }
     }
 
     private fun setupRecyclerView() {
@@ -101,7 +100,6 @@ class BulkReviewBadRatingCategoryBottomSheet :
     }
 
     interface Listener {
-        fun onDismiss()
         fun onApplyBadRatingCategory()
         fun onBadRatingCategorySelected(position: Int, badRatingCategoryID: String, reason: String)
         fun onBadRatingCategoryUnselected(position: Int, badRatingCategoryID: String, reason: String)
