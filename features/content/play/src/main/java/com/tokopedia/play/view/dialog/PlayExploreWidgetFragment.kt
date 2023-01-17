@@ -41,6 +41,7 @@ import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
+import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import com.tokopedia.play.R as playR
@@ -208,7 +209,7 @@ class PlayExploreWidgetFragment @Inject constructor(
                 widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
             }
             is ResultState.Fail -> {
-                val errMessage = if (state.error is MessageErrorException) getString(playR.string.play_explore_widget_noconn_errmessage) else getString(playR.string.play_explore_widget_default_errmessage)
+                val errMessage = if (state.error is UnknownHostException) getString(playR.string.play_explore_widget_noconn_errmessage) else getString(playR.string.play_explore_widget_default_errmessage)
                 Toaster.build(
                     view = requireView(),
                     text = errMessage,
