@@ -1489,6 +1489,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.AR_BUTTON })
     }
 
+    // region variant
     /**
      *  Variant Section
      */
@@ -1751,11 +1752,40 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
+    fun `variant level one is empty when select variant two on thumbnail changes2`() {
+        val categoryKeyLvl1 = "28323838"
+        val categoryKeyLvl2 = "28323839"
+        val singleVariant = ProductSingleVariantDataModel(
+            mapOfSelectedVariant = mutableMapOf(
+                categoryKeyLvl1 to "94748049",
+                categoryKeyLvl2 to "94748052"
+            )
+        )
+
+        `on success get pdp layout mini variants options`()
+
+        // give empty variant data to be expected
+        viewModel.variantData = null
+
+        viewModel.onThumbnailVariantSelected(
+            uiData = singleVariant,
+            variantId = "",
+            categoryKey = ""
+        )
+
+        try {
+            viewModel.onThumbnailVariantSelectedData.getOrAwaitValue()
+        } catch (e: Throwable) {
+            Assert.assertTrue(e is TimeoutException)
+        }
+    }
+
+    @Test
     fun `no impact when select variant thumbnail with ui-data is null `() {
         val expectSelected = "94748050"
         val expectCategory = "28323838"
         `on success get pdp layout mini variants options`()
-        viewModel.variantData = null
+
         viewModel.onThumbnailVariantSelected(
             uiData = null,
             variantId = expectSelected,
@@ -1799,6 +1829,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         `co verify p1 success`()
     }
 
+    //endregion variant
     /**
      * Hit Affiliate, most of it do no op call
      */

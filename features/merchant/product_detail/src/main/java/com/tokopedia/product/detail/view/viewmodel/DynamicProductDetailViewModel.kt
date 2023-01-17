@@ -1353,7 +1353,8 @@ open class DynamicProductDetailViewModel @Inject constructor(
         variantId: String,
         categoryKey: String
     ) {
-        val variantSelected = uiData?.mapOfSelectedVariant.orEmpty()
+        val singleVariant = uiData ?: return
+        val variantSelected = singleVariant.mapOfSelectedVariant
         val variantDataNonNull = variantData ?: ProductVariant()
         val variants = selectVariantTwoOnThumbnailVariantSelected(
             productVariant = variantDataNonNull,
@@ -1366,9 +1367,9 @@ open class DynamicProductDetailViewModel @Inject constructor(
             variantDataNonNull
         )
 
-        if (variantLevelOneUpdated != null && uiData != null) {
+        if (variantLevelOneUpdated != null) {
             _onThumbnailVariantSelectedData.postValue(
-                uiData.copy(
+                singleVariant.copy(
                     mapOfSelectedVariant = variants,
                     variantLevelOne = variantLevelOneUpdated
                 )
