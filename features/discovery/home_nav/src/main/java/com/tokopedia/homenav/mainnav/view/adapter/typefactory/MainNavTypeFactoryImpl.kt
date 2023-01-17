@@ -4,17 +4,15 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.homenav.base.diffutil.HomeNavTypeFactory
 import com.tokopedia.homenav.base.datamodel.HomeNavGlobalErrorDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
-import com.tokopedia.homenav.base.datamodel.HomeNavExpandableDataModel
-import com.tokopedia.homenav.base.diffutil.holder.HomeNavExpandableViewHolder
-import com.tokopedia.homenav.base.diffutil.holder.HomeNavMenuViewHolder
-import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
+import com.tokopedia.homenav.base.diffutil.HomeNavTypeFactory
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavGlobalErrorViewHolder
+import com.tokopedia.homenav.base.diffutil.holder.HomeNavMenuViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavTickerViewHolder
+import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.*
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshop.ErrorFavoriteShopViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshop.FavoriteShopViewHolder
@@ -22,7 +20,6 @@ import com.tokopedia.homenav.mainnav.view.adapter.viewholder.review.ErrorReviewV
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.review.ReviewViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist.ErrorWishlistViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist.WishlistViewHolder
-import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ErrorStateFavoriteShopDataModel
@@ -34,13 +31,16 @@ import com.tokopedia.homenav.mainnav.view.datamodel.review.ShimmerReviewDataMode
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateWishlistDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ShimmerWishlistDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
+import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
 
-class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
-                             private val userSession: UserSessionInterface,
-                             private val tokopediaPlusListener: TokopediaPlusListener)
-    : HomeNavTypeFactory, MainNavTypeFactory {
+class MainNavTypeFactoryImpl(
+    private val mainNavListener: MainNavListener,
+    private val userSession: UserSessionInterface,
+    private val tokopediaPlusListener: TokopediaPlusListener
+) :
+    HomeNavTypeFactory, MainNavTypeFactory {
 
     override fun type(accountHeaderDataModel: AccountHeaderDataModel): Int {
         return AccountHeaderViewHolder.LAYOUT
@@ -130,10 +130,6 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
         return ErrorReviewViewHolder.LAYOUT
     }
 
-    override fun type(visitable: HomeNavExpandableDataModel): Int {
-        return HomeNavExpandableViewHolder.LAYOUT
-    }
-
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when (viewType) {
             HomeNavMenuViewHolder.LAYOUT -> HomeNavMenuViewHolder(view, mainNavListener)
@@ -154,9 +150,7 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
             ErrorFavoriteShopViewHolder.LAYOUT -> ErrorFavoriteShopViewHolder(view, mainNavListener)
             ReviewViewHolder.LAYOUT -> ReviewViewHolder(view, mainNavListener)
             ErrorReviewViewHolder.LAYOUT -> ErrorReviewViewHolder(view, mainNavListener)
-            HomeNavExpandableViewHolder.LAYOUT -> HomeNavExpandableViewHolder(view, mainNavListener, userSession, tokopediaPlusListener)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         } as AbstractViewHolder<Visitable<*>>
     }
-
 }
