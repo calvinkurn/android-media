@@ -199,16 +199,19 @@ class PlayExploreWidgetFragment @Inject constructor(
         }
     }
 
-    private fun renderWidgets(state: ResultState, widget: WidgetItemUiModel) {
+    private fun renderWidgets(state: WidgetState, widget: WidgetItemUiModel) {
         when (state) {
-            ResultState.Success -> {
-                showEmpty(widget.item.items.isEmpty())
+            WidgetState.Success -> {
+                showEmpty(false)
                 widgetAdapter.setItemsAndAnimateChanges(widget.item.items)
             }
-            ResultState.Loading -> {
+            WidgetState.Empty -> {
+                showEmpty(true)
+            }
+            WidgetState.Loading -> {
                 widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
             }
-            is ResultState.Fail -> {
+            is WidgetState.Fail -> {
                 val errMessage = if (state.error is UnknownHostException) getString(playR.string.play_explore_widget_noconn_errmessage) else getString(playR.string.play_explore_widget_default_errmessage)
                 Toaster.build(
                     view = requireView(),
