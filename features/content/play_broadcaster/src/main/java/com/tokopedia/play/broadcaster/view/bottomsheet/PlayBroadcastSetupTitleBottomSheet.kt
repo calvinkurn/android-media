@@ -6,19 +6,27 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroSetupTitleBinding
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import javax.inject.Inject
 
 /**
  * Created by fachrizalmrsln on 10/01/23
  */
-class PlayBroadcastSetupTitleBottomSheet : BottomSheetUnify() {
+class PlayBroadcastSetupTitleBottomSheet @Inject constructor(
+    private val viewModelFactory: ViewModelProvider.Factory,
+) : BottomSheetUnify() {
 
     private var _binding: BottomSheetPlayBroSetupTitleBinding? = null
     private val binding: BottomSheetPlayBroSetupTitleBinding
         get() = _binding!!
+
+    private val viewModel: PlayBroadcastPrepareViewModel by viewModels { viewModelFactory }
 
     private var mListener: Listener? = null
 
@@ -52,6 +60,7 @@ class PlayBroadcastSetupTitleBottomSheet : BottomSheetUnify() {
         setTitle(getString(R.string.play_bro_title_label_bottom_sheet))
 
         tvSetupTitleField.apply {
+            setCounter(viewModel.maxTitleChars)
             editText.setText(mTitle)
             editText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}

@@ -24,7 +24,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/btn_setup_title"
         app:unify_text_field_clearable="true"
-        app:unify_text_field_counter="38"
         app:unify_text_field_input_type="text"
         app:unify_text_field_label="@string/play_bro_title_form_hint_bottom_sheet"
         app:unify_text_field_label_static="false" />
