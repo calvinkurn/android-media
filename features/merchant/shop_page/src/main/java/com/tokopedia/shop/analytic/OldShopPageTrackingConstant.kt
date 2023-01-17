@@ -22,7 +22,4 @@ object OldShopPageTrackingConstant {
     const val NAME = "name"
     const val SHOP_TYPE = "shop_type"
     const val ALL_ETALASE = "Semua Etalase"
-
-    // SCREEN/PAGES
-    const val SCREEN_SHOP_PAGE = "Shop Page"
 }
