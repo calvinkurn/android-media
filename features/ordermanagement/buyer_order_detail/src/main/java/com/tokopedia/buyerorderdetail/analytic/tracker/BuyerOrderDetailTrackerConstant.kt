@@ -64,7 +64,6 @@ object BuyerOrderDetailTrackerConstant {
 
     // current site
     const val CURRENT_SITE_TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
-    const val CURRENT_SITE_MARKETPLACE = "Marketplace"
 
     // separator
     const val SEPARATOR_STRIP = " - "

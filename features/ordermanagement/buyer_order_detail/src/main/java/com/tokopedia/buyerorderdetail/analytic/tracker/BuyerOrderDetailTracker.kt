@@ -279,7 +279,7 @@ object BuyerOrderDetailTracker {
             eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_BUY_AGAIN,
             eventLabel = "${BuyerOrderDetailTrackerConstant.EVENT_LABEL_ATTEMPT_BUY_AGAIN} $orderId"
         ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
-            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_MARKETPLACE)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .appendUserId(userId)
             .sendGeneralEvent()
     }
@@ -299,7 +299,7 @@ object BuyerOrderDetailTracker {
             eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_BUY_AGAIN_SUCCESS,
             eventLabel = "${BuyerOrderDetailTrackerConstant.EVENT_LABEL_BUY_AGAIN_SUCCESS} $orderId"
         ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
-            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_MARKETPLACE)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .appendBuyAgainProductEE(products, atcResult, shopId, shopName, shopType)
             .appendProductIds(products)
             .appendUserId(userId)
@@ -329,7 +329,7 @@ object BuyerOrderDetailTracker {
             eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_INSURANCE_WIDGET,
             eventLabel = "${trackerData.orderStatusCode}${BuyerOrderDetailTrackerConstant.SEPARATOR_STRIP}${trackerData.orderId}"
         ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
-            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_MARKETPLACE)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_CLICK_INSURANCE_WIDGET)
             .sendGeneralEvent()
     }
