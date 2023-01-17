@@ -254,9 +254,13 @@ class MainNavViewModel @Inject constructor(
         launch {
             if (useCacheData) {
                 onlyForLoggedInUser { getProfileDataCached() }
-                getBuListMenuCached()
+                if (!isUsingMePageRollenceVariant()) {
+                    getBuListMenuCached()
+                }
             } else {
-                getBuListMenu()
+                if (!isUsingMePageRollenceVariant()) {
+                    getBuListMenu()
+                }
             }
             // update cached data with cloud data
             onlyForLoggedInUser { getNotification() }
@@ -322,6 +326,13 @@ class MainNavViewModel @Inject constructor(
                     addWidgetList(result, it)
                 }
             } catch (e: Exception) { }
+            if (!isUsingMePageRollenceVariant()) {
+                val shimmeringDataModel = _mainNavListVisitable.find {
+                    it is InitialShimmerDataModel
+                }
+                shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
+            }
+            getBuListMenu()
         }
     }
 
@@ -345,17 +356,25 @@ class MainNavViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
+                // if bu cache is already exist in list
+                // then error state is not needed
+                val isBuExist = findExistingEndBuIndexPosition()
+                if (isBuExist == null) {
+                    findBuStartIndexPosition()?.let {
+                        updateWidget(ErrorStateBuDataModel(), it)
+                    }
+                }
+
                 val buShimmering = _mainNavListVisitable.find {
                     it is InitialShimmerDataModel
                 }
                 buShimmering?.let {
-                    if (allCategoriesCache.isNotEmpty()) {
-                        addWidgetList(allCategoriesCache, _mainNavListVisitable.indexOf(it))
-                        deleteWidget(buShimmering)
-                    } else {
-                        updateWidget(ErrorStateBuDataModel(), _mainNavListVisitable.indexOf(it))
-                    }
+                    updateWidget(
+                        ErrorStateBuDataModel(),
+                        _mainNavListVisitable.indexOf(it)
+                    )
                 }
+                e.printStackTrace()
             }
         }
     }
@@ -424,10 +443,8 @@ class MainNavViewModel @Inject constructor(
 
     fun refreshBuListData() {
         launchCatchError(coroutineContext, block = {
-            if (!isUsingMePageRollenceVariant()) {
-                findBuStartIndexPosition()?.let {
-                    updateWidget(InitialShimmerDataModel(), it)
-                }
+            findBuStartIndexPosition()?.let {
+                updateWidget(InitialShimmerDataModel(), it)
             }
             getBuListMenu()
         }) {
