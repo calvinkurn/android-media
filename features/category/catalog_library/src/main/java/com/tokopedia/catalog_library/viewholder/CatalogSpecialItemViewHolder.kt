@@ -10,28 +10,38 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class CatalogSpecialItemViewHolder(val view: View, private val catalogLibraryListener: CatalogLibraryListener) : AbstractViewHolder<CatalogSpecialDataModel>(view) {
+class CatalogSpecialItemViewHolder(
+    val view: View,
+    private val catalogLibraryListener: CatalogLibraryListener
+) : AbstractViewHolder<CatalogSpecialDataModel>(view) {
 
-    private val specialImage = view.findViewById<ImageUnify>(R.id.special_icon)
-    private val specialTitle = view.findViewById<Typography>(R.id.special_title)
-    private val specialLayout = view.findViewById<CardUnify2>(R.id.img_card)
+    private val specialImage: ImageUnify by lazy(LazyThreadSafetyMode.NONE) {
+        view.findViewById(R.id.special_icon)
+    }
+
+    private val specialTitle: Typography by lazy(LazyThreadSafetyMode.NONE) {
+        view.findViewById(R.id.special_title)
+    }
+
+    private val specialLayout: CardUnify2 by lazy(LazyThreadSafetyMode.NONE) {
+        view.findViewById(R.id.img_card)
+    }
 
     companion object {
         val LAYOUT = R.layout.item_catalog_special
     }
 
     override fun bind(element: CatalogSpecialDataModel?) {
-        element?.specialDataListItem?.iconUrl?.let { iconUrl ->
+        val specialDataListItem = element?.specialDataListItem
+        specialDataListItem?.iconUrl?.let { iconUrl ->
             specialImage.loadImage(iconUrl)
         }
-        specialTitle?.let {
-            it.text = element?.specialDataListItem?.name
-            it.setOnClickListener {
-                catalogLibraryListener.onCategoryItemClicked(element?.specialDataListItem?.categoryIdentifier)
-            }
+        specialTitle.text = specialDataListItem?.name ?: ""
+        specialTitle.setOnClickListener {
+            catalogLibraryListener.onCategoryItemClicked(specialDataListItem?.categoryIdentifier)
         }
         specialLayout.setOnClickListener {
-            catalogLibraryListener.onCategoryItemClicked(element?.specialDataListItem?.categoryIdentifier)
+            catalogLibraryListener.onCategoryItemClicked(specialDataListItem?.categoryIdentifier)
         }
     }
 }
