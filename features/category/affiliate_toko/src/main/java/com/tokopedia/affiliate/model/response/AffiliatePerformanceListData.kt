@@ -11,48 +11,52 @@ data class AffiliatePerformanceListData(
         var `data`: Data?
     ) {
         data class Data(
-                @SerializedName("Data")
+            @SerializedName("Data")
             var `data`: Data?,
-                @SerializedName("Error")
+            @SerializedName("Error")
             var error: Error?,
-                @SerializedName("Status")
+            @SerializedName("Status")
             var status: Int?
         ) {
             data class Data(
-                    @SerializedName("AffiliateID")
+                @SerializedName("AffiliateID")
                 var affiliateID: String?,
-                    @SerializedName("DayRange")
+                @SerializedName("DayRange")
                 var dayRange: String?,
-                    @SerializedName("EndTime")
+                @SerializedName("EndTime")
                 var endTime: String?,
-                    @SerializedName("ItemTotalCount")
+                @SerializedName("ItemTotalCount")
                 var itemTotalCount: Int?,
-                    @SerializedName("ItemTotalCountFmt")
+                @SerializedName("ItemTotalCountFmt")
                 var itemTotalCountFmt: String?,
-                    @SerializedName("LastID")
+                @SerializedName("LastID")
                 var lastID: String?,
-                    @SerializedName("Items")
+                @SerializedName("Items")
                 var items: List<Item?>?,
-                    @SerializedName("StartTime")
+                @SerializedName("StartTime")
                 var startTime: String?
             ) {
                 data class Item(
-                        @SerializedName("DefaultLinkURL")
+                    @SerializedName("DefaultLinkURL")
                     var defaultLinkURL: String?,
-                        @SerializedName("Image")
+                    @SerializedName("Image")
                     var image: Image?,
-                        @SerializedName("ItemID")
+                    @SerializedName("ItemID")
                     var itemID: String?,
-                        @SerializedName("LinkGeneratedAt")
+                    @SerializedName("LinkGeneratedAt")
                     var linkGeneratedAt: String?,
-                        @SerializedName("ItemTitle")
+                    @SerializedName("ItemTitle")
                     var itemTitle: String?,
-                        @SerializedName("ItemType")
+                    @SerializedName("ItemType")
                     var itemType: Int?,
-                        @SerializedName("Metrics")
+                    @SerializedName("Metrics")
                     var metrics: List<Metric?>?,
-                        @SerializedName("Status")
-                    var status: Int?
+                    @SerializedName("Status")
+                    var status: Int?,
+                    @SerializedName("SSAStatus")
+                    var ssaStatus: Boolean?,
+                    @SerializedName("Label")
+                    var ssaLabel: Label?
                 ) {
                     data class Image(
                         @SerializedName("AndroidURL")
@@ -81,17 +85,24 @@ data class AffiliatePerformanceListData(
                         @SerializedName("Order")
                         var order: Int?
                     )
+
+                    data class Label(
+                        @SerializedName("LabelType")
+                        var labelType: String?,
+                        @SerializedName("LabelText")
+                        var labelText: String?
+                    )
                 }
             }
 
             data class Error(
-                    @SerializedName("CtaLink")
+                @SerializedName("CtaLink")
                 var ctaLink: CtaLink?,
-                    @SerializedName("CtaText")
+                @SerializedName("CtaText")
                 var ctaText: String?,
-                    @SerializedName("ErrorType")
+                @SerializedName("ErrorType")
                 var errorType: Int?,
-                    @SerializedName("Message")
+                @SerializedName("Message")
                 var message: String?
             ) {
                 data class CtaLink(
