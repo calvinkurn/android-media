@@ -10,12 +10,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandler
+import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
@@ -25,10 +24,14 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TITLE_ERROR_SAVING_DRAFT
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddUploadTracking
+import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.FileOutputStream
+import java.net.URL
 
 /**
  * Created by faisalramd on 2020-04-05.
@@ -63,13 +66,16 @@ open class AddEditProductAddService : AddEditProductBaseService() {
 
         if (productInputModel.isDuplicate) {
             // re download product images + update new file path
-            downloadProductImages(productInputModel)
-//            // re download product variant images + update new file path
-//            val productVariantData = productInputModel.variantInputModel.products
-//            productInputModel.variantInputModel.products = reDownloadProductVariantImages(productVariantData)
-//            // re download product variant size chart + update new file path
-//            val variantSizeChart = productInputModel.variantInputModel.sizecharts
-//            reDownloadVariantSizeChart(variantSizeChart)
+            val productImageData = productInputModel.detailInputModel.pictureList
+            reDownloadProductImages(productImageData)
+            // re download product variant images + update new file path
+            val productVariantData = productInputModel.variantInputModel.products
+            reDownloadProductVariantImages(productVariantData)
+            // re download product variant size chart + update new file path
+            val variantSizeChart = productInputModel.variantInputModel.sizecharts
+            reDownloadVariantSizeChart(variantSizeChart)
+            // run the normal flows
+            saveProductToDraftAsync()
         } else {
             // (1)
             saveProductToDraftAsync()
@@ -203,19 +209,21 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         }
     }
 
-//    private fun downloadFile(url: String, path: String) {
-//        launchCatchError(block = {
-//            URL(url).openStream().use { input ->
-//                FileOutputStream(File(path), false).use { output ->
-//                    input.copyTo(output)
-//                }
-//            }
-//        }, onError = { throwable ->
-//                AddEditProductErrorHandler.logMessage(path)
-//                AddEditProductErrorHandler.logExceptionToCrashlytics(throwable)
-//                // TODO notify user about the error
-//            })
-//    }
+    private fun downloadFile(url: String, filename: String) {
+        launchCatchError(block = {
+            val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
+            var path = "$downloadsDir/$filename"
+            URL(url).openStream().use { input ->
+                FileOutputStream(File(path), false).use { output ->
+                    input.copyTo(output)
+                }
+            }
+        }, onError = { throwable ->
+                AddEditProductErrorHandler.logMessage(filename)
+                AddEditProductErrorHandler.logExceptionToCrashlytics(throwable)
+                // TODO notify user about the error
+            })
+    }
 
 //    private fun downloadFile(url: String, outputFileName: String) {
 //        launchCatchError(block = {
@@ -242,108 +250,108 @@ open class AddEditProductAddService : AddEditProductBaseService() {
 //            })
 //    }
 
-    private fun downloadProductImages(productData: ProductInputModel) {
-        val productImageData = productData.detailInputModel.pictureList
-        if (productImageData.isNullOrEmpty()) return
-        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-        val mutableData = productImageData.toMutableList()
-        var index = 0
+//    private fun downloadProductImages(productData: ProductInputModel) {
+//        val productImageData = productData.detailInputModel.pictureList
+//        if (productImageData.isNullOrEmpty()) return
+//        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
+//        val mutableData = productImageData.toMutableList()
+//        var index = 0
+//
+//        val downloadCompleteListener = object : DownloadHelper.DownloadHelperListener {
+//            override fun onDownloadComplete() {
+//                // update file path
+//                var data = mutableData.getOrNull(index)
+//                data?.run {
+//                    var path = downloadsDir + "/" + this.fileName
+//                    this.filePath = path
+//                }
+//                if (mutableData.lastIndex == index) {
+//                    productInputModel.detailInputModel.pictureList = mutableData.toList()
+//
+//                    // download variant images
+//                    downloadProductVariantImages(productInputModel)
+//                } else {
+//                    // download next image
+//                    try {
+//                        index += Int.ONE
+//                        var nextImage = mutableData.getOrNull(index)
+//                        nextImage?.let {
+//                            val helper = DownloadHelper(
+//                                context = this@AddEditProductAddService,
+//                                uri = it.urlOriginal,
+//                                filename = it.fileName,
+//                                listener = this
+//                            )
+//                            helper.downloadFile { true }
+//                        }
+//                    } catch (se: SecurityException) {
+//                        AddEditProductErrorHandler.logMessage(mutableData.first().fileName)
+//                        AddEditProductErrorHandler.logExceptionToCrashlytics(se)
+//                    } catch (iae: IllegalArgumentException) {
+//                        AddEditProductErrorHandler.logMessage(mutableData.first().fileName)
+//                        AddEditProductErrorHandler.logExceptionToCrashlytics(iae)
+//                    } catch (ex: Exception) {
+//                        AddEditProductErrorHandler.logMessage(mutableData.first().fileName)
+//                        AddEditProductErrorHandler.logExceptionToCrashlytics(ex)
+//                    }
+//                }
+//            }
+//        }
+//
+//        // Find the start index
+//        for (data in productImageData) {
+//            var loopIndex = productImageData.indexOf(data)
+//
+//            // check if file is already downloaded into downloads directory
+//            val imageFile = File(downloadsDir + "/" + data.fileName)
+//
+//            // all the images already exist in downloads dir
+//            if (loopIndex == productImageData.lastIndex && imageFile.isFile) {
+//                downloadProductVariantImages(productInputModel)
+//                break
+//            }
+//            if (!imageFile.isFile) {
+//                index = productImageData.indexOf(data)
+//                break
+//            }
+//        }
+//
+//        try {
+//            // initial download with the start index
+//            mutableData.getOrNull(index)?.let {
+//                val helper = DownloadHelper(
+//                    context = this@AddEditProductAddService,
+//                    uri = it.urlOriginal,
+//                    filename = it.fileName,
+//                    listener = downloadCompleteListener
+//                )
+//                helper.downloadFile { true }
+//            }
+//        } catch (se: SecurityException) {
+//            val fileName = mutableData.getOrNull(index)?.fileName.orEmpty()
+//            AddEditProductErrorHandler.logMessage(fileName)
+//            AddEditProductErrorHandler.logExceptionToCrashlytics(se)
+//        } catch (iae: IllegalArgumentException) {
+//            val fileName = mutableData.getOrNull(index)?.fileName.orEmpty()
+//            AddEditProductErrorHandler.logMessage(fileName)
+//            AddEditProductErrorHandler.logExceptionToCrashlytics(iae)
+//        } catch (ex: Exception) {
+//            val fileName = mutableData.getOrNull(index)?.fileName.orEmpty()
+//            AddEditProductErrorHandler.logMessage(fileName)
+//            AddEditProductErrorHandler.logExceptionToCrashlytics(ex)
+//        }
+//    }
 
-        val downloadCompleteListener = object : DownloadHelper.DownloadHelperListener {
-            override fun onDownloadComplete() {
-                // update file path
-                var data = mutableData.getOrNull(index)
-                data?.run {
-                    var path = downloadsDir + "/" + this.fileName
-                    this.filePath = path
-                }
-                if (mutableData.lastIndex == index) {
-                    productInputModel.detailInputModel.pictureList = mutableData.toList()
-
-                    // download variant images
-                    downloadProductVariantImages(productInputModel)
-                } else {
-                    // download next image
-                    try {
-                        index += Int.ONE
-                        var nextImage = mutableData.getOrNull(index)
-                        nextImage?.let {
-                            val helper = DownloadHelper(
-                                context = this@AddEditProductAddService,
-                                uri = it.urlOriginal,
-                                filename = it.fileName,
-                                listener = this
-                            )
-                            helper.downloadFile { true }
-                        }
-                    } catch (se: SecurityException) {
-                        AddEditProductErrorHandler.logMessage(mutableData.first().fileName)
-                        AddEditProductErrorHandler.logExceptionToCrashlytics(se)
-                    } catch (iae: IllegalArgumentException) {
-                        AddEditProductErrorHandler.logMessage(mutableData.first().fileName)
-                        AddEditProductErrorHandler.logExceptionToCrashlytics(iae)
-                    } catch (ex: Exception) {
-                        AddEditProductErrorHandler.logMessage(mutableData.first().fileName)
-                        AddEditProductErrorHandler.logExceptionToCrashlytics(ex)
-                    }
-                }
-            }
-        }
-
-        // Find the start index
-        for (data in productImageData) {
-            var loopIndex = productImageData.indexOf(data)
-
-            // check if file is already downloaded into downloads directory
-            val imageFile = File(downloadsDir + "/" + data.fileName)
-
-            // all the images already exist in downloads dir
-            if (loopIndex == productImageData.lastIndex && imageFile.isFile) {
-                downloadProductVariantImages(productInputModel)
-                break
-            }
-            if (!imageFile.isFile) {
-                index = productImageData.indexOf(data)
-                break
-            }
-        }
-
-        try {
-            // initial download with the start index
-            mutableData.getOrNull(index)?.let {
-                val helper = DownloadHelper(
-                    context = this@AddEditProductAddService,
-                    uri = it.urlOriginal,
-                    filename = it.fileName,
-                    listener = downloadCompleteListener
-                )
-                helper.downloadFile { true }
-            }
-        } catch (se: SecurityException) {
-            val fileName = mutableData.getOrNull(index)?.fileName.orEmpty()
-            AddEditProductErrorHandler.logMessage(fileName)
-            AddEditProductErrorHandler.logExceptionToCrashlytics(se)
-        } catch (iae: IllegalArgumentException) {
-            val fileName = mutableData.getOrNull(index)?.fileName.orEmpty()
-            AddEditProductErrorHandler.logMessage(fileName)
-            AddEditProductErrorHandler.logExceptionToCrashlytics(iae)
-        } catch (ex: Exception) {
-            val fileName = mutableData.getOrNull(index)?.fileName.orEmpty()
-            AddEditProductErrorHandler.logMessage(fileName)
-            AddEditProductErrorHandler.logExceptionToCrashlytics(ex)
-        }
-    }
-
-    private fun downloadProductVariantImages(productData: ProductInputModel) {
-        val productVariantData = productData.variantInputModel.products
-        if (productVariantData.isNullOrEmpty()) downloadVariantSizeChart(productData)
-        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-        val mutableData = productVariantData.toMutableList()
-
-        var variantIndex = 0
-        var imageIndex = 0
-
-        downloadVariantSizeChart(productInputModel)
+//    private fun downloadProductVariantImages(productData: ProductInputModel) {
+//        val productVariantData = productData.variantInputModel.products
+//        if (productVariantData.isNullOrEmpty()) downloadVariantSizeChart(productData)
+//        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
+//        val mutableData = productVariantData.toMutableList()
+//
+//        var variantIndex = 0
+//        var imageIndex = 0
+//
+//        downloadVariantSizeChart(productInputModel)
 
 //        val downloadCompleteListener = object : DownloadHelper.DownloadHelperListener {
 //            override fun onDownloadComplete() {
@@ -369,83 +377,73 @@ open class AddEditProductAddService : AddEditProductBaseService() {
 //                break
 //            }
 //        }
-    }
-
-    private fun downloadVariantSizeChart(productData: ProductInputModel) {
-        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-        val variantSizeChart = productData.variantInputModel.sizecharts
-        val filePath = downloadsDir + "/" + variantSizeChart.fileName
-
-        val downloadCompleteListener = object : DownloadHelper.DownloadHelperListener {
-            override fun onDownloadComplete() {
-                productInputModel.variantInputModel.sizecharts.filePath = filePath
-                saveProductToDraftAsync()
-            }
-        }
-
-        if (variantSizeChart.urlOriginal.isNotBlank()) {
-            // check if file is already downloaded into downloads directory
-            val imageFile = File(filePath)
-            if (!imageFile.isFile) {
-                try {
-                    val helper = DownloadHelper(
-                        context = this@AddEditProductAddService,
-                        uri = variantSizeChart.urlOriginal,
-                        filename = variantSizeChart.fileName,
-                        listener = downloadCompleteListener
-                    )
-                    helper.downloadFile { true }
-                } catch (se: SecurityException) {
-                    val fileName = variantSizeChart.fileName
-                    AddEditProductErrorHandler.logMessage(fileName)
-                    AddEditProductErrorHandler.logExceptionToCrashlytics(se)
-                } catch (iae: IllegalArgumentException) {
-                    val fileName = variantSizeChart.fileName
-                    AddEditProductErrorHandler.logMessage(fileName)
-                    AddEditProductErrorHandler.logExceptionToCrashlytics(iae)
-                } catch (ex: Exception) {
-                    val fileName = variantSizeChart.fileName
-                    AddEditProductErrorHandler.logMessage(fileName)
-                    AddEditProductErrorHandler.logExceptionToCrashlytics(ex)
-                }
-            }
-        }
-    }
-
-//    private fun reDownloadProductImages(productImageData: List<PictureInputModel>): List<PictureInputModel> {
-//        val mutableData = productImageData.toMutableList()
-//        val downloadsDir =
-//            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-//        mutableData.forEach { data ->
-//            var path = downloadsDir + "/" + data.fileName
-//            downloadFile(url = data.urlOriginal, outputFileName = data.fileName)
-//            data.filePath = path
-//        }
-//        return mutableData.toList()
 //    }
 
-//    private fun reDownloadProductVariantImages(productVariantData: List<ProductVariantInputModel>): List<ProductVariantInputModel> {
-//        val mutableData = productVariantData.toMutableList()
-//        val downloadsDir =
-//            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-//        mutableData.forEach { data ->
-//            data.pictures.forEach { picture ->
-//                var path = downloadsDir + "/" + picture.fileName
-//                downloadFile(url = picture.urlOriginal, outputFileName = picture.fileName)
-//                picture.filePath = path
+//    private fun downloadVariantSizeChart(productData: ProductInputModel) {
+//        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
+//        val variantSizeChart = productData.variantInputModel.sizecharts
+//        val filePath = downloadsDir + "/" + variantSizeChart.fileName
+//
+//        val downloadCompleteListener = object : DownloadHelper.DownloadHelperListener {
+//            override fun onDownloadComplete() {
+//                productInputModel.variantInputModel.sizecharts.filePath = filePath
+//                saveProductToDraftAsync()
 //            }
 //        }
-//        return mutableData.toList()
+//
+//        if (variantSizeChart.urlOriginal.isNotBlank()) {
+//            // check if file is already downloaded into downloads directory
+//            val imageFile = File(filePath)
+//            if (!imageFile.isFile) {
+//                try {
+//                    val helper = DownloadHelper(
+//                        context = this@AddEditProductAddService,
+//                        uri = variantSizeChart.urlOriginal,
+//                        filename = variantSizeChart.fileName,
+//                        listener = downloadCompleteListener
+//                    )
+//                    helper.downloadFile { true }
+//                } catch (se: SecurityException) {
+//                    val fileName = variantSizeChart.fileName
+//                    AddEditProductErrorHandler.logMessage(fileName)
+//                    AddEditProductErrorHandler.logExceptionToCrashlytics(se)
+//                } catch (iae: IllegalArgumentException) {
+//                    val fileName = variantSizeChart.fileName
+//                    AddEditProductErrorHandler.logMessage(fileName)
+//                    AddEditProductErrorHandler.logExceptionToCrashlytics(iae)
+//                } catch (ex: Exception) {
+//                    val fileName = variantSizeChart.fileName
+//                    AddEditProductErrorHandler.logMessage(fileName)
+//                    AddEditProductErrorHandler.logExceptionToCrashlytics(ex)
+//                }
+//            }
+//        }
 //    }
 
-//    private fun reDownloadVariantSizeChart(variantSizeChart: PictureVariantInputModel) {
-//        val downloadsDir =
-//            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-//        var path = downloadsDir + "/" + variantSizeChart.fileName
-//        downloadFile(
-//            url = variantSizeChart.urlOriginal,
-//            outputFileName = variantSizeChart.fileName
-//        )
-//        variantSizeChart.filePath = path
-//    }
+    private fun reDownloadProductImages(productImageData: List<PictureInputModel>) {
+        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
+        productImageData.forEach { data ->
+            var path = downloadsDir + "/" + data.fileName
+            downloadFile(url = data.urlOriginal, filename = data.fileName)
+            data.filePath = path
+        }
+    }
+
+    private fun reDownloadProductVariantImages(productVariantData: List<ProductVariantInputModel>) {
+        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
+        productVariantData.forEach { data ->
+            data.pictures.forEach { picture ->
+                var path = downloadsDir + "/" + picture.fileName
+                downloadFile(url = picture.urlOriginal, filename = picture.fileName)
+                picture.filePath = path
+            }
+        }
+    }
+
+    private fun reDownloadVariantSizeChart(variantSizeChart: PictureVariantInputModel) {
+        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
+        var path = downloadsDir + "/" + variantSizeChart.fileName
+        downloadFile(url = variantSizeChart.urlOriginal, filename = variantSizeChart.fileName)
+        variantSizeChart.filePath = path
+    }
 }
