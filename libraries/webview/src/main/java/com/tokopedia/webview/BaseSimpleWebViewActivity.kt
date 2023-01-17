@@ -310,7 +310,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         }
     }
 
-    private fun isDomainWhitelisted(domain: String): Boolean {
+    fun isDomainWhitelisted(domain: String): Boolean {
         if (whiteListedDomains.isEnabled) {
             whiteListedDomains.domains.forEach {
                 if (it.contains(domain)) {
@@ -339,7 +339,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         }
     }
 
-    private fun getBaseDomain(host: String): String {
+    fun getBaseDomain(host: String): String {
         val split = host.split('.')
         return if (split.size > 2) split[1] else split[0]
     }
