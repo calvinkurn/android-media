@@ -339,18 +339,6 @@ class ShopPageTrackingBuyer(
         )
     }
 
-    fun impressionCoachMarkDissapearFollowUnfollowShop(
-        shopId: String,
-        userId: String?
-    ) {
-        followUnfollowShop(
-            ShopPageTrackingConstant.VIEW_SHOP_PAGE_IRIS,
-            ShopPageTrackingConstant.VIEW_COACHMARK_FOLLOW,
-            ShopPageTrackingConstant.SHOP_PAGE_LABEL + shopId + ShopPageTrackingConstant.COACHMARK_DISAPPEAR,
-            userId
-        )
-    }
-
     fun clickFollowUnfollowShop(
         isFollowing: Boolean,
         shopId: String,
@@ -860,32 +848,6 @@ class ShopPageTrackingBuyer(
         val eventName: String
         eventName = if (isFollowed) ShopPageTrackingConstant.SELLER_ADDED_TO_FAVORITE else ShopPageTrackingConstant.SELLER_REMOVED_FROM_FAVORITE
         TrackApp.getInstance().moEngage.sendTrackEvent(mapData, eventName)
-    }
-
-    fun searchProduct(
-        keyword: String?,
-        isProductSearchResultEmpty: Boolean,
-        isOwner: Boolean,
-        customDimensionShopPage: CustomDimensionShopPage?
-    ) {
-        val productResultLabel = if (isProductSearchResultEmpty) ShopPageTrackingConstant.SEARCH_PRODUCT_NO_RESULT else ShopPageTrackingConstant.SEARCH_PRODUCT_RESULT
-        sendGeneralEvent(
-            ShopPageTrackingConstant.CLICK_SHOP_PAGE,
-            getShopPageCategory(isOwner),
-            ShopPageTrackingConstant.SEARCH_PRODUCT,
-            joinSpace(ShopPageTrackingConstant.SEARCH, joinDash(keyword, productResultLabel)),
-            customDimensionShopPage
-        )
-    }
-
-    fun clickAddEtalase(customDimensionShopPage: CustomDimensionShopPage?) {
-        sendGeneralEvent(
-            ShopPageTrackingConstant.CLICK_SHOP_PAGE,
-            ShopPageTrackingConstant.SHOP_PAGE_SELLER,
-            ShopPageTrackingConstant.CLICK_ADD_ETALASE_BUTTON,
-            "",
-            customDimensionShopPage
-        )
     }
 
     private fun getProductEtalaseEvent(
