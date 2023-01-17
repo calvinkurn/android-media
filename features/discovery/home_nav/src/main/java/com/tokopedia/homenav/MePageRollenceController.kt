@@ -17,7 +17,7 @@ object MePageRollenceController {
         }
     }
 
-    fun getMePageRollenceValue(): String {
+    private fun getMePageRollenceValue(): String {
         return rollenceMePageValue.ifEmpty { RollenceKey.ME_PAGE_CONTROL }
     }
 
