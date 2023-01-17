@@ -1,6 +1,5 @@
 package com.tokopedia.usercomponents.userconsent
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +9,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usercomponents.databinding.FragmentDebugUserConsentBinding
-import com.tokopedia.usercomponents.userconsent.common.UserConsentPayload
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
-import com.tokopedia.usercomponents.userconsent.ui.UserConsentActionListener
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 open class UserConsentDebugFragment: BaseDaggerFragment() {
@@ -44,26 +41,13 @@ open class UserConsentDebugFragment: BaseDaggerFragment() {
     }
 
     private fun loadConsentComponent(collectionId: String, version: String) {
-        val consentParam = ConsentCollectionParam(collectionId,version)
+        val consentParam = ConsentCollectionParam(
+            collectionId = collectionId,
+            version = version,
+            identifier = "12345"
+        )
         viewBinding?.sampleUserConsent?.apply {
-            actionText = viewBinding?.textActionButton?.editText?.text.toString()
-        }?.load(viewLifecycleOwner, this, consentParam, object : UserConsentActionListener {
-            override fun onCheckedChange(isChecked: Boolean) {
-
-            }
-
-            @SuppressLint("SetTextI18n")
-            override fun onActionClicked(payload: UserConsentPayload, isDefaultTemplate: Boolean) {
-                viewBinding?.textPayloadData?.apply {
-                    text = if (isDefaultTemplate) "this widget use default template"
-                    else "PAYLOAD: \n\n$payload"
-                }?.show()
-            }
-
-            override fun onFailed(throwable: Throwable) {
-                Toast.makeText(context, throwable.message.orEmpty(), Toast.LENGTH_LONG).show()
-            }
-        })
+        }?.load(viewLifecycleOwner, this, consentParam)
     }
 
     override fun onDestroy() {
@@ -73,6 +57,6 @@ open class UserConsentDebugFragment: BaseDaggerFragment() {
 
     companion object {
         private const val SCREEN_NAME = "User Consent Debug Fragment"
-        private const val COLLECTION_ID_SAMPLE = "6d45e8ce-d46d-4f0e-bf0c-a93f82f75e36"
+        private const val COLLECTION_ID_SAMPLE = "bf7c9ba1-a4a9-447e-bbee-974c905a95ac"
     }
 }

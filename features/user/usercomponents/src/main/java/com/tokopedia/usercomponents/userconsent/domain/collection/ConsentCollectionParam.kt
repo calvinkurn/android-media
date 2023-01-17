@@ -8,4 +8,8 @@ data class ConsentCollectionParam(
     var collectionId: String,
     @SerializedName("version")
     var version: String,
+    @SerializedName("dataElements")
+    val dataElements: Map<String, String>? = null,
+    @SerializedName("identifier")
+    var identifier: String = ""
 ): GqlParam

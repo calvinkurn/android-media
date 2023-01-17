@@ -24,7 +24,6 @@ import com.tokopedia.kyc_centralized.ui.customview.KycOnBoardingViewInflater
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.usercomponents.userconsent.common.UserConsentPayload
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
-import com.tokopedia.usercomponents.userconsent.ui.UserConsentActionListener
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
@@ -83,18 +82,17 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
             version = KYCConstant.consentVersion
         )
         viewBinding?.layoutBenefit?.userConsentKyc?.load(
-            viewLifecycleOwner, this, consentParam, object : UserConsentActionListener {
-                override fun onCheckedChange(isChecked: Boolean) { }
-
-                override fun onActionClicked(payload: UserConsentPayload, isDefaultTemplate: Boolean) {
-                    startKyc()
-                }
-
-                override fun onFailed(throwable: Throwable) {
-                    Toast.makeText(context, throwable.message.orEmpty(), Toast.LENGTH_LONG).show()
-                }
-            }
+            viewLifecycleOwner, this, consentParam
         )
+
+        viewBinding?.layoutBenefit?.kycBenefitBtn?.setOnClickListener {
+            viewBinding?.layoutBenefit?.userConsentKyc?.submitConsent()
+            startKyc()
+        }
+
+        viewBinding?.layoutBenefit?.userConsentKyc?.setOnCheckedChangeListener {isChecked ->
+            viewBinding?.layoutBenefit?.kycBenefitBtn?.isEnabled = isChecked
+        }
     }
 
     private fun setupKycBenefitView(view: View) {

@@ -60,18 +60,15 @@ class UserConsentWidget : FrameLayout,
     private var lifecycleOwner: LifecycleOwner? = null
     private var consentCollectionParam: ConsentCollectionParam? = null
     private var submissionParam = ConsentSubmissionParam()
-    private var userConsentActionListener: UserConsentActionListener? = null
     private var collection: UserConsentCollectionDataModel.CollectionPointDataModel? = null
+    private var isErrorGetConsent = false
 
     private var userConsentDescription: UserConsentDescription? = null
     private var userConsentPurposeAdapter: UserConsentPurposeAdapter? = null
 
-    /** Set action button text */
-    var actionText: String
-        get() = viewBinding?.buttonAction?.text.toString()
-        set(value) {
-            viewBinding?.buttonAction?.text = value
-        }
+    private var onCheckedChangeListener: (Boolean) -> Unit = {}
+    private var onAllCheckBoxCheckedListener: (Boolean) -> Unit = {}
+    private var onFailedGetCollectionListener: (Throwable) -> Unit = {}
 
     /** set Default State if user got error when trying to get data collection from BE **/
     var defaultTemplate: UserConsentType = NONE
@@ -96,28 +93,13 @@ class UserConsentWidget : FrameLayout,
         if (attributeSet != null) setAttributes(attributeSet)
 
         viewBinding?.apply {
-            buttonAction.setOnClickListener {
-                submitConsent()
-
-                collection?.purposes?.let {
-                    userConsentAnalytics.trackOnActionButtonClicked(it)
-                }
-
-                if (defaultTemplate != NONE) {
-                    userConsentActionListener?.onActionClicked(generatePayloadData(), true)
-                } else {
-                    userConsentActionListener?.onActionClicked(generatePayloadData())
-                }
-            }
-
             singleConsent.apply {
                 checkboxPurposes.setOnCheckedChangeListener { buttonView, isChecked ->
                     collection?.purposes?.let {
                         userConsentAnalytics.trackOnPurposeCheck(isChecked, it)
                     }
 
-                    userConsentActionListener?.onCheckedChange(isChecked)
-                    viewBinding.buttonAction.isEnabled = isChecked
+                    onCheckedChangeListener.invoke(isChecked)
                 }
             }
 
@@ -128,18 +110,22 @@ class UserConsentWidget : FrameLayout,
         }
     }
 
-    /*
-    * if you hide the button, you can call this function when user submit using your own button submit
-    * */
     fun submitConsent() {
+        collection?.purposes?.let {
+            userConsentAnalytics.trackOnActionButtonClicked(it)
+        }
+
         submissionParam.collectionId = consentCollectionParam?.collectionId.orEmpty()
         submissionParam.version = consentCollectionParam?.version.orEmpty()
+        submissionParam.default = isErrorGetConsent
+        submissionParam.dataElements = consentCollectionParam?.dataElements
+        submissionParam.purposes.clear()
         collection?.purposes?.forEach {
             submissionParam.purposes.add(
                 Purpose(
                     purposeID = it.id,
                     transactionType = CONSENT_OPT_IN,
-                    version = it.version
+                    version = it.version,
                 )
             )
         }
@@ -162,9 +148,6 @@ class UserConsentWidget : FrameLayout,
             0,
             0
         )
-
-        actionText = typedArray.getString(R.styleable.UserConsentWidget_actionText)
-            ?: context.getString(R.string.user_consent_default_action_text)
 
         val consentType = typedArray.getInt(R.styleable.UserConsentWidget_defaultTemplate, -1)
         defaultTemplate = when(consentType.toString()) {
@@ -191,10 +174,12 @@ class UserConsentWidget : FrameLayout,
                         setLoader(true)
                     }
                     is UserComponentsStateResult.Fail -> {
+                        isErrorGetConsent = true
                         setLoader(false)
                         showError(result.error)
                     }
                     is UserComponentsStateResult.Success -> {
+                        isErrorGetConsent = false
                         setLoader(false)
                         result.data?.let { data ->
                             collection = data.collectionPoints.first()
@@ -215,7 +200,11 @@ class UserConsentWidget : FrameLayout,
         renderView()
     }
 
-    private fun generatePayloadData(): UserConsentPayload {
+    fun generatePayloadData(): String {
+        collection?.purposes?.let {
+            userConsentAnalytics.trackOnActionButtonClicked(it)
+        }
+
         val purposes: MutableList<UserConsentPayload.PurposeDataModel> = mutableListOf()
         collection?.purposes?.forEach {
             purposes.add(UserConsentPayload.PurposeDataModel(
@@ -224,7 +213,13 @@ class UserConsentWidget : FrameLayout,
                 collection?.consentType.orEmpty()
             ))
         }
-        return UserConsentPayload(collection?.id.orEmpty(), collection?.version.orEmpty(), purposes)
+        return UserConsentPayload(
+            identifier = consentCollectionParam?.identifier.orEmpty(),
+            collectionId = collection?.id.orEmpty(),
+            dataElements = consentCollectionParam?.dataElements,
+            default = isErrorGetConsent,
+            purposes = purposes
+        ).toString()
     }
 
     private fun renderView() {
@@ -265,11 +260,9 @@ class UserConsentWidget : FrameLayout,
             if (collection?.attributes?.collectionPointStatementOnlyFlag == NO_CHECKLIST) {
                 checkboxPurposes.hide()
                 iconMandatoryInfo.show()
-                viewBinding.buttonAction.isEnabled = true
             } else if (collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST) {
                 checkboxPurposes.show()
                 iconMandatoryInfo.hide()
-                viewBinding.buttonAction.isEnabled = false
             }
 
             if (collection?.attributes?.policyNoticeType == TERM_CONDITION) {
@@ -346,7 +339,6 @@ class UserConsentWidget : FrameLayout,
                 }
 
                 descriptionPurposes.movementMethod = LinkMovementMethod.getInstance()
-                viewBinding.buttonAction.isEnabled = !checkboxPurposes.isVisible
             }.root.show()
         }
     }
@@ -376,7 +368,7 @@ class UserConsentWidget : FrameLayout,
                 }
             }?.show()
 
-            userConsentActionListener?.onFailed(throwable)
+            onFailedGetCollectionListener.invoke(throwable)
         } else {
             renderDefaultTemplate(defaultTemplate)
         }
@@ -386,20 +378,14 @@ class UserConsentWidget : FrameLayout,
         isChecked: Boolean,
         purposeDataModel: UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel,
     ) {
-        userConsentActionListener?.onCheckedChange(isChecked)
+        onCheckedChangeListener.invoke(isChecked)
         userConsentAnalytics.trackOnPurposeCheckOnOptional(isChecked, purposeDataModel)
 
-        if (purposeDataModel.attribute.alwaysMandatory == MANDATORY) {
-            viewBinding?.buttonAction?.isEnabled = isChecked
-        } else {
-            val isAllChecked = userConsentPurposeAdapter?.listCheckBoxView?.all {
-                it.isChecked
-            }
-
-            if (isAllChecked == true) {
-                viewBinding?.buttonAction?.isEnabled = true
-            }
+        val isAllChecked = userConsentPurposeAdapter?.listCheckBoxView?.all {
+            it.isChecked
         }
+
+        onAllCheckBoxCheckedListener.invoke(isAllChecked == true)
     }
 
     override fun invalidate() {
@@ -409,7 +395,6 @@ class UserConsentWidget : FrameLayout,
             checkboxPurposes.isChecked = false
         }
 
-        viewBinding?.buttonAction?.isEnabled = false
         userConsentPurposeAdapter?.clearAllItems()
     }
 
@@ -454,12 +439,10 @@ class UserConsentWidget : FrameLayout,
     fun load(
         lifecycleOwner: LifecycleOwner,
         viewModelStoreOwner: ViewModelStoreOwner,
-        consentCollectionParam: ConsentCollectionParam,
-        userConsentActionListener: UserConsentActionListener
+        consentCollectionParam: ConsentCollectionParam
     ) {
         this.lifecycleOwner = lifecycleOwner
         this.consentCollectionParam = consentCollectionParam
-        this.userConsentActionListener = userConsentActionListener
 
         invalidate()
         initViewModel(viewModelStoreOwner)
@@ -473,6 +456,17 @@ class UserConsentWidget : FrameLayout,
         }
 
         lifecycleOwner = null
+    }
+    fun setOnCheckedChangeListener(listener: (Boolean) -> Unit) {
+        onCheckedChangeListener = listener
+    }
+
+    fun setOnAllCheckBoxCheckedListener(listener: (Boolean) -> Unit) {
+        onAllCheckBoxCheckedListener = listener
+    }
+
+    fun setOnFailedGetCollectionListener(listener: (Throwable) -> Unit) {
+        onFailedGetCollectionListener = listener
     }
 
     companion object {
