@@ -18,7 +18,6 @@ import com.tokopedia.catalog_library.model.datamodel.CatalogLihatDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDataModel
 import com.tokopedia.catalog_library.model.raw.CatalogLibraryResponse.CategoryListLibraryPage.CategoryData
 import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_LIHAT_SEMUA_ITEM
-import com.tokopedia.unifyprinciples.Typography
 
 class CatalogLihatViewHolder(
     private val view: View,
