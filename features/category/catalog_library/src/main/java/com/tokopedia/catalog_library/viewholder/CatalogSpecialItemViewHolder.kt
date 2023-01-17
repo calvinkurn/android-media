@@ -16,15 +16,15 @@ class CatalogSpecialItemViewHolder(
 ) : AbstractViewHolder<CatalogSpecialDataModel>(view) {
 
     private val specialImage: ImageUnify by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById(R.id.special_icon)
+        itemView.findViewById(R.id.special_icon)
     }
 
     private val specialTitle: Typography by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById(R.id.special_title)
+        itemView.findViewById(R.id.special_title)
     }
 
     private val specialLayout: CardUnify2 by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById(R.id.img_card)
+        itemView.findViewById(R.id.img_card)
     }
 
     companion object {

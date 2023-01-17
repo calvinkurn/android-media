@@ -18,15 +18,15 @@ class CatalogLihatItemViewHolder(
 ) : AbstractViewHolder<CatalogLihatItemDataModel>(view) {
 
     private val lihatItemIcon: ImageUnify? by lazy(NONE) {
-        view.findViewById(R.id.lihat_item_icon)
+        itemView.findViewById(R.id.lihat_item_icon)
     }
 
     private val lihatItemTitle: Typography? by lazy(NONE) {
-        view.findViewById(R.id.lihat_item_title)
+        itemView.findViewById(R.id.lihat_item_title)
     }
 
     private val lihatExpandedItemLayout: CardUnify2? by lazy(NONE) {
-        view.findViewById(R.id.img_card)
+        itemView.findViewById(R.id.img_card)
     }
 
     companion object {

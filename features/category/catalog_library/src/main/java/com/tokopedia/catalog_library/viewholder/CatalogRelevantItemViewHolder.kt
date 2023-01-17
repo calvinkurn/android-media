@@ -14,15 +14,15 @@ import com.tokopedia.unifyprinciples.Typography
 class CatalogRelevantItemViewHolder(val view: View, private val catalogLibraryListener: CatalogLibraryListener): AbstractViewHolder<CatalogRelevantDataModel>(view) {
 
     private val relevantImage: ImageUnify by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById(R.id.catalog_relevant_image)
+        itemView.findViewById(R.id.catalog_relevant_image)
     }
 
     private val relevantTitle: Typography by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById(R.id.catalog_relevant_product_title)
+        itemView.findViewById(R.id.catalog_relevant_product_title)
     }
 
     private val relevantLayout: ConstraintLayout by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById(R.id.catalog_relevant_layout)
+        itemView.findViewById(R.id.catalog_relevant_layout)
     }
 
     companion object {

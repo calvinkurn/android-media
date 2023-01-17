@@ -12,26 +12,29 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class CatalogMostViralItemViewHolder(val view: View, private val catalogLibraryListener: CatalogLibraryListener): AbstractViewHolder<CatalogMostViralDataModel>(view) {
+class CatalogMostViralItemViewHolder(
+    val view: View,
+    private val catalogLibraryListener: CatalogLibraryListener
+) : AbstractViewHolder<CatalogMostViralDataModel>(view) {
 
     private val mostViralImage: ImageUnify by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById(R.id.catalog_product_viral_image)
+        itemView.findViewById(R.id.catalog_product_viral_image)
     }
 
     private val mostViralTitle: Typography by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById(R.id.catalog_product_viral_title)
+        itemView.findViewById(R.id.catalog_product_viral_title)
     }
 
     private val mostViralSubtitle: Typography by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById(R.id.catalog_product_viral_category)
+        itemView.findViewById(R.id.catalog_product_viral_category)
     }
 
     private val mostViralIcon: IconUnify by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById(R.id.catalog_most_viral_icon)
+        itemView.findViewById(R.id.catalog_most_viral_icon)
     }
 
     private val mostViralLayout: ConstraintLayout by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById(R.id.catalog_most_viral_item_layout)
+        itemView.findViewById(R.id.catalog_most_viral_item_layout)
     }
 
     companion object {
@@ -45,13 +48,18 @@ class CatalogMostViralItemViewHolder(val view: View, private val catalogLibraryL
         mostViralTitle.text = element?.catalogMostViralData?.name
         mostViralIcon.apply {
             setImage(
-                newLightEnable = MethodChecker.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+                newLightEnable = MethodChecker.getColor(
+                    itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                )
             )
         }
         mostViralLayout.setOnClickListener {
             catalogLibraryListener.onProductCardClicked(element?.catalogMostViralData?.applink)
         }
-        mostViralSubtitle.text =
-            "${element?.categoryName} ${getString(R.string.most_viral_subtitle_common)}"
+
+        mostViralSubtitle.text = String.format(
+            view.context.getString(R.string.most_viral_subtitle_common),
+            element?.categoryName ?: "",
+        )
     }
 }

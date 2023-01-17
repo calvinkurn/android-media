@@ -16,13 +16,25 @@ import com.tokopedia.catalog_library.model.datamodel.CatalogContainerDataModel
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class CatalogContainerItemViewHolder(val view: View,  private val catalogLibraryListener: CatalogLibraryListener): AbstractViewHolder<CatalogContainerDataModel>(view) {
+class CatalogContainerItemViewHolder(
+    val view: View,
+    private val catalogLibraryListener: CatalogLibraryListener
+) : AbstractViewHolder<CatalogContainerDataModel>(view) {
 
-    private val title = view.findViewById<Typography>(R.id.container_titile)
-    private val lihatSemuaText = view.findViewById<Typography>(R.id.lihat_semua_text)
-    private val containerRV = view.findViewById<RecyclerView>(R.id.container_rv)
+    private val title: Typography by lazy(LazyThreadSafetyMode.NONE) {
+        itemView.findViewById(R.id.container_titile)
+    }
+
+    private val lihatSemuaText: Typography by lazy(LazyThreadSafetyMode.NONE) {
+        itemView.findViewById(R.id.lihat_semua_text)
+    }
+
+    private val containerRV: RecyclerView by lazy(LazyThreadSafetyMode.NONE) {
+        itemView.findViewById(R.id.container_rv)
+    }
 
     private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
         CatalogHomepageAdapterFactoryImpl(
@@ -46,12 +58,12 @@ class CatalogContainerItemViewHolder(val view: View,  private val catalogLibrary
     }
 
     private fun renderLihat(element: CatalogContainerDataModel) {
-        if(element.hasMoreButtonEnabled){
+        if (element.hasMoreButtonEnabled) {
             lihatSemuaText.show()
             lihatSemuaText.setOnClickListener {
                 catalogLibraryListener.onLihatSemuaTextClick(element.hasMoreButtonAppLink)
             }
-        }else {
+        } else {
             lihatSemuaText.hide()
         }
     }
@@ -61,11 +73,11 @@ class CatalogContainerItemViewHolder(val view: View,  private val catalogLibrary
     }
 
     private fun renderRecyclerView(element: CatalogContainerDataModel) {
-        containerRV?.apply {
-            layoutManager = if(element.isGrid){
-                GridLayoutManager(view.context,element.columnCount)
-            }else {
-                LinearLayoutManager(view.context, element.orientationRecyclerView , false)
+        containerRV.apply {
+            layoutManager = if (element.isGrid) {
+                GridLayoutManager(itemView.context, element.columnCount)
+            } else {
+                LinearLayoutManager(itemView.context, element.orientationRecyclerView, false)
             }
             adapter = containerAdapter
         }

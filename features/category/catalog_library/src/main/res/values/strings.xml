@@ -4,6 +4,8 @@
     <string name="kategori_Special_Buatmu">Kategori Special Buatmu</string>
     <string name="katalog_lainnya_buat_inspirasimu">Katalog lainnya buat inspirasimu</string>
     <string name="catalog_homepage_title">Katalog Tokopedia</string>
-    <string name="most_viral_subtitle_common">yang lagi ramai dilihat</string>
     <string name="most_viral_lagi_viral_nih">Lagi Viral, nih!</string>
+    <string name="top_five_rank">#%s</string>
+    <string name="product_price">%s - %s</string>
+    <string name="most_viral_subtitle_common">%s yang lagi ramai dilihat</string>
 </resources>

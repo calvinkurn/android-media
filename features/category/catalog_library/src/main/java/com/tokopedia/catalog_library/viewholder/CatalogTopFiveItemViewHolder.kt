@@ -10,23 +10,26 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class CatalogTopFiveItemViewHolder(val view: View, private val catalogLibraryListener: CatalogLibraryListener): AbstractViewHolder<CatalogTopFiveDataModel>(view) {
+class CatalogTopFiveItemViewHolder(
+    private val view: View,
+    private val catalogLibraryListener: CatalogLibraryListener
+) : AbstractViewHolder<CatalogTopFiveDataModel>(view) {
 
 
     private val topFiveImage: ImageUnify by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById(R.id.catalog_top_five_product_image)
+        itemView.findViewById(R.id.catalog_top_five_product_image)
     }
 
     private val topFiveTitle: Typography by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById(R.id.catalog_top_five_product_title)
+        itemView.findViewById(R.id.catalog_top_five_product_title)
     }
 
     private val topFiveRank: Typography by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById(R.id.catalog_top_five_rank)
+        itemView.findViewById(R.id.catalog_top_five_rank)
     }
 
     private val topFiveLayout: CardUnify2 by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById(R.id.catalog_top_five_layout)
+        itemView.findViewById(R.id.catalog_top_five_layout)
     }
 
     companion object {
@@ -40,7 +43,10 @@ class CatalogTopFiveItemViewHolder(val view: View, private val catalogLibraryLis
             topFiveImage.loadImage(iconUrl)
         }
         topFiveTitle.text = catalogTopFiveList?.name ?: ""
-        topFiveRank.text = "#${catalogTopFiveList?.rank}"
+        topFiveRank.text = String.format(
+            view.context.getString(R.string.top_five_rank),
+            catalogTopFiveList?.rank ?: ""
+        )
         topFiveLayout.setOnClickListener {
             catalogLibraryListener.onProductCardClicked(catalogTopFiveList?.applink)
         }

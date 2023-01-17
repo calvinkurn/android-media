@@ -16,19 +16,19 @@ class CatalogProductItemViewHolder(
 ) : AbstractViewHolder<CatalogProductDataModel>(view) {
 
     private val productImage: ImageUnify by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById(R.id.catalog_product_image)
+        itemView.findViewById(R.id.catalog_product_image)
     }
 
     private val productTitle: Typography by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById(R.id.catalog_product_title)
+        itemView.findViewById(R.id.catalog_product_title)
     }
 
     private val productPrice: Typography by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById(R.id.catalog_product_price)
+        itemView.findViewById(R.id.catalog_product_price)
     }
 
     private val productLayout: ConstraintLayout by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById(R.id.product_layout)
+        itemView.findViewById(R.id.product_layout)
     }
 
     companion object {
@@ -37,8 +37,10 @@ class CatalogProductItemViewHolder(
 
     override fun bind(element: CatalogProductDataModel?) {
         val catalogProduct = element?.catalogProduct
-        productPrice.text =
-            "${catalogProduct?.marketPrice?.minFmt} - ${catalogProduct?.marketPrice?.maxFmt}"
+        productPrice.text = String.format(
+            itemView.context.getString(R.string.product_price),
+            catalogProduct?.marketPrice?.minFmt, catalogProduct?.marketPrice?.maxFmt
+        )
 
         catalogProduct?.imageUrl?.let { iconUrl ->
             productImage.loadImage(iconUrl)
