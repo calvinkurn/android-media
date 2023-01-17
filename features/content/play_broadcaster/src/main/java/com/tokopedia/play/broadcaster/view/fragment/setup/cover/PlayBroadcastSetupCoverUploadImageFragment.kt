@@ -69,7 +69,8 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
             is PlayBroadcastSetupBottomSheet -> {
                 childFragment.setListener(object : PlayBroadcastSetupBottomSheet.Listener {
                     override fun onCoverChanged(cover: PlayCoverUiModel) {
-                        parentViewModel.submitAction(PlayBroadcastAction.SetCover(cover))
+                        // TODO handle save cover data
+                        // TODO update the cover preview and upload will be from button
                     }
                 })
                 childFragment.setDataSource(object : PlayBroadcastSetupBottomSheet.DataSource {
@@ -93,13 +94,17 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
         mListener = listener
     }
 
-    private fun setupView() = with(binding.clCoverFormPreview) {
-        setAuthorName(parentViewModel.authorName)
-        setTitle(parentViewModel.channelTitle)
-        setOnClickListener {
-            if (binding.clCoverFormPreview.isCoverAvailable) analytic.clickEditCover()
+    private fun setupView() = with(binding) {
+        clCoverFormPreview.setAuthorName(parentViewModel.authorName)
+        clCoverFormPreview.setTitle(parentViewModel.channelTitle)
+        clCoverFormPreview.setOnClickListener {
+            if (clCoverFormPreview.isCoverAvailable) analytic.clickEditCover()
             else analytic.clickAddNewCover()
             openCoverSetupFragment()
+        }
+        btnSetupCoverUploadImage.setOnClickListener {
+            // TODO do the cover save mechanism
+            // parentViewModel.submitAction(PlayBroadcastAction.SetCover(cover))
         }
     }
 
