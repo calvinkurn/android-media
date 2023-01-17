@@ -28,7 +28,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:textSize="14sp"
+        app:unifyButtonSize="medium"
         android:enabled="false"
         android:text="@string/play_label_save"
         app:layout_constraintBottom_toBottomOf="parent"
