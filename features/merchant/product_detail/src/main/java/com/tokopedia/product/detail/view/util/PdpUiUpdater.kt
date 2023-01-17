@@ -828,6 +828,16 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
+    fun updateSingleVariant(singleVariant: ProductSingleVariantDataModel?) {
+        if (singleVariant == null) {
+            removeComponent(ProductDetailConstant.MINI_VARIANT_OPTIONS)
+        } else {
+            updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
+                mapOfData[ProductDetailConstant.MINI_VARIANT_OPTIONS] = singleVariant
+            }
+        }
+    }
+
     fun updateDiscussionData(discussionMostHelpful: DiscussionMostHelpful) {
         updateData(ProductDetailConstant.DISCUSSION_FAQ) {
             productDiscussionMostHelpfulMap?.run {

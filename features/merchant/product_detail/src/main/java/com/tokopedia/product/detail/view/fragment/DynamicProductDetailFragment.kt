@@ -160,6 +160,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
@@ -2616,14 +2617,12 @@ open class DynamicProductDetailFragment :
     /**
      * update product UI on thumbnail variant changed
      */
-    private fun updateThumbnailVariantDataAndUi(variantProcessedData: List<VariantCategory>?) {
-        val singleVariant = pdpUiUpdater?.productSingleVariant
+    private fun updateThumbnailVariantDataAndUi(singleVariant: ProductSingleVariantDataModel?) {
         val selectedChild = viewModel.getVariantSelectedChild(
             singleVariant = singleVariant,
             optionalVariant = null // because thumb variant is not optional variant but single variant
         )
-
-        pdpUiUpdater?.updateVariantData(variantProcessedData)
+        pdpUiUpdater?.updateSingleVariant(singleVariant)
         pdpUiUpdater?.updateMediaScrollPosition(selectedChild?.optionIds?.firstOrNull())
 
         // store the product id to this variable to open vbs later
@@ -3403,14 +3402,12 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onThumbnailVariantSelected(variantId: String, categoryKey: String) {
-        val selectedVariant = pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant.orEmpty()
-        val variants = viewModel.selectVariantTwoOnThumbnailVariant(
-            variantsSelected = selectedVariant,
-            newVariantId = variantId,
-            newVariantCategoryKey = categoryKey
+        val singleVariantUiData = pdpUiUpdater?.productSingleVariant
+        viewModel.onThumbnailVariantSelected(
+            uiData = singleVariantUiData,
+            variantId = variantId,
+            categoryKey = categoryKey
         )
-        pdpUiUpdater?.updateVariantSelected(variants)
-        viewModel.onThumbnailVariantSelected(variants)
     }
 
     private fun selectVariantInPdp(variantOptions: VariantOptionWithAttribute, state: Int) {

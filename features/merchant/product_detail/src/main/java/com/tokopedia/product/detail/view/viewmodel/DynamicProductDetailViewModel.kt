@@ -239,8 +239,8 @@ open class DynamicProductDetailViewModel @Inject constructor(
         get() = _onVariantClickedData
 
     // slicing from _onVariantClickedData, because thumbnail variant feature using vbs for refresh pdp info
-    private val _onThumbnailVariantSelectedData = MutableLiveData<List<VariantCategory>?>()
-    val onThumbnailVariantSelectedData: LiveData<List<VariantCategory>?>
+    private val _onThumbnailVariantSelectedData = MutableLiveData<ProductSingleVariantDataModel?>()
+    val onThumbnailVariantSelectedData: LiveData<ProductSingleVariantDataModel?>
         get() = _onThumbnailVariantSelectedData
 
     private val _toggleTeaserNotifyMe = MutableLiveData<Result<NotifyMeUiData>>()
@@ -1347,20 +1347,29 @@ open class DynamicProductDetailViewModel @Inject constructor(
      * Thumbnail variant selected is variant level one only
      */
     fun onThumbnailVariantSelected(
-        variantsSelected: Map<String, String>
+        uiData: ProductSingleVariantDataModel?,
+        variantId: String,
+        categoryKey: String
     ) {
+        val variantSelected = uiData?.mapOfSelectedVariant.orEmpty()
+        val variants = selectVariantTwoOnThumbnailVariantSelected(variantSelected, variantId, categoryKey)
         val variantDataNonNull = variantData ?: ProductVariant()
         val variantLevelOneUpdated = ProductDetailVariantLogic.determineVariant(
-            variantsSelected,
+            variants,
             variantDataNonNull
         )
 
         if (variantLevelOneUpdated != null) {
-            _onThumbnailVariantSelectedData.postValue(listOf(variantLevelOneUpdated))
+            _onThumbnailVariantSelectedData.postValue(
+                uiData?.copy(
+                    mapOfSelectedVariant = variants,
+                    variantLevelOne = variantLevelOneUpdated
+                )
+            )
         }
     }
 
-    fun selectVariantTwoOnThumbnailVariant(
+    private fun selectVariantTwoOnThumbnailVariantSelected(
         variantsSelected: Map<String, String>,
         newVariantId: String,
         newVariantCategoryKey: String
@@ -1377,9 +1386,10 @@ open class DynamicProductDetailViewModel @Inject constructor(
             return variants
         }
 
-        // don't move this order, because level 1 always on top and level 2 always below lvl1
+        // don't move this order, because level 1 always on top and level 2 always below lvl1 in map
         variants[newVariantCategoryKey] = newVariantId
 
+        // if mapOfSelected still don't select yet variant lvl two, so set default lvl2 with fist lvl2 item
         if (variantLevelTwo != null && variantsSelected.size < MAX_VARIANT_LEVEL) {
             // in case, thumb variant selected but variant two never select from vbs
             val variantLevelTwoId = variantLevelTwo.options.firstOrNull()?.id
