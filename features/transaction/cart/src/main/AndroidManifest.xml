@@ -2,9 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.cart">
 
-    <application
-        android:allowBackup="true"
-        android:supportsRtl="true">
+    <application>
         <activity
             android:name="com.tokopedia.cart.view.CartActivity"
             android:label="@string/checkout_module_title_activity_cart"
