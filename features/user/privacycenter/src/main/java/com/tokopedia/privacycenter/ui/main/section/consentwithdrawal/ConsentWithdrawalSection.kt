@@ -4,6 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.data.ConsentGroupDataModel
@@ -67,6 +69,13 @@ class ConsentWithdrawalSection constructor(
         consentWithdrawalSectionAdapter.clearAllItems()
         data.groups.forEach {
             consentWithdrawalSectionAdapter.addItem(it)
+        }
+
+        if(data.ticker.isNotEmpty()) {
+            sectionViewBinding.consentGroupListTicker.show()
+            sectionViewBinding.consentGroupListTicker.setTextDescription(data.ticker)
+        } else {
+            sectionViewBinding.consentGroupListTicker.hide()
         }
 
         consentWithdrawalSectionAdapter.notifyItemRangeInserted(0, data.groups.size)
