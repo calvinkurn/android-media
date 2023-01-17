@@ -20,9 +20,12 @@ import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.*
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ErrorStateFavoriteShopDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ShimmerFavoriteShopDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ErrorStateReviewDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.review.ShimmerReviewDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateWishlistDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ShimmerWishlistDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.network.exception.MessageErrorException
@@ -90,7 +93,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given user not logged in when using me page variant 1 should add empty data for each section`() {
+    fun `given user not logged in when using me page variant 1 should add empty data for transaction and favorite shop`() {
         val userSession = mockk<UserSessionInterface>()
 
         every { userSession.isLoggedIn } returns false
@@ -108,7 +111,7 @@ class TestMainNavViewModel {
         val favoriteShopModel = viewModel.mainNavLiveData.value?.dataList?.find { it is FavoriteShopListDataModel } as? FavoriteShopListDataModel
         Assert.assertTrue(favoriteShopModel != null && favoriteShopModel.favoriteShops.isEmpty())
 
-        val transactionListModel = viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel } as TransactionListItemDataModel?
+        val transactionListModel = viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel } as? TransactionListItemDataModel?
         Assert.assertTrue(transactionListModel != null && transactionListModel.orderListModel.orderList.isEmpty())
         Assert.assertTrue(transactionListModel != null && transactionListModel.orderListModel.paymentList.isEmpty())
 
@@ -119,7 +122,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given user not logged in when using me page variant 2 should add empty data for each section`() {
+    fun `given user not logged in when using me page variant 2 should add empty data for all sections`() {
         val userSession = mockk<UserSessionInterface>()
 
         every { userSession.isLoggedIn } returns false
@@ -140,12 +143,59 @@ class TestMainNavViewModel {
         val favoriteShopModel = viewModel.mainNavLiveData.value?.dataList?.find { it is FavoriteShopListDataModel } as? FavoriteShopListDataModel
         Assert.assertTrue(favoriteShopModel != null && favoriteShopModel.favoriteShops.isEmpty())
 
-        val transactionListModel = viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel } as TransactionListItemDataModel?
+        val transactionListModel = viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel } as? TransactionListItemDataModel?
         Assert.assertTrue(transactionListModel != null && transactionListModel.orderListModel.orderList.isEmpty())
         Assert.assertTrue(transactionListModel != null && transactionListModel.orderListModel.paymentList.isEmpty())
 
         val reviewModel = viewModel.mainNavLiveData.value?.dataList?.find { it is ReviewListDataModel } as? ReviewListDataModel
         Assert.assertTrue(reviewModel != null && reviewModel.reviewList.isEmpty())
+    }
+
+    @Test
+    fun `given user logged in when using me page variant 1 should add shimmer for transaction and favorite shop`() {
+        val userSession = mockk<UserSessionInterface>()
+
+        every { userSession.isLoggedIn } returns true
+
+        viewModel = createViewModel(
+            userSession = userSession
+        )
+
+        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
+        every { MePageRollenceController.isUsingMePageRollenceVariant1() } returns true
+        viewModel.setInitialState()
+
+        Assert.assertNotNull(viewModel.mainNavLiveData.value)
+
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find { it is InitialShimmerTransactionRevampDataModel })
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ShimmerFavoriteShopDataModel })
+
+        val menuDataModel = viewModel.mainNavLiveData.value?.dataList?.filterIsInstance<HomeNavMenuDataModel>().orEmpty()
+
+        Assert.assertNotNull(menuDataModel.find { it.id == ClientMenuGenerator.ID_REVIEW && it.sectionId == MainNavConst.Section.ACTIVITY })
+        Assert.assertNotNull(menuDataModel.find { it.id == ClientMenuGenerator.ID_WISHLIST_MENU && it.sectionId == MainNavConst.Section.ACTIVITY })
+    }
+
+    @Test
+    fun `given user logged in when using me page variant 2 should add shimmer for all sections`() {
+        val userSession = mockk<UserSessionInterface>()
+
+        every { userSession.isLoggedIn } returns true
+
+        viewModel = createViewModel(
+            userSession = userSession
+        )
+
+        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
+        every { MePageRollenceController.isUsingMePageRollenceVariant2() } returns true
+        viewModel.setInitialState()
+
+        Assert.assertNotNull(viewModel.mainNavLiveData.value)
+
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find { it is InitialShimmerTransactionRevampDataModel })
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ShimmerFavoriteShopDataModel })
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ShimmerWishlistDataModel })
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ShimmerReviewDataModel })
     }
 
     // Back to home icon
