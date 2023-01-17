@@ -17,15 +17,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.Router
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
 import com.tokopedia.play.ui.explorewidget.ChipItemDecoration
 import com.tokopedia.play.ui.explorewidget.ChipsViewHolder
 import com.tokopedia.play.ui.explorewidget.ChipsWidgetAdapter
+import com.tokopedia.play.util.isAnyChanged
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
@@ -167,10 +166,10 @@ class PlayExploreWidgetFragment @Inject constructor(
                         cachedState.value.exploreWidget.data.chips
                     )
 
-                if (cachedState.isChanged {
-                        it.exploreWidget.data.widgets
-                        it.exploreWidget.data.state
-                    })
+                if (cachedState.isAnyChanged (
+                        { it.exploreWidget.data.widgets },
+                        { it.exploreWidget.data.state }
+                    ))
                     renderWidgets(
                         cachedState.value.exploreWidget.data.state,
                         cachedState.value.exploreWidget.data.widgets.getChannelBlock

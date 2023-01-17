@@ -2768,7 +2768,7 @@ class PlayViewModel @AssistedInject constructor(
     private fun onActionWidget(isNextPage : Boolean = false) {
         if(!_exploreWidget.value.param.hasNextPage && isNextPage) return
         viewModelScope.launchCatchError( block = {
-            _exploreWidget.update { it.copy(state = WidgetState.Loading, param = it.param.copy(cursor = if (isNextPage) it.param.cursor else "")) }
+            _exploreWidget.update { it.copy(state = if(isNextPage) it.state else WidgetState.Loading, param = it.param.copy(cursor = if (isNextPage) it.param.cursor else "")) }
 
             val widgets = getWidgets()
 
