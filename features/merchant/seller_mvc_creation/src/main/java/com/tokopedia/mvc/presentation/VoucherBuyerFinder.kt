@@ -4,6 +4,13 @@ import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
 import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import com.tokopedia.mvc.util.extension.isCashback
+import com.tokopedia.mvc.util.extension.isDiscount
+import com.tokopedia.mvc.util.extension.isFreeShipping
+import com.tokopedia.mvc.util.extension.isPrivate
+import com.tokopedia.mvc.util.extension.isProductVoucher
+import com.tokopedia.mvc.util.extension.isPublic
+import com.tokopedia.mvc.util.extension.isShopVoucher
 import javax.inject.Inject
 
 class VoucherBuyerFinder @Inject constructor() {
@@ -28,33 +35,5 @@ class VoucherBuyerFinder @Inject constructor() {
             voucherType.isProductVoucher() && voucherTarget.isPrivate() && promoType.isDiscount() -> listOf(VoucherTargetBuyer.ALL_BUYER)
             else -> emptyList()
         }
-    }
-
-    private fun VoucherServiceType.isShopVoucher(): Boolean {
-        return this == VoucherServiceType.SHOP_VOUCHER
-    }
-
-    private fun VoucherServiceType.isProductVoucher(): Boolean {
-        return this == VoucherServiceType.PRODUCT_VOUCHER
-    }
-
-    private fun VoucherTarget.isPrivate(): Boolean {
-        return this == VoucherTarget.PRIVATE
-    }
-
-    private fun VoucherTarget.isPublic(): Boolean {
-        return this == VoucherTarget.PUBLIC
-    }
-
-    private fun PromoType.isCashback(): Boolean {
-        return this == PromoType.CASHBACK
-    }
-
-    private fun PromoType.isFreeShipping(): Boolean {
-        return this == PromoType.FREE_SHIPPING
-    }
-
-    private fun PromoType.isDiscount(): Boolean {
-        return this == PromoType.DISCOUNT
     }
 }

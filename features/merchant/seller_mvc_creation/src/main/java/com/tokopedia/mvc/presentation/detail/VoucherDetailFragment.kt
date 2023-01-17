@@ -59,6 +59,7 @@ import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.presentation.product.list.ProductListActivity
 import com.tokopedia.mvc.presentation.share.LinkerDataGenerator
 import com.tokopedia.mvc.presentation.share.ShareComponentInstanceBuilder
+import com.tokopedia.mvc.presentation.share.ShareCopyWritingGenerator
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.mvc.util.constant.BundleConstant
@@ -118,6 +119,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var shareCopyWritingGenerator: ShareCopyWritingGenerator
 
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
@@ -838,6 +842,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             },
             onBottomSheetClosed = {}
         )
+
 
         universalShareBottomSheet?.show(childFragmentManager, universalShareBottomSheet?.tag)
     }
