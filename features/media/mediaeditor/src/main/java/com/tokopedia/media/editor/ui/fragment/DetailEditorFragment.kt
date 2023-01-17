@@ -260,12 +260,17 @@ class DetailEditorFragment @Inject constructor(
             overlayView.setTargetAspectRatio(ratio.getRatio())
             cropView.targetAspectRatio = ratio.getRatio()
 
-            val newRatio = Pair(ratio.getRatioX(), ratio.getRatioY())
-            if (data.cropRotateValue.cropRatio != newRatio && data.cropRotateValue.cropRatio != EMPTY_RATIO) {
-                data.cropRotateValue.cropRatio = newRatio
-                isEdited = true
+            val newRatioPair = Pair(ratio.getRatioX(), ratio.getRatioY())
+            // check if any crop state before
+            if (data.cropRotateValue.cropRatio != EMPTY_RATIO) {
+                // if had crop state then compare if ratio is change
+                if (data.cropRotateValue.cropRatio != newRatioPair) {
+                    setCropRatio(newRatioPair)
+                }
+            } else if (data.originalRatio != ratio.getRatio()) { // if didn't have crop state, compare original ratio
+                setCropRatio(newRatioPair)
             }
-            data.cropRotateValue.cropRatio = newRatio
+            data.cropRotateValue.cropRatio = newRatioPair
         }
     }
 
@@ -917,6 +922,11 @@ class DetailEditorFragment @Inject constructor(
             Toast.LENGTH_LONG
         ).show()
         activity?.finish()
+    }
+
+    private fun setCropRatio(newRatioPair: Pair<Int, Int>) {
+        data.cropRotateValue.cropRatio = newRatioPair
+        isEdited = true
     }
 
     override fun getScreenName() = SCREEN_NAME
