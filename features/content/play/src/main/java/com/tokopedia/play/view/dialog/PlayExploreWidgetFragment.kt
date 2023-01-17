@@ -238,12 +238,14 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     private fun setupDraggable() {
         view?.setOnTouchListener { vw, motionEvent ->
+            var newX = vw.x
             if(vw.x >= 700) {
                 dismiss()
                 return@setOnTouchListener false
             }
             if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                if(motionEvent.x < 10) vw.x = vw.x - 100 else vw.x = vw.x + 100
+                newX = if(motionEvent.x < 10) newX - 100 else newX + 100
+                vw.animate().xBy(newX)
                 true
             }
             false
