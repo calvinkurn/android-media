@@ -1602,7 +1602,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleAutoOpen(){
-        if(_autoOpenInteractive.value && !repo.hasJoined(_interactive.value.game.id) && !bottomInsets.isAnyShown && !_interactive.value.isPlaying){
+        if(_autoOpenInteractive.value && !repo.hasJoined(_interactive.value.game.id) && !bottomInsets.isAnyShown && !_interactive.value.isPlaying && !_exploreWidget.value.isOpened){
             _autoOpenInteractive.setValue { false }
             handlePlayingInteractive(shouldPlay = true)
         }
