@@ -94,6 +94,7 @@ class EtalaseListBottomSheet @Inject constructor(
 
         setCloseClickListener {
             eventBus.emit(Event.ClickClose)
+            dismiss()
         }
     }
 
