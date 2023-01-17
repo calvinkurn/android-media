@@ -174,7 +174,7 @@ class FeedViewModel @Inject constructor(
                 currentFollowState[item.header.followCta.authorID] =
                     item.header.followCta.isFollow
             } else if (item is DynamicPostUiModel) {
-                currentFollowState[item.feedXCard.shopId] = item.feedXCard.followers.isFollowed
+                currentFollowState[item.feedXCard.author.id] = item.feedXCard.followers.isFollowed
             }
         }
     }
