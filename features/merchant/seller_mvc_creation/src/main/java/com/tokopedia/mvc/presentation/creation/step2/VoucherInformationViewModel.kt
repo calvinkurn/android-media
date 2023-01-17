@@ -224,6 +224,12 @@ class VoucherInformationViewModel @Inject constructor(
     }
 
     private fun handleNavigateToNextStep() {
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                voucherConfiguration = it.voucherConfiguration.copy(isFinishFilledStepTwo = true)
+            )
+        }
         _uiAction.tryEmit(VoucherCreationStepTwoAction.ContinueToNextStep(currentState.voucherConfiguration))
     }
 

@@ -55,7 +55,7 @@ class VoucherSettingViewModel @Inject constructor(
             is VoucherCreationStepThreeEvent.ChooseTargetBuyer -> {}
             is VoucherCreationStepThreeEvent.HandleCoachMark -> {}
             is VoucherCreationStepThreeEvent.TapBackButton -> handleBackToPreviousStep()
-            is VoucherCreationStepThreeEvent.NavigateToNextStep -> {}
+            is VoucherCreationStepThreeEvent.NavigateToNextStep -> handleNavigateToNextStep()
         }
     }
 
@@ -75,6 +75,16 @@ class VoucherSettingViewModel @Inject constructor(
 
     private fun handleBackToPreviousStep() {
         _uiAction.tryEmit(VoucherCreationStepThreeAction.BackToPreviousStep(currentState.voucherConfiguration))
+    }
+
+    private fun handleNavigateToNextStep() {
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                voucherConfiguration = it.voucherConfiguration.copy(isFinishFilledStepThree = true)
+            )
+        }
+        _uiAction.tryEmit(VoucherCreationStepThreeAction.ContinueToNextStep(currentState.voucherConfiguration))
     }
 
     private fun handlePromoTypeSelection(promoType: PromoType) {

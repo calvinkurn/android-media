@@ -283,6 +283,29 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         setupVoucherCodeSection()
         setupVoucherPeriodSection()
         setupButtonSection()
+        presetValue()
+    }
+
+    private fun presetValue() {
+        setVoucherTarget(voucherConfiguration.isVoucherPublic)
+        voucherNameSectionBinding?.tfVoucherName?.run {
+            editText.setText(voucherConfiguration.voucherName)
+        }
+        voucherCodeSectionBinding?.tfVoucherCode?.run {
+            editText.setText(voucherConfiguration.voucherCode)
+        }
+        voucherPeriodSectionBinding?.run {
+            tfVoucherStartPeriod.editText.setText(
+                voucherConfiguration.startPeriod.formatTo(
+                    DATE_TIME_MINUTE_PRECISION
+                )
+            )
+            tfVoucherEndPeriod.editText.setText(
+                voucherConfiguration.endPeriod.formatTo(
+                    DATE_TIME_MINUTE_PRECISION
+                )
+            )
+        }
     }
 
     private fun setupHeader() {
@@ -318,7 +341,6 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     }
 
     private fun setupVoucherTargetSelection() {
-        setVoucherTarget(voucherConfiguration.isVoucherPublic)
         voucherTargetSectionBinding?.run {
             viewVoucherTargetPublic.apply {
                 imgVoucherTarget?.setImageUrl(ImageUrlConstant.IMAGE_URL_PUBLIC_VOUCHER)
@@ -402,7 +424,6 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
 
         voucherNameSectionBinding?.run {
-            tfVoucherName.editText.setText(voucherConfiguration.voucherName)
             tfVoucherName.editText.textChangesAsFlow()
                 .filterNot { it.isEmpty() }
                 .debounce { DEBOUNCE }
@@ -437,7 +458,6 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         voucherCodeSectionBinding?.run {
             tfVoucherCode.apply {
                 prependText(voucherConfiguration.voucherCodePrefix)
-                editText.setText(voucherConfiguration.voucherCode)
                 editText.setToAllCapsMode()
                 editText.textChangesAsFlow()
                     .filterNot { it.isEmpty() }
@@ -477,20 +497,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         voucherPeriodSectionBinding?.run {
             tfVoucherStartPeriod.run {
                 disableText(editText)
-                editText.setText(
-                    voucherConfiguration.startPeriod.formatTo(
-                        DATE_TIME_MINUTE_PRECISION
-                    )
-                )
                 editText.setOnClickListener { onClickListenerForStartDate() }
             }
             tfVoucherEndPeriod.run {
                 disableText(editText)
-                editText.setText(
-                    voucherConfiguration.endPeriod.formatTo(
-                        DATE_TIME_MINUTE_PRECISION
-                    )
-                )
                 editText.setOnClickListener { onClickListenerForEndDate() }
             }
             cbRepeatPeriod.setOnCheckedChangeListener { _, isChecked ->
