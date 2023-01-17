@@ -156,7 +156,7 @@ object DynamicProductDetailMapper {
                             ProductSingleVariantDataModel(
                                 type = component.type,
                                 name = component.componentName,
-                                isThumbnailType = component.componentData.firstOrNull()?.componentType == "thumbnail"
+                                isThumbnailType = true // component.componentData.firstOrNull()?.componentType == "thumbnail"
                             )
                         )
                     } else {
