@@ -8,19 +8,31 @@ import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogMostViralDataModel
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class CatalogMostViralItemViewHolder(val view: View, private val catalogLibraryListener: CatalogLibraryListener): AbstractViewHolder<CatalogMostViralDataModel>(view) {
 
-    private val mostViralImage = view.findViewById<ImageUnify>(R.id.catalog_product_viral_image)
-    private val mostViralTitle = view.findViewById<Typography>(R.id.catalog_product_viral_title)
-    private val mostViralSubtitle =
-        view.findViewById<Typography>(R.id.catalog_product_viral_category)
-    private val mostViralIcon = view.findViewById<IconUnify>(R.id.catalog_most_viral_icon)
-    private val mostViralLayout =
-        view.findViewById<ConstraintLayout>(R.id.catalog_most_viral_item_layout)
+    private val mostViralImage: ImageUnify by lazy(LazyThreadSafetyMode.NONE) {
+        view.findViewById(R.id.catalog_product_viral_image)
+    }
+
+    private val mostViralTitle: Typography by lazy(LazyThreadSafetyMode.NONE) {
+        view.findViewById(R.id.catalog_product_viral_title)
+    }
+
+    private val mostViralSubtitle: Typography by lazy(LazyThreadSafetyMode.NONE) {
+        view.findViewById(R.id.catalog_product_viral_category)
+    }
+
+    private val mostViralIcon: IconUnify by lazy(LazyThreadSafetyMode.NONE) {
+        view.findViewById(R.id.catalog_most_viral_icon)
+    }
+
+    private val mostViralLayout: ConstraintLayout by lazy(LazyThreadSafetyMode.NONE) {
+        view.findViewById(R.id.catalog_most_viral_item_layout)
+    }
 
     companion object {
         val LAYOUT = R.layout.item_catalog_most_viral
@@ -28,7 +40,7 @@ class CatalogMostViralItemViewHolder(val view: View, private val catalogLibraryL
 
     override fun bind(element: CatalogMostViralDataModel?) {
         element?.catalogMostViralData?.imageUrl?.let { iconUrl ->
-            mostViralImage.loadImageWithoutPlaceholder(iconUrl)
+            mostViralImage.loadImage(iconUrl)
         }
         mostViralTitle.text = element?.catalogMostViralData?.name
         mostViralIcon.apply {

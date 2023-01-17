@@ -15,29 +15,37 @@ class CatalogProductItemViewHolder(
     private val catalogLibraryListener: CatalogLibraryListener
 ) : AbstractViewHolder<CatalogProductDataModel>(view) {
 
-    private val productImage = view.findViewById<ImageUnify>(R.id.catalog_product_image)
-    private val productTitle = view.findViewById<Typography>(R.id.catalog_product_title)
-    private val productPrice = view.findViewById<Typography>(R.id.catalog_product_price)
-    private val productLayout = view.findViewById<ConstraintLayout>(R.id.product_layout)
+    private val productImage: ImageUnify by lazy(LazyThreadSafetyMode.NONE) {
+        view.findViewById(R.id.catalog_product_image)
+    }
+
+    private val productTitle: Typography by lazy(LazyThreadSafetyMode.NONE) {
+        view.findViewById(R.id.catalog_product_title)
+    }
+
+    private val productPrice: Typography by lazy(LazyThreadSafetyMode.NONE) {
+        view.findViewById(R.id.catalog_product_price)
+    }
+
+    private val productLayout: ConstraintLayout by lazy(LazyThreadSafetyMode.NONE) {
+        view.findViewById(R.id.product_layout)
+    }
 
     companion object {
         val LAYOUT = R.layout.item_catalog_product
     }
 
     override fun bind(element: CatalogProductDataModel?) {
-        val priceText =
-            "${element?.catalogProduct?.marketPrice?.minFmt} - ${element?.catalogProduct?.marketPrice?.maxFmt}"
-        productPrice?.let {
-            it.text = priceText
-        }
-        element?.catalogProduct?.imageUrl?.let { iconUrl ->
+        val catalogProduct = element?.catalogProduct
+        productPrice.text =
+            "${catalogProduct?.marketPrice?.minFmt} - ${catalogProduct?.marketPrice?.maxFmt}"
+
+        catalogProduct?.imageUrl?.let { iconUrl ->
             productImage.loadImage(iconUrl)
         }
-        productTitle?.let {
-            it.text = element?.catalogProduct?.name
-        }
+        productTitle.text = element?.catalogProduct?.name ?: ""
         productLayout.setOnClickListener {
-            catalogLibraryListener.onProductCardClicked(element?.catalogProduct?.applink)
+            catalogLibraryListener.onProductCardClicked(catalogProduct?.applink)
         }
     }
 }

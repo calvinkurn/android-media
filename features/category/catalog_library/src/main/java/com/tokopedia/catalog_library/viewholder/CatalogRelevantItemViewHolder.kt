@@ -7,14 +7,23 @@ import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogRelevantDataModel
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class CatalogRelevantItemViewHolder(val view: View, private val catalogLibraryListener: CatalogLibraryListener): AbstractViewHolder<CatalogRelevantDataModel>(view) {
 
-    private val relevantImage = view.findViewById<ImageUnify>(R.id.catalog_relevant_image)
-    private val relevantTitle = view.findViewById<Typography>(R.id.catalog_relevant_product_title)
-    private val relevantLayout = view.findViewById<ConstraintLayout>(R.id.catalog_relevant_layout)
+    private val relevantImage: ImageUnify by lazy(LazyThreadSafetyMode.NONE) {
+        view.findViewById(R.id.catalog_relevant_image)
+    }
+
+    private val relevantTitle: Typography by lazy(LazyThreadSafetyMode.NONE) {
+        view.findViewById(R.id.catalog_relevant_product_title)
+    }
+
+    private val relevantLayout: ConstraintLayout by lazy(LazyThreadSafetyMode.NONE) {
+        view.findViewById(R.id.catalog_relevant_layout)
+    }
 
     companion object {
         val LAYOUT = R.layout.item_catalog_relevant
@@ -22,9 +31,9 @@ class CatalogRelevantItemViewHolder(val view: View, private val catalogLibraryLi
 
     override fun bind(element: CatalogRelevantDataModel?) {
         element?.relevantDataList?.imageUrl?.let { iconUrl ->
-            relevantImage.loadImageWithoutPlaceholder(iconUrl)
+            relevantImage.loadImage(iconUrl)
         }
-        relevantTitle.text = element?.relevantDataList?.name
+        relevantTitle.text = element?.relevantDataList?.name ?: ""
         relevantLayout.setOnClickListener {
             catalogLibraryListener.onProductCardClicked(element?.relevantDataList?.applink)
         }

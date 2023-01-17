@@ -1,6 +1,5 @@
 package com.tokopedia.catalog_library.viewholder
 
-import android.util.Log
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
