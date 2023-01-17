@@ -10,7 +10,7 @@ import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryChoos
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryGridListener
+import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
@@ -42,7 +42,7 @@ class CategoryTypeFactoryImpl(
     productRecommendationOocListener: TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener,
     productRecommendationListener: TokoNowProductRecommendationView.TokoNowProductRecommendationListener?,
     private val categoryAisleListener: CategoryAisleListener,
-    private val tokoNowCategoryGridListener: TokoNowCategoryGridListener,
+    private val tokoNowCategoryMenuListener: TokoNowCategoryMenuListener,
     private val tokoNowProductCardListener: TokoNowProductCardListener,
     feedbackWidgetListener: TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener
 ): BaseSearchCategoryTypeFactoryImpl(
@@ -71,7 +71,7 @@ class CategoryTypeFactoryImpl(
             CategoryAisleViewHolder.LAYOUT ->
                 CategoryAisleViewHolder(view, categoryAisleListener)
             TokoNowCategoryMenuViewHolder.LAYOUT ->
-                TokoNowCategoryMenuViewHolder(view, tokoNowCategoryGridListener)
+                TokoNowCategoryMenuViewHolder(view, tokoNowCategoryMenuListener)
             TokoNowRepurchaseViewHolder.LAYOUT ->
                 TokoNowRepurchaseViewHolder(view, tokoNowProductCardListener)
             else -> super.createViewHolder(view, type)

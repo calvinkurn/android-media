@@ -54,7 +54,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addMoreHom
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addProductRecomOoc
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addProgressBar
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.getItem
-import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryGridData
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryMenuData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapPlayWidgetData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductPurchaseData
@@ -356,17 +356,17 @@ class TokoNowHomeViewModel @Inject constructor(
         }, source)
     }
 
-    fun getCategoryGrid(item: TokoNowCategoryMenuUiModel, warehouseId: String) {
+    fun getCategoryMenu(warehouseId: String) {
         launchCatchError(block = {
             val response = getCategoryList(warehouseId)
-            homeLayoutItemList.mapHomeCategoryGridData(item, response, warehouseId)
+            homeLayoutItemList.mapHomeCategoryMenuData(response, warehouseId)
             val data = HomeLayoutListUiModel(
                 items = getHomeVisitableList(),
                 state = TokoNowLayoutState.UPDATE
             )
             _homeLayoutList.postValue(Success(data))
         }) {
-            homeLayoutItemList.mapHomeCategoryGridData(item, null)
+            homeLayoutItemList.mapHomeCategoryMenuData(null)
             val data = HomeLayoutListUiModel(
                 items = getHomeVisitableList(),
                 state = TokoNowLayoutState.UPDATE
@@ -650,7 +650,7 @@ class TokoNowHomeViewModel @Inject constructor(
      */
     private suspend fun getTokoNowGlobalComponent(item: Visitable<*>?, warehouseId: String) {
         when (item) {
-            is TokoNowCategoryMenuUiModel -> getCategoryGridDataAsync(item, warehouseId).await()
+            is TokoNowCategoryMenuUiModel -> getCategoryMenuDataAsync(warehouseId).await()
             is TokoNowRepurchaseUiModel -> getRepurchaseDataAsync(item, warehouseId).await()
             else -> removeUnsupportedLayout(item)
         }
@@ -672,15 +672,14 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getCategoryGridDataAsync(
-        item: TokoNowCategoryMenuUiModel,
+    private suspend fun getCategoryMenuDataAsync(
         warehouseId: String
     ): Deferred<Unit?> {
         return asyncCatchError(block = {
             val response = getCategoryList(warehouseId)
-            homeLayoutItemList.mapHomeCategoryGridData(item, response, warehouseId)
+            homeLayoutItemList.mapHomeCategoryMenuData(response, warehouseId)
         }) {
-            homeLayoutItemList.mapHomeCategoryGridData(item, emptyList())
+            homeLayoutItemList.mapHomeCategoryMenuData(emptyList())
         }
     }
 

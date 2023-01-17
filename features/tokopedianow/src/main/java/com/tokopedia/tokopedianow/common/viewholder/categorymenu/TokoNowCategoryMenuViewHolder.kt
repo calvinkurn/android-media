@@ -10,11 +10,12 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.adapter.TokoNowCategoryGridAdapter
+import com.tokopedia.tokopedianow.common.adapter.TokoNowCategoryMenuAdapter
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.adapter.differ.TokoNowCategoryGridDiffer
+import com.tokopedia.tokopedianow.common.adapter.differ.TokoNowCategoryMenuDiffer
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryMenuAdapterTypeFactory
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryMenuBinding
@@ -22,7 +23,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowCategoryMenuViewHolder(
     itemView: View,
-    private val listener: TokoNowCategoryGridListener? = null,
+    private val listener: TokoNowCategoryMenuListener? = null,
 ): AbstractViewHolder<TokoNowCategoryMenuUiModel>(itemView),
     TokoNowCategoryMenuItemViewHolder.TokoNowCategoryMenuItemListener,
     TokoNowCategoryMenuItemSeeAllViewHolder.TokoNowCategoryMenuItemSeeAllListener,
@@ -36,12 +37,12 @@ class TokoNowCategoryMenuViewHolder(
     private var binding: ItemTokopedianowCategoryMenuBinding? by viewBinding()
 
     private val adapter by lazy {
-        TokoNowCategoryGridAdapter(
+        TokoNowCategoryMenuAdapter(
             typeFactory = TokoNowCategoryMenuAdapterTypeFactory(
                 tokoNowCategoryMenuItemListener = this@TokoNowCategoryMenuViewHolder,
                 tokoNowCategoryMenuItemSeeAllListener = this@TokoNowCategoryMenuViewHolder
             ),
-            differ = TokoNowCategoryGridDiffer()
+            differ = TokoNowCategoryMenuDiffer()
         )
     }
 
@@ -67,18 +68,12 @@ class TokoNowCategoryMenuViewHolder(
         onClickSeeAll(appLink)
     }
 
-    override fun onCategoryClicked(
-        position: Int,
-        categoryId: String,
-        headerName: String,
-        categoryName: String
-    ) {
-        listener?.onCategoryClicked(
-            position = position,
-            categoryId = categoryId,
-            headerName = headerName,
-            categoryName = categoryName
-        )
+    override fun onCategoryItemClicked(data: TokoNowCategoryMenuItemUiModel, itemPosition: Int) {
+        listener?.onCategoryMenuItemClicked(data, itemPosition)
+    }
+
+    override fun onCategoryItemImpressed(data: TokoNowCategoryMenuItemUiModel, itemPosition: Int) {
+        listener?.onCategoryMenuItemImpressed(data, itemPosition)
     }
 
     override fun onChannelExpired() { /* nothing to do */ }
@@ -98,19 +93,19 @@ class TokoNowCategoryMenuViewHolder(
         header.show()
         rvCategory.show()
 
-        showCategoryGrid(
+        showCategoryMenu(
             data = data
         )
     }
 
-    private fun ItemTokopedianowCategoryMenuBinding.showCategoryGrid(
+    private fun ItemTokopedianowCategoryMenuBinding.showCategoryMenu(
         data: TokoNowCategoryMenuUiModel
     ) {
         binding.apply {
             setHeader(data)
             setCategoryList(data)
             root.addOnImpressionListener(data) {
-                listener?.onCategoryImpression(data)
+                listener?.onCategoryMenuWidgetImpression(data)
             }
         }
     }
@@ -144,7 +139,7 @@ class TokoNowCategoryMenuViewHolder(
                 description?.text = itemView.context.getString(R.string.tokopedianow_category_is_failed_to_display_description)
                 refreshBtn?.setOnClickListener {
                     progressState = true
-                    listener?.onCategoryRetried()
+                    listener?.onCategoryMenuWidgetRetried()
                 }
             }
 
@@ -156,12 +151,14 @@ class TokoNowCategoryMenuViewHolder(
 
     private fun onClickSeeAll(appLink: String) {
         RouteManager.route(itemView.context, appLink)
+        listener?.onSeeAllCategoriesClicked()
     }
 
-    interface TokoNowCategoryGridListener {
-        fun onCategoryRetried()
-        fun onAllCategoryClicked()
-        fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String)
-        fun onCategoryImpression(data: TokoNowCategoryMenuUiModel)
+    interface TokoNowCategoryMenuListener {
+        fun onCategoryMenuWidgetRetried()
+        fun onSeeAllCategoriesClicked()
+        fun onCategoryMenuItemClicked(data: TokoNowCategoryMenuItemUiModel, itemPosition: Int)
+        fun onCategoryMenuItemImpressed(data: TokoNowCategoryMenuItemUiModel, itemPosition: Int)
+        fun onCategoryMenuWidgetImpression(data: TokoNowCategoryMenuUiModel)
     }
 }

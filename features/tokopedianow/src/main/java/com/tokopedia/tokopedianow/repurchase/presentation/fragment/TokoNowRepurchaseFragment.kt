@@ -63,7 +63,6 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
-import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.util.RecyclerViewGridUtil.addProductItemDecoration
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger
@@ -75,7 +74,6 @@ import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.Erro
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.LOAD_LAYOUT_ERROR
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.LOAD_MORE_ERROR
 import com.tokopedia.tokopedianow.common.view.TokoNowView
-import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryGridListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener
@@ -93,6 +91,7 @@ import com.tokopedia.tokopedianow.repurchase.di.component.DaggerRepurchaseCompon
 import com.tokopedia.tokopedianow.repurchase.presentation.adapter.RepurchaseAdapter
 import com.tokopedia.tokopedianow.repurchase.presentation.adapter.RepurchaseAdapterTypeFactory
 import com.tokopedia.tokopedianow.repurchase.presentation.adapter.differ.RepurchaseListDiffer
+import com.tokopedia.tokopedianow.repurchase.presentation.listener.CategoryMenuCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductRecommendationCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductRecommendationOocCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.RepurchaseProductCardListener
@@ -120,7 +119,6 @@ class TokoNowRepurchaseFragment:
     MiniCartWidgetListener,
     TokoNowView,
     TokoNowChooseAddressWidgetListener,
-    TokoNowCategoryGridListener,
     TokoNowEmptyStateNoResultListener,
     TokoNowRecommendationCarouselListener,
     RepurchaseEmptyStateNoHistoryListener,
@@ -166,7 +164,7 @@ class TokoNowRepurchaseFragment:
                 tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
                 tokoNowChooseAddressWidgetListener = this,
                 tokoNowListener = this,
-                tokoNowCategoryGridListener = this,
+                tokoNowCategoryMenuListener = createCategoryMenuCallback(),
                 tokoNowEmptyStateNoResultListener = this,
                 tokoNowRecommendationCarouselListener = this,
                 emptyStateNoHistorylistener = this,
@@ -256,14 +254,6 @@ class TokoNowRepurchaseFragment:
     override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
 
     override fun refreshLayoutPage() = refreshLayout()
-
-    override fun onCategoryRetried() { /* noting to do */ }
-
-    override fun onAllCategoryClicked() { /* noting to do */ }
-
-    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String) { /* noting to do */ }
-
-    override fun onCategoryImpression(data: TokoNowCategoryMenuUiModel) { }
 
     override fun onFindInTokopediaClick() {
         RouteManager.route(context, ApplinkConst.HOME)
@@ -1055,5 +1045,12 @@ class TokoNowRepurchaseFragment:
 
     private fun createSimilarProductCallback(): SimilarProductCallback {
         return SimilarProductCallback(analytics)
+    }
+
+    private fun createCategoryMenuCallback(): CategoryMenuCallback {
+        return CategoryMenuCallback(
+            analytics = analytics,
+            viewModel = viewModel
+        )
     }
 }

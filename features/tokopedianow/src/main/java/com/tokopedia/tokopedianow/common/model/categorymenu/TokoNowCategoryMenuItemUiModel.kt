@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.common.model.categorymenu
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryMenuItemTypeFactory
 
 data class TokoNowCategoryMenuItemUiModel(
@@ -10,7 +11,7 @@ data class TokoNowCategoryMenuItemUiModel(
     val appLink: String = "",
     val warehouseId: String = "",
     val headerName: String = ""
-): Visitable<TokoNowCategoryMenuItemTypeFactory> {
+): Visitable<TokoNowCategoryMenuItemTypeFactory>, ImpressHolder() {
     override fun type(typeFactoryCategory: TokoNowCategoryMenuItemTypeFactory): Int {
         return typeFactoryCategory.type(this)
     }

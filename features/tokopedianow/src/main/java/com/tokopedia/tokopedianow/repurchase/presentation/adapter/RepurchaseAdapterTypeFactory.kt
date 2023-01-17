@@ -41,7 +41,7 @@ import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
 class RepurchaseAdapterTypeFactory(
     private val tokoNowListener: TokoNowView? = null,
     private val tokoNowEmptyStateOocListener: TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener? = null,
-    private val tokoNowCategoryGridListener: TokoNowCategoryMenuViewHolder.TokoNowCategoryGridListener? = null,
+    private val tokoNowCategoryMenuListener: TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener? = null,
     private val tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener? = null,
     private val productCardListener: RepurchaseProductCardListener,
     private val similarProductListener: SimilarProductListener,
@@ -83,7 +83,7 @@ class RepurchaseAdapterTypeFactory(
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             // region Common TokoNow Component
-            TokoNowCategoryMenuViewHolder.LAYOUT -> TokoNowCategoryMenuViewHolder(view, tokoNowCategoryGridListener)
+            TokoNowCategoryMenuViewHolder.LAYOUT -> TokoNowCategoryMenuViewHolder(view, tokoNowCategoryMenuListener)
             TokoNowChooseAddressWidgetViewHolder.LAYOUT -> TokoNowChooseAddressWidgetViewHolder(view, tokoNowListener, tokoNowChooseAddressWidgetListener)
             TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(
                 view,

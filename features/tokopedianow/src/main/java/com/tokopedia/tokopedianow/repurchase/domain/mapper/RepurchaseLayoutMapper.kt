@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.repurchase.domain.mapper
 
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -28,6 +29,7 @@ import com.tokopedia.tokopedianow.datefilter.presentation.fragment.TokoNowDateFi
 import com.tokopedia.tokopedianow.datefilter.presentation.fragment.TokoNowDateFilterFragment.Companion.LAST_ONE_MONTH_POSITION
 import com.tokopedia.tokopedianow.datefilter.presentation.fragment.TokoNowDateFilterFragment.Companion.LAST_THREE_MONTHS_POSITION
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.APPLINK_PARAM_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.SORT_FILTER
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseProductMapper.mapToProductListUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.factory.RepurchaseSortFilterFactory
@@ -101,16 +103,44 @@ object RepurchaseLayoutMapper {
         removeAll { it is RepurchaseProductUiModel }
     }
 
-    fun MutableList<Visitable<*>>.addCategoryGrid(response: List<GetCategoryListResponse.CategoryListResponse.CategoryResponse>?, warehouseId: String) {
+    fun MutableList<Visitable<*>>.addCategoryMenu(
+        response: List<GetCategoryListResponse.CategoryListResponse.CategoryResponse>? = null,
+        warehouseId: String = "",
+        @TokoNowLayoutState state: Int
+    ) {
         val categoryListUiModel = HomeCategoryMapper.mapToCategoryList(response, warehouseId, CATEGORY_GRID_TITLE)
         add(
             TokoNowCategoryMenuUiModel(
                 id = "",
                 title = "",
                 categoryListUiModel = categoryListUiModel,
-                state = TokoNowLayoutState.SHOW
+                state = state
             )
         )
+    }
+
+    fun MutableList<Visitable<*>>.mapCategoryMenuData(
+        response: List<GetCategoryListResponse.CategoryListResponse.CategoryResponse>?,
+        warehouseId: String = ""
+    ) {
+        getCategoryMenuIndex()?.let { index ->
+            val item = this[index]
+            if (item is TokoNowCategoryMenuUiModel) {
+                val newItem = if (!response.isNullOrEmpty()) {
+                    val seeAllAppLink = ApplinkConstInternalTokopediaNow.CATEGORY_MENU + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
+                    val categoryList = HomeCategoryMapper.mapToCategoryList(response, item.title, seeAllAppLink)
+                    item.copy(categoryListUiModel = categoryList, state = TokoNowLayoutState.SHOW, seeAllAppLink = seeAllAppLink)
+                } else {
+                    item.copy(categoryListUiModel = null, state = TokoNowLayoutState.HIDE)
+                }
+                removeAt(index)
+                add(index, newItem)
+            }
+        }
+    }
+
+    fun MutableList<Visitable<*>>.getCategoryMenuIndex(): Int? {
+        return firstOrNull { it is TokoNowCategoryMenuUiModel }?.let { indexOf(it) }
     }
 
     fun MutableList<Visitable<*>>.addChooseAddress() {

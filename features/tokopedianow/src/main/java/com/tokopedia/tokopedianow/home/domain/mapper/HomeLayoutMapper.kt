@@ -44,6 +44,7 @@ import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMP
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.TICKER_WIDGET_ID
 import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.APPLINK_PARAM_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.mapToCategoryLayout
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.mapToCategoryList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapRepurchaseUiModel
@@ -86,7 +87,6 @@ object HomeLayoutMapper {
 
     const val DEFAULT_QUANTITY = 0
     private const val DEFAULT_PARENT_ID = "0"
-    private const val APPLINK_PARAM_WAREHOUSE_ID = "?warehouse_id="
 
     private val SUPPORTED_LAYOUT_TYPES = listOf(
         CATEGORY,
@@ -209,21 +209,24 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.mapHomeCategoryGridData(
-        item: TokoNowCategoryMenuUiModel,
+    fun MutableList<HomeLayoutItemUiModel>.mapHomeCategoryMenuData(
         response: List<GetCategoryListResponse.CategoryListResponse.CategoryResponse>?,
         warehouseId: String = ""
     ) {
-        updateItemById(item.id) {
-            if (!response.isNullOrEmpty()) {
+        firstOrNull { it.layout is TokoNowCategoryMenuUiModel }?.let {
+            val item = it.layout as TokoNowCategoryMenuUiModel
+            val newItem = if (!response.isNullOrEmpty()) {
                 val seeAllAppLink = ApplinkConstInternalTokopediaNow.CATEGORY_MENU + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
                 val categoryList = mapToCategoryList(response, item.title, seeAllAppLink)
-                val layout = item.copy(categoryListUiModel = categoryList, state = TokoNowLayoutState.SHOW, seeAllAppLink = seeAllAppLink)
+                val layout = it.layout.copy(categoryListUiModel = categoryList, state = TokoNowLayoutState.SHOW, seeAllAppLink = seeAllAppLink)
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             } else {
-                val layout = item.copy(categoryListUiModel = null, state = TokoNowLayoutState.HIDE)
+                val layout = it.layout.copy(categoryListUiModel = null, state = TokoNowLayoutState.HIDE)
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             }
+            val index = indexOf(it)
+            removeAt(index)
+            add(index, newItem)
         }
     }
 

@@ -2,10 +2,10 @@ package com.tokopedia.tokopedianow.common.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowListAdapter
-import com.tokopedia.tokopedianow.common.adapter.differ.TokoNowCategoryGridDiffer
+import com.tokopedia.tokopedianow.common.adapter.differ.TokoNowCategoryMenuDiffer
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryMenuAdapterTypeFactory
 
-class TokoNowCategoryGridAdapter(
+class TokoNowCategoryMenuAdapter(
     typeFactory: TokoNowCategoryMenuAdapterTypeFactory,
-    differ: TokoNowCategoryGridDiffer
+    differ: TokoNowCategoryMenuDiffer
 ) : BaseTokopediaNowListAdapter<Visitable<*>, TokoNowCategoryMenuAdapterTypeFactory>(typeFactory, differ)

@@ -12,17 +12,19 @@ import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuI
 
 object HomeCategoryMapper {
 
+    const val APPLINK_PARAM_WAREHOUSE_ID = "?warehouse_id="
+
     private const val MAX_CATEGORY_ITEM_COUNT = 9
     private const val NOT_ADULT_CATEGORY = 0
 
     fun mapToCategoryLayout(response: HomeLayoutResponse, state: HomeLayoutItemState): HomeLayoutItemUiModel {
-        val categoryGridUiModel = TokoNowCategoryMenuUiModel(
+        val categoryMenuUiModel = TokoNowCategoryMenuUiModel(
             id = response.id,
             title = response.header.name,
             categoryListUiModel = null,
             state = TokoNowLayoutState.LOADING
         )
-        return HomeLayoutItemUiModel(categoryGridUiModel, state)
+        return HomeLayoutItemUiModel(categoryMenuUiModel, state)
     }
 
     fun mapToCategoryList(response: List<GetCategoryListResponse.CategoryListResponse.CategoryResponse>?, headerName: String, seeAllAppLink: String): List<Visitable<*>> {

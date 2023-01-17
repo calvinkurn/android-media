@@ -108,6 +108,9 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_ACTION_CLICK_CLOSE_SHARE_BOTTOM_SHEET  = "click - close share bottom sheet"
         const val EVENT_ACTION_CLICK_ADD_TO_WISHLIST  = "click bell add to wishlist"
         const val EVENT_ACTION_CLICK_REMOVE_FROM_WISHLIST  = "click bell remove from wishlist"
+        const val EVENT_ACTION_IMPRESSION_CATEGORY_MENU_WIDGET = "impression category menu widget"
+        const val EVENT_ACTION_CLICK_CATEGORY_MENU_WIDGET = "click category menu widget"
+        const val EVENT_ACTION_CLICK_SEE_ALL_CATEGORIES = "click lihat semua category menu"
     }
 
     object TRACKER_ID{
