@@ -14,24 +14,22 @@ import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroSetupTitleBi
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
+import kotlin.math.max
 
 /**
  * Created by fachrizalmrsln on 10/01/23
  */
-class PlayBroadcastSetupTitleBottomSheet @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
-) : BottomSheetUnify() {
+class PlayBroadcastSetupTitleBottomSheet: BottomSheetUnify() {
 
     private var _binding: BottomSheetPlayBroSetupTitleBinding? = null
     private val binding: BottomSheetPlayBroSetupTitleBinding
         get() = _binding!!
 
-    private val viewModel: PlayBroadcastPrepareViewModel by viewModels { viewModelFactory }
-
     private var mListener: Listener? = null
 
     private lateinit var mTitle: String
     private var mErrorState = false
+    private var mMaxCharacter: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +58,7 @@ class PlayBroadcastSetupTitleBottomSheet @Inject constructor(
         setTitle(getString(R.string.play_bro_title_label_bottom_sheet))
 
         tvSetupTitleField.apply {
-            setCounter(viewModel.maxTitleChars)
+            setCounter(mMaxCharacter)
             editText.setText(mTitle)
             editText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -121,6 +119,10 @@ class PlayBroadcastSetupTitleBottomSheet @Inject constructor(
         setLoading(false)
         binding.tvSetupTitleField.isInputError = mErrorState
         binding.tvSetupTitleField.setMessage(errorMessage ?: getString(R.string.play_bro_default_error_message))
+    }
+
+    fun setMaxCharacter(maxCharacter: Int) {
+        mMaxCharacter = maxCharacter
     }
 
     private fun setLoading(isLoading: Boolean) {

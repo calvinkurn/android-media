@@ -62,11 +62,6 @@ abstract class PlayBroadcastFragmentModule {
      */
     @Binds
     @IntoMap
-    @FragmentKey(PlayBroadcastSetupTitleBottomSheet::class)
-    abstract fun getSetupTitleBottomSheet(fragment: PlayBroadcastSetupTitleBottomSheet): Fragment
-
-    @Binds
-    @IntoMap
     @FragmentKey(PlayBroadcastSetupCoverUploadImageFragment::class)
     abstract fun getSetupCoverUploadImageFragment(fragment: PlayBroadcastSetupCoverUploadImageFragment): Fragment
 
