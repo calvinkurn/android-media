@@ -96,17 +96,17 @@ class MediaView @JvmOverloads constructor(
         }
 
         val doubleTapGestureListener = object : GestureDetector.OnDoubleTapListener {
-            override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                 //Logic for play-pause
                 togglePlayPause()
                 return true
             }
 
-            override fun onDoubleTap(e: MotionEvent?): Boolean {
+            override fun onDoubleTap(e: MotionEvent): Boolean {
                 return false
             }
 
-            override fun onDoubleTapEvent(e: MotionEvent?): Boolean {
+            override fun onDoubleTapEvent(e: MotionEvent): Boolean {
                 if (e?.action == MotionEvent.ACTION_UP) {
                     toggleScaleType()
                     return true

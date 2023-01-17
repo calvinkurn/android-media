@@ -9,11 +9,17 @@ data class ProductListResponse(
     val productList: ProductList = ProductList()
 ) {
     data class ProductList(
+        @SerializedName("header")
+        val header: Header = Header(),
         @SerializedName("meta")
         val meta: Meta = Meta(0),
         @SerializedName("data")
         val `data`: List<Data> = listOf()
     ) {
+        data class Header(
+            @SerializedName("messages")
+            val messages: List<String> = emptyList(),
+        )
         data class Meta(
             @SerializedName("totalHits")
             val totalHits: Int = 0

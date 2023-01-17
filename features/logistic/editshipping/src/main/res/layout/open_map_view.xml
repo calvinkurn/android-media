@@ -37,7 +37,8 @@
             android:textSize="14sp"
             android:focusable="false"
             android:clickable="true"
-            android:hint="@string/choose_location"/>
+            android:hint="@string/choose_location"
+            android:textColor="@color/Unify_N700"/>
 
     </RelativeLayout>
 

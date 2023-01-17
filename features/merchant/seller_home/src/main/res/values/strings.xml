@@ -226,5 +226,20 @@
     <string name="text_checkbox_in_detail_centralize_promo">Jangan tampilkan informasi fitur ini lagi</string>
     <string name="text_badge_new">Baru</string>
     <string name="sah_new_other_tokomember">TokoMember</string>
+    <string name="sah_new_seller_welcoming_dialog_title">Halo, %1$s. Selamat datang di Tokopedia Seller!</string>
+    <string name="sah_new_seller_welcoming_dialog_description">Kelola toko jadi lebih mudah dengan tampilan baru. Pelajari dulu, yuk.</string>
+    <string name="sah_learn_a_new_look">Pelajari Tampilan Baru</string>
+    <string name="sah_new_seller_welcoming_coach_mark_title_1">Cek operasional toko dan ikuti misi</string>
+    <string name="sah_new_seller_welcoming_coach_mark_description_1">Selesaikan tugasmu hari ini dan pantau data tentang tokomu di sini, ya.</string>
+    <string name="sah_new_seller_welcoming_coach_mark_title_2">Yang baru-baru jangan sampai lolos!</string>
+    <string name="sah_new_seller_welcoming_coach_mark_description_2">Cek notifikasi agar tetap tahu kabar terkini.</string>
+    <string name="sah_new_seller_welcoming_coach_mark_title_3">Fitur utamanya ada di navigasi ini</string>
+    <string name="sah_new_seller_welcoming_coach_mark_description_3">Kamu bisa lihat daftar produk, balas chat, dan proses pesanan.</string>
+    <string name="sah_new_seller_welcoming_coach_mark_title_4">Fitur lain yang tidak kalah penting</string>
+    <string name="sah_new_seller_welcoming_coach_mark_description_4">Temukan fitur lainnya seperti Statistik, Iklan dan Promosi, Ulasan, Diskusi, Komplain di sini.</string>
 
+    <!-- Wear Os -->
+    <string name="wearos_install_popup_title">Install Wear App</string>
+    <string name="wearos_install_popup_install">Install</string>
+    <string name="wearos_install_popup_later">Not Now</string>
 </resources>

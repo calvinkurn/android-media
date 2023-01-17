@@ -19,7 +19,7 @@ class StackedCouponFilterPagerAdapter(fm: FragmentManager, private val mItems: L
         return mItems.size
     }
 
-    override fun getPageTitle(position: Int): CharSequence? {
+    override fun getPageTitle(position: Int): CharSequence {
         return mItems[position].name
     }
 

@@ -12,7 +12,9 @@ import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.searchcategory.data.createAceSearchProductRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createCategoryFilterRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createDynamicChannelRequest
+import com.tokopedia.tokopedianow.searchcategory.data.createFeedbackFieldToggleRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createQuickFilterRequest
+import com.tokopedia.tokopedianow.searchcategory.data.getFeedbackFieldToggleData
 import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokopedianow.searchcategory.data.mapper.getBanner
 import com.tokopedia.tokopedianow.searchcategory.data.mapper.getCategoryFilter
@@ -38,15 +40,16 @@ class GetSearchFirstPageUseCase(
         graphqlUseCase.addRequest(createQuickFilterRequest(quickFilterParams))
         graphqlUseCase.addRequest(createDynamicChannelRequest(TOKONOW_SEARCH))
         graphqlUseCase.addRequest(createCategoryJumperRequest(queryParams))
+        graphqlUseCase.addRequest(createFeedbackFieldToggleRequest())
 
         val graphqlResponse = graphqlUseCase.executeOnBackground()
-
         return SearchModel(
                 searchProduct = getSearchProduct(graphqlResponse),
                 categoryFilter = getCategoryFilter(graphqlResponse),
                 quickFilter = getQuickFilter(graphqlResponse),
                 bannerChannel = getBanner(graphqlResponse),
                 searchCategoryJumper = getSearchCategoryJumper(graphqlResponse),
+                feedbackFieldToggle = getFeedbackFieldToggleData(graphqlResponse)
         )
     }
 

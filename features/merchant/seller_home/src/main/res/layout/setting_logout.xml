@@ -24,7 +24,7 @@
         android:id="@+id/appVersionText"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginEnd="16dp"
         android:gravity="center_vertical"
         android:textColor="@color/Unify_N700_32"
         app:layout_constraintEnd_toEndOf="parent"

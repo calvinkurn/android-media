@@ -10,7 +10,7 @@ data class ProfileUiModel(
     val name: String,
     val username: String,
     val biography: String,
-    val badges: List<Any?>,
+    val badges: List<String>,
     val stats: ProfileStatsUiModel,
     val shareLink: LinkUiModel,
     val liveInfo: LivePlayChannelUiModel,

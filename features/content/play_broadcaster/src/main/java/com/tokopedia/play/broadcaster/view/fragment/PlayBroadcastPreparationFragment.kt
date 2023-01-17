@@ -237,7 +237,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                             analytic.onClickAccountAndHaveDraft()
                             getSwitchAccountConfirmationDialog(contentAccount).show()
                         }
-                        else parentViewModel.submitAction(SwitchAccount)
+                        else parentViewModel.submitAction(SwitchAccount())
                         viewModel.setFromSwitchAccount(true)
                     }
                 })
@@ -248,15 +248,26 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         parentViewModel.submitAction(PlayBroadcastAction.GetAccountList(TYPE_USER))
                     }
 
-                    override fun impressTncOnboarding() {}
+                    override fun clickNextOnTncOnboarding() {
+                        analytic.onClickNextOnboardingUGC()
+                    }
 
-                    override fun impressCompleteOnboarding() {}
+                    override fun clickUsernameFieldOnCompleteOnboarding() {
+                        analytic.onClickUsernameFieldCompleteOnboardingUGC()
+                    }
 
-                    override fun clickNextOnTncOnboarding() {}
+                    override fun clickCheckBoxOnCompleteOnboarding() {
+                        analytic.onClickCheckBoxCompleteOnboardingUGC()
+                    }
 
-                    override fun clickNextOnCompleteOnboarding() {}
+                    override fun clickNextOnCompleteOnboarding() {
+                        analytic.onClickNextOnboardingUGC()
+                    }
 
-                    override fun clickCloseIcon() { closeBottomSheet() }
+                    override fun clickCloseIcon() {
+                        analytic.onClickCloseOnboardingUGC()
+                        closeBottomSheet()
+                    }
                 })
             }
             is WarningInfoBottomSheet -> {
@@ -266,9 +277,17 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 })
             }
             is SellerTncBottomSheet -> {
-                childFragment.initViews(parentViewModel.tncList)
+                childFragment.setData(parentViewModel.tncList)
                 childFragment.setListener(object : SellerTncBottomSheet.Listener {
-                    override fun clickCloseIcon() { closeBottomSheet() }
+                    override fun clickOkButton() {
+                        analytic.onClickOkButtonTNCSGC()
+                        closeBottomSheet()
+                    }
+
+                    override fun clickCloseIcon() {
+                        analytic.onClickCloseTNCSGC()
+                        closeBottomSheet()
+                    }
                 })
             }
         }
@@ -739,6 +758,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Others */
     private fun showMainComponent(isShow: Boolean) {
+        if (!isShow) binding.toolbarContentCommon.hideCoachMarkSwitchAccount()
         binding.groupPreparationMain.showWithCondition(isShow)
     }
 
@@ -879,7 +899,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     else getString(R.string.play_bro_switch_account_secondary_cta_buyer_dialog)
                 )
                 setSecondaryCTAClickListener {
-                    parentViewModel.submitAction(SwitchAccount)
+                    parentViewModel.submitAction(SwitchAccount())
                     if (dialog?.isShowing == true) {
                         analytic.onClickConfirmSwitchAccount()
                         dismiss()

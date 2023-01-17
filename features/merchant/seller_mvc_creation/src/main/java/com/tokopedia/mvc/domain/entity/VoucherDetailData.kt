@@ -5,7 +5,7 @@ import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
-import com.tokopedia.utils.date.DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z
+import com.tokopedia.utils.date.DateUtil.YYYY_MM_DD_T_HH_MM_SS
 import com.tokopedia.utils.date.toDate
 
 data class VoucherDetailData(
@@ -85,9 +85,10 @@ data class VoucherDetailData(
             isVoucherPublic = isPublic.isMoreThanZero(),
             voucherName = voucherName,
             voucherCode = voucherCode,
-            startPeriod = voucherStartTime.toDate(YYYY_MM_DD_T_HH_MM_SS_Z),
-            endPeriod = voucherFinishTime.toDate(YYYY_MM_DD_T_HH_MM_SS_Z),
-            totalPeriod = totalPeriod
+            startPeriod = voucherStartTime.toDate(YYYY_MM_DD_T_HH_MM_SS),
+            endPeriod = voucherFinishTime.toDate(YYYY_MM_DD_T_HH_MM_SS),
+            totalPeriod = totalPeriod,
+            warehouseId = warehouseId
         )
     }
 

@@ -10,7 +10,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.review.R
 import com.tokopedia.review.analytics.common.CassavaTestFixture
@@ -21,25 +20,26 @@ import com.tokopedia.review.feature.reviewlist.data.ProductReviewListResponse
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment
 import com.tokopedia.review.stub.inbox.presentation.activity.InboxReputationActivityStub
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import org.hamcrest.Matchers
+import org.hamcrest.CoreMatchers
 import org.junit.Rule
 import org.junit.Test
 
 class SellerReviewListActivityTest: CassavaTestFixture() {
 
     companion object {
-        const val CLICK_PRODUCT_PATH =
-            "tracker/merchant/review/seller/rating_product_click_product.json"
-        const val CLICK_FILTER_PATH =
-            "tracker/merchant/review/seller/rating_product_click_filter.json"
+        const val CLICK_PRODUCT_PATH = "tracker/merchant/review/seller/rating_product_click_product.json"
+        const val CLICK_FILTER_PATH = "tracker/merchant/review/seller/rating_product_click_filter.json"
         const val CLICK_SORT_PATH = "tracker/merchant/review/seller/rating_product_click_sort.json"
         const val CLICK_SEARCH_PATH = "tracker/merchant/review/seller/rating_product_search.json"
         const val PRODUCT_NAME_TO_SEARCH = "baju"
     }
 
     @get:Rule
-    var activityRule: ActivityTestRule<InboxReputationActivityStub> =
-        IntentsTestRule(InboxReputationActivityStub::class.java, false, false)
+    var activityRule = IntentsTestRule(
+        InboxReputationActivityStub::class.java,
+        false,
+        false
+    )
 
     override fun setup() {
         super.setup()
@@ -53,13 +53,9 @@ class SellerReviewListActivityTest: CassavaTestFixture() {
     @Test
     fun validateClickProduct() {
         actionTest {
-            val viewInteractionRatingProduct =
-                Espresso.onView(ViewMatchers.withId(R.id.rvRatingProduct))
-            viewInteractionRatingProduct.perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                    getRatingProductItemCount() - 1,
-                    ViewActions.scrollTo()
-                )
+            scrollToRecyclerViewItem(R.id.rvRatingProduct, getRatingProductItemCount().dec())
+            val viewInteractionRatingProduct = Espresso.onView(
+                ViewMatchers.withId(R.id.rvRatingProduct)
             )
             viewInteractionRatingProduct.perform(
                 ViewActions.swipeDown()
@@ -86,12 +82,11 @@ class SellerReviewListActivityTest: CassavaTestFixture() {
     @Test
     fun validateClickFilter() {
         actionTest {
-            Espresso.onView(ViewMatchers.withId(R.id.review_period_filter_chips))
-                .perform(ViewActions.click())
+            clickAction(R.id.review_period_filter_chips)
             waitUntilBottomSheetShowingAndSettled {
                 findFragmentByTag(RatingProductFragment.BOTTOM_SHEET_FILTER_TAG)
             }
-            Espresso.onData(Matchers.anything())
+            Espresso.onData(CoreMatchers.anything())
                 .inAdapterView(ViewMatchers.withId(R.id.listFilterRatingProduct)).atPosition(1)
                 .perform(ViewActions.click())
         } assertTest {
@@ -103,12 +98,11 @@ class SellerReviewListActivityTest: CassavaTestFixture() {
     @Test
     fun validateClickSort() {
         actionTest {
-            Espresso.onView(ViewMatchers.withId(R.id.review_sort_chips))
-                .perform(ViewActions.click())
+            clickAction(R.id.review_sort_chips)
             waitUntilBottomSheetShowingAndSettled {
                 findFragmentByTag(RatingProductFragment.BOTTOM_SHEET_SORT_TAG)
             }
-            Espresso.onData(Matchers.anything())
+            Espresso.onData(CoreMatchers.anything())
                 .inAdapterView(ViewMatchers.withId(R.id.listSortRatingProduct)).atPosition(1)
                 .perform(ViewActions.click())
         } assertTest {
@@ -120,9 +114,7 @@ class SellerReviewListActivityTest: CassavaTestFixture() {
     @Test
     fun validateClickSearch() {
         actionTest {
-            Espresso.onView(ViewMatchers.withId(R.id.searchBarRatingProduct))
-                .perform(ViewActions.click())
-            Espresso.onIdle()
+            clickAction(R.id.searchBarRatingProduct)
             Espresso.onView(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield))
                 .perform(ViewActions.typeText(PRODUCT_NAME_TO_SEARCH))
             Espresso.onView(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield))

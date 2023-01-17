@@ -8,20 +8,24 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.mvc.data.mapper.GetVoucherListMapper
 import com.tokopedia.mvc.data.response.GetMerchantVoucherListResponse
 import com.tokopedia.mvc.domain.entity.Voucher
+import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.network.exception.MessageErrorException
 import javax.inject.Inject
 
 class GetVoucherListChildUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     private val mapper: GetVoucherListMapper
-): GraphqlUseCase<List<Voucher>>(repository) {
+) : GraphqlUseCase<List<Voucher>>(repository) {
 
     companion object {
         private const val PARAM_KEY = "voucherId"
+        private const val PARAM_FILTER_VOUCHER_STATUS = "voucherStatus"
         private const val OPERATION_NAME = "MerchantPromotionGetChildMVList"
         private const val QUERY = """
-            query MerchantPromotionGetChildMVList(${'$'}voucherId: Int!) {
-                MerchantPromotionGetChildMVList(parent_voucher_id: ${'$'}voucherId, Filter: {}) {
+            query MerchantPromotionGetChildMVList(${'$'}voucherId: Int!, ${'$'}voucherStatus: String) {
+                MerchantPromotionGetChildMVList(parent_voucher_id: ${'$'}voucherId, Filter: {
+                voucher_status: ${'$'}voucherStatus
+                }) {
                     data {
                       vouchers {
                         voucher_id
@@ -59,14 +63,15 @@ class GetVoucherListChildUseCase @Inject constructor(
         """
     }
 
-    private val query = object: GqlQueryInterface {
+    private val query = object : GqlQueryInterface {
         override fun getOperationNameList(): List<String> = listOf(OPERATION_NAME)
         override fun getQuery(): String = QUERY.trimIndent()
         override fun getTopOperationName(): String = OPERATION_NAME
     }
 
-    suspend fun execute(voucherId: Long): List<Voucher> {
-        val request = buildRequest(voucherId)
+    suspend fun execute(voucherId: Long, voucherStatus: ArrayList<VoucherStatus>?= null): List<Voucher> {
+        val filterToApply = voucherStatus?.joinToString { it.id.toString() }.orEmpty().replace(" ","")
+        val request = buildRequest(voucherId, filterToApply)
         val response = repository.response(listOf(request))
         val errors = response.getError(GetMerchantVoucherListResponse::class.java)
         if (errors.isNullOrEmpty()) {
@@ -77,11 +82,17 @@ class GetVoucherListChildUseCase @Inject constructor(
         }
     }
 
-    private fun buildRequest(voucherId: Long): GraphqlRequest {
+    private fun buildRequest(
+        voucherId: Long,
+        voucherStatus: String
+    ): GraphqlRequest {
         return GraphqlRequest(
             query,
             GetMerchantVoucherListResponse::class.java,
-            mapOf(PARAM_KEY to voucherId)
+            mapOf(
+                PARAM_KEY to voucherId,
+                PARAM_FILTER_VOUCHER_STATUS to voucherStatus
+            )
         )
     }
 }

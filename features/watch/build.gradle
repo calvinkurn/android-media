@@ -1,0 +1,76 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+apply from: "../../compile-instrument-test.gradle"
+
+android{
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
+    defaultConfig {
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
+
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+}
+
+buildscript {
+    repositories {
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
+            allowInsecureProtocol = true
+        }
+        mavenCentral()
+        maven {
+            url 'https://maven-hansel.tokopedia.com/maven'
+            allowInsecureProtocol = true
+        }
+        google()
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.playServicesDependencies.playServiceWearable
+    implementation rootProject.ext.miscDependencies.coroutinePlayService
+
+    wearApp project(':wearosapp')
+
+}
+
+project.ext {
+    artifactId = 'home-nav'
+    groupId = 'com.tokopedia.discovery'
+    versionName = "0.0.1"
+    artifactName ="home-nav-release"
+}
+
+apply from: '../../publish_local.gradle'
+apply from: '../../sonar_config.gradle'
+apply from: '../../jacoco_task.gradle'

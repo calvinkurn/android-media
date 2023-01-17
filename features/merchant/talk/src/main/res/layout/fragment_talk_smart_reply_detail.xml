@@ -8,15 +8,15 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/layout_lvl2">
+        android:paddingBottom="16dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/talkSmartReplyDetailCardContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/Unify_N50"
-            android:paddingTop="@dimen/layout_lvl1"
-            android:paddingBottom="@dimen/layout_lvl1"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -25,8 +25,8 @@
                 android:id="@+id/talkSmartReplyDetailCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/layout_lvl2"
-                android:layout_marginEnd="@dimen/layout_lvl2"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -35,9 +35,9 @@
             android:id="@+id/talk_smart_reply_detail_ticker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_marginEnd="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
             app:closeButtonVisibility="gone"
             app:descriptionText="@string/smart_reply_detail_ticker"
             app:layout_constraintTop_toBottomOf="@id/talkSmartReplyDetailCardContainer"
@@ -48,8 +48,8 @@
             android:id="@+id/talk_smart_reply_detail_stock_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:text="@string/smart_reply_detail_stock_availability_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/talk_smart_reply_detail_ticker"
@@ -66,9 +66,9 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/talkSmartReplyDetailSubtitle"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginTop="8dp"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintEnd_toStartOf="@id/talkSmartReplySwitch"
             app:layout_constraintStart_toStartOf="@id/talk_smart_reply_detail_ticker"
@@ -80,9 +80,9 @@
             android:id="@+id/talkSmartReplyDetailAvailableStockTextArea"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/layout_lvl2"
-            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintTop_toBottomOf="@id/talkSmartReplyDetailSubtitle"
             app:text_area_label="@string/smart_reply_available_stock_text_area_label"
             app:text_area_placeholder="" />
@@ -91,9 +91,9 @@
             android:id="@+id/talkSmartReplyDetailUnavailableStockTextArea"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/layout_lvl2"
-            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintTop_toBottomOf="@id/talkSmartReplyDetailAvailableStockTextArea"
             app:text_area_label="@string/smart_reply_unavailable_stock_text_area_label"
             app:text_area_placeholder="" />
@@ -102,8 +102,8 @@
             android:id="@+id/talkSmartReplyDetailSubmitButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:enabled="false"
             android:gravity="bottom"
             android:text="@string/smart_reply_detail_save_button"

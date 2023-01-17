@@ -112,6 +112,8 @@
     <string name="path_notification_buyer_info" translatable="false">/notif-center</string>
     <string name="path_notification_buyer_info_id" translatable="false">/notif-center/.*\\/</string>
 
+    <string name="path_product_ar">/productar/.*\\/</string>
+
     <string name="path_user_notification_setting" translatable="false">/user-notification-setting</string>
     <string name="path_user_attach_invoice" translatable="false">/user-attach-invoice</string>
     <string name="path_user_attach_voucher" translatable="false">/user-attach-voucher</string>

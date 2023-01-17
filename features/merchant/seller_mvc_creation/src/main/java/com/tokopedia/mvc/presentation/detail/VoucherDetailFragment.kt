@@ -666,7 +666,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 openThreeDotsBottomSheet(data)
             }
             btnDuplicate.setOnClickListener {
-                SummaryActivity.start(requireContext(), data.toVoucherConfiguration())
+                val intent = SummaryActivity.buildDuplicateModeIntent(context, data.voucherId)
+                startActivity(intent)
             }
         }
     }

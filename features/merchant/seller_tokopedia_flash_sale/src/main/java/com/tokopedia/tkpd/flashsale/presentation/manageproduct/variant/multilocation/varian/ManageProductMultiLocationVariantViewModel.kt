@@ -177,7 +177,7 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
     ): List<ReservedProduct.Product.Warehouse> {
         val warehouse = warehouses[positionWarehouse]
         warehouses.forEach {
-            if (it.isToggleOn && it.isDilayaniTokopedia) {
+            if (it.isToggleOn && it.isDilayaniTokopedia && warehouse.isDilayaniTokopedia) {
                 it.discountSetup.apply {
                     price = warehouse.discountSetup.price
                     discount = warehouse.discountSetup.discount

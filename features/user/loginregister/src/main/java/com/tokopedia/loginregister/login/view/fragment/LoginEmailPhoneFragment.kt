@@ -11,9 +11,11 @@ import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.text.SpannableString
+import android.text.TextPaint
 import android.text.TextUtils
 import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.view.*
 import android.view.inputmethod.EditorInfo
@@ -99,7 +101,6 @@ import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.P
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_LOGIN_METHOD
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_PHONE
 import com.tokopedia.loginregister.login.view.bottomsheet.NeedHelpBottomSheet
-import com.tokopedia.loginregister.login.view.custom.NonCopyClickableSpan
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
@@ -806,11 +807,19 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
             val spannable = SpannableString(sourceString)
 
-            spannable.setSpan(NonCopyClickableSpan(onClick = {},
-                updateDrawableStateCallback = {
-                    it.color = MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-                    it.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-                }), sourceString.indexOf("Daftar"), sourceString.length, 0)
+            spannable.setSpan(object : ClickableSpan() {
+                override fun onClick(view: View) {
+
+                }
+
+                override fun updateDrawState(ds: TextPaint) {
+                    ds.color = MethodChecker.getColor(
+                            activity, com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    )
+                    ds.typeface = Typeface.create("sans-serif", Typeface
+                            .NORMAL)
+                }
+            }, sourceString.indexOf("Daftar"), sourceString.length, 0)
 
             viewBinding?.registerButton?.setText(spannable, TextView.BufferType.SPANNABLE)
 
@@ -821,14 +830,21 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun initTokopediaCareText() {
         val message = getString(R.string.need_help_call_tokopedia_care)
         val spannable = SpannableString(message)
+        spannable.setSpan(
+                object : ClickableSpan() {
+                    override fun onClick(view: View) {
+                        goToTokopediaCareWebview()
+                    }
 
-        spannable.setSpan(NonCopyClickableSpan(onClick = {
-            goToTokopediaCareWebview()
-        }, updateDrawableStateCallback = {
-            it.color = MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-            it.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        }), message.indexOf(getString(R.string.call_tokopedia_care)), message.indexOf(getString(R.string.call_tokopedia_care)) + getString(R.string.call_tokopedia_care).length, 0)
-
+                    override fun updateDrawState(ds: TextPaint) {
+                        ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                    }
+                },
+                message.indexOf(getString(R.string.call_tokopedia_care)),
+                message.indexOf(getString(R.string.call_tokopedia_care)) + getString(R.string.call_tokopedia_care).length,
+                0
+        )
         viewBinding?.toTokopediaCare?.movementMethod = LinkMovementMethod.getInstance()
         viewBinding?.toTokopediaCare?.setText(spannable, TextView.BufferType.SPANNABLE)
     }
@@ -1645,7 +1661,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun isFromAtcPage(): Boolean = source == LoginConstants.SourcePage.SOURCE_ATC
 
     override fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String) {
-        val applink = ApplinkConstInternalUserPlatform.ADD_NAME_REGISTER_CLEAN_VIEW
+        val applink = ApplinkConstInternalUserPlatform.ADD_NAME_REGISTER
         val intent = RouteManager.getIntent(context, applink)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, msisdn)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid)
@@ -1659,8 +1675,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun handleGoogleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
-            if (account != null && account.idToken != null) {
-                val accessToken: String = account?.idToken
+            val accessToken = account?.idToken
+            if (account != null && accessToken != null) {
                 val email = account.email
                 if (email != null) {
                     showLoadingLogin()
@@ -1885,8 +1901,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun submitIntegrityApi() {
-        context?.let {
-            IntegrityApiWorker.scheduleWorker(it.applicationContext, IntegrityApiConstant.EVENT_LOGIN)
+        if(firebaseRemoteConfig.getBoolean(IntegrityApiConstant.LOGIN_CONFIG)) {
+            context?.let {
+                IntegrityApiWorker.scheduleWorker(it.applicationContext, IntegrityApiConstant.EVENT_LOGIN)
+            }
         }
     }
 

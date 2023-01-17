@@ -152,7 +152,7 @@ class UpdateVoucherPeriodUseCase @Inject constructor(
                 minPurchase = minimumAmt,
                 quota = quota,
                 token = token,
-                source = Source.source
+                source = Source.SOURCE
             )
         }
     }

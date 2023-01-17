@@ -8,6 +8,9 @@ import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.just
@@ -34,7 +37,7 @@ internal class SearchProductHandleInspirationCarouselClickTest :
         `Given View already load data with inspiration carousel`(searchProductModel)
 
         val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList(
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST,
+            LAYOUT_INSPIRATION_CAROUSEL_LIST,
             true
         )
         `When inspiration carousel product clicked`(inspirationCarouselProduct)
@@ -51,7 +54,7 @@ internal class SearchProductHandleInspirationCarouselClickTest :
         `Given View already load data with inspiration carousel`(searchProductModel)
 
         val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList(
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST,
+            LAYOUT_INSPIRATION_CAROUSEL_LIST,
             false
         )
         `When inspiration carousel product clicked`(inspirationCarouselProduct)
@@ -93,7 +96,7 @@ internal class SearchProductHandleInspirationCarouselClickTest :
     }
 
     private fun `Given class name`() {
-        every { productListView.className } returns className
+        every { classNameProvider.className } returns className
     }
 
     private fun `Given view already load data`() {
@@ -108,7 +111,7 @@ internal class SearchProductHandleInspirationCarouselClickTest :
 
     private fun `Then verify inspiration carousel product top ads clicked`(product: InspirationCarouselDataView.Option.Product) {
         verify {
-            productListView.className
+            classNameProvider.className
 
             topAdsUrlHitter.hitClickUrl(
                 className,
@@ -123,25 +126,25 @@ internal class SearchProductHandleInspirationCarouselClickTest :
 
     private fun `Then verify interaction for Inspiration Carousel Product List click`(product: InspirationCarouselDataView.Option.Product) {
         verify {
-            productListView.redirectionStartActivity(product.applink, product.url)
-            productListView.trackEventClickInspirationCarouselListItem(product)
+            inspirationCarouselView.openLink(product.applink, product.url)
+            inspirationCarouselView.trackEventClickInspirationCarouselListItem(product)
         }
 
         verify(exactly = 0) {
-            productListView.trackEventClickInspirationCarouselGridItem(product)
-            productListView.trackEventClickInspirationCarouselChipsItem(product)
+            inspirationCarouselView.trackEventClickInspirationCarouselGridItem(product)
+            inspirationCarouselView.trackEventClickInspirationCarouselChipsItem(product)
         }
     }
 
     private fun `Then verify interaction for Inspiration Carousel Product Grid click`(product: InspirationCarouselDataView.Option.Product) {
         verify {
-            productListView.redirectionStartActivity(product.applink, product.url)
-            productListView.trackEventClickInspirationCarouselGridItem(product)
+            inspirationCarouselView.openLink(product.applink, product.url)
+            inspirationCarouselView.trackEventClickInspirationCarouselGridItem(product)
         }
 
         verify(exactly = 0) {
-            productListView.trackEventClickInspirationCarouselListItem(product)
-            productListView.trackEventClickInspirationCarouselChipsItem(product)
+            inspirationCarouselView.trackEventClickInspirationCarouselListItem(product)
+            inspirationCarouselView.trackEventClickInspirationCarouselChipsItem(product)
         }
     }
 
@@ -149,13 +152,13 @@ internal class SearchProductHandleInspirationCarouselClickTest :
         product: InspirationCarouselDataView.Option.Product
     ) {
         verify {
-            productListView.redirectionStartActivity(product.applink, product.url)
-            productListView.trackEventClickInspirationCarouselChipsItem(product)
+            inspirationCarouselView.openLink(product.applink, product.url)
+            inspirationCarouselView.trackEventClickInspirationCarouselChipsItem(product)
         }
 
         verify(exactly = 0) {
-            productListView.trackEventClickInspirationCarouselListItem(product)
-            productListView.trackEventClickInspirationCarouselGridItem(product)
+            inspirationCarouselView.trackEventClickInspirationCarouselListItem(product)
+            inspirationCarouselView.trackEventClickInspirationCarouselGridItem(product)
         }
     }
 
@@ -165,7 +168,7 @@ internal class SearchProductHandleInspirationCarouselClickTest :
         `Given View already load data with inspiration carousel`(searchProductModel)
 
         val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList(
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID,
+            LAYOUT_INSPIRATION_CAROUSEL_GRID,
             true
         )
         `When inspiration carousel product clicked`(inspirationCarouselProduct)
@@ -182,7 +185,7 @@ internal class SearchProductHandleInspirationCarouselClickTest :
         `Given View already load data with inspiration carousel`(searchProductModel)
 
         val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList(
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID,
+            LAYOUT_INSPIRATION_CAROUSEL_GRID,
             false
         )
         `When inspiration carousel product clicked`(inspirationCarouselProduct)
@@ -200,7 +203,7 @@ internal class SearchProductHandleInspirationCarouselClickTest :
         `Given View already load data with inspiration carousel`(searchProductModel)
 
         val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList(
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
+            LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
             true
         )
         `When inspiration carousel product clicked`(inspirationCarouselProduct)
@@ -217,7 +220,7 @@ internal class SearchProductHandleInspirationCarouselClickTest :
         `Given View already load data with inspiration carousel`(searchProductModel)
 
         val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList(
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
+            LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
             false
         )
         `When inspiration carousel product clicked`(inspirationCarouselProduct)
@@ -278,7 +281,7 @@ internal class SearchProductHandleInspirationCarouselClickTest :
     private fun List<Visitable<*>>.findIndexedChipsCarousel(): IndexedValue<InspirationCarouselDataView> {
         val indexedVisitable = withIndex().find {
             it.value is InspirationCarouselDataView
-                    && (it.value as InspirationCarouselDataView).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+                    && (it.value as InspirationCarouselDataView).layout == LAYOUT_INSPIRATION_CAROUSEL_CHIPS
         }!!
 
         return IndexedValue(

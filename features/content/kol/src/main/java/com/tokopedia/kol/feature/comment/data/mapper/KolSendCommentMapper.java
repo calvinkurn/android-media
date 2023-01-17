@@ -3,15 +3,15 @@ package com.tokopedia.kol.feature.comment.data.mapper;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.network.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.kolcommon.util.GraphqlErrorException;
-import com.tokopedia.kolcommon.util.TimeConverter;
 import com.tokopedia.kol.feature.comment.data.pojo.send.SendCommentKolData;
 import com.tokopedia.kol.feature.comment.data.pojo.send.SendCommentKolGraphql;
 import com.tokopedia.kol.feature.comment.data.pojo.send.SendCommentKolUser;
 import com.tokopedia.kol.feature.comment.domain.model.KolCommentUserDomain;
 import com.tokopedia.kol.feature.comment.domain.model.SendKolCommentDomain;
+import com.tokopedia.kolcommon.util.GraphqlErrorException;
+import com.tokopedia.kolcommon.util.TimeConverter;
+import com.tokopedia.network.data.model.response.GraphqlResponse;
 
 import javax.inject.Inject;
 
@@ -62,19 +62,18 @@ public class KolSendCommentMapper
     }
 
     private SendKolCommentDomain convertToDomain(SendCommentKolData data) {
-        return new SendKolCommentDomain(data.getId() == null ? "0" : data.getId(),
-                data.getComment() == null ? "" : data.getComment(),
-                TimeConverter.generateTime(context, data.getCreateTime() == null ? "" : data
-                        .getCreateTime()),
+        return new SendKolCommentDomain(data.getId(),
+                data.getComment(),
+                TimeConverter.generateTime(context, data.getCreateTime()),
                 createDomainUser(data.getUser()),
                 true);
     }
 
 
     private KolCommentUserDomain createDomainUser(SendCommentKolUser user) {
-        return new KolCommentUserDomain(user.getId() == null ? "0" : user.getId(),
-                user.getIskol() == null ? false : user.getIskol(),
-                user.getName() == null ? "" : user.getName(),
-                user.getPhoto() == null ? "" : user.getPhoto());
+        return new KolCommentUserDomain(user.getId(),
+                user.getIskol(),
+                user.getName(),
+                user.getPhoto());
     }
 }

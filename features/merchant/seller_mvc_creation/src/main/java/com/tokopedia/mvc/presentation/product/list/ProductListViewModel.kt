@@ -321,7 +321,8 @@ class ProductListViewModel @Inject constructor(
                 ProductListEffect.ProceedToVoucherPreviewPage(
                     modifiedVoucherConfiguration,
                     selectedProducts,
-                    topSellingProductImageUrls
+                    topSellingProductImageUrls,
+                    currentState.originalPageMode
                 )
             )
 

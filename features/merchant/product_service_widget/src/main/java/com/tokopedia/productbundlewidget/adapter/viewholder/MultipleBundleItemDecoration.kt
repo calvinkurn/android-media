@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.unifycomponents.toPx
 import kotlin.math.roundToInt
 
 
@@ -26,18 +27,18 @@ class MultipleBundleItemDecoration(context: Context) : RecyclerView.ItemDecorati
         for (i in 0 until childCount.dec()) {
             val child = parent.getChildAt(i)
             parent.layoutManager?.getDecoratedBoundsWithMargins(child, mBounds)
-            val right = mBounds.right + PLUS_ICON_SIZE * HORIZONTAL_PERCENT_ADJUSTMENT
-            val left = mBounds.right - PLUS_ICON_SIZE * HORIZONTAL_PERCENT_ADJUSTMENT
+            val right = mBounds.right + PLUS_ICON_SIZE.toPx() * HORIZONTAL_PERCENT_ADJUSTMENT
+            val left = mBounds.right - PLUS_ICON_SIZE.toPx() * HORIZONTAL_PERCENT_ADJUSTMENT
 
-            divider?.setBounds(left.roundToInt(), PLUS_ICON_TOP_POS,
-                right.roundToInt(), PLUS_ICON_TOP_POS+PLUS_ICON_SIZE)
+            divider?.setBounds(left.roundToInt(), PLUS_ICON_TOP_POS.toPx(),
+                right.roundToInt(), PLUS_ICON_TOP_POS.toPx() + PLUS_ICON_SIZE.toPx())
             divider?.draw(c)
         }
     }
 
     companion object {
-        private const val PLUS_ICON_SIZE = 50
-        private const val PLUS_ICON_TOP_POS = 85
+        private const val PLUS_ICON_SIZE = 18
+        private const val PLUS_ICON_TOP_POS = 30
         private const val HORIZONTAL_PERCENT_ADJUSTMENT = 0.5f
     }
 }

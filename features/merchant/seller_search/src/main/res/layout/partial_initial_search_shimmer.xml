@@ -2,8 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/spacing_lvl4"
-    android:paddingEnd="@dimen/spacing_lvl4"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -19,9 +19,9 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loadTvTitle"
         android:layout_width="0dp"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_height="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="20dp"
         app:layout_constraintStart_toEndOf="@id/loadImageView"
         app:layout_constraintTop_toTopOf="parent"
@@ -33,9 +33,9 @@
         android:id="@+id/loadTvDesc"
         android:layout_width="0dp"
         android:layout_height="12dp"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl3"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toEndOf="@id/loadImageView"
         app:layout_constraintTop_toBottomOf="@id/loadTvTitle"
         app:layout_constraintWidth_percent="0.3"

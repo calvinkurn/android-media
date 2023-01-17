@@ -103,12 +103,13 @@ class UploadPrescriptionViewModel @Inject constructor(
         _productDetailLiveData.postValue(Fail(throwable))
     }
 
-    fun getEPharmacyCheckoutDetail(checkoutId: String) {
+    fun getEPharmacyCheckoutDetail(checkoutId: String,source: String) {
         getEPharmacyCheckoutDetailUseCase.cancelJobs()
         getEPharmacyCheckoutDetailUseCase.getEPharmacyCheckoutDetail(
             ::onAvailableEPharmacyCheckoutDetail,
             ::onFailEPharmacyDetail,
-            checkoutId
+            checkoutId,
+            source
         )
     }
 

@@ -19,7 +19,7 @@
 //            content = HomeWidget.ContentItemTab(
 //                    contentId = 101,
 //                    contentName = "LISTRIK PLN",
-//                    imageUrl = "https://ecs7.tokopedia.net/img/recharge/operator/pln_2.png",
+//                    imageUrl = "https://images.tokopedia.net/img/recharge/operator/pln_2.png",
 //                    url = "https://pulsa.tokopedia.com/?action=init_data\\u0026operator_id=18\\u0026product_id=291\\u0026client_number=884949494946",
 //                    applink = "tokopedia://digital/form?category_id=3\\u0026client_number=884949494946\\u0026product_id=291\\u0026operator_id=18\\u0026is_from_widget=true",
 //                    title1st = "Rp 92.500",
