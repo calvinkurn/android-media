@@ -1334,12 +1334,14 @@ open class DynamicProductDetailViewModel @Inject constructor(
         singleVariant: ProductSingleVariantDataModel?,
         optionalVariant: VariantDataModel?
     ): VariantChild? {
-        val selectedOptionIds = singleVariant?.mapOfSelectedVariant?.values
-            ?: optionalVariant?.mapOfSelectedVariant?.values
+        val mapOfSelectedVariants = singleVariant?.mapOfSelectedVariant
+            ?: optionalVariant?.mapOfSelectedVariant ?: mutableMapOf()
+        val selectedOptionIds = mapOfSelectedVariants.values.toList()
         val variantDataNonNull = variantData ?: ProductVariant()
+
         return VariantCommonMapper.selectedProductData(
             variantData = variantDataNonNull,
-            selectedOptionIds = selectedOptionIds.orEmpty().toList()
+            selectedOptionIds = selectedOptionIds
         )
     }
 
