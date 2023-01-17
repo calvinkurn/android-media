@@ -3,7 +3,9 @@ package com.tokopedia.buyerorderdetail.presentation.model
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.PartialOrderFulfillmentTypeFactoryImpl
 
 
-class PofThinDividerUiModel: BasePofVisitableUiModel {
+data class PofThinDividerUiModel(
+    val marginHorizontal: Int? = null
+): BasePofVisitableUiModel {
 
     override fun type(typeFactory: PartialOrderFulfillmentTypeFactoryImpl): Int {
         return typeFactory.type(this)

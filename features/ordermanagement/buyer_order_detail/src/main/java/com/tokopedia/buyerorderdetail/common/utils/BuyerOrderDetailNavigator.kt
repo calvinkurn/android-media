@@ -186,6 +186,19 @@ class BuyerOrderDetailNavigator(
         applyTransition()
     }
 
+    fun goToPartialOrderFulfillment(orderId: String) {
+        val params = mapOf(
+            ApplinkConstInternalOrder.PARAM_ORDER_ID to orderId
+        )
+        val appLink = UriUtil.buildUriAppendParams(
+            ApplinkConstInternalOrder.PATH_BUYER_PARTIAL_ORDER_FULFILLMENT,
+            params
+        )
+        val intent = RouteManager.getIntent(fragment.context, appLink)
+        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_PARTIAL_ORDER_FULFILLMENT)
+        applyTransition()
+    }
+
     fun openAppLink(appLink: String, shouldRefreshWhenBack: Boolean): Boolean {
         val intent: Intent? = RouteManager.getIntentNoFallback(activity, appLink)
         return if (intent == null) {

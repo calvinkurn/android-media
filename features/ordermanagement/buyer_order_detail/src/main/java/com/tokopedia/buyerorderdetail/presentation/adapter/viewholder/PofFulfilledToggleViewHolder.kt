@@ -51,7 +51,7 @@ class PofFulfilledToggleViewHolder(
     private fun ItemPofStillAvailableToggleBinding.setChevronToggle(item: PofFulfilledToggleUiModel) {
         icDropdown.rotation = if (item.isExpanded) REVERSE_ROTATION else NO_ROTATION
         icDropdown.setOnClickListener {
-            listener.onPofFulfilledToggleClicked(item.isExpanded, item.pofProductFulfilledList)
+            listener.onPofFulfilledToggleClicked(!item.isExpanded, item.pofProductFulfilledList)
         }
     }
 

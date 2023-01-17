@@ -15,12 +15,17 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailTickerType
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 object Utils {
     private const val STRING_BUTTON_TYPE_ALTERNATE = "alternate"
@@ -38,6 +43,13 @@ object Utils {
             Color.parseColor(colorHex)
         } catch (e: Exception) {
             MethodChecker.getColor(context, defaultColor)
+        }
+    }
+
+    fun Throwable.getGlobalErrorType(): Int {
+        return when (this) {
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> GlobalError.NO_CONNECTION
+            else -> GlobalError.SERVER_ERROR
         }
     }
 

@@ -2,13 +2,14 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.typefactory
 
 import com.tokopedia.buyerorderdetail.presentation.model.PofAvailableLabelUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofDetailUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PofErrorUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofFulfilledToggleUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofHeaderInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofProductFulfilledUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofProductUnfulfilledUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofRefundEstimateUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PofThickDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofThinDividerUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.ThickDividerUiModel
 
 interface PartialOrderFulfillmentTypeFactory {
 
@@ -26,8 +27,10 @@ interface PartialOrderFulfillmentTypeFactory {
 
     fun type(pofRefundEstimateUiModel: PofRefundEstimateUiModel): Int
 
-    fun type(pofThickDividerUiModel: ThickDividerUiModel): Int
+    fun type(pofThickDividerUiModel: PofThickDividerUiModel): Int
 
     fun type(pofThinDividerUiModel: PofThinDividerUiModel): Int
+
+    fun type(pofErrorUiModel: PofErrorUiModel): Int
 
 }

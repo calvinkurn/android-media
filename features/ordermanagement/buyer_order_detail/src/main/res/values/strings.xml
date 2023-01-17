@@ -100,5 +100,6 @@
 
     <string name="buyer_order_detail_pof_item_detail_refunded_cta">Cek detail dana yang dikembalikan &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
     <string name="buyer_order_detail_pof_detail_refunded_bottomsheet_title">Detail dana dikembalikan</string>
+    <string name="buyer_order_detail_pof_error_request">Ada gangguan yang perlu kami bereskan. Coba lagi nanti, ya.</string>
 
 </resources>

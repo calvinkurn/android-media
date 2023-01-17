@@ -34,5 +34,9 @@ class EstimateRefundInfoBottomSheet: BottomSheetUnify() {
 
     companion object {
         const val TAG = "EstimateRefundInfoBottomSheet"
+
+        fun newInstance(): EstimateRefundInfoBottomSheet {
+            return EstimateRefundInfoBottomSheet()
+        }
     }
 }

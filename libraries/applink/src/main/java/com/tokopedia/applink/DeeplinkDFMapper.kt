@@ -620,7 +620,8 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL) ||
                     it.startsWith(BUYER_ORDER_EXTENSION) ||
                     it.startsWith(ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION) ||
-                    it.startsWith(ApplinkConstInternalOrder.PATH_BUYER_ORDER_PARTIAL_FULFILLMENT)
+                    it.startsWith(ApplinkConst.BUYER_PARTIAL_ORDER_FULFILLMENT) ||
+                    it.startsWith(ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_PARTIAL_ORDER_FULFILLMENT)
             }, DF_BASE, R.string.title_revamped_buyer_order_detail)
             )
 

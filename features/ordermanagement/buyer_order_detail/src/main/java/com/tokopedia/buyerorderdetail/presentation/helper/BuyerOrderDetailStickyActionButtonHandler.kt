@@ -125,6 +125,10 @@ class BuyerOrderDetailStickyActionButtonHandler(
         navigator.goToOrderExtension(viewModel.getOrderId())
     }
 
+    private fun onRespondToPartialOrderFulfillmentClicked() {
+        navigator.goToPartialOrderFulfillment(viewModel.getOrderId())
+    }
+
     private fun onReUploadPrescriptionClicked(url: String) {
         navigator.openAppLink(url, true)
     }

@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.PartialOrderFulfillmentListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofAvailableLabelViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofDetailViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofErrorViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofFulfilledToggleViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofHeaderInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofProductFulfilledViewHolder
@@ -18,11 +19,13 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofThickDi
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofThinDividerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.model.PofAvailableLabelUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofDetailUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PofErrorUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofFulfilledToggleUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofHeaderInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofProductFulfilledUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofProductUnfulfilledUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofRefundEstimateUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PofThickDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofThinDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ThickDividerUiModel
 
@@ -79,11 +82,15 @@ class PartialOrderFulfillmentTypeFactoryImpl(
         return PofRefundEstimateViewHolder.LAYOUT
     }
 
-    override fun type(pofThickDividerUiModel: ThickDividerUiModel): Int {
+    override fun type(pofThickDividerUiModel: PofThickDividerUiModel): Int {
         return PofThickDividerViewHolder.LAYOUT
     }
 
     override fun type(pofThinDividerUiModel: PofThinDividerUiModel): Int {
         return PofThinDividerViewHolder.LAYOUT
+    }
+
+    override fun type(pofErrorUiModel: PofErrorUiModel): Int {
+        return PofErrorViewHolder.LAYOUT
     }
 }

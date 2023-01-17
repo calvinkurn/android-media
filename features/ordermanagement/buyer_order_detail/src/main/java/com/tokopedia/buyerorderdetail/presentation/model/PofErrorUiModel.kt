@@ -2,12 +2,8 @@ package com.tokopedia.buyerorderdetail.presentation.model
 
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.PartialOrderFulfillmentTypeFactoryImpl
 
-data class PofFulfilledToggleUiModel(
-    val totalFulfilled: Long,
-    val isExpanded: Boolean,
-    val pofProductFulfilledList: List<PofProductFulfilledUiModel>
-) : BasePofVisitableUiModel {
+class PofErrorUiModel(val throwable: Throwable): BasePofVisitableUiModel {
     override fun type(typeFactory: PartialOrderFulfillmentTypeFactoryImpl): Int {
-        return typeFactory.type(this)
+        TODO("Not yet implemented")
     }
 }

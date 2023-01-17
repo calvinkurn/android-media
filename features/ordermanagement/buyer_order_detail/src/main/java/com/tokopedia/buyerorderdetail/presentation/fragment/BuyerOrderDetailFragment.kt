@@ -255,6 +255,11 @@ open class BuyerOrderDetailFragment :
                     handleResultOrderExtension(data)
                 }
             }
+            BuyerOrderDetailIntentCode.REQUEST_CODE_PARTIAL_ORDER_FULFILLMENT -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    handleResultPartialOrderFulfillment()
+                }
+            }
         }
     }
 
@@ -659,6 +664,10 @@ open class BuyerOrderDetailFragment :
     private fun handleComplaintResult() {
         loadBuyerOrderDetail(false)
         bottomSheetManager.dismissBottomSheets()
+    }
+
+    private fun handleResultPartialOrderFulfillment() {
+        handleResultRefreshOnly()
     }
 
     private fun handleResultOrderExtension(data: Intent?) {
