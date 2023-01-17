@@ -54,10 +54,10 @@ class PlayBroadcastSetupTitleBottomSheet : BottomSheetUnify() {
         tvSetupTitleField.apply {
             editText.setText(mTitle)
             editText.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                }
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
                 override fun afterTextChanged(p0: Editable?) {
+                    if (p0?.isBlank() == true) return
                     if (mErrorState) {
                         mErrorState = false
                         isInputError = mErrorState
@@ -67,8 +67,11 @@ class PlayBroadcastSetupTitleBottomSheet : BottomSheetUnify() {
                 }
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    if (p1 == 0 && p0?.isBlank() == true) {
+                        editText.text.clear()
+                        return
+                    }
                 }
-
             })
             editText.setOnEditorActionListener { _, _, _ ->
                 hideKeyboard()
