@@ -315,7 +315,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
     private fun buildListAction(action: PlayMoreActionUiModel) {
         if (!listOfAction.contains(reportAction)) listOfAction.add(reportAction) // Report
-        if (!listOfAction.contains(watchAction)) listOfAction.add(watchAction) //Watch Mode
+        if (!listOfAction.contains(watchAction) && !playViewModel.videoOrientation.isHorizontal && !playViewModel.hasNoMedia) listOfAction.add(watchAction) //Watch Mode
         if (action == PlayMoreActionUiModel.Empty) return
         if (!listOfAction.contains(action)) listOfAction.add(action)
     }

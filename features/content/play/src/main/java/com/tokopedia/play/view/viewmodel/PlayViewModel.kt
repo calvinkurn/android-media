@@ -434,6 +434,9 @@ class PlayViewModel @AssistedInject constructor(
             return statusType.isFreeze || statusType.isBanned
         }
 
+    val hasNoMedia : Boolean
+        get() = _videoProperty.value.state.hasNoData
+
     /**
      * Temporary
      */
