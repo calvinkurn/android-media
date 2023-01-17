@@ -2,10 +2,12 @@ package com.tokopedia.tokopedianow.common.viewholder.categorymenu
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemSeeAllUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryMenuItemSeeAllBinding
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowCategoryMenuItemSeeAllViewHolder(
@@ -21,8 +23,16 @@ class TokoNowCategoryMenuItemSeeAllViewHolder(
     private var binding: ItemTokopedianowCategoryMenuItemSeeAllBinding? by viewBinding()
 
     override fun bind(element: TokoNowCategoryMenuItemSeeAllUiModel) {
-        binding?.root?.setOnClickListener {
-            listener?.onSeeAllClicked(element.appLink)
+        binding?.apply {
+            root.setOnClickListener {
+                listener?.onSeeAllClicked(element.appLink)
+            }
+            val drawable = VectorDrawableCompat.create(
+                root.context.resources,
+                if (root.context.isDarkMode()) R.drawable.tokopedianow_bg_see_all_categories_dark else R.drawable.tokopedianow_bg_see_all_categories_light,
+                itemView.context.theme
+            )
+            ivBackground.setImageDrawable(drawable)
         }
     }
 

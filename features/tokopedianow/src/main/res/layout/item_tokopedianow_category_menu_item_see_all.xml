@@ -14,14 +14,14 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:scaleType="center"
-            app:srcCompat="@drawable/tokopedianow_bg_see_all_categories" />
+            android:scaleType="center" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tp_all_category"
