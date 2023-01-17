@@ -891,7 +891,6 @@ class FeedPlusFragment :
     override fun onLoad(totalCount: Int) {
         val isNotEmpty = adapter.getlist().isNotEmpty()
         if (isNotEmpty && adapter.getlist()[0] !is EmptyModel) feedViewModel.getFeedNextPage()
-        feedViewModel.updateCurrentFollowState(adapter.getlist())
     }
 
     override fun onCreateView(
@@ -2945,6 +2944,7 @@ class FeedPlusFragment :
     private fun onSuccessGetFirstFeed(firstPageDomainModel: DynamicFeedFirstPageDomainModel) {
         if (!firstPageDomainModel.shouldOverwrite) {
             adapter.updateList(firstPageDomainModel.dynamicFeedDomainModel.postList)
+            feedViewModel.updateCurrentFollowState(adapter.getlist())
             return
         }
         if (isRefreshForPostCOntentCreation) {
@@ -2956,6 +2956,7 @@ class FeedPlusFragment :
             if (!fetchedPostIsSameAsTopMostPost) {
                 adapter.addListItemAtTop(firstPageDomainModel.dynamicFeedDomainModel.postList[1])
             }
+            feedViewModel.updateCurrentFollowState(adapter.getlist())
             return
         }
 
@@ -2978,6 +2979,8 @@ class FeedPlusFragment :
             onShowEmpty()
         }
 
+                feedViewModel.updateCurrentFollowState(adapter.getlist())
+
         sendMoEngageOpenFeedEvent()
         stopTracePerformanceMon()
     }
@@ -2999,6 +3002,7 @@ class FeedPlusFragment :
 
             adapter.removeEmpty()
             adapter.addList(model.postList)
+            feedViewModel.updateCurrentFollowState(adapter.getlist())
         }
     }
 
