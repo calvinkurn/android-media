@@ -6,15 +6,10 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroSetupTitleBinding
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import javax.inject.Inject
-import kotlin.math.max
 
 /**
  * Created by fachrizalmrsln on 10/01/23
