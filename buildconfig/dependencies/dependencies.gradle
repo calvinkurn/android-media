@@ -357,6 +357,7 @@ ext {
             espressoIntents       : "androidx.test.espresso:espresso-intents:$espressoVersion",
             espressoContrib       : "androidx.test.espresso:espresso-contrib:$espressoVersion",
             espressoIdlingResource: "androidx.test.espresso:espresso-idling-resource:$espressoVersion",
+            okhttpIdlingResource  : "com.jakewharton.espresso:okhttp3-idling-resource:1.0.0",
             retrofitMock          : "com.squareup.retrofit2:retrofit-mock:$retrofitVersion",
             retrofitMockWebser    : "com.squareup.okhttp3:mockwebserver:$okHttpVersion",
             dexMaker              : 'com.google.dexmaker:dexmaker:1.2',

@@ -1,0 +1,84 @@
+{
+  "data": {
+    "id": "b0c80252-c6a6-40f1-a3ce-a9894a32ac6d",
+    "name": "F-68720537282",
+    "type": "group-booking",
+    "created_by": {
+      "id": "00000000-0000-0000-0000-000000000000",
+      "name": "",
+      "phone": "",
+      "country_code": ""
+    },
+    "members": [
+      {
+        "id": "bf6ba1cf-90c4-4b8d-9dbb-f78279d67bfc",
+        "name": "Tokofood Driver 13 Tokofood Driver 13 Tokofood Driver 13 Tokofood Driver 13 Tokofood Driver 13",
+        "owner_type": "driver",
+        "phone": "82240158005",
+        "country_code": "62",
+        "image_url": "www.picture.com/steve",
+        "unread_message_count": 0,
+        "unread_channel_count": 0,
+        "metadata": {
+          "licence_plate": "X001OAH"
+        }
+      },
+      {
+        "id": "835a69de-577e-4881-bf1d-4e3eed13c643",
+        "name": "bctiga",
+        "owner_type": "tokopedia_customer",
+        "phone": "89676955972",
+        "country_code": "62",
+        "unread_message_count": 0,
+        "unread_channel_count": 0
+      }
+    ],
+    "unread_count": 0,
+    "last_message_sent": {
+      "id": "89953ffd-6655-4581-b811-8e1a6145661b",
+      "channel_id": "b0c80252-c6a6-40f1-a3ce-a9894a32ac6d",
+      "text": "Hello",
+      "data": "{\"tracking_id\":\"E63E0505-418B-4B6C-8125-B8889784001E\"}",
+      "type": "text",
+      "sender": {
+        "id": "835a69de-577e-4881-bf1d-4e3eed13c643",
+        "name": "bctiga",
+        "phone": "89676955972",
+        "country_code": "62"
+      },
+      "sent_at": 1673950390655
+    },
+    "last_read": {
+      "835a69de-577e-4881-bf1d-4e3eed13c643": 1673950390715,
+      "bf6ba1cf-90c4-4b8d-9dbb-f78279d67bfc": 1673949690347
+    },
+    "created_at": 1673949438430,
+    "read_only": false,
+    "metadata": {
+      "order_info": {
+        "chat_type": "driver",
+        "service_type": 5,
+        "id": "F-68720537282",
+        "description_info": "TokoFood Outlet Test 1",
+        "status": "ongoing",
+        "driver": {
+          "driver_id": "942427243",
+          "driver_name": "Tokofood Driver 13 Tokofood Driver 13 Tokofood Driver 13 Tokofood Driver 13 Tokofood Driver 13",
+          "driver_phone": "+6282240158005",
+          "display_name": "Driver",
+          "driver_photo": "www.picture.com/steve"
+        },
+        "shopper": null,
+        "chat_window": {
+          "disabled": false
+        },
+        "country_code": "ID"
+      }
+    },
+    "read_mode_starts_at": null,
+    "expires_at": 1674554238430,
+    "updated_at": 1673950390788
+  },
+  "success": true,
+  "errors": []
+}

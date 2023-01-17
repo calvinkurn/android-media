@@ -13,7 +13,13 @@ import dagger.Component
 @ActivityScope
 @Component(
     modules = [
+        // Stub modules
         TokoChatModuleStub::class,
+        TokoChatNetworkModuleStub::class,
+        TokoChatUseCaseModuleStub::class,
+        TokoChatCourierConversationModule::class,
+
+        // Real modules
         TokoChatModule::class,
         TokoChatViewModelModule::class,
         TokoChatImageAttachmentNetworkModule::class,

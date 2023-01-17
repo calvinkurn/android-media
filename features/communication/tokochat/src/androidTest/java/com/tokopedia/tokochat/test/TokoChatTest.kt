@@ -2,24 +2,32 @@ package com.tokopedia.tokochat.test
 
 import android.content.Context
 import android.content.Intent
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
+import com.jakewharton.espresso.OkHttp3IdlingResource
 import com.tokochat.tokochat_config_common.di.module.TokoChatConfigContextModule
+import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.tokochat.stub.common.BabbleCourierClientStub
 import com.tokopedia.tokochat.stub.common.ConversationsPreferencesStub
+import com.tokopedia.tokochat.stub.common.MockWebServerDispatcher
 import com.tokopedia.tokochat.stub.di.DaggerTokoChatComponentStub
 import com.tokopedia.tokochat.stub.di.TokoChatComponentStub
 import com.tokopedia.tokochat.stub.view.TokoChatActivityStub
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
+import okhttp3.OkHttpClient
+import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import javax.inject.Inject
 
+@UiTest
 class TokoChatTest {
 
     @get:Rule
@@ -34,6 +42,14 @@ class TokoChatTest {
         get() = InstrumentationRegistry
             .getInstrumentation().context.applicationContext
 
+    private val mockWebServer = MockWebServer()
+    private val mockWebServerDispatcher = MockWebServerDispatcher()
+    private lateinit var okHttp3IdlingResource: OkHttp3IdlingResource
+
+    @Inject
+    @TokoChatQualifier
+    lateinit var okhttpClient: OkHttpClient
+
     @Inject
     lateinit var conversationsPreferences: ConversationsPreferencesStub
 
@@ -46,18 +62,23 @@ class TokoChatTest {
     open fun before() {
         setupDaggerComponent()
         setupConversationAndCourier()
+        okHttp3IdlingResource = OkHttp3IdlingResource.create("okhttp", okhttpClient)
+        IdlingRegistry.getInstance().register(okHttp3IdlingResource)
+        mockWebServer.start(8080)
     }
 
     @After
     open fun tearDown() {
         removeConversationAndCourier()
         tokoChatComponent = null
+        mockWebServer.shutdown()
+        IdlingRegistry.getInstance().unregister(okHttp3IdlingResource)
     }
 
     private fun setupConversationAndCourier() {
         babbleCourierClient.init(USER_ID_DUMMY)
         babbleCourierClient.setClientId(USER_ID_DUMMY)
-//        conversationsPreferences.setProfileDetails(USER_ID_DUMMY)
+        conversationsPreferences.setProfileDetails(USER_ID_DUMMY)
     }
 
     private fun removeConversationAndCourier() {
@@ -109,6 +130,7 @@ class TokoChatTest {
     fun test123()
     {
         Thread.sleep(10000)
+        mockWebServer.dispatcher = mockWebServerDispatcher
         launchChatRoomActivity()
         Thread.sleep(20000)
     }
@@ -123,9 +145,9 @@ class TokoChatTest {
 
     companion object {
         const val USER_ID_DUMMY = "9075737"
-        const val GOJEK_ORDER_ID_DUMMY = "F-68720516436"
+        const val GOJEK_ORDER_ID_DUMMY = "F-68720537282"
         const val TKPD_ORDER_ID_DUMMY = "52af8a53-86cc-40b7-bb98-cc3adde8e32a"
-        const val CHANNEL_ID_DUMMY = "b61e429e-b11e-4310-bd47-6242d6ceef19"
+        const val CHANNEL_ID_DUMMY = "b0c80252-c6a6-40f1-a3ce-a9894a32ac6d"
 
         var tokoChatComponent: TokoChatComponentStub? = null
     }

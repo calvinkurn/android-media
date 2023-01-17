@@ -1,0 +1,15 @@
+{
+  "data": {
+    "sendbird_id": "testSendBirdId1",
+    "sendbird_token": "testSendBirdToken1",
+    "id": "testId1",
+    "name": "bctiga",
+    "handle": "",
+    "phone": "89676955972",
+    "country_code": "62",
+    "unread_message_count": 0,
+    "unread_channel_count": 0
+  },
+  "success": true,
+  "errors": []
+}

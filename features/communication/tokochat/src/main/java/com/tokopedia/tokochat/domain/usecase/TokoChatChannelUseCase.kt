@@ -7,12 +7,11 @@ import com.gojek.conversations.channel.ConversationsChannel
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.gojek.conversations.network.ConversationsNetworkError
-import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
 import javax.inject.Inject
 
-class TokoChatChannelUseCase @Inject constructor(
-    @TokoChatQualifier private val repository: TokoChatRepository
+open class TokoChatChannelUseCase @Inject constructor(
+    private val repository: TokoChatRepository
 ) {
 
     fun initGroupBookingChat(
@@ -26,7 +25,7 @@ class TokoChatChannelUseCase @Inject constructor(
         )
     }
 
-    fun isChatConnected(): Boolean {
+    open fun isChatConnected(): Boolean {
         return repository.getConversationRepository().isChatConnected()
     }
 
