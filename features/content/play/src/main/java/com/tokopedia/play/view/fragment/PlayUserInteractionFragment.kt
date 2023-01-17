@@ -1602,23 +1602,6 @@ class PlayUserInteractionFragment @Inject constructor(
         chooseAddressView?.rootView?.showWithCondition(addressUiState.shouldShow)
     }
 
-<<<<<<< HEAD
-    private fun handleStatus(status: PlayStatusUiModel) {
-=======
-    private fun castViewOnStateChanged(
-        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
-    ) {
-        if(playViewModel.isCastAllowed && !bottomInsets.isAnyShown) {
-            val currentVisibility = castView?.isHidden() ?: true
-            if(currentVisibility)
-                analytic.impressCast(playViewModel.latestCompleteChannelData.channelDetail.channelInfo.id, playViewModel.channelType)
-
-            castView?.show()
-        }
-        else castView?.hide()
-    }
-    //endregion
-
     private fun handleStatus(state: CachedState<PlayViewerNewUiState>) {
         if(state.isNotChanged { it.status.channelStatus.statusType }) return
 
