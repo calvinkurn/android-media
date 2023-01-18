@@ -32,7 +32,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - back post creation",
             account = account,
-            trackerId = "37533"
+            trackerId = getTrackerIdBySite("37533", "37615")
         )
     }
 
@@ -41,7 +41,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - close coachmark",
             account = account,
-            trackerId = "37534"
+            trackerId = getTrackerIdBySite("37534", "37616")
         )
     }
 
@@ -212,7 +212,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - back title page",
             account = account,
-            trackerId = "37555"
+            trackerId = getTrackerIdBySite("37555", "37637")
         )
     }
 
@@ -221,7 +221,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - fill text title",
             account = account,
-            trackerId = "37556"
+            trackerId = getTrackerIdBySite("37556", "37638")
         )
     }
 
@@ -230,7 +230,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - simpan",
             account = account,
-            trackerId = "37557"
+            trackerId = getTrackerIdBySite("37557", "37639")
         )
     }
 
@@ -239,7 +239,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - delete text title",
             account = account,
-            trackerId = "37558"
+            trackerId = getTrackerIdBySite("37558", "37640")
         )
     }
 
@@ -247,7 +247,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     override fun openScreenTitleForm(account: ContentAccountUiModel) {
         sendGeneralOpenScreen(
             screenName = "/play broadcast short - title page - ${PlayShortsAnalyticHelper.getEventLabelByAccount(account)}",
-            trackerId = "37559",
+            trackerId = getTrackerIdBySite("37559", "37641")
         )
     }
 
@@ -346,6 +346,10 @@ class PlayShortsAnalyticImpl @Inject constructor(
             account = account,
             trackerId = "37605"
         )
+    }
+
+    private fun getTrackerIdBySite(mainAppTrackerId: String, sellerAppTrackerId: String): String {
+        return PlayShortsAnalyticHelper.getTrackerIdBySite(mainAppTrackerId, sellerAppTrackerId)
     }
 
     private fun sendGeneralOpenScreen(

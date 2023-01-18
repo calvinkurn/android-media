@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.analytic.helper
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.shorts.analytic.const.Value
@@ -30,6 +31,14 @@ object PlayShortsAnalyticHelper {
             ContentCommonUserType.TYPE_SHOP -> Value.SHORTS_TYPE_SELLER
             ContentCommonUserType.TYPE_USER -> Value.SHORTS_TYPE_USER
             else -> ""
+        }
+    }
+
+    fun getTrackerIdBySite(mainAppTrackerId: String, sellerAppTrackerId: String): String {
+        return if (GlobalConfig.isSellerApp()) {
+            sellerAppTrackerId
+        } else {
+            mainAppTrackerId
         }
     }
 }
