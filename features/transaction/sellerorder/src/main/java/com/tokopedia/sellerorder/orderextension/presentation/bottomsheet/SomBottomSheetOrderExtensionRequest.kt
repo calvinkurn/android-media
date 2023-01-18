@@ -62,7 +62,7 @@ class SomBottomSheetOrderExtensionRequest(
         }
     }
 
-    var currentExtentionTime = 0
+    var currentExtensionTime = 0
 
     override fun bind(view: View): BottomsheetOrderExtensionRequestInfoBinding {
         return BottomsheetOrderExtensionRequestInfoBinding.bind(view)
@@ -148,7 +148,7 @@ class SomBottomSheetOrderExtensionRequest(
                 binding?.root?.hideKeyboard()
                 if (!dismissing && !data.isLoadingOrderExtensionRequestInfo()) {
                     binding?.rvRequestExtensionInfo?.focusedChild?.clearFocus()
-                    viewModel.sendOrderExtensionRequest(orderId, currentExtentionTime)
+                    viewModel.sendOrderExtensionRequest(orderId, currentExtensionTime)
                 }
             }
         }
@@ -189,7 +189,7 @@ class SomBottomSheetOrderExtensionRequest(
     override fun onShowCalendarPicker() {
         val calendarOrderExtensionBottomSheet =
             CalendarOrderExtensionBottomSheet(data.orderExtentionDate, {
-                currentExtentionTime = it.extensionTime
+                currentExtensionTime = it.extensionTime
                 adapter?.updatePickTime(
                     it.date.toFormattedString(
                         FORMAT_DATE_TEXT,

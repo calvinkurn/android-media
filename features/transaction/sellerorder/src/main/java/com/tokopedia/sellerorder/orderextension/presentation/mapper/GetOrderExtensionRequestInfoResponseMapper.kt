@@ -145,6 +145,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
         add(
             OrderExtensionRequestInfoUiModel.DescriptionUiModel(
                 id = id,
+                fontColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
                 typographyType = OrderExtensionRequestInfoUiModel.DescriptionUiModel.DescriptionTextType.BODY_2,
                 description = resourceProvider.getOrderExtensionDescriptionComposer(
                     text,
@@ -206,7 +207,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
         add(
             OrderExtensionRequestInfoUiModel.DescriptionUiModel(
                 id = id,
-                alignment = OrderExtensionRequestInfoUiModel.DescriptionUiModel.DescriptionAlignment.TEXT_ALIGNMENT_CENTER,
+                alignment = OrderExtensionRequestInfoUiModel.DescriptionUiModel.DescriptionAlignment.TEXT_ALIGNMENT_TEXT_START,
                 fontColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
                 description = resourceProvider.getOrderExtensionRequestBottomSheetFooterComposer(),
                 show = true
