@@ -424,17 +424,19 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     setDiscountSelected()
                 }
             }
-            chipFreeShipping.chip_container.setOnClickListener {
-                setPromoType(PromoType.FREE_SHIPPING)
-                setFreeShippingSelected()
-            }
-            chipCashback.chip_container.setOnClickListener {
-                setPromoType(PromoType.CASHBACK)
-                setCashbackSelected()
-            }
-            chipDiscount.chip_container.setOnClickListener {
-                setPromoType(PromoType.DISCOUNT)
-                setDiscountSelected()
+            if (pageMode == PageMode.CREATE) {
+                chipFreeShipping.chip_container.setOnClickListener {
+                    setPromoType(PromoType.FREE_SHIPPING)
+                    setFreeShippingSelected()
+                }
+                chipCashback.chip_container.setOnClickListener {
+                    setPromoType(PromoType.CASHBACK)
+                    setCashbackSelected()
+                }
+                chipDiscount.chip_container.setOnClickListener {
+                    setPromoType(PromoType.DISCOUNT)
+                    setDiscountSelected()
+                }
             }
         }
     }
@@ -1049,8 +1051,10 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         buyerTargetSectionBinding?.run {
             radioAllBuyer.disable()
             radioNewFollower.disable()
-            for (id in availableTargetBuyer) {
-                rgBuyerTarget.getChildAt(id.id).enable()
+            if (pageMode == PageMode.CREATE) {
+                for (id in availableTargetBuyer) {
+                    rgBuyerTarget.getChildAt(id.id).enable()
+                }
             }
             setTargetBuyerRadioButton(voucherConfiguration)
         }
