@@ -458,13 +458,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     class MyWebChromeClient extends WebChromeClient {
         @Override
-        public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-            Log.d("MyApplication", consoleMessage.message() + " -- From line " +
-                    consoleMessage.lineNumber() + " of " + consoleMessage.sourceId());
-            return true;
-        }
-
-        @Override
         public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
             checkLocationPermission(callback, origin);
         }

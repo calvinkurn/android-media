@@ -20,7 +20,8 @@ import kotlinx.coroutines.Job;
 
 public final class PrintWebPageInterface {
 
-    private static final String JOB_NAME = "Current Page";
+    private static final String DEFAULT_JOB_NAME_PREFIX = "download-";
+    private static int DELAY = 500;
 
     private WeakReference<Activity> mContextRef;
     private WeakReference<WebView> mWebViewRef;
@@ -28,7 +29,6 @@ public final class PrintWebPageInterface {
     private Handler mHandler;
     private Runnable mRunnable;
 
-    private int delay = 500;
 
     @Volatile
     private long lastTimestampCalled;
@@ -38,16 +38,8 @@ public final class PrintWebPageInterface {
         this.mWebViewRef = new WeakReference<WebView>(webView);
     }
 
-    private void cancelJob() {
-        if (mHandler == null || mRunnable == null) {
-            return;
-        }
-        mHandler.removeCallbacks(mRunnable);
-    }
-
     @JavascriptInterface
-    public void printCurrentScreen() {
-        cancelJob();
+    public void printCurrentScreen(final String filename) {
         mHandler = new Handler(Looper.getMainLooper());
         mRunnable = new Runnable() {
             @Override
@@ -57,7 +49,7 @@ public final class PrintWebPageInterface {
                         return;
                     }
                     long currentTimestampCalled = System.currentTimeMillis();
-                    if (lastTimestampCalled + delay >= currentTimestampCalled) {
+                    if (lastTimestampCalled + DELAY >= currentTimestampCalled) {
                         return;
                     }
                     lastTimestampCalled = System.currentTimeMillis();
@@ -68,17 +60,23 @@ public final class PrintWebPageInterface {
                             PrintAttributes.MediaSize.ISO_A4
                     ).build();
 
+                    String jobName = "";
+                    if (filename.isEmpty()) {
+                        jobName = DEFAULT_JOB_NAME_PREFIX + currentTimestampCalled;
+                    } else {
+                        jobName = filename;
+                    }
+
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        adapter = mWebViewRef.get().createPrintDocumentAdapter(JOB_NAME);
+                        adapter = mWebViewRef.get().createPrintDocumentAdapter(jobName);
                     } else {
                         adapter = mWebViewRef.get().createPrintDocumentAdapter();
                     }
 
                     if (printManager != null) {
-                        printManager.print(JOB_NAME, adapter, printAttr);
+                        printManager.print(jobName, adapter, printAttr);
                     }
                 } catch (Exception e) {
-                    Log.d("MyApplication", "Throw: " + e.toString());
                     e.printStackTrace();
                 }
             }
