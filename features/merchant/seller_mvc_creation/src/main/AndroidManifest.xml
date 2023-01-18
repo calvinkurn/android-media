@@ -58,7 +58,7 @@
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name=".presentation.list.MvcListActivity"
             android:exported="false"
@@ -80,7 +80,7 @@
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.WhiteUnify">
         </activity>
 
         <activity
