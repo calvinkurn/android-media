@@ -93,9 +93,9 @@ class DynamicIconMacroItemViewHolder(
         iconImageView?.setImageUrl(item.imageUrl)
         iconContainer?.layoutParams = ViewGroup.LayoutParams(
             if (isScrollable) ViewGroup.LayoutParams.WRAP_CONTENT else ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.MATCH_PARENT
         )
-        iconTvName?.height = titleHeight
+//        iconTvName?.height = titleHeight
         iconContainer?.setOnTouchListener { _, event ->
             iconImageView?.performTouchDown()
             when (event?.action) {

@@ -53,6 +53,10 @@ object DynamicIconsMacroUtil {
             )
             if (heightText > maxHeight) maxHeight = heightText
         }
+        maxHeight += context.resources.getDimensionPixelSize(R.dimen.home_dynamic_icon_image_size)
+        maxHeight += context.resources.getDimensionPixelSize(R.dimen.home_dynamic_icon_padding_top)
+        maxHeight += context.resources.getDimensionPixelSize(R.dimen.home_dynamic_icon_padding_bottom)
+        maxHeight += context.resources.getDimensionPixelSize(R.dimen.home_dynamic_icon_margin_top_title)
         return maxHeight
     }
 }

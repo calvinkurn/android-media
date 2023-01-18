@@ -74,21 +74,24 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
                 launch {
                     val maximalTitleHeight =
                         DynamicIconsMacroUtil.findMaxHeightTitleText(icons, itemView.context)
-                    adapterMacro.setTitleHeight(maximalTitleHeight)
-                    adapterMacro.submitList(element)
                     val layoutParams = iconRecyclerView?.layoutParams as RecyclerView.LayoutParams
-                    layoutParams.setMargins(Int.ZERO, MARGIN_TOP_MACRO, Int.ZERO, MARGIN_BOTTOM_MACRO)
+                    layoutParams.height = maximalTitleHeight
                     iconRecyclerView?.layoutParams = layoutParams
-
-                    if (iconRecyclerView?.itemDecorationCount == Int.ZERO) {
-                        iconRecyclerView?.addItemDecoration(
-                            CommonSpacingDecoration(
-                                MARGIN_HORIZONTAL_BETWEEN_CARD_MACRO.toPx()
-                            )
-                        )
-                    }
-                    iconRecyclerView?.adapter = adapterMacro
                 }
+//                adapterMacro.setTitleHeight(maximalTitleHeight)
+                adapterMacro.submitList(element)
+                val layoutParams = iconRecyclerView?.layoutParams as RecyclerView.LayoutParams
+                layoutParams.setMargins(Int.ZERO, MARGIN_TOP_MACRO, Int.ZERO, MARGIN_BOTTOM_MACRO)
+                iconRecyclerView?.layoutParams = layoutParams
+
+                if (iconRecyclerView?.itemDecorationCount == Int.ZERO) {
+                    iconRecyclerView?.addItemDecoration(
+                        CommonSpacingDecoration(
+                            MARGIN_HORIZONTAL_BETWEEN_CARD_MACRO.toPx()
+                        )
+                    )
+                }
+                iconRecyclerView?.adapter = adapterMacro
             } else {
                 adapter.submitList(element)
                 adapter.updatePosition(absoluteAdapterPosition)
