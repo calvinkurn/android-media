@@ -1,7 +1,7 @@
 package com.tokopedia.topads.common.data.raw
 
 const val TOP_ADS_GROUPS_STATISTIC_GQL = """
-    query GetTopadsDashboardGroupStatisticsV3(${'$'}queryInput:GetTopadsDashboardGroupStatisticsV3!){
+    query GetTopadsDashboardGroupStatisticsV3(${'$'}queryInput:GetTopadsDashboardGroupStatisticsInputTypeV3!){
       GetTopadsDashboardGroupStatisticsV3(queryInput:${'$'}queryInput){
           page{
             current

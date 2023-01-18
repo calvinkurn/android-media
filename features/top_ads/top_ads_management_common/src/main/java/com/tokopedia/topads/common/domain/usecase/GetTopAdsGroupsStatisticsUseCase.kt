@@ -2,7 +2,7 @@ package com.tokopedia.topads.common.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.topads.common.data.model.AdGroupsParams
+import com.tokopedia.topads.common.data.model.AdGroupStatsParam
 import com.tokopedia.topads.common.data.raw.TOP_ADS_GROUPS_STATISTIC_GQL
 import com.tokopedia.topads.common.data.response.TopAdsGroupsStatisticResponseResponse
 import com.tokopedia.utils.date.DateUtil
@@ -23,10 +23,11 @@ class GetTopAdsGroupsStatisticsUseCase@Inject constructor() : GraphqlUseCase<Top
         keyword:String = "",
         page:Int = 1,
         sort:String = "",
+        groupIds:String = "",
         success:(TopAdsGroupsStatisticResponseResponse) -> Unit,
         failure:(Throwable) -> Unit
     ){
-        setRequestParams(getRequestParams(shopId, keyword, page, sort))
+        setRequestParams(getRequestParams(shopId, keyword, page, sort,groupIds))
         setTypeClass(TopAdsGroupsStatisticResponseResponse::class.java)
         setGraphqlQuery(TOP_ADS_GROUPS_STATISTIC_GQL)
         execute({
@@ -37,21 +38,21 @@ class GetTopAdsGroupsStatisticsUseCase@Inject constructor() : GraphqlUseCase<Top
         },failure)
     }
 
-    private fun getRequestParams(shopId:String,keyword:String,page:Int,sort:String) : Map<String,Any?>{
+    private fun getRequestParams(shopId:String,keyword:String,page:Int,sort:String,groupIds:String) : Map<String,Any?>{
         val endDate = DateUtil.getCurrentDate().toString(DateUtil.YYYY_MM_DD)
         val startDate = DateUtil.getCurrentCalendar().time.addTimeToSpesificDate(Calendar.DAY_OF_YEAR,-ROLLBACK_DAYS).toString(
             DateUtil.YYYY_MM_DD)
         return mapOf(
-            PARAM_KEY to AdGroupsParams(
+            PARAM_KEY to AdGroupStatsParam(
                 shopId = shopId,
                 keyword = keyword,
                 page = page,
                 sort = sort,
                 separateStatistic = "true",
                 goalId = "1",
-                groupType = 1,
                 startDate = startDate,
-                endDate = endDate
+                endDate = endDate,
+                groupIds = groupIds
             )
         )
     }

@@ -76,15 +76,16 @@ class MpAdCreationActivity : BaseActivity(),HasComponent<CreateAdsComponent> {
 //        if(productType!=null && productType.isUsed){
 //
 //        }
-        if(productId.isEmpty()){
-            addFragment(
-                ProductManageSellerFragment.newInstance(
-                    arrayListOf(),"",""
-                ))
-        }
-        else{
-            addFragment(MpAdCreationOnboardingFragment.newInstance(productId))
-        }
+        addFragment(MpAdGroupFragment.newInstance())
+//        if(productId.isEmpty()){
+//            addFragment(
+//                ProductManageSellerFragment.newInstance(
+//                    arrayListOf(),"",""
+//                ))
+//        }
+//        else{
+//            addFragment(MpAdCreationOnboardingFragment.newInstance(productId))
+//        }
 //        addFragment(
 //            ProductManageSellerFragment.newInstance(
 //            arrayListOf(),"",""

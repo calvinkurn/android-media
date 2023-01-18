@@ -20,7 +20,7 @@ data class DashboardGroupStatistic(
     @SerializedName("group_id")
     val groupId:String = "",
     @SerializedName("stat_total_impression")
-    val statTotalImpression:Int = 0,
+    val statTotalImpression:String = "",
     @SerializedName("stat_total_click")
     val statTotatClick:String = "",
     @SerializedName("stat_total_conversion")

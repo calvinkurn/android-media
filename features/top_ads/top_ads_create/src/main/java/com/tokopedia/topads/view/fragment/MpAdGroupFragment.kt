@@ -1,5 +1,6 @@
 package com.tokopedia.topads.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,13 +15,16 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.create.databinding.MpAdGroupFragmentBinding
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.adapter.adgrouplist.AdGroupListAdapter
 import com.tokopedia.topads.create.R
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.view.adapter.adgrouplist.model.ErrorUiModel
 import com.tokopedia.topads.view.adapter.adgrouplist.typefactory.AdGroupTypeFactory
 import com.tokopedia.topads.view.adapter.adgrouplist.typefactory.AdGroupTypeFactoryImpl
@@ -29,6 +33,9 @@ import com.tokopedia.topads.view.adapter.adgrouplist.viewholder.ErrorViewHolder
 import com.tokopedia.topads.view.adapter.adgrouplist.viewholder.ReloadInfiniteViewHolder
 import com.tokopedia.topads.view.model.MpAdsGroupsViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -52,6 +59,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         private const val CONVERSION_VALUE = "conversion"
         private const val PRODUCT_ID_KEY = "product_id"
         private const val SEARCH_DELAY_TIME = 500L
+        private const val successImageUrl = "https://images.tokopedia.net/img/android/topads/createads_success/mp_group_creation_success_dialog.png"
     }
 
     private var binding:MpAdGroupFragmentBinding?=null
@@ -99,6 +107,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         setupHeader()
         setupRecyclerView()
+        setupCta()
         attachFilterClickListener()
         attachSearchQueryListener()
         observeViewModel()
@@ -120,6 +129,15 @@ class MpAdGroupFragment : BaseDaggerFragment(),
             layoutManager = linearLayoutManager
             adapter = adGroupAdapter
             addRecyclerViewScrollListeners()
+        }
+    }
+
+    private fun setupCta(){
+        binding?.adGroupCta?.apply {
+//            isEnabled = false
+            setOnClickListener {
+               adGroupViewModel.checkTopadsDeposits()
+            }
         }
     }
 
@@ -146,6 +164,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
     private fun observeViewModel(){
         adGroupViewModel.mainListLiveData.observe(viewLifecycleOwner,::submitListToAdapter)
         adGroupViewModel.hasNextLiveData.observe(viewLifecycleOwner,::onMoreGroupsLoaded)
+        adGroupViewModel.topadsCreditLiveData.observe(viewLifecycleOwner,::onTopadsCreditCheck)
     }
 
     private fun attachFilterClickListener(){
@@ -175,6 +194,17 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         }
         endlessScrollListener?.updateStateAfterGetData()
         endlessScrollListener?.setHasNextPage(hasNext)
+    }
+
+    private fun onTopadsCreditCheck(data:Result<Deposit>){
+        when(data){
+            is Success ->{
+                openSuccessDialog()
+            }
+            is Fail -> {
+                openInsufficientCreditsDialog()
+            }
+        }
     }
 
     private fun removeRecyclerViewScrollListeners(){
@@ -257,8 +287,14 @@ class MpAdGroupFragment : BaseDaggerFragment(),
     }
 
     override fun onAdGroupClicked(index: Int, active: Boolean) {
-        if(active) adGroupViewModel.chooseAdGroup(index)
-        else adGroupViewModel.unChooseAdGroup(index)
+        if(active){
+//            binding?.adGroupCta?.isEnabled = true
+            adGroupViewModel.chooseAdGroup(index)
+        }
+        else {
+//            binding?.adGroupCta?.isEnabled = false
+            adGroupViewModel.unChooseAdGroup(index)
+        }
     }
 
     override fun getScreenName() = ""
@@ -281,5 +317,38 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         mHandler.postDelayed({
             adGroupViewModel.loadFirstPage(shopId)
         }, SEARCH_DELAY_TIME)
+    }
+
+    private fun openSuccessDialog(){
+        val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION)
+        dialog.setImageUrl(successImageUrl)
+        dialog.setDescription(getString(R.string.success_dailog_description))
+        dialog.setTitle(getString(R.string.product_successfully_advertised))
+        dialog.setPrimaryCTAText(getString(R.string.manage_ads_group))
+        dialog.setSecondaryCTAText(getString(R.string.stay_here))
+        dialog.setPrimaryCTAClickListener {
+
+        }
+        dialog.setSecondaryCTAClickListener {
+            requireActivity().finish()
+        }
+        dialog.show()
+    }
+
+    private fun openInsufficientCreditsDialog(){
+        val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setDescription(getString(R.string.success_group_creation_insufficient_credits_text))
+        dialog.setTitle(getString(R.string.ads_created_successfully_but_cant_appear_yet))
+        dialog.setPrimaryCTAText(getString(R.string.add_credit))
+        dialog.setSecondaryCTAText(getString(R.string.later))
+        dialog.setPrimaryCTAClickListener {
+            val intent = Intent(activity, TopAdsAddCreditActivity::class.java)
+            intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
+            startActivityForResult(intent, 99)
+        }
+        dialog.setSecondaryCTAClickListener {
+            requireActivity().finish()
+        }
+        dialog.show()
     }
 }

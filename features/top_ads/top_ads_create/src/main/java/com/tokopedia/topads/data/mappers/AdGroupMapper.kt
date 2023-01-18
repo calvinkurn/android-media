@@ -1,6 +1,7 @@
 package com.tokopedia.topads.data.mappers
 
 import com.tokopedia.topads.common.data.response.TopAdsGroupsResponse
+import com.tokopedia.topads.common.data.response.TopAdsGroupsStatisticResponseResponse
 import com.tokopedia.topads.data.AdGroupCompleteData
 import com.tokopedia.topads.data.AdGroupSettingData
 import com.tokopedia.topads.data.AdGroupStatsData
@@ -20,9 +21,9 @@ object AdGroupMapper {
                         productBrowse = it.groupBidSetting.productBrowse,
                         productSearch = it.groupBidSetting.productSearch,
                     ),
-                    adGroupStats = AdGroupStatsData(
-                        loading = true
-                    )
+//                    adGroupStats = AdGroupStatsData(
+//                        loading = true
+//                    )
                 )
             )
             groupList.add(
@@ -35,6 +36,20 @@ object AdGroupMapper {
             )
         }
         return Pair(groupList,uiList)
+    }
+
+    fun getAdGroupStatsFromResponse(data: TopAdsGroupsStatisticResponseResponse) : List<AdGroupStatsData>{
+       val statList = mutableListOf<AdGroupStatsData>()
+        data.response?.data?.forEach {
+            statList.add(
+                AdGroupStatsData(
+                    totalImpressionStats = it.statTotalImpression,
+                    totalClickStats = it.statTotatClick,
+                    totalConversionStats = it.statTotalConversion
+                )
+            )
+        }
+        return statList
     }
 
 }

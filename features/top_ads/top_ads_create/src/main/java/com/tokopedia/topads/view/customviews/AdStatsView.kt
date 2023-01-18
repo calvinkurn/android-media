@@ -42,9 +42,9 @@ class AdStatsView @JvmOverloads constructor(
     }
 
     private fun getDummyList() = listOf(
-        AdStatModel("11.098","Tampil"),
-        AdStatModel("11.098","Klik"),
-        AdStatModel("11.098","Terjual")
+        AdStatModel("0","Tampil"),
+        AdStatModel("1","Klik"),
+        AdStatModel("0","Terjual")
     )
 
     fun submitStatList(list:List<AdStatModel>){
