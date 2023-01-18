@@ -10,22 +10,23 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
-import com.tokopedia.homenav.mock.MainNavMockResponseConfig
-import com.tokopedia.homenav.util.MainNavRecyclerViewIdlingResource
-import com.tokopedia.homenav.view.activity.HomeNavActivity
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.test.application.annotations.CassavaTest
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
 import com.tokopedia.homenav.mainnav.view.datamodel.TransactionListItemDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
+import com.tokopedia.homenav.mock.MainNavMockResponseConfig
+import com.tokopedia.homenav.util.MainNavRecyclerViewIdlingResource
+import com.tokopedia.homenav.view.activity.HomeNavActivity
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
+import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -132,6 +133,26 @@ class MainNavAnalyticsTest {
             hasPassedAnalytics(
                 cassavaTestRule,
                 ANALYTIC_VALIDATOR_QUERY_FILE_NAME_FAVORITE_SHOP
+            )
+        }
+    }
+
+    @Test
+    fun testComponentReview() {
+        mainNavCassavaTest {
+            login()
+            waitForData()
+            doActivityTestByModelClass(
+                delayBeforeRender = 2000,
+                dataModelClass = ReviewListDataModel::class
+            ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                clickOnReview(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(
+                cassavaTestRule,
+                ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REVIEW
             )
         }
     }
@@ -259,7 +280,7 @@ class MainNavAnalyticsTest {
     private fun setupAbTestRemoteConfig() {
         RemoteConfigInstance.getInstance().abTestPlatform.setString(
             RollenceKey.ME_PAGE_EXP,
-            RollenceKey.ME_PAGE_VARIANT_1
+            RollenceKey.ME_PAGE_VARIANT_2
         )
     }
 }
