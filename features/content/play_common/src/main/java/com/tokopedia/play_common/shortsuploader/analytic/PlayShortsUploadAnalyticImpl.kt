@@ -36,7 +36,7 @@ class PlayShortsUploadAnalyticImpl @Inject constructor(
                     EVENT_LABEL to "$authorId - ${getAnalyticAuthorType(authorType)} - $channelId",
                     EVENT_BUSINESSUNIT to EVENT_BUSINESS_UNIT_PLAY,
                     EVENT_CURRENTSITE to currentSite,
-                    EVENT_TRACKER_ID to "37589",
+                    EVENT_TRACKER_ID to getTrackerIdBySite("37589", "37671"),
                     EVENT_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                     EVENT_USER_ID to userSession.userId
                 )
@@ -59,7 +59,7 @@ class PlayShortsUploadAnalyticImpl @Inject constructor(
                     EVENT_LABEL to "$authorId - ${getAnalyticAuthorType(authorType)}",
                     EVENT_BUSINESSUNIT to EVENT_BUSINESS_UNIT_PLAY,
                     EVENT_CURRENTSITE to currentSite,
-                    EVENT_TRACKER_ID to "37591",
+                    EVENT_TRACKER_ID to getTrackerIdBySite("37591", "37673"),
                     EVENT_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                     EVENT_USER_ID to userSession.userId
                 )
@@ -77,6 +77,11 @@ class PlayShortsUploadAnalyticImpl @Inject constructor(
     private val currentSite: String
         get() = if(GlobalConfig.isSellerApp()) EVENT_CURRENT_SITE_SA
                 else EVENT_CURRENT_SITE_MA
+
+    private fun getTrackerIdBySite(mainAppTrackerId: String, sellerAppTrackerId: String): String {
+        return if(GlobalConfig.isSellerApp()) sellerAppTrackerId
+        else mainAppTrackerId
+    }
 
     companion object {
         private const val EVENT_NAME = "event"
