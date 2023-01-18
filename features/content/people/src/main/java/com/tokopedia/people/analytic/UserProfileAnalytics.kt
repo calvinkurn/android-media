@@ -16,8 +16,11 @@ class UserProfileAnalytics {
             get() = TrackApp.getInstance().gtm
 
         val currentSite: String
-            get() = if (GlobalConfig.isSellerApp()) Constants.TOKOPEDIA_SELLER
-            else Constants.TOKOPEDIA_MARKETPLACE
+            get() = if (GlobalConfig.isSellerApp()) {
+                Constants.TOKOPEDIA_SELLER
+            } else {
+                Constants.TOKOPEDIA_MARKETPLACE
+            }
     }
 
     object Function {
@@ -32,6 +35,7 @@ class UserProfileAnalytics {
         const val EVENT_ACTION = "eventAction"
         const val EVENT_LABEL = "eventLabel"
         const val BUSINESS_UNIT = "businessUnit"
+        const val KEY_TRACKER_ID = "trackerId"
         const val CURRENT_SITE = "currentSite"
         const val SESSION_IRIS = "sessionIris"
         const val CREATIVE = "creative"
