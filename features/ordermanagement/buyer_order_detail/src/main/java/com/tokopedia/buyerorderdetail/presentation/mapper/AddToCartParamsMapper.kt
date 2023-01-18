@@ -4,8 +4,6 @@ import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 object AddToCartParamsMapper {
     fun mapMultiAddToCartParams(
@@ -42,13 +40,13 @@ object AddToCartParamsMapper {
         userId: String
     ): AddToCartMultiParam {
         return AddToCartMultiParam(
-            productId = productId.toLongOrZero(),
+            productId = productId,
             productName = productName,
-            productPrice = price.toLong(),
+            productPrice = price,
             qty = quantity,
             notes = notes,
-            shopId = shopId.toIntOrZero(),
-            custId = userId.toIntOrZero()
+            shopId = shopId,
+            custId = userId
         )
     }
 
@@ -57,13 +55,13 @@ object AddToCartParamsMapper {
         userId: String
     ): AddToCartMultiParam {
         return AddToCartMultiParam(
-            productId = productId.toLongOrZero(),
+            productId = productId,
             productName = productName,
-            productPrice = price.toLong(),
+            productPrice = price,
             qty = quantity,
             notes = notes,
-            shopId = shopId.toIntOrZero(),
-            custId = userId.toIntOrZero()
+            shopId = shopId,
+            custId = userId
         )
     }
 }
