@@ -80,7 +80,7 @@ class DtHomeViewModel @Inject constructor(
 
             _homeLayoutList.postValue(Success(data))
 
-            getAnchorTabMenu(homeLayoutResponse)
+            getAnchorTabMenu(homeLayoutResponse, localCacheModel)
             getRecommendationForYouNew()
         }) {
             _homeLayoutList.postValue(Fail(it))
@@ -90,9 +90,9 @@ class DtHomeViewModel @Inject constructor(
     /**
      * anchor tab contain info and visitable of click to scroll
      */
-    private fun getAnchorTabMenu(homeLayoutResponse: List<HomeLayoutResponse>) {
+    private fun getAnchorTabMenu(homeLayoutResponse: List<HomeLayoutResponse>, localCacheModel: LocalCacheModel) {
         launchCatchError(block = {
-            val anchorTabResponse = getHomeAnchorTabUseCase.execute()
+            val anchorTabResponse = getHomeAnchorTabUseCase.execute(localCacheModel)
             val menuList = anchorTabResponse.mapMenuList(homeLayoutResponse, getHomeVisitableList())
             _menuList.postValue(menuList)
         }) {}

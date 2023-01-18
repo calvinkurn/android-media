@@ -32,7 +32,7 @@ object AnchorTabMapper {
                 if (anchorTab.groupId == homeLayoutResponse[index].groupId) {
                     anchorTab.apply {
                         // remove later
-                        this.title = homeLayoutResponse[index].header.name
+                        this.title = homeLayoutResponse[index].groupId
                     }
                     listMenu.add(anchorTab)
                     listMenu = listMenu.distinctBy { it.groupId }.toMutableList()
@@ -68,12 +68,12 @@ object AnchorTabMapper {
 
             val anchorTab = AnchorTabUiModel(
                 homeIcon.id.toString(),
-                homeIcon.name,
+                homeIcon.feParam,
                 homeIcon.imageUrl,
                 dummyGroupId
             )
             listMenu.add(anchorTab)
-            listMenu = listMenu.distinctBy { it.groupId }.toMutableList()
+            listMenu = listMenu.toMutableList()
         }
         return listMenu.toList()
     }

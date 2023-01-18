@@ -31,6 +31,7 @@ internal object GetAnchorTabQuery : GqlQueryInterface {
                   withBackground
                   categoryPersona
                   galaxyAttribution
+                  feParam
                 }
               }
             }

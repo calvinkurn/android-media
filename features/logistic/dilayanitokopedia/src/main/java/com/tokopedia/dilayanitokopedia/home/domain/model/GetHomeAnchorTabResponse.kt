@@ -32,6 +32,9 @@ data class GetHomeAnchorTabResponse(
             @SerializedName("galaxyAttribution")
             @Expose
             val galaxyAttribution: String = "",
+            @SerializedName("feParam")
+            @Expose
+            val feParam: String = "",
             @SerializedName("id")
             @Expose
             val id: Long = 0,
