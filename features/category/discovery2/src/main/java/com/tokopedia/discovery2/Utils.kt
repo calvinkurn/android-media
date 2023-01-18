@@ -151,6 +151,8 @@ class Utils {
             discoComponentQuery?.let {
                 filtersMasterMapParam.putAll(it)
             }
+            filtersMasterMapParam.remove(QUERY_PARENT)
+
             component?.let {
                 filtersMasterMapParam.putAll(addAddressQueryMap(it.userAddressData))
             }
