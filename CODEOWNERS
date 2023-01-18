@@ -205,7 +205,7 @@
 /features/media/mediapicker-common/                     @tokopedia/android-minionkevin-dev
 /features/media/mediaeditor/                            @tokopedia/android-minionkevin-dev
 
-/features/user/chatbot/                         		@tokopedia/android-minionken-dev
+/features/user/chatbot/                         		@tokopedia/android-minionmark-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
 /features/user/profilecompletion/                       @tokopedia/android-minionkevin-dev
 /features/user/vote/                            		@tokopedia/android-minionkevin-dev
@@ -247,8 +247,8 @@
 /features/communication/topchat/                        @tokopedia/android-minionkevin-dev
 /features/communication/push-notification-common/       @tokopedia/android-minionyoda-dev
 
-/features/operational/contact_us        				@tokopedia/android-minionken-dev
-/features/operational/csat_rating        				@tokopedia/android-minionken-dev
+/features/operational/contact_us        				@tokopedia/android-minionmark-dev
+/features/operational/csat_rating        				@tokopedia/android-minionmark-dev
 
 /features/fintech/common_wallet         				@tokopedia/android-minionmark-dev
 /features/fintech/fintech_home_widget         			@tokopedia/android-minionmark-dev
