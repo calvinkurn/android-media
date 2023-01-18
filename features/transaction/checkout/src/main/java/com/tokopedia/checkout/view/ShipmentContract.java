@@ -443,9 +443,11 @@ public interface ShipmentContract {
 
         void validateDynamicData();
 
-        DynamicDataPassingParamRequest getDynamicData();
+        DynamicDataPassingParamRequest getDynamicDataParam();
 
         boolean isUsingDynamicDataPassing();
+
+        String getDynamicData();
     }
 
 }

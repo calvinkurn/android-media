@@ -241,7 +241,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private PublishSubject<Boolean> logisticPromoDonePublisher = null;
 
     private boolean isUsingDynamicDataPassing = false;
-    private DynamicDataPassingParamRequest _dynamicData = null;
+    private DynamicDataPassingParamRequest dynamicDataParam;
+    private String dynamicData = "";
 
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
@@ -316,7 +317,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         logisticDonePublisher = null;
         ratesPromoPublisher = null;
         logisticPromoDonePublisher = null;
-        _dynamicData = null;
+        dynamicDataParam = null;
     }
 
     @Override
@@ -701,6 +702,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         }
         isUsingDynamicDataPassing = cartShipmentAddressFormData.isUsingDdp();
+        dynamicData = cartShipmentAddressFormData.getDynamicData();
     }
 
     private void checkIsUserEligibleForRevampAna(CartShipmentAddressFormData cartShipmentAddressFormData) {
@@ -839,7 +841,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }
             }
 
-            Map<String, Object> params = generateCheckoutParams(isOneClickShipment, isTradeIn, isTradeInDropOff, deviceId, checkoutRequest);
+            Map<String, Object> params = generateCheckoutParams(isOneClickShipment, isTradeIn, isTradeInDropOff, deviceId, checkoutRequest, dynamicData);
             RequestParams requestParams = RequestParams.create();
             requestParams.putAll(params);
             compositeSubscription.add(
@@ -861,10 +863,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                       boolean isTradeIn,
                                                       boolean isTradeInDropOff,
                                                       String deviceId,
-                                                      CheckoutRequest checkoutRequest) {
+                                                      CheckoutRequest checkoutRequest,
+                                                      String dynamicData) {
         Map<String, Object> params = new HashMap<>();
         params.put(CheckoutGqlUseCase.PARAM_CARTS, CheckoutRequestMapper.INSTANCE.map(checkoutRequest));
         params.put(CheckoutGqlUseCase.PARAM_IS_ONE_CLICK_SHIPMENT, String.valueOf(isOneClickShipment));
+        params.put(CheckoutGqlUseCase.PARAM_DYNAMIC_DATA, dynamicData);
         if (isTradeIn) {
             params.put(CheckoutGqlUseCase.PARAM_IS_TRADE_IN, true);
             params.put(CheckoutGqlUseCase.PARAM_IS_TRADE_IN_DROP_OFF, isTradeInDropOff);
@@ -2914,6 +2918,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         getView().stopTrace();
                         if (!isFireAndForget) {
                             getView().doCheckout();
+                        } else {
+                            dynamicData = dynamicDataPassingUiModel.getDynamicData();
                         }
                     }
                     return Unit.INSTANCE;
@@ -2935,29 +2941,34 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void setDynamicData(DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam, boolean isChecked) {
-        for (DynamicDataPassingParamRequest.DynamicDataParam dynamicDataExisting : _dynamicData.getData()) {
-            if (!dynamicDataExisting.getUniqueId().equalsIgnoreCase(dynamicDataParam.getUniqueId())) {
-                if (isChecked) {
-                    _dynamicData.getData().add(dynamicDataParam);
-                }
+        if (this.dynamicDataParam.getData().contains(dynamicDataParam)) {
+            if (!isChecked) {
+                this.dynamicDataParam.getData().remove(dynamicDataParam);
             }
+        } else {
+            this.dynamicDataParam.getData().add(dynamicDataParam);
         }
-        updateDynamicData(_dynamicData, true);
+        updateDynamicData(this.dynamicDataParam, true);
     }
 
     @Override
     public void validateDynamicData() {
-        updateDynamicData(_dynamicData, false);
+        updateDynamicData(dynamicDataParam, false);
     }
 
     @Override
-    public DynamicDataPassingParamRequest getDynamicData() {
-        return _dynamicData;
+    public DynamicDataPassingParamRequest getDynamicDataParam() {
+        return dynamicDataParam;
     }
 
     @Override
     public boolean isUsingDynamicDataPassing() {
         return isUsingDynamicDataPassing;
+    }
+
+    @Override
+    public String getDynamicData() {
+        return dynamicData;
     }
 
     @Override

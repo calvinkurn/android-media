@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class DynamicDataPassingParamRequest(
     @SerializedName("data")
-    var data: List<DynamicDataParam> = emptyList()
+    var data: List<DynamicDataParam> = arrayListOf()
 ) {
 
     data class DynamicDataParam(
