@@ -1,9 +1,7 @@
 package com.tokopedia.homenav.mainnav.interactor
 
 import android.accounts.NetworkErrorException
-import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.homenav.MePageRollenceController
@@ -57,11 +55,7 @@ class TestMainNavViewModel {
     @get:Rule
     val rule = CoroutineTestRule()
 
-    @ApplicationContext
-    lateinit var context: Context
-
     private lateinit var viewModel: MainNavViewModel
-    private val shopId = 1224
     private val mockListAllCategory = listOf(HomeNavMenuDataModel())
 
     @Before
@@ -1425,6 +1419,143 @@ class TestMainNavViewModel {
         Assert.assertNotNull(transactionDataModel)
     }
 
+    @Test
+    fun `given failed when logged in user get payment data and success when get ongoing order with control rollence then show only ongoing order`() {
+        val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
+        val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
+        val userSession = mockk<UserSessionInterface>()
+
+        every { userSession.isLoggedIn } returns true
+        every { userSession.hasShop() } returns true
+
+        coEvery { userSession.isShopOwner } returns true
+        coEvery { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(any()) }.answers { }
+        coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns Success(listOf(NavProductOrder()))
+        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns Fail(MessageErrorException(""))
+
+        viewModel = createViewModel(
+            getUohOrdersNavUseCase = getUohOrdersNavUseCase,
+            getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
+            userSession = userSession
+        )
+        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
+        viewModel.setInitialState()
+        viewModel.getMainNavData(true)
+
+        val menuList = viewModel.mainNavLiveData.value?.dataList?.filter {
+            it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.ORDER
+        } ?: listOf()
+
+        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is TransactionListItemDataModel
+        } as? TransactionListItemDataModel
+
+        Assert.assertFalse(menuList.isEmpty())
+        Assert.assertTrue(transactionDataModel?.orderListModel?.paymentList?.isEmpty() == true)
+        Assert.assertTrue(transactionDataModel?.orderListModel?.orderList?.isNotEmpty() == true)
+    }
+
+    @Test
+    fun `given failed when logged in user get ongoing order data and success when get payment with control rollence then show only payment`() {
+        val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
+        val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
+        val userSession = mockk<UserSessionInterface>()
+
+        every { userSession.isLoggedIn } returns true
+        every { userSession.hasShop() } returns true
+
+        coEvery { userSession.isShopOwner } returns true
+        coEvery { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(any()) }.answers { }
+        coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns Fail(MessageErrorException(""))
+        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns Success(listOf(NavPaymentOrder()))
+
+        viewModel = createViewModel(
+            getUohOrdersNavUseCase = getUohOrdersNavUseCase,
+            getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
+            userSession = userSession
+        )
+        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
+        viewModel.setInitialState()
+        viewModel.getMainNavData(true)
+
+        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is TransactionListItemDataModel
+        } as? TransactionListItemDataModel
+
+        Assert.assertTrue(transactionDataModel?.orderListModel?.orderList?.isEmpty() == true)
+        Assert.assertTrue(transactionDataModel?.orderListModel?.paymentList?.isNotEmpty() == true)
+    }
+
+    @Test
+    fun `given failed when logged in user get ongoing order and payment data with control rollence then show error`() {
+        val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
+        val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
+        val userSession = mockk<UserSessionInterface>()
+
+        every { userSession.isLoggedIn } returns true
+        every { userSession.hasShop() } returns true
+
+        coEvery { userSession.isShopOwner } returns true
+        coEvery { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(any()) }.answers { }
+        coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns Fail(MessageErrorException(""))
+        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns Fail(MessageErrorException(""))
+
+        viewModel = createViewModel(
+            getUohOrdersNavUseCase = getUohOrdersNavUseCase,
+            getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
+            userSession = userSession
+        )
+        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
+        viewModel.setInitialState()
+        viewModel.getMainNavData(true)
+
+        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is TransactionListItemDataModel
+        } as? TransactionListItemDataModel
+
+        val transactionError = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is ErrorStateOngoingTransactionModel
+        }
+
+        Assert.assertNull(transactionDataModel)
+        Assert.assertNotNull(transactionError)
+    }
+
+    @Test
+    fun `given thrown error when logged in user get ongoing order and payment data with control rollence then show error`() {
+        val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
+        val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
+        val userSession = mockk<UserSessionInterface>()
+
+        every { userSession.isLoggedIn } returns true
+        every { userSession.hasShop() } returns true
+
+        coEvery { userSession.isShopOwner } returns true
+        coEvery { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(any()) }.answers { }
+        coEvery { getUohOrdersNavUseCase.executeOnBackground() } throws MessageErrorException("")
+        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } throws MessageErrorException("")
+
+        viewModel = createViewModel(
+            getUohOrdersNavUseCase = getUohOrdersNavUseCase,
+            getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
+            userSession = userSession
+        )
+        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
+        viewModel.setInitialState()
+        viewModel.getMainNavData(true)
+
+        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is TransactionListItemDataModel
+        } as? TransactionListItemDataModel
+
+        val transactionError = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is ErrorStateOngoingTransactionModel
+        }
+
+        Assert.assertNull(transactionDataModel)
+        Assert.assertNotNull(transactionError)
+    }
+
     // Wishlist section
     @Test
     fun `given success and not empty data when get wishlist with me page variant 2 should add wishlist model to visitable list`() {
@@ -1966,6 +2097,107 @@ class TestMainNavViewModel {
 
         Assert.assertEquals(1, transactionDataModel?.orderListModel?.orderList?.size)
         Assert.assertTrue(transactionDataModel?.orderListModel?.orderList?.get(0)?.fullWidth == true)
+    }
+
+    @Test
+    fun `given failed when logged in user get ongoing order data and success when get payment with me page variant then show only payment`() {
+        val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
+        val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
+        val userSession = mockk<UserSessionInterface>()
+
+        every { userSession.isLoggedIn } returns true
+        every { userSession.hasShop() } returns true
+
+        coEvery { userSession.isShopOwner } returns true
+        coEvery { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(any()) }.answers { }
+        coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns Fail(MessageErrorException(""))
+        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns Success(listOf(NavPaymentOrder()))
+
+        viewModel = createViewModel(
+            getUohOrdersNavUseCase = getUohOrdersNavUseCase,
+            getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
+            userSession = userSession
+        )
+        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
+        viewModel.setInitialState()
+        viewModel.getMainNavData(true)
+
+        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is TransactionListItemDataModel
+        } as? TransactionListItemDataModel
+
+        Assert.assertTrue(transactionDataModel?.orderListModel?.orderList?.isEmpty() == true)
+        Assert.assertTrue(transactionDataModel?.orderListModel?.paymentList?.isNotEmpty() == true)
+    }
+
+    @Test
+    fun `given failed when logged in user get ongoing order and payment data with me page variant then show error`() {
+        val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
+        val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
+        val userSession = mockk<UserSessionInterface>()
+
+        every { userSession.isLoggedIn } returns true
+        every { userSession.hasShop() } returns true
+
+        coEvery { userSession.isShopOwner } returns true
+        coEvery { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(any()) }.answers { }
+        coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns Fail(MessageErrorException(""))
+        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns Fail(MessageErrorException(""))
+
+        viewModel = createViewModel(
+            getUohOrdersNavUseCase = getUohOrdersNavUseCase,
+            getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
+            userSession = userSession
+        )
+        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
+        viewModel.setInitialState()
+        viewModel.getMainNavData(true)
+
+        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is TransactionListItemDataModel
+        } as? TransactionListItemDataModel
+
+        val transactionError = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is ErrorStateOngoingTransactionModel
+        }
+
+        Assert.assertNull(transactionDataModel)
+        Assert.assertNotNull(transactionError)
+    }
+
+    @Test
+    fun `given thrown error when logged in user get ongoing order and payment data with me page variant then show error`() {
+        val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
+        val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
+        val userSession = mockk<UserSessionInterface>()
+
+        every { userSession.isLoggedIn } returns true
+        every { userSession.hasShop() } returns true
+
+        coEvery { userSession.isShopOwner } returns true
+        coEvery { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(any()) }.answers { }
+        coEvery { getUohOrdersNavUseCase.executeOnBackground() } throws MessageErrorException("")
+        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } throws MessageErrorException("")
+
+        viewModel = createViewModel(
+            getUohOrdersNavUseCase = getUohOrdersNavUseCase,
+            getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
+            userSession = userSession
+        )
+        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
+        viewModel.setInitialState()
+        viewModel.getMainNavData(true)
+
+        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is TransactionListItemDataModel
+        } as? TransactionListItemDataModel
+
+        val transactionError = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is ErrorStateOngoingTransactionModel
+        }
+
+        Assert.assertNull(transactionDataModel)
+        Assert.assertNotNull(transactionError)
     }
 
     // Review section
