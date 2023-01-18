@@ -7,7 +7,6 @@ import android.os.Looper;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
-import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
@@ -16,7 +15,6 @@ import androidx.core.content.ContextCompat;
 import java.lang.ref.WeakReference;
 
 import kotlin.jvm.Volatile;
-import kotlinx.coroutines.Job;
 
 public final class PrintWebPageInterface {
 
