@@ -11,10 +11,10 @@ import javax.inject.Inject
 /**
  * Created By : Muhammad Furqan on 16/01/23
  */
-open class GetShopFollowingUseCase @Inject constructor(
+open class GetFollowingUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-): CoroutineUseCase<List<String>, ShopFollowingEntity>(dispatcher.io) {
+) : CoroutineUseCase<List<String>, ShopFollowingEntity>(dispatcher.io) {
 
     override suspend fun execute(params: List<String>): ShopFollowingEntity {
         val param = generateParam(params)
@@ -25,13 +25,15 @@ open class GetShopFollowingUseCase @Inject constructor(
         val inputFields = listOf(DEFAULT_FAVORITE)
         return mapOf<String, Any>(
             PARAM_SHOP_IDS to shopIds.map { it.toIntSafely() }.toList(),
+            PARAM_USER_IDS to shopIds,
             PARAM_INPUT_FIELDS to inputFields
         )
     }
 
     override fun graphqlQuery(): String = """
-        query get_shop_following_status(
+        query get_following_status(
             $$PARAM_SHOP_IDS: [Int!]!, 
+            $$PARAM_USER_IDS: [String!]!,
             $$PARAM_INPUT_FIELDS: [String!]!
         ) {
           shopInfoByID(
@@ -49,12 +51,20 @@ open class GetShopFollowingUseCase @Inject constructor(
               }
             }
           }
+          feedXProfileIsFollowing(followingUserIDs: $$PARAM_USER_IDS){
+            isUserFollowing {
+              userID
+              status
+              encryptedUserID
+            }
+          }
         }
 
     """.trimIndent()
 
     companion object {
         private const val PARAM_SHOP_IDS = "shopIDs"
+        private const val PARAM_USER_IDS = "followingUserIDs"
         private const val PARAM_INPUT_FIELDS = "inputFields"
         private const val DEFAULT_FAVORITE: String = "favorite"
     }

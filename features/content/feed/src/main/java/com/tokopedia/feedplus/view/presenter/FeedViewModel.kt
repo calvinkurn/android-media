@@ -24,7 +24,7 @@ import com.tokopedia.feedcomponent.domain.usecase.CheckUpcomingCampaignReminderU
 import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
-import com.tokopedia.feedcomponent.domain.usecase.GetShopFollowingUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetFollowingUseCase
 import com.tokopedia.feedcomponent.domain.usecase.PostUpcomingCampaignReminderUseCase
 import com.tokopedia.feedcomponent.domain.usecase.SCREEN_NAME_UPDATE_TAB
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Follow
@@ -111,7 +111,7 @@ class FeedViewModel @Inject constructor(
     private val doFollowUseCase: ProfileFollowUseCase,
     private val doUnfollowUseCase: ProfileUnfollowedUseCase,
     private val profileMutationMapper: ProfileMutationMapper,
-    private val getShopFollowingUseCase: GetShopFollowingUseCase,
+    private val getFollowingUseCase: GetFollowingUseCase,
 ) : BaseViewModel(baseDispatcher.main) {
 
     companion object {
@@ -185,7 +185,7 @@ class FeedViewModel @Inject constructor(
             viewModelScope.launchCatchError(block = {
                 val shopIdsToUpdate = mutableMapOf<String, Boolean>()
                 val response = withContext(baseDispatcher.io) {
-                    getShopFollowingUseCase(authorIds)
+                    getFollowingUseCase(authorIds)
                 }
                 response.shopInfoById.result.map { item ->
                     {

@@ -9,7 +9,8 @@ import com.google.gson.annotations.SerializedName
 data class ShopFollowingEntity(
     @SerializedName("shopInfoByID")
     @Expose
-    val shopInfoById: ShopInfoById = ShopInfoById()
+    val shopInfoById: ShopInfoById = ShopInfoById(),
+
 )
 
 data class ShopInfoById(
