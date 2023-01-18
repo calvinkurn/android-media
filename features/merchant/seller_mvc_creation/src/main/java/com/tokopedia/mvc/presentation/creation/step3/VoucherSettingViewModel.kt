@@ -46,7 +46,7 @@ class VoucherSettingViewModel @Inject constructor(
             is VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged -> handleMaxDeductionInputChanges(event.maxDeduction)
             is VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged -> handleMinimumBuyInputChanges(event.minimumBuy)
             is VoucherCreationStepThreeEvent.OnInputQuotaChanged -> handleQuotaInputChanges(event.quota)
-            is VoucherCreationStepThreeEvent.ChooseTargetBuyer -> {}
+            is VoucherCreationStepThreeEvent.ChooseTargetBuyer -> handleTargetBuyerSelection(event.targetBuyer)
             is VoucherCreationStepThreeEvent.HandleCoachMark -> handleCoachmark()
             is VoucherCreationStepThreeEvent.TapBackButton -> handleBackToPreviousStep()
             is VoucherCreationStepThreeEvent.NavigateToNextStep -> handleNavigateToNextStep()
@@ -178,6 +178,18 @@ class VoucherSettingViewModel @Inject constructor(
         }
         handleVoucherInputValidation()
         setSpendingEstimation()
+    }
+
+    private fun handleTargetBuyerSelection(targetBuyer: VoucherTargetBuyer) {
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                voucherConfiguration = it.voucherConfiguration.copy(
+                    targetBuyer = targetBuyer
+                )
+            )
+        }
+        handleVoucherInputValidation()
     }
 
     private fun handleVoucherInputValidation() {

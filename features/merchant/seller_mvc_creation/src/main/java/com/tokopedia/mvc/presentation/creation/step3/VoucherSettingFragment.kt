@@ -1017,8 +1017,8 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         buyerTargetSectionBinding?.run {
             val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
             rgBuyerTarget.apply {
-                setOnCheckedChangeListener { _, position ->
-                    val target = if (position == VoucherTargetBuyer.ALL_BUYER.id) {
+                setOnCheckedChangeListener { _, radioButtonId ->
+                    val target = if (radioButtonId == radioAllBuyer.id) {
                         VoucherTargetBuyer.ALL_BUYER
                     } else {
                         VoucherTargetBuyer.NEW_FOLLOWER
