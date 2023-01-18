@@ -3,6 +3,7 @@ package com.tokopedia.home_component.viewholders
 import android.view.*
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -49,18 +50,36 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         val icons = element.dynamicIconComponent.dynamicIcon
         iconRecyclerView = itemView.findViewById(R.id.dynamic_icon_recycler_view)
         if (icons.isNotEmpty()) {
-            adapter.submitList(element)
-            adapter.updatePosition(adapterPosition)
-            adapter.setType(element.type)
-            adapterMacro.submitList(element)
-            adapterMacro.updatePosition(adapterPosition)
-            adapterMacro.setType(element.type)
+            if (isUsingMacroInteraction) {
+                adapterMacro.submitList(element)
+                adapterMacro.updatePosition(absoluteAdapterPosition)
+                adapterMacro.setType(element.type)
+
+                val layoutParams = iconRecyclerView?.layoutParams as RecyclerView.LayoutParams
+                layoutParams.setMargins(0, 6, 0, 4)
+                iconRecyclerView?.layoutParams = layoutParams
+            } else {
+                adapter.submitList(element)
+                adapter.updatePosition(absoluteAdapterPosition)
+                adapter.setType(element.type)
+                val layoutParams = iconRecyclerView?.layoutParams as RecyclerView.LayoutParams
+                layoutParams.setMargins(0, 12, 0, 12)
+                iconRecyclerView?.layoutParams = layoutParams
+            }
             if (iconRecyclerView?.itemDecorationCount == 0) {
-                iconRecyclerView?.addItemDecoration(
-                    CommonSpacingDecoration(
-                        8f.toDpInt()
+                if (isUsingMacroInteraction) {
+                    iconRecyclerView?.addItemDecoration(
+                        CommonSpacingDecoration(
+                            0f.toDpInt()
+                        )
                     )
-                )
+                } else {
+                    iconRecyclerView?.addItemDecoration(
+                        CommonSpacingDecoration(
+                            8f.toDpInt()
+                        )
+                    )
+                }
             }
             iconRecyclerView?.adapter = if (isUsingMacroInteraction) adapterMacro else adapter
             setupLayoutManager(
@@ -71,7 +90,7 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
             iconRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    listener.onIconScroll(adapterPosition)
+                    listener.onIconScroll(absoluteAdapterPosition)
                 }
             })
         }
@@ -79,7 +98,7 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
 
     private fun setupImpression(element: DynamicIconComponentDataModel) {
         itemView.addOnImpressionListener(element) {
-            if (!element.isCache) listener.onIconChannelImpressed(element, adapterPosition)
+            if (!element.isCache) listener.onIconChannelImpressed(element, absoluteAdapterPosition)
         }
     }
 
@@ -157,14 +176,14 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
             )
             iconTvName?.maxLines = if (item.withBackground) 2 else 1
             itemView.setOnClickListener {
-                listener.onClickIcon(item, parentPosition, adapterPosition, type)
+                listener.onClickIcon(item, parentPosition, absoluteAdapterPosition, type)
             }
 
             if (!isCache) {
                 itemView.addOnImpressionListener(item) {
                     listener.onImpressIcon(
                         dynamicIcon = item,
-                        iconPosition = adapterPosition,
+                        iconPosition = absoluteAdapterPosition,
                         parentPosition = parentPosition,
                         type = type,
                         view = itemView
