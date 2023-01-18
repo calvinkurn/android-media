@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/description_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="paragraph_2"
+        app:typographyWeight="reguler"
+        tools:text="Description Label" />
+
+    <com.tokopedia.productbundlewidget.presentation.ProductBundleWidgetView
+        android:id="@+id/product_bundle_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:minHeight="@dimen/dp_200"
+        app:layout_constraintBottom_toTopOf="@+id/card_bottom_ticker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/description_label"
+        app:layout_goneMarginBottom="@dimen/dp_16"
+        tools:layout_height="@dimen/dp_200" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/card_bottom_ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/product_bundle_widget">
+
+        <com.tokopedia.unifycomponents.ContainerUnify
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_12"
+            app:container_color="GREEN">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/bottom_ticker_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:typographyType="paragraph_3"
+                app:typographyWeight="reguler"
+                tools:text="Bottom Sheet Label" />
+        </com.tokopedia.unifycomponents.ContainerUnify>
+    </com.tokopedia.unifycomponents.CardUnify>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
