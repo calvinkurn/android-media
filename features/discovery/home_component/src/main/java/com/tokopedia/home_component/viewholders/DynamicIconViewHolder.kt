@@ -67,7 +67,7 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         val icons = element.dynamicIconComponent.dynamicIcon
         iconRecyclerView = itemView.findViewById(R.id.dynamic_icon_recycler_view)
         if (icons.isNotEmpty()) {
-            if (isUsingMacroInteraction) {
+            if (true) {
                 adapterMacro.updatePosition(absoluteAdapterPosition)
                 adapterMacro.setType(element.type)
                 setRecyclerView(icons)
