@@ -674,10 +674,10 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
-    private fun loadUohItemDelay(isDelay: Boolean, uuid: String, index: Int) {
+    private fun loadUohItemDelay(uuid: String, index: Int) {
         paramUohOrder.uUID = uuid
         paramUohOrder.page = 1
-        uohListViewModel.loadUohItemDelay(isDelay, paramUohOrder.copy(), index)
+        uohListViewModel.loadUohItemDelay(true, paramUohOrder.copy(), index)
     }
 
     private fun loadRecommendationList() {
@@ -770,14 +770,14 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
     private fun observingUohItemDelay() {
         uohListViewModel.uohItemDelayResult.observe(viewLifecycleOwner) {
-            when (it.first) {
+            when (it) {
                 is Success -> {
-                    if (it.second > -1 && (it.first as Success<UohListOrder.Data.UohOrders>).data.orders.isNotEmpty()) {
-                        uohItemAdapter.updateDataAtIndex(it.second, (it.first as Success<UohListOrder.Data.UohOrders>).data.orders[0])
+                    if (it.data.second > -1 && it.data.first.uohOrders.orders.isNotEmpty()) {
+                        uohItemAdapter.updateDataAtIndex(it.data.second, it.data.first.uohOrders.orders[0])
                     }
                 }
                 is Fail -> {
-                    val errorType = when ((it.first as Fail).throwable) {
+                    val errorType = when (it.throwable) {
                         is MessageErrorException -> null
                         is SocketTimeoutException, is UnknownHostException -> GlobalError.NO_CONNECTION
                         else -> GlobalError.SERVER_ERROR
@@ -794,7 +794,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     }
 
                     showToaster(
-                        ErrorHandler.getErrorMessage(context, (it.first as Fail).throwable),
+                        ErrorHandler.getErrorMessage(context, it.throwable),
                         Toaster.TYPE_ERROR
                     )
                 }
@@ -825,7 +825,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     if (responseFinishOrder.success == 1) {
                         responseFinishOrder.message.firstOrNull()
                             ?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
-                        loadUohItemDelay(true, orderIdNeedUpdated, currIndexNeedUpdate)
+                        loadUohItemDelay(orderIdNeedUpdated, currIndexNeedUpdate)
                     } else {
                         if (responseFinishOrder.message.isNotEmpty()) {
                             responseFinishOrder.message.firstOrNull()
@@ -2414,8 +2414,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         custId = objParam.get(CUSTOMER_ID).asString,
                         warehouseId = objParam.get(WAREHOUSE_ID).asString
                     )
-                    )
-
+                )
             }
 
             uohListViewModel.doAtcMulti(

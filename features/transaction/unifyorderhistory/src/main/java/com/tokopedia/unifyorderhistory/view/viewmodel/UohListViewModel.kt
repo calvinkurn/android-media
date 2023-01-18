@@ -19,25 +19,8 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.unifyorderhistory.data.model.FlightResendEmail
-import com.tokopedia.unifyorderhistory.data.model.LsPrintData
-import com.tokopedia.unifyorderhistory.data.model.PmsNotification
-import com.tokopedia.unifyorderhistory.data.model.RechargeSetFailData
-import com.tokopedia.unifyorderhistory.data.model.TrainResendEmail
-import com.tokopedia.unifyorderhistory.data.model.TrainResendEmailParam
-import com.tokopedia.unifyorderhistory.data.model.UohFilterCategory
-import com.tokopedia.unifyorderhistory.data.model.UohFinishOrder
-import com.tokopedia.unifyorderhistory.data.model.UohFinishOrderParam
-import com.tokopedia.unifyorderhistory.data.model.UohListOrder
-import com.tokopedia.unifyorderhistory.data.model.UohListParam
-import com.tokopedia.unifyorderhistory.domain.FlightResendEmailUseCase
-import com.tokopedia.unifyorderhistory.domain.GetUohFilterCategoryUseCase
-import com.tokopedia.unifyorderhistory.domain.GetUohPmsCounterUseCase
-import com.tokopedia.unifyorderhistory.domain.LsPrintFinishOrderUseCase
-import com.tokopedia.unifyorderhistory.domain.RechargeSetFailUseCase
-import com.tokopedia.unifyorderhistory.domain.TrainResendEmailUseCase
-import com.tokopedia.unifyorderhistory.domain.UohFinishOrderUseCase
-import com.tokopedia.unifyorderhistory.domain.UohListUseCase
+import com.tokopedia.unifyorderhistory.data.model.*
+import com.tokopedia.unifyorderhistory.domain.*
 import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_ADS_COUNT
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_DIMEN_ID
@@ -48,8 +31,6 @@ import com.tokopedia.unifyorderhistory.util.UohUtils.asSuccess
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -79,8 +60,8 @@ class UohListViewModel @Inject constructor(
     val orderHistoryListResult: LiveData<Result<UohListOrder.UohOrders>>
         get() = _orderHistoryListResult
 
-    private val _uohItemDelayResult = MutableLiveData<Pair<Result<UohListOrder.Data.UohOrders>, Int>>()
-    val uohItemDelayResult: LiveData<Pair<Result<UohListOrder.Data.UohOrders>, Int>>
+    private val _uohItemDelayResult = MutableLiveData<Result<Pair<UohListOrder, Int>>>()
+    val uohItemDelayResult: LiveData<Result<Pair<UohListOrder, Int>>>
         get() = _uohItemDelayResult
 
     private val _recommendationListResult = MutableLiveData<Result<List<RecommendationWidget>>>()
@@ -127,28 +108,25 @@ class UohListViewModel @Inject constructor(
     val getUohPmsCounterResult: LiveData<Result<PmsNotification>>
         get() = _getUohPmsCounterResult
 
-    private var delayRefreshJob: Job? = null
-    private val DELAY_REFRESH = 2000L
-
-    fun loadFilterCategory() {
-        launch {
-            _filterCategoryResult.value = getUohFilterCategoryUseCase.executeSuspend()
-        }
-    }
-
     fun loadOrderList(paramOrder: UohListParam) {
         UohIdlingResource.increment()
         launchCatchError(block = {
-            val result = uohListUseCase(paramOrder)
+            val result = uohListUseCase(Pair(paramOrder, false))
             _orderHistoryListResult.value = Success(result.uohOrders)
             UohIdlingResource.decrement()
         }, onError = {
-                // make sure delayRefreshJob is not ongoing
-            if (paramOrder.page == 1 && paramOrder.uUID.isEmpty()) {
-                delayRefreshJob?.cancel()
-            }
-            _orderHistoryListResult.value = Fail(it)
+                _orderHistoryListResult.value = Fail(it)
                 UohIdlingResource.decrement()
+            })
+    }
+
+    fun loadUohItemDelay(isDelay: Boolean, paramOrder: UohListParam, index: Int) {
+        // provide flag isDelay for hansel
+        launchCatchError(block = {
+            val result = uohListUseCase(Pair(paramOrder, isDelay))
+            _uohItemDelayResult.value = Success(Pair(result, index))
+        }, onError = {
+                _uohItemDelayResult.value = Fail(it)
             })
     }
 
@@ -207,20 +185,6 @@ class UohListViewModel @Inject constructor(
                 _lsPrintFinishOrderResult.value = Fail(it)
                 UohIdlingResource.decrement()
             })
-    }
-
-    fun loadUohItemDelay(isDelay: Boolean, paramOrder: UohListParam, index: Int) {
-        // provide flag isDelay for hansel
-        if (isDelay) {
-            delayRefreshJob = launch {
-                delay(DELAY_REFRESH)
-                _uohItemDelayResult.value = Pair(uohListUseCase.executeSuspend(paramOrder), index)
-            }
-        } else {
-            launch {
-                _uohItemDelayResult.value = Pair(uohListUseCase.executeSuspend(paramOrder), index)
-            }
-        }
     }
 
     fun loadPmsCounter(shopId: String) {
@@ -310,10 +274,5 @@ class UohListViewModel @Inject constructor(
                 UohIdlingResource.decrement()
             }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        delayRefreshJob?.cancel()
     }
 }
