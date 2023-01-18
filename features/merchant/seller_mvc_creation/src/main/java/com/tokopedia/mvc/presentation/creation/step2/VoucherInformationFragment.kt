@@ -31,6 +31,7 @@ import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import com.tokopedia.mvc.domain.entity.enums.PageMode
+import com.tokopedia.mvc.domain.entity.enums.UnavailableRecurringDateErrorType.*
 import com.tokopedia.mvc.domain.entity.enums.VoucherCreationStepTwoFieldValidation
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.SelectRepeatPeriodBottomSheet
@@ -709,8 +710,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 unavailableRecurringPeriodView.run {
                     type = RecurringDateScheduleCustomView.TYPE_ERROR
                     title = when (unAvailableDate.first().type) {
-                        1 -> getString(R.string.smvc_recurring_date_error_type_1_title)
-                        2 -> getString(R.string.smvc_recurring_date_error_type_2_title)
+                        SAME_DATE_VOUCHER_ALREADY_EXIST.type -> getString(R.string.smvc_recurring_date_error_type_1_title)
+                        NEW_FOLLOWER_VOUCHER_ALREADY_EXIST.type -> getString(R.string.smvc_recurring_date_error_type_2_title)
                         else -> getString(R.string.smvc_recurring_date_error_type_3_title)
                     }
                     isVisible = tfRepeat.isVisible
