@@ -2,13 +2,13 @@ package com.tokopedia.imagepicker_insta.activity
 
 import android.os.Bundle
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.imagepicker_insta.R
-import com.tokopedia.content.common.R as commonR
 import com.tokopedia.content.common.types.BundleData
+import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.imagepicker_insta.fragment.ImagePickerInstaMainFragment
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
 import com.tokopedia.imagepicker_insta.util.VideoUtil
+import com.tokopedia.content.common.R as commonR
 
 class ImagePickerInstaActivity : PermissionActivity() {
 
@@ -19,7 +19,7 @@ class ImagePickerInstaActivity : PermissionActivity() {
     var applinkToNavigateAfterMediaCapture = ""
     var applinkForGalleryProceed = ""
     var applinkForBackNavigation = ""
-    var videoMaxDurationInSeconds:Long = VideoUtil.DEFAULT_DURATION_MAX_LIMIT
+    var videoMaxDurationInSeconds: Long = VideoUtil.DEFAULT_DURATION_MAX_LIMIT
     var isCreatePostAsBuyer: Boolean = false
     var isOpenFrom = ""
 
@@ -37,11 +37,17 @@ class ImagePickerInstaActivity : PermissionActivity() {
         }
     }
 
-    fun getAttachedFragment(): ImagePickerInstaMainFragment? {
-        if (!supportFragmentManager.fragments.isNullOrEmpty()) {
-            return supportFragmentManager.fragments.first() as? ImagePickerInstaMainFragment
+    private fun getAttachedFragment(): ImagePickerInstaMainFragment? {
+        return if (supportFragmentManager.fragments.isNotEmpty()) {
+            val mainFragment = supportFragmentManager.fragments.first() as? ImagePickerInstaMainFragment
+            if (mainFragment?.isAdded == true) {
+                mainFragment
+            } else {
+                null
+            }
+        } else {
+            null
         }
-        return null
     }
 
     override fun onResume() {
@@ -71,7 +77,7 @@ class ImagePickerInstaActivity : PermissionActivity() {
         applinkForBackNavigation = intent.extras?.getString(BundleData.APPLINK_FOR_BACK_NAVIGATION) ?: ""
         toolbarIconUrl = intent.extras?.getString(BundleData.TOOLBAR_ICON_URL) ?: ""
         videoMaxDurationInSeconds = intent.extras?.getLong(BundleData.VIDEO_MAX_SECONDS) ?: VideoUtil.DEFAULT_DURATION_MAX_LIMIT
-        if(videoMaxDurationInSeconds == 0L){
+        if (videoMaxDurationInSeconds == 0L) {
             videoMaxDurationInSeconds = VideoUtil.DEFAULT_DURATION_MAX_LIMIT
         }
         isCreatePostAsBuyer = intent.extras?.getBoolean(BundleData.IS_CREATE_POST_AS_BUYER, false) ?: false
