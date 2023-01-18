@@ -16,10 +16,11 @@ import com.tokopedia.home_component.decoration.CommonSpacingDecoration
 import com.tokopedia.home_component.listener.DynamicIconComponentListener
 import com.tokopedia.home_component.model.DynamicIconComponent
 import com.tokopedia.home_component.util.DynamicIconsMacroUtil
-import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
@@ -41,6 +42,11 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         @LayoutRes
         val LAYOUT = R.layout.home_component_dynamic_icon
         const val SCROLLABLE_ITEM = 5
+        private const val MARGIN_TOP_MACRO = 6
+        private const val MARGIN_BOTTOM_MACRO = 4
+        private const val MARGIN_VERTICAL_DEFAULT = 12
+        private const val MARGIN_HORIZONTAL_BETWEEN_CARD_MACRO = 0
+        private const val MARGIN_HORIZONTAL_BETWEEN_CARD = 8
     }
 
     private val adapter = DynamicIconAdapter(listener)
@@ -71,13 +77,13 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
                     adapterMacro.setTitleHeight(maximalTitleHeight)
                     adapterMacro.submitList(element)
                     val layoutParams = iconRecyclerView?.layoutParams as RecyclerView.LayoutParams
-                    layoutParams.setMargins(0, 6, 0, 4)
+                    layoutParams.setMargins(Int.ZERO, MARGIN_TOP_MACRO, Int.ZERO, MARGIN_BOTTOM_MACRO)
                     iconRecyclerView?.layoutParams = layoutParams
 
-                    if (iconRecyclerView?.itemDecorationCount == 0) {
+                    if (iconRecyclerView?.itemDecorationCount == Int.ZERO) {
                         iconRecyclerView?.addItemDecoration(
                             CommonSpacingDecoration(
-                                0f.toDpInt()
+                                MARGIN_HORIZONTAL_BETWEEN_CARD_MACRO.toPx()
                             )
                         )
                     }
@@ -88,11 +94,11 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
                 adapter.updatePosition(absoluteAdapterPosition)
                 adapter.setType(element.type)
                 val layoutParams = iconRecyclerView?.layoutParams as RecyclerView.LayoutParams
-                layoutParams.setMargins(0, 12, 0, 12)
+                layoutParams.setMargins(Int.ZERO, MARGIN_VERTICAL_DEFAULT, Int.ZERO, MARGIN_VERTICAL_DEFAULT)
                 iconRecyclerView?.layoutParams = layoutParams
                 iconRecyclerView?.addItemDecoration(
                     CommonSpacingDecoration(
-                        8f.toDpInt()
+                        MARGIN_HORIZONTAL_BETWEEN_CARD.toPx()
                     )
                 )
                 iconRecyclerView?.adapter = adapter
@@ -194,6 +200,8 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         companion object {
             @LayoutRes
             val LAYOUT = R.layout.home_component_dynamic_icon_item
+            private const val ONE_LINE = 1
+            private const val TWO_LINES = 2
         }
 
         fun bind(
@@ -213,7 +221,7 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
                 if (isScrollable) ViewGroup.LayoutParams.WRAP_CONTENT else ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            iconTvName?.maxLines = if (item.withBackground) 2 else 1
+            iconTvName?.maxLines = if (item.withBackground) TWO_LINES else ONE_LINE
             itemView.setOnClickListener {
                 listener.onClickIcon(item, parentPosition, absoluteAdapterPosition, type)
             }
