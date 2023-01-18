@@ -469,9 +469,30 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
     }
 
     @Test
-    fun `when setProductAddToCartQuantity throw exception should do nothing`() {
+    fun `when setProductAddToCartQuantity _getLayout has value should do nothing`() {
+        onGetRepurchaseProductList_thenReturn(
+            GetRepurchaseProductListResponse(
+                meta = GetRepurchaseProductMetaResponse(
+                    page = 1,
+                    hasNext = false,
+                    totalScan = 1,
+                ),
+                products = listOf(RepurchaseProduct())
+            )
+        )
+
+        viewModel.getLayoutData()
+
         onGetLayoutList_thenReturnNull()
 
+        viewModel.setProductAddToCartQuantity(MiniCartSimplifiedData())
+
+        viewModel.atcQuantity
+            .verifyValueEquals(null)
+    }
+
+    @Test
+    fun `when setProductAddToCartQuantity throw exception should do nothing`() {
         viewModel.setProductAddToCartQuantity(MiniCartSimplifiedData())
 
         viewModel.atcQuantity

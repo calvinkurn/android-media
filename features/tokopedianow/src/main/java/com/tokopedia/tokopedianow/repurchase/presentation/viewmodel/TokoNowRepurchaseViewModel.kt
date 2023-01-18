@@ -81,6 +81,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -148,7 +149,6 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     private var layoutList: MutableList<Visitable<*>> = mutableListOf()
 
     private var getMiniCartJob: Job? = null
-    private var productListAsyncAwait: Unit? = null
 
     fun trackOpeningScreen(screenName: String) {
         _openScreenTracker.value = screenName
@@ -179,7 +179,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
 
     fun getLayoutData() {
         launchCatchError(block = {
-            productListAsyncAwait = getProductListAsync().await()
+            getProductListAsync().await()
 
             val layout = RepurchaseLayoutUiModel(
                 layoutList = layoutList,
@@ -260,17 +260,17 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     }
 
     fun setProductAddToCartQuantity(miniCart: MiniCartSimplifiedData) {
+        if (_getLayout.value == null) return
+
         launchCatchError(block = {
-            productListAsyncAwait?.let {
-                setMiniCartAndProductQuantity(miniCart)
+            setMiniCartAndProductQuantity(miniCart)
 
-                val layout = RepurchaseLayoutUiModel(
-                    layoutList = layoutList,
-                    state = TokoNowLayoutState.UPDATE
-                )
+            val layout = RepurchaseLayoutUiModel(
+                layoutList = layoutList,
+                state = TokoNowLayoutState.UPDATE
+            )
 
-                _atcQuantity.postValue(Success(layout))
-            }
+            _atcQuantity.postValue(Success(layout))
         }) {}
     }
 
