@@ -41,8 +41,8 @@ open class GetShopFollowingUseCase @Inject constructor(
             }
           ) {
             result {
-              ownerInfo {
-                id
+              shopCore {
+                shopID
               }
               favoriteData {
                 alreadyFavorited

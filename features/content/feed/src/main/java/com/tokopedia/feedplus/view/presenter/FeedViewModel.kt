@@ -189,8 +189,8 @@ class FeedViewModel @Inject constructor(
                 }
                 response.shopInfoById.result.map { item ->
                     {
-                        if (currentFollowState[item.ownerInfo.id] != null && item.favoriteData.isFollowing != currentFollowState[item.ownerInfo.id]) {
-                            shopIdsToUpdate[item.ownerInfo.id] = item.favoriteData.isFollowing
+                        if (currentFollowState[item.shopCore.shopID] != null && item.favoriteData.isFollowing != currentFollowState[item.shopCore.shopID]) {
+                            shopIdsToUpdate[item.shopCore.shopID] = item.favoriteData.isFollowing
                         }
                     }
                 }

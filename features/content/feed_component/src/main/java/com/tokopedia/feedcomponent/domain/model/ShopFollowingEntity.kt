@@ -19,18 +19,18 @@ data class ShopInfoById(
 )
 
 data class ResultItem(
-    @SerializedName("ownerInfo")
+    @SerializedName("shopCore")
     @Expose
-    val ownerInfo: OwnerInfo,
+    val shopCore: ShopCore,
     @SerializedName("favoriteData")
     @Expose
     val favoriteData: FavoriteData = FavoriteData()
 )
 
-data class OwnerInfo(
-    @SerializedName("id")
+data class ShopCore(
+    @SerializedName("shopID")
     @Expose
-    val id: String = ""
+    val shopID: String = ""
 )
 
 data class FavoriteData(
