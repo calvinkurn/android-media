@@ -6,18 +6,17 @@
     android:layout_width="64dp"
     android:layout_height="88dp">
 
-    <com.tokopedia.unifycomponents.CardUnify2
+    <androidx.cardview.widget.CardView
         android:id="@+id/variant_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="6dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="6dp"
-        android:clipToOutline="true"
-        android:padding="1.2dp"
+        app:cardElevation="0dp"
+        app:cardMaxElevation="0dp"
         app:cardCornerRadius="8dp"
-        app:card_enable_check_icon="false"
-        app:card_type="border">
+        android:foreground="@drawable/pdp_thumbnail_variant_border_default">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -41,8 +40,8 @@
                 android:id="@+id/variant_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="5dp"
-                android:layout_marginBottom="5dp"
+                android:layout_marginHorizontal="4dp"
+                android:layout_marginBottom="6dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textAlignment="center"
@@ -54,7 +53,7 @@
                 tools:text="Pohon pinang" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.tokopedia.unifycomponents.CardUnify2>
+    </androidx.cardview.widget.CardView>
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/variant_promo_icon"

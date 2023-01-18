@@ -11,8 +11,8 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.getColorChecker
+import com.tokopedia.product.detail.common.extensions.getDrawableChecker
 import com.tokopedia.product.detail.databinding.ThumbnailVariantViewBinding
-import com.tokopedia.unifycomponents.CardUnify2
 
 /**
  * Created by yovi.putra on 13/01/23"
@@ -26,10 +26,6 @@ class ThumbnailVariantView(
 ) : FrameLayout(context, attrs) {
 
     val binding: ThumbnailVariantViewBinding
-
-    private val enableColor by lazyThreadSafetyNone { context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_NN0) }
-
-    private val disableColor by lazyThreadSafetyNone { context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_NN50) }
 
     init {
         inflate(context, R.layout.thumbnail_variant_view, this).apply {
@@ -58,7 +54,7 @@ class ThumbnailVariantView(
     }
 
     private fun setThumbnail(url: String) {
-        binding.variantThumbnail.loadImage(url, properties = {
+       binding.variantThumbnail.loadImage(url, properties = {
             centerCrop()
         })
     }
@@ -69,26 +65,27 @@ class ThumbnailVariantView(
 
     fun setSelectedState() {
         setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-        binding.variantCard.cardType = CardUnify2.TYPE_BORDER_ACTIVE
-        binding.variantCard.setCardUnifyBackgroundColor(enableColor)
+        setCardBackground(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        setCardBorder(R.drawable.pdp_thumbnail_variant_border_selected)
     }
 
     fun setSelectedStockEmptyState() {
         setSelectedState()
         setThumbGrayscale()
-        binding.variantCard.setCardUnifyBackgroundColor(enableColor)
+        setCardBackground(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        setCardBorder(R.drawable.pdp_thumbnail_variant_border_selected)
     }
 
     fun setUnselectedState() {
         setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
-        binding.variantCard.cardType = CardUnify2.TYPE_BORDER
-        binding.variantCard.setCardUnifyBackgroundColor(enableColor)
+        setCardBackground(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        setCardBorder(R.drawable.pdp_thumbnail_variant_border_default)
     }
 
     fun setDisableState() {
         setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_NN400)
-        binding.variantCard.cardType = CardUnify2.TYPE_BORDER_DISABLED
-        binding.variantCard.setCardUnifyBackgroundColor(disableColor)
+        setCardBackground(com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+        setCardBorder(R.drawable.pdp_thumbnail_variant_border_disable)
         setThumbGrayscale()
     }
 
@@ -101,6 +98,14 @@ class ThumbnailVariantView(
 
     private fun setVariantTitleColor(resId: Int) {
         binding.variantTitle.setTextColor(getColor(resId))
+    }
+
+    private fun setCardBorder(resId: Int) {
+        binding.variantCard.foreground = context.getDrawableChecker(resId)
+    }
+
+    private fun setCardBackground(colorId: Int) {
+        binding.variantCard.setCardBackgroundColor(context.getColorChecker(colorId))
     }
 
     private fun getColor(resId: Int): Int {
