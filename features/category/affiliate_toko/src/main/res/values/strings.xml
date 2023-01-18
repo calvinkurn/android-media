@@ -184,4 +184,6 @@
     <string name="affiliate_event_banner_content_description">event_banner</string>
     <string name="affiliate_education_social_content">education social banner</string>
     <string name="affiliate_education_tutorial_cover_title">Yuk pelajari tutorial biar jago promosi!</string>
+    <string name="ssa_entry_promo_desc">Dapatkan komisi tambahan dari promosikan toko bertanda khusus</string>
+    <string name="ssa_entry_promo_title">Pilihan Komisi Ekstra dari Toko Favoritmu!</string>
 </resources>
