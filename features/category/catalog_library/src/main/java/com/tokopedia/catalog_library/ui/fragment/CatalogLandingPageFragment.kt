@@ -242,21 +242,13 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
             catalogLibraryUiUpdater.updateModel(component)
         }
 
-        if(productsList.isEmpty()){
+        if (productsList.isEmpty()) {
             catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT_LOAD)
-        }else {
+        } else {
             catalogLibraryUiUpdater.updateModel(CatalogProductLoadMoreDataModel())
         }
-
-//        val shimmerDataModel = CatalogShimmerDataModel(
-//            CatalogLibraryConstant.CATALOG_PRODUCT,
-//            CatalogLibraryConstant.CATALOG_PRODUCT,
-//            CatalogLibraryConstant.CATALOG_SHIMMER_PRODUCTS
-//        )
-//        catalogLibraryUiUpdater.updateModel(shimmerDataModel)
         updateUi()
     }
-
     override fun onShimmerAdded() {
     }
 
