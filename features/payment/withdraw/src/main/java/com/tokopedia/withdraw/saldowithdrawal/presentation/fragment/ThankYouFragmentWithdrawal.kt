@@ -13,6 +13,8 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -87,9 +89,10 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
             tvTotalWithdrawalAmount.text = CurrencyFormatHelper.convertToRupiah(withdrawalRequest.withdrawal.toString())
             showRekeningWidgets(activity)
         }
-        btnOpenSaldoDetail.setOnClickListener { onGoToSaldoDetail() }
-        btnOpenSaldoDetail.text = getCtaText()
+        btnCta.setOnClickListener { onCtaClick() }
+        btnCta.text = getCtaText()
         tvWithdrawalTitle.text = getTitleText()
+        setContentImage()
     }
 
     private fun getCtaText(): String {
@@ -105,6 +108,20 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
             getString(R.string.swd_withdrawal_being_processed_title)
         } else {
             getString(R.string.swd_withdrawal_cannot_be_processed_title)
+        }
+    }
+
+    private fun setContentImage() {
+        if (!withdrawalResponse.isSuccess()) {
+            ivWithdrawalSuccess.loadRemoteImageDrawable("swd_img_rejected.png")
+        }
+    }
+
+    private fun onCtaClick() {
+        if (withdrawalResponse.isSuccess()) {
+            onGoToSaldoDetail()
+        } else {
+            RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, HELP_URL)
         }
     }
 
@@ -255,6 +272,7 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
         private const val LABEL_FORMAT_REASON = "%s - reason : %s"
         private const val ARG_WITHDRAWAL_REQUEST = "arg_withdrawal_request"
         private const val ARG_SUBMIT_WITHDRAWAL_RESPONSE = "arg_submit_withdrawal_response"
+        private const val HELP_URL = "https://www.tokopedia.com/help"
 
         fun getInstance(withdrawalRequest: WithdrawalRequest,
                         submitWithdrawalResponse: SubmitWithdrawalResponse): Fragment {
