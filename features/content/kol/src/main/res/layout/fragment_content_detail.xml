@@ -6,7 +6,15 @@
     android:layout_height="match_parent"
     android:background="@color/Unify_Background"
     android:orientation="vertical">
-
+        <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+            android:id="@+id/cdp_swipe_refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:tag="swipe_to_refresh_content_detail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/cdp_recycler_view"
@@ -24,5 +32,7 @@
                     app:layout_constraintVertical_weight="1"
                     tools:itemCount="10"
                 />
+        </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
