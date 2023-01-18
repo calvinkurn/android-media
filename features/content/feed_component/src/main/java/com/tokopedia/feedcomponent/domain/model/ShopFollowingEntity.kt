@@ -10,7 +10,9 @@ data class ShopFollowingEntity(
     @SerializedName("shopInfoByID")
     @Expose
     val shopInfoById: ShopInfoById = ShopInfoById(),
-
+    @SerializedName("feedXProfileIsFollowing")
+    @Expose
+    val feedXProfileIsFollowing: FeedXProfileIsFollowing = FeedXProfileIsFollowing()
 )
 
 data class ShopInfoById(
@@ -45,3 +47,18 @@ data class FavoriteData(
         const val IS_FOLLOWING = 1
     }
 }
+
+data class FeedXProfileIsFollowing(
+    @SerializedName("isUserFollowing")
+    @Expose
+    val isUserFollowing: List<IsUserFollowing> = listOf()
+)
+
+data class IsUserFollowing(
+    @SerializedName("userID")
+    @Expose
+    val userId: String = "",
+    @SerializedName("status")
+    @Expose
+    val status: Boolean = false
+)

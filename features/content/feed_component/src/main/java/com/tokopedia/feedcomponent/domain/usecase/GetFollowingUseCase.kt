@@ -55,7 +55,6 @@ open class GetFollowingUseCase @Inject constructor(
             isUserFollowing {
               userID
               status
-              encryptedUserID
             }
           }
         }

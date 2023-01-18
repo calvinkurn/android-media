@@ -194,6 +194,13 @@ class FeedViewModel @Inject constructor(
                         }
                     }
                 }
+                response.feedXProfileIsFollowing.isUserFollowing.map { item ->
+                    {
+                        if (currentFollowState[item.userId] != null && item.status != currentFollowState[item.userId]) {
+                            shopIdsToUpdate[item.userId] = item.status
+                        }
+                    }
+                }
                 _shopIdsFollowStatusToUpdateData.value = Success(shopIdsToUpdate)
             }) {
                 _shopIdsFollowStatusToUpdateData.value = Fail(it)
