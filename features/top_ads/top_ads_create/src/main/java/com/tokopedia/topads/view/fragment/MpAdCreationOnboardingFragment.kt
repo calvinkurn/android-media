@@ -2,15 +2,12 @@ package com.tokopedia.topads.view.fragment
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
 import com.tokopedia.topads.create.R
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.constants.SpanConstant
 import com.tokopedia.topads.create.databinding.MpAdCreationOnboardingFragmentBinding
 import com.tokopedia.topads.utils.Span
@@ -25,23 +22,14 @@ class MpAdCreationOnboardingFragment : TkpdBaseV4Fragment() {
         private const val FOOTER_LINK_TEXT = "Yuk, Kenalan Dulu"
         private const val ONBOARDING_IMG_URL = "https://images.tokopedia.net/img/topads/topads_onboarding.png"
         private const val PRODUCT_ID_KEY = "product_id"
+        private const val TAG = "MP_TOPADS_CREATE_ONBOARDING"
 
-        fun newInstance(productId:String = "") : MpAdCreationOnboardingFragment{
-            return MpAdCreationOnboardingFragment().apply {
-                arguments = Bundle().apply {
-                    putString(PRODUCT_ID_KEY,productId)
-                }
-            }
+        fun newInstance() : MpAdCreationOnboardingFragment{
+            return MpAdCreationOnboardingFragment()
         }
     }
 
     private var binding:MpAdCreationOnboardingFragmentBinding?=null
-    private var productId=""
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        productId = arguments?.getString(PRODUCT_ID_KEY).orEmpty()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -78,17 +66,13 @@ class MpAdCreationOnboardingFragment : TkpdBaseV4Fragment() {
     private fun setupFooterText(){
       binding?.footerText?.let {
           val text = context?.resources?.getString(R.string.mp_ad_creation_onboarding_footer_text).orEmpty()
-          it.movementMethod = LinkMovementMethod.getInstance()
           it.text = context?.resources?.let { it1 ->
               val linkColor = ResourcesCompat.getColor(it1,com.tokopedia.unifyprinciples.R.color.Unify_GN500,null)
               SpannableUtils.applySpannable(
                   text,
                   SpannedString(FOOTER_LINK_TEXT, listOf(
                       Span(SpanConstant.COLOR_SPAN,linkColor),
-                      Span(SpanConstant.TYPEFACE_SPAN,Typeface.BOLD),
-                      Span(SpanConstant.CLICK_SPAN,{
-                          RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATION_ONBOARD)
-                      })
+                      Span(SpanConstant.TYPEFACE_SPAN,Typeface.BOLD)
                   ))
               )
           } ?: text

@@ -1,0 +1,40 @@
+package com.tokopedia.topads.common.data.response
+
+import com.google.gson.annotations.SerializedName
+
+data class TopAdsProductResponse(
+    val result : ArrayList<Data>
+)
+
+data class Response(
+    @SerializedName("data")
+    val data: Data,
+    @SerializedName("errors")
+    val errors:List<TopAdsProductError>? = listOf()
+)
+
+data class Data(
+    @SerializedName("getProductV3")
+    val product: Product
+)
+
+data class Product(
+    @SerializedName("productID")
+    val productId : String,
+    @SerializedName("productName")
+    val productName : String,
+    @SerializedName("price")
+    val price : String,
+    @SerializedName("description")
+    val description : String
+)
+
+data class TopAdsProductError(
+    @SerializedName("message")
+    val message : String
+)
+
+data class OptionV3(
+    @SerializedName("basic")
+    val basic : Boolean
+)
