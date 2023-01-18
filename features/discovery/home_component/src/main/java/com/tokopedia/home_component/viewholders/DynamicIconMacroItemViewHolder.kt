@@ -123,11 +123,8 @@ class DynamicIconMacroItemViewHolder(
                                 }
                             })
                         },
-                        if (event.eventTime - event.downTime <= UnifyMotion.T1) UnifyMotion.T1 - (event.eventTime - event.downTime) else 0.toLong()
+                        if (event.eventTime - event.downTime <= UnifyMotion.T1) UnifyMotion.T1 - (event.eventTime - event.downTime) else Int.ZERO.toLong()
                     )
-                    if (event.action == MotionEvent.ACTION_UP) {
-                        isLongPress = false
-                    }
                 }
                 MotionEvent.ACTION_DOWN -> {
                     longPressHandler.postDelayed(
