@@ -443,7 +443,14 @@ open class ShopPageHomeFragment :
         observeLiveData()
         observeShopHomeWidgetContentData()
         observeShopPageMiniCartSharedViewModel()
+        observeLatestShopHomeWidgetData()
         isLoadInitialData = true
+    }
+
+    private fun observeLatestShopHomeWidgetData() {
+        viewModel?.latestShopHomeWidgetData?.observe(viewLifecycleOwner) {
+            setShopHomeWidgetLayoutData(it)
+        }
     }
 
     open fun initView() {
@@ -3530,8 +3537,7 @@ open class ShopPageHomeFragment :
         shopHomeAdapter.removeProductList()
         shopHomeAdapter.showLoading()
         scrollToTop()
-        listWidgetLayout = initialLayoutData.toMutableList()
-        setWidgetLayoutPlaceholder()
+        getLatestShopHomeWidgetData()
     }
 
     // flash sale widget
@@ -3541,8 +3547,15 @@ open class ShopPageHomeFragment :
         shopHomeAdapter.removeProductList()
         shopHomeAdapter.showLoading()
         scrollToTop()
-        listWidgetLayout = initialLayoutData.toMutableList()
-        setWidgetLayoutPlaceholder()
+        getLatestShopHomeWidgetData()
+    }
+
+    private fun getLatestShopHomeWidgetData(){
+        viewModel?.getLatestShopHomeWidgetData(
+            shopId,
+            extParam,
+            ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+        )
     }
 
     private fun setNplRemindMeClickedCampaignId(campaignId: String) {
