@@ -982,6 +982,10 @@ open class TopChatViewModel @Inject constructor(
         sendWsStopTyping()
     }
 
+    /**
+     * isSecure param is used when users don't use service
+     * otherwise it will be sent in service param
+     */
     fun startUploadImages(
         image: ImageUploadUiModel,
         isSecure: Boolean

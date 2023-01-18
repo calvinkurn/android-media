@@ -5,8 +5,6 @@ import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.url.Env
-import com.tokopedia.url.TokopediaUrl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
@@ -38,18 +36,13 @@ open class TopchatUploadImageUseCase @Inject constructor(
         setUploading(true)
         assignCallback(onSuccess, onError)
         chatImageServerUseCase.getSourceId(
-            { sourceId ->
-                // Need to change hardcoded source id with response from BE GQL
+            { sourceId, sourceIdSecure ->
                 val id = if (isSecure) {
-                    getHardcodedSourceId()
+                    sourceIdSecure
                 } else {
                     sourceId
                 }
-                uploadImageWithSourceId(
-                    id,
-                    image,
-                    isSecure
-                )
+                uploadImageWithSourceId(id, image, isSecure)
             },
             { throwable ->
                 this.onError?.invoke(throwable, image)
@@ -104,13 +97,5 @@ open class TopchatUploadImageUseCase @Inject constructor(
 
     private fun setUploading(isUploading: Boolean) {
         this.isUploading = isUploading
-    }
-
-    private fun getHardcodedSourceId(): String {
-        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-            "NDFSlH"
-        } else {
-            "tNsKPH"
-        }
     }
 }

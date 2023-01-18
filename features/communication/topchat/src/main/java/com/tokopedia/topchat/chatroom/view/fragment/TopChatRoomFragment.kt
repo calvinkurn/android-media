@@ -3571,7 +3571,7 @@ open class TopChatRoomFragment :
         return abTestPlatform.getString(AB_TEST_NEW_SRW, AB_TEST_OLD_SRW) == AB_TEST_NEW_SRW
     }
 
-    private fun isUploadImageSecure(): Boolean {
+    protected fun isUploadImageSecure(): Boolean {
         return abTestPlatform.getString(ROLLENCE_UPLOAD_SECURE, "") == ROLLENCE_UPLOAD_SECURE
     }
 
@@ -3618,7 +3618,7 @@ open class TopChatRoomFragment :
         const val AB_TEST_NEW_SRW = "srw_new_design"
         const val AB_TEST_OLD_SRW = "control_variant"
         const val ROLLENCE_ENABLE_MEDIA_PICKER = "and_chat_picker_v2"
-        const val ROLLENCE_UPLOAD_SECURE = "topchat_upload_secure"
+        const val ROLLENCE_UPLOAD_SECURE = "chat_upsecure_an"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
