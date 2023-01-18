@@ -57,6 +57,6 @@ open class UserConsentDebugFragment: BaseDaggerFragment() {
 
     companion object {
         private const val SCREEN_NAME = "User Consent Debug Fragment"
-        private const val COLLECTION_ID_SAMPLE = "bf7c9ba1-a4a9-447e-bbee-974c905a95ac"
+        private const val COLLECTION_ID_SAMPLE = "6d45e8ce-d46d-4f0e-bf0c-a93f82f75e36"
     }
 }
