@@ -124,7 +124,7 @@ class PlayErrorFragment @Inject constructor(
             when (val state = it.state) {
                 is PageResultState.Fail -> showGlobalError(state.error)
                 is PageResultState.Success -> container.hide()
-                is PageResultState.Archived -> showArchived(state.config)
+                is PageResultState.Archived -> showArchived(state.config, it.currentValue.firstOrNull() ?: "")
             }
         })
     }
@@ -175,8 +175,14 @@ class PlayErrorFragment @Inject constructor(
         }
     }
 
-    private fun showArchived(config: ArchivedUiModel) {
+    private fun showArchived(config: ArchivedUiModel, channelId: String) {
+        analytic.sendScreenArchived(channelId)
+
         imgBack.setImage(newIconId = IconUnify.ARROW_BACK)
+        imgBack.setOnClickListener {
+            activity?.onBackPressed()
+            analytic.clickExitArchived(channelId)
+        }
         tvTitle.text = ""
 
         globalError.apply {
@@ -186,6 +192,7 @@ class PlayErrorFragment @Inject constructor(
             errorAction.text = config.btnTitle
             setActionClickListener {
                 activity?.let { activity ->
+                    analytic.clickCtaArchived(channelId)
                     router.route(activity, config.appLink)
                 }
             }

@@ -223,7 +223,9 @@ class GetProductMapper @Inject constructor() {
             convertToGram(product.weight, product.weightUnit),
             UNIT_GRAM,
             product.mustInsurance,
-            CPLModel(),
+            CPLModel(
+                cplParam = product.cpl.shipperServices
+            ),
             product.variant.products.isEmpty()
         )
     }
