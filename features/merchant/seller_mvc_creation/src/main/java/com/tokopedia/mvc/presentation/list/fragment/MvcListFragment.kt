@@ -24,6 +24,7 @@ import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.campaign.utils.extension.slideDown
 import com.tokopedia.campaign.utils.extension.slideUp
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -100,9 +101,7 @@ class MvcListFragment :
     }
 
     private val filterList = ArrayList<SortFilterItem>()
-    private val filterItem by lazy { SortFilterItem(getString(R.string.smvc_bottomsheet_filter_voucher_all)) }
-    private val filterItem2 by lazy { SortFilterItem("Kupon Toko", ChipsUnify.TYPE_SELECTED) }
-    private val filterItem3 by lazy { SortFilterItem("Kupon Produk", ChipsUnify.TYPE_SELECTED) }
+    private val filterItemStatus by lazy { SortFilterItem(getString(R.string.smvc_bottomsheet_filter_voucher_all)) }
     private var binding by autoClearedNullable<SmvcFragmentMvcListBinding>()
     private var moreMenuBottomSheet: MoreMenuBottomSheet? = null
     private var voucherEditPeriodBottomSheet: VoucherEditPeriodBottomSheet? = null
@@ -311,8 +310,8 @@ class MvcListFragment :
     }
 
     override fun onFilterVoucherStatusChanged(status: List<VoucherStatus>, statusText: String) {
-        filterItem.title = statusText
-        filterItem.selectedItem = arrayListOf(statusText)
+        filterItemStatus.title = statusText
+        filterItemStatus.selectedItem = arrayListOf(statusText)
         viewModel.setFilterStatus(status)
         loadInitialDataList()
     }
@@ -471,39 +470,48 @@ class MvcListFragment :
     }
 
     private fun SortFilter.setupFilter() {
-        filterList.add(filterItem)
-        filterList.add(filterItem2)
-        filterList.add(filterItem3)
+        val quickFilterItems = setupQuickFilterItems()
+        filterList.add(filterItemStatus)
+        filterList.addAll(quickFilterItems)
         addItem(filterList)
         parentListener = {
-            filterItem.selectedItem = arrayListOf()
+            filterItemStatus.selectedItem = arrayListOf()
             val bottomSheet = FilterVoucherBottomSheet.newInstance(viewModel.filter)
             bottomSheet.setListener(this@MvcListFragment)
             bottomSheet.show(childFragmentManager, "")
         }
         dismissListener = parentListener
 
-        filterItem.listener = {
+        filterItemStatus.listener = {
             val bottomSheet = FilterVoucherStatusBottomSheet()
-            bottomSheet.setSelected(filterItem.selectedItem)
+            bottomSheet.setSelected(filterItemStatus.selectedItem)
             bottomSheet.setListener(this@MvcListFragment)
             bottomSheet.show(childFragmentManager, "")
         }
-        filterItem2.listener = {
-            filterItem2.toggleSelected()
-            viewModel.setFilterType(VoucherServiceType.SHOP_VOUCHER, filterItem2.isSelected())
-            viewModel.setFilterType(VoucherServiceType.PRODUCT_VOUCHER, filterItem3.isSelected())
-            loadInitialDataList()
-            resetPaging()
+        filterItemStatus.refChipUnify.setChevronClickListener { filterItemStatus.listener.invoke() }
+    }
+
+    private fun setupQuickFilterItems(): List<SortFilterItem> {
+        val voucherTypes = context?.resources?.getStringArray(R.array.type_items).orEmpty()
+        val filterVoucherTypeItems = voucherTypes.map { SortFilterItem(it) }
+        filterVoucherTypeItems.firstOrNull()?.listener = {
+            filterVoucherTypeItems.firstOrNull()?.toggleSelected()
+            applyQuickFilter(filterVoucherTypeItems)
         }
-        filterItem3.listener = {
-            filterItem3.toggleSelected()
-            viewModel.setFilterType(VoucherServiceType.SHOP_VOUCHER, filterItem2.isSelected())
-            viewModel.setFilterType(VoucherServiceType.PRODUCT_VOUCHER, filterItem3.isSelected())
-            loadInitialDataList()
-            resetPaging()
+        filterVoucherTypeItems.lastOrNull()?.listener = {
+            filterVoucherTypeItems.lastOrNull()?.toggleSelected()
+            applyQuickFilter(filterVoucherTypeItems)
         }
-        filterItem.refChipUnify.setChevronClickListener { filterItem.listener.invoke() }
+        return filterVoucherTypeItems
+    }
+
+    private fun applyQuickFilter(filterVoucherTypeItems: List<SortFilterItem>) {
+        val isShopVoucherSelected = filterVoucherTypeItems.firstOrNull()?.isSelected().orFalse()
+        val isProductVoucherSelected = filterVoucherTypeItems.lastOrNull()?.isSelected().orFalse()
+        viewModel.setFilterType(VoucherServiceType.SHOP_VOUCHER, isShopVoucherSelected)
+        viewModel.setFilterType(VoucherServiceType.PRODUCT_VOUCHER, isProductVoucherSelected)
+        loadInitialDataList()
+        resetPaging()
     }
 
     fun SortFilterItem.isSelected(): Boolean {
