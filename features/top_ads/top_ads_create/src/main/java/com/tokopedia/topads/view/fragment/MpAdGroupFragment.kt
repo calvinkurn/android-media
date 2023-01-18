@@ -25,10 +25,12 @@ import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.adapter.adgrouplist.AdGroupListAdapter
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
+import com.tokopedia.topads.view.activity.RoutingCallback
 import com.tokopedia.topads.view.adapter.adgrouplist.model.ErrorUiModel
 import com.tokopedia.topads.view.adapter.adgrouplist.typefactory.AdGroupTypeFactory
 import com.tokopedia.topads.view.adapter.adgrouplist.typefactory.AdGroupTypeFactoryImpl
 import com.tokopedia.topads.view.adapter.adgrouplist.viewholder.AdGroupViewHolder
+import com.tokopedia.topads.view.adapter.adgrouplist.viewholder.CreateAdGroupViewHolder
 import com.tokopedia.topads.view.adapter.adgrouplist.viewholder.ErrorViewHolder
 import com.tokopedia.topads.view.adapter.adgrouplist.viewholder.ReloadInfiniteViewHolder
 import com.tokopedia.topads.view.model.MpAdsGroupsViewModel
@@ -43,7 +45,8 @@ class MpAdGroupFragment : BaseDaggerFragment(),
     AdGroupViewHolder.AdGroupListener,
     FilterGeneralDetailBottomSheet.Callback,
     ErrorViewHolder.ErrorListener,
-    ReloadInfiniteViewHolder.ReloadInfiniteScrollListener{
+    ReloadInfiniteViewHolder.ReloadInfiniteScrollListener,
+   CreateAdGroupViewHolder.CreateAdsCallback{
 
     companion object{
         fun newInstance(productId:String = "") : MpAdGroupFragment{
@@ -66,7 +69,6 @@ class MpAdGroupFragment : BaseDaggerFragment(),
     var userSession:UserSessionInterface?=null
     @Inject set
 
-    private var shopId = ""
     private var productId = ""
 
     private val adGroupAdapter:AdGroupListAdapter by lazy {
@@ -86,7 +88,6 @@ class MpAdGroupFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        shopId = userSession?.shopId.orEmpty()
         productId = arguments?.getString(PRODUCT_ID_KEY).orEmpty()
     }
 
@@ -111,7 +112,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         attachFilterClickListener()
         attachSearchQueryListener()
         observeViewModel()
-        adGroupViewModel.loadFirstPage(shopId)
+        adGroupViewModel.loadFirstPage()
     }
 
     private fun setupHeader(){
@@ -134,8 +135,9 @@ class MpAdGroupFragment : BaseDaggerFragment(),
 
     private fun setupCta(){
         binding?.adGroupCta?.apply {
-//            isEnabled = false
+            isEnabled = false
             setOnClickListener {
+                isLoading = true
                adGroupViewModel.checkTopadsDeposits()
             }
         }
@@ -144,7 +146,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
     private fun createEndlessRecyclerViewListener() {
        endlessScrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                adGroupViewModel.loadMorePages(shopId)
+                adGroupViewModel.loadMorePages()
             }
         }
     }
@@ -174,6 +176,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
     }
 
     private fun getAdGroupTypeFactory() : AdGroupTypeFactory = AdGroupTypeFactoryImpl(
+        this,
         this,
         this,
         this)
@@ -279,7 +282,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
     private fun resetAdGroupList(){
         removeRecyclerViewScrollListeners()
         addRecyclerViewScrollListeners()
-        adGroupViewModel.loadFirstPage(shopId)
+        adGroupViewModel.loadFirstPage()
     }
 
     override fun onAdStatClicked(bottomSheet: BottomSheetUnify) {
@@ -288,11 +291,11 @@ class MpAdGroupFragment : BaseDaggerFragment(),
 
     override fun onAdGroupClicked(index: Int, active: Boolean) {
         if(active){
-//            binding?.adGroupCta?.isEnabled = true
+            binding?.adGroupCta?.isEnabled = true
             adGroupViewModel.chooseAdGroup(index)
         }
         else {
-//            binding?.adGroupCta?.isEnabled = false
+            binding?.adGroupCta?.isEnabled = false
             adGroupViewModel.unChooseAdGroup(index)
         }
     }
@@ -307,7 +310,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
 
     // Reload Logic
     override fun onReload() {
-        adGroupViewModel.loadMorePages(shopId)
+        adGroupViewModel.loadMorePages()
     }
 
     //Search Logic
@@ -315,7 +318,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         adGroupViewModel.searchKeyword = query.orEmpty()
         mHandler.removeCallbacksAndMessages(null)
         mHandler.postDelayed({
-            adGroupViewModel.loadFirstPage(shopId)
+            adGroupViewModel.loadFirstPage()
         }, SEARCH_DELAY_TIME)
     }
 
@@ -331,6 +334,9 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         }
         dialog.setSecondaryCTAClickListener {
             requireActivity().finish()
+        }
+        dialog.setOnDismissListener {
+            binding?.adGroupCta?.isLoading = false
         }
         dialog.show()
     }
@@ -349,6 +355,17 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         dialog.setSecondaryCTAClickListener {
             requireActivity().finish()
         }
+        dialog.setOnDismissListener {
+            binding?.adGroupCta?.isLoading = false
+        }
         dialog.show()
+    }
+
+    override fun onCreateAdsClicked() {
+      activity?.let{
+          if(it is RoutingCallback){
+              it.addCreateAds()
+          }
+      }
     }
 }

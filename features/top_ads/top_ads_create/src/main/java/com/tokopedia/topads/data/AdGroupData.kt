@@ -17,8 +17,8 @@ data class AdGroupSettingData(
 )
 
 data class AdGroupStatsData(
-    val totalImpressionStats:String = "0",
-    val totalClickStats:String = "1",
-    val totalConversionStats:String = "0",
+    val totalImpressionStats:String = "",
+    val totalClickStats:String = "",
+    val totalConversionStats:String = "",
     val loading:Boolean = false
 )

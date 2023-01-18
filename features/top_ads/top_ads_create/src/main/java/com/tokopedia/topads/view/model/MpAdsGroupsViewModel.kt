@@ -14,7 +14,6 @@ import com.tokopedia.topads.common.domain.usecase.GetTopAdsGroupsStatisticsUseCa
 import com.tokopedia.topads.common.domain.usecase.GetTopAdsGroupsUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.data.AdGroupCompleteData
-import com.tokopedia.topads.data.AdGroupSettingData
 import com.tokopedia.topads.data.AdGroupStatsData
 import com.tokopedia.topads.data.mappers.AdGroupMapper
 import com.tokopedia.topads.view.adapter.adgrouplist.model.AdGroupShimmerUiModel
@@ -25,6 +24,8 @@ import com.tokopedia.topads.view.adapter.adgrouplist.model.LoadingMoreUiModel
 import com.tokopedia.topads.view.adapter.adgrouplist.model.ReloadInfiniteUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 import kotlin.math.min
 import kotlin.text.StringBuilder
@@ -33,6 +34,7 @@ class MpAdsGroupsViewModel @Inject constructor(
     private val getTopAdsGroupsUseCase: GetTopAdsGroupsUseCase,
     private val getTopAdsGroupStatsUseCase: GetTopAdsGroupsStatisticsUseCase,
     private val getTopadsDepositsUseCase: TopAdsGetDepositUseCase,
+    userSession:UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
@@ -62,7 +64,7 @@ class MpAdsGroupsViewModel @Inject constructor(
     private val _hasNextLiveData:MutableLiveData<Boolean> = MutableLiveData(true)
     val hasNextLiveData:LiveData<Boolean> = _hasNextLiveData
 
-    private val _topadsCreditLiveData:MutableLiveData<com.tokopedia.usecase.coroutines.Result<Deposit>> = MutableLiveData(null)
+    private val _topadsCreditLiveData:MutableLiveData<com.tokopedia.usecase.coroutines.Result<Deposit>> = SingleLiveEvent()
     val topadsCreditLiveData:LiveData<com.tokopedia.usecase.coroutines.Result<Deposit>> = _topadsCreditLiveData
 
     private var adGroupListStartIndex = NO_POSITION
@@ -75,10 +77,10 @@ class MpAdsGroupsViewModel @Inject constructor(
     private var currentPage = 1
     private var currentItemCount = 0
     private var totalItemCount = 0
-    private var shopId = ""
 
-    fun loadFirstPage(shopId:String){
-        this.shopId = shopId
+    val shopId = userSession.shopId ?: ""
+
+    fun loadFirstPage(){
         reset()
         createShimmerList()
         getTopAdsGroupsUseCase.getAdGroups(
@@ -92,12 +94,17 @@ class MpAdsGroupsViewModel @Inject constructor(
     }
 
     private fun onFirstPageSuccess(data: TopAdsGroupsResponse){
-        currentItemCount += data.response?.data?.size.orZero()
-        totalItemCount = data.response?.page?.total ?: 1
-        val mappedList = AdGroupMapper.getAdGroupsFromDashboardResponse(data)
-        createDataList(mappedList.first)
-        createAdGroupList(mappedList.second)
-        getAdGroupStats()
+        currentItemCount = data.response?.data?.size.orZero()
+        totalItemCount = data.response?.page?.total ?: 0
+        if(data.response==null || data.response?.data==null || data.response!!.data!!.isEmpty()){
+            createErrorList(GlobalError.PAGE_NOT_FOUND)
+        }
+        else{
+            val mappedList = AdGroupMapper.getAdGroupsFromDashboardResponse(data)
+            createDataList(mappedList.first)
+            createAdGroupList(mappedList.second)
+            getAdGroupStats()
+        }
     }
 
     private fun onFirstPageFailure(error:Throwable){
@@ -118,16 +125,14 @@ class MpAdsGroupsViewModel @Inject constructor(
 
     private fun onGetAdGroupStatsSuccess(data: TopAdsGroupsStatisticResponseResponse){
       val statList = AdGroupMapper.getAdGroupStatsFromResponse(data)
-//        updateAdStatsVisitableList(statList)
+        updateAdStatsVisitableList(statList)
     }
 
-    private fun onGetAdGroupStatsFailure(err:Throwable){
-     val b = 10
-    }
+    private fun onGetAdGroupStatsFailure(err:Throwable){}
 
     private fun updateAdStatsVisitableList(statList:List<AdGroupStatsData>){
         val startIndex = (currentPage - 1) * PER_PAGE + adGroupListStartIndex
-        val endIndex = startIndex + min(PER_PAGE,statList.size)
+        val endIndex = startIndex + min(PER_PAGE,statList.size) - 1
         for(idx in startIndex..endIndex){
             val visitable = visitableList[idx]
             if(visitable is AdGroupUiModel){
@@ -135,7 +140,7 @@ class MpAdsGroupsViewModel @Inject constructor(
                     groupId = visitable.groupId,
                     groupName = visitable.groupName,
                     adGroupSetting = visitable.adGroupSetting.copy(),
-                    adGroupStats = statList[idx]
+                    adGroupStats = statList[idx-startIndex]
                 )
             }
         }
@@ -151,7 +156,7 @@ class MpAdsGroupsViewModel @Inject constructor(
         setSelectedAdGroupPosition(NO_POSITION)
     }
 
-    fun loadMorePages(shopId:String){
+    fun loadMorePages(){
         createInfiniteLoadingVisitableList()
         getTopAdsGroupsUseCase.getAdGroups(
             shopId,
@@ -200,24 +205,6 @@ class MpAdsGroupsViewModel @Inject constructor(
     private fun createInfiniteLoadRetryList(){
         removeInfiniteLoadingVisitableList()
         visitableList.add(ReloadInfiniteUiModel())
-        updateVisitableLiveData()
-    }
-
-    private fun createDummyList(){
-      visitableList.clear()
-        visitableList.addAll(
-            listOf(
-                CreateAdGroupUiModel(),
-                AdGroupUiModel(),
-                AdGroupUiModel(adGroupSetting = AdGroupSettingData(loading = true)),
-                AdGroupUiModel(adGroupStats = AdGroupStatsData(loading = true)),
-                AdGroupUiModel(),
-                AdGroupUiModel(),
-                AdGroupUiModel(),
-                ReloadInfiniteUiModel()
-            )
-        )
-        setAdGroupStartPosition(1)
         updateVisitableLiveData()
     }
 

@@ -59,7 +59,7 @@ class AdGroupViewHolder(itemView: View,private val listener:AdGroupListener) : A
         val clickStatValue = CurrencyFormatHelper.convertToRupiah(data.totalClickStats)
         val conversionStatValue = CurrencyFormatHelper.convertToRupiah(data.totalConversionStats)
         binding?.apply {
-            adStatsBottomRow.submitStatList(
+            adStatsTopRow.submitStatList(
                 listOf(
                     AdStatModel(description = impressionStatText, value = impressionStatValue),
                     AdStatModel(description = clickStatText, value = clickStatValue),

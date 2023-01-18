@@ -21,9 +21,9 @@ object AdGroupMapper {
                         productBrowse = it.groupBidSetting.productBrowse,
                         productSearch = it.groupBidSetting.productSearch,
                     ),
-//                    adGroupStats = AdGroupStatsData(
-//                        loading = true
-//                    )
+                    adGroupStats = AdGroupStatsData(
+                        loading = true
+                    )
                 )
             )
             groupList.add(

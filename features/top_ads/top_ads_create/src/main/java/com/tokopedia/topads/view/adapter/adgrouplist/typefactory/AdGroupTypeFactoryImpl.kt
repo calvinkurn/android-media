@@ -19,7 +19,8 @@ import com.tokopedia.topads.view.adapter.adgrouplist.viewholder.ReloadInfiniteVi
 class AdGroupTypeFactoryImpl(
     private val adGroupListener: AdGroupViewHolder.AdGroupListener,
     private val errorListener: ErrorViewHolder.ErrorListener,
-    private val reloadListener:ReloadInfiniteViewHolder.ReloadInfiniteScrollListener
+    private val reloadListener:ReloadInfiniteViewHolder.ReloadInfiniteScrollListener,
+    private val createAdsListener: CreateAdGroupViewHolder.CreateAdsCallback
 ) : AdGroupTypeFactory , BaseAdapterTypeFactory() {
     override fun type(model: AdGroupShimmerUiModel) = AdGroupShimmerViewHolder.LAYOUT
 
@@ -37,7 +38,7 @@ class AdGroupTypeFactoryImpl(
         return when(viewType){
             AdGroupShimmerViewHolder.LAYOUT -> AdGroupShimmerViewHolder(itemView)
             AdGroupViewHolder.LAYOUT -> AdGroupViewHolder(itemView,adGroupListener)
-            CreateAdGroupViewHolder.LAYOUT -> CreateAdGroupViewHolder(itemView)
+            CreateAdGroupViewHolder.LAYOUT -> CreateAdGroupViewHolder(itemView,createAdsListener)
             ErrorViewHolder.LAYOUT -> ErrorViewHolder(itemView,errorListener)
             ReloadInfiniteViewHolder.LAYOUT -> ReloadInfiniteViewHolder(itemView,reloadListener)
             LoadingMoreViewHolder.LAYOUT -> LoadingMoreViewHolder(itemView)

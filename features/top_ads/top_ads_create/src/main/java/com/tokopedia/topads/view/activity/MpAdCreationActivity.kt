@@ -15,16 +15,16 @@ import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.di.DaggerCreateAdsComponent
 import com.tokopedia.topads.view.fragment.MpAdCreationOnboardingFragment
 import com.tokopedia.topads.view.fragment.MpAdGroupFragment
+import com.tokopedia.topads.view.fragment.MpCreateAdGroupFragment
 import com.tokopedia.topads.view.model.MpAdCreationViewModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class MpAdCreationActivity : BaseActivity(),HasComponent<CreateAdsComponent> {
+class MpAdCreationActivity : BaseActivity(),HasComponent<CreateAdsComponent> ,RoutingCallback{
 
     companion object{
         private const val TAG = "MP_TOPADS_CREATE"
-        private const val PRODUCT_TYPE = "product"
     }
 
     @Inject
@@ -74,23 +74,20 @@ class MpAdCreationActivity : BaseActivity(),HasComponent<CreateAdsComponent> {
     private fun handleFragmentRender(data:TopadsShopInfoV2Model){
 //        val productType = data.topadsGetShopInfo.data.ads.find { it.type == PRODUCT_TYPE }
 //        if(productType!=null && productType.isUsed){
-//
-//        }
-        addFragment(MpAdGroupFragment.newInstance())
-//        if(productId.isEmpty()){
-//            addFragment(
-//                ProductManageSellerFragment.newInstance(
-//                    arrayListOf(),"",""
-//                ))
+//            addFragment(MpAdGroupFragment.newInstance(productId))
 //        }
 //        else{
-//            addFragment(MpAdCreationOnboardingFragment.newInstance(productId))
+//            addFragment(MpAdCreationOnboardingFragment.newInstance())
 //        }
-//        addFragment(
-//            ProductManageSellerFragment.newInstance(
-//            arrayListOf(),"",""
-//        ))
-//        addFragment(MpAdCreationOnboardingFragment.newInstance())
+        if(productId.isEmpty()){
+            addFragment(
+                ProductManageSellerFragment.newInstance(
+                    arrayListOf(),"",""
+                ))
+        }
+        else{
+            addFragment(MpAdGroupFragment.newInstance())
+        }
     }
 
     override fun onBackPressed() {
@@ -108,7 +105,7 @@ class MpAdCreationActivity : BaseActivity(),HasComponent<CreateAdsComponent> {
                 com.tokopedia.abstraction.R.anim.slide_in_left,
                 com.tokopedia.abstraction.R.anim.slide_out_right
             )
-            .add(R.id.mp_ad_creation_container,fragment)
+            .replace(R.id.mp_ad_creation_container,fragment)
             .addToBackStack(TAG)
             .commit()
     }
@@ -117,4 +114,12 @@ class MpAdCreationActivity : BaseActivity(),HasComponent<CreateAdsComponent> {
         return DaggerCreateAdsComponent.builder().baseAppComponent(
             (application as BaseMainApplication).baseAppComponent).build()
     }
+
+    override fun addCreateAds() {
+        addFragment(MpCreateAdGroupFragment.newInstance())
+    }
+}
+
+interface RoutingCallback{
+    fun addCreateAds()
 }
