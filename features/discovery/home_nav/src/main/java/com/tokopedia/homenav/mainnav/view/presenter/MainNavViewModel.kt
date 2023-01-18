@@ -1,6 +1,5 @@
 package com.tokopedia.homenav.mainnav.view.presenter
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -517,7 +516,6 @@ class MainNavViewModel @Inject constructor(
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
         } catch (e: Exception) {
-            Log.e("", "getOnGoingTransactionRevamp: ", e)
             // find shimmering and change with result value
             findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
                 updateWidget(ErrorStateOngoingTransactionModel(), it)

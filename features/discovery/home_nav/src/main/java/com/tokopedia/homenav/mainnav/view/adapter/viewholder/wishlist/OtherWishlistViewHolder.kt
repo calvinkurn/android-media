@@ -13,7 +13,7 @@ import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.OtherWishlistModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.utils.view.binding.viewBinding
 
-class OtherWishlistViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<OtherWishlistModel>(itemView) {
+class OtherWishlistViewHolder(itemView: View, val mainNavListener: MainNavListener) : AbstractViewHolder<OtherWishlistModel>(itemView) {
     private var binding: HolderViewAllRevampBinding? by viewBinding()
 
     companion object {
@@ -29,7 +29,7 @@ class OtherWishlistViewHolder(itemView: View, val mainNavListener: MainNavListen
 
         itemView.setOnClickListener {
             TrackingTransactionSection.clickOnWishlistViewAll()
-            RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
+            RouteManager.route(context, ApplinkConst.WISHLIST)
         }
     }
 

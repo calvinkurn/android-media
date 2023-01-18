@@ -8,11 +8,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderOtherTransactionProductBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
-import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionModel
+import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.utils.view.binding.viewBinding
 
-class OtherTransactionViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<OtherTransactionModel>(itemView) {
+class OtherTransactionViewHolder(itemView: View, val mainNavListener: MainNavListener) : AbstractViewHolder<OtherTransactionModel>(itemView) {
     private var binding: HolderOtherTransactionProductBinding? by viewBinding()
     val otherTrackingLabel = "other"
     companion object {
@@ -29,9 +29,10 @@ class OtherTransactionViewHolder(itemView: View, val mainNavListener: MainNavLis
 
         itemView.setOnClickListener {
             TrackingTransactionSection.clickOnOrderStatus(
-                    mainNavListener.getUserId(),
-                    otherTrackingLabel)
-            RouteManager.route(context, ApplinkConst.PURCHASE_ORDER)
+                mainNavListener.getUserId(),
+                otherTrackingLabel
+            )
+            RouteManager.route(context, ApplinkConst.REPUTATION)
         }
     }
 }

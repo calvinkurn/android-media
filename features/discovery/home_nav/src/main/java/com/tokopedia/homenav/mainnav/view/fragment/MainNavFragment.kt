@@ -21,6 +21,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation.SOURCE_ACCOUNT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.homenav.R
@@ -351,7 +352,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onWishlistCollectionClicked(wishlistModel: NavWishlistModel, position: Int) {
         TrackingTransactionSection.clickOnWishlistItem(getUserId(), wishlistModel, position)
-        goToPDP(wishlistModel.id, position)
+        RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL, wishlistModel.id)
     }
 
     override fun onErrorFavoriteShopClicked() {
