@@ -29,9 +29,18 @@ data class GetOrderExtensionRequestInfoResponse(
                 @SerializedName("new_deadline")
                 @Expose
                 val newDeadline: String? = "",
+                @SerializedName("deadline_info")
+                @Expose
+                val deadlineInfo: DeadlineInfo = DeadlineInfo(),
                 @SerializedName("reason")
                 @Expose
                 val reason: List<Reason>? = listOf(),
+                @SerializedName("eligible_dates")
+                @Expose
+                val elibleDates: List<EligbleDates> = listOf(),
+                @SerializedName("special_dates")
+                @Expose
+                val specialDates: List<SpecialDates> = listOf(),
                 @SerializedName("text")
                 @Expose
                 val text: String? = ""
@@ -55,6 +64,38 @@ data class GetOrderExtensionRequestInfoResponse(
                     @SerializedName("must_comment")
                     @Expose
                     val mustComment: Boolean = false
+                )
+
+                data class EligbleDates(
+                    @SerializedName("date")
+                    @Expose
+                    val date: String = "",
+                    @SerializedName("extension_time")
+                    @Expose
+                    val extensionTime: Int = 0,
+                    @SerializedName("is_disabled")
+                    @Expose
+                    val isDisabled: Boolean = false
+                )
+                data class SpecialDates(
+                    @SerializedName("date")
+                    @Expose
+                    val date: String = "",
+                    @SerializedName("event_name")
+                    @Expose
+                    val event_name: String = "",
+                    @SerializedName("is_disabled")
+                    @Expose
+                    val isDisabled: Boolean = false
+                )
+
+                data class DeadlineInfo(
+                    @SerializedName("max_time")
+                    @Expose
+                    val maxTime: String = "",
+                    @SerializedName("max_date")
+                    @Expose
+                    val maxDate: String = ""
                 )
             }
         }

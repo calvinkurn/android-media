@@ -77,12 +77,24 @@ class ResourceProvider @Inject constructor() {
         }
     }
 
+    fun getOrderExtensionRequestBottomSheetPickTimeTitleComposer(): StringComposer {
+        return StringComposer {
+            it.getString(R.string.bottomsheet_order_extension_request_pick_time_header)
+        }
+    }
+
     fun getOrderExtensionRequestBottomSheetFooterComposer(): StringComposer {
         return StringComposer {
             HtmlLinkHelper(
                 it,
                 it.getString(R.string.bottomsheet_order_extension_request_footer)
             ).spannedString ?: ""
+        }
+    }
+
+    fun getOrderExtensionRequestBottomSheetPickTimeRulesComposer(): StringComposer {
+        return StringComposer {
+            it.getString(R.string.bottomsheet_order_extension_request_pick_time_rules)
         }
     }
 

@@ -4,16 +4,13 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.OrderExtensionRequestInfoDescriptionViewHolder
-import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.OrderExtensionRequestInfoOptionViewHolder
-import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.OrderExtensionRequestInfoCommentViewHolder
-import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.OrderExtensionRequestInfoDescriptionShimmerViewHolder
-import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.OrderExtensionRequestInfoOptionShimmerViewHolder
+import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.*
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 
 class OrderExtensionRequestInfoAdapterTypeFactory(
     private val optionListener: OrderExtensionRequestInfoOptionViewHolder.SomRequestExtensionOptionListener,
-    private val textAreaListener: OrderExtensionRequestInfoCommentViewHolder.OrderExtensionRequestInfoCommentListener
+    private val textAreaListener: OrderExtensionRequestInfoCommentViewHolder.OrderExtensionRequestInfoCommentListener,
+    private val onPickTimeListener: OrderExtensionRequestInfoPickTimeViewHolder.SomRequestExtensionPickTimeListener
 ) : BaseAdapterTypeFactory() {
 
     fun type(descriptionUiModel: OrderExtensionRequestInfoUiModel.DescriptionUiModel): Int {
@@ -36,6 +33,14 @@ class OrderExtensionRequestInfoAdapterTypeFactory(
         return OrderExtensionRequestInfoOptionShimmerViewHolder.LAYOUT
     }
 
+    fun type(pickTimeShimmerUiModel: OrderExtensionRequestInfoUiModel.PickTimeShimmerUiModel): Int {
+        return OrderExtensionRequestInfoPickTimeShimmerViewHolder.LAYOUT
+    }
+
+    fun type(pickTimeShimmerUiModel: OrderExtensionRequestInfoUiModel.PickTimeUiModel): Int {
+        return OrderExtensionRequestInfoPickTimeViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             OrderExtensionRequestInfoDescriptionViewHolder.LAYOUT -> OrderExtensionRequestInfoDescriptionViewHolder(parent)
@@ -43,6 +48,8 @@ class OrderExtensionRequestInfoAdapterTypeFactory(
             OrderExtensionRequestInfoCommentViewHolder.LAYOUT -> OrderExtensionRequestInfoCommentViewHolder(parent, textAreaListener)
             OrderExtensionRequestInfoDescriptionShimmerViewHolder.LAYOUT -> OrderExtensionRequestInfoDescriptionShimmerViewHolder(parent)
             OrderExtensionRequestInfoOptionShimmerViewHolder.LAYOUT -> OrderExtensionRequestInfoOptionShimmerViewHolder(parent)
+            OrderExtensionRequestInfoPickTimeShimmerViewHolder.LAYOUT -> OrderExtensionRequestInfoPickTimeShimmerViewHolder(parent)
+            OrderExtensionRequestInfoPickTimeViewHolder.LAYOUT -> OrderExtensionRequestInfoPickTimeViewHolder(parent,onPickTimeListener)
             else -> super.createViewHolder(parent, type)
         }
     }

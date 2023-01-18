@@ -4,6 +4,7 @@ import android.text.Spanned
 import android.text.style.URLSpan
 import android.view.MotionEvent
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.sellerorder.R
@@ -62,7 +63,7 @@ class OrderExtensionRequestInfoDescriptionViewHolder(
     }
 
     private fun setupDescription(description: CharSequence) {
-        binding?.root?.text = description
+        binding?.root?.text = description.toString().parseAsHtml()
     }
 
     private fun setupAlignment(alignment: OrderExtensionRequestInfoUiModel.DescriptionUiModel.DescriptionAlignment) {

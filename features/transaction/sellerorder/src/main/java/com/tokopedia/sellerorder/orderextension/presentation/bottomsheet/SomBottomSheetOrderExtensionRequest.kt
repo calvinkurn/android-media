@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.widget.LinearLayout
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
@@ -16,11 +18,15 @@ import com.tokopedia.sellerorder.orderextension.presentation.adapter.itemdecorat
 import com.tokopedia.sellerorder.orderextension.presentation.adapter.typefactory.OrderExtensionRequestInfoAdapterTypeFactory
 import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.OrderExtensionRequestInfoCommentViewHolder
 import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.OrderExtensionRequestInfoOptionViewHolder
+import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.OrderExtensionRequestInfoPickTimeViewHolder
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
+import java.util.*
 
 class SomBottomSheetOrderExtensionRequest(
+    val fragmentManager: FragmentManager,
     context: Context,
     private var orderId: String,
     private var data: OrderExtensionRequestInfoUiModel,
@@ -36,10 +42,15 @@ class SomBottomSheetOrderExtensionRequest(
     context = context,
     dismissOnClickOverlay = true
 ), OrderExtensionRequestInfoOptionViewHolder.SomRequestExtensionOptionListener,
-    OrderExtensionRequestInfoCommentViewHolder.OrderExtensionRequestInfoCommentListener {
+    OrderExtensionRequestInfoCommentViewHolder.OrderExtensionRequestInfoCommentListener,
+    OrderExtensionRequestInfoPickTimeViewHolder.SomRequestExtensionPickTimeListener {
 
     companion object {
         private val LAYOUT = R.layout.bottomsheet_order_extension_request_info
+        private const val FORMAT_DATE_TEXT = "EEEE, dd MMMM yyyy"
+        private const val LOCALE_LANGUAGE_ID = "in"
+        private const val LOCALE_COUNTRY_ID = "ID"
+
     }
 
     private var adapter: OrderExtensionRequestInfoAdapter? = null
@@ -50,6 +61,8 @@ class SomBottomSheetOrderExtensionRequest(
             }
         }
     }
+
+    var currentExtentionTime = 0
 
     override fun bind(view: View): BottomsheetOrderExtensionRequestInfoBinding {
         return BottomsheetOrderExtensionRequestInfoBinding.bind(view)
@@ -112,6 +125,7 @@ class SomBottomSheetOrderExtensionRequest(
                 adapter = adapter ?: OrderExtensionRequestInfoAdapter(
                     OrderExtensionRequestInfoAdapterTypeFactory(
                         this@SomBottomSheetOrderExtensionRequest,
+                        this@SomBottomSheetOrderExtensionRequest,
                         this@SomBottomSheetOrderExtensionRequest
                     )
                 )
@@ -134,7 +148,7 @@ class SomBottomSheetOrderExtensionRequest(
                 binding?.root?.hideKeyboard()
                 if (!dismissing && !data.isLoadingOrderExtensionRequestInfo()) {
                     binding?.rvRequestExtensionInfo?.focusedChild?.clearFocus()
-                    viewModel.sendOrderExtensionRequest(orderId)
+                    viewModel.sendOrderExtensionRequest(orderId, currentExtentionTime)
                 }
             }
         }
@@ -154,7 +168,8 @@ class SomBottomSheetOrderExtensionRequest(
 
     private fun scrollToRequestFocusItem() {
         binding?.rvRequestExtensionInfo?.post {
-            val requestFocusPosition = adapter?.getRequestFocusItemPosition() ?: RecyclerView.NO_POSITION
+            val requestFocusPosition =
+                adapter?.getRequestFocusItemPosition() ?: RecyclerView.NO_POSITION
             if (requestFocusPosition != RecyclerView.NO_POSITION) {
                 smoothScroller.targetPosition = requestFocusPosition
                 binding?.rvRequestExtensionInfo?.layoutManager?.startSmoothScroll(smoothScroller)
@@ -162,11 +177,48 @@ class SomBottomSheetOrderExtensionRequest(
         }
     }
 
+
     fun setOrderId(orderId: String) {
         this.orderId = orderId
     }
 
     fun setData(data: OrderExtensionRequestInfoUiModel) {
         this.data = data
+    }
+
+    override fun onShowCalendarPicker() {
+        val calendarOrderExtensionBottomSheet =
+            CalendarOrderExtensionBottomSheet(data.orderExtentionDate, {
+                currentExtentionTime = it.extensionTime
+                adapter?.updatePickTime(
+                    it.date.toFormattedString(
+                        FORMAT_DATE_TEXT,
+                        Locale(
+                            LOCALE_LANGUAGE_ID,
+                            LOCALE_COUNTRY_ID
+                        )
+                    )
+                )
+            },{
+                val errorMessage = context.getString(R.string.bottomsheet_order_extension_failed_pick_date)
+                binding?.root?.let {
+                    Toaster.build(
+                        it,
+                        type = Toaster.TYPE_ERROR,
+                        text = errorMessage,
+                        duration = Toaster.LENGTH_LONG
+                    ).show()
+                }
+            })
+        calendarOrderExtensionBottomSheet.show(
+            fragmentManager,
+            CalendarOrderExtensionBottomSheet.TAG
+        )
+    }
+
+    override fun onShowTooltip() {
+        val infoPickTimeOrderExtentionBottomSheet =
+            InfoPickTimeOrderExtentionBottomSheet(fragmentManager)
+        infoPickTimeOrderExtentionBottomSheet.show()
     }
 }

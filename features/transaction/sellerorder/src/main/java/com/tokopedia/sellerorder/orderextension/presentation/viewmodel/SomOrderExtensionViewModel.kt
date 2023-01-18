@@ -31,7 +31,8 @@ class SomOrderExtensionViewModel @Inject constructor(
     val orderExtensionRequestInfo: LiveData<OrderExtensionRequestInfoUiModel>
         get() = _requestExtensionInfo
 
-    private val orderExtensionRequestInfoUpdates: MutableLiveData<OrderExtensionRequestInfoUpdater> = MutableLiveData()
+    private val orderExtensionRequestInfoUpdates: MutableLiveData<OrderExtensionRequestInfoUpdater> =
+        MutableLiveData()
 
     init {
         launch {
@@ -109,14 +110,15 @@ class SomOrderExtensionViewModel @Inject constructor(
     fun getSomOrderExtensionRequestInfo(orderId: String) {
         launchCatchError(context = dispatcher.io, block = {
             val result = somGetOrderExtensionRequestInfoUseCase.execute(orderId, userSession.shopId)
-            val mappedResult = somGetOrderExtensionRequestInfoMapper.mapSuccessResponseToUiModel(result)
+            val mappedResult =
+                somGetOrderExtensionRequestInfoMapper.mapSuccessResponseToUiModel(result)
             onSuccessGetSomRequestExtensionInfo(mappedResult)
         }, onError = {
             onFailedGetOrderExtensionRequest(it)
         })
     }
 
-    fun sendOrderExtensionRequest(orderId: String) {
+    fun sendOrderExtensionRequest(orderId: String, extensionTime: Int) {
         startSendingOrderExtensionRequest { requestExtensionInfo ->
             launchCatchError(context = dispatcher.io, block = {
                 if (requestExtensionInfo.isValid()) {
@@ -125,9 +127,11 @@ class SomOrderExtensionViewModel @Inject constructor(
                         orderId,
                         userSession.shopId,
                         selectedOptionCode,
-                        requestExtensionInfo.getComment(selectedOptionCode)
+                        requestExtensionInfo.getComment(selectedOptionCode),
+                        extensionTime
                     )
-                    val mappedResult = somOrderExtensionRequestResultMapper.mapResponseToUiModel(result)
+                    val mappedResult =
+                        somOrderExtensionRequestResultMapper.mapResponseToUiModel(result)
                     if (!mappedResult.success) {
                         onFailedSendingOrderExtensionRequest(
                             errorMessage = mappedResult.message,

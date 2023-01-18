@@ -54,6 +54,16 @@ class OrderExtensionRequestInfoAdapter(
         (visitables.getOrNull(index) as? OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem)?.requestFocus = false
     }
 
+    fun updatePickTime(timeText: String) {
+        val index = visitables.indexOfFirst {
+            it is OrderExtensionRequestInfoUiModel.PickTimeUiModel
+        }
+        val pickTimeUiModel = visitables[index] as OrderExtensionRequestInfoUiModel.PickTimeUiModel
+        pickTimeUiModel.timeText = timeText
+        visitables[index] = pickTimeUiModel
+        notifyItemChanged(index)
+    }
+
     fun updateItems(newItems: List<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>) {
         processDiff(newItems)
         updateVisitable(newItems)

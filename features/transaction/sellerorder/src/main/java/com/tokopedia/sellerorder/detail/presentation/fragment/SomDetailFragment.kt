@@ -190,7 +190,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         ViewModelProvider(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
     protected val bottomSheetManager by lazy {
-        view?.let { if (it is ViewGroup) BottomSheetManager(it) else null }
+        view?.let { if (it is ViewGroup) BottomSheetManager(it,childFragmentManager) else null }
     }
 
     private fun createChatIcon(context: Context): IconUnify {

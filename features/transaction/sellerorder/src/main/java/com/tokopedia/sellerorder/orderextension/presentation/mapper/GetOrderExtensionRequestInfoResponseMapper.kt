@@ -5,23 +5,37 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerorder.orderextension.domain.models.GetOrderExtensionRequestInfoResponse
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.util.ResourceProvider
+import com.tokopedia.utils.date.toDate
 import javax.inject.Inject
 
 class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
     private val resourceProvider: ResourceProvider
 ) {
 
+    companion object{
+        private const val ID_HEADER = 0
+        private const val ID_DESCRIPTION = 1
+        private const val ID_PICK_TIME_TITLE = 2
+        private const val ID_OPTIONS_TITLE = 3
+        private const val ID_FOOTER_TITLE = 4
+        private const val FORMAT_DATE_ORDER_EXTENTION = "yyyy-MM-dd"
+        private const val FORMAT_DATE_DEADLINE_ORDER_EXTENTION = "yyyy/MM/dd"
+
+    }
+
     fun createLoadingData(): OrderExtensionRequestInfoUiModel = OrderExtensionRequestInfoUiModel(
         items = mutableListOf<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>().apply {
-            addOrderExtensionHeader()
-            addOrderExtensionDescriptionShimmer(resourceProvider.getLongDescriptionShimmerWidth())
-            addOrderExtensionDescriptionShimmer(resourceProvider.getLongDescriptionShimmerWidth())
-            addOrderExtensionDescriptionShimmer(resourceProvider.getShortDescriptionShimmerWidth())
-            addOrderExtensionOptionsTitle()
+            addOrderExtensionHeader(ID_HEADER)
+            addOrderExtensionDescriptionShimmer(
+                resourceProvider.getLongDescriptionShimmerWidth()
+            )
+            addOrderExtensionPickTimeTitle(ID_PICK_TIME_TITLE)
+            addOrderExtensionPickTimeShimmer()
+            addOrderExtensionOptionsTitle(ID_OPTIONS_TITLE)
             addOrderExtensionOptionsShimmer()
             addOrderExtensionOptionsShimmer()
             addOrderExtensionOptionsShimmer()
-            addOrderExtensionFooter()
+            addOrderExtensionFooter(ID_FOOTER_TITLE)
         },
         processing = false,
         success = true,
@@ -36,13 +50,24 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
     ): OrderExtensionRequestInfoUiModel = OrderExtensionRequestInfoUiModel(
         items = if (!response.reason.isNullOrEmpty()) {
             mutableListOf<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>().apply {
-                addOrderExtensionHeader()
-                addOrderExtensionDescription(response.text, response.newDeadline)
-                addOrderExtensionOptionsTitle()
+                addOrderExtensionHeader(ID_HEADER)
+                addOrderExtensionDescription(ID_DESCRIPTION,response.text, response.newDeadline)
+                addOrderExtensionPickTimeTitle(ID_PICK_TIME_TITLE)
+                addOrderExtensionPickTimeField()
+                addOrderExtensionOptionsTitle(ID_OPTIONS_TITLE)
                 addOrderExtensionOptions(response.reason)
-                addOrderExtensionFooter()
+                addOrderExtensionFooter(ID_FOOTER_TITLE)
             }
         } else emptyList(),
+        orderExtentionDate = OrderExtensionRequestInfoUiModel.OrderExtentionDate(
+            deadLineTime = response.deadlineInfo.maxDate.toDate(FORMAT_DATE_DEADLINE_ORDER_EXTENTION),
+            eligbleDates = response.elibleDates.map {
+                OrderExtensionRequestInfoUiModel.OrderExtentionDate.EligbleDateUIModel(
+                    date = it.date.toDate(FORMAT_DATE_ORDER_EXTENTION),
+                    extensionTime = it.extensionTime
+                )
+            }
+        ),
         processing = false,
         success = response.isSuccess(),
         completed = response.isSuccess().not(),
@@ -99,9 +124,12 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
         )
     }
 
-    private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionHeader() {
+    private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionHeader(
+        id: Int
+    ) {
         add(
             OrderExtensionRequestInfoUiModel.DescriptionUiModel(
+                id = id,
                 fontColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950,
                 typographyType = OrderExtensionRequestInfoUiModel.DescriptionUiModel.DescriptionTextType.HEADING_3,
                 description = resourceProvider.getOrderExtensionRequestBottomSheetTitleComposer()
@@ -110,20 +138,46 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
     }
 
     private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionDescription(
+        id: Int,
         text: String?,
         newDeadline: String?
     ) {
         add(
             OrderExtensionRequestInfoUiModel.DescriptionUiModel(
+                id = id,
                 typographyType = OrderExtensionRequestInfoUiModel.DescriptionUiModel.DescriptionTextType.BODY_2,
-                description = resourceProvider.getOrderExtensionDescriptionComposer(text, newDeadline)
+                description = resourceProvider.getOrderExtensionDescriptionComposer(
+                    text,
+                    newDeadline
+                )
             )
         )
     }
 
-    private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionOptionsTitle() {
+    private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionPickTimeTitle(
+        id: Int
+    ) {
         add(
             OrderExtensionRequestInfoUiModel.DescriptionUiModel(
+                id = id,
+                fontColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950,
+                typographyType = OrderExtensionRequestInfoUiModel.DescriptionUiModel.DescriptionTextType.HEADING_4,
+                description = resourceProvider.getOrderExtensionRequestBottomSheetPickTimeTitleComposer()
+            )
+        )
+    }
+
+    private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionPickTimeField() {
+        add(OrderExtensionRequestInfoUiModel.PickTimeUiModel())
+    }
+
+
+    private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionOptionsTitle(
+        id: Int
+    ) {
+        add(
+            OrderExtensionRequestInfoUiModel.DescriptionUiModel(
+                id = id,
                 fontColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950,
                 typographyType = OrderExtensionRequestInfoUiModel.DescriptionUiModel.DescriptionTextType.HEADING_4,
                 description = resourceProvider.getOrderExtensionRequestBottomSheetOptionsTitleComposer()
@@ -137,18 +191,21 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
         val options = mutableListOf<OrderExtensionRequestInfoUiModel.OptionUiModel>()
         val optionsComment = mutableListOf<OrderExtensionRequestInfoUiModel.CommentUiModel>()
         reasons?.forEachIndexed { index, reason ->
-            options.addOrderExtensionOption(index, reason)
+            options.addOrderExtensionOption(index = index, reason = reason)
             if (reason.mustComment) {
-                optionsComment.addOrderExtensionOptionComment(index, reason)
+                optionsComment.addOrderExtensionOptionComment(index = index, reason = reason)
             }
         }
         addAll(options)
         addAll(optionsComment)
     }
 
-    private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionFooter() {
+    private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionFooter(
+        id: Int
+    ) {
         add(
             OrderExtensionRequestInfoUiModel.DescriptionUiModel(
+                id = id,
                 alignment = OrderExtensionRequestInfoUiModel.DescriptionUiModel.DescriptionAlignment.TEXT_ALIGNMENT_CENTER,
                 fontColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
                 description = resourceProvider.getOrderExtensionRequestBottomSheetFooterComposer(),
@@ -157,13 +214,21 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
         )
     }
 
-    private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionDescriptionShimmer(
-        @DimenRes widthResId: Int
-    ) {
-        add(OrderExtensionRequestInfoUiModel.DescriptionShimmerUiModel(com.tokopedia.sellerorder.orderextension.presentation.model.DimenRes(widthResId)))
+    private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionDescriptionShimmer(@DimenRes widthResId: Int) {
+        add(
+            OrderExtensionRequestInfoUiModel.DescriptionShimmerUiModel(
+                com.tokopedia.sellerorder.orderextension.presentation.model.DimenRes(
+                    widthResId
+                )
+            )
+        )
     }
 
     private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionOptionsShimmer() {
         add(OrderExtensionRequestInfoUiModel.OptionShimmerUiModel())
+    }
+
+    private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionPickTimeShimmer() {
+        add(OrderExtensionRequestInfoUiModel.PickTimeShimmerUiModel())
     }
 }
