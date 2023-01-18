@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.util
 
+import android.content.Context
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.kotlin.extensions.convertToDate
@@ -82,3 +83,11 @@ fun Date.formatTo(locale: Locale = LocaleUtils.getIDLocale()): String {
 fun String.convertDate(format: String, locale: Locale = LocaleUtils.getIDLocale()): String {
     return this.convertUnsafeDateTime().formatTo(format, locale).toBlankOrString()
 }
+
+fun getGregorianDate(date: String): GregorianCalendar {
+    return GregorianCalendar().apply {
+        time = date.convertUnsafeDateTime()
+    }
+}
+
+fun Context.getToday() = GregorianCalendar(LocaleUtils.getCurrentLocale(this))

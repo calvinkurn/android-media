@@ -19,8 +19,9 @@ import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.VoucherEditPeriodViewModel
 import com.tokopedia.mvc.util.DateTimeUtils
-import com.tokopedia.mvc.util.convertUnsafeDateTime
 import com.tokopedia.mvc.util.formatTo
+import com.tokopedia.mvc.util.getGregorianDate
+import com.tokopedia.mvc.util.getToday
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -107,12 +108,6 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun getGregorianDate(date: String): GregorianCalendar {
-        return GregorianCalendar().apply {
-            time = date.convertUnsafeDateTime()
-        }
-    }
-
     private fun initObservers() {
         viewModel.startDateCalendarLiveData.observe(viewLifecycleOwner) {
             startCalendar = it as? GregorianCalendar
@@ -194,8 +189,8 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
 
     private fun onClickListenerForStartDate() {
         context?.run {
-            startCalendar?.let { minDate ->
-                DateTimeUtils.getMaxDate(startCalendar)?.let { maxDate ->
+            decideCalendarPeriodStartDate()?.let { minDate ->
+                DateTimeUtils.getMaxDate(minDate)?.let { maxDate ->
                     voucherEditCalendarBottomSheet =
                         VoucherEditCalendarBottomSheet.newInstance(
                             startCalendar,
@@ -242,6 +237,16 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
             }
         }
         return null
+    }
+
+    private fun decideCalendarPeriodStartDate(): GregorianCalendar? {
+        val get30DaysBefore = DateTimeUtils.getMinDate(startCalendar)
+        val today = context?.getToday()
+        return if (get30DaysBefore?.compareTo(today)?.isLessThanZero() == true) {
+            today
+        } else {
+            get30DaysBefore
+        }
     }
 
     private var getSelectedDateStarting: (Calendar) -> Unit = {
