@@ -106,12 +106,12 @@ object HomeLayoutMapper {
         SMALL_PLAY_WIDGET
     )
 
-    fun MutableList<HomeLayoutItemUiModel>.addLoadingIntoList() {
+    fun MutableList<HomeLayoutItemUiModel?>.addLoadingIntoList() {
         val loadingLayout = HomeLoadingStateUiModel(id = LOADING_STATE)
         add(HomeLayoutItemUiModel(loadingLayout, HomeLayoutItemState.LOADED))
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.addEmptyStateIntoList(
+    fun MutableList<HomeLayoutItemUiModel?>.addEmptyStateIntoList(
         @HomeStaticLayoutId id: String,
         serviceType: String
     ) {
@@ -131,7 +131,7 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.addProductRecomOoc() {
+    fun MutableList<HomeLayoutItemUiModel?>.addProductRecomOoc() {
         val productRecomUiModel = TokoNowProductRecommendationOocUiModel(
             pageName = OOC_TOKONOW,
             isFirstLoad = true,
@@ -140,7 +140,7 @@ object HomeLayoutMapper {
         add(HomeLayoutItemUiModel(productRecomUiModel, HomeLayoutItemState.LOADED))
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.mapHomeLayoutList(
+    fun MutableList<HomeLayoutItemUiModel?>.mapHomeLayoutList(
         response: List<HomeLayoutResponse>,
         hasTickerBeenRemoved: Boolean,
         removeAbleWidgets: List<HomeRemoveAbleWidget>,
@@ -167,7 +167,7 @@ object HomeLayoutMapper {
         }
     }
 
-    private fun MutableList<HomeLayoutItemUiModel>.addSwitcherUiModel(
+    private fun MutableList<HomeLayoutItemUiModel?>.addSwitcherUiModel(
         response: HomeLayoutResponse,
         localCacheModel: LocalCacheModel,
         isLoggedIn: Boolean
@@ -178,7 +178,7 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.addMoreHomeLayout(
+    fun MutableList<HomeLayoutItemUiModel?>.addMoreHomeLayout(
         response: List<HomeLayoutResponse>,
         removeAbleWidgets: List<HomeRemoveAbleWidget>,
         miniCartData: MiniCartSimplifiedData?,
@@ -193,15 +193,15 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.addProgressBar() {
+    fun MutableList<HomeLayoutItemUiModel?>.addProgressBar() {
         add(HomeLayoutItemUiModel(HomeProgressBarUiModel, HomeLayoutItemState.LOADED))
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.removeProgressBar() {
-        removeFirst { it.layout is HomeProgressBarUiModel }
+    fun MutableList<HomeLayoutItemUiModel?>.removeProgressBar() {
+        removeFirst { it?.layout is HomeProgressBarUiModel }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.setStateToLoading(item: HomeLayoutItemUiModel) {
+    fun MutableList<HomeLayoutItemUiModel?>.setStateToLoading(item: HomeLayoutItemUiModel) {
         item.layout?.let { layout ->
             updateItemById(layout.getVisitableId()) {
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADING)
@@ -234,7 +234,7 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.mapSharingEducationData(
+    fun MutableList<HomeLayoutItemUiModel?>.mapSharingEducationData(
         item: HomeSharingEducationWidgetUiModel
     ) {
         updateItemById(item.visitableId) {
@@ -242,7 +242,7 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.mapSharingReferralData(
+    fun MutableList<HomeLayoutItemUiModel?>.mapSharingReferralData(
         item: HomeSharingReferralWidgetUiModel,
         data: HomeReferralDataModel
     ) {
@@ -268,7 +268,7 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.mapTickerData(
+    fun MutableList<HomeLayoutItemUiModel?>.mapTickerData(
         item: HomeTickerUiModel,
         tickerData: List<TickerData>
     ) {
@@ -278,7 +278,7 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.mapQuestData(
+    fun MutableList<HomeLayoutItemUiModel?>.mapQuestData(
         item: HomeQuestSequenceWidgetUiModel,
         questList: List<HomeQuestWidgetUiModel>,
         state: HomeLayoutItemState
@@ -293,7 +293,7 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.mapProductPurchaseData(
+    fun MutableList<HomeLayoutItemUiModel?>.mapProductPurchaseData(
         item: TokoNowRepurchaseUiModel,
         response: RepurchaseData,
         miniCartData: MiniCartSimplifiedData? = null
@@ -304,7 +304,7 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.mapPlayWidgetData(item: HomePlayWidgetUiModel) {
+    fun MutableList<HomeLayoutItemUiModel?>.mapPlayWidgetData(item: HomePlayWidgetUiModel) {
         updateItemById(item.id) {
             HomeLayoutItemUiModel(item, HomeLayoutItemState.LOADED)
         }
@@ -323,21 +323,21 @@ object HomeLayoutMapper {
         } ?: DEFAULT_QUANTITY
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.updateRepurchaseProductQuantity(
+    fun MutableList<HomeLayoutItemUiModel?>.updateRepurchaseProductQuantity(
         miniCartData: MiniCartSimplifiedData
     ) {
         updateAllProductQuantity(miniCartData, REPURCHASE_PRODUCT)
         updateDeletedProductQuantity(miniCartData, REPURCHASE_PRODUCT)
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.updateProductRecomQuantity(
+    fun MutableList<HomeLayoutItemUiModel?>.updateProductRecomQuantity(
         miniCartData: MiniCartSimplifiedData
     ) {
         updateAllProductQuantity(miniCartData, PRODUCT_RECOM)
         updateDeletedProductQuantity(miniCartData, PRODUCT_RECOM)
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.updateLeftCarouselProductQuantity(
+    fun MutableList<HomeLayoutItemUiModel?>.updateLeftCarouselProductQuantity(
         miniCartData: MiniCartSimplifiedData
     ) {
         updateAllProductQuantity(miniCartData, MIX_LEFT_CAROUSEL_ATC)
@@ -345,7 +345,7 @@ object HomeLayoutMapper {
     }
 
     // Update all product with quantity from cart
-    private fun MutableList<HomeLayoutItemUiModel>.updateAllProductQuantity(
+    private fun MutableList<HomeLayoutItemUiModel?>.updateAllProductQuantity(
         miniCartData: MiniCartSimplifiedData,
         @TokoNowLayoutType type: String
     ) {
@@ -359,7 +359,7 @@ object HomeLayoutMapper {
     }
 
     // Update single product with quantity from cart
-    fun MutableList<HomeLayoutItemUiModel>.updateProductQuantity(
+    fun MutableList<HomeLayoutItemUiModel?>.updateProductQuantity(
         productId: String,
         quantity: Int,
         @TokoNowLayoutType type: String
@@ -372,13 +372,13 @@ object HomeLayoutMapper {
     }
 
     // Update quantity to 0 for deleted product in cart
-    private fun MutableList<HomeLayoutItemUiModel>.updateDeletedProductQuantity(
+    private fun MutableList<HomeLayoutItemUiModel?>.updateDeletedProductQuantity(
         miniCartData: MiniCartSimplifiedData,
         @TokoNowLayoutType type: String
     ) {
         when (type) {
             REPURCHASE_PRODUCT -> {
-                firstOrNull { it.layout is TokoNowRepurchaseUiModel }?.run {
+                firstOrNull { it?.layout is TokoNowRepurchaseUiModel }?.run {
                     val layout = layout as TokoNowRepurchaseUiModel
                     val cartProductIds = miniCartData.miniCartItems.values.mapNotNull {
                         if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
@@ -400,8 +400,8 @@ object HomeLayoutMapper {
                 }
             }
             PRODUCT_RECOM -> {
-                filter { it.layout is HomeProductRecomUiModel }.forEach { homeLayoutItemUiModel ->
-                    val layout = homeLayoutItemUiModel.layout as HomeProductRecomUiModel
+                filter { it?.layout is HomeProductRecomUiModel }.forEach { homeLayoutItemUiModel ->
+                    val layout = homeLayoutItemUiModel?.layout as HomeProductRecomUiModel
                     val realTimeRecomList = layout.realTimeRecom.productList
                     val cartProductIds = miniCartData.miniCartItems.values.mapNotNull { if (it is MiniCartItem.MiniCartItemProduct) it.productId else null }
                     val deletedProducts = layout.productList.filter { it.getProductId() !in cartProductIds }
@@ -417,8 +417,8 @@ object HomeLayoutMapper {
                 }
             }
             MIX_LEFT_CAROUSEL_ATC -> {
-                filter { it.layout is HomeLeftCarouselAtcUiModel }.forEach { homeLayoutItemUiModel ->
-                    val layout = homeLayoutItemUiModel.layout as HomeLeftCarouselAtcUiModel
+                filter { it?.layout is HomeLeftCarouselAtcUiModel }.forEach { homeLayoutItemUiModel ->
+                    val layout = homeLayoutItemUiModel?.layout as HomeLeftCarouselAtcUiModel
                     val realTimeRecomList = layout.realTimeRecom.productList
 
                     val miniCartItems = miniCartData.miniCartItems.values
@@ -447,7 +447,7 @@ object HomeLayoutMapper {
         }
     }
 
-    private fun MutableList<HomeLayoutItemUiModel>.removeProductRecomATC(
+    private fun MutableList<HomeLayoutItemUiModel?>.removeProductRecomATC(
         productId: String,
         parentProductId: String,
         miniCartData: MiniCartSimplifiedData
@@ -465,7 +465,7 @@ object HomeLayoutMapper {
         }
     }
 
-    private fun MutableList<HomeLayoutItemUiModel>.removeMixLeftATCProduct(
+    private fun MutableList<HomeLayoutItemUiModel?>.removeMixLeftATCProduct(
         productId: String,
         parentProductId: String,
         variantGroup: Map<String, List<MiniCartItem.MiniCartItemProduct>>
@@ -483,11 +483,11 @@ object HomeLayoutMapper {
         }
     }
 
-    private fun MutableList<HomeLayoutItemUiModel>.updateRepurchaseProductQuantity(
+    private fun MutableList<HomeLayoutItemUiModel?>.updateRepurchaseProductQuantity(
         productId: String,
         quantity: Int
     ) {
-        firstOrNull { it.layout is TokoNowRepurchaseUiModel }?.run {
+        firstOrNull { it?.layout is TokoNowRepurchaseUiModel }?.run {
             val layoutUiModel = layout as TokoNowRepurchaseUiModel
             val productList = layoutUiModel.productList.toMutableList()
             val productUiModel = productList.firstOrNull {
@@ -513,12 +513,12 @@ object HomeLayoutMapper {
         }
     }
 
-    private fun MutableList<HomeLayoutItemUiModel>.updateProductRecomQuantity(
+    private fun MutableList<HomeLayoutItemUiModel?>.updateProductRecomQuantity(
         productId: String,
         quantity: Int
     ) {
-        filter { it.layout is HomeProductRecomUiModel }.forEach { homeLayoutItemUiModel ->
-            val layout = homeLayoutItemUiModel.layout
+        filter { it?.layout is HomeProductRecomUiModel }.forEach { homeLayoutItemUiModel ->
+            val layout = homeLayoutItemUiModel?.layout
             val uiModel = layout as HomeProductRecomUiModel
             val newRecommendationList = uiModel.productList.toMutableList()
             val recommendationItem = newRecommendationList.firstOrNull { it.getProductId() == productId }
@@ -548,12 +548,12 @@ object HomeLayoutMapper {
         }
     }
 
-    private fun MutableList<HomeLayoutItemUiModel>.updateLeftCarouselProductQuantity(
+    private fun MutableList<HomeLayoutItemUiModel?>.updateLeftCarouselProductQuantity(
         productId: String,
         quantity: Int
     ) {
-        filter { it.layout is HomeLeftCarouselAtcUiModel }.forEach { homeLayoutItemUiModel ->
-            val layout = homeLayoutItemUiModel.layout
+        filter { it?.layout is HomeLeftCarouselAtcUiModel }.forEach { homeLayoutItemUiModel ->
+            val layout = homeLayoutItemUiModel?.layout
             val layoutUiModel = layout as HomeLeftCarouselAtcUiModel
             val newProductList = layoutUiModel.productList.toMutableList()
             val productVisitable = newProductList.firstOrNull {
@@ -591,10 +591,11 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.updatePlayWidget(channelId: String, totalView: String) {
-        map { it.layout }.filterIsInstance<HomePlayWidgetUiModel>().forEach {
-            val model = it.playWidgetState.model.copy(
-                items = it.playWidgetState.model.items.map { item ->
+    fun MutableList<HomeLayoutItemUiModel?>.updatePlayWidget(channelId: String, totalView: String) {
+        filter { it?.layout is HomePlayWidgetUiModel }.forEach {
+            val playWidget = it?.layout as HomePlayWidgetUiModel
+            val model = playWidget.playWidgetState.model.copy(
+                items = playWidget.playWidgetState.model.items.map { item ->
                     if (item is PlayWidgetChannelUiModel && item.channelId == channelId) {
                         item.copy(totalView = item.totalView.copy(totalViewFmt = totalView))
                     } else {
@@ -602,25 +603,25 @@ object HomeLayoutMapper {
                     }
                 }
             )
-            val playWidgetState = it.playWidgetState.copy(model = model)
-            val playWidgetUiModel = it.copy(playWidgetState = playWidgetState)
+            val playWidgetState = playWidget.playWidgetState.copy(model = model)
+            val playWidgetUiModel = playWidget.copy(playWidgetState = playWidgetState)
 
-            updateItemById(it.id) {
+            updateItemById(playWidget.id) {
                 HomeLayoutItemUiModel(playWidgetUiModel, HomeLayoutItemState.LOADED)
             }
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.removeItem(id: String?) {
+    fun MutableList<HomeLayoutItemUiModel?>.removeItem(id: String?) {
         getItemIndex(id)?.let { removeAt(it) }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.updateProductRecom(
+    fun MutableList<HomeLayoutItemUiModel?>.updateProductRecom(
         productId: String,
         quantity: Int
     ): HomeProductRecomUiModel? {
-        return filter { it.layout is HomeProductRecomUiModel }.firstOrNull { uiModel ->
-            val productRecom = uiModel.layout as HomeProductRecomUiModel
+        return filter { it?.layout is HomeProductRecomUiModel }.firstOrNull { uiModel ->
+            val productRecom = uiModel?.layout as HomeProductRecomUiModel
             val recommendations = productRecom.productList
             recommendations.firstOrNull { it.getProductId() == productId } != null
         }?.let { uiModel ->
@@ -635,10 +636,8 @@ object HomeLayoutMapper {
         }
     }
 
-    inline fun<reified T : Visitable<*>> List<HomeLayoutItemUiModel>.getItem(itemClass: Class<T>): T? {
-        return mapNotNull { it.layout }.find {
-            it.javaClass == itemClass
-        } as? T
+    inline fun<reified T : Visitable<*>> List<HomeLayoutItemUiModel?>.getItem(itemClass: Class<T>): T? {
+        return find { it?.layout?.javaClass == itemClass }?.layout as? T
     }
 
     private fun Visitable<*>.getVisitableId(): String? {

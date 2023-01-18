@@ -742,8 +742,15 @@ class TokoNowHomeFragment : Fragment(),
     }
 
     private fun loadHeaderBackground() {
-        ivHeaderBackground?.show()
-        ivHeaderBackground?.setImageResource(R.drawable.tokopedianow_ic_header_background_shimmering)
+        context?.resources?.apply {
+            val background = VectorDrawableCompat.create(
+                this,
+                R.drawable.tokopedianow_ic_header_background_shimmering,
+                context?.theme
+            )
+            ivHeaderBackground?.setImageDrawable(background)
+            ivHeaderBackground?.show()
+        }
     }
 
     private fun showHeaderBackground() {
