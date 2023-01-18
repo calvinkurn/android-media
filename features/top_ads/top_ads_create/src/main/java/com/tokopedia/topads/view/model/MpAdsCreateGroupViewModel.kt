@@ -2,7 +2,6 @@ package com.tokopedia.topads.view.model
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.topads.SourceConstant
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.*
@@ -28,20 +27,17 @@ class MpAdsCreateGroupViewModel@Inject constructor(
             },
             { throwable ->
                 throwable.printStackTrace()
-            })
+            }
+        )
     }
 
-    fun getProduct(productid: String, onSuccess: (TopAdsProductResponse) -> Unit){
-        topAdsGetProductUseCase.getProduct(productid,
-            {
-                onSuccess(it)
-            },
-            { throwable ->
-                throwable.printStackTrace()
-            })
+    fun getProduct(productid: String, onSuccess: (TopAdsProductResponse) -> Unit) {
+        topAdsGetProductUseCase.getProduct(productid) {
+            onSuccess(it)
+        }
     }
 
-    fun validateGroup(groupName: String,onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateNameV2) -> Unit)){
+    fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateNameV2) -> Unit)) {
         topAdsGroupValidateNameUseCase.setParams(groupName, "android.mp_topads")
         topAdsGroupValidateNameUseCase.execute({
             onSuccess(it.topAdsGroupValidateName)
@@ -50,8 +46,7 @@ class MpAdsCreateGroupViewModel@Inject constructor(
         })
     }
 
-    fun topAdsCreate(){
-
+    fun topAdsCreate() {
     }
 
     fun getTopAdsDeposit(
