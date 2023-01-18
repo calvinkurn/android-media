@@ -1,11 +1,12 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
-import com.tokopedia.tokopedianow.categorylist.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_LIST_DEPTH
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
@@ -15,7 +16,6 @@ import io.mockk.slot
 import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as shouldBe
-import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_GRID_TITLE
 
 class CategoryGetCategoryGridTest: CategoryTestFixtures() {
 
@@ -36,7 +36,7 @@ class CategoryGetCategoryGridTest: CategoryTestFixtures() {
         `When view created`()
 
         `Then assert get category list params`()
-        `Then assert category grid ui model state show`()
+        `Then assert category menu ui model state show`(warehouseId)
     }
 
     private fun `Given get category list use case will return category list`() {
@@ -50,16 +50,19 @@ class CategoryGetCategoryGridTest: CategoryTestFixtures() {
         assertThat(depth, shouldBe(CATEGORY_LIST_DEPTH))
     }
 
-    private fun `Then assert category grid ui model state show`() {
-        val expectedCategoryList = CategoryMenuMapper.mapToCategoryList(categoryList.response.data, CATEGORY_GRID_TITLE)
+    private fun `Then assert category menu ui model state show`(warehouseId: String) {
+        val expectedCategoryList = CategoryMenuMapper.mapToCategoryList(
+            response = categoryList.response.data,
+            seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID + warehouseId
+        )
         val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
-        val categoryGridUiModel = visitableList.findIndexedCategoryGridUIModel()
+        val categoryGridUiModel = visitableList.findIndexedCategoryMenuUIModel()
 
         assertThat(categoryGridUiModel.categoryListUiModel, shouldBe(expectedCategoryList))
         assertThat(categoryGridUiModel.state, shouldBe(TokoNowLayoutState.SHOW))
     }
 
-    private fun List<Visitable<*>>.findIndexedCategoryGridUIModel() =
+    private fun List<Visitable<*>>.findIndexedCategoryMenuUIModel() =
             find { it is TokoNowCategoryMenuUiModel }
                 as? TokoNowCategoryMenuUiModel
                 ?: throw AssertionError("Cannot find category grid ui model")
@@ -99,7 +102,7 @@ class CategoryGetCategoryGridTest: CategoryTestFixtures() {
 
     private fun `Then assert category grid ui model state hide`() {
         val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
-        val categoryGridUiModel = visitableList.findIndexedCategoryGridUIModel()
+        val categoryGridUiModel = visitableList.findIndexedCategoryMenuUIModel()
 
         assertThat(categoryGridUiModel.state, shouldBe(TokoNowLayoutState.HIDE))
     }
@@ -113,10 +116,10 @@ class CategoryGetCategoryGridTest: CategoryTestFixtures() {
 
         `When view retry load category grid`()
 
-        `Then assert category grid ui model state show`()
+        `Then assert category menu ui model state show`(warehouseId)
     }
 
     private fun `When view retry load category grid`() {
-        tokoNowCategoryViewModel.onCategoryGridRetry()
+        tokoNowCategoryViewModel.onCategoryMenuRetry()
     }
 }

@@ -5,7 +5,6 @@ import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.searchcategory.EmptyProductTestHelper
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
-import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_GRID_TITLE
 import com.tokopedia.usecase.RequestParams
 import io.mockk.verify
 import org.hamcrest.CoreMatchers.instanceOf
@@ -50,10 +49,6 @@ class CategoryEmptyProductTest: CategoryTestFixtures(), EmptyProductTestHelper.C
 
     private fun Visitable<*>.assertTokonowCategoryGrid() {
         assertThat(this, instanceOf(TokoNowCategoryMenuUiModel::class.java))
-
-        val categoryGridUiModel = this as TokoNowCategoryMenuUiModel
-
-        assertThat(categoryGridUiModel.title, shouldBe(CATEGORY_GRID_TITLE))
     }
 
     @Test

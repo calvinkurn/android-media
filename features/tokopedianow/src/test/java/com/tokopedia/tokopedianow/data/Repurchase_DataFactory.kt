@@ -1,14 +1,12 @@
 package com.tokopedia.tokopedianow.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse.CategoryResponse
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId
-import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addCategoryGrid
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addCategoryMenu
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addChooseAddress
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateNoHistory
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateNoResult
@@ -33,9 +31,9 @@ fun createChooseAddressLayout(): List<Visitable<*>> {
     return layoutList
 }
 
-fun createCategoryGridLayout(warehouseId: String): List<Visitable<*>> {
+fun createCategoryGridLayout(): List<Visitable<*>> {
     val layoutList: MutableList<Visitable<*>> = mutableListOf()
-    layoutList.addCategoryGrid(listOf(
+    layoutList.addCategoryMenu(listOf(
             CategoryResponse(
                 id = "3",
                 name = "Category 3",
@@ -47,7 +45,7 @@ fun createCategoryGridLayout(warehouseId: String): List<Visitable<*>> {
                 isAdult = 0
             )
         ),
-        warehouseId = warehouseId
+        TokoNowLayoutState.SHOW
     )
     return layoutList
 }

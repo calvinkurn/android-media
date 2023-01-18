@@ -241,7 +241,7 @@ class TokoNowCategoryViewModel @Inject constructor (
 
         val categoryList = getCategoryList()
 
-        val seeAllAppLink = ApplinkConstInternalTokopediaNow.CATEGORY_MENU + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
+        val seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
 
         updateCategoryUIModel(
                 categoryItemListUIModel = CategoryMenuMapper.mapToCategoryList(

@@ -104,6 +104,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
 
     val warehouseId: String
         get() = localCacheModel?.warehouse_id.orEmpty()
+    val serviceType: String
+        get() = localCacheModel?.service_type.orEmpty()
 
     val getLayout: LiveData<Result<RepurchaseLayoutUiModel>>
         get() = _getLayout
@@ -490,7 +492,6 @@ class TokoNowRepurchaseViewModel @Inject constructor(
                 state = TokoNowLayoutState.LOADING
             )
 
-            val warehouseId = localCacheModel?.warehouse_id.orEmpty()
             val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
             layoutList.mapCategoryMenuData(response, warehouseId)
 
@@ -514,7 +515,6 @@ class TokoNowRepurchaseViewModel @Inject constructor(
 
     fun getCategoryMenu() {
         launchCatchError(block = {
-            val warehouseId = localCacheModel?.warehouse_id.orEmpty()
             val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
             layoutList.mapCategoryMenuData(response, warehouseId)
 
@@ -676,7 +676,6 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     }
 
     private fun createProductListRequestParam(page: Int): GetRepurchaseProductListParam {
-        val warehouseID = localCacheModel?.warehouse_id.orEmpty()
         val totalScan = productListMeta?.totalScan.orZero()
         val categoryIds = selectedCategoryFilter?.id
         val sort = selectedSortFilter
@@ -684,7 +683,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         val dateEnd = selectedDateFilter.endDate
 
         return GetRepurchaseProductListParam(
-            warehouseID = warehouseID,
+            warehouseID = warehouseId,
             sort = sort,
             totalScan = totalScan,
             page = page,
@@ -718,7 +717,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
             EMPTY_STATE_OOC -> {
                 layoutList.clear()
                 layoutList.addChooseAddress()
-                layoutList.addEmptyStateOoc(localCacheModel?.service_type.orEmpty())
+                layoutList.addEmptyStateOoc(serviceType)
                 layoutList.addProductRecommendationOoc(PAGE_NAME_RECOMMENDATION_OOC_PARAM)
             }
             ERROR_STATE_FAILED_TO_FETCH_DATA -> {
@@ -728,7 +727,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
             else -> {
                 layoutList.clear()
                 layoutList.addChooseAddress()
-                layoutList.addEmptyStateNoResult(localCacheModel?.service_type.orEmpty())
+                layoutList.addEmptyStateNoResult(serviceType)
                 getCategoryMenuAsync().await()
                 layoutList.addProductRecommendation(PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM)
             }

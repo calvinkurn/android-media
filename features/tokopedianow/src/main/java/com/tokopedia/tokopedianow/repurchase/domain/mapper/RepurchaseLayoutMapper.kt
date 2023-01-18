@@ -125,7 +125,7 @@ object RepurchaseLayoutMapper {
             val item = this[index]
             if (item is TokoNowCategoryMenuUiModel) {
                 val newItem = if (!response.isNullOrEmpty()) {
-                    val seeAllAppLink = ApplinkConstInternalTokopediaNow.CATEGORY_MENU + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
+                    val seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
                     val categoryList = CategoryMenuMapper.mapToCategoryList(
                         response = response,
                         headerName = item.title,
