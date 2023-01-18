@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.mvc.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.CardUnify2
@@ -94,5 +95,11 @@ class VoucherTargetSelectionView : BaseCustomView {
         } else {
             cardParent?.cardType = CardUnify2.TYPE_BORDER
         }
+    }
+
+    fun disable() {
+        tpgTitle?.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN400)
+        tpgDescription?.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN400)
+        cardParent?.cardType = CardUnify2.TYPE_BORDER_DISABLED
     }
 }

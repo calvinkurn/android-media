@@ -16,6 +16,7 @@ import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_TIME_MINUTE_PRECISION
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_YEAR_PRECISION
+import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
@@ -235,7 +236,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     private fun handleAction(action: VoucherCreationStepTwoAction) {
         when (action) {
             is VoucherCreationStepTwoAction.BackToPreviousStep -> backToPreviousStep(action.voucherConfiguration)
-            is VoucherCreationStepTwoAction.NavigateToNextStep -> navigateToNextStep(action.pageMode, action.voucherConfiguration)
+            is VoucherCreationStepTwoAction.NavigateToNextStep -> navigateToNextStep(
+                action.pageMode,
+                action.voucherConfiguration
+            )
             is VoucherCreationStepTwoAction.ShowError -> TODO()
             is VoucherCreationStepTwoAction.ShowCoachmark -> showCoachmark()
         }
@@ -309,6 +313,14 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 )
             )
         }
+        if (pageMode == PageMode.EDIT) {
+            voucherCodeSectionBinding?.run {
+                tfVoucherCode.disable()
+            }
+            voucherPeriodSectionBinding?.run {
+                cbRepeatPeriod.disable()
+            }
+        }
     }
 
     private fun setupHeader() {
@@ -339,13 +351,13 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             viewVoucherTargetPublic.apply {
                 imgVoucherTarget?.setImageUrl(ImageUrlConstant.IMAGE_URL_PUBLIC_VOUCHER)
                 cardParent?.setOnClickListener {
-                    setVoucherTarget(true)
+                    if (pageMode == PageMode.CREATE) setVoucherTarget(true)
                 }
             }
             viewVoucherTargetPrivate.apply {
                 imgVoucherTarget?.setImageUrl(ImageUrlConstant.IMAGE_URL_PRIVATE_VOUCHER)
                 cardParent?.setOnClickListener {
-                    setVoucherTarget(false)
+                    if (pageMode == PageMode.CREATE) setVoucherTarget(false)
                 }
             }
         }
@@ -374,7 +386,12 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             setPrimaryCTAText(getString(R.string.smvc_voucher_target_confirmation_primary_cta_label))
             setSecondaryCTAText(getString(R.string.smvc_voucher_target_confirmation_secondary_cta_label))
             setPrimaryCTAClickListener {
-                viewModel.processEvent(VoucherCreationStepTwoEvent.ChooseVoucherTarget(isPublic, true))
+                viewModel.processEvent(
+                    VoucherCreationStepTwoEvent.ChooseVoucherTarget(
+                        isPublic,
+                        true
+                    )
+                )
                 dismiss()
             }
             setSecondaryCTAClickListener { dismiss() }
@@ -399,6 +416,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         voucherTargetSectionBinding?.run {
             viewVoucherTargetPublic.isActive = true
             viewVoucherTargetPrivate.isActive = false
+            if (pageMode == PageMode.EDIT) viewVoucherTargetPrivate.disable()
         }
     }
 
@@ -412,6 +430,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         voucherTargetSectionBinding?.run {
             viewVoucherTargetPublic.isActive = false
             viewVoucherTargetPrivate.isActive = true
+            if (pageMode == PageMode.EDIT) viewVoucherTargetPublic.disable()
         }
     }
 
@@ -824,7 +843,12 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             context?.let { ctx -> VoucherTypeActivity.start(ctx, currentVoucherConfiguration) }
             activity?.finish()
         } else {
-            context?.let { ctx -> VoucherTypeActivity.buildEditModeIntent(ctx, currentVoucherConfiguration) }
+            context?.let { ctx ->
+                VoucherTypeActivity.buildEditModeIntent(
+                    ctx,
+                    currentVoucherConfiguration
+                )
+            }
             activity?.finish()
         }
     }
@@ -837,7 +861,12 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             context?.let { ctx -> VoucherSettingActivity.start(ctx, currentVoucherConfiguration) }
             activity?.finish()
         } else {
-            context?.let { ctx -> VoucherSettingActivity.buildEditModeIntent(ctx, currentVoucherConfiguration) }
+            context?.let { ctx ->
+                VoucherSettingActivity.buildEditModeIntent(
+                    ctx,
+                    currentVoucherConfiguration
+                )
+            }
             activity?.finish()
         }
     }
