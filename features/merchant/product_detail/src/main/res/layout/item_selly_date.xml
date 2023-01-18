@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="16dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_selly_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        tools:text="Hari ini"
+        tools:visibility="visible" />
+
+    <include
+        android:id="@+id/pdp_selly_additional_message"
+        layout="@layout/item_selly_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pdp_selly_date"
+        tools:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/pdp_selly_time_list"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pdp_selly_additional_message" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_selly_expandable_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Jadwal Lainnya"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintEnd_toStartOf="@id/pdp_selly_expandable_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pdp_selly_time_list"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/pdp_selly_expandable_icon"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        app:icon_color_light_enable="@color/Unify_G500"
+        app:icon_name="CHEVRON_DOWN"
+        app:layout_constraintBottom_toBottomOf="@id/pdp_selly_expandable_button"
+        app:layout_constraintStart_toEndOf="@id/pdp_selly_expandable_button"
+        app:layout_constraintTop_toTopOf="@id/pdp_selly_expandable_button" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

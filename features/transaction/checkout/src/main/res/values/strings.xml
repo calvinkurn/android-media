@@ -16,7 +16,6 @@
     <string name="label_show_other_item_count">+ %d Barang lainnya</string>
     <string name="label_other_item_count_format" formatted="false">+%s Produk Lainnya</string>
     <string name="label_hardcoded_courier_ticker">Pembelian dengan Instan dan Same Day diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
-    <string name="label_trade_in_shipping_price">Pilih lokasi untuk menampilkan harga</string>
     <string name="label_item_count_with_format">Harga (%d Barang)</string>
     <string name="title_dropshipper_army">Dropshipper tidak tersedia</string>
     <string name="desc_dropshipper_army">Pengiriman secara dropshipping tidak bisa dipilih karena kamu menggunakan Bebas Ongkir</string>
@@ -78,11 +77,6 @@
     <string name="label_choose_shipping">Pilih Pengiriman</string>
     <string name="label_check">Cek</string>
     <string name="content_desc_label_choose_shipping">text pilih pengiriman</string>
-    <string name="content_desc_icon_chevron_choose_shipping">image pilih pengiriman</string>
-    <string name="content_desc_label_selected_shipping_duration">text durasi pengiriman</string>
-    <string name="content_desc_icon_chevron_choose_duration">image pilih durasi</string>
-    <string name="content_desc_label_selected_shipping_courier">text kurir pengiriman</string>
-    <string name="content_desc_icon_chevron_choose_courier">image pilih kurir</string>
     <string name="content_desc_iv_detail_option_chevron">image detail subtotal</string>
     <string name="content_desc_tv_sub_total_price">text subtotal harga keseluruhan</string>
     <string name="content_desc_tv_total_item_price_subtotal">text subtotal harga barang</string>
@@ -128,12 +122,6 @@
     <string name="checkout_label_per_insurance_price">per barang</string>
     <string name="label_ticker_trade_in">Tukar Tambah</string>
     <string name="checkout_label_payment_try_again">Oops, sedang terjadi kendala. Coba lagi atau kembali dalam beberapa saat.</string>
-    <string name="checkout_label_reload_shipping">Refresh</string>
-    <string name="checkout_shipping">Pengiriman</string>
-    <string name="checkout_label_failed_get_shipping">Gagal menampilkan pengiriman</string>
     <string name="checkout_label_see_error_product">Lihat</string>
-    <string name="checkout_label_set_pinpoint_title">Atur pinpoint alamatmu dulu, ya.</string>
-    <string name="checkout_label_set_pinpoint_description">Pengiriman &amp; estimasi tiba akan tampil di sini.</string>
-    <string name="checkout_label_set_pinpoint_action">Atur</string>
     <string name="checkout_failed_auto_apply_bo_message">Bebas ongkir gagal diaplikasikan, silahkan coba lagi</string>
 </resources>

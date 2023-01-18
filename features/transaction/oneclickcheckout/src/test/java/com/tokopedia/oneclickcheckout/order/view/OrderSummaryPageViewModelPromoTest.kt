@@ -322,6 +322,34 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
+    fun `Validate Use Promo Red State Released And Has newGlobalEvent`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        val promoCode = "abc"
+        val errorMessage = "error message"
+        val response = ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200",
+            promoUiModel = PromoUiModel(codes = listOf(promoCode), messageUiModel = MessageUiModel(state = "red"),
+            additionalInfoUiModel = AdditionalInfoUiModel(errorDetailUiModel = ErrorDetailUiModel(message = errorMessage))
+            ))
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns response
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
+
+        // When
+        orderSummaryPageViewModel.validateUsePromo()
+
+        // Then
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(true)
+        }
+        assertEquals(response, orderSummaryPageViewModel.validateUsePromoRevampUiModel)
+        assertEquals(OccButtonState.NORMAL, orderSummaryPageViewModel.orderTotal.value.buttonState)
+        assertEquals(OccGlobalEvent.ToasterInfo(errorMessage), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
     fun `Validate Use Promo Benefit Decreased`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart

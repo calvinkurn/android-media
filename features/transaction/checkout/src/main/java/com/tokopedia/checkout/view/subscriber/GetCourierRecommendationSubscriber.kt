@@ -210,7 +210,7 @@ class GetCourierRecommendationSubscriber(
         logisticPromo: LogisticPromoUiModel? = null
     ): CourierItemData {
         var courierItemData =
-            shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel)
+            shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel, shippingRecommendationData)
 
         // Auto apply Promo Stacking Logistic
         var logisticPromoChosen = logisticPromo
@@ -239,7 +239,7 @@ class GetCourierRecommendationSubscriber(
             }.shippingCourierViewModelList.first {
                 it.productData.shipperProductId == logisticPromoChosen.shipperProductId
             }
-            courierItemData = shippingCourierConverter.convertToCourierItemData(courierUiModel)
+            courierItemData = shippingCourierConverter.convertToCourierItemData(courierUiModel, shippingRecommendationData)
         }
         logisticPromoChosen?.let {
             courierItemData.logPromoCode = it.promoCode

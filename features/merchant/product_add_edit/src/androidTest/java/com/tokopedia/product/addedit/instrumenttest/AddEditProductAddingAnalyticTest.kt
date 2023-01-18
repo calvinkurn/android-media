@@ -9,8 +9,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.mock.AddEditProductAddingMockResponseConfig

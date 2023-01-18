@@ -32,4 +32,38 @@
     <string name="content_description_img_logo_rates_promo_prefix">image %1$s</string>
     <string name="message_error_shipping_general">Terjadi kesalahan</string>
     <string name="txt_label_dynamic_pricing">Ongkir Spesial PM Pro</string>
+
+    <string name="content_desc_label_choose_shipping">text pilih pengiriman</string>
+    <string name="label_choose_shipping">Pilih Pengiriman</string>
+    <string name="content_desc_icon_chevron_choose_shipping">image pilih pengiriman</string>
+    <string name="content_desc_icon_chevron_choose_duration">image pilih durasi</string>
+    <string name="label_otdg_tnc"><![CDATA[S&K Berlaku]]></string>
+    <string name="content_desc_icon_chevron_choose_courier">image pilih kurir</string>
+    <string name="checkout_shipping">Pengiriman</string>
+    <string name="checkout_label_failed_get_shipping">Gagal menampilkan pengiriman</string>
+    <string name="checkout_label_reload_shipping">Refresh</string>
+    <string name="label_trade_in_shipping_price">Pilih lokasi untuk menampilkan harga</string>
+    <string name="content_desc_label_selected_shipping_duration">text durasi pengiriman</string>
+    <string name="content_desc_label_selected_shipping_courier">text kurir pengiriman</string>
+    <string name="checkout_label_set_pinpoint_title">Atur pinpoint alamatmu dulu, ya.</string>
+    <string name="checkout_label_set_pinpoint_description">Pengiriman &amp; estimasi tiba akan tampil di sini.</string>
+    <string name="checkout_label_set_pinpoint_action">Atur</string>
+    <string name="label_pilih">Pilih</string>
+    <string name="lbl_reload_shipping">Refresh</string>
+    <string name="lbl_shipping">Pengiriman</string>
+    <string name="lbl_shipping_with_name">Pengiriman %1$s</string>
+    <string name="lbl_shipping_with_name_and_price">Pengiriman %1$s (%2$s)</string>
+    <string name="lbl_change_template">Ubah</string>
+    <string name="occ_pinpoint_error_title">Atur pinpoint alamatmu dulu, ya.</string>
+    <string name="occ_pinpoint_error_description">Pengiriman &amp; estimasi tiba akan tampil di sini.</string>
+    <string name="occ_pinpoint_error_action">Atur</string>
+
+    <string name="label_out_of_date">HABIS</string>
+    <string name="label_choose_delivery_time">Pilih Waktu Pengiriman</string>
+    <string name="title_coachmark_option_schedule_delivery">Bisa atur kapan pesanan tiba sesuai kebutuhan 😄</string>
+    <string name="description_coachmark_option_schedule_delivery">Tersedia khusus pesanan Tokopedia NOW!</string>
+    <string name="bottomsheet_schedule_slot_title">Pilih Jadwal Pengiriman</string>
+
+    <string name="checkout_whitelabel_otdg_url"><![CDATA[<a href="%1$s">%2$s</a>]]></string>
+    <string name="checkout_whitelabel_desc_otdg_url"><![CDATA[%1$s & <a href="%2$s">%3$s</a>]]></string>
 </resources>

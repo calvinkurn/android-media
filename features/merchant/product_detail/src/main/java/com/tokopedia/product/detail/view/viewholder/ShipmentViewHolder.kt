@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.graphics.Paint
+import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -15,6 +16,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.databinding.ItemPdpShimmerShipmentBinding
 import com.tokopedia.product.detail.databinding.ItemShipmentBinding
+import com.tokopedia.product.detail.databinding.ItemShipmentOptionBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentErrorBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -187,30 +189,26 @@ class ShipmentViewHolder(
             else R.string.pdp_shipping_choose_courier_label
             pdpShipmentCourierLabel2.text = context.getString(labelStringId)
         } else {
-            val chipViews = listOf(
-                pdpShipmentCourierOption1,
-                pdpShipmentCourierOption2
-            )
-            usedLabels = labels.take(chipViews.size)
-            usedLabels.forEachIndexed { index, label ->
-                chipViews[index].showIfWithBlock(label.isNotEmpty()) {
-                    setLabel(label)
+            pdpShipmentCourierOptions.show()
+            pdpShipmentCourierOptions.removeAllViews()
+            labels.forEach { label ->
+                if(label.isNotEmpty()){
+                    val itemView = ItemShipmentOptionBinding.inflate(LayoutInflater.from(context)).root
+                    itemView.setLabel(label)
+                    pdpShipmentCourierOptions.addView(itemView)
                 }
             }
             pdpShipmentCourierLabel1.text = rates.subtitle
 
             pdpShipmentCourierLabel1.show()
             pdpShipmentCourierArrow.show()
-            pdpShipmentCourierPlaceholder1.show()
         }
 
         setOnClickOnViews(
             listOf(
                 pdpShipmentCourierLabel1,
-                pdpShipmentCourierOption1,
-                pdpShipmentCourierOption2,
+                pdpShipmentCourierOptions,
                 pdpShipmentCourierArrow,
-                pdpShipmentCourierPlaceholder1,
                 pdpShipmentCourierLabel2
             )
         ) {
@@ -251,10 +249,8 @@ class ShipmentViewHolder(
             pdpShipmentGroupTc.hide()
             pdpShipmentDestination.hide()
             pdpShipmentEstimation.hide()
+            pdpShipmentCourierOptions.hide()
             pdpShipmentCourierLabel1.hide()
-            pdpShipmentCourierOption1.hide()
-            pdpShipmentCourierOption2.hide()
-            pdpShipmentCourierPlaceholder1.hide()
             pdpShipmentCourierArrow.hide()
             pdpShipmentCourierLabel2.hide()
             pdpShipmentRatesError.hide()

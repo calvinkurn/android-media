@@ -20,6 +20,7 @@ import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 const val FEATURE_TYPE_REGULAR_PRODUCT = 3
 const val FEATURE_TYPE_TOKONOW_PRODUCT = 12
 const val UPLOAD_PRESCRIPTION_META_DATA_KEY = "prescription_ids"
+const val SCHEDULE_DELIVERY_META_DATA_KEY = "shipping_validation_metadata"
 data class Carts(
     @SerializedName("has_promo_stacking")
     var hasPromoStacking: Boolean = false,
@@ -386,6 +387,9 @@ object CheckoutRequestMapper {
         }
         if (shopProductCheckoutRequest.needPrescription && prescriptionIds != null && prescriptionIds.isNotEmpty()) {
             orderMetadata.add(OrderMetadata(UPLOAD_PRESCRIPTION_META_DATA_KEY, prescriptionIds.toString()))
+        }
+        if (shopProductCheckoutRequest.needToSendValidationMetadata) {
+            orderMetadata.add(OrderMetadata(SCHEDULE_DELIVERY_META_DATA_KEY, shopProductCheckoutRequest.validationMetadata))
         }
         return orderMetadata
     }

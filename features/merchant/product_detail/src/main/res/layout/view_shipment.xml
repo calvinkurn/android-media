@@ -133,28 +133,15 @@
         app:typographyType="display_3"
         tools:text="Kurir lainnya:" />
 
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/pdp_shipment_courier_option_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        app:labelType="general_light_grey"
-        app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_courier_label_1"
-        app:layout_constraintLeft_toRightOf="@id/pdp_shipment_courier_label_1"
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/pdp_shipment_courier_options"
+        android:layout_width="0dp"
+        app:flexWrap="wrap"
+        app:layout_constraintStart_toEndOf="@id/pdp_shipment_courier_label_1"
         app:layout_constraintTop_toTopOf="@id/pdp_shipment_courier_label_1"
-        tools:text="Instan" />
-
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/pdp_shipment_courier_option_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:text="@string/pdp_shipping_cod_label"
-        app:labelType="general_light_grey"
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_courier_label_1"
-        app:layout_constraintLeft_toRightOf="@id/pdp_shipment_courier_option_1"
-        app:layout_constraintTop_toTopOf="@id/pdp_shipment_courier_label_1"
-        app:layout_goneMarginStart="4dp" />
+        app:layout_constraintEnd_toStartOf="@id/pdp_shipment_icon"
+        android:layout_height="wrap_content"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/pdp_shipment_courier_arrow"
@@ -163,15 +150,6 @@
         app:icon_name="CHEVRON_RIGHT"
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_courier_label_1"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/pdp_shipment_courier_label_1" />
-
-    <View
-        android:id="@+id/pdp_shipment_courier_placeholder_1"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_courier_label_1"
-        app:layout_constraintLeft_toRightOf="@id/pdp_shipment_courier_option_2"
-        app:layout_constraintRight_toLeftOf="@id/pdp_shipment_courier_arrow"
         app:layout_constraintTop_toTopOf="@id/pdp_shipment_courier_label_1" />
 
     <com.tokopedia.unifyprinciples.Typography

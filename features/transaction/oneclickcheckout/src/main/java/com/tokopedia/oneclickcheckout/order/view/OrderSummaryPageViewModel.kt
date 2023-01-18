@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.view
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
@@ -53,6 +54,7 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogis
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.ResultRates
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShippingDuration
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
@@ -96,6 +98,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     var orderPreferenceData: OrderPreference = OrderPreference()
     val orderPreference: OccMutableLiveData<OccState<OrderPreference>> = OccMutableLiveData(OccState.Loading)
+    val orderShippingDuration: OccMutableLiveData<OccState<OrderShippingDuration>> = OccMutableLiveData(OccState.FirstLoad(
+        OrderShippingDuration()
+    ))
 
     val orderProfile: OccMutableLiveData<OrderProfile> = OccMutableLiveData(OrderProfile(enable = false))
     val orderShipment: OccMutableLiveData<OrderShipment> = OccMutableLiveData(OrderShipment())
@@ -1111,6 +1116,36 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                         hasAddOn = false
                 )
         )
+    }
+
+    fun getShippingBottomsheetParam() {
+        launch(executorDispatchers.immediate) {
+            val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(
+                orderCart,
+                orderShipment.value,
+                validateUsePromoRevampUiModel,
+                orderPayment.value
+            )
+            val (shipmentDetailData, products) = logisticProcessor.generateShippingBottomsheetParam(
+                orderCart,
+                orderProfile.value,
+                orderCost
+            )
+            val pslCode = if (orderShipment.value.isApplyLogisticPromo) orderShipment.value.logisticPromoViewModel?.promoCode ?: "" else ""
+            shipmentDetailData?.let {
+                orderShippingDuration.value = OccState.Success(
+                    OrderShippingDuration(
+                        shipmentDetailData = it,
+                        shopShipmentList = orderShop.value.shopShipment,
+                        selectedServiceId = orderShipment.value.serviceId.toZeroIfNull(),
+                        products = products,
+                        cartString = orderCart.cartString,
+                        pslCode = pslCode,
+                        cartData = orderCart.cartData
+                    )
+                )
+            }
+        }
     }
 
     override fun onCleared() {

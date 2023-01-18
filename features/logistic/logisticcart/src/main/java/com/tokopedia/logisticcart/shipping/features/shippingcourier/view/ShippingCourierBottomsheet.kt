@@ -11,13 +11,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.logisticCommon.data.constant.CourierConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.DaggerShippingCourierComponent
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.ShippingCourierModule
+import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -43,6 +45,7 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
     private var mCourierModelList: List<ShippingCourierUiModel> = ArrayList()
     private var mPreOrderModel: PreOrderModel? = null
     private var mRecipientAddress: RecipientAddressModel? = null
+    private var isOcc: Boolean = false
 
     @Inject
     lateinit var shippingCourierAdapter: ShippingCourierAdapter
@@ -55,9 +58,10 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
              shippingCourierBottomsheetListener: ShippingCourierBottomsheetListener,
              shippingCourierUiModels: List<ShippingCourierUiModel>?,
              recipientAddressModel: RecipientAddressModel?,
-             cartPosition: Int) {
+             cartPosition: Int, isOcc: Boolean) {
         this.activity = activity
         this.shippingCourierBottomsheetListener = shippingCourierBottomsheetListener
+        this.isOcc = isOcc
         initData(shippingCourierUiModels, recipientAddressModel, cartPosition)
         initBottomSheet(activity)
         initView(activity)
@@ -89,14 +93,14 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
     }
 
     fun setShippingCourierViewModels(shippingCourierUiModels: List<ShippingCourierUiModel>?,
-                                     cartPosition: Int, shipmentCartItemModel: ShipmentCartItemModel, preOrderModel: PreOrderModel?) {
+                                     cartPosition: Int, preOrderModel: PreOrderModel?) {
         hideLoading()
         if (shippingCourierUiModels != null && shippingCourierUiModels.isNotEmpty()) {
             mCourierModelList = shippingCourierUiModels
             mPreOrderModel = preOrderModel
             setupRecyclerView(cartPosition)
         } else if (activity != null) {
-            showErrorPage(activity!!.getString(R.string.message_error_shipping_general), shipmentCartItemModel, cartPosition)
+            showErrorPage(activity!!.getString(R.string.message_error_shipping_general))
         }
     }
 
@@ -121,11 +125,11 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
     }
 
     private fun loadData() {
-        if (bundle != null) {
-            mRecipientAddress = bundle?.getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL)
-            val cartPosition = bundle?.getInt(ARGUMENT_CART_POSITION) ?: 0
-            val shippingCourierUiModels: ArrayList<ShippingCourierUiModel>? = bundle?.getParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST)
-            mPreOrderModel = bundle?.getParcelable(ARGUMENT_PRE_ORDER_MODEL)
+        bundle?.let {
+            mRecipientAddress = it.getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL)
+            val cartPosition = it.getInt(ARGUMENT_CART_POSITION)
+            val shippingCourierUiModels: ArrayList<ShippingCourierUiModel>? = it.getParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST)
+            mPreOrderModel = it.getParcelable(ARGUMENT_PRE_ORDER_MODEL)
             if (shippingCourierUiModels != null) {
                 mCourierModelList = shippingCourierUiModels
                 setupRecyclerView(cartPosition)
@@ -137,8 +141,9 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
 
     private fun setupRecyclerView(cartPosition: Int) {
         shippingCourierAdapter.setShippingCourierAdapterListener(this)
-        shippingCourierAdapter.setShippingCourierViewModels(mCourierModelList, mPreOrderModel)
+        shippingCourierAdapter.setShippingCourierViewModels(convertCourierListToUiModel(mCourierModelList, mPreOrderModel, isOcc))
         shippingCourierAdapter.setCartPosition(cartPosition)
+        shippingCourierAdapter.setEndYearPromotion(isToogleYearEndPromotionOn())
         val linearLayoutManager = LinearLayoutManager(
                 activity, LinearLayoutManager.VERTICAL, false)
         rvCourier?.layoutManager = linearLayoutManager
@@ -148,13 +153,15 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
     override fun onCourierChoosen(shippingCourierUiModel: ShippingCourierUiModel, cartPosition: Int, isNeedPinpoint: Boolean) {
         val productData = shippingCourierUiModel.productData
         val spId = shippingCourierUiModel.productData.shipperProductId
-        if (shippingCourierUiModel.productData.error != null) {
-            // Not updating when it has Error Pinpoint Needed
-            if (shippingCourierUiModel.productData.error.errorId != ErrorProductData.ERROR_PINPOINT_NEEDED) {
+        if (!isOcc) {
+            if (shippingCourierUiModel.productData.error != null) {
+                // Not updating when it has Error Pinpoint Needed
+                if (shippingCourierUiModel.productData.error.errorId != ErrorProductData.ERROR_PINPOINT_NEEDED) {
+                    courierConverter.updateSelectedCourier(mCourierModelList, spId)
+                }
+            } else {
                 courierConverter.updateSelectedCourier(mCourierModelList, spId)
             }
-        } else {
-            courierConverter.updateSelectedCourier(mCourierModelList, spId)
         }
         val courierItemData = courierConverter.convertToCourierItemData(shippingCourierUiModel)
         val isCod = productData.codProductData != null && productData.codProductData.isCodAvailable == 1
@@ -164,12 +171,16 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         bottomSheet?.dismiss()
     }
 
-    override fun isToogleYearEndPromotionOn(): Boolean {
-        if (activity != null) {
-            val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(activity)
-            return remoteConfig.getBoolean("mainapp_enable_year_end_promotion")
+    private fun isToogleYearEndPromotionOn(): Boolean {
+        if (isOcc) {
+            return false
+        } else {
+            if (activity != null) {
+                val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(activity)
+                return remoteConfig.getBoolean("mainapp_enable_year_end_promotion")
+            }
+            return false
         }
-        return false
     }
 
     override fun showLoading() {
@@ -184,17 +195,46 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         llContent?.visibility = View.VISIBLE
     }
 
-    private fun showErrorPage(message: String, shipmentCartItemModel: ShipmentCartItemModel, cartPosition: Int) {
+    private fun showErrorPage(message: String) {
         pbLoading?.visibility = View.GONE
         llContent?.visibility = View.GONE
         llNetworkErrorView?.visibility = View.VISIBLE
         NetworkErrorHelper.showEmptyState(activity, llNetworkErrorView, message) {
             showLoading()
-            shippingCourierBottomsheetListener?.onRetryReloadCourier(shipmentCartItemModel, cartPosition)
+        }
+    }
+
+    private fun convertCourierListToUiModel(shippingCourierUiModels: List<ShippingCourierUiModel>, preOrderModel: PreOrderModel?, isOcc: Boolean) : MutableList<RatesViewModelType>{
+        val eligibleCourierList = shippingCourierUiModels.filter { courier -> !courier.productData.isUiRatesHidden}.toMutableList()
+        val uiModel : MutableList<RatesViewModelType> = mutableListOf()
+        uiModel.addAll(eligibleCourierList)
+        eligibleCourierList.getOrNull(0)?.let {
+            firstCourier -> setNotifierModel(uiModel, firstCourier, isOcc)
+        }
+
+        if (preOrderModel?.display == true) {
+            preOrderModel.let { uiModel.add(0, it) }
+        }
+        return uiModel
+    }
+
+    private fun setNotifierModel(
+        uiModel: MutableList<RatesViewModelType>,
+        shippingCourierUiModel: ShippingCourierUiModel,
+        isOcc: Boolean
+    ) {
+        if (isOcc && shippingCourierUiModel.productData.shipperId in CourierConstant.INSTANT_SAMEDAY_COURIER) {
+            uiModel.add(0, NotifierModel(NotifierModel.TYPE_DEFAULT))
+        } else if (shippingCourierUiModel.serviceData.serviceName == INSTAN_VIEW_TYPE) {
+            uiModel.add(0, NotifierModel(NotifierModel.TYPE_INSTAN))
+        } else if (shippingCourierUiModel.serviceData.serviceName == SAME_DAY_VIEW_TYPE) {
+            uiModel.add(0, NotifierModel(NotifierModel.TYPE_SAMEDAY))
         }
     }
 
     companion object {
+        private const val INSTAN_VIEW_TYPE = "Instan"
+        private const val SAME_DAY_VIEW_TYPE = "Same Day"
         const val ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST = "ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST"
         const val ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION"
         const val ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL"

@@ -19,6 +19,8 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesR
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
@@ -135,6 +137,73 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
             preOrderDuration = productPreOrderDuration
             boMetadata = orderShop.boMetadata
         } to 0.0
+    }
+    
+    fun generateShippingBottomsheetParam(
+        orderCart: OrderCart,
+        orderProfile: OrderProfile,
+        orderCost: OrderCost
+    ): Pair<ShipmentDetailData?, ArrayList<Product>> {
+        val address = orderProfile.address
+        val orderShop = orderCart.shop
+        val orderProducts = orderCart.products
+        val orderKero = orderCart.kero
+
+        var totalWeight = 0.0
+        var totalWeightActual = 0.0
+        var productFInsurance = 0
+        var preOrder = false
+        var productPreOrderDuration = 0
+        val productList: ArrayList<Product> = ArrayList()
+        val categoryList: ArrayList<String> = ArrayList()
+        orderProducts.forEach {
+            if (!it.isError) {
+                totalWeight += it.orderQuantity * it.weight
+                totalWeightActual += if (it.weightActual > 0) {
+                    it.orderQuantity * it.weightActual
+                } else {
+                    it.orderQuantity * it.weight
+                }
+                if (it.productFinsurance == 1) {
+                    productFInsurance = 1
+                }
+                preOrder = it.isPreOrder != 0
+                productPreOrderDuration = it.preOrderDuration
+                categoryList.add(it.categoryId)
+                productList.add(Product(it.productId.toLongOrZero(), it.isFreeOngkir, it.isFreeOngkirExtra))
+            }
+        }
+        if (orderShop.shouldValidateWeight() && totalWeight > orderShop.maximumWeight) {
+            // overweight
+            return null to productList
+        }
+        return ShipmentDetailData().apply {
+            shopId = orderShop.shopId.toString()
+            preorder = preOrder
+            addressId = address.addressId.toString()
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = orderShop.districtId,
+                originPostalCode = orderShop.postalCode,
+                originLatitude = orderShop.latitude,
+                originLongitude = orderShop.longitude,
+                weight = totalWeight,
+                weightActual = totalWeightActual,
+                shopTier = orderShop.shopTier,
+                token = orderKero.keroToken,
+                ut = orderKero.keroUT,
+                insurance = 1,
+                productInsurance = productFInsurance,
+                orderValue = orderCost.totalItemPrice.toLong(),
+                categoryIds = categoryList.joinToString(","),
+                preOrderDuration = productPreOrderDuration,
+                isFulfillment = orderShop.isFulfillment,
+                boMetadata = orderShop.boMetadata,
+                destinationDistrictId = address.districtId.toString(),
+                destinationPostalCode = address.postalCode,
+                destinationLatitude = address.latitude,
+                destinationLongitude = address.longitude,
+            )
+        } to productList
     }
 
     private fun mapShippingRecommendationData(
@@ -360,6 +429,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 insurance = OrderInsurance(selectedShippingCourierUiModel.productData.insurance),
                 serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
                 serviceEta = getShippingServiceETA(selectedShippingDurationUiModel.serviceData.texts),
+                whitelabelDescription = selectedShippingDurationUiModel.serviceData.texts.textServiceDesc,
                 shippingEta = getShippingCourierETA(selectedShippingCourierUiModel.productData.estimatedTimeArrival),
                 serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
                 serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
@@ -432,6 +502,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 insurance = OrderInsurance(selectedShippingCourierUiModel.productData.insurance),
                 serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
                 serviceEta = getShippingServiceETA(selectedShippingDurationUiModel.serviceData.texts),
+                whitelabelDescription = selectedShippingDurationUiModel.serviceData.texts.textServiceDesc,
                 shippingEta = getShippingCourierETA(selectedShippingCourierUiModel.productData.estimatedTimeArrival),
                 serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
                 serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
@@ -549,6 +620,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
                 isHideChangeCourierCard = selectedShippingDurationUiModel.serviceData.selectedShipperProductId > 0,
                 serviceEta = getShippingServiceETA(selectedShippingDurationUiModel.serviceData.texts),
+                whitelabelDescription = selectedShippingDurationUiModel.serviceData.texts.textServiceDesc,
                 shippingEta = getShippingCourierETA(selectedShippingCourierUiModel.productData.estimatedTimeArrival),
                 serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
                 shippingPrice = selectedShippingCourierUiModel.productData.price.price,
@@ -731,6 +803,11 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 if (shippingDurationViewModel.serviceData.serviceId == selectedServiceId) {
                     shippingDurationViewModel.isSelected = true
                     selectedShippingDurationViewModel = shippingDurationViewModel
+                    // Update courier recommendation selection state
+                    // based from selectedShippingCourierUiModel from bottomsheet shipping
+                    for (courier in selectedShippingDurationViewModel.shippingCourierViewModelList) {
+                        courier.isSelected = courier.productData.shipperProductId == selectedShippingCourierUiModel.productData.shipperProductId
+                    }
                 } else {
                     shippingDurationViewModel.isSelected = false
                 }
@@ -755,6 +832,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 insurance = OrderInsurance(selectedShippingCourierUiModel.productData.insurance),
                 shippingPrice = selectedShippingCourierUiModel.productData.price.price,
                 serviceEta = getShippingServiceETA(selectedShippingDurationViewModel.serviceData.texts),
+                whitelabelDescription = selectedShippingDurationViewModel.serviceData.texts.textServiceDesc,
                 shippingEta = getShippingCourierETA(selectedShippingCourierUiModel.productData.estimatedTimeArrival),
                 shippingRecommendationData = shippingRecommendationData,
                 logisticPromoTickerMessage = null,
