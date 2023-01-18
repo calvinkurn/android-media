@@ -28,7 +28,7 @@ class OtherReviewViewHolder(itemView: View, val mainNavListener: MainNavListener
 
         itemView.setOnClickListener {
             TrackingTransactionSection.clickOnReviewViewAll()
-            RouteManager.route(context, ApplinkConst.FAVORITE)
+            RouteManager.route(context, ApplinkConst.REPUTATION)
         }
     }
 

@@ -32,7 +32,7 @@ class OtherTransactionViewHolder(itemView: View, val mainNavListener: MainNavLis
                 mainNavListener.getUserId(),
                 otherTrackingLabel
             )
-            RouteManager.route(context, ApplinkConst.REPUTATION)
+            RouteManager.route(context, ApplinkConst.PURCHASE_ORDER)
         }
     }
 }
