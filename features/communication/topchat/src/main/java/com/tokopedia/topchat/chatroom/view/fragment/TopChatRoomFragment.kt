@@ -2269,6 +2269,7 @@ open class TopChatRoomFragment :
                                 context,
                                 v
                             )
+                            success()
                         }
                     }
                 }
