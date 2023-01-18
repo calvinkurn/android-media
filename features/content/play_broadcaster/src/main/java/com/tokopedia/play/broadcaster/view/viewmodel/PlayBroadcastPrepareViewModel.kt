@@ -73,6 +73,9 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     val isFirstSwitchAccount: Boolean
         get() = sharedPref.isFirstSwitchAccount()
 
+    val isShowSetupCoverCoachMark: Boolean
+        get() = sharedPref.isShowSetupCoverCoachMark()
+
     init {
         _observableIngestUrl.observeForever(ingestUrlObserver)
     }
@@ -84,6 +87,10 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
 
     fun setNotFirstSwitchAccount() {
         sharedPref.setNotFirstSwitchAccount()
+    }
+
+    fun setShowSetupCoverCoachMark() {
+        sharedPref.setShowSetupCoverCoachMark()
     }
 
     fun setDataFromSetupDataStore(setupDataStore: PlayBroadcastSetupDataStore) {

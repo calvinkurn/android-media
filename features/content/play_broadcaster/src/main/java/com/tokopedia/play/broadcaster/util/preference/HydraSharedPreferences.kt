@@ -65,6 +65,21 @@ class HydraSharedPreferences @Inject constructor(
             ).apply()
     }
 
+    fun isShowSetupCoverCoachMark(): Boolean {
+        return mSharedPrefs.getBoolean(
+            String.format(KEY_SETUP_COVER_COACH_MARK, userSession.userId),
+            true
+        )
+    }
+
+    fun setShowSetupCoverCoachMark() {
+        mSharedPrefs.edit()
+            .putBoolean(
+                String.format(KEY_SETUP_COVER_COACH_MARK, userSession.userId),
+                false
+            ).apply()
+    }
+
     fun setLastSelectedAccount(selectedAccount: String) {
         mSharedPrefs.edit()
             .putString(
@@ -135,6 +150,7 @@ class HydraSharedPreferences @Inject constructor(
         private const val KEY_FIRST_SELECT_QUIZ_OPTION = "first_select_quiz_option_%s"
         private const val KEY_FIRST_GAME_RESULT = "first_game_result_%s"
         private const val KEY_FIRST_SWITCH_ACCOUNT = "first_switch_account_%s"
+        private const val KEY_SETUP_COVER_COACH_MARK = "setup_cover_coach_mark_%s"
         private const val KEY_LAST_SELECTED_ACCOUNT = "last_selected_account_%s"
     }
 }
