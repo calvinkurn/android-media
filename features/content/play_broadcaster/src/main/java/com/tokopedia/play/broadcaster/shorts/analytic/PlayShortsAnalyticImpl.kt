@@ -256,7 +256,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - close cover page",
             account = account,
-            trackerId = "37574"
+            trackerId = getTrackerIdBySite("37574", "37656")
         )
     }
 
@@ -265,7 +265,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - edit cover",
             account = account,
-            trackerId = "37575"
+            trackerId = getTrackerIdBySite("37575", "37657")
         )
     }
 
@@ -273,7 +273,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     override fun openScreenCoverForm(account: ContentAccountUiModel) {
         sendGeneralOpenScreen(
             screenName = "/play broadcast short - cover page - ${PlayShortsAnalyticHelper.getEventLabelByAccount(account)}",
-            trackerId = "37580"
+            trackerId = getTrackerIdBySite("37580", "37662")
         )
     }
 
@@ -282,7 +282,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralViewEvent(
             eventAction = "view - yakin mau keluar botom sheet",
             account = account,
-            trackerId = "37582"
+            trackerId = getTrackerIdBySite("37582", "37664")
         )
     }
 
@@ -291,7 +291,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - lanjut persiapan bottom sheet",
             account = account,
-            trackerId = "37583"
+            trackerId = getTrackerIdBySite("37583", "37665")
         )
     }
 
@@ -300,7 +300,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - back summary page",
             account = account,
-            trackerId = "37584"
+            trackerId = getTrackerIdBySite("37584", "37666")
         )
     }
 
@@ -309,7 +309,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - content tag",
             eventLabel = "${account.id} - $tag - ${PlayShortsAnalyticHelper.getAccountType(account)}",
-            trackerId = "37585"
+            trackerId = getTrackerIdBySite("37585", "37667")
         )
     }
 
@@ -318,7 +318,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - upload video",
             eventLabel = "${PlayShortsAnalyticHelper.getEventLabelByAccount(account)} - $channelId",
-            trackerId = "37586"
+            trackerId = getTrackerIdBySite("37586", "37668")
         )
     }
 
@@ -326,7 +326,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     override fun openScreenSummaryPage(account: ContentAccountUiModel) {
         sendGeneralOpenScreen(
             screenName = "/play broadcast short - summary page - ${PlayShortsAnalyticHelper.getEventLabelByAccount(account)}",
-            trackerId = "37588",
+            trackerId = getTrackerIdBySite("37588", "37670"),
         )
     }
 
@@ -335,7 +335,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - refresh content tags",
             account = account,
-            trackerId = "37590"
+            trackerId = getTrackerIdBySite("37590", "37672")
         )
     }
 
@@ -344,7 +344,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - lanjut post creation",
             account = account,
-            trackerId = "37605"
+            trackerId = getTrackerIdBySite("37605", "37687")
         )
     }
 
