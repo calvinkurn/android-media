@@ -45,6 +45,7 @@
 
     <string name="path_chat">/topchat</string>
     <string name="path_chat_room" translatable="false">/topchat/.*\</string>
+    <string name="path_chat_report" translatable="false">/chat/report</string>
     <string name="path_chat_bubble_activation" translatable="false">/bubble-activation</string>
 
 

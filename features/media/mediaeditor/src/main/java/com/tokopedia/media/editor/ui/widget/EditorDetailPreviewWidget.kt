@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.values
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel.Companion.EMPTY_RATIO
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.utils.getUCropTempResultPath
 import com.yalantis.ucrop.callback.BitmapCropCallback
@@ -173,6 +174,13 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         }
 
         // set crop area on data that will be pass to landing pass for state
+        val imageRatio = data?.let {
+            if (it.cropRotateValue.cropRatio == EMPTY_RATIO) {
+                Pair(imageWidth, imageHeight)
+            } else {
+                it.cropRotateValue.cropRatio
+            }
+        }
         data?.cropRotateValue = EditorCropRotateUiModel(
             normalizeX,
             normalizeY,
@@ -188,7 +196,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             isRotate = isRotate,
             isCrop = isCrop,
             croppedSourceWidth = originalWidth,
-            cropRatio = data?.cropRotateValue?.cropRatio ?: Pair(0, 0)
+            cropRatio = imageRatio ?: EMPTY_RATIO
         )
 
         return Bitmap.createBitmap(rotatedBitmap, normalizeX, normalizeY, imageWidth, imageHeight)
