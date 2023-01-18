@@ -29,7 +29,7 @@ class TokoNowCategoryMenuItemSeeAllViewHolder(
             }
             val drawable = VectorDrawableCompat.create(
                 root.context.resources,
-                if (root.context.isDarkMode()) R.drawable.tokopedianow_bg_see_all_categories_dark else R.drawable.tokopedianow_bg_see_all_categories_light,
+                if (root.context.isDarkMode()) R.drawable.tokopedianow_bg_see_all_category_dark else R.drawable.tokopedianow_bg_see_all_category_light,
                 itemView.context.theme
             )
             ivBackground.setImageDrawable(drawable)

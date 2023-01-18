@@ -27,7 +27,7 @@ import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.EVE
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.EVENT_ACTION_CLICK_CATEGORY_MENU_WIDGET
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.EVENT_ACTION_CLICK_CLOSE_BOTTOMSHEET
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.EVENT_ACTION_CLICK_PRODUCT
-import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.EVENT_ACTION_CLICK_SEE_ALL_CATEGORIES
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.EVENT_ACTION_CLICK_SEE_ALL_CATEGORY
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.EVENT_ACTION_CLICK_SIMILAR_PRODUCT_BTN
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.EVENT_ACTION_IMPRESSION_BOTTOMSHEET
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.EVENT_ACTION_IMPRESSION_EMPTY_STATE
@@ -54,7 +54,7 @@ import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.WITHO
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.WITH_HALAL_LABEL
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.WITH_VARIANT
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.TRACKER_ID.TRACKER_ID_CLICK_CATEGORY_MENU_WIDGET
-import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.TRACKER_ID.TRACKER_ID_CLICK_SEE_ALL_CATEGORIES
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.TRACKER_ID.TRACKER_ID_CLICK_SEE_ALL_CATEGORY
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.TRACKER_ID.TRACKER_ID_IMPRESSION_CATEGORY_MENU_WIDGET
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_ACCESS_PHOTO_MEDIA_FILES
@@ -180,7 +180,7 @@ object CategoryTracking {
         const val EVENT_ACTION_CLICK_PRODUCT = "click product oos bottomsheet"
         const val EVENT_ACTION_IMPRESSION_CATEGORY_MENU_WIDGET = "impression category menu widget"
         const val EVENT_ACTION_CLICK_CATEGORY_MENU_WIDGET = "click category menu widget"
-        const val EVENT_ACTION_CLICK_SEE_ALL_CATEGORIES = "click lihat semua category menu"
+        const val EVENT_ACTION_CLICK_SEE_ALL_CATEGORY = "click lihat semua category menu"
     }
 
     object Category {
@@ -213,7 +213,7 @@ object CategoryTracking {
     object TRACKER_ID {
         const val TRACKER_ID_IMPRESSION_CATEGORY_MENU_WIDGET = "40825"
         const val TRACKER_ID_CLICK_CATEGORY_MENU_WIDGET = "40826"
-        const val TRACKER_ID_CLICK_SEE_ALL_CATEGORIES = "40827"
+        const val TRACKER_ID_CLICK_SEE_ALL_CATEGORY = "40827"
     }
 
     fun sendGeneralEvent(dataLayer: Map<String, Any>) {
@@ -1074,7 +1074,7 @@ object CategoryTracking {
     }
 
     /**
-     * NOW! SeeAllCategories Page Tracker
+     * NOW! SeeAllCategory Page Tracker
      * https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3695
      */
 
@@ -1120,17 +1120,17 @@ object CategoryTracking {
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
-    fun trackClickSeeAllCategories() {
+    fun trackClickSeeAllCategory() {
         val dataLayer = getDataLayer(
             event = EVENT_CLICK_GROCERIES,
-            action = EVENT_ACTION_CLICK_SEE_ALL_CATEGORIES,
+            action = EVENT_ACTION_CLICK_SEE_ALL_CATEGORY,
             category = TOKONOW_CATEGORY_PAGE,
             label = ""
         )
 
         dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
         dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_TRACKER_ID] = TRACKER_ID_CLICK_SEE_ALL_CATEGORIES
+        dataLayer[KEY_TRACKER_ID] = TRACKER_ID_CLICK_SEE_ALL_CATEGORY
 
         getTracker().sendGeneralEvent(dataLayer)
     }

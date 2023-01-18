@@ -151,12 +151,12 @@ class TokoNowCategoryMenuViewHolder(
 
     private fun onClickSeeAll(appLink: String) {
         RouteManager.route(itemView.context, appLink)
-        listener?.onSeeAllCategoriesClicked()
+        listener?.onSeeAllCategoryClicked()
     }
 
     interface TokoNowCategoryMenuListener {
         fun onCategoryMenuWidgetRetried()
-        fun onSeeAllCategoriesClicked()
+        fun onSeeAllCategoryClicked()
         fun onCategoryMenuItemClicked(data: TokoNowCategoryMenuItemUiModel, itemPosition: Int)
         fun onCategoryMenuItemImpressed(data: TokoNowCategoryMenuItemUiModel, itemPosition: Int)
         fun onCategoryMenuWidgetImpression(data: TokoNowCategoryMenuUiModel)

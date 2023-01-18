@@ -15,8 +15,8 @@ class CategoryMenuCallback(
         viewModel.getCategoryMenu()
     }
 
-    override fun onSeeAllCategoriesClicked() {
-        analytics.trackClickSeeAllCategories()
+    override fun onSeeAllCategoryClicked() {
+        analytics.trackClickSeeAllCategory()
     }
 
     override fun onCategoryMenuItemClicked(

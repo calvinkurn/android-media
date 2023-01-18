@@ -4,7 +4,7 @@ import com.tokopedia.tokopedianow.categorylist.presentation.uimodel.CategoryList
 import com.tokopedia.tokopedianow.categorylist.presentation.uimodel.CategoryListChildUiModel.*
 import com.tokopedia.tokopedianow.categorylist.presentation.uimodel.CategoryListItemUiModel
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
-import com.tokopedia.tokopedianow.seeallcategories.persentation.uimodel.SeeAllCategoriesItemUiModel
+import com.tokopedia.tokopedianow.seeallcategory.persentation.uimodel.SeeAllCategoryItemUiModel
 import com.tokopedia.unifyprinciples.Typography
 
 object CategoryListMapper {
@@ -16,8 +16,8 @@ object CategoryListMapper {
         }
     }
 
-    fun GetCategoryListResponse.CategoryListResponse.mapToSeeAllCategoriesItemUiModel(): List<SeeAllCategoriesItemUiModel> = data.map {
-        SeeAllCategoriesItemUiModel(
+    fun GetCategoryListResponse.CategoryListResponse.mapToSeeAllCategoryItemUiModel(): List<SeeAllCategoryItemUiModel> = data.map {
+        SeeAllCategoryItemUiModel(
             id = it.id,
             name = it.name,
             appLink = it.appLinks,

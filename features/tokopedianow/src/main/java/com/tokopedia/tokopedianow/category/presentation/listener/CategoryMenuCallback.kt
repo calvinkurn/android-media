@@ -15,8 +15,8 @@ class CategoryMenuCallback(
         viewModel.onCategoryMenuRetry()
     }
 
-    override fun onSeeAllCategoriesClicked() {
-        CategoryTracking.trackClickSeeAllCategories()
+    override fun onSeeAllCategoryClicked() {
+        CategoryTracking.trackClickSeeAllCategory()
     }
 
     override fun onCategoryMenuItemClicked(

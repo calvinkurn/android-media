@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".seeallcategories.persentation.activity.TokoNowSeeAllCategoriesActivity"
+            android:name=".seeallcategory.persentation.activity.TokoNowSeeAllCategoryActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
             android:screenOrientation="portrait"
@@ -34,7 +34,7 @@
 
                 <data
                     android:host="@string/host_tokopedia_now"
-                    android:pathPattern="@string/path_tokopedia_now_see_all_categories"
+                    android:pathPattern="@string/path_tokopedia_now_see_all_category"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

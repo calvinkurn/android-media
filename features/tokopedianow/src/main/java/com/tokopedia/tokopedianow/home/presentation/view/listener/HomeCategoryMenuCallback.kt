@@ -15,7 +15,7 @@ class HomeCategoryMenuCallback(
         viewModel.getCategoryMenu(warehouseId)
     }
 
-    override fun onSeeAllCategoriesClicked() {
+    override fun onSeeAllCategoryClicked() {
         analytics.onClickAllCategory()
     }
 

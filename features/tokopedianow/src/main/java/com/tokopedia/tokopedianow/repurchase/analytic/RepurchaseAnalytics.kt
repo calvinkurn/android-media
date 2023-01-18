@@ -9,7 +9,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_ADD_TO_WISHLIST
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_CATEGORY_MENU_WIDGET
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_REMOVE_FROM_WISHLIST
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_SEE_ALL_CATEGORIES
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_SEE_ALL_CATEGORY
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_IMPRESSION_CATEGORY_MENU_WIDGET
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOKOPEDIA_CATEGORY_PAGE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOKOPEDIA_REPURCHASE_PAGE
@@ -62,7 +62,7 @@ import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_IMPRESSION_NO_RESULT_REPURCHASE
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.CATEGORY.EVENT_CATEGORY_REPURCHASE_PAGE_TOKONOW
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.TRACKER_ID.TRACKER_ID_CLICK_CATEGORY_MENU_WIDGET
-import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.TRACKER_ID.TRACKER_ID_CLICK_SEE_ALL_CATEGORIES
+import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.TRACKER_ID.TRACKER_ID_CLICK_SEE_ALL_CATEGORY
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.TRACKER_ID.TRACKER_ID_IMPRESSION_CATEGORY_MENU_WIDGET
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants
@@ -112,7 +112,7 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
     object TRACKER_ID {
         const val TRACKER_ID_IMPRESSION_CATEGORY_MENU_WIDGET = "40828"
         const val TRACKER_ID_CLICK_CATEGORY_MENU_WIDGET = "40829"
-        const val TRACKER_ID_CLICK_SEE_ALL_CATEGORIES = "40830"
+        const val TRACKER_ID_CLICK_SEE_ALL_CATEGORY = "40830"
     }
 
     fun onClickChangeAddress(userId: String) {
@@ -522,7 +522,7 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
     }
 
     /**
-     * NOW! SeeAllCategories Page Tracker
+     * NOW! SeeAllCategory Page Tracker
      * https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3695
      */
 
@@ -568,17 +568,17 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
-    fun trackClickSeeAllCategories() {
+    fun trackClickSeeAllCategory() {
         val dataLayer = getDataLayer(
             event = EVENT_CLICK_GROCERIES,
-            action = EVENT_ACTION_CLICK_SEE_ALL_CATEGORIES,
+            action = EVENT_ACTION_CLICK_SEE_ALL_CATEGORY,
             category = EVENT_CATEGORY_REPURCHASE_PAGE_TOKONOW,
             label = ""
         )
 
         dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
         dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[KEY_TRACKER_ID] = TRACKER_ID_CLICK_SEE_ALL_CATEGORIES
+        dataLayer[KEY_TRACKER_ID] = TRACKER_ID_CLICK_SEE_ALL_CATEGORY
 
         getTracker().sendGeneralEvent(dataLayer)
     }
