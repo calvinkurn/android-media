@@ -1,6 +1,5 @@
 package com.tokopedia.mvc.presentation.creation.step2
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -44,6 +43,7 @@ import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStep
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoEvent
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
 import com.tokopedia.mvc.presentation.creation.step3.VoucherSettingActivity
+import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.DateTimeUtils
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
@@ -838,9 +838,9 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     ) {
         if (pageMode == PageMode.CREATE) {
             if (voucherConfiguration.isFinishFilledStepTwo) {
-                navigateToVoucherSettingPage(pageMode, voucherConfiguration)
-            } else {
                 navigateToVoucherSummaryPage(voucherConfiguration)
+            } else {
+                navigateToVoucherSettingPage(pageMode, voucherConfiguration)
             }
         } else {
             navigateToVoucherSummaryPage(voucherConfiguration)
@@ -881,14 +881,12 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToVoucherSummaryPage(currentVoucherConfiguration: VoucherConfiguration) {
-        val intent = Intent().apply {
-            putExtra(
-                BundleConstant.BUNDLE_KEY_VOUCHER_CREATION_STEP_TWO,
+        context?.let { ctx ->
+            SummaryActivity.start(
+                ctx,
                 currentVoucherConfiguration
             )
         }
-        activity?.setResult(103, intent)
-        activity?.finish()
     }
 
     private fun showCreateVoucherConfirmationDialog(voucherConfiguration: VoucherConfiguration) {

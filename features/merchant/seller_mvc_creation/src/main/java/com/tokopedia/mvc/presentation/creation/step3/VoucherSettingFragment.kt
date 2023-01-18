@@ -1,6 +1,5 @@
 package com.tokopedia.mvc.presentation.creation.step3
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,7 +30,7 @@ import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeAction
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeEvent
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeUiState
-import com.tokopedia.mvc.presentation.product.add.AddProductActivity
+import com.tokopedia.mvc.presentation.product.list.ProductListActivity
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -1100,7 +1099,12 @@ class VoucherSettingFragment : BaseDaggerFragment() {
 
     private fun backToPreviousStep(voucherConfiguration: VoucherConfiguration) {
         if (pageMode == PageMode.CREATE) {
-            context?.let { ctx -> VoucherInformationActivity.buildCreateModeIntent(ctx, voucherConfiguration) }
+            context?.let { ctx ->
+                VoucherInformationActivity.buildCreateModeIntent(
+                    ctx,
+                    voucherConfiguration
+                )
+            }
             activity?.finish()
         } else {
             activity?.finish()
@@ -1119,15 +1123,18 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 navigateToVoucherSummaryPage(voucherConfiguration)
             }
         } else {
-            setResultForSummaryPage(voucherConfiguration)
+            navigateToVoucherSummaryPage(voucherConfiguration)
         }
     }
 
     private fun navigateToAddProductPage(currentVoucherConfiguration: VoucherConfiguration) {
-        if (pageMode == PageMode.CREATE) {
-            context?.let { ctx -> AddProductActivity.buildCreateModeIntent(ctx, currentVoucherConfiguration) }
-        } else {
-            context?.let { ctx -> AddProductActivity.buildEditModeIntent(ctx, currentVoucherConfiguration) }
+        context?.let { ctx ->
+            ProductListActivity.start(
+                ctx,
+                currentVoucherConfiguration,
+                emptyList(),
+                0
+            )
         }
     }
 
@@ -1138,16 +1145,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 currentVoucherConfiguration
             )
         }
-    }
-
-    private fun setResultForSummaryPage(currentVoucherConfiguration: VoucherConfiguration) {
-        val intent = Intent().apply {
-            putExtra(
-                BundleConstant.BUNDLE_KEY_VOUCHER_CREATION_STEP_THREE,
-                currentVoucherConfiguration
-            )
-        }
-        activity?.setResult(104, intent)
         activity?.finish()
     }
 

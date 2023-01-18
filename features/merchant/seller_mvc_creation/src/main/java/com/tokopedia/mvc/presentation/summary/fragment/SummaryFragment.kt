@@ -305,7 +305,7 @@ class SummaryFragment :
         with(configuration) {
             tpgPromoType.text = promoTypeWordings.getOrNull(promoType.id.dec()).orEmpty()
             if (benefitType == BenefitType.NOMINAL) {
-                tpgVoucherNominal.text = benefitPercent.getCurrencyFormatted()
+                tpgVoucherNominal.text = benefitIdr.getCurrencyFormatted()
                 llVoucherMaxPriceDeduction.gone()
                 tpgVoucherMaxPriceDeduction.text = benefitIdr.getCurrencyFormatted()
                 tpgDeductionType.text = getString(R.string.smvc_summary_page_deduction_nominal_text)
@@ -421,17 +421,16 @@ class SummaryFragment :
 
     private fun onInformationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
         context?.let {
-            val intent = VoucherInformationActivity.buildEditModeIntent(it, configuration)
-            startActivity(intent)
+            VoucherInformationActivity.buildCreateModeIntent(it, configuration)
         }
+        activity?.finish()
     }
 
     private fun onConfigurationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
-        // TODO: redirect to step 3
         context?.let {
-            val intent = VoucherSettingActivity.buildEditModeIntent(it, configuration)
-            startActivity(intent)
+            VoucherSettingActivity.buildCreateModeIntent(it, configuration)
         }
+        activity?.finish()
     }
 
     private fun onChangeProductBtnChangeClicked(configuration: VoucherConfiguration) {

@@ -74,7 +74,9 @@ class VoucherInformationViewModel @Inject constructor(
             it.copy(
                 isLoading = false,
                 pageMode = pageMode,
-                voucherConfiguration = voucherConfiguration
+                voucherConfiguration = voucherConfiguration.copy(
+                    isFinishFilledStepOne = true
+                )
             )
         }
         handleVoucherInputValidation()
@@ -236,12 +238,6 @@ class VoucherInformationViewModel @Inject constructor(
     }
 
     private fun handleNavigateToNextStep() {
-        _uiState.update {
-            it.copy(
-                isLoading = false,
-                voucherConfiguration = it.voucherConfiguration.copy(isFinishFilledStepTwo = true)
-            )
-        }
         _uiAction.tryEmit(
             VoucherCreationStepTwoAction.NavigateToNextStep(
                 currentState.pageMode,

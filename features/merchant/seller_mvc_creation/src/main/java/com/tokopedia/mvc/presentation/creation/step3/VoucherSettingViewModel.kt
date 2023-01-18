@@ -69,7 +69,9 @@ class VoucherSettingViewModel @Inject constructor(
             it.copy(
                 isLoading = false,
                 pageMode = pageMode,
-                voucherConfiguration = voucherConfiguration
+                voucherConfiguration = voucherConfiguration.copy(
+                    isFinishFilledStepTwo = true
+                )
             )
         }
         handleVoucherInputValidation()
@@ -84,13 +86,17 @@ class VoucherSettingViewModel @Inject constructor(
     }
 
     private fun handleNavigateToNextStep() {
+        _uiAction.tryEmit(VoucherCreationStepThreeAction.ContinueToNextStep(currentState.voucherConfiguration))
+        setVoucherCreationStepThreeIsFilled()
+    }
+
+    private fun setVoucherCreationStepThreeIsFilled() {
         _uiState.update {
             it.copy(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(isFinishFilledStepThree = true)
             )
         }
-        _uiAction.tryEmit(VoucherCreationStepThreeAction.ContinueToNextStep(currentState.voucherConfiguration))
     }
 
     private fun handlePromoTypeSelection(promoType: PromoType) {
