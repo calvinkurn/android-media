@@ -845,7 +845,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun navigateToVoucherTypePage(currentVoucherConfiguration: VoucherConfiguration) {
         if (this.pageMode == PageMode.CREATE) {
-            context?.let { ctx -> VoucherTypeActivity.start(ctx, currentVoucherConfiguration) }
+            context?.let { ctx -> VoucherTypeActivity.buildCreateModeIntent(ctx, currentVoucherConfiguration) }
             activity?.finish()
         } else {
             context?.let { ctx ->
@@ -863,7 +863,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         currentVoucherConfiguration: VoucherConfiguration
     ) {
         if (pageMode == PageMode.CREATE) {
-            context?.let { ctx -> VoucherSettingActivity.start(ctx, currentVoucherConfiguration) }
+            context?.let { ctx -> VoucherSettingActivity.buildCreateModeIntent(ctx, currentVoucherConfiguration) }
             activity?.finish()
         } else {
             context?.let { ctx ->

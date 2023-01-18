@@ -1100,7 +1100,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
 
     private fun backToPreviousStep(voucherConfiguration: VoucherConfiguration) {
         if (pageMode == PageMode.CREATE) {
-            context?.let { ctx -> VoucherInformationActivity.start(ctx, voucherConfiguration) }
+            context?.let { ctx -> VoucherInformationActivity.buildCreateModeIntent(ctx, voucherConfiguration) }
             activity?.finish()
         } else {
             activity?.finish()

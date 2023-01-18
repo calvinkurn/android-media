@@ -9,11 +9,11 @@ import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.util.constant.BundleConstant
 
-class VoucherSettingActivity : BaseSimpleActivity()  {
+class VoucherSettingActivity : BaseSimpleActivity() {
 
     companion object {
         @JvmStatic
-        fun start(
+        fun buildCreateModeIntent(
             context: Context,
             voucherConfiguration: VoucherConfiguration
         ) {

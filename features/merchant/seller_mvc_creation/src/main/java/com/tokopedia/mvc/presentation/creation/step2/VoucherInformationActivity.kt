@@ -13,7 +13,7 @@ class VoucherInformationActivity : BaseSimpleActivity() {
 
     companion object {
         @JvmStatic
-        fun start(
+        fun buildCreateModeIntent(
             context: Context,
             voucherConfiguration: VoucherConfiguration
         ) {

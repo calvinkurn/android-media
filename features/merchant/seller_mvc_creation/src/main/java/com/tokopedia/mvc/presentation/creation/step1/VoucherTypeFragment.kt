@@ -299,7 +299,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
         currentVoucherConfiguration: VoucherConfiguration
     ) {
         if (pageMode == PageMode.CREATE) {
-            context?.let { ctx -> VoucherInformationActivity.start(ctx, currentVoucherConfiguration) }
+            context?.let { ctx -> VoucherInformationActivity.buildCreateModeIntent(ctx, currentVoucherConfiguration) }
             activity?.finish()
         } else {
             context?.let { ctx -> VoucherInformationActivity.buildEditModeIntent(ctx, currentVoucherConfiguration) }
