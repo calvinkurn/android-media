@@ -794,12 +794,12 @@ class FeedPlusFragment :
                                     it.data[shopId]?.let { followStatus ->
                                         when (item) {
                                             is DynamicPostModel -> {
-                                                Log.d("FEED_PLUS", "Changed from ${item.header.followCta.isFollow} to $followStatus")
+                                                Log.d("FEED_PLUS", "Changed ${shopId} from ${item.header.followCta.isFollow} to $followStatus")
                                                 item.header.followCta.isFollow = followStatus
                                                 isChanged = true
                                             }
                                             is DynamicPostUiModel -> {
-                                                Log.d("FEED_PLUS", "Changed from ${item.feedXCard.followers.isFollowed} to $followStatus")
+                                                Log.d("FEED_PLUS", "Changed ${shopId} from ${item.feedXCard.followers.isFollowed} to $followStatus")
                                                 item.feedXCard.followers.isFollowed = followStatus
                                                 isChanged = true
                                             }

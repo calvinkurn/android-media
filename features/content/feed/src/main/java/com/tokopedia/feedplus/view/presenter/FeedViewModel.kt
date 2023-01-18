@@ -188,12 +188,17 @@ class FeedViewModel @Inject constructor(
                     getFollowingUseCase(authorIds)
                 }
                 response.shopInfoById.result.map { item ->
-                    if (currentFollowState[item.shopCore.shopID] != null && item.favoriteData.isFollowing != currentFollowState[item.shopCore.shopID]) {
+                    if (currentFollowState[item.shopCore.shopID] != null &&
+                        item.favoriteData.isFollowing != currentFollowState[item.shopCore.shopID]
+                    ) {
                         shopIdsToUpdate[item.shopCore.shopID] = item.favoriteData.isFollowing
                     }
                 }
                 response.feedXProfileIsFollowing.isUserFollowing.map { item ->
-                    if (currentFollowState[item.userId] != null && item.status != currentFollowState[item.userId]) {
+                    if (currentFollowState[item.userId] != null &&
+                        response.shopInfoById.result.firstOrNull { it.shopCore.shopID == item.userId } == null &&
+                        item.status != currentFollowState[item.userId]
+                    ) {
                         shopIdsToUpdate[item.userId] = item.status
                     }
                 }
