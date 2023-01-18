@@ -24,6 +24,7 @@ import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStep
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneEvent
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneUiState
 import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
+import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -270,12 +271,29 @@ class VoucherTypeFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun navigateToNextStep(pageMode: PageMode, voucherConfiguration: VoucherConfiguration) {
+    private fun navigateToNextStep(pageMode: PageMode, currentVoucherConfiguration: VoucherConfiguration) {
         if (pageMode == PageMode.CREATE) {
-            VoucherInformationActivity.start(requireContext(), voucherConfiguration)
-            activity?.finish()
+            navigateToVoucherInformationPage(currentVoucherConfiguration)
         } else {
-            TODO("Navigate to next step in edit mode")
+            navigateToNexStepInEditMode(currentVoucherConfiguration)
         }
+    }
+
+    private fun navigateToNexStepInEditMode(currentVoucherConfiguration: VoucherConfiguration) {
+        if (currentVoucherConfiguration.isVoucherProduct != voucherConfiguration.isVoucherProduct) {
+            navigateToVoucherInformationPage(currentVoucherConfiguration)
+        } else {
+            navigateToVoucherSummaryPage(currentVoucherConfiguration)
+        }
+    }
+
+    private fun navigateToVoucherInformationPage(currentVoucherConfiguration: VoucherConfiguration) {
+        context?.let { ctx -> VoucherInformationActivity.start(ctx, currentVoucherConfiguration) }
+        activity?.finish()
+    }
+
+    private fun navigateToVoucherSummaryPage(currentVoucherConfiguration: VoucherConfiguration) {
+        SummaryActivity.start(context, currentVoucherConfiguration)
+        activity?.finish()
     }
 }

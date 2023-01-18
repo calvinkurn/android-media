@@ -9,6 +9,7 @@ import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.domain.entity.enums.VoucherCreationStepTwoFieldValidation
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoAction
@@ -40,7 +41,10 @@ class VoucherInformationViewModel @Inject constructor(
             is VoucherCreationStepTwoEvent.InitVoucherConfiguration -> initVoucherConfiguration(
                 event.voucherConfiguration
             )
-            is VoucherCreationStepTwoEvent.ChooseVoucherTarget -> handleVoucherTargetSelection(event.isPublic)
+            is VoucherCreationStepTwoEvent.ChooseVoucherTarget -> handleVoucherTargetSelection(
+                event.isPublic,
+                event.isChangingTargetBuyer
+            )
             is VoucherCreationStepTwoEvent.TapBackButton -> handleBackToPreviousStep()
             is VoucherCreationStepTwoEvent.OnVoucherNameChanged -> handleVoucherNameChanges(event.voucherName)
             is VoucherCreationStepTwoEvent.OnVoucherCodeChanged -> handleVoucherCodeChanges(event.voucherCode)
@@ -81,12 +85,17 @@ class VoucherInformationViewModel @Inject constructor(
         _uiAction.tryEmit(VoucherCreationStepTwoAction.BackToPreviousStep(currentState.voucherConfiguration))
     }
 
-    private fun handleVoucherTargetSelection(isPublic: Boolean) {
+    private fun handleVoucherTargetSelection(isPublic: Boolean, isChangingTargetBuyer: Boolean) {
         _uiState.update {
             it.copy(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
-                    isVoucherPublic = isPublic
+                    isVoucherPublic = isPublic,
+                    targetBuyer = if (isChangingTargetBuyer) {
+                        VoucherTargetBuyer.ALL_BUYER
+                    } else {
+                        it.voucherConfiguration.targetBuyer
+                    }
                 ),
                 fieldValidated = getFieldValidated(VoucherCreationStepTwoFieldValidation.VOUCHER_TARGET)
             )

@@ -42,6 +42,7 @@ import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStep
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoEvent
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
 import com.tokopedia.mvc.presentation.creation.step3.VoucherSettingActivity
+import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.DateTimeUtils
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
@@ -322,13 +323,27 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun backToPreviousStep(voucherConfiguration: VoucherConfiguration) {
+    private fun backToPreviousStep(currentVoucherConfiguration: VoucherConfiguration) {
         if (pageMode == PageMode.CREATE) {
-            VoucherTypeActivity.start(requireContext(), voucherConfiguration)
-            activity?.finish()
+            navigateToVoucherTypePage(currentVoucherConfiguration)
         } else {
-            // TODO: navigate back to summary page
+            navigateToVoucherSummaryPage(currentVoucherConfiguration)
         }
+    }
+
+    private fun navigateToVoucherTypePage(currentVoucherConfiguration: VoucherConfiguration) {
+        context?.let { ctx -> VoucherTypeActivity.start(ctx, currentVoucherConfiguration) }
+        activity?.finish()
+    }
+
+    private fun navigateToVoucherSettingPage(currentVoucherConfiguration: VoucherConfiguration) {
+        context?.let { ctx -> VoucherSettingActivity.start(ctx, currentVoucherConfiguration) }
+        activity?.finish()
+    }
+
+    private fun navigateToVoucherSummaryPage(currentVoucherConfiguration: VoucherConfiguration) {
+        SummaryActivity.start(context, currentVoucherConfiguration)
+        activity?.finish()
     }
 
     // Voucher target section
@@ -381,7 +396,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             setPrimaryCTAText(getString(R.string.smvc_voucher_target_confirmation_primary_cta_label))
             setSecondaryCTAText(getString(R.string.smvc_voucher_target_confirmation_secondary_cta_label))
             setPrimaryCTAClickListener {
-                viewModel.processEvent(VoucherCreationStepTwoEvent.ChooseVoucherTarget(isPublic))
+                viewModel.processEvent(VoucherCreationStepTwoEvent.ChooseVoucherTarget(isPublic, true))
                 dismiss()
             }
             setSecondaryCTAClickListener { dismiss() }
