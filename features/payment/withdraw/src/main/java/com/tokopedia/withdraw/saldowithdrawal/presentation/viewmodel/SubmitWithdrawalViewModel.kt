@@ -54,7 +54,7 @@ class SubmitWithdrawalViewModel @Inject constructor(
 
 
     companion object {
-        private const val WITHDRAWAL_SUCCESS = "success"
+        const val WITHDRAWAL_SUCCESS = "success"
     }
 
 }

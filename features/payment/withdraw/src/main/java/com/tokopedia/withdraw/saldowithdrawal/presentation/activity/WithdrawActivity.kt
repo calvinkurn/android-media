@@ -3,7 +3,6 @@ package com.tokopedia.withdraw.saldowithdrawal.presentation.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -16,12 +15,12 @@ import com.tokopedia.withdraw.saldowithdrawal.di.component.WithdrawComponent
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.SubmitWithdrawalResponse
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.WithdrawalRequest
 import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.SaldoWithdrawalFragment
-import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.SuccessFragmentWithdrawal
+import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.ThankYouFragmentWithdrawal
 import com.tokopedia.withdraw.saldowithdrawal.presentation.listener.WithdrawalFragmentCallback
 import com.tokopedia.withdraw.saldowithdrawal.presentation.listener.WithdrawalJoinRPCallback
+import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SubmitWithdrawalViewModel
 import kotlinx.android.synthetic.main.swd_activity_saldo_withdraw.*
 import javax.inject.Inject
-import com.tokopedia.config.GlobalConfig
 
 /**
  * For navigating to this class
@@ -74,11 +73,11 @@ class WithdrawActivity : BaseSimpleActivity(), WithdrawalFragmentCallback,
     }
 
     private fun setResultIfSuccessFragment(): Boolean {
-        if (supportFragmentManager.findFragmentByTag(TAG_SUCCESS_FRAGMENT) != null) {
+        if (supportFragmentManager.findFragmentByTag(TAG_THANK_YOU_FRAGMENT) != null) {
             val resultIntent = Intent()
             setResult(Activity.RESULT_OK, resultIntent)
-            val fragment = supportFragmentManager.findFragmentByTag(TAG_SUCCESS_FRAGMENT)
-            if (fragment is SuccessFragmentWithdrawal) {
+            val fragment = supportFragmentManager.findFragmentByTag(TAG_THANK_YOU_FRAGMENT)
+            if (fragment is ThankYouFragmentWithdrawal) {
                 fragment.onCloseButtonClick()
             }
             return true
@@ -86,14 +85,21 @@ class WithdrawActivity : BaseSimpleActivity(), WithdrawalFragmentCallback,
         return false
     }
 
-    override fun openSuccessFragment(withdrawalRequest: WithdrawalRequest,
+    override fun openThankYouFragment(withdrawalRequest: WithdrawalRequest,
                                      submitWithdrawalResponse: SubmitWithdrawalResponse) {
         swd_header.setNavigationIcon(RUnifyComp.drawable.unify_bottomsheet_close)
-        updateHeaderTitle(getString(R.string.swd_success_page_title))
-        val successFragment = SuccessFragmentWithdrawal.getInstance(withdrawalRequest, submitWithdrawalResponse)
+        updateHeaderTitle(getHeaderTitle(submitWithdrawalResponse))
+        val thankYouFragment = ThankYouFragmentWithdrawal.getInstance(withdrawalRequest, submitWithdrawalResponse)
         val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.parent_view, successFragment, TAG_SUCCESS_FRAGMENT)
+        fragmentTransaction.replace(R.id.parent_view, thankYouFragment, TAG_THANK_YOU_FRAGMENT)
         fragmentTransaction.commitAllowingStateLoss()
+    }
+
+    private fun getHeaderTitle(submitWithdrawalResponse: SubmitWithdrawalResponse): String {
+        return if (submitWithdrawalResponse.isSuccess())
+            getString(R.string.swd_success_page_title)
+        else
+            getString(R.string.swd_rejected_page_title)
     }
 
     override fun getTagFragment(): String {
@@ -108,7 +114,7 @@ class WithdrawActivity : BaseSimpleActivity(), WithdrawalFragmentCallback,
 
     companion object {
         const val TAG_SALDO_FRAGMENT = "TAG_SALDO_FRAGMENT"
-        const val TAG_SUCCESS_FRAGMENT = "TAG_SUCCESS_FRAGMENT"
+        const val TAG_THANK_YOU_FRAGMENT = "TAG_THANK_YOU_FRAGMENT"
     }
 
     override fun onWithdrawalAndJoinRekening(isJoinRP: Boolean) {

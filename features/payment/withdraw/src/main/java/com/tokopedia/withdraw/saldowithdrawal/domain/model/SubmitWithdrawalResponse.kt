@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SubmitWithdrawalViewModel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -21,7 +22,12 @@ data class SubmitWithdrawalResponse(
         @SerializedName("errorCode")
         val errorCode: String? = null,
         @SerializedName("joinPromptMessageResponse")
-        val joinPromptMessageResponse: JoinPromptMessageResponse? = null) : Parcelable
+        val joinPromptMessageResponse: JoinPromptMessageResponse? = null
+) : Parcelable {
+    fun isSuccess(): Boolean {
+        return status == SubmitWithdrawalViewModel.WITHDRAWAL_SUCCESS
+    }
+}
 
 data class JoinPromptMessageResponse(
         @SerializedName("title")

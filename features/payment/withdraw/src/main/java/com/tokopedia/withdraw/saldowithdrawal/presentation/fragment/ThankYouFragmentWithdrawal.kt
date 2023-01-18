@@ -29,7 +29,7 @@ import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
 import kotlinx.android.synthetic.main.swd_success_page.*
 import javax.inject.Inject
 
-class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
+class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
 
     @Inject
     lateinit var analytics: dagger.Lazy<WithdrawAnalytics>
@@ -88,6 +88,24 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
             showRekeningWidgets(activity)
         }
         btnOpenSaldoDetail.setOnClickListener { onGoToSaldoDetail() }
+        btnOpenSaldoDetail.text = getCtaText()
+        tvWithdrawalTitle.text = getTitleText()
+    }
+
+    private fun getCtaText(): String {
+        return if (withdrawalResponse.isSuccess()) {
+            getString(R.string.swd_back_to_saldo_detail)
+        } else {
+            getString(R.string.swd_contact_tokopedia_care)
+        }
+    }
+
+    private fun getTitleText(): String {
+        return if (withdrawalResponse.isSuccess()) {
+            getString(R.string.swd_withdrawal_being_processed_title)
+        } else {
+            getString(R.string.swd_withdrawal_cannot_be_processed_title)
+        }
     }
 
     private fun showRekeningWidgets(context: Context) {
@@ -240,7 +258,7 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
 
         fun getInstance(withdrawalRequest: WithdrawalRequest,
                         submitWithdrawalResponse: SubmitWithdrawalResponse): Fragment {
-            val successFragment: Fragment = SuccessFragmentWithdrawal()
+            val successFragment: Fragment = ThankYouFragmentWithdrawal()
             val bundle = Bundle()
             bundle.putParcelable(ARG_WITHDRAWAL_REQUEST, withdrawalRequest)
             bundle.putParcelable(ARG_SUBMIT_WITHDRAWAL_RESPONSE, submitWithdrawalResponse)
