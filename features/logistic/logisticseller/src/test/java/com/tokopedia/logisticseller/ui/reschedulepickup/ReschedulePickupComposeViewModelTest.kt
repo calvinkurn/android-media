@@ -250,6 +250,22 @@ class ReschedulePickupComposeViewModelTest {
         }
 
     @Test
+    fun `when openBottomSheet time after choosing day then bottomsheet state should be time`() =
+        coroutineTestRule.runBlockingTest {
+            // given
+            val day = ReschedulePickupTestDataProvider.getChosenDay()
+            reschedulePickupViewModel.setDay(day)
+            val openedBottomSheet = RescheduleBottomSheetState.TIME
+
+            // when
+            reschedulePickupViewModel.openBottomSheetState(openedBottomSheet)
+
+            // then
+            assert(reschedulePickupViewModel.uiState.value.bottomSheet == openedBottomSheet)
+            assert(reschedulePickupViewModel.uiState.value.bottomSheet != RescheduleBottomSheetState.NONE)
+        }
+
+    @Test
     fun `when setDialogState then should update save model`() =
         coroutineTestRule.runBlockingTest {
             // given
