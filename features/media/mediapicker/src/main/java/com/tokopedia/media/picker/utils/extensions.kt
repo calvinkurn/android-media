@@ -26,5 +26,5 @@ fun exceptionHandler(invoke: () -> Unit) {
 }
 
 fun isOppoManufacturer(): Boolean {
-    return Build.MANUFACTURER.contains("oppo")
+    return Build.MANUFACTURER.contains("oppo", ignoreCase = true)
 }
