@@ -16,7 +16,7 @@ class TopAdsGetProductUseCase @Inject constructor() : GraphqlUseCase<TopAdsProdu
     }
 
     fun getProduct(
-        productId: String,
+        productId: String?,
         success: (TopAdsProductResponse) -> Unit
     ) {
         setRequestParams(mapOf(PRODUCT_ID_KEY to productId, OPTIONS_KEY to OptionV3(true)))

@@ -2,10 +2,12 @@ package com.tokopedia.topads.view.model
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetProductUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
@@ -16,6 +18,7 @@ class MpAdsCreateGroupViewModel@Inject constructor(
     private val topAdsGetProductUseCase: TopAdsGetProductUseCase,
     private val topAdsGroupValidateNameUseCase: TopAdsGroupValidateNameUseCase,
     private val topAdsGetDepositUseCase: TopAdsGetDepositUseCase,
+    private val topAdsCreateUseCase: TopAdsCreateUseCase,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
@@ -31,7 +34,7 @@ class MpAdsCreateGroupViewModel@Inject constructor(
         )
     }
 
-    fun getProduct(productid: String, onSuccess: (TopAdsProductResponse) -> Unit) {
+    fun getProduct(productid: String?, onSuccess: (TopAdsProductResponse) -> Unit) {
         topAdsGetProductUseCase.getProduct(productid) {
             onSuccess(it)
         }
@@ -46,7 +49,38 @@ class MpAdsCreateGroupViewModel@Inject constructor(
         })
     }
 
-    fun topAdsCreate() {
+    fun topAdsCreate(
+        productIds: List<String>,
+        currentGroupName: String,
+        dailyBudget: Double,
+        onSuccess: ((String) -> Unit),
+        onError: ((error: String?) -> Unit)
+    ) {
+        val param =
+            topAdsCreateUseCase.createRequestParamActionCreate(
+                productIds,
+                currentGroupName,
+                0.0,
+                0.0,
+                dailyBudget,
+                "android.mp_topads"
+            )
+        launchCatchError(block = {
+            val response = topAdsCreateUseCase.execute(param)
+
+            val dataGroup = response.topadsManageGroupAds.groupResponse
+            val dataKeyword = response.topadsManageGroupAds.keywordResponse
+            if (dataGroup.errors.isNullOrEmpty() && dataKeyword.errors.isNullOrEmpty()) {
+                onSuccess(dataGroup.data.id)
+            } else {
+                val error =
+                    dataGroup.errors?.firstOrNull()?.detail + dataKeyword.errors?.firstOrNull()?.detail
+                onError(error)
+            }
+        }, onError = {
+                onError(it.message)
+                it.printStackTrace()
+            })
     }
 
     fun getTopAdsDeposit(
