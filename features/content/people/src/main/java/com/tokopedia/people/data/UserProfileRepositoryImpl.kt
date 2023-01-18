@@ -25,6 +25,7 @@ import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -49,6 +50,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val getFollowingListUseCase: GetFollowingListUseCase,
     private val getUserProfileTabUseCase: GetUserProfileTabUseCase,
     private val getUserProfileFeedPostsUseCase: GetUserProfileFeedPostsUseCase,
+    private val postBlockUserUseCase: PostBlockUserUseCase,
 ) : UserProfileRepository {
 
     override suspend fun getProfile(username: String): ProfileUiModel {
@@ -175,6 +177,16 @@ class UserProfileRepositoryImpl @Inject constructor(
             )
             return@withContext mapper.mapProfileTab(result)
         }
+    }
+
+    override suspend fun blockUser(userId: String) = withContext(dispatcher.io) {
+        val response = postBlockUserUseCase.execute(userId, true)
+        if (!response.data.success) error("Failed to block user $userId")
+    }
+
+    override suspend fun unblockUser(userId: String) = withContext(dispatcher.io) {
+        val response = postBlockUserUseCase.execute(userId, false)
+        if (!response.data.success) error("Failed to unblock user $userId")
     }
 
     companion object {

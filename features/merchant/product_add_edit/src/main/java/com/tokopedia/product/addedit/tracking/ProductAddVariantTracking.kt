@@ -61,11 +61,6 @@ object ProductAddVariantTracking {
         sendAddProductVariantClick("click simpan custom variant value", label, shopId, SCREEN_NAME)
     }
 
-    // 2.8
-    fun pickProductVariantPhotos(shopId: String) {
-        sendAddProductVariantClick("click done image product", "", shopId, SCREEN_NAME)
-    }
-
     // 2.9 label = variant type - variant unit value
     fun removeVariantUnitValue(label: String, shopId: String) {
         sendAddProductVariantClick("click unselect variant type value", label, shopId, SCREEN_NAME)
