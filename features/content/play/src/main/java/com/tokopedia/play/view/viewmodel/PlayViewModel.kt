@@ -444,6 +444,9 @@ class PlayViewModel @AssistedInject constructor(
     val hasNoMedia : Boolean
         get() = _videoProperty.value.state.hasNoData
 
+    val isExploreWidgetOpened : Boolean
+        get() = _exploreWidget.value.isOpened
+
     /**
      * Temporary
      */
