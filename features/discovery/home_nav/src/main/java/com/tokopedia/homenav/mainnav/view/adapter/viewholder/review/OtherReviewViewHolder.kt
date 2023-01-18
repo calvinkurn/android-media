@@ -13,7 +13,7 @@ import com.tokopedia.homenav.mainnav.view.datamodel.review.OtherReviewModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.utils.view.binding.viewBinding
 
-class OtherReviewViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<OtherReviewModel>(itemView) {
+class OtherReviewViewHolder(itemView: View, val mainNavListener: MainNavListener) : AbstractViewHolder<OtherReviewModel>(itemView) {
     private var binding: HolderViewAllRevampBinding? by viewBinding()
     companion object {
         @LayoutRes
@@ -27,7 +27,7 @@ class OtherReviewViewHolder(itemView: View, val mainNavListener: MainNavListener
         binding?.cardViewAll?.setCta(context.getString(R.string.global_view_all))
 
         itemView.setOnClickListener {
-            TrackingTransactionSection.clickOnFavoriteShopViewAll()
+            TrackingTransactionSection.clickOnReviewViewAll()
             RouteManager.route(context, ApplinkConst.FAVORITE)
         }
     }
