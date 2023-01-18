@@ -81,10 +81,6 @@ class PlayBroadcastSetupTitleBottomSheet: BottomSheetUnify() {
                 hideSetupTitleKeyboard()
                 return@setOnEditorActionListener false
             }
-            clearIconView.setOnClickListener {
-                editText.text.clear()
-                btnSetupTitle.isEnabled = false
-            }
         }
         btnSetupTitle.setOnClickListener {
             hideSetupTitleKeyboard()
