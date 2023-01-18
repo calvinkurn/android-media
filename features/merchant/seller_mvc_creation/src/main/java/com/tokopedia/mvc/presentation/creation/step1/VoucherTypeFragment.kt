@@ -277,18 +277,11 @@ class VoucherTypeFragment : BaseDaggerFragment() {
         currentVoucherConfiguration: VoucherConfiguration
     ) {
         if (pageMode == PageMode.CREATE) {
-            navigateToVoucherInformationPage(pageMode, currentVoucherConfiguration)
-        } else {
-            navigateToNexStepInEditMode(pageMode, currentVoucherConfiguration)
-        }
-    }
-
-    private fun navigateToNexStepInEditMode(
-        pageMode: PageMode,
-        currentVoucherConfiguration: VoucherConfiguration
-    ) {
-        if (currentVoucherConfiguration.isVoucherProduct != voucherConfiguration.isVoucherProduct) {
-            navigateToVoucherInformationPage(pageMode, currentVoucherConfiguration)
+            if (voucherConfiguration.isFinishFilledStepOne) {
+                navigateToVoucherInformationPage(pageMode, currentVoucherConfiguration)
+            } else {
+                navigateToVoucherSummaryPage(voucherConfiguration)
+            }
         } else {
             navigateToVoucherSummaryPage(currentVoucherConfiguration)
         }

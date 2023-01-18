@@ -1110,7 +1110,11 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun continueToNextStep(voucherConfiguration: VoucherConfiguration) {
         if (pageMode == PageMode.CREATE) {
             if (voucherConfiguration.isVoucherProduct) {
-                navigateToAddProductPage(voucherConfiguration)
+                if (voucherConfiguration.isFinishFilledStepThree) {
+                    navigateToVoucherSummaryPage(voucherConfiguration)
+                } else {
+                    navigateToAddProductPage(voucherConfiguration)
+                }
             } else {
                 navigateToVoucherSummaryPage(voucherConfiguration)
             }

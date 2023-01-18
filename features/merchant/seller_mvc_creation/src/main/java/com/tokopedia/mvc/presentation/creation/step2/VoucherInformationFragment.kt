@@ -837,7 +837,11 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         voucherConfiguration: VoucherConfiguration
     ) {
         if (pageMode == PageMode.CREATE) {
-            navigateToVoucherSettingPage(pageMode, voucherConfiguration)
+            if (voucherConfiguration.isFinishFilledStepTwo) {
+                navigateToVoucherSettingPage(pageMode, voucherConfiguration)
+            } else {
+                navigateToVoucherSummaryPage(voucherConfiguration)
+            }
         } else {
             navigateToVoucherSummaryPage(voucherConfiguration)
         }
