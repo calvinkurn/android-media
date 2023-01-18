@@ -767,7 +767,7 @@ class FeedPlusFragment :
                         }
                         is Success -> {
                             reportBottomSheet.setFinalView()
-                            onSuccessDeletePost(it.data.rowNumber)
+                            onSuccessDeletePost(it.data.rowNumber, isPostReported = true)
                         }
                     }
                 }
@@ -3129,17 +3129,19 @@ class FeedPlusFragment :
         showToast(errorMessage, Toaster.TYPE_ERROR)
     }
 
-    private fun onSuccessDeletePost(rowNumber: Int) {
+    private fun onSuccessDeletePost(rowNumber: Int, isPostReported: Boolean = false) {
         if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostUiModel) {
             adapter.getlist().removeAt(rowNumber)
             adapter.notifyItemRemoved(rowNumber)
-            Toaster.build(
-                requireView(),
-                getString(R.string.feed_post_deleted),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                getString(com.tokopedia.kolcommon.R.string.content_action_ok)
-            ).show()
+            if (!isPostReported) {
+                Toaster.build(
+                    requireView(),
+                    getString(R.string.feed_post_deleted),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(com.tokopedia.kolcommon.R.string.content_action_ok)
+                ).show()
+            }
         }
         if (adapter.getlist().isEmpty()) {
             showRefresh()
