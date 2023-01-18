@@ -9,20 +9,22 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.databinding.LayoutBottomsheetScheduleSlotBinding
+import com.tokopedia.logisticcart.scheduledelivery.utils.ScheduleSlotListener
 import com.tokopedia.logisticcart.scheduledelivery.view.adapter.ScheduleSlotAdapter
 import com.tokopedia.logisticcart.scheduledelivery.view.adapter.ScheduleSlotTypeFactory
 import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.BottomSheetUiModel
 import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ButtonDateUiModel
 import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ChooseTimeUiModel
-import com.tokopedia.logisticcart.scheduledelivery.utils.ScheduleSlotListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class ScheduleSlotBottomSheet(private val data: BottomSheetUiModel)
-    : BottomSheetUnify(), ScheduleSlotListener {
+class ScheduleSlotBottomSheet(private val data: BottomSheetUiModel) :
+    BottomSheetUnify(),
+    ScheduleSlotListener {
 
     interface ScheduleSlotBottomSheetListener {
         fun onChooseTimeListener(timeId: Long, dateId: String)
     }
+
     private var listener: ScheduleSlotBottomSheetListener? = null
     private var bottomSheetInfo: ScheduleInfoBottomSheet? = null
 
@@ -30,7 +32,11 @@ class ScheduleSlotBottomSheet(private val data: BottomSheetUiModel)
         ScheduleSlotAdapter(ScheduleSlotTypeFactory(this))
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         initView()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -64,12 +70,12 @@ class ScheduleSlotBottomSheet(private val data: BottomSheetUiModel)
         this.data.date.content.forEach {
             it.isSelected = it.id == data.id
         }
-        adapterScheduleSlot.setData(this.data)
+        adapterScheduleSlot.setTimeSlot(this.data)
     }
 
     override fun onClickTimeListener(data: ChooseTimeUiModel) {
         this.data.date.content.forEach {
-            it.availableTime.forEach {  time ->
+            it.availableTime.forEach { time ->
                 time.isSelected = data.dateId == time.dateId && data.timeId == time.timeId
             }
         }
