@@ -16,18 +16,17 @@ class PartialOrderFulfillmentViewModelTest : PartialOrderFulfillmentViewModelTes
     fun `when getPartialOrderFulfillment should set live data success`() {
         runBlocking {
             // given
-            val orderIdLong = orderId.toLong()
             val partialOrderFulfillmentWrapperUiModel = PartialOrderFulfillmentWrapperUiModel()
             onGetPartialOrderFulfillmentUseCase_thenReturn(
                 partialOrderFulfillmentWrapperUiModel,
-                orderIdLong
+                orderId
             )
 
             // when
-            viewModel.fetchPartialOrderFulfillment(orderIdLong)
+            viewModel.fetchPartialOrderFulfillment(orderId)
 
             // then
-            verifyGetOrderExtensionRespondInfoUseCaseCalled(orderIdLong)
+            verifyGetOrderExtensionRespondInfoUseCaseCalled(orderId)
             val actualResult = (viewModel.partialOrderFulfillmentRespondInfo.value as Success).data
             assertEquals(partialOrderFulfillmentWrapperUiModel, actualResult)
             assertEquals(
@@ -41,15 +40,14 @@ class PartialOrderFulfillmentViewModelTest : PartialOrderFulfillmentViewModelTes
     fun `when getPartialOrderFulfillment should set live data error`() {
         runBlocking {
             // given
-            val orderIdLong = orderId.toLong()
             val errorException = MessageErrorException()
-            onGetPartialOrderFulfillmentUseCase_thenReturnError(orderIdLong, errorException)
+            onGetPartialOrderFulfillmentUseCase_thenReturnError(orderId, errorException)
 
             // when
-            viewModel.fetchPartialOrderFulfillment(orderIdLong)
+            viewModel.fetchPartialOrderFulfillment(orderId)
 
             // then
-            verifyGetOrderExtensionRespondInfoUseCaseCalled(orderIdLong)
+            verifyGetOrderExtensionRespondInfoUseCaseCalled(orderId)
 
             val actualResult =
                 (viewModel.partialOrderFulfillmentRespondInfo.value as Fail).throwable::class.java
@@ -62,17 +60,16 @@ class PartialOrderFulfillmentViewModelTest : PartialOrderFulfillmentViewModelTes
     fun `when approvePartialOrderFulfillment should set live data success`() {
         runBlocking {
             // given
-            val orderIdLong = orderId.toLong()
             val approvePartialOrderFulfillmentUiModel = ApprovePartialOrderFulfillmentUiModel(
                 isSuccess = true
             )
-            onApprovePartialOrderFulfillmentUseCase_thenReturn(approvePartialOrderFulfillmentUiModel, orderIdLong)
+            onApprovePartialOrderFulfillmentUseCase_thenReturn(approvePartialOrderFulfillmentUiModel, orderId)
 
             // when
-            viewModel.approvePartialOrderFulfillment(orderIdLong)
+            viewModel.approvePartialOrderFulfillment(orderId)
 
             // then
-            verifyApprovePartialOrderFulfillmentUseCaseCalled(orderIdLong)
+            verifyApprovePartialOrderFulfillmentUseCaseCalled(orderId)
             val actualResult = (viewModel.approvePartialOrderFulfillment.value as Success).data
             assertEquals(approvePartialOrderFulfillmentUiModel.isSuccess, actualResult.isSuccess)
         }
@@ -82,15 +79,14 @@ class PartialOrderFulfillmentViewModelTest : PartialOrderFulfillmentViewModelTes
     fun `when approvePartialOrderFulfillment should set live data error`() {
         runBlocking {
             // given
-            val orderIdLong = orderId.toLong()
             val errorException = MessageErrorException()
-            onApprovePartialOrderFulfillmentUseCase_thenReturnError(errorException, orderIdLong)
+            onApprovePartialOrderFulfillmentUseCase_thenReturnError(errorException, orderId)
 
             // when
-            viewModel.approvePartialOrderFulfillment(orderIdLong)
+            viewModel.approvePartialOrderFulfillment(orderId)
 
             // then
-            verifyApprovePartialOrderFulfillmentUseCaseCalled(orderIdLong)
+            verifyApprovePartialOrderFulfillmentUseCaseCalled(orderId)
 
             val actualResult = (viewModel.approvePartialOrderFulfillment.value as Fail).throwable::class.java
             val expectedResult = errorException::class.java
@@ -102,17 +98,16 @@ class PartialOrderFulfillmentViewModelTest : PartialOrderFulfillmentViewModelTes
     fun `when rejectPartialOrderFulfillment should set live data success`() {
         runBlocking {
             // given
-            val orderIdLong = orderId.toLong()
             val rejectPartialOrderFulfillmentUiModel = RejectPartialOrderFulfillmentUiModel(
                 isSuccess = true
             )
-            onRejectPartialOrderFulfillmentUseCase_thenReturn(rejectPartialOrderFulfillmentUiModel, orderIdLong)
+            onRejectPartialOrderFulfillmentUseCase_thenReturn(rejectPartialOrderFulfillmentUiModel, orderId)
 
             // when
-            viewModel.rejectPartialOrderFulfillment(orderIdLong)
+            viewModel.rejectPartialOrderFulfillment(orderId)
 
             // then
-            verifyRejectPartialOrderFulfillmentUseCaseCalled(orderIdLong)
+            verifyRejectPartialOrderFulfillmentUseCaseCalled(orderId)
             val actualResult = (viewModel.rejectPartialOrderFulfillment.value as Success).data
             assertEquals(rejectPartialOrderFulfillmentUiModel.isSuccess, actualResult.isSuccess)
         }
@@ -122,15 +117,14 @@ class PartialOrderFulfillmentViewModelTest : PartialOrderFulfillmentViewModelTes
     fun `when rejectPartialOrderFulfillment should set live data error`() {
         runBlocking {
             // given
-            val orderIdLong = orderId.toLong()
             val errorException = MessageErrorException()
-            onRejectPartialOrderFulfillmentUseCase_thenReturnError(errorException, orderIdLong)
+            onRejectPartialOrderFulfillmentUseCase_thenReturnError(errorException, orderId)
 
             // when
-            viewModel.rejectPartialOrderFulfillment(orderIdLong)
+            viewModel.rejectPartialOrderFulfillment(orderId)
 
             // then
-            verifyRejectPartialOrderFulfillmentUseCaseCalled(orderIdLong)
+            verifyRejectPartialOrderFulfillmentUseCaseCalled(orderId)
             val actualResult = (viewModel.rejectPartialOrderFulfillment.value as Fail).throwable::class.java
             val expectedResult = errorException::class.java
             assertEquals(expectedResult, actualResult)

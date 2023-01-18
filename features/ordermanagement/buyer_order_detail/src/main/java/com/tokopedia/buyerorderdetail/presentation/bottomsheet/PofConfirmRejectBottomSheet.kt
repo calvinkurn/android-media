@@ -26,7 +26,7 @@ class PofConfirmRejectBottomSheet : BottomSheetUnify() {
     private var binding by autoClearedNullable<PofConfirmRejectBottomsheetBinding>()
 
     private val orderId by lazy(LazyThreadSafetyMode.NONE) {
-        arguments?.getLong(POF_REJECT_ORDER_ID_KEY)
+        arguments?.getString(POF_REJECT_ORDER_ID_KEY)
     }
 
     @Inject
@@ -147,15 +147,12 @@ class PofConfirmRejectBottomSheet : BottomSheetUnify() {
 
         const val TAG = "PofConfirmRejectBottomSheet"
 
-        fun newInstance(orderId: Long?): PofConfirmRejectBottomSheet {
+        fun newInstance(orderId: String): PofConfirmRejectBottomSheet {
             return PofConfirmRejectBottomSheet().apply {
-                orderId?.let {
-                    arguments = Bundle().apply {
-                        putLong(POF_REJECT_ORDER_ID_KEY, it)
-                    }
+                arguments = Bundle().apply {
+                    putString(POF_REJECT_ORDER_ID_KEY, orderId)
                 }
             }
         }
     }
 }
-

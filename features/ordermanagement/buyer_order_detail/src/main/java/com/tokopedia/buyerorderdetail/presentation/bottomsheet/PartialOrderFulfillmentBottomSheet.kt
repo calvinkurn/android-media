@@ -41,9 +41,8 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
     }
 
     private val orderId by lazy(LazyThreadSafetyMode.NONE) {
-        arguments?.getLong(POF_ORDER_ID_KEY)
+        arguments?.getString(POF_ORDER_ID_KEY)
     }
-
 
     private val partialOrderFulfillmentTypeFactoryImpl by lazy(LazyThreadSafetyMode.NONE) {
         PartialOrderFulfillmentTypeFactoryImpl(this)
@@ -222,8 +221,10 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
     }
 
     private fun showConfirmedCancelledOrderBottomSheet() {
-        val bottomSheet = PofConfirmRejectBottomSheet.newInstance(orderId)
-        bottomSheet.show(childFragmentManager)
+        orderId?.let {
+            val bottomSheet = PofConfirmRejectBottomSheet.newInstance(it)
+            bottomSheet.show(childFragmentManager)
+        }
     }
 
     private fun showToasterError() {
@@ -247,12 +248,10 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
         const val POF_ORDER_ID_KEY = "pof_order_id_key"
         const val TAG = "PartialOrderFulfillmentBottomSheet"
 
-        fun newInstance(orderId: Long?): PartialOrderFulfillmentBottomSheet {
+        fun newInstance(orderId: String): PartialOrderFulfillmentBottomSheet {
             return PartialOrderFulfillmentBottomSheet().apply {
-                orderId?.let {
-                    arguments = Bundle().apply {
-                        putLong(POF_ORDER_ID_KEY, it)
-                    }
+                arguments = Bundle().apply {
+                    putString(POF_ORDER_ID_KEY, orderId)
                 }
             }
         }

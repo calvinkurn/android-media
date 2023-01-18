@@ -57,7 +57,7 @@ abstract class PartialOrderFulfillmentViewModelTestFixture {
 
     protected fun onGetPartialOrderFulfillmentUseCase_thenReturn(
         partialOrderFulfillmentWrapperUiModel: PartialOrderFulfillmentWrapperUiModel,
-        orderId: Long
+        orderId: String
     ) {
         coEvery {
             getPartialOrderFulfillmentInfoUseCase.get().execute(orderId)
@@ -65,21 +65,21 @@ abstract class PartialOrderFulfillmentViewModelTestFixture {
     }
 
     protected fun onGetPartialOrderFulfillmentUseCase_thenReturnError(
-        orderId: Long,
+        orderId: String,
         exception: Throwable
     ) {
         coEvery { getPartialOrderFulfillmentInfoUseCase.get().execute(orderId) } throws exception
     }
 
     protected fun verifyGetOrderExtensionRespondInfoUseCaseCalled(
-        orderId: Long
+        orderId: String
     ) {
         coVerify { getPartialOrderFulfillmentInfoUseCase.get().execute(orderId) }
     }
 
     protected fun onApprovePartialOrderFulfillmentUseCase_thenReturn(
         approvePartialOrderFulfillmentUiModel: ApprovePartialOrderFulfillmentUiModel,
-        orderId: Long
+        orderId: String
     ) {
         coEvery {
             approvePartialOrderFulfillmentUseCase.get().execute(orderId)
@@ -87,21 +87,21 @@ abstract class PartialOrderFulfillmentViewModelTestFixture {
     }
 
     protected fun verifyApprovePartialOrderFulfillmentUseCaseCalled(
-        orderId: Long
+        orderId: String
     ) {
         coVerify { approvePartialOrderFulfillmentUseCase.get().execute(orderId) }
     }
 
     protected fun onApprovePartialOrderFulfillmentUseCase_thenReturnError(
         exception: Throwable,
-        orderId: Long
+        orderId: String
     ) {
         coEvery { approvePartialOrderFulfillmentUseCase.get().execute(orderId) } throws exception
     }
 
     protected fun onRejectPartialOrderFulfillmentUseCase_thenReturn(
         rejectPartialOrderFulfillmentUiModel: RejectPartialOrderFulfillmentUiModel,
-        orderId: Long
+        orderId: String
     ) {
         coEvery {
             rejectPartialOrderFulfillmentUseCase.get().execute(orderId)
@@ -109,14 +109,14 @@ abstract class PartialOrderFulfillmentViewModelTestFixture {
     }
 
     protected fun verifyRejectPartialOrderFulfillmentUseCaseCalled(
-        orderId: Long
+        orderId: String
     ) {
         coVerify { rejectPartialOrderFulfillmentUseCase.get().execute(orderId) }
     }
 
     protected fun onRejectPartialOrderFulfillmentUseCase_thenReturnError(
         exception: Throwable,
-        orderId: Long
+        orderId: String
     ) {
         coEvery { rejectPartialOrderFulfillmentUseCase.get().execute(orderId) } throws exception
     }

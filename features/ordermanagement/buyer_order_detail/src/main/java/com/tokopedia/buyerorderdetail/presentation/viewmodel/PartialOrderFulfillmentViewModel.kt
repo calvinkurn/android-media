@@ -8,8 +8,6 @@ import com.tokopedia.buyerorderdetail.domain.usecases.ApprovePartialOrderFulfill
 import com.tokopedia.buyerorderdetail.domain.usecases.GetPartialOrderFulfillmentInfoUseCase
 import com.tokopedia.buyerorderdetail.domain.usecases.RejectPartialOrderFulfillmentUseCase
 import com.tokopedia.buyerorderdetail.presentation.model.ApprovePartialOrderFulfillmentUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.BasePofVisitableUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.OrderExtensionRespondInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PartialOrderFulfillmentWrapperUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.RejectPartialOrderFulfillmentUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -42,36 +40,36 @@ class PartialOrderFulfillmentViewModel @Inject constructor(
     val rejectPartialOrderFulfillment: LiveData<Result<RejectPartialOrderFulfillmentUiModel>>
         get() = _rejectPartialOrderFulfillment
 
-    fun fetchPartialOrderFulfillment(orderId: Long) {
+    fun fetchPartialOrderFulfillment(orderId: String) {
         launchCatchError(block = {
             val response = withContext(dispatcher.io) {
                 getPartialOrderFulfillmentInfoUseCase.get().execute(orderId)
             }
             _partialOrderFulfillmentRespondInfo.value = Success(response)
         }, onError = {
-            _partialOrderFulfillmentRespondInfo.value = Fail(it)
-        })
+                _partialOrderFulfillmentRespondInfo.value = Fail(it)
+            })
     }
 
-    fun approvePartialOrderFulfillment(orderId: Long) {
+    fun approvePartialOrderFulfillment(orderId: String) {
         launchCatchError(block = {
             val response = withContext(dispatcher.io) {
                 approvePartialOrderFulfillmentUseCase.get().execute(orderId)
             }
             _approvePartialOrderFulfillment.value = Success(response)
         }, onError = {
-            _approvePartialOrderFulfillment.value = Fail(it)
-        })
+                _approvePartialOrderFulfillment.value = Fail(it)
+            })
     }
 
-    fun rejectPartialOrderFulfillment(orderId: Long) {
+    fun rejectPartialOrderFulfillment(orderId: String) {
         launchCatchError(block = {
             val response = withContext(dispatcher.io) {
                 rejectPartialOrderFulfillmentUseCase.get().execute(orderId)
             }
             _rejectPartialOrderFulfillment.value = Success(response)
         }, onError = {
-            _rejectPartialOrderFulfillment.value = Fail(it)
-        })
+                _rejectPartialOrderFulfillment.value = Fail(it)
+            })
     }
 }

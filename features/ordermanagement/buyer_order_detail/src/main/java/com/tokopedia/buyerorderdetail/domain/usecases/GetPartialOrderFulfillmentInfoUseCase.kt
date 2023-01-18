@@ -9,7 +9,7 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 const val PARTIAL_ORDER_FULFILLMENT_INFO_QUERY = """
-    query InfoRespondPartialOrderFulfillment(${'$'}order_id: Int!) {
+    query InfoRespondPartialOrderFulfillment(${'$'}order_id: String!) {
       info_respond_partial_order_fulfillment(input: {
            order_id: ${'$'}order_id
       }){
@@ -68,19 +68,18 @@ class GetPartialOrderFulfillmentInfoUseCase @Inject constructor(
         useCase.setTypeClass(PartialOrderFulfillmentResponse::class.java)
     }
 
-    suspend fun execute(orderId: Long): PartialOrderFulfillmentWrapperUiModel {
+    suspend fun execute(orderId: String): PartialOrderFulfillmentWrapperUiModel {
         useCase.setRequestParams(createRequestParams(orderId))
         return mapper.mapToPartialOrderFulfillmentUiModelList(
             useCase.executeOnBackground().infoRespondPartialOrderFulfillment
         )
     }
 
-    private fun createRequestParams(orderId: Long): Map<String, Any> {
+    private fun createRequestParams(orderId: String): Map<String, Any> {
         return RequestParams.create().apply {
-            putLong(ORDER_ID_KEY, orderId)
+            putString(ORDER_ID_KEY, orderId)
         }.parameters
     }
-
 
     companion object {
         private const val ORDER_ID_KEY = "order_id"
