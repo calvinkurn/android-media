@@ -16,6 +16,7 @@ import com.tokopedia.topads.create.databinding.MpAdCreationOnboardingFragmentBin
 import com.tokopedia.topads.utils.Span
 import com.tokopedia.topads.utils.SpannableUtils
 import com.tokopedia.topads.utils.SpannedString
+import com.tokopedia.topads.view.activity.RoutingCallback
 import com.tokopedia.utils.image.ImageUtils
 
 class MpAdCreationOnboardingFragment : TkpdBaseV4Fragment() {
@@ -59,16 +60,11 @@ class MpAdCreationOnboardingFragment : TkpdBaseV4Fragment() {
         loadOnboardingImage()
         setupFooterText()
         binding?.onboardingCta?.setOnClickListener {
-            requireActivity().supportFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    com.tokopedia.abstraction.R.anim.slide_in_right,
-                    com.tokopedia.abstraction.R.anim.slide_out_left,
-                    com.tokopedia.abstraction.R.anim.slide_in_left,
-                    com.tokopedia.abstraction.R.anim.slide_out_right
-                )
-                .replace(R.id.mp_ad_creation_container,MpCreateAdGroupFragment.newInstance())
-                .addToBackStack("")
-                .commit()
+            activity?.let{
+                if(it is RoutingCallback){
+                    it.addCreateAds()
+                }
+            }
         }
     }
 

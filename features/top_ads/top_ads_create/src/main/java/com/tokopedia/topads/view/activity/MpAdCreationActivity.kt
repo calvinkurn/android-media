@@ -25,6 +25,7 @@ class MpAdCreationActivity : BaseActivity(),HasComponent<CreateAdsComponent> ,Ro
 
     companion object{
         private const val TAG = "MP_TOPADS_CREATE"
+        private const val PRODUCT_TYPE = "product"
     }
 
     @Inject
@@ -72,21 +73,12 @@ class MpAdCreationActivity : BaseActivity(),HasComponent<CreateAdsComponent> ,Ro
     }
 
     private fun handleFragmentRender(data:TopadsShopInfoV2Model){
-//        val productType = data.topadsGetShopInfo.data.ads.find { it.type == PRODUCT_TYPE }
-//        if(productType!=null && productType.isUsed){
-//            addFragment(MpAdGroupFragment.newInstance(productId))
-//        }
-//        else{
-//            addFragment(MpAdCreationOnboardingFragment.newInstance())
-//        }
-        if(productId.isEmpty()){
-            addFragment(
-                ProductManageSellerFragment.newInstance(
-                    arrayListOf(),"",""
-                ))
+        val productType = data.topadsGetShopInfo.data.ads.find { it.type == PRODUCT_TYPE }
+        if(productType!=null && productType.isUsed){
+            addFragment(MpAdGroupFragment.newInstance(productId))
         }
         else{
-            addFragment(MpAdGroupFragment.newInstance())
+            addFragment(MpAdCreationOnboardingFragment.newInstance(productId))
         }
     }
 
@@ -116,7 +108,7 @@ class MpAdCreationActivity : BaseActivity(),HasComponent<CreateAdsComponent> ,Ro
     }
 
     override fun addCreateAds() {
-        addFragment(MpCreateAdGroupFragment.newInstance())
+        addFragment(MpCreateAdGroupFragment.newInstance(productId))
     }
 }
 

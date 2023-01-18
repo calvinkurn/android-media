@@ -48,6 +48,11 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
         ViewModelProvider(this, viewModelFactory).get(MpAdsCreateGroupViewModel::class.java)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        productId = arguments?.getString("productId")
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -62,7 +67,6 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
         init()
         setupToolbar()
         attachClickListeners()
-        productId = arguments?.getString("productId")
     }
 
     override fun getScreenName() = ""
@@ -163,6 +167,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
             intent.putExtra(TopAdsDashboardConstant.GROUP_ID, id)
             intent.putExtra(TopAdsDashboardConstant.PRICE_SPEND, binding.dailyBudget.editText.text.toString())
             startActivityForResult(intent, TopAdsDashboardConstant.GROUP_UPDATED)
+            dialog.dismiss()
         }
         dialog.setSecondaryCTAClickListener {
             requireActivity().finish()

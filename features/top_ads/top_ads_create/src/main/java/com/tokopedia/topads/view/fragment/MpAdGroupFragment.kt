@@ -19,11 +19,13 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.topads.common.data.response.Deposit
+import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.create.databinding.MpAdGroupFragmentBinding
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.adapter.adgrouplist.AdGroupListAdapter
 import com.tokopedia.topads.create.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupDetailViewActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.view.activity.RoutingCallback
 import com.tokopedia.topads.view.adapter.adgrouplist.model.ErrorUiModel
@@ -138,7 +140,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
             isEnabled = false
             setOnClickListener {
                 isLoading = true
-               adGroupViewModel.checkTopadsDeposits()
+               adGroupViewModel.createTopAdsGroup(productId)
             }
         }
     }
@@ -166,7 +168,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
     private fun observeViewModel(){
         adGroupViewModel.mainListLiveData.observe(viewLifecycleOwner,::submitListToAdapter)
         adGroupViewModel.hasNextLiveData.observe(viewLifecycleOwner,::onMoreGroupsLoaded)
-        adGroupViewModel.topadsCreditLiveData.observe(viewLifecycleOwner,::onTopadsCreditCheck)
+        adGroupViewModel.createAdGroupLiveData.observe(viewLifecycleOwner,::onTopadsCreditCheck)
     }
 
     private fun attachFilterClickListener(){
@@ -199,7 +201,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         endlessScrollListener?.setHasNextPage(hasNext)
     }
 
-    private fun onTopadsCreditCheck(data:Result<Deposit>){
+    private fun onTopadsCreditCheck(data:Result<FinalAdResponse>){
         when(data){
             is Success ->{
                 openSuccessDialog()
@@ -330,7 +332,11 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         dialog.setPrimaryCTAText(getString(R.string.manage_ads_group))
         dialog.setSecondaryCTAText(getString(R.string.stay_here))
         dialog.setPrimaryCTAClickListener {
-
+            val intent = Intent(context, TopAdsGroupDetailViewActivity::class.java)
+            intent.putExtra(TopAdsDashboardConstant.GROUP_ID, id)
+            intent.putExtra(TopAdsDashboardConstant.PRICE_SPEND,"")
+            startActivityForResult(intent, TopAdsDashboardConstant.GROUP_UPDATED)
+            dialog.dismiss()
         }
         dialog.setSecondaryCTAClickListener {
             requireActivity().finish()

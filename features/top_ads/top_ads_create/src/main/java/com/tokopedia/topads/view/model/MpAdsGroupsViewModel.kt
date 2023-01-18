@@ -6,12 +6,14 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.topads.common.data.response.Deposit
+import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.TopAdsGroupsResponse
 import com.tokopedia.topads.common.data.response.TopAdsGroupsStatisticResponseResponse
 import com.tokopedia.topads.common.domain.usecase.GetTopAdsGroupsStatisticsUseCase
 import com.tokopedia.topads.common.domain.usecase.GetTopAdsGroupsUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.data.AdGroupCompleteData
 import com.tokopedia.topads.data.AdGroupStatsData
@@ -22,6 +24,7 @@ import com.tokopedia.topads.view.adapter.adgrouplist.model.CreateAdGroupUiModel
 import com.tokopedia.topads.view.adapter.adgrouplist.model.ErrorUiModel
 import com.tokopedia.topads.view.adapter.adgrouplist.model.LoadingMoreUiModel
 import com.tokopedia.topads.view.adapter.adgrouplist.model.ReloadInfiniteUiModel
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -34,6 +37,7 @@ class MpAdsGroupsViewModel @Inject constructor(
     private val getTopAdsGroupsUseCase: GetTopAdsGroupsUseCase,
     private val getTopAdsGroupStatsUseCase: GetTopAdsGroupsStatisticsUseCase,
     private val getTopadsDepositsUseCase: TopAdsGetDepositUseCase,
+    private val topAdsCreateUseCase: TopAdsCreateUseCase,
     userSession:UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
@@ -41,6 +45,7 @@ class MpAdsGroupsViewModel @Inject constructor(
     companion object{
         private const val NO_POSITION = -1
         private const val PER_PAGE = 20
+        private const val SOURCE = "android.mp_topads"
     }
 
     // Data list to hold all ad groups
@@ -64,8 +69,8 @@ class MpAdsGroupsViewModel @Inject constructor(
     private val _hasNextLiveData:MutableLiveData<Boolean> = MutableLiveData(true)
     val hasNextLiveData:LiveData<Boolean> = _hasNextLiveData
 
-    private val _topadsCreditLiveData:MutableLiveData<com.tokopedia.usecase.coroutines.Result<Deposit>> = SingleLiveEvent()
-    val topadsCreditLiveData:LiveData<com.tokopedia.usecase.coroutines.Result<Deposit>> = _topadsCreditLiveData
+    private val _createAdGroupLiveData:MutableLiveData<com.tokopedia.usecase.coroutines.Result<FinalAdResponse>> = SingleLiveEvent()
+    val createAdGroupLiveData:LiveData<com.tokopedia.usecase.coroutines.Result<FinalAdResponse>> = _createAdGroupLiveData
 
     private var adGroupListStartIndex = NO_POSITION
     private var selectedAdGroupIndex = NO_POSITION
@@ -318,14 +323,39 @@ class MpAdsGroupsViewModel @Inject constructor(
         }
     }
 
-    fun checkTopadsDeposits(){
+    fun checkTopadsDeposits(createAdResponse:FinalAdResponse){
         getTopadsDepositsUseCase.execute(
             {
-                _topadsCreditLiveData.value = Success(it)
+                _createAdGroupLiveData.value = Success(createAdResponse)
             },
             {
-                _topadsCreditLiveData.value = Fail(it)
+                _createAdGroupLiveData.value = Fail(it)
             }
         )
+    }
+
+    fun createTopAdsGroup(productId:String){
+        if(selectedAdGroupIndex!= NO_POSITION){
+            val requestParams =  getTopAdsCreateRequestParams(productId)
+            launchCatchError(
+                block = {
+                   val response = topAdsCreateUseCase.execute(requestParams)
+                    checkTopadsDeposits(response)
+                },
+                onError = {}
+            )
+        }
+    }
+
+    private fun getTopAdsCreateRequestParams(productId:String) : RequestParams {
+        val groupName = adGroupDataList[selectedAdGroupIndex].groupName
+        return topAdsCreateUseCase.createRequestParamActionCreate(
+                listOf(productId),
+                groupName,
+                0.0,
+                0.0,
+                null,
+                SOURCE
+            )
     }
 }
