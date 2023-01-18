@@ -17,16 +17,6 @@ class PlayShortsAnalyticImpl @Inject constructor(
      * https://mynakama.tokopedia.com/datatracker/requestdetail/view/3511
      */
 
-    /**
-     * Notes:
-     * 1. Row 16 & 18 -> is it expected we use suffix "bottom sheet" while we are showing a popup dialog?
-     * 2. Row 34 -> is it expected we just have label "click - simpan" without more context on what data is being saved?
-     * 3. Row 53 - 56 -> its not applicable since android still using old cover picker
-     * 4. Row 58 -> we dont have "Simpan" button in existing feature
-     * 5. Row 59 & 60 -> is it expected we use suffix "bottom sheet" while we are showing a popup dialog?
-     * 6. Row 20 - 24 -> theres a possiblity where eventLabel is " - " bcs theres no selected account, so how?
-     */
-
     /** Row 10 */
     override fun clickBackOnPreparationPage(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
@@ -176,7 +166,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralViewEvent(
             eventAction = "view - post creation page",
             account = account,
-            trackerId = "37551"
+            trackerId = getTrackerIdBySite("37551", "37633")
         )
     }
 
@@ -185,7 +175,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - edit title",
             account = account,
-            trackerId = "37552"
+            trackerId = getTrackerIdBySite("37552", "37634")
         )
     }
 
@@ -194,7 +184,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - add product tag",
             account = account,
-            trackerId = "37553"
+            trackerId = getTrackerIdBySite("37553", "37635")
         )
     }
 
@@ -203,7 +193,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - add cover on preparation page",
             account = account,
-            trackerId = "37554"
+            trackerId = getTrackerIdBySite("37554", "37636")
         )
     }
 
