@@ -34,9 +34,11 @@ import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
 import android.webkit.PermissionRequest;
@@ -455,6 +457,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     class MyWebChromeClient extends WebChromeClient {
+        @Override
+        public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+            Log.d("MyApplication", consoleMessage.message() + " -- From line " +
+                    consoleMessage.lineNumber() + " of " + consoleMessage.sourceId());
+            return true;
+        }
+
         @Override
         public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
             checkLocationPermission(callback, origin);
