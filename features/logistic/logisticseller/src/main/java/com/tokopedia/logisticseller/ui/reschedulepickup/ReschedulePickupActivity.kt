@@ -88,22 +88,4 @@ class ReschedulePickupActivity : AppCompatActivity() {
     private fun onTimeChosen(timeChosen: RescheduleTimeOptionModel) {
         viewModel.setTime(timeChosen)
     }
-
-//    private fun showErrorToaster(
-//        message: String,
-//        onClick: () -> Unit
-//    ) {
-//        view?.let {
-//            toaster = Toaster.build(
-//                it,
-//                message,
-//                Toaster.LENGTH_SHORT,
-//                Toaster.TYPE_ERROR,
-//                getString(R.string.title_cta_error_reschedule_pickup)
-//            ) { onClick() }
-//        }
-//        if (toaster?.isShown == false) {
-//            toaster?.show()
-//        }
-//    }
 }
