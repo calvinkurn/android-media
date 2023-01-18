@@ -816,6 +816,11 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
         buttonSectionBinding?.run {
             btnBack.setOnClickListener { viewModel.processEvent(VoucherCreationStepTwoEvent.TapBackButton) }
+            btnContinue.text = if (pageMode == PageMode.CREATE) {
+                getString(R.string.smvc_continue)
+            } else {
+                getText(R.string.smvc_save)
+            }
         }
     }
 
