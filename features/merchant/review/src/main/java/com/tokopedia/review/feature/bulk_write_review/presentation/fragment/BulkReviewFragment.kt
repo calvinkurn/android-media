@@ -84,7 +84,7 @@ import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listener {
+open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.Listener {
 
     companion object {
         private const val MAX_VIDEO_COUNT = 1
