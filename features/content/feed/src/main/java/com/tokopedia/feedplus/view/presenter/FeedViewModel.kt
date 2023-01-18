@@ -192,6 +192,7 @@ class FeedViewModel @Inject constructor(
                         item.favoriteData.isFollowing != currentFollowState[item.shopCore.shopID]
                     ) {
                         shopIdsToUpdate[item.shopCore.shopID] = item.favoriteData.isFollowing
+                        currentFollowState[item.shopCore.shopID] = item.favoriteData.isFollowing
                     }
                 }
                 response.feedXProfileIsFollowing.isUserFollowing.map { item ->
@@ -200,12 +201,22 @@ class FeedViewModel @Inject constructor(
                         item.status != currentFollowState[item.userId]
                     ) {
                         shopIdsToUpdate[item.userId] = item.status
+                        currentFollowState[item.userId] = item.status
                     }
                 }
                 _shopIdsFollowStatusToUpdateData.value = Success(shopIdsToUpdate)
             }) {
                 _shopIdsFollowStatusToUpdateData.value = Fail(it)
             }
+    }
+
+    fun clearFollowIdToUpdate() {
+        if (_shopIdsFollowStatusToUpdateData.value != null &&
+            _shopIdsFollowStatusToUpdateData.value is Success &&
+            (_shopIdsFollowStatusToUpdateData.value as Success).data.isNotEmpty()
+        ) {
+            _shopIdsFollowStatusToUpdateData.value = Success(mapOf())
+        }
     }
 
     fun sendReport(

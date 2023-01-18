@@ -8,7 +8,6 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -794,12 +793,10 @@ class FeedPlusFragment :
                                     it.data[shopId]?.let { followStatus ->
                                         when (item) {
                                             is DynamicPostModel -> {
-                                                Log.d("FEED_PLUS", "Changed ${shopId} from ${item.header.followCta.isFollow} to $followStatus")
                                                 item.header.followCta.isFollow = followStatus
                                                 isChanged = true
                                             }
                                             is DynamicPostUiModel -> {
-                                                Log.d("FEED_PLUS", "Changed ${shopId} from ${item.feedXCard.followers.isFollowed} to $followStatus")
                                                 item.feedXCard.followers.isFollowed = followStatus
                                                 isChanged = true
                                             }
@@ -813,6 +810,7 @@ class FeedPlusFragment :
                                         )
                                 }
                             }
+                            feedViewModel.clearFollowIdToUpdate()
                         }
                         is Fail -> {}
                     }
@@ -1203,7 +1201,6 @@ class FeedPlusFragment :
         if (isUserEventTrackerDoneOnResume) {
             isUserEventTrackerDoneOnResume = false
         }
-        Log.d("FEED_PLUS", "Masuk on Resume")
         feedViewModel.updateFollowStatus()
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
