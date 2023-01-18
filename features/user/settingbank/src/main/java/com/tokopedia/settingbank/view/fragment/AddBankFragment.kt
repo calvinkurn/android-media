@@ -322,7 +322,6 @@ class AddBankFragment : BaseDaggerFragment() {
         add_account_button.isEnabled = true
         groupAccountNameAuto.gone()
         textAreaBankAccountHolderName.visible()
-        textAreaBankAccountHolderName.editText.isEnabled = true
         if (data.accountName.isNotEmpty())
             textAreaBankAccountHolderName.editText.setTextWithMaximumOf20(data.accountName)
 
@@ -337,7 +336,6 @@ class AddBankFragment : BaseDaggerFragment() {
             groupAccountNameAuto.gone()
             textAreaBankAccountHolderName.visible()
             textAreaBankAccountHolderName.editText.setTextWithMaximumOf20(data.accountName)
-            textAreaBankAccountHolderName.editText.isEnabled = false
             showManualAccountNameError(data.message)
         }
     }
