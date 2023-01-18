@@ -10,7 +10,7 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
-import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
+import com.tokopedia.contactus.switcheractivity.inbox.InboxSwitcherActivity;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.webview.BaseSessionWebViewFragment;
 import com.tokopedia.webview.BaseWebViewFragment;
@@ -63,7 +63,7 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_inbox) {
-            startActivity(InboxListActivity.getCallingIntent(this));
+            InboxSwitcherActivity.start(this);
             return true;
         }
         return super.onOptionsItemSelected(item);
