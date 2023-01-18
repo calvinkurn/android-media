@@ -209,11 +209,11 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.mapHomeCategoryMenuData(
+    fun MutableList<HomeLayoutItemUiModel?>.mapHomeCategoryMenuData(
         response: List<GetCategoryListResponse.CategoryListResponse.CategoryResponse>?,
         warehouseId: String = ""
     ) {
-        firstOrNull { it.layout is TokoNowCategoryMenuUiModel }?.let {
+        firstOrNull { it?.layout is TokoNowCategoryMenuUiModel }?.let {
             val item = it.layout as TokoNowCategoryMenuUiModel
             val newItem = if (!response.isNullOrEmpty()) {
                 val seeAllAppLink = ApplinkConstInternalTokopediaNow.CATEGORY_MENU + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
