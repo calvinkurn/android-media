@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.bottomsheet
 
 import android.content.DialogInterface
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentManager
@@ -487,6 +488,11 @@ class PlayMoreActionBottomSheet @Inject constructor(
     override fun onDestroy() {
         super.onDestroy()
         mListener = null
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        dismiss()
     }
 
     /***
