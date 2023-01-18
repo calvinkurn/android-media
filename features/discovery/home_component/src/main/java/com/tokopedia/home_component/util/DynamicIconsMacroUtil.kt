@@ -4,7 +4,6 @@ import android.content.Context
 import android.widget.LinearLayout
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.DynamicIconComponent
-import com.tokopedia.home_component.visitable.MissionWidgetDataModel
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -46,7 +45,6 @@ object DynamicIconsMacroUtil {
         var maxHeight = 0
         val titleWidth = context.resources.getDimensionPixelSize(R.dimen.home_dynamic_icon_title_width)
 
-        //substract with margin start and end
         for (icon in icons) {
             val heightText = measureSummaryTextHeight(
                 icon.name,

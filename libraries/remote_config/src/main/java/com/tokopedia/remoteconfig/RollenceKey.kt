@@ -24,8 +24,8 @@ object RollenceKey {
     const val HOME_COMPONENT_HPB_DOTS_INFINITE_EXP = "hpb_dots_infinite_2"
     const val HOME_COMPONENT_HPB_DOTS_INFINITE_CONTROL = "control_variant"
     const val HOME_COMPONENT_HPB_DOTS_INFINITE_VARIANT = "new_dots_scroll"
-    const val HOME_COMPONENT_DYNAMIC_ICON_EXP = "dynamic_icon_new"
-    const val HOME_COMPONENT_DYNAMIC_ICON_VARIANT = "dynamic_icon_new"
+    const val HOME_COMPONENT_DYNAMIC_ICON_EXP = "icon_animation"
+    const val HOME_COMPONENT_DYNAMIC_ICON_VARIANT = "exp_icon"
     // end of home component rollence section
 
     const val NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT = "control_variant"
