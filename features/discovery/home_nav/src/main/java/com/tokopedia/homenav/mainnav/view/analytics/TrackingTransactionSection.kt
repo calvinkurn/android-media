@@ -49,6 +49,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
     private const val ACTION_CLICK_ON_FAVORITE_SHOP_VIEW_ALL = "click view all favorite shop"
     private const val ACTION_CLICK_ON_REVIEW_VIEW_ALL = "click view all review"
     private const val ITEM_ID_FAVORITE_SHOP_FORMAT = "0_%s"
+    private const val FORMAT_DASH_TWO_VALUES = "%s - %s"
 
     fun clickOnAllTransaction(userId: String) {
         val trackingBuilder = BaseTrackerBuilder()
@@ -144,7 +145,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
             promotions = listOf(
                 Promotion(
                     creative = orderLabel,
-                    id = String.format("%s - %s", bannerId, orderId),
+                    id = FORMAT_DASH_TWO_VALUES.format(bannerId, orderId),
                     name = TEMPLATE_GLOBAL_MENU,
                     creativeUrl = "",
                     position = (position + 1).toString()
