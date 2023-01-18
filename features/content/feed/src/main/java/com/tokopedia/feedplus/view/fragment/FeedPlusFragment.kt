@@ -785,23 +785,32 @@ class FeedPlusFragment :
                                         item.header.followCta.authorID
                                     }
                                     is DynamicPostUiModel -> {
-                                        item.feedXCard.shopId
+                                        item.feedXCard.author.id
                                     }
                                     else -> ""
                                 }
                                 if (shopId != "") {
+                                    var isChanged = false
                                     it.data[shopId]?.let { followStatus ->
                                         when (item) {
                                             is DynamicPostModel -> {
+                                                Log.d("FEED_PLUS", "Changed from ${item.header.followCta.isFollow} to $followStatus")
                                                 item.header.followCta.isFollow = followStatus
+                                                isChanged = true
                                             }
                                             is DynamicPostUiModel -> {
+                                                Log.d("FEED_PLUS", "Changed from ${item.feedXCard.followers.isFollowed} to $followStatus")
                                                 item.feedXCard.followers.isFollowed = followStatus
+                                                isChanged = true
                                             }
                                             else -> ""
                                         }
                                     }
-                                    adapter.notifyItemChanged(index)
+                                    if (isChanged)
+                                        adapter.notifyItemChanged(
+                                            index,
+                                            DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
+                                        )
                                 }
                             }
                         }
@@ -2979,7 +2988,7 @@ class FeedPlusFragment :
             onShowEmpty()
         }
 
-                feedViewModel.updateCurrentFollowState(adapter.getlist())
+        feedViewModel.updateCurrentFollowState(adapter.getlist())
 
         sendMoEngageOpenFeedEvent()
         stopTracePerformanceMon()
