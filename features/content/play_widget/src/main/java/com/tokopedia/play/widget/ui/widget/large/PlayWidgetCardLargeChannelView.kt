@@ -12,8 +12,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.widget.R
-import com.tokopedia.unifyprinciples.R as unifyR
-import com.tokopedia.play_common.R as playCommonR
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -24,8 +22,9 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play.widget.util.PlayWidgetCompositeTouchDelegate
 import com.tokopedia.play_common.util.extension.exhaustive
-import com.tokopedia.play_common.util.extension.updateLayoutParams
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.play_common.R as playCommonR
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * @author by astidhiyaa on 11/01/22
@@ -98,10 +97,10 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
     fun setModel(model: PlayWidgetChannelUiModel) {
         this.mModel = model
 
-        updateLayoutParams {
-            width = model.gridType.getWidthAndHeight(context).first
-            height = model.gridType.getWidthAndHeight(context).second
-        }
+        layoutParams = ViewGroup.LayoutParams(
+            model.gridType.getWidthAndHeight(context).first,
+            model.gridType.getWidthAndHeight(context).second
+        )
 
         thumbnail.setImageUrl(model.video.coverUrl)
 
