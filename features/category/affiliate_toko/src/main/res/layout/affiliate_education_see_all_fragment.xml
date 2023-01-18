@@ -21,6 +21,20 @@
         app:toolbarInitialFillColor="transparent"
         app:toolbarInitialTheme="light" />
 
+    <com.tokopedia.unifycomponents.TabsUnify
+        android:id="@+id/education_tab_nav"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_50"
+        android:layout_gravity="bottom"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/education_see_all_navToolbar"
+        app:tabBackground="@color/Unify_N0"
+        app:tabMode="fixed"
+        app:tabPaddingEnd="0dp"
+        tools:visibility="visible" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_education_category_chip"
         android:layout_width="match_parent"
@@ -29,7 +43,7 @@
         android:orientation="horizontal"
         android:paddingHorizontal="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/education_see_all_navToolbar"
+        app:layout_constraintTop_toBottomOf="@id/education_tab_nav"
         tools:listitem="@layout/affiliate_item_performance_chip" />
 
     <com.tokopedia.unifyprinciples.Typography

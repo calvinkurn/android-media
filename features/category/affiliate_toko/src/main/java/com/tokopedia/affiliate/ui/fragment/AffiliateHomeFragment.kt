@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -69,6 +70,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -190,7 +192,8 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(),
                             }
                             .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
-            getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text = getString(R.string.label_affiliate)
+//            getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text = getString(R.string.label_affiliate)
+            getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.gone()
             setOnBackButtonClickListener {
                 (activity as? AffiliateActivity)?.handleBackButton(false)
             }

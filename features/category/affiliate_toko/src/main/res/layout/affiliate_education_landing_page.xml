@@ -6,24 +6,21 @@
     android:theme="@style/Theme.White"
     android:paddingBottom="60dp">
 
-    <com.tokopedia.searchbar.navigation_component.NavToolbar
+    <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/edukasi_navToolbar"
+        app:search_bar_placeholder="Mau cari tahu apa?"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="1dp"
-        android:minHeight="?actionBarSize"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:toolbarAlwaysShowShadow="false"
-        app:toolbarBackButton="back"
-        app:toolbarContentType="typeCustom"
-        app:toolbarCustomContent="@layout/affiliate_navbar_custom_content"
-        app:toolbarInitialTheme="light" />
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="4dp"
+        app:search_bar_show_icon="false" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_education_page"
         android:layout_width="match_parent"
+        android:layout_marginTop="8dp"
         android:layout_height="0dp"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

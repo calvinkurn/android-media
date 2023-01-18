@@ -15,14 +15,17 @@ class AffiliateEducationSeeAllActivity :
     companion object {
         const val PARAM_PAGE_TYPE = "param_page_type"
         const val PARAM_CATEGORY_ID = "param_category_id"
+        const val SEARCH_KEYWORD = "search_keyword"
         fun createIntent(
             context: Context,
             pageType: String?,
-            categoryId: String?
+            categoryId: String?,
+            searchKeyword: String?
         ): Intent {
             val intent = Intent(context, AffiliateEducationSeeAllActivity::class.java)
             intent.putExtra(PARAM_PAGE_TYPE, pageType)
             intent.putExtra(PARAM_CATEGORY_ID, categoryId)
+            intent.putExtra(SEARCH_KEYWORD, searchKeyword)
             return intent
         }
     }
@@ -41,6 +44,7 @@ class AffiliateEducationSeeAllActivity :
         return AffiliateEducationSeeAllFragment.newInstance(
             intent?.getStringExtra(PARAM_PAGE_TYPE),
             intent?.getStringExtra(PARAM_CATEGORY_ID),
+            intent?.getStringExtra(SEARCH_KEYWORD),
         )
     }
 

@@ -65,11 +65,15 @@
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/promotion_info_desc"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="16dp"
+                        android:layout_marginStart="16dp"
                         android:layout_marginTop="4dp"
+                        android:layout_marginEnd="16dp"
                         android:text="@string/promo_info_desc"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/promotion_info_title"
                         app:typographyType="display_3"
                         app:typographyWeight="reguler" />

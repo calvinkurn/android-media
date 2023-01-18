@@ -14,6 +14,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEduCategoryChipM
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSeeAllUiModel
 import com.tokopedia.affiliate.usecase.AffiliateEducationArticleCardsUseCase
 import com.tokopedia.affiliate.usecase.AffiliateEducationCategoryTreeUseCase
+import com.tokopedia.affiliate.usecase.AffiliateEducationSearchResultUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
@@ -26,7 +27,8 @@ import javax.inject.Inject
 
 class AffiliateEducationSeeAllViewModel @Inject constructor(
     private val educationCategoryUseCase: AffiliateEducationCategoryTreeUseCase,
-    private val educationArticleCardsUseCase: AffiliateEducationArticleCardsUseCase
+    private val educationArticleCardsUseCase: AffiliateEducationArticleCardsUseCase,
+    private val educationSearchResultUseCase: AffiliateEducationSearchResultUseCase,
 ) : BaseViewModel() {
     companion object {
         private val isStaging = TokopediaUrl.getInstance().GQL.contains("staging")
@@ -56,6 +58,16 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
             if (educationCategoryChip.value.isNullOrEmpty()) {
                 loadCategory(pageType, categoryID)
             }
+            convertToVisitable(educationArticleCards, pageType)
+        }, onError = { Timber.e(it) })
+    }
+
+    fun fetchSearchData(pageType: String?, keyword: String?){
+        launchCatchError(block = {
+            val educationArticleCards =
+                educationSearchResultUseCase.getEducationSearchResultCards(
+
+                )
             convertToVisitable(educationArticleCards, pageType)
         }, onError = { Timber.e(it) })
     }

@@ -3,15 +3,19 @@ package com.tokopedia.affiliate.ui.fragment.education
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.affiliate.AFFILIATE_HELP_URL_WEBVIEW
 import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_PROD_URL
 import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_STAGING_URL
+import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
 import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
@@ -23,15 +27,18 @@ import com.tokopedia.affiliate.interfaces.AffiliateEducationSocialCTAClickInterf
 import com.tokopedia.affiliate.interfaces.AffiliateEducationTopicTutorialClickInterface
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateEducationSeeAllActivity
+import com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
 import com.tokopedia.affiliate.viewmodel.AffiliateEducationLandingViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
 import timber.log.Timber
@@ -47,6 +54,7 @@ class AffiliateEducationLandingPage :
     AffiliateEducationBannerClickInterface {
 
     private var eduViewModel: AffiliateEducationLandingViewModel? = null
+    private var searchBar: SearchBarUnify? = null
 
     @JvmField
     @Inject
@@ -85,20 +93,23 @@ class AffiliateEducationLandingPage :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.affiliate_education_landing_page, container, false)
+        val view =  inflater.inflate(R.layout.affiliate_education_landing_page, container, false)
+        searchBar = view.findViewById(R.id.edukasi_navToolbar)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.findViewById<NavToolbar>(R.id.edukasi_navToolbar)?.run {
-            viewLifecycleOwner.lifecycle.addObserver(this)
-            setIcon(IconBuilder().addIcon(IconList.ID_NAV_GLOBAL) {})
-            getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
-                getString(R.string.affiliate_edukasi)
-            setOnBackButtonClickListener {
-                (activity as? AffiliateActivity)?.handleBackButton(false)
-            }
-        }
+        setSearchListener(searchBar)
+//        view.findViewById<NavToolbar>(R.id.edukasi_navToolbar)?.run {
+//            viewLifecycleOwner.lifecycle.addObserver(this)
+//            setIcon(IconBuilder().addIcon(IconList.ID_NAV_GLOBAL) {})
+//            getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
+//                getString(R.string.affiliate_edukasi)
+//            setOnBackButtonClickListener {
+//                (activity as? AffiliateActivity)?.handleBackButton(false)
+//            }
+//        }
         eduViewModel?.getEducationPageData()?.observe(viewLifecycleOwner) {
             val adapter =
                 AffiliateAdapter(
@@ -113,11 +124,38 @@ class AffiliateEducationLandingPage :
             adapter.setVisitables(it)
             view.findViewById<RecyclerView>(R.id.rv_education_page).adapter = adapter
         }
+        view.findViewById<SearchBarUnify>(R.id.edukasi_navToolbar)?.run {
+
+        }
+    }
+
+    private fun setSearchListener(searchBar: SearchBarUnify?) {
+
+        val searchTextField = searchBar?.searchBarTextField
+        val searchClearButton = searchBar?.searchBarIcon
+
+        searchTextField?.imeOptions = EditorInfo.IME_ACTION_SEARCH
+        searchTextField?.setOnEditorActionListener(object : TextView.OnEditorActionListener {
+            override fun onEditorAction(view: TextView?, actionId: Int, even: KeyEvent?): Boolean {
+                if(actionId == EditorInfo.IME_ACTION_SEARCH && !searchTextField.text.toString().isNullOrEmpty()) {
+                    context?.let {
+                        startActivity(AffiliateEducationSeeAllActivity.createIntent(it,
+                            PAGE_EDUCATION_ARTICLE,  "", searchTextField.text.toString()))
+                    }
+                    return true
+                }
+                return false
+            }
+        })
+
+        searchClearButton?.setOnClickListener {
+            searchTextField?.text?.clear()
+        }
     }
 
     override fun onSeeMoreClick(pageType: String, categoryId: String) {
         context?.let {
-            startActivity(AffiliateEducationSeeAllActivity.createIntent(it, pageType, categoryId))
+            startActivity(AffiliateEducationSeeAllActivity.createIntent(it, pageType, categoryId,null))
         }
     }
 
@@ -157,7 +195,7 @@ class AffiliateEducationLandingPage :
 
     override fun onCardClick(pageType: String, categoryId: String) {
         context?.let {
-            startActivity(AffiliateEducationSeeAllActivity.createIntent(it, pageType, categoryId))
+            startActivity(AffiliateEducationSeeAllActivity.createIntent(it, pageType, categoryId, null))
         }
     }
 
