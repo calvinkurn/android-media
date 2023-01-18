@@ -12,6 +12,7 @@ import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetEditPeriodCalendarBinding
+import com.tokopedia.mvc.presentation.quota.QuotaInfoBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.text.SimpleDateFormat
@@ -45,8 +46,16 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
         binding = SmvcBottomsheetEditPeriodCalendarBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)
         setTitle(context?.resources?.getString(R.string.edit_period_calender_title).toBlankOrString())
+        setAction(context?.getString(R.string.edit_period_see_remaining_quota).toBlankOrString()){
+            showQuotaInfoBottomSheet()
+        }
         dateFormat.timeZone = TimeZone.getDefault()
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun showQuotaInfoBottomSheet() {
+        val bottomSheet = QuotaInfoBottomSheet()
+        bottomSheet.show(childFragmentManager)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
