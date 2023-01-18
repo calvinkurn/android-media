@@ -1,6 +1,5 @@
 package com.tokopedia.home_component.viewholders
 
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -99,23 +98,7 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
                 iconRecyclerView?.adapter = adapter
                 setRecyclerView(icons)
             }
-//            if (iconRecyclerView?.itemDecorationCount == 0) {
-//                if (isUsingMacroInteraction) {
-//                    iconRecyclerView?.addItemDecoration(
-//                        CommonSpacingDecoration(
-//                            0f.toDpInt()
-//                        )
-//                    )
-//                } else {
-//                    iconRecyclerView?.addItemDecoration(
-//                        CommonSpacingDecoration(
-//                            8f.toDpInt()
-//                        )
-//                    )
-//                }
-//            }
         }
-//        }
     }
 
     private fun setRecyclerView(icons: List<DynamicIconComponent.DynamicIcon>) {
@@ -161,12 +144,11 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         ): DynamicIconItemViewHolder {
             return DynamicIconItemViewHolder(
                 LayoutInflater.from(parent.context).inflate(
-                    if (isUsingMacroInteraction) DynamicIconItemViewHolder.LAYOUT else DynamicIconItemViewHolder.LAYOUT_EXPERIMENT,
+                    DynamicIconItemViewHolder.LAYOUT,
                     parent,
                     false
                 ),
-                listener,
-                isUsingMacroInteraction
+                listener
             )
         }
 
@@ -203,8 +185,7 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
 
     internal class DynamicIconItemViewHolder(
         itemView: View,
-        private val listener: DynamicIconComponentListener,
-        private val isUsingMicroInteraction: Boolean
+        private val listener: DynamicIconComponentListener
     ) : RecyclerView.ViewHolder(itemView) {
         var iconTvName: Typography? = null
         var iconImageView: ImageUnify? = null
@@ -213,7 +194,6 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         companion object {
             @LayoutRes
             val LAYOUT = R.layout.home_component_dynamic_icon_item
-            val LAYOUT_EXPERIMENT = R.layout.home_component_dynamic_icon_item_interaction
         }
 
         fun bind(

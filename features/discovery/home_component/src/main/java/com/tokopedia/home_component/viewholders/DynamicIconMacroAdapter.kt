@@ -20,7 +20,7 @@ class DynamicIconMacroAdapter(private val listener: DynamicIconComponentListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicIconMacroItemViewHolder {
         return DynamicIconMacroItemViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                DynamicIconViewHolder.DynamicIconItemViewHolder.LAYOUT_EXPERIMENT,
+                DynamicIconMacroItemViewHolder.LAYOUT,
                 parent,
                 false
             ),
@@ -29,8 +29,10 @@ class DynamicIconMacroAdapter(private val listener: DynamicIconComponentListener
     }
 
     override fun onBindViewHolder(holder: DynamicIconMacroItemViewHolder, position: Int) {
-        iconList.getOrNull(position)?.let { holder.
-        bind(it, iconList.size > DynamicIconViewHolder.SCROLLABLE_ITEM, this.position, type, isCache, titleHeight) }
+        iconList.getOrNull(position)?.let {
+            holder
+                .bind(it, iconList.size > DynamicIconViewHolder.SCROLLABLE_ITEM, this.position, type, isCache, titleHeight)
+        }
     }
 
     override fun getItemCount(): Int {

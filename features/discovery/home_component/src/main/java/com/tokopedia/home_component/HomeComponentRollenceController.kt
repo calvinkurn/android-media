@@ -19,7 +19,7 @@ object HomeComponentRollenceController {
         rollenceLego24BannerValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_LEGO24BANNER_EXP, RollenceKey.HOME_COMPONENT_LEGO24BANNER_OLD)
         rollenceHPBDurationValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_HPB_DURATION_EXP, RollenceKey.HOME_COMPONENT_HPB_DURATION_CONTROL)
         rollenceHPBDotsInfiniteValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_HPB_DOTS_INFINITE_EXP, RollenceKey.HOME_COMPONENT_HPB_DOTS_INFINITE_CONTROL)
-        rollenceDynamicIcons = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_DYNAMIC_ICON_EXP, RollenceKey.HOME_COMPONENT_DYNAMIC_ICON_VARIANT)
+        rollenceDynamicIcons = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_DYNAMIC_ICON_EXP, "")
     }
 
     private fun getRollenceValueLego24Banner(): String {
@@ -47,7 +47,7 @@ object HomeComponentRollenceController {
     }
 
     fun getHPBDuration(): Long {
-        return when(getHPBDurationRollenceValue()) {
+        return when (getHPBDurationRollenceValue()) {
             RollenceKey.HOME_COMPONENT_HPB_DURATION_VARIANT_4S -> HPB_DURATION_4S
             RollenceKey.HOME_COMPONENT_HPB_DURATION_VARIANT_6S -> HPB_DURATION_6S
             else -> HPB_DURATION_5S
