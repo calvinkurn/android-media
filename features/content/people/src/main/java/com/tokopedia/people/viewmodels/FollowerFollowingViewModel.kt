@@ -40,7 +40,18 @@ class FollowerFollowingViewModel @Inject constructor(
         limit: Int,
     ) {
         launchCatchError(block = {
-            val result = repo.getFollowerList(username, cursor, limit)
+
+            var profileList: List<ProfileFollowerV2>
+            var currentCursor: String = cursor
+            var result: ProfileFollowerListBase
+
+            do {
+                result = repo.getFollowerList(username, currentCursor, limit)
+
+                profileList = result.profileFollowers.profileFollower
+                currentCursor = result.profileFollowers.newCursor
+
+            } while (profileList.isEmpty() && currentCursor.isNotEmpty())
 
             profileFollowers.value = Success(result)
         }, onError = {
@@ -53,7 +64,18 @@ class FollowerFollowingViewModel @Inject constructor(
         limit: Int,
     ) {
         launchCatchError(block = {
-            val result = repo.getFollowingList(username, cursor, limit)
+
+            var profileList: List<ProfileFollowerV2>
+            var currentCursor: String = cursor
+            var result: ProfileFollowingListBase
+
+            do {
+                result = repo.getFollowingList(username, currentCursor, limit)
+
+                profileList = result.profileFollowings.profileFollower
+                currentCursor = result.profileFollowings.newCursor
+
+            } while (profileList.isEmpty() && currentCursor.isNotEmpty())
 
             profileFollowingsList.value = Success(result)
         }, onError = {
