@@ -1,7 +1,6 @@
 package com.tokopedia.buyerorderdetail.domain.mapper
 
 import com.tokopedia.buyerorderdetail.domain.models.ApprovePartialOrderFulfillment
-import com.tokopedia.buyerorderdetail.domain.models.ApprovePartialOrderFulfillmentResponse
 import com.tokopedia.buyerorderdetail.domain.models.InfoRespondPartialOrderFulfillment
 import com.tokopedia.buyerorderdetail.domain.models.RejectPartialOrderFulfillment
 import com.tokopedia.buyerorderdetail.presentation.model.ApprovePartialOrderFulfillmentUiModel
@@ -31,6 +30,7 @@ class PartialOrderFulfillmentMapper @Inject constructor() {
             add(PofHeaderInfoUiModel(headerInfoHtmlStr = infoRespondPartialOrderFulfillment.headerInfo))
             add(PofAvailableLabelUiModel())
             add(PofThinDividerUiModel())
+
             addAll(infoRespondPartialOrderFulfillment.detailsUnfulfill.map {
                 PofProductUnfulfilledUiModel(
                     productPictureUrl = it.productPicture,
@@ -40,14 +40,21 @@ class PartialOrderFulfillmentMapper @Inject constructor() {
                     productQtyRequest = it.productQuantityRequest
                 )
             })
-            val productFulfilledList = infoRespondPartialOrderFulfillment.detailsFulfilled.map {
-                PofProductFulfilledUiModel(
-                    productPictureUrl = it.productPicture,
-                    productName = it.productName,
-                    productPrice = it.productPrice,
-                    productQty = it.productQuantity
-                )
-            }
+
+            add(PofThinDividerUiModel())
+
+            val productFulfilledList =
+                infoRespondPartialOrderFulfillment.detailsFulfilled.mapIndexed { index, detailsFulfilled ->
+                    val isShowDivider = isShowDividerUnfulfilledProduct(index, infoRespondPartialOrderFulfillment.detailsFulfilled.size)
+                    PofProductFulfilledUiModel(
+                        productPictureUrl = detailsFulfilled.productPicture,
+                        productName = detailsFulfilled.productName,
+                        productPrice = detailsFulfilled.productPrice,
+                        productQty = detailsFulfilled.productQuantity,
+                        isShowDivider = isShowDivider
+                    )
+                }
+
             add(
                 PofFulfilledToggleUiModel(
                     totalFulfilled = infoRespondPartialOrderFulfillment.totalFulfilled,
@@ -56,12 +63,7 @@ class PartialOrderFulfillmentMapper @Inject constructor() {
                 )
             )
 
-            productFulfilledList.forEachIndexed { index, pofProductFulfilledUiModel ->
-                add(pofProductFulfilledUiModel)
-                if (index < productFulfilledList.size - Int.ONE) {
-                    add(PofThinDividerUiModel())
-                }
-            }
+            addAll(productFulfilledList)
 
             add(PofThickDividerUiModel())
 
@@ -69,7 +71,7 @@ class PartialOrderFulfillmentMapper @Inject constructor() {
                 add(PofDetailUiModel(key = it.key, label = it.label, value = it.value))
             }
 
-            add(PofThinDividerUiModel(MARGIN_HORIZONTAL))
+            add(PofThinDividerUiModel(marginHorizontal = MARGIN_16, marginTop = MARGIN_12))
 
             val estimateRefund = infoRespondPartialOrderFulfillment.summary.estimateRefund
             add(
@@ -100,7 +102,13 @@ class PartialOrderFulfillmentMapper @Inject constructor() {
         return RejectPartialOrderFulfillmentUiModel(isSuccess)
     }
 
+    private fun isShowDividerUnfulfilledProduct(index: Int, fullFilledProductsSize: Int): Boolean {
+        return index < fullFilledProductsSize - Int.ONE
+    }
+
     companion object {
-        const val MARGIN_HORIZONTAL = 16
+        const val MARGIN_8 = 8
+        const val MARGIN_16 = 16
+        const val MARGIN_12 = 12
     }
 }

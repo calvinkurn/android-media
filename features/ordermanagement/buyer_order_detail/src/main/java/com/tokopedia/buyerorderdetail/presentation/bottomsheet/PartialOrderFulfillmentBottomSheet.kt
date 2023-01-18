@@ -7,18 +7,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.buyerorderdetail.databinding.PartialOrderFulfillmentBottomsheetBinding
 import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.presentation.activity.PartialOrderFulfillmentActivity
 import com.tokopedia.buyerorderdetail.presentation.adapter.PartialOrderFulfillmentAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.PartialOrderFulfillmentListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.PartialOrderFulfillmentTypeFactoryImpl
+import com.tokopedia.buyerorderdetail.presentation.model.PartialOrderFulfillmentWrapperUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofErrorUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofFulfilledToggleUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofProductFulfilledUiModel
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.PartialOrderFulfillmentViewModel
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -60,6 +65,7 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        clearContentPadding = true
         binding = PartialOrderFulfillmentBottomsheetBinding.inflate(inflater, container, false)
         setChild(binding?.root)
         setTitle(
@@ -70,6 +76,7 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupRvPartialOrderFulfillment()
         setupCta()
         loadPofInfo()
         observePartialOrderFulfillmentInfo()
@@ -98,6 +105,14 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
         refundEstimateInfoBottomSheet.show(childFragmentManager)
     }
 
+    override fun onFooterHyperlinkClicked(linkUrl: String) {
+        goToWebView(linkUrl)
+    }
+
+    override fun onHeaderHyperlinkClicked(linkUrl: String) {
+        goToWebView(linkUrl)
+    }
+
     override fun onErrorActionClicked() {
         partialOrderFulfillmentAdapter.run {
             hideError()
@@ -112,17 +127,39 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
         }
     }
 
+    private fun goToWebView(linkUrl: String) {
+        context?.let {
+            RouteManager.route(it, ApplinkConstInternalGlobal.WEBVIEW, linkUrl)
+        }
+    }
+
+    private fun setupRvPartialOrderFulfillment() {
+        binding?.rvPartialOrderFulfillment?.run {
+            layoutManager = LinearLayoutManager(context)
+            adapter = partialOrderFulfillmentAdapter
+        }
+    }
+
     private fun observePartialOrderFulfillmentInfo() {
         observe(viewModel.partialOrderFulfillmentRespondInfo) {
             partialOrderFulfillmentAdapter.hideLoadingShimmer()
             when (it) {
                 is Success -> {
-                    partialOrderFulfillmentAdapter.updateItems(it.data.partialOrderFulfillmentUiModelList)
+                    showPartialOrderFulfillment(it.data)
                 }
                 is Fail -> {
                     showPartialOrderFulfillmentError(it.throwable)
                 }
             }
+        }
+    }
+
+    private fun showPartialOrderFulfillment(data: PartialOrderFulfillmentWrapperUiModel) {
+        partialOrderFulfillmentAdapter.updateItems(data.partialOrderFulfillmentUiModelList)
+        binding?.run {
+            viewPofShadow.show()
+            btnPrimaryConfirm.show()
+            btnSecondaryCancelOrder.show()
         }
     }
 

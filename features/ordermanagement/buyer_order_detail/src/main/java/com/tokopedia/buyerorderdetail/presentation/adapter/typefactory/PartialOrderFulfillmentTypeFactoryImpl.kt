@@ -39,13 +39,14 @@ class PartialOrderFulfillmentTypeFactoryImpl(
             PofAvailableLabelViewHolder.LAYOUT -> PofAvailableLabelViewHolder(parent)
             PofDetailViewHolder.LAYOUT -> PofDetailViewHolder(parent)
             PofFulfilledToggleViewHolder.LAYOUT -> PofFulfilledToggleViewHolder(parent, partialOrderFulfillmentListener)
-            PofHeaderInfoViewHolder.LAYOUT -> PofHeaderInfoViewHolder(parent)
+            PofHeaderInfoViewHolder.LAYOUT -> PofHeaderInfoViewHolder(parent, partialOrderFulfillmentListener)
             PofProductFulfilledViewHolder.LAYOUT -> PofProductFulfilledViewHolder(parent)
             PofProductUnfulfilledViewHolder.LAYOUT -> PofProductUnfulfilledViewHolder(parent)
             PofRefundEstimateViewHolder.LAYOUT -> PofRefundEstimateViewHolder(parent, partialOrderFulfillmentListener)
             PofThickDividerViewHolder.LAYOUT -> PofThickDividerViewHolder(parent)
             PofThinDividerViewHolder.LAYOUT -> PofThinDividerViewHolder(parent)
             PofShimmerViewHolder.LAYOUT -> PofShimmerViewHolder(parent)
+            PofErrorViewHolder.LAYOUT -> PofErrorViewHolder(parent, partialOrderFulfillmentListener)
             else -> super.createViewHolder(parent, type)
         }
     }

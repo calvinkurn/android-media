@@ -9,6 +9,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.diffutil.PartialOrder
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.PartialOrderFulfillmentTypeFactoryImpl
 import com.tokopedia.buyerorderdetail.presentation.model.BasePofVisitableUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofErrorUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PofFulfilledToggleUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofProductFulfilledUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -53,7 +54,7 @@ class PartialOrderFulfillmentAdapter(
 
     fun expandFulfilledProducts(fulfilledProducts: List<PofProductFulfilledUiModel>) {
         val fulfilledProductIndex =
-            visitables.indexOfFirst { it is PofProductFulfilledUiModel } + Int.ONE
+            visitables.indexOfFirst { it is PofFulfilledToggleUiModel } + Int.ONE
         visitables.addAll(fulfilledProductIndex, fulfilledProducts)
         notifyItemRangeInserted(fulfilledProductIndex, fulfilledProducts.size)
     }

@@ -84,16 +84,16 @@ class PofConfirmRejectBottomSheet : BottomSheetUnify() {
 
     private fun setBtnPrimaryCancellation() {
         binding?.btnSecondaryBack?.setOnClickListener {
-            orderId?.let {
-                showBtnPrimaryLoading()
-                viewModel.rejectPartialOrderFulfillment(it)
-            }
+            dismiss()
         }
     }
 
     private fun setBtnSecondaryBack() {
         binding?.btnPrimaryCancellation?.setOnClickListener {
-            dismiss()
+            orderId?.let {
+                showBtnPrimaryLoading()
+                viewModel.rejectPartialOrderFulfillment(it)
+            }
         }
     }
 

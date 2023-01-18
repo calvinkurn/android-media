@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.databinding.ItemFulfilledPartialOrderBinding
 import com.tokopedia.buyerorderdetail.presentation.model.PofProductFulfilledUiModel
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 
 class PofProductFulfilledViewHolder(view: View) :
@@ -20,6 +21,7 @@ class PofProductFulfilledViewHolder(view: View) :
             setImageProductUrl(element.productPictureUrl)
             setProductName(element.productName)
             setProductQtyPrice(element.getProductPriceQty())
+            setFulfilledDivider(element.isShowDivider)
         }
     }
 
@@ -35,6 +37,9 @@ class PofProductFulfilledViewHolder(view: View) :
                 if (oldItem.getProductPriceQty() != newItem.getProductPriceQty()) {
                     binding.setProductQtyPrice(newItem.getProductPriceQty())
                 }
+                if (oldItem.isShowDivider != newItem.isShowDivider) {
+                    binding.setFulfilledDivider(newItem.isShowDivider)
+                }
             }
         }
     }
@@ -49,6 +54,10 @@ class PofProductFulfilledViewHolder(view: View) :
 
     private fun ItemFulfilledPartialOrderBinding.setProductQtyPrice(productQtyPrice: String) {
         tvUnfulfilledProductPriceQuantity.text = productQtyPrice
+    }
+
+    private fun ItemFulfilledPartialOrderBinding.setFulfilledDivider(isShowDivider: Boolean) {
+        dividerFulfilledProduct.showWithCondition(isShowDivider)
     }
 }
 

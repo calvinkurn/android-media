@@ -9,7 +9,7 @@ class PofThickDividerViewHolder(itemView: View?) :
     AbstractViewHolder<PofThickDividerUiModel>(itemView) {
 
     companion object {
-        val LAYOUT = R.layout.item_buyer_order_detail_thick_divider
+        val LAYOUT = R.layout.item_partial_order_fulfillment_thick_divider
     }
 
     override fun bind(element: PofThickDividerUiModel?) {

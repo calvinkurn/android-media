@@ -10,7 +10,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/viewPofShadow"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <View
@@ -19,14 +20,17 @@
         android:layout_height="2dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/buyer_order_detail_sticky_action_buttons_shadow"
-        app:layout_constraintBottom_toTopOf="@id/btnSecondaryCancelOrder" />
+        app:layout_constraintBottom_toTopOf="@id/btnSecondaryCancelOrder"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnSecondaryCancelOrder"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintEnd_toStartOf="@id/guidelineBtn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -34,7 +38,9 @@
         app:unifyButtonVariant="ghost"
         app:unifyButtonSize="medium"
         android:textColor="@color/Unify_NN600"
-        android:text="@string/buyer_order_detail_pof_cancel_order_btn_secondary" />
+        android:text="@string/buyer_order_detail_pof_cancel_order_btn_secondary"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineBtn"
@@ -49,15 +55,17 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guidelineBtn"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/btnSecondaryCancelOrder"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled"
         app:unifyButtonSize="medium"
         android:textColor="@color/Unify_NN0"
-        android:text="@string/buyer_order_detail_pof_confirmation_btn_primary" />
+        android:text="@string/buyer_order_detail_pof_confirmation_btn_primary"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

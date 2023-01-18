@@ -2,6 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="12dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -40,7 +43,7 @@
         app:layout_constraintTop_toTopOf="@id/icCheckAvailable"
         app:layout_constraintBottom_toBottomOf="@id/icCheckAvailable"
         app:icon_color_light_enable="@color/Unify_NN900"
-        app:icon_name="CHEVRON_UP"/>
+        app:icon_name="CHEVRON_DOWN"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

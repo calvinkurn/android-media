@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailExtensionViewModel
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
+import com.tokopedia.buyerorderdetail.presentation.viewmodel.PartialOrderFulfillmentViewModel
 import com.tokopedia.digital.digital_recommendation.di.DigitalRecommendationViewModelModule
 import dagger.Binds
 import dagger.Module
@@ -26,4 +27,9 @@ abstract class BuyerOrderDetailViewModelModule {
     @IntoMap
     @ViewModelKey(BuyerOrderDetailExtensionViewModel::class)
     internal abstract fun provideOrderDetailExtensionViewModel(viewModel: BuyerOrderDetailExtensionViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PartialOrderFulfillmentViewModel::class)
+    internal abstract fun providePartialOrderFulfillmentViewModel(viewModel: PartialOrderFulfillmentViewModel): ViewModel
 }

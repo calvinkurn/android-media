@@ -191,7 +191,7 @@ class BuyerOrderDetailNavigator(
             ApplinkConstInternalOrder.PARAM_ORDER_ID to orderId
         )
         val appLink = UriUtil.buildUriAppendParams(
-            ApplinkConstInternalOrder.PATH_BUYER_PARTIAL_ORDER_FULFILLMENT,
+            ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_PARTIAL_ORDER_FULFILLMENT,
             params
         )
         val intent = RouteManager.getIntent(fragment.context, appLink)

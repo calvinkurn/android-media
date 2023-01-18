@@ -18,7 +18,7 @@ class PofDetailViewHolder(view: View) : CustomPayloadViewHolder<PofDetailUiModel
     override fun bind(element: PofDetailUiModel) {
         with(binding) {
             setPofDetailLabel(element.label)
-            setPofDetailLabel(element.value)
+            setPofDetailValue(element.value)
         }
     }
 

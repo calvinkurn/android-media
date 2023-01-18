@@ -7,6 +7,7 @@ data class PofProductFulfilledUiModel(
     val productName: String,
     val productPrice: String,
     val productQty: Long,
+    val isShowDivider: Boolean
 ): BasePofVisitableUiModel {
     fun getProductPriceQty() = "$productQty x $productPrice"
     override fun type(typeFactory: PartialOrderFulfillmentTypeFactoryImpl): Int {

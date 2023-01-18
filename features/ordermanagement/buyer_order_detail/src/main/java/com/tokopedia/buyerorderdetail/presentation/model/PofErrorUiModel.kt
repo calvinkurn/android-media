@@ -4,6 +4,6 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.PartialOr
 
 class PofErrorUiModel(val throwable: Throwable): BasePofVisitableUiModel {
     override fun type(typeFactory: PartialOrderFulfillmentTypeFactoryImpl): Int {
-        TODO("Not yet implemented")
+        return typeFactory.type(this)
     }
 }

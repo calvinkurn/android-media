@@ -4,7 +4,8 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.PartialOr
 
 
 data class PofThinDividerUiModel(
-    val marginHorizontal: Int? = null
+    val marginHorizontal: Int? = null,
+    val marginTop: Int? = null
 ): BasePofVisitableUiModel {
 
     override fun type(typeFactory: PartialOrderFulfillmentTypeFactoryImpl): Int {

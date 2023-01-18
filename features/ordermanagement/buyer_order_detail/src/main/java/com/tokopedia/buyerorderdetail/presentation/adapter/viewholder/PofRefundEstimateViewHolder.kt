@@ -3,6 +3,7 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.common.utils.PofUtils.setupHyperlinkText
 import com.tokopedia.buyerorderdetail.databinding.ItemPofEstimateRefundBottomsheetBinding
 import com.tokopedia.buyerorderdetail.presentation.model.PofRefundEstimateUiModel
 
@@ -58,10 +59,14 @@ class PofRefundEstimateViewHolder(
     }
 
     private fun ItemPofEstimateRefundBottomsheetBinding.setRefundEstimateFooter(footerInfo: String) {
-        tvPofEstimateRefundFooterInfo.text = MethodChecker.fromHtml(footerInfo)
+        tvPofEstimateRefundFooterInfo.setupHyperlinkText(footerInfo) {
+            listener.onFooterHyperlinkClicked(it)
+        }
     }
 
     interface Listener {
         fun onRefundEstimateInfoClicked()
+
+        fun onFooterHyperlinkClicked(linkUrl: String)
     }
 }
