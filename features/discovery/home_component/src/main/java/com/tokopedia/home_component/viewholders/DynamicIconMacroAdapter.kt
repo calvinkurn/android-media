@@ -11,10 +11,11 @@ import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
  * Created by dhaba
  */
 class DynamicIconMacroAdapter(private val listener: DynamicIconComponentListener) : RecyclerView.Adapter<DynamicIconMacroItemViewHolder>() {
-    private val categoryList = mutableListOf<DynamicIconComponent.DynamicIcon>()
+    private val iconList = mutableListOf<DynamicIconComponent.DynamicIcon>()
     private var position: Int = 0
     private var type: Int = 1
     private var isCache: Boolean = false
+    private var titleHeight: Int = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicIconMacroItemViewHolder {
         return DynamicIconMacroItemViewHolder(
@@ -28,11 +29,16 @@ class DynamicIconMacroAdapter(private val listener: DynamicIconComponentListener
     }
 
     override fun onBindViewHolder(holder: DynamicIconMacroItemViewHolder, position: Int) {
-        categoryList.getOrNull(position)?.let { holder.bind(it, categoryList.size > DynamicIconViewHolder.SCROLLABLE_ITEM, this.position, type, isCache) }
+        iconList.getOrNull(position)?.let { holder.
+        bind(it, iconList.size > DynamicIconViewHolder.SCROLLABLE_ITEM, this.position, type, isCache, titleHeight) }
     }
 
     override fun getItemCount(): Int {
-        return categoryList.size
+        return iconList.size
+    }
+
+    fun setTitleHeight(titleHeight: Int) {
+        this.titleHeight = titleHeight
     }
 
     fun setType(type: Int) {
@@ -44,8 +50,8 @@ class DynamicIconMacroAdapter(private val listener: DynamicIconComponentListener
     }
 
     fun submitList(list: DynamicIconComponentDataModel) {
-        categoryList.clear()
-        categoryList.addAll(list.dynamicIconComponent.dynamicIcon)
+        iconList.clear()
+        iconList.addAll(list.dynamicIconComponent.dynamicIcon)
         this.isCache = list.isCache
     }
 }
