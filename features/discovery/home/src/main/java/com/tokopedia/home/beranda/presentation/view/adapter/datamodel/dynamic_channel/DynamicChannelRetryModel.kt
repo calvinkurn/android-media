@@ -21,7 +21,6 @@ class DynamicChannelRetryModel(var isLoading: Boolean) : HomeVisitable {
     }
 
     override fun setTrackingDataForCombination(`object`: List<Any>) {
-        // no-op
     }
 
     override fun isTrackingCombined(): Boolean {
