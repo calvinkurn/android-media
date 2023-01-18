@@ -1,8 +1,6 @@
 package com.tokopedia.logisticseller.domain.mapper
 
 import com.tokopedia.logisticseller.data.model.RescheduleDayOptionModel
-import com.tokopedia.logisticseller.data.model.RescheduleDetailModel
-import com.tokopedia.logisticseller.data.model.RescheduleOptionsModel
 import com.tokopedia.logisticseller.data.model.RescheduleReasonOptionModel
 import com.tokopedia.logisticseller.data.model.RescheduleTimeOptionModel
 import com.tokopedia.logisticseller.data.model.SaveRescheduleModel
@@ -25,24 +23,14 @@ object ReschedulePickupMapper {
         )
     }
 
-    fun mapToRescheduleDetailModel(data: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup): RescheduleDetailModel {
-        val orderData = data.data.first().orderData
-        val shipperName = data.data.first().shipperName
-        return RescheduleDetailModel(
-            options = mapOrderDataToOptionModel(orderData.firstOrNull() ?: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData()),
-            courierName = "${orderData.firstOrNull()?.shipperProductName ?: ""} - $shipperName",
-            invoice = orderData.firstOrNull()?.invoice ?: "",
-            errorMessage = orderData.firstOrNull()?.errorMessage ?: "",
-            ticker = data.orderDetailTicker,
-            appLink = data.appLink
-        )
-    }
-
     fun mapToState(data: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup): ReschedulePickupState {
         val orderData = data.data.first().orderData
         val shipperName = data.data.first().shipperName
         return ReschedulePickupState(
-            options = mapOrderDataToOptionState(orderData.firstOrNull() ?: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData()),
+            options = mapOrderDataToOptionState(
+                orderData.firstOrNull()
+                    ?: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData()
+            ),
             info = ReschedulePickupInfo(
                 courier = "${orderData.firstOrNull()?.shipperProductName ?: ""} - $shipperName",
                 invoice = orderData.firstOrNull()?.invoice ?: "",
@@ -56,13 +44,6 @@ object ReschedulePickupMapper {
         return ReschedulePickupOptions(
             dayOptions = mapDayOptionToModel(orderData.chooseDay),
             reasonOptions = mapReasonOptionToModel(orderData.chooseReason)
-        )
-    }
-
-    private fun mapOrderDataToOptionModel(orderData: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData): RescheduleOptionsModel {
-        return RescheduleOptionsModel(
-            dayOptions = mapDayOptionToModel(orderData.chooseDay),
-            reasonOptionModel = mapReasonOptionToModel(orderData.chooseReason)
         )
     }
 
@@ -105,7 +86,11 @@ object ReschedulePickupMapper {
         )
     }
 
-    fun mapToSaveRescheduleModel(data: SaveReschedulePickupResponse.Data, etaPickup: String, orderId: String): SaveRescheduleModel {
+    fun mapToSaveRescheduleModel(
+        data: SaveReschedulePickupResponse.Data,
+        etaPickup: String,
+        orderId: String
+    ): SaveRescheduleModel {
         return SaveRescheduleModel(
             success = data.mpLogisticInsertReschedulePickup.status == INSERT_SUCCESS_STATUS && data.mpLogisticInsertReschedulePickup.errors.isEmpty(),
             message = mapSaveRescheduleMessage(data, orderId),
@@ -116,7 +101,10 @@ object ReschedulePickupMapper {
         )
     }
 
-    private fun mapSaveRescheduleMessage(data: SaveReschedulePickupResponse.Data, orderId: String): String {
+    private fun mapSaveRescheduleMessage(
+        data: SaveReschedulePickupResponse.Data,
+        orderId: String
+    ): String {
         return if (data.mpLogisticInsertReschedulePickup.status == INSERT_SUCCESS_STATUS && data.mpLogisticInsertReschedulePickup.errors.isNotEmpty()) {
             data.mpLogisticInsertReschedulePickup.errors.first().replaceFirst("$orderId: ", "")
         } else {
