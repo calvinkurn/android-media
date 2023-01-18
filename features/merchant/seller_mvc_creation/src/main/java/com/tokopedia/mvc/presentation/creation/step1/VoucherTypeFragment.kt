@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.presentation.creation.step1
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +25,6 @@ import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStep
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneEvent
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneUiState
 import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
-import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -94,6 +94,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.processEvent(
             VoucherCreationStepOneEvent.InitVoucherConfiguration(
+                pageMode ?: PageMode.CREATE,
                 voucherConfiguration
             )
         )
@@ -271,29 +272,49 @@ class VoucherTypeFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun navigateToNextStep(pageMode: PageMode, currentVoucherConfiguration: VoucherConfiguration) {
+    private fun navigateToNextStep(
+        pageMode: PageMode,
+        currentVoucherConfiguration: VoucherConfiguration
+    ) {
         if (pageMode == PageMode.CREATE) {
-            navigateToVoucherInformationPage(currentVoucherConfiguration)
+            navigateToVoucherInformationPage(pageMode, currentVoucherConfiguration)
         } else {
-            navigateToNexStepInEditMode(currentVoucherConfiguration)
+            navigateToNexStepInEditMode(pageMode, currentVoucherConfiguration)
         }
     }
 
-    private fun navigateToNexStepInEditMode(currentVoucherConfiguration: VoucherConfiguration) {
+    private fun navigateToNexStepInEditMode(
+        pageMode: PageMode,
+        currentVoucherConfiguration: VoucherConfiguration
+    ) {
         if (currentVoucherConfiguration.isVoucherProduct != voucherConfiguration.isVoucherProduct) {
-            navigateToVoucherInformationPage(currentVoucherConfiguration)
+            navigateToVoucherInformationPage(pageMode, currentVoucherConfiguration)
         } else {
             navigateToVoucherSummaryPage(currentVoucherConfiguration)
         }
     }
 
-    private fun navigateToVoucherInformationPage(currentVoucherConfiguration: VoucherConfiguration) {
-        context?.let { ctx -> VoucherInformationActivity.start(ctx, currentVoucherConfiguration) }
-        activity?.finish()
+    private fun navigateToVoucherInformationPage(
+        pageMode: PageMode,
+        currentVoucherConfiguration: VoucherConfiguration
+    ) {
+        if (pageMode == PageMode.CREATE) {
+            context?.let { ctx -> VoucherInformationActivity.start(ctx, currentVoucherConfiguration) }
+            activity?.finish()
+        } else {
+            context?.let { ctx -> VoucherInformationActivity.buildEditModeIntent(ctx, currentVoucherConfiguration) }
+            activity?.finish()
+        }
     }
 
     private fun navigateToVoucherSummaryPage(currentVoucherConfiguration: VoucherConfiguration) {
-        SummaryActivity.start(context, currentVoucherConfiguration)
+        val intent = Intent().apply {
+            putExtra(
+                BundleConstant.BUNDLE_KEY_VOUCHER_CREATION_STEP_ONE,
+                currentVoucherConfiguration
+            )
+        }
+        activity?.setResult(102, intent)
         activity?.finish()
     }
 }

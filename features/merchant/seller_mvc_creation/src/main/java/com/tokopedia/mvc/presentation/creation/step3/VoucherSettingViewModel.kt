@@ -37,14 +37,22 @@ class VoucherSettingViewModel @Inject constructor(
     fun processEvent(event: VoucherCreationStepThreeEvent) {
         when (event) {
             is VoucherCreationStepThreeEvent.InitVoucherConfiguration -> {
-                initVoucherConfiguration(event.voucherConfiguration)
+                initVoucherConfiguration(event.pageMode, event.voucherConfiguration)
             }
             is VoucherCreationStepThreeEvent.ChoosePromoType -> handlePromoTypeSelection(event.promoType)
             is VoucherCreationStepThreeEvent.ChooseBenefitType -> handleBenefitTypeSelection(event.benefitType)
-            is VoucherCreationStepThreeEvent.OnInputNominalChanged -> handleNominalInputChanges(event.nominal)
-            is VoucherCreationStepThreeEvent.OnInputPercentageChanged -> handlePercentageInputChanges(event.percentage)
-            is VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged -> handleMaxDeductionInputChanges(event.maxDeduction)
-            is VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged -> handleMinimumBuyInputChanges(event.minimumBuy)
+            is VoucherCreationStepThreeEvent.OnInputNominalChanged -> handleNominalInputChanges(
+                event.nominal
+            )
+            is VoucherCreationStepThreeEvent.OnInputPercentageChanged -> handlePercentageInputChanges(
+                event.percentage
+            )
+            is VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged -> handleMaxDeductionInputChanges(
+                event.maxDeduction
+            )
+            is VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged -> handleMinimumBuyInputChanges(
+                event.minimumBuy
+            )
             is VoucherCreationStepThreeEvent.OnInputQuotaChanged -> handleQuotaInputChanges(event.quota)
             is VoucherCreationStepThreeEvent.ChooseTargetBuyer -> handleTargetBuyerSelection(event.targetBuyer)
             is VoucherCreationStepThreeEvent.HandleCoachMark -> handleCoachmark()
@@ -53,10 +61,14 @@ class VoucherSettingViewModel @Inject constructor(
         }
     }
 
-    private fun initVoucherConfiguration(voucherConfiguration: VoucherConfiguration) {
+    private fun initVoucherConfiguration(
+        pageMode: PageMode,
+        voucherConfiguration: VoucherConfiguration
+    ) {
         _uiState.update {
             it.copy(
                 isLoading = false,
+                pageMode = pageMode,
                 voucherConfiguration = voucherConfiguration
             )
         }

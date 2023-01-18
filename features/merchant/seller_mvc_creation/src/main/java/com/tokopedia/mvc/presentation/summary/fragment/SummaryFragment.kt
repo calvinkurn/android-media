@@ -20,7 +20,6 @@ import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.getPercentFormatted
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -39,7 +38,6 @@ import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherSettingSectionBindi
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.SelectedProduct
-import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.ImageRatio
@@ -49,6 +47,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.SuccessUploadBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
+import com.tokopedia.mvc.presentation.creation.step3.VoucherSettingActivity
 import com.tokopedia.mvc.presentation.summary.helper.SummaryPageRedirectionHelper
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
 import com.tokopedia.mvc.util.SharingUtil
@@ -146,7 +145,7 @@ class SummaryFragment :
     }
 
     override fun onVoucherTypePageResult() {
-        //TODO("Not yet implemented")
+        // TODO("Not yet implemented")
     }
 
     private fun setupPageMode() {
@@ -329,8 +328,11 @@ class SummaryFragment :
         with(configuration) {
             tpgVoucherName.text = voucherName
             tpgVoucherCode.text = voucherCode
-            tpgVoucherTarget.text = if (isVoucherPublic) getString(R.string.smvc_voucher_public_label)
-                                    else getString(R.string.smvc_voucher_private_label)
+            tpgVoucherTarget.text = if (isVoucherPublic) {
+                getString(R.string.smvc_voucher_public_label)
+            } else {
+                getString(R.string.smvc_voucher_private_label)
+            }
             llVoucherCode.isVisible = !isVoucherPublic
             llVoucherMultiperiod.isVisible = isPeriod
             tpgVoucherMultiperiod.text = getString(R.string.smvc_summary_page_multiperiod_format, totalPeriod)
@@ -426,6 +428,10 @@ class SummaryFragment :
 
     private fun onConfigurationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
         // TODO: redirect to step 3
+        context?.let {
+            val intent = VoucherSettingActivity.buildEditModeIntent(it, configuration)
+            startActivity(intent)
+        }
     }
 
     private fun onChangeProductBtnChangeClicked(configuration: VoucherConfiguration) {

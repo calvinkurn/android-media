@@ -4,11 +4,14 @@ import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 
 sealed class VoucherCreationStepOneEvent {
-    data class InitVoucherConfiguration(val voucherConfiguration: VoucherConfiguration) :
-        VoucherCreationStepOneEvent()
+    data class InitVoucherConfiguration(
+        val pageMode: PageMode,
+        val voucherConfiguration: VoucherConfiguration
+    ) : VoucherCreationStepOneEvent()
 
     data class ChooseVoucherType(
-        val pageMode: PageMode, val isVoucherProduct: Boolean
+        val pageMode: PageMode,
+        val isVoucherProduct: Boolean
     ) : VoucherCreationStepOneEvent()
 
     object HandleCoachmark : VoucherCreationStepOneEvent()

@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.presentation.creation.step3
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,7 +31,7 @@ import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeAction
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeEvent
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeUiState
-import com.tokopedia.mvc.presentation.product.list.ProductListActivity
+import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -114,6 +115,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.processEvent(
             VoucherCreationStepThreeEvent.InitVoucherConfiguration(
+                pageMode ?: PageMode.CREATE,
                 voucherConfiguration
             )
         )
@@ -1099,30 +1101,41 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun continueToNextStep(voucherConfiguration: VoucherConfiguration) {
         if (pageMode == PageMode.CREATE) {
             if (voucherConfiguration.isVoucherProduct) {
-                context?.let { ctx ->
-                    ProductListActivity.start(
-                        ctx,
-                        voucherConfiguration,
-                        emptyList(),
-                        0
-                    )
-                }
+                navigateToAddProductPage(voucherConfiguration)
             } else {
-                context?.let { ctx ->
-                    SummaryActivity.start(
-                        ctx,
-                        voucherConfiguration
-                    )
-                }
+                navigateToVoucherSummaryPage(voucherConfiguration)
             }
         } else {
-            context?.let { ctx ->
-                SummaryActivity.start(
-                    ctx,
-                    voucherConfiguration
-                )
-            }
+            setResultForSummaryPage(voucherConfiguration)
         }
+    }
+
+    private fun navigateToAddProductPage(currentVoucherConfiguration: VoucherConfiguration) {
+        if (pageMode == PageMode.CREATE) {
+            context?.let { ctx -> AddProductActivity.buildCreateModeIntent(ctx, currentVoucherConfiguration) }
+        } else {
+            context?.let { ctx -> AddProductActivity.buildEditModeIntent(ctx, currentVoucherConfiguration) }
+        }
+    }
+
+    private fun navigateToVoucherSummaryPage(currentVoucherConfiguration: VoucherConfiguration) {
+        context?.let { ctx ->
+            SummaryActivity.start(
+                ctx,
+                currentVoucherConfiguration
+            )
+        }
+    }
+
+    private fun setResultForSummaryPage(currentVoucherConfiguration: VoucherConfiguration) {
+        val intent = Intent().apply {
+            putExtra(
+                BundleConstant.BUNDLE_KEY_VOUCHER_CREATION_STEP_THREE,
+                currentVoucherConfiguration
+            )
+        }
+        activity?.setResult(104, intent)
+        activity?.finish()
     }
 
     private fun renderButtonValidation(

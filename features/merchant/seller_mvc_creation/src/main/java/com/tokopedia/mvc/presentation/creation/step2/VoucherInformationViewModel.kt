@@ -39,6 +39,7 @@ class VoucherInformationViewModel @Inject constructor(
     fun processEvent(event: VoucherCreationStepTwoEvent) {
         when (event) {
             is VoucherCreationStepTwoEvent.InitVoucherConfiguration -> initVoucherConfiguration(
+                event.pageMode,
                 event.voucherConfiguration
             )
             is VoucherCreationStepTwoEvent.ChooseVoucherTarget -> handleVoucherTargetSelection(
@@ -66,11 +67,13 @@ class VoucherInformationViewModel @Inject constructor(
     }
 
     private fun initVoucherConfiguration(
+        pageMode: PageMode,
         voucherConfiguration: VoucherConfiguration
     ) {
         _uiState.update {
             it.copy(
                 isLoading = false,
+                pageMode = pageMode,
                 voucherConfiguration = voucherConfiguration
             )
         }
@@ -239,7 +242,12 @@ class VoucherInformationViewModel @Inject constructor(
                 voucherConfiguration = it.voucherConfiguration.copy(isFinishFilledStepTwo = true)
             )
         }
-        _uiAction.tryEmit(VoucherCreationStepTwoAction.ContinueToNextStep(currentState.voucherConfiguration))
+        _uiAction.tryEmit(
+            VoucherCreationStepTwoAction.NavigateToNextStep(
+                currentState.pageMode,
+                currentState.voucherConfiguration
+            )
+        )
     }
 
     private fun isCoachMarkShown(): Boolean {

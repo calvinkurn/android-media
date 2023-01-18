@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.presentation.creation.step2
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -42,7 +43,6 @@ import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStep
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoEvent
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
 import com.tokopedia.mvc.presentation.creation.step3.VoucherSettingActivity
-import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.DateTimeUtils
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
@@ -150,6 +150,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.processEvent(
             VoucherCreationStepTwoEvent.InitVoucherConfiguration(
+                pageMode ?: PageMode.CREATE,
                 voucherConfiguration
             )
         )
@@ -234,7 +235,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     private fun handleAction(action: VoucherCreationStepTwoAction) {
         when (action) {
             is VoucherCreationStepTwoAction.BackToPreviousStep -> backToPreviousStep(action.voucherConfiguration)
-            is VoucherCreationStepTwoAction.ContinueToNextStep -> continueToNextStep(action.voucherConfiguration)
+            is VoucherCreationStepTwoAction.NavigateToNextStep -> navigateToNextStep(action.pageMode, action.voucherConfiguration)
             is VoucherCreationStepTwoAction.ShowError -> TODO()
             is VoucherCreationStepTwoAction.ShowCoachmark -> showCoachmark()
         }
@@ -323,30 +324,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun backToPreviousStep(currentVoucherConfiguration: VoucherConfiguration) {
-        if (pageMode == PageMode.CREATE) {
-            navigateToVoucherTypePage(currentVoucherConfiguration)
-        } else {
-            navigateToVoucherSummaryPage(currentVoucherConfiguration)
-        }
-    }
-
-    private fun navigateToVoucherTypePage(currentVoucherConfiguration: VoucherConfiguration) {
-        context?.let { ctx -> VoucherTypeActivity.start(ctx, currentVoucherConfiguration) }
-        activity?.finish()
-    }
-
-    private fun navigateToVoucherSettingPage(currentVoucherConfiguration: VoucherConfiguration) {
-        context?.let { ctx -> VoucherSettingActivity.start(ctx, currentVoucherConfiguration) }
-        activity?.finish()
-    }
-
-    private fun navigateToVoucherSummaryPage(currentVoucherConfiguration: VoucherConfiguration) {
-        SummaryActivity.start(context, currentVoucherConfiguration)
-        activity?.finish()
-    }
-
-    // Voucher target section
+    // Voucher target region
     private fun setupVoucherTargetSection() {
         binding?.run {
             if (viewVoucherTarget.parent != null) {
@@ -437,7 +415,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
     }
 
-    // Voucher name section
+    // Voucher name region
     private fun setupVoucherNameSection() {
         binding?.run {
             if (viewVoucherName.parent != null) {
@@ -469,7 +447,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
     }
 
-    // Voucher code section
+    // Voucher code region
     private fun setupVoucherCodeSection() {
         binding?.run {
             if (viewVoucherCode.parent != null) {
@@ -508,7 +486,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
     }
 
-    // Voucher period section
+    // Voucher period region
     private fun setupVoucherPeriodSection() {
         binding?.run {
             if (viewVoucherActivePeriod.parent != null) {
@@ -809,7 +787,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
     }
 
-    // Button section
+    // Button region
     private fun setupButtonSection() {
         binding?.run {
             if (viewButton.parent != null) {
@@ -822,32 +800,57 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderButtonValidation(
-        voucherConfiguration: VoucherConfiguration,
-        isEnabled: Boolean,
-        validationDate: List<VoucherValidationResult.ValidationDate>
-    ) {
-        buttonSectionBinding?.run {
-            btnContinue.apply {
-                val unAvailableDate = validationDate.filter { !it.available }
-                this.isEnabled = isEnabled
-                if (unAvailableDate.isNotEmpty()) {
-                    showCreateVoucherConfirmationDialog(voucherConfiguration)
-                } else {
-                    setOnClickListener {
-                        viewModel.processEvent(
-                            VoucherCreationStepTwoEvent.NavigateToNextStep(
-                                voucherConfiguration
-                            )
-                        )
-                    }
-                }
-            }
+    private fun backToPreviousStep(currentVoucherConfiguration: VoucherConfiguration) {
+        if (pageMode == PageMode.CREATE) {
+            navigateToVoucherTypePage(currentVoucherConfiguration)
+        } else {
+            navigateToVoucherSummaryPage(currentVoucherConfiguration)
         }
     }
 
-    private fun continueToNextStep(voucherConfiguration: VoucherConfiguration) {
-        context?.let { ctx -> VoucherSettingActivity.start(ctx, voucherConfiguration) }
+    private fun navigateToNextStep(
+        pageMode: PageMode,
+        voucherConfiguration: VoucherConfiguration
+    ) {
+        if (pageMode == PageMode.CREATE) {
+            navigateToVoucherSettingPage(pageMode, voucherConfiguration)
+        } else {
+            navigateToVoucherSummaryPage(voucherConfiguration)
+        }
+    }
+
+    private fun navigateToVoucherTypePage(currentVoucherConfiguration: VoucherConfiguration) {
+        if (this.pageMode == PageMode.CREATE) {
+            context?.let { ctx -> VoucherTypeActivity.start(ctx, currentVoucherConfiguration) }
+            activity?.finish()
+        } else {
+            context?.let { ctx -> VoucherTypeActivity.buildEditModeIntent(ctx, currentVoucherConfiguration) }
+            activity?.finish()
+        }
+    }
+
+    private fun navigateToVoucherSettingPage(
+        pageMode: PageMode,
+        currentVoucherConfiguration: VoucherConfiguration
+    ) {
+        if (pageMode == PageMode.CREATE) {
+            context?.let { ctx -> VoucherSettingActivity.start(ctx, currentVoucherConfiguration) }
+            activity?.finish()
+        } else {
+            context?.let { ctx -> VoucherSettingActivity.buildEditModeIntent(ctx, currentVoucherConfiguration) }
+            activity?.finish()
+        }
+    }
+
+    private fun navigateToVoucherSummaryPage(currentVoucherConfiguration: VoucherConfiguration) {
+        val intent = Intent().apply {
+            putExtra(
+                BundleConstant.BUNDLE_KEY_VOUCHER_CREATION_STEP_TWO,
+                currentVoucherConfiguration
+            )
+        }
+        activity?.setResult(103, intent)
+        activity?.finish()
     }
 
     private fun showCreateVoucherConfirmationDialog(voucherConfiguration: VoucherConfiguration) {
@@ -873,5 +876,29 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             }
             setSecondaryCTAClickListener { dismiss() }
         }?.show()
+    }
+
+    private fun renderButtonValidation(
+        voucherConfiguration: VoucherConfiguration,
+        isEnabled: Boolean,
+        validationDate: List<VoucherValidationResult.ValidationDate>
+    ) {
+        buttonSectionBinding?.run {
+            btnContinue.apply {
+                val unAvailableDate = validationDate.filter { !it.available }
+                this.isEnabled = isEnabled
+                if (unAvailableDate.isNotEmpty()) {
+                    showCreateVoucherConfirmationDialog(voucherConfiguration)
+                } else {
+                    setOnClickListener {
+                        viewModel.processEvent(
+                            VoucherCreationStepTwoEvent.NavigateToNextStep(
+                                voucherConfiguration
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 }
