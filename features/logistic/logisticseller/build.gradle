@@ -16,8 +16,6 @@ buildscript {
     ext {
         compose_compiler = "1.1.1"
         compose_version = "1.1.1"
-        compose_activity = "1.3.1"
-        fragment_ktx = "1.3.3"
     }
     repositories {
         google()
@@ -44,15 +42,6 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion = compose_compiler
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
     packagingOptions {
@@ -103,21 +92,13 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     //-------------------------------------------------------------------//
 
-
-    //Compose
-    implementation "androidx.compose.compiler:compiler:$compose_compiler"
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation "androidx.compose.runtime:runtime:$compose_version"
-    implementation "androidx.compose.foundation:foundation:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.material:material-icons-extended:$compose_version"
-    implementation "androidx.activity:activity-compose:$compose_version"
-
-    // viewModels delegate and ViewTreeSavedStateRegistryOwners
-    implementation "androidx.fragment:fragment-ktx:$fragment_ktx"
-    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+    // Compose
+    api rootProject.ext.composeDependencies.composeUi
+    api rootProject.ext.composeDependencies.composeRuntime
+    api rootProject.ext.composeDependencies.composeFoundation
+    api rootProject.ext.composeDependencies.composeMaterial
+    api rootProject.ext.composeDependencies.composeIconsExtended
+    api rootProject.ext.composeDependencies.composeActivity
 
     //Macrobenchmark
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_version")
