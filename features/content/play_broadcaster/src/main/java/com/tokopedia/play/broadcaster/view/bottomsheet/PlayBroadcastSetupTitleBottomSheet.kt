@@ -58,18 +58,18 @@ class PlayBroadcastSetupTitleBottomSheet: BottomSheetUnify() {
             editText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-                override fun afterTextChanged(p0: Editable?) {
-                    if (p0?.isBlank() == true) return
+                override fun afterTextChanged(text: Editable?) {
+                    if (text?.isBlank() == true) return
                     if (mErrorState) {
                         mErrorState = false
                         isInputError = mErrorState
                         setMessage("")
                     }
-                    btnSetupTitle.isEnabled = (p0 != null && !p0.contentEquals(mTitle))
+                    btnSetupTitle.isEnabled = (text != null && !text.contentEquals(mTitle))
                 }
 
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    if (p1 == 0 && p0?.isBlank() == true) {
+                override fun onTextChanged(text: CharSequence?, textLength: Int, p2: Int, p3: Int) {
+                    if (textLength == 0 && text?.isBlank() == true) {
                         editText.text.clear()
                         return
                     }
