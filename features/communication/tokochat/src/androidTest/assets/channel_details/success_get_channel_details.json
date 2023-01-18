@@ -16,7 +16,7 @@
         "owner_type": "driver",
         "phone": "82240158005",
         "country_code": "62",
-        "image_url": "www.picture.com/steve",
+        "image_url": "https://images.tokopedia.net/img/cache/300/tPxBYm/2022/6/22/2511631a-0065-441a-9c34-6575b80b8bfc.jpg",
         "unread_message_count": 0,
         "unread_channel_count": 0,
         "metadata": {
@@ -66,7 +66,7 @@
           "driver_name": "Tokofood Driver 13 Tokofood Driver 13 Tokofood Driver 13 Tokofood Driver 13 Tokofood Driver 13",
           "driver_phone": "+6282240158005",
           "display_name": "Driver",
-          "driver_photo": "www.picture.com/steve"
+          "driver_photo": "https://images.tokopedia.net/img/cache/300/tPxBYm/2022/6/22/2511631a-0065-441a-9c34-6575b80b8bfc.jpg"
         },
         "shopper": null,
         "chat_window": {

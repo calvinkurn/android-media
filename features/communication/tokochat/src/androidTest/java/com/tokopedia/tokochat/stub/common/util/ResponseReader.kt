@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.stub.common
+package com.tokopedia.tokochat.stub.common.util
 
 import androidx.test.platform.app.InstrumentationRegistry
 import java.io.InputStreamReader

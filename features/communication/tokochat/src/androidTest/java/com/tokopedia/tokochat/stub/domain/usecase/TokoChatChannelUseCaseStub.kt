@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.stub.domain
+package com.tokopedia.tokochat.stub.domain.usecase
 
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase

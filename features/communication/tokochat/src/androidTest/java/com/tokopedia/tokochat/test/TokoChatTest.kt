@@ -6,9 +6,9 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.jakewharton.espresso.OkHttp3IdlingResource
+import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokochat.tokochat_config_common.di.module.TokoChatConfigContextModule
 import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.test.application.annotations.UiTest
@@ -17,6 +17,8 @@ import com.tokopedia.tokochat.stub.common.ConversationsPreferencesStub
 import com.tokopedia.tokochat.stub.common.MockWebServerDispatcher
 import com.tokopedia.tokochat.stub.di.DaggerTokoChatComponentStub
 import com.tokopedia.tokochat.stub.di.TokoChatComponentStub
+import com.tokopedia.tokochat.stub.di.base.DaggerFakeBaseAppComponent
+import com.tokopedia.tokochat.stub.di.base.FakeAppModule
 import com.tokopedia.tokochat.stub.view.TokoChatActivityStub
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
 import okhttp3.OkHttpClient
@@ -60,6 +62,7 @@ class TokoChatTest {
 
     @Before
     open fun before() {
+        AndroidThreeTen.init(applicationContext)
         setupDaggerComponent()
         setupConversationAndCourier()
         okHttp3IdlingResource = OkHttp3IdlingResource.create("okhttp", okhttpClient)
@@ -127,8 +130,7 @@ class TokoChatTest {
     }
 
     @Test
-    fun test123()
-    {
+    fun test123() {
         Thread.sleep(10000)
         mockWebServer.dispatcher = mockWebServerDispatcher
         launchChatRoomActivity()
@@ -136,8 +138,11 @@ class TokoChatTest {
     }
 
     private fun setupDaggerComponent() {
+        val baseComponent = DaggerFakeBaseAppComponent.builder()
+            .fakeAppModule(FakeAppModule(applicationContext))
+            .build()
         tokoChatComponent = DaggerTokoChatComponentStub.builder()
-            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .fakeBaseAppComponent(baseComponent)
             .tokoChatConfigContextModule(TokoChatConfigContextModule(context))
             .build()
         tokoChatComponent!!.inject(this)

@@ -1,10 +1,12 @@
 package com.tokopedia.tokochat.stub.common
 
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tokochat.stub.common.util.ResponseReader
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.RecordedRequest
 
-class MockWebServerDispatcher: Dispatcher() {
+class MockWebServerDispatcher : Dispatcher() {
 
     var responseCode: Int = 200
 
@@ -12,7 +14,7 @@ class MockWebServerDispatcher: Dispatcher() {
         return MockResponse()
             .setResponseCode(responseCode)
             .setBody(
-                ResponseReader.convertJsonToStream(getResponseString(request.path?: ""))
+                ResponseReader.convertJsonToStream(getResponseString(request.path ?: ""))
             )
     }
 
@@ -20,7 +22,7 @@ class MockWebServerDispatcher: Dispatcher() {
         return if (responseCode == 200) {
             getSuccessResponseString(url)
         } else {
-            "//TODO"
+            throw MessageErrorException("Error $responseCode")
         }
     }
 
