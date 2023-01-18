@@ -45,6 +45,10 @@ android {
         viewBinding true
         buildConfig true
     }
+
+    testOptions {
+        animationsDisabled = true
+    }
 }
 
 dependencies {
@@ -144,6 +148,7 @@ dependencies {
         exclude group: 'com.google.firebase'
     }
     androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 
     //For Ui test
     androidTestImplementation rootProject.ext.unifyDependencies.sortFilter
