@@ -96,14 +96,14 @@ class ReschedulePickupComposeViewModel @Inject constructor(
     }
 
     private fun validateInput() {
-        val isValid =
-            input.day.isNotEmpty() && input.time.isNotEmpty() && validateReason(input.reason)
         val state = _uiState.value
+        val isValid =
+            input.day.isNotEmpty() && input.time.isNotEmpty() && validateReason(input.reason, state.reason)
         _uiState.value = state.copy(valid = isValid)
     }
 
-    private fun validateReason(reason: String): Boolean {
-        return if (reason == OTHER_REASON_RESCHEDULE) {
+    private fun validateReason(reason: String, templateReason: String): Boolean {
+        return if (templateReason == OTHER_REASON_RESCHEDULE) {
             reason.length in OTHER_REASON_MIN_CHAR..OTHER_REASON_MAX_CHAR
         } else {
             reason.isNotEmpty()
