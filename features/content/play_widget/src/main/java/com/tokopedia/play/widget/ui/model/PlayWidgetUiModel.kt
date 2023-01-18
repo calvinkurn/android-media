@@ -43,7 +43,8 @@ sealed class PlayWidgetItemUiModel
 data class PlayWidgetBannerUiModel(
     val appLink: String,
     val imageUrl: String,
-) : PlayWidgetItemUiModel(), ImpressionableModel {
+    val gridType: PlayGridType = PlayGridType.Unknown,
+    ) : PlayWidgetItemUiModel(), ImpressionableModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 }
