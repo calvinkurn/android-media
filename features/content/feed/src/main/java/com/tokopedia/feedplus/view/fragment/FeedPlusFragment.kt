@@ -3118,7 +3118,7 @@ class FeedPlusFragment :
         if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostUiModel) {
             adapter.getlist().removeAt(rowNumber)
             adapter.notifyItemRemoved(rowNumber)
-            if (!isPostReported)
+            if (!isPostReported) {
                 Toaster.build(
                     requireView(),
                     getString(R.string.feed_post_deleted),
@@ -3126,6 +3126,7 @@ class FeedPlusFragment :
                     Toaster.TYPE_NORMAL,
                     getString(com.tokopedia.kolcommon.R.string.content_action_ok)
                 ).show()
+            }
         }
         if (adapter.getlist().isEmpty()) {
             showRefresh()
