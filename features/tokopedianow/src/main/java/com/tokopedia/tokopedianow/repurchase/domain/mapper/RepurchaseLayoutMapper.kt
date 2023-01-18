@@ -103,18 +103,9 @@ object RepurchaseLayoutMapper {
     }
 
     fun MutableList<Visitable<*>>.addCategoryMenu(
-        response: List<GetCategoryListResponse.CategoryListResponse.CategoryResponse>? = null,
         @TokoNowLayoutState state: Int
     ) {
-        val categoryListUiModel = CategoryMenuMapper.mapToCategoryList(
-            response = response,
-        )
-        add(
-            TokoNowCategoryMenuUiModel(
-                categoryListUiModel = categoryListUiModel,
-                state = state
-            )
-        )
+        add(TokoNowCategoryMenuUiModel(state = state))
     }
 
     fun MutableList<Visitable<*>>.mapCategoryMenuData(
@@ -131,9 +122,17 @@ object RepurchaseLayoutMapper {
                         headerName = item.title,
                         seeAllAppLink = seeAllAppLink
                     )
-                    item.copy(categoryListUiModel = categoryList, state = TokoNowLayoutState.SHOW, seeAllAppLink = seeAllAppLink)
+                    item.copy(
+                        categoryListUiModel = categoryList,
+                        state = TokoNowLayoutState.SHOW,
+                        seeAllAppLink = seeAllAppLink
+                    )
                 } else {
-                    item.copy(categoryListUiModel = null, state = TokoNowLayoutState.HIDE)
+                    item.copy(
+                        categoryListUiModel = null,
+                        state = TokoNowLayoutState.HIDE,
+                        seeAllAppLink = ""
+                    )
                 }
                 removeAt(index)
                 add(index, newItem)

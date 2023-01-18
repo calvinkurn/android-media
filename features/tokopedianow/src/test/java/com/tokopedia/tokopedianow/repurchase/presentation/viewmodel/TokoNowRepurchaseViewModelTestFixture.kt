@@ -211,7 +211,11 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     }
 
     protected fun onGetCategoryList_thenReturn(categoryListResponse: CategoryListResponse) {
-        coEvery { getCategoryListUseCase.execute("1", TokoNowRepurchaseFragment.CATEGORY_LEVEL_DEPTH) } returns categoryListResponse
+        coEvery { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) } returns categoryListResponse
+    }
+
+    protected fun onGetCategoryList_thenReturn(error: Throwable) {
+        coEvery { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) } throws error
     }
 
     protected fun onGetRepurchaseProductList_thenReturn(response: GetRepurchaseProductListResponse) {
