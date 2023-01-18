@@ -103,11 +103,12 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupView()
+        val images = populateImages()
+        setupView(images)
         applyUnifyBackgroundColor()
         observeUiEffect()
         observeUiState()
-        viewModel.processEvent(VoucherImageEvent.PopulateInitialData(populateImages()))
+        viewModel.processEvent(VoucherImageEvent.PopulateInitialData(images))
     }
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
@@ -116,9 +117,11 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
         setTitle(getString(R.string.smvc_select_voucher_image_ratio))
     }
 
-    private fun setupView() {
+    private fun setupView(images: List<VoucherImageUiModel>) {
         setupClickListener()
         setupList()
+        binding?.tvMvcDownloadDescription?.text =
+            context?.getString(R.string.smvc_placeholder_download_voucher_description, images.size)
     }
 
     private fun setupClickListener() {

@@ -286,7 +286,7 @@
     <string name="smvc_download_voucher_image">Download voucher image</string>
     <string name="smvc_download_voucher">Download Kupon</string>
     <string name="smvc_select_voucher_image_ratio">Pilih ukuran kupon</string>
-    <string name="smvc_download_voucher_description">Download kupon dengan ukuran yang sesuai dengan kebutuhanmu dari 3 ukuran berikut:</string>
+    <string name="smvc_placeholder_download_voucher_description">Download kupon dengan ukuran yang sesuai dengan kebutuhanmu dari %d ukuran berikut:</string>
     <string name="smvc_placeholder_download_voucher_image_success">Kupon %s berhasil di-download</string>
     <string name="smvc_download_voucher_image_failed">Download kupon gagal, cek koneksi internetmu dulu, ya.</string>
     <string name="smvc_storage_permission_enabled_needed">Anda tidak memberikan izin akses untuk Media Penyimpanan.</string>
