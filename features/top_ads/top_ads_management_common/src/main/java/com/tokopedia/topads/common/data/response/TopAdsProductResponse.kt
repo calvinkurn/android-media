@@ -3,8 +3,12 @@ package com.tokopedia.topads.common.data.response
 import com.google.gson.annotations.SerializedName
 
 data class TopAdsProductResponse(
+    val result : ArrayList<Data>
+)
+
+data class Response(
     @SerializedName("data")
-    val data: Data? = null,
+    val data: Data,
     @SerializedName("errors")
     val errors:List<TopAdsProductError>? = listOf()
 )

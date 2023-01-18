@@ -196,6 +196,7 @@
     <string name="later">Nanti Saja</string>
     <string name="mp_create_group_budget_help_desc">Semakin tinggi anggaran harian, durasi tampil iklanmu akan semakin lama dan dapat menjangkau semakin banyak pembeli.</string>
     <string name="daily_budget_tips">Tips Anggaran Harian</string>
+    <string name="the_group_name_is_already_in_use">Nama grup sudah digunakan.</string>
 
     <string-array name="sort_product_list_array">
         <item>Terlaris</item>

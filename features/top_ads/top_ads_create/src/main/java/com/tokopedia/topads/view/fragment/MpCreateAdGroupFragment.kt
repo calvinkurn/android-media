@@ -1,5 +1,6 @@
 package com.tokopedia.topads.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
@@ -10,11 +11,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.topads.common.data.response.DepositAmount
+import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.common.data.response.TopAdsProductResponse
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.create.databinding.FragmentMpCreateAdGroupBinding
 import com.tokopedia.topads.view.sheet.MpCreateGroupBudgetHelpSheet
 import com.tokopedia.topads.create.R
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.model.MpAdsCreateGroupViewModel
 import javax.inject.Inject
@@ -61,7 +65,6 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
     }
 
     private fun init(){
-        binding.btnSubmit.isLoading = true
         val suggestions = java.util.ArrayList<DataSuggestions>()
         suggestions.add(DataSuggestions("", listOf()))
         createGroupViewModel.getBidInfo(suggestions, GROUP_DETAIL_PAGE,  this::onSuccessBidSuggestion)
@@ -74,9 +77,32 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun onSuccessGroupValidation(data: ResponseGroupValidateName.TopAdsGroupValidateNameV2){
+        if (data.errors.isEmpty()) {
+//            createGroupViewModel.topAdsCreate()
+            createGroupViewModel.getTopAdsDeposit(this::getTopAdsDeposits)
+        } else {
+            binding.groupName.isInputError = true
+            binding.groupName.setMessage(getString(R.string.the_group_name_is_already_in_use))
+        }
+    }
+
     private fun onSuccessNameSuggestion(response : TopAdsProductResponse){
-        response.data?.product.let {
-            binding.groupName.editText.text = Editable.Factory().newEditable(it?.productName)
+//        response.result[0].data.product.let {
+//            binding.groupName.editText.text = Editable.Factory().newEditable(it.productName)
+//        }
+    }
+
+    private fun onSuccessGroupCreate(){
+        createGroupViewModel.getTopAdsDeposit(this::getTopAdsDeposits)
+    }
+
+    private fun getTopAdsDeposits(data: DepositAmount) {
+        val isEnoughDeposit = data.amount > 0
+        if (isEnoughDeposit) {
+            openInsufficientCreditsDialog()
+        } else {
+            openInsufficientCreditsDialog()
         }
     }
 
@@ -93,7 +119,13 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
         }
 
         binding.btnSubmit.setOnClickListener{
-
+            if(!binding.btnSubmit.isLoading) {
+                binding.btnSubmit.isLoading = true
+                createGroupViewModel.validateGroup(
+                    binding.groupName.editText.text.toString(),
+                    this::onSuccessGroupValidation
+                )
+            }
         }
     }
 
@@ -108,7 +140,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
 
         }
         dialog.setSecondaryCTAClickListener {
-            dialog.dismiss()
+            requireActivity().finish()
         }
         dialog.show()
     }
@@ -120,10 +152,12 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
         dialog.setPrimaryCTAText(getString(R.string.add_credit))
         dialog.setSecondaryCTAText(getString(R.string.later))
         dialog.setPrimaryCTAClickListener {
-
+            val intent = Intent(activity, TopAdsAddCreditActivity::class.java)
+            intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
+            startActivityForResult(intent, 99)
         }
         dialog.setSecondaryCTAClickListener {
-            dialog.dismiss()
+            requireActivity().finish()
         }
         dialog.show()
     }

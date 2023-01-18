@@ -23,10 +23,12 @@ class TopAdsGetProductUseCase @Inject constructor() : GraphqlUseCase<TopAdsProdu
         setTypeClass(TopAdsProductResponse::class.java)
         setGraphqlQuery(TOP_ADS_PRODUCT_GQL)
         execute({
-            if(it.errors?.isNotEmpty().orFalse()){
-                failure.invoke(Throwable(it.errors!![0].message))
-            }
-            else success.invoke(it)
+                it.result[0]
+            it.result[0]
+//            if(it.result[0].errors?.isNotEmpty().orFalse()){
+//                failure.invoke(Throwable(it.result[0].errors!![0].message))
+//            }
+//            else success.invoke(it)
         },failure)
     }
 }
