@@ -76,7 +76,7 @@
 
     <string name="empty_state_wishlist">Punya produk incaran? Tandai pakai ikon 💚, nanti akan muncul disini</string>
 
-    <string name="empty_state_favorite_shop">Follow toko yang kamu suka biar dapat info produk &amp; promo terbaru!</string>
+    <string name="empty_state_favorite_shop">Follow toko yang kamu suka, biar bisa dicek lagi lewat sini!</string>
     <string name="content_desc_image_empty_wishlist">image empty wishlist</string>
     <string name="content_desc_image_favorite_shop">image favorite shop</string>
     <string name="content_desc_image_wishlist">image wishlist</string>
