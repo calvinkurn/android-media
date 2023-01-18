@@ -8,6 +8,8 @@ import com.tokopedia.homenav.mainnav.data.pojo.order.UohOrders
 import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
 import com.tokopedia.homenav.mainnav.domain.usecases.query.GetOrderHistoryMePageQuery
 import com.tokopedia.homenav.mainnav.domain.usecases.query.GetOrderHistoryQuery
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 
@@ -16,7 +18,7 @@ import com.tokopedia.usecase.coroutines.UseCase
  */
 class GetUohOrdersNavUseCase(
     private val graphqlUseCase: GraphqlUseCase<UohData>
-) : UseCase<List<NavProductOrder>>() {
+) : UseCase<Result<List<NavProductOrder>>>() {
 
     private var isMePageUsingRollenceVariant = false
 
@@ -31,40 +33,44 @@ class GetUohOrdersNavUseCase(
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
 
-    override suspend fun executeOnBackground(): List<NavProductOrder> {
-        prepareGql()
-        val responseData = Success(graphqlUseCase.executeOnBackground().uohOrders ?: UohOrders())
-        val navProductList = mutableListOf<NavProductOrder>()
-        responseData.data.orders?.map {
-            if (it.metadata?.products?.isNotEmpty() == true) {
-                val product = it.metadata.products[0]
-                val additionalProductCount = it.metadata.products.size - 1
-                val statusOrder = it.status ?: ""
-                val estimatedArrival =
-                    if (statusOrder == IN_PROCESS || statusOrder == SENDING || statusOrder == PROCESSING) {
-                        it.metadata.queryParams?.substringAfter(
-                            SUBSTRING_AFTER_ESTIMATED_ARRIVAL
-                        )?.substringBefore(
-                            SUBSTRING_BEFORE_ESTIMATED_ARRIVAL
-                        ) ?: ""
-                    } else {
-                        ""
-                    }
-                navProductList.add(
-                    NavProductOrder(
-                        statusText = it.metadata.status?.label ?: "",
-                        statusTextColor = it.metadata.status?.textColor ?: "",
-                        productNameText = product.title ?: "",
-                        additionalProductCount = additionalProductCount,
-                        imageUrl = product.imageURL ?: "",
-                        id = it.orderUUID ?: "",
-                        applink = it.metadata.detailURL?.appURL ?: "",
-                        estimatedArrival = estimatedArrival
+    override suspend fun executeOnBackground(): Result<List<NavProductOrder>> {
+        return try {
+            prepareGql()
+            val responseData = graphqlUseCase.executeOnBackground().uohOrders ?: UohOrders()
+            val navProductList = mutableListOf<NavProductOrder>()
+            responseData.orders?.map {
+                if (it.metadata?.products?.isNotEmpty() == true) {
+                    val product = it.metadata.products[0]
+                    val additionalProductCount = it.metadata.products.size - 1
+                    val statusOrder = it.status ?: ""
+                    val estimatedArrival =
+                        if (statusOrder == IN_PROCESS || statusOrder == SENDING || statusOrder == PROCESSING) {
+                            it.metadata.queryParams?.substringAfter(
+                                SUBSTRING_AFTER_ESTIMATED_ARRIVAL
+                            )?.substringBefore(
+                                SUBSTRING_BEFORE_ESTIMATED_ARRIVAL
+                            ) ?: ""
+                        } else {
+                            ""
+                        }
+                    navProductList.add(
+                        NavProductOrder(
+                            statusText = it.metadata.status?.label ?: "",
+                            statusTextColor = it.metadata.status?.textColor ?: "",
+                            productNameText = product.title ?: "",
+                            additionalProductCount = additionalProductCount,
+                            imageUrl = product.imageURL ?: "",
+                            id = it.orderUUID ?: "",
+                            applink = it.metadata.detailURL?.appURL ?: "",
+                            estimatedArrival = estimatedArrival
+                        )
                     )
-                )
+                }
             }
+            Success(navProductList)
+        } catch (e: Exception) {
+            Fail(e)
         }
-        return navProductList
     }
 
     private fun generateParam(param: NavUohListParam): Map<String, Any?> {

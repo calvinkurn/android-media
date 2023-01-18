@@ -82,10 +82,10 @@ fun createViewModel(
         coEvery { it.executeOnBackground() }.answers { NavNotificationModel(0) }
     }
     val getUohOrdersNavUseCaseMock = getOrUseDefault(getUohOrdersNavUseCase) {
-        coEvery { it.executeOnBackground() }.answers { listOf() }
+        coEvery { it.executeOnBackground() }.answers { Success(listOf()) }
     }
     val getPaymentOrdersNavUseCaseMock = getOrUseDefault(getPaymentOrdersNavUseCase) {
-        coEvery { it.executeOnBackground() }.answers { listOf() }
+        coEvery { it.executeOnBackground() }.answers { Success(listOf()) }
     }
     val getProfileDataUseCaseMock = getOrUseDefault(getProfileDataUseCase) {
         coEvery { it.executeOnBackground() }.answers { AccountHeaderDataModel() }

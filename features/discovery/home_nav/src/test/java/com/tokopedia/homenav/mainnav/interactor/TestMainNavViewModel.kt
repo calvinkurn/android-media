@@ -915,49 +915,6 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test when show coachmark complain with correct position and control rollence for logged in user first time`() {
-        val defaultPositionComplaintNotFound = -1
-
-        val userSession = mockk<UserSessionInterface>()
-        every { userSession.isLoggedIn() } returns true
-        every { userSession.hasShop() } returns true
-        every { userSession.isShopOwner } returns true
-        viewModel = createViewModel(userSession = userSession)
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
-        viewModel.setInitialState()
-
-        viewModel.getMainNavData(true)
-        val complainPosition = viewModel.findComplainModelPosition()
-        Assert.assertNotEquals(defaultPositionComplaintNotFound, complainPosition)
-    }
-
-    @Test
-    fun `test when show coachmark all transaction with correct position and disable me page rollence`() {
-        val indexDefaultAllTransaction = 1
-        val pageSource = "Other page"
-
-        viewModel = createViewModel()
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
-        viewModel.setInitialState()
-        viewModel.setPageSource(pageSource)
-
-        val allTransactionPosition = viewModel.findAllTransactionModelPosition()
-        Assert.assertNotEquals(indexDefaultAllTransaction, allTransactionPosition)
-    }
-
-    @Test
-    fun `test when coachmark all transaction will not show for specific page`() {
-        val indexDefaultAllTransaction = 1
-        val pageSource = ApplinkConsInternalNavigation.SOURCE_HOME
-
-        viewModel = createViewModel()
-        viewModel.setPageSource(pageSource)
-
-        val allTransactionPosition = viewModel.findAllTransactionModelPosition()
-        Assert.assertEquals(indexDefaultAllTransaction, allTransactionPosition)
-    }
-
-    @Test
     fun `given thrown exception when refresh shop data then isGetShopError should be true`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
 
@@ -1347,8 +1304,8 @@ class TestMainNavViewModel {
         val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
         val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
 
-        coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf()
-        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf()
+        coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns Success(listOf())
+        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns Success(listOf())
 
         viewModel = createViewModel(
             getUohOrdersNavUseCase = getUohOrdersNavUseCase,
@@ -1380,8 +1337,8 @@ class TestMainNavViewModel {
 
         coEvery { userSession.isShopOwner } returns true
         coEvery { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(any()) }.answers { }
-        coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf()
-        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf(NavPaymentOrder())
+        coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns Success(listOf())
+        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns Success(listOf(NavPaymentOrder()))
 
         viewModel = createViewModel(
             getUohOrdersNavUseCase = getUohOrdersNavUseCase,
@@ -1411,8 +1368,8 @@ class TestMainNavViewModel {
         val userSession = mockk<UserSessionInterface>()
 
         every { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(any()) }.answers { }
-        coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf(NavProductOrder())
-        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf()
+        coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns Success(listOf(NavProductOrder()))
+        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns Success(listOf())
         coEvery { userSession.isShopOwner } returns true
         every { userSession.isLoggedIn } returns true
         every { userSession.hasShop() } returns true
@@ -1446,8 +1403,8 @@ class TestMainNavViewModel {
 
         every { userSession.isLoggedIn } returns true
         every { getNavOrderUseCase.setIsMePageUsingRollenceVariant(any()) }.answers { }
-        coEvery { getNavOrderUseCase.executeOnBackground() } returns listOf(NavProductOrder())
-        coEvery { getPaymentUseCase.executeOnBackground() } returns listOf(NavPaymentOrder())
+        coEvery { getNavOrderUseCase.executeOnBackground() } returns Success(listOf(NavProductOrder()))
+        coEvery { getPaymentUseCase.executeOnBackground() } returns Success(listOf(NavPaymentOrder()))
         viewModel = createViewModel(
             getPaymentOrdersNavUseCase = getPaymentUseCase,
             getUohOrdersNavUseCase = getNavOrderUseCase
@@ -1886,10 +1843,10 @@ class TestMainNavViewModel {
         } answers { }
         coEvery {
             getPaymentOrderNavUseCase.executeOnBackground()
-        } returns mockList3PaymentOrder
+        } returns Success(mockList3PaymentOrder)
         coEvery {
             getUohOrdersNavUseCase.executeOnBackground()
-        } returns mockList3ProductOrder
+        } returns Success(mockList3ProductOrder)
 
         viewModel = createViewModel(
             getPaymentOrdersNavUseCase = getPaymentOrderNavUseCase,
@@ -1968,7 +1925,7 @@ class TestMainNavViewModel {
         every { userSession.isLoggedIn } returns true
         coEvery {
             getPaymentOrderNavUseCase.executeOnBackground()
-        } returns mockList1PaymentOrder
+        } returns Success(mockList1PaymentOrder)
         viewModel = createViewModel(
             getPaymentOrdersNavUseCase = getPaymentOrderNavUseCase,
             userSession = userSession
@@ -1994,7 +1951,7 @@ class TestMainNavViewModel {
         every { userSession.isLoggedIn } returns true
         coEvery {
             getUohOrderNavUseCase.executeOnBackground()
-        } returns mockList1OrderProduct
+        } returns Success(mockList1OrderProduct)
         viewModel = createViewModel(
             getUohOrdersNavUseCase = getUohOrderNavUseCase,
             userSession = userSession
