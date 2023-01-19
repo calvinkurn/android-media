@@ -1,13 +1,18 @@
 package com.tokopedia.plugin
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
 open class ScanLatestVersionTask : DefaultTask() {
+    @Internal
     var moduleLatestVersionMap = hashMapOf<String, ArtifactLatestVersionInfo>()
 
+    @Internal
     val PROPERTY_KEY = "moduleLatestVersion"
+
+    @Internal
     var successScan = false
 
     @TaskAction
@@ -24,7 +29,7 @@ open class ScanLatestVersionTask : DefaultTask() {
                             val artifactId = lineSplit[0]
                             val latestVersion = lineSplit[1]
                             moduleLatestVersionMap.put(artifactId, ArtifactLatestVersionInfo(artifactId, latestVersion, ""))
-                        } else if (lineSplit.size == 3){
+                        } else if (lineSplit.size == 3) {
                             val artifactId = lineSplit[0]
                             val latestVersion = lineSplit[1]
                             val commidId = lineSplit[2]
