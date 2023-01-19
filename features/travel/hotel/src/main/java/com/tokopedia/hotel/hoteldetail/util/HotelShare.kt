@@ -6,6 +6,7 @@ import android.content.Intent
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -27,20 +28,26 @@ import java.lang.ref.WeakReference
  * @author by jessica on 20/10/20
  */
 
-class HotelShare(val activity: WeakReference<Activity>, private val context: Context, private val view: View) {
+class HotelShare(
+    val activity: WeakReference<Activity>,
+    private val context: Context,
+    private val view: View,
+    private val trackerUtil: TrackingHotelUtil
+) {
 
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity.get()) }
     private fun isBranchUrlActive() = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true)
 
-
     fun showUniversalBottomSheet(fragmentManager: FragmentManager, propertyDetailData: PropertyDetailData, isPromo: Boolean, userId: String, imageList: ArrayList<String>) {
         fragmentManager.let {
             UniversalShareBottomSheet.createInstance().apply {
-                init(object: ShareBottomsheetListener {
+                init(object : ShareBottomsheetListener {
                     override fun onCloseOptionClicked() {
+                        trackerUtil.closeShare(this@HotelShare.context, propertyDetailData.property.id)
                     }
 
                     override fun onShareOptionClicked(shareModel: ShareModel) {
+                        trackerUtil.clickChannelShare(this@HotelShare.context, propertyDetailData.property.id)
                         if (this@HotelShare.activity.get() != null) {
                             onClickChannelWidget(
                                 this@apply,
@@ -56,6 +63,14 @@ class HotelShare(val activity: WeakReference<Activity>, private val context: Con
                 })
                 setUtmCampaignData("Hotel", userId, propertyDetailData.property.id, "share")
                 setMetaData(propertyDetailData.property.name, propertyDetailData.property.locationImageStatic, "", imageList)
+
+                this.setShowListener {
+                    trackerUtil.viewShare(this@HotelShare.context, propertyDetailData.property.id)
+                }
+
+                this.setSelectThumbnailImageListener {
+                    trackerUtil.clickImageShare(this@HotelShare.context, propertyDetailData.property.id)
+                }
             }.show(it, "")
         }
     }
@@ -70,29 +85,33 @@ class HotelShare(val activity: WeakReference<Activity>, private val context: Con
         activity.get()?.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.hotel_detail_share_bottomsheet_title)))
     }
 
-    private fun onClickChannelWidget(universalShareBottomSheet: UniversalShareBottomSheet,
-                                     shareModel: ShareModel,
-                                     data: PropertyDetailData,
-                                     isPromo: Boolean,
-                                     context: Context,
-                                     activity: Activity,
-                                     view: View
+    private fun onClickChannelWidget(
+        universalShareBottomSheet: UniversalShareBottomSheet,
+        shareModel: ShareModel,
+        data: PropertyDetailData,
+        isPromo: Boolean,
+        context: Context,
+        activity: Activity,
+        view: View
     ) {
         if (isBranchUrlActive()) {
             LinkerManager.getInstance().executeShareRequest(
-                LinkerUtils.createShareRequest(0,
-                    travelDataToLinkerDataMapper(shareModel, data, isPromo, context), object : ShareCallback {
-                    override fun urlCreated(linkerShareData: LinkerShareResult) {
-                        SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, context.getString(R.string.hotel_detail_share_cta_link, data.property.name, data.city.name, linkerShareData.url))
-                    }
+                LinkerUtils.createShareRequest(
+                    0,
+                    travelDataToLinkerDataMapper(shareModel, data, isPromo, context),
+                    object : ShareCallback {
+                        override fun urlCreated(linkerShareData: LinkerShareResult) {
+                            SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, context.getString(R.string.hotel_detail_share_cta_link, data.property.name, data.city.name, linkerShareData.url))
+                        }
 
-                    override fun onError(linkerError: LinkerError) {
-                        val seoUrl = "${data.property.name.replace(" ", "-").trimEnd()}-${data.property.id}"
-                        openIntentShare(data, TkpdBaseURL.WEB_DOMAIN + context.resources.getString(R.string.hotel_detail_share_weblink, data.city.countryName, seoUrl), context)
+                        override fun onError(linkerError: LinkerError) {
+                            val seoUrl = "${data.property.name.replace(" ", "-").trimEnd()}-${data.property.id}"
+                            openIntentShare(data, TkpdBaseURL.WEB_DOMAIN + context.resources.getString(R.string.hotel_detail_share_weblink, data.city.countryName, seoUrl), context)
+                        }
                     }
-                }))
+                )
+            )
             universalShareBottomSheet.dismiss()
-
         } else {
             val seoUrl = "${data.property.name.replace(" ", "-").trimEnd()}-${data.property.id}"
             openIntentShare(data, TkpdBaseURL.WEB_DOMAIN + context.resources.getString(R.string.hotel_detail_share_weblink, data.city.countryName, seoUrl), context)
@@ -106,8 +125,11 @@ class HotelShare(val activity: WeakReference<Activity>, private val context: Con
                 id = data.property.id
                 campaign = shareModel.campaign
                 channel = shareModel.channel
-                name = context.resources.getString(R.string.hotel_detail_share_link_title,
-                    "Hotel", data.property.name)
+                name = context.resources.getString(
+                    R.string.hotel_detail_share_link_title,
+                    "Hotel",
+                    data.property.name
+                )
                 description = ""
                 type = LinkerData.HOTEL_TYPE
                 ogUrl = null
@@ -119,7 +141,6 @@ class HotelShare(val activity: WeakReference<Activity>, private val context: Con
             }
         }
     }
-
 
     companion object {
         private const val TYPE = "text/plain"

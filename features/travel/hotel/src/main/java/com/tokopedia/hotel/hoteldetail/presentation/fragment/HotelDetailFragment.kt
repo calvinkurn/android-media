@@ -69,9 +69,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
-import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -183,7 +180,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         if (context != null) {
             activity?.run {
                 val ctx = WeakReference<Activity>(this)
-                hotelShare = HotelShare(ctx, requireContext(), view)
+                hotelShare = HotelShare(ctx, requireContext(), view, trackingHotelUtil)
             }
         }
 
@@ -241,23 +238,26 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             }
         )
 
-        detailViewModel.hotelInfoResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    isHotelDetailSuccess = true
-                    setupLayout(it.data)
-                    hotelName = it.data.property.name
-                    hotelId = it.data.property.id
-                    hotelImage = it.data.property.locationImageStatic
+        detailViewModel.hotelInfoResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        isHotelDetailSuccess = true
+                        setupLayout(it.data)
+                        hotelName = it.data.property.name
+                        hotelId = it.data.property.id
+                        hotelImage = it.data.property.locationImageStatic
+                    }
+                    is Fail -> {
+                        isHotelDetailSuccess = false
+                        showErrorView(it.throwable)
+                    }
                 }
-                is Fail -> {
-                    isHotelDetailSuccess = false
-                    showErrorView(it.throwable)
-                }
+                isHotelInfoLoaded = true
+                stopTrace()
             }
-            isHotelInfoLoaded = true
-            stopTrace()
-        })
+        )
 
         detailViewModel.hotelReviewResult.observe(
             viewLifecycleOwner,
@@ -521,7 +521,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     private fun setupShareLink(propertyDetailData: PropertyDetailData) {
         binding?.hotelShareButton?.setOnClickListener {
-            trackingHotelUtil.clickShareUrl(requireContext(), PDP_SCREEN_NAME, hotelId, roomPriceAmount)
+            trackingHotelUtil.clickShareUrl(requireContext(), hotelId)
             if (::hotelShare.isInitialized) {
                 if (fragmentManager != null && context != null && view != null) {
                     hotelShare.showUniversalBottomSheet(fragmentManager!!, propertyDetailData, isPromo, userSession.userId, ArrayList(imageList))
