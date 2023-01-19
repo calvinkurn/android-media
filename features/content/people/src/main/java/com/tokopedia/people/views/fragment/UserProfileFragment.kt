@@ -499,8 +499,12 @@ class UserProfileFragment @Inject constructor(
     fun refreshLandingPageData(isRefreshPost: Boolean = false) {
         viewModel.submitAction(UserProfileAction.LoadProfile(isRefreshPost))
         if (!isRefreshPost) return
-        viewModel.submitAction(UserProfileAction.LoadFeedPosts())
-        viewModel.submitAction(UserProfileAction.LoadPlayVideo())
+
+        if (pagerAdapter.getTabs().isEmpty()) return
+        if (pagerAdapter.getFeedsTabs().isNotEmpty())
+            viewModel.submitAction(UserProfileAction.LoadFeedPosts())
+        if (pagerAdapter.getVideoTabs().isNotEmpty())
+            viewModel.submitAction(UserProfileAction.LoadPlayVideo())
     }
 
     private fun addLiveClickListener(appLink: String) {
