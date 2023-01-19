@@ -22,11 +22,25 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
-        app:unify_text_field_label_static="true"
-        app:unify_text_field_placeholder="@string/smvc_voucher_code_placeholder_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tpg_voucher_code_title"
-        app:unify_text_field_counter="10" />
+        app:unify_text_field_counter="10"
+        app:unify_text_field_label_static="true"
+        app:unify_text_field_placeholder="@string/smvc_voucher_code_placeholder_label" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_pelajari"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="@string/smvc_pelajari_label"
+        android:textColor="@color/Unify_GN500"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/tf_voucher_code"
+        app:layout_constraintTop_toBottomOf="@+id/tf_voucher_code"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="bold" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

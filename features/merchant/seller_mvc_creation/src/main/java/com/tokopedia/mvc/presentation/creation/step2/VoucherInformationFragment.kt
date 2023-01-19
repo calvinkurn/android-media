@@ -465,6 +465,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         voucherNameSectionBinding?.run {
             tfVoucherName.isInputError = isVoucherNameError
             tfVoucherName.setMessage(voucherNameErrorMsg)
+            tpgCheckHere.isVisible = voucherNameErrorMsg.contains(
+                getString(R.string.smvc_larang_label),
+                ignoreCase = true
+            )
         }
     }
 
@@ -500,9 +504,13 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         voucherCodeErrorMsg: String
     ) {
         voucherCodeSectionBinding?.run {
-            tfVoucherCode.editText.setText(voucherConfiguration.voucherCode)
+//            tfVoucherCode.editText.setText(voucherConfiguration.voucherCode)
             tfVoucherCode.isInputError = isVoucherCodeError
             tfVoucherCode.setMessage(voucherCodeErrorMsg)
+            tpgPelajari.isVisible = voucherCodeErrorMsg.contains(
+                getString(R.string.smvc_larang_label),
+                ignoreCase = true
+            )
         }
     }
 

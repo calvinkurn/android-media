@@ -363,6 +363,9 @@
     <string name="smvc_create_voucher_confirmation_description">Jika tetap lanjut buat kupon, semua jadwal yang bermasalah tidak akan disertakan.</string>
     <string name="smvc_create_voucher_confirmation_primary_cta_label">Ya, Buat Kupon</string>
     <string name="smvc_create_voucher_confirmation_secondary_cta_label">Batalkan</string>
+    <string name="smvc_larang_label">larang</string>
+    <string name="smvc_pelajari_label">Pelajari</string>
+    <string name="smvc_check_here_label">Cek di sini</string>
 
     <!--VoucherCreationStepThree-->
     <string name="smvc_creation_step_three_out_of_three_sub_title_label">Langkah 3 dari 3</string>
