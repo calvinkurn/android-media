@@ -39,8 +39,7 @@ class SellerMigrationActivity : BaseSimpleActivity() {
             appLinks: ArrayList<String>
         ): Intent {
             return RouteManager.getIntent(
-                context,
-                String.format(
+                context, String.format(
                     "%s?${SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME}=%s",
                     ApplinkConst.SELLER_MIGRATION,
                     featureName
@@ -91,35 +90,24 @@ class SellerMigrationActivity : BaseSimpleActivity() {
         }
 
         trackUserRedirection(openedPage)
-        showSellerAppUpdateToaster()
     }
 
     private fun getSellerHomeIntent(appLinks: java.util.ArrayList<String>): Intent {
         val parameterizedAppLinks = appLinks.map {
-            Uri.parse(it).buildUpon()
-                .appendQueryParameter(
-                    SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME,
-                    featureName
-                )
-                .toString()
+            Uri.parse(it).buildUpon().appendQueryParameter(
+                SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName
+            ).toString()
         }
         val sellerHomeAppLink = Uri.parse(ApplinkConstInternalSellerapp.SELLER_HOME).buildUpon()
-            .appendQueryParameter(
-                RouteManager.KEY_REDIRECT_TO_SELLER_APP,
-                "true"
-            )
-            .appendQueryParameter(
-                SellerMigrationApplinkConst.QUERY_PARAM_IS_AUTO_LOGIN,
-                "true"
-            )
+            .appendQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, "true")
+            .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_IS_AUTO_LOGIN, "true")
             .toString()
         return RouteManager.getIntent(this, sellerHomeAppLink).apply {
             putStringArrayListExtra(
                 SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA,
                 ArrayList(parameterizedAppLinks)
             )
-            flags =
-                Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         }
     }
 
@@ -156,13 +144,7 @@ class SellerMigrationActivity : BaseSimpleActivity() {
         val view: FrameLayout = findViewById(parentViewResourceID)
         val message = getString(R.string.sma_toaster_update_message)
         val ctaText = getString(R.string.sma_update)
-        Toaster.build(
-            view,
-            message,
-            Toaster.LENGTH_LONG,
-            Toaster.TYPE_ERROR,
-            ctaText
-        ) {
+        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText) {
             goToPlayStore()
         }.show()
     }
@@ -172,15 +154,13 @@ class SellerMigrationActivity : BaseSimpleActivity() {
             try {
                 startActivity(
                     Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse(APPLINK_PLAYSTORE + PACKAGE_SELLER_APP)
+                        Intent.ACTION_VIEW, Uri.parse(APPLINK_PLAYSTORE + PACKAGE_SELLER_APP)
                     )
                 )
             } catch (anfe: ActivityNotFoundException) {
                 startActivity(
                     Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse(URL_PLAYSTORE + PACKAGE_SELLER_APP)
+                        Intent.ACTION_VIEW, Uri.parse(URL_PLAYSTORE + PACKAGE_SELLER_APP)
                     )
                 )
             } finally {
