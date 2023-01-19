@@ -27,6 +27,8 @@ import com.tokopedia.seller_migration_common.presentation.fragment.SellerMigrati
 import com.tokopedia.seller_migration_common.presentation.util.getRegisteredMigrationApplinks
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
+import java.util.Locale
+import kotlin.collections.ArrayList
 
 
 class SellerMigrationActivity : BaseSimpleActivity() {
@@ -40,6 +42,7 @@ class SellerMigrationActivity : BaseSimpleActivity() {
         ): Intent {
             return RouteManager.getIntent(
                 context, String.format(
+                    Locale.getDefault(),
                     "%s?${SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME}=%s",
                     ApplinkConst.SELLER_MIGRATION,
                     featureName
