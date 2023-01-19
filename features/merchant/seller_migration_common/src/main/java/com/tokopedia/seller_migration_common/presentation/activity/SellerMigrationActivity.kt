@@ -144,7 +144,7 @@ class SellerMigrationActivity : BaseSimpleActivity() {
         val view: FrameLayout = findViewById(parentViewResourceID)
         val message = getString(R.string.sma_toaster_update_message)
         val ctaText = getString(R.string.sma_update)
-        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText) {
+        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText) {
             goToPlayStore()
         }.show()
     }
