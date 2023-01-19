@@ -157,10 +157,13 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
     override fun onBackEvent() {
         if (listFragment.size == currentPosition) {
             val fragmentId = listFragment[currentPosition - 1].id
-            val fragment =
-                supportFragmentManager.findFragmentById(fragmentId) as UserIdentificationFormFinalFragment?
-            fragment?.clickBackAction()
-            showDocumentAlertDialog(fragment)
+            val fragment = supportFragmentManager.findFragmentById(fragmentId)
+            if (fragment is UserIdentificationFormFinalFragment) {
+                fragment.clickBackAction()
+                showDocumentAlertDialog(fragment)
+            } else {
+                backToPreviousFragment()
+            }
         } else {
             backToPreviousFragment()
         }
