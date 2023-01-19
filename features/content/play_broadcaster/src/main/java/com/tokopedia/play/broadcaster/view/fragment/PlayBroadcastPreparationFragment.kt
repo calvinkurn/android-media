@@ -177,6 +177,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         setupInsets()
         setupListener()
         setupObserver()
+        setupCoachMark()
 
         binding.viewPreparationMenu.isSetTitleChecked(parentViewModel.channelTitle.isNotEmpty())
     }
@@ -494,11 +495,23 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         observeViewEvent()
     }
 
-    private fun setupCoachMark(isShortsEntryPointShown: Boolean) {
+    private fun setupCoachMark() {
+
+        var isShortsEntryPointCoachMarkShown = false
+
+        fun onDismissCoachMark() {
+            if(isShortsEntryPointCoachMarkShown)
+                analytic.clickCloseShortsEntryPointCoachMark(parentViewModel.authorId, parentViewModel.authorType)
+
+            coachMark?.dismissCoachMark()
+        }
+
         if(coachMark != null) return
 
         val coachMarkItems = mutableListOf<CoachMark2Item>().apply {
-            if(isShortsEntryPointShown && !coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)) {
+            isShortsEntryPointCoachMarkShown = parentViewModel.isShortVideoAllowed && !coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+
+            if(isShortsEntryPointCoachMarkShown) {
                 add(
                     CoachMark2Item(
                         anchorView = binding.bannerShorts,
@@ -519,31 +532,25 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         position = CoachMark2.POSITION_BOTTOM,
                     )
                 )
+                viewModel.setNotFirstSwitchAccount()
             }
         }
 
-        if(coachMark == null) {
-            coachMark = CoachMark2(requireContext())
-        }
+        if(coachMarkItems.isNotEmpty()) {
 
-        coachMark?.showCoachMark(ArrayList(coachMarkItems))
-
-        coachMark?.simpleCloseIcon?.setOnClickListener {
-            coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
-            viewModel.setNotFirstSwitchAccount()
-
-            analytic.clickCloseShortsEntryPointCoachMark(parentViewModel.authorId, parentViewModel.authorType)
-            coachMark?.dismissCoachMark()
-        }
-
-        coachMark?.setStepListener(object : CoachMark2.OnStepListener {
-            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                when(coachMarkItem.anchorView) {
-                    binding.bannerShorts -> coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
-                    binding.toolbarContentCommon -> viewModel.setNotFirstSwitchAccount()
-                }
+            if(coachMark == null) {
+                coachMark = CoachMark2(requireContext())
             }
-        })
+
+            coachMark?.showCoachMark(ArrayList(coachMarkItems))
+
+            if(coachMarkItems.size == 1) {
+                coachMark?.simpleCloseIcon?.setOnClickListener { onDismissCoachMark() }
+            }
+            else {
+                coachMark?.stepCloseIcon?.setOnClickListener { onDismissCoachMark() }
+            }
+        }
     }
 
     private fun observeConfigInfo() {
@@ -794,7 +801,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         prev: PlayChannelUiState?,
         curr: PlayChannelUiState,
     ) {
-
         if(prev?.shortVideoAllowed == curr.shortVideoAllowed) return
 
         if(curr.shortVideoAllowed) {
@@ -804,8 +810,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         else {
             binding.bannerShorts.gone()
         }
-
-        setupCoachMark(curr.shortVideoAllowed)
     }
 
     /** Form */

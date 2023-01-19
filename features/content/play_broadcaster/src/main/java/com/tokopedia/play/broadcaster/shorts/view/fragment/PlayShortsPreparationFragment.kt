@@ -415,11 +415,11 @@ class PlayShortsPreparationFragment @Inject constructor(
             }
         }
 
-        if(coachMark == null) {
-            coachMark = CoachMark2(requireContext())
-        }
-
         if(coachMarkItems.isNotEmpty()) {
+            if(coachMark == null) {
+                coachMark = CoachMark2(requireContext())
+            }
+
             coachMark?.showCoachMark(ArrayList(coachMarkItems))
 
             if(coachMarkItems.size == 1) {
