@@ -29,7 +29,7 @@
 
     <!--Section | Consent Withdrawal -->
     <string name="consent_withdrawal_section_title">Persetujuan kamu</string>
-    <string name="consent_withdrawal_section_description">Nantikan fitur lain yang bisa diatur akses datanya di sini</string>
+    <string name="consent_withdrawal_section_description">Atur fitur apa aja yang boleh akses datamu</string>
 
     <!--Section | Privacy Policy -->
     <string name="privacy_policy_label">Privacy Policy</string>
