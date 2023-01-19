@@ -14,6 +14,7 @@ import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.product_bundle.common.data.constant.BundlingPageSource
 import com.tokopedia.productbundlewidget.model.GetBundleParamBuilder
 import com.tokopedia.productbundlewidget.model.WidgetType
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -30,7 +31,7 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        private const val MARGIN_START_ADJUSTMENT_BUNDLE_WIDGET = -6
+        private const val BUNDLING_WIDGET_MARGIN_START_ADJUSTMENT = -6
         private const val TAG = "CartBundlingBottomSheet"
         private const val KEY_DATA = "key_data"
 
@@ -61,11 +62,12 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
         val bundleParam = GetBundleParamBuilder()
             .setBundleId(data.bundleIds)
             .setWidgetType(WidgetType.TYPE_3)
+            .setPageSource(BundlingPageSource.CART_PAGE)
             .build()
         if (data.bottomTicker.isNotBlank()) {
             binding?.cardBottomTicker?.apply {
                 // Margin adjustment for card view padding in bundle widget recycler view item
-                setMargin(marginLeft + MARGIN_START_ADJUSTMENT_BUNDLE_WIDGET.toPx(), marginTop, marginRight, marginBottom)
+                setMargin(marginLeft + BUNDLING_WIDGET_MARGIN_START_ADJUSTMENT.toPx(), marginTop, marginRight, marginBottom)
             }
             binding?.bottomTickerLabel?.text = MethodChecker.fromHtml(data.bottomTicker)
             binding?.bottomTickerLabel?.movementMethod = LinkMovementMethod.getInstance()
