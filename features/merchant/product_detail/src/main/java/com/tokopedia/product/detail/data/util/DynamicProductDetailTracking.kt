@@ -2368,8 +2368,8 @@ object DynamicProductDetailTracking {
                 putString(ProductTrackingConstant.Tracking.KEY_ACTION, "impression on banner v2v widget")
                 putString(ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP)
                 putString(ProductTrackingConstant.Tracking.KEY_LABEL, pageTitle)
-                putString(ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.CURRENT_SITE)
-                putString(ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, "home & browse")
+                putString(ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, "home & browse")
+                putString(ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.CURRENT_SITE)
                 putString(ProductTrackingConstant.Tracking.KEY_TRACKER_ID, "40439")
 
                 //promotion
@@ -2390,10 +2390,11 @@ object DynamicProductDetailTracking {
             position: Int,
             headerName: String,
         ) = Bundle().apply {
+            val currentPosition = position + 1
             putString("creative_name", "null")
-            putInt("creative_slot", position)
+            putInt("creative_slot", currentPosition)
             putString("item_id", asItemId())
-            putString("item_name", asItemName(position,headerName))
+            putString("item_name", asItemName(currentPosition, headerName))
         }
 
         private fun RecommendationItem.asItemId(): String {
@@ -2424,8 +2425,8 @@ object DynamicProductDetailTracking {
                 putString(ProductTrackingConstant.Tracking.KEY_ACTION, "click on banner v2v widget")
                 putString(ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP)
                 putString(ProductTrackingConstant.Tracking.KEY_LABEL, pageTitle)
-                putString(ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.CURRENT_SITE)
-                putString(ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, "home & browse")
+                putString(ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, "home & browse")
+                putString(ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.CURRENT_SITE)
                 putString(ProductTrackingConstant.Tracking.KEY_TRACKER_ID, "40441")
 
                 //promotion

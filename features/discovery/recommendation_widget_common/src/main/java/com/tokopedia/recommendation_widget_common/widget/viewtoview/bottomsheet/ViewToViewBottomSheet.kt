@@ -23,13 +23,14 @@ import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewIt
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Result
 import java.net.SocketTimeoutException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 
 class ViewToViewBottomSheet @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory
+    private val viewModelFactory: ViewModelProvider.Factory,
 ) : BottomSheetUnify(), ViewToViewListener {
 
     private lateinit var viewModel: ViewToViewViewModel
@@ -117,9 +118,19 @@ class ViewToViewBottomSheet @Inject constructor(
         }
     }
 
-    private fun renderRecommendationResult(result: Result<List<ViewToViewDataModel>>) {
+    private fun renderRecommendationResult(result: Result<ViewToViewResult>) {
         result.doSuccessOrFail(
-            success = { recommendationAdapter?.submitList(it.data) },
+            success = {
+                it.data.widget?.let { widget ->
+                    ViewToViewBottomSheetTracker.eventBottomSheetImpress(
+                        widget,
+                        headerTitle,
+                        viewModel.getUserId(),
+                        productAnchorId,
+                    )
+                }
+                recommendationAdapter?.submitList(it.data.data)
+            },
             fail = { showGlobalError(it) }
         )
     }
@@ -159,13 +170,14 @@ class ViewToViewBottomSheet @Inject constructor(
         message: String,
     ) {
         val view = view?.rootView ?: return
-        Toaster.build(
-            view,
-            message,
-            Snackbar.LENGTH_SHORT,
-            Toaster.TYPE_NORMAL,
-            "",
-        ) {}.show()
+        Toaster.apply { toasterCustomBottomHeight = 40.toPx() }
+            .build(
+                view,
+                message,
+                Snackbar.LENGTH_SHORT,
+                Toaster.TYPE_NORMAL,
+            )
+            .show()
     }
 
     private fun initRecyclerView() {
@@ -182,16 +194,6 @@ class ViewToViewBottomSheet @Inject constructor(
         super.onDestroyView()
     }
 
-    override fun onProductImpressed(product: ViewToViewDataModel.Product, position: Int) {
-        ViewToViewBottomSheetTracker.eventProductImpress(
-            product.recommendationItem,
-            headerTitle,
-            viewModel.getUserId(),
-            position,
-            productAnchorId,
-        )
-    }
-
     override fun onProductClicked(product: ViewToViewDataModel.Product, position: Int) {
         ViewToViewBottomSheetTracker.eventProductClick(
             product.recommendationItem,
@@ -205,7 +207,7 @@ class ViewToViewBottomSheet @Inject constructor(
     }
 
     override fun onAddToCartClicked(product: ViewToViewDataModel.Product, position: Int) {
-        if(viewModel.isUserSessionActive) {
+        if (viewModel.isUserSessionActive) {
             viewModel.addToCart(product)
         } else {
             activity?.let {

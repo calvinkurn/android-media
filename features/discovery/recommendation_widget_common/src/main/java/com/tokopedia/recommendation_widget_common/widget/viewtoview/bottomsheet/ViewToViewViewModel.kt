@@ -28,16 +28,16 @@ class ViewToViewViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.main) {
-    val viewToViewRecommendationLiveData: LiveData<Result<List<ViewToViewDataModel>>>
+    val viewToViewRecommendationLiveData: LiveData<Result<ViewToViewResult>>
         get() = _viewToViewRecommendationLiveData
-    private val _viewToViewRecommendationLiveData = MutableLiveData<Result<List<ViewToViewDataModel>>>()
+    private val _viewToViewRecommendationLiveData = MutableLiveData<Result<ViewToViewResult>>()
 
     val viewToViewATCStatusLiveData: LiveData<ViewToViewATCStatus>
         get() = _viewToViewATCStatusLiveData
     private val _viewToViewATCStatusLiveData = MutableLiveData<ViewToViewATCStatus>()
 
-    fun getUserId() : String {
-        return if(userSession.isLoggedIn) userSession.userId else "0"
+    fun getUserId(): String {
+        return if (userSession.isLoggedIn) userSession.userId else "0"
     }
 
     val isUserSessionActive: Boolean
@@ -52,13 +52,17 @@ class ViewToViewViewModel @Inject constructor(
                 queryParam = queryParams,
             )
             val loadingList = List(PRODUCT_COUNT) { ViewToViewDataModel.Loading(hasAtcButton) }
-            _viewToViewRecommendationLiveData.postValue(Success(loadingList))
+            _viewToViewRecommendationLiveData.postValue(Success(ViewToViewResult(data = loadingList)))
             val recommendation = getRecommendationUseCase.get().getData(requestParam)
-            val result = if(recommendation.isNotEmpty()
-                && recommendation.first().recommendationItemList.isNotEmpty()) {
+            val result = if (recommendation.isNotEmpty()
+                && recommendation.first().recommendationItemList.isNotEmpty()
+            ) {
                 Success(
-                    recommendation.first().recommendationItemList
-                        .map { it.toViewToViewDataModelProduct(hasAtcButton) }
+                    ViewToViewResult(
+                        widget = recommendation.first(),
+                        data = recommendation.first().recommendationItemList
+                            .map { it.toViewToViewDataModelProduct(hasAtcButton) }
+                    )
                 )
             } else Fail(Exception("Empty Recommendation"))
             _viewToViewRecommendationLiveData.postValue(result)
