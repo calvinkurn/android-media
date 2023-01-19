@@ -3,7 +3,6 @@ package com.tokopedia.saldodetails.commom.di.component
 import android.content.Context
 import com.tokopedia.saldodetails.commom.di.module.*
 import com.tokopedia.saldodetails.commom.di.scope.SaldoDetailsScope
-import com.tokopedia.saldodetails.merchantDetail.credit.MerchantCreditDetailFragment
 import com.tokopedia.saldodetails.merchantDetail.priority.MerchantSaldoPriorityFragment
 import com.tokopedia.saldodetails.saldoDetail.SaldoDepositActivity
 import com.tokopedia.saldodetails.saldoDetail.SaldoDepositFragment
@@ -33,8 +32,6 @@ interface SaldoDetailsComponent {
     fun inject(fragment: MerchantSaldoPriorityFragment)
 
     fun inject(fragment: SaldoDepositFragment)
-
-    fun inject(fragment: MerchantCreditDetailFragment)
 
     fun inject(saldoDepositActivity: SaldoDepositActivity)
 
