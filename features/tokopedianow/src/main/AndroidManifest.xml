@@ -22,7 +22,7 @@
         </activity>
         <activity
             android:name=".seeallcategory.persentation.activity.TokoNowSeeAllCategoryActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_tokopedia_now"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
