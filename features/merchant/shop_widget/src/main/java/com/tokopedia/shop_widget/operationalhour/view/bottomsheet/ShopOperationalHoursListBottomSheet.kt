@@ -25,6 +25,10 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.shop_widget.operationalhour.view.adapter.ShopOperationalHoursListBottomsheetAdapter.Companion.MAX_END_TIME
+import com.tokopedia.shop_widget.operationalhour.view.adapter.ShopOperationalHoursListBottomsheetAdapter.Companion.MIN_START_TIME
+import com.tokopedia.shop_widget.operationalhour.view.adapter.ShopOperationalHoursListBottomsheetAdapter.Companion.MONDAY_NUMBER
+import com.tokopedia.shop_widget.operationalhour.view.adapter.ShopOperationalHoursListBottomsheetAdapter.Companion.SUNDAY_NUMBER
 import com.tokopedia.usecase.coroutines.Fail
 
 
@@ -98,6 +102,9 @@ class ShopOperationalHoursListBottomSheet : BottomSheetUnify() {
                     opsHoursList?.let { hourList ->
                         if (hourList.isNotEmpty()) {
                             updateShopHoursDataSet(hourList)
+                        } else {
+                            val defaultOperationalHours: List<ShopOperationalHour> = getDefaultShopOperationalHours()
+                            updateShopHoursDataSet(defaultOperationalHours)
                         }
                     }
                 }
@@ -107,6 +114,21 @@ class ShopOperationalHoursListBottomSheet : BottomSheetUnify() {
                 }
             }
         })
+    }
+
+    private fun getDefaultShopOperationalHours(): List<ShopOperationalHour> {
+        val defaultOperationalHours: MutableList<ShopOperationalHour> = mutableListOf()
+        for (i in MONDAY_NUMBER..SUNDAY_NUMBER) { // Loop from monday to sunday
+            defaultOperationalHours.add(
+                ShopOperationalHour(
+                    day = i,
+                    endTime = MAX_END_TIME,
+                    startTime = MIN_START_TIME,
+                    status = 1
+                )
+            )
+        }
+        return defaultOperationalHours
     }
 
     private fun showErrorToast(message: String) {
