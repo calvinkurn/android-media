@@ -1330,7 +1330,7 @@ open class DynamicProductDetailViewModel @Inject constructor(
             })
     }
 
-    fun getVariantSelectedChild(
+    fun getChildOfVariantSelected(
         singleVariant: ProductSingleVariantDataModel?,
         optionalVariant: VariantDataModel?
     ): VariantChild? {

@@ -1571,31 +1571,31 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `get variant selected child with single variant only and return variant child`() {
+    fun `child is available when get child of variant selected with single variant only`() {
         val singleVariant = ProductSingleVariantDataModel(
             mapOfSelectedVariant = mutableMapOf(
                 "28323838" to "94748049",
                 "28323839" to "94748052"
             )
         )
-        `get variant selected child`(singleVariant, null)
+        `child options id is available when get child of variant selected`(singleVariant, null)
     }
 
     @Test
-    fun `get variant selected child with variant options only and return variant child`() {
+    fun `child is available when get child of variant selected with options variant only`() {
         val variantData = VariantDataModel(
             mapOfSelectedVariant = mutableMapOf(
                 "28323838" to "94748049",
                 "28323839" to "94748052"
             )
         )
-        `get variant selected child`(null, variantData)
+        `child options id is available when get child of variant selected`(null, variantData)
     }
 
     @Test
-    fun `get variant selected child with variant options and single variant is null`() {
+    fun `child is null when get child of variant selected with single and options variant is null`() {
         `on success get pdp layout mini variants options`()
-        val childVariant = viewModel.getVariantSelectedChild(
+        val childVariant = viewModel.getChildOfVariantSelected(
             singleVariant = null,
             optionalVariant = null
         )
@@ -1603,27 +1603,30 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `get variant select child with single variant selected before is null`() {
+    fun `child is null when get child of variant selected with single and options variant is empty`() {
         `on success get pdp layout mini variants options`()
-        val childVariant = viewModel.getVariantSelectedChild(
+        val childVariant = viewModel.getChildOfVariantSelected(
             singleVariant = ProductSingleVariantDataModel(),
             optionalVariant = VariantDataModel()
         )
         Assert.assertTrue(childVariant == null)
     }
 
-    private fun `get variant selected child`(
+    private fun `child options id is available when get child of variant selected`(
         singleVariant: ProductSingleVariantDataModel?,
         optionalVariant: VariantDataModel?
     ) {
+        // given pdp layout data
         `on success get pdp layout mini variants options`()
 
         val p1Result = (viewModel.productLayout.value as Success).data
-        val childVariant = viewModel.getVariantSelectedChild(
+        // then, get child of variant selected
+        val childVariant = viewModel.getChildOfVariantSelected(
             singleVariant = singleVariant,
             optionalVariant = optionalVariant
         )
 
+        // assert the expectation
         Assert.assertTrue(
             p1Result.any {
                 it.type() == ProductDetailConstant.PRODUCT_VARIANT_INFO &&
@@ -1634,13 +1637,13 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `get variant select child with single variant only and return null`() {
+    fun `child is null when get child of variant selected with variant data is null and single variant only`() {
         val singleVariant = ProductSingleVariantDataModel()
         `on success get pdp layout mini variants options`()
 
         viewModel.variantData = null
 
-        val childVariant = viewModel.getVariantSelectedChild(
+        val childVariant = viewModel.getChildOfVariantSelected(
             singleVariant = singleVariant,
             optionalVariant = null
         )
@@ -1673,7 +1676,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `change select variant thumbnail is successful after selected before`() {
+    fun `change select variant thumbnail is successful when previously selected`() {
         val expectSelected = "94748050"
         val expectCategory = "28323838"
         val singleVariant = ProductSingleVariantDataModel(
@@ -1697,7 +1700,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `select variant two on thumbnail variant selected when variant have level one only`() {
+    fun `thumbnail variant selected is success when variant have lvl 1 only`() {
         val expectSelected = "94748050"
         val expectCategory = "28323838"
         val singleVariant = ProductSingleVariantDataModel(
@@ -1725,7 +1728,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `select variant two on thumbnail variant selected when variant option is empty`() {
+    fun `variant lvl 2 is empty on thumbnail variant selected when variant lvl 2 options is empty`() {
         val variantLvl1 = "94748050"
         val categoryLvl1 = "28323838"
         val categoryLvl2 = "28323839"
@@ -1761,7 +1764,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `don't select variant thumbnail when select variant id is empty`() {
+    fun `don't select variant thumbnail when select variant with variant id is empty`() {
         val categoryKeyLvl1 = "28323838"
         val categoryKeyLvl2 = "28323839"
         val singleVariant = ProductSingleVariantDataModel(
@@ -1787,7 +1790,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `variant level one is empty when select thumbnail changes`() {
+    fun `thumbnail variant not changes when variants is empty`() {
         val categoryKeyLvl1 = "28323838"
         val categoryKeyLvl2 = "28323839"
         val singleVariant = ProductSingleVariantDataModel(
@@ -1816,7 +1819,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `variant level one is empty when select variant two on thumbnail changes`() {
+    fun `thumbnail variant change is success when variant lv2 have pv is null`() {
         val selectVariant1 = "94748050"
         val categoryKeyLvl1 = "28323838"
         val categoryKeyLvl2 = "28323839"

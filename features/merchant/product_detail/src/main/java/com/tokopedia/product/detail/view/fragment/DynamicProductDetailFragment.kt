@@ -2544,7 +2544,7 @@ open class DynamicProductDetailFragment :
     ) {
         val singleVariant = pdpUiUpdater?.productSingleVariant
         val optionalVariant = pdpUiUpdater?.productOptionalVariantDataModel
-        val selectedChild = viewModel.getVariantSelectedChild(
+        val selectedChild = viewModel.getChildOfVariantSelected(
             singleVariant = singleVariant,
             optionalVariant = optionalVariant
         )
@@ -2618,7 +2618,7 @@ open class DynamicProductDetailFragment :
      * update product UI on thumbnail variant changed
      */
     private fun updateThumbnailVariantDataAndUi(singleVariant: ProductSingleVariantDataModel?) {
-        val selectedChild = viewModel.getVariantSelectedChild(
+        val selectedChild = viewModel.getChildOfVariantSelected(
             singleVariant = singleVariant,
             optionalVariant = null // because thumb variant is not optional variant but single variant
         )
