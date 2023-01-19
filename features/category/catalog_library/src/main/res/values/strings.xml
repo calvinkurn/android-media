@@ -1,5 +1,5 @@
 <resources>
-    <string name="catalog_library_host" translatable="false">catalog-library</string>
+    <string name="catalog_library_host" translatable="false">catalog_library</string>
     <string name="catalog_lihat_semua">Lihat Semua</string>
     <string name="kategori_Special_Buatmu">Kategori Special Buatmu</string>
     <string name="katalog_lainnya_buat_inspirasimu">Katalog lainnya buat inspirasimu</string>
