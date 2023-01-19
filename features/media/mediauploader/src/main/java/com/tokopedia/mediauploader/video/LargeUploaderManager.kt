@@ -37,7 +37,7 @@ class LargeUploaderManager @Inject constructor(
 ) {
 
     private var maxRetryTranscoding = 0
-    private var partDone = mutableListOf<Boolean>()
+    private var partDone = mutableMapOf<Int, Boolean>()
     private var chunkTotal = 0
     private var mUploadId = ""
 
@@ -61,9 +61,6 @@ class LargeUploaderManager @Inject constructor(
 
         // calculate the chunk total based on file size and upload size of chunk
         chunkTotal = ceil(file.length() / sizePerChunk.toDouble()).toInt()
-        if (partDone.isEmpty()) { // if getLastState() didn't found any last state, init new
-            partDone = MutableList(chunkTotal + UPLOAD_PART_START) { false }
-        }
 
         // 2. upload per chunk in loop until N of part number
         uploadPart(file, sizePerChunk, sourceId, policy)
@@ -119,7 +116,7 @@ class LargeUploaderManager @Inject constructor(
     ) = kotlin.run {
         val jobList = mutableListOf<Job>()
         for (part in UPLOAD_PART_START..chunkTotal) {
-            if (partDone[part]) continue
+            if (partDone[part] == true) continue
 
             file.slice(part, sizePerChunk)?.let {
                 val byteArrayToSend = it
@@ -176,7 +173,7 @@ class LargeUploaderManager @Inject constructor(
 
         if (data.initTimeInMillis.isLessThanHoursOf(THRESHOLD_REQUEST_MAX_TIME)) {
             mUploadId = data.uploadId
-            partDone = data.partDone
+            partDone = data.partDone.toMutableMap()
         } else {
             resetUpload()
             init()
@@ -184,12 +181,7 @@ class LargeUploaderManager @Inject constructor(
     }
 
     private fun updateProgressValue() {
-        var totalDone = 0
-        partDone.forEach { isDone ->
-            if (isDone) totalDone++
-        }
-
-        progressUploader?.onProgress(MAX_PROGRESS_LOADER * totalDone / chunkTotal)
+        progressUploader?.onProgress(MAX_PROGRESS_LOADER * partDone.size / chunkTotal)
     }
 
     private suspend fun initUpload(sourceId: String, file: File) {
@@ -278,11 +270,6 @@ class LargeUploaderManager @Inject constructor(
     }
 
     private suspend fun completeUpload(): String {
-        var totalPartDone = 0
-        partDone.forEach {
-            if (it) totalPartDone++
-        }
-
         if (partDone.size >= chunkTotal) {
             val complete = completeUseCase(mUploadId)
             if (complete.isSuccess()) {
@@ -297,7 +284,7 @@ class LargeUploaderManager @Inject constructor(
         uploadStateManager.clear()
 
         chunkTotal = 0
-        partDone.clear()
+        partDone = mutableMapOf()
         maxRetryTranscoding = 0
     }
 
