@@ -20,4 +20,6 @@ class PromoStacking(
     val boCampaignId: Long = 0,
     @SerializedName("free_shipping_metadata")
     val freeShippingMetadata: FreeShippingMetadata = FreeShippingMetadata(),
+    @SerializedName("disabled")
+    val disabled: Boolean = false,
 ) : Parcelable
