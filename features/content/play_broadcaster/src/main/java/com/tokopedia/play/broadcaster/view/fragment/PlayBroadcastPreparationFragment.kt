@@ -709,7 +709,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     override fun setupCoverButtonSaveClicked() {
-        if (getSetupCoverBottomSheet().isAdded) getSetupCoverBottomSheet().dismiss()
+        if (getSetupCoverBottomSheet()?.isAdded == true) getSetupCoverBottomSheet()?.dismiss()
     }
 
     /** Others */
