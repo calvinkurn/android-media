@@ -7,6 +7,6 @@ import dagger.Module;
  */
 
 @Module(includes = {OkHttpClientModule.class, RetrofitModule.class})
-public class  NetModule {
+public class NetModule {
 
 }
