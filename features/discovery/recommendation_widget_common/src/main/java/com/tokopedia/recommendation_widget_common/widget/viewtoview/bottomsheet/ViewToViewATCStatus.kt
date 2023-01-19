@@ -10,4 +10,8 @@ sealed class ViewToViewATCStatus {
     data class Failure(
         override val message: String
     ): ViewToViewATCStatus()
+
+    object NonLogin: ViewToViewATCStatus() {
+        override val message: String = "NonLogin"
+    }
 }

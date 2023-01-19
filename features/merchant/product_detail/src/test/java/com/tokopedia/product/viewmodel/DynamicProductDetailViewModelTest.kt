@@ -1053,6 +1053,47 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             getProductRecommendationUseCase.executeOnBackground(any())
         }
     }
+
+    @Test
+    fun `success load view to view recommendation`() {
+        val recomWidget = RecommendationWidget(recommendationItemList = listOf(RecommendationItem()))
+        val response = listOf(recomWidget)
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns response
+
+        viewModel.loadViewToView("view_to_view", "", false)
+
+        coVerify { getRecommendationUseCase.getData(any()) }
+        Assert.assertTrue(viewModel.loadViewToView.value is Success)
+    }
+
+    @Test
+    fun `fail load view to view recommendation when recommendation widget is empty`() {
+        val response = listOf<RecommendationWidget>()
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns response
+
+        viewModel.loadViewToView("view_to_view", "", false)
+
+        coVerify { getRecommendationUseCase.getData(any()) }
+        Assert.assertTrue(viewModel.loadViewToView.value is Fail)
+    }
+
+    @Test
+    fun `fail load view to view recommendation on exception`() {
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } throws Exception()
+
+        viewModel.loadViewToView("view_to_view", "", false)
+
+        coVerify { getRecommendationUseCase.getData(any()) }
+        Assert.assertTrue(viewModel.loadViewToView.value is Fail)
+    }
     //endregion
 
     //region ticker p2

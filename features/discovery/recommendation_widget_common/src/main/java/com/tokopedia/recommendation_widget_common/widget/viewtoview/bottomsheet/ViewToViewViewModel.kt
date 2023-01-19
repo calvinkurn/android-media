@@ -107,16 +107,22 @@ class ViewToViewViewModel @Inject constructor(
     fun addToCart(
         product: ViewToViewDataModel.Product,
     ) {
-        launchCatchError(
-            block = {
-                val useCase = addToCartUseCase.get()
-                useCase.setParams(product.createAddToCartRequestParams())
-                useCase?.execute(
-                    onSuccess = { handleATCSuccess(it, product) },
-                    onError = ::handleATCError,
-                )
-            }, onError = ::handleATCError
-        )
+        if(userSession.isLoggedIn) {
+            launchCatchError(
+                block = {
+                    val useCase = addToCartUseCase.get()
+                    useCase.setParams(product.createAddToCartRequestParams())
+                    val result = useCase.executeOnBackground()
+                    if (!result.isStatusError()) {
+                        handleATCSuccess(result, product)
+                    } else {
+                        handleATCError(Exception(result.getAtcErrorMessage()))
+                    }
+                }, onError = ::handleATCError
+            )
+        } else {
+            _viewToViewATCStatusLiveData.postValue(ViewToViewATCStatus.NonLogin)
+        }
     }
 
     private fun handleATCSuccess(

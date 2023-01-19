@@ -1718,7 +1718,6 @@ open class DynamicProductDetailFragment :
             pageName = pageName,
             productId = p1.basic.productID,
             isTokoNow = p1.basic.isTokoNow,
-            miniCart = viewModel.p2Data.value?.miniCart,
         )
     }
 

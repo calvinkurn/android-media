@@ -155,15 +155,27 @@ class ViewToViewBottomSheet @Inject constructor(
     }
 
     private fun handleATCStatus(atcStatus: ViewToViewATCStatus) {
-        if (atcStatus is ViewToViewATCStatus.Success) {
-            ViewToViewBottomSheetTracker.eventAddToCart(
-                atcStatus.product.recommendationItem,
-                headerTitle,
-                viewModel.getUserId(),
-                productAnchorId,
-            )
+        when (atcStatus) {
+            is ViewToViewATCStatus.Success -> {
+                trackATCSuccess(atcStatus)
+                showATCToaster(atcStatus.message)
+            }
+            is ViewToViewATCStatus.Failure -> {
+                showATCToaster(atcStatus.message)
+            }
+            is ViewToViewATCStatus.NonLogin -> {
+                showLogin()
+            }
         }
-        showATCToaster(atcStatus.message)
+     }
+
+    private fun trackATCSuccess(atcStatus: ViewToViewATCStatus.Success) {
+        ViewToViewBottomSheetTracker.eventAddToCart(
+            atcStatus.product.recommendationItem,
+            headerTitle,
+            viewModel.getUserId(),
+            productAnchorId,
+        )
     }
 
     private fun showATCToaster(
@@ -178,6 +190,15 @@ class ViewToViewBottomSheet @Inject constructor(
                 Toaster.TYPE_NORMAL,
             )
             .show()
+    }
+
+    private fun showLogin() {
+        activity?.let {
+            startActivityForResult(
+                RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                REQUEST_CODE_LOGIN
+            )
+        }
     }
 
     private fun initRecyclerView() {
@@ -207,16 +228,7 @@ class ViewToViewBottomSheet @Inject constructor(
     }
 
     override fun onAddToCartClicked(product: ViewToViewDataModel.Product, position: Int) {
-        if (viewModel.isUserSessionActive) {
-            viewModel.addToCart(product)
-        } else {
-            activity?.let {
-                startActivityForResult(
-                    RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                    REQUEST_CODE_LOGIN
-                )
-            }
-        }
+        viewModel.addToCart(product)
     }
 
     companion object {

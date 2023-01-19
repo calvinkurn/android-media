@@ -721,7 +721,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         pageName: String,
         productId: String,
         isTokoNow: Boolean,
-        miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?,
     ) {
         if (GlobalConfig.isSellerApp()) return
 
