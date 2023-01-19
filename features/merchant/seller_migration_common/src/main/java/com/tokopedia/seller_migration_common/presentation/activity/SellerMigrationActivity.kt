@@ -91,6 +91,7 @@ class SellerMigrationActivity : BaseSimpleActivity() {
         }
 
         trackUserRedirection(openedPage)
+        showSellerAppUpdateToaster()
     }
 
     private fun getSellerHomeIntent(appLinks: java.util.ArrayList<String>): Intent {
