@@ -920,7 +920,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 "$userId - shop - ${item.id}"
             }
             ShopRecomUiModelItem.FOLLOW_TYPE_BUYER -> {
-                "$userId - user - ${item.encryptedID}"
+                "$userId - user - ${item.id}"
             }
             else -> String.EMPTY
         }

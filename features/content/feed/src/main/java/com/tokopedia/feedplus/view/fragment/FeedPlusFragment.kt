@@ -4069,7 +4069,7 @@ class FeedPlusFragment :
                 "shop - ${item.id}"
             }
             ShopRecomUiModelItem.FOLLOW_TYPE_BUYER -> {
-                "user - ${item.encryptedID}"
+                "user - ${item.id}"
             }
             else -> String.EMPTY
         }
