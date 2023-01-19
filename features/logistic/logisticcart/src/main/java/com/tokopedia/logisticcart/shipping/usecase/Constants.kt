@@ -589,6 +589,7 @@ internal fun scheduleDeliveryRatesQuery() = """
                 is_bebas_ongkir_extra
                 benefit_amount
                 bo_campaign_id
+                disabled
                 free_shipping_metadata {
                   sent_shipper_partner
                   benefit_class
