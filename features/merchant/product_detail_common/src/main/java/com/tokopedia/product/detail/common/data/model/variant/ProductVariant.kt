@@ -50,7 +50,7 @@ data class ProductVariant(
         val list = variants.mapIndexed { index, variant ->
             "${variants.getOrNull(index)?.options?.size ?: ""} ${variant.name}"
         }
-        return list.joinToString()
+        return list.joinToString() + "."
     }
 
     fun getChildByOptionId(selectedIds: List<String>): VariantChild? {
