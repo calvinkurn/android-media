@@ -15,29 +15,39 @@
         android:focusable="true"
         android:foreground="?attr/selectableItemBackground">
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/image_wishlist"
-            android:layout_width="56dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_image"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
             android:layout_height="56dp"
-            android:layout_marginVertical="8dp"
-            android:layout_marginStart="8dp"
-            android:contentDescription="@string/content_desc_image_wishlist"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/image_wishlist_2"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginVertical="8dp"
-            android:layout_marginStart="4dp"
-            android:contentDescription="@string/content_desc_image_wishlist"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toEndOf="@id/image_wishlist"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginVertical="8dp"
+            android:layout_marginStart="8dp">
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/image_wishlist"
+                android:layout_width="56dp"
+                android:layout_height="0dp"
+                tools:visibility="visible"
+                android:contentDescription="@string/content_desc_image_wishlist"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/image_wishlist_2"
+                android:layout_width="56dp"
+                android:layout_height="0dp"
+                tools:visibility="visible"
+                android:layout_marginStart="4dp"
+                android:contentDescription="@string/content_desc_image_wishlist"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toEndOf="@id/image_wishlist"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_name"
@@ -51,7 +61,7 @@
             tools:text="Semua Wishlist"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintBottom_toTopOf="@id/text_description"
-            app:layout_constraintStart_toEndOf="@id/image_wishlist_2"
+            app:layout_constraintStart_toEndOf="@id/layout_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
@@ -62,6 +72,7 @@
             android:id="@+id/text_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:layout_goneMarginStart="16dp"
             android:layout_marginStart="@dimen/unify_space_8"
             android:layout_marginEnd="@dimen/unify_space_8"
             android:layout_marginTop="2dp"
@@ -70,7 +81,7 @@
             tools:text="67 Barang"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/image_wishlist_2"
+            app:layout_constraintStart_toEndOf="@id/layout_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_name"
             app:layout_constraintVertical_chainStyle="packed"

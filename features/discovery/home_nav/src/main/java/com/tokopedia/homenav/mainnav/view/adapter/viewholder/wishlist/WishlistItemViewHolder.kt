@@ -36,7 +36,11 @@ class WishlistItemViewHolder(itemView: View, val mainNavListener: MainNavListene
 
         binding?.textName?.text = element.navWishlistModel.name
 
-        if (element.navWishlistModel.images.isNotEmpty()) {
+        if (element.navWishlistModel.images.isEmpty()) {
+            binding?.imageWishlist?.gone()
+            binding?.imageWishlist2?.gone()
+        } else {
+            binding?.imageWishlist?.visible()
             binding?.imageWishlist?.setImageUrl(element.navWishlistModel.images[0])
             if(element.navWishlistModel.images.size > 1) {
                 binding?.imageWishlist2?.apply {
@@ -47,6 +51,7 @@ class WishlistItemViewHolder(itemView: View, val mainNavListener: MainNavListene
                 binding?.imageWishlist2?.gone()
             }
         }
+
         binding?.textDescription?.text = itemView.context.getString(
             com.tokopedia.homenav.R.string.wishlist_item_count_format
         ).format(element.navWishlistModel.totalItem)
