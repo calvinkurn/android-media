@@ -313,7 +313,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         try {
             if (getActivity() instanceof BaseSimpleWebViewActivity) {
                 BaseSimpleWebViewActivity baseSimpleWebViewActivity = (BaseSimpleWebViewActivity) getActivity();
-                return baseSimpleWebViewActivity.isDomainWhitelisted(baseSimpleWebViewActivity.getBaseDomain(mUrl));
+                return baseSimpleWebViewActivity.isDomainWhitelisted(baseSimpleWebViewActivity.getDomainName(baseSimpleWebViewActivity.getBaseDomain(mUrl)));
             }
             return false;
         } catch (Exception ex) {
