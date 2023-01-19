@@ -89,7 +89,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
                 else -> null
             },
             applink = when (identifier) {
-                IDENTIFIER_TITLE_WISHLIST -> ApplinkConst.NEW_WISHLIST
+                IDENTIFIER_TITLE_WISHLIST -> ApplinkConst.WISHLIST
                 IDENTIFIER_TITLE_FAVORITE_SHOP -> ApplinkConst.FAVORITE
                 IDENTIFIER_TITLE_ORDER_HISTORY -> ApplinkConst.PURCHASE_ORDER
                 IDENTIFIER_TITLE_REVIEW -> getReputationApplink().needLoginValidation()
@@ -104,7 +104,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
             id = ID_WISHLIST_MENU,
             srcIconId = IconUnify.HEART,
             itemTitle = context.getString(R.string.menu_user_menu_wishlist),
-            applink = ApplinkConst.NEW_WISHLIST.needLoginValidation(),
+            applink = ApplinkConst.WISHLIST.needLoginValidation(),
             notifCount = notifCount,
             sectionId = sectionId
         )

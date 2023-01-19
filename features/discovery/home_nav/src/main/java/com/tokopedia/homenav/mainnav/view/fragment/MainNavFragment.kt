@@ -271,7 +271,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             hitClickTrackingBasedOnId(homeNavMenuDataModel)
             if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
                 if (homeNavMenuDataModel.applink.isNotEmpty()) {
-                    if (!handleClickFromPageSource(homeNavMenuDataModel)) {
+                    if (!handleClickFromPageSource(homeNavMenuDataModel.applink)) {
                         RouteManager.route(context, homeNavMenuDataModel.applink)
                     }
                 } else {
@@ -288,23 +288,23 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         }
     }
 
-    private fun handleClickFromPageSource(homeNavMenuDataModel: HomeNavMenuDataModel): Boolean {
-        if (validateTargetMenu(homeNavMenuDataModel)) {
+    private fun handleClickFromPageSource(applink: String): Boolean {
+        if (validateTargetMenu(applink)) {
             activity?.onBackPressed()
             return true
         }
         return false
     }
 
-    private fun validateTargetMenu(homeNavMenuDataModel: HomeNavMenuDataModel): Boolean {
-        return validateHomeUohPage(homeNavMenuDataModel) || validateHomeWishlistPage(homeNavMenuDataModel)
+    private fun validateTargetMenu(applink: String): Boolean {
+        return validateHomeUohPage(applink) || validateHomeWishlistPage(applink)
     }
 
-    private fun validateHomeUohPage(homeNavMenuDataModel: HomeNavMenuDataModel) =
-        homeNavMenuDataModel.id == ID_ALL_TRANSACTION && pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_UOH
+    private fun validateHomeUohPage(applink: String) =
+        applink == ApplinkConst.PURCHASE_ORDER && pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_UOH
 
-    private fun validateHomeWishlistPage(homeNavMenuDataModel: HomeNavMenuDataModel) =
-        homeNavMenuDataModel.id == ID_WISHLIST_MENU &&
+    private fun validateHomeWishlistPage(applink: String) =
+        applink == ApplinkConst.WISHLIST &&
             (
                 pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_COLLECTION ||
                     pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2
@@ -343,7 +343,9 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             ClientMenuGenerator.IDENTIFIER_TITLE_WISHLIST -> TrackingTransactionSection.clickOnWishlistViewAll()
             ClientMenuGenerator.IDENTIFIER_TITLE_FAVORITE_SHOP -> TrackingTransactionSection.clickOnFavoriteShopViewAll()
         }
-        RouteManager.route(context, homeNavTitleDataModel.applink)
+        if (!handleClickFromPageSource(homeNavTitleDataModel.applink)) {
+            RouteManager.route(context, homeNavTitleDataModel.applink)
+        }
     }
 
     override fun onErrorWishlistClicked() {
@@ -376,6 +378,25 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onErrorReviewClicked() {
         viewModel.refreshReviewData()
+    }
+
+    override fun onViewAllTransactionClicked(trackingLabel: String) {
+        TrackingTransactionSection.clickOnOrderStatus(
+            getUserId(),
+            trackingLabel
+        )
+        val applink = ApplinkConst.PURCHASE_ORDER
+        if (!handleClickFromPageSource(applink)) {
+            RouteManager.route(context, applink)
+        }
+    }
+
+    override fun onViewAllWishlistClicked() {
+        TrackingTransactionSection.clickOnWishlistViewAll()
+        val applink = ApplinkConst.WISHLIST
+        if (!handleClickFromPageSource(applink)) {
+            RouteManager.route(context, applink)
+        }
     }
 
     private fun getNavPerformanceCallback(): PageLoadTimePerformanceInterface? {

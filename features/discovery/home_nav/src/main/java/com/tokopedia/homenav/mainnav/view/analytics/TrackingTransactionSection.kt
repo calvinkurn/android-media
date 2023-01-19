@@ -50,6 +50,8 @@ object TrackingTransactionSection : BaseTrackerConst() {
     private const val ACTION_CLICK_ON_REVIEW_VIEW_ALL = "click view all review"
     private const val ITEM_ID_FAVORITE_SHOP_FORMAT = "0_%s"
     private const val FORMAT_DASH_TWO_VALUES = "%s - %s"
+    private const val WISHLIST_IMPRESSION_TRACKER_ID = "30836"
+    private const val WISHLIST_CLICK_TRACKER_ID = "30837"
 
     fun clickOnAllTransaction(userId: String) {
         val trackingBuilder = BaseTrackerBuilder()
@@ -163,7 +165,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
             event = Event.PRODUCT_VIEW,
             eventCategory = CATEGORY_GLOBAL_MENU,
             eventAction = IMPRESSION_ON_WISHLIST_CARD,
-            eventLabel = Label.NONE,
+            eventLabel = FORMAT_DASH_TWO_VALUES.format(wishlistModel.id, ""),
             list = LIST_WISHLIST,
             products = listOf(
                 Product(
@@ -183,6 +185,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
             .appendCurrentSite(DEFAULT_CURRENT_SITE)
             .appendUserId(userId)
             .appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
+            .appendCustomKeyValue(TrackerId.KEY, WISHLIST_IMPRESSION_TRACKER_ID)
             .build() as HashMap<String, Any>
     }
 
