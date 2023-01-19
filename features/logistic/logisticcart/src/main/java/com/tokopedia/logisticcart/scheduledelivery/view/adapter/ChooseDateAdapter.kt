@@ -3,6 +3,7 @@ package com.tokopedia.logisticcart.scheduledelivery.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.databinding.ItemDateCardBinding
@@ -37,7 +38,6 @@ class ChooseDateAdapter(
         val previousSelectedDateIndex = items.indexOfFirst { it.isSelected }
         if (previousSelectedDateIndex != -1) {
             items.getOrNull(previousSelectedDateIndex)?.isSelected = false
-            // notify item changed
             notifyItemChanged(previousSelectedDateIndex)
         }
         // find current selected date, set selected to true
@@ -48,7 +48,6 @@ class ChooseDateAdapter(
             }
             notifyItemChanged(dateUiModelIndex)
         }
-        // notify item changed
         listener.onClickDateListener(dateUiModel)
     }
 
@@ -62,15 +61,36 @@ class ChooseDateAdapter(
             binding.tvTitleDate.text = buttonDateUiModel.title
             binding.tvDate.text = buttonDateUiModel.date
             setCardState(buttonDateUiModel)
+            setTextColor(buttonDateUiModel)
             setListener(buttonDateUiModel)
             setLabelOufOfSlot(buttonDateUiModel)
+        }
+
+        private fun setTextColor(buttonDateUiModel: ButtonDateUiModel) {
+            if (!buttonDateUiModel.isEnabled) {
+                binding.tvTitleDate.setTextColor(
+                    MethodChecker.getColor(
+                        itemView.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                    )
+                )
+                binding.tvDate.setTextColor(
+                    MethodChecker.getColor(
+                        itemView.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                    )
+                )
+            }
         }
 
         private fun setLabelOufOfSlot(buttonDateUiModel: ButtonDateUiModel) {
             if (buttonDateUiModel.isEnabled) {
                 binding.tvLabelOutOfDate.gone()
             } else {
-                binding.tvLabelOutOfDate.visible()
+                binding.tvLabelOutOfDate.run {
+                    opacityLevel = 0.3F
+                    visible()
+                }
             }
         }
 

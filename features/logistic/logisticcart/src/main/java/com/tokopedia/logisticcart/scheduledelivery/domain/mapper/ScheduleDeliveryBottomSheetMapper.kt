@@ -30,12 +30,12 @@ object ScheduleDeliveryBottomSheetMapper {
         return BottomSheetUiModel(
             date = ChooseDateUiModel(content = buttonDateUiModel),
             availableTitle = TitleSectionUiModel(
-                title = "Jadwal Tersedia",
+                title = "Jadwal tersedia",
                 content = selectedTimeSlot.promoText,
                 icon = IconUnify.INFORMATION
             ),
             unavailableTitle = TitleSectionUiModel(
-                title = "Jadwal habis atau tidak tersedia"
+                title = "Jadwal tidak tersedia"
             ),
             infoUiModel = mapNoticeToScheduleInfoUiModel(notice)
         )

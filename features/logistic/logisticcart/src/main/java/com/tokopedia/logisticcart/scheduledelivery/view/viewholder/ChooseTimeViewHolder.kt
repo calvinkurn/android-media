@@ -3,14 +3,14 @@ package com.tokopedia.logisticcart.scheduledelivery.view.viewholder
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ChooseTimeUiModel
-import com.tokopedia.logisticcart.scheduledelivery.utils.DividerType
-import com.tokopedia.logisticcart.scheduledelivery.utils.ScheduleSlotListener
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.logisticcart.databinding.ViewholderChooseTimeBinding
+import com.tokopedia.logisticcart.scheduledelivery.utils.DividerType
+import com.tokopedia.logisticcart.scheduledelivery.utils.ScheduleSlotListener
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ChooseTimeUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
 
@@ -83,9 +83,9 @@ class ChooseTimeViewHolder(
     private fun setState(element: ChooseTimeUiModel) {
         if (element.isEnabled) {
             viewBinding.tvDescription.setTextColor(
-                ContextCompat.getColor(
+                MethodChecker.getColor(
                     viewBinding.root.context,
-                    com.tokopedia.logisticcart.R.color.Unify_NN950
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950
                 )
             )
 
@@ -94,9 +94,9 @@ class ChooseTimeViewHolder(
             }
         } else {
             viewBinding.tvDescription.setTextColor(
-                ContextCompat.getColor(
+                MethodChecker.getColor(
                     viewBinding.root.context,
-                    com.tokopedia.logisticcart.R.color.Unify_NN400
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
                 )
             )
             viewBinding.root.setOnClickListener(null)
