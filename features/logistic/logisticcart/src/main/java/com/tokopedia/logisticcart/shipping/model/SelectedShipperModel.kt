@@ -52,7 +52,6 @@ data class SelectedShipperModel(
             insuranceUsedInfo = scheduleDelivery.deliveryProduct.insurance.insuranceUsedInfo
             insuranceUsedDefault = scheduleDelivery.deliveryProduct.insurance.insuranceUsedDefault
 
-            logPromoCode = scheduleDelivery.deliveryProduct.promoStacking.promoCode
             discountedRate = scheduleDelivery.deliveryProduct.finalPrice.roundToInt()
             shippingRate = scheduleDelivery.deliveryProduct.realPrice.roundToInt()
             benefitAmount = 0
@@ -75,10 +74,13 @@ data class SelectedShipperModel(
             etaErrorCode = 0
             shipperName = ""
             freeShippingChosenCourierTitle = ""
-            freeShippingMetadata = scheduleDelivery.deliveryProduct.promoStacking.freeShippingMetadata.toJson()
-            benefitClass = scheduleDelivery.deliveryProduct.promoStacking.benefitClass
-            shippingSubsidy = scheduleDelivery.deliveryProduct.promoStacking.freeShippingMetadata.shippingSubsidy
-            boCampaignId = scheduleDelivery.deliveryProduct.promoStacking.boCampaignId
+            if (scheduleDelivery.deliveryProduct.promoStacking.disabled.not()) {
+                logPromoCode = scheduleDelivery.deliveryProduct.promoStacking.promoCode
+                freeShippingMetadata = scheduleDelivery.deliveryProduct.promoStacking.freeShippingMetadata.toJson()
+                benefitClass = scheduleDelivery.deliveryProduct.promoStacking.benefitClass
+                shippingSubsidy = scheduleDelivery.deliveryProduct.promoStacking.freeShippingMetadata.shippingSubsidy
+                boCampaignId = scheduleDelivery.deliveryProduct.promoStacking.boCampaignId
+            }
         }
     }
 }
