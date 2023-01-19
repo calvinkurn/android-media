@@ -77,18 +77,13 @@ class CalendarOrderExtensionBottomSheet(
         ).parseAsHtml()
 
         if (currentSelectDate.extensionTime != Int.ZERO) {
-            val selectDate = orderExtensionDate.eligbleDates.find {
-                it.extensionTime == currentSelectDate.extensionTime
-            }
-            selectDate?.date?.let {
-                calendar?.init(
-                    currentDate.time,
-                    orderExtensionDate.deadLineTime,
-                    listOf(),
-                    activeDates
-                )?.inMode(CalendarPickerView.SelectionMode.SINGLE)
-                    ?.withSelectedDate(it)
-            }
+            calendar?.init(
+                currentDate.time,
+                orderExtensionDate.deadLineTime,
+                listOf(),
+                activeDates
+            )?.inMode(CalendarPickerView.SelectionMode.SINGLE)
+                ?.withSelectedDate(currentSelectDate.date)
         } else {
             calendar?.init(
                 currentDate.time,
