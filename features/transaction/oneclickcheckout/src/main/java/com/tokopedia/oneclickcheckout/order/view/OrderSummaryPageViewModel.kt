@@ -1090,7 +1090,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 orderTotal.value = orderTotal.value.copy(
                         orderCost = orderTotal.value.orderCost.copy(
                                 hasAddOn = true,
-                                addOnPrice = addOnResult.addOnData.firstOrNull()?.addOnPrice?.toDouble()
+                                addOnPrice = addOnResult.addOnData.firstOrNull()?.addOnPrice
                                         ?: 0.0
                         )
                 )
@@ -1101,7 +1101,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 orderTotal.value = orderTotal.value.copy(
                         orderCost = orderTotal.value.orderCost.copy(
                                 hasAddOn = true,
-                                addOnPrice = addOnResult.addOnData.firstOrNull()?.addOnPrice?.toDouble()
+                                addOnPrice = addOnResult.addOnData.firstOrNull()?.addOnPrice
                                         ?: 0.0
                         )
                 )
