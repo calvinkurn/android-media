@@ -7,9 +7,6 @@ import com.tokopedia.homenav.mainnav.data.pojo.payment.Payment
 import com.tokopedia.homenav.mainnav.data.pojo.payment.PaymentQuery
 import com.tokopedia.homenav.mainnav.domain.model.NavPaymentOrder
 import com.tokopedia.homenav.mainnav.domain.usecases.query.GetPaymentQuery
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 
 /**
@@ -17,7 +14,7 @@ import com.tokopedia.usecase.coroutines.UseCase
  */
 class GetPaymentOrdersNavUseCase(
     private val graphqlUseCase: GraphqlUseCase<Payment>
-) : UseCase<Result<List<NavPaymentOrder>>>() {
+) : UseCase<List<NavPaymentOrder>>() {
     init {
         graphqlUseCase.setGraphqlQuery(GetPaymentQuery())
         graphqlUseCase.setRequestParams(generateParam())
@@ -25,24 +22,19 @@ class GetPaymentOrdersNavUseCase(
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
 
-    override suspend fun executeOnBackground(): Result<List<NavPaymentOrder>> {
-        return try {
-            val responseData = graphqlUseCase.executeOnBackground().paymentQuery ?: PaymentQuery()
-            val navPaymentList = responseData.paymentList?.map {
-                NavPaymentOrder(
-                    statusText = "",
-                    statusTextColor = "",
-                    paymentAmountText = it.paymentAmount.toString(),
-                    descriptionText = it.tickerMessage ?: "",
-                    imageUrl = if (it.bankImg?.isNotBlank() == true) it.bankImg else it.gatewayImg ?: "",
-                    id = it.transactionID ?: "",
-                    applink = it.applink ?: ""
-                )
-            }.orEmpty()
-            Success(navPaymentList)
-        } catch (e: Exception) {
-            Fail(e)
-        }
+    override suspend fun executeOnBackground(): List<NavPaymentOrder> {
+        val responseData = graphqlUseCase.executeOnBackground().paymentQuery ?: PaymentQuery()
+        return responseData.paymentList?.map {
+            NavPaymentOrder(
+                statusText = "",
+                statusTextColor = "",
+                paymentAmountText = it.paymentAmount.toString(),
+                descriptionText = it.tickerMessage ?: "",
+                imageUrl = if (it.bankImg?.isNotBlank() == true) it.bankImg else it.gatewayImg ?: "",
+                id = it.transactionID ?: "",
+                applink = it.applink ?: ""
+            )
+        }.orEmpty()
     }
 
     companion object {

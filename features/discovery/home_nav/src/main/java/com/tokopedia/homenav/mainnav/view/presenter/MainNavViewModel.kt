@@ -478,55 +478,40 @@ class MainNavViewModel @Inject constructor(
             updateWidget(InitialShimmerTransactionRevampDataModel(), it.index)
         }
         try {
-            val paymentResponse = getPaymentOrdersNavUseCase.get().executeOnBackground()
+            val paymentList = getPaymentOrdersNavUseCase.get().executeOnBackground()
             getUohOrdersNavUseCase.get().setIsMePageUsingRollenceVariant(true)
-            val orderResponse = getUohOrdersNavUseCase.get().executeOnBackground()
+            val orderList = getUohOrdersNavUseCase.get().executeOnBackground()
 
-            if (paymentResponse is Fail && orderResponse is Fail) {
-                findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
-                    updateWidget(ErrorStateOngoingTransactionModel(), it)
-                }
-            } else {
-                val paymentList = mutableListOf<NavPaymentOrder>()
-                val orderList = mutableListOf<NavProductOrder>()
-                if (paymentResponse is Success) {
-                    paymentList.addAll(paymentResponse.data)
-                }
-                if (orderResponse is Success) {
-                    orderList.addAll(orderResponse.data)
-                }
-
-                if (paymentList.isNotEmpty() || orderList.isNotEmpty()) {
-                    val totalTransaction = paymentList.size + orderList.size
-                    val isFullWidth = totalTransaction == SIZE_LAYOUT_SHOW_FULL_WIDTH
-                    if (isFullWidth) {
-                        when {
-                            paymentList.size == SIZE_LAYOUT_SHOW_FULL_WIDTH -> {
-                                paymentList[INDEX_FOR_FULL_WIDTH].fullWidth = isFullWidth
-                            }
-                            orderList.size == SIZE_LAYOUT_SHOW_FULL_WIDTH -> {
-                                orderList[INDEX_FOR_FULL_WIDTH].fullWidth = isFullWidth
-                            }
+            if (paymentList.isNotEmpty() || orderList.isNotEmpty()) {
+                val totalTransaction = paymentList.size + orderList.size
+                val isFullWidth = totalTransaction == SIZE_LAYOUT_SHOW_FULL_WIDTH
+                if (isFullWidth) {
+                    when {
+                        paymentList.size == SIZE_LAYOUT_SHOW_FULL_WIDTH -> {
+                            paymentList[INDEX_FOR_FULL_WIDTH].fullWidth = isFullWidth
+                        }
+                        orderList.size == SIZE_LAYOUT_SHOW_FULL_WIDTH -> {
+                            orderList[INDEX_FOR_FULL_WIDTH].fullWidth = isFullWidth
                         }
                     }
+                }
 
-                    val (paymentListToShow, orderListToShow) = getOrderHistory(paymentList, orderList)
-                    val otherTransaction = totalTransaction - MAX_CARD_SHOWN_REVAMP
-                    val transactionListItemViewModel = TransactionListItemDataModel(
-                        NavOrderListModel(orderListToShow, paymentListToShow),
-                        otherTransaction,
-                        isUsingMePageRollenceVariant()
-                    )
+                val (paymentListToShow, orderListToShow) = getOrderHistory(paymentList, orderList)
+                val otherTransaction = totalTransaction - MAX_CARD_SHOWN_REVAMP
+                val transactionListItemViewModel = TransactionListItemDataModel(
+                    NavOrderListModel(orderListToShow, paymentListToShow),
+                    otherTransaction,
+                    isUsingMePageRollenceVariant()
+                )
 
-                    // find shimmering and change with result value
-                    findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
-                        updateWidget(transactionListItemViewModel, it)
-                    }
-                } else {
-                    val emptyTransaction = TransactionListItemDataModel(NavOrderListModel(), isMePageUsingRollenceVariant = isUsingMePageRollenceVariant())
-                    findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
-                        updateWidget(emptyTransaction, it)
-                    }
+                // find shimmering and change with result value
+                findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
+                    updateWidget(transactionListItemViewModel, it)
+                }
+            } else {
+                val emptyTransaction = TransactionListItemDataModel(NavOrderListModel(), isMePageUsingRollenceVariant = isUsingMePageRollenceVariant())
+                findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
+                    updateWidget(emptyTransaction, it)
                 }
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
@@ -604,41 +589,26 @@ class MainNavViewModel @Inject constructor(
             updateWidget(InitialShimmerTransactionDataModel(), it.index)
         }
         try {
-            val paymentResponse = getPaymentOrdersNavUseCase.get().executeOnBackground()
+            val paymentList = getPaymentOrdersNavUseCase.get().executeOnBackground()
             getUohOrdersNavUseCase.get().setIsMePageUsingRollenceVariant(isUsingMePageRollenceVariant())
-            val orderResponse = getUohOrdersNavUseCase.get().executeOnBackground()
+            val orderList = getUohOrdersNavUseCase.get().executeOnBackground()
 
-            if (paymentResponse is Fail && orderResponse is Fail) {
+            if (paymentList.isNotEmpty() || orderList.isNotEmpty()) {
+                val othersTransactionCount = orderList.size - ON_GOING_TRANSACTION_TO_SHOW
+
+                val (paymentListToShow, orderListToShow) = getOrderHistory(paymentList, orderList)
+
+                val transactionListItemViewModel = TransactionListItemDataModel(
+                    NavOrderListModel(orderListToShow, paymentListToShow),
+                    othersTransactionCount,
+                    isUsingMePageRollenceVariant()
+                )
+
                 findShimmerPosition<InitialShimmerTransactionDataModel>()?.let {
-                    updateWidget(ErrorStateOngoingTransactionModel(), it)
+                    updateWidget(transactionListItemViewModel, it)
                 }
             } else {
-                val paymentList = mutableListOf<NavPaymentOrder>()
-                val orderList = mutableListOf<NavProductOrder>()
-                if (paymentResponse is Success) {
-                    paymentList.addAll(paymentResponse.data)
-                }
-                if (orderResponse is Success) {
-                    orderList.addAll(orderResponse.data)
-                }
-
-                if (paymentList.isNotEmpty() || orderList.isNotEmpty()) {
-                    val othersTransactionCount = orderList.size - ON_GOING_TRANSACTION_TO_SHOW
-
-                    val (paymentListToShow, orderListToShow) = getOrderHistory(paymentList, orderList)
-
-                    val transactionListItemViewModel = TransactionListItemDataModel(
-                        NavOrderListModel(orderListToShow, paymentListToShow),
-                        othersTransactionCount,
-                        isUsingMePageRollenceVariant()
-                    )
-
-                    findShimmerPosition<InitialShimmerTransactionDataModel>()?.let {
-                        updateWidget(transactionListItemViewModel, it)
-                    }
-                } else {
-                    deleteWidget(InitialShimmerTransactionDataModel())
-                }
+                deleteWidget(InitialShimmerTransactionDataModel())
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
         } catch (e: Exception) {
