@@ -1,10 +1,7 @@
 package com.tokopedia.sellerorder.orderextension.presentation.model
 
 import androidx.annotation.ColorRes
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -14,7 +11,7 @@ import java.util.Date
 
 data class OrderExtensionRequestInfoUiModel(
     var items: List<BaseOrderExtensionRequestInfoItem> = emptyList(),
-    val orderExtentionDate: OrderExtentionDate = OrderExtentionDate(),
+    val orderExtensionDate: OrderExtentionDate = OrderExtentionDate(),
     var processing: Boolean,
     var success: Boolean,
     var completed: Boolean,

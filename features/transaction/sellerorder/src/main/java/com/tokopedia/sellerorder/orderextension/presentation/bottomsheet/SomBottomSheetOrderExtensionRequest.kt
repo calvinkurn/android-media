@@ -192,7 +192,7 @@ class SomBottomSheetOrderExtensionRequest(
 
     override fun onShowCalendarPicker() {
         val calendarOrderExtensionBottomSheet =
-            CalendarOrderExtensionBottomSheet(data.orderExtentionDate,::onSelectDate,
+            CalendarOrderExtensionBottomSheet(data.orderExtensionDate,::onSelectDate,
                 ::onValidateDate, currentSelectDate)
         calendarOrderExtensionBottomSheet.show(
             fragmentManager,

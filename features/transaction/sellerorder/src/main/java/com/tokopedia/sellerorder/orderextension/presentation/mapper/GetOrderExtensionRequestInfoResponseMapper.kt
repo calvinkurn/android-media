@@ -59,7 +59,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
                 addOrderExtensionFooter(ID_FOOTER_TITLE)
             }
         } else emptyList(),
-        orderExtentionDate = OrderExtensionRequestInfoUiModel.OrderExtentionDate(
+        orderExtensionDate = OrderExtensionRequestInfoUiModel.OrderExtentionDate(
             deadLineTime = response.deadlineInfo.maxDate.toDate(FORMAT_DATE_DEADLINE_ORDER_EXTENTION),
             eligbleDates = response.elibleDates.map {
                 OrderExtensionRequestInfoUiModel.OrderExtentionDate.EligbleDateUIModel(
