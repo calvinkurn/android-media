@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHour
@@ -124,7 +125,7 @@ class ShopOperationalHoursListBottomSheet : BottomSheetUnify() {
                     day = i,
                     endTime = MAX_END_TIME,
                     startTime = MIN_START_TIME,
-                    status = 1
+                    status = Int.ONE
                 )
             )
         }
