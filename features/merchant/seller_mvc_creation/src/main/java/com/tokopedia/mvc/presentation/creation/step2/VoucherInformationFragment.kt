@@ -183,11 +183,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 renderVoucherNameValidation(state.isVoucherNameError, state.voucherNameErrorMsg)
             }
             VoucherCreationStepTwoFieldValidation.VOUCHER_CODE -> {
-                renderVoucherCodeValidation(
-                    state.voucherConfiguration,
-                    state.isVoucherCodeError,
-                    state.voucherCodeErrorMsg
-                )
+                renderVoucherCodeValidation(state.isVoucherCodeError, state.voucherCodeErrorMsg)
             }
             VoucherCreationStepTwoFieldValidation.VOUCHER_START_DATE -> {
                 renderVoucherStartPeriodSelection(
@@ -206,11 +202,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             VoucherCreationStepTwoFieldValidation.ALL -> {
                 renderVoucherTargetSelection(state.voucherConfiguration.isVoucherPublic)
                 renderVoucherNameValidation(state.isVoucherNameError, state.voucherNameErrorMsg)
-                renderVoucherCodeValidation(
-                    state.voucherConfiguration,
-                    state.isVoucherCodeError,
-                    state.voucherCodeErrorMsg
-                )
+                renderVoucherCodeValidation(state.isVoucherCodeError, state.voucherCodeErrorMsg)
                 renderVoucherStartPeriodSelection(
                     state.voucherConfiguration,
                     state.isStartDateError,
@@ -499,12 +491,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     }
 
     private fun renderVoucherCodeValidation(
-        voucherConfiguration: VoucherConfiguration,
         isVoucherCodeError: Boolean,
         voucherCodeErrorMsg: String
     ) {
         voucherCodeSectionBinding?.run {
-//            tfVoucherCode.editText.setText(voucherConfiguration.voucherCode)
             tfVoucherCode.isInputError = isVoucherCodeError
             tfVoucherCode.setMessage(voucherCodeErrorMsg)
             tpgPelajari.isVisible = voucherCodeErrorMsg.contains(
