@@ -23,6 +23,7 @@
     <string name="applink_catalog_kategori" translatable="false">/kategori</string>
     <string name="applink_catalog_kategori_category" translatable="false">/kategori/.*\</string>
     <string name="applink_title_e_pharmacy">EPharmacy</string>
+    <string name="applink_title_catalog_library">Catalog Library</string>
     <string name="money_in">Langsung Laku</string>
     <string name="host_belanja_kategori" translatable="false">category_belanja</string>
     <string name="label_kategori">Belanja di Tokopedia</string>
