@@ -413,8 +413,6 @@ class AddEditProductShipmentFragment :
             if (isRequired) {
                 if (shipmentViewModel.isEditMode) {
                     ProductEditShippingTracking.clickInsurance(shopId)
-                } else {
-                    ProductAddShippingTracking.clickInsurance(shopId)
                 }
             }
 
