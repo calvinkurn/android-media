@@ -44,10 +44,11 @@ object RollenceKey {
     const val SEARCH_BROAD_MATCH_TRACKER_UNIFICATION = "keyword_track_broad"
 
     // Purchase Platform
-    const val WISHLIST_CONTROL_VARIANT = "control_variant"
-    const val WISHLIST_EXPERIMENT_VARIANT = "experiment_variant"
+    const val CONTROL_VARIANT = "control_variant"
+    const val EXPERIMENT_VARIANT = "experiment_variant"
     const val WISHLIST_COLLECTION = "WL_collection_andro"
     const val WISHLIST_COLLECTION_SHARING = "WL_sharing_andro"
+    const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
 
     // SRP Video Sneak Peek Autoplay
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY = "srp_prodvideo_3"
@@ -60,9 +61,6 @@ object RollenceKey {
     // Global Menu (Me Page)
     const val ME_PAGE_REVAMP = "Navigation_Mepage"
     const val ME_PAGE_REVAMP_VARIANT = "Mepage_Variant"
-
-    // Food
-    const val KEY_GOFOOD_SEARCH = "gofood_search"
 
     // TokoChat
     const val KEY_ROLLENCE_TOKOCHAT = "gofood_chat_2"

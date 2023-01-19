@@ -25,8 +25,6 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -1303,8 +1301,8 @@ class ProductListPresenter @Inject constructor(
 
     private fun ProductItemDataView.createAddToCartRequestParams(): AddToCartRequestParams {
         return AddToCartRequestParams(
-            productId = productID.toLongOrZero(),
-            shopId = shopID.toIntOrZero(),
+            productId = productID,
+            shopId = shopID,
             quantity = minOrder,
             productName = productName,
             price = price,

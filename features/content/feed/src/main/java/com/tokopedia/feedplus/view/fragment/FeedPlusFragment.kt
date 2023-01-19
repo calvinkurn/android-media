@@ -542,7 +542,8 @@ class FeedPlusFragment :
                             if (data.isSuccess) {
                                 onSuccessDeletePost(data.rowNumber)
                             } else {
-                                data.errorMessage = getString(R.string.default_request_error_unknown)
+                                data.errorMessage =
+                                    getString(R.string.default_request_error_unknown)
                                 onErrorDeletePost(data)
                             }
                         }
@@ -766,7 +767,7 @@ class FeedPlusFragment :
                         }
                         is Success -> {
                             reportBottomSheet.setFinalView()
-                            onSuccessDeletePost(it.data.rowNumber)
+                            onSuccessDeletePost(it.data.rowNumber, isPostReported = true)
                         }
                     }
                 }
@@ -912,7 +913,8 @@ class FeedPlusFragment :
                             adapter.getList()
                         )
                     }
-                } catch (e: Exception) { }
+                } catch (e: Exception) {
+                }
             }
         })
 
@@ -1632,7 +1634,11 @@ class FeedPlusFragment :
     ) {
         onGoToLink(redirectUrl)
         val trackerId = if (isCaption) {
-            getTrackerIdForCampaignSaleTracker(positionInFeed, trackerIdAsgc = "17981", trackerIdAsgcRecom = "40070")
+            getTrackerIdForCampaignSaleTracker(
+                positionInFeed,
+                trackerIdAsgc = "17981",
+                trackerIdAsgcRecom = "40070"
+            )
         } else {
             getTrackerIdForCampaignSaleTracker(
                 positionInFeed,
@@ -1715,7 +1721,11 @@ class FeedPlusFragment :
             val finalId =
                 if (postType == TYPE_FEED_X_CARD_PLAY) playChannelId else postId
             val trackerId =
-                getTrackerIdForCampaignSaleTracker(positionInFeed, trackerIdAsgc = "13452", trackerIdAsgcRecom = "40065")
+                getTrackerIdForCampaignSaleTracker(
+                    positionInFeed,
+                    trackerIdAsgc = "13452",
+                    trackerIdAsgcRecom = "40065"
+                )
             getFeedTrackerDataModelFromPosition(positionInFeed, trackerId)?.let {
                 feedAnalytics.evenClickMenu(
                     it
@@ -1731,7 +1741,11 @@ class FeedPlusFragment :
             sheet.show((context as FragmentActivity).supportFragmentManager, "")
             sheet.onReport = {
                 val trackerIdReport =
-                    getTrackerIdForCampaignSaleTracker(positionInFeed, trackerIdAsgc = "17985", trackerIdAsgcRecom = "40066")
+                    getTrackerIdForCampaignSaleTracker(
+                        positionInFeed,
+                        trackerIdAsgc = "17985",
+                        trackerIdAsgcRecom = "40066"
+                    )
                 feedAnalytics.eventClickThreeDotsOption(
                     finalId,
                     "laporkan",
@@ -1944,7 +1958,8 @@ class FeedPlusFragment :
                 campaignStatus = getTrackerLabelSuffixFromPosition(positionInFeed),
                 positionInFeed = positionInFeed,
                 contentSlotValue = getContentScoreFromPosition(positionInFeed),
-                authorType = authorType
+                authorType = authorType,
+                hasVoucher = getTrackerHasVoucherFromPosition(positionInFeed)
             ),
             doubleTap = type,
             isLiked = !isLiked
@@ -3114,17 +3129,19 @@ class FeedPlusFragment :
         showToast(errorMessage, Toaster.TYPE_ERROR)
     }
 
-    private fun onSuccessDeletePost(rowNumber: Int) {
+    private fun onSuccessDeletePost(rowNumber: Int, isPostReported: Boolean = false) {
         if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostUiModel) {
             adapter.getlist().removeAt(rowNumber)
             adapter.notifyItemRemoved(rowNumber)
-            Toaster.build(
-                requireView(),
-                getString(R.string.feed_post_deleted),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                getString(com.tokopedia.kolcommon.R.string.content_action_ok)
-            ).show()
+            if (!isPostReported) {
+                Toaster.build(
+                    requireView(),
+                    getString(R.string.feed_post_deleted),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(com.tokopedia.kolcommon.R.string.content_action_ok)
+                ).show()
+            }
         }
         if (adapter.getlist().isEmpty()) {
             showRefresh()

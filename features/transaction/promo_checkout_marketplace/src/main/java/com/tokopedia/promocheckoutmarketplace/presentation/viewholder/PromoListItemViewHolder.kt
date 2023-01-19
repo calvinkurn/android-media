@@ -71,10 +71,19 @@ class PromoListItemViewHolder(
     private var colorIconDarkDisabled =
         ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN300)
 
+    // variable to identify view holder
+    private var currentItemId: String? = null
+
     override fun bind(element: PromoListItemUiModel) {
         if (element.uiState.isUpdateSelectionStateAction) {
             element.uiState.isUpdateSelectionStateAction = false
-            renderPromoState(viewBinding, element)
+            if (currentItemId != null && currentItemId == element.id) {
+                renderPromoState(viewBinding, element)
+            } else {
+                renderPromoData(viewBinding, element)
+                renderPromoState(viewBinding, element)
+                setPromoItemClickListener(viewBinding, element)
+            }
         } else {
             renderPromoData(viewBinding, element)
             renderPromoState(viewBinding, element)
@@ -334,6 +343,7 @@ class PromoListItemViewHolder(
         renderErrorInfo(viewBinding, element)
         renderDivider(viewBinding, element)
         adjustConstraints(viewBinding)
+        currentItemId = element.id
     }
 
     private fun renderHighlightIdentifier(

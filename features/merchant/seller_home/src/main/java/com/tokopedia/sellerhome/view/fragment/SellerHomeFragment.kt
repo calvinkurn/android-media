@@ -715,8 +715,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendAnnouncementImpressionEvent(element)
     }
 
-    override fun sendAnnouncementClickEvent(element: AnnouncementWidgetUiModel) {
-        SellerHomeTracking.sendAnnouncementClickEvent(element)
+    override fun setOnAnnouncementWidgetCtaClicked(element: AnnouncementWidgetUiModel) {
+        context?.let {
+            val appLink = element.data?.appLink.orEmpty()
+            val isRouting = RouteManager.route(it, appLink)
+            if (isRouting) {
+                showDownloadToaster(appLink)
+                SellerHomeTracking.sendAnnouncementClickEvent(element)
+            }
+        }
     }
 
     override fun sendUnificationImpressionEvent(element: UnificationWidgetUiModel) {
@@ -2743,13 +2750,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun showNewSellerDialog() {
         recyclerView?.post {
-            newSellerJourneyHelper.showNewSellerDialog(
-                requireActivity(),
-                sectionWidgetAnchor = getSectionView(),
-                notificationAnchor = getNotificationView(),
-                navigationAnchor = navigationView,
-                otherMenuAnchor = otherMenuView
-            )
+            activity?.let {
+                if (!it.isFinishing) {
+                    newSellerJourneyHelper.showNewSellerDialog(
+                        it,
+                        sectionWidgetAnchor = getSectionView(),
+                        notificationAnchor = getNotificationView(),
+                        navigationAnchor = navigationView,
+                        otherMenuAnchor = otherMenuView
+                    )
+                }
+            }
         }
     }
 
@@ -2763,6 +2774,20 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun getNotificationView(): View? {
         return menu?.findItem(NOTIFICATION_MENU_ID)?.actionView
+    }
+
+    private fun showDownloadToaster(appLink: String) {
+        activity?.let {
+            val isDownloadAppLink = appLink.startsWith(ApplinkConst.WEBVIEW_DOWNLOAD, true)
+            if (isDownloadAppLink) {
+                view?.run {
+                    post {
+                        val message = it.getString(R.string.sah_toaster_download_message)
+                        Toaster.build(this, message).show()
+                    }
+                }
+            }
+        }
     }
 
     interface Listener {
