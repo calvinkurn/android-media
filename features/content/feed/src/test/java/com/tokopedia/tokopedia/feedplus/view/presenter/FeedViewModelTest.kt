@@ -53,7 +53,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedWidgetData
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
+import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopModel
 import com.tokopedia.kolcommon.data.SubmitActionContentResponse
 import com.tokopedia.kolcommon.data.SubmitReportContentResponse
 import com.tokopedia.kolcommon.data.pojo.like.LikeKolPostData
@@ -249,12 +249,8 @@ class FeedViewModelTest {
         val expected = ProfileDoFollowModelBase(
             profileFollowers = ProfileDoFollowedData(
                 data =
-                ProfileDoFollowedDataVal(
-                    userIdSource = "",
-                    userIdTarget = "",
-                    isSuccess = "200",
-                    relation = ""
-                ), messages = emptyList(), errorCode = ""
+                ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "200", relation = ""),
+                messages = emptyList(), errorCode = ""
             )
         )
 
@@ -263,11 +259,11 @@ class FeedViewModelTest {
         create(dispatcher = testDispatcher, doFollowUseCase = mockFollowKol)
             .use {
                 it.vm.doFollowKol("1", 2)
-                it.vm.followKolResp.getOrAwaitValue()
-                    .assertType<Success<FollowKolViewModel>> { dt ->
-                        dt.data.isSuccess.assertTrue()
-                        dt.data.status.assertEqualTo(FollowKolPostGqlUseCase.PARAM_FOLLOW)
-                    }
+                it.vm.followKolResp.getOrAwaitValue().assertType<Success<FollowKolViewModel>> {
+                        dt ->
+                    dt.data.isSuccess.assertTrue()
+                    dt.data.status.assertEqualTo(FollowKolPostGqlUseCase.PARAM_FOLLOW)
+                }
             }
     }
 
@@ -276,12 +272,8 @@ class FeedViewModelTest {
         val expected = ProfileDoFollowModelBase(
             profileFollowers = ProfileDoFollowedData(
                 data =
-                ProfileDoFollowedDataVal(
-                    userIdSource = "",
-                    userIdTarget = "",
-                    isSuccess = "200",
-                    relation = ""
-                ), messages = listOf("Error aja"), errorCode = "404"
+                ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "200", relation = ""),
+                messages = listOf("Error aja"), errorCode = "404"
             )
         )
 
@@ -318,12 +310,8 @@ class FeedViewModelTest {
         val expected = ProfileDoUnFollowModelBase(
             profileFollowers = ProfileDoFollowedData(
                 data =
-                ProfileDoFollowedDataVal(
-                    userIdSource = "",
-                    userIdTarget = "",
-                    isSuccess = "1",
-                    relation = ""
-                ), messages = listOf("Yeay, success"), errorCode = ""
+                ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "1", relation = ""),
+                messages = listOf("Yeay, success"), errorCode = ""
             )
         )
 
@@ -346,12 +334,8 @@ class FeedViewModelTest {
         val expected = ProfileDoUnFollowModelBase(
             profileFollowers = ProfileDoFollowedData(
                 data =
-                ProfileDoFollowedDataVal(
-                    userIdSource = "",
-                    userIdTarget = "",
-                    isSuccess = "200",
-                    relation = ""
-                ), messages = listOf("Error Aja"), errorCode = "404"
+                ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "200", relation = ""),
+                messages = listOf("Error Aja"), errorCode = "404"
             )
         )
 
@@ -507,12 +491,8 @@ class FeedViewModelTest {
         val expected = ProfileDoFollowModelBase(
             profileFollowers = ProfileDoFollowedData(
                 data =
-                ProfileDoFollowedDataVal(
-                    userIdSource = "",
-                    userIdTarget = "",
-                    isSuccess = "200",
-                    relation = ""
-                ), messages = emptyList(), errorCode = ""
+                ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "200", relation = ""),
+                messages = emptyList(), errorCode = ""
             )
         )
 
@@ -535,12 +515,8 @@ class FeedViewModelTest {
         val expected = ProfileDoFollowModelBase(
             profileFollowers = ProfileDoFollowedData(
                 data =
-                ProfileDoFollowedDataVal(
-                    userIdSource = "",
-                    userIdTarget = "",
-                    isSuccess = "",
-                    relation = ""
-                ), messages = listOf("Error aja"), errorCode = "404"
+                ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "", relation = ""),
+                messages = listOf("Error aja"), errorCode = "404"
             )
         )
 
@@ -580,12 +556,8 @@ class FeedViewModelTest {
         val expected = ProfileDoUnFollowModelBase(
             profileFollowers = ProfileDoFollowedData(
                 data =
-                ProfileDoFollowedDataVal(
-                    userIdSource = "",
-                    userIdTarget = "",
-                    isSuccess = "1",
-                    relation = ""
-                ), messages = listOf("Yeay, success"), errorCode = ""
+                ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "1", relation = ""),
+                messages = listOf("Yeay, success"), errorCode = ""
             )
         )
 
@@ -607,12 +579,8 @@ class FeedViewModelTest {
         val expected = ProfileDoUnFollowModelBase(
             profileFollowers = ProfileDoFollowedData(
                 data =
-                ProfileDoFollowedDataVal(
-                    userIdSource = "",
-                    userIdTarget = "",
-                    isSuccess = "200",
-                    relation = ""
-                ), messages = listOf("Error aja"), errorCode = "404"
+                ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "200", relation = ""),
+                messages = listOf("Error aja"), errorCode = "404"
             )
         )
 
@@ -710,7 +678,6 @@ class FeedViewModelTest {
                 )
                 verify { mockTopAdsTracker.hitClick(any(), any(), any(), any()) }
             }
-
     }
 
     @Test
@@ -726,7 +693,6 @@ class FeedViewModelTest {
                 )
                 verify { mockTopAdsTracker.hitImpressions(any(), any(), any(), any()) }
             }
-
     }
 
     /**
@@ -741,12 +707,12 @@ class FeedViewModelTest {
         create(dispatcher = testDispatcher, shopFollowUseCase = mockFollowShop)
             .use {
                 it.vm.doFavoriteShop(Data(), 1)
-                it.vm.doFavoriteShopResp.getOrAwaitValue()
-                    .assertType<Success<FeedPromotedShopViewModel>> { dt ->
-                        dt.data.adapterPosition.assertEqualTo(1)
-                        dt.data.isSuccess.assertEqualTo(expected.followShop.success)
-                        dt.data.isSuccess.assertTrue()
-                    }
+                it.vm.doFavoriteShopResp.getOrAwaitValue().assertType<Success<FeedPromotedShopModel>> {
+                        dt ->
+                    dt.data.adapterPosition.assertEqualTo(1)
+                    dt.data.isSuccess.assertEqualTo(expected.followShop.success)
+                    dt.data.isSuccess.assertTrue()
+                }
             }
     }
 
@@ -770,35 +736,22 @@ class FeedViewModelTest {
 
     @Test
     fun `fetch latest widget success not empty`() {
-        val expected = FeedXData(
-            feedXHome = FeedXHome(
-                items = listOf(FeedXCard(), FeedXCard()),
-                mods = emptyList(),
-                pagination = FeedXPaginationInfo(cursor = "", hasNext = false, totalData = 0)
-            )
-        )
+        val expected = FeedXData(feedXHome = FeedXHome(items = listOf(FeedXCard(), FeedXCard()), mods = emptyList(), pagination = FeedXPaginationInfo(cursor = "", hasNext = false, totalData = 0)))
         coEvery { mockDynamicFeed.executeForCDP(any(), any(), any()) } returns expected
 
         create(dispatcher = testDispatcher, getDynamicFeedNewUseCase = mockDynamicFeed)
             .use {
                 it.vm.fetchLatestFeedPostWidgetData("1", 1)
-                it.vm.feedWidgetLatestData.getOrAwaitValue()
-                    .assertType<Success<FeedWidgetData>> { dt ->
-                        dt.data.feedXCard.assertEqualTo(expected.feedXHome.items.first())
-                    }
+                it.vm.feedWidgetLatestData.getOrAwaitValue().assertType<Success<FeedWidgetData>> {
+                        dt ->
+                    dt.data.feedXCard.assertEqualTo(expected.feedXHome.items.first())
+                }
             }
-
     }
 
     @Test
     fun `fetch latest widget success  empty`() {
-        val expected = FeedXData(
-            feedXHome = FeedXHome(
-                items = emptyList(),
-                mods = emptyList(),
-                pagination = FeedXPaginationInfo(cursor = "", hasNext = false, totalData = 0)
-            )
-        )
+        val expected = FeedXData(feedXHome = FeedXHome(items = emptyList(), mods = emptyList(), pagination = FeedXPaginationInfo(cursor = "", hasNext = false, totalData = 0)))
         coEvery { mockDynamicFeed.executeForCDP(any(), any(), any()) } returns expected
 
         create(dispatcher = testDispatcher, getDynamicFeedNewUseCase = mockDynamicFeed)
@@ -837,12 +790,7 @@ class FeedViewModelTest {
 
     @Test
     fun `shop recom is shown`() {
-        val expected = UserShopRecomModel(
-            feedXRecomWidget = FeedXRecomWidget(
-                isShown = true,
-                items = listOf(ShopRecomItem())
-            )
-        )
+        val expected = UserShopRecomModel(feedXRecomWidget = FeedXRecomWidget(isShown = true, items = listOf(ShopRecomItem())))
         coEvery { mockShopRecom.executeOnBackground(any(), any(), any()) } returns expected
 
         create(dispatcher = testDispatcher, shopRecomUseCase = mockShopRecom)
@@ -855,12 +803,7 @@ class FeedViewModelTest {
 
     @Test
     fun `shop recom is not shown`() {
-        val expected = UserShopRecomModel(
-            feedXRecomWidget = FeedXRecomWidget(
-                isShown = false,
-                items = listOf(ShopRecomItem())
-            )
-        )
+        val expected = UserShopRecomModel(feedXRecomWidget = FeedXRecomWidget(isShown = false, items = listOf(ShopRecomItem())))
         coEvery { mockShopRecom.executeOnBackground(any(), any(), any()) } returns expected
 
         create(dispatcher = testDispatcher, shopRecomUseCase = mockShopRecom)
@@ -886,11 +829,7 @@ class FeedViewModelTest {
 
     @Test
     fun `atc gql return not success`() {
-        val expected = AddToCartDataModel(
-            status = "NOT FOUND",
-            data = DataModel(success = 0),
-            errorMessage = arrayListOf("Error")
-        )
+        val expected = AddToCartDataModel(status = "NOT FOUND", data = DataModel(success = 0), errorMessage = arrayListOf("Error"))
         coEvery { mockAtc.executeOnBackground() } returns expected
 
         create(dispatcher = testDispatcher, atcUseCase = mockAtc)
@@ -955,12 +894,7 @@ class FeedViewModelTest {
 
     @Test
     fun `set unset reminder - error from gql`() {
-        val expected = PostUpcomingCampaign(
-            response = UpcomingCampaignResponse(
-                errorMessage = "Error Aja",
-                success = false
-            )
-        )
+        val expected = PostUpcomingCampaign(response = UpcomingCampaignResponse(errorMessage = "Error Aja", success = false))
         coEvery { mockPostReminderCampaign.executeOnBackground() } returns expected
         create(
             dispatcher = testDispatcher,
