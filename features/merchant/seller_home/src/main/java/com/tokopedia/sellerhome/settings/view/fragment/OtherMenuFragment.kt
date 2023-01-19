@@ -119,6 +119,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         const val FREE_SHIPPING = "free shipping"
         const val TOTAL_TOKO_MEMBER = "total tokomember"
 
+        private const val MAX_RM_TRANSACTION_THRESHOLD = 100
 
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
@@ -284,7 +285,11 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     override fun onRmTransactionClicked(currentTransactionTotal: Long) {
-        openRmTransactionBottomSheet(currentTransactionTotal)
+        if (currentTransactionTotal < MAX_RM_TRANSACTION_THRESHOLD) {
+            openRmTransactionBottomSheet(currentTransactionTotal)
+        } else {
+            goToNewMembershipScheme()
+        }
     }
 
     override fun onShopBadgeClicked() {
@@ -734,6 +739,12 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     private fun openRmTransactionBottomSheet(currentTransactionTotal: Long) {
         RMTransactionBottomSheet.createInstance(currentTransactionTotal).show(childFragmentManager)
+    }
+
+    private fun goToNewMembershipScheme() {
+        context?.let {
+            RouteManager.route(it, SellerBaseUrl.getNewMembershipSchemeApplink())
+        }
     }
 
     private fun isActivityResumed(): Boolean {
