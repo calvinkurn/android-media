@@ -545,7 +545,7 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
                     categoryId = categoryId,
                     categoryName = categoryName,
                     warehouseId = warehouseId,
-                    position = position.getTrackerPosition(),
+                    position = newPosition,
                     itemName = getCategoryMenuItemName(
                         position = newPosition,
                         headerName = DEFAULT_HEADER_CATEGORY_MENU
