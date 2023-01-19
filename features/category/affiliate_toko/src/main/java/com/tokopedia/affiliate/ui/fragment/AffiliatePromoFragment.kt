@@ -29,6 +29,7 @@ import com.tokopedia.affiliate.setAnnouncementData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliatePromoSearchActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
+import com.tokopedia.affiliate.ui.activity.AffiliateSSAShopListActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetPromoCopyPasteInfo
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
@@ -44,6 +45,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -114,6 +116,13 @@ class AffiliatePromoFragment :
 
         view?.findViewById<ImageUnify>(R.id.icon_more)?.setOnClickListener {
             AffiliateBottomSheetPromoCopyPasteInfo.newInstance().show(childFragmentManager, "")
+        }
+        view?.findViewById<CardUnify2>(R.id.card_ssa_entry)?.setOnClickListener {
+            context?.let {
+                startActivity(
+                    Intent(it, AffiliateSSAShopListActivity::class.java)
+                )
+            }
         }
         setupViewPager()
         showDefaultState()
