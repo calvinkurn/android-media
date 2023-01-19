@@ -4,23 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.tokopedia.calendar.CalendarPickerView
-import com.tokopedia.calendar.Legend
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerorder.databinding.BottomSheetPickTimeOrderExtentionBinding
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
-import kotlin.collections.ArrayList
 import com.tokopedia.sellerorder.R
 
 class CalendarOrderExtensionBottomSheet(
     val orderExtensionDate: OrderExtensionRequestInfoUiModel.OrderExtentionDate,
     val onSelectDate: (OrderExtensionRequestInfoUiModel.OrderExtentionDate.EligbleDateUIModel) -> Unit,
-    val onErrorSelectDate: () -> Unit
+    val onErrorSelectDate: () -> Unit,
+    private val currentSelectDate: OrderExtensionRequestInfoUiModel.OrderExtentionDate.EligbleDateUIModel,
 ) : BottomSheetUnify() {
 
 
@@ -77,12 +76,28 @@ class CalendarOrderExtensionBottomSheet(
             orderExtensionDate.deadLineTime.toFormattedString(FORMAT_DATE_DEADLINETIME)
         ).parseAsHtml()
 
-        calendar?.init(
-            currentDate.time,
-            orderExtensionDate.deadLineTime,
-            listOf(),
-            activeDates
-        )?.inMode(CalendarPickerView.SelectionMode.SINGLE)
+        if (currentSelectDate.extensionTime != Int.ZERO) {
+            val selectDate = orderExtensionDate.eligbleDates.find {
+                it.extensionTime == currentSelectDate.extensionTime
+            }
+            selectDate?.date?.let {
+                calendar?.init(
+                    currentDate.time,
+                    orderExtensionDate.deadLineTime,
+                    listOf(),
+                    activeDates
+                )?.inMode(CalendarPickerView.SelectionMode.SINGLE)
+                    ?.withSelectedDate(it)
+            }
+        } else {
+            calendar?.init(
+                currentDate.time,
+                orderExtensionDate.deadLineTime,
+                listOf(),
+                activeDates
+            )?.inMode(CalendarPickerView.SelectionMode.SINGLE)
+        }
+
     }
 
 }

@@ -62,7 +62,7 @@ class SomBottomSheetOrderExtensionRequest(
         }
     }
 
-    var currentExtensionTime = 0
+    var currentSelectDate = OrderExtensionRequestInfoUiModel.OrderExtentionDate.EligbleDateUIModel()
 
     override fun bind(view: View): BottomsheetOrderExtensionRequestInfoBinding {
         return BottomsheetOrderExtensionRequestInfoBinding.bind(view)
@@ -146,11 +146,11 @@ class SomBottomSheetOrderExtensionRequest(
             }
             setOnClickListener {
                 binding?.root?.hideKeyboard()
-                if (!dismissing && !data.isLoadingOrderExtensionRequestInfo() ) {
+                if (!dismissing && !data.isLoadingOrderExtensionRequestInfo()) {
                     binding?.rvRequestExtensionInfo?.focusedChild?.clearFocus()
-                    if (currentExtensionTime != Int.ZERO){
-                        viewModel.sendOrderExtensionRequest(orderId, currentExtensionTime)
-                    }else{
+                    if (currentSelectDate.extensionTime != Int.ZERO) {
+                        viewModel.sendOrderExtensionRequest(orderId, currentSelectDate.extensionTime)
+                    } else {
                         onValidateDate()
                     }
                 }
@@ -192,20 +192,8 @@ class SomBottomSheetOrderExtensionRequest(
 
     override fun onShowCalendarPicker() {
         val calendarOrderExtensionBottomSheet =
-            CalendarOrderExtensionBottomSheet(data.orderExtentionDate, {
-                currentExtensionTime = it.extensionTime
-                adapter?.updatePickTime(
-                    it.date.toFormattedString(
-                        FORMAT_DATE_TEXT,
-                        Locale(
-                            LOCALE_LANGUAGE_ID,
-                            LOCALE_COUNTRY_ID
-                        )
-                    )
-                )
-            }, {
-                onValidateDate()
-            })
+            CalendarOrderExtensionBottomSheet(data.orderExtentionDate,::onSelectDate,
+                ::onValidateDate, currentSelectDate)
         calendarOrderExtensionBottomSheet.show(
             fragmentManager,
             CalendarOrderExtensionBottomSheet.TAG
@@ -228,5 +216,18 @@ class SomBottomSheetOrderExtensionRequest(
                 duration = Toaster.LENGTH_LONG
             ).show()
         }
+    }
+
+    private fun onSelectDate(selectDate: OrderExtensionRequestInfoUiModel.OrderExtentionDate.EligbleDateUIModel) {
+        currentSelectDate = selectDate
+        adapter?.updatePickTime(
+            selectDate.date.toFormattedString(
+                FORMAT_DATE_TEXT,
+                Locale(
+                    LOCALE_LANGUAGE_ID,
+                    LOCALE_COUNTRY_ID
+                )
+            )
+        )
     }
 }

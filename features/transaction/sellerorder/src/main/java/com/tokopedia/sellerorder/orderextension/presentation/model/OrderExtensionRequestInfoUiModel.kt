@@ -69,7 +69,7 @@ data class OrderExtensionRequestInfoUiModel(
         val eligbleDates: List<EligbleDateUIModel> = listOf()
     ){
         data class EligbleDateUIModel(
-            val date: Date,
+            val date: Date = Date(),
             val extensionTime: Int = 0
         )
     }
