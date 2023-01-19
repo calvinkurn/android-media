@@ -15,7 +15,6 @@ class DynamicIconMacroAdapter(private val listener: DynamicIconComponentListener
     private var position: Int = 0
     private var type: Int = 1
     private var isCache: Boolean = false
-    private var titleHeight: Int = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicIconMacroItemViewHolder {
         return DynamicIconMacroItemViewHolder(
@@ -31,16 +30,12 @@ class DynamicIconMacroAdapter(private val listener: DynamicIconComponentListener
     override fun onBindViewHolder(holder: DynamicIconMacroItemViewHolder, position: Int) {
         iconList.getOrNull(position)?.let {
             holder
-                .bind(it, iconList.size > DynamicIconViewHolder.SCROLLABLE_ITEM, this.position, type, isCache, titleHeight)
+                .bind(it, iconList.size > DynamicIconViewHolder.SCROLLABLE_ITEM, this.position, type, isCache)
         }
     }
 
     override fun getItemCount(): Int {
         return iconList.size
-    }
-
-    fun setTitleHeight(titleHeight: Int) {
-        this.titleHeight = titleHeight
     }
 
     fun setType(type: Int) {

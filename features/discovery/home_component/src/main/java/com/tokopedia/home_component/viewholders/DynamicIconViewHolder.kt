@@ -73,12 +73,11 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
                 setRecyclerView(icons)
                 launch {
                     val maximalTitleHeight =
-                        DynamicIconsMacroUtil.findMaxHeightTitleText(icons, itemView.context)
+                        DynamicIconsMacroUtil.findMaxDynamicIconsMacro(icons, itemView.context)
                     val layoutParams = iconRecyclerView?.layoutParams as RecyclerView.LayoutParams
                     layoutParams.height = maximalTitleHeight
                     iconRecyclerView?.layoutParams = layoutParams
                 }
-//                adapterMacro.setTitleHeight(maximalTitleHeight)
                 adapterMacro.submitList(element)
                 val layoutParams = iconRecyclerView?.layoutParams as RecyclerView.LayoutParams
                 layoutParams.setMargins(Int.ZERO, MARGIN_TOP_MACRO, Int.ZERO, MARGIN_BOTTOM_MACRO)

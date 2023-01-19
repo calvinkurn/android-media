@@ -83,8 +83,7 @@ class DynamicIconMacroItemViewHolder(
         isScrollable: Boolean,
         parentPosition: Int,
         type: Int,
-        isCache: Boolean,
-        titleHeight: Int
+        isCache: Boolean
     ) {
         iconTvName = itemView.findViewById(R.id.dynamic_icon_typography)
         iconImageView = itemView.findViewById(R.id.dynamic_icon_image_view)
@@ -95,7 +94,6 @@ class DynamicIconMacroItemViewHolder(
             if (isScrollable) ViewGroup.LayoutParams.WRAP_CONTENT else ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
-//        iconTvName?.height = titleHeight
         iconContainer?.setOnTouchListener { _, event ->
             iconImageView?.performTouchDown()
             when (event?.action) {

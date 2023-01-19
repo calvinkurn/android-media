@@ -13,7 +13,7 @@ object DynamicIconsMacroUtil {
     private const val MAX_LINES_TITLE_HEIGHT = 2
     private const val DEFAULT_LAYOUT_SPEC = 0
 
-    private fun measureSummaryTextHeight(
+    private fun measureHeightTitle(
         text: CharSequence?,
         textWidth: Int,
         context: Context
@@ -38,7 +38,7 @@ object DynamicIconsMacroUtil {
         }
     }
 
-    fun findMaxHeightTitleText(
+    fun findMaxDynamicIconsMacro(
         icons: List<DynamicIconComponent.DynamicIcon>,
         context: Context
     ): Int {
@@ -46,7 +46,7 @@ object DynamicIconsMacroUtil {
         val titleWidth = context.resources.getDimensionPixelSize(R.dimen.home_dynamic_icon_title_width)
 
         for (icon in icons) {
-            val heightText = measureSummaryTextHeight(
+            val heightText = measureHeightTitle(
                 icon.name,
                 titleWidth,
                 context
