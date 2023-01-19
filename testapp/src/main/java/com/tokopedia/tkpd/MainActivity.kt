@@ -11,7 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.product.detail.postatc.view.PostAtcActivity
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
@@ -119,7 +121,10 @@ class MainActivity : AppCompatActivity() {
         if (appLink.isNotBlank()) {
             RouteManager.route(this, appLink)
         } else {
-            Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
+
+            val intent = Intent(this, PostAtcActivity::class.java)
+            startActivity(intent)
+//            Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
         }
     }
 
