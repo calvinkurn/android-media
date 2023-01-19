@@ -62,8 +62,8 @@ public class EncoderDecoder {
     }
 
     public static String Decrypt(String text, String initialVector) {
-        byte[] raw = new byte[]{'g', 'g', 'g', 'g', 't', 't', 't', 't', 't', 'u', 'j', 'k', 'r', 'r', 'r', 'r'};
-        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+        int[] raw = getRawKey();
+        SecretKeySpec skeySpec = new SecretKeySpec(convertRaw(raw).getBytes(), "AES");
         //String initialVector = "abcdefgh";
         String decode_result = isReturnNull() ? null : "";
         IvParameterSpec ivs = new IvParameterSpec(initialVector.getBytes());
