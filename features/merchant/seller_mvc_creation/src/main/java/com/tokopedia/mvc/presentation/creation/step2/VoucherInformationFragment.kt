@@ -45,7 +45,6 @@ import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStep
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
 import com.tokopedia.mvc.presentation.creation.step3.VoucherSettingActivity
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
-import com.tokopedia.mvc.util.DateTimeUtils
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
 import com.tokopedia.mvc.util.convertUnsafeDateTime
@@ -102,6 +101,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     }
     private var startCalendar: GregorianCalendar? = null
     private var endCalendar: GregorianCalendar? = null
+    private var minCalendar: GregorianCalendar? = null
+    private var maxCalendar: GregorianCalendar? = null
     private var startHour: Int = 0
     private var startMinute: Int = 0
 
@@ -553,8 +554,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun onClickListenerForStartDate() {
         context?.run {
-            startCalendar?.let { minDate ->
-                DateTimeUtils.getMaxDate(startCalendar)?.let { maxDate ->
+            minCalendar?.let { minDate ->
+                maxCalendar?.let { maxDate ->
                     voucherEditCalendarBottomSheet =
                         VoucherEditCalendarBottomSheet.newInstance(
                             startCalendar,
@@ -575,8 +576,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun onClickListenerForEndDate() {
         context?.run {
-            startCalendar?.let { minDate ->
-                DateTimeUtils.getMaxDate(startCalendar)?.let { maxDate ->
+            minCalendar?.let { minDate ->
+                maxCalendar?.let { maxDate ->
                     voucherEditCalendarBottomSheet =
                         VoucherEditCalendarBottomSheet.newInstance(
                             endCalendar,
@@ -614,6 +615,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         val endDate = voucherConfiguration.endPeriod.formatTo(DATE_WITH_SECOND_PRECISION_ISO_8601)
         startCalendar = getGregorianDate(startDate)
         endCalendar = getGregorianDate(endDate)
+        minCalendar = getGregorianDate(startDate)
+        maxCalendar = getGregorianDate(endDate)
     }
 
     private fun renderVoucherRecurringToggleChanges(voucherConfiguration: VoucherConfiguration) {
@@ -630,13 +633,18 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     ) {
         voucherPeriodSectionBinding?.run {
             tfVoucherStartPeriod.run {
-                isInputError = isStartDateError
-                setMessage(startDateErrorMsg)
-                editText.setText(
-                    voucherConfiguration.startPeriod.formatTo(
-                        DATE_TIME_MINUTE_PRECISION
+                try {
+                    isInputError = isStartDateError
+                    setMessage(startDateErrorMsg)
+                    editText.setText(
+                        voucherConfiguration.startPeriod.formatTo(
+                            DATE_TIME_MINUTE_PRECISION
+                        )
                     )
-                )
+                    val startDate =
+                        voucherConfiguration.startPeriod.formatTo(DATE_WITH_SECOND_PRECISION_ISO_8601)
+                    startCalendar = getGregorianDate(startDate)
+                } catch (_: Throwable) {}
             }
         }
     }
@@ -648,9 +656,14 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     ) {
         voucherPeriodSectionBinding?.run {
             tfVoucherEndPeriod.run {
-                isInputError = isEndDateError
-                setMessage(endDateErrorMsg)
-                editText.setText(voucherConfiguration.endPeriod.formatTo(DATE_TIME_MINUTE_PRECISION))
+                try {
+                    isInputError = isEndDateError
+                    setMessage(endDateErrorMsg)
+                    editText.setText(voucherConfiguration.endPeriod.formatTo(DATE_TIME_MINUTE_PRECISION))
+
+                    val endDate = voucherConfiguration.endPeriod.formatTo(DATE_WITH_SECOND_PRECISION_ISO_8601)
+                    endCalendar = getGregorianDate(endDate)
+                } catch (_: Throwable) {}
             }
         }
     }
