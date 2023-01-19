@@ -48,7 +48,7 @@ class PrivacyPolicySection constructor(
     override fun onViewRendered() {
         context?.let { NetworkClient.init(it) }
         showShimmering(false)
-
+        sectionViewBinding.menuCurrentPrivacyPolicy.setIcon(IconUnify.PROTECTION_CHECK)
         sectionViewBinding.apply {
             listPrivacyPolicy.apply {
                 adapter = privacyPolicyAdapter
