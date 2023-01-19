@@ -63,7 +63,7 @@ object RollenceKey {
     const val ME_PAGE_REVAMP_VARIANT = "Mepage_Variant"
 
     // TokoChat
-    const val KEY_ROLLENCE_TOKOCHAT = "gofood_chat"
+    const val KEY_ROLLENCE_TOKOCHAT = "gofood_chat_2"
 
     // PDP
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
