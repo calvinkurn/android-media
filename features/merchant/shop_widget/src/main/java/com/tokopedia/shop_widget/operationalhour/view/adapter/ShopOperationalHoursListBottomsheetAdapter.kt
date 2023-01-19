@@ -44,7 +44,7 @@ class ShopOperationalHoursListBottomsheetAdapter(
         const val START_TIME_INDEX = 0
         const val END_TIME_INDEX = 5
         const val MIN_START_TIME = "00:00:00"
-        const val MAX_END_TIME = "23:59:00"
+        const val MAX_END_TIME = "23:59:59"
     }
     private var operationalHoursList: MutableList<ShopOperationalHour> = mutableListOf()
 
