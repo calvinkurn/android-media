@@ -72,11 +72,7 @@ public final class PrintWebPageInterface {
                 jobName = filename;
             }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                adapter = mWebViewRef.get().createPrintDocumentAdapter(jobName);
-            } else {
-                adapter = mWebViewRef.get().createPrintDocumentAdapter();
-            }
+            adapter = mWebViewRef.get().createPrintDocumentAdapter(jobName);
 
             if (printManager != null) {
                 printManager.print(jobName, adapter, printAttr);
