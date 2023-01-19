@@ -92,25 +92,6 @@ class SellerMigrationActivity : BaseSimpleActivity() {
         trackUserRedirection(openedPage)
     }
 
-    private fun getSellerHomeIntent(appLinks: java.util.ArrayList<String>): Intent {
-        val parameterizedAppLinks = appLinks.map {
-            Uri.parse(it).buildUpon().appendQueryParameter(
-                SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName
-            ).toString()
-        }
-        val sellerHomeAppLink = Uri.parse(ApplinkConstInternalSellerapp.SELLER_HOME).buildUpon()
-            .appendQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, "true")
-            .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_IS_AUTO_LOGIN, "true")
-            .toString()
-        return RouteManager.getIntent(this, sellerHomeAppLink).apply {
-            putStringArrayListExtra(
-                SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA,
-                ArrayList(parameterizedAppLinks)
-            )
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-    }
-
     private fun trackUserRedirection(openedPage: String) {
         val userSession = UserSession(this)
         val screenName =
@@ -138,6 +119,25 @@ class SellerMigrationActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
         return SellerMigrationFragment.createInstance(featureName)
+    }
+
+    private fun getSellerHomeIntent(appLinks: java.util.ArrayList<String>): Intent {
+        val parameterizedAppLinks = appLinks.map {
+            Uri.parse(it).buildUpon().appendQueryParameter(
+                SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName
+            ).toString()
+        }
+        val sellerHomeAppLink = Uri.parse(ApplinkConstInternalSellerapp.SELLER_HOME).buildUpon()
+            .appendQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, "true")
+            .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_IS_AUTO_LOGIN, "true")
+            .toString()
+        return RouteManager.getIntent(this, sellerHomeAppLink).apply {
+            putStringArrayListExtra(
+                SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA,
+                ArrayList(parameterizedAppLinks)
+            )
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        }
     }
 
     private fun showSellerAppUpdateToaster() {
