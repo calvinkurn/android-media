@@ -1,0 +1,117 @@
+package com.tokopedia.play.broadcaster.view.bottomsheet
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroSetupCoverBinding
+import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayBroadcastSetupCoverUploadImageFragment
+import com.tokopedia.unifycomponents.BottomSheetUnify
+
+/**
+ * Created by fachrizalmrsln on 11/01/23
+ */
+class PlayBroadcastSetupCoverBottomSheet : BottomSheetUnify() {
+
+    private var _binding: BottomSheetPlayBroSetupCoverBinding? = null
+    private val binding: BottomSheetPlayBroSetupCoverBinding
+        get() = _binding!!
+
+    private var mListener: Listener? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupBottomSheet()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupView()
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when (childFragment) {
+            is PlayBroadcastSetupCoverUploadImageFragment -> {
+                childFragment.setupListener(mListener)
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        mListener = null
+    }
+
+    private fun setupBottomSheet() {
+        _binding = BottomSheetPlayBroSetupCoverBinding.inflate(
+            LayoutInflater.from(requireContext())
+        )
+        clearContentPadding = true
+        setChild(binding.root)
+    }
+
+    private fun setupView() = with(binding) {
+        setTitle(getString(R.string.play_bro_setup_cover_title))
+        binding.root.layoutParams = binding.root.layoutParams.apply {
+            height = (getScreenHeight() * SHEET_HEIGHT_PERCENT).toInt()
+        }
+
+        selectedContent(false)
+        csuSetupCover.setOnCheckedChangeListener { _, isChecked ->
+            selectedContent(isChecked)
+        }
+    }
+
+    private fun selectedContent(isChecked: Boolean) = with(binding) {
+        childFragmentManager.beginTransaction()
+            .replace(
+                fragmentContainerSetupCover.id,
+                if (isChecked) getSetupCoverChooseTemplateFragment()
+                else getSetupCoverUploadImageFragment(),
+                null
+            ).commit()
+    }
+
+    fun show(fragmentManager: FragmentManager) {
+        if (!isAdded) show(fragmentManager, TAG)
+    }
+
+    fun setupListener(listener: Listener) {
+        mListener = listener
+    }
+
+    private fun getSetupCoverUploadImageFragment() =
+        PlayBroadcastSetupCoverUploadImageFragment.getFragment(
+            childFragmentManager,
+            requireActivity().classLoader
+        )
+
+    // TODO add template chooser fragment 
+    private fun getSetupCoverChooseTemplateFragment() = Fragment()
+
+    companion object {
+        const val TAG = "PlayBroadcastSetupCoverBottomSheet"
+        private const val SHEET_HEIGHT_PERCENT = 0.85f
+
+        fun getFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+        ): PlayBroadcastSetupCoverBottomSheet? {
+            val oldInstance =
+                fragmentManager.findFragmentByTag(TAG) as? PlayBroadcastSetupCoverBottomSheet
+            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                PlayBroadcastSetupCoverBottomSheet::class.java.name
+            ) as? PlayBroadcastSetupCoverBottomSheet
+        }
+    }
+
+    interface Listener {
+    }
+
+}

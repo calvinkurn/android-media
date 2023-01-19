@@ -11,9 +11,11 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSort
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupTitleBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.dialog.InteractiveSetupDialogFragment
+import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayBroadcastSetupCoverUploadImageFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastPostVideoFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastReportFragment
@@ -54,6 +56,14 @@ abstract class PlayBroadcastFragmentModule {
     @IntoMap
     @FragmentKey(PlayPermissionFragment::class)
     abstract fun getPermissionFragment(fragment: PlayPermissionFragment): Fragment
+
+    /**
+     * Setup
+     */
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayBroadcastSetupCoverUploadImageFragment::class)
+    abstract fun getSetupCoverUploadImageFragment(fragment: PlayBroadcastSetupCoverUploadImageFragment): Fragment
 
     /**
      * Revamp
