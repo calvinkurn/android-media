@@ -37,7 +37,7 @@ class OrderExtensionRequestInfoDiffUtil(
 
     private fun getUniqueIdentifier(type: Visitable<OrderExtensionRequestInfoAdapterTypeFactory>?): Int {
         val model = type as? OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem
-        if(model is OrderExtensionRequestInfoUiModel.DescriptionUiModel){
+        if (model is OrderExtensionRequestInfoUiModel.DescriptionUiModel) {
             return model.id
         }
         return model?.type(typeFactory).orZero()

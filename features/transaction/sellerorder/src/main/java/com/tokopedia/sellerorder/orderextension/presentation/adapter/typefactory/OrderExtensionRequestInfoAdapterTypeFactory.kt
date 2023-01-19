@@ -49,7 +49,7 @@ class OrderExtensionRequestInfoAdapterTypeFactory(
             OrderExtensionRequestInfoDescriptionShimmerViewHolder.LAYOUT -> OrderExtensionRequestInfoDescriptionShimmerViewHolder(parent)
             OrderExtensionRequestInfoOptionShimmerViewHolder.LAYOUT -> OrderExtensionRequestInfoOptionShimmerViewHolder(parent)
             OrderExtensionRequestInfoPickTimeShimmerViewHolder.LAYOUT -> OrderExtensionRequestInfoPickTimeShimmerViewHolder(parent)
-            OrderExtensionRequestInfoPickTimeViewHolder.LAYOUT -> OrderExtensionRequestInfoPickTimeViewHolder(parent,onPickTimeListener)
+            OrderExtensionRequestInfoPickTimeViewHolder.LAYOUT -> OrderExtensionRequestInfoPickTimeViewHolder(parent, onPickTimeListener)
             else -> super.createViewHolder(parent, type)
         }
     }

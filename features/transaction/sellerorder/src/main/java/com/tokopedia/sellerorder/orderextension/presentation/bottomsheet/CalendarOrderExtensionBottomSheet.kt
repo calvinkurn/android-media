@@ -22,7 +22,6 @@ class CalendarOrderExtensionBottomSheet(
     private val currentSelectDate: OrderExtensionRequestInfoUiModel.OrderExtentionDate.EligbleDateUIModel,
 ) : BottomSheetUnify() {
 
-
     companion object {
         val TAG: String = CalendarOrderExtensionBottomSheet::class.java.simpleName
         private const val FORMAT_DATE_DEADLINETIME = "dd MMMM yyyy"

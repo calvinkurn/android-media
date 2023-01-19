@@ -64,7 +64,7 @@ data class OrderExtensionRequestInfoUiModel(
     data class OrderExtentionDate(
         val deadLineTime: Date = Date(),
         val eligbleDates: List<EligbleDateUIModel> = listOf()
-    ){
+    ) {
         data class EligbleDateUIModel(
             val date: Date = Date(),
             val extensionTime: Int = 0
@@ -185,7 +185,7 @@ data class OrderExtensionRequestInfoUiModel(
     }
 
     class PickTimeUiModel : BaseOrderExtensionRequestInfoItem {
-        var timeText:String = String.EMPTY
+        var timeText: String = String.EMPTY
         override var show: Boolean = true
         override var hideKeyboardOnClick: Boolean = true
         override var requestFocus: Boolean = false

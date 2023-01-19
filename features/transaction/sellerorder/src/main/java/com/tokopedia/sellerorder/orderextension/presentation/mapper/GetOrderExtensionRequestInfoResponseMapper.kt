@@ -12,7 +12,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
     private val resourceProvider: ResourceProvider
 ) {
 
-    companion object{
+    companion object {
         private const val ID_HEADER = 0
         private const val ID_DESCRIPTION = 1
         private const val ID_PICK_TIME_TITLE = 2
@@ -51,7 +51,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
         items = if (!response.reason.isNullOrEmpty()) {
             mutableListOf<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>().apply {
                 addOrderExtensionHeader(ID_HEADER)
-                addOrderExtensionDescription(ID_DESCRIPTION,response.text, response.newDeadline)
+                addOrderExtensionDescription(ID_DESCRIPTION, response.text, response.newDeadline)
                 addOrderExtensionPickTimeTitle(ID_PICK_TIME_TITLE)
                 addOrderExtensionPickTimeField()
                 addOrderExtensionOptionsTitle(ID_OPTIONS_TITLE)
@@ -171,7 +171,6 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
     private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionPickTimeField() {
         add(OrderExtensionRequestInfoUiModel.PickTimeUiModel())
     }
-
 
     private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionOptionsTitle(
         id: Int

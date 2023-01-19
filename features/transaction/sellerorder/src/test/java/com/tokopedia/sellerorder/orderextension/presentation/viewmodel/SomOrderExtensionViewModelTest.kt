@@ -342,7 +342,7 @@ class SomOrderExtensionViewModelTest {
                 somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any(), any())
             } returns successOrderExtensionRequestResult
 
-            viewModel.sendOrderExtensionRequest(orderId,extensionTime)
+            viewModel.sendOrderExtensionRequest(orderId, extensionTime)
 
             coVerify {
                 somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any(), any())
