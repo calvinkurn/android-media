@@ -80,6 +80,9 @@ class PlayShortsViewModel @Inject constructor(
     val tncList: List<TermsAndConditionUiModel>
         get() = _config.value.tncList
 
+    val isFirstSwitchAccount: Boolean
+        get() = sharedPref.isFirstSwitchAccount()
+
     private val _globalLoader = MutableStateFlow(false)
     private val _config = MutableStateFlow(PlayShortsConfigUiModel.Empty)
     private val _media = MutableStateFlow(PlayShortsMediaUiModel.Empty)
@@ -186,6 +189,9 @@ class PlayShortsViewModel @Inject constructor(
             is PlayShortsAction.LoadTag -> handleLoadTag()
             is PlayShortsAction.SelectTag -> handleSelectTag(action.tag)
             is PlayShortsAction.ClickUploadVideo -> handleClickUploadVideo()
+
+            /** Others */
+            is PlayShortsAction.SetNotFirstSwitchAccount -> handleSetNotFirstSwitchAccount()
         }
     }
 
@@ -344,6 +350,10 @@ class PlayShortsViewModel @Inject constructor(
             _uploadState.update { PlayShortsUploadUiState.Error(throwable) }
             _uiEvent.emit(PlayShortsUiEvent.ErrorUploadMedia(throwable))
         }
+    }
+
+    private fun handleSetNotFirstSwitchAccount() {
+        sharedPref.setNotFirstSwitchAccount()
     }
 
     private fun setSelectedAccount(account: ContentAccountUiModel) {
