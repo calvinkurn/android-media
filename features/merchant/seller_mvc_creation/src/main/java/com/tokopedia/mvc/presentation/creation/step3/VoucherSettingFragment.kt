@@ -346,7 +346,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
 
     private fun presetValue() {
         val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
-        if (pageMode == PageMode.EDIT || currentVoucherConfiguration.isFinishFilledStepThree) {
+        if (currentVoucherConfiguration.isFinishFilledStepThree || pageMode == PageMode.EDIT) {
             freeShippingInputSectionBinding?.run {
                 tfFreeShippingNominal.editText.setText(currentVoucherConfiguration.benefitIdr.toString())
                 tfFreeShippingMinimumBuy.editText.setText(currentVoucherConfiguration.minPurchase.toString())
