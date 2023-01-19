@@ -312,4 +312,6 @@ public class RemoteConfigKey {
     public static final String HOME_USE_NEW_PULL_REFRESH = "android_home_use_new_pull_refresh";
 
     public static final String PAYMENT_OVERLONG_THRESHOLD = "android_payment_overlong_threshold";
+
+    public static final String SELLER_HOME_ENABLE_WATCH_APP_CHECKING = "android_sellerapp_home_enable_watch_app_checking";
 }
