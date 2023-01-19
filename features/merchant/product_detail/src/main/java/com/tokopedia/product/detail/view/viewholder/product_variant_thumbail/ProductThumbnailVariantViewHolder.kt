@@ -20,8 +20,8 @@ import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ada
  */
 class ProductThumbnailVariantViewHolder(
     val view: View,
-    val variantListener: AtcVariantListener,
-    val pdpListener: DynamicProductDetailListener
+    private val variantListener: AtcVariantListener,
+    private val pdpListener: DynamicProductDetailListener
 ) : ProductDetailPageViewHolder<ProductSingleVariantDataModel>(view),
     AtcVariantListener by variantListener {
 
@@ -55,7 +55,9 @@ class ProductThumbnailVariantViewHolder(
 
     fun scrollToPosition(position: Int) {
         if (position != -1) {
-            smoothScroller.scrollThumbnail(position)
+            binding.thumbVariantList.post {
+                smoothScroller.scrollThumbnail(position)
+            }
         }
     }
 
@@ -87,7 +89,7 @@ class ProductThumbnailVariantViewHolder(
 
     override fun onSelectionChanged(view: View, position: Int) {
         if (!layoutManager.isViewPartiallyVisible(view, true, true)) {
-            view.post { binding.thumbVariantList.smoothScrollToPosition(position) }
+            scrollToPosition(position = position)
         }
     }
 }

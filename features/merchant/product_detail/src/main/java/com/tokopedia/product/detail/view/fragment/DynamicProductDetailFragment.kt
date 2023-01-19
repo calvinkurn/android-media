@@ -2064,7 +2064,8 @@ open class DynamicProductDetailFragment :
             }
 
             // select the variant
-            onThumbnailVariantSelected(
+            viewModel.onThumbnailVariantSelected(
+                uiData = singleVariant,
                 variantId = selected?.variantId.orEmpty(),
                 categoryKey = selected?.variantCategoryKey.orEmpty()
             )
@@ -3408,6 +3409,13 @@ open class DynamicProductDetailFragment :
             variantId = variantId,
             categoryKey = categoryKey
         )
+
+        DynamicProductDetailTracking.Click
+            .onThumbnailVariantClicked(
+                productInfo = viewModel.getDynamicProductInfoP1,
+                singleVariant = singleVariantUiData,
+                componentPosition = getComponentPositionBeforeUpdate(singleVariantUiData)
+            )
     }
 
     private fun selectVariantInPdp(variantOptions: VariantOptionWithAttribute, state: Int) {
