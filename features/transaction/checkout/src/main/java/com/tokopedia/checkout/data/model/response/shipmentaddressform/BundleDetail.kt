@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.data.model.response.shipmentaddressform
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class BundleDetail(
