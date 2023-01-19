@@ -39,6 +39,8 @@ internal const val KEY_TRACK_VIEW = "view"
 internal const val KEY_TRACK_SCROLL = "scroll"
 internal const val KEY_TRACK_IMPRESSION = "impression"
 
+internal const val VAL_BUSINESS_UNIT = "content"
+
 internal val currentSite: String
     get() = if (GlobalConfig.isSellerApp()) {
         KEY_TRACK_CURRENT_SITE

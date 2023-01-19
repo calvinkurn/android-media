@@ -3,6 +3,7 @@ package com.tokopedia.media.picker.data.repository
 import android.content.Context
 import android.graphics.Bitmap
 import com.bumptech.glide.Glide
+import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 import javax.inject.Inject
@@ -25,8 +26,19 @@ class BitmapConverterRepositoryImpl @Inject constructor(
             Bitmap.CompressFormat.JPEG
         )
 
-        // 3. get file url
-        return file?.path
+        file?.let {
+            val fileName = getFileName(it.path)
+            val newFilename = "$PICKER_URL_FILE_CODE$fileName"
+            val newFile = File(it.path.replace(fileName, newFilename))
+
+            it.renameTo(newFile)
+
+            // 3. get file url, if image source from remote url
+            return newFile.path
+        }
+
+        // 4. only if cache file is missing (failed to save bitmap #2)
+        return null
     }
 
     private fun urlToBitmap(url: String): Bitmap? {
@@ -35,6 +47,10 @@ class BitmapConverterRepositoryImpl @Inject constructor(
             .load(url)
             .submit()
             .get()
+    }
+
+    private fun getFileName(path: String): String {
+        return path.substring(path.lastIndexOf("/") + 1)
     }
 
 }

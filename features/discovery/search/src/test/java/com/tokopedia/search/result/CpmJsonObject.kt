@@ -58,7 +58,7 @@ internal val cpmJsonString = """
           },
           "badges": [
             {
-              "image_url": "https://ecs7.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+              "image_url": "https://images.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
               "show": true,
               "title": "Power Merchant"
             }

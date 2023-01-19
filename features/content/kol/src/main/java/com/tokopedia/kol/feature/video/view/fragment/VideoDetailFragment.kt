@@ -37,10 +37,10 @@ import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
+import com.tokopedia.kol.common.util.resize
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.videoplayer.utils.Video
 import kotlinx.android.synthetic.main.layout_single_video_fragment.*
 import javax.inject.Inject
 
@@ -128,7 +128,7 @@ class VideoDetailFragment :
         mediaPlayer?.let { player ->
             activity?.let { it ->
                 //video player resize
-                val videoSize = Video.resize(it, player.videoWidth, player.videoHeight)
+                val videoSize = resize(it, player.videoWidth, player.videoHeight)
                 videoView.setSize(videoSize.videoWidth, videoSize.videoHeight)
                 videoView.holder.setFixedSize(videoSize.videoWidth, videoSize.videoHeight)
 
@@ -270,7 +270,7 @@ class VideoDetailFragment :
                 MediaPlayer.MEDIA_ERROR_UNKNOWN -> {
                     Toast.makeText(
                         requireContext(),
-                        getString(com.tokopedia.videoplayer.R.string.error_unknown),
+                        getString(R.string.kol_error_unknown),
                         Toast.LENGTH_SHORT
                     ).show()
                     activity?.finish()
@@ -447,7 +447,7 @@ class VideoDetailFragment :
                         String.format(
                             "%s",
                             desc?.replace("%s", feedXCard.author.name),
-                        ), feedXCard.author.name + " `post"
+                        ), feedXCard.author.name + " post"
                     )
                 }
             shareText.setOnClickListener {
@@ -455,7 +455,7 @@ class VideoDetailFragment :
                         String.format(
                                 "%s",
                                 desc?.replace("%s", feedXCard.author.name),
-                        ), feedXCard.author.name + " `post"
+                        ), feedXCard.author.name + " post"
                 )
             }
 

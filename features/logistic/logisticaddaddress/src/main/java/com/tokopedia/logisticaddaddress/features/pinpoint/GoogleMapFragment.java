@@ -208,7 +208,9 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     @Override
     public void onStart() {
         super.onStart();
-        mapView.onStart();
+        if (RequestPermissionUtil.checkHasPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
+            mapView.onStart();
+        }
     }
 
     @Override
@@ -225,7 +227,9 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     @Override
     public void onPause() {
         super.onPause();
-        mapView.onPause();
+        if (RequestPermissionUtil.checkHasPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
+            mapView.onPause();
+        }
     }
 
     @Override
@@ -512,15 +516,19 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     private boolean isServiceConnected() {
         GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
 
-        int resultCode = availability.isGooglePlayServicesAvailable(getContext());
+        Context context = getContext();
+        if (context != null) {
+            int resultCode = availability.isGooglePlayServicesAvailable(context);
 
-        if (ConnectionResult.SUCCESS == resultCode) {
-            Timber.d("Google play services available");
-            return true;
-        } else {
-            Timber.d("Google play services unavailable");
-            return false;
+            if (ConnectionResult.SUCCESS == resultCode) {
+                Timber.d("Google play services available");
+                return true;
+            } else {
+                Timber.d("Google play services unavailable");
+                return false;
+            }
         }
+        return false;
     }
 
     @Override

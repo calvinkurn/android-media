@@ -20,7 +20,6 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
@@ -32,6 +31,7 @@ import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity.BackButtonListener;
 import com.tokopedia.contactus.createticket.utils.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.unifycomponents.LoaderUnify;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -51,7 +51,7 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
     public final static int ATTACH_FILE_REQUEST = 1;
     private TkpdWebView webView;
-    private ProgressBar progressBar;
+    private LoaderUnify progressBar;
     public static final String URL_HELP = TokopediaUrl.Companion.getInstance().getWEB() + "help?utm_source=android";
     private UserSessionInterface session;
     ContactUsFaqListener listener;
@@ -122,12 +122,12 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
 
         webView.setWebViewClient(new MyWebClient());
         webView.setWebChromeClient(new MyWebViewClient());
-        progressBar.setIndeterminate(true);
+        progressBar.setVisibility(View.VISIBLE);
         WebSettings webSettings = webView.getSettings();
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setBuiltInZoomControls(true);
-        webSettings.setAppCacheEnabled(false);
+//        webSettings.setAppCacheEnabled(false);
         MethodChecker.setAllowMixedContent(webSettings);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
     }
@@ -174,7 +174,7 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
                 if (newProgress == 100) {
                     webView.setVisibility(View.VISIBLE);
                     view.setVisibility(View.VISIBLE);
-                    progressBar.setIndeterminate(false);
+                    progressBar.setVisibility(View.GONE);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -233,11 +233,7 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
-            try {
-                progressBar.setIndeterminate(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            progressBar.setVisibility(View.VISIBLE);
         }
 
         @SuppressWarnings("deprecation")
@@ -304,8 +300,6 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (progressBar != null)
-            progressBar.setIndeterminate(false);
     }
 
     public BackButtonListener getBackButtonListener() {

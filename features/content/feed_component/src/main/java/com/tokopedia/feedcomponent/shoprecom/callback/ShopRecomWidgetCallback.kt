@@ -11,4 +11,6 @@ interface ShopRecomWidgetCallback {
     fun onShopRecomItemClicked(itemID: Long, appLink: String, imageUrl: String, postPosition: Int)
 
     fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int)
+
+    fun onShopRecomLoadingNextPage(nextCursor: String)
 }

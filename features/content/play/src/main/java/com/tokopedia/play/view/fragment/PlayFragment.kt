@@ -17,7 +17,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -26,6 +26,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.extensions.*
+import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
@@ -70,6 +71,7 @@ class PlayFragment @Inject constructor(
     private val pageMonitoring: PlayPltPerformanceCallback,
     private val analytic: PlayAnalytic,
     private val newAnalytic: PlayNewAnalytic,
+    private val router: Router,
 ) :
         TkpdBaseV4Fragment(),
         PlayFragmentContract,
@@ -236,7 +238,8 @@ class PlayFragment @Inject constructor(
     }
 
     fun openVariantBottomSheet(action: ProductAction, product: PlayProductUiModel.Product) {
-        fragmentBottomSheetView.openVariantBottomSheet(action, product)
+        val selectedProduct = product.buttons.firstOrNull { it.type.toAction == action }.orDefault()
+        fragmentBottomSheetView.openVariantBottomSheet(selectedProduct)
     }
 
     fun onFirstTopBoundsCalculated() {
@@ -321,6 +324,7 @@ class PlayFragment @Inject constructor(
             playViewModel.focusPage(channelData)
             analytic.sendScreen(channelId, playViewModel.channelType, sourceType = playParentViewModel.source.type, channelName = channelData.channelDetail.channelInfo.title)
             newAnalytic.sendDataNow(channelId, playViewModel.channelType, channelData.channelDetail.channelInfo.title)
+            newAnalytic.setData(channelData.channelDetail.channelInfo)
             sendSwipeRoomAnalytic()
         } catch (e: Throwable) {}
     }
@@ -473,7 +477,7 @@ class PlayFragment @Inject constructor(
                 val state = cachedState.value
                 val prevState = cachedState.prevValue
 
-                handleStatus(state.status)
+                if(cachedState.isChanged { it.status.channelStatus.statusType }) handleStatus(state.status)
             }
         }
     }
@@ -488,7 +492,7 @@ class PlayFragment @Inject constructor(
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
                 it.finish()
-                if (buttonUrl.isNotEmpty()) RouteManager.route(it, buttonUrl)
+                if (buttonUrl.isNotEmpty()) router.route(it, buttonUrl)
             }
             dialog.setOverlayClose(false)
             dialog.show()

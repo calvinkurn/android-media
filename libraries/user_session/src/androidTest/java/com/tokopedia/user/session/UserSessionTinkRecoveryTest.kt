@@ -3,12 +3,15 @@ package com.tokopedia.user.session
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.tokopedia.user.session.datastore.DataStorePreference
+import com.tokopedia.user.session.datastore.UserSessionDataStoreClient
 import com.tokopedia.utils.GoogleTinkExplorerLab
 import com.tokopedia.utils.RawAccessPreference
-import org.hamcrest.CoreMatchers
+import io.mockk.every
+import io.mockk.spyk
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
-import org.hamcrest.MatcherAssert
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -17,12 +20,18 @@ import org.junit.Test
 class UserSessionTinkRecoveryTest {
 
     private lateinit var context: Context
+    private lateinit var storePref: DataStorePreference
+
+    private val actual_key_set = "tkpd_master_keyset"
+
 
     @Before
     fun setup() {
         context = ApplicationProvider.getApplicationContext()
+        storePref = spyk(DataStorePreference(context)) {
+            every { isDataStoreEnabled() } returns true
+        }
     }
-
 
     @Test
     fun test_android_keystore_to_cleartext_migration() {
@@ -30,7 +39,7 @@ class UserSessionTinkRecoveryTest {
 
         val keystoreAead = GoogleTinkExplorerLab.generateKey(
             context,
-            name = "tkpd_master_keyset",
+            name = actual_key_set,
             withKeystore = true
         )
         val userSession = UserSession(context, DataStorePreference(context), keystoreAead)
@@ -54,53 +63,43 @@ class UserSessionTinkRecoveryTest {
     }
 
     @Test
-    fun test_android_keystore_to_cleartext_migration_buggy_current_condition() {
+    fun newSolution_fixingGeneralSecurityException() = runBlocking {
+        /**
+         * Log in MigratedUserSession's decryptString to see the Exception
+         * */
         val name = "Pak Toko"
 
-        val keystoreAead = GoogleTinkExplorerLab.generateKey(
-            context,
-            name = "tkpd_master_keyset",
-            withKeystore = true
-        )
-        val userSession = UserSession(context, DataStorePreference(context), keystoreAead)
+        val keystoreAead = GoogleTinkExplorerLab.generateKey(context, actual_key_set)
+        val userSession = UserSession(context, storePref, keystoreAead)
 
         userSession.name = name
 
         UserSessionMap.map.clear()
         val actual = userSession.name
+        val actualDs = UserSessionDataStoreClient.getInstance(context).getName().first()
 
         assertThat(actual, `is`(name))
+        assertThat(actualDs, `is`(name))
 
+        GoogleTinkExplorerLab.delete(context)
 
+        val newKeystoreAead = GoogleTinkExplorerLab.generateKey(context, actual_key_set)
+        val newUserSession = UserSession(context, storePref, newKeystoreAead)
         /**
-         * Because of default behaviour of UserSession will generate Aead without AndroidKeystore,
-         * after this execution, any string access should produce [InvalidProtocolBufferException]
+         * To fix GeneralSecurityException, aead should be refreshed and datastore must be re-created
+         *   Refreshing aead is refreshed by re-creating UserSession
+         *   Refreshing datastore is refreshed by using the new reCreate function
          * */
-        val ctUserSession = UserSession(context)
+        UserSessionDataStoreClient.reCreate(context)
+        val ctName = "Pak Edi"
+//        userSession.name = ctName
+        newUserSession.name = ctName
 
-        /**
-         * But because the exception was handled, it returns the expected value from the backup.
-         * After 3.178, we always set a backup value whenever PII data is set
-         * */
         UserSessionMap.map.clear()
-        val backup = RawAccessPreference(context, "LOGIN_SESSION_v2")
-            .getRawValue("FULL_NAME_v2_PII_BACKUP") as String
-        assertThat(backup, `is`(notNullValue()))
-        val ctActual = ctUserSession.name
-        assertThat(ctActual, `is`(name))
-
-        val encryptionErrorStatus = RawAccessPreference(context, "ENCRYPTION_STATE_PREF")
-            .getRawValue("KEY_ENCRYPTION_ERROR") as Boolean
-        assertTrue(encryptionErrorStatus)
-
-        /**
-         * In this scenario, the name will never empty, whereas, Google Tink recovers only if the name is empty.
-         * Hence, this case won't recover and always gets [InvalidProtocolBufferException].
-         * Who: Every user who already gets AndroidKeystore prior to 3.178,
-         *      then having backup name after 3.178 without recovery first
-         *
-         * This condition has been fixed at version 3.184
-         * */
+        val ctActual = newUserSession.name
+        val newName = UserSessionDataStoreClient.getInstance(context).getName().first()
+        assertThat(ctActual, `is`(ctName))
+        assertThat(newName, `is`(ctName))
     }
 
     @Test
@@ -109,7 +108,7 @@ class UserSessionTinkRecoveryTest {
 
         val keystoreAead = GoogleTinkExplorerLab.generateKey(
             context,
-            name = "tkpd_master_keyset",
+            name = actual_key_set,
             withKeystore = true
         )
         val userSession = UserSession(context, DataStorePreference(context), keystoreAead)

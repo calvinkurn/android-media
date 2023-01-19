@@ -13,10 +13,15 @@ import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.blockPromo
+import com.tokopedia.topchat.chatroom.view.activity.base.changeCtaBroadcast
 import com.tokopedia.topchat.chatroom.view.activity.base.hideBanner
 import com.tokopedia.topchat.chatroom.view.activity.base.setFollowing
+import com.tokopedia.topchat.chatroom.view.activity.robot.broadcast.BroadcastResult.assertBroadcastCtaLabel
+import com.tokopedia.topchat.chatroom.view.activity.robot.broadcast.BroadcastResult.assertBroadcastCtaText
 import com.tokopedia.topchat.chatroom.view.activity.robot.broadcast.BroadcastResult.assertBroadcastShown
 import com.tokopedia.topchat.chatroom.view.activity.robot.broadcast.BroadcastResult.assertBroadcastSpamHandler
+import com.tokopedia.topchat.chatroom.view.activity.robot.broadcast.BroadcastRobot.clickCtaBroadcast
+import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithExtra
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
@@ -115,6 +120,67 @@ class TopchatRoomBuyerBroadcastTest : TopchatRoomTest() {
 
         // Then
         onView(withId(R.id.iv_banner)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun show_broadcast_with_flexible_cta() {
+        // Given
+        getChatUseCase.response = getChatUseCase.broadCastChatWithFlexibleCta
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
+        launchChatRoomActivity()
+        intending(anyIntent()).respondWith(
+            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        )
+
+        // When
+        clickCtaBroadcast()
+
+        // Then
+        assertBroadcastCtaText("Lihat Keranjang")
+        assertBroadcastCtaLabel(false)
+        openPageWithExtra("url", "https://chat.tokopedia.com/tc/v1/redirect/broadcast_url/")
+    }
+
+    @Test
+    fun show_broadcast_with_flexible_cta_but_null() {
+        // Given
+        getChatUseCase.response = getChatUseCase.broadCastChatWithFlexibleCta
+            .changeCtaBroadcast(null, null, null)
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
+        launchChatRoomActivity()
+        intending(anyIntent()).respondWith(
+            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        )
+
+        // When
+        clickCtaBroadcast()
+
+        // Then
+        assertBroadcastCtaText("Lihat Selengkapnya")
+        assertBroadcastCtaLabel(false)
+        openPageWithExtra("url", "https://chat.tokopedia.com/tc/v1/redirect/original_url/")
+    }
+
+    @Test
+    fun show_broadcast_with_flexible_cta_but_empty() {
+        // Given
+        getChatUseCase.response = getChatUseCase.broadCastChatWithFlexibleCta
+            .changeCtaBroadcast(null, "", "")
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
+        launchChatRoomActivity()
+        intending(anyIntent()).respondWith(
+            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        )
+
+        // When
+        clickCtaBroadcast()
+
+        // Then
+        assertBroadcastCtaText("Lihat Selengkapnya")
+        assertBroadcastCtaLabel(false)
     }
 
     private fun assertBroadcastSpamHandlerIsVisible() {

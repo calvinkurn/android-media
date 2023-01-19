@@ -37,6 +37,7 @@ import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodHomeDynamicIco
 import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodHomeTickerUseCase
 import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodHomeUSPUseCase
 import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodMerchantListUseCase
+import com.tokopedia.tokofood.feature.home.presentation.sharedpref.TokofoodHomeSharedPref
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodErrorStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeIconsUiModel
@@ -81,6 +82,7 @@ class TokoFoodHomeViewModel @Inject constructor(
     private val keroEditAddressUseCase: KeroEditAddressUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val eligibleForAddressUseCase: EligibleForAddressUseCase,
+    private val searchCoachmarkSharedPref: TokofoodHomeSharedPref,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -89,6 +91,7 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     private val _flowChooseAddress = MutableSharedFlow<Result<GetStateChosenAddressResponse>>(Int.ONE)
     private val _flowEligibleForAnaRevamp = MutableSharedFlow<Result<EligibleForAddressFeature>>(Int.ONE)
+    private val _flowShouldShowSearchCoachMark = MutableSharedFlow<Boolean>(Int.ONE)
 
     init {
         _inputState.tryEmit(TokoFoodUiState())
@@ -124,6 +127,7 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     val flowEligibleForAnaRevamp: SharedFlow<Result<EligibleForAddressFeature>> = _flowEligibleForAnaRevamp
     val flowChooseAddress: SharedFlow<Result<GetStateChosenAddressResponse>> = _flowChooseAddress
+    val flowShouldShowSearchCoachMark: SharedFlow<Boolean> = _flowShouldShowSearchCoachMark
 
     private val homeLayoutItemList = mutableListOf<TokoFoodItemUiModel>()
     private var pageKey = INITIAL_PAGE_KEY_MERCHANT
@@ -417,6 +421,15 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     fun setPageKey(pageNew: String) {
         pageKey = pageNew
+    }
+
+    fun checkForSearchCoachMark() {
+        val hasSearchCoachMarkShown = searchCoachmarkSharedPref.getHasSearchCoachmarkShown()
+        _flowShouldShowSearchCoachMark.tryEmit(!hasSearchCoachMarkShown)
+    }
+
+    fun setSearchCoachMarkHasShown() {
+        searchCoachmarkSharedPref.setHasSearchCoachmarkShown(true)
     }
 
     private suspend fun getTokoFoodHomeComponent(

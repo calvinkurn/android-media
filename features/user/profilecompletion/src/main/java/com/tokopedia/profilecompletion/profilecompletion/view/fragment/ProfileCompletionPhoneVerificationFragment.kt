@@ -43,7 +43,7 @@ class ProfileCompletionPhoneVerificationFragment : AddPhoneFragment() {
 	profileCompletionFragment?.onSuccessEditProfile(ProfileCompletionNewConstants.EDIT_VERIF)
 	Toast.makeText(
 	    activity,
-	    MethodChecker.fromHtml(getString(R.string.success_verify_phone_number)),
+	    MethodChecker.fromHtml(getString(R.string.add_phone_success_verify_phone_number)),
 	    Toast.LENGTH_LONG
 	).show()
     }

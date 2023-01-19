@@ -135,14 +135,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/setting-bank
     const val SETTING_BANK = "$INTERNAL_GLOBAL/setting-bank"
 
-    const val GLOBAL_INTERNAL_DIGITAL_DEAL = "$INTERNAL_GLOBAL/deals"
-
-    const val GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE = "$INTERNAL_GLOBAL/deals-slug/"
-
-    const val GLOBAL_INTERNAL_DIGITAL_DEAL_CHECKOUT = "$GLOBAL_INTERNAL_DIGITAL_DEAL/checkout"
-
-    const val GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG = "$GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE{slug}/"
-
     // PhoneVerificationProfileActivity
     // tokopedia-android-internal://global/setting-bank
     const val ADD_BANK = "$INTERNAL_GLOBAL/add-bank"
@@ -214,7 +206,6 @@ object ApplinkConstInternalGlobal {
      * If you want to use {shopId} to chatroom use external applink
      */
     const val TOPCHAT_ROOM = "$INTERNAL_GLOBAL/topchat/{message_id}"
-
 
 
     //ReferralPhoneNumberVerificationActivity

@@ -302,7 +302,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     }
                     if (product.wholesalePriceList.isNotEmpty()) {
                         var finalPrice = product.productPrice
-                        product.wholesalePrice = 0
+                        product.wholesalePrice = 0.0
                         for (price in product.wholesalePriceList) {
                             if (itemQty >= price.qtyMin) {
                                 finalPrice = price.prdPrc
@@ -314,14 +314,14 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                             updatedProductIndex.add(productIndex)
                         }
                         if (!mapParentWholesalePrice.containsKey(product.parentId)) {
-                            val totalPrice = itemQty * product.finalPrice.toDouble()
+                            val totalPrice = itemQty * product.finalPrice
                             totalProductWholesalePrice += totalPrice
                             mapParentWholesalePrice[product.parentId] = totalPrice
                         }
                     } else {
-                        product.wholesalePrice = 0
+                        product.wholesalePrice = 0.0
                         product.finalPrice = product.productPrice
-                        totalProductPrice += itemQty * product.finalPrice.toDouble()
+                        totalProductPrice += itemQty * product.finalPrice
                     }
                     var purchaseProtectionPriceMultiplier = product.orderQuantity
                     if (product.purchaseProtectionPlanData.source.equals(PurchaseProtectionPlanData.SOURCE_READINESS, true)) {
