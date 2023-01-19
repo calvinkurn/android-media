@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/automaticallyAddsCreditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Otomatis tambah kredit sebesar"
+        android:textColor="#212121"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/selectedPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:text="Rp500.000"
+        android:textColor="#212121"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/automaticallyAddsCreditText"
+        app:typographyType="display_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/selectedBonus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="@string/topads_dash_auto_topup_bonus"
+        android:textColor="#212121"
+        app:layout_constraintBottom_toBottomOf="@id/selectedPrice"
+        app:layout_constraintStart_toEndOf="@id/selectedPrice"
+        app:layout_constraintTop_toTopOf="@id/selectedPrice"
+        app:typographyType="display_2"
+        tools:text="(Bonus Rp47.500)" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/maxCreditLimitText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Saat kredit kurang dari"
+        android:textColor="#212121"
+        app:layout_constraintStart_toStartOf="@id/selectedPrice"
+        app:layout_constraintTop_toBottomOf="@id/selectedBonus"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/maxCreditLimit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Rp500.000"
+        android:textColor="#212121"
+        app:layout_constraintStart_toStartOf="@id/maxCreditLimitText"
+        app:layout_constraintTop_toBottomOf="@id/maxCreditLimitText"
+        app:typographyType="display_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/frequncyTambahCreditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Frekuensi tambah kredit"
+        android:textColor="#212121"
+        app:layout_constraintStart_toStartOf="@id/maxCreditLimit"
+        app:layout_constraintTop_toBottomOf="@id/maxCreditLimit"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/selectedFrequncyTambahCredit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/topads_dash_auto_topup_frequency"
+        android:textColor="#212121"
+        app:layout_constraintStart_toStartOf="@id/frequncyTambahCreditText"
+        app:layout_constraintTop_toBottomOf="@id/frequncyTambahCreditText"
+        app:typographyType="display_2"
+        tools:text="Normal (maks. 6 kali/hari)" />
+
+    <com.tokopedia.unifycomponents.TipsUnify
+        android:id="@+id/autoTopUpCreditTipsUnify"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/selectedFrequncyTambahCredit" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/editAutoTopUpButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Ubah Pengaturan"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/autoTopUpCreditTipsUnify"
+        app:unifyButtonVariant="ghost" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

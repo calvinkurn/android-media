@@ -15,7 +15,9 @@ data class GetPersonalisedCopyResponse(
             @SerializedName("credit_performance")
             val creditPerformance: String = "",
             @SerializedName("is_auto_top_up")
-            val isAutoTopUp: Boolean = false
+            val isAutoTopUp: Boolean = false,
+            @SerializedName("count_top_up")
+            val countTopUp:Int = 0
         ) {
             var isAutoTopUpSelected: Boolean = false
         }

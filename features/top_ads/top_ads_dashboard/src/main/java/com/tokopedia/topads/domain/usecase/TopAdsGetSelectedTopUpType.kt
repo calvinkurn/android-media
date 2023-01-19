@@ -15,6 +15,7 @@ const val GET_PERSONALISED_COPY_QUERY = """query getPersonalisedCopy(${'$'}shop_
     data {
       credit_performance
       is_auto_top_up
+      count_top_up
     }
   }
 }

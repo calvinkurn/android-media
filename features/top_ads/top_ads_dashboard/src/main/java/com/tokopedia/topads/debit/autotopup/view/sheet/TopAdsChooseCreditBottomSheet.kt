@@ -74,6 +74,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
     var isAutoTopUpSelected: Boolean = false
     private var isCreditHistoryReceived: Boolean = false
     var onSaved: ((productUrl: String, isAutoAdsSaved: Boolean) -> Unit)? = null
+    var onCancel: (() -> Unit)? = null
 
     @JvmField
     @Inject
@@ -113,6 +114,9 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         showCloseIcon = false
         clearContentPadding = true
         isDragable = true
+        setTitle(getString(R.string.title_top_ads_add_credit))
+        showCloseIcon = true
+        customPeekHeight = 600
         setChild(contentView)
         initView(contentView)
     }
@@ -156,6 +160,9 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         setDefaultState()
         setUpClickListener()
         setUpCheckChangeListener()
+        setOnDismissListener {
+            if (!isAutoTopUpActive) onCancel?.invoke()
+        }
     }
 
     private fun checkRadioDefaultTopUpType() {
@@ -481,6 +488,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
                 is ResponseSaving -> {
                     saveButton?.isLoading = false
                     onSaved?.invoke("", true)
+                    isAutoTopUpActive = true
                     handleResponseSaving(it)
                     dismiss()
 

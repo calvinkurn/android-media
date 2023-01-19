@@ -493,6 +493,11 @@
     <string name="top_ads_auto_top_up_save_btn">Aktifkan Tambah Kredit Otomatis</string>
     <string name="topads_dash_auto_topup_bonus"><![CDATA["(<font color='#6D7588'>Bonus</font><font color='#00AA5B'><b> Rp%s </b></font>)]]></string>
     <string name="topads_dash_auto_topup_frequency"><![CDATA["%s (<font color='#6D7588'>maks. %s kali/hari</font>)]]></string>
+    <string name="topads_dash_top_credit_interrupt_sheet_learn_more"><![CDATA["Mau tahu lebih lanjut tentang Tambah Kredit?<br>
+     <font color='#00AA5B'><a href="https://seller.tokopedia.com/edu/cara-top-up-saldo-topads/">Pelajari Selengkapnya</a></font>]]></string>
+    <string name="topads_dash_top_credit_interrupt_sheet_edu_point_three"><![CDATA[Dapatkan bonus <b>%s%% Kredit TopAds</b> tiap kali kreditmu ditambah otomatis!]]></string>
+
+    <string name="topads_dash_top_credit_interrupt_sheet_description">Kamu sudah %sx tambah kredit minggu ini. Coba pakai Tambah Kredit Otomatis yuk</string>
 
 </resources>
 

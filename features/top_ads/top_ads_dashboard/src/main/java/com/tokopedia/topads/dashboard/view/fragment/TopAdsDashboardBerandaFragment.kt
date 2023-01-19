@@ -20,6 +20,7 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_DEFAULT_INDEX
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_TOP_UP_CREDIT
 import com.tokopedia.topads.dashboard.data.model.beranda.*
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.getSummaryAdTypes
@@ -37,6 +38,7 @@ import com.tokopedia.topads.dashboard.view.sheet.SummaryAdTypesBottomSheet
 import com.tokopedia.topads.dashboard.view.sheet.SummaryInformationBottomSheet
 import com.tokopedia.topads.dashboard.viewmodel.TopAdsDashboardViewModel
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -71,8 +73,11 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         LatestReadingTopAdsDashboardRvAdapter { context?.openWebView(it) }
     }
 
-    private var isAutoTopUpActive:Boolean = false
-    private var isAutoTopUpSelected:Boolean = false
+    private var isAutoTopUpActive: Boolean = false
+    private var isAutoTopUpSelected: Boolean = false
+    private var topUpUCount: Int = 0
+    private var autoTopUpBonus: Double = 0.0
+    private var showAutoTopUpOldFlow = true
 
     companion object {
         private const val REQUEST_CODE_SET_AUTO_TOPUP = 6
@@ -172,11 +177,11 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             goToCreditHistory(false)
         }
         binding.tambahKreditLayout.addCredit.setOnClickListener {
-            val intent = Intent(activity, TopAdsAddCreditActivity::class.java)
-            intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
-            intent.putExtra(TopAdsAddCreditActivity.IS_AUTO_TOP_UP_ACTIVE, isAutoTopUpActive)
-            intent.putExtra(TopAdsAddCreditActivity.IS_AUTO_TOP_UP_SELECTED, isAutoTopUpSelected)
-            startActivityForResult(intent, REQUEST_CODE_ADD_CREDIT)
+            if (showAutoTopUpOldFlow){
+                openOldAutoTopUpBottomSheet()
+            }else{
+                openNewAutoTopUpBottomSheet()
+            }
         }
         binding.layoutRingkasan.ivSummaryDropDown.setOnClickListener {
             summaryAdTypesBottomSheet.show(childFragmentManager, "")
@@ -210,6 +215,22 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 (activity as? TopAdsDashboardActivity)?.switchTab(CONST_3)
             }
         }
+    }
+
+    private fun openNewAutoTopUpBottomSheet() {
+        val intent = Intent(activity, TopAdsCreditTopUpActivity::class.java)
+        intent.putExtra(TopAdsCreditTopUpActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
+        intent.putExtra(TopAdsCreditTopUpActivity.IS_AUTO_TOP_UP_ACTIVE, isAutoTopUpActive)
+        intent.putExtra(TopAdsCreditTopUpActivity.IS_AUTO_TOP_UP_SELECTED, isAutoTopUpSelected)
+        intent.putExtra(TopAdsCreditTopUpActivity.TOP_UP_COUNT, topUpUCount)
+        intent.putExtra(TopAdsCreditTopUpActivity.AUTO_TOP_UP_BONUS, autoTopUpBonus)
+        startActivityForResult(intent, REQUEST_CODE_TOP_UP_CREDIT)
+    }
+
+    private fun openOldAutoTopUpBottomSheet() {
+        val intent = Intent(activity, TopAdsAddCreditActivity::class.java)
+        intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
+        startActivityForResult(intent, REQUEST_CODE_ADD_CREDIT)
     }
 
     private fun setUpRecyclerView() {
@@ -334,12 +355,24 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             }
         }
 
-
         topAdsDashboardViewModel.getAutoTopUpDefaultSate.observe(viewLifecycleOwner) {
             if (it is Success) {
                 isAutoTopUpActive = it.data.isAutoTopUp
                 setButtonRefreshCreditState(it.data.isAutoTopUp)
                 isAutoTopUpSelected = it.data.isAutoTopUpSelected
+                topUpUCount = it.data.countTopUp
+            }
+        }
+
+        topAdsDashboardViewModel.autoTopUpStatusLiveData.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                autoTopUpBonus = it.data.statusBonus
+            }
+        }
+
+        topAdsDashboardViewModel.isUserWhitelisted.observe(viewLifecycleOwner){
+            if (it is Success) {
+                showAutoTopUpOldFlow = !it.data
             }
         }
     }
@@ -451,12 +484,19 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         topAdsDashboardViewModel.fetchShopDeposit()
         adTypeChanged(selectedAdType)
         topAdsDashboardViewModel.fetchRecommendationStatistics()
+        topAdsDashboardViewModel.getAutoTopUpStatus()
         topAdsDashboardViewModel.getSelectedTopUpType()
+        topAdsDashboardViewModel.getWhiteListedUser()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_ADD_CREDIT) {
+            topAdsDashboardViewModel.fetchShopDeposit()
+        } else if (requestCode == REQUEST_CODE_SET_AUTO_TOPUP && resultCode == Activity.RESULT_OK) {
+            if (data?.getBooleanExtra("no_redirect", false) != true)
+                goToCreditHistory(true)
+        }else if (requestCode == REQUEST_CODE_TOP_UP_CREDIT){
             topAdsDashboardViewModel.fetchShopDeposit()
             if (resultCode == Activity.RESULT_OK) {
                 setButtonRefreshCreditState(true)
@@ -467,9 +507,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                     getString(com.tokopedia.topads.common.R.string.topads_common_text_ok)
                 ).show()
             }
-        } else if (requestCode == REQUEST_CODE_SET_AUTO_TOPUP && resultCode == Activity.RESULT_OK) {
-            if (data?.getBooleanExtra("no_redirect", false) != true)
-                goToCreditHistory(true)
         }
     }
 

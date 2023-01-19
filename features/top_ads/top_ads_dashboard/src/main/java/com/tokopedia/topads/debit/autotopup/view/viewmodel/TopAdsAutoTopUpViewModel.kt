@@ -1,5 +1,6 @@
 package com.tokopedia.topads.debit.autotopup.view.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -7,6 +8,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.domain.usecase.GetWhiteListedUserUseCase
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.model.CreditResponse
 import com.tokopedia.topads.dashboard.data.model.DataCredit
@@ -29,11 +31,14 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
     private val topAdsTopUpCreditUseCase: TopAdsTopUpCreditUseCase,
     private val saveSelectionUseCase: TopAdsSaveSelectionUseCase,
     private val  userSession: UserSessionInterface,
+    private val whiteListedUserUseCase: GetWhiteListedUserUseCase,
     val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.main) {
 
     val getAutoTopUpStatus = MutableLiveData<Result<AutoTopUpStatus>>()
     val statusSaveSelection: MutableLiveData<SavingAutoTopUpState> = MutableLiveData()
     val topAdsTopUpCreditData: MutableLiveData<Result<TopAdsShopTierShopGradeData.ShopInfoByID.Result>> = MutableLiveData()
+    private val _isUserWhitelisted: MutableLiveData<Result<Boolean>> = MutableLiveData()
+    val isUserWhitelisted: LiveData<Result<Boolean>> = _isUserWhitelisted
     fun getAutoTopUpStatusFull() {
         autoTopUpUSeCase.setParams()
         autoTopUpUSeCase.setQuery()
@@ -46,6 +51,21 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
         }, {
             getAutoTopUpStatus.value = Fail(it)
         })
+    }
+
+    fun getWhiteListedUser() {
+        whiteListedUserUseCase.setParams()
+        whiteListedUserUseCase.executeQuerySafeMode(
+            onSuccess = {
+                it.data.forEach { data ->
+                    if (data.featureName == "variant1_auto_topup_design") _isUserWhitelisted.value =
+                        Success(true)
+                }
+            },
+            onError = {
+                _isUserWhitelisted.value = Fail(it)
+            }
+        )
     }
     fun getManualTopAdsCreditList() {
         topAdsTopUpCreditUseCase.setParams()
@@ -88,7 +108,7 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
                 ParamObject.SOURCE to TopAdsDashboardConstant.SOURCE_DASH)
         useCase.setTypeClass(TkpdProducts::class.java)
         useCase.setRequestParams(params)
-        useCase.setGraphqlQuery(CategoryList.GQL_QUERY)
+        useCase.setGraphqlQuery(CategoryList())
         useCase.execute({
             onSuccess(it.tkpdProduct.creditResponse)
         }

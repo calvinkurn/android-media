@@ -28,6 +28,7 @@ object TopAdsDashboardConstant {
 
     const val AUTO_TOPUP_INACTIVE: Int = 0
     const val REQUEST_CODE_ADD_CREDIT = 99
+    const val REQUEST_CODE_TOP_UP_CREDIT = 1919
     const val ACTIVE_STATUS = "1"
 
 

@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.data.utils
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
@@ -13,6 +14,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils.DEFAULT_LOCALE
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -264,6 +266,31 @@ object Utils {
         spn.append(minCredit)
         spn.append(suffix)
         return spn
+    }
+
+    fun isShowInterruptSheet(context: Context): Boolean {
+        val sharedPref =
+            context.getSharedPreferences("TopAdsTopUpCredit", BaseSimpleActivity.MODE_PRIVATE)
+        val storedTime = sharedPref.getLong("TopAdsTopUpCreditSavedTime", 0)
+        if (storedTime == 0L) {
+            storeNewTime(Calendar.getInstance().timeInMillis, sharedPref)
+            return true
+        } else {
+            val currentTime = Calendar.getInstance().timeInMillis
+            val timeDiffMillis = currentTime - storedTime
+            val days = timeDiffMillis/(1000*60)
+            if (days >= 0) {
+                storeNewTime(currentTime, sharedPref)
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun storeNewTime(time: Long, sharedPref: SharedPreferences){
+        val editor = sharedPref.edit()
+        editor.putLong("TopAdsTopUpCreditSavedTime", time)
+        editor.apply()
     }
 
 

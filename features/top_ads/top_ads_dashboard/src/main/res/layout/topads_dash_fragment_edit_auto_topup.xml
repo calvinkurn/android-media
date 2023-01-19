@@ -67,6 +67,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:padding="12dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/card_auto_topup_status">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -190,6 +191,16 @@
                 tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.tokopedia.unifycomponents.CardUnify>
+
+    <include
+        android:id="@+id/autoTopUpCreditHistoryLayout"
+        layout="@layout/top_ads_auto_top_up_history_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_auto_topup_status" />
 
     <include
         android:id="@+id/offLayout"

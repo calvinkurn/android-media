@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.response.DepositAmount
+import com.tokopedia.topads.common.domain.usecase.GetWhiteListedUserUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.dashboard.data.model.GetPersonalisedCopyResponse
 import com.tokopedia.topads.dashboard.data.model.beranda.RecommendationStatistics
@@ -30,7 +31,8 @@ class TopAdsDashboardViewModel @Inject constructor(
     private val recommendationStatisticsUseCase: TopadsRecommendationStatisticsUseCase,
     private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
     private val autoTopUpUSeCase: TopAdsAutoTopUpUSeCase,
-    private val topAdsGetSelectedTopUpType: TopAdsGetSelectedTopUpType
+    private val topAdsGetSelectedTopUpType: TopAdsGetSelectedTopUpType,
+    private val whiteListedUserUseCase: GetWhiteListedUserUseCase,
 ) : BaseViewModel(Dispatchers.Main) {
 
     private val _summaryStatisticsLiveData =
@@ -53,6 +55,9 @@ class TopAdsDashboardViewModel @Inject constructor(
 
     private val _getAutoTopUpDefaultSate = MutableLiveData<Result<GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData>>()
     val getAutoTopUpDefaultSate:LiveData<Result<GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData>> = _getAutoTopUpDefaultSate
+
+    private val _isUserWhitelisted: MutableLiveData<Result<Boolean>> = MutableLiveData()
+    val isUserWhitelisted: LiveData<Result<Boolean>> = _isUserWhitelisted
 
     fun fetchShopDeposit() {
         topAdsGetShopDepositUseCase.execute({
@@ -127,5 +132,20 @@ class TopAdsDashboardViewModel @Inject constructor(
         }, {
             _getAutoTopUpDefaultSate.value = Fail(it)
         })
+    }
+
+    fun getWhiteListedUser() {
+        whiteListedUserUseCase.setParams()
+        whiteListedUserUseCase.executeQuerySafeMode(
+            onSuccess = {
+                it.data.forEach { data ->
+                    if (data.featureName == "variant1_auto_topup_design") _isUserWhitelisted.value =
+                        Success(true)
+                }
+            },
+            onError = {
+                _isUserWhitelisted.value = Fail(it)
+            }
+        )
     }
 }
