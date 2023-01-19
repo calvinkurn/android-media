@@ -28,9 +28,9 @@ class ViewToViewViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.main) {
-    val viewToViewRecommendationLiveData: LiveData<Result<ViewToViewResult>>
+    val viewToViewRecommendationLiveData: LiveData<Result<ViewToViewRecommendationResult>>
         get() = _viewToViewRecommendationLiveData
-    private val _viewToViewRecommendationLiveData = MutableLiveData<Result<ViewToViewResult>>()
+    private val _viewToViewRecommendationLiveData = MutableLiveData<Result<ViewToViewRecommendationResult>>()
 
     val viewToViewATCStatusLiveData: LiveData<ViewToViewATCStatus>
         get() = _viewToViewATCStatusLiveData
@@ -52,13 +52,13 @@ class ViewToViewViewModel @Inject constructor(
                 queryParam = queryParams,
             )
             val loadingList = List(PRODUCT_COUNT) { ViewToViewDataModel.Loading(hasAtcButton) }
-            _viewToViewRecommendationLiveData.postValue(Success(ViewToViewResult(data = loadingList)))
+            _viewToViewRecommendationLiveData.postValue(Success(ViewToViewRecommendationResult(data = loadingList)))
             val recommendation = getRecommendationUseCase.get().getData(requestParam)
             val result = if (recommendation.isNotEmpty()
                 && recommendation.first().recommendationItemList.isNotEmpty()
             ) {
                 Success(
-                    ViewToViewResult(
+                    ViewToViewRecommendationResult(
                         widget = recommendation.first(),
                         data = recommendation.first().recommendationItemList
                             .map { it.toViewToViewDataModelProduct(hasAtcButton) }

@@ -118,7 +118,7 @@ class ViewToViewBottomSheet @Inject constructor(
         }
     }
 
-    private fun renderRecommendationResult(result: Result<ViewToViewResult>) {
+    private fun renderRecommendationResult(result: Result<ViewToViewRecommendationResult>) {
         result.doSuccessOrFail(
             success = {
                 it.data.widget?.let { widget ->

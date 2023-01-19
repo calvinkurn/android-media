@@ -1,8 +1,8 @@
 package com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet
 
 import android.os.Bundle
-import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.EVENT_ADD_TO_CART
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.ADD_TO_CART
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.EVENT_ADD_TO_CART
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.PRODUCT_CLICK
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.PRODUCT_VIEW
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.SELECT_CONTENT
@@ -13,7 +13,6 @@ import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstant
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CURRENT_SITE_MP
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_40
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_45
-import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ECOMMERCE
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEMS
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_BRAND
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_CATEGORY
@@ -39,7 +38,6 @@ import com.tokopedia.track.constant.TrackerConstant.EVENT_ACTION
 import com.tokopedia.track.constant.TrackerConstant.EVENT_CATEGORY
 import com.tokopedia.track.constant.TrackerConstant.EVENT_LABEL
 import com.tokopedia.track.constant.TrackerConstant.USERID
-import com.tokopedia.trackingoptimizer.TrackingQueue
 
 object ViewToViewBottomSheetTracker {
     fun eventBottomSheetImpress(
@@ -150,7 +148,7 @@ object ViewToViewBottomSheetTracker {
             putLong(ITEM_ID, productId)
             putString(ITEM_NAME, name)
             putString(ITEM_VARIANT, "")
-            putString(PRICE, priceInt.toString())
+            putString(PRICE, "%.1f".format(priceInt.toDouble()))
             putInt(QUANTITY, quantity)
             putInt(SHOP_ID, shopId)
             putString(SHOP_NAME, shopName)
