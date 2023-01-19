@@ -12,6 +12,7 @@ import com.tokopedia.emoney.util.TapcashObjectMapper.mapTapcashtoEmoney
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
@@ -185,7 +186,8 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
      */
     private fun isCommandFailed(byteArray: ByteArray): Boolean {
         val len: Int = byteArray.size
-        return ((byteArray[len - 2].compareTo(0x90.toByte())) != 0) ||
+        return if (len.isZero()) true
+        else ((byteArray[len - 2].compareTo(0x90.toByte())) != 0) ||
                 (byteArray[len - 1].compareTo(0x00.toByte()) != 0)
     }
 

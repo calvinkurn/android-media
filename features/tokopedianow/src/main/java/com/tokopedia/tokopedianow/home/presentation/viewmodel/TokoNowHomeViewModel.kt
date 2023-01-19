@@ -195,7 +195,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _updateToolbarNotification = MutableLiveData<Boolean>()
     private val _referralEvaluate = MutableLiveData<Result<HomeReceiverReferralDialogUiModel>>()
 
-    private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
+    private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel?>()
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var hasTickerBeenRemoved = false
     private var channelToken = ""
@@ -299,6 +299,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 )
                 channelToken = homeLayoutResponse.first().token
 
+                homeLayoutItemList.removeProgressBar()
                 homeLayoutItemList.addMoreHomeLayout(
                     homeLayoutResponse,
                     removeAbleWidgets,
@@ -307,8 +308,6 @@ class TokoNowHomeViewModel @Inject constructor(
                 )
 
                 getLayoutComponentData(localCacheModel)
-
-                homeLayoutItemList.removeProgressBar()
 
                 val data = HomeLayoutListUiModel(
                     items = getHomeVisitableList(),
@@ -452,7 +451,7 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     fun getRepurchaseProducts(): List<TokoNowProductCardUiModel> {
-        val item = homeLayoutItemList.firstOrNull { it.layout is TokoNowRepurchaseUiModel }
+        val item = homeLayoutItemList.firstOrNull { it?.layout is TokoNowRepurchaseUiModel }
         val repurchase = item?.layout as? TokoNowRepurchaseUiModel
         return repurchase?.productList.orEmpty()
     }
@@ -588,7 +587,7 @@ class TokoNowHomeViewModel @Inject constructor(
     fun getLayoutComponentData(localCacheModel: LocalCacheModel) {
         launchCatchError(block = {
             val layoutItems = mutableListOf<HomeLayoutItemUiModel>()
-            layoutItems.addAll(homeLayoutItemList)
+            layoutItems.addAll(homeLayoutItemList.filterNotNull())
 
             layoutItems.filter { it.state == HomeLayoutItemState.NOT_LOADED }.forEach {
                 homeLayoutItemList.setStateToLoading(it)
@@ -1048,7 +1047,8 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun trackRepurchaseAddToCart(productId: String, quantity: Int, cartId: String) {
-        val homeItem = homeLayoutItemList.firstOrNull { it.layout is TokoNowRepurchaseUiModel }
+        val homeItem = homeLayoutItemList.filterNotNull()
+            .firstOrNull { it.layout is TokoNowRepurchaseUiModel }
         val repurchase = homeItem?.layout as? TokoNowRepurchaseUiModel
         val productList = repurchase?.productList.orEmpty()
         val product = productList.firstOrNull { it.productId == productId }
@@ -1086,7 +1086,7 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun trackLeftCarouselAddToCart(productId: String, quantity: Int, cartId: String) {
-        homeLayoutItemList.firstOrNull { it.layout is HomeLeftCarouselAtcUiModel }?.apply {
+        homeLayoutItemList.filterNotNull().firstOrNull { it.layout is HomeLeftCarouselAtcUiModel }?.apply {
             val repurchase = layout as HomeLeftCarouselAtcUiModel
             val productList = repurchase.productList
             val product = productList.firstOrNull { it is HomeLeftCarouselAtcProductCardUiModel && it.productCardModel.productId == productId }
@@ -1134,10 +1134,16 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private fun shouldLoadMore(lastVisibleItemIndex: Int): Boolean {
         val allItemsLoaded = channelToken.isEmpty()
-        val layoutList = getHomeVisitableList()
-        val isLoading = layoutList.firstOrNull { it == HomeProgressBarUiModel } != null
-        val scrolledToBottom = lastVisibleItemIndex == layoutList.count() - DEFAULT_INDEX
-        return scrolledToBottom && !isLoading && !allItemsLoaded
+        val scrolledToBottom = scrolledToBottom(lastVisibleItemIndex)
+        return if (allItemsLoaded || !scrolledToBottom) false else !isLoading()
+    }
+
+    private fun scrolledToBottom(lastVisibleItemIndex: Int): Boolean {
+        return lastVisibleItemIndex == homeLayoutItemList.count() - DEFAULT_INDEX
+    }
+
+    private fun isLoading(): Boolean {
+        return getHomeVisitableList().firstOrNull { it == HomeProgressBarUiModel } != null
     }
 
     private fun showProgressBar() {
@@ -1150,7 +1156,8 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun getHomeVisitableList(): List<Visitable<*>> {
-        return homeLayoutItemList.mapNotNull { it.layout }
+        val layoutItemsList = homeLayoutItemList.toMutableList()
+        return layoutItemsList.filterNotNull().mapNotNull { it.layout }
     }
 
     private fun getQuestUiModel(): HomeQuestSequenceWidgetUiModel? {

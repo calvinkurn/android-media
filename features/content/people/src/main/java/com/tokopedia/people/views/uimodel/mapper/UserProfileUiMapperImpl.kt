@@ -46,6 +46,8 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
                     appLink = response.profileHeader.profile.liveplaychannel.liveplaychannellink.applink,
                 ),
             ),
+            isBlocking = response.profileHeader.isBlocking,
+            isBlockedBy = response.profileHeader.isBlockedBy,
         )
     }
 

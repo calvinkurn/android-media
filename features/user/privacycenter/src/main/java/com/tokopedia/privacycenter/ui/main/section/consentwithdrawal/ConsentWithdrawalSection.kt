@@ -9,6 +9,7 @@ import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.data.ConsentGroupDataModel
 import com.tokopedia.privacycenter.data.ConsentGroupListDataModel
 import com.tokopedia.privacycenter.databinding.SectionConsentwithdrawalBinding
+import com.tokopedia.privacycenter.ui.consentwithdrawal.ConsentWithdrawalFragment
 import com.tokopedia.privacycenter.ui.main.analytics.MainPrivacyCenterAnalytics
 import com.tokopedia.privacycenter.ui.main.section.BasePrivacyCenterSection
 import com.tokopedia.privacycenter.ui.main.section.consentwithdrawal.adapter.ConsentWithdrawalSectionAdapter
@@ -74,8 +75,8 @@ class ConsentWithdrawalSection constructor(
 
     override fun onItemClicked(data: ConsentGroupDataModel) {
         MainPrivacyCenterAnalytics.sendClickOnConsentSectionEvent(data.groupTitle)
-
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.CONSENT_WITHDRAWAL_NEW, data.id)
+        intent.putExtra(ConsentWithdrawalFragment.KEY_HEADER_TITLE, data.groupTitle)
         context?.startActivity(intent)
     }
 
