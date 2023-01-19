@@ -146,9 +146,13 @@ class SomBottomSheetOrderExtensionRequest(
             }
             setOnClickListener {
                 binding?.root?.hideKeyboard()
-                if (!dismissing && !data.isLoadingOrderExtensionRequestInfo()) {
+                if (!dismissing && !data.isLoadingOrderExtensionRequestInfo() ) {
                     binding?.rvRequestExtensionInfo?.focusedChild?.clearFocus()
-                    viewModel.sendOrderExtensionRequest(orderId, currentExtensionTime)
+                    if (currentExtensionTime != Int.ZERO){
+                        viewModel.sendOrderExtensionRequest(orderId, currentExtensionTime)
+                    }else{
+                        onValidateDate()
+                    }
                 }
             }
         }
@@ -199,16 +203,8 @@ class SomBottomSheetOrderExtensionRequest(
                         )
                     )
                 )
-            },{
-                val errorMessage = context.getString(R.string.bottomsheet_order_extension_failed_pick_date)
-                binding?.root?.let {
-                    Toaster.build(
-                        it,
-                        type = Toaster.TYPE_ERROR,
-                        text = errorMessage,
-                        duration = Toaster.LENGTH_LONG
-                    ).show()
-                }
+            }, {
+                onValidateDate()
             })
         calendarOrderExtensionBottomSheet.show(
             fragmentManager,
@@ -220,5 +216,17 @@ class SomBottomSheetOrderExtensionRequest(
         val infoPickTimeOrderExtentionBottomSheet =
             InfoPickTimeOrderExtentionBottomSheet(fragmentManager)
         infoPickTimeOrderExtentionBottomSheet.show()
+    }
+
+    private fun onValidateDate() {
+        val errorMessage = context.getString(R.string.bottomsheet_order_extension_failed_pick_date)
+        binding?.root?.let {
+            Toaster.build(
+                it,
+                type = Toaster.TYPE_ERROR,
+                text = errorMessage,
+                duration = Toaster.LENGTH_LONG
+            ).show()
+        }
     }
 }
