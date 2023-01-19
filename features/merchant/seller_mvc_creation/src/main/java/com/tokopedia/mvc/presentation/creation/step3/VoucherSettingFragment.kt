@@ -13,7 +13,11 @@ import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.textChangesAsFlow
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentCreationVoucherSettingBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreeButtonSectionBinding
@@ -24,20 +28,27 @@ import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreeFreeShippingInp
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreePromoTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
-import com.tokopedia.mvc.domain.entity.enums.*
+import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.PageMode
+import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherCreationStepThreeFieldValidation
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeAction
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeEvent
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeUiState
-import com.tokopedia.mvc.presentation.product.list.ProductListActivity
+import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
-import java.util.ArrayList
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @FlowPreview
@@ -1128,14 +1139,11 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToAddProductPage(currentVoucherConfiguration: VoucherConfiguration) {
-        context?.let { ctx ->
-            ProductListActivity.start(
-                ctx,
-                currentVoucherConfiguration,
-                emptyList(),
-                0
-            )
-        }
+        val intent = AddProductActivity.buildCreateModeIntent(
+            context ?: return,
+            currentVoucherConfiguration
+        )
+        startActivity(intent)
     }
 
     private fun navigateToVoucherSummaryPage(currentVoucherConfiguration: VoucherConfiguration) {
