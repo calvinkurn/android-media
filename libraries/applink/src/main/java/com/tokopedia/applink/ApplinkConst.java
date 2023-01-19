@@ -395,6 +395,7 @@ public interface ApplinkConst {
     String CATEGORY = "tokopedia://category";
     String TRADEIN = "tokopedia://category/tradein";
     String EPHARMACY = "tokopedia://epharmacy";
+    String CATALOG_LIBRARY = "tokopedia://catalog-library";
     String AFFILIATE_TOKO_HOST = "affiliate";
     String AFFILIATE_TOKO = "tokopedia://affiliate";
     String AFFILIATE_TOKO_HELP = "tokopedia://affiliate/help";
