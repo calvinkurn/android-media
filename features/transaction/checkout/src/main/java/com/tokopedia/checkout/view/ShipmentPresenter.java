@@ -2285,15 +2285,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         ratesPublisher
                                 .concatMap(shipmentGetCourierHolderData -> {
                                     if (shipmentCartItemModel.getRatesValidationFlow()) {
-                                        ratesWithScheduleUseCase.execute(param, String.valueOf(shipmentCartItemModel.getFulfillmentId()))
+                                        ratesWithScheduleUseCase.execute(shipmentGetCourierHolderData.getRatesParam(), String.valueOf(shipmentGetCourierHolderData.getShipmentCartItemModel().getFulfillmentId()))
                                                 .map(shippingRecommendationData ->
                                                         stateConverter.fillState(shippingRecommendationData, shipmentGetCourierHolderData.getShopShipmentList(),
                                                                 shipmentGetCourierHolderData.getSpId(), 0)
                                                 ).subscribe(
                                                         new GetScheduleDeliveryCourierRecommendationSubscriber(
-                                                                getView(), this, shipperId, spId, itemPosition,
-                                                                shippingCourierConverter, shipmentCartItemModel,
-                                                                isInitialLoad, isForceReload, isBoUnstackEnabled,
+                                                                getView(), this, shipmentGetCourierHolderData.getShipperId(), shipmentGetCourierHolderData.getSpId(), shipmentGetCourierHolderData.getItemPosition(),
+                                                                shippingCourierConverter, shipmentGetCourierHolderData.getShipmentCartItemModel(),
+                                                                shipmentGetCourierHolderData.isInitialLoad(), shipmentGetCourierHolderData.isForceReload(), isBoUnstackEnabled,
                                                                 logisticDonePublisher
                                                         ));
                                     } else {
