@@ -125,6 +125,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
             getBuyerOrderDetailData()
             viewModel.finishOrder()
+            advanceTimeBy(2000L)
 
             assertTrue(viewModel.finishOrderResult.value is Success)
         }
@@ -142,6 +143,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
             getBuyerOrderDetailData()
             viewModel.finishOrder()
+            advanceTimeBy(2000L)
 
             assertTrue(viewModel.finishOrderResult.value is Success)
         }
