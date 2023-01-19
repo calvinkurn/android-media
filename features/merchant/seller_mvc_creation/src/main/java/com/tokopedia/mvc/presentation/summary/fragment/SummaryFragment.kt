@@ -287,9 +287,10 @@ class SummaryFragment :
                 ClipboardHandler().copyToClipboard(nonNullActivity, tpgVoucherCode.text.toString())
                 Toaster.build(
                     requireView(),
-                    getString(R.string.smvc_voucherlist_copy_to_clipboard_message),
+                    context?.getString(R.string.smvc_voucherlist_copy_to_clipboard_message).toString(),
                     Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL
+                    Toaster.TYPE_NORMAL,
+                    context?.getString(R.string.smvc_ok).toString()
                 ).show()
             }
         }
