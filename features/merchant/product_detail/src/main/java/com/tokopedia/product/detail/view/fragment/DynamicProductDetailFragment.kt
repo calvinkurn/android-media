@@ -4287,11 +4287,14 @@ open class DynamicProductDetailFragment :
     }
 
     private fun getLocalSearchApplink(): String {
-        val isTokoNow = viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true
+        val basic = viewModel.getDynamicProductInfoP1?.basic
+        val isTokoNow = basic?.isTokoNow == true
         val applink = ApplinkConstInternalDiscovery.AUTOCOMPLETE + if (isTokoNow) {
-            "?${SearchApiConst.NAVSOURCE}=tokonow&${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalTokopediaNow.SEARCH}"
+            "?${SearchApiConst.NAVSOURCE}=tokonow&" +
+                "${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalTokopediaNow.SEARCH}&" +
+                "${SearchApiConst.Q}=${basic?.category?.name.orEmpty()}"
         } else {
-            ""
+            "?${SearchApiConst.Q}=${basic?.category?.name.orEmpty()}"
         }
         return applink
     }
