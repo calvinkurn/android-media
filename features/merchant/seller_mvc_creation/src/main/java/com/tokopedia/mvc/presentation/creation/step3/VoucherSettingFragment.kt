@@ -346,7 +346,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
 
     private fun presetValue() {
         val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
-        if (pageMode == PageMode.EDIT) {
+        if (pageMode == PageMode.EDIT || currentVoucherConfiguration.isFinishFilledStepThree) {
             freeShippingInputSectionBinding?.run {
                 tfFreeShippingNominal.editText.setText(currentVoucherConfiguration.benefitIdr.toString())
                 tfFreeShippingMinimumBuy.editText.setText(currentVoucherConfiguration.minPurchase.toString())
@@ -1099,11 +1099,10 @@ class VoucherSettingFragment : BaseDaggerFragment() {
 
     private fun backToPreviousStep(voucherConfiguration: VoucherConfiguration) {
         if (pageMode == PageMode.CREATE) {
-            context?.let { ctx ->
-                VoucherInformationActivity.buildCreateModeIntent(
-                    ctx,
-                    voucherConfiguration
-                )
+            if (voucherConfiguration.isFinishedFillAllStep()) {
+                navigateToVoucherSummaryPage(voucherConfiguration)
+            } else {
+                navigateToVoucherInfoPage(voucherConfiguration)
             }
             activity?.finish()
         } else {
@@ -1114,7 +1113,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun continueToNextStep(voucherConfiguration: VoucherConfiguration) {
         if (pageMode == PageMode.CREATE) {
             if (voucherConfiguration.isVoucherProduct) {
-                if (voucherConfiguration.isFinishFilledStepThree) {
+                if (voucherConfiguration.isFinishedFillAllStep()) {
                     navigateToVoucherSummaryPage(voucherConfiguration)
                 } else {
                     navigateToAddProductPage(voucherConfiguration)
@@ -1124,6 +1123,15 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             }
         } else {
             navigateToVoucherSummaryPage(voucherConfiguration)
+        }
+    }
+
+    private fun navigateToVoucherInfoPage(currentVoucherConfiguration: VoucherConfiguration) {
+        context?.let { ctx ->
+            VoucherInformationActivity.buildCreateModeIntent(
+                ctx,
+                currentVoucherConfiguration
+            )
         }
     }
 

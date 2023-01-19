@@ -86,8 +86,8 @@ class VoucherSettingViewModel @Inject constructor(
     }
 
     private fun handleNavigateToNextStep() {
-        _uiAction.tryEmit(VoucherCreationStepThreeAction.ContinueToNextStep(currentState.voucherConfiguration))
         setVoucherCreationStepThreeIsFilled()
+        _uiAction.tryEmit(VoucherCreationStepThreeAction.ContinueToNextStep(currentState.voucherConfiguration))
     }
 
     private fun setVoucherCreationStepThreeIsFilled() {

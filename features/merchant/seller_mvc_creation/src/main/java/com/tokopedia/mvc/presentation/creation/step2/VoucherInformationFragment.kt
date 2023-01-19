@@ -295,23 +295,26 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun presetValue() {
         setVoucherTarget(voucherConfiguration.isVoucherPublic)
-        voucherNameSectionBinding?.tfVoucherName?.run {
-            editText.setText(voucherConfiguration.voucherName)
-        }
-        voucherCodeSectionBinding?.tfVoucherCode?.run {
-            editText.setText(voucherConfiguration.voucherCode)
-        }
-        voucherPeriodSectionBinding?.run {
-            tfVoucherStartPeriod.editText.setText(
-                voucherConfiguration.startPeriod.formatTo(
-                    DATE_TIME_MINUTE_PRECISION
+        val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
+        if (currentVoucherConfiguration.isFinishFilledStepTwo || pageMode == PageMode.EDIT) {
+            voucherNameSectionBinding?.tfVoucherName?.run {
+                editText.setText(voucherConfiguration.voucherName)
+            }
+            voucherCodeSectionBinding?.tfVoucherCode?.run {
+                editText.setText(voucherConfiguration.voucherCode)
+            }
+            voucherPeriodSectionBinding?.run {
+                tfVoucherStartPeriod.editText.setText(
+                    voucherConfiguration.startPeriod.formatTo(
+                        DATE_TIME_MINUTE_PRECISION
+                    )
                 )
-            )
-            tfVoucherEndPeriod.editText.setText(
-                voucherConfiguration.endPeriod.formatTo(
-                    DATE_TIME_MINUTE_PRECISION
+                tfVoucherEndPeriod.editText.setText(
+                    voucherConfiguration.endPeriod.formatTo(
+                        DATE_TIME_MINUTE_PRECISION
+                    )
                 )
-            )
+            }
         }
         if (pageMode == PageMode.EDIT) {
             voucherCodeSectionBinding?.run {
@@ -444,7 +447,6 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
         voucherNameSectionBinding?.run {
             tfVoucherName.editText.textChangesAsFlow()
-                .filterNot { it.isEmpty() }
                 .debounce { DEBOUNCE }
                 .distinctUntilChanged()
                 .onEach {
@@ -479,7 +481,6 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 prependText(voucherConfiguration.voucherCodePrefix)
                 editText.setToAllCapsMode()
                 editText.textChangesAsFlow()
-                    .filterNot { it.isEmpty() }
                     .debounce { DEBOUNCE }
                     .distinctUntilChanged()
                     .onEach {
@@ -826,7 +827,11 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun backToPreviousStep(currentVoucherConfiguration: VoucherConfiguration) {
         if (pageMode == PageMode.CREATE) {
-            navigateToVoucherTypePage(currentVoucherConfiguration)
+            if (voucherConfiguration.isFinishedFillAllStep()) {
+                navigateToVoucherSummaryPage(currentVoucherConfiguration)
+            } else {
+                navigateToVoucherTypePage(currentVoucherConfiguration)
+            }
         } else {
             navigateToVoucherSummaryPage(currentVoucherConfiguration)
         }
@@ -837,7 +842,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         voucherConfiguration: VoucherConfiguration
     ) {
         if (pageMode == PageMode.CREATE) {
-            if (voucherConfiguration.isFinishFilledStepTwo) {
+            if (voucherConfiguration.isFinishedFillAllStep()) {
                 navigateToVoucherSummaryPage(voucherConfiguration)
             } else {
                 navigateToVoucherSettingPage(pageMode, voucherConfiguration)
@@ -849,7 +854,12 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun navigateToVoucherTypePage(currentVoucherConfiguration: VoucherConfiguration) {
         if (this.pageMode == PageMode.CREATE) {
-            context?.let { ctx -> VoucherTypeActivity.buildCreateModeIntent(ctx, currentVoucherConfiguration) }
+            context?.let { ctx ->
+                VoucherTypeActivity.buildCreateModeIntent(
+                    ctx,
+                    currentVoucherConfiguration
+                )
+            }
             activity?.finish()
         } else {
             context?.let { ctx ->
@@ -867,7 +877,12 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         currentVoucherConfiguration: VoucherConfiguration
     ) {
         if (pageMode == PageMode.CREATE) {
-            context?.let { ctx -> VoucherSettingActivity.buildCreateModeIntent(ctx, currentVoucherConfiguration) }
+            context?.let { ctx ->
+                VoucherSettingActivity.buildCreateModeIntent(
+                    ctx,
+                    currentVoucherConfiguration
+                )
+            }
             activity?.finish()
         } else {
             context?.let { ctx ->
