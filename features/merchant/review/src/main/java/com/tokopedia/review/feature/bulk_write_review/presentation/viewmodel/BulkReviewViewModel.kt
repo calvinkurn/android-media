@@ -446,7 +446,7 @@ class BulkReviewViewModel @Inject constructor(
             inboxID = inboxID,
             title = ResourceProvider.getExpandedTextAreaTitle(reviewItem.getReviewItemRating()),
             hint = reviewItem.getReviewItemTextAreaHint(),
-            text = reviewItem.getReviewItemTextAreaText(),
+            text = text,
             allowEmpty = true
         )
     }
