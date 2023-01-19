@@ -76,10 +76,9 @@ import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseS
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
-import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -839,7 +838,7 @@ abstract class TopchatRoomTest {
 
     protected fun assertToolbarTitle(expectedTitle: String) {
         onView(
-            Matchers.allOf(
+            allOf(
                 withId(com.tokopedia.chat_common.R.id.title),
                 isDescendantOfA(withId(R.id.toolbar))
             )
@@ -891,7 +890,7 @@ abstract class TopchatRoomTest {
 
     protected fun clickSrwPreviewItemAt(position: Int) {
         onView(
-            Matchers.allOf(
+            allOf(
                 withRecyclerView(R.id.rv_srw_partial).atPositionOnView(
                     position,
                     R.id.tp_srw_title
@@ -1023,7 +1022,11 @@ fun GetExistingChatPojo.hideBanner(hide: Boolean): GetExistingChatPojo {
     return this
 }
 
-fun GetExistingChatPojo.changeCtaBroadcast(url: String?, text: String?): GetExistingChatPojo {
+fun GetExistingChatPojo.changeCtaBroadcast(
+    url: String?,
+    text: String?,
+    label: String?
+): GetExistingChatPojo {
     val banner: Reply? = chatReplies.list[0].chats[0].replies.find { reply ->
         reply.attachment.type.toString() == TYPE_IMAGE_ANNOUNCEMENT
     }
@@ -1033,6 +1036,7 @@ fun GetExistingChatPojo.changeCtaBroadcast(url: String?, text: String?): GetExis
     ).apply {
         this.broadcastCtaUrl = url
         this.broadcastCtaText = text
+        this.broadcastCtaLabel = label
     }
     banner?.attachment?.attributes = CommonUtil.toJson(attribute)
     return this
