@@ -1868,7 +1868,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(
             2000.0,
             orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
-                ?: 0.0, 0.0)
+                ?: 0.0,
+            0.0
+        )
     }
 
     @Test
@@ -1897,7 +1899,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(
             0.0,
             orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
-                ?: 0.0, 0.0)
+                ?: 0.0,
+            0.0
+        )
     }
 
     @Test
@@ -1925,7 +1929,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(
             0.0,
             orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
-                ?: 0.0, 0.0)
+                ?: 0.0,
+            0.0
+        )
     }
 
     @Test
@@ -1954,7 +1960,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(
             1000.0,
             orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
-                ?: 0.0, 0.0)
+                ?: 0.0,
+            0.0
+        )
     }
 
     @Test
@@ -1982,7 +1990,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(
             2000.0,
             orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
-                ?: 0.0, 0.0)
+                ?: 0.0,
+            0.0
+        )
     }
 
     @Test
@@ -2011,7 +2021,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(
             1000.0,
             orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
-                ?: 0.0, 0.0)
+                ?: 0.0,
+            0.0
+        )
     }
 
     @Test
@@ -2039,7 +2051,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(
             2000.0,
             orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
-                ?: 0.0, 0.0
+                ?: 0.0,
+            0.0
         )
     }
 
