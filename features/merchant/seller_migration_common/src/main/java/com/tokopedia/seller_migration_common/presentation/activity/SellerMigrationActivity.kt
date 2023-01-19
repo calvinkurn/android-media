@@ -90,6 +90,7 @@ class SellerMigrationActivity : BaseSimpleActivity() {
         }
 
         trackUserRedirection(openedPage)
+        showSellerAppUpdateToaster()
     }
 
     private fun trackUserRedirection(openedPage: String) {
