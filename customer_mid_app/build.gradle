@@ -171,6 +171,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.homecredit)
     implementation projectOrAar(rootProject.ext.features.fcm_common)
     implementation projectOrAar(rootProject.ext.features.logisticcart)
+    implementation projectOrAar(rootProject.ext.features.dilayanitokopedia)
     implementation projectOrAar(rootProject.ext.features.chatcommon)
     implementation projectOrAar(rootProject.ext.features.qrscanner)
     implementation projectOrAar(rootProject.ext.features.navigation)
