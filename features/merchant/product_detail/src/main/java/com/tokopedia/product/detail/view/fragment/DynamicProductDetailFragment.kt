@@ -4204,7 +4204,7 @@ open class DynamicProductDetailFragment :
 
             setIcon(
                 IconBuilder()
-                    .addIcon(IconList.ID_SEARCH, disableRouteManager = false) {
+                    .addIcon(IconList.ID_SEARCH, disableRouteManager = true) {
                         goToApplink(getLocalSearchApplink())
                     }
                     .addIcon(getShareIcon()) {
