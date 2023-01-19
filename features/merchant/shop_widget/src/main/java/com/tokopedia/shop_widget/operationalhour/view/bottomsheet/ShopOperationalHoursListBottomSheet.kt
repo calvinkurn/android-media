@@ -103,7 +103,7 @@ class ShopOperationalHoursListBottomSheet : BottomSheetUnify() {
                     opsHoursList?.let { hourList ->
                         if (hourList.isNotEmpty()) {
                             updateShopHoursDataSet(hourList)
-                        } else {
+                        } else { // This is the case when the seller is not yet setting his operational hours
                             val defaultOperationalHours: List<ShopOperationalHour> = getDefaultShopOperationalHours()
                             updateShopHoursDataSet(defaultOperationalHours)
                         }
