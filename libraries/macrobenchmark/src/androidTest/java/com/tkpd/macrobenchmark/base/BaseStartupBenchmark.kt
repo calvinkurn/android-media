@@ -1,6 +1,7 @@
 package com.tkpd.macrobenchmark.base
 
 import android.content.Intent
+import androidx.benchmark.macro.ExperimentalMetricApi
 import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.StartupTimingMetric
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
@@ -33,21 +34,22 @@ abstract class BaseStartupBenchmark(private val startupMode: StartupMode) {
 
     @Before
     fun setupBefore() {
-        if (MacroArgs.useMock(InstrumentationRegistry.getArguments())){
+        if (MacroArgs.useMock(InstrumentationRegistry.getArguments())) {
             setupMock()
         }
         setupEnvironment()
     }
 
+    @OptIn(ExperimentalMetricApi::class)
     @Test
     fun macrobenchmarkLaunchTime() {
         benchmarkRule.measureTokopediaApps(
-                startupMode = startupMode,
-                packageName = packageName(),
-                metrics = listOf(
-                    StartupTimingMetric()
-                ).plus(MacroMetrics.getPltMetrics(traceName()))
-            ) {
+            startupMode = startupMode,
+            packageName = packageName(),
+            metrics = listOf(
+                StartupTimingMetric()
+            ).plus(MacroMetrics.getPltMetrics(traceName()))
+        ) {
             it.startActivityAndWait(getIntent())
             waitUntil()
         }
