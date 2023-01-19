@@ -72,6 +72,7 @@ class ThumbnailVariantViewHolder(
 
     private fun shouldRenderFlashSale(element: VariantOptionWithAttribute): Boolean {
         return element.currentState != VariantConstant.STATE_EMPTY &&
-            element.currentState != VariantConstant.STATE_SELECTED_EMPTY
+            element.currentState != VariantConstant.STATE_SELECTED_EMPTY &&
+            element.flashSale
     }
 }
