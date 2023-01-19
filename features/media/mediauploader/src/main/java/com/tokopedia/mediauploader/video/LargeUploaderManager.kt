@@ -19,8 +19,11 @@ import com.tokopedia.mediauploader.video.data.params.ChunkUploadParam
 import com.tokopedia.mediauploader.video.data.params.InitParam
 import com.tokopedia.mediauploader.video.data.params.LargeUploadCacheParam
 import com.tokopedia.mediauploader.video.domain.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 import kotlin.math.ceil
@@ -113,7 +116,7 @@ class LargeUploaderManager @Inject constructor(
         sizePerChunk: Int,
         sourceId: String,
         policy: SourcePolicy
-    ) = kotlin.run {
+    ) = withContext(Dispatchers.IO) {
         val jobList = mutableListOf<Job>()
         for (part in UPLOAD_PART_START..chunkTotal) {
             if (partUploaded[part] == true) continue
@@ -126,7 +129,7 @@ class LargeUploaderManager @Inject constructor(
                     byteArrayToSend.trimLastZero()
                 }
 
-                jobList.add(globalScopeLaunch({
+                jobList.add(launch {
                     chunkUpload(
                         sourceId,
                         file.name,
@@ -136,7 +139,7 @@ class LargeUploaderManager @Inject constructor(
                     )
 
                     updateProgressValue()
-                }))
+                })
             }
         }
         jobList.forEach { job ->
