@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.bottomsheet
 
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +15,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 /**
  * Created by fachrizalmrsln on 10/01/23
  */
-class PlayBroadcastSetupTitleBottomSheet : BottomSheetUnify() {
+class PlayBroadcastSetupTitleBottomSheet: BottomSheetUnify() {
 
     private var _binding: BottomSheetPlayBroSetupTitleBinding? = null
     private val binding: BottomSheetPlayBroSetupTitleBinding
@@ -24,6 +25,7 @@ class PlayBroadcastSetupTitleBottomSheet : BottomSheetUnify() {
 
     private lateinit var mTitle: String
     private var mErrorState = false
+    private var mMaxCharacter: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,35 +54,36 @@ class PlayBroadcastSetupTitleBottomSheet : BottomSheetUnify() {
         setTitle(getString(R.string.play_bro_title_label_bottom_sheet))
 
         tvSetupTitleField.apply {
+            setCounter(mMaxCharacter)
+            editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS
             editText.setText(mTitle)
             editText.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                }
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-                override fun afterTextChanged(p0: Editable?) {
+                override fun afterTextChanged(text: Editable?) {
+                    if (text?.isBlank() == true) return
                     if (mErrorState) {
                         mErrorState = false
                         isInputError = mErrorState
                         setMessage("")
                     }
-                    btnSetupTitle.isEnabled = (p0 != null && !p0.contentEquals(mTitle))
+                    btnSetupTitle.isEnabled = (text != null && !text.contentEquals(mTitle))
                 }
 
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                override fun onTextChanged(text: CharSequence?, textLength: Int, p2: Int, p3: Int) {
+                    if (textLength == 0 && text?.isBlank() == true) {
+                        editText.text.clear()
+                        return
+                    }
                 }
-
             })
             editText.setOnEditorActionListener { _, _, _ ->
-                hideKeyboard()
+                hideSetupTitleKeyboard()
                 return@setOnEditorActionListener false
-            }
-            clearIconView.setOnClickListener {
-                editText.text.clear()
-                btnSetupTitle.isEnabled = false
             }
         }
         btnSetupTitle.setOnClickListener {
-            hideKeyboard()
+            hideSetupTitleKeyboard()
 
             mListener?.submitTitle(tvSetupTitleField.editText.text.trim().toString())
             setLoading(true)
@@ -111,11 +114,15 @@ class PlayBroadcastSetupTitleBottomSheet : BottomSheetUnify() {
         binding.tvSetupTitleField.setMessage(errorMessage ?: getString(R.string.play_bro_default_error_message))
     }
 
+    fun setMaxCharacter(maxCharacter: Int) {
+        mMaxCharacter = maxCharacter
+    }
+
     private fun setLoading(isLoading: Boolean) {
         binding.btnSetupTitle.isLoading = isLoading
     }
 
-    private fun hideKeyboard() {
+    private fun hideSetupTitleKeyboard() {
         binding.tvSetupTitleField.editText.apply {
             requestFocus()
             hideKeyboard()

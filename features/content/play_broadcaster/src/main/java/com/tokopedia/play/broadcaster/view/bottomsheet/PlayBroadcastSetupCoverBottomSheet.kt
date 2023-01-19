@@ -148,13 +148,13 @@ class PlayBroadcastSetupCoverBottomSheet : BottomSheetUnify() {
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-        ): PlayBroadcastSetupCoverBottomSheet {
+        ): PlayBroadcastSetupCoverBottomSheet? {
             val oldInstance =
                 fragmentManager.findFragmentByTag(TAG) as? PlayBroadcastSetupCoverBottomSheet
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 PlayBroadcastSetupCoverBottomSheet::class.java.name
-            ) as PlayBroadcastSetupCoverBottomSheet
+            ) as? PlayBroadcastSetupCoverBottomSheet
         }
     }
 

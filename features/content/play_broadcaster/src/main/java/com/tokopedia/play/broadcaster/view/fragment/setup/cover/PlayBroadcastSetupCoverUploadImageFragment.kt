@@ -45,9 +45,7 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSetupCoverUploadImageBinding.inflate(
-            LayoutInflater.from(requireContext())
-        )
+        _binding = FragmentSetupCoverUploadImageBinding.inflate(inflater, container, false)
         return binding.root
     }
 
