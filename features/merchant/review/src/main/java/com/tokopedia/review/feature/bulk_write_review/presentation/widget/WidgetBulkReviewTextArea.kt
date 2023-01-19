@@ -64,6 +64,7 @@ class WidgetBulkReviewTextArea @JvmOverloads constructor(
         binding.root.maxLine = MAX_LINES
         binding.root.setSecondIcon(R.drawable.ic_expand)
         binding.root.editText.imeOptions = EditorInfo.IME_ACTION_DONE
+        binding.root.labelText.gone()
     }
 
     private fun setupListener() {
