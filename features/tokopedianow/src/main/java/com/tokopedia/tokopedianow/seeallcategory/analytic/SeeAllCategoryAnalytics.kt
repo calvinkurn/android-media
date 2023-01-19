@@ -36,6 +36,7 @@ class SeeAllCategoryAnalytics @Inject constructor(private val userSession: UserS
     }
 
     fun onCategoryImpressed(categoryId: String, categoryName: String, warehouseId: String, position: Int) {
+        val newPosition = position.getTrackerPosition()
         val dataLayer = getEcommerceDataLayerCategoryMenu(
             event = EVENT_VIEW_ITEM,
             action = EVENT_ACTION_IMPRESSION_CATEGORY_CARD,
@@ -47,7 +48,11 @@ class SeeAllCategoryAnalytics @Inject constructor(private val userSession: UserS
                     categoryId = categoryId,
                     categoryName = categoryName,
                     warehouseId = warehouseId,
-                    position = position.getTrackerPosition()
+                    position = newPosition,
+                    itemName = getCategoryMenuItemName(
+                        position = newPosition,
+                        categoryName = categoryName
+                    )
                 )
             ),
             warehouseId = warehouseId,
@@ -57,6 +62,7 @@ class SeeAllCategoryAnalytics @Inject constructor(private val userSession: UserS
     }
 
     fun onCategoryClicked(categoryId: String, categoryName: String, warehouseId: String, position: Int) {
+        val newPosition = position.getTrackerPosition()
         val dataLayer = getEcommerceDataLayerCategoryMenu(
             event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_CATEGORY_CARD,
@@ -68,13 +74,21 @@ class SeeAllCategoryAnalytics @Inject constructor(private val userSession: UserS
                     categoryId = categoryId,
                     categoryName = categoryName,
                     warehouseId = warehouseId,
-                    position = position.getTrackerPosition()
+                    position = newPosition,
+                    itemName = getCategoryMenuItemName(
+                        position = newPosition,
+                        categoryName = categoryName
+                    )
                 )
             ),
             warehouseId = warehouseId,
             userId = userSession.userId
         )
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
+    }
+
+    private fun getCategoryMenuItemName(position: Int, categoryName: String): String {
+        return "/ - p$position - category menu - card - $categoryName"
     }
 
 }

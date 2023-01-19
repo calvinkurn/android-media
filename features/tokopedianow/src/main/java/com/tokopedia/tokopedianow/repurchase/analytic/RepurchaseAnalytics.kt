@@ -41,6 +41,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_EMPTY_VALUE
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_HEADER_CATEGORY_MENU
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getDataLayer
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getEcommerceDataLayerCategoryMenu
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getEcommerceDataLayerCategoryMenuPromotion
@@ -526,7 +527,13 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
      * https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3695
      */
 
-    fun trackImpressCategoryMenu(categoryId: String, categoryName: String, warehouseId: String, position: Int) {
+    fun trackImpressCategoryMenu(
+        categoryId: String,
+        categoryName: String,
+        warehouseId: String,
+        position: Int
+    ) {
+        val newPosition = position.getTrackerPosition()
         val dataLayer = getEcommerceDataLayerCategoryMenu(
             event = EVENT_VIEW_ITEM,
             action = EVENT_ACTION_IMPRESSION_CATEGORY_MENU_WIDGET,
@@ -538,7 +545,11 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
                     categoryId = categoryId,
                     categoryName = categoryName,
                     warehouseId = warehouseId,
-                    position = position.getTrackerPosition()
+                    position = position.getTrackerPosition(),
+                    itemName = getCategoryMenuItemName(
+                        position = newPosition,
+                        headerName = DEFAULT_HEADER_CATEGORY_MENU
+                    )
                 )
             ),
             warehouseId = warehouseId,
@@ -547,7 +558,13 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
         getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
     }
 
-    fun trackClickCategoryMenu(categoryId: String, categoryName: String, warehouseId: String, position: Int) {
+    fun trackClickCategoryMenu(
+        categoryId: String,
+        categoryName: String,
+        warehouseId: String,
+        position: Int
+    ) {
+        val newPosition = position.getTrackerPosition()
         val dataLayer = getEcommerceDataLayerCategoryMenu(
             event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_CATEGORY_MENU_WIDGET,
@@ -559,7 +576,11 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
                     categoryId = categoryId,
                     categoryName = categoryName,
                     warehouseId = warehouseId,
-                    position = position.getTrackerPosition()
+                    position = newPosition,
+                    itemName = getCategoryMenuItemName(
+                        position = newPosition,
+                        headerName = DEFAULT_HEADER_CATEGORY_MENU
+                    )
                 )
             ),
             warehouseId = warehouseId,
@@ -581,6 +602,10 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
         dataLayer[KEY_TRACKER_ID] = TRACKER_ID_CLICK_SEE_ALL_CATEGORY
 
         getTracker().sendGeneralEvent(dataLayer)
+    }
+
+    private fun getCategoryMenuItemName(position: Int, headerName: String): String {
+        return "/ - p$position - repurchase page - category widget - $headerName"
     }
 
     private fun createGeneralDataLayer(event: String, action: String, label: String = TokoNowCommonAnalyticConstants.VALUE.DEFAULT_EMPTY_VALUE, userId: String): Bundle {

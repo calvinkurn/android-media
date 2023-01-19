@@ -94,6 +94,7 @@ object TokoNowCommonAnalyticConstants {
         const val DEFAULT_NULL_VALUE = "null"
         const val DEFAULT_CATEGORY_ID = "0"
         const val DEFAULT_EMPTY_VALUE = ""
+        const val DEFAULT_HEADER_CATEGORY_MENU = "Cek kategori lainnya"
     }
 
     object ACTION{

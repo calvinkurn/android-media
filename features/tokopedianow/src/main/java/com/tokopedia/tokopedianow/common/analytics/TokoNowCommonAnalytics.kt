@@ -39,10 +39,6 @@ object TokoNowCommonAnalytics {
         return this
     }
 
-    private fun getCategoryMenuItemName(position: Int, categoryName: String): String {
-        return "/ - p$position - category menu - card - $categoryName"
-    }
-
     fun onOpenScreen(isLoggedInStatus : Boolean, screenName: String, additionalMap: MutableMap<String, String>? = null) {
         val map = mutableMapOf(
             Pair(TrackAppUtils.EVENT, EVENT_OPEN_SCREEN),
@@ -105,13 +101,19 @@ object TokoNowCommonAnalytics {
         }
     }
 
-    fun getEcommerceDataLayerCategoryMenuPromotion(position: Int, categoryName: String, categoryId: String, warehouseId: String): Bundle {
+    fun getEcommerceDataLayerCategoryMenuPromotion(
+        position: Int,
+        categoryName: String,
+        categoryId: String,
+        warehouseId: String,
+        itemName: String
+    ): Bundle {
         return Bundle().apply {
             putString(KEY_CREATIVE_NAME, categoryName)
             putString(KEY_CREATIVE_SLOT, position.toString())
             putString(KEY_DIMENSION_56, warehouseId)
             putString(KEY_ITEM_ID, categoryId)
-            putString(KEY_ITEM_NAME, getCategoryMenuItemName(position, categoryName))
+            putString(KEY_ITEM_NAME, itemName)
         }
     }
 
