@@ -17,7 +17,11 @@ class BottomSheetListFragment : InboxBottomSheetFragment() {
         mAdapter = adapter
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val rootView = super.onCreateView(inflater, container, savedInstanceState)
         rvBottomSheet = rootView?.findViewById(R.id.rv_filter)
         rvBottomSheet?.adapter = mAdapter

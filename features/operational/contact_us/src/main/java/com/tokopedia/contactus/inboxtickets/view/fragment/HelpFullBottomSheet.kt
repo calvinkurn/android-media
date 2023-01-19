@@ -6,7 +6,10 @@ import android.widget.TextView
 import com.tokopedia.contactus.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class HelpFullBottomSheet(context: Context, private val closeBottomSheetListener: CloseSHelpFullBottomSheet) : BottomSheetUnify(), View.OnClickListener {
+class HelpFullBottomSheet(
+    context: Context,
+    private val closeBottomSheetListener: CloseSHelpFullBottomSheet
+) : BottomSheetUnify(), View.OnClickListener {
     init {
         val helpfullView = View.inflate(context, R.layout.helpfull_bottom_sheet_layout, null)
         val noButton = helpfullView.findViewById<TextView>(R.id.tv_no_button)
@@ -18,7 +21,6 @@ class HelpFullBottomSheet(context: Context, private val closeBottomSheetListener
         showCloseIcon = false
         showHeader = false
     }
-
 
     override fun onClick(view: View) {
         if (view.id == R.id.tv_no_button) {

@@ -5,7 +5,7 @@ import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 
 data class TicketUiState(
     val isLoading: Boolean = true,
-    val ticketDetail : Tickets = Tickets(),
-    val csatReasonListBadReview : List<BadCsatReasonListItem> = arrayListOf(),
-    val isIssueClose : Boolean = false
+    val ticketDetail: Tickets = Tickets(),
+    val csatReasonListBadReview: List<BadCsatReasonListItem> = arrayListOf(),
+    val isIssueClose: Boolean = false
 )

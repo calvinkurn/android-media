@@ -11,7 +11,7 @@ data class StepTwoResponse(
         val ticketReplyAttachData: TicketReplyAttachData? = null
     ) {
 
-        fun getAttachment() = ticketReplyAttachData?:TicketReplyAttachData()
+        fun getAttachment() = ticketReplyAttachData ?: TicketReplyAttachData()
 
         data class TicketReplyAttachData(
             @SerializedName("is_success")
@@ -21,5 +21,5 @@ data class StepTwoResponse(
         )
     }
 
-    fun getTicketAttach() = ticketReplyAttach?:TicketReplyAttach()
+    fun getTicketAttach() = ticketReplyAttach ?: TicketReplyAttach()
 }

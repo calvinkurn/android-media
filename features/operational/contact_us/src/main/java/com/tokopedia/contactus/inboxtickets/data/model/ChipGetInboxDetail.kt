@@ -5,15 +5,15 @@ import com.tokopedia.contactus.inboxtickets.view.ticket.TicketConstanta.FAILED_H
 
 data class ChipGetInboxDetail(
     @SerializedName("data")
-        var data: Data? = null,
+    var data: Data? = null,
     @SerializedName("messageError")
-        var messageError: List<String>? = null
-){
-    fun getDataTicket() =  data?.tickets?: Tickets()
+    var messageError: List<String>? = null
+) {
+    fun getDataTicket() = data?.tickets ?: Tickets()
 
     fun getErrorMessage() = messageError?.get(0).orEmpty()
 
-    fun getErrorListMessage()= messageError?: arrayListOf()
+    fun getErrorListMessage() = messageError ?: arrayListOf()
 
-    fun isSuccess() = data?.isSuccess?:FAILED_HIT_API
+    fun isSuccess() = data?.isSuccess ?: FAILED_HIT_API
 }

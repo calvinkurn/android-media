@@ -25,14 +25,24 @@ abstract class InboxBottomSheetFragment : BottomSheetDialogFragment() {
         layoutID = arguments?.getInt(RESID, R.layout.layout_bottom_sheet_fragment) ?: 0
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val contentView = inflater.inflate(layoutID, container, false)
         title = contentView.findViewById(R.id.tv_bottom_sheet_title)
-        title?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.contact_us_ic_close), null, null, null)
+        title?.setCompoundDrawablesWithIntrinsicBounds(
+            MethodChecker.getDrawable(activity, R.drawable.contact_us_ic_close),
+            null,
+            null,
+            null
+        )
         dialog?.setOnShowListener { dialog: DialogInterface ->
             val d = dialog as BottomSheetDialog
-            val bottomSheetInternal = d.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            val bottomSheetInternal = d.findViewById<View>(
+                com.google.android.material.R.id.design_bottom_sheet
+            )
             bottomSheetInternal?.let {
                 BottomSheetBehavior.from(it).setState(BottomSheetBehavior.STATE_EXPANDED)
             }
@@ -43,15 +53,21 @@ abstract class InboxBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun closeBottomSheet() {
         if (activity is TicketActivity) {
-            ContactUsTracking.sendGTMInboxTicket(context, "",
-                    InboxTicketTracking.Category.EventInboxTicket,
-                    InboxTicketTracking.Action.EventClickReason,
-                    "Closing Reason Pop Up")
+            ContactUsTracking.sendGTMInboxTicket(
+                context,
+                "",
+                InboxTicketTracking.Category.EventInboxTicket,
+                InboxTicketTracking.Action.EventClickReason,
+                "Closing Reason Pop Up"
+            )
         } else {
-            ContactUsTracking.sendGTMInboxTicket(context, "",
-                    InboxTicketTracking.Category.EventInboxTicket,
-                    InboxTicketTracking.Action.EventClickFilter,
-                    "Closing Status Pop Up")
+            ContactUsTracking.sendGTMInboxTicket(
+                context,
+                "",
+                InboxTicketTracking.Category.EventInboxTicket,
+                InboxTicketTracking.Action.EventClickFilter,
+                "Closing Status Pop Up"
+            )
         }
         dismiss()
     }

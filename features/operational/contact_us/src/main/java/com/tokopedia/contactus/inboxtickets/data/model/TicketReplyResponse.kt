@@ -1,6 +1,5 @@
 package com.tokopedia.contactus.inboxtickets.data.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class TicketReplyResponse(
@@ -18,9 +17,8 @@ data class TicketReplyResponse(
             val status: String = ""
         )
 
-        fun getTicketReplayData() = ticketReplyData?: Data()
-
+        fun getTicketReplayData() = ticketReplyData ?: Data()
     }
 
-    fun getTicketReplay() = ticketReply?: TicketReply()
+    fun getTicketReplay() = ticketReply ?: TicketReply()
 }

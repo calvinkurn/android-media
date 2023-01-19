@@ -11,16 +11,15 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
 
-
 @ExperimentalCoroutinesApi
 @RunWith(Suite::class)
 @Suite.SuiteClasses(
-        CloseTicketByUserUseCaseTest::class,
-        GetTicketListUseCaseTest::class,
-        InboxOptionUseCaseTest::class,
-        PostMessageUseCase2Test::class,
-        PostMessageUseCaseTest::class,
-        SubmitRatingUseCaseTest::class,
-        UploadImageUseCaseTest::class
+    CloseTicketByUserUseCaseTest::class,
+    GetTicketListUseCaseTest::class,
+    InboxOptionUseCaseTest::class,
+    PostMessageUseCase2Test::class,
+    PostMessageUseCaseTest::class,
+    SubmitRatingUseCaseTest::class,
+    UploadImageUseCaseTest::class
 )
 class ContactUsSuite

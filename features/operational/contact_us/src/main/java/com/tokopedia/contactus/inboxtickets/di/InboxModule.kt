@@ -28,7 +28,6 @@ class InboxModule(private val context: Context) {
         return context
     }
 
-
     @InboxScope
     @Provides
     fun provideSharedPreference(context: Context?): SharedPreferences {
@@ -70,9 +69,16 @@ class InboxModule(private val context: Context) {
         @ImageUploaderQualifier generateHostRepository: GenerateHostRepository,
         @ImageUploaderQualifier gson: Gson,
         @ImageUploaderQualifier userSession: UserSessionInterface,
-        @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils):
+        @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils
+    ):
         UploadImageUseCase<UploadImageResponse> {
-        return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession,
-            UploadImageResponse::class.java, imageUploaderUtils)
+        return UploadImageUseCase(
+            uploadImageRepository,
+            generateHostRepository,
+            gson,
+            userSession,
+            UploadImageResponse::class.java,
+            imageUploaderUtils
+        )
     }
 }

@@ -133,14 +133,16 @@ class InboxContactUsViewModel @Inject constructor(
             NEED_RATING -> {
                 val requestParams = getTickets.getRequestParams(
                     currentState.offset,
-                    NEED_RATING, TICKET_ON_GIVE_RATE
+                    NEED_RATING,
+                    TICKET_ON_GIVE_RATE
                 )
                 getTicketList(requestParams)
             }
             else -> {
                 val requestParams = getTickets.getRequestParams(
                     currentState.offset,
-                    NEED_RATING, TICKET_ON_CLOSE
+                    NEED_RATING,
+                    TICKET_ON_CLOSE
                 )
 
                 getTicketList(requestParams)
@@ -202,5 +204,4 @@ class InboxContactUsViewModel @Inject constructor(
             )
         }
     }
-
 }

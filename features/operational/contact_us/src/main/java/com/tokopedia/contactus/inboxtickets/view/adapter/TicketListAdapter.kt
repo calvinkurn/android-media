@@ -24,7 +24,9 @@ private const val RATING_CLOSED = 0
 private const val READ = "read"
 private const val UNREAD = "unread"
 
-class TicketListAdapter(private val itemList: MutableList<InboxTicketListResponse.Ticket.Data.TicketItem>) :
+class TicketListAdapter(
+    private val itemList: MutableList<InboxTicketListResponse.Ticket.Data.TicketItem>
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val footerItem = InboxTicketListResponse.Ticket.Data.TicketItem()
     private var isFooterAdded = false
@@ -47,9 +49,7 @@ class TicketListAdapter(private val itemList: MutableList<InboxTicketListRespons
                 v = inflater.inflate(R.layout.layout_item_ticket, parent, false)
                 TicketItemHolder(v)
             }
-
         }
-
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -86,7 +86,7 @@ class TicketListAdapter(private val itemList: MutableList<InboxTicketListRespons
         notifyItemInserted(itemList.size - 1)
     }
 
-    fun addAll(ticketItems: List<InboxTicketListResponse.Ticket.Data.TicketItem>){
+    fun addAll(ticketItems: List<InboxTicketListResponse.Ticket.Data.TicketItem>) {
         val lastPosition = itemList.size
         itemList.addAll(ticketItems)
         notifyItemRangeInserted(lastPosition, ticketItems.size)
@@ -293,5 +293,4 @@ class TicketListAdapter(private val itemList: MutableList<InboxTicketListRespons
 
         fun onClickTicket(index: Int, isOfficialStore: Boolean)
     }
-
 }

@@ -11,14 +11,17 @@ import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxFilterSelect
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
-class InboxFilterAdapter(private val dataSet: List<InboxFilterSelection>,
-                         private val onPick : (List<InboxFilterSelection>) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class InboxFilterAdapter(
+    private val dataSet: List<InboxFilterSelection>,
+    private val onPick: (List<InboxFilterSelection>) -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var currentSelectedOption = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(
-            parent.context)
+            parent.context
+        )
         val v = inflater.inflate(R.layout.layout_filter_item, parent, false)
         return FilterHolder(v)
     }
@@ -31,7 +34,9 @@ class InboxFilterAdapter(private val dataSet: List<InboxFilterSelection>,
         return dataSet.size
     }
 
-    internal inner class FilterHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    internal inner class FilterHolder constructor(itemView: View) : RecyclerView.ViewHolder(
+        itemView
+    ) {
         private var filterText: TextView? = null
         private var ivTick: ImageView? = null
         private var locationDateItem: View? = null
@@ -63,12 +68,10 @@ class InboxFilterAdapter(private val dataSet: List<InboxFilterSelection>,
             notifyItemChanged(currentSelectedOption)
             notifyItemChanged(prevSelected)
             onPick(dataSet)
-
         }
 
         init {
             findingViewsId(itemView)
         }
     }
-
 }

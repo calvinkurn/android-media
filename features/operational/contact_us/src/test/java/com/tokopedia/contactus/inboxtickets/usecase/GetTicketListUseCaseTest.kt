@@ -29,7 +29,9 @@ class GetTicketListUseCaseTest {
     private val contactUsRepository: ContactUsRepository = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
 
-    private var getTicketDetailUseCase = spyk(GetTicketListUseCase(userSession, contactUsRepository))
+    private var getTicketDetailUseCase = spyk(
+        GetTicketListUseCase(userSession, contactUsRepository)
+    )
 
     @Before
     @Throws(Exception::class)
@@ -37,7 +39,6 @@ class GetTicketListUseCaseTest {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
     }
-
 
     @After
     @Throws(Exception::class)
@@ -49,7 +50,6 @@ class GetTicketListUseCaseTest {
 
     @Test
     fun `check invocation of getRequestParams with parameters value greater than 0`() {
-
         val page = 1
         val status = 1
         val rating = 5
@@ -59,27 +59,22 @@ class GetTicketListUseCaseTest {
         assertEquals(map.parameters[STATUS], 1)
         assertEquals(map.parameters["page"], 1)
         assertEquals(map.parameters[RATING], 5)
-
     }
-
 
     @Test
     fun `check invocation of getRequestParams with parameters value less than 0`() {
-
         val page = -2
         val status = -1
         val rating = 0
 
         val map = getTicketDetailUseCase.getRequestParams(page, status, rating)
 
-        assertEquals(map.parameters[STATUS],-1)
+        assertEquals(map.parameters[STATUS], -1)
         assertNull(map.parameters[RATING])
-        assertEquals(map.parameters["page"],-2)
-
+        assertEquals(map.parameters["page"], -2)
     }
 
     /****************************************** setQueryMap() ***************************************/
-
 
     /*************************************** getTicketListResponse() ********************************/
 
@@ -87,13 +82,13 @@ class GetTicketListUseCaseTest {
     fun `check function invocation getTicketListResponse`() {
         runBlockingTest {
             coEvery {
-                contactUsRepository.getGQLData<InboxTicketListResponse>(any(),any(),any())
+                contactUsRepository.getGQLData<InboxTicketListResponse>(any(), any(), any())
             } returns mockk()
 
             getTicketDetailUseCase.getTicketListResponse(mockk(relaxed = true))
 
             coVerify(exactly = 1) {
-                contactUsRepository.getGQLData<InboxTicketListResponse>(any(),any(),any())
+                contactUsRepository.getGQLData<InboxTicketListResponse>(any(), any(), any())
             }
         }
     }

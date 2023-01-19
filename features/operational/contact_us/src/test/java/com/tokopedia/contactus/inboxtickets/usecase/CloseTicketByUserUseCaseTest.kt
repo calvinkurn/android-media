@@ -26,7 +26,9 @@ class CloseTicketByUserUseCaseTest {
 
     private val contactUsRepository: ContactUsRepository = mockk(relaxed = true)
 
-    private var closeTicketByUserUseCase = spyk(CloseTicketByUserUseCase(anyString(), contactUsRepository))
+    private var closeTicketByUserUseCase = spyk(
+        CloseTicketByUserUseCase(anyString(), contactUsRepository)
+    )
 
     @Before
     @Throws(Exception::class)
@@ -34,7 +36,6 @@ class CloseTicketByUserUseCaseTest {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
     }
-
 
     @After
     @Throws(Exception::class)
@@ -53,24 +54,25 @@ class CloseTicketByUserUseCaseTest {
         assertEquals(variables.parameters["source"], source)
     }
 
-
     @Test
     fun `check function invocation of getData`() {
         runBlockingTest {
             coEvery {
-                contactUsRepository.getGQLData("",
-                        ChipInboxDetails::class.java,
-                        any()).chipGetInboxDetail
+                contactUsRepository.getGQLData(
+                    "",
+                    ChipInboxDetails::class.java,
+                    any()
+                ).chipGetInboxDetail
             } returns mockk()
 
             closeTicketByUserUseCase.getChipInboxDetail(mockk(relaxed = true))
             coVerify(exactly = 1) {
-                contactUsRepository.getGQLData("",
-                        ChipInboxDetails::class.java,
-                        any()).getInboxDetail()
+                contactUsRepository.getGQLData(
+                    "",
+                    ChipInboxDetails::class.java,
+                    any()
+                ).getInboxDetail()
             }
         }
     }
-
-
 }

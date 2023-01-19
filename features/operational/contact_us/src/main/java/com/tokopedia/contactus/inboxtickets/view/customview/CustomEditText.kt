@@ -20,7 +20,11 @@ class CustomEditText : AppCompatEditText {
 
     constructor(context: Context?) : super(context!!)
     constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context!!, attrs, defStyleAttr)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context!!,
+        attrs,
+        defStyleAttr
+    )
 
     fun setListener(listener: Listener?) {
         this.listener = listener
@@ -48,11 +52,14 @@ class CustomEditText : AppCompatEditText {
 
             private fun runTimer(text: String) {
                 timer = Timer()
-                timer?.schedule(object : TimerTask() {
-                    override fun run() {
-                        updateListener(text)
-                    }
-                }, delayTextChanged)
+                timer?.schedule(
+                    object : TimerTask() {
+                        override fun run() {
+                            updateListener(text)
+                        }
+                    },
+                    delayTextChanged
+                )
             }
 
             private fun updateListener(text: String) {

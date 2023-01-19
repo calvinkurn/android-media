@@ -34,7 +34,6 @@ class PostMessageUseCase2Test {
         Dispatchers.setMain(TestCoroutineDispatcher())
     }
 
-
     @After
     @Throws(Exception::class)
     fun tearDown() {
@@ -45,44 +44,49 @@ class PostMessageUseCase2Test {
 
     @Test
     fun `check invocation of setQueryMap`() {
-
         val fileUploaded = "file"
         val postKey = "key"
         val userId = "uid"
         val ticketId = "tid"
 
-        val parmas = postMessageUseCase2.createRequestParams(ticketId, userId, fileUploaded, postKey)
+        val parmas = postMessageUseCase2.createRequestParams(
+            ticketId,
+            userId,
+            fileUploaded,
+            postKey
+        )
 
         assertEquals(parmas.parameters[FILE_UPLOADED], fileUploaded)
         assertEquals(parmas.parameters[POST_KEY], postKey)
         assertEquals(parmas.parameters[USER_ID], userId)
         assertEquals(parmas.parameters[TICKETID], ticketId)
-
     }
 
     /****************************************** createRequestParams() ***************************************/
-
 
     /************************************* getInboxDataResponse() **********************************/
     @Test
     fun `check function invocation getInboxDataResponse`() {
         runBlockingTest {
             coEvery {
-                contactUsRepository.getGQLData("",
-                        StepTwoResponse::class.java,
-                        any())
+                contactUsRepository.getGQLData(
+                    "",
+                    StepTwoResponse::class.java,
+                    any()
+                )
             } returns mockk()
 
             postMessageUseCase2.getInboxDataResponse(mockk(relaxed = true))
 
             coVerify(exactly = 1) {
-                contactUsRepository.getGQLData(any(),
-                        StepTwoResponse::class.java,
-                        any())
+                contactUsRepository.getGQLData(
+                    any(),
+                    StepTwoResponse::class.java,
+                    any()
+                )
             }
         }
     }
 
     /************************************* getInboxDataResponse() **********************************/
-
 }

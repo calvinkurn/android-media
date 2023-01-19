@@ -43,32 +43,31 @@ class InboxOptionUseCaseTest {
 
     @Test
     fun createRequestParams() {
-
         val caseId = "1234"
         val params = inboxOptionUseCase.createRequestParams(caseId)
 
         assertEquals(params.parameters["caseID"], caseId)
     }
 
-
     @Test
     fun `check function invokation of getData`() {
         runBlockingTest {
             coEvery {
-                contactUsRepository.getGQLData("",
-                        ChipInboxDetails::class.java,
-                        any()).chipGetInboxDetail
+                contactUsRepository.getGQLData(
+                    "",
+                    ChipInboxDetails::class.java,
+                    any()
+                ).chipGetInboxDetail
             } returns mockk()
 
             inboxOptionUseCase.getChipInboxDetail(mockk(relaxed = true))
             coVerify(exactly = 1) {
-                contactUsRepository.getGQLData("",
-                        ChipInboxDetails::class.java,
-                        any()).getInboxDetail()
+                contactUsRepository.getGQLData(
+                    "",
+                    ChipInboxDetails::class.java,
+                    any()
+                ).getInboxDetail()
             }
         }
     }
-
-
-
 }

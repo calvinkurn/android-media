@@ -78,14 +78,15 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-
-class TicketFragment : BaseDaggerFragment(),
-    View.OnClickListener, BackTicketListener {
+class TicketFragment :
+    BaseDaggerFragment(),
+    View.OnClickListener,
+    BackTicketListener {
 
     companion object {
         fun newInstance(
             ticketId: String,
-            isOfficialStore: Boolean,
+            isOfficialStore: Boolean
         ): TicketFragment {
             val fragment = TicketFragment()
             val bundle = Bundle()
@@ -156,7 +157,6 @@ class TicketFragment : BaseDaggerFragment(),
     private val imageList: List<ImageUpload>
         get() = imageUploadAdapter?.getUploadedImageList() ?: emptyList()
 
-
     private val isUploadImageValid: Int
         get() {
             val uploadImageList = imageList
@@ -181,9 +181,9 @@ class TicketFragment : BaseDaggerFragment(),
     private val userMessage: String
         get() = edMessage?.text.toString()
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = ContactUsFragmentTicketBinding.inflate(inflater, container, false)
@@ -211,7 +211,9 @@ class TicketFragment : BaseDaggerFragment(),
 
     override fun initInjector() {
         DaggerInboxComponent.builder()
-            .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+            .baseAppComponent(
+                (activity?.applicationContext as? BaseMainApplication)?.baseAppComponent
+            )
             .inboxModule(activity?.applicationContext?.let { InboxModule(it) })
             .build().inject(this)
     }
@@ -275,25 +277,34 @@ class TicketFragment : BaseDaggerFragment(),
             this@TicketFragment.noTicketFound = noTicketFound.root
             this@TicketFragment.tvNoTicket = noTicketFound.tvNoTicket
             this@TicketFragment.tvOkButton = noTicketFound.tvOkButton
-            layoutManager = LinearLayoutManager(context?:return, LinearLayoutManager.VERTICAL, false)
+            layoutManager = LinearLayoutManager(
+                context ?: return,
+                LinearLayoutManager.VERTICAL,
+                false
+            )
             this@TicketFragment.rvMessageList?.layoutManager =
                 layoutManager
         }
     }
 
     private fun initImageAdapter() {
-        imageUploadAdapter = ImageUploadAdapter(context ?: return, object :
-            ImageUploadAdapter.OnSelectImageClick {
-            override fun onClick() {
-                showImagePickerDialog()
+        imageUploadAdapter = ImageUploadAdapter(
+            context ?: return,
+            object :
+                ImageUploadAdapter.OnSelectImageClick {
+                override fun onClick() {
+                    showImagePickerDialog()
+                }
             }
-        }) {
+        ) {
             rvSelectedImages?.hide()
             rvMessageList?.setPadding(
                 0,
                 0,
                 0,
-                activity?.resources?.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed)
+                activity?.resources?.getDimensionPixelSize(
+                    R.dimen.contact_us_text_toolbar_height_collapsed
+                )
                     ?: return@ImageUploadAdapter
             )
             Unit
@@ -313,8 +324,11 @@ class TicketFragment : BaseDaggerFragment(),
                 } else {
                     setSubmitButtonEnabled(false)
                 }
-                if (s.length == TEXT_MAX_LENGTH)
-                    binding?.root.showErrorToasterWithCta(getString(R.string.contact_us_maximum_length_error_text))
+                if (s.length == TEXT_MAX_LENGTH) {
+                    binding?.root.showErrorToasterWithCta(
+                        getString(R.string.contact_us_maximum_length_error_text)
+                    )
+                }
             }
 
             override fun afterTextChanged(s: Editable) {}
@@ -328,7 +342,6 @@ class TicketFragment : BaseDaggerFragment(),
             override fun onSearchTextChanged(text: String) {
                 viewModel.onSearchSubmitted(text)
             }
-
         })
 
         btnInactive1?.setOnClickListener(this)
@@ -355,8 +368,8 @@ class TicketFragment : BaseDaggerFragment(),
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_IMAGE_PICKER
-            && resultCode == Activity.RESULT_OK
+        if (requestCode == REQUEST_IMAGE_PICKER &&
+            resultCode == Activity.RESULT_OK
         ) {
             val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
             if (imagePathList.size <= 0) {
@@ -395,7 +408,8 @@ class TicketFragment : BaseDaggerFragment(),
     @SuppressLint("DeprecatedMethod")
     private fun sendTrackerImageError1() {
         ContactUsTracking.sendGTMInboxTicket(
-            context ?: return, "",
+            context ?: return,
+            "",
             InboxTicketTracking.Category.EventInboxTicket,
             InboxTicketTracking.Action.EventClickAttachImage,
             InboxTicketTracking.Label.ImageError1
@@ -405,7 +419,8 @@ class TicketFragment : BaseDaggerFragment(),
     @SuppressLint("DeprecatedMethod")
     private fun sendTrackerImageError2() {
         ContactUsTracking.sendGTMInboxTicket(
-            context ?: return, "",
+            context ?: return,
+            "",
             InboxTicketTracking.Category.EventInboxTicket,
             InboxTicketTracking.Action.EventClickAttachImage,
             InboxTicketTracking.Label.ImageError2
@@ -416,8 +431,12 @@ class TicketFragment : BaseDaggerFragment(),
         if (rvSelectedImages?.visibility != View.VISIBLE) {
             rvSelectedImages?.show()
             rvMessageList?.setPadding(
-                0, 0, 0,
-                activity?.resources?.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_expanded)
+                0,
+                0,
+                0,
+                activity?.resources?.getDimensionPixelSize(
+                    R.dimen.contact_us_text_toolbar_height_expanded
+                )
                     ?: return
             )
         }
@@ -590,14 +609,20 @@ class TicketFragment : BaseDaggerFragment(),
         if (visibility == View.VISIBLE) {
             binding?.viewHelpRate?.root?.hide()
             rvMessageList?.setPadding(
-                0, 0, 0,
-                activity?.resources?.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed)
+                0,
+                0,
+                0,
+                activity?.resources?.getDimensionPixelSize(
+                    R.dimen.contact_us_text_toolbar_height_collapsed
+                )
                     ?: return
             )
         } else {
             binding?.viewHelpRate?.root?.show()
             rvMessageList?.setPadding(
-                0, 0, 0,
+                0,
+                0,
+                0,
                 activity?.resources?.getDimensionPixelSize(R.dimen.help_rate_height) ?: return
             )
         }
@@ -609,8 +634,12 @@ class TicketFragment : BaseDaggerFragment(),
         binding?.layoutReplayMessage?.root?.hide()
         binding?.viewLinkBottom?.root?.show()
         rvMessageList?.setPadding(
-            0, 0, 0,
-            activity?.resources?.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed)
+            0,
+            0,
+            0,
+            activity?.resources?.getDimensionPixelSize(
+                R.dimen.contact_us_text_toolbar_height_collapsed
+            )
                 ?: return
         )
     }
@@ -752,13 +781,15 @@ class TicketFragment : BaseDaggerFragment(),
                 emojiNumber,
                 viewModel.getFirstCommentId(),
                 viewModel.getCSATBadReasonList() as ArrayList<BadCsatReasonListItem>
-            ), REQUEST_SUBMIT_FEEDBACK
+            ),
+            REQUEST_SUBMIT_FEEDBACK
         )
     }
 
     private fun sendGTMEventView() {
         ContactUsTracking.sendGTMInboxTicket(
-            activity, InboxTicketTracking.Event.EventView,
+            activity,
+            InboxTicketTracking.Event.EventView,
             InboxTicketTracking.Category.EventHelpMessageInbox,
             InboxTicketTracking.Action.EventImpressionOnCsatRating,
             ticketId
@@ -767,7 +798,8 @@ class TicketFragment : BaseDaggerFragment(),
 
     private fun sendGTMEventClick(number: Int, ticketNumber: String) {
         ContactUsTracking.sendGTMInboxTicket(
-            activity, InboxTicketTracking.Event.Event,
+            activity,
+            InboxTicketTracking.Event.Event,
             InboxTicketTracking.Category.EventCategoryInbox,
             InboxTicketTracking.Action.EventClickOnCsatRating,
             "$ticketNumber - $number"
@@ -795,12 +827,12 @@ class TicketFragment : BaseDaggerFragment(),
 
     private fun sendGTmEvent(eventLabel: String, action: String) {
         ContactUsTracking.sendGTMInboxTicket(
-            context, InboxTicketTracking.Event.Event,
+            context,
+            InboxTicketTracking.Event.Event,
             InboxTicketTracking.Category.EventCategoryInbox,
             action,
             "$ticketId - $eventLabel"
         )
-
     }
 
     override fun onClick(view: View) {
@@ -822,12 +854,15 @@ class TicketFragment : BaseDaggerFragment(),
                     binding?.viewRplyBottonBeforeCsatRating?.root?.hide()
                     binding?.layoutReplayMessage?.root?.show()
                 } else {
-                    helpFullBottomSheet = HelpFullBottomSheet(context ?: return, object :
-                        HelpFullBottomSheet.CloseSHelpFullBottomSheet {
-                        override fun onClick(agreed: Boolean) {
-                            setHelpOnClick(agreed)
+                    helpFullBottomSheet = HelpFullBottomSheet(
+                        context ?: return,
+                        object :
+                            HelpFullBottomSheet.CloseSHelpFullBottomSheet {
+                            override fun onClick(agreed: Boolean) {
+                                setHelpOnClick(agreed)
+                            }
                         }
-                    })
+                    )
                     helpFullBottomSheet?.show(parentFragmentManager, "helpFullBottomSheet")
 
                     binding?.viewRplyBottonBeforeCsatRating?.root?.hide()
@@ -859,15 +894,16 @@ class TicketFragment : BaseDaggerFragment(),
             )
 
             if (viewModel.isTicketAllowClose()) {
-                closeComplainBottomSheet = CloseComplainBottomSheet(context ?: return, object :
-                    CloseComplainBottomSheet.CloseComplainBottomSheetListner {
-                    override fun onClickComplain(agreed: Boolean) {
-                        sendComplain(agreed)
+                closeComplainBottomSheet = CloseComplainBottomSheet(
+                    context ?: return,
+                    object :
+                        CloseComplainBottomSheet.CloseComplainBottomSheetListner {
+                        override fun onClickComplain(agreed: Boolean) {
+                            sendComplain(agreed)
+                        }
                     }
-
-                })
+                )
                 closeComplainBottomSheet?.show(parentFragmentManager, "closeComplainBottomSheet")
-
             } else {
                 binding?.layoutReplayMessage?.root?.show()
             }
@@ -885,7 +921,8 @@ class TicketFragment : BaseDaggerFragment(),
     private fun onClickUpload() {
         showImagePickerDialog()
         ContactUsTracking.sendGTMInboxTicket(
-            context, "",
+            context,
+            "",
             InboxTicketTracking.Category.EventInboxTicket,
             InboxTicketTracking.Action.EventClickAttachImage,
             ""
@@ -918,7 +955,8 @@ class TicketFragment : BaseDaggerFragment(),
         viewModel.sendMessage(isUploadImageValid, imageList, message = userMessage)
         edMessage?.setHint(R.string.contact_us_type_here)
         ContactUsTracking.sendGTMInboxTicket(
-            context, InboxTicketTracking.Event.Event,
+            context,
+            InboxTicketTracking.Event.Event,
             InboxTicketTracking.Category.EventCategoryInbox,
             InboxTicketTracking.Action.EventClickReplyTicket,
             ticketId
@@ -941,7 +979,8 @@ class TicketFragment : BaseDaggerFragment(),
         )
         hideSendProgress()
         ContactUsTracking.sendGTMInboxTicket(
-            activity, "",
+            activity,
+            "",
             InboxTicketTracking.Category.EventInboxTicket,
             InboxTicketTracking.Action.EventNotAttachImageRequired,
             ""
@@ -955,8 +994,12 @@ class TicketFragment : BaseDaggerFragment(),
         imageUploadAdapter?.notifyItemChanged(imageUploadAdapter!!.itemCount - 1)
         rvSelectedImages?.hide()
         rvMessageList?.setPadding(
-            0, 0, 0,
-            activity?.resources?.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed)
+            0,
+            0,
+            0,
+            activity?.resources?.getDimensionPixelSize(
+                R.dimen.contact_us_text_toolbar_height_collapsed
+            )
                 ?: return
         )
         detailAdapter?.setNeedAttachment(false)
@@ -966,18 +1009,19 @@ class TicketFragment : BaseDaggerFragment(),
     @SuppressLint("DeprecatedMethod")
     private fun sendTrackerSearchFindResult() {
         ContactUsTracking.sendGTMInboxTicket(
-            activity, "",
+            activity,
+            "",
             InboxTicketTracking.Category.EventInboxTicket,
             InboxTicketTracking.Action.EventClickSearchDetails,
             InboxTicketTracking.Label.GetResult
         )
     }
 
-
     @SuppressLint("DeprecatedMethod")
     private fun sendTrackerSearchNotFindResult() {
         ContactUsTracking.sendGTMInboxTicket(
-            activity, "",
+            activity,
+            "",
             InboxTicketTracking.Category.EventInboxTicket,
             InboxTicketTracking.Action.EventClickSearchDetails,
             InboxTicketTracking.Label.NoResult
@@ -989,7 +1033,8 @@ class TicketFragment : BaseDaggerFragment(),
         if (id == R.id.txt_hyper) {
             activity?.setResult(RESULT_FINISH)
             ContactUsTracking.sendGTMInboxTicket(
-                context, "",
+                context,
+                "",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickHubungi,
                 InboxTicketTracking.Label.TicketClosed
@@ -1046,7 +1091,6 @@ class TicketFragment : BaseDaggerFragment(),
                     override fun scrollTo(position: Int) {
                         scrollToPosition(position)
                     }
-
                 },
                 viewModel.getUserId(),
                 ticketId,
@@ -1082,8 +1126,12 @@ class TicketFragment : BaseDaggerFragment(),
         when (lastCommentStatus) {
             TICKET_STATUS_IN_PROCESS -> {
                 rvMessageList?.setPadding(
-                    0, 0, 0,
-                    activity?.resources?.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed)
+                    0,
+                    0,
+                    0,
+                    activity?.resources?.getDimensionPixelSize(
+                        R.dimen.contact_us_text_toolbar_height_collapsed
+                    )
                         ?: return
                 )
                 if (ROLE_TYPE_AGENT.equals(
@@ -1112,18 +1160,22 @@ class TicketFragment : BaseDaggerFragment(),
     }
 
     fun onCommentPriorityLabelClick() {
-        servicePrioritiesBottomSheet = ServicePrioritiesBottomSheet(context ?: return, object :
-            ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet {
-            override fun onClickClose() {
-                servicePrioritiesBottomSheet?.dismiss()
+        servicePrioritiesBottomSheet = ServicePrioritiesBottomSheet(
+            context ?: return,
+            object :
+                ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet {
+                override fun onClickClose() {
+                    servicePrioritiesBottomSheet?.dismiss()
+                }
             }
-        })
+        )
         servicePrioritiesBottomSheet?.show(parentFragmentManager, "servicePrioritiesBottomSheet")
     }
 
     fun onCommentTransactionDetailsClick() {
         ContactUsTracking.sendGTMInboxTicket(
-            context ?: return, "",
+            context ?: return,
+            "",
             InboxTicketTracking.Category.EventInboxTicket,
             InboxTicketTracking.Action.EventClickDetailTrasanksi,
             ""
@@ -1134,9 +1186,9 @@ class TicketFragment : BaseDaggerFragment(),
         sendTrackingImagePreview()
         val imagesUrl = ArrayList<String>()
         for (item in imagesAttachment) {
-            if (item.url?.isNotEmpty() == true)
+            if (item.url?.isNotEmpty() == true) {
                 imagesUrl.add(item.url ?: "")
-            else imagesUrl.add(item.thumbnail ?: "")
+            } else imagesUrl.add(item.thumbnail ?: "")
         }
         startActivity(
             ImagePreviewActivity.getCallingIntent(
@@ -1150,7 +1202,8 @@ class TicketFragment : BaseDaggerFragment(),
 
     private fun sendTrackingImagePreview() {
         ContactUsTracking.sendGTMInboxTicket(
-            context, "",
+            context,
+            "",
             InboxTicketTracking.Category.EventInboxTicket,
             InboxTicketTracking.Action.EventClickAttachImage,
             InboxTicketTracking.Label.ImageAttached
@@ -1175,7 +1228,7 @@ class TicketFragment : BaseDaggerFragment(),
             if (viewModel.isShowRating()) {
                 toggleTextToolbar(View.GONE)
             } else if (viewModel.getTicketStatus()
-                    .equals(CLOSED, ignoreCase = true) && !viewModel.isShowRating()
+                .equals(CLOSED, ignoreCase = true) && !viewModel.isShowRating()
             ) {
                 showIssueClosed()
             } else {
@@ -1194,8 +1247,10 @@ class TicketFragment : BaseDaggerFragment(),
     }
 
     private fun onBackPressed() {
-        if ((imageUploadAdapter?.itemCount
-                ?: 0) > 1 || binding?.layoutReplayMessage?.root?.visibility == View.VISIBLE &&
+        if ((
+            imageUploadAdapter?.itemCount
+                ?: 0
+            ) > 1 || binding?.layoutReplayMessage?.root?.visibility == View.VISIBLE &&
             edMessage?.isFocused == true && edMessage?.text?.isNotEmpty() == true && parentFragmentManager.backStackEntryCount <= 0
         ) {
             val builder = AlertDialog.Builder(context)
@@ -1215,9 +1270,10 @@ class TicketFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun sendTrackerBackPress(){
+    private fun sendTrackerBackPress() {
         ContactUsTracking.sendGTMInboxTicket(
-            context, "",
+            context,
+            "",
             InboxTicketTracking.Category.EventInboxTicket,
             InboxTicketTracking.Action.EventAbandonReplySubmission,
             getString(R.string.inbox_cancel)
@@ -1225,7 +1281,6 @@ class TicketFragment : BaseDaggerFragment(),
     }
 
     fun Int?.orOne(): Int = this ?: 1
-
 }
 
 interface BackTicketListener {

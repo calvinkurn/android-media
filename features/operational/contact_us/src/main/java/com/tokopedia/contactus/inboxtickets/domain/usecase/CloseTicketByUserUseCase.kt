@@ -7,8 +7,9 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 import javax.inject.Named
 
-class CloseTicketByUserUseCase @Inject constructor(@Named("close_ticket_by_user") val closeTicketQuery: String,
-                                                   private val repository: ContactUsRepository
+class CloseTicketByUserUseCase @Inject constructor(
+    @Named("close_ticket_by_user") val closeTicketQuery: String,
+    private val repository: ContactUsRepository
 ) {
 
     fun createRequestParams(caseID: String?, source: String?): RequestParams {
@@ -18,14 +19,16 @@ class CloseTicketByUserUseCase @Inject constructor(@Named("close_ticket_by_user"
         return requestParams
     }
 
-
     suspend fun getChipInboxDetail(requestParams: RequestParams): ChipGetInboxDetail {
-        return repository.getGQLData(closeTicketQuery, ChipInboxDetails::class.java, requestParams.parameters).getInboxDetail()
+        return repository.getGQLData(
+            closeTicketQuery,
+            ChipInboxDetails::class.java,
+            requestParams.parameters
+        ).getInboxDetail()
     }
 
     companion object {
         private const val CASEID = "caseID"
         private const val SOURCE = "source"
     }
-
 }

@@ -9,5 +9,5 @@ data class InboxState(
     val unReadNotification: Boolean = false,
     val offset: Int = 0,
     val ticketItems: List<InboxTicketListResponse.Ticket.Data.TicketItem> = arrayListOf(),
-    val isFilteredData : Boolean = false
+    val isFilteredData: Boolean = false
 )

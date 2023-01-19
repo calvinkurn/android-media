@@ -1,6 +1,5 @@
 package com.tokopedia.contactus.inboxtickets.data.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class PicObjPojo(

@@ -10,7 +10,11 @@ import com.tokopedia.csat_rating.quickfilter.QuickSingleFilterView
 class CustomQuickOptionView : QuickSingleFilterView {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     override fun initialAdapter() {
         adapterFilter = ContactUsCustomQuickOptionViewAdapter(quickSingleFilterListener())
@@ -21,7 +25,10 @@ class CustomQuickOptionView : QuickSingleFilterView {
     }
 
     override fun getLayoutManager(): RecyclerView.LayoutManager {
-        return LinearLayoutManager(context,
-                LinearLayoutManager.VERTICAL, false)
+        return LinearLayoutManager(
+            context,
+            LinearLayoutManager.VERTICAL,
+            false
+        )
     }
 }

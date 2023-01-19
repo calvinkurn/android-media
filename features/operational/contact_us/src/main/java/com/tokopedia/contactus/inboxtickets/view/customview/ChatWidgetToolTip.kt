@@ -12,8 +12,12 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyImageButton
 import com.tokopedia.unifyprinciples.Typography
 
-class ChatWidgetToolTip @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : PopupWindow(context, attrs, defStyleAttr) {
+class ChatWidgetToolTip @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) :
+    PopupWindow(context, attrs, defStyleAttr) {
 
     private var view: View
     private var toolTipCloseButton: UnifyImageButton? = null
@@ -24,12 +28,12 @@ class ChatWidgetToolTip @JvmOverloads constructor(context: Context, attrs: Attri
 
     init {
         view = LayoutInflater
-                .from(context)
-                .inflate(R.layout.chat_widget_tool_tip, null).also {
-                    toolTipText = it.findViewById(R.id.text)
-                    toolTipCloseButton = it.findViewById(R.id.close_button)
-                    toolTipButton = it.findViewById(R.id.chat_button)
-                }
+            .from(context)
+            .inflate(R.layout.chat_widget_tool_tip, null).also {
+                toolTipText = it.findViewById(R.id.text)
+                toolTipCloseButton = it.findViewById(R.id.close_button)
+                toolTipButton = it.findViewById(R.id.chat_button)
+            }
         contentView = view
         chatWidgetToolTipListener = context as? ChatWidgetToolTipListener
         setSize()
@@ -54,7 +58,7 @@ class ChatWidgetToolTip @JvmOverloads constructor(context: Context, attrs: Attri
         }
     }
 
-    fun setToolTipDescription(descripton: CharSequence){
+    fun setToolTipDescription(descripton: CharSequence) {
         toolTipText?.text = descripton
     }
 
@@ -73,7 +77,7 @@ class ChatWidgetToolTip @JvmOverloads constructor(context: Context, attrs: Attri
         return CustomChatWidgetOnScrollListener()
     }
 
-    fun setUpToolTipButtonListener(listener : ChatWidgetToolTipListener){
+    fun setUpToolTipButtonListener(listener: ChatWidgetToolTipListener) {
         chatWidgetToolTipListener = listener
     }
 

@@ -9,9 +9,11 @@ class ChipUploadHostConfigUseCase @Inject constructor(private val repository: Co
 
     suspend fun getChipUploadHostConfig(): ChipUploadHostConfig {
         val chipUploadHostConfig = repository
-                .getGQLData(CHIP_UPLOAD_HOST_GQL,
-                        ChipUploadHostConfig::class.java, mapOf())
-        return chipUploadHostConfig;
+            .getGQLData(
+                CHIP_UPLOAD_HOST_GQL,
+                ChipUploadHostConfig::class.java,
+                mapOf()
+            )
+        return chipUploadHostConfig
     }
-
 }

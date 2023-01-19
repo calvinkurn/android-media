@@ -14,19 +14,21 @@ private const val HEADER_REFERER_KEY = "Referer"
 private const val HEADER_REFERER_VALUE = "tokopedia.com/help/inbox"
 class ContactUsRepository @Inject constructor() : BaseRepository() {
 
-    suspend fun <T : Any> postMultiRestData(url: String,
-                                            typeOf: Type,
-                                            queryMap: Map<String, Any> = RequestParams.EMPTY.parameters,
-                                            cacheType: CacheType = CacheType.ALWAYS_CLOUD,
-                                            body: MultipartBody.Part): T {
+    suspend fun <T : Any> postMultiRestData(
+        url: String,
+        typeOf: Type,
+        queryMap: Map<String, Any> = RequestParams.EMPTY.parameters,
+        cacheType: CacheType = CacheType.ALWAYS_CLOUD,
+        body: MultipartBody.Part
+    ): T {
         try {
             val restRequest = RestRequest.Builder(url, typeOf)
-                    .setRequestType(RequestType.POST_MULTIPART)
-                    .setQueryParams(queryMap)
-                    .setBody(body)
-                    .setHeaders(mapOf(HEADER_REFERER_KEY to HEADER_REFERER_VALUE))
-                    .setCacheStrategy(RestCacheStrategy.Builder(cacheType).build())
-                    .build()
+                .setRequestType(RequestType.POST_MULTIPART)
+                .setQueryParams(queryMap)
+                .setBody(body)
+                .setHeaders(mapOf(HEADER_REFERER_KEY to HEADER_REFERER_VALUE))
+                .setCacheStrategy(RestCacheStrategy.Builder(cacheType).build())
+                .build()
             return restRepository.getResponse(restRequest).getData()
         } catch (t: Throwable) {
             throw t

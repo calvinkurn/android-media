@@ -16,7 +16,7 @@ abstract class ContactUsViewModelModule {
 
     @Binds
     @InboxScope
-    internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+    internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory // ktlint-disable max-line-length
 
     @Binds
     @InboxScope
@@ -33,5 +33,4 @@ abstract class ContactUsViewModelModule {
     @IntoMap
     @ViewModelKey(TicketViewModel::class)
     internal abstract fun provideTicketViewModel(viewModel: TicketViewModel): ViewModel
-
 }

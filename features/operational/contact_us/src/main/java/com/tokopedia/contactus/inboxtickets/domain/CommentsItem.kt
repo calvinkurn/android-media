@@ -25,6 +25,6 @@ data class CommentsItem(
     var ticketTitle: String? = null,
     var ticketId: String? = null,
     var ticketStatus: String? = null
-){
-    fun getCreateCommentTime() = createTime?: ""
+) {
+    fun getCreateCommentTime() = createTime.orEmpty()
 }

@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
-
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -180,7 +179,7 @@ class InboxContactUsViewModelTest {
     }
 
     @Test
-    fun `get Ticket List but it is error`(){
+    fun `get Ticket List but it is error`() {
         runBlockingTest {
             val optionsSelected = listOf(
                 InboxFilterSelection(ALL, "All", true),
@@ -238,7 +237,10 @@ class InboxContactUsViewModelTest {
                 InboxFilterSelection(CLOSED, "Closed", false)
             )
             viewModel.setOptionsFilter(optionsSelected)
-            coEvery { getTicketUsecase.getTicketListResponse(any()) } returns createListTicket(false, statusTicket = ALL)
+            coEvery { getTicketUsecase.getTicketListResponse(any()) } returns createListTicket(
+                false,
+                statusTicket = ALL
+            )
             viewModel.getTicketItems()
             val stateData = viewModel.uiState.value
             assertEquals(5, stateData.ticketItems.size)
@@ -255,7 +257,10 @@ class InboxContactUsViewModelTest {
                 InboxFilterSelection(CLOSED, "Closed", false)
             )
             viewModel.setOptionsFilter(optionsSelected)
-            coEvery { getTicketUsecase.getTicketListResponse(any()) } returns createListTicket(false, statusTicket = IN_PROGRESS)
+            coEvery { getTicketUsecase.getTicketListResponse(any()) } returns createListTicket(
+                false,
+                statusTicket = IN_PROGRESS
+            )
             viewModel.getTicketItems()
             val stateData = viewModel.uiState.value
             assertEquals(4, stateData.ticketItems.size)
@@ -272,7 +277,10 @@ class InboxContactUsViewModelTest {
                 InboxFilterSelection(CLOSED, "Closed", false)
             )
             viewModel.setOptionsFilter(optionsSelected)
-            coEvery { getTicketUsecase.getTicketListResponse(any()) } returns createListTicket(false, statusTicket = NEED_RATING)
+            coEvery { getTicketUsecase.getTicketListResponse(any()) } returns createListTicket(
+                false,
+                statusTicket = NEED_RATING
+            )
             viewModel.getTicketItems()
             val stateData = viewModel.uiState.value
             assertEquals(3, stateData.ticketItems.size)
@@ -289,7 +297,10 @@ class InboxContactUsViewModelTest {
                 InboxFilterSelection(CLOSED, "Closed", true)
             )
             viewModel.setOptionsFilter(optionsSelected)
-            coEvery { getTicketUsecase.getTicketListResponse(any()) } returns createListTicket(false, statusTicket = CLOSED)
+            coEvery { getTicketUsecase.getTicketListResponse(any()) } returns createListTicket(
+                false,
+                statusTicket = CLOSED
+            )
             viewModel.getTicketItems()
             val stateData = viewModel.uiState.value
             assertEquals(2, stateData.ticketItems.size)
@@ -306,15 +317,18 @@ class InboxContactUsViewModelTest {
                 InboxFilterSelection(CLOSED, "Closed", true)
             )
             viewModel.setOptionsFilter(optionsSelected)
-            coEvery { getTicketUsecase.getTicketListResponse(any()) } returns createListTicketHasNextAndPref(false, statusTicket = CLOSED)
+            coEvery { getTicketUsecase.getTicketListResponse(any()) } returns createListTicketHasNextAndPref(
+                false,
+                statusTicket = CLOSED
+            )
             viewModel.getTicketItems()
             val stateData = viewModel.uiState.value
             assertEquals(2, stateData.ticketItems.size)
         }
     }
-    
+
     @Test
-    fun `check getItemTicketOnPosition`(){
+    fun `check getItemTicketOnPosition`() {
         runBlockingTest {
             val listResponse = createListTicketHasNextAndPref(false, statusTicket = CLOSED)
             val target = listResponse.getTicketOnInbox().getTicket().getTicketList()[0]
@@ -333,7 +347,7 @@ class InboxContactUsViewModelTest {
     }
 
     @Test
-    fun `check restart paging`(){
+    fun `check restart paging`() {
         viewModel.restartPageOfList()
         val stateData = viewModel.uiState.value
         assertEquals(stateData.offset, 0)
@@ -413,7 +427,6 @@ class InboxContactUsViewModelTest {
             NEED_RATING -> {
                 for (i in 1..3) {
                     list.add(createTicketItem(statusTicket.toLong(), i.toString()))
-
                 }
             }
             IN_PROGRESS -> {
@@ -428,7 +441,6 @@ class InboxContactUsViewModelTest {
             }
         }
         return list
-
     }
 
     private fun createTicketItem(

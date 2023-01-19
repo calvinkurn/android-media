@@ -11,12 +11,18 @@ private const val SERVER_ID = "server_id"
 
 class SecureUploadUseCase @Inject constructor(private val repository: ContactUsRepository) {
 
-    suspend fun getSecureImageParameter(body: MultipartBody.Part, chipUploadHostConfig: ChipUploadHostConfig): SecureImageParameter {
+    suspend fun getSecureImageParameter(
+        body: MultipartBody.Part,
+        chipUploadHostConfig: ChipUploadHostConfig
+    ): SecureImageParameter {
         val secureImageParameter = repository.postMultiRestData<SecureImageParameter>(
             chipUploadHostConfig.getUploadHostConfig().getUploadHostConfigData().getHost().getSecureHost(),
-                object : TypeToken<SecureImageParameter>() {}.type,
-                queryMap = mapOf(SERVER_ID to chipUploadHostConfig.getUploadHostConfig().getUploadHostConfigData().getHost().getSecureHost()),
-                body = body)
+            object : TypeToken<SecureImageParameter>() {}.type,
+            queryMap = mapOf(
+                SERVER_ID to chipUploadHostConfig.getUploadHostConfig().getUploadHostConfigData().getHost().getSecureHost()
+            ),
+            body = body
+        )
         return secureImageParameter
     }
 }

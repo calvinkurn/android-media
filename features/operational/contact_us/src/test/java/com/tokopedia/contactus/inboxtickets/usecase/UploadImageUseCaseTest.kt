@@ -31,7 +31,9 @@ class UploadImageUseCaseTest {
 
     private val context: Context = mockk(relaxed = true)
     private val uploadImageUseCase = mockk<UploadImageUseCase<UploadImageResponse>>(relaxed = true)
-    private var contactUsUploadImageUseCase = spyk(ContactUsUploadImageUseCase(context, uploadImageUseCase))
+    private var contactUsUploadImageUseCase = spyk(
+        ContactUsUploadImageUseCase(context, uploadImageUseCase)
+    )
     private lateinit var userSession: UserSessionInterface
     private val list = ArrayList<ImageUpload>()
 
@@ -52,30 +54,39 @@ class UploadImageUseCaseTest {
     @Test
     fun `check invocation of uploadFile with parameter list as null`() {
         runBlockingTest {
-            val list = contactUsUploadImageUseCase.uploadFile("", mockk(relaxed = true), mockk(relaxed = true), mockk(relaxed = true))
+            val list = contactUsUploadImageUseCase.uploadFile(
+                "",
+                mockk(relaxed = true),
+                mockk(relaxed = true),
+                mockk(relaxed = true)
+            )
             assertEquals(list.size, 0)
         }
     }
 
     @Test
     fun `check picObj value on invocation of upload file`() {
-
         runBlockingTest {
             list.add(ImageUpload("", "", "", ""))
             val listfile = listOf<String>("file1")
             val response = mockk<UploadImageResponse>(relaxed = true)
-            
+
             every { uploadImageUseCase.createObservable(any()).toBlocking().first().dataResultImageUpload } returns response
             every { response.data.picObj } returns "picObj"
 
-            every { contactUsUploadImageUseCase.getModifiedPicObj(any(),any()) } returns "picObj"
+            every { contactUsUploadImageUseCase.getModifiedPicObj(any(), any()) } returns "picObj"
 
-            contactUsUploadImageUseCase.uploadFile("", list, listfile, arrayListOf<SecureImageParameter>(
-                mockk(relaxed = true)))
+            contactUsUploadImageUseCase.uploadFile(
+                "",
+                list,
+                listfile,
+                arrayListOf<SecureImageParameter>(
+                    mockk(relaxed = true)
+                )
+            )
 
             assertEquals(list[0].picObj, "picObj")
         }
-
     }
 
     @Test

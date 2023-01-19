@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.contactus.R
-import com.tokopedia.contactus.inboxtickets.view.adapter.ImageUploadAdapter
 import com.tokopedia.contactus.inboxtickets.data.ImageUpload
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -17,11 +16,17 @@ import java.io.File
 
 private const val DUMMY_IMAGE_RESOURCE_FOR_LOCAL_FILE = -1
 
-class ImageUploadAdapter(private val context: Context, private val onSelectImageClick: OnSelectImageClick, private val onClickCross: () -> Unit) : RecyclerView.Adapter<ImageUploadAdapter.ImageViewHolder>() {
+class ImageUploadAdapter(
+    private val context: Context,
+    private val onSelectImageClick: OnSelectImageClick,
+    private val onClickCross: () -> Unit
+) : RecyclerView.Adapter<ImageUploadAdapter.ImageViewHolder>() {
     private val maxPicUpload = 5
     private val imageUpload: ArrayList<ImageUpload> by lazy { ArrayList<ImageUpload>() }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
-        return ImageViewHolder(LayoutInflater.from(context).inflate(R.layout.selected_image_item, parent, false))
+        return ImageViewHolder(
+            LayoutInflater.from(context).inflate(R.layout.selected_image_item, parent, false)
+        )
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
@@ -80,7 +85,6 @@ class ImageUploadAdapter(private val context: Context, private val onSelectImage
             imageUpload.remove(image)
             notifyDataSetChanged()
         }
-
     }
 
     interface OnSelectImageClick {

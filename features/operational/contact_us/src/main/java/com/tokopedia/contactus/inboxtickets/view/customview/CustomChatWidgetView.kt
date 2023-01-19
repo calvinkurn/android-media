@@ -10,8 +10,12 @@ import com.tokopedia.contactus.R
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.unifycomponents.ImageUnify
 
-class CustomChatWidgetView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : FrameLayout(context, attrs, defStyleAttr) {
+class CustomChatWidgetView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) :
+    FrameLayout(context, attrs, defStyleAttr) {
 
     private var chatWidgetButton: ImageUnify
     private var widgetCardView: CardView
@@ -43,11 +47,11 @@ class CustomChatWidgetView @JvmOverloads constructor(context: Context, attrs: At
         widgetCardView.cardElevation = 0F
     }
 
-    fun setToolTipDescription(description: CharSequence){
+    fun setToolTipDescription(description: CharSequence) {
         toolTip.setToolTipDescription(description)
     }
 
-    fun setToolTipButtonLister(listener : ChatWidgetToolTip.ChatWidgetToolTipListener){
+    fun setToolTipButtonLister(listener: ChatWidgetToolTip.ChatWidgetToolTipListener) {
         toolTip.setUpToolTipButtonListener(listener)
     }
 

@@ -49,13 +49,21 @@ class Utils {
         return occurrences
     }
 
-    fun getHighlightText(context: Context,what: String, src: String): SpannableString {
+    fun getHighlightText(context: Context, what: String, src: String): SpannableString {
         val spannableString = SpannableString(src)
         if (what.isNotEmpty()) {
             val occurences = findOccurrences(what, src)
             for (start in occurences) {
-                val styleSpan =  getColorResource(com.tokopedia.unifyprinciples.R.color.Unify_Y200, context)
-                spannableString.setSpan(styleSpan, start, start + what.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+                val styleSpan = getColorResource(
+                    com.tokopedia.unifyprinciples.R.color.Unify_Y200,
+                    context
+                )
+                spannableString.setSpan(
+                    styleSpan,
+                    start,
+                    start + what.length,
+                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+                )
             }
         }
         return spannableString
@@ -65,14 +73,36 @@ class Utils {
         return MethodChecker.getColor(context, colorId)
     }
 
-    fun getStatusTitle(src: String, background: Int, textColor: Int, textSize: Int, mContext: Context): SpannableString {
+    fun getStatusTitle(
+        src: String,
+        background: Int,
+        textColor: Int,
+        textSize: Int,
+        mContext: Context
+    ): SpannableString {
         val spannableString = SpannableString(src)
         val start = src.lastIndexOf(".") + 4
-        val roundedBackgroundSpan = RoundedBackgroundSpan(background, textColor, textSize.toFloat(),
-                convertDpToPx(8, mContext), convertDpToPx(4, mContext), convertDpToPx(2, mContext), convertDpToPx(2, mContext))
-        spannableString.setSpan(roundedBackgroundSpan, start, src.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-        spannableString.setSpan(AbsoluteSizeSpan(textSize), start,
-                src.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        val roundedBackgroundSpan = RoundedBackgroundSpan(
+            background,
+            textColor,
+            textSize.toFloat(),
+            convertDpToPx(8, mContext),
+            convertDpToPx(4, mContext),
+            convertDpToPx(2, mContext),
+            convertDpToPx(2, mContext)
+        )
+        spannableString.setSpan(
+            roundedBackgroundSpan,
+            start,
+            src.length,
+            Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+        )
+        spannableString.setSpan(
+            AbsoluteSizeSpan(textSize),
+            start,
+            src.length,
+            Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+        )
         return spannableString
     }
 
@@ -95,7 +125,10 @@ class Utils {
             return dateFormat.format(Date(System.currentTimeMillis()))
         }
 
-    private val dateFormat:SimpleDateFormat by lazy { SimpleDateFormat("d MMM 'pukul' HH:mm", locale) }
+    private val dateFormat: SimpleDateFormat by lazy { SimpleDateFormat(
+        "d MMM 'pukul' HH:mm",
+        locale
+    ) }
 
     fun getDateTimeYear(isoTime: String?): String {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale)
@@ -105,7 +138,9 @@ class Utils {
         timeFormat.timeZone = TimeZone.getTimeZone("Asia/Jakarta")
         return try {
             val date = inputFormat.parse(isoTime)
-            if (DateUtils.isToday(date.time)) timeFormat.format(date) else if (isYesterday(date.time)) {
+            if (DateUtils.isToday(date.time)) timeFormat.format(date) else if (isYesterday(
+                    date.time
+                )) {
                 "Kemarin"
             } else {
                 dateFormat.format(date)
@@ -137,7 +172,8 @@ class Utils {
         for (item in 0 until size) {
             val image = uploadImageList.get(item)
             if (fileSizeValid(image.fileLoc ?: "") &&
-                    isBitmapDimenValid(image.fileLoc ?: "")) {
+                isBitmapDimenValid(image.fileLoc ?: "")
+            ) {
                 count++
             }
         }
@@ -150,17 +186,18 @@ class Utils {
             attachmentString.append("~").append(it.imageId)
         }
         attachmentString = StringBuilder(attachmentString.toString().replace("~~", "~"))
-        if (attachmentString.isNotEmpty()) attachmentString = StringBuilder(attachmentString.substring(1))
+        if (attachmentString.isNotEmpty()) attachmentString = StringBuilder(
+            attachmentString.substring(1)
+        )
 
         return attachmentString.toString()
-
     }
 
     fun getFileUploaded(attachment: List<ImageUpload>): String {
-        var reviewPhotos : JSONObject?= null
+        var reviewPhotos: JSONObject? = null
         try {
             attachment.forEachIndexed { index, imageUpload ->
-                if(index == 0){
+                if (index == 0) {
                     reviewPhotos = JSONObject()
                 }
                 reviewPhotos?.put(imageUpload.imageId, imageUpload.picObj)
@@ -168,11 +205,15 @@ class Utils {
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-        return reviewPhotos?.toString()?:""
+        return reviewPhotos?.toString() ?: ""
     }
 
     private fun convertDpToPx(dp: Int, mContext: Context): Float {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), mContext.resources.displayMetrics)
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp.toFloat(),
+            mContext.resources.displayMetrics
+        )
     }
 
     private val locale: Locale by lazy { Locale("in", "ID", "") }
@@ -184,9 +225,10 @@ class Utils {
         val thenMonth = mTime.month
         val thenMonthDay = mTime.monthDay
         mTime.set(System.currentTimeMillis())
-        return (thenYear == mTime.year
-                && thenMonth == mTime.month
-                && thenMonthDay == mTime.monthDay - 1)
+        return (
+            thenYear == mTime.year &&
+                thenMonth == mTime.month &&
+                thenMonthDay == mTime.monthDay - 1
+            )
     }
-
 }

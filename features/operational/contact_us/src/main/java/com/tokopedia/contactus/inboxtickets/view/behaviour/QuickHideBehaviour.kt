@@ -17,39 +17,50 @@ import androidx.core.view.ViewCompat
 class QuickHideBehaviour : CoordinatorLayout.Behavior<View> {
     /* Tracking direction of user motion */
     private var mScrollingDirection = 0
+
     /* Tracking last threshold crossed */
     private var mScrollTrigger = 0
+
     /* Accumulated scroll distance */
     private var mScrollDistance = 0
+
     /* Distance threshold to trigger animation */
     private var mScrollThreshold = 0
     private var mAnimator: ObjectAnimator? = null
 
-    //Required to instantiate as a default behavior
+    // Required to instantiate as a default behavior
     constructor()
 
-    //Required to attach behavior via XML
+    // Required to attach behavior via XML
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         val a = context.theme
-                .obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize))
-        //Use half the standard action bar height
+            .obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize))
+        // Use half the standard action bar height
         mScrollThreshold = a.getDimensionPixelSize(0, 0) / 2
         a.recycle()
     }
 
-    //Called before a nested scroll event. Return true to declare interest
-    override fun onStartNestedScroll(coordinatorLayout: CoordinatorLayout,
-                                     child: View, directTargetChild: View, target: View,
-                                     nestedScrollAxes: Int): Boolean { //We have to declare interest in the scroll to receive further events
+    // Called before a nested scroll event. Return true to declare interest
+    override fun onStartNestedScroll(
+        coordinatorLayout: CoordinatorLayout,
+        child: View,
+        directTargetChild: View,
+        target: View,
+        nestedScrollAxes: Int
+    ): Boolean { // We have to declare interest in the scroll to receive further events
         return nestedScrollAxes and ViewCompat.SCROLL_AXIS_VERTICAL != 0
     }
 
-    //Called before the scrolling child consumes the event
+    // Called before the scrolling child consumes the event
 // We can steal all/part of the event by filling in the consumed array
-    override fun onNestedPreScroll(coordinatorLayout: CoordinatorLayout,
-                                   child: View, target: View,
-                                   dx: Int, dy: Int,
-                                   consumed: IntArray) { //Determine direction changes here
+    override fun onNestedPreScroll(
+        coordinatorLayout: CoordinatorLayout,
+        child: View,
+        target: View,
+        dx: Int,
+        dy: Int,
+        consumed: IntArray
+    ) { // Determine direction changes here
         if (dy > 0 && mScrollingDirection != DIRECTION_UP) {
             mScrollingDirection = DIRECTION_UP
             mScrollDistance = 0
@@ -59,30 +70,39 @@ class QuickHideBehaviour : CoordinatorLayout.Behavior<View> {
         }
     }
 
-    //Called after the scrolling child consumes the event, with amount consumed
-    override fun onNestedScroll(coordinatorLayout: CoordinatorLayout,
-                                child: View, target: View,
-                                dxConsumed: Int, dyConsumed: Int,
-                                dxUnconsumed: Int, dyUnconsumed: Int) { //Consumed distance is the actual distance traveled by the scrolling view
+    // Called after the scrolling child consumes the event, with amount consumed
+    override fun onNestedScroll(
+        coordinatorLayout: CoordinatorLayout,
+        child: View,
+        target: View,
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int
+    ) { // Consumed distance is the actual distance traveled by the scrolling view
         mScrollDistance += dyConsumed
-        if (mScrollDistance > mScrollThreshold
-                && mScrollTrigger != DIRECTION_UP
-        ) { //Hide the target view
+        if (mScrollDistance > mScrollThreshold &&
+            mScrollTrigger != DIRECTION_UP
+        ) { // Hide the target view
             mScrollTrigger = DIRECTION_UP
             restartAnimator(child, getTargetHideValue(coordinatorLayout, child))
-        } else if (mScrollDistance < -mScrollThreshold
-                && mScrollTrigger != DIRECTION_DOWN
-        ) { //Return the target view
+        } else if (mScrollDistance < -mScrollThreshold &&
+            mScrollTrigger != DIRECTION_DOWN
+        ) { // Return the target view
             mScrollTrigger = DIRECTION_DOWN
             restartAnimator(child, 0f)
         }
     }
 
-    //Called after the scrolling child handles the fling
-    override fun onNestedFling(coordinatorLayout: CoordinatorLayout,
-                               child: View, target: View,
-                               velocityX: Float, velocityY: Float,
-                               consumed: Boolean): Boolean { //We only care when the target view is already handling the fling
+    // Called after the scrolling child handles the fling
+    override fun onNestedFling(
+        coordinatorLayout: CoordinatorLayout,
+        child: View,
+        target: View,
+        velocityX: Float,
+        velocityY: Float,
+        consumed: Boolean
+    ): Boolean { // We only care when the target view is already handling the fling
         if (consumed) {
             if (velocityY > 0 && mScrollTrigger != DIRECTION_UP) {
                 mScrollTrigger = DIRECTION_UP
@@ -95,15 +115,15 @@ class QuickHideBehaviour : CoordinatorLayout.Behavior<View> {
         return false
     }
 
-    /* Helper Methods */ //Helper to trigger hide/show animation
+    /* Helper Methods */ // Helper to trigger hide/show animation
     private fun restartAnimator(target: View, value: Float) {
         if (mAnimator != null) {
             mAnimator!!.cancel()
             mAnimator = null
         }
         mAnimator = ObjectAnimator
-                .ofFloat(target, View.TRANSLATION_Y, value)
-                .setDuration(250)
+            .ofFloat(target, View.TRANSLATION_Y, value)
+            .setDuration(250)
         mAnimator?.start()
     }
 

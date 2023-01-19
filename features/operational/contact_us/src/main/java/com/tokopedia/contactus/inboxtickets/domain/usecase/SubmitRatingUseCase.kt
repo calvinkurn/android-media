@@ -11,8 +11,9 @@ const val COMMENT_ID = "commentID"
 const val CSAT_RATING = "rating"
 const val REASON = "reason"
 
-class SubmitRatingUseCase @Inject constructor(@Named("submit_rating") val submitRatingQuery: String,
-                                              private val repository: ContactUsRepository
+class SubmitRatingUseCase @Inject constructor(
+    @Named("submit_rating") val submitRatingQuery: String,
+    private val repository: ContactUsRepository
 ) {
 
     fun createRequestParams(commentID: String, rating: Int, reason: String): RequestParams {
@@ -23,11 +24,11 @@ class SubmitRatingUseCase @Inject constructor(@Named("submit_rating") val submit
         return requestParams
     }
 
-
     suspend fun getChipInboxDetail(requestParams: RequestParams): ChipGetInboxDetail {
-        return repository.getGQLData(submitRatingQuery,
+        return repository.getGQLData(
+            submitRatingQuery,
             ChipInboxDetails::class.java,
-            requestParams.parameters).getInboxDetail()
+            requestParams.parameters
+        ).getInboxDetail()
     }
-
 }

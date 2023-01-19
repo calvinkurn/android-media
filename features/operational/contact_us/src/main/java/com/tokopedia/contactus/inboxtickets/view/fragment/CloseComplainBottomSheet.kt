@@ -6,12 +6,17 @@ import android.widget.TextView
 import com.tokopedia.contactus.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class CloseComplainBottomSheet(context: Context,
-                               private val closeBottomSheetListener: CloseComplainBottomSheetListner
+class CloseComplainBottomSheet(
+    context: Context,
+    private val closeBottomSheetListener: CloseComplainBottomSheetListner
 ) : BottomSheetUnify(), View.OnClickListener {
 
     init {
-        val closeComplainView = View.inflate(context, R.layout.close_complain_bottom_sheet_layout, null)
+        val closeComplainView = View.inflate(
+            context,
+            R.layout.close_complain_bottom_sheet_layout,
+            null
+        )
         val noButton = closeComplainView.findViewById<TextView>(R.id.tv_no_button)
         val yesButton = closeComplainView.findViewById<TextView>(R.id.tv_yes_button)
         noButton.setOnClickListener(this)

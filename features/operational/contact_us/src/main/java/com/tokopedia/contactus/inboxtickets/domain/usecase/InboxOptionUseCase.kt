@@ -8,9 +8,10 @@ import javax.inject.Inject
 import javax.inject.Named
 
 const val CASEID = "caseID"
-class InboxOptionUseCase @Inject constructor(@Named("inbox_question_query") val inboxQuestionQuery: String,
-                                             private val repository: ContactUsRepository
-){
+class InboxOptionUseCase @Inject constructor(
+    @Named("inbox_question_query") val inboxQuestionQuery: String,
+    private val repository: ContactUsRepository
+) {
 
     fun createRequestParams(id: String?): RequestParams {
         val requestParams = RequestParams.create()
@@ -19,8 +20,10 @@ class InboxOptionUseCase @Inject constructor(@Named("inbox_question_query") val 
     }
 
     suspend fun getChipInboxDetail(requestParams: RequestParams): ChipGetInboxDetail {
-        return repository.getGQLData(inboxQuestionQuery, ChipInboxDetails::class.java, requestParams.parameters).getInboxDetail()
+        return repository.getGQLData(
+            inboxQuestionQuery,
+            ChipInboxDetails::class.java,
+            requestParams.parameters
+        ).getInboxDetail()
     }
-
-
 }

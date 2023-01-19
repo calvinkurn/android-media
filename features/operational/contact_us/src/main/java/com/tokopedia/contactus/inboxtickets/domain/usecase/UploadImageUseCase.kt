@@ -24,25 +24,32 @@ const val IMAGE_QUALITY = 70
 private const val PARAM_WEB_SERVICE = "web_service"
 private const val PARAM_ID = "id"
 
-class ContactUsUploadImageUseCase @Inject constructor(private val context: Context,
-                                                      private val uploadImageUseCase: UploadImageUseCase<UploadImageResponse>) {
+class ContactUsUploadImageUseCase @Inject constructor(
+    private val context: Context,
+    private val uploadImageUseCase: UploadImageUseCase<UploadImageResponse>
+) {
 
-   suspend fun uploadFile(userId: String,
-                          imageUploads: List<ImageUpload>?,
-                          files: List<String>,
-                          listOfSecureImageParmeter: ArrayList<SecureImageParameter>): List<ImageUpload>{
+    fun uploadFile(
+        userId: String,
+        imageUploads: List<ImageUpload>?,
+        files: List<String>,
+        listOfSecureImageParmeter: ArrayList<SecureImageParameter>
+    ): List<ImageUpload> {
         val list = ArrayList<ImageUpload>()
         imageUploads?.forEachIndexed { index, imageUpload ->
 
-            val params =getParams(userId,files[index])
+            val params = getParams(userId, files[index])
 
             val response = uploadImageUseCase
-                    .createObservable(params)
-                    .toBlocking()
-                    .first()
-                    .dataResultImageUpload
+                .createObservable(params)
+                .toBlocking()
+                .first()
+                .dataResultImageUpload
 
-            imageUpload.picObj = getModifiedPicObj(response.data.picObj, listOfSecureImageParmeter[index])
+            imageUpload.picObj = getModifiedPicObj(
+                response.data.picObj,
+                listOfSecureImageParmeter[index]
+            )
             list.add(imageUpload)
         }
         return list
@@ -50,20 +57,27 @@ class ContactUsUploadImageUseCase @Inject constructor(private val context: Conte
 
     fun getModifiedPicObj(picObj: String, secureImageParameter: SecureImageParameter): String {
         val picObjPojo = GsonBuilder().create()
-                .fromJson(picObj.decode(),
-                        PicObjPojo::class.java)
+            .fromJson(
+                picObj.decode(),
+                PicObjPojo::class.java
+            )
         picObjPojo.fileName = secureImageParameter.getImage().imageDataValues?.fileName.orEmpty()
         picObjPojo.filePath = secureImageParameter.getImage().imageDataValues?.filePath.orEmpty()
 
-        return Gson().toJson(picObjPojo).encode();
+        return Gson().toJson(picObjPojo).encode()
     }
 
     private fun String.decode(): String {
-        return android.util.Base64.decode(this, android.util.Base64.DEFAULT).toString(charset("UTF-8"))
+        return android.util.Base64.decode(this, android.util.Base64.DEFAULT).toString(
+            charset("UTF-8")
+        )
     }
 
     private fun String.encode(): String {
-        return android.util.Base64.encodeToString(this.toByteArray(charset("UTF-8")), android.util.Base64.DEFAULT)
+        return android.util.Base64.encodeToString(
+            this.toByteArray(charset("UTF-8")),
+            android.util.Base64.DEFAULT
+        )
     }
 
     private fun getParams(userId: String, pathFile: String): RequestParams {
@@ -71,12 +85,13 @@ class ContactUsUploadImageUseCase @Inject constructor(private val context: Conte
         reqParam[PARAM_WEB_SERVICE] = createRequestBody("1")
         reqParam[PARAM_ID] = createRequestBody(String.format("%s%s", userId, pathFile))
 
-        return uploadImageUseCase.createRequestParam(pathFile,
-                IMAGE_UPLOAD_PATH,
-                ATTACHMENT_TYPE,
-                reqParam)
+        return uploadImageUseCase.createRequestParam(
+            pathFile,
+            IMAGE_UPLOAD_PATH,
+            ATTACHMENT_TYPE,
+            reqParam
+        )
     }
-
 
     private fun createRequestBody(content: String): RequestBody {
         return content.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -87,11 +102,13 @@ class ContactUsUploadImageUseCase @Inject constructor(private val context: Conte
         val list = ArrayList<String>()
         imageUpload?.forEach {
             val s = ImageProcessingUtil.compressImageFile(it.fileLoc ?: "", IMAGE_QUALITY)
-            list.add(try {
-                s.absolutePath
-            } catch (e: IOException) {
-                throw IOException(context.getString(R.string.contact_us_error_upload_image))
-            })
+            list.add(
+                try {
+                    s.absolutePath
+                } catch (e: IOException) {
+                    throw IOException(context.getString(R.string.contact_us_error_upload_image))
+                }
+            )
         }
         return list
     }

@@ -6,13 +6,17 @@ interface InboxDetailListener {
     fun onCommentClick(agreed: Boolean, commentPosition: Int, commentId: String)
     fun onPriorityLabelClick()
     fun onTransactionDetailsClick()
-    fun showImageAttachment(position: Int,
-                            imagesURL: List<AttachmentItem>)
+    fun showImageAttachment(
+        position: Int,
+        imagesURL: List<AttachmentItem>
+    )
 
     fun scrollTo(position: Int)
 }
 
-interface AttachmentListener{
-    fun showImagePreview(position: Int,
-                         imagesItems: List<AttachmentItem>)
+interface AttachmentListener {
+    fun showImagePreview(
+        position: Int,
+        imagesItems: List<AttachmentItem>
+    )
 }

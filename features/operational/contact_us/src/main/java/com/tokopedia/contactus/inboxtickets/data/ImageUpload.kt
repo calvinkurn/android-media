@@ -4,26 +4,29 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.contactus.R
 
-data class ImageUpload(var imageId: String? = null,
-                       var fileLoc: String? = null,
-                       var picSrc: String? = null,
-                       val picSrcLarge: String? = null,
-                       var picObj: String? = null,
-                       var position: Int = 0,
-                       val description: String? = null,
-                       val isSelected: Boolean = false,
-                       var imgSrc: Int = R.drawable.ic_upload) :Parcelable {
+data class ImageUpload(
+    var imageId: String? = null,
+    var fileLoc: String? = null,
+    var picSrc: String? = null,
+    val picSrcLarge: String? = null,
+    var picObj: String? = null,
+    var position: Int = 0,
+    val description: String? = null,
+    val isSelected: Boolean = false,
+    var imgSrc: Int = R.drawable.ic_upload
+) : Parcelable {
 
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readInt()) {
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readInt(),
+        parcel.readString(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readInt()
+    ) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

@@ -21,15 +21,21 @@ private const val HEADER_REFERER_KEY = "Referer"
 private const val HEADER_REFERER_VALUE = "tokopedia.com/help/inbox"
 private const val CONTACT_US = "contact-us"
 private const val HTTP_LENGTH = 4
-class AttachmentAdapter constructor(data: List<AttachmentItem>,
-                                    listenerAttachment: AttachmentListener,
-                                    private val userId: String,
-                                    private val caseId: String) : RecyclerView.Adapter<AttachmentViewHolder>() {
+class AttachmentAdapter constructor(
+    data: List<AttachmentItem>,
+    listenerAttachment: AttachmentListener,
+    private val userId: String,
+    private val caseId: String
+) : RecyclerView.Adapter<AttachmentViewHolder>() {
     private val attachmentList: MutableList<AttachmentItem>
     private val caseIdList: MutableList<String> by lazy { ArrayList<String>() }
     private var listener: AttachmentListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AttachmentViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.layout_attachment_item, parent, false)
+        val v = LayoutInflater.from(parent.context).inflate(
+            R.layout.layout_attachment_item,
+            parent,
+            false
+        )
         return AttachmentViewHolder(v)
     }
 
@@ -82,16 +88,18 @@ class AttachmentAdapter constructor(data: List<AttachmentItem>,
 
         private fun getUrl(url: String?): GlideUrl {
             return if (url?.contains(CONTACT_US) == true) {
-                GlideUrl(url, LazyHeaders.Builder()
-                    .addHeader(HEADER_USER_ID_KEY, userId)
-                    .addHeader(HEADER_CASE_ID_KEY, caseId)
-                    .addHeader(HEADER_REFERER_KEY, HEADER_REFERER_VALUE)
-                    .build())
+                GlideUrl(
+                    url,
+                    LazyHeaders.Builder()
+                        .addHeader(HEADER_USER_ID_KEY, userId)
+                        .addHeader(HEADER_CASE_ID_KEY, caseId)
+                        .addHeader(HEADER_REFERER_KEY, HEADER_REFERER_VALUE)
+                        .build()
+                )
             } else {
                 GlideUrl(url)
             }
         }
-
     }
 
     init {

@@ -24,18 +24,24 @@ private const val TICKET_REPLY_ATTACH: String = """
 class PostMessageUseCase2 @Inject internal constructor(private val repository: ContactUsRepository) {
 
     suspend fun getInboxDataResponse(requestParams: RequestParams): StepTwoResponse {
-        return repository.getGQLData(TicketReplyAttach.GQL_QUERY, StepTwoResponse::class.java, requestParams.parameters)
-
+        return repository.getGQLData(
+            TicketReplyAttach.GQL_QUERY,
+            StepTwoResponse::class.java,
+            requestParams.parameters
+        )
     }
 
-    fun createRequestParams(ticketId: String, userId: String, fileUploaded: String, postKey: String): RequestParams {
+    fun createRequestParams(
+        ticketId: String,
+        userId: String,
+        fileUploaded: String,
+        postKey: String
+    ): RequestParams {
         val requestParams = RequestParams.create()
-        requestParams.putString(USER_ID,userId)
+        requestParams.putString(USER_ID, userId)
         requestParams.putString(FILE_UPLOADED, fileUploaded)
         requestParams.putString(POST_KEY, postKey)
         requestParams.putString(TICKETID, ticketId)
         return requestParams
     }
-
-
 }

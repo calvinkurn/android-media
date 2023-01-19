@@ -142,7 +142,6 @@ class TicketViewModelTest {
         assertEquals("open", statusTicket)
         val commentIsEmpty = viewModel.isCommentEmpty()
         assertEquals(true, commentIsEmpty)
-
     }
 
     @Test
@@ -448,7 +447,11 @@ class TicketViewModelTest {
                 )
             } returns mockk(relaxed = false)
             coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery { graphResponseSend.getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns successData
+            coEvery {
+                graphResponseSend.getData<TicketReplyResponse>(
+                    TicketReplyResponse::class.java
+                )
+            } returns successData
             coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns null
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "FAILED"
 
@@ -501,7 +504,11 @@ class TicketViewModelTest {
                 )
             } returns mockk(relaxed = false)
             coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery { graphResponseSend.getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns successData
+            coEvery {
+                graphResponseSend.getData<TicketReplyResponse>(
+                    TicketReplyResponse::class.java
+                )
+            } returns successData
             coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns null
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "OK"
             coEvery { successData.getTicketReplay().getTicketReplayData().postKey } returns ""
@@ -555,7 +562,11 @@ class TicketViewModelTest {
                 )
             } returns mockk(relaxed = false)
             coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery { graphResponseSend.getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns successData
+            coEvery {
+                graphResponseSend.getData<TicketReplyResponse>(
+                    TicketReplyResponse::class.java
+                )
+            } returns successData
             coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns null
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "OK"
             coEvery { successData.getTicketReplay().getTicketReplayData().postKey } returns ""
@@ -610,7 +621,11 @@ class TicketViewModelTest {
                 )
             } returns mockk(relaxed = false)
             coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery { graphResponseSend.getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns successData
+            coEvery {
+                graphResponseSend.getData<TicketReplyResponse>(
+                    TicketReplyResponse::class.java
+                )
+            } returns successData
             coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns null
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "OK"
             coEvery { successData.getTicketReplay().getTicketReplayData().postKey } returns "dsadsa"
@@ -676,7 +691,11 @@ class TicketViewModelTest {
                 )
             } returns mockk(relaxed = false)
             coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery { graphResponseSend.getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns successData
+            coEvery {
+                graphResponseSend.getData<TicketReplyResponse>(
+                    TicketReplyResponse::class.java
+                )
+            } returns successData
             coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns null
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "OK"
             coEvery { successData.getTicketReplay().getTicketReplayData().postKey } returns "dsadsa"
@@ -744,7 +763,11 @@ class TicketViewModelTest {
                 )
             } returns mockk(relaxed = false)
             coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery { graphResponseSend.getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns successData
+            coEvery {
+                graphResponseSend.getData<TicketReplyResponse>(
+                    TicketReplyResponse::class.java
+                )
+            } returns successData
             coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns null
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "OK"
             coEvery { successData.getTicketReplay().getTicketReplayData().postKey } returns "dsadsa"
@@ -786,7 +809,11 @@ class TicketViewModelTest {
             val error: List<GraphqlError> =
                 arrayListOf(GraphqlError().apply { message = "asdasdas" })
             coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery { graphResponseSend.getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns successData
+            coEvery {
+                graphResponseSend.getData<TicketReplyResponse>(
+                    TicketReplyResponse::class.java
+                )
+            } returns successData
             coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns error
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "FAILED"
             coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
@@ -818,7 +845,11 @@ class TicketViewModelTest {
             val graphResponseSend: GraphqlResponse = mockk(relaxed = true)
             val error: List<GraphqlError> = arrayListOf()
             coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery { graphResponseSend.getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns successData
+            coEvery {
+                graphResponseSend.getData<TicketReplyResponse>(
+                    TicketReplyResponse::class.java
+                )
+            } returns successData
             coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns error
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "FAILED"
             coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
@@ -847,7 +878,11 @@ class TicketViewModelTest {
             val successData: TicketReplyResponse = mockk(relaxed = true)
             val graphResponseSend: GraphqlResponse = mockk(relaxed = true)
             coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery { graphResponseSend.getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns successData
+            coEvery {
+                graphResponseSend.getData<TicketReplyResponse>(
+                    TicketReplyResponse::class.java
+                )
+            } returns successData
             coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns null
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "FAILED"
             coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
@@ -876,7 +911,11 @@ class TicketViewModelTest {
             val successData: TicketReplyResponse = mockk(relaxed = true)
             val graphResponseSend: GraphqlResponse = mockk(relaxed = true)
             coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery { graphResponseSend.getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns successData
+            coEvery {
+                graphResponseSend.getData<TicketReplyResponse>(
+                    TicketReplyResponse::class.java
+                )
+            } returns successData
             coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns null
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "FAILED"
             coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
@@ -924,7 +963,11 @@ class TicketViewModelTest {
             val successData: TicketReplyResponse = mockk(relaxed = true)
             val graphResponseSend: GraphqlResponse = mockk(relaxed = true)
             coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery { graphResponseSend.getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns successData
+            coEvery {
+                graphResponseSend.getData<TicketReplyResponse>(
+                    TicketReplyResponse::class.java
+                )
+            } returns successData
             coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns null
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "OK"
             coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
@@ -1216,7 +1259,7 @@ class TicketViewModelTest {
             assertEquals(true, isOnSearchTicketKeyword)
 
             val indexSize = viewModel.searchIndices
-            assertEquals(arrayListOf(2,3,5,6,7), indexSize)
+            assertEquals(arrayListOf(2, 3, 5, 6, 7), indexSize)
             job.cancel()
         }
     }
@@ -1395,18 +1438,27 @@ class TicketViewModelTest {
     fun `getSecurelyUploadedImages is empty because one of get secure url is failed`() {
         runBlockingTest {
             val responseSecure: SecureImageParameter = mockk(relaxed = true)
-            val responseChipUpload : ChipUploadHostConfig = mockk(relaxed = true)
-            val responseChipUpload2 : ChipUploadHostConfig = mockk(relaxed = true)
-            coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf("/sasdasd", "/dasdad")
+            val responseChipUpload: ChipUploadHostConfig = mockk(relaxed = true)
+            val responseChipUpload2: ChipUploadHostConfig = mockk(relaxed = true)
+            coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf(
+                "/sasdasd",
+                "/dasdad"
+            )
             coEvery {
                 secureUploadUseCase.getSecureImageParameter(
                     any(),
                     any()
                 )
             } returns responseSecure
-            coEvery { responseChipUpload.getUploadHostConfig().getUploadHostConfigData().getHost().getServerID() } returns "1"
-            coEvery { chipUploadHostConfigUseCase.getChipUploadHostConfig() } returnsMany  arrayListOf(responseChipUpload, responseChipUpload2)
-            every { responseSecure.getImage().isSuccess() } returnsMany  arrayListOf(1,0)
+            coEvery {
+                responseChipUpload.getUploadHostConfig().getUploadHostConfigData().getHost()
+                    .getServerID()
+            } returns "1"
+            coEvery { chipUploadHostConfigUseCase.getChipUploadHostConfig() } returnsMany arrayListOf(
+                responseChipUpload,
+                responseChipUpload2
+            )
+            every { responseSecure.getImage().isSuccess() } returnsMany arrayListOf(1, 0)
             coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
                 statusTickets = "open"
             )
@@ -1421,12 +1473,13 @@ class TicketViewModelTest {
             val isFailed = actualResult is TicketUiEffect.SendTextMessageFailed
             assertEquals(true, isFailed)
             job.cancel()
-
         }
     }
 
     private fun createGetSecureImageParameter(isError: Boolean): SecureImageParameter {
-        return SecureImageParameter(imageData = SecureImageParameter.ImageData(isSuccess = if (isError) 0 else 1))
+        return SecureImageParameter(
+            imageData = SecureImageParameter.ImageData(isSuccess = if (isError) 0 else 1)
+        )
     }
 
     private fun createTicketDetail(
@@ -1442,21 +1495,23 @@ class TicketViewModelTest {
         rating: String = "",
         isAllCustomer: Boolean = false
     ): ChipGetInboxDetail {
-        val response = ChipGetInboxDetail(Data(
-            isSuccess = isSuccess,
-            tickets = Tickets().apply {
-                badCsatReasonList = createBadCsatReasonListItem()
-                isShowRating = showRating
-                id = idTicket
-                message = messageTicket
-                status = statusTickets
-                number = numberTicket
-                comments =
-                    if (isEmpty) null else createCommentsItems(rating, isAllCustomer)
-                isAllowClose = isAllowCloseTicket
-                isNeedAttachment = isNeedAttachmentTicket
-            }
-        ))
+        val response = ChipGetInboxDetail(
+            Data(
+                isSuccess = isSuccess,
+                tickets = Tickets().apply {
+                    badCsatReasonList = createBadCsatReasonListItem()
+                    isShowRating = showRating
+                    id = idTicket
+                    message = messageTicket
+                    status = statusTickets
+                    number = numberTicket
+                    comments =
+                        if (isEmpty) null else createCommentsItems(rating, isAllCustomer)
+                    isAllowClose = isAllowCloseTicket
+                    isNeedAttachment = isNeedAttachmentTicket
+                }
+            )
+        )
 
         return response
     }
@@ -1464,11 +1519,13 @@ class TicketViewModelTest {
     private fun createBadCsatReasonListItem(): ArrayList<BadCsatReasonListItem> {
         val badCsatReasonListItem: ArrayList<BadCsatReasonListItem> = arrayListOf()
         for (i in 1..6) {
-            badCsatReasonListItem.add(BadCsatReasonListItem().apply {
-                id = i.toLong()
-                messageEn = "message-$i"
-                message = "message-$i"
-            })
+            badCsatReasonListItem.add(
+                BadCsatReasonListItem().apply {
+                    id = i
+                    messageEn = "message-$i"
+                    message = "message-$i"
+                }
+            )
         }
         return badCsatReasonListItem
     }
@@ -1488,7 +1545,7 @@ class TicketViewModelTest {
                     createdBy = if (isAllCustomer) CreatedBy(role = "customer") else if (i % 2 == 0) CreatedBy(
                         role = "agent"
                     ) else CreatedBy(role = "customer"),
-                    createTime = if(i==2) "" else "2023-01-04T06:09:08.000+0000"
+                    createTime = if (i == 2) "" else "2023-01-04T06:09:08.000+0000"
                 )
             )
         }
@@ -1521,5 +1578,4 @@ class TicketViewModelTest {
             .apply { isAccessible = true }
             .set(this, value)
     }
-
 }

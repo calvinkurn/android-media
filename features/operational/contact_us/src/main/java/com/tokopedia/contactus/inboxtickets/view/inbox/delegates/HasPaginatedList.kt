@@ -2,7 +2,6 @@ package com.tokopedia.contactus.inboxtickets.view.inbox.delegates
 
 import androidx.recyclerview.widget.RecyclerView
 
-
 interface HasPaginatedList {
     data class Config(
         val pageSize: Int,

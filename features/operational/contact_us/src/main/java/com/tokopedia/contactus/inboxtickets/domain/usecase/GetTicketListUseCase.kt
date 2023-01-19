@@ -8,15 +8,19 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 const val STATUS = "status"
-const val READ = "read"
 const val RATING = "rating"
 private const val USERID = "userID"
 private const val PAGE = "page"
-class GetTicketListUseCase @Inject constructor(private val userSession: UserSessionInterface,
-                                               private val repository: ContactUsRepository
+class GetTicketListUseCase @Inject constructor(
+    private val userSession: UserSessionInterface,
+    private val repository: ContactUsRepository
 ) {
     suspend fun getTicketListResponse(requestParams: RequestParams): InboxTicketListResponse {
-        return repository.getGQLData(TICKET_LIST_QUERY, InboxTicketListResponse::class.java, requestParams.parameters)
+        return repository.getGQLData(
+            TICKET_LIST_QUERY,
+            InboxTicketListResponse::class.java,
+            requestParams.parameters
+        )
     }
 
     fun getRequestParams(page: Int, status: Int, rating: Int = 0): RequestParams {

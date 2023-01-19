@@ -25,6 +25,10 @@ const val CHIP_TOP_BOT_STATUS_QUERY = """
 class ChipTopBotStatusUseCase @Inject constructor() : BaseRepository() {
 
     suspend fun getChipTopBotStatus(): ChipTopBotStatusResponse {
-        return getGQLData(ChipTopBotStatusQuery.GQL_QUERY, ChipTopBotStatusResponse::class.java, emptyMap())
+        return getGQLData(
+            ChipTopBotStatusQuery.GQL_QUERY,
+            ChipTopBotStatusResponse::class.java,
+            emptyMap()
+        )
     }
 }

@@ -24,11 +24,10 @@ class InboxHeaderViewHolder(val view: View) : InboxDetailViewHolder(view) {
 
     fun bind(header: CommentsItem, inboxDetailListener: InboxDetailListener, utils: Utils) {
         ticketTitle.text = setTitle(header.ticketTitle ?: "", header.ticketStatus ?: "", utils)
-                ?: header.ticketTitle ?: ""
+            ?: header.ticketTitle ?: ""
         setPriorityLabel(header.priorityLabel, inboxDetailListener)
         setTicketId(header.ticketId ?: "")
         ticketTransactionDetails.setOnClickListener { inboxDetailListener.onTransactionDetailsClick() }
-
     }
 
     private fun setPriorityLabel(priorityLabel: Boolean, inboxDetailListener: InboxDetailListener) {
@@ -68,7 +67,9 @@ class InboxHeaderViewHolder(val view: View) : InboxDetailViewHolder(view) {
                     ContextCompat.getColor(
                         context,
                         com.tokopedia.unifyprinciples.R.color.Unify_NN100
-                    ), context.resources.getDimensionPixelSize(R.dimen.sp_11), context
+                    ),
+                    context.resources.getDimensionPixelSize(R.dimen.sp_11),
+                    context
                 )
             TICKET_STATUS_CLOSED ->
                 utils.getStatusTitle(
@@ -80,11 +81,11 @@ class InboxHeaderViewHolder(val view: View) : InboxDetailViewHolder(view) {
                     ContextCompat.getColor(
                         context,
                         com.tokopedia.unifyprinciples.R.color.Unify_NN100
-                    ), context.resources.getDimensionPixelSize(R.dimen.sp_11), context
+                    ),
+                    context.resources.getDimensionPixelSize(R.dimen.sp_11),
+                    context
                 )
             else -> null
         }
-
     }
-
 }

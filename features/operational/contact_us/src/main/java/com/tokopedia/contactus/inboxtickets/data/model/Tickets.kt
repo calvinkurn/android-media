@@ -10,33 +10,48 @@ import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 class Tickets {
     @SerializedName("badCsatReasonList")
     var badCsatReasonList: ArrayList<BadCsatReasonListItem>? = null
+
     @SerializedName("showRating")
     var isShowRating = false
+
     @SerializedName("id")
     var id: String? = null
-	@SerializedName("comments")
+
+    @SerializedName("comments")
     var comments: MutableList<CommentsItem>? = null
+
     @SerializedName("createTime")
-    val createTime: String?= null
-	@SerializedName("subject")
+    val createTime: String? = null
+
+    @SerializedName("subject")
     val subject: String? = null
+
     @SerializedName("message")
     var message: String? = null
+
     @SerializedName("createdBy")
     val createdBy: CreatedBy? = null
-	@SerializedName("number")
+
+    @SerializedName("number")
     var number: String? = null
+
     @SerializedName("attachment")
     var attachment: List<AttachmentItem>? = null
-    @SuppressLint("Invalid Data Type") // can not use string or long since ids is a list
+
+    @SuppressLint("Invalid Data Type")
+    // can not use string or long since ids is a list
     @SerializedName("bad_rating_comment_id")
     val badRatingCommentId: List<String>? = null
+
     @SerializedName("need_attachment")
     var isNeedAttachment = false
+
     @SerializedName("invoice")
     var invoice: String? = null
-	@SerializedName("status")
+
+    @SerializedName("status")
     var status: String? = null
+
     @SerializedName("allowClose")
     var isAllowClose = false
 
@@ -44,11 +59,11 @@ class Tickets {
 
     fun getTicketComment() = comments ?: arrayListOf()
 
-    fun getBadCsatReasons() = badCsatReasonList?: arrayListOf()
+    fun getBadCsatReasons() = badCsatReasonList ?: arrayListOf()
 
     fun getMessageTicket() = message.orEmpty()
 
-    fun getCreatedTicketBy() = createdBy?: CreatedBy()
+    fun getCreatedTicketBy() = createdBy ?: CreatedBy()
 
     fun getCreateTimeTicket() = createTime.orEmpty()
 
@@ -60,9 +75,9 @@ class Tickets {
 
     override fun toString(): String {
         return "Tickets{" +
-                "badCsatReasonList = '" + badCsatReasonList + '\'' +
-                ",showRating = '" + isShowRating + '\'' +
-                ",id = '" + id + '\'' +
-                "}"
+            "badCsatReasonList = '" + badCsatReasonList + '\'' +
+            ",showRating = '" + isShowRating + '\'' +
+            ",id = '" + id + '\'' +
+            "}"
     }
 }

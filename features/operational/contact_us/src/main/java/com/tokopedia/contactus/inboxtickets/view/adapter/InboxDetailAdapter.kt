@@ -41,7 +41,7 @@ class InboxDetailAdapter(
     private val inboxDetailListener: InboxDetailListener,
     private val userId: String,
     private val caseId: String,
-    private val ticketStatus: String,
+    private val ticketStatus: String
 ) : RecyclerView.Adapter<InboxDetailViewHolder>() {
 
     private var needAttachment: Boolean
@@ -60,7 +60,6 @@ class InboxDetailAdapter(
             val view = inflater.inflate(R.layout.layout_item_message, parent, false)
             InboxMessageViewHolder(view)
         }
-
     }
 
     override fun onBindViewHolder(holder: InboxDetailViewHolder, position: Int) {
@@ -103,7 +102,8 @@ class InboxDetailAdapter(
         inboxDetailListener.scrollTo(itemCount - 1)
     }
 
-    inner class InboxMessageViewHolder(val view: View) : InboxDetailViewHolder(view),
+    inner class InboxMessageViewHolder(val view: View) :
+        InboxDetailViewHolder(view),
         View.OnClickListener {
         private var ivProfile: ImageView? = null
         private var tvName: TextView? = null
@@ -134,15 +134,17 @@ class InboxDetailAdapter(
                 if (attachmentAdapter == null) {
                     attachmentAdapter = AttachmentAdapter(
                         commentList[position].attachment
-                            ?: listOf(), object : AttachmentListener {
+                            ?: listOf(),
+                        object : AttachmentListener {
                             override fun showImagePreview(
                                 position: Int,
                                 imagesItems: List<AttachmentItem>
                             ) {
                                 inboxDetailListener.showImageAttachment(position, imagesItems)
                             }
-
-                        }, userId, caseId
+                        },
+                        userId,
+                        caseId
                     )
                 } else {
                     attachmentAdapter?.addAll(
@@ -204,14 +206,15 @@ class InboxDetailAdapter(
                 if (CLOSED.equals(
                         ticket,
                         ignoreCase = true
-                    ) && item.rating != KEY_LIKED && item.rating != KEY_DIS_LIKED
-                    || !isRoleAgent(item) || item.id.isEmpty()
+                    ) && item.rating != KEY_LIKED && item.rating != KEY_DIS_LIKED ||
+                    !isRoleAgent(item) || item.id.isEmpty()
                 ) {
                     settingRatingButtonsVisibility(View.GONE)
                 }
                 if (searchMode) {
                     tvComment?.text = utils.getHighlightText(
-                        view.context, searchText ?: "",
+                        view.context,
+                        searchText ?: "",
                         HtmlUtil.fromHtml(item.message).toString()
                     )
                     tvComment?.movementMethod = LinkMovementMethod.getInstance()
@@ -269,7 +272,8 @@ class InboxDetailAdapter(
 
         private fun sendGTMEvent(eventLabel: String) {
             ContactUsTracking.sendGTMInboxTicket(
-                view.context, InboxTicketTracking.Event.EventName,
+                view.context,
+                InboxTicketTracking.Event.EventName,
                 InboxTicketTracking.Category.EventHelpMessageInbox,
                 InboxTicketTracking.Action.EventClickCsatPerReply,
                 eventLabel

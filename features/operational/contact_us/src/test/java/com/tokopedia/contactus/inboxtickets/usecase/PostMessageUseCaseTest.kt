@@ -34,7 +34,6 @@ class PostMessageUseCaseTest {
         Dispatchers.setMain(TestCoroutineDispatcher())
     }
 
-
     @After
     @Throws(Exception::class)
     fun tearDown() {
@@ -44,7 +43,6 @@ class PostMessageUseCaseTest {
     /****************************************** createRequestParam() ***************************************/
     @Test
     fun `check value of createRequestParam`() {
-
         val id = "ticket_id"
         val message = "test message"
         val photo = 1
@@ -52,7 +50,14 @@ class PostMessageUseCaseTest {
         val agentReply = "lastReply"
         val userId = "1234"
 
-        val requestParam = postMessageUseCase.createRequestParams(id, message, photo, photoAll, agentReply, userId)
+        val requestParam = postMessageUseCase.createRequestParams(
+            id,
+            message,
+            photo,
+            photoAll,
+            agentReply,
+            userId
+        )
 
         assertEquals(requestParam.parameters[TICKET_ID], id)
         assertEquals(requestParam.parameters[MESSAGE], message)
@@ -60,10 +65,8 @@ class PostMessageUseCaseTest {
         assertEquals(requestParam.parameters[IMAGE_AS_STRING], photoAll)
         assertEquals(requestParam.parameters[AGENT_REPLY], agentReply)
         assertEquals(requestParam.parameters[USER_ID], userId)
-
     }
     /****************************************** createRequestParam() ***************************************/
-
 
     /************************************* getCreateTicketResult() **********************************/
 //    @Test
@@ -86,5 +89,4 @@ class PostMessageUseCaseTest {
 //    }
 
     /************************************* getCreateTicketResult() **********************************/
-
 }

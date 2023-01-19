@@ -51,7 +51,8 @@ import com.tokopedia.webview.KEY_TITLE
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-class InboxContactUsFragment : BaseDaggerFragment(),
+class InboxContactUsFragment :
+    BaseDaggerFragment(),
     ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet,
     HasPaginatedList by HasPaginatedListImpl() {
 
@@ -81,7 +82,6 @@ class InboxContactUsFragment : BaseDaggerFragment(),
         private const val PAGE_SIZE = 10
         const val REQUEST_DETAILS = 204
 
-
         @JvmStatic
         fun newInstance(): InboxContactUsFragment {
             return InboxContactUsFragment()
@@ -92,13 +92,16 @@ class InboxContactUsFragment : BaseDaggerFragment(),
 
     override fun initInjector() {
         DaggerInboxComponent.builder()
-            .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+            .baseAppComponent(
+                (activity?.applicationContext as? BaseMainApplication)?.baseAppComponent
+            )
             .inboxModule(activity?.applicationContext?.let { InboxModule(it) })
             .build().inject(this)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = ContactUsFragmentInboxBinding.inflate(inflater, container, false)
@@ -129,7 +132,10 @@ class InboxContactUsFragment : BaseDaggerFragment(),
             MethodChecker.getDrawable(
                 context ?: return,
                 R.drawable.contactus_ic_filter_list
-            ), null, null, null
+            ),
+            null,
+            null,
+            null
         )
     }
 
@@ -211,9 +217,11 @@ class InboxContactUsFragment : BaseDaggerFragment(),
             pageSize = PAGE_SIZE,
             onLoadNextPage = {
                 mAdapter.addFooter()
-            }, onLoadNextPageFinished = {
+            },
+            onLoadNextPageFinished = {
                 mAdapter.removeFooter()
-            })
+            }
+        )
 
         binding?.rvEmailList?.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -233,7 +241,6 @@ class InboxContactUsFragment : BaseDaggerFragment(),
                     startActivityForResult(detailIntent, REQUEST_DETAILS)
                     sendTrackingClickToDetailTicketMessage(index)
                 }
-
             })
             adapter = mAdapter
 
@@ -246,7 +253,8 @@ class InboxContactUsFragment : BaseDaggerFragment(),
     fun sendTrackingClickToDetailTicketMessage(positionItem: Int) {
         val itemTicket = viewModel.getItemTicketOnPosition(positionItem)
         ContactUsTracking.sendGTMInboxTicket(
-            context, InboxTicketTracking.Event.Event,
+            context,
+            InboxTicketTracking.Event.Event,
             InboxTicketTracking.Category.EventCategoryInbox,
             InboxTicketTracking.Action.EventTicketClick,
             itemTicket.caseNumber
@@ -394,7 +402,8 @@ class InboxContactUsFragment : BaseDaggerFragment(),
             contactUsHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(contactUsHome)
             ContactUsTracking.sendGTMInboxTicket(
-                context ?: return, "",
+                context ?: return,
+                "",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickHubungi,
                 InboxTicketTracking.Label.InboxEmpty
@@ -421,7 +430,8 @@ class InboxContactUsFragment : BaseDaggerFragment(),
     @SuppressLint("DeprecatedMethod")
     private fun sendGtmClickTicketFilter(selected: String) {
         ContactUsTracking.sendGTMInboxTicket(
-            activity, InboxTicketTracking.Event.Event,
+            activity,
+            InboxTicketTracking.Event.Event,
             InboxTicketTracking.Category.EventCategoryInbox,
             InboxTicketTracking.Action.EventClickTicketFilter,
             selected
@@ -448,7 +458,8 @@ class InboxContactUsFragment : BaseDaggerFragment(),
                     Intent(
                         context,
                         ContactUsHomeActivity::class.java
-                    ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP), 100
+                    ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP),
+                    100
                 )
                 activity?.finish()
             }

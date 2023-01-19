@@ -38,7 +38,6 @@ class SubmitRatingUseCaseTest {
         Dispatchers.setMain(TestCoroutineDispatcher())
     }
 
-
     @After
     @Throws(Exception::class)
     fun tearDown() {
@@ -58,23 +57,25 @@ class SubmitRatingUseCaseTest {
         assertEquals(variables.parameters[REASON], reason)
     }
 
-
     @Test
     fun `check function invokation of getChipInboxDetail`() {
         runBlockingTest {
             coEvery {
-                contactUsRepository.getGQLData("",
-                        ChipInboxDetails::class.java,
-                        any()).chipGetInboxDetail
+                contactUsRepository.getGQLData(
+                    "",
+                    ChipInboxDetails::class.java,
+                    any()
+                ).chipGetInboxDetail
             } returns mockk()
 
             submitRatingUseCase.getChipInboxDetail(mockk(relaxed = true))
             coVerify(exactly = 1) {
-                contactUsRepository.getGQLData("",
-                        ChipInboxDetails::class.java,
-                        any()).getInboxDetail()
+                contactUsRepository.getGQLData(
+                    "",
+                    ChipInboxDetails::class.java,
+                    any()
+                ).getInboxDetail()
             }
         }
     }
-
 }
