@@ -25,9 +25,8 @@ class ReschedulePickupFrameTimingBenchmark : BaseFrameTimingBenchmark() {
     override fun setupMock() {
     }
     override fun pageInteractionTest(currentIteration: Int) {
-        MacroInteration.basicRecyclerviewInteraction(
-            MacroIntent.ReschedulePickup.PACKAGE_NAME,
-            MacroIntent.ReschedulePickup.RECYCLER_VIEW_ID
+        MacroInteration.basicComposableListInteraction(
+            MacroIntent.ReschedulePickup.CONTENT_DESCRIPTION
         )
     }
 

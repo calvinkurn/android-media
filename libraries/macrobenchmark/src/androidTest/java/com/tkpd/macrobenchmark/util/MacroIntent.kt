@@ -248,6 +248,7 @@ object MacroIntent {
 
         const val PACKAGE_NAME = TKPD_PACKAGE_SELLER_APP
         const val TRACE_NAME = "mp_reschedule_pickup"
+        const val CONTENT_DESCRIPTION = "reschedule_pickup_layout"
 
         fun getIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")

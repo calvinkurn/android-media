@@ -29,9 +29,8 @@ class ReschedulePickupStartupBenchmark(startupMode: StartupMode) : BaseStartupBe
     override fun getIntent() = MacroIntent.ReschedulePickup.getIntent()
 
     override fun waitUntil() {
-        MacroInteration.waitUntilRecyclerViewExist(
-            MacroIntent.ReschedulePickup.PACKAGE_NAME,
-            MacroIntent.ReschedulePickup.RECYCLER_VIEW_ID
+        MacroInteration.waitForComposableWidgetVisible(
+            MacroIntent.ReschedulePickup.CONTENT_DESCRIPTION
         )
     }
 

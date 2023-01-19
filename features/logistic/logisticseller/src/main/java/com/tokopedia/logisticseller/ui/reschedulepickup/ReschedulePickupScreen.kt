@@ -34,6 +34,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import com.tokopedia.common_compose.extensions.tag
 import com.tokopedia.common_compose.principles.NestButton
 import com.tokopedia.common_compose.principles.NestTextField
 import com.tokopedia.common_compose.principles.NestTicker
@@ -133,6 +134,7 @@ fun ReschedulePickupScreenLayout(
 ) {
     Column(
         modifier = Modifier
+            .tag("reschedule_pickup_layout")
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
