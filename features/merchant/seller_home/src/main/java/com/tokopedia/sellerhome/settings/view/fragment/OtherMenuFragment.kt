@@ -47,6 +47,7 @@ import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.constant.SellerMenuFreeShippingUrl
 import com.tokopedia.seller.menu.common.exception.UserShopInfoException
+import com.tokopedia.seller.menu.common.view.bottomsheet.RMTransactionBottomSheet
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
@@ -282,8 +283,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         RouteManager.route(context, ApplinkConst.SHOP, userSession.shopId)
     }
 
-    override fun onRmTransactionClicked() {
-        goToNewMembershipScheme()
+    override fun onRmTransactionClicked(currentTransactionTotal: Long) {
+        openRmTransactionBottomSheet(currentTransactionTotal)
     }
 
     override fun onShopBadgeClicked() {
@@ -731,10 +732,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         startActivity(totalMemberIntent)
     }
 
-    private fun goToNewMembershipScheme() {
-        context?.let {
-            RouteManager.route(it, SellerBaseUrl.getNewMembershipSchemeApplink())
-        }
+    private fun openRmTransactionBottomSheet(currentTransactionTotal: Long) {
+        RMTransactionBottomSheet.createInstance(currentTransactionTotal).show(childFragmentManager)
     }
 
     private fun isActivityResumed(): Boolean {
