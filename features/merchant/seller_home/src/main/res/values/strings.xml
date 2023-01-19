@@ -43,6 +43,7 @@
     <string name="setting_menu_finance_service">Layanan Keuangan</string>
     <string name="setting_menu_set_activation_page_cod">Layanan bayar di tempat</string>
     <string name="setting_menu_account_setting">Pengaturan akun</string>
+    <string name="setting_seller_persona">Tipe Seller Apakah Kamu?</string>
     <string name="setting_menu_self_profile">Ubah profil diri</string>
     <string name="setting_menu_bank_account">Edit rekening bank</string>
     <string name="setting_menu_password">Edit kata sandi</string>

@@ -119,4 +119,7 @@ object ApplinkConstInternalSellerapp {
 
     //TokomemberMemberListActivity
     const val INTERNAL_MEMBER_LIST = "$TOKOMEMBER/member-list"
+
+    //Seller Persona
+    const val SELLER_PERSONA = "$INTERNAL_SELLERAPP/seller-persona"
 }

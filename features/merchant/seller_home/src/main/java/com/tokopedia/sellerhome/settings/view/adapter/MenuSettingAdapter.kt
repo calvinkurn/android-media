@@ -6,12 +6,17 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
-import com.tokopedia.seller.menu.common.view.uimodel.*
+import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.IndentedSettingTitleUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SettingLoadingUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleMenuUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.R
@@ -50,7 +55,7 @@ class MenuSettingAdapter(
         ),
         MenuItemUiModel(
             context?.getString(R.string.setting_menu_bank_account).orEmpty(),
-            clickApplink = ApplinkConstInternalGlobal.SETTING_BANK,
+            clickApplink = ApplinkConstInternalSellerapp.SELLER_PERSONA,
             settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING
         ),
         MenuItemUiModel(
@@ -100,7 +105,7 @@ class MenuSettingAdapter(
         DividerUiModel(DividerType.THIN_INDENTED)
     )
 
-    fun populateInitialMenus(isShopOwner: Boolean,  isMultiLocation: Boolean = false) {
+    fun populateInitialMenus(isShopOwner: Boolean, isMultiLocation: Boolean = false) {
         val menuList = mutableListOf<SettingUiModel>()
         if (isShopOwner) {
             val shopSettingList = if (isMultiLocation) {
@@ -152,7 +157,7 @@ class MenuSettingAdapter(
         notifyItemRangeChanged(0, settingList.size - 1)
     }
 
-    fun showShopSetting(isMultiLocation: Boolean = false){
+    fun showShopSetting(isMultiLocation: Boolean = false) {
         val settingList = if (isMultiLocation) {
             getShopMultiLocationSettingList()
         } else {

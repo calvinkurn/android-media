@@ -1,0 +1,8 @@
+<resources>
+    <string name="sp_opening_title">Cari tahu tipe Seller kamu</string>
+    <string name="sp_opening_sub_title">Kami akan kasih konten rekomendasi dan \ntampilan Home sesuai jawaban kuismu.</string>
+    <string name="sp_opening_footer">Datamu aman dan hanya akan dipakai untuk personalisasi.</string>
+    <string name="sp_start_quiz">Mulai Kuis</string>
+    <string name="sp_try_later">Nanti Saja</string>
+    <string name="sp_seller_persona">Seller Persona</string>
+</resources>
