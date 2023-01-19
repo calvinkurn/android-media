@@ -78,7 +78,7 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
     private fun inflateUi() {
         activity?.let { activity ->
             val bankAccount: BankAccount = withdrawalRequest.bankAccount
-            tvWithdrawalTimeNote.text = withdrawalResponse.withdrawalNote
+            tvWithdrawalTimeNote.text = withdrawalResponse.description
             tvBankName.text = bankAccount.bankName
             if (bankAccount.adminFee > 0) {
                 tvAdminFees.text = String.format(activity.resources.getString(R.string.swd_admin_fee_msg)
@@ -91,7 +91,7 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
         }
         btnCta.setOnClickListener { onCtaClick() }
         btnCta.text = getCtaText()
-        tvWithdrawalTitle.text = getTitleText()
+        tvWithdrawalTitle.text = withdrawalResponse.title
         setContentImage()
     }
 
@@ -100,14 +100,6 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
             getString(R.string.swd_back_to_saldo_detail)
         } else {
             getString(R.string.swd_contact_tokopedia_care)
-        }
-    }
-
-    private fun getTitleText(): String {
-        return if (withdrawalResponse.isSuccess()) {
-            getString(R.string.swd_withdrawal_being_processed_title)
-        } else {
-            getString(R.string.swd_withdrawal_cannot_be_processed_title)
         }
     }
 

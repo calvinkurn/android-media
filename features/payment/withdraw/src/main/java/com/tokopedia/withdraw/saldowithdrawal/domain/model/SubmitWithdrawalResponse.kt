@@ -22,7 +22,11 @@ data class SubmitWithdrawalResponse(
         @SerializedName("errorCode")
         val errorCode: String? = null,
         @SerializedName("joinPromptMessageResponse")
-        val joinPromptMessageResponse: JoinPromptMessageResponse? = null
+        val joinPromptMessageResponse: JoinPromptMessageResponse? = null,
+        @SerializedName("title")
+        val title: String? = null,
+        @SerializedName("description")
+        val description: String? = null,
 ) : Parcelable {
     fun isSuccess(): Boolean {
         return status == SubmitWithdrawalViewModel.WITHDRAWAL_SUCCESS

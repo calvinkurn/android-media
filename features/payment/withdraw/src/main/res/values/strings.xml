@@ -44,7 +44,6 @@
     <string name="swd_destination_account">Rekening Tujuan</string>
     <string name="swd_ttl_withdraw_dtl">Detail penarikan</string>
     <string name="swd_withdrawal_being_processed_title">Penarikanmu sedang diproses</string>
-    <string name="swd_withdrawal_cannot_be_processed_title">Maaf, penarikanmu tidak bisa diproses</string>
     <string name="swd_contact_tokopedia_care">Hubungi Tim Tokopedia Care</string>
 
     <string name="swd_success_page_title">Penarikan Diproses</string>
