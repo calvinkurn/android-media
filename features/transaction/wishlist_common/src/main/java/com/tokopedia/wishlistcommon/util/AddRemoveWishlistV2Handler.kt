@@ -69,7 +69,7 @@ object AddRemoveWishlistV2Handler {
         if (result.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED || !result.isSuccess) typeToaster = Toaster.TYPE_ERROR
 
         val ctaText = result.ctaTextV2.ifEmpty {
-            context.getString(R.string.cta_success_remove_from_wishlist)
+            context.getString(R.string.cta_ok_wishlist)
         }
 
         Toaster.build(
@@ -106,7 +106,7 @@ object AddRemoveWishlistV2Handler {
         if (result.toasterColor == WishlistV2CommonConsts.TOASTER_RED || !result.success) typeToaster = Toaster.TYPE_ERROR
 
         val ctaText = result.button.text.ifEmpty {
-            context.getString(R.string.cta_success_remove_from_wishlist)
+            context.getString(R.string.cta_ok_wishlist)
         }
 
         Toaster.build(
@@ -143,7 +143,7 @@ object AddRemoveWishlistV2Handler {
         if (result.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED || !result.isSuccess) typeToaster = Toaster.TYPE_ERROR
 
         val ctaText = result.ctaTextV2.ifEmpty {
-            context.getString(R.string.cta_success_remove_from_wishlist)
+            context.getString(R.string.cta_ok_wishlist)
         }
 
         Toaster.build(
