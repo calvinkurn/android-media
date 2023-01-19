@@ -269,7 +269,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
         view?.let {
             hitClickTrackingBasedOnId(homeNavMenuDataModel)
-            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
+            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER ||
+                homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON ||
+                homeNavMenuDataModel.sectionId == MainNavConst.Section.ACTIVITY
+            ) {
                 if (homeNavMenuDataModel.applink.isNotEmpty()) {
                     if (!handleClickFromPageSource(homeNavMenuDataModel.applink)) {
                         RouteManager.route(context, homeNavMenuDataModel.applink)
