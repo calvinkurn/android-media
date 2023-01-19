@@ -23,6 +23,9 @@ import com.tokopedia.mvc.databinding.SmvcBottomsheetChangeQuotaFormBinding
 import com.tokopedia.mvc.databinding.SmvcBottomsheetChangeQuotaShimmerBinding
 import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaModel
 import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaEffect
+import com.tokopedia.mvc.util.constant.ChangeQuotaConstant.APPLY_ALL_PERIOD_COUPON
+import com.tokopedia.mvc.util.constant.ChangeQuotaConstant.APPLY_ONLY_PERIOD_COUPON
+import com.tokopedia.mvc.util.constant.ChangeQuotaConstant.NOT_YET_APPLY_PERIOD_COUPON
 import javax.inject.Inject
 
 class ChangeQuotaBottomSheet : BottomSheetUnify() {
@@ -125,8 +128,8 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
             formLayout?.textFieldDiscountQuota?.editText?.afterTextChanged {
                 viewModel.isValidInput(it.toLongOrZero())
             }
-            formLayout?.radiosMultipleCoupon?.setOnCheckedChangeListener { _, position ->
-                viewModel.setOptionsApplyPeriodCoupon(position)
+            formLayout?.radiosMultipleCoupon?.setOnCheckedChangeListener { _, optionsId ->
+                viewModel.setOptionsApplyPeriodCoupon(getPositionOptions(optionsId))
             }
             formLayout?.labelSpendingEstimation?.apply {
                 iconInfo?.setOnClickListener {
@@ -137,7 +140,9 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
             formLayout?.btnMvcSaveP?.run {
                 setOnClickListener {
                     this@ChangeQuotaBottomSheet.isCancelable = false
-                    viewModel.changeQuota(formLayout?.textFieldDiscountQuota?.editText?.text.toString().toIntOrZero())
+                    viewModel.changeQuota(
+                        formLayout?.textFieldDiscountQuota?.editText?.text.toString().toIntOrZero()
+                    )
                     isLoading = true
                 }
             }
@@ -197,7 +202,8 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
                 voucher.maxBenefit.orZero(),
                 voucher.currentQuota.orZero()
             )
-            labelSpendingEstimation.spendingEstimationText = estimationSpending.getCurrencyFormatted()
+            labelSpendingEstimation.spendingEstimationText =
+                estimationSpending.getCurrencyFormatted()
             textFieldDiscountQuota.editText.setText(voucher.currentQuota.orZero().toString())
             if (voucher.isMultiPeriod.orFalse()) {
                 radiosMultipleCoupon.visible()
@@ -213,7 +219,8 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
             state.quotaReq
         ) else getString(R.string.smvc_error_max_quota, state.quotaReq)
         binding?.layoutFormChangeQuota?.run {
-            labelSpendingEstimation.spendingEstimationText = state.estimationSpending.getCurrencyFormatted()
+            labelSpendingEstimation.spendingEstimationText =
+                state.estimationSpending.getCurrencyFormatted()
             textFieldDiscountQuota.isInputError = !state.isValidInput
             if (!state.isValidInput) {
                 textFieldDiscountQuota.setMessage(messageError)
@@ -227,6 +234,14 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
     fun show(fragmentManager: FragmentManager?) {
         fragmentManager?.let {
             show(it, TAG)
+        }
+    }
+
+    private fun getPositionOptions(optionsId: Int): Int {
+        return when (optionsId) {
+            R.id.radio_just_one_coupon -> APPLY_ONLY_PERIOD_COUPON
+            R.id.radio_apply_all_coupon -> APPLY_ALL_PERIOD_COUPON
+            else -> NOT_YET_APPLY_PERIOD_COUPON
         }
     }
 
