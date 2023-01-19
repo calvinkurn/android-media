@@ -13,11 +13,13 @@ sealed interface UserProfileAction {
 
     data class LoadFeedPosts(val cursor: String = "", val isRefresh: Boolean = false) : UserProfileAction
 
-    data class LoadNextPageShopRecom(val nextCurSor: String) : UserProfileAction
-
     data class LoadPlayVideo(val cursor: String = "") : UserProfileAction
 
     data class LoadProfile(val isRefresh: Boolean = false) : UserProfileAction
+
+    data class LoadShopRecom(val cursor: String = ""): UserProfileAction
+
+    data class LoadNextPageShopRecom(val nextCurSor: String) : UserProfileAction
 
     data class RemoveShopRecomItem(val itemID: Long) : UserProfileAction
 

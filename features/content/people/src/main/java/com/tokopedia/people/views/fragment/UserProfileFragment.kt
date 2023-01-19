@@ -697,9 +697,9 @@ class UserProfileFragment @Inject constructor(
 
         mainBinding.shopRecommendation.setData(shopRecom)
 
-        if (value.shopRecom.items.isEmpty()) {
-            mainBinding.shopRecommendation.showEmptyShopRecom()
-        } else {
+        if (value.shopRecom.items.isEmpty()) mainBinding.shopRecommendation.hide()
+        else {
+            mainBinding.shopRecommendation.show()
             mainBinding.shopRecommendation.showContentShopRecom()
         }
     }
@@ -972,6 +972,7 @@ class UserProfileFragment @Inject constructor(
             text = getString(R.string.up_empty_post_desc_on_self)
             show()
         }
+        viewModel.submitAction(UserProfileAction.LoadShopRecom())
     }
 
     private fun emptyPostVisitor() {
