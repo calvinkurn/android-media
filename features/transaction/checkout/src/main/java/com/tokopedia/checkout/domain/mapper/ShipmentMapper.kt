@@ -240,7 +240,7 @@ class ShipmentMapper @Inject constructor() {
                             shopTypeInfoData
                     )
                     if (product.tradeInInfo.isValidTradeIn) {
-                        productPrice = product.tradeInInfo.newDevicePrice.toDouble()
+                        productPrice = product.tradeInInfo.newDevicePrice
                     }
                     isError = !product.errors.isNullOrEmpty() ||
                             shipmentAddressFormDataResponse.errorTicker.isNotEmpty() ||
