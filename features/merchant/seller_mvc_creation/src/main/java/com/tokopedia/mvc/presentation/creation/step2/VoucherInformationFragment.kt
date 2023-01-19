@@ -35,6 +35,7 @@ import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.domain.entity.enums.UnavailableRecurringDateErrorType.*
 import com.tokopedia.mvc.domain.entity.enums.VoucherCreationStepTwoFieldValidation
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import com.tokopedia.mvc.presentation.bottomsheet.ForbiddenWordsBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.SelectRepeatPeriodBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.editperiod.VoucherEditCalendarBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
@@ -120,6 +121,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     private var voucherEditCalendarBottomSheet: VoucherEditCalendarBottomSheet? = null
     private var repeatPeriodBottomSheet: SelectRepeatPeriodBottomSheet? = null
     private var voucherRecurringPeriodBottomSheet: VoucherPeriodBottomSheet? = null
+    private var forbiddenWordsBottomSheet: ForbiddenWordsBottomSheet? = null
 
     // coachmark
     private val coachMark by lazy {
@@ -457,10 +459,13 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         voucherNameSectionBinding?.run {
             tfVoucherName.isInputError = isVoucherNameError
             tfVoucherName.setMessage(voucherNameErrorMsg)
-            tpgCheckHere.isVisible = voucherNameErrorMsg.contains(
-                getString(R.string.smvc_larang_label),
-                ignoreCase = true
-            )
+            tpgCheckHere.apply {
+                isVisible = voucherNameErrorMsg.contains(
+                    getString(R.string.smvc_larang_label),
+                    ignoreCase = true
+                )
+                setOnClickListener { showForbiddenWordsBottomSheet() }
+            }
         }
     }
 
@@ -497,11 +502,19 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         voucherCodeSectionBinding?.run {
             tfVoucherCode.isInputError = isVoucherCodeError
             tfVoucherCode.setMessage(voucherCodeErrorMsg)
-            tpgPelajari.isVisible = voucherCodeErrorMsg.contains(
-                getString(R.string.smvc_larang_label),
-                ignoreCase = true
-            )
+            tpgPelajari.apply {
+                isVisible = voucherCodeErrorMsg.contains(
+                    getString(R.string.smvc_larang_label),
+                    ignoreCase = true
+                )
+                setOnClickListener { showForbiddenWordsBottomSheet() }
+            }
         }
+    }
+
+    private fun showForbiddenWordsBottomSheet() {
+        forbiddenWordsBottomSheet = ForbiddenWordsBottomSheet()
+        forbiddenWordsBottomSheet?.show(childFragmentManager)
     }
 
     // Voucher period region

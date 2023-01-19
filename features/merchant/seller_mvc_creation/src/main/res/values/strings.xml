@@ -366,6 +366,8 @@
     <string name="smvc_larang_label">larang</string>
     <string name="smvc_pelajari_label">Pelajari</string>
     <string name="smvc_check_here_label">Cek di sini</string>
+    <string name="smvc_forbidden_words_info_title">Informasi daftar larangan kata</string>
+    <string name="smvc_forbidden_words_info_content">Nama campaign tidak boleh mengandung kata-kata Kejar Diskon, Flash Sale, FlashSale, Toped, Tokopedia, Tkpd, Shopee, Bukalapak, BL, Lazada, kata-kata kasar, atau unsur SARA.</string>
 
     <!--VoucherCreationStepThree-->
     <string name="smvc_creation_step_three_out_of_three_sub_title_label">Langkah 3 dari 3</string>
