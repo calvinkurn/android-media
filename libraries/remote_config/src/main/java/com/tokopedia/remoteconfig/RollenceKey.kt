@@ -77,9 +77,6 @@ object RollenceKey {
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
 
-    // Play
-    const val SWIPE_LIVE_ROOM = "play_sc"
-
     // Bubbles
     const val KEY_ROLLENCE_BUBBLE_CHAT = "seller_bubble_chat_2"
 
