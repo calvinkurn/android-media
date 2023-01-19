@@ -22,10 +22,12 @@ class RMTransactionBottomSheet: BottomSheetUnify() {
     private var binding by autoClearedNullable<SellerRmTransactionBottomsheetBinding>()
 
     private val linkTextColor by lazy(LazyThreadSafetyMode.NONE) {
-        MethodChecker.getColor(
-            context,
-            com.tokopedia.unifyprinciples.R.color.Unify_GN500
-        )
+        context?.let {
+            MethodChecker.getColor(
+                it,
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            )
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -107,7 +109,9 @@ class RMTransactionBottomSheet: BottomSheetUnify() {
 
     private fun TextPaint.applyStyling() {
         isUnderlineText = false
-        color = linkTextColor
+        linkTextColor?.let {
+            color = it
+        }
         applyFont()
     }
 
