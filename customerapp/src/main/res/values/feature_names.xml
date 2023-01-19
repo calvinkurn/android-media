@@ -174,7 +174,6 @@
     <string name="label_dob">Tanggal Lahir</string>
     <string name="title_activity_catalog">Katalog</string>
     <string name="catalog_host">catalog</string>
-    <string name="catalog_library_host">Catalog Library</string>
     <string name="label_kategori">Belanja di Tokopedia</string>
     <string name="label_category">category</string>
     <string name="hotlist_label">hotlist</string>
