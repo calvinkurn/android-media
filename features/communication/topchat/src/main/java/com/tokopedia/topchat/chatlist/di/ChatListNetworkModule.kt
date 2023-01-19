@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.iris.util.Session
 import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -74,7 +75,6 @@ class ChatListNetworkModule {
         )
     }
 
-
     @ChatListScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
@@ -122,7 +122,7 @@ class ChatListNetworkModule {
         networkRouter: NetworkRouter,
         userSessionInterface: UserSessionInterface
     ):
-            FingerprintInterceptor {
+        FingerprintInterceptor {
         return FingerprintInterceptor(networkRouter, userSessionInterface)
     }
 
@@ -133,7 +133,7 @@ class ChatListNetworkModule {
         networkRouter: NetworkRouter,
         userSessionInterface: UserSessionInterface
     ):
-            TkpdAuthInterceptor {
+        TkpdAuthInterceptor {
         return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
     }
 
@@ -146,7 +146,7 @@ class ChatListNetworkModule {
         fingerprintInterceptor: FingerprintInterceptor,
         httpLoggingInterceptor: HttpLoggingInterceptor
     ):
-            OkHttpClient {
+        OkHttpClient {
         val builder = OkHttpClient.Builder()
             .addInterceptor(fingerprintInterceptor)
             .addInterceptor(errorResponseInterceptor)
@@ -167,14 +167,20 @@ class ChatListNetworkModule {
     fun provideTopChatWebSocket(
         userSession: UserSessionInterface,
         client: OkHttpClient,
-        abTestPlatform: AbTestPlatform
+        abTestPlatform: AbTestPlatform,
+        irisSession: Session
     ): TopchatWebSocket {
         val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
-                "?os_type=1" +
-                "&device_id=" + userSession.deviceId +
-                "&user_id=" + userSession.userId
+            "?os_type=1" +
+            "&device_id=" + userSession.deviceId +
+            "&user_id=" + userSession.userId
         return DefaultTopChatWebSocket(
-            client, webSocketUrl, userSession.accessToken, PAGE_CHATLIST, abTestPlatform
+            client,
+            webSocketUrl,
+            userSession.accessToken,
+            PAGE_CHATLIST,
+            abTestPlatform,
+            irisSession
         )
     }
 
@@ -183,5 +189,4 @@ class ChatListNetworkModule {
     fun provideAbTestPlatform(): AbTestPlatform {
         return RemoteConfigInstance.getInstance().abTestPlatform
     }
-
 }
