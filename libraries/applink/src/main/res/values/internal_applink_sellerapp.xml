@@ -48,6 +48,7 @@
     <string name="path_shop_discount_manage_product_discount" translatable="false">/shop-discount/manage-discount/product</string>
     <string name="path_shop_discount_manage_product_variant_discount" translatable="false">/shop-discount/manage-discount/product/variant</string>
     <string name="path_shop_discount_manage_product_discount_multi_loc" translatable="false">/shop-discount/manage-discount/product/multi-loc</string>
+    <string name="path_seller_mvc_intro" translatable="false">/seller-mvc/intro</string>
     <string name="path_seller_mvc_list" translatable="false">/seller-mvc/list</string>
     <string name="path_seller_mvc_list_active" translatable="false">/seller-mvc/list/active</string>
     <string name="path_seller_mvc_list_history" translatable="false">/seller-mvc/list/history</string>
