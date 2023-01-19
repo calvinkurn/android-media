@@ -17,7 +17,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:text="@string/smvc_download_voucher_description"
+            tools:text="@string/smvc_placeholder_download_voucher_description"
             android:textColor="@color/light_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

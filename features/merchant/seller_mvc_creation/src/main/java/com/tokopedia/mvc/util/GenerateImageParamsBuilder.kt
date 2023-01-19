@@ -16,7 +16,6 @@ import javax.inject.Inject
 class GenerateImageParamsBuilder @Inject constructor() {
 
     companion object {
-        private const val EMPTY_STRING = ""
         private const val THOUSAND = 1_000f
         private const val MILLION = 1_000_000f
         private const val FIRST_IMAGE_URL_INDEX = 0
