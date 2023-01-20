@@ -1,4 +1,4 @@
-package com.tokopedia.homenav.mainnav.view.adapter.viewholder
+package com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -11,7 +11,6 @@ import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderWishlistListBinding
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.WishlistTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.NavOrderSpacingDecoration
-import com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist.WishlistAdapter
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.EmptyStateWishlistDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.OtherWishlistModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
@@ -51,12 +50,14 @@ class WishlistViewHolder(itemView: View,
             )
         }
         val visitableList = mutableListOf<Visitable<*>>()
-        visitableList.addAll(element.wishlist.map { WishlistModel(it) })
-        if (visitableList.isEmpty()) {
+        if (element.collections.isEmpty() || element.isEmptyState) {
             visitableList.add(EmptyStateWishlistDataModel())
-        } else if(element.showViewAll) {
-            visitableList.add(OtherWishlistModel())
-            binding?.wishlistRv?.setHeightBasedOnCardMaxHeight()
+        } else {
+            visitableList.addAll(element.collections.map { WishlistModel(it) })
+            if(element.showViewAll) {
+                visitableList.add(OtherWishlistModel())
+                binding?.wishlistRv?.setHeightBasedOnCardMaxHeight()
+            }
         }
         adapter.setVisitables(visitableList)
     }

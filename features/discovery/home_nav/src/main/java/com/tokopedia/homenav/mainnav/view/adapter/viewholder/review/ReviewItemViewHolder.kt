@@ -1,4 +1,4 @@
-package com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist
+package com.tokopedia.homenav.mainnav.view.adapter.viewholder.review
 
 import android.net.Uri
 import android.view.View
@@ -8,9 +8,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.homenav.R
-import com.tokopedia.homenav.databinding.HolderTransactionReviewBinding
+import com.tokopedia.homenav.databinding.HolderReviewBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
-import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderReviewModel
+import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.track.TrackApp
@@ -19,13 +19,13 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by dhaba
  */
-class OrderReviewViewHolder(itemView: View, val mainNavListener: MainNavListener) :
-    AbstractViewHolder<OrderReviewModel>(itemView) {
-    private var binding: HolderTransactionReviewBinding? by viewBinding()
+class ReviewItemViewHolder(itemView: View, val mainNavListener: MainNavListener) :
+    AbstractViewHolder<ReviewModel>(itemView) {
+    private var binding: HolderReviewBinding? by viewBinding()
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.holder_transaction_review
+        val LAYOUT = R.layout.holder_review
         private const val UTM_SOURCE_GLOBAL_NAV = "global_nav"
         private const val SOURCE = "source"
         private const val RATING = "rating"
@@ -36,7 +36,7 @@ class OrderReviewViewHolder(itemView: View, val mainNavListener: MainNavListener
         private const val RATE_STARS_5 = "5"
     }
 
-    private fun setLayoutFullWidth(element: OrderReviewModel) {
+    private fun setLayoutFullWidth(element: ReviewModel) {
         val layoutParams = binding?.orderReviewCard?.layoutParams
         if (element.navReviewModel.fullWidth) {
             layoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT
@@ -47,17 +47,17 @@ class OrderReviewViewHolder(itemView: View, val mainNavListener: MainNavListener
         binding?.orderReviewCard?.layoutParams = layoutParams
     }
 
-    override fun bind(element: OrderReviewModel, payloads: MutableList<Any>) {
+    override fun bind(element: ReviewModel, payloads: MutableList<Any>) {
         bind(element)
     }
 
-    private fun clickReviewCard(element: OrderReviewModel, rateStars: String) {
+    private fun clickReviewCard(element: ReviewModel, rateStars: String) {
         val tracking = TrackingTransactionSection.getClickReviewStars(adapterPosition, mainNavListener.getUserId(), element.navReviewModel, rateStars)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.first, tracking.second)
         mainNavListener.showReviewProduct(generateUriShowBottomSheetReview(element, rateStars))
     }
 
-    private fun generateUriShowBottomSheetReview(element: OrderReviewModel, rateStars: String) : String {
+    private fun generateUriShowBottomSheetReview(element: ReviewModel, rateStars: String) : String {
         return Uri.parse(
             UriUtil.buildUri(
                 ApplinkConstInternalMarketplace.CREATE_REVIEW,
@@ -75,7 +75,7 @@ class OrderReviewViewHolder(itemView: View, val mainNavListener: MainNavListener
             .toString()
     }
 
-    override fun bind(element: OrderReviewModel) {
+    override fun bind(element: ReviewModel) {
         setLayoutFullWidth(element)
         binding?.orderReviewProductName?.text = element.navReviewModel.productName
 
