@@ -18,13 +18,11 @@ import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
-import com.tokopedia.play.widget.ui.model.getWidthAndHeight
 import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play.widget.util.PlayWidgetCompositeTouchDelegate
 import com.tokopedia.play_common.util.extension.exhaustive
-import com.tokopedia.play_common.util.extension.updateLayoutParams
 import com.tokopedia.unifycomponents.ImageUnify
 
 /**
@@ -97,11 +95,6 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
     fun setModel(model: PlayWidgetChannelUiModel) {
         this.mModel = model
-
-        updateLayoutParams {
-            width = model.gridType.getWidthAndHeight(context).first
-            height = model.gridType.getWidthAndHeight(context).second
-        }
 
         thumbnail.setImageUrl(model.video.coverUrl)
 
