@@ -16,6 +16,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaU
 import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaEffect
 import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaEffect.SuccessToGetDetailVoucher
 import com.tokopedia.mvc.util.constant.ChangeQuotaConstant.APPLY_ALL_PERIOD_COUPON
+import com.tokopedia.mvc.util.constant.ChangeQuotaConstant.APPLY_ONLY_PERIOD_COUPON
 import com.tokopedia.mvc.util.constant.ChangeQuotaConstant.NOT_YET_APPLY_PERIOD_COUPON
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.async
@@ -52,7 +53,7 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
                 val response = merchantPromotionGetMVDataByIDUseCase.execute(param)
                 _changeQuotaUiModel.postValue(SuccessToGetDetailVoucher(response.toUpdateQuotaModelMapper()))
                 updateQuotaModel = response.toUpdateQuotaModelMapper()
-                setOptionsApplyPeriodCoupon(NOT_YET_APPLY_PERIOD_COUPON)
+                setOptionsApplyPeriodCoupon(isNeedToDisableYesButton())
             },
             onError = { error ->
                 _changeQuotaUiModel.postValue(UpdateQuotaEffect.FailToGetDetailVoucher(error))
@@ -164,7 +165,12 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
         updateQuotaModel = updateQuotaModel.copy(isApplyToAllPeriodCoupon = false)
         _changeQuotaUiModel.postValue(SuccessToGetDetailVoucher(updateQuotaModel))
         setOptionsApplyPeriodCoupon(
-            NOT_YET_APPLY_PERIOD_COUPON
+            isNeedToDisableYesButton()
         )
     }
+
+    fun getVoucherStatus() = updateQuotaModel.voucherStatus.name
+
+    private fun isNeedToDisableYesButton() =
+        if (updateQuotaModel.isMultiPeriod) NOT_YET_APPLY_PERIOD_COUPON else APPLY_ONLY_PERIOD_COUPON
 }

@@ -21,6 +21,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.VoucherEditPeriodVie
 import com.tokopedia.mvc.util.DateTimeUtils
 import com.tokopedia.mvc.util.convertUnsafeDateTime
 import com.tokopedia.mvc.util.formatTo
+import com.tokopedia.mvc.util.tracker.ChangePeriodTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -41,6 +42,9 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var mapper: UpdateVoucherMapper
+
+    @Inject
+    lateinit var tracker: ChangePeriodTracker
 
     private val viewModel: VoucherEditPeriodViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(this, viewModelFactory).get(VoucherEditPeriodViewModel::class.java)
@@ -83,6 +87,8 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
             voucher?.let {
                 viewModel.validateAndUpdateDateTime(it)
                 binding?.btnMvcSavePeriod?.isLoading = true
+                clearDismissListener()
+                tracker.sendClickOkEvent(createLabelTracker(it))
             }
         }
     }
@@ -159,11 +165,15 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
     }
 
     private fun setUpView() {
+        setDismissListener()
         binding?.apply {
             voucher?.let {
                 edtMvcStartDate.run {
                     editText.setOnClickListener {
                         onClickListenerForStartDate()
+                        voucher?.let {
+                            tracker.sendClickStartEndDateEvent(createLabelTracker(it))
+                        }
                     }
                     labelText.text =
                         context?.getString(R.string.edit_period_start_date).toBlankOrString()
@@ -173,6 +183,9 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
                 edtMvcEndDate.run {
                     editText.setOnClickListener {
                         onClickListenerForEndDate()
+                        voucher?.let {
+                            tracker.sendClickStartEndDateEvent(createLabelTracker(it))
+                        }
                     }
                     labelText.text =
                         context?.getString(R.string.edit_period_end_date).toBlankOrString()
@@ -189,9 +202,23 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
 
         setAction(context?.getString(R.string.edit_period_reset).toBlankOrString()) {
             setUpDate()
+            voucher?.let {
+                tracker.sendClickResetEvent(createLabelTracker(it))
+            }
         }
     }
 
+    private fun setDismissListener(){
+        this.setOnDismissListener {
+            voucher?.let {
+                tracker.sendClickCloseEvent(createLabelTracker(it))
+            }
+        }
+    }
+
+    private fun clearDismissListener(){
+        this.setOnDismissListener {  }
+    }
     private fun onClickListenerForStartDate() {
         context?.run {
             startCalendar?.let { minDate ->
@@ -258,6 +285,10 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
             isClickable = true
             keyListener = null
         }
+    }
+
+    private fun createLabelTracker(voucher: Voucher) : String {
+        return getString(R.string.smvc_tracker_change_pariod_lable, voucher.id.toString(), voucher.status.name)
     }
 
     companion object {

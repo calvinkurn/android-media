@@ -9,9 +9,14 @@ import com.tokopedia.mvc.R
 class StopVoucherConfirmationDialog(context: Context) {
     private val dialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
     private var onPositiveConfirmed: () -> Unit = {}
+    private var onNegativeConfirmed: () -> Unit = {}
 
     fun setOnPositiveConfirmed(callback: () -> Unit) {
         this.onPositiveConfirmed = callback
+    }
+
+    fun setOnNegativeConfirmed(callback: () -> Unit) {
+        this.onNegativeConfirmed = callback
     }
 
     fun show(title : String, description : String, positiveLabel : String) = with(dialog) {
@@ -24,6 +29,7 @@ class StopVoucherConfirmationDialog(context: Context) {
         }
         setSecondaryCTAText(context.getString(R.string.smvc_back))
         setSecondaryCTAClickListener {
+            onNegativeConfirmed()
             setDismissDialog()
         }
         with(dialogSecondaryCTA) {

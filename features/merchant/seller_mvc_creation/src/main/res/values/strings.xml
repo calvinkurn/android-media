@@ -451,4 +451,10 @@
     <string name="smvc_quota_info_quota_button_format">Cek %d Sumber Lainnya</string>
     <string name="smvc_quota_info_quota_total_format">/ %d</string>
 
+    <!--Tracker update voucher-->
+    <string name="smvc_tracker_change_quota_lable">voucher id: %s - voucher status: %s</string>
+    <string name="smvc_tracker_change_quota_lable_options">voucher id: %s - voucher status: %s - option: %s</string>
+    <string name="smvc_tracker_stop_voucher_lable">voucher id: %s - campaign id: %s</string>
+    <string name="smvc_tracker_change_pariod_lable">voucher id: %s - voucher status: %s</string>
+
 </resources>

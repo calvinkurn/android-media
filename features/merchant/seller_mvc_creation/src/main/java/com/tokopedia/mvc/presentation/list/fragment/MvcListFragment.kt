@@ -73,6 +73,7 @@ import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.mvc.presentation.quota.QuotaInfoActivity
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.SharingUtil
+import com.tokopedia.mvc.util.tracker.StopVoucherTracker
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.SearchBarUnify
@@ -110,6 +111,9 @@ class MvcListFragment :
 
     @Inject
     lateinit var viewModel: MvcListViewModel
+
+    @Inject
+    lateinit var tracker: StopVoucherTracker
 
     override fun getScreenName() = ""
 
@@ -617,7 +621,12 @@ class MvcListFragment :
             with(dialog) {
                 setOnPositiveConfirmed {
                     viewModel.stopVoucher(voucher)
+                    sendTrackerOnPositiveButton(voucher)
                 }
+                setOnNegativeConfirmed {
+                    sendTrackerOnNegativeButton(voucher)
+                }
+
                 show(
                     getTitleStopVoucherDialog(voucherStatus),
                     getStringDescStopVoucherDialog(voucherStatus, voucher.name),
@@ -641,6 +650,26 @@ class MvcListFragment :
         } else {
             getString(R.string.smvc_canceled_voucher_confirmation_body_dialog, voucherName)
         }
+    }
+
+    private fun sendTrackerOnPositiveButton(voucher: Voucher) {
+        if (voucher.status == VoucherStatus.NOT_STARTED) {
+            tracker.sendClickYesCancelEvent(createLabelOnTracker(voucher))
+        } else {
+            tracker.sendClickYesStopEvent(createLabelOnTracker(voucher))
+        }
+    }
+
+    private fun sendTrackerOnNegativeButton(voucher: Voucher) {
+        if (voucher.status == VoucherStatus.NOT_STARTED) {
+            tracker.sendClickNoCancelEvent(createLabelOnTracker(voucher))
+        } else {
+            tracker.sendClickNoStopEvent(createLabelOnTracker(voucher))
+        }
+    }
+
+    private fun createLabelOnTracker(voucher: Voucher) : String{
+        return getString(R.string.smvc_tracker_stop_voucher_lable, voucher.id.toString(), "")
     }
 
     private fun getStringPositiveCtaStopVoucherDialog(voucherStatus: VoucherStatus): String {
