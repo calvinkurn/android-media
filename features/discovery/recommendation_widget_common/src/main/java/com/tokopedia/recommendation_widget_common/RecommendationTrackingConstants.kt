@@ -35,6 +35,10 @@ object RecommendationTrackingConstants {
         const val SHOP_TYPE = "shop_type"
 
         const val KEY_INDEX = "index"
+
+        const val IMPRESSIONS = "impressions"
+        const val CURRENCY_CODE = "currencyCode"
+        const val IDR = "IDR"
     }
 
     object Action {

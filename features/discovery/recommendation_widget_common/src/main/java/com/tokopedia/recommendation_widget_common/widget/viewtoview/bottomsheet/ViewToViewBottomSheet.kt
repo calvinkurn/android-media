@@ -127,14 +127,6 @@ class ViewToViewBottomSheet @Inject constructor(
     private fun renderRecommendationResult(result: Result<ViewToViewRecommendationResult>) {
         result.doSuccessOrFail(
             success = {
-                it.data.widget?.let { widget ->
-//                    ViewToViewBottomSheetTracker.eventBottomSheetImpress(
-//                        widget,
-//                        headerTitle,
-//                        viewModel.getUserId(),
-//                        productAnchorId,
-//                    )
-                }
                 recommendationAdapter?.submitList(it.data.data)
             },
             fail = { showGlobalError(it) }

@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet
 
 import android.os.Bundle
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.ADD_TO_CART
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.PRODUCT_VIEW
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.SELECT_CONTENT
@@ -8,9 +9,12 @@ import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstant
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.BUSINESS_UNIT_HOME
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CATEGORY_ID
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CATEGORY_PDP
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CURRENCY_CODE
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CURRENT_SITE_MP
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_40
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_45
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.IDR
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.IMPRESSIONS
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEMS
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_BRAND
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_CATEGORY
@@ -39,7 +43,7 @@ import com.tokopedia.track.constant.TrackerConstant.EVENT_CATEGORY
 import com.tokopedia.track.constant.TrackerConstant.EVENT_LABEL
 import com.tokopedia.track.constant.TrackerConstant.USERID
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import java.util.HashMap
+import kotlin.collections.HashMap
 
 object ViewToViewBottomSheetTracker: BaseTrackerConst() {
     private const val TOPADS = "topads"
@@ -63,80 +67,25 @@ object ViewToViewBottomSheetTracker: BaseTrackerConst() {
         anchorProductId: String,
         trackingQueue: TrackingQueue?,
     ) {
-        val trackingBuilder = BaseTrackerBuilder()
-        val productList = arrayListOf(
-            Product(
-                name = product.name,
-                id = product.productId.toString(),
-                productPrice = product.price,
-                brand = "",
-                category = product.categoryBreadcrumbs,
-                variant = "",
-                productPosition = (product.position + 1).toString(),
-                isFreeOngkir = product.isFreeOngkirActive,
-                isTopAds = product.isTopAds,
-                cartId = product.cartId,
-                shopId = product.shopId.toString(),
-                shopName = product.shopName,
-                shopType = product.shopType,
-                pageName = product.pageName,
-                recommendationType = product.recommendationType,
-                headerName = product.header,
-                quantity = product.quantity.toString(),
-            )
-        )
-        val dataLayer = trackingBuilder.constructBasicProductView(
-            event = PRODUCT_VIEW,
-            eventCategory = CATEGORY_PDP,
-            eventAction = IMPRESSION_ACTION,
-            eventLabel = headerTitle,
-            list = product.asItemList(),
-            products = productList,
-        )
-            .appendBusinessUnit(BusinessUnit.DEFAULT)
-            .appendCurrentSite(CurrentSite.DEFAULT)
-            .appendUserId(userId)
-            .appendCustomKeyValue(TRACKER_ID, IMPRESSION_TRACKER_ID)
-            .appendCustomKeyValue(PRODUCT_ID, anchorProductId)
-            .build() as HashMap<String, Any>
+        val productList = arrayListOf(product.asDataLayer())
+
+        val dataLayer = DataLayer.mapOf(
+            Event.KEY, PRODUCT_VIEW,
+            Category.KEY, CATEGORY_PDP,
+            Action.KEY, IMPRESSION_ACTION,
+            Label.KEY, headerTitle,
+            BusinessUnit.KEY, BusinessUnit.DEFAULT,
+            CurrentSite.KEY, CurrentSite.DEFAULT,
+            TRACKER_ID, IMPRESSION_TRACKER_ID,
+            ITEM_LIST, product.asItemList(),
+            Ecommerce.KEY, DataLayer.mapOf(
+                CURRENCY_CODE, IDR,
+                IMPRESSIONS, productList,
+            ),
+            PRODUCT_ID, anchorProductId,
+            USERID, userId,
+        ) as HashMap<String, Any>
         trackingQueue?.putEETracking(dataLayer)
-    }
-
-    fun eventBottomSheetImpress(
-        widget: RecommendationWidget,
-        headerTitle: String,
-        userId: String,
-        anchorProductId: String,
-    ) {
-
-        val itemBundle = Bundle().apply {
-            putString(EVENT, VIEW_ITEM_LIST)
-            putString(EVENT_ACTION, IMPRESSION_ACTION)
-            putString(EVENT_CATEGORY, CATEGORY_PDP)
-            putString(EVENT_LABEL, headerTitle)
-            putString(BUSINESS_UNIT, BUSINESS_UNIT_HOME)
-            putString(CURRENT_SITE, CURRENT_SITE_MP)
-            putString(TRACKER_ID, IMPRESSION_TRACKER_ID)
-            putString(ITEM_LIST, widget.asItemList())
-
-            //promotion
-            val bundlePromotions = widget.recommendationItemList.mapIndexed { index, product ->
-                product.asBundle(index + 1)
-            }
-            val list = ArrayList(bundlePromotions)
-            putParcelableArrayList(ITEMS, list)
-
-            putString(PRODUCT_ID, anchorProductId)
-            putString(USERID, userId)
-        }
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, itemBundle)
-    }
-
-    private fun RecommendationWidget.asItemList(): String {
-        val firstRecommendationItem = recommendationItemList.firstOrNull()
-        val isTopAds = if (firstRecommendationItem?.isTopAds == true) TOPADS else NONTOPADS
-        val recommendationType = firstRecommendationItem?.recommendationType ?: ""
-        return ITEM_LIST_TEMPLATE.format(recommendationType, isTopAds)
     }
 
     fun eventProductClick(
@@ -217,5 +166,24 @@ object ViewToViewBottomSheetTracker: BaseTrackerConst() {
             putString(SHOP_TYPE, shopType)
             putInt(KEY_INDEX, position)
         }
+    }
+
+    private fun RecommendationItem.asDataLayer(): Map<String,Any> {
+        return hashMapOf(
+            CATEGORY_ID to departmentId,
+            DIMENSION_40 to asItemList(),
+            DIMENSION_45 to cartId,
+            ITEM_BRAND to "",
+            ITEM_CATEGORY to categoryBreadcrumbs,
+            ITEM_ID to productId,
+            ITEM_NAME to name,
+            ITEM_VARIANT to "",
+            PRICE to "%.1f".format(priceInt.toDouble()),
+            QUANTITY to quantity,
+            SHOP_ID to shopId,
+            SHOP_NAME to shopName,
+            SHOP_TYPE to shopType,
+            KEY_INDEX to position,
+        )
     }
 }

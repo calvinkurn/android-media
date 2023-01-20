@@ -16,18 +16,18 @@ sealed class ViewToViewViewHolder(
 ) : RecyclerView.ViewHolder(view) {
 
     abstract fun bind(element: ViewToViewDataModel?)
-    abstract fun type() : Int
+    abstract fun type(): Int
 
-    class Loading(view: View): ViewToViewViewHolder(view) {
+    class Loading(view: View) : ViewToViewViewHolder(view) {
         private var binding: ItemViewToViewShimmeringBinding? by viewBinding()
 
         override fun bind(element: ViewToViewDataModel?) {
-            if(element is ViewToViewDataModel.Loading) bind(element)
+            if (element is ViewToViewDataModel.Loading) bind(element)
         }
 
         fun bind(data: ViewToViewDataModel.Loading) {
             val button = binding?.button ?: return
-            if(data.hasAtc) button.show() else button.hide()
+            if (data.hasAtc) button.show() else button.hide()
         }
 
         override fun type() = LAYOUT
@@ -40,25 +40,20 @@ sealed class ViewToViewViewHolder(
     class Product(
         private val listener: ViewToViewListener,
         view: View,
-    ): ViewToViewViewHolder(view) {
+    ) : ViewToViewViewHolder(view) {
         private var binding: ItemViewToViewBinding? by viewBinding()
 
         override fun bind(element: ViewToViewDataModel?) {
-            if(element is ViewToViewDataModel.Product) bind(element)
+            if (element is ViewToViewDataModel.Product) bind(element)
         }
 
         fun bind(data: ViewToViewDataModel.Product) {
+            itemView.addOnImpressionListener(data.recommendationItem) {
+                listener.onProductImpressed(data, bindingAdapterPosition)
+            }
             val binding = binding ?: return
             with(binding.root) {
                 setProductModel(data.productModel)
-                setAddToCartNonVariantClickListener(object : ATCNonVariantListener {
-                    override fun onQuantityChanged(quantity: Int) {
-
-                    }
-                })
-                addOnImpressionListener(data.recommendationItem) {
-                    listener.onProductImpressed(data, bindingAdapterPosition)
-                }
                 setOnClickListener {
                     listener.onProductClicked(data, bindingAdapterPosition)
                 }
