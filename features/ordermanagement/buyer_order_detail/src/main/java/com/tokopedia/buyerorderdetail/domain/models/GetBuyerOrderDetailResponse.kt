@@ -82,7 +82,10 @@ data class GetBuyerOrderDetailResponse(
             val hasResoStatus: Boolean? = false,
             @SerializedName("has_ppp")
             @Expose
-            val hasInsurance: Boolean? = false
+            val hasInsurance: Boolean? = false,
+            @SerializedName("is_pof")
+            @Expose
+            val isPof: Boolean? = false
         ) {
             fun getDriverTippingInfo(): LogisticSectionInfo? {
                 return logisticSections.find { it.id == BuyerOrderDetailLogisticSectionInfoID.DRIVER_TIPPING_INFO }
@@ -214,7 +217,9 @@ data class GetBuyerOrderDetailResponse(
                 val paymentDetails: List<PaymentDetail> = listOf(),
                 @Expose
                 @SerializedName("payment_method")
-                val paymentMethod: PaymentMethod = PaymentMethod()
+                val paymentMethod: PaymentMethod = PaymentMethod(),
+                @SerializedName("payment_refund")
+                val paymentRefund: PaymentRefund = PaymentRefund()
             ) {
                 data class PaymentAmount(
                     @Expose
@@ -242,6 +247,46 @@ data class GetBuyerOrderDetailResponse(
                     @SerializedName("value")
                     val value: String = ""
                 )
+
+                data class PaymentRefund(
+                    @SerializedName("summary_info")
+                    val summaryInfo: SummaryInfo? = SummaryInfo(),
+                    @SerializedName("estimate_info")
+                    val estimateInfo: EstimateInfo? = EstimateInfo(),
+                    @SerializedName("total_amount")
+                    val totalAmount: TotalAmount = TotalAmount(),
+                    @SerializedName("is_refunded")
+                    val isRefunded: Boolean = false
+                ) {
+                    data class TotalAmount(
+                        @SerializedName("label")
+                        val label: String = "",
+                        @SerializedName("value")
+                        val value: String = ""
+                    )
+                    data class SummaryInfo(
+                        @SerializedName("details")
+                        val details: List<Detail> = listOf(),
+                        @SerializedName("footer")
+                        val footer: String = "",
+                        @SerializedName("total_amount")
+                        val totalAmount: TotalAmount = TotalAmount()
+                    ) {
+                        data class Detail(
+                            @SerializedName("label")
+                            val label: String = "",
+                            @SerializedName("value")
+                            val value: String = ""
+                        )
+                    }
+
+                    data class EstimateInfo(
+                        @SerializedName("title")
+                        val title: String = "",
+                        @SerializedName("info")
+                        val info: String = "",
+                    )
+                }
             }
 
             data class Shipment(
@@ -407,7 +452,8 @@ data class GetBuyerOrderDetailResponse(
                 @SerializedName("non_bundles")
                 @Expose
                 val nonBundles: List<NonBundle>? = listOf(),
-                @SerializedName("total_products")
+                @SerializedName("partial_fulfillment")
+                val partialFulfillment: PartialFulfillment = PartialFulfillment(),                @SerializedName("total_products")
                 @Expose
                 val totalProducts: Long = 0
             ) {
@@ -604,6 +650,32 @@ data class GetBuyerOrderDetailResponse(
                             val type: String = ""
                         )
                     }
+                }
+
+                data class PartialFulfillment(
+                    @SerializedName("fulfilled")
+                    val fulfilled: Fulfilled = Fulfilled(),
+                    @SerializedName("unfulfilled")
+                    val unfulfilled: Unfulfilled = Unfulfilled()
+                ) {
+                    data class Fulfilled(
+                        @SerializedName("header")
+                        val header: Header = Header()
+                    )
+
+                    data class Unfulfilled(
+                        @SerializedName("details")
+                        val details: List<NonBundle> = listOf(),
+                        @SerializedName("header")
+                        val header: Header = Header()
+                    )
+
+                    data class Header(
+                        @SerializedName("quantity")
+                        val quantity: String = "",
+                        @SerializedName("title")
+                        val title: String = ""
+                    )
                 }
             }
 

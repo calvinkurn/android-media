@@ -508,7 +508,7 @@ class BuyerOrderDetailValidator {
             } catch (e: AssertionError) {
                 if (errorMessage.isEmpty()) {
                     errorMessage.appendLine()
-                        .append("Begin Buyer Order Detail Analytic Error Message")
+                        .append("Begin Buyer Order DetailFulfilled Analytic Error Message")
                 }
                 errorMessage.appendLine()
                     .append("Error when validating query ${it.split("/").last()}")

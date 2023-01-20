@@ -62,8 +62,8 @@ data class DetailsUnfulfill(
 )
 
 data class EstimateInfo(
-    @SerializedName("list_info")
-    val listInfo: List<Info> = listOf(),
+    @SerializedName("info")
+    val info: String = "",
     @SerializedName("title")
     val title: String = ""
 )

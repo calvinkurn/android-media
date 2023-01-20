@@ -37,9 +37,7 @@ const val PARTIAL_ORDER_FULFILLMENT_INFO_QUERY = """
         }
         estimate_info{
           title
-          list_info{
-            info
-          }
+          info
         }
         summary {
           pof_details{

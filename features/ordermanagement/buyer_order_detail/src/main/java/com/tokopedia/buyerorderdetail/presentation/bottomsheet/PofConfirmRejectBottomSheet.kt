@@ -145,7 +145,7 @@ class PofConfirmRejectBottomSheet : BottomSheetUnify() {
     companion object {
         const val POF_REJECT_ORDER_ID_KEY = "pof_reject_order_id_key"
 
-        const val TAG = "PofConfirmRejectBottomSheet"
+        private val TAG = PofConfirmRejectBottomSheet::class.java.simpleName
 
         fun newInstance(orderId: String): PofConfirmRejectBottomSheet {
             return PofConfirmRejectBottomSheet().apply {

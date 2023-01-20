@@ -18,4 +18,5 @@ object BuyerOrderDetailActionButtonKey {
     const val SEE_POD = "pod_details"
     const val RE_UPLOAD_PRESCRIPTION = "epharmacy_reupload_prescription"
     const val CHECK_PRESCRIPTION = "epharmacy_check_prescription"
+    const val PARTIAL_ORDER_FULFILLMENT = "response_partial_order_fulfillment"
 }

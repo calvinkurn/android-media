@@ -17,6 +17,7 @@ import com.tokopedia.buyerorderdetail.presentation.activity.PartialOrderFulfillm
 import com.tokopedia.buyerorderdetail.presentation.adapter.PartialOrderFulfillmentAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.PartialOrderFulfillmentListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.PartialOrderFulfillmentTypeFactoryImpl
+import com.tokopedia.buyerorderdetail.presentation.model.EstimateInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PartialOrderFulfillmentWrapperUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofErrorUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofFulfilledToggleUiModel
@@ -99,8 +100,11 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
         }
     }
 
-    override fun onRefundEstimateInfoClicked() {
-        val refundEstimateInfoBottomSheet = EstimateRefundInfoBottomSheet.newInstance()
+    override fun onRefundEstimateInfoClicked(estimateInfoUiModel: EstimateInfoUiModel) {
+        val refundEstimateInfoBottomSheet = PofEstimateRefundInfoBottomSheet.newInstance(
+            estimateInfoUiModel.title,
+            estimateInfoUiModel.info
+        )
         refundEstimateInfoBottomSheet.show(childFragmentManager)
     }
 
@@ -246,7 +250,7 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
     companion object {
 
         const val POF_ORDER_ID_KEY = "pof_order_id_key"
-        const val TAG = "PartialOrderFulfillmentBottomSheet"
+        private val TAG = PartialOrderFulfillmentBottomSheet::class.java.simpleName
 
         fun newInstance(orderId: String): PartialOrderFulfillmentBottomSheet {
             return PartialOrderFulfillmentBottomSheet().apply {

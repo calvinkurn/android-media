@@ -114,6 +114,9 @@ class BuyerOrderDetailStickyActionButtonHandler(
                     BuyerOrderDetailTrackerConstant.TRACKER_ID_CHECK_PRESCRIPTION
                 )
             }
+            BuyerOrderDetailActionButtonKey.PARTIAL_ORDER_FULFILLMENT -> {
+                onRespondToPartialOrderFulfillmentClicked()
+            }
         }
     }
 

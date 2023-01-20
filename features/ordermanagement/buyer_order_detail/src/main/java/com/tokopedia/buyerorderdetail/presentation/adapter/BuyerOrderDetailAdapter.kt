@@ -15,6 +15,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetU
 import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlatformFeeInfoUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PofRefundInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.SimpleCopyableKeyValueUiModel
@@ -84,9 +85,12 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
     ) {
         addThickDividerSection()
         addProductListHeaderSection(context, productListUiModel.productListHeaderUiModel)
+        addPofHeaderSection(context, productListUiModel.productFulfilledHeaderLabel)
         addProductBundlingListSection(productListUiModel.productBundlingList)
         addProductListSection(context, productListUiModel.productList)
         addAddonsListSection(productListUiModel.addonsListUiModel)
+        addPofHeaderSection(context, productListUiModel.productUnfulfilledHeaderLabel)
+        addProductListSection(context, productListUiModel.productUnFulfilledList)
         addProductListToggleSection(productListUiModel.productListToggleUiModel)
     }
 
@@ -128,6 +132,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         addPaymentInfoSection(context, paymentInfoUiModel.paymentInfoItems)
         addThinDividerSection()
         addPaymentGrandTotalSection(context, paymentInfoUiModel.paymentGrandTotal)
+        addPaymentRefundSection(context, paymentInfoUiModel.pofRefundInfoUiModel)
         addPlatformFeeInfoSection()
         addTickerSection(context, paymentInfoUiModel.ticker)
     }
@@ -192,9 +197,27 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductListSection(
         context: Context?,
-        productList: List<ProductListUiModel.ProductUiModel>
+        productList: List<ProductListUiModel.ProductUiModel>?
     ) {
-        productList.filter { it.shouldShow(context) }.also { addAll(it) }
+        productList?.filter { it.shouldShow(context) }?.also { addAll(it) }
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPofHeaderSection(
+        context: Context?,
+        pofHeaderLabelUiModel: ProductListUiModel.ProductPofHeaderLabelUiModel?
+    ) {
+        if (pofHeaderLabelUiModel?.shouldShow(context) == true) {
+            add(pofHeaderLabelUiModel)
+        }
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPofUnfulfilledHeaderSection(
+        context: Context?,
+        pofHeaderLabelUiModel: ProductListUiModel.ProductPofHeaderLabelUiModel
+    ) {
+        if (pofHeaderLabelUiModel.shouldShow(context)) {
+            add(pofHeaderLabelUiModel)
+        }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addCourierInfoSection(
@@ -300,6 +323,14 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
     ) {
         if (paymentGrandTotal.shouldShow(context)) add(paymentGrandTotal)
     }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPaymentRefundSection(
+        context: Context?,
+        paymentRefund: PofRefundInfoUiModel
+    ) {
+        if (paymentRefund.shouldShow(context)) add(paymentRefund)
+    }
+
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPlatformFeeInfoSection() {
         add(PlatformFeeInfoUiModel())

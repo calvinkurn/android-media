@@ -1,16 +1,15 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.view.View
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.PofUtils.setupHyperlinkText
 import com.tokopedia.buyerorderdetail.databinding.ItemPofEstimateRefundBottomsheetBinding
-import com.tokopedia.buyerorderdetail.presentation.model.PofRefundEstimateUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.EstimateInfoUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PofRefundEstimateBottomSheetUiModel
 
-class PofRefundEstimateViewHolder(
-    view: View,
-    private val listener: Listener
-) : CustomPayloadViewHolder<PofRefundEstimateUiModel>(view) {
+class PofRefundEstimateBottomSheetViewHolder(
+    view: View, private val listener: Listener
+) : CustomPayloadViewHolder<PofRefundEstimateBottomSheetUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_pof_estimate_refund_bottomsheet
@@ -18,19 +17,18 @@ class PofRefundEstimateViewHolder(
 
     private val binding = ItemPofEstimateRefundBottomsheetBinding.bind(itemView)
 
-    override fun bind(element: PofRefundEstimateUiModel) {
+    override fun bind(element: PofRefundEstimateBottomSheetUiModel) {
         with(binding) {
             setRefundEstimateLabel(element.refundEstimateLabel)
             setRefundEstimateValue(element.refundEstimateValue)
             setRefundEstimateFooter(element.pofFooterInfo)
-            setRefundEstimateIcon()
+            setRefundEstimateIcon(element.estimateInfoUiModel)
         }
     }
 
     override fun bindPayload(payloads: Pair<*, *>?) {
         payloads?.let { (oldItem, newItem) ->
-            if (oldItem is PofRefundEstimateUiModel && newItem is PofRefundEstimateUiModel) {
-                binding.setRefundEstimateIcon()
+            if (oldItem is PofRefundEstimateBottomSheetUiModel && newItem is PofRefundEstimateBottomSheetUiModel) {
                 if (oldItem.refundEstimateLabel != newItem.refundEstimateLabel) {
                     binding.setRefundEstimateLabel(newItem.refundEstimateLabel)
                 }
@@ -40,13 +38,16 @@ class PofRefundEstimateViewHolder(
                 if (oldItem.pofFooterInfo != newItem.pofFooterInfo) {
                     binding.setRefundEstimateFooter(newItem.pofFooterInfo)
                 }
+                if (oldItem.estimateInfoUiModel != newItem.estimateInfoUiModel) {
+                    binding.setRefundEstimateIcon(newItem.estimateInfoUiModel)
+                }
             }
         }
     }
 
-    private fun ItemPofEstimateRefundBottomsheetBinding.setRefundEstimateIcon() {
+    private fun ItemPofEstimateRefundBottomsheetBinding.setRefundEstimateIcon(estimateInfoUiModel: EstimateInfoUiModel) {
         icEstimateRefundInfo.setOnClickListener {
-            listener.onRefundEstimateInfoClicked()
+            listener.onRefundEstimateInfoClicked(estimateInfoUiModel)
         }
     }
 
@@ -65,7 +66,7 @@ class PofRefundEstimateViewHolder(
     }
 
     interface Listener {
-        fun onRefundEstimateInfoClicked()
+        fun onRefundEstimateInfoClicked(estimateInfoUiModel: EstimateInfoUiModel)
 
         fun onFooterHyperlinkClicked(linkUrl: String)
     }

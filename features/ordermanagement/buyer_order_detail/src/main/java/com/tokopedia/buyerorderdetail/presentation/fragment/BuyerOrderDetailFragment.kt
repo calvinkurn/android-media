@@ -39,17 +39,23 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRec
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderResolutionViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PartialProductItemViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofRefundInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListToggleViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailToolbarMenuAnimator
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
+import com.tokopedia.buyerorderdetail.presentation.bottomsheet.PofDetailRefundedBottomSheet
+import com.tokopedia.buyerorderdetail.presentation.bottomsheet.PofEstimateRefundInfoBottomSheet
+import com.tokopedia.buyerorderdetail.presentation.bottomsheet.SubmissionOrderExtensionBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.coachmark.CoachMarkManager
 import com.tokopedia.buyerorderdetail.presentation.dialog.RequestCancelResultDialog
 import com.tokopedia.buyerorderdetail.presentation.helper.BuyerOrderDetailStickyActionButtonHandler
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.EstimateInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
+import com.tokopedia.buyerorderdetail.presentation.model.PofRefundSummaryUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailMotionLayout
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailStickyActionButton
@@ -92,7 +98,8 @@ open class BuyerOrderDetailFragment :
     CourierInfoViewHolder.CourierInfoViewHolderListener,
     PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
     OrderResolutionViewHolder.OrderResolutionListener,
-    ProductListToggleViewHolder.Listener {
+    ProductListToggleViewHolder.Listener,
+    PofRefundInfoViewHolder.Listener {
 
     companion object {
         @JvmStatic
@@ -140,6 +147,7 @@ open class BuyerOrderDetailFragment :
             this,
             this,
             digitalRecommendationData,
+            this,
             this,
             this,
             this,
@@ -786,6 +794,22 @@ open class BuyerOrderDetailFragment :
 
     override fun onExpandProductList() {
         viewModel.expandProductList()
+    }
+
+    override fun estimateRefundInfoClicked(estimateInfoUiModel: EstimateInfoUiModel) {
+        val bottomSheet = PofEstimateRefundInfoBottomSheet.newInstance(estimateInfoUiModel.title, estimateInfoUiModel.info)
+        bottomSheet.show(childFragmentManager)
+    }
+
+    override fun refundSummaryClicked(refundSummaryRefundUiModel: PofRefundSummaryUiModel) {
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+        cacheManager?.put(
+            PofDetailRefundedBottomSheet.KEY_DETAIL_REFUNDED_UI_MODEL,
+            refundSummaryRefundUiModel
+        )
+        val bottomSheet =
+            PofDetailRefundedBottomSheet.newInstance(cacheManager?.id.orEmpty())
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun <T> Continuation<T>.resumeSafely(any: T) {

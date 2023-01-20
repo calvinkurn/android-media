@@ -6,8 +6,12 @@ import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
+import com.tokopedia.buyerorderdetail.presentation.model.EstimateInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PofRefundInfoUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PofSummaryInfoUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PofRefundSummaryUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.PaymentInfoUiState
 
@@ -97,6 +101,7 @@ object PaymentInfoUiStateMapper {
             paymentMethodInfoItem = mapPaymentMethodInfoItem(payment.paymentMethod),
             paymentInfoItems = mapPaymentInfoItems(payment.paymentDetails),
             paymentGrandTotal = mapPaymentGrandTotal(payment.paymentAmount),
+            pofRefundInfoUiModel = mapPaymentRefundEstimate(payment.paymentRefund),
             ticker = mapPaymentTicker(cashbackInfo)
         )
     }
@@ -136,6 +141,36 @@ object PaymentInfoUiStateMapper {
     ): PaymentInfoUiModel.PaymentGrandTotalUiModel {
         return PaymentInfoUiModel.PaymentGrandTotalUiModel(
             label = paymentAmount.label, value = paymentAmount.value
+        )
+    }
+
+    private fun mapPaymentRefundEstimate(
+        paymentRefund: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Payment.PaymentRefund
+    ): PofRefundInfoUiModel {
+        val paymentTotalAmount = paymentRefund.totalAmount
+        return PofRefundInfoUiModel(
+            totalAmountLabel = paymentTotalAmount.label,
+            totalAmountValue = paymentTotalAmount.value,
+            isRefunded = paymentRefund.isRefunded,
+            estimateInfoUiModel = paymentRefund.estimateInfo?.let {
+                EstimateInfoUiModel(
+                    title = it.title,
+                    info = it.info
+                )
+            },
+            pofRefundSummaryUiModel = paymentRefund.summaryInfo?.let {
+                PofRefundSummaryUiModel(
+                    totalAmountValue = it.totalAmount.value,
+                    totalAmountLabel = it.totalAmount.label,
+                    footerInfo = it.footer,
+                    detailsSummary = it.details.map { detail ->
+                        PofSummaryInfoUiModel(
+                            label = detail.label,
+                            value = detail.value
+                        )
+                    }
+                )
+            }
         )
     }
 

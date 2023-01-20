@@ -13,7 +13,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofFulfill
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofHeaderInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofProductFulfilledViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofProductUnfulfilledViewHolder
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofRefundEstimateViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofRefundEstimateBottomSheetViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofShimmerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofThickDividerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofThinDividerViewHolder
@@ -24,10 +24,9 @@ import com.tokopedia.buyerorderdetail.presentation.model.PofFulfilledToggleUiMod
 import com.tokopedia.buyerorderdetail.presentation.model.PofHeaderInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofProductFulfilledUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofProductUnfulfilledUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.PofRefundEstimateUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PofRefundEstimateBottomSheetUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofThickDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofThinDividerUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.ThickDividerUiModel
 
 class PartialOrderFulfillmentTypeFactoryImpl(
     private val partialOrderFulfillmentListener: PartialOrderFulfillmentListener
@@ -42,7 +41,7 @@ class PartialOrderFulfillmentTypeFactoryImpl(
             PofHeaderInfoViewHolder.LAYOUT -> PofHeaderInfoViewHolder(parent, partialOrderFulfillmentListener)
             PofProductFulfilledViewHolder.LAYOUT -> PofProductFulfilledViewHolder(parent)
             PofProductUnfulfilledViewHolder.LAYOUT -> PofProductUnfulfilledViewHolder(parent)
-            PofRefundEstimateViewHolder.LAYOUT -> PofRefundEstimateViewHolder(parent, partialOrderFulfillmentListener)
+            PofRefundEstimateBottomSheetViewHolder.LAYOUT -> PofRefundEstimateBottomSheetViewHolder(parent, partialOrderFulfillmentListener)
             PofThickDividerViewHolder.LAYOUT -> PofThickDividerViewHolder(parent)
             PofThinDividerViewHolder.LAYOUT -> PofThinDividerViewHolder(parent)
             PofShimmerViewHolder.LAYOUT -> PofShimmerViewHolder(parent)
@@ -79,8 +78,8 @@ class PartialOrderFulfillmentTypeFactoryImpl(
         return PofProductUnfulfilledViewHolder.LAYOUT
     }
 
-    override fun type(pofRefundEstimateUiModel: PofRefundEstimateUiModel): Int {
-        return PofRefundEstimateViewHolder.LAYOUT
+    override fun type(pofRefundEstimateUiModel: PofRefundEstimateBottomSheetUiModel): Int {
+        return PofRefundEstimateBottomSheetViewHolder.LAYOUT
     }
 
     override fun type(pofThickDividerUiModel: PofThickDividerUiModel): Int {

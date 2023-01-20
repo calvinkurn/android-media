@@ -10,6 +10,7 @@ data class PaymentInfoUiModel(
     val paymentGrandTotal: PaymentGrandTotalUiModel,
     val paymentInfoItems: List<PaymentInfoItemUiModel>,
     val paymentMethodInfoItem: PaymentInfoItemUiModel,
+    val pofRefundInfoUiModel: PofRefundInfoUiModel,
     val ticker: TickerUiModel
 ) {
     data class PaymentInfoItemUiModel(

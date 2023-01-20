@@ -6,35 +6,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvPofUnfulfilledDetailLabel"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvDetailRefunded"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
-        android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tvPofUnfulfilledDetailValue"
-        app:typographyType="display_3"
-        tools:text="Harga produk yang tidak bisa dikirim (1 barang)" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvPofUnfulfilledDetailValue"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textColor="@color/Unify_NN950"
-        app:typographyType="display_3"
-        app:layout_constraintBottom_toBottomOf="@id/tvPofUnfulfilledDetailLabel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvPofUnfulfilledDetailLabel"
-        tools:text="Rp5.000.000" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/item_pof_detail_refunded"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerPofDetailRefunded"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@id/tvPofUnfulfilledDetailLabel"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/rvDetailRefunded"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -70,11 +56,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="12dp"
-        android:layout_marginBottom="18dp"
+        android:layout_marginBottom="16dp"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvPofTotalRefundedLabel"
         app:layout_constraintEnd_toStartOf="@id/tvPofTotalRefundedValue"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:typographyType="display_3"
         tools:text="Dana dikembalikan sesuai metode pembayaranmu " />
 

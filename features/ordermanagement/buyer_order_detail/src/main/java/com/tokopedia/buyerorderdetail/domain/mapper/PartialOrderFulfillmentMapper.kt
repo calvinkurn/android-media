@@ -1,10 +1,12 @@
 package com.tokopedia.buyerorderdetail.domain.mapper
 
 import com.tokopedia.buyerorderdetail.domain.models.ApprovePartialOrderFulfillment
+import com.tokopedia.buyerorderdetail.domain.models.EstimateInfo
 import com.tokopedia.buyerorderdetail.domain.models.InfoRespondPartialOrderFulfillment
 import com.tokopedia.buyerorderdetail.domain.models.RejectPartialOrderFulfillment
 import com.tokopedia.buyerorderdetail.presentation.model.ApprovePartialOrderFulfillmentUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BasePofVisitableUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.EstimateInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PartialOrderFulfillmentWrapperUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofAvailableLabelUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofDetailUiModel
@@ -12,7 +14,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.PofFulfilledToggleUiMod
 import com.tokopedia.buyerorderdetail.presentation.model.PofHeaderInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofProductFulfilledUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofProductUnfulfilledUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.PofRefundEstimateUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PofRefundEstimateBottomSheetUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofThickDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofThinDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.RejectPartialOrderFulfillmentUiModel
@@ -75,10 +77,11 @@ class PartialOrderFulfillmentMapper @Inject constructor() {
 
             val estimateRefund = infoRespondPartialOrderFulfillment.summary.estimateRefund
             add(
-                PofRefundEstimateUiModel(
+                PofRefundEstimateBottomSheetUiModel(
                     refundEstimateLabel = estimateRefund.label,
                     refundEstimateValue = estimateRefund.value,
-                    pofFooterInfo = infoRespondPartialOrderFulfillment.footerInfo
+                    pofFooterInfo = infoRespondPartialOrderFulfillment.footerInfo,
+                    estimateInfoUiModel = mapToEstimateInfoUiModel(infoRespondPartialOrderFulfillment.estimateInfo)
                 )
             )
         }.toList()
@@ -86,6 +89,10 @@ class PartialOrderFulfillmentMapper @Inject constructor() {
         return PartialOrderFulfillmentWrapperUiModel(
             partialOrderFulfillmentUiModelList = partialOrderFulfillmentUiModelList
         )
+    }
+
+    fun mapToEstimateInfoUiModel(estimateInfo: EstimateInfo): EstimateInfoUiModel {
+        return EstimateInfoUiModel(estimateInfo.title, estimateInfo.info)
     }
 
     fun mapToApprovePartialOrderFulfillmentUiModel(
@@ -107,7 +114,6 @@ class PartialOrderFulfillmentMapper @Inject constructor() {
     }
 
     companion object {
-        const val MARGIN_8 = 8
         const val MARGIN_16 = 16
         const val MARGIN_12 = 12
     }

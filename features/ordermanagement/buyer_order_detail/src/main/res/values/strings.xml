@@ -95,8 +95,7 @@
     <string name="buyer_order_detail_pof_item_available_label">Barang tersedia</string>
     <string name="buyer_order_detail_pof_item_still_available_label">%1$s Barang masih tersedia</string>
     <string name="buyer_order_detail_pof_item_request_stock"><![CDATA[<font color="%1$s">%2$s</font> dari %3$s]]></string>
-    <string name="buyer_order_detail_pof_item_available_header"><![CDATA[Produk tersedia<font color="%1$s">(%2$s barang)</font>]]></string>
-    <string name="buyer_order_detail_pof_item_not_available_header"><![CDATA[Produk tidak tersedia<font color="%1$s">(%2$s barang)</font>]]></string>
+    <string name="buyer_order_detail_pof_header_label"><![CDATA[%1$s <font color="%2$s">%3$s</font>]]></string>
 
     <string name="buyer_order_detail_pof_item_detail_refunded_cta">Cek detail dana yang dikembalikan &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
     <string name="buyer_order_detail_pof_detail_refunded_bottomsheet_title">Detail dana dikembalikan</string>
