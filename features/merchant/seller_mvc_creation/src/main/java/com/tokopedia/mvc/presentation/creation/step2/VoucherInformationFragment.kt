@@ -246,8 +246,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             coachMarkItem.add(
                 CoachMark2Item(
                     cbRepeatPeriod,
-                    getString(R.string.smvc_voucher_creation_step_one_coachmark_title),
-                    getString(R.string.smvc_voucher_creation_step_one_coachmark_description),
+                    getString(R.string.smvc_voucher_creation_step_two_coachmark_title),
+                    getString(R.string.smvc_voucher_creation_step_two_coachmark_description),
                     CoachMark2.POSITION_TOP
                 )
             )
