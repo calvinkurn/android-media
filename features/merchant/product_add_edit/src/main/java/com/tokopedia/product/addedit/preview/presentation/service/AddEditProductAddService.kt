@@ -22,6 +22,7 @@ import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProduc
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TITLE_ERROR_DOWNLOAD_IMAGE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TITLE_ERROR_SAVING_DRAFT
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddUploadTracking
@@ -50,6 +51,8 @@ open class AddEditProductAddService : AddEditProductBaseService() {
     protected var productDraftId = 0L
     protected var productInputModel: ProductInputModel = ProductInputModel()
 
+    private var filename = String.EMPTY
+
     companion object {
         fun startService(context: Context, cacheId: String) {
             val work = Intent(context, AddEditProductBaseService::class.java).apply {
@@ -66,21 +69,39 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         productInputModel = saveInstanceCacheManager.get(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
 
         if (productInputModel.isDuplicate) {
-            // re download product images + update new file path
-            val productDetail = productInputModel.detailInputModel
-            reDownloadProductImages(productDetail)
-            // re download product variant images + update new file path
-            val productVariant = productInputModel.variantInputModel.products
-            reDownloadProductVariantImages(productVariant)
-            // re download product variant size chart + update new file path
-            val variantSizeChart = productInputModel.variantInputModel.sizecharts
-            reDownloadVariantSizeChart(variantSizeChart)
-            // run the normal flows
-            saveProductToDraftAsync()
+            duplicateProductImages(productInputModel)
         } else {
             // (1)
             saveProductToDraftAsync()
         }
+    }
+
+    private fun duplicateProductImages(productInputModel: ProductInputModel) {
+        launchCatchError(
+            block = {
+                asyncCatchError(
+                    coroutineContext,
+                    block = {
+                        // re download product images + update new file path
+                        val productDetail = productInputModel.detailInputModel
+                        reDownloadProductImages(productDetail)
+                        // re download product variant images + update new file path
+                        val productVariant = productInputModel.variantInputModel.products
+                        reDownloadProductVariantImages(productVariant)
+                        // re download product variant size chart + update new file path
+                        val variantSizeChart = productInputModel.variantInputModel.sizecharts
+                        reDownloadVariantSizeChart(variantSizeChart)
+                    },
+                    onError = { throwable ->
+                        AddEditProductErrorHandler.logExceptionToCrashlytics(throwable)
+                    }
+                ).await().run { saveProductToDraftAsync() } // save to draft and upload
+            },
+            onError = { throwable ->
+                AddEditProductErrorHandler.logMessage("$TITLE_ERROR_DOWNLOAD_IMAGE $filename")
+                AddEditProductErrorHandler.logExceptionToCrashlytics(throwable)
+            }
+        )
     }
 
     private fun saveProductToDraftAsync() {
@@ -211,18 +232,13 @@ open class AddEditProductAddService : AddEditProductBaseService() {
     }
 
     private fun downloadFile(url: String, filename: String) {
-        launchCatchError(block = {
-            val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-            val path = "$downloadsDir/$filename"
-            URL(url).openStream().use { input ->
-                FileOutputStream(File(path), false).use { output ->
-                    input.copyTo(output)
-                }
+        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
+        val path = "$downloadsDir/$filename"
+        URL(url).openStream().use { input ->
+            FileOutputStream(File(path), false).use { output ->
+                input.copyTo(output)
             }
-        }, onError = { throwable ->
-                AddEditProductErrorHandler.logMessage(filename)
-                AddEditProductErrorHandler.logExceptionToCrashlytics(throwable)
-            })
+        }
     }
 
     private fun reDownloadProductImages(productDetail: DetailInputModel) {
@@ -230,6 +246,9 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
         productImageData.forEach { data ->
             if (data.urlOriginal.isNotBlank() && data.fileName.isNotBlank()) {
+                // logging purpose
+                filename = data.fileName
+
                 val path = downloadsDir + "/" + data.fileName
                 downloadFile(url = data.urlOriginal, filename = data.fileName)
                 data.picID = String.EMPTY
@@ -244,6 +263,9 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         productVariant.forEach { data ->
             data.pictures.forEach { picture ->
                 if (picture.urlOriginal.isNotBlank() && picture.fileName.isNotBlank()) {
+                    // logging purpose
+                    filename = picture.fileName
+
                     val path = downloadsDir + "/" + picture.fileName
                     downloadFile(url = picture.urlOriginal, filename = picture.fileName)
                     picture.picID = String.EMPTY
@@ -257,6 +279,9 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
         val path = downloadsDir + "/" + variantSizeChart.fileName
         if (variantSizeChart.urlOriginal.isNotBlank() && variantSizeChart.fileName.isNotBlank()) {
+            // logging purpose
+            filename = variantSizeChart.fileName
+
             downloadFile(url = variantSizeChart.urlOriginal, filename = variantSizeChart.fileName)
             variantSizeChart.picID = String.EMPTY
             variantSizeChart.urlOriginal = path
