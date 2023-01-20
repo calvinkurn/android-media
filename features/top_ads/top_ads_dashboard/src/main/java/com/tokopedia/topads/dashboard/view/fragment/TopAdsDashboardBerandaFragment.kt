@@ -532,6 +532,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 TopAdsCreditHistoryActivity.createInstance(
                     it,
                     isFromSelection,
+                    showAutoTopUpOldFlow,
                     (activity as? TopAdsDashboardActivity)?.datePickerIndex
                         ?: DATE_PICKER_DEFAULT_INDEX
                 ),

@@ -18,7 +18,7 @@ import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsWidgetSummaryStatisticsUseCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopadsRecommendationStatisticsUseCase
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
-import com.tokopedia.topads.domain.usecase.TopAdsGetSelectedTopUpType
+import com.tokopedia.topads.domain.usecase.TopAdsGetSelectedTopUpTypeUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -31,7 +31,7 @@ class TopAdsDashboardViewModel @Inject constructor(
     private val recommendationStatisticsUseCase: TopadsRecommendationStatisticsUseCase,
     private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
     private val autoTopUpUSeCase: TopAdsAutoTopUpUSeCase,
-    private val topAdsGetSelectedTopUpType: TopAdsGetSelectedTopUpType,
+    private val topAdsGetSelectedTopUpTypeUseCase: TopAdsGetSelectedTopUpTypeUseCase,
     private val whiteListedUserUseCase: GetWhiteListedUserUseCase,
 ) : BaseViewModel(Dispatchers.Main) {
 
@@ -125,7 +125,7 @@ class TopAdsDashboardViewModel @Inject constructor(
     }
 
     fun getSelectedTopUpType(){
-        topAdsGetSelectedTopUpType.execute({
+        topAdsGetSelectedTopUpTypeUseCase.execute({
             val data = it.getPersonalisedCopy.getPersonalisedCopyData
             data.isAutoTopUpSelected = data.creditPerformance == "TopUpFrequently" || data.creditPerformance == "InsufficientCredit"
             _getAutoTopUpDefaultSate.value = Success(it.getPersonalisedCopy.getPersonalisedCopyData)

@@ -72,6 +72,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
     private var autoTopUpFrequencySelected: Int = 6
     var isAutoTopUpActive: Boolean = false
     var isAutoTopUpSelected: Boolean = false
+    var isShowEditHistory: Boolean = false
     private var isCreditHistoryReceived: Boolean = false
     var onSaved: ((productUrl: String, isAutoAdsSaved: Boolean) -> Unit)? = null
     var onCancel: (() -> Unit)? = null
@@ -478,6 +479,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
                     autoTopUpCreditHistoryTriple = viewModel?.getAutoTopUpCreditHistoryData(it.data)
                     isCreditHistoryReceived = true
                     manageAutoTopUpActiveState()
+                    if (isShowEditHistory)enableEditAutoTopUpState()
 
                 }
             }

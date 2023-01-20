@@ -22,7 +22,7 @@ const val GET_PERSONALISED_COPY_QUERY = """query getPersonalisedCopy(${'$'}shop_
 """
 
 @GqlQuery("GetPersonalisedCopyQuery", GET_PERSONALISED_COPY_QUERY)
-class TopAdsGetSelectedTopUpType @Inject constructor(
+class TopAdsGetSelectedTopUpTypeUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository,
     private val userSession: UserSessionInterface
 ) : GraphqlUseCase<GetPersonalisedCopyResponse>(graphqlRepository) {

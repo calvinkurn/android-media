@@ -74,7 +74,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
     private var autoTopupStatus: AutoTopUpStatus? = null
 
     private var autoTopUpCreditHistoryTriple: Triple<String, String, Pair<String, Int>>? = null
-    private var showOldFlow = false
+    private var showOldFlow = true
     private var isAutoTopUpActive = false
 
     private val enableAutoAdssheet: TopAdsChooseTopUpAmountSheet? by lazy {
@@ -121,11 +121,11 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getAutoTopUpStatus.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.getAutoTopUpStatus.observe(viewLifecycleOwner){
             if (it is Success) {
                 onSuccessGetAutoTopUp(it.data)
             }
-        })
+        }
         viewModel.isUserWhitelisted.observe(viewLifecycleOwner){
             if (it is Success){
                 showOldFlow = !it.data
@@ -162,7 +162,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
         }
 
         editAutoTopUpButton?.setOnClickListener {
-            showNewAutoTopUpFlow(true)
+            showNewAutoTopUpFlow(isAutoTopUpActive = true, isShowEditHistory = true)
         }
 
         creditDropMenu?.setOnClickListener {
@@ -183,10 +183,11 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showNewAutoTopUpFlow(isAutoTopUpActive:Boolean = false) {
+    private fun showNewAutoTopUpFlow(isAutoTopUpActive:Boolean = false, isShowEditHistory: Boolean = false) {
         val sheet = TopAdsChooseCreditBottomSheet.newInstance().also {
             it.isAutoTopUpSelected = true
             it.isAutoTopUpActive = isAutoTopUpActive
+            it.isShowEditHistory = isShowEditHistory
             it.isFullpage = true
         }
         sheet.show(childFragmentManager)
@@ -196,7 +197,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
         sheet.onSaved = { _, isAutoAdsSaved ->
             if (isAutoAdsSaved) {
                 showToastSuccess(TYPE_AUTO_TOP_CREDIT_ENABLED)
-                setLayoutOnToggle(true)
+                loadData()
             }
         }
     }
@@ -306,8 +307,9 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
             if (!showOldFlow) setCreditHistoryData()
         } else {
             switchAutoTopupStatus?.isChecked = false
-            selectCreditCard?.visibility = View.GONE
-            offLayout?.visibility = View.VISIBLE
+            selectCreditCard?.hide()
+            offLayout?.show()
+            autoTopUpCreditHistoryLayout?.hide()
         }
     }
 
