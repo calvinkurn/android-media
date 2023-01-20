@@ -7,6 +7,7 @@ import com.tokopedia.homenav.mainnav.data.pojo.wishlist.*
 import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
 import com.tokopedia.homenav.mainnav.domain.usecases.query.GetWishlistQuery
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
@@ -18,6 +19,10 @@ import javax.inject.Inject
 class GetWishlistNavUseCase @Inject constructor(
     private val graphqlUseCase: GraphqlUseCase<GetWishlistCollection>
 ) : UseCase<Triple<List<NavWishlistModel>, Boolean, Boolean>>() {
+
+    companion object {
+        private const val MAX_WISHLIST_COLLECTIONS = 4
+    }
 
     init {
         graphqlUseCase.setGraphqlQuery(GetWishlistQuery())
@@ -39,7 +44,7 @@ class GetWishlistNavUseCase @Inject constructor(
                 )
             )
         }
-        val showViewAll = (responseData.data.totalCollection ?: 0) > 4
+        val showViewAll = (responseData.data.totalCollection ?: Int.ZERO) > MAX_WISHLIST_COLLECTIONS
         return Triple(wishlistList, showViewAll, responseData.data.isEmptyState.orFalse())
     }
 }
