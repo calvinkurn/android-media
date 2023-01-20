@@ -4,7 +4,7 @@
     <string name="host_topads" translatable="false">topads</string>
     <string name="path_topads_dashboard" translatable="false">/dashboard</string>
     <string name="path_topads_buy_credit" translatable="false">/buy</string>
-    <string name="path_topads_add_credit" translatable="false">/add-crdit</string>
+    <string name="path_topads_add_credit" translatable="false">/add-credit</string>
     <string name="path_topads_history_credit" translatable="false">/history-credit</string>
     <string name="path_topads_auto_topup" translatable="false">/auto-topup</string>
     <string name="path_topads_detail_shop" translatable="false">/detail-shop</string>
