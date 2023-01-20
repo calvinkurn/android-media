@@ -18,6 +18,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -47,6 +48,13 @@ class ViewToViewViewModelTest {
             cartId = "12345",
             message = arrayListOf("Success")
         ), status = "OK"
+    )
+
+    private val atcResponseFail = AddToCartDataModel(
+        data = DataModel(
+            success = 0,
+            message = arrayListOf("Fail")
+        ), status = "Fail"
     )
 
     @Before
@@ -89,6 +97,16 @@ class ViewToViewViewModelTest {
         `Then verify view to view recommendation is Fail`()
     }
 
+    @Test
+    fun `view to view retry recommendation should success`() {
+        `Given getViewToViewRecommendationUseCase will return`(RecommendationWidget())
+
+        val queryParam = ""
+        viewToViewViewModel.retryViewToViewProductRecommendation(queryParam, true)
+
+        `Then verify view to view recommendation is Success`()
+    }
+
     private fun `Given getViewToViewRecommendationUseCase will return`(widget: RecommendationWidget) {
         coEvery { getViewToViewRecommendationUseCase.getData(any()) } returns listOf(widget)
     }
@@ -128,7 +146,20 @@ class ViewToViewViewModelTest {
     }
 
     @Test
-    fun `add to cart should return fail`() {
+    fun `add to cart should return fail when atc not success`() {
+        `Given view to view loaded`(recommendationWidget)
+        `Given user is logged in`()
+        `Given addToCartUseCase will return`(atcResponseFail)
+
+        val recommendationResult = (viewToViewViewModel.viewToViewRecommendationLiveData.value as Success).data
+        val product = recommendationResult.data.first() as ViewToViewDataModel.Product
+        `When addToCart`(product)
+
+        `Then verify addToCart fail`()
+    }
+
+    @Test
+    fun `add to cart should return fail when encounter exception`() {
         `Given view to view loaded`(recommendationWidget)
         `Given user is logged in`()
         `Given addToCartUseCase will throw`(Exception())
@@ -192,6 +223,17 @@ class ViewToViewViewModelTest {
     private fun `Then verify addToCart status is NonLogin`() {
         val result = viewToViewViewModel.viewToViewATCStatusLiveData.value
         assertTrue(result is ViewToViewATCStatus.NonLogin)
+    }
+
+    @Test
+    fun `getUserId should return same user id`() {
+        val userId = "1"
+        `Given user is logged in`()
+        every { userSession.userId } returns userId
+
+        val actualUserId = viewToViewViewModel.getUserId()
+
+        assertEquals(userId, actualUserId)
     }
 
 }

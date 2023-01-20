@@ -40,9 +40,6 @@ class ViewToViewViewModel @Inject constructor(
         return if (userSession.isLoggedIn) userSession.userId else "0"
     }
 
-    val isUserSessionActive: Boolean
-        get() = userSession.isLoggedIn
-
     fun getViewToViewProductRecommendation(
         queryParams: String,
         hasAtcButton: Boolean,
@@ -113,11 +110,7 @@ class ViewToViewViewModel @Inject constructor(
                     val useCase = addToCartUseCase.get()
                     useCase.setParams(product.createAddToCartRequestParams())
                     val result = useCase.executeOnBackground()
-                    if (!result.isStatusError()) {
-                        handleATCSuccess(result, product)
-                    } else {
-                        handleATCError(Exception(result.getAtcErrorMessage()))
-                    }
+                    handleATCSuccess(result, product)
                 }, onError = ::handleATCError
             )
         } else {
