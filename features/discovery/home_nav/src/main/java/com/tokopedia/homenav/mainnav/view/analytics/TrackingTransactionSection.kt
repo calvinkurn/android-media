@@ -37,9 +37,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
     private const val STAR_RATING = "star rating"
     private const val PRODUCT_CARD = "product card"
     private const val CREATIVE_NAME_CLICK_REVIEW_FORMAT = "%s_%s"
-    private const val DIMENSION_125 = "dimension125"
-    private const val DIMENSION_40 = "dimension40"
-    private const val LIST_WISHLIST = "/global_menu - wishlist_card"
+    private const val ITEM_NAME_WISHLIST = "/global_menu - wishlist_card"
     private const val IMPRESSION_ON_WISHLIST_CARD = "impression wishlist card"
     private const val ACTION_CLICK_ON_WISHLIST_CARD = "click wishlist card"
     private const val ACTION_CLICK_ON_WISHLIST_VIEW_ALL = "click view all wishlist"
@@ -48,7 +46,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
     private const val ACTION_CLICK_ON_FAVORITE_SHOP_CARD = "click favorite shop card"
     private const val ACTION_CLICK_ON_FAVORITE_SHOP_VIEW_ALL = "click view all favorite shop"
     private const val ACTION_CLICK_ON_REVIEW_VIEW_ALL = "click view all review"
-    private const val ITEM_ID_FAVORITE_SHOP_FORMAT = "0_%s"
+    private const val ITEM_ID_FORMAT = "0_%s"
     private const val FORMAT_DASH_TWO_VALUES = "%s - %s"
     private const val WISHLIST_IMPRESSION_TRACKER_ID = "30836"
     private const val WISHLIST_CLICK_TRACKER_ID = "30837"
@@ -161,26 +159,20 @@ object TrackingTransactionSection : BaseTrackerConst() {
     }
 
     fun getImpressionOnWishlist(userId: String, position: Int, wishlistModel: NavWishlistModel): HashMap<String, Any> {
-        return BaseTrackerBuilder().constructBasicProductView(
-            event = Event.PRODUCT_VIEW,
+        return BaseTrackerBuilder().constructBasicPromotionView(
+            event = Event.PROMO_VIEW,
             eventCategory = CATEGORY_GLOBAL_MENU,
             eventAction = IMPRESSION_ON_WISHLIST_CARD,
-            eventLabel = FORMAT_DASH_TWO_VALUES.format(wishlistModel.id, ""),
-            list = LIST_WISHLIST,
-            products = listOf(
-                Product(
-                    name = wishlistModel.name,
-                    id = wishlistModel.id,
-                    variant = "",
-                    brand = Value.NONE_OTHER,
-                    productPosition = (position + 1).toString(),
-                    productPrice = "",
-                    wishlistId = "",
-                    isFreeOngkir = false,
-                    category = ""
+            eventLabel = wishlistModel.id,
+            promotions = listOf(
+                Promotion(
+                    creative = Value.EMPTY,
+                    id = "0",
+                    name = ITEM_NAME_WISHLIST,
+                    creativeUrl = Value.EMPTY,
+                    position = (position + 1).toString()
                 )
-            ),
-            buildCustomList = { LIST_WISHLIST }
+            )
         )
             .appendCurrentSite(DEFAULT_CURRENT_SITE)
             .appendUserId(userId)
@@ -194,25 +186,20 @@ object TrackingTransactionSection : BaseTrackerConst() {
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
         bundle.putString(Category.KEY, CATEGORY_GLOBAL_MENU)
         bundle.putString(Action.KEY, ACTION_CLICK_ON_WISHLIST_CARD)
-        bundle.putString(Label.KEY, Label.FORMAT_2_ITEMS.format("", wishlistModel.id))
+        bundle.putString(Label.KEY, wishlistModel.id)
         bundle.putString(CurrentSite.KEY, DEFAULT_CURRENT_SITE)
         bundle.putString(UserId.KEY, userId)
         bundle.putString(BusinessUnit.KEY, DEFAULT_BUSINESS_UNIT)
-        bundle.putString(ItemList.KEY, LIST_WISHLIST)
-        val items = arrayListOf(
+        val promotions = arrayListOf(
             Bundle().apply {
-                putString(DIMENSION_125, "")
-                putString(DIMENSION_40, LIST_WISHLIST)
-                putString(Items.INDEX, (position + 1).toString())
-                putString(Items.ITEM_BRAND, Value.NONE_OTHER)
-                putString(Items.ITEM_CATEGORY, "")
-                putString(Items.ITEM_ID, wishlistModel.id)
-                putString(Items.ITEM_NAME, wishlistModel.name)
-                putString(Items.ITEM_VARIANT, "")
-                putString(Items.PRICE, "")
+                putString(Promotion.CREATIVE_NAME, Value.EMPTY)
+                putString(Promotion.CREATIVE_SLOT, (position + 1).toString())
+                putString(Items.ITEM_ID, "0")
+                putString(Items.ITEM_NAME, ITEM_NAME_WISHLIST)
             }
         )
-        bundle.putParcelableArrayList(Items.KEY, items)
+        bundle.putParcelableArrayList(Promotion.KEY, promotions)
+        bundle.putString(TrackerId.KEY, WISHLIST_CLICK_TRACKER_ID)
         getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
@@ -236,7 +223,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
             promotions = listOf(
                 Promotion(
                     creative = Value.EMPTY,
-                    id = ITEM_ID_FAVORITE_SHOP_FORMAT.format(favoriteShopModel.id),
+                    id = ITEM_ID_FORMAT.format(favoriteShopModel.id),
                     name = ITEM_NAME_FAVORITE_SHOP,
                     creativeUrl = Value.EMPTY,
                     position = (position + 1).toString()
@@ -262,7 +249,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
             Bundle().apply {
                 putString(Promotion.CREATIVE_NAME, Value.EMPTY)
                 putString(Promotion.CREATIVE_SLOT, (position + 1).toString())
-                putString(Items.ITEM_ID, ITEM_ID_FAVORITE_SHOP_FORMAT.format(favoriteShopModel.id))
+                putString(Items.ITEM_ID, ITEM_ID_FORMAT.format(favoriteShopModel.id))
                 putString(Items.ITEM_NAME, ITEM_NAME_FAVORITE_SHOP)
             }
         )
