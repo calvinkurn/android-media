@@ -351,7 +351,11 @@ class LottieBottomNav : LinearLayout {
     private fun handleItemClicked(index: Int, bottomMenu: BottomMenu) {
         // invoke listener
         Handler(Looper.getMainLooper()).post {
-            if (listener?.menuClicked(index, bottomMenu.id) == true) {
+            var isReSelected = false
+            if (selectedItem != index) {
+                isReSelected = listener?.menuClicked(index, bottomMenu.id) == true
+            }
+            if (isReSelected) {
                 changeColor(index)
                 selectedItem = index
             }
