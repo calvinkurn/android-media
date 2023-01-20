@@ -4,8 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticsdebugger.debugger.SSELogger
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.network.NetworkRouter
-import com.tokopedia.network.interceptor.TkpdAuthenticator
 import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
 import com.tokopedia.sellerhomecommon.sse.mapper.WidgetSSEMapper
 import com.tokopedia.sellerhomecommon.sse.model.WidgetSSEModel
@@ -13,7 +11,6 @@ import com.tokopedia.sse.OkSse
 import com.tokopedia.sse.ServerSentEvent
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -24,7 +21,6 @@ import kotlinx.coroutines.flow.map
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by @ilhamsuaib on 10/10/22.
@@ -49,29 +45,31 @@ class SellerHomeWidgetSSEImpl(
             "https://sse-staging.tokopedia.com/seller-dashboard/sse/datakeys?page=%s&datakeys=%s"
         private const val SSE_PRODUCTION_URL =
             "https://sse.tokopedia.com/seller-dashboard/sse/datakeys?page=%s&datakeys=%s"
+        private const val MAX_RETRY_COUNT = 10
     }
 
+    private var isSseConnected = false
+    private var retryCount = 0
     private var sse: ServerSentEvent? = null
     private var sseFlow = MutableSharedFlow<WidgetSSEModel>(extraBufferCapacity = 100)
 
     override fun connect(page: String, dataKeys: List<String>) {
+        if (isSseConnected) {
+            return
+        }
+        isSseConnected = true
+
         initLogger()
 
         val baseSseUrl = getBaseSseUrl()
         val dataKey = dataKeys.joinToString(DATA_KEY_SEPARATOR)
         val url = String.format(baseSseUrl, page, dataKey)
-        val authorization = String.format(BEARER, userSession.accessToken)
-        val xDevice = String.format(ANDROID_VERSION, GlobalConfig.VERSION_NAME)
-
-        val request = Request.Builder().get().url(url)
-            .addHeader(HEADER_X_DEVICE, xDevice)
-            .addHeader(HEADER_AUTHORIZATION, authorization)
-            .build()
+        val request = getRequest(url)
 
         closeSse()
         printLog("SSE Connecting...$url")
 
-        sse = OkSse(sseOkHttpClient).newServerSentEvent(request, getSseEventListener(request))
+        sse = OkSse(sseOkHttpClient).newServerSentEvent(request, getSseEventListener(url))
     }
 
     override fun closeSse() {
@@ -87,6 +85,10 @@ class SellerHomeWidgetSSEImpl(
             }
     }
 
+    override fun isConnected(): Boolean {
+        return isSseConnected
+    }
+
     private fun getBaseSseUrl(): String {
         return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
             SSE_STAGING_URL
@@ -95,7 +97,17 @@ class SellerHomeWidgetSSEImpl(
         }
     }
 
-    private fun getSseEventListener(request: Request): ServerSentEvent.Listener {
+    private fun getRequest(url: String): Request {
+        val authorization = String.format(BEARER, userSession.accessToken)
+        val xDevice = String.format(ANDROID_VERSION, GlobalConfig.VERSION_NAME)
+
+        return Request.Builder().get().url(url)
+            .addHeader(HEADER_X_DEVICE, xDevice)
+            .addHeader(HEADER_AUTHORIZATION, authorization)
+            .build()
+    }
+
+    private fun getSseEventListener(url: String): ServerSentEvent.Listener {
         return object : ServerSentEvent.Listener {
 
             override fun onOpen(sse: ServerSentEvent, response: Response) {
@@ -129,16 +141,25 @@ class SellerHomeWidgetSSEImpl(
                 response: Response?
             ): Boolean {
                 printLog("onRetryError : ${throwable.message}")
-                return true
+                val shouldRetry = retryCount < MAX_RETRY_COUNT
+                if (shouldRetry) {
+                    retryCount++
+                } else {
+                    closeSse()
+                    retryCount = 0
+                }
+                return shouldRetry
             }
 
             override fun onClosed(sse: ServerSentEvent) {
                 printLog("onClosed")
+                isSseConnected = false
+                retryCount = 0
             }
 
             override fun onPreRetry(sse: ServerSentEvent, originalRequest: Request): Request {
-                printLog("onPreRetry")
-                return request
+                printLog("onPreRetry : $retryCount")
+                return getRequest(url)
             }
         }
     }
@@ -148,6 +169,7 @@ class SellerHomeWidgetSSEImpl(
     }
 
     private fun printLog(s: String) {
+        println("SSE : $s")
         SSELogger.getInstance(context).send(s)
     }
 }
