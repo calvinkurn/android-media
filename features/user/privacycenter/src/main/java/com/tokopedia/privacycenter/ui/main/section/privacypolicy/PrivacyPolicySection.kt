@@ -96,7 +96,7 @@ class PrivacyPolicySection constructor(
                 val view = BottomSheetPrivacyInfoBinding.inflate(LayoutInflater.from(this@PrivacyPolicySection.context), null, false)
                 setTitle(this@PrivacyPolicySection.context?.resources?.getString(R.string.privacy_policy_info_title).orEmpty())
                 setChild(view.root)
-            }.show(it, "")
+            }.show(it, BOTTOM_SHEET_INFO_TAG)
         }
     }
 
@@ -175,5 +175,7 @@ class PrivacyPolicySection constructor(
 
     companion object {
         const val TAG = "PrivacyPolicySection"
+
+        const val BOTTOM_SHEET_INFO_TAG = "PrivacyPolicyInfoBottomSheet"
     }
 }

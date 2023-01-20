@@ -31,7 +31,7 @@
         app:layout_constraintTop_toBottomOf="@+id/menuCurrentPrivacyPolicy">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/typography8"
+            android:id="@+id/txtSubtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Riwayat Kebijakan Privasi"
@@ -48,9 +48,9 @@
             android:layout_height="28dp"
             android:padding="4dp"
             app:icon_name="INFORMATION"
-            app:layout_constraintBottom_toBottomOf="@+id/typography8"
-            app:layout_constraintStart_toEndOf="@+id/typography8"
-            app:layout_constraintTop_toTopOf="@+id/typography8" />
+            app:layout_constraintBottom_toBottomOf="@+id/txtSubtitle"
+            app:layout_constraintStart_toEndOf="@+id/txtSubtitle"
+            app:layout_constraintTop_toTopOf="@+id/txtSubtitle" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iconMenu"
