@@ -1959,25 +1959,35 @@ class AddEditProductPreviewFragment :
     }
 
     private fun checkDownloadPermission() {
-        val listener = object : PermissionCheckerHelper.PermissionCheckListener {
-            override fun onPermissionDenied(permissionText: String) {
-                permissionCheckerHelper.onPermissionDenied(requireActivity(), permissionText)
+        if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.R) {
+            viewModel.productInputModel.value?.let { productInputModel ->
+                productInputModel.isDuplicate = true
+                startProductAddService(productInputModel)
+                activity?.setResult(RESULT_OK)
             }
-            override fun onNeverAskAgain(permissionText: String) {
-                permissionCheckerHelper.onNeverAskAgain(requireActivity(), permissionText)
-            }
-            override fun onPermissionGranted() {
-                viewModel.productInputModel.value?.let { productInputModel ->
-                    productInputModel.isDuplicate = true
-                    startProductAddService(productInputModel)
-                    activity?.setResult(RESULT_OK)
+        } else {
+            val listener = object : PermissionCheckerHelper.PermissionCheckListener {
+                override fun onPermissionDenied(permissionText: String) {
+                    permissionCheckerHelper.onPermissionDenied(requireActivity(), permissionText)
+                }
+
+                override fun onNeverAskAgain(permissionText: String) {
+                    permissionCheckerHelper.onNeverAskAgain(requireActivity(), permissionText)
+                }
+
+                override fun onPermissionGranted() {
+                    viewModel.productInputModel.value?.let { productInputModel ->
+                        productInputModel.isDuplicate = true
+                        startProductAddService(productInputModel)
+                        activity?.setResult(RESULT_OK)
+                    }
                 }
             }
+            permissionCheckerHelper.checkPermission(
+                fragment = this,
+                permission = PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+                listener = listener
+            )
         }
-        permissionCheckerHelper.checkPermission(
-            fragment = this,
-            permission = PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
-            listener = listener
-        )
     }
 }
