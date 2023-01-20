@@ -340,11 +340,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         context?.let { UpdateShopActiveWorker.execute(it) }
     }
 
-    override fun onResume() {
-        super.onResume()
-        startWidgetSse()
-    }
-
     override fun onPause() {
         super.onPause()
         stopWidgetSse()
@@ -382,6 +377,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             if (!isFirstLoad) {
                 getShopStateInfoIfEligible()
             }
+            startWidgetSse()
         }
     }
 
