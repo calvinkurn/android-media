@@ -43,11 +43,18 @@ class AuthHelper {
         ): MutableMap<String, String> {
             val date = generateDate(dateFormat)
             val contentMD5 = getMD5Hash(strParam)
-            val authString = "${method}\n${contentMD5}\n${contentType}\n${date}\n${path}"
+
+            val newContentType = if (contentType.contains("; charset=UTF-8") ){
+                contentType.removeSuffix("; charset=UTF-8")
+            }else{
+                contentType
+            }
+
+            val authString = "${method}\n${contentMD5}\n${newContentType}\n${date}\n${path}"
             val signature = calculateRFC2104HMAC(authString, authKey)
 
             val headerMap = ArrayMap<String, String>()
-            headerMap[HEADER_CONTENT_TYPE] = contentType
+            headerMap[HEADER_CONTENT_TYPE] = newContentType
             headerMap[HEADER_X_METHOD] = method
             headerMap[HEADER_REQUEST_METHOD] = method
             headerMap[HEADER_CONTENT_MD5] = contentMD5
