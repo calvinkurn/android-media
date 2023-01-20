@@ -1,6 +1,5 @@
 package com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist
 
-import android.util.TypedValue
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -19,12 +18,6 @@ class OtherTransactionRevampViewHolder(itemView: View, val mainNavListener: Main
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_view_all_revamp
-    }
-
-    private fun setForegroundClickViewAllCard() {
-        val outValue = TypedValue()
-        itemView.context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
-        binding?.cardViewAll?.cardView?.foreground = itemView.context.getDrawable(outValue.resourceId)
     }
 
     override fun bind(otherTransactionRevampModel: OtherTransactionRevampModel) {
