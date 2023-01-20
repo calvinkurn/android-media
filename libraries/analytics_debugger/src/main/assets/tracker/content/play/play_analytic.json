@@ -26,22 +26,15 @@
       "userId": ".*"
     },
     {
-      "businessUnit": "play",
-      "eventCategory": "groupchat room",
-      "currentSite": ".*",
-      "event": "clickGroupChat",
-      "userId": ".*",
-      "eventAction": "swipe channel",
-      "eventLabel": ".+",
-      "sessionIris": ".*"
-    },
-    {
       "event": "openScreen",
       "trackerId": "13881",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "isLoggedInStatus": "(true|false)",
-      "screenName": "/group-chat-room/\\d+/(live|vod)/is coachmark (true/false)",
+      "eventAction": "null",
+      "eventCategory": "null",
+      "eventLabel": "null",
+      "screenName": "/group-chat-room/\\d+/(live|vod)/is coachmark (true|false)",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -141,13 +134,6 @@
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
-      "sessionIris": ".*"
-    },
-    {
-      "eventAction": "scroll merchant voucher",
-      "event": "clickGroupChat",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+",
       "sessionIris": ".*"
     },
     {
@@ -252,6 +238,7 @@
     },
     {
       "eventAction": "impression - product in ongoing section",
+      "clientId": ".*",
       "event": "view_item_list",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+ - is pinned product (true|false)",
@@ -276,6 +263,7 @@
       "eventAction": "impression - product in upcoming section",
       "event": "view_item_list",
       "eventCategory": "groupchat room",
+      "clientId": ".*",
       "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+ - is pinned product (true|false)",
       "sessionIris": ".*",
       "items": [
@@ -587,16 +575,6 @@
       "channel": ".*"
     },
     {
-      "eventAction": "impression on private voucher",
-      "event": "viewGroupChatIris",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod)",
-      "sessionIris": ".*",
-      "currentSite": ".*",
-      "userId": ".*",
-      "businessUnit": "play"
-    },
-    {
       "eventAction": "click product pinned message",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
@@ -725,6 +703,43 @@
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - exit archive page",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+",
+      "trackerId": "40355",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - to tokopedia play",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+",
+      "trackerId": "40354",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "openScreen",
+      "networkSpeed": ".*",
+      "clientId": ".*",
+      "isLoggedInStatus": "true|false",
+      "appsflyerId": ".*",
+      "shopId": ".*",
+      "screenName": "/group-chat-room/\\d+/archive delete channel",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "trackerId": "40353",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "theme": ".*"
     }
   ]
 }

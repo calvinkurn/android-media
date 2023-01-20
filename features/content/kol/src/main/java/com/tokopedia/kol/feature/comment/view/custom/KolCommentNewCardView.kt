@@ -191,7 +191,11 @@ class KolCommentNewCardView : LinearLayout {
         )
 
         setOnLongClickListener {
-            listener?.onMenuClicked(element.id, element.canDeleteComment())
+            listener?.onMenuClicked(
+                element.id,
+                element.canDeleteComment(),
+                element.canReportComment()
+            )
             false
         }
 
@@ -212,6 +216,7 @@ class KolCommentNewCardView : LinearLayout {
                     .replace("(\r\n|\n)".toRegex(), "<br />")
             )
     }
+
     private val colorLinkHashtag: Int
         get() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
 
@@ -229,6 +234,6 @@ class KolCommentNewCardView : LinearLayout {
         fun onMentionedProfileClicked(authorId: String)
         fun onTokopediaUrlClicked(url: String)
         fun onReplyClicked(mentionableUser: MentionableUserModel)
-        fun onMenuClicked(id: String?, canDeleteComment: Boolean)
+        fun onMenuClicked(id: String?, canDeleteComment: Boolean, canReportComment: Boolean)
     }
 }

@@ -39,12 +39,6 @@ class TmProgramListViewModel @Inject constructor(
         _tmProgramListLoadingStateLiveData.postValue(state)
     }
 
-    fun getInitalProgramList(shopId: Int, cardID: Int, status: Int = -1, page: Int = 1, pageSize: Int = 10){
-        if(tokomemberProgramListResultLiveData.value==null || tokomemberProgramListResultLiveData.value?.data==null){
-            getProgramList(shopId, cardID, status, page, pageSize)
-        }
-    }
-
     fun getProgramList(shopId: Int, cardID: Int, status: Int = -1, page: Int = 1, pageSize: Int = 10){
         tokomemberDashGetProgramListUsecase.cancelJobs()
         if(page>1){
@@ -56,12 +50,15 @@ class TmProgramListViewModel @Inject constructor(
         }
         tokomemberDashGetProgramListUsecase.getProgramList({
             if(page>1) removeLoader()
-            _tokomemberProgramListResultLiveData.postValue(TokoLiveDataResult.success(it))
+            if(page==1){
+                programList.clear()
+            }
             it.membershipGetProgramList?.programSellerList?.let { it1 ->
                 it1.forEach { it2 ->
                     it2?.let{it3 -> programList.add(ProgramItem(it3)) }
                 }
             }
+            _tokomemberProgramListResultLiveData.postValue(TokoLiveDataResult.success(it))
         }, {
             _tokomemberProgramListResultLiveData.postValue(TokoLiveDataResult.error(it))
         }, shopId, cardID, status, page, pageSize)

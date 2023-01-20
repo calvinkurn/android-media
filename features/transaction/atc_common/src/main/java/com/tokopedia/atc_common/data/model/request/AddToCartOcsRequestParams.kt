@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
 
 data class AddToCartOcsRequestParams(
         @SerializedName("product_id")
-        var productId: Long = 0,
+        var productId: String = "0",
 
         @SerializedName("shop_id")
-        var shopId: Int = 0,
+        var shopId: String = "0",
 
         @SerializedName("quantity")
         var quantity: Int = 0,
@@ -20,10 +20,10 @@ data class AddToCartOcsRequestParams(
         var notes: String = "",
 
         @SerializedName("warehouse_id")
-        var warehouseId: Int = 0,
+        var warehouseId: String = "0",
 
         @SerializedName("customer_id")
-        var customerId: Int = 0,
+        var customerId: String = "0",
 
         @SerializedName("tracker_attribution")
         var trackerAttribution: String = "",
@@ -38,7 +38,7 @@ data class AddToCartOcsRequestParams(
         var isTradeIn: Boolean = false,
 
         @SerializedName("shipping_price")
-        var shippingPrice: Int = 0,
+        var shippingPrice: Double = 0.0,
 
         // analytics data
         var productName: String = "",

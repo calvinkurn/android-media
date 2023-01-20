@@ -285,7 +285,8 @@ object IrisAnalyticsEvents {
             INAPP_DISMISSED,
             PUSH_RECEIVED,
             PUSH_CLICKED,
-            PUSH_DISMISSED
+            PUSH_DISMISSED,
+            PUSH_CANCELLED
         )
 
         if (!shopId.isNullOrBlank() && (eventName in allowedEvents)) {

@@ -16,14 +16,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
  * Created by dhaba
  */
 class BalanceWidgetTypeFactoryImpl(val listener: HomeCategoryListener?) : BaseAdapterTypeFactory(), BalanceWidgetTypeFactory {
-    private var balanceWidgetViewHolder : BalanceWidgetViewHolder ? = null
+    private var balanceWidgetViewHolder: BalanceWidgetViewHolder ? = null
 
     override fun type(dataModel: HomeBalanceModel): Int {
         return BalanceWidgetViewHolder.LAYOUT
     }
 
     override fun type(dataModel: BalanceShimmerModel): Int {
-        balanceWidgetViewHolder?.clearPreviousData()
         return BalanceWidgetShimmerViewHolder.LAYOUT
     }
 

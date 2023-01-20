@@ -181,7 +181,7 @@ class CarouselImageViewHolder(
                 val tagView = PostTagView(itemView.context, tagging)
                 tagView.bindData(
                     tagBubbleListener  = dataSource.getTagBubbleListener(),
-                    products = if (card.isTypeProductHighlight && card.useASGCNewDesign || card.isTypeUGC) {
+                    products = if (card.isTypeProductHighlight && card.useASGCNewDesign) {
                         card.products
                     } else card.tags,
                     width = it.width,
@@ -232,7 +232,7 @@ class CarouselImageViewHolder(
 
     }
 
-    private fun updateAsgcButton(){
+    fun updateAsgcButton(){
         flashSaleViewCardUpcoming.setReminderBtnState(dataSource.getFeedXCard().campaign.reminder, dataSource.getPositionInFeed())
     }
 

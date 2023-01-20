@@ -3,7 +3,7 @@ package com.tokopedia.feed_shop.presenter
 import android.content.Context
 import android.text.TextUtils
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
+import com.tokopedia.createpost.common.domain.usecase.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel

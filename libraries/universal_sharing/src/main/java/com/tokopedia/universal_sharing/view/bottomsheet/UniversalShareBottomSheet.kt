@@ -33,10 +33,10 @@ import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.linker.LinkerManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.linker.LinkerManager
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -47,13 +47,9 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.constants.BroadcastChannelType
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
-import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
 import com.tokopedia.universal_sharing.di.DaggerUniversalShareComponent
 import com.tokopedia.universal_sharing.di.UniversalShareModule
-import com.tokopedia.universal_sharing.model.ImageGeneratorRequestData
-import com.tokopedia.universal_sharing.model.BroadcastChannelModel
-import com.tokopedia.universal_sharing.model.TickerShareModel
-import com.tokopedia.universal_sharing.model.generateImageGeneratorParam
+import com.tokopedia.universal_sharing.model.*
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
 import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
@@ -81,7 +77,6 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.Exception
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import com.tokopedia.iconunify.R as unifyIconR
@@ -286,6 +281,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     //affiliate commission view
     private var affiliateCommissionTextView: Typography? = null
+    private var layoutCommisionExtra: View? = null
 
     private var thumbNailTitle = ""
     private var bottomSheetTitleRemoteConfKey = ""
@@ -512,6 +508,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             showAffiliateRegister(generateAffiliateLinkEligibility, deeplink)
         }
         affiliateListener?.invoke(isAffiliateUser)
+
+        if (generateAffiliateLinkEligibility.eligibleCommission?.ssaStatus == true) {
+            showCommissionExtra(generateAffiliateLinkEligibility)
+        }
     }
 
     private fun isShowAffiliateComission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): Boolean {
@@ -541,6 +541,17 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             return
         }
         affiliateQueryData = null
+    }
+
+    private fun showCommissionExtra(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
+        layoutCommisionExtra?.let { layoutCommisionExtra ->
+            layoutCommisionExtra.visibility = View.VISIBLE
+            val badgeView = layoutCommisionExtra.findViewById<Typography>(R.id.tg_commision_extra)
+            val expiredDateView = layoutCommisionExtra.findViewById<Typography>(R.id.tg_expired_date)
+            badgeView?.text = generateAffiliateLinkEligibility.eligibleCommission?.badge ?: ""
+            expiredDateView?.text = generateAffiliateLinkEligibility.eligibleCommission?.expiredDateFormatted
+                ?: ""
+        }
     }
 
     private fun showAffiliateRegister(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility, deeplink: String) {
@@ -613,6 +624,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             affiliateRegisterTitle = findViewById(R.id.tv_title_affiliate)
             affiliateRegisterIcon = findViewById(R.id.iv_affiliate)
             affiliateRegisterContainer = findViewById(R.id.card_register_affiliate)
+            layoutCommisionExtra = findViewById(R.id.layout_commission_extra)
             rvTicker = findViewById(R.id.rv_ticker)
             setFixedOptionsClickListeners()
 
@@ -1032,8 +1044,11 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         setIfAffiliate(shareModel)
         if (getImageFromMedia) {
             when (sourceId) {
-                ImageGeneratorConstants.ImageGeneratorSourceId.PDP -> {
+                ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP -> {
                     executePdpContextualImage(shareModel)
+                }
+                ImageGeneratorConstants.ImageGeneratorSourceId.SHOP_PAGE -> {
+                    executeShopContextualImage(shareModel)
                 }
                 ImageGeneratorConstants.ImageGeneratorSourceId.WISHLIST_COLLECTION -> {
                     executeWishlistCollectionContextualImage(shareModel)
@@ -1041,7 +1056,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                 else -> {
                     addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM, shareModel.platform)
                     addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_URL, ogImageUrl)
-                    imageGeneratorDataArray?.let { executeImageGeneratorUseCase(sourceId, it, shareModel) }
+                    imageGeneratorDataArray?.let { executeImageGeneratorUseCase(it, shareModel) }
                 }
             }
         } else {
@@ -1050,15 +1065,31 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun executePdpContextualImage(shareModel: ShareModel) {
-        if (imageGeneratorParam == null) return
-        imageGeneratorParam?.apply {
+        if (imageGeneratorParam == null || !(imageGeneratorParam is PdpParamModel)) return
+        (imageGeneratorParam as? PdpParamModel)?.apply {
+            this.platform = shareModel.platform
+            this.productImageUrl = transformOgImageURL(ogImageUrl)
+        }
+
+        lifecycleScope.launchCatchError(block = {
+            val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
+            val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
+            executeImageGeneratorUseCase(listOfParams, shareModel)
+        }, onError =  {
+            executeSharingFlow(shareModel)
+        })
+    }
+
+    private fun executeShopContextualImage(shareModel: ShareModel) {
+        if (imageGeneratorParam == null || !(imageGeneratorParam is ShopPageParamModel)) return
+        (imageGeneratorParam as? ShopPageParamModel)?.apply {
             this.platform = shareModel.platform
         }
 
         lifecycleScope.launchCatchError(block = {
             val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
             val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
-            executeImageGeneratorUseCase(sourceId, listOfParams, shareModel)
+            executeImageGeneratorUseCase(listOfParams, shareModel)
         }, onError =  {
             executeSharingFlow(shareModel)
         })
@@ -1072,7 +1103,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         lifecycleScope.launchCatchError(block = {
             val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
             val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
-            executeImageGeneratorUseCase(sourceId, listOfParams, shareModel)
+            executeImageGeneratorUseCase(listOfParams, shareModel)
         }, onError = {
             executeSharingFlow(shareModel)
         })
@@ -1207,15 +1238,21 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         imageGeneratorDataArray?.add(ImageGeneratorRequestData(key, value))
     }
 
-    private fun executeImageGeneratorUseCase(sourceId: String, args: ArrayList<ImageGeneratorRequestData>,
+    private fun executeImageGeneratorUseCase(args: ArrayList<ImageGeneratorRequestData>,
                                              shareModel: ShareModel) {
         loaderUnify?.visibility = View.VISIBLE
         gqlJob = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 imageGeneratorUseCase = ImageGeneratorUseCase(GraphqlInteractor.getInstance().graphqlRepository)
-                val mediaImageUrl = imageGeneratorUseCase.apply {
+                val response = imageGeneratorUseCase.apply {
                     params = ImageGeneratorUseCase.createParam(sourceId, args)
                 }.executeOnBackground()
+                val mediaImageUrl = response.imageUrl
+
+                /* for A/B Testing on PDP Page */
+                if (sourceId == ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP) {
+                    setAbTestContextual(shareModel, response.sourceId)
+                }
                 SharingUtil.saveImageFromURLToStorage(context, mediaImageUrl) {
                     imageSaved(it)
                     executeMediaImageSharingFlow(shareModel, mediaImageUrl)
@@ -1227,6 +1264,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         })
     }
 
+    /***
+     * @param sourceId is from result of [ImageGeneratorUseCase]
+     */
+    private fun setAbTestContextual(shareModel: ShareModel, sourceId: String) {
+        if (getImageFromMedia) {
+            shareModel.campaign = shareModel.campaign?.replace(KEY_CONTEXTUAL_IMAGE, sourceId)
+        }
+    }
+
     fun getImageFromMedia(getImageFromMediaFlag: Boolean) {
         getImageFromMedia = getImageFromMediaFlag
         savedImagePath = "{media_image}"
@@ -1236,6 +1282,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         imageGeneratorParam = param
     }
 
+    /* set page source id */
     fun setMediaPageSourceId(pageSourceId: String) {
         sourceId = pageSourceId
     }
