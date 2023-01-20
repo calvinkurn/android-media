@@ -2,9 +2,6 @@ package com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet
 
 import android.os.Bundle
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.ADD_TO_CART
-import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.EVENT_ADD_TO_CART
-import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.PRODUCT_CLICK
-import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.PRODUCT_VIEW
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.SELECT_CONTENT
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.VIEW_ITEM_LIST
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.BUSINESS_UNIT_HOME
@@ -31,6 +28,8 @@ import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstant
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.BaseTrackerBuilder
+import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.track.constant.TrackerConstant.BUSINESS_UNIT
 import com.tokopedia.track.constant.TrackerConstant.CURRENT_SITE
 import com.tokopedia.track.constant.TrackerConstant.EVENT
@@ -38,8 +37,70 @@ import com.tokopedia.track.constant.TrackerConstant.EVENT_ACTION
 import com.tokopedia.track.constant.TrackerConstant.EVENT_CATEGORY
 import com.tokopedia.track.constant.TrackerConstant.EVENT_LABEL
 import com.tokopedia.track.constant.TrackerConstant.USERID
+import com.tokopedia.trackingoptimizer.TrackingQueue
+import java.util.HashMap
 
-object ViewToViewBottomSheetTracker {
+object ViewToViewBottomSheetTracker: BaseTrackerConst() {
+    private const val TOPADS = "topads"
+    private const val NONTOPADS = "nontopads"
+    private const val ITEM_LIST_TEMPLATE = "/product - v2v widget - rekomendasi untuk anda - %s - product %s"
+
+    private const val IMPRESSION_ACTION = "impression on product bottom sheet v2v widget"
+    private const val IMPRESSION_TRACKER_ID = "40440"
+
+    private const val CLICK_ACTION = "click on product bottom sheet v2v widget"
+    private const val CLICK_TRACKER_ID = "40442"
+
+    private const val ATC_ACTION = "click keranjang on product bottom sheet v2v widget"
+    private const val ATC_TRACKER_ID = "40443"
+
+    fun eventImpressProduct(
+        product: RecommendationItem,
+        headerTitle: String,
+        position: Int,
+        userId: String,
+        anchorProductId: String,
+        trackingQueue: TrackingQueue?,
+    ) {
+        val trackingBuilder = BaseTrackerBuilder()
+        val productList = arrayListOf(
+            Product(
+                name = product.name,
+                id = product.productId.toString(),
+                productPrice = product.price,
+                brand = "",
+                category = product.categoryBreadcrumbs,
+                variant = "",
+                productPosition = (product.position + 1).toString(),
+                isFreeOngkir = product.isFreeOngkirActive,
+                isTopAds = product.isTopAds,
+                cartId = product.cartId,
+                shopId = product.shopId.toString(),
+                shopName = product.shopName,
+                shopType = product.shopType,
+                pageName = product.pageName,
+                recommendationType = product.recommendationType,
+                headerName = product.header,
+                quantity = product.quantity.toString(),
+            )
+        )
+        val dataLayer = trackingBuilder.constructBasicProductView(
+            event = VIEW_ITEM_LIST,
+            eventCategory = CATEGORY_PDP,
+            eventAction = IMPRESSION_ACTION,
+            eventLabel = headerTitle,
+            list = product.asItemList(),
+            products = productList,
+        )
+            .appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendCurrentSite(CurrentSite.DEFAULT)
+            .appendUserId(userId)
+            .appendCustomKeyValue(TRACKER_ID, IMPRESSION_TRACKER_ID)
+            .appendCustomKeyValue(PRODUCT_ID, anchorProductId)
+            .build() as HashMap<String, Any>
+        trackingQueue?.putEETracking(dataLayer)
+    }
+
     fun eventBottomSheetImpress(
         widget: RecommendationWidget,
         headerTitle: String,
@@ -49,12 +110,12 @@ object ViewToViewBottomSheetTracker {
 
         val itemBundle = Bundle().apply {
             putString(EVENT, VIEW_ITEM_LIST)
-            putString(EVENT_ACTION, "impression on product bottom sheet v2v widget")
+            putString(EVENT_ACTION, IMPRESSION_ACTION)
             putString(EVENT_CATEGORY, CATEGORY_PDP)
             putString(EVENT_LABEL, headerTitle)
             putString(BUSINESS_UNIT, BUSINESS_UNIT_HOME)
             putString(CURRENT_SITE, CURRENT_SITE_MP)
-            putString(TRACKER_ID, "40440")
+            putString(TRACKER_ID, IMPRESSION_TRACKER_ID)
             putString(ITEM_LIST, widget.asItemList())
 
             //promotion
@@ -67,14 +128,14 @@ object ViewToViewBottomSheetTracker {
             putString(PRODUCT_ID, anchorProductId)
             putString(USERID, userId)
         }
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_VIEW, itemBundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, itemBundle)
     }
 
     private fun RecommendationWidget.asItemList(): String {
-        val firstRecommendationItem = recommendationItemList?.firstOrNull()
-        val isTopAds = if (firstRecommendationItem?.isTopAds == true) "topads" else "nontopads"
+        val firstRecommendationItem = recommendationItemList.firstOrNull()
+        val isTopAds = if (firstRecommendationItem?.isTopAds == true) TOPADS else NONTOPADS
         val recommendationType = firstRecommendationItem?.recommendationType ?: ""
-        return "/product - v2v widget - rekomendasi untuk anda - $recommendationType - product $isTopAds"
+        return ITEM_LIST_TEMPLATE.format(recommendationType, isTopAds)
     }
 
     fun eventProductClick(
@@ -86,12 +147,12 @@ object ViewToViewBottomSheetTracker {
     ) {
         val itemBundle = Bundle().apply {
             putString(EVENT, SELECT_CONTENT)
-            putString(EVENT_ACTION, "click on product bottom sheet v2v widget")
+            putString(EVENT_ACTION, CLICK_ACTION)
             putString(EVENT_CATEGORY, CATEGORY_PDP)
             putString(EVENT_LABEL, headerTitle)
             putString(BUSINESS_UNIT, BUSINESS_UNIT_HOME)
             putString(CURRENT_SITE, CURRENT_SITE_MP)
-            putString(TRACKER_ID, "40442")
+            putString(TRACKER_ID, CLICK_TRACKER_ID)
             putString(ITEM_LIST, product.asItemList())
 
             //promotion
@@ -103,7 +164,7 @@ object ViewToViewBottomSheetTracker {
             putString(USERID, userId)
 
         }
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_CLICK, itemBundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, itemBundle)
     }
 
     fun eventAddToCart(
@@ -114,12 +175,12 @@ object ViewToViewBottomSheetTracker {
     ) {
         val itemBundle = Bundle().apply {
             putString(EVENT, ADD_TO_CART)
-            putString(EVENT_ACTION, "click keranjang on product bottom sheet v2v widget")
+            putString(EVENT_ACTION, ATC_ACTION)
             putString(EVENT_CATEGORY, CATEGORY_PDP)
             putString(EVENT_LABEL, headerTitle)
             putString(BUSINESS_UNIT, BUSINESS_UNIT_HOME)
             putString(CURRENT_SITE, CURRENT_SITE_MP)
-            putString(TRACKER_ID, "40443")
+            putString(TRACKER_ID, ATC_TRACKER_ID)
             putString(ITEM_LIST, product.asItemList())
 
             //promotion
@@ -130,12 +191,12 @@ object ViewToViewBottomSheetTracker {
             putString(PRODUCT_ID, anchorProductId)
             putString(USERID, userId)
         }
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(EVENT_ADD_TO_CART, itemBundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART, itemBundle)
     }
 
     private fun RecommendationItem.asItemList(): String {
-        val isTopAds = if (isTopAds) "topads" else "nontopads"
-        return "/product - v2v widget - rekomendasi untuk anda - $recommendationType - product $isTopAds"
+        val isTopAds = if (isTopAds) TOPADS else NONTOPADS
+        return ITEM_LIST_TEMPLATE.format(recommendationType, isTopAds)
     }
 
     private fun RecommendationItem.asBundle(position: Int) : Bundle {

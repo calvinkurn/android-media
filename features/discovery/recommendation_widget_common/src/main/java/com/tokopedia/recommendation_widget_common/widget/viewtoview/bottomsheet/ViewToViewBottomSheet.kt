@@ -20,6 +20,7 @@ import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.BottomSheetViewToViewBinding
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
@@ -38,6 +39,10 @@ class ViewToViewBottomSheet @Inject constructor(
     }
     private var binding: BottomSheetViewToViewBinding? = null
     private var recommendationAdapter: ViewToViewAdapter? = null
+
+    private val trackingQueue: TrackingQueue? by lazy {
+        activity?.let { TrackingQueue(it) }
+    }
 
     private val queryParams: String
         get() = arguments?.getString(KEY_RECOMMENDATION_PARAMS, "") ?: ""
@@ -123,12 +128,12 @@ class ViewToViewBottomSheet @Inject constructor(
         result.doSuccessOrFail(
             success = {
                 it.data.widget?.let { widget ->
-                    ViewToViewBottomSheetTracker.eventBottomSheetImpress(
-                        widget,
-                        headerTitle,
-                        viewModel.getUserId(),
-                        productAnchorId,
-                    )
+//                    ViewToViewBottomSheetTracker.eventBottomSheetImpress(
+//                        widget,
+//                        headerTitle,
+//                        viewModel.getUserId(),
+//                        productAnchorId,
+//                    )
                 }
                 recommendationAdapter?.submitList(it.data.data)
             },
@@ -214,6 +219,17 @@ class ViewToViewBottomSheet @Inject constructor(
     override fun onDestroyView() {
         binding = null
         super.onDestroyView()
+    }
+
+    override fun onProductImpressed(product: ViewToViewDataModel.Product, position: Int) {
+        ViewToViewBottomSheetTracker.eventImpressProduct(
+            product.recommendationItem,
+            headerTitle,
+            position,
+            viewModel.getUserId(),
+            productAnchorId,
+            trackingQueue,
+        )
     }
 
     override fun onProductClicked(product: ViewToViewDataModel.Product, position: Int) {

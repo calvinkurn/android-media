@@ -56,6 +56,9 @@ sealed class ViewToViewViewHolder(
 
                     }
                 })
+                addOnImpressionListener(data.recommendationItem) {
+                    listener.onProductImpressed(data, bindingAdapterPosition)
+                }
                 setOnClickListener {
                     listener.onProductClicked(data, bindingAdapterPosition)
                 }
