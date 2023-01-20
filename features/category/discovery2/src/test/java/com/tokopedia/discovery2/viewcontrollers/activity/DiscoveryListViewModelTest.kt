@@ -118,22 +118,5 @@ class DiscoveryListViewModelTest {
         assert(vmRef1 != vmRef2)
     }
 
-    /**************************** test for clearViewModels logic *******************************************/
-    @Test
-    fun `test for onCleared`() {
-        discoveryListViewModel.getViewHolderModel({ application, components, position ->
-            MultiBannerViewModel(
-                application,
-                components,
-                position
-            )
-        }, componentsItem, 1)
-        discoveryListViewModel.getViewHolderModel({ application, components, position ->
-            MultiBannerViewModel(
-                application,
-                components,
-                position
-            )
-        }, componentsItem2, 2)
-    }
+
 }

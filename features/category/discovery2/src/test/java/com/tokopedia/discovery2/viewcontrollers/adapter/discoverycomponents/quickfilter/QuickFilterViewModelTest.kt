@@ -166,6 +166,55 @@ class QuickFilterViewModelTest {
 
     }
 
+    @Test
+    fun `test for on Quick Filter Selected when quick Filter is of type Radio return null`() {
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        val componentsItem: ComponentsItem = mockk(relaxed = true)
+
+        val option: Option = mockk(relaxed = true)
+        every { option.inputType } returns Option.INPUT_TYPE_RADIO
+        val quickFilterUseCase: QuickFilterUseCase = mockk(relaxed = true)
+        every { viewModel.isQuickFilterSelected(option) } returns false
+        every {
+            quickFilterUseCase.onFilterApplied(
+                componentsItem,
+                selectedFilter = null,
+                selectedSort = null
+            )
+        } returns true
+        every { getComponent(any(), any()) } returns null
+
+        viewModel.onQuickFilterSelected(option)
+
+        assert(viewModel.syncData.value == null)
+
+    }
+
+    @Test
+    fun `test for on Quick Filter Selected when quick Filter is selected return null`() {
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        val componentsItem: ComponentsItem = mockk(relaxed = true)
+
+        val option: Option = mockk(relaxed = true)
+        val quickFilterUseCase: QuickFilterUseCase = mockk(relaxed = true)
+        every { viewModel.isQuickFilterSelected(option) } returns true
+        every {
+            quickFilterUseCase.onFilterApplied(
+                componentsItem,
+                selectedFilter = null,
+                selectedSort = null
+            )
+        } returns true
+        every { getComponent(any(), any()) } returns null
+
+        viewModel.onQuickFilterSelected(option)
+
+        assert(viewModel.syncData.value == null)
+
+    }
+
     //    TEST Init Methods
     @Test
     fun `test for on fetchQuickFilters with filters not present anywhere already present in data`() {
@@ -229,6 +278,7 @@ class QuickFilterViewModelTest {
         assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).isNotEmpty())
         assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).first() === filter)
     }
+
     @Test
     fun `test for on fetchQuickFilters with filters not present in data but fetched from repo`() {
         val componentsItem: ComponentsItem = mockk(relaxed = true)
@@ -260,4 +310,48 @@ class QuickFilterViewModelTest {
         assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).isNotEmpty())
         assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).first() === filter)
     }
+
+    @Test
+    fun `test for on fetchQuickFilters with filters not present in data but fetched from repo but options is empty`() {
+        val componentsItem: ComponentsItem = mockk(relaxed = true)
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        val quickFilterRepository: QuickFilterRepository = mockk(relaxed = true)
+
+        viewModel.quickFilterRepository = quickFilterRepository
+        coEvery {
+            quickFilterRepository.getQuickFilterData(
+                componentsItem.id,
+                componentsItem.pageEndPoint
+            )
+        } returns arrayListOf()
+
+        every { componentsItem.data } returns null
+        viewModel.fetchQuickFilters()
+        assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).isEmpty())
+
+        val filter = mockk<Filter>()
+        every { filter.options } returns listOf()
+        coEvery {
+            quickFilterRepository.getQuickFilterData(
+                componentsItem.id,
+                componentsItem.pageEndPoint
+            )
+        } returns arrayListOf(filter)
+        viewModel.fetchQuickFilters()
+        assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).isEmpty())
+    }
+
+    @Test
+    fun `test that every time viewmodel is attached shouldRefreshComponent key is reset`() {
+        val componentsItem: ComponentsItem = spyk()
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        componentsItem.shouldRefreshComponent = true
+        assert(componentsItem.shouldRefreshComponent == true)
+        viewModel.onAttachToViewHolder()
+        assert(componentsItem.shouldRefreshComponent == null)
+
+    }
+
 }
