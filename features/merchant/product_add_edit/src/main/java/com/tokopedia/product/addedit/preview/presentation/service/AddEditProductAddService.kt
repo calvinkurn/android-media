@@ -245,17 +245,19 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         val productImageData = productDetail.pictureList
         val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
         productImageData.forEach { data ->
+            // new added images have no url. therefore there is no need to filter the list
             if (data.urlOriginal.isNotBlank() && data.fileName.isNotBlank()) {
-                // logging purpose
-                filename = data.fileName
-
+                filename = data.fileName // logging purpose
                 val path = downloadsDir + "/" + data.fileName
                 downloadFile(url = data.urlOriginal, filename = data.fileName)
                 data.picID = String.EMPTY
                 data.filePath = path
             }
         }
-        productDetail.imageUrlOrPathList = productImageData.map { it.filePath }
+        val imagePathList = mutableListOf<String>()
+        imagePathList.addAll(productImageData.map { it.filePath })
+        imagePathList.addAll(filterPathOnly(productDetail.imageUrlOrPathList))
+        productDetail.imageUrlOrPathList = imagePathList.toList()
     }
 
     private fun reDownloadProductVariantImages(productVariant: List<ProductVariantInputModel>) {
@@ -263,9 +265,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         productVariant.forEach { data ->
             data.pictures.forEach { picture ->
                 if (picture.urlOriginal.isNotBlank() && picture.fileName.isNotBlank()) {
-                    // logging purpose
-                    filename = picture.fileName
-
+                    filename = picture.fileName // logging purpose
                     val path = downloadsDir + "/" + picture.fileName
                     downloadFile(url = picture.urlOriginal, filename = picture.fileName)
                     picture.picID = String.EMPTY
@@ -279,9 +279,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
         val path = downloadsDir + "/" + variantSizeChart.fileName
         if (variantSizeChart.urlOriginal.isNotBlank() && variantSizeChart.fileName.isNotBlank()) {
-            // logging purpose
-            filename = variantSizeChart.fileName
-
+            filename = variantSizeChart.fileName // logging purpose
             downloadFile(url = variantSizeChart.urlOriginal, filename = variantSizeChart.fileName)
             variantSizeChart.picID = String.EMPTY
             variantSizeChart.urlOriginal = path
