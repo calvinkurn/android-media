@@ -92,7 +92,7 @@ class FeedShopRecomWidgetAnalytic @Inject constructor(
 
     fun sendClickFollowShopRecommendationEvent(eventLabel: String) {
         val map = mapOf(
-            KEY_EVENT to CLICK_PG,
+            KEY_EVENT to CLICK_CONTENT,
             KEY_EVENT_ACTION to EVENT_ACTION_CLICK_FOLLOW_SHOP_RECOMMENDATION,
             KEY_EVENT_CATEGORY to EVENT_CATEGORY_CONTENT_FEED_TIMELINE,
             KEY_EVENT_LABEL to eventLabel,
@@ -107,7 +107,7 @@ class FeedShopRecomWidgetAnalytic @Inject constructor(
 
     fun sendClickXShopRecommendationEvent(eventLabel: String) {
         val map = mapOf(
-            KEY_EVENT to CLICK_PG,
+            KEY_EVENT to CLICK_CONTENT,
             KEY_EVENT_ACTION to EVENT_ACTION_CLICK_X_SHOP_RECOMMENDATION,
             KEY_EVENT_CATEGORY to EVENT_CATEGORY_CONTENT_FEED_TIMELINE,
             KEY_EVENT_LABEL to eventLabel,
@@ -174,6 +174,7 @@ class FeedShopRecomWidgetAnalytic @Inject constructor(
 
         private const val CONTENT = "content"
         private const val CLICK_PG = "clickPG"
+        private const val CLICK_CONTENT = "clickContent"
         private const val TOKOPEDIA_SELLER = "tokopediaseller"
         private const val TOKOPEDIA_MARKET_PLACE = "tokopediamarketplace"
 

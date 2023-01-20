@@ -70,6 +70,7 @@ class UserProfileAnalytics {
         const val EVENT_SELECT_CONTENT = "select_content"
         const val EVENT_VIEW_HOME_PAGE = "viewHomepageIris"
         const val EVENT_CLICK_HOME_PAGE = "clickHomepage"
+        const val EVENT_CLICK_CONTENT = "clickContent"
         const val EVENT_CLICK_COMMUNICATION = "clickCommunication"
         const val EVENT_VIEW_COMMUNICATION = "viewCommunicationIris"
     }

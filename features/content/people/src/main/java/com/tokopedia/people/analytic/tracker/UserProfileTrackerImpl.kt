@@ -61,6 +61,7 @@ import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.SCREEN_NAME
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.SESSION_IRIS
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.USER_ID
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_COMMUNICATION
+import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_CONTENT
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_FEED
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_HOME_PAGE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_OPEN_SCREEN
@@ -734,11 +735,13 @@ class UserProfileTrackerImpl @Inject constructor(
             hashMapOf(
                 ECOMMERCE to hashMapOf(
                     PROMO_VIEW to hashMapOf(
-                        PROMOTIONS to convertToPromotion(
-                            shops.id.toString(),
-                            shops.logoImageURL,
-                            postPosition,
-                            FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
+                        PROMOTIONS to listOf(
+                            convertToPromotion(
+                                shops.id.toString(),
+                                shops.logoImageURL,
+                                postPosition,
+                                FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
+                            )
                         )
                     )
                 )
@@ -793,7 +796,7 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun clickFollowProfileRecommendation(userId: String, item: ShopRecomUiModelItem) {
         trackingQueue.putEETracking(
             EventModel(
-                event = EVENT_CLICK_HOME_PAGE,
+                event = EVENT_CLICK_CONTENT,
                 category = FEED_USER_PROFILE,
                 action = CLICK_FOLLOW_PROFILE_RECOMMENDATION,
                 label = getShopRecomEventLabel(userId, item)
