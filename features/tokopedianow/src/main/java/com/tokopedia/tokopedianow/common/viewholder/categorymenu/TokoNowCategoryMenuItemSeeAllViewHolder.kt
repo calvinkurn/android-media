@@ -1,11 +1,7 @@
 package com.tokopedia.tokopedianow.common.viewholder.categorymenu
 
-import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
@@ -13,7 +9,6 @@ import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuI
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryMenuItemSeeAllBinding
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
-
 
 class TokoNowCategoryMenuItemSeeAllViewHolder(
     itemView: View,
