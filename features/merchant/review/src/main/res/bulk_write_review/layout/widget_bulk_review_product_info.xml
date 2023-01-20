@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
         android:ellipsize="end"
-        android:maxLines="2"
+        android:maxLines="1"
         android:textColor="@color/Unify_N700_96"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
