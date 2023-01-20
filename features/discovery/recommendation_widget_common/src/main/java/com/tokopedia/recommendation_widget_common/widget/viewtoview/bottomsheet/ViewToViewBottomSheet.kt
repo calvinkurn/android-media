@@ -33,7 +33,9 @@ class ViewToViewBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
 ) : BottomSheetUnify(), ViewToViewListener {
 
-    private lateinit var viewModel: ViewToViewViewModel
+    private val viewModel: ViewToViewViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get()
+    }
     private var binding: BottomSheetViewToViewBinding? = null
     private var recommendationAdapter: ViewToViewAdapter? = null
 
@@ -53,7 +55,6 @@ class ViewToViewBottomSheet @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, viewModelFactory).get()
         viewModel.getViewToViewProductRecommendation(
             queryParams,
             hasAtcButton,

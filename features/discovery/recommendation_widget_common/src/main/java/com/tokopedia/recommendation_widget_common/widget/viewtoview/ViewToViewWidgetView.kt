@@ -57,11 +57,11 @@ class ViewToViewWidgetView : FrameLayout, ViewToViewItemListener, CoroutineScope
     private var carouselData: RecommendationCarouselData? = null
     private var headerView: Typography? = null
     private var loadingView: View? = null
-    private lateinit var typeFactory: ViewToViewItemTypeFactory
+    private var typeFactory: ViewToViewItemTypeFactory? = null
     private var recyclerView: RecyclerView
     private var adapter: ViewToViewItemAdapter? = null
     private var localLoad: LocalLoad? = null
-    private lateinit var layoutManager: RecyclerView.LayoutManager
+    private var layoutManager: RecyclerView.LayoutManager? = null
     private var scrollListener: ((Parcelable?) -> Unit)? = null
     private var userSession: UserSessionInterface? = null
 
@@ -139,18 +139,17 @@ class ViewToViewWidgetView : FrameLayout, ViewToViewItemListener, CoroutineScope
     }
 
     fun getCurrentPosition(): Int {
-        return if (::layoutManager.isInitialized) {
-            when(val currentLayoutManager = layoutManager) {
-                is LinearLayoutManager -> currentLayoutManager.findFirstCompletelyVisibleItemPosition()
-                is GridLayoutManager -> currentLayoutManager.findFirstCompletelyVisibleItemPosition()
+        return layoutManager?.let {
+            when(it) {
+                is GridLayoutManager -> it.findFirstCompletelyVisibleItemPosition()
+                is LinearLayoutManager -> it.findFirstCompletelyVisibleItemPosition()
                 else -> 0
             }
-        }
-        else 0
+        } ?: 0
     }
 
     fun restoreScrollState(scrollState: Parcelable?) {
-        if (!::layoutManager.isInitialized) return
+        val layoutManager = layoutManager ?: return
 
         itemView.post {
             layoutManager.onRestoreInstanceState(scrollState)
@@ -176,7 +175,9 @@ class ViewToViewWidgetView : FrameLayout, ViewToViewItemListener, CoroutineScope
         carouselData?.let {
             typeFactory = ViewToViewItemTypeFactoryImpl(this)
         }
-        adapter = ViewToViewItemAdapter(typeFactory)
+        typeFactory?.let {
+            adapter = ViewToViewItemAdapter(it)
+        }
 
         recyclerView.addOnScrollListener(createScrollListener())
         recyclerView.addItemDecoration(ViewToViewItemDecoration())
@@ -253,7 +254,7 @@ class ViewToViewWidgetView : FrameLayout, ViewToViewItemListener, CoroutineScope
             carouselData.recommendationData.recommendationItemList.toViewToViewItemModels()
         cardList.addAll(productDataList)
         if (cardList.size != 0) {
-            typeFactory.useBigLayout(cardList.size < 3)
+            typeFactory?.useBigLayout(cardList.size < 3)
             updateLayoutManager(cardList.size)
             adapter?.submitList(cardList)
 
@@ -273,7 +274,7 @@ class ViewToViewWidgetView : FrameLayout, ViewToViewItemListener, CoroutineScope
     }
 
     private fun scrollCarousel(scrollToPosition: Int) {
-        if (!::layoutManager.isInitialized) return
+        val layoutManager = layoutManager ?: return
         if (scrollToPosition == RecyclerView.NO_POSITION) return
 
         itemView.post {
@@ -291,10 +292,9 @@ class ViewToViewWidgetView : FrameLayout, ViewToViewItemListener, CoroutineScope
         return object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (::layoutManager.isInitialized) {
-                    val scrollState = layoutManager.onSaveInstanceState()
-                    scrollListener?.invoke(scrollState)
-                }
+                val layoutManager = layoutManager ?: return
+                val scrollState = layoutManager.onSaveInstanceState()
+                scrollListener?.invoke(scrollState)
             }
         }
     }
