@@ -19,7 +19,6 @@ class TokoNowCategoryMenuItemSeeAllViewHolder(
         const val IMG_DARK_MODE = "https://images.tokopedia.net/img/tokopedianow/see-all-category-dark.png"
         const val IMG_LIGHT_MODE = "https://images.tokopedia.net/img/tokopedianow/see-all-category-light.png"
 
-
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_category_menu_item_see_all
     }
