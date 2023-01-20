@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.domain.GetUserReportListUseCase
 import com.tokopedia.play.domain.PostUserReportUseCase
 import com.tokopedia.play.domain.repository.PlayViewerUserReportRepository
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import kotlinx.coroutines.withContext
@@ -26,10 +27,27 @@ class PlayViewerUserReportRepositoryImpl @Inject constructor(
         }
 
     override suspend fun submitReport(
-        params: PostUserReportUseCase.ChannelReportParams,
+        channelId: Long,
+        mediaUrl: String,
+        partnerId: Long,
+        reasonId: Int,
+        timestamp: Long,
+        reportDesc: String,
+        partnerType: PartnerType,
+        userId: Long
     ): Boolean = withContext(dispatchers.io)
     {
-        val request = postUserReportUseCase.createParam(params)
+        val request = postUserReportUseCase
+            .createParam(
+                userId = userId,
+                channelId = channelId,
+                mediaUrl = mediaUrl,
+                partnerId = partnerId,
+                reasonId = reasonId,
+                timestamp = timestamp,
+                reportDesc = reportDesc,
+                partnerType = partnerType,
+            )
         postUserReportUseCase.setRequestParams(request.parameters)
         val response = postUserReportUseCase.executeOnBackground()
         return@withContext playUiModelMapper.mapUserReportSubmission(response.submissionReport)

@@ -2600,11 +2600,9 @@ class PlayViewModel @AssistedInject constructor(
                          reportDesc: String){
         viewModelScope.launchCatchError(block = {
             _userReportSubmission.value = ResultState.Loading
-            val param = PostUserReportUseCase
-                .ChannelReportParams(channelId = channelId.toLongOrZero(), partnerId = partnerId.orZero(), partnerType = PartnerType.getTypeByValue(partnerType),
-                    reasonId = reasonId, timestamp = timestamp, desc = reportDesc, reporterId = userId.toLongOrZero(), mediaUrl = mediaUrl)
-            val isSuccess = repo.submitReport(param)
-
+            val isSuccess = repo.submitReport(channelId = channelId.toLongOrZero(), partnerId = partnerId.orZero(),
+                    partnerType = PartnerType.getTypeByValue(partnerType),
+                    reasonId = reasonId, timestamp = timestamp, reportDesc = reportDesc, userId = userId.toLongOrZero(), mediaUrl = mediaUrl)
             if(isSuccess){
                 _userReportSubmission.value = ResultState.Success
             }else{

@@ -27,35 +27,31 @@ class PostUserReportUseCase @Inject constructor(
     }
 
     fun createParam(
-       params: ChannelReportParams
+        channelId: Long,
+        mediaUrl: String,
+        reasonId: Int,
+        timestamp: Long,
+        reportDesc: String,
+        partnerId: Long,
+        partnerType: PartnerType,
+        userId: Long,
     ): RequestParams{
         val param = mutableMapOf(
-            REPORTER_ID_PARAM to params.reporterId,
-            CHANNEL_ID_PARAM to params.channelId,
-            MEDIA_URL_PARAM to params.mediaUrl,
-            REASON_ID_PARAM to params.reasonId,
-            TIMESTAMP_PARAM to params.timestamp,
-            DESCRIPTION_PARAM to params.desc,
+            REPORTER_ID_PARAM to userId,
+            CHANNEL_ID_PARAM to channelId,
+            MEDIA_URL_PARAM to mediaUrl,
+            REASON_ID_PARAM to reasonId,
+            TIMESTAMP_PARAM to timestamp,
+            DESCRIPTION_PARAM to reportDesc,
         ).apply {
-            if (params.partnerType == PartnerType.Buyer) put(USER_ID_PARAM, params.partnerId)
-            else put(SHOP_ID_PARAM, params.partnerId)
+            if (partnerType == PartnerType.Buyer) put(USER_ID_PARAM, partnerId)
+            else put(SHOP_ID_PARAM, partnerId)
         }
 
         return RequestParams.create().apply {
             putObject(INPUT, param)
         }
     }
-
-    data class ChannelReportParams(
-        val channelId: Long,
-        val partnerId: Long,
-        val partnerType: PartnerType,
-        val reasonId: Int,
-        val timestamp: Long,
-        val desc: String,
-        val reporterId: Long,
-        val mediaUrl: String,
-    )
 
     companion object {
         private const val REPORTER_ID_PARAM = "reporter_id"

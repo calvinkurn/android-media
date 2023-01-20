@@ -47,7 +47,7 @@ class PlayViewerUserReportTest {
         Dispatchers.setMain(testDispatcher.coroutineDispatcher)
 
         userReportRepo = PlayViewerUserReportRepositoryImpl(
-            getUserReportListUseCase, postUserReportUseCase, mapper, userSession, testDispatcher
+            getUserReportListUseCase, postUserReportUseCase, mapper, testDispatcher
         )
     }
 
