@@ -1157,12 +1157,13 @@ class DetailEditorFragment @Inject constructor(
             previewWidget.cropImageView.drawable.intrinsicHeight
         }
 
-        // set size to provide new ratio if image is rotated
-        val rotateSize = if (viewModel.rotateNumber % 2 == 1) {
-            Pair(realImageHeight, realImageWidth)
-        } else {
-            Pair(realImageWidth, realImageHeight)
-        }
+        // set size to provide new ratio if image is rotated, compare state rotate number with view model temp value
+        val rotateSize =
+            if ((viewModel.rotateNumber - data.cropRotateValue.orientationChangeNumber) % 2 == 1) {
+                Pair(realImageHeight, realImageWidth)
+            } else {
+                Pair(realImageWidth, realImageHeight)
+            }
 
         updateAddLogoOverlay(rotateSize) { resultUrl ->
             setOverlaySize(
