@@ -95,8 +95,8 @@ class ViewToViewViewModel @Inject constructor(
 
     private fun ViewToViewDataModel.Product.createAddToCartRequestParams(): AddToCartRequestParams {
         return AddToCartRequestParams(
-            productId = id.toLongOrZero(),
-            shopId = shopId.toIntOrZero(),
+            productId = id,
+            shopId = shopId,
             quantity = minOrder,
             productName = productName,
             price = price,
