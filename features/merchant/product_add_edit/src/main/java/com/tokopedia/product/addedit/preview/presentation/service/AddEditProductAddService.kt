@@ -93,12 +93,12 @@ open class AddEditProductAddService : AddEditProductBaseService() {
                         reDownloadVariantSizeChart(variantSizeChart)
                     },
                     onError = { throwable ->
+                        AddEditProductErrorHandler.logMessage("$TITLE_ERROR_DOWNLOAD_IMAGE $filename")
                         AddEditProductErrorHandler.logExceptionToCrashlytics(throwable)
                     }
                 ).await().run { saveProductToDraftAsync() } // save to draft and upload
             },
             onError = { throwable ->
-                AddEditProductErrorHandler.logMessage("$TITLE_ERROR_DOWNLOAD_IMAGE $filename")
                 AddEditProductErrorHandler.logExceptionToCrashlytics(throwable)
             }
         )
