@@ -1,14 +1,19 @@
 package com.tokopedia.tokopedianow.common.viewholder.categorymenu
 
+import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemSeeAllUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryMenuItemSeeAllBinding
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
+
 
 class TokoNowCategoryMenuItemSeeAllViewHolder(
     itemView: View,
@@ -16,6 +21,10 @@ class TokoNowCategoryMenuItemSeeAllViewHolder(
 ): AbstractViewHolder<TokoNowCategoryMenuItemSeeAllUiModel>(itemView) {
 
     companion object {
+        const val IMG_DARK_MODE = "https://images.tokopedia.net/img/tokopedianow/see-all-category-dark.png"
+        const val IMG_LIGHT_MODE = "https://images.tokopedia.net/img/tokopedianow/see-all-category-light.png"
+
+
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_category_menu_item_see_all
     }
@@ -27,12 +36,7 @@ class TokoNowCategoryMenuItemSeeAllViewHolder(
             root.setOnClickListener {
                 listener?.onSeeAllClicked(element.appLink)
             }
-            val drawable = VectorDrawableCompat.create(
-                root.context.resources,
-                if (root.context.isDarkMode()) R.drawable.tokopedianow_bg_see_all_category_dark else R.drawable.tokopedianow_bg_see_all_category_light,
-                itemView.context.theme
-            )
-            ivBackground.setImageDrawable(drawable)
+            ivBackground.loadImage(if (root.context.isDarkMode()) IMG_DARK_MODE else IMG_LIGHT_MODE)
         }
     }
 
