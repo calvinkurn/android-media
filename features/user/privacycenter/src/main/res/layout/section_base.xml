@@ -55,7 +55,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/sectionTitle"
                 app:typographyType="display_3"
-                android:textColor="@color/Neutral_N600"
+                android:textColor="@color/Unify_N600"
                 tools:text="Lorem ipsum dolor sit amet" />
 
             <com.tokopedia.iconunify.IconUnify
