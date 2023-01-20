@@ -104,7 +104,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
     private var shipmentDataConverter = ShipmentDataConverter()
