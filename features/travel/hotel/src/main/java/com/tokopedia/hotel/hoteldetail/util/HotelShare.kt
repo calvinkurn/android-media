@@ -61,6 +61,7 @@ class HotelShare(
                         }
                     }
                 })
+                imageSaved(imageList.firstOrNull() ?: "")
                 setUtmCampaignData("Hotel", userId, propertyDetailData.property.id, "share")
                 setMetaData(propertyDetailData.property.name, propertyDetailData.property.locationImageStatic, "", imageList)
 
