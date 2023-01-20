@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.data.UserReportSubmissionResponse
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -18,7 +19,7 @@ class PostUserReportUseCase @Inject constructor(
 ) : GraphqlUseCase<UserReportSubmissionResponse>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(PostUserReportUseCaseQuery.GQL_QUERY)
+        setGraphqlQuery(PostUserReportUseCaseQuery())
         setCacheStrategy(
             GraphqlCacheStrategy
             .Builder(CacheType.ALWAYS_CLOUD).build())
@@ -26,27 +27,35 @@ class PostUserReportUseCase @Inject constructor(
     }
 
     fun createParam(
-        reporterId: Long,
-        channelId: Long,
-        mediaUrl: String,
-        reasonId: Int,
-        timestamp: Long,
-        reportDesc: String,
-        shopId: Long
+       params: ChannelReportParams
     ): RequestParams{
-        val params = mapOf(
-            REPORTER_ID_PARAM to reporterId,
-            CHANNEL_ID_PARAM to channelId,
-            MEDIA_URL_PARAM to mediaUrl,
-            REASON_ID_PARAM to reasonId,
-            TIMESTAMP_PARAM to timestamp,
-            DESCRIPTION_PARAM to reportDesc,
-            SHOP_ID_PARAM to shopId
-        )
+        val param = mutableMapOf(
+            REPORTER_ID_PARAM to params.reporterId,
+            CHANNEL_ID_PARAM to params.channelId,
+            MEDIA_URL_PARAM to params.mediaUrl,
+            REASON_ID_PARAM to params.reasonId,
+            TIMESTAMP_PARAM to params.timestamp,
+            DESCRIPTION_PARAM to params.desc,
+        ).apply {
+            if (params.partnerType == PartnerType.Buyer) put(USER_ID_PARAM, params.partnerId)
+            else put(SHOP_ID_PARAM, params.partnerId)
+        }
+
         return RequestParams.create().apply {
-            putObject(INPUT, params)
+            putObject(INPUT, param)
         }
     }
+
+    data class ChannelReportParams(
+        val channelId: Long,
+        val partnerId: Long,
+        val partnerType: PartnerType,
+        val reasonId: Int,
+        val timestamp: Long,
+        val desc: String,
+        val reporterId: Long,
+        val mediaUrl: String,
+    )
 
     companion object {
         private const val REPORTER_ID_PARAM = "reporter_id"
@@ -57,6 +66,7 @@ class PostUserReportUseCase @Inject constructor(
         private const val DESCRIPTION_PARAM = "description"
         private const val SHOP_ID_PARAM = "shop_id"
         private const val INPUT = "input"
+        private const val USER_ID_PARAM = "user_id"
 
         const val QUERY_NAME = "PostUserReportUseCaseQuery"
         const val QUERY = """

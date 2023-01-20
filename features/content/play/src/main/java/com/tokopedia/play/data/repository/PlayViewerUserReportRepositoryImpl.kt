@@ -1,13 +1,11 @@
 package com.tokopedia.play.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.domain.GetUserReportListUseCase
 import com.tokopedia.play.domain.PostUserReportUseCase
 import com.tokopedia.play.domain.repository.PlayViewerUserReportRepository
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -18,7 +16,6 @@ class PlayViewerUserReportRepositoryImpl @Inject constructor(
     private val getUserReportListUseCase: GetUserReportListUseCase,
     private val postUserReportUseCase: PostUserReportUseCase,
     private val playUiModelMapper: PlayUiModelMapper,
-    private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) : PlayViewerUserReportRepository {
 
@@ -29,23 +26,10 @@ class PlayViewerUserReportRepositoryImpl @Inject constructor(
         }
 
     override suspend fun submitReport(
-        channelId: Long,
-        mediaUrl: String,
-        shopId: Long,
-        reasonId: Int,
-        timestamp: Long,
-        reportDesc: String
+        params: PostUserReportUseCase.ChannelReportParams,
     ): Boolean = withContext(dispatchers.io)
     {
-        val request = postUserReportUseCase.createParam(
-            reporterId = userSession.userId.toLongOrZero(),
-            channelId = channelId,
-            mediaUrl = mediaUrl,
-            shopId = shopId,
-            reasonId = reasonId,
-            timestamp = timestamp,
-            reportDesc = reportDesc
-        )
+        val request = postUserReportUseCase.createParam(params)
         postUserReportUseCase.setRequestParams(request.parameters)
         val response = postUserReportUseCase.executeOnBackground()
         return@withContext playUiModelMapper.mapUserReportSubmission(response.submissionReport)
