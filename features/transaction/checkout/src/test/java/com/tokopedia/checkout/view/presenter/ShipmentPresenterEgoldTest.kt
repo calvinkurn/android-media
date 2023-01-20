@@ -90,6 +90,9 @@ class ShipmentPresenterEgoldTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
+    @MockK
+    private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private lateinit var presenter: ShipmentPresenter
@@ -100,13 +103,15 @@ class ShipmentPresenterEgoldTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-                compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
-                editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
-                getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-                ratesStatesConverter, shippingCourierConverter,
-                shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-                validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
+            compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
+            editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
+            getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
+            ratesStatesConverter, shippingCourierConverter,
+            shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
+            checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
+            validateUsePromoRevampUseCase, gson, TestSchedulers,
+            eligibleForAddressUseCase, updateDynamicDataPassingUseCase
+        )
         presenter.attachView(view)
     }
 
@@ -191,24 +196,30 @@ class ShipmentPresenterEgoldTest {
             minEgoldRange = 50
             maxEgoldRange = 1000
             egoldTieringModelArrayList = arrayListOf<EgoldTieringModel>().apply {
-                add(EgoldTieringModel().apply {
-                    minTotalAmount = 500
-                    minAmount = 2000
-                    maxAmount = 5999
-                    basisAmount = 4000
-                })
-                add(EgoldTieringModel().apply {
-                    minTotalAmount = 98001
-                    minAmount = 2000
-                    maxAmount = 11999
-                    basisAmount = 10000
-                })
-                add(EgoldTieringModel().apply {
-                    minTotalAmount = 998001
-                    minAmount = 2000
-                    maxAmount = 51999
-                    basisAmount = 50000
-                })
+                add(
+                    EgoldTieringModel().apply {
+                        minTotalAmount = 500
+                        minAmount = 2000
+                        maxAmount = 5999
+                        basisAmount = 4000
+                    }
+                )
+                add(
+                    EgoldTieringModel().apply {
+                        minTotalAmount = 98001
+                        minAmount = 2000
+                        maxAmount = 11999
+                        basisAmount = 10000
+                    }
+                )
+                add(
+                    EgoldTieringModel().apply {
+                        minTotalAmount = 998001
+                        minAmount = 2000
+                        maxAmount = 51999
+                        basisAmount = 50000
+                    }
+                )
             }
         }
 
@@ -234,24 +245,30 @@ class ShipmentPresenterEgoldTest {
             minEgoldRange = 50
             maxEgoldRange = 1000
             egoldTieringModelArrayList = arrayListOf<EgoldTieringModel>().apply {
-                add(EgoldTieringModel().apply {
-                    minTotalAmount = 500
-                    minAmount = 2000
-                    maxAmount = 5999
-                    basisAmount = 4000
-                })
-                add(EgoldTieringModel().apply {
-                    minTotalAmount = 98001
-                    minAmount = 2000
-                    maxAmount = 11999
-                    basisAmount = 10000
-                })
-                add(EgoldTieringModel().apply {
-                    minTotalAmount = 998001
-                    minAmount = 2000
-                    maxAmount = 51999
-                    basisAmount = 50000
-                })
+                add(
+                    EgoldTieringModel().apply {
+                        minTotalAmount = 500
+                        minAmount = 2000
+                        maxAmount = 5999
+                        basisAmount = 4000
+                    }
+                )
+                add(
+                    EgoldTieringModel().apply {
+                        minTotalAmount = 98001
+                        minAmount = 2000
+                        maxAmount = 11999
+                        basisAmount = 10000
+                    }
+                )
+                add(
+                    EgoldTieringModel().apply {
+                        minTotalAmount = 998001
+                        minAmount = 2000
+                        maxAmount = 51999
+                        basisAmount = 50000
+                    }
+                )
             }
         }
 

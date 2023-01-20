@@ -6,11 +6,7 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
-import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
-import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
-import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
+import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
@@ -113,6 +109,9 @@ class ShipmentPresenterDisableFeatureTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
+    @MockK
+    private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private val gson = Gson()
@@ -125,13 +124,15 @@ class ShipmentPresenterDisableFeatureTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-                compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
-                editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
-                getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-                ratesStatesConverter, shippingCourierConverter,
-                shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-                validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
+            compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
+            editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
+            getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
+            ratesStatesConverter, shippingCourierConverter,
+            shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
+            checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
+            validateUsePromoRevampUseCase, gson, TestSchedulers,
+            eligibleForAddressUseCase, updateDynamicDataPassingUseCase
+        )
         presenter.attachView(view)
     }
 

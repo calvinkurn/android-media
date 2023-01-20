@@ -99,6 +99,9 @@ class ShipmentPresenterSaveShipmentStateTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
+    @MockK
+    private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private lateinit var presenter: ShipmentPresenter
@@ -109,13 +112,15 @@ class ShipmentPresenterSaveShipmentStateTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-                compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
-                editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
-                getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-                ratesStatesConverter, shippingCourierConverter,
-                shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-                validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
+            compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
+            editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
+            getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
+            ratesStatesConverter, shippingCourierConverter,
+            shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
+            checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
+            validateUsePromoRevampUseCase, gson, TestSchedulers,
+            eligibleForAddressUseCase, updateDynamicDataPassingUseCase
+        )
         presenter.attachView(view)
     }
 
@@ -124,17 +129,21 @@ class ShipmentPresenterSaveShipmentStateTest {
         // Given
         every { view.isTradeInByDropOff } returns false
 
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel().apply {
-                productId = 1
-            })
-            selectedShipmentDetailData = ShipmentDetailData().apply {
-                selectedCourier = CourierItemData().apply {
-                    shipperId = 1
-                    shipperProductId = 2
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(
+                    CartItemModel().apply {
+                        productId = 1
+                    }
+                )
+                selectedShipmentDetailData = ShipmentDetailData().apply {
+                    selectedCourier = CourierItemData().apply {
+                        shipperId = 1
+                        shipperProductId = 2
+                    }
                 }
             }
-        })
+        )
 
         val addressId = "123"
         presenter.recipientAddressModel = RecipientAddressModel().apply {
@@ -167,19 +176,23 @@ class ShipmentPresenterSaveShipmentStateTest {
         // Given
         every { view.isTradeInByDropOff } returns false
 
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel().apply {
-                productId = 1
-                isPreOrder = true
-                preOrderDurationDay = 2
-            })
-            selectedShipmentDetailData = ShipmentDetailData().apply {
-                selectedCourier = CourierItemData().apply {
-                    shipperId = 1
-                    shipperProductId = 2
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(
+                    CartItemModel().apply {
+                        productId = 1
+                        isPreOrder = true
+                        preOrderDurationDay = 2
+                    }
+                )
+                selectedShipmentDetailData = ShipmentDetailData().apply {
+                    selectedCourier = CourierItemData().apply {
+                        shipperId = 1
+                        shipperProductId = 2
+                    }
                 }
             }
-        })
+        )
 
         val addressId = "123"
         presenter.recipientAddressModel = RecipientAddressModel().apply {
@@ -212,19 +225,23 @@ class ShipmentPresenterSaveShipmentStateTest {
         // Given
         every { view.isTradeInByDropOff } returns true
 
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel().apply {
-                productId = 1
-                isPreOrder = true
-                preOrderDurationDay = 2
-            })
-            selectedShipmentDetailData = ShipmentDetailData().apply {
-                selectedCourierTradeInDropOff = CourierItemData().apply {
-                    shipperId = 1
-                    shipperProductId = 2
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(
+                    CartItemModel().apply {
+                        productId = 1
+                        isPreOrder = true
+                        preOrderDurationDay = 2
+                    }
+                )
+                selectedShipmentDetailData = ShipmentDetailData().apply {
+                    selectedCourierTradeInDropOff = CourierItemData().apply {
+                        shipperId = 1
+                        shipperProductId = 2
+                    }
                 }
             }
-        })
+        )
 
         val addressId = "123"
         presenter.recipientAddressModel = RecipientAddressModel().apply {
@@ -258,9 +275,11 @@ class ShipmentPresenterSaveShipmentStateTest {
         every { view.isTradeInByDropOff } returns false
 
         val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel().apply {
-                productId = 1
-            })
+            cartItemModels = listOf(
+                CartItemModel().apply {
+                    productId = 1
+                }
+            )
             selectedShipmentDetailData = ShipmentDetailData().apply {
                 selectedCourier = CourierItemData().apply {
                     shipperId = 1
@@ -301,9 +320,11 @@ class ShipmentPresenterSaveShipmentStateTest {
         every { view.isTradeInByDropOff } returns false
 
         val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel().apply {
-                productId = 1
-            })
+            cartItemModels = listOf(
+                CartItemModel().apply {
+                    productId = 1
+                }
+            )
             selectedShipmentDetailData = ShipmentDetailData()
         }
 

@@ -2,11 +2,7 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
-import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
-import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
-import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
+import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
@@ -99,6 +95,9 @@ class ShipmentPresenterGetShippingRatesTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
+    @MockK
+    private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
     private var ratesStatesConverter = RatesResponseStateConverter()
     private var shippingCourierConverter = ShippingCourierConverter()
@@ -112,13 +111,15 @@ class ShipmentPresenterGetShippingRatesTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-                compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
-                editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
-                getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-                ratesStatesConverter, shippingCourierConverter,
-                shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-                validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
+            compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
+            editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
+            getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
+            ratesStatesConverter, shippingCourierConverter,
+            shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
+            checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
+            validateUsePromoRevampUseCase, gson, TestSchedulers,
+            eligibleForAddressUseCase, updateDynamicDataPassingUseCase
+        )
         presenter.attachView(view)
     }
 
@@ -170,14 +171,14 @@ class ShipmentPresenterGetShippingRatesTest {
 
         // When
         presenter.processGetCourierRecommendation(
-                shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
-                shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-                recipientAddressModel, isForceReload, skipMvc
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
+            recipientAddressModel, isForceReload, skipMvc
         )
 
         // Then
         verify {
-            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff, isForceReload);
+            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff, isForceReload)
         }
     }
 
@@ -235,14 +236,14 @@ class ShipmentPresenterGetShippingRatesTest {
 
         // When
         presenter.processGetCourierRecommendation(
-                shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
-                shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-                recipientAddressModel, isForceReload, skipMvc
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
+            recipientAddressModel, isForceReload, skipMvc
         )
 
         // Then
         verify {
-            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff, isForceReload);
+            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff, isForceReload)
         }
     }
 
@@ -297,14 +298,14 @@ class ShipmentPresenterGetShippingRatesTest {
 
         // When
         presenter.processGetCourierRecommendation(
-                shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
-                shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-                recipientAddressModel, isForceReload, skipMvc
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
+            recipientAddressModel, isForceReload, skipMvc
         )
 
         // Then
         verify {
-            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff, isForceReload);
+            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff, isForceReload)
         }
     }
 
@@ -359,18 +360,18 @@ class ShipmentPresenterGetShippingRatesTest {
 
         // When get first shipping
         presenter.processGetCourierRecommendation(
-                shipperId, spId, itemPosition, shipmentDetailData, ShipmentCartItemModel().apply { orderNumber = itemPosition },
-                shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-                recipientAddressModel, isForceReload, skipMvc
+            shipperId, spId, itemPosition, shipmentDetailData, ShipmentCartItemModel().apply { orderNumber = itemPosition },
+            shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
+            recipientAddressModel, isForceReload, skipMvc
         )
 
         itemPosition++
 
         // When get second shipping
         presenter.processGetCourierRecommendation(
-                shipperId, spId, itemPosition, shipmentDetailData, ShipmentCartItemModel().apply { orderNumber = itemPosition },
-                shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-                recipientAddressModel, isForceReload, skipMvc
+            shipperId, spId, itemPosition, shipmentDetailData, ShipmentCartItemModel().apply { orderNumber = itemPosition },
+            shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
+            recipientAddressModel, isForceReload, skipMvc
         )
 
         // Then

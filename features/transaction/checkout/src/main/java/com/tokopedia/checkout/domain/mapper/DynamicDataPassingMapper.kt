@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.domain.mapper
 
-import com.google.gson.Gson
 import com.tokopedia.checkout.data.model.response.dynamicdata.UpdateDynamicDataPassingUiModel
 import com.tokopedia.checkout.domain.model.cartshipmentform.DynamicDataPassingParamRequest
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -11,9 +10,6 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOn
 object DynamicDataPassingMapper {
 
     private val dynamicDataParamList: List<DynamicDataPassingParamRequest>? = null
-
-    // temporary using gson --> probably will change into Hashmap
-    private val gson = Gson()
 
     fun mapResponseToUiModel(dynamicData: String): UpdateDynamicDataPassingUiModel {
         return UpdateDynamicDataPassingUiModel(dynamicData = dynamicData)

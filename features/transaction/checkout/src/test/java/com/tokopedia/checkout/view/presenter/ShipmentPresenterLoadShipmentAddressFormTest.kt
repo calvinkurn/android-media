@@ -11,11 +11,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
-import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
-import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
-import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
+import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
@@ -124,6 +120,9 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
+    @MockK
+    private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
     private var shipmentMapper = ShipmentMapper()
 
@@ -141,7 +140,8 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             ratesStatesConverter, shippingCourierConverter,
             shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
             checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-            validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase
+            validateUsePromoRevampUseCase, gson, TestSchedulers,
+            eligibleForAddressUseCase, updateDynamicDataPassingUseCase
         )
         presenter.attachView(view)
     }

@@ -93,6 +93,9 @@ class ShipmentPresenterReleaseBookingTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
+    @MockK
+    private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
     private var shipmentMapper = ShipmentMapper()
 
@@ -104,13 +107,15 @@ class ShipmentPresenterReleaseBookingTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-                compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
-                editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
-                getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-                ratesStatesConverter, shippingCourierConverter,
-                shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-                validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
+            compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
+            editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
+            getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
+            ratesStatesConverter, shippingCourierConverter,
+            shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
+            checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
+            validateUsePromoRevampUseCase, gson, TestSchedulers,
+            eligibleForAddressUseCase, updateDynamicDataPassingUseCase
+        )
         presenter.attachView(view)
     }
 
@@ -119,16 +124,18 @@ class ShipmentPresenterReleaseBookingTest {
         // Given
         every { releaseBookingUseCase.execute(any()) } returns Observable.just(ReleaseBookingResponse())
         val productId = 300L
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel(
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
                 cartItemModels = listOf(
-                        CartItemModel(
-                                productId = productId
-                        ),
-                        CartItemModel(
-                                productId = productId + 1
-                        )
+                    CartItemModel(
+                        productId = productId
+                    ),
+                    CartItemModel(
+                        productId = productId + 1
+                    )
                 )
-        ))
+            )
+        )
 
         // When
         presenter.releaseBooking()

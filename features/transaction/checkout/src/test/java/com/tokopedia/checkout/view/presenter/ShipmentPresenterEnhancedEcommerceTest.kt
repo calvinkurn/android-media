@@ -6,11 +6,7 @@ import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutReques
 import com.tokopedia.checkout.data.model.request.checkout.old.ProductDataCheckoutRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckoutRequest
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
-import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
-import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
-import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
+import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
@@ -112,6 +108,9 @@ class ShipmentPresenterEnhancedEcommerceTest {
     @MockK
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
+    @MockK
+    private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private lateinit var presenter: ShipmentPresenter
@@ -122,13 +121,15 @@ class ShipmentPresenterEnhancedEcommerceTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-                compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
-                editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
-                getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-                ratesStatesConverter, shippingCourierConverter,
-                shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-                validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
+            compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
+            editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
+            getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
+            ratesStatesConverter, shippingCourierConverter,
+            shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
+            checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
+            validateUsePromoRevampUseCase, gson, TestSchedulers,
+            eligibleForAddressUseCase, updateDynamicDataPassingUseCase
+        )
         presenter.attachView(view)
     }
 
@@ -137,9 +138,11 @@ class ShipmentPresenterEnhancedEcommerceTest {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel())
-        })
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(CartItemModel())
+            }
+        )
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
 
         // When
@@ -154,9 +157,11 @@ class ShipmentPresenterEnhancedEcommerceTest {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel())
-        })
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(CartItemModel())
+            }
+        )
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
 
         // When
@@ -171,9 +176,11 @@ class ShipmentPresenterEnhancedEcommerceTest {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel())
-        })
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(CartItemModel())
+            }
+        )
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
 
         // When
@@ -189,10 +196,12 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         val shopId = 652660L
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel())
-            this.shopId = shopId
-        })
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(CartItemModel())
+                this.shopId = shopId
+            }
+        )
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
 
         // When
@@ -207,9 +216,11 @@ class ShipmentPresenterEnhancedEcommerceTest {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel())
-        })
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(CartItemModel())
+            }
+        )
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
 
         // When
@@ -229,15 +240,19 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val productData = dataCheckoutRequest.shopProducts?.firstOrNull()?.productData
         productData?.apply {
             clear()
-            add(ProductDataCheckoutRequest().apply {
-                freeShippingName = VALUE_BEBAS_ONGKIR
-            })
+            add(
+                ProductDataCheckoutRequest().apply {
+                    freeShippingName = VALUE_BEBAS_ONGKIR
+                }
+            )
         }
         dataCheckoutRequest.shopProducts?.firstOrNull()?.productData = productData
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel())
-        })
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(CartItemModel())
+            }
+        )
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
 
         // When
@@ -257,15 +272,19 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val productData = dataCheckoutRequest.shopProducts?.firstOrNull()?.productData
         productData?.apply {
             clear()
-            add(ProductDataCheckoutRequest().apply {
-                freeShippingName = VALUE_BEBAS_ONGKIR_EXTRA
-            })
+            add(
+                ProductDataCheckoutRequest().apply {
+                    freeShippingName = VALUE_BEBAS_ONGKIR_EXTRA
+                }
+            )
         }
         dataCheckoutRequest.shopProducts?.firstOrNull()?.productData = productData
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel())
-        })
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(CartItemModel())
+            }
+        )
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
 
         // When
@@ -289,9 +308,11 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val step = "4"
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel())
-        })
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(CartItemModel())
+            }
+        )
         presenter.setCheckoutData(CheckoutData(transactionId = transactionId))
         presenter.listShipmentCrossSellModel = arrayListOf()
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
@@ -303,7 +324,14 @@ class ShipmentPresenterEnhancedEcommerceTest {
         // Then
         verify {
             shipmentAnalyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(
-                    any(), tradeInCustomDimension, transactionId, "", false, eventCategory, eventAction, eventLabel
+                any(),
+                tradeInCustomDimension,
+                transactionId,
+                "",
+                false,
+                eventCategory,
+                eventAction,
+                eventLabel
             )
         }
     }
@@ -319,14 +347,16 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val step = "2"
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel())
-        })
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(CartItemModel())
+            }
+        )
         presenter.setCheckoutData(CheckoutData(transactionId = transactionId))
         presenter.listShipmentCrossSellModel = arrayListOf()
         val pomlAutoApplied = true
         presenter.lastApplyData = LastApplyUiModel(
-                additionalInfo = LastApplyAdditionalInfoUiModel(pomlAutoApplied = pomlAutoApplied)
+            additionalInfo = LastApplyAdditionalInfoUiModel(pomlAutoApplied = pomlAutoApplied)
         )
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
@@ -337,7 +367,14 @@ class ShipmentPresenterEnhancedEcommerceTest {
         // Then
         verify {
             shipmentAnalyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(
-                    any(), tradeInCustomDimension, transactionId, "", pomlAutoApplied, eventCategory, eventAction, eventLabel
+                any(),
+                tradeInCustomDimension,
+                transactionId,
+                "",
+                pomlAutoApplied,
+                eventCategory,
+                eventAction,
+                eventLabel
             )
         }
     }
@@ -353,9 +390,11 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val step = "2"
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel())
-        })
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(CartItemModel())
+            }
+        )
         presenter.setCheckoutData(CheckoutData(transactionId = transactionId))
         presenter.listShipmentCrossSellModel = arrayListOf()
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
@@ -366,7 +405,14 @@ class ShipmentPresenterEnhancedEcommerceTest {
         // Then
         verify {
             shipmentAnalyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(
-                    any(), tradeInCustomDimension, transactionId, "", false, eventCategory, eventAction, eventLabel
+                any(),
+                tradeInCustomDimension,
+                transactionId,
+                "",
+                false,
+                eventCategory,
+                eventAction,
+                eventLabel
             )
         }
     }
@@ -382,14 +428,16 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val step = "4"
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel())
-        })
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(CartItemModel())
+            }
+        )
         presenter.setCheckoutData(CheckoutData(transactionId = transactionId))
         presenter.listShipmentCrossSellModel = arrayListOf()
         val pomlAutoApplied = true
         presenter.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
-                PromoUiModel(additionalInfoUiModel = AdditionalInfoUiModel(pomlAutoApplied = pomlAutoApplied))
+            PromoUiModel(additionalInfoUiModel = AdditionalInfoUiModel(pomlAutoApplied = pomlAutoApplied))
         )
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
@@ -400,7 +448,14 @@ class ShipmentPresenterEnhancedEcommerceTest {
         // Then
         verify {
             shipmentAnalyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(
-                    any(), tradeInCustomDimension, transactionId, "", pomlAutoApplied, eventCategory, eventAction, eventLabel
+                any(),
+                tradeInCustomDimension,
+                transactionId,
+                "",
+                pomlAutoApplied,
+                eventCategory,
+                eventAction,
+                eventLabel
             )
         }
     }
@@ -411,16 +466,20 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val cartString = "1"
 
         val dataCheckoutRequestList = arrayListOf<DataCheckoutRequest>().apply {
-            add(DataCheckoutRequest().apply {
-                shopProducts = arrayListOf<ShopProductCheckoutRequest>().apply {
-                    add(ShopProductCheckoutRequest().apply {
-                        this.cartString = cartString
-                        productData = arrayListOf<ProductDataCheckoutRequest>().apply {
-                            add(ProductDataCheckoutRequest())
-                        }
-                    })
+            add(
+                DataCheckoutRequest().apply {
+                    shopProducts = arrayListOf<ShopProductCheckoutRequest>().apply {
+                        add(
+                            ShopProductCheckoutRequest().apply {
+                                this.cartString = cartString
+                                productData = arrayListOf<ProductDataCheckoutRequest>().apply {
+                                    add(ProductDataCheckoutRequest())
+                                }
+                            }
+                        )
+                    }
                 }
-            })
+            )
         }
         val shippingDuration = "1 Day"
         val shippingPrice = "100"
@@ -445,33 +504,45 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val promoCodes = "a"
         val promoDetails = "aaa"
 
-        presenter.setDataCheckoutRequestList(arrayListOf<DataCheckoutRequest>().apply {
-            add(DataCheckoutRequest().apply {
-                shopProducts = arrayListOf<ShopProductCheckoutRequest>().apply {
-                    add(ShopProductCheckoutRequest().apply {
-                        this.cartString = cartString
-                        productData = arrayListOf<ProductDataCheckoutRequest>().apply {
-                            add(ProductDataCheckoutRequest().apply {
-                                this.productId = productId
-                            })
+        presenter.setDataCheckoutRequestList(
+            arrayListOf<DataCheckoutRequest>().apply {
+                add(
+                    DataCheckoutRequest().apply {
+                        shopProducts = arrayListOf<ShopProductCheckoutRequest>().apply {
+                            add(
+                                ShopProductCheckoutRequest().apply {
+                                    this.cartString = cartString
+                                    productData = arrayListOf<ProductDataCheckoutRequest>().apply {
+                                        add(
+                                            ProductDataCheckoutRequest().apply {
+                                                this.productId = productId
+                                            }
+                                        )
+                                    }
+                                }
+                            )
                         }
-                    })
-                }
-            })
-        })
+                    }
+                )
+            }
+        )
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>().apply {
-            add(ShipmentCartItemModel().apply {
-                this.cartString = cartString
-                cartItemModels = arrayListOf<CartItemModel>().apply {
-                    add(CartItemModel().apply {
-                        this.productId = productId
-                        analyticsProductCheckoutData = AnalyticsProductCheckoutData().apply {
-                            this.promoCode = promoCodes
-                            this.promoDetails = promoDetails
-                        }
-                    })
+            add(
+                ShipmentCartItemModel().apply {
+                    this.cartString = cartString
+                    cartItemModels = arrayListOf<CartItemModel>().apply {
+                        add(
+                            CartItemModel().apply {
+                                this.productId = productId
+                                analyticsProductCheckoutData = AnalyticsProductCheckoutData().apply {
+                                    this.promoCode = promoCodes
+                                    this.promoDetails = promoDetails
+                                }
+                            }
+                        )
+                    }
                 }
-            })
+            )
         }
 
         // When
@@ -491,33 +562,43 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val promoDetails = "aaa"
 
         val dataCheckoutRequests = arrayListOf<DataCheckoutRequest>().apply {
-            add(DataCheckoutRequest().apply {
-                shopProducts = arrayListOf<ShopProductCheckoutRequest>().apply {
-                    add(ShopProductCheckoutRequest().apply {
-                        this.cartString = cartString
-                        productData = arrayListOf<ProductDataCheckoutRequest>().apply {
-                            add(ProductDataCheckoutRequest().apply {
-                                this.productId = productId
-                            })
-                        }
-                    })
+            add(
+                DataCheckoutRequest().apply {
+                    shopProducts = arrayListOf<ShopProductCheckoutRequest>().apply {
+                        add(
+                            ShopProductCheckoutRequest().apply {
+                                this.cartString = cartString
+                                productData = arrayListOf<ProductDataCheckoutRequest>().apply {
+                                    add(
+                                        ProductDataCheckoutRequest().apply {
+                                            this.productId = productId
+                                        }
+                                    )
+                                }
+                            }
+                        )
+                    }
                 }
-            })
+            )
         }
 
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>().apply {
-            add(ShipmentCartItemModel().apply {
-                this.cartString = cartString
-                cartItemModels = arrayListOf<CartItemModel>().apply {
-                    add(CartItemModel().apply {
-                        this.productId = productId
-                        analyticsProductCheckoutData = AnalyticsProductCheckoutData().apply {
-                            this.promoCode = promoCodes
-                            this.promoDetails = promoDetails
-                        }
-                    })
+            add(
+                ShipmentCartItemModel().apply {
+                    this.cartString = cartString
+                    cartItemModels = arrayListOf<CartItemModel>().apply {
+                        add(
+                            CartItemModel().apply {
+                                this.productId = productId
+                                analyticsProductCheckoutData = AnalyticsProductCheckoutData().apply {
+                                    this.promoCode = promoCodes
+                                    this.promoDetails = promoDetails
+                                }
+                            }
+                        )
+                    }
                 }
-            })
+            )
         }
 
         every { view.generateNewCheckoutRequest(any(), any()) } returns dataCheckoutRequests
