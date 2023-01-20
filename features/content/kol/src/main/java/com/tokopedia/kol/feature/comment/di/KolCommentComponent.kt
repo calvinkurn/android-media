@@ -1,7 +1,7 @@
 package com.tokopedia.kol.feature.comment.di
 
 import com.tokopedia.kol.common.di.KolComponent
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity
+import com.tokopedia.kol.feature.comment.view.activity.ContentCommentActivity
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentNewFragment
 import dagger.Component
 
@@ -14,6 +14,6 @@ import dagger.Component
     dependencies = [KolComponent::class]
 )
 interface KolCommentComponent {
-    fun inject(kolCommentNewActivity: KolCommentNewActivity)
+    fun inject(kolCommentNewActivity: ContentCommentActivity)
     fun inject(kolCommentNewFragment: KolCommentNewFragment)
 }

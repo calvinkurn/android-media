@@ -119,7 +119,7 @@ class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check comment appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
-        val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/comment-new/123456"
+        val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/comment/123456"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
     }
 
