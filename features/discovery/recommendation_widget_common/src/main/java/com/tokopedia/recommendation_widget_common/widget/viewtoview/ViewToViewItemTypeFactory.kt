@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 
-interface ViewToViewItemTypeFactory: AdapterTypeFactory {
+interface ViewToViewItemTypeFactory : AdapterTypeFactory {
     fun useBigLayout(useBigLayout: Boolean)
     fun type(viewToView: ViewToViewItemData): Int
 

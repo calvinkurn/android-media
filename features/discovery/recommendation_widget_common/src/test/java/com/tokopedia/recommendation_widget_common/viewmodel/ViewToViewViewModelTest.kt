@@ -46,15 +46,17 @@ class ViewToViewViewModelTest {
         data = DataModel(
             success = 1,
             cartId = "12345",
-            message = arrayListOf("Success")
-        ), status = "OK"
+            message = arrayListOf("Success"),
+        ),
+        status = "OK",
     )
 
     private val atcResponseFail = AddToCartDataModel(
         data = DataModel(
             success = 0,
-            message = arrayListOf("Fail")
-        ), status = "Fail"
+            message = arrayListOf("Fail"),
+        ),
+        status = "Fail",
     )
 
     @Before

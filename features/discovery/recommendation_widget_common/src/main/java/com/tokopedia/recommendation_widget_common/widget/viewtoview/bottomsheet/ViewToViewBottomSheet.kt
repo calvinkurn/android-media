@@ -168,7 +168,7 @@ class ViewToViewBottomSheet @Inject constructor(
                 showLogin()
             }
         }
-     }
+    }
 
     private fun trackATCSuccess(atcStatus: ViewToViewATCStatus.Success) {
         ViewToViewBottomSheetTracker.eventAddToCart(

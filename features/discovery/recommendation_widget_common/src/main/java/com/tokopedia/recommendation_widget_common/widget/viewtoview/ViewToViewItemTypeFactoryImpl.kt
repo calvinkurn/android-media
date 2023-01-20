@@ -14,7 +14,7 @@ class ViewToViewItemTypeFactoryImpl(
     }
 
     override fun type(viewToView: ViewToViewItemData): Int {
-        return if(isUseBigLayout) {
+        return if (isUseBigLayout) {
             ViewToViewItemViewHolder.Big.LAYOUT
         } else ViewToViewItemViewHolder.Regular.LAYOUT
     }

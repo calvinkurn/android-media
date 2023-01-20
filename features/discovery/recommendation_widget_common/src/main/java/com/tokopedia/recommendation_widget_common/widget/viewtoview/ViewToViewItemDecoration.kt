@@ -20,18 +20,24 @@ class ViewToViewItemDecoration : ItemDecoration() {
 
         when (position) {
             0 -> {
-                outRect.left = 16.toPx()
-                outRect.right = 4.toPx()
+                outRect.left = BIG_HORIZONTAL_OFFSET.toPx()
+                outRect.right = HORIZONTAL_OFFSET.toPx()
             }
             itemCount - 1 -> {
-                outRect.left = 4.toPx()
-                outRect.right = 16.toPx()
+                outRect.left = HORIZONTAL_OFFSET.toPx()
+                outRect.right = BIG_HORIZONTAL_OFFSET.toPx()
             }
             else -> {
-                outRect.left = 4.toPx()
-                outRect.right = 4.toPx()
+                outRect.left = HORIZONTAL_OFFSET.toPx()
+                outRect.right = HORIZONTAL_OFFSET.toPx()
             }
         }
-        outRect.bottom = 12.toPx()
+        outRect.bottom = BOTTOM_OFFSET.toPx()
+    }
+
+    companion object {
+        private const val BIG_HORIZONTAL_OFFSET = 16
+        private const val BOTTOM_OFFSET = 12
+        private const val HORIZONTAL_OFFSET = 4
     }
 }

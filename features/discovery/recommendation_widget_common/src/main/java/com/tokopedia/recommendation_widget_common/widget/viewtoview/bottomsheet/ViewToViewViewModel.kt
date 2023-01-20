@@ -8,8 +8,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetViewToViewRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
@@ -30,7 +28,8 @@ class ViewToViewViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
     val viewToViewRecommendationLiveData: LiveData<Result<ViewToViewRecommendationResult>>
         get() = _viewToViewRecommendationLiveData
-    private val _viewToViewRecommendationLiveData = MutableLiveData<Result<ViewToViewRecommendationResult>>()
+    private val _viewToViewRecommendationLiveData =
+        MutableLiveData<Result<ViewToViewRecommendationResult>>()
 
     val viewToViewATCStatusLiveData: LiveData<ViewToViewATCStatus>
         get() = _viewToViewATCStatusLiveData
@@ -104,14 +103,15 @@ class ViewToViewViewModel @Inject constructor(
     fun addToCart(
         product: ViewToViewDataModel.Product,
     ) {
-        if(userSession.isLoggedIn) {
+        if (userSession.isLoggedIn) {
             launchCatchError(
                 block = {
                     val useCase = addToCartUseCase.get()
                     useCase.setParams(product.createAddToCartRequestParams())
                     val result = useCase.executeOnBackground()
                     handleATCSuccess(result, product)
-                }, onError = ::handleATCError
+                },
+                onError = ::handleATCError,
             )
         } else {
             _viewToViewATCStatusLiveData.postValue(ViewToViewATCStatus.NonLogin)

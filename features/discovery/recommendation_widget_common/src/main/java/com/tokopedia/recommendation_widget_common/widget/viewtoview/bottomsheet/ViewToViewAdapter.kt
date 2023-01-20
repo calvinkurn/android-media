@@ -19,13 +19,21 @@ class ViewToViewAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewToViewViewHolder {
-        return when(viewType) {
+        return when (viewType) {
             R.layout.item_view_to_view -> {
-                val view = ItemViewToViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                val view = ItemViewToViewBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
                 ViewToViewViewHolder.Product(listener, view.root)
             }
             else -> {
-                val view = ItemViewToViewShimmeringBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                val view = ItemViewToViewShimmeringBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
                 ViewToViewViewHolder.Loading(view.root)
             }
         }

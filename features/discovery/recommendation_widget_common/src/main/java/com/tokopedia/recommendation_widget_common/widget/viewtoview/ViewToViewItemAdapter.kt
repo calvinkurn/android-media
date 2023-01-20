@@ -8,7 +8,7 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.Recommendation
 
 class ViewToViewItemAdapter(
     typeFactory: ViewToViewItemTypeFactory,
-): BaseAdapter<ViewToViewItemTypeFactory>(typeFactory) {
+) : BaseAdapter<ViewToViewItemTypeFactory>(typeFactory) {
 
     val data: List<Visitable<*>>
         get() = visitables

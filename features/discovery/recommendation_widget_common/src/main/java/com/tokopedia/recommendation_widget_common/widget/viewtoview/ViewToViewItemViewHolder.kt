@@ -41,6 +41,7 @@ sealed class ViewToViewItemViewHolder(
                 listener.onViewToViewItemClicked(element, bindingAdapterPosition)
             }
         }
+
         companion object {
             val LAYOUT = R.layout.item_recom_view_to_view_big
         }

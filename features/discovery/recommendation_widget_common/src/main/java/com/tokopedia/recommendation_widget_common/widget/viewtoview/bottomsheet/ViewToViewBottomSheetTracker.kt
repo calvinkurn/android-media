@@ -71,7 +71,7 @@ object ViewToViewBottomSheetTracker {
     }
 
     private fun RecommendationWidget.asItemList(): String {
-        val firstRecommendationItem = recommendationItemList?.firstOrNull()
+        val firstRecommendationItem = recommendationItemList.firstOrNull()
         val isTopAds = if (firstRecommendationItem?.isTopAds == true) "topads" else "nontopads"
         val recommendationType = firstRecommendationItem?.recommendationType ?: ""
         return "/product - v2v widget - rekomendasi untuk anda - $recommendationType - product $isTopAds"
@@ -138,9 +138,9 @@ object ViewToViewBottomSheetTracker {
         return "/product - v2v widget - rekomendasi untuk anda - $recommendationType - product $isTopAds"
     }
 
-    private fun RecommendationItem.asBundle(position: Int) : Bundle {
+    private fun RecommendationItem.asBundle(position: Int): Bundle {
         return Bundle().apply {
-            putInt(CATEGORY_ID , departmentId)
+            putInt(CATEGORY_ID, departmentId)
             putString(DIMENSION_40, asItemList())
             putString(DIMENSION_45, cartId)
             putString(ITEM_BRAND, "")

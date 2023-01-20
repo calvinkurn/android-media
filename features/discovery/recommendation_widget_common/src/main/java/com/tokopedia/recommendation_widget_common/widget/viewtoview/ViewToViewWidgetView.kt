@@ -140,7 +140,7 @@ class ViewToViewWidgetView : FrameLayout, ViewToViewItemListener, CoroutineScope
 
     fun getCurrentPosition(): Int {
         return layoutManager?.let {
-            when(it) {
+            when (it) {
                 is GridLayoutManager -> it.findFirstCompletelyVisibleItemPosition()
                 is LinearLayoutManager -> it.findFirstCompletelyVisibleItemPosition()
                 else -> 0
@@ -187,10 +187,10 @@ class ViewToViewWidgetView : FrameLayout, ViewToViewItemListener, CoroutineScope
     }
 
     private fun createLayoutManager(itemSize: Int): RecyclerView.LayoutManager {
-        return if(itemSize > 2) createLinearLayoutManager() else createGridLayoutManager()
+        return if (itemSize > 2) createLinearLayoutManager() else createGridLayoutManager()
     }
 
-    private fun createLinearLayoutManager() : LinearLayoutManager {
+    private fun createLinearLayoutManager(): LinearLayoutManager {
         return object : LinearLayoutManager(itemView.context, HORIZONTAL, false) {
             override fun requestChildRectangleOnScreen(
                 parent: RecyclerView,
@@ -212,7 +212,7 @@ class ViewToViewWidgetView : FrameLayout, ViewToViewItemListener, CoroutineScope
         }
     }
 
-    private fun createGridLayoutManager() : GridLayoutManager {
+    private fun createGridLayoutManager(): GridLayoutManager {
         return object : GridLayoutManager(itemView.context, 2) {
             override fun requestChildRectangleOnScreen(
                 parent: RecyclerView,
@@ -279,7 +279,7 @@ class ViewToViewWidgetView : FrameLayout, ViewToViewItemListener, CoroutineScope
 
         itemView.post {
             val currentLayoutManager = layoutManager
-            if(currentLayoutManager is LinearLayoutManager) {
+            if (currentLayoutManager is LinearLayoutManager) {
                 currentLayoutManager.scrollToPositionWithOffset(
                     scrollToPosition,
                     16f.toDpInt()

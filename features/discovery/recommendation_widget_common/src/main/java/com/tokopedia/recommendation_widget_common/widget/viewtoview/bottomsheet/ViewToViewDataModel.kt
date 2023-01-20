@@ -7,7 +7,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 sealed interface ViewToViewDataModel {
     data class Loading(
         val hasAtc: Boolean,
-    ): ViewToViewDataModel
+    ) : ViewToViewDataModel
 
     data class Product(
         val id: String,
