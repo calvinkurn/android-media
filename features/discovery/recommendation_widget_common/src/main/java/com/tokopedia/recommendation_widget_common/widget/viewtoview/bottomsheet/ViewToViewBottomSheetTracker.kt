@@ -2,6 +2,7 @@ package com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet
 
 import android.os.Bundle
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.ADD_TO_CART
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.PRODUCT_VIEW
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.SELECT_CONTENT
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.VIEW_ITEM_LIST
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.BUSINESS_UNIT_HOME
@@ -85,7 +86,7 @@ object ViewToViewBottomSheetTracker: BaseTrackerConst() {
             )
         )
         val dataLayer = trackingBuilder.constructBasicProductView(
-            event = VIEW_ITEM_LIST,
+            event = PRODUCT_VIEW,
             eventCategory = CATEGORY_PDP,
             eventAction = IMPRESSION_ACTION,
             eventLabel = headerTitle,
