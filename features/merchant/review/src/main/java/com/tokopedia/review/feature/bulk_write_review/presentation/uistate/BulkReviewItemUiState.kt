@@ -76,6 +76,24 @@ sealed interface BulkReviewItemUiState {
         }
     }
 
+    fun getReviewItemImageAttachmentPaths(): List<String> {
+        return mediaPickerUiState.let { mediaPickerUiState ->
+            if (mediaPickerUiState is CreateReviewMediaPickerUiState.HasMedia) {
+                mediaPickerUiState
+                    .mediaItems
+                    .mapNotNull {
+                        if (it is CreateReviewMediaUiModel.Image || it is CreateReviewMediaUiModel.Video) {
+                            it.uri
+                        } else {
+                            null
+                        }
+                    }
+            } else {
+                emptyList()
+            }
+        }
+    }
+
     fun getReviewItemVideoAttachmentCount(): Int {
         return mediaPickerUiState.let { mediaPickerUiState ->
             if (mediaPickerUiState is CreateReviewMediaPickerUiState.HasMedia) {

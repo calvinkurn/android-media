@@ -97,6 +97,10 @@ data class BulkReviewItemUiModel(
         return uiState.getReviewItemImageAttachmentIds()
     }
 
+    fun getReviewItemImageAttachmentPaths(): List<String> {
+        return uiState.getReviewItemImageAttachmentPaths()
+    }
+
     fun getReviewItemVideoAttachmentCount(): Int {
         return uiState.getReviewItemVideoAttachmentCount()
     }

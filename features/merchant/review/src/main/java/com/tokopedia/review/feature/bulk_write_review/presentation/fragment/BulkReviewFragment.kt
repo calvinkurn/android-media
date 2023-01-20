@@ -229,8 +229,9 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
 
     override fun onAddMediaClicked(inboxID: String, enabled: Boolean) {
         if (enabled) {
+            val pickedMedia = viewModel.getReviewItemMedia(inboxID)
             viewModel.getAndUpdateActiveMediaPickerInboxID(inboxID)
-            goToMediaPicker()
+            goToMediaPicker(pickedMedia)
         } else {
             viewModel.enqueueToasterDisabledAddMoreMedia()
         }
@@ -566,7 +567,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         binding?.root?.findFocus()?.clearFocus()
     }
 
-    private fun goToMediaPicker() {
+    private fun goToMediaPicker(pickedMedia: List<String> = emptyList()) {
         context?.let {
             val intent = MediaPicker.intent(it) {
                 pageSource(PageSource.Review)
@@ -574,6 +575,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                 maxMediaItem(MAX_IMAGE_COUNT)
                 maxVideoItem(MAX_VIDEO_COUNT)
                 maxVideoFileSize(MAX_VIDEO_SIZE_BYTE)
+                includeMedias(pickedMedia)
             }
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }

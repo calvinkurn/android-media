@@ -457,6 +457,7 @@ class BulkReviewViewModel @Inject constructor(
 
     fun onReceiveMediaPickerResult(originalPaths: List<String>) {
         val inboxID = getAndUpdateActiveMediaPickerInboxID(String.EMPTY)
+        incrementReviewItemMediaUploadBatchNumber(inboxID)
         updateMediaUris(inboxID, originalPaths)
     }
 
@@ -712,6 +713,10 @@ class BulkReviewViewModel @Inject constructor(
         return previousValue
     }
 
+    fun getReviewItemMedia(inboxID: String): List<String> {
+        return getReviewItem(inboxID)?.getReviewItemImageAttachmentPaths().orEmpty()
+    }
+
     fun enqueueToasterDisabledAddMoreMedia() {
         _bulkReviewPageToasterQueue.tryEmit(
             CreateReviewToasterUiModel(
@@ -790,7 +795,9 @@ class BulkReviewViewModel @Inject constructor(
             CreateReviewMapper.mapPoem(
                 currentValue = reviewItemsMediaPickerPoem.value[inboxID] ?: Pair("", StringRes(Int.ZERO)),
                 mediaItems = mediaItems[inboxID].orEmpty(),
-                uploadBatchNumber = mediaItems[inboxID]?.firstOrNull()?.uploadBatchNumber.orZero()
+                uploadBatchNumber = reviewItemsMediaUploadBatchNumber.value.find {
+                    it.inboxID == inboxID
+                }?.batchNumber.orZero()
             )
         }
     }
