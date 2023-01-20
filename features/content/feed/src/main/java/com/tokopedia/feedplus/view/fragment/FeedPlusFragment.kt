@@ -111,7 +111,7 @@ import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.feedplus.view.di.FeedPlusComponent
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
-import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
+import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
@@ -2949,7 +2949,7 @@ class FeedPlusFragment :
         hideAdapterLoading()
     }
 
-    private fun onSuccessFavoriteUnfavoriteShop(model: FeedPromotedShopViewModel) {
+    private fun onSuccessFavoriteUnfavoriteShop(model: FeedPromotedShopModel) {
         showSnackbar(model.resultString)
         if (hasFeed()) {
             updateFavorite()

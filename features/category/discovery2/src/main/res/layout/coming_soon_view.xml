@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
+    android:layout_height="1dp"
     android:orientation="vertical">
-
+<!-- Warning: Please do not remove the 1dp height. As in case if the height is 0 dp and this layout
+is first item in RecyclerView, the recyclerView stops giving canScrollVertically(-1) as
+false even if the recycler view is on top most position.
+-->
 </LinearLayout>

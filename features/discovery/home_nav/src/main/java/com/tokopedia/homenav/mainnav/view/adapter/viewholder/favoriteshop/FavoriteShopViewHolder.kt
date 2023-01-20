@@ -1,4 +1,4 @@
-package com.tokopedia.homenav.mainnav.view.adapter.viewholder
+package com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshop
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -10,7 +10,6 @@ import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderFavoriteShopListBinding
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.FavoriteShopTypeFactoryImpl
-import com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshop.FavoriteShopAdapter
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.NavOrderSpacingDecoration
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.EmptyStateFavoriteShopDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel

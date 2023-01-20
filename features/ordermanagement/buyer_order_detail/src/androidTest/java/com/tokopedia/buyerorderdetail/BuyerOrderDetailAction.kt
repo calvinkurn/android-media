@@ -13,8 +13,10 @@ import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.Swipe
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayingAtLeast
@@ -22,16 +24,18 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.buyerorderdetail.cassava.BuyerOrderDetailTrackerValidationConstant
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
+import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailResponse
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderInsuranceViewHolder
 import com.tokopedia.buyerorderdetail.presentation.fragment.BuyerOrderDetailFragment
 import com.tokopedia.buyerorderdetail.stub.common.graphql.coroutines.domain.repository.GraphqlRepositoryStub
 import com.tokopedia.buyerorderdetail.stub.detail.presentation.activity.BuyerOrderDetailActivityStub
 import com.tokopedia.cachemanager.gson.GsonSingleton
-import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
-import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationResponse
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
@@ -54,14 +58,14 @@ class BuyerOrderDetailAction {
     private fun findSecondaryActionButtonBottomSheet(activity: AppCompatActivity): BottomSheetUnify? {
         return findBuyerOrderDetailFragment(activity)?.childFragmentManager?.fragments?.find {
             it is BottomSheetUnify &&
-                    it.bottomSheetTitle.text == BuyerOrderDetailTrackerValidationConstant.SECONDARY_ACTION_BUTTON_BOTTOMSHEET_TITLE
+                it.bottomSheetTitle.text == BuyerOrderDetailTrackerValidationConstant.SECONDARY_ACTION_BUTTON_BOTTOMSHEET_TITLE
         } as? BottomSheetUnify
     }
 
     private fun findFinishOrderConfirmationBottomSheet(activity: AppCompatActivity): BottomSheetUnify? {
         return findBuyerOrderDetailFragment(activity)?.childFragmentManager?.fragments?.find {
             it is BottomSheetUnify &&
-                    it.bottomSheetTitle.text == BuyerOrderDetailTrackerValidationConstant.FINISH_ORDER_CONFIRMATION_BOTTOMSHEET_TITLE
+                it.bottomSheetTitle.text == BuyerOrderDetailTrackerValidationConstant.FINISH_ORDER_CONFIRMATION_BOTTOMSHEET_TITLE
         } as? BottomSheetUnify
     }
 
@@ -98,7 +102,7 @@ class BuyerOrderDetailAction {
         activity.findViewById<RecyclerView>(R.id.rvBuyerOrderDetail)?.let {
             while (it.canScrollVertically(1)) {
                 onView(allOf(withId(R.id.rvBuyerOrderDetail), isAssignableFrom(RecyclerView::class.java), isDisplayed()))
-                        .perform(GeneralSwipeAction(Swipe.SLOW, GeneralLocation.BOTTOM_CENTER, GeneralLocation.TOP_CENTER, Press.FINGER))
+                    .perform(GeneralSwipeAction(Swipe.SLOW, GeneralLocation.BOTTOM_CENTER, GeneralLocation.TOP_CENTER, Press.FINGER))
                 if (isViewVisible(matcher)) return
             }
         }
@@ -258,11 +262,14 @@ class BuyerOrderDetailAction {
     }
 
     fun launchBuyerOrderDetailActivity(activityRule: ActivityTestRule<BuyerOrderDetailActivityStub>) {
-        activityRule.launchActivity(BuyerOrderDetailActivityStub.createIntent(
+        activityRule.launchActivity(
+            BuyerOrderDetailActivityStub.createIntent(
                 InstrumentationRegistry.getInstrumentation().targetContext,
                 BuyerOrderDetailTrackerValidationConstant.cartString,
                 BuyerOrderDetailTrackerValidationConstant.orderId,
-                BuyerOrderDetailTrackerValidationConstant.paymentId))
+                BuyerOrderDetailTrackerValidationConstant.paymentId
+            )
+        )
     }
 
     fun blockAllIntent() {
@@ -307,6 +314,15 @@ class BuyerOrderDetailAction {
     fun testClickShipmentTnC(activity: AppCompatActivity) {
         scrollToShipmentTnC(activity)
         clickShipmentTnC()
+    }
+
+    fun testClickInsuranceWidget() {
+        onView(withId(R.id.rvBuyerOrderDetail)).perform(
+            RecyclerViewActions.actionOnItem<OrderInsuranceViewHolder>(
+                ViewMatchers.hasDescendant(withId(R.id.iv_buyer_order_detail_insurance_logo)),
+                click()
+            )
+        )
     }
 
     fun testClickCopyAWB(activity: AppCompatActivity) {
@@ -367,6 +383,10 @@ class BuyerOrderDetailMock {
                 BuyerOrderDetailMockResponseData(
                     com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_700,
                     GetBuyerOrderDetailResponse.Data::class.java
+                ),
+                BuyerOrderDetailMockResponseData(
+                    com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_insurance,
+                    GetInsuranceDetailResponse.Data::class.java
                 ),
                 BuyerOrderDetailMockResponseData(
                     com.tokopedia.buyerorderdetail.test.R.raw.response_mock_add_to_cart,
@@ -476,7 +496,8 @@ class BuyerOrderDetailMock {
                     InstrumentationMockHelper.getRawString(
                         context,
                         it.id
-                    ), it.type
+                    ),
+                    it.type
                 )
             )
         }

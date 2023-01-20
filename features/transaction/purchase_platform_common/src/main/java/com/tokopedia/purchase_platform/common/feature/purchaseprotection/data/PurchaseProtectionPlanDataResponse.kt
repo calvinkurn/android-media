@@ -12,7 +12,7 @@ data class PurchaseProtectionPlanDataResponse(
         @SerializedName("protection_price_per_product")
         var protectionPricePerProduct: Int = 0,
         @SerializedName("protection_price")
-        var protectionPrice: Int = 0,
+        var protectionPrice: Double = 0.0,
         @SerializedName("protection_title")
         var protectionTitle: String = "",
         @SerializedName("protection_subtitle")

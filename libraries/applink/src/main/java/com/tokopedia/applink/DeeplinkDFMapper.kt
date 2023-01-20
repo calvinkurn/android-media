@@ -567,7 +567,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Media
             add(DFP({
-                it.startsWith(INTERNAL_MEDIA_PICKER) ||
+                it.startsWithPattern(INTERNAL_MEDIA_PICKER) ||
                         it.startsWith(INTERNAL_MEDIA_PICKER_ALBUM) ||
                         it.startsWith(INTERNAL_MEDIA_PICKER_PREVIEW)
             }, DF_FEED_CONTENT_CREATION, R.string.title_image_picker))

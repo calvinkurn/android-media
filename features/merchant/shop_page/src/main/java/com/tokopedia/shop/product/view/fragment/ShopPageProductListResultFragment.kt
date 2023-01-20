@@ -55,8 +55,8 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
-import com.tokopedia.shop.analytic.OldShopPageTrackingConstant
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
@@ -995,7 +995,7 @@ class ShopPageProductListResultFragment :
             getProductIntent(
                 shopProductUiModel.productUrl,
                 attribution,
-                shopPageTracking?.getListNameOfProduct(OldShopPageTrackingConstant.SEARCH, getSelectedEtalaseChip())
+                shopPageTracking?.getListNameOfProduct(SEARCH, getSelectedEtalaseChip())
                     ?: ""
             )
         )

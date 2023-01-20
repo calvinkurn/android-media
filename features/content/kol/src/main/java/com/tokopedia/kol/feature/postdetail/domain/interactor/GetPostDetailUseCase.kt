@@ -20,7 +20,7 @@ class GetPostDetailUseCase @Inject constructor(
         try {
             val feedXData = getDynamicFeedUseCase.executeForCDP(cursor, limit, detailId)
             return ContentDetailUiModel(
-                postList = feedXData.feedXHome.items,
+                postList = feedXData.feedXHome.items.map { it.copyPostData() },
                 cursor = ""
             )
         } catch (e: Throwable) {
