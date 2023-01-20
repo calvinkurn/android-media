@@ -44,11 +44,7 @@ class AuthHelper {
             val date = generateDate(dateFormat)
             val contentMD5 = getMD5Hash(strParam)
 
-            val newContentType = if (contentType.contains("; charset=UTF-8") ){
-                contentType.removeSuffix("; charset=UTF-8")
-            }else{
-                contentType
-            }
+            val newContentType = "application/json"
 
             val authString = "${method}\n${contentMD5}\n${newContentType}\n${date}\n${path}"
             val signature = calculateRFC2104HMAC(authString, authKey)
