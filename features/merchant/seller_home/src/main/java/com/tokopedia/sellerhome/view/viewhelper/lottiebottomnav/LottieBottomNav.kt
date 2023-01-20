@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -353,7 +354,7 @@ class LottieBottomNav : LinearLayout {
         Handler(Looper.getMainLooper()).post {
             var isReSelected = false
             if (selectedItem != index) {
-                isReSelected = listener?.menuClicked(index, bottomMenu.id) == true
+                isReSelected = listener?.menuClicked(index, bottomMenu.id).orTrue()
             }
             if (isReSelected) {
                 changeColor(index)

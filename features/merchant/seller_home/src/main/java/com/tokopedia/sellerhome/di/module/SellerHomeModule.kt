@@ -37,7 +37,7 @@ class SellerHomeModule {
 
     companion object {
         private const val VOUCHER_CREATION_PREF_NAME = "voucher_creation"
-        private const val READ_TIME_OUT = 0L
+        private const val SSE_CLIENT_READ_TIME_OUT = 0L
     }
 
     @SellerHomeScope
@@ -103,10 +103,10 @@ class SellerHomeModule {
     ): OkHttpClient {
         val authenticator = getAuthenticator(context, userSession)
         val builder = OkHttpClient.Builder()
-            .readTimeout(READ_TIME_OUT, TimeUnit.SECONDS)
+            .readTimeout(SSE_CLIENT_READ_TIME_OUT, TimeUnit.SECONDS)
             .retryOnConnectionFailure(true)
-        if (authenticator != null) {
-            builder.authenticator(authenticator)
+        authenticator?.let {
+            builder.authenticator(it)
         }
         return builder.build()
     }
@@ -144,5 +144,4 @@ class SellerHomeModule {
             null
         }
     }
-
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticsdebugger.debugger.SSELogger
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
 import com.tokopedia.sellerhomecommon.sse.mapper.WidgetSSEMapper
 import com.tokopedia.sellerhomecommon.sse.model.WidgetSSEModel
@@ -64,12 +65,11 @@ class SellerHomeWidgetSSEImpl(
         val baseSseUrl = getBaseSseUrl()
         val dataKey = dataKeys.joinToString(DATA_KEY_SEPARATOR)
         val url = String.format(baseSseUrl, page, dataKey)
-        val request = getRequest(url)
 
         closeSse()
         printLog("SSE Connecting...$url")
 
-        sse = OkSse(sseOkHttpClient).newServerSentEvent(request, getSseEventListener(url))
+        sse = OkSse(sseOkHttpClient).newServerSentEvent(getRequest(url), getSseEventListener(url))
     }
 
     override fun closeSse() {
@@ -77,12 +77,9 @@ class SellerHomeWidgetSSEImpl(
     }
 
     override fun listen(): Flow<BaseDataUiModel?> {
-        return sseFlow.filterNotNull()
-            .buffer()
-            .flowOn(dispatchers.io)
-            .map {
-                widgetSseMapper.mappingWidget(it.event, it.message)
-            }
+        return sseFlow.filterNotNull().buffer().flowOn(dispatchers.io).map {
+            widgetSseMapper.mappingWidget(it.event, it.message)
+        }
     }
 
     override fun isConnected(): Boolean {
@@ -101,10 +98,8 @@ class SellerHomeWidgetSSEImpl(
         val authorization = String.format(BEARER, userSession.accessToken)
         val xDevice = String.format(ANDROID_VERSION, GlobalConfig.VERSION_NAME)
 
-        return Request.Builder().get().url(url)
-            .addHeader(HEADER_X_DEVICE, xDevice)
-            .addHeader(HEADER_AUTHORIZATION, authorization)
-            .build()
+        return Request.Builder().get().url(url).addHeader(HEADER_X_DEVICE, xDevice)
+            .addHeader(HEADER_AUTHORIZATION, authorization).build()
     }
 
     private fun getSseEventListener(url: String): ServerSentEvent.Listener {
@@ -115,10 +110,7 @@ class SellerHomeWidgetSSEImpl(
             }
 
             override fun onMessage(
-                sse: ServerSentEvent,
-                id: String,
-                event: String,
-                message: String
+                sse: ServerSentEvent, id: String, event: String, message: String
             ) {
                 printLog("onMessage -> $event -> $message")
                 if (widgetSseMapper.getStatusIsValidDataKey(event)) {
@@ -136,9 +128,7 @@ class SellerHomeWidgetSSEImpl(
             }
 
             override fun onRetryError(
-                sse: ServerSentEvent,
-                throwable: Throwable,
-                response: Response?
+                sse: ServerSentEvent, throwable: Throwable, response: Response?
             ): Boolean {
                 printLog("onRetryError : ${throwable.message}")
                 val shouldRetry = retryCount < MAX_RETRY_COUNT
@@ -146,7 +136,7 @@ class SellerHomeWidgetSSEImpl(
                     retryCount++
                 } else {
                     closeSse()
-                    retryCount = 0
+                    retryCount = Int.ZERO
                 }
                 return shouldRetry
             }
@@ -154,7 +144,7 @@ class SellerHomeWidgetSSEImpl(
             override fun onClosed(sse: ServerSentEvent) {
                 printLog("onClosed")
                 isSseConnected = false
-                retryCount = 0
+                retryCount = Int.ZERO
             }
 
             override fun onPreRetry(sse: ServerSentEvent, originalRequest: Request): Request {
