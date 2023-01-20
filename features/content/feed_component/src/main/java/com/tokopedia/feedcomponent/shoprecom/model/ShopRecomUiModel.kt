@@ -13,15 +13,15 @@ data class ShopRecomUiModel(
 )
 
 data class ShopRecomUiModelItem(
-    val badgeImageURL: String = "",
-    val encryptedID: String = "",
-    val id: Long = 0,
-    val logoImageURL: String = "",
-    val name: String = "",
-    val nickname: String = "",
-    val type: Int = 0,
-    val applink: String = "",
-    val state: ShopRecomFollowState = ShopRecomFollowState.UNFOLLOW,
+    var badgeImageURL: String = "",
+    var encryptedID: String = "",
+    var id: Long = 0,
+    var logoImageURL: String = "",
+    var name: String = "",
+    var nickname: String = "",
+    var type: Int = 0,
+    var applink: String = "",
+    var state: ShopRecomFollowState = ShopRecomFollowState.UNFOLLOW,
 )
 
 enum class ShopRecomFollowState {

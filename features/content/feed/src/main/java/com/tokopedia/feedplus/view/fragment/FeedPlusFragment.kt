@@ -60,6 +60,7 @@ import com.tokopedia.feedcomponent.domain.mapper.*
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.cordinator.ShopRecomImpressCoordinator
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
@@ -779,36 +780,47 @@ class FeedPlusFragment :
                     when (it) {
                         is Success -> {
                             adapter.getlist().mapIndexed { index, item ->
-                                val shopId = when (item) {
-                                    is DynamicPostModel -> {
-                                        item.header.followCta.authorID
-                                    }
-                                    is DynamicPostUiModel -> {
-                                        item.feedXCard.author.id
-                                    }
-                                    else -> ""
-                                }
-                                if (shopId != "") {
-                                    var isChanged = false
-                                    it.data[shopId]?.let { followStatus ->
-                                        when (item) {
-                                            is DynamicPostModel -> {
-                                                item.header.followCta.isFollow = followStatus
-                                                isChanged = true
-                                            }
-                                            is DynamicPostUiModel -> {
-                                                item.feedXCard.followers.isFollowed = followStatus
-                                                isChanged = true
-                                            }
-                                            else -> ""
+                                var isChanged = false
+                                if (item is ShopRecomWidgetModel) {
+                                    item.shopRecomUiModel.items.map { recomItem ->
+                                        it.data[recomItem.id.toString()]?.let { followStatus ->
+                                            recomItem.state =
+                                                if (followStatus) ShopRecomFollowState.FOLLOW else ShopRecomFollowState.UNFOLLOW
+                                            isChanged = true
                                         }
                                     }
-                                    if (isChanged)
-                                        adapter.notifyItemChanged(
-                                            index,
-                                            DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
-                                        )
+                                } else {
+                                    val shopId = when (item) {
+                                        is DynamicPostModel -> {
+                                            item.header.followCta.authorID
+                                        }
+                                        is DynamicPostUiModel -> {
+                                            item.feedXCard.author.id
+                                        }
+                                        else -> ""
+                                    }
+                                    if (shopId != "") {
+                                        it.data[shopId]?.let { followStatus ->
+                                            when (item) {
+                                                is DynamicPostModel -> {
+                                                    item.header.followCta.isFollow = followStatus
+                                                    isChanged = true
+                                                }
+                                                is DynamicPostUiModel -> {
+                                                    item.feedXCard.followers.isFollowed =
+                                                        followStatus
+                                                    isChanged = true
+                                                }
+                                                else -> ""
+                                            }
+                                        }
+                                    }
                                 }
+                                if (isChanged)
+                                    adapter.notifyItemChanged(
+                                        index,
+                                        DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
+                                    )
                             }
                             feedViewModel.clearFollowIdToUpdate()
                         }

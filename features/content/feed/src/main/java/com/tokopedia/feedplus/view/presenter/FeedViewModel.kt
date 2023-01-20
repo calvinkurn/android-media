@@ -170,11 +170,21 @@ class FeedViewModel @Inject constructor(
 
     fun updateCurrentFollowState(list: List<Visitable<*>>) {
         list.map { item ->
-            if (item is DynamicPostModel) {
-                currentFollowState[item.header.followCta.authorID] =
-                    item.header.followCta.isFollow
-            } else if (item is DynamicPostUiModel) {
-                currentFollowState[item.feedXCard.author.id] = item.feedXCard.followers.isFollowed
+            when (item) {
+                is DynamicPostModel -> {
+                    currentFollowState[item.header.followCta.authorID] =
+                        item.header.followCta.isFollow
+                }
+                is DynamicPostUiModel -> {
+                    currentFollowState[item.feedXCard.author.id] =
+                        item.feedXCard.followers.isFollowed
+                }
+                is ShopRecomWidgetModel -> {
+                    item.shopRecomUiModel.items.map {
+                        currentFollowState[it.id.toString()] = it.state == FOLLOW
+                    }
+                }
+                else -> {}
             }
         }
     }
@@ -482,7 +492,11 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doFollowKol(id: String, rowNumber: Int, isFollowedFromFollowRestrictionBottomSheet: Boolean = false) {
+    fun doFollowKol(
+        id: String,
+        rowNumber: Int,
+        isFollowedFromFollowRestrictionBottomSheet: Boolean = false
+    ) {
         launchCatchError(block = {
             val response = withContext(baseDispatcher.io) {
                 doFollowUseCase.executeOnBackground(id)
