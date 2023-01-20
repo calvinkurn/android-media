@@ -375,7 +375,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
         return Pair(Event.SELECT_CONTENT, bundle)
     }
 
-    fun getClickViewAllTransaction(): Pair<String, Bundle> {
+    fun getClickViewAllTransaction() {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
         bundle.putString(Action.KEY, ACTION_CLICK_VIEW_ALL_TRANSACTION)
@@ -383,7 +383,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
         bundle.putString(Label.KEY, DEFAULT_EMPTY)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
-        return Pair(Event.CLICK_HOMEPAGE, bundle)
+        getTracker().sendEnhanceEcommerceEvent(Event.CLICK_HOMEPAGE, bundle)
     }
 
     fun clickOnReviewViewAll() {

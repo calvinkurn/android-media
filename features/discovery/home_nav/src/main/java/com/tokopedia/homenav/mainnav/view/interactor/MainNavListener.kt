@@ -42,7 +42,7 @@ interface MainNavListener : HomeNavListener {
 
     fun onErrorReviewClicked()
 
-    fun onViewAllTransactionClicked(trackingLabel: String)
+    fun onViewAllTransactionClicked(trackingLabel: String? = null)
 
     fun onViewAllWishlistClicked()
 }

@@ -383,11 +383,13 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         viewModel.refreshReviewData()
     }
 
-    override fun onViewAllTransactionClicked(trackingLabel: String) {
-        TrackingTransactionSection.clickOnOrderStatus(
-            getUserId(),
-            trackingLabel
-        )
+    override fun onViewAllTransactionClicked(trackingLabel: String?) {
+        trackingLabel?.run {
+            TrackingTransactionSection.clickOnOrderStatus(
+                getUserId(),
+                trackingLabel
+            )
+        } ?: TrackingTransactionSection.getClickViewAllTransaction()
         val applink = ApplinkConst.PURCHASE_ORDER
         if (!handleClickFromPageSource(applink)) {
             RouteManager.route(context, applink)
