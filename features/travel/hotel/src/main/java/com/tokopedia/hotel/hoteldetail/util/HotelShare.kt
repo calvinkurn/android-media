@@ -47,7 +47,7 @@ class HotelShare(
                     }
 
                     override fun onShareOptionClicked(shareModel: ShareModel) {
-                        trackerUtil.clickChannelShare(this@HotelShare.context, propertyDetailData.property.id)
+                        trackerUtil.clickChannelShare(this@HotelShare.context, propertyDetailData.property.id, shareModel.channel ?: "", UniversalShareBottomSheet.KEY_IMAGE_DEFAULT)
                         if (this@HotelShare.activity.get() != null) {
                             onClickChannelWidget(
                                 this@apply,

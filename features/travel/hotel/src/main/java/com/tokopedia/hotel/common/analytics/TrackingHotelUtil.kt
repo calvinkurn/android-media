@@ -825,9 +825,9 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun clickChannelShare(context: Context, hotelId: String) {
+    fun clickChannelShare(context: Context, hotelId: String, channel: String, imageType: String) {
         val map = getTrackingShareMapWithHeader(context, TRACKER_ID_CLICK_CHANNEL_SHARE) as MutableMap<String, Any>
-        map.addShareEvent(CLICK_COMMUNICATION, CLICK_CHANNEL_SHARE_ACTION, hotelId)
+        map.addShareEvent(CLICK_COMMUNICATION, CLICK_CHANNEL_SHARE_ACTION, "$channel - $hotelId - $imageType")
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
