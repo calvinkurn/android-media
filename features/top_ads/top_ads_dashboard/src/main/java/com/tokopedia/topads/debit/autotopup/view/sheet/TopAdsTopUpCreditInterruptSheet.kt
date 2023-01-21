@@ -1,5 +1,6 @@
 package com.tokopedia.topads.debit.autotopup.view.sheet
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -14,6 +15,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.utils.Utils.openWebView
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -31,6 +33,11 @@ class TopAdsTopUpCreditInterruptSheet : BottomSheetUnify() {
 
     companion object {
         fun newInstance() = TopAdsTopUpCreditInterruptSheet()
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        if (activity is TopAdsCreditTopUpActivity) activity?.finish()
     }
 
 
@@ -97,10 +104,8 @@ class TopAdsTopUpCreditInterruptSheet : BottomSheetUnify() {
         }
 
         interruptSheetCancelButton?.setOnClickListener {
-            TopAdsChooseCreditBottomSheet.newInstance().also {
-                it.isAutoTopUpSelected = false
+           TopAdsChooseCreditBottomSheet.newInstance().also {
                 it.isAutoTopUpActive = isAutoTopUpActive
-                it.isFullpage = true
                 it.show((context as FragmentActivity).supportFragmentManager)
                 dismiss()
             }
@@ -138,7 +143,6 @@ class TopAdsTopUpCreditInterruptSheet : BottomSheetUnify() {
             }
         }
     }
-
     fun show(
         fragmentManager: FragmentManager,
     ) {

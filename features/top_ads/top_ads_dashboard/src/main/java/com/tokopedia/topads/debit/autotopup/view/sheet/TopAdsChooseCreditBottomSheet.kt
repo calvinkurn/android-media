@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.dashboard.R
@@ -24,6 +25,7 @@ import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.createListOfSize
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.debit.autotopup.data.model.*
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
 import com.tokopedia.topads.debit.autotopup.view.adapter.TopAdsCreditListAdapter
 import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModel
 import com.tokopedia.unifycomponents.*
@@ -163,6 +165,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         setUpCheckChangeListener()
         setOnDismissListener {
             if (!isAutoTopUpActive) onCancel?.invoke()
+            if (activity is TopAdsCreditTopUpActivity) activity?.finish()
         }
     }
 
@@ -259,6 +262,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         selectedNominalIndex = defaultEditList?.second ?: INVALID_NOMINAL_INDEX
         applyButton?.isEnabled = false
         resetSaveButtonTag()
+        expandBottomSheet()
     }
 
     private fun resetSaveButtonTag() {
@@ -345,6 +349,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         groupAutoTopUpCreditHistory?.hide()
         saveButton?.buttonVariant = UnifyButton.Variant.FILLED
         resetSaveButtonTag()
+        collapseBottomSheet()
     }
 
     private fun changeToAutoState() {
@@ -358,6 +363,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         selectedNominalIndex = INVALID_NOMINAL_INDEX
         manageAutoTopUpActiveState()
         addNominalList(autoTopUpNominalList)
+        if (isAutoTopUpActive) collapseBottomSheet() else expandBottomSheet()
     }
 
     private fun manageAutoTopUpActiveState() {
@@ -560,6 +566,20 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
             applyButton?.isEnabled = true
         } else {
             saveButton?.isEnabled = true
+        }
+    }
+
+    private fun collapseBottomSheet(){
+        if (dialog?.isShowing == true){
+            frameDialogView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            bottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+    }
+
+    private fun expandBottomSheet(){
+        if (dialog?.isShowing == true){
+            frameDialogView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
         }
     }
 }

@@ -219,7 +219,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     private fun openNewAutoTopUpBottomSheet() {
         val intent = Intent(activity, TopAdsCreditTopUpActivity::class.java)
-        intent.putExtra(TopAdsCreditTopUpActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
         intent.putExtra(TopAdsCreditTopUpActivity.IS_AUTO_TOP_UP_ACTIVE, isAutoTopUpActive)
         intent.putExtra(TopAdsCreditTopUpActivity.IS_AUTO_TOP_UP_SELECTED, isAutoTopUpSelected)
         intent.putExtra(TopAdsCreditTopUpActivity.TOP_UP_COUNT, topUpUCount)

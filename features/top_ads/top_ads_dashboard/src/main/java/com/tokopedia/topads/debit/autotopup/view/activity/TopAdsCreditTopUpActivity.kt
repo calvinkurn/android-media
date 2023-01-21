@@ -24,36 +24,34 @@ class TopAdsCreditTopUpActivity : BaseSimpleActivity() {
 
     private var userSession: UserSessionInterface? = null
 
-    private val sheet: TopAdsChooseCreditBottomSheet? by lazy {
+    private val topAdsChooseCreditBottomSheet: TopAdsChooseCreditBottomSheet by lazy {
         TopAdsChooseCreditBottomSheet.newInstance().also {
-            if (showFullScreenBottomSheet()) it.isFullpage = true
-            if (isAutoTopUpActive()) it.isAutoTopUpActive = true
-            if (isAutoTopUpSelected()) it.isAutoTopUpSelected = true
+            it.isFullpage = isAutoTopUpSelected()
+            it.isAutoTopUpActive = isAutoTopUpActive()
+            it.isAutoTopUpSelected = isAutoTopUpSelected()
             it.customPeekHeight = 600
+            it.setTitle(resources.getString(R.string.title_top_ads_add_credit))
+        }
+    }
+    private val topAdsTopUpCreditInterruptSheet by lazy {
+        TopAdsTopUpCreditInterruptSheet.newInstance().also {
+            if (isAutoTopUpActive()) it.isAutoTopUpActive = true
+            it.topUpCount = getTopUpCount()
+            it.autoTopUpBonus = getAutoTopUpBonus()
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.topads_base_layout)
-        if (true) {
-            if (Utils.isShowInterruptSheet(this)) {
-                TopAdsTopUpCreditInterruptSheet.newInstance().also {
-                    if (isAutoTopUpActive()) it.isAutoTopUpActive = true
-                    it.topUpCount = getTopUpCount()
-                    it.autoTopUpBonus = getAutoTopUpBonus()
-                    it.show(supportFragmentManager)
-                }
-            } else {
-                sheet?.show(supportFragmentManager)
-                sheet?.setTitle(resources.getString(R.string.title_top_ads_add_credit))
-            }
+
+        if (Utils.isShowInterruptSheet(this)) {
+            topAdsTopUpCreditInterruptSheet.show(supportFragmentManager)
         } else {
-            sheet?.show(supportFragmentManager)
+            topAdsChooseCreditBottomSheet.show(supportFragmentManager)
         }
 
-
-        sheet?.onSaved = { productUrl, isAutoAdsSaved ->
+        topAdsChooseCreditBottomSheet.onSaved = { productUrl, isAutoAdsSaved ->
             if (productUrl.isNotEmpty()) chooseCredit(productUrl)
             else if (isAutoAdsSaved) {
                 root?.let {
@@ -66,8 +64,7 @@ class TopAdsCreditTopUpActivity : BaseSimpleActivity() {
                 }
             }
         }
-
-        sheet?.setOnDismissListener {
+        topAdsChooseCreditBottomSheet.setOnDismissListener {
             finish()
         }
 
@@ -91,10 +88,6 @@ class TopAdsCreditTopUpActivity : BaseSimpleActivity() {
         )
     }
 
-    private fun showFullScreenBottomSheet(): Boolean {
-        return intent?.extras?.getBoolean(SHOW_FULL_SCREEN_BOTTOM_SHEET, false) ?: false
-    }
-
     private fun isAutoTopUpActive(): Boolean {
         return intent?.extras?.getBoolean(IS_AUTO_TOP_UP_ACTIVE, false) ?: false
     }
@@ -114,7 +107,6 @@ class TopAdsCreditTopUpActivity : BaseSimpleActivity() {
     companion object {
         const val IS_AUTO_TOP_UP_ACTIVE = "isAutoTopUpActive"
         const val IS_AUTO_TOP_UP_SELECTED = "isAutoTopUpSelected"
-        const val SHOW_FULL_SCREEN_BOTTOM_SHEET = "FullScreenBottomSheet"
         const val TOP_UP_COUNT = "TopUpCount"
         const val AUTO_TOP_UP_BONUS = "AutoTopUpBonus"
     }
