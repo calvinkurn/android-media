@@ -166,6 +166,7 @@ class TopAdsCreditHistoryFragment :
             ))
         }
         autoTopUpBonus = data.statusBonus
+        isAutoTopUpActive = data.status == ACTIVE_STATUS
     }
 
     override fun getRecyclerViewResourceId(): Int {

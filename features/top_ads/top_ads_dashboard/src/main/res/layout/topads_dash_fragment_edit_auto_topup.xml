@@ -129,7 +129,7 @@
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/iconunify_chevron_down"
+                    app:srcCompat="@drawable/iconunify_chevron_down"
                     android:tint="@color/Unify_NN950" />
             </LinearLayout>
 
@@ -170,7 +170,7 @@
                 android:layout_width="@dimen/unify_space_12"
                 android:layout_height="@dimen/unify_space_12"
                 android:layout_marginStart="@dimen/spacing_lvl2"
-                android:src="@drawable/iconunify_information"
+                app:srcCompat="@drawable/iconunify_information"
                 android:tint="@color/Unify_NN950"
                 app:layout_constraintBottom_toBottomOf="@id/deductionTitle"
                 app:layout_constraintStart_toEndOf="@id/deductionTitle"

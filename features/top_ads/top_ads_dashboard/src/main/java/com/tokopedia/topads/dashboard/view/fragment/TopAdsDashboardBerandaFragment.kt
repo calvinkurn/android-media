@@ -495,6 +495,9 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         } else if (requestCode == REQUEST_CODE_SET_AUTO_TOPUP && resultCode == Activity.RESULT_OK) {
             if (data?.getBooleanExtra("no_redirect", false) != true)
                 goToCreditHistory(true)
+            else{
+                topAdsDashboardViewModel.getSelectedTopUpType()
+            }
         }else if (requestCode == REQUEST_CODE_TOP_UP_CREDIT){
             topAdsDashboardViewModel.fetchShopDeposit()
             if (resultCode == Activity.RESULT_OK) {
