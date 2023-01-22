@@ -7,6 +7,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.INSUFFICIENT_CREDIT
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_UP_FREQUENTLY
 import com.tokopedia.topads.dashboard.data.model.GetPersonalisedCopyResponse
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopadsGetFreeDepositUseCase
@@ -84,10 +86,13 @@ class TopAdsCreditHistoryViewModel @Inject constructor(
         })
     }
 
-    fun getSelectedTopUpType(){
+    fun getSelectedTopUpType() {
         topAdsGetSelectedTopUpTypeUseCase.execute({
             val data = it.getPersonalisedCopy.getPersonalisedCopyData
-            data.isAutoTopUpSelected = data.creditPerformance == "TopUpFrequently" || data.creditPerformance == "InsufficientCredit"
+            data.isAutoTopUpSelected = data.creditPerformance.equals(
+                TOP_UP_FREQUENTLY,
+                true
+            ) || data.creditPerformance.equals(INSUFFICIENT_CREDIT, true)
             _getAutoTopUpDefaultSate.value = Success(it.getPersonalisedCopy.getPersonalisedCopyData)
         }, {
             _getAutoTopUpDefaultSate.value = Fail(it)

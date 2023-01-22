@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.IS_BONUS_ZERO
 import com.tokopedia.topads.debit.autotopup.data.model.TopUpCreditItemData
 import com.tokopedia.topads.debit.autotopup.view.adapter.TopAdsCreditListAdapter
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -30,7 +31,7 @@ class CreditItemViewHolder(
             nominalShimmer.hide()
             creditItemText.text = list[position].productPrice
 
-            creditItemBonus.showWithCondition(list[position].bonus != "Bonus Rp0")
+            creditItemBonus.showWithCondition(list[position].bonus != IS_BONUS_ZERO)
             creditItemBonus.text = list[position].bonus
             changeCreditItemState(list[position].clicked)
             creditItem.setOnClickListener {

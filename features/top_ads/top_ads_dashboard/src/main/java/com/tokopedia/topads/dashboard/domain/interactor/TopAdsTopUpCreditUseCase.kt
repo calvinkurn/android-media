@@ -6,6 +6,11 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.FIELDS_KEY
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.OTHER_GOLD_OS_VALUE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.SHOP_IDS_KEY
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.SOURCE_KEY
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_ADS_DASHBOARD_VALUE
 import com.tokopedia.topads.debit.autotopup.data.model.TopAdsShopTierShopGradeData
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -34,16 +39,17 @@ class TopAdsTopUpCreditUseCase @Inject constructor(
     init {
         setTypeClass(TopAdsShopTierShopGradeData::class.java)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
-        setGraphqlQuery(TopUpGetShopInfoQuery.GQL_QUERY)
+        setGraphqlQuery(TopUpGetShopInfoQuery())
     }
 
 
     fun setParams() {
         val params = mutableMapOf(
-            "shopIds" to listOf(userSessionInterface.shopId.toIntOrZero()),
-            "fields" to listOf("other-goldos"),
-            "source" to "top_ads_dashboard"
+            SHOP_IDS_KEY to listOf(userSessionInterface.shopId.toIntOrZero()),
+            FIELDS_KEY to listOf(OTHER_GOLD_OS_VALUE),
+            SOURCE_KEY to TOP_ADS_DASHBOARD_VALUE
         )
         setRequestParams(params)
     }
 }
+

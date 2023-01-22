@@ -134,7 +134,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
             }
 
             setLayoutOnToggle(isAutoTopUpActive)
-            loader?.visibility = View.GONE
+            loader?.hide()
         }
     }
 
@@ -194,7 +194,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
         sheet.onCancel = {
             setLayoutOnToggle(false)
         }
-        sheet.onSaved = { _, isAutoAdsSaved ->
+        sheet.onSaved = {isAutoAdsSaved ->
             if (isAutoAdsSaved) {
                 showToastSuccess(TYPE_AUTO_TOP_CREDIT_ENABLED)
                 loadData()
@@ -268,7 +268,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
                     getString(R.string.topads_dash_auto_topup_disabled_toast)
                 }
                 TYPE_AUTO_TOP_CREDIT_ENABLED -> {
-                    getString(R.string.topads_dash_auto_topup_activated_toast)
+                    getString(R.string.top_ads_auto_top_up_save_btn)
                 }
                 else -> {
                     getString(R.string.topads_dash_auto_topup_setting_is_saved_toast)
@@ -326,7 +326,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
         (autoTopUpCreditHistoryLayout?.findViewById<Typography>(R.id.maxCreditLimit))?.text =
             autoTopUpCreditHistoryTriple?.third?.first
         val autoTopUpFrequencySelectedText =
-            getTextFromFrequency(autoTopUpCreditHistoryTriple?.third?.second)
+            Utils.getTextFromFrequency(context, autoTopUpCreditHistoryTriple?.third?.second)
         (autoTopUpCreditHistoryLayout?.findViewById<Typography>(R.id.selectedFrequncyTambahCredit))?.text =
             HtmlCompat.fromHtml(
                 String.format(
@@ -349,15 +349,6 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
                 } ?: ""
         }
         autoTopUpCreditHistoryLayout?.show()
-    }
-
-    private fun getTextFromFrequency(autoTopUpFrequencySelected: Int?): String {
-        return when (autoTopUpFrequencySelected) {
-            4 -> "Jarang"
-            6 -> "Normal"
-            8 -> "Sering"
-            else -> "Normal"
-        }
     }
 
     private fun showConfirmationDialog() {

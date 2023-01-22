@@ -9,6 +9,9 @@ import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.domain.usecase.GetWhiteListedUserUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.INSUFFICIENT_CREDIT
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.IS_TOP_UP_CREDIT_NEW_UI
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_UP_FREQUENTLY
 import com.tokopedia.topads.dashboard.data.model.GetPersonalisedCopyResponse
 import com.tokopedia.topads.dashboard.data.model.beranda.RecommendationStatistics
 import com.tokopedia.topads.dashboard.data.model.beranda.TopAdsLatestReading
@@ -124,10 +127,13 @@ class TopAdsDashboardViewModel @Inject constructor(
         })
     }
 
-    fun getSelectedTopUpType(){
+    fun getSelectedTopUpType() {
         topAdsGetSelectedTopUpTypeUseCase.execute({
             val data = it.getPersonalisedCopy.getPersonalisedCopyData
-            data.isAutoTopUpSelected = data.creditPerformance == "TopUpFrequently" || data.creditPerformance == "InsufficientCredit"
+            data.isAutoTopUpSelected = data.creditPerformance.equals(
+                TOP_UP_FREQUENTLY,
+                true
+            ) || data.creditPerformance.equals(INSUFFICIENT_CREDIT, true)
             _getAutoTopUpDefaultSate.value = Success(it.getPersonalisedCopy.getPersonalisedCopyData)
         }, {
             _getAutoTopUpDefaultSate.value = Fail(it)
@@ -139,7 +145,11 @@ class TopAdsDashboardViewModel @Inject constructor(
         whiteListedUserUseCase.executeQuerySafeMode(
             onSuccess = {
                 it.data.forEach { data ->
-                    if (data.featureName == "variant1_auto_topup_design") _isUserWhitelisted.value =
+                    if (data.featureName.equals(
+                            IS_TOP_UP_CREDIT_NEW_UI,
+                            true
+                        )
+                    ) _isUserWhitelisted.value =
                         Success(true)
                 }
             },

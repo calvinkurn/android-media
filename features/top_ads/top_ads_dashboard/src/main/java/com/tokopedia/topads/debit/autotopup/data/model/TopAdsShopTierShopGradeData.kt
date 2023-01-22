@@ -5,21 +5,21 @@ import com.google.gson.annotations.SerializedName
 
 data class TopAdsShopTierShopGradeData(
     @SerializedName("shopInfoByID")
-    val shopInfoByID: ShopInfoByID? = null
+    val shopInfoByID: ShopInfoByID = ShopInfoByID()
 ) {
     data class ShopInfoByID(
         @SerializedName("result")
-        val result: List<Result>
+        val result: List<Result> = listOf()
     ) {
         data class Result(
             @SerializedName("goldOS")
-            val goldOS: GoldOS? = null
+            val goldOS: GoldOS = GoldOS()
         ) {
             data class GoldOS(
                 @SerializedName("shopGrade")
-                val shopGrade: Int,
+                val shopGrade: Int = 0,
                 @SerializedName("shopTier")
-                val shopTier: Int
+                val shopTier: Int = 0
             )
         }
     }

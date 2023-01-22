@@ -1,18 +1,15 @@
 package com.tokopedia.topads.debit.autotopup.view.sheet
 
 import android.content.DialogInterface
+import android.content.res.Resources
 import android.os.Bundle
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.ClickableSpan
-import android.text.style.URLSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.utils.Utils.openWebView
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
@@ -28,7 +25,7 @@ class TopAdsTopUpCreditInterruptSheet : BottomSheetUnify() {
     private var interruptSheetDescription: Typography? = null
     private var interruptSheetEducationPointThreeDescription: Typography? = null
     var isAutoTopUpActive: Boolean = false
-    var topUpCount: Int = 0
+    var topUpCount: Int = Int.ZERO
     var autoTopUpBonus: Double = 0.0
 
     companion object {
@@ -39,7 +36,6 @@ class TopAdsTopUpCreditInterruptSheet : BottomSheetUnify() {
         super.onCancel(dialog)
         if (activity is TopAdsCreditTopUpActivity) activity?.finish()
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,13 +49,17 @@ class TopAdsTopUpCreditInterruptSheet : BottomSheetUnify() {
     private fun initChildLayout() {
         val contentView =
             View.inflate(context, R.layout.topads_dash_top_up_intrrupt_model_sheet, null)
+        setDefaultConfigs()
+        setChild(contentView)
+        initView(contentView)
+    }
+
+    private fun setDefaultConfigs() {
         showCloseIcon = false
         clearContentPadding = true
         isDragable = true
         showHeader = false
-        customPeekHeight = 500
-        setChild(contentView)
-        initView(contentView)
+        customPeekHeight = Resources.getSystem().displayMetrics.heightPixels
     }
 
     private fun initView(contentView: View?) {
@@ -98,8 +98,8 @@ class TopAdsTopUpCreditInterruptSheet : BottomSheetUnify() {
 
     private fun setClickListeners() {
         interruptSheetLearnMoreLinkTypography?.setOnClickListener {
-            if (context != null) {
-                context?.openWebView("https://seller.tokopedia.com/edu/cara-top-up-saldo-topads")
+            context?.let {
+                it.openWebView(it.getString(R.string.topads_credit_top_up_url))
             }
         }
 
@@ -122,31 +122,10 @@ class TopAdsTopUpCreditInterruptSheet : BottomSheetUnify() {
         }
     }
 
-    private fun TextView.handleUrlClicks(onClicked: ((String) -> Unit)? = null) {
-        //create span builder and replaces current text with it
-        text = SpannableStringBuilder.valueOf(text).apply {
-            //search for all URL spans and replace all spans with our own clickable spans
-            getSpans(0, length, URLSpan::class.java).forEach {
-                //add new clickable span at the same position
-                setSpan(
-                    object : ClickableSpan() {
-                        override fun onClick(widget: View) {
-                            onClicked?.invoke(it.url)
-                        }
-                    },
-                    getSpanStart(it),
-                    getSpanEnd(it),
-                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-                )
-                //remove old URLSpan
-                removeSpan(it)
-            }
-        }
-    }
     fun show(
         fragmentManager: FragmentManager,
     ) {
-        show(fragmentManager, "top_up_interrupt_sheet")
+        show(fragmentManager, "")
     }
 }
 

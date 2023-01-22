@@ -9,6 +9,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_DASH_SELECTION_ITEM
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_TOGGLE_OFF
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_TOGGLE_ON
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.FREQUENCY
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpItem
 import com.tokopedia.user.session.UserSessionInterface
@@ -37,7 +38,7 @@ class TopAdsSaveSelectionUseCase @Inject constructor(graphqlRepository: GraphqlR
     init {
         setTypeClass(AutoTopUpData.Response::class.java)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
-        setGraphqlQuery(SaveSelection.GQL_QUERY)
+        setGraphqlQuery(SaveSelection())
     }
 
     fun setParam(isActive: Boolean, selectedItem: AutoTopUpItem, frequency: String) {
@@ -45,7 +46,7 @@ class TopAdsSaveSelectionUseCase @Inject constructor(graphqlRepository: GraphqlR
             ParamObject.SHOP_Id to userSessionInterface.shopId,
             ParamObject.ACTION to (if (isActive) PARAM_TOGGLE_ON else PARAM_TOGGLE_OFF),
             PARAM_DASH_SELECTION_ITEM to selectedItem.id.toString(),
-            "frequency" to frequency
+            FREQUENCY to frequency
         )
 
         setRequestParams(params)

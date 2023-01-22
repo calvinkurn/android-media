@@ -1,15 +1,26 @@
 package com.tokopedia.topads.debit.autotopup.view.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.domain.usecase.GetWhiteListedUserUseCase
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.DEFAULT_TOP_UP_FREQUENCY
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.IS_TOP_UP_CREDIT_NEW_UI
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.OS
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.PM
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.PM_PRO
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.PM_PRO_ADVANCED
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.PM_PRO_EXPERT
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.PM_PRO_ULTIMATE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.RM
 import com.tokopedia.topads.dashboard.data.model.CreditResponse
 import com.tokopedia.topads.dashboard.data.model.DataCredit
 import com.tokopedia.topads.dashboard.data.model.TkpdProducts
@@ -58,7 +69,7 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
         whiteListedUserUseCase.executeQuerySafeMode(
             onSuccess = {
                 it.data.forEach { data ->
-                    if (data.featureName == "variant1_auto_topup_design") _isUserWhitelisted.value =
+                    if (data.featureName == IS_TOP_UP_CREDIT_NEW_UI) _isUserWhitelisted.value =
                         Success(true)
                 }
             },
@@ -70,7 +81,7 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
     fun getManualTopAdsCreditList() {
         topAdsTopUpCreditUseCase.setParams()
         topAdsTopUpCreditUseCase.execute({ data ->
-            if (data.shopInfoByID?.result!=null){
+            if (data.shopInfoByID.result.isNotEmpty()){
                 topAdsTopUpCreditData.value = Success(data.shopInfoByID.result.first())
             }
         },
@@ -79,7 +90,7 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
             })
     }
 
-    fun saveSelection(isActive: Boolean, selectedItem: AutoTopUpItem, frequency: String = "6") {
+    fun saveSelection(isActive: Boolean, selectedItem: AutoTopUpItem, frequency: String = DEFAULT_TOP_UP_FREQUENCY.toString()) {
         statusSaveSelection.value = Loading
         saveSelectionUseCase.setParam(isActive, selectedItem, frequency)
         saveSelectionUseCase.execute({ data ->
@@ -134,37 +145,37 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
         return nominalList
     }
 
-    fun getCreditItemData2(
+    fun getCreditItemDataList(
         credit: List<DataCredit>?,
         data: TopAdsShopTierShopGradeData.ShopInfoByID.Result
     ): MutableList<TopUpCreditItemData> {
         val nominalList = mutableListOf<TopUpCreditItemData>()
 
-        when (data.goldOS?.shopTier) {
-            0 -> {
+        when (data.goldOS.shopTier) {
+            RM -> {
                 nominalList.clear()
                 nominalList.addAll(createCreditList(credit, 0.0f))
 
             }
-            1 -> {
+            PM -> {
                 nominalList.clear()
                 nominalList.addAll(createCreditList(credit, 5.0f))
             }
-            2 -> {
+            OS -> {
                 nominalList.clear()
                 nominalList.addAll(createCreditList(credit, 7.0f))
             }
-            3 -> {
+            PM_PRO -> {
                 when (data.goldOS.shopTier) {
-                    24 -> {
+                    PM_PRO_ADVANCED -> {
                         nominalList.clear()
                         nominalList.addAll(createCreditList(credit, 5.5f))
                     }
-                    26 -> {
+                    PM_PRO_EXPERT -> {
                         nominalList.clear()
                         nominalList.addAll(createCreditList(credit, 6.0f))
                     }
-                    28 -> {
+                    PM_PRO_ULTIMATE -> {
                         nominalList.clear()
                         nominalList.addAll(createCreditList(credit, 6.5f))
                     }
@@ -249,6 +260,14 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
             }
         }
         return Pair(autoTopUpNominalList, selectedIndex)
+    }
+
+    fun getUrl(productUrl: String): String {
+        return URLGenerator.generateURLSessionLogin(
+            Uri.encode(productUrl),
+            userSession.deviceId,
+            userSession.userId
+        )
     }
 
     companion object {

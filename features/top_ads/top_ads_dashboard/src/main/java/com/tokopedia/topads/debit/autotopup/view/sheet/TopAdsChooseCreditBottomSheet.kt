@@ -2,6 +2,7 @@ package com.tokopedia.topads.debit.autotopup.view.sheet
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,11 +20,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.topads.common.extension.EIGHT
+import com.tokopedia.topads.common.extension.ZERO
+import com.tokopedia.topads.common.extension.createListOfSize
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.DEFAULT_TOP_UP_FREQUENCY
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.INVALID_NOMINAL_INDEX
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.IS_EDIT_TOP_UP
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_UP_FREQUENCY_EIGHT
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_UP_FREQUENCY_FOUR
 import com.tokopedia.topads.dashboard.data.model.CreditResponse
 import com.tokopedia.topads.dashboard.data.utils.Utils
-import com.tokopedia.topads.dashboard.data.utils.createListOfSize
+import com.tokopedia.topads.dashboard.data.utils.Utils.getTextFromFrequency
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.view.activity.TopAdsPaymentCreditActivity
 import com.tokopedia.topads.debit.autotopup.data.model.*
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
 import com.tokopedia.topads.debit.autotopup.view.adapter.TopAdsCreditListAdapter
@@ -32,16 +42,16 @@ import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.webview.KEY_TITLE
+import com.tokopedia.webview.KEY_URL
 import javax.inject.Inject
 
-const val INVALID_NOMINAL_INDEX = -1
 
 class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
     TopAdsCreditListAdapter.NominalClickListener {
-    private var autoTopUpCreditHistoryTriple: Triple<String, String, Pair<String, Int>>? = null
+
     private var creditItemRecyclerView: RecyclerView? = null
     private var textPilihNominal: com.tokopedia.unifyprinciples.Typography? = null
-    private val adapter by lazy { TopAdsCreditListAdapter() }
     private var topCreditSheetScrollView: NestedScrollView? = null
     private var manualRadioButton: RadioButtonUnify? = null
     private var autoRadioButton: RadioButtonUnify? = null
@@ -64,20 +74,24 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
     private var maxCreditLimit: com.tokopedia.unifyprinciples.Typography? = null
     private var selectedFrequncyTambahCredit: com.tokopedia.unifyprinciples.Typography? = null
     private var creditHistoryShimmer: LoaderUnify? = null
+
+    private var autoTopUpCreditHistoryTriple: Triple<String, String, Pair<String, Int>>? = null
     private var selectedNominal: TopUpCreditItemData? = null
     private var selectedNominalIndex: Int = INVALID_NOMINAL_INDEX
     private var creditResponse: CreditResponse? = null
     private var manualNominalList: MutableList<TopUpCreditItemData> = mutableListOf()
     private var autoTopUpNominalList: MutableList<TopUpCreditItemData> = mutableListOf()
     private var autoTopUpAvailableNominalList: MutableList<AutoTopUpItem> = mutableListOf()
-    private var autoTopUpMaxCreditLimit: Long = 0L
-    private var autoTopUpFrequencySelected: Int = 6
+    private var autoTopUpMaxCreditLimit: Long = Long.ZERO
+    private var autoTopUpFrequencySelected: Int = DEFAULT_TOP_UP_FREQUENCY
     var isAutoTopUpActive: Boolean = false
     var isAutoTopUpSelected: Boolean = false
     var isShowEditHistory: Boolean = false
     private var isCreditHistoryReceived: Boolean = false
-    var onSaved: ((productUrl: String, isAutoAdsSaved: Boolean) -> Unit)? = null
+    var onSaved: ((isAutoAdsSaved: Boolean) -> Unit)? = null
     var onCancel: (() -> Unit)? = null
+
+    private val adapter by lazy { TopAdsCreditListAdapter() }
 
     @JvmField
     @Inject
@@ -114,14 +128,17 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
 
     private fun initChildLayout() {
         val contentView = View.inflate(context, R.layout.topads_dash_choose_credit_sheet, null)
-        showCloseIcon = false
-        clearContentPadding = true
-        isDragable = true
-        setTitle(getString(R.string.title_top_ads_add_credit))
-        showCloseIcon = true
-        customPeekHeight = 600
+        setDefaultConfigs()
         setChild(contentView)
         initView(contentView)
+    }
+
+    private fun setDefaultConfigs() {
+        clearContentPadding = true
+        isDragable = true
+        showCloseIcon = true
+        setTitle(getString(R.string.title_top_ads_add_credit))
+        customPeekHeight = Resources.getSystem().displayMetrics.heightPixels
     }
 
     private fun initView(contentView: View?) {
@@ -200,7 +217,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
 
     private fun setUpClickListener() {
         saveButton?.setOnClickListener {
-            if (it.tag == "editAutoTopUp") {
+            if (it.tag == IS_EDIT_TOP_UP) {
                 enableEditAutoTopUpState()
             } else if (manualRadioButton?.isChecked == true) {
                 openManualAdsCreditWebView()
@@ -226,7 +243,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         tncAutoCreditCheckBox?.hide()
         groupAutoTopUpCreditHistory?.show()
         saveButton?.isEnabled = true
-        saveButton?.tag = "editAutoTopUp"
+        saveButton?.tag = IS_EDIT_TOP_UP
     }
 
     private fun enableEditAutoTopUpState() {
@@ -235,9 +252,9 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         groupFrequencyAutoTopUp?.show()
         groupAutoTopUpCreditHistory?.hide()
         when (autoTopUpCreditHistoryTriple?.third?.second) {
-            4 -> jarangRadioButton?.isChecked = true
-            6 -> normalRadioButton?.isChecked = true
-            8 -> seringRadioButton?.isChecked = true
+            TOP_UP_FREQUENCY_FOUR -> jarangRadioButton?.isChecked = true
+            DEFAULT_TOP_UP_FREQUENCY -> normalRadioButton?.isChecked = true
+            TOP_UP_FREQUENCY_EIGHT -> seringRadioButton?.isChecked = true
         }
         tncAutoCreditCheckBox?.isChecked = true
         tncAutoCreditCheckBox?.isEnabled = false
@@ -261,6 +278,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         defaultEditList?.first?.let { list -> adapter.submitList(list) }
         selectedNominalIndex = defaultEditList?.second ?: INVALID_NOMINAL_INDEX
         applyButton?.isEnabled = false
+        setCheckBoxText()
         resetSaveButtonTag()
         expandBottomSheet()
     }
@@ -292,9 +310,9 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
 
         radioGroupAutoTopUpFrequency?.setOnCheckedChangeListener { _, id ->
             when (id) {
-                jarangRadioButton?.id -> autoTopUpFrequencySelected = 4
-                normalRadioButton?.id -> autoTopUpFrequencySelected = 6
-                seringRadioButton?.id -> autoTopUpFrequencySelected = 8
+                jarangRadioButton?.id -> autoTopUpFrequencySelected = TOP_UP_FREQUENCY_FOUR
+                normalRadioButton?.id -> autoTopUpFrequencySelected = DEFAULT_TOP_UP_FREQUENCY
+                seringRadioButton?.id -> autoTopUpFrequencySelected = TOP_UP_FREQUENCY_EIGHT
             }
 
             if (autoRadioButton?.isChecked == true) {
@@ -323,15 +341,12 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
     }
 
     private fun openManualAdsCreditWebView() {
-        dismiss()
         if (selectedNominalIndex != INVALID_NOMINAL_INDEX) {
             creditResponse?.credit?.getOrNull(selectedNominalIndex)?.productUrl?.let { productUrl ->
-                onSaved?.invoke(
-                    productUrl,
-                    false
-                )
+                chooseCredit(productUrl)
             }
         }
+        dismiss()
     }
 
     private fun changeToManualState() {
@@ -393,7 +408,8 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
             ), HtmlCompat.FROM_HTML_MODE_LEGACY
         )
         maxCreditLimit?.text = autoTopUpCreditHistoryTriple?.third?.first
-        val autoTopUpFrequencySelectedText = getTextFromFrequency(autoTopUpCreditHistoryTriple?.third?.second)
+        val autoTopUpFrequencySelectedText =
+            getTextFromFrequency(context, autoTopUpCreditHistoryTriple?.third?.second)
         selectedFrequncyTambahCredit?.text = HtmlCompat.fromHtml(
             String.format(
                 getString(R.string.topads_dash_auto_topup_frequency),
@@ -407,26 +423,17 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         ) ?: 0L
         autoTopUpCreditTips?.description =
             context?.let { Utils.getSpannableForTips(it, autoTopUpMaxCreditLimit) } ?: ""
-        saveButton?.text = "Ubah Pengaturan"
+        saveButton?.text = context?.getString(R.string.topads_edit_auto_top_up)
         saveButton?.buttonVariant = UnifyButton.Variant.GHOST
         saveButton?.isEnabled = isCreditHistoryReceived
         creditHistoryShimmer?.showWithCondition(!isCreditHistoryReceived)
-        saveButton?.tag = "editAutoTopUp"
+        saveButton?.tag = IS_EDIT_TOP_UP
         groupAutoTopUpCreditHistory?.showWithCondition(isCreditHistoryReceived)
         autoTopUpCreditTips?.updateLayoutParams<ConstraintLayout.LayoutParams> {
             if (selectedFrequncyTambahCredit?.id != null) topToBottom =
                 selectedFrequncyTambahCredit?.id!!
         }
         autoTopUpCreditTips?.showWithCondition(isCreditHistoryReceived)
-    }
-
-    private fun getTextFromFrequency(autoTopUpFrequencySelected: Int?): String {
-        return when (autoTopUpFrequencySelected) {
-            4 -> "Jarang"
-            6 -> "Normal"
-            8 -> "Sering"
-            else -> "Normal"
-        }
     }
 
     private fun resetManualState() {
@@ -455,16 +462,20 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
                     )
                 }
             }
-            tncAutoCreditCheckBox?.text = context?.let {
-                Utils.getTncSpannable(
-                    it,
-                    autoTopUpAvailableNominalList.getOrNull(selectedNominalIndex)?.minCreditFmt
-                        ?: ""
-                )
-            }
+            setCheckBoxText()
             tncAutoCreditCheckBox?.show()
         }
 
+    }
+
+    private fun setCheckBoxText() {
+        tncAutoCreditCheckBox?.text = context?.let {
+            Utils.getTncSpannable(
+                it,
+                autoTopUpAvailableNominalList.getOrNull(selectedNominalIndex)?.minCreditFmt
+                    ?: ""
+            )
+        }
     }
 
     private fun getInitialData() {
@@ -474,20 +485,14 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
 
     private fun setObserver() {
         viewModel?.topAdsTopUpCreditData?.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> onSuccessGetCreditListData(it.data)
+            if (it is Success) {
+                onSuccessGetCreditListData(it.data)
             }
         }
-        viewModel?.getAutoTopUpStatus?.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    onSuccessGetAutoCreditListData(it.data)
-                    autoTopUpCreditHistoryTriple = viewModel?.getAutoTopUpCreditHistoryData(it.data)
-                    isCreditHistoryReceived = true
-                    manageAutoTopUpActiveState()
-                    if (isShowEditHistory)enableEditAutoTopUpState()
 
-                }
+        viewModel?.getAutoTopUpStatus?.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                onSuccessGetAutoCreditListData(it.data)
             }
         }
 
@@ -495,9 +500,9 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
             when (it) {
                 is ResponseSaving -> {
                     saveButton?.isLoading = false
-                    onSaved?.invoke("", true)
+                    onSaved?.invoke(true)
                     isAutoTopUpActive = true
-                    handleResponseSaving(it)
+                    handleResponseSaving()
                     dismiss()
 
                 }
@@ -508,10 +513,8 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         }
     }
 
-    private fun handleResponseSaving(it: ResponseSaving) {
-        activity?.let {
-            it.setResult(Activity.RESULT_OK, Intent())
-        }
+    private fun handleResponseSaving() {
+        activity?.setResult(Activity.RESULT_OK, Intent())
     }
 
     private fun onSuccessCreditInfo(data: CreditResponse) {
@@ -526,10 +529,14 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         autoTopUpNominalList.clear()
         list?.let { autoTopUpNominalList.addAll(it) }
         if (autoRadioButton?.isChecked == true) addNominalList(autoTopUpNominalList)
+        autoTopUpCreditHistoryTriple = viewModel?.getAutoTopUpCreditHistoryData(data)
+        isCreditHistoryReceived = true
+        manageAutoTopUpActiveState()
+        if (isShowEditHistory) enableEditAutoTopUpState()
     }
 
     private fun onSuccessGetCreditListData(data: TopAdsShopTierShopGradeData.ShopInfoByID.Result) {
-        val list = viewModel?.getCreditItemData2(creditResponse?.credit, data)
+        val list = viewModel?.getCreditItemDataList(creditResponse?.credit, data)
         manualNominalList.clear()
         list?.let { manualNominalList.addAll(it) }
         if (manualRadioButton?.isChecked == true) addNominalList(manualNominalList)
@@ -540,7 +547,7 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
             adapter.submitList(
                 mutableListOf<TopUpCreditItemData>().createListOfSize(
                     TopUpCreditItemData(),
-                    8
+                    Int.EIGHT
                 )
             )
         } else {
@@ -551,13 +558,13 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
     fun show(
         fragmentManager: FragmentManager
     ) {
-        show(fragmentManager, "top_up_sheet")
+        show(fragmentManager, "")
     }
 
     override fun onNominalClicked(nominalList: ArrayList<TopUpCreditItemData>, position: Int) {
         selectedNominal = nominalList.getOrNull(position)
         selectedNominalIndex = position
-        nominalList.forEach { it.clicked = false }
+        nominalList.reset()
         selectedNominal?.clicked = true
         adapter.submitList(nominalList.toMutableList())
         if (autoRadioButton?.isChecked == true) {
@@ -576,14 +583,25 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         }
     }
 
-    private fun expandBottomSheet(){
-        if (dialog?.isShowing == true){
+    private fun expandBottomSheet() {
+        if (dialog?.isShowing == true) {
             frameDialogView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
         }
     }
+
+    private fun chooseCredit(productUrl: String) {
+        activity?.let {
+            val intent = Intent(context, TopAdsPaymentCreditActivity::class.java).apply {
+                putExtra(KEY_URL, viewModel?.getUrl(productUrl))
+                putExtra(KEY_TITLE, context?.getString(R.string.title_top_ads_add_credit))
+            }
+            startActivity(intent)
+        }
+
+    }
 }
 
-private fun <E> MutableList<E>.reset() {
-    this.forEach { (it as TopUpCreditItemData).clicked = false }
+private fun MutableList<TopUpCreditItemData>.reset() {
+    this.forEach { it.clicked = false }
 }

@@ -27,8 +27,13 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.util.Utils.locale
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
+import com.tokopedia.topads.common.extension.ZERO
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_ADS_TOP_UP_CREDIT_SP_KEY_NAME
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_ADS_TOP_UP_CREDIT_SP_NAME
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.unifycomponents.toDp
 import java.text.DateFormat
 import java.text.NumberFormat
 import java.text.ParseException
@@ -219,7 +224,7 @@ object Utils {
             SpannableString(context.getString(R.string.top_ads_auto_top_up_tips_bullet_two))
 
         spannableOne.setSpan(
-            BulletSpan(12, ContextCompat.getColor(
+            BulletSpan(12.toDp(), ContextCompat.getColor(
                 context,
                 com.tokopedia.unifyprinciples.R.color.Unify_Static_Black,
             )),
@@ -233,13 +238,13 @@ object Utils {
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         spannableThree.setSpan(
-            BulletSpan(12,
+            BulletSpan(12.toDp(),
                 ContextCompat.getColor(
                     context,
                     com.tokopedia.unifyprinciples.R.color.Unify_Static_Black,
                 )),
 
-            0, spannableTwo.length,
+            Int.ZERO, spannableTwo.length,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         val spn = SpannableStringBuilder()
@@ -270,9 +275,9 @@ object Utils {
 
     fun isShowInterruptSheet(context: Context): Boolean {
         val sharedPref =
-            context.getSharedPreferences("TopAdsTopUpCredit", BaseSimpleActivity.MODE_PRIVATE)
-        val storedTime = sharedPref.getLong("TopAdsTopUpCreditSavedTime", 0)
-        if (storedTime == 0L) {
+            context.getSharedPreferences(TOP_ADS_TOP_UP_CREDIT_SP_NAME, BaseSimpleActivity.MODE_PRIVATE)
+        val storedTime = sharedPref.getLong(TOP_ADS_TOP_UP_CREDIT_SP_KEY_NAME, Long.ZERO)
+        if (storedTime == Long.ZERO) {
             storeNewTime(Calendar.getInstance().timeInMillis, sharedPref)
             return true
         } else {
@@ -289,16 +294,17 @@ object Utils {
 
     private fun storeNewTime(time: Long, sharedPref: SharedPreferences){
         val editor = sharedPref.edit()
-        editor.putLong("TopAdsTopUpCreditSavedTime", time)
+        editor.putLong(TOP_ADS_TOP_UP_CREDIT_SP_KEY_NAME, time)
         editor.apply()
     }
 
-
-}
-
-fun <E> MutableList<E>.createListOfSize(topUpCreditItemData: E, size: Int): MutableList<E> {
-    for (i in 1..size) {
-        this.add(topUpCreditItemData)
+    fun getTextFromFrequency(context: Context?, autoTopUpFrequencySelected: Int?): String? {
+        return when (autoTopUpFrequencySelected) {
+            TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_UP_FREQUENCY_FOUR -> context?.getString(R.string.topads_frequency_four_text)
+            TopAdsDashboardConstant.TopAdsCreditTopUpConstant.DEFAULT_TOP_UP_FREQUENCY -> context?.getString(R.string.topads_frequency_six_text)
+            TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_UP_FREQUENCY_EIGHT -> context?.getString(R.string.topads_frequency_eight_text)
+            else -> context?.getString(R.string.topads_frequency_six_text)
+        }
     }
-    return this
 }
+

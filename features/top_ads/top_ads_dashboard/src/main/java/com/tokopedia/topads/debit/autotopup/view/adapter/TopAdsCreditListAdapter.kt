@@ -41,5 +41,4 @@ class TopAdsCreditListAdapter() :
     interface NominalClickListener{
         fun onNominalClicked(nominalList: ArrayList<TopUpCreditItemData>, position: Int)
     }
-
 }

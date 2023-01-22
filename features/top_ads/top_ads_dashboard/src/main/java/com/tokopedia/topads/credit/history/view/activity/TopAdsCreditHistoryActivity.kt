@@ -6,11 +6,11 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.topads.credit.history.view.fragment.TopAdsCreditHistoryFragment
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.IS_SHOW_OLD_FLOW
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 
 const val PARAM_DATE_PICKER_INDEX = "picker_index"
-const val IS_SHOW_OLD_FLOW = "is_show_old_flow"
 
 class TopAdsCreditHistoryActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboardComponent> {
     override fun getComponent(): TopAdsDashboardComponent =
