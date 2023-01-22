@@ -68,6 +68,17 @@
                 app:layout_constraintStart_toEndOf="@id/topUpSwitchRadioButtonGroup"
                 app:typographyType="paragraph_1" />
 
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/toolTipAuto"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="2dp"
+                app:srcCompat="@drawable/iconunify_information"
+                android:tint="@color/Unify_NN900"
+                app:layout_constraintBottom_toBottomOf="@+id/autoRadioButtonText"
+                app:layout_constraintStart_toEndOf="@id/autoRadioButtonText"
+                app:layout_constraintTop_toTopOf="@id/autoRadioButtonText" />
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/autoRadioButtonTextDescription"
                 android:layout_width="wrap_content"
@@ -146,6 +157,17 @@
                 app:layout_constraintTop_toBottomOf="@id/dividerAutoTopContent"
                 app:typographyType="display_1"
                 app:typographyWeight="bold" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/toolTipFrequency"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="2dp"
+                app:srcCompat="@drawable/iconunify_information"
+                android:tint="@color/Unify_NN900"
+                app:layout_constraintBottom_toBottomOf="@+id/frequncyCreditTitle"
+                app:layout_constraintStart_toEndOf="@id/frequncyCreditTitle"
+                app:layout_constraintTop_toTopOf="@id/frequncyCreditTitle" />
 
             <RadioGroup
                 android:id="@+id/radioGroupAutoTopUpFrequency"
@@ -324,6 +346,17 @@
                 app:layout_constraintStart_toStartOf="@id/selectedPrice"
                 app:layout_constraintTop_toBottomOf="@id/selectedBonus" />
 
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/toolTipMaxCreditLimit"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="2dp"
+                app:srcCompat="@drawable/iconunify_information"
+                android:tint="@color/Unify_NN900"
+                app:layout_constraintBottom_toBottomOf="@id/maxCreditLimitText"
+                app:layout_constraintStart_toEndOf="@id/maxCreditLimitText"
+                app:layout_constraintTop_toTopOf="@id/maxCreditLimitText" />
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/maxCreditLimit"
                 android:layout_width="wrap_content"
@@ -346,6 +379,17 @@
                 app:typographyWeight="bold"
                 app:layout_constraintStart_toStartOf="@id/maxCreditLimit"
                 app:layout_constraintTop_toBottomOf="@id/maxCreditLimit" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/toolTipFrequencyHistory"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="2dp"
+                app:srcCompat="@drawable/iconunify_information"
+                android:tint="@color/Unify_NN900"
+                app:layout_constraintBottom_toBottomOf="@id/frequncyTambahCreditText"
+                app:layout_constraintStart_toEndOf="@id/frequncyTambahCreditText"
+                app:layout_constraintTop_toTopOf="@id/frequncyTambahCreditText" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/selectedFrequncyTambahCredit"
@@ -374,7 +418,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:constraint_referenced_ids="automaticallyAddsCreditText,selectedPrice,selectedBonus,maxCreditLimitText,maxCreditLimit,frequncyTambahCreditText,selectedFrequncyTambahCredit"
+                app:constraint_referenced_ids="automaticallyAddsCreditText,selectedPrice,selectedBonus,maxCreditLimitText,maxCreditLimit,frequncyTambahCreditText,selectedFrequncyTambahCredit, toolTipFrequencyHistory, toolTipMaxCreditLimit"
                 tools:visibility="visible" />
 
             <androidx.constraintlayout.widget.Group
@@ -382,7 +426,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:constraint_referenced_ids="dividerAutoTopContent, radioGroupAutoTopUpFrequency,frequncyCreditTitle, jarangFrequency, jarangText, normalText, normalFrequency, seringFrequency, seringText"
+                app:constraint_referenced_ids="dividerAutoTopContent, radioGroupAutoTopUpFrequency,frequncyCreditTitle, toolTipFrequency, jarangFrequency, jarangText, normalText, normalFrequency, seringFrequency, seringText"
                 tools:visibility="visible" />
 
 

@@ -518,6 +518,9 @@
     <string name="top_ads_interrupt_bottom_sheet_title">Lebih praktis dengan \nTambah Kredit Otomatis</string>
     <string name="top_ads_tambah_manual">Tambah Manual</string>
     <string name="top_ads_pelajari_selengkapnya">Pelajari Selengkapnya</string>
+    <string name="top_ads_tool_tip_auto_description">Fitur yang membantumu untuk tambah kredit secara otomatis, agar iklanmu terus aktif.</string>
+    <string name="top_ads_tool_tip_frequency_description">Seberapa sering tambah kredit dalam sehari untuk menjaga iklanmu terus aktif.</string>
+    <string name="top_ads_tool_tip_max_credit_limit_description">Kredit TopAds akan bertambah secara otomatis setiap kreditmu kurang dari angka yang tertera di sini.</string>
 
 </resources>
 

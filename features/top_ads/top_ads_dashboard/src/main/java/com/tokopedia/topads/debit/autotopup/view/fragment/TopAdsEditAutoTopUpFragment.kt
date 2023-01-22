@@ -24,6 +24,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.util.Utils.convertToCurrency
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
+import com.tokopedia.topads.common.sheet.TopAdsToolTipBottomSheet
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.utils.Utils
@@ -65,6 +66,9 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
     private var autoTopUpCreditHistoryLayout: ConstraintLayout? = null
     private var autoTopUpCreditTipsUnify: TipsUnify? = null
     private var editAutoTopUpButton: UnifyButton? = null
+    private var toolTipMaxCreditLimit: ImageUnify? = null
+    private var toolTipFrequencyHistory: ImageUnify? = null
+    private var toolTipAutoHistory: ImageUnify? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -116,6 +120,9 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
         autoTopUpCreditHistoryLayout = view.findViewById(R.id.autoTopUpCreditHistoryLayout)
         autoTopUpCreditTipsUnify = view.findViewById(R.id.autoTopUpCreditTipsUnify)
         editAutoTopUpButton = view.findViewById(R.id.editAutoTopUpButton)
+        toolTipMaxCreditLimit = view.findViewById(R.id.toolTipMaxCreditLimit)
+        toolTipFrequencyHistory = view.findViewById(R.id.toolTipFrequencyHistory)
+        toolTipAutoHistory = view.findViewById(R.id.toolTipAutoHistory)
         return view
     }
 
@@ -180,6 +187,33 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
             bottomSheet.setTitle(getString(R.string.toapds_dash_tooltip_title))
             bottomSheet.setChild(view1)
             bottomSheet.show(childFragmentManager, "")
+        }
+
+        toolTipMaxCreditLimit?.setOnClickListener {
+            TopAdsToolTipBottomSheet.newInstance().also {
+                it.setTitle(context?.getString(R.string.toapds_dash_tooltip_title) ?: "")
+                it.setDescription(
+                    context?.getString(R.string.top_ads_tool_tip_max_credit_limit_description) ?: ""
+                )
+            }.show(childFragmentManager)
+        }
+
+        toolTipFrequencyHistory?.setOnClickListener {
+            TopAdsToolTipBottomSheet.newInstance().also {
+                it.setTitle(context?.getString(R.string.top_ads_frekuensi_tambah_kredit) ?: "")
+                it.setDescription(
+                    context?.getString(R.string.top_ads_tool_tip_frequency_description) ?: ""
+                )
+            }.show(childFragmentManager)
+        }
+
+        toolTipAutoHistory?.setOnClickListener {
+            TopAdsToolTipBottomSheet.newInstance().also {
+                it.setTitle(context?.getString(R.string.label_topads_automatic_topup) ?: "")
+                it.setDescription(
+                    context?.getString(R.string.top_ads_tool_tip_auto_description) ?: ""
+                )
+            }.show(childFragmentManager)
         }
     }
 

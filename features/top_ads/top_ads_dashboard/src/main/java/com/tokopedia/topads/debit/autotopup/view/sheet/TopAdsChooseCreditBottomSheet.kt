@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.common.extension.EIGHT
 import com.tokopedia.topads.common.extension.ZERO
 import com.tokopedia.topads.common.extension.createListOfSize
+import com.tokopedia.topads.common.sheet.TopAdsToolTipBottomSheet
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.DEFAULT_TOP_UP_FREQUENCY
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.INVALID_NOMINAL_INDEX
@@ -74,6 +75,10 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
     private var maxCreditLimit: com.tokopedia.unifyprinciples.Typography? = null
     private var selectedFrequncyTambahCredit: com.tokopedia.unifyprinciples.Typography? = null
     private var creditHistoryShimmer: LoaderUnify? = null
+    private var toolTipAuto: ImageUnify? = null
+    private var toolTipFrequency: ImageUnify? = null
+    private var toolTipMaxCreditLimit: ImageUnify? = null
+    private var toolTipFrequencyHistory: ImageUnify? = null
 
     private var autoTopUpCreditHistoryTriple: Triple<String, String, Pair<String, Int>>? = null
     private var selectedNominal: TopUpCreditItemData? = null
@@ -167,6 +172,10 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         textPilihNominal = contentView?.findViewById(R.id.textPilihNominal)
         selectedFrequncyTambahCredit = contentView?.findViewById(R.id.selectedFrequncyTambahCredit)
         creditHistoryShimmer = contentView?.findViewById(R.id.creditHistoryShimmer)
+        toolTipAuto = contentView?.findViewById(R.id.toolTipAuto)
+        toolTipFrequency = contentView?.findViewById(R.id.toolTipFrequency)
+        toolTipFrequencyHistory = contentView?.findViewById(R.id.toolTipFrequencyHistory)
+        toolTipMaxCreditLimit = contentView?.findViewById(R.id.toolTipMaxCreditLimit)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -232,6 +241,42 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
 
         applyButton?.setOnClickListener {
             saveAutoTopUp()
+        }
+
+        toolTipAuto?.setOnClickListener {
+            TopAdsToolTipBottomSheet.newInstance().also {
+                it.setTitle(context?.getString(R.string.label_topads_automatic_topup) ?: "")
+                it.setDescription(
+                    context?.getString(R.string.top_ads_tool_tip_auto_description) ?: ""
+                )
+            }.show(childFragmentManager)
+        }
+
+        toolTipFrequency?.setOnClickListener {
+            TopAdsToolTipBottomSheet.newInstance().also {
+                it.setTitle(context?.getString(R.string.top_ads_frekuensi_tambah_kredit) ?: "")
+                it.setDescription(
+                    context?.getString(R.string.top_ads_tool_tip_frequency_description) ?: ""
+                )
+            }.show(childFragmentManager)
+        }
+
+        toolTipMaxCreditLimit?.setOnClickListener {
+            TopAdsToolTipBottomSheet.newInstance().also {
+                it.setTitle(context?.getString(R.string.toapds_dash_tooltip_title) ?: "")
+                it.setDescription(
+                    context?.getString(R.string.top_ads_tool_tip_max_credit_limit_description) ?: ""
+                )
+            }.show(childFragmentManager)
+        }
+
+        toolTipFrequencyHistory?.setOnClickListener {
+            TopAdsToolTipBottomSheet.newInstance().also {
+                it.setTitle(context?.getString(R.string.top_ads_frekuensi_tambah_kredit) ?: "")
+                it.setDescription(
+                    context?.getString(R.string.top_ads_tool_tip_frequency_description) ?: ""
+                )
+            }.show(childFragmentManager)
         }
     }
 
