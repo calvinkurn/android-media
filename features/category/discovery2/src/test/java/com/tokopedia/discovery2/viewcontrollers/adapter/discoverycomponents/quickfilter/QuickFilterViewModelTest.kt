@@ -1,16 +1,19 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter
 
 import android.app.Application
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery.common.utils.URLParser
-import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
-import com.tokopedia.discovery2.data.Properties
+import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
+import com.tokopedia.discovery2.repository.quickFilter.IQuickFilterGqlRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 import com.tokopedia.discovery2.usecase.QuickFilterUseCase
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.user.session.UserSession
 import io.mockk.*
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +29,7 @@ class QuickFilterViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
     private val componentsItem: ComponentsItem = mockk(relaxed = true)
+    private val context: Context = mockk()
     private val application: Application = mockk()
 
     @Before
@@ -36,6 +40,8 @@ class QuickFilterViewModelTest {
         mockkStatic(::getComponent)
         mockkConstructor(URLParser::class)
         every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        mockkConstructor(UserSession::class)
+        every { application.applicationContext } returns context
     }
 
     @After
@@ -43,6 +49,7 @@ class QuickFilterViewModelTest {
         Dispatchers.resetMain()
         unmockkStatic(::getComponent)
         unmockkConstructor(URLParser::class)
+        unmockkConstructor(UserSession::class)
     }
 
     @Test
@@ -104,7 +111,6 @@ class QuickFilterViewModelTest {
         viewModel.getTargetComponent()
 
         TestCase.assertEquals(viewModel.getTargetComponent(), parentComponentsItem)
-
     }
 
     @Test
@@ -351,6 +357,142 @@ class QuickFilterViewModelTest {
         assert(componentsItem.shouldRefreshComponent == true)
         viewModel.onAttachToViewHolder()
         assert(componentsItem.shouldRefreshComponent == null)
+
+    }
+
+    @Test
+    fun `test for fetchDynamicFilterModel for non dynamic component`() {
+        val componentsItem: ComponentsItem = spyk()
+        val filterRepository: FilterRepository = mockk()
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        viewModel.filterRepository = filterRepository
+        val prop: Properties = mockk()
+        every { componentsItem.properties } returns prop
+        every { prop.dynamic } returns false
+        every { componentsItem.id } returns "1001"
+        every { componentsItem.userAddressData } returns null
+        val filterModel: DynamicFilterModel = spyk()
+        coEvery {
+            filterRepository.getFilterData(
+                "1001",
+                any(),
+                componentsItem.pageEndPoint
+            )
+        } returns filterModel
+
+        viewModel.fetchDynamicFilterModel()
+        assert(viewModel.getDynamicFilterModelLiveData().value === filterModel)
+    }
+
+    @Test
+    fun `test for fetchDynamicFilterModel for dynamic component`() {
+        val componentsItem: ComponentsItem = spyk()
+        val filterRepository: FilterRepository = mockk()
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        viewModel.filterRepository = filterRepository
+        val prop: Properties = mockk()
+        every { componentsItem.properties } returns prop
+        every { prop.dynamic } returns true
+        every { componentsItem.id } returns "1_1001"
+        every { componentsItem.dynamicOriginalId } returns "1001"
+        every { componentsItem.userAddressData } returns null
+        val filterModel: DynamicFilterModel = spyk()
+        coEvery {
+            filterRepository.getFilterData(
+                "1001",
+                any(),
+                componentsItem.pageEndPoint
+            )
+        } returns filterModel
+
+        viewModel.fetchDynamicFilterModel()
+        assert(viewModel.getDynamicFilterModelLiveData().value === filterModel)
+    }
+
+    @Test
+    fun `test for renderDynamicFilter for non dynamic component`() {
+        val componentsItem: ComponentsItem = spyk()
+        val filterRepository: FilterRepository = mockk()
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        viewModel.filterRepository = filterRepository
+        val prop: Properties = mockk()
+        every { componentsItem.properties } returns prop
+        every { prop.dynamic } returns false
+        every { componentsItem.id } returns "1001"
+        every { componentsItem.userAddressData } returns null
+        val filterModel: DynamicFilterModel = spyk()
+        coEvery {
+            filterRepository.getFilterData(
+                "1001",
+                any(),
+                componentsItem.pageEndPoint
+            )
+        } returns filterModel
+
+        viewModel.fetchDynamicFilterModel()
+    }
+
+    @Test
+    fun `test for filterProductsCount`() {
+        val componentsItem: ComponentsItem = spyk()
+        val quickFilterGQLRepository: IQuickFilterGqlRepository = mockk()
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        viewModel.quickFilterGQLRepository = quickFilterGQLRepository
+        val mapOfSelectedFilters = mutableMapOf<String, String>()
+        viewModel.filterProductsCount(mapOfSelectedFilters)
+        assert(viewModel.productCountLiveData.value == null)
+
+        val prop: Properties = mockk()
+        every { componentsItem.properties } returns prop
+        every { prop.targetId } returns null
+        viewModel.filterProductsCount(mapOfSelectedFilters)
+        assert(viewModel.productCountLiveData.value == null)
+
+        every { prop.targetId } returns "1,2"
+
+        every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).userId } returns "10234"
+        coEvery { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).userId } returns "10234"
+
+        val discoResponse: DiscoveryResponse = mockk()
+        coEvery {
+            quickFilterGQLRepository.getQuickFilterProductCountData(
+                "1",
+                any(),
+                allAny(),
+                "10234"
+            )
+        } returns discoResponse
+
+        every { discoResponse.component } returns null
+        viewModel.filterProductsCount(mapOfSelectedFilters)
+        assert(viewModel.productCountLiveData.value == "")
+
+        val mockTargetResponse: ComponentsItem = mockk()
+        every { discoResponse.component } returns mockTargetResponse
+        every { mockTargetResponse.compAdditionalInfo } returns null
+        viewModel.filterProductsCount(mapOfSelectedFilters)
+        assert(viewModel.productCountLiveData.value == "")
+
+        val compAdditionInfo: ComponentAdditionalInfo = mockk()
+        every { mockTargetResponse.compAdditionalInfo } returns compAdditionInfo
+        every { compAdditionInfo.totalProductData } returns null
+        viewModel.filterProductsCount(mapOfSelectedFilters)
+        assert(viewModel.productCountLiveData.value == "")
+
+        val totalProductData: TotalProductData = mockk()
+        every { compAdditionInfo.totalProductData } returns totalProductData
+        every { totalProductData.productCountWording } returns null
+        viewModel.filterProductsCount(mapOfSelectedFilters)
+        assert(viewModel.productCountLiveData.value == "")
+
+        every { totalProductData.productCountWording } returns "1000 products"
+        viewModel.filterProductsCount(mapOfSelectedFilters)
+        assert(viewModel.productCountLiveData.value == "1000 products")
+
 
     }
 
