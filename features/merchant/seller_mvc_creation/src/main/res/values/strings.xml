@@ -161,7 +161,7 @@
     <string name="mvc_bottomsheet_expense_estimation_point_one">Kuota penggunaan kupon akan berkurang saat transaksi selesai.</string>
     <string name="mvc_bottomsheet_expense_estimation_point_two">1 kuota penggunaan berlaku untuk 1 kali transaksi dari 1 pembeli selama periode berlangsung kupon. Kamu tidak perlu membayar kupon yang tidak digunakan oleh pembeli.</string>
     <string name="mvc_bottomsheet_expense_estimation_footnote_header">Perhitungan pengeluaran</string>
-    <string name="mvc_bottomsheet_expense_estimation_footnote_body">Estimasi = Nominal Promo x Kuota Penggunaan Kupon</string>
+    <string name="mvc_bottomsheet_expense_estimation_footnote_body">Pengeluaran = Nominal Promo x Kuota Penggunaan Kupon</string>
 
     <!--  Promotion Type Bottom Sheet  -->
     <string name="mvc_bottomsheet_promotion_type_title">Tipe Promo</string>

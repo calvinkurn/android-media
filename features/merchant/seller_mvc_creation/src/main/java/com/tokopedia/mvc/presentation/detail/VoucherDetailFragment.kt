@@ -372,8 +372,11 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     }
                 }
             }
+            if (data.isVps == TRUE && data.isSubsidy == TRUE) {
+                btnUbahKupon.gone()
+            }
             btnUbahKupon.setOnClickListener {
-                SummaryActivity.start(requireContext(), data.toVoucherConfiguration())
+                SummaryActivity.start(context, data.toVoucherConfiguration())
             }
         }
     }
