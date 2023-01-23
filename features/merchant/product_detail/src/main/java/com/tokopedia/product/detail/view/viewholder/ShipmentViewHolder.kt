@@ -193,9 +193,9 @@ class ShipmentViewHolder(
             pdpShipmentCourierOptions.removeAllViews()
             labels.forEach { label ->
                 if(label.isNotEmpty()){
-                    val itemView = ItemShipmentOptionBinding.inflate(LayoutInflater.from(context)).root
-                    itemView.setLabel(label)
-                    pdpShipmentCourierOptions.addView(itemView)
+                    val itemBinding = ItemShipmentOptionBinding.inflate(LayoutInflater.from(context))
+                    itemBinding.pdpShipmentCourierOption.setLabel(label)
+                    pdpShipmentCourierOptions.addView(itemBinding.root)
                 }
             }
             pdpShipmentCourierLabel1.text = rates.subtitle
