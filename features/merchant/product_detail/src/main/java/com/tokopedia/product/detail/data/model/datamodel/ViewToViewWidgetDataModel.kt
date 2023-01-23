@@ -49,15 +49,7 @@ data class ViewToViewWidgetDataModel(
     }
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
-        val bundle = Bundle()
-        return if (newData is ViewToViewWidgetDataModel) {
-            if (cardModel?.size != newData.cardModel?.size) {
-                return null
-            }
-            null
-        } else {
-            null
-        }
+        return null
     }
 
     private fun areRecomItemTheSame(newRecomWidgetData: RecommendationWidget?): Boolean {
