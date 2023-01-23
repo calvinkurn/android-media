@@ -30,7 +30,7 @@ import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeAction
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeEvent
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeUiState
-import com.tokopedia.mvc.presentation.product.list.ProductListActivity
+import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -346,7 +346,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
 
     private fun presetValue() {
         val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
-        if (currentVoucherConfiguration.isFinishFilledStepThree || pageMode == PageMode.EDIT) {
+        if (currentVoucherConfiguration.isFinishedFillAllStep() || pageMode == PageMode.EDIT) {
             freeShippingInputSectionBinding?.run {
                 tfFreeShippingNominal.editText.setText(currentVoucherConfiguration.benefitIdr.toString())
                 tfFreeShippingMinimumBuy.editText.setText(currentVoucherConfiguration.minPurchase.toString())
@@ -1136,21 +1136,20 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToAddProductPage(currentVoucherConfiguration: VoucherConfiguration) {
-        context?.let { ctx ->
-            ProductListActivity.start(
+        val intent = context?.let { ctx ->
+            AddProductActivity.buildCreateModeIntent(
                 ctx,
-                currentVoucherConfiguration,
-                emptyList(),
-                0
+                currentVoucherConfiguration.copy(isFinishFilledStepThree = true)
             )
         }
+        context?.startActivity(intent)
     }
 
     private fun navigateToVoucherSummaryPage(currentVoucherConfiguration: VoucherConfiguration) {
         context?.let { ctx ->
             SummaryActivity.start(
                 ctx,
-                currentVoucherConfiguration
+                currentVoucherConfiguration.copy(isFinishFilledStepThree = true)
             )
         }
         activity?.finish()
