@@ -136,12 +136,12 @@
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/pdp_shipment_courier_options"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         app:flexWrap="wrap"
-        app:layout_constraintStart_toEndOf="@id/pdp_shipment_courier_label_1"
-        app:layout_constraintTop_toTopOf="@id/pdp_shipment_courier_label_1"
-        app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_courier_label_1"
         app:layout_constraintEnd_toStartOf="@id/pdp_shipment_icon"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintStart_toEndOf="@id/pdp_shipment_courier_label_1"
+        app:layout_constraintTop_toTopOf="@id/pdp_shipment_courier_label_1" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/pdp_shipment_courier_arrow"
