@@ -456,8 +456,9 @@ interface DynamicProductDetailListener {
      * ViewToView
      */
     fun onViewToViewImpressed(
-        data: RecommendationWidget,
+        data: ViewToViewItemData,
         title: String,
+        itemPosition: Int,
         adapterPosition: Int,
     )
     fun onViewToViewClicked(

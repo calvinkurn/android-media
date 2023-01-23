@@ -1,10 +1,9 @@
 package com.tokopedia.recommendation_widget_common.widget.viewtoview
 
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-
 interface ViewToViewWidgetBasicListener {
-    fun onViewToViewBannerImpressed(
-        data: RecommendationWidget,
+    fun onViewToViewItemImpressed(
+        data: ViewToViewItemData,
+        itemPosition: Int,
         adapterPosition: Int,
     )
     fun onViewToViewItemClicked(

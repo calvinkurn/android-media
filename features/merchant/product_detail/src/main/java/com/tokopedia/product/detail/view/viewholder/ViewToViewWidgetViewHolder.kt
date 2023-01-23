@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
@@ -50,12 +51,13 @@ class ViewToViewWidgetViewHolder(
         }
     }
 
-    override fun onViewToViewBannerImpressed(
-        data: RecommendationWidget,
-        adapterPosition: Int,
+    override fun onViewToViewItemImpressed(
+        data: ViewToViewItemData,
+        itemPosition: Int,
+        adapterPosition: Int
     ) {
         val title = viewToView?.recomWidgetData?.title ?: ""
-        listener.onViewToViewImpressed(data, title, adapterPosition)
+        listener.onViewToViewImpressed(data, title, itemPosition, adapterPosition)
     }
 
     override fun onViewToViewItemClicked(
