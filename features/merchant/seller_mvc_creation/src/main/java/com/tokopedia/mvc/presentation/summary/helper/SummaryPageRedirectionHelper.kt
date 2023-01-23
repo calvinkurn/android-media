@@ -7,6 +7,8 @@ import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.presentation.creation.step1.VoucherTypeActivity
+import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
+import com.tokopedia.mvc.presentation.creation.step3.VoucherSettingActivity
 import com.tokopedia.mvc.presentation.product.list.ProductListActivity
 
 class SummaryPageRedirectionHelper(private val listener: SummaryPageResultListener) {
@@ -74,5 +76,33 @@ class SummaryPageRedirectionHelper(private val listener: SummaryPageResultListen
         val context = fragment.context ?: return
         val intent = VoucherTypeActivity.buildEditModeIntent(context, configuration)
         fragment.startActivityForResult(intent, REQUEST_CODE_CHANGE_COUPON_TYPE)
+    }
+
+    fun redirectToCouponInfoPage(
+        fragment: Fragment,
+        configuration: VoucherConfiguration,
+        isAdding: Boolean
+    ) {
+        val context = fragment.context ?: return
+        if (isAdding) {
+            VoucherInformationActivity.buildCreateModeIntent(context, configuration)
+        } else {
+            val intent = VoucherInformationActivity.buildEditModeIntent(context, configuration)
+            fragment.startActivity(intent)
+        }
+    }
+
+    fun redirectToCouponConfigurationPage(
+        fragment: Fragment,
+        configuration: VoucherConfiguration,
+        isAdding: Boolean
+    ) {
+        val context = fragment.context ?: return
+        if (isAdding) {
+            VoucherSettingActivity.buildCreateModeIntent(context, configuration)
+        } else {
+            val intent = VoucherSettingActivity.buildEditModeIntent(context, configuration)
+            fragment.startActivity(intent)
+        }
     }
 }
