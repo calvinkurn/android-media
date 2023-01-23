@@ -8,8 +8,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetViewToViewRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
@@ -48,16 +46,14 @@ class ViewToViewViewModel @Inject constructor(
             val requestParam = GetRecommendationRequestParam(
                 queryParam = queryParams,
             )
-            val loadingList = List(PRODUCT_COUNT) { ViewToViewDataModel.Loading(hasAtcButton) }
-            _viewToViewRecommendationLiveData.postValue(Success(ViewToViewRecommendationResult(data = loadingList)))
+            _viewToViewRecommendationLiveData.postValue(Success(ViewToViewRecommendationResult.Loading(hasAtcButton)))
             val recommendation = getRecommendationUseCase.get().getData(requestParam)
             val result = if (recommendation.isNotEmpty()
                 && recommendation.first().recommendationItemList.isNotEmpty()
             ) {
                 Success(
-                    ViewToViewRecommendationResult(
-                        widget = recommendation.first(),
-                        data = recommendation.first().recommendationItemList
+                    ViewToViewRecommendationResult.Product(
+                        products = recommendation.first().recommendationItemList
                             .map { it.toViewToViewDataModelProduct(hasAtcButton) }
                     )
                 )
@@ -78,8 +74,8 @@ class ViewToViewViewModel @Inject constructor(
 
     private fun RecommendationItem.toViewToViewDataModelProduct(
         hasAtcButton: Boolean,
-    ): ViewToViewDataModel.Product {
-        return ViewToViewDataModel.Product(
+    ): ViewToViewDataModel {
+        return ViewToViewDataModel(
             productId.toString(),
             shopId.toString(),
             name,
@@ -90,19 +86,19 @@ class ViewToViewViewModel @Inject constructor(
         )
     }
 
-    private fun ViewToViewDataModel.Product.createAddToCartRequestParams(): AddToCartRequestParams {
+    private fun ViewToViewDataModel.createAddToCartRequestParams(): AddToCartRequestParams {
         return AddToCartRequestParams(
             productId = id,
             shopId = shopId,
             quantity = minOrder,
             productName = productName,
             price = price,
-            userId = if (userSession.isLoggedIn) userSession.userId else "0"
+            userId = getUserId(),
         )
     }
 
     fun addToCart(
-        product: ViewToViewDataModel.Product,
+        product: ViewToViewDataModel,
     ) {
         if(userSession.isLoggedIn) {
             launchCatchError(
@@ -120,7 +116,7 @@ class ViewToViewViewModel @Inject constructor(
 
     private fun handleATCSuccess(
         atcData: AddToCartDataModel,
-        product: ViewToViewDataModel.Product,
+        product: ViewToViewDataModel,
     ) {
         val atcStatus = if (atcData.isStatusError()) {
             ViewToViewATCStatus.Failure(atcData.getAtcErrorMessage() ?: "")
@@ -136,9 +132,5 @@ class ViewToViewViewModel @Inject constructor(
         _viewToViewATCStatusLiveData.postValue(
             ViewToViewATCStatus.Failure(e.message ?: "")
         )
-    }
-
-    companion object {
-        private const val PRODUCT_COUNT = 4
     }
 }

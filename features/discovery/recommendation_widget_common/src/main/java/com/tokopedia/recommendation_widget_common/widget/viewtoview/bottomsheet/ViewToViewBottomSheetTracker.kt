@@ -67,7 +67,7 @@ object ViewToViewBottomSheetTracker: BaseTrackerConst() {
         anchorProductId: String,
         trackingQueue: TrackingQueue?,
     ) {
-        val productList = arrayListOf(product.asDataLayer())
+        val productList = arrayListOf(product.asDataLayer(position + 1))
 
         val dataLayer = DataLayer.mapOf(
             Event.KEY, PRODUCT_VIEW,
@@ -168,7 +168,7 @@ object ViewToViewBottomSheetTracker: BaseTrackerConst() {
         }
     }
 
-    private fun RecommendationItem.asDataLayer(): Map<String,Any> {
+    private fun RecommendationItem.asDataLayer(position: Int): Map<String,Any> {
         return hashMapOf(
             CATEGORY_ID to departmentId,
             DIMENSION_40 to asItemList(),

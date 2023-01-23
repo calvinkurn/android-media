@@ -1,8 +1,11 @@
 package com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet
 
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+sealed class ViewToViewRecommendationResult {
+    data class Loading(
+        val hasATCButton: Boolean
+    ) : ViewToViewRecommendationResult()
 
-data class ViewToViewRecommendationResult(
-    val widget: RecommendationWidget? = null,
-    val data: List<ViewToViewDataModel> = emptyList(),
-)
+    data class Product(
+        val products: List<ViewToViewDataModel> = emptyList(),
+    ) : ViewToViewRecommendationResult()
+}

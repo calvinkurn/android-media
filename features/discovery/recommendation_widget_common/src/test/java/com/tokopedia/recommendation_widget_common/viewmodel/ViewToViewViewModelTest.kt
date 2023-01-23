@@ -9,6 +9,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet.ViewToViewATCStatus
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet.ViewToViewDataModel
+import com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet.ViewToViewRecommendationResult
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet.ViewToViewViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -17,7 +18,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -99,7 +99,7 @@ class ViewToViewViewModelTest {
 
     @Test
     fun `view to view retry recommendation should success`() {
-        `Given getViewToViewRecommendationUseCase will return`(RecommendationWidget())
+        `Given getViewToViewRecommendationUseCase will return`(recommendationWidget)
 
         val queryParam = ""
         viewToViewViewModel.retryViewToViewProductRecommendation(queryParam, true)
@@ -138,8 +138,8 @@ class ViewToViewViewModelTest {
         `Given user is logged in`()
         `Given addToCartUseCase will return`(atcResponseSuccess)
 
-        val recommendationResult = (viewToViewViewModel.viewToViewRecommendationLiveData.value as Success).data
-        val product = recommendationResult.data.first() as ViewToViewDataModel.Product
+        val recommendationResult = (viewToViewViewModel.viewToViewRecommendationLiveData.value as Success).data  as ViewToViewRecommendationResult.Product
+        val product = recommendationResult.products.first()
         `When addToCart`(product)
 
         `Then verify addToCart success`()
@@ -151,8 +151,8 @@ class ViewToViewViewModelTest {
         `Given user is logged in`()
         `Given addToCartUseCase will return`(atcResponseFail)
 
-        val recommendationResult = (viewToViewViewModel.viewToViewRecommendationLiveData.value as Success).data
-        val product = recommendationResult.data.first() as ViewToViewDataModel.Product
+        val recommendationResult = (viewToViewViewModel.viewToViewRecommendationLiveData.value as Success).data as ViewToViewRecommendationResult.Product
+        val product = recommendationResult.products.first()
         `When addToCart`(product)
 
         `Then verify addToCart fail`()
@@ -164,8 +164,8 @@ class ViewToViewViewModelTest {
         `Given user is logged in`()
         `Given addToCartUseCase will throw`(Exception())
 
-        val recommendationResult = (viewToViewViewModel.viewToViewRecommendationLiveData.value as Success).data
-        val product = recommendationResult.data.first() as ViewToViewDataModel.Product
+        val recommendationResult = (viewToViewViewModel.viewToViewRecommendationLiveData.value as Success).data  as ViewToViewRecommendationResult.Product
+        val product = recommendationResult.products.first()
         `When addToCart`(product)
 
         `Then verify addToCart fail`()
@@ -176,8 +176,8 @@ class ViewToViewViewModelTest {
         `Given view to view loaded`(recommendationWidget)
         `Given user is not logged in`()
 
-        val recommendationResult = (viewToViewViewModel.viewToViewRecommendationLiveData.value as Success).data
-        val product = recommendationResult.data.first() as ViewToViewDataModel.Product
+        val recommendationResult = (viewToViewViewModel.viewToViewRecommendationLiveData.value as Success).data  as ViewToViewRecommendationResult.Product
+        val product = recommendationResult.products.first()
         `When addToCart`(product)
 
         `Then verify addToCart status is NonLogin`()
@@ -206,7 +206,7 @@ class ViewToViewViewModelTest {
         every { userSession.isLoggedIn } returns false
     }
 
-    private fun `When addToCart`(product: ViewToViewDataModel.Product) {
+    private fun `When addToCart`(product: ViewToViewDataModel) {
         viewToViewViewModel.addToCart(product)
     }
 
