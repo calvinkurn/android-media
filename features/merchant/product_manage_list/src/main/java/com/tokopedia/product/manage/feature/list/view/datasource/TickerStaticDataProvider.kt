@@ -25,6 +25,15 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
         }
     }
 
+    private fun MutableList<TickerData>.addTobaccoTicker() {
+        add(
+            TickerData(
+                description = resourceProvider.getTickerTobaccoDescription(),
+                type = Ticker.TYPE_ANNOUNCEMENT,
+            )
+        )
+    }
+
     private fun MutableList<TickerData>.addMaxStockTicker() {
         add(
             TickerData(
@@ -58,6 +67,7 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
             }
             else -> {
                 mutableListOf<TickerData>().apply {
+                    addTobaccoTicker()
                     addStockAvailableTicker(enableStockAvailable)
                     addMaxStockTicker()
                     addMultiLocationTicker(multiLocationSeller)

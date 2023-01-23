@@ -16,16 +16,16 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.presentation.activity.mock.HotelCancellationMockResponseConfig
 import com.tokopedia.hotel.cancellation.presentation.adapter.HotelCancellationReasonAdapter
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 import org.hamcrest.core.AllOf
 import org.junit.Assert
 import org.junit.Rule
@@ -94,7 +94,7 @@ class HotelCancellationActivityTest {
     }
 
     private fun withTagStringValue(tagStringValue: String): Matcher<View> {
-        return withTagValue(Matchers.`is`(tagStringValue))
+        return withTagValue(CoreMatchers.`is`(tagStringValue))
     }
 
     private fun forceClick(): ViewAction? {

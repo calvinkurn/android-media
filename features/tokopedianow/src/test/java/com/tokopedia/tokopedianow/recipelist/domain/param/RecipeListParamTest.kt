@@ -32,7 +32,7 @@ class RecipeListParamTest {
         val expectedPerPage = 5
         val expectedWarehouseId = "2"
         val expectedSourcePage = "TokoNow Home"
-        val expectedQueryParams = "title=hello world&ingredient_ids=4,5,6&sort_by=Newest"
+        val expectedQueryParams = "title=hello+world&ingredient_ids=4,5,6&sort_by=Newest"
 
         assertEquals(expectedPage, actualParams["page"])
         assertEquals(expectedPerPage, actualParams["perPage"])
@@ -70,7 +70,7 @@ class RecipeListParamTest {
         val expectedPerPage = 7
         val expectedWarehouseId = "5"
         val expectedSourcePage = "TokoNow Search"
-        val expectedQueryParams = "title=Hello now&ingredient_ids=5,6,7&sort_by=Oldest"
+        val expectedQueryParams = "title=Hello+now&ingredient_ids=5,6,7&sort_by=Oldest"
 
         assertEquals(expectedPage, actualParams["page"])
         assertEquals(expectedPerPage, actualParams["perPage"])
@@ -97,7 +97,7 @@ class RecipeListParamTest {
         val expectedPerPage = 7
         val expectedWarehouseId = "5"
         val expectedSourcePage = "TokoNow Search"
-        val expectedQueryParams = "title=Hello now"
+        val expectedQueryParams = "title=Hello+now"
 
         assertEquals(expectedPage, actualParams["page"])
         assertEquals(expectedPerPage, actualParams["perPage"])
@@ -108,12 +108,12 @@ class RecipeListParamTest {
 
     @Test
     fun `given query params when generateQueryParams should return expected query string`() {
-        val queryParams =
-            "title=hello world&tag_ids=1,2,3&ingredient_ids=4,5,6&category_ids=7,8,9&from_duration=5&to_duration=10&from_portion=10&to_portion=20&sort_by=Newest"
+        val queryParams = "title=hello world&tag_ids=1,2,3&ingredient_ids=4,5,6&category_ids=7,8,9&from_duration=5&to_duration=10&from_portion=10&to_portion=20&sort_by=Newest"
 
         recipeListParam.mapToQueryParamsMap(queryParams)
         val actualQueryParams = recipeListParam.generateQueryParams()
 
-        assertEquals(queryParams, actualQueryParams)
+        val expectedQueryParams = "title=hello+world&tag_ids=1,2,3&ingredient_ids=4,5,6&category_ids=7,8,9&from_duration=5&to_duration=10&from_portion=10&to_portion=20&sort_by=Newest"
+        assertEquals(expectedQueryParams, actualQueryParams)
     }
 }
