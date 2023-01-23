@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.databinding.ItemOrderExtensionRequestInfoCommentBinding
 import com.tokopedia.sellerorder.databinding.ItemOrderExtensionRequestInfoPickTimeBinding
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.utils.view.binding.viewBinding

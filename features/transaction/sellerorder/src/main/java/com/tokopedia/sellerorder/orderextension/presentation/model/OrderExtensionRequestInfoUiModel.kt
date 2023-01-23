@@ -185,7 +185,7 @@ data class OrderExtensionRequestInfoUiModel(
     }
 
     class PickTimeUiModel : BaseOrderExtensionRequestInfoItem {
-        var timeText:String = String.EMPTY
+        var timeText: String = String.EMPTY
         override var show: Boolean = true
         override var hideKeyboardOnClick: Boolean = true
         override var requestFocus: Boolean = false

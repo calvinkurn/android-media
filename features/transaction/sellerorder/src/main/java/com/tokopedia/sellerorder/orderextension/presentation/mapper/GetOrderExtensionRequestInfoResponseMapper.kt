@@ -172,7 +172,6 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
         add(OrderExtensionRequestInfoUiModel.PickTimeUiModel())
     }
 
-
     private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionOptionsTitle(
         id: Int
     ) {

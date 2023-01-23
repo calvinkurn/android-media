@@ -185,7 +185,6 @@ class SomBottomSheetOrderExtensionRequest(
         }
     }
 
-
     fun setOrderId(orderId: String) {
         this.orderId = orderId
     }
