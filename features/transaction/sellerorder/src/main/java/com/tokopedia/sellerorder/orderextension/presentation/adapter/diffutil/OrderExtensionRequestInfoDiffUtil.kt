@@ -25,8 +25,7 @@ class OrderExtensionRequestInfoDiffUtil(
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return getUniqueIdentifier(oldItems.getOrNull(oldItemPosition)) == getUniqueIdentifier(newItems.getOrNull(
-            newItemPosition))
+        return oldItems.getOrNull(oldItemPosition) == newItems.getOrNull(newItemPosition)
     }
 
     override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {

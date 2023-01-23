@@ -11,7 +11,7 @@ import java.util.Date
 
 data class OrderExtensionRequestInfoUiModel(
     var items: List<BaseOrderExtensionRequestInfoItem> = emptyList(),
-    val orderExtensionDate: OrderExtentionDate = OrderExtentionDate(),
+    val orderExtensionDate: OrderExtensionDate = OrderExtensionDate(),
     var processing: Boolean,
     var success: Boolean,
     var completed: Boolean,
@@ -61,11 +61,11 @@ data class OrderExtensionRequestInfoUiModel(
         }
     }
 
-    data class OrderExtentionDate(
+    data class OrderExtensionDate(
         val deadLineTime: Date = Date(),
-        val eligbleDates: List<EligbleDateUIModel> = listOf()
+        val eligibleDates: List<EligibleDateUIModel> = listOf()
     ){
-        data class EligbleDateUIModel(
+        data class EligibleDateUIModel(
             val date: Date = Date(),
             val extensionTime: Int = 0
         )

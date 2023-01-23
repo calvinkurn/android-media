@@ -20,13 +20,14 @@ import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.
 import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.OrderExtensionRequestInfoOptionViewHolder
 import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.OrderExtensionRequestInfoPickTimeViewHolder
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
+import com.tokopedia.sellerorder.orderextension.presentation.util.SingleClick.doSomethingBeforeTime
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import java.util.*
 
 class SomBottomSheetOrderExtensionRequest(
-    val fragmentManager: FragmentManager,
+    private val fragmentManager: FragmentManager,
     context: Context,
     private var orderId: String,
     private var data: OrderExtensionRequestInfoUiModel,
@@ -62,7 +63,7 @@ class SomBottomSheetOrderExtensionRequest(
         }
     }
 
-    var currentSelectDate = OrderExtensionRequestInfoUiModel.OrderExtentionDate.EligbleDateUIModel()
+    var currentSelectDate = OrderExtensionRequestInfoUiModel.OrderExtensionDate.EligibleDateUIModel()
 
     override fun bind(view: View): BottomsheetOrderExtensionRequestInfoBinding {
         return BottomsheetOrderExtensionRequestInfoBinding.bind(view)
@@ -149,7 +150,10 @@ class SomBottomSheetOrderExtensionRequest(
                 if (!dismissing && !data.isLoadingOrderExtensionRequestInfo()) {
                     binding?.rvRequestExtensionInfo?.focusedChild?.clearFocus()
                     if (currentSelectDate.extensionTime != Int.ZERO) {
-                        viewModel.sendOrderExtensionRequest(orderId, currentSelectDate.extensionTime)
+                        viewModel.sendOrderExtensionRequest(
+                            orderId,
+                            currentSelectDate.extensionTime
+                        )
                     } else {
                         onValidateDate()
                     }
@@ -191,19 +195,24 @@ class SomBottomSheetOrderExtensionRequest(
     }
 
     override fun onShowCalendarPicker() {
-        val calendarOrderExtensionBottomSheet =
-            CalendarOrderExtensionBottomSheet(data.orderExtensionDate,::onSelectDate,
-                ::onValidateDate, currentSelectDate)
-        calendarOrderExtensionBottomSheet.show(
-            fragmentManager,
-            CalendarOrderExtensionBottomSheet.TAG
-        )
+        doSomethingBeforeTime{
+            val calendarOrderExtensionBottomSheet =
+                CalendarOrderExtensionBottomSheet(data.orderExtensionDate,::onSelectDate,
+                    ::onValidateDate, currentSelectDate)
+            calendarOrderExtensionBottomSheet.setSelectedDate(currentSelectDate)
+            calendarOrderExtensionBottomSheet.show(
+                fragmentManager,
+                CalendarOrderExtensionBottomSheet.TAG
+            )
+        }
     }
 
     override fun onShowTooltip() {
-        val infoPickTimeOrderExtentionBottomSheet =
-            InfoPickTimeOrderExtentionBottomSheet(fragmentManager)
-        infoPickTimeOrderExtentionBottomSheet.show()
+        doSomethingBeforeTime {
+            val infoPickTimeOrderExtentionBottomSheet =
+                InfoPickTimeOrderExtentionBottomSheet(fragmentManager)
+            infoPickTimeOrderExtentionBottomSheet.show()
+        }
     }
 
     private fun onValidateDate() {
@@ -218,7 +227,7 @@ class SomBottomSheetOrderExtensionRequest(
         }
     }
 
-    private fun onSelectDate(selectDate: OrderExtensionRequestInfoUiModel.OrderExtentionDate.EligbleDateUIModel) {
+    private fun onSelectDate(selectDate: OrderExtensionRequestInfoUiModel.OrderExtensionDate.EligibleDateUIModel) {
         currentSelectDate = selectDate
         adapter?.updatePickTime(
             selectDate.date.toFormattedString(
@@ -231,3 +240,4 @@ class SomBottomSheetOrderExtensionRequest(
         )
     }
 }
+

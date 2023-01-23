@@ -37,10 +37,10 @@ data class GetOrderExtensionRequestInfoResponse(
                 val reason: List<Reason>? = listOf(),
                 @SerializedName("eligible_dates")
                 @Expose
-                val elibleDates: List<EligbleDates> = listOf(),
+                val eligibleDates: List<EligibleDates>? = listOf(),
                 @SerializedName("special_dates")
                 @Expose
-                val specialDates: List<SpecialDates> = listOf(),
+                val specialDates: List<SpecialDates>? = listOf(),
                 @SerializedName("text")
                 @Expose
                 val text: String? = ""
@@ -66,7 +66,7 @@ data class GetOrderExtensionRequestInfoResponse(
                     val mustComment: Boolean = false
                 )
 
-                data class EligbleDates(
+                data class EligibleDates(
                     @SerializedName("date")
                     @Expose
                     val date: String = "",

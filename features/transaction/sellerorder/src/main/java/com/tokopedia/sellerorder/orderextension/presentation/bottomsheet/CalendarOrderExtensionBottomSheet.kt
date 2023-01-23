@@ -16,10 +16,10 @@ import java.util.*
 import com.tokopedia.sellerorder.R
 
 class CalendarOrderExtensionBottomSheet(
-    val orderExtensionDate: OrderExtensionRequestInfoUiModel.OrderExtentionDate,
-    val onSelectDate: (OrderExtensionRequestInfoUiModel.OrderExtentionDate.EligbleDateUIModel) -> Unit,
+    val orderExtensionDate: OrderExtensionRequestInfoUiModel.OrderExtensionDate,
+    val onSelectDate: (OrderExtensionRequestInfoUiModel.OrderExtensionDate.EligibleDateUIModel) -> Unit,
     val onErrorSelectDate: () -> Unit,
-    private val currentSelectDate: OrderExtensionRequestInfoUiModel.OrderExtentionDate.EligbleDateUIModel,
+    private var currentSelectDate: OrderExtensionRequestInfoUiModel.OrderExtensionDate.EligibleDateUIModel,
 ) : BottomSheetUnify() {
 
 
@@ -54,7 +54,7 @@ class CalendarOrderExtensionBottomSheet(
 
         calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
             override fun onDateSelected(date: Date) {
-                val selectedDate = orderExtensionDate.eligbleDates.find {
+                val selectedDate = orderExtensionDate.eligibleDates.find {
                     it.date == date
                 }
                 dismiss()
@@ -67,7 +67,7 @@ class CalendarOrderExtensionBottomSheet(
 
             override fun onDateUnselected(date: Date) {}
         })
-        val activeDates = orderExtensionDate.eligbleDates.map {
+        val activeDates = orderExtensionDate.eligibleDates.map {
             it.date
         }
 
@@ -95,4 +95,7 @@ class CalendarOrderExtensionBottomSheet(
 
     }
 
+    fun setSelectedDate(currentSelectDate: OrderExtensionRequestInfoUiModel.OrderExtensionDate.EligibleDateUIModel){
+        this.currentSelectDate = currentSelectDate
+    }
 }

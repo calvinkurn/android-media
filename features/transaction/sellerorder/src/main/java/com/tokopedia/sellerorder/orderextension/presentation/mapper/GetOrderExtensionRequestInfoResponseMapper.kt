@@ -12,7 +12,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
     private val resourceProvider: ResourceProvider
 ) {
 
-    companion object{
+    companion object {
         private const val ID_HEADER = 0
         private const val ID_DESCRIPTION = 1
         private const val ID_PICK_TIME_TITLE = 2
@@ -51,7 +51,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
         items = if (!response.reason.isNullOrEmpty()) {
             mutableListOf<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>().apply {
                 addOrderExtensionHeader(ID_HEADER)
-                addOrderExtensionDescription(ID_DESCRIPTION,response.text, response.newDeadline)
+                addOrderExtensionDescription(ID_DESCRIPTION, response.text, response.newDeadline)
                 addOrderExtensionPickTimeTitle(ID_PICK_TIME_TITLE)
                 addOrderExtensionPickTimeField()
                 addOrderExtensionOptionsTitle(ID_OPTIONS_TITLE)
@@ -59,14 +59,14 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
                 addOrderExtensionFooter(ID_FOOTER_TITLE)
             }
         } else emptyList(),
-        orderExtensionDate = OrderExtensionRequestInfoUiModel.OrderExtentionDate(
+        orderExtensionDate = OrderExtensionRequestInfoUiModel.OrderExtensionDate(
             deadLineTime = response.deadlineInfo.maxDate.toDate(FORMAT_DATE_DEADLINE_ORDER_EXTENTION),
-            eligbleDates = response.elibleDates.map {
-                OrderExtensionRequestInfoUiModel.OrderExtentionDate.EligbleDateUIModel(
+            eligibleDates = response.eligibleDates?.map {
+                OrderExtensionRequestInfoUiModel.OrderExtensionDate.EligibleDateUIModel(
                     date = it.date.toDate(FORMAT_DATE_ORDER_EXTENTION),
                     extensionTime = it.extensionTime
                 )
-            }
+            }.orEmpty()
         ),
         processing = false,
         success = response.isSuccess(),

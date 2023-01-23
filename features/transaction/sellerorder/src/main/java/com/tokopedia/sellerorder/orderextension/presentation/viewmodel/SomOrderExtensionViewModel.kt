@@ -44,7 +44,7 @@ class SomOrderExtensionViewModel @Inject constructor(
         }
     }
 
-    private suspend fun onNeedToUpdateOrderExtensionRequestInfo(updateInfo: OrderExtensionRequestInfoUpdater) {
+    private suspend  fun onNeedToUpdateOrderExtensionRequestInfo(updateInfo: OrderExtensionRequestInfoUpdater) {
         _requestExtensionInfo.value?.let { oldRequestExtensionInfo ->
             withContext(dispatcher.computation) {
                 updateInfo.execute(oldRequestExtensionInfo)
