@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcItemVoucherBinding
 import com.tokopedia.mvc.databinding.SmvcItemVoucherDataBinding
@@ -63,12 +65,21 @@ class VouchersViewHolder(
                 tfStatusTitle.text = context.getString(R.string.smvc_voucherlist_status_stopped_text)
             }
         }
-        tfVps.isVisible = voucher.isVps
-        tfSubsidy.isVisible = voucher.isSubsidy
+        setupHeaderSubsidy(voucher)
         tfStatusTitle.setTextColor(processColor)
         cardIndicator.setCardBackgroundColor(processColor)
         iconMenu.setOnClickListener {
             listener.onVoucherListMoreMenuClicked(voucher)
+        }
+    }
+
+    private fun SmvcItemVoucherHeaderBinding.setupHeaderSubsidy(voucher: Voucher) {
+        tfVps.gone()
+        tfSubsidy.gone()
+        if (voucher.isVps) {
+            tfVps.visible()
+        } else if (voucher.isSubsidy) {
+            tfSubsidy.visible()
         }
     }
 

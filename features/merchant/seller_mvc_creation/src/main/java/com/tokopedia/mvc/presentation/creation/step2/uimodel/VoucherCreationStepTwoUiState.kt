@@ -20,7 +20,7 @@ data class VoucherCreationStepTwoUiState(
     val endDateErrorMsg: String = "",
     val validationDate: List<VoucherValidationResult.ValidationDate> = emptyList(),
     val fieldValidated: VoucherCreationStepTwoFieldValidation = VoucherCreationStepTwoFieldValidation.ALL,
-    val error: Throwable? = null
+    val validateField: Boolean = false
 ) {
     fun isInputValid(): Boolean = if (voucherConfiguration.isVoucherPublic) {
         validateWhenVoucherIsPublic()

@@ -73,10 +73,14 @@ class ShareComponentInstanceBuilder @Inject constructor(
             init(listener)
             getImageFromMedia(getImageFromMediaFlag = true)
             setMediaPageSourceId(pageSourceId = ImageGeneratorConstants.ImageGeneratorSourceId.MVC_PRODUCT)
-            setMetaData(
-                tnTitle = title,
-                tnImage = ShareComponentConstant.THUMBNAIL_ICON_IMAGE_URL
-            )
+
+            val iconImageUrl = if (param.isVoucherProduct) {
+                ShareComponentConstant.IMAGE_URL_PRODUCT_VOUCHER_ICON
+            } else {
+                ShareComponentConstant.IMAGE_URL_SHOP_VOUCHER_ICON
+            }
+            setMetaData(tnTitle = title, tnImage = iconImageUrl)
+
             setUtmCampaignData(
                 pageName = ShareComponentConstant.PAGE_NAME,
                 userId = userSession.userId,

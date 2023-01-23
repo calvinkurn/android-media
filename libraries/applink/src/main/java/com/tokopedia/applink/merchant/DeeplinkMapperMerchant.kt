@@ -386,6 +386,10 @@ object DeeplinkMapperMerchant {
         return UriUtil.matchWithPattern(ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL, appLink) != null
     }
 
+    fun isSellerMvcIntroAppLink(deeplink: String): Boolean {
+        return ApplinkConst.SellerApp.SELLER_MVC_INTRO == deeplink
+    }
+
     fun isSellerMvcListAppLink(deeplink: String): Boolean {
         return ApplinkConst.SellerApp.SELLER_MVC_LIST == deeplink
     }
@@ -438,6 +442,10 @@ object DeeplinkMapperMerchant {
             ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL,
             lastSegment
         )
+    }
+
+    fun getRegisteredNavigationForSellerMvcIntro(): String {
+        return ApplinkConstInternalSellerapp.SELLER_MVC_INTRO
     }
 
     fun getRegisteredNavigationForSellerMvcList(): String {

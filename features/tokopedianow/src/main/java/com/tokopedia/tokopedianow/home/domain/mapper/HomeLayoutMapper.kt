@@ -582,9 +582,10 @@ object HomeLayoutMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel?>.updatePlayWidget(channelId: String, totalView: String) {
-        map { it?.layout }.filterIsInstance<HomePlayWidgetUiModel>().forEach {
-            val model = it.playWidgetState.model.copy(
-                items = it.playWidgetState.model.items.map { item ->
+        filter { it?.layout is HomePlayWidgetUiModel }.forEach {
+            val playWidget = it?.layout as HomePlayWidgetUiModel
+            val model = playWidget.playWidgetState.model.copy(
+                items = playWidget.playWidgetState.model.items.map { item ->
                     if (item is PlayWidgetChannelUiModel && item.channelId == channelId) {
                         item.copy(totalView = item.totalView.copy(totalViewFmt = totalView))
                     } else {
@@ -592,10 +593,10 @@ object HomeLayoutMapper {
                     }
                 }
             )
-            val playWidgetState = it.playWidgetState.copy(model = model)
-            val playWidgetUiModel = it.copy(playWidgetState = playWidgetState)
+            val playWidgetState = playWidget.playWidgetState.copy(model = model)
+            val playWidgetUiModel = playWidget.copy(playWidgetState = playWidgetState)
 
-            updateItemById(it.id) {
+            updateItemById(playWidget.id) {
                 HomeLayoutItemUiModel(playWidgetUiModel, HomeLayoutItemState.LOADED)
             }
         }
@@ -614,7 +615,7 @@ object HomeLayoutMapper {
             val recommendations = productRecom.productList
             recommendations.firstOrNull { it.getProductId() == productId } != null
         }?.let { uiModel ->
-            val productRecom = uiModel?.layout as HomeProductRecomUiModel
+            val productRecom = uiModel.layout as HomeProductRecomUiModel
             val recommendations = productRecom.productList.toMutableList()
 
             val product = recommendations.first { it.getProductId() == productId }
@@ -626,9 +627,7 @@ object HomeLayoutMapper {
     }
 
     inline fun<reified T : Visitable<*>> List<HomeLayoutItemUiModel?>.getItem(itemClass: Class<T>): T? {
-        return mapNotNull { it?.layout }.find {
-            it.javaClass == itemClass
-        } as? T
+        return find { it?.layout?.javaClass == itemClass }?.layout as? T
     }
 
     private fun Visitable<*>.getVisitableId(): String? {

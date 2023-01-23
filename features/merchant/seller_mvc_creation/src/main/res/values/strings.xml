@@ -113,17 +113,46 @@
     <string name="smvc_bottomsheet_select_repeat_period_ticker_description">Kupon di beberapa periode berpotensi gagal dibuat karena ada kuota yang habis.</string>
 
     <!--Share Component-->
-    <string name="smvc_placeholder_share_component_outgoing_title">Kupon Produk dari %s</string>
+    <string name="smvc_placeholder_share_component_outgoing_title">Kupon Produk %s</string>
     <string name="smvc_share_component_outgoing_text_description">Yuk, belanja dan pakai Kupon Produknya sekarang!</string>
     <string name="smvc_placeholder_share_component_text_description">Dapatkan Kupon Produk %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
-    <string name="smvc_placeholder_share_component_outgoing_title_product_voucher">Kupon Produk dari %s</string>
-    <string name="smvc_placeholder_share_component_outgoing_title_shop_voucher">Voucher Toko dari %s</string>
-
-    <string name="smvc_placeholder_share_component_text_description_product_voucher">Dapatkan Kupon Produk %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
-    <string name="smvc_placeholder_share_component_text_description_shop_voucher">Dapatkan Voucher Toko %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
+    <string name="smvc_placeholder_share_component_outgoing_title_product_voucher">Kupon Produk %s</string>
+    <string name="smvc_placeholder_share_component_outgoing_title_shop_voucher">Kupon Toko %s</string>
 
     <string name="smvc_share_component_outgoing_text_description_product_voucher">Yuk, belanja dan pakai Kupon Produknya sekarang!</string>
-    <string name="smvc_share_component_outgoing_text_description_shop_voucher">Yuk, belanja dan pakai Voucher Tokonya sekarang!</string>
+    <string name="smvc_share_component_outgoing_text_description_shop_voucher">Yuk, belanja dan pakai Kupon Tokonya sekarang!</string>
+
+    <!--Share Component: Outgoing product voucher description for all buyer. No 1-6 -->
+    <string name="smvc_outgoing_text_description_product_cashback_nominal">Cek kupon ini, deh! Ada cashback %d %s khusus produk pilihan dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_product_cashback_percentage">Cek kupon ini, deh! Ada cashback %d%% hingga %d %s khusus produk pilihan dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_product_free_shipping_nominal">Cek kupon ini, deh! Ada gratis ongkir %d %s buat belanja produk pilihan dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_product_free_shipping_percentage">Cek kupon ini, deh! Ada gratis ongkir %d%% hingga %d %s buat belanja produk pilihan dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_product_discount_nominal">Cek kupon ini, deh! Ada diskon %d %s buat belanja produk pilihan dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_product_discount_percentage">Cek kupon ini, deh! Ada diskon %d%% hingga %d %s buat belanja produk pilihan dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+
+    <!--Share Component: Outgoing shop voucher description for all buyer. No 7-12 -->
+    <string name="smvc_outgoing_text_description_shop_cashback_nominal">Cek kupon ini, deh! Ada cashback %d %s buat semua produk dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_shop_cashback_percentage">Cek kupon ini, deh! Ada cashback %d%% hingga %d %s buat semua produk dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_shop_free_shipping_nominal">Cek kupon ini, deh! Ada gratis ongkir %d %s buat semua produk dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_shop_free_shipping_percentage">Cek kupon ini, deh! Ada gratis ongkir %d%% hingga %d %s buat semua produk dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_shop_discount_nominal">Cek kupon ini, deh! Ada diskon %d %s buat semua produk dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_shop_discount_percentage">Cek kupon ini, deh! Ada diskon %d%% hingga %d %s buat semua produk dari toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+
+    <!--Share Component: Outgoing product voucher description for new follower. No. 13 - 18 -->
+    <string name="smvc_outgoing_text_description_product_nf_cashback_nominal">Cek kupon ini, deh! Ada cashback %d %s khusus produk pilihan buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_product_nf_cashback_percentage">Cek kupon ini, deh! Ada cashback %d%% hingga %d %s khusus produk pilihan buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_product_nf_free_shipping_nominal">Cek kupon ini, deh! Ada gratis ongkir %d %s buat belanja produk pilihan buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_product_nf_free_shipping_percentage">Cek kupon ini, deh! Ada gratis ongkir %d%% hingga %d %s buat belanja produk pilihan buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_product_nf_discount_nominal">Cek kupon ini, deh! Ada diskon %d %s buat belanja produk pilihan buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_product_nf_discount_percentage">Cek kupon ini, deh! Ada diskon %d%% hingga %d %s buat belanja produk pilihan buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+
+    <!--Share Component: Outgoing shop voucher description for new follower. 19 - 24 -->
+    <string name="smvc_outgoing_text_description_shop_nf_cashback_nominal">Cek kupon ini, deh! Ada cashback %d %s buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_shop_nf_cashback_percentage">Cek kupon ini, deh! Ada cashback %d%% hingga %d %s buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_shop_nf_free_shipping_nominal">Cek kupon ini, deh! Ada gratis ongkir %d %s buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_shop_nf_free_shipping_percentage">Cek kupon ini, deh! Ada gratis ongkir %d%% hingga %d %s buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_shop_nf_discount_nominal">Cek kupon ini, deh! Ada diskon %d %s buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
+    <string name="smvc_outgoing_text_description_shop_nf_discount_percentage">Cek kupon ini, deh! Ada diskon %d%% hingga %d %s buat yang baru follow toko %s, berlaku sampai %s, %s WIB. Kuota terbatas, lho!</string>
 
     <string name="bullet_unicode">\u2022</string>
 
@@ -132,7 +161,7 @@
     <string name="mvc_bottomsheet_expense_estimation_point_one">Kuota penggunaan kupon akan berkurang saat transaksi selesai.</string>
     <string name="mvc_bottomsheet_expense_estimation_point_two">1 kuota penggunaan berlaku untuk 1 kali transaksi dari 1 pembeli selama periode berlangsung kupon. Kamu tidak perlu membayar kupon yang tidak digunakan oleh pembeli.</string>
     <string name="mvc_bottomsheet_expense_estimation_footnote_header">Perhitungan pengeluaran</string>
-    <string name="mvc_bottomsheet_expense_estimation_footnote_body">Estimasi = Nominal Promo x Kuota Penggunaan Kupon</string>
+    <string name="mvc_bottomsheet_expense_estimation_footnote_body">Pengeluaran = Nominal Promo x Kuota Penggunaan Kupon</string>
 
     <!--  Promotion Type Bottom Sheet  -->
     <string name="mvc_bottomsheet_promotion_type_title">Tipe Promo</string>
@@ -241,6 +270,7 @@
     <string name="edit_period_time_picker_title">Pilih Waktu</string>
     <string name="edit_period_success_edit_period">Periode kupon %1$s dan semua jadwal berikutnya berhasil diubah.</string>
     <string name="edit_period_calendar_show_tag">TimePicker Show</string>
+    <string name="edit_period_see_remaining_quota">Lihat Sisa Kuota</string>
 
     <!-- Voucher Display -->
     <string name="voucher_bs_coupon_display_title">Tampilan Kupon</string>
@@ -257,7 +287,7 @@
     <string name="smvc_download_voucher_image">Download voucher image</string>
     <string name="smvc_download_voucher">Download Kupon</string>
     <string name="smvc_select_voucher_image_ratio">Pilih ukuran kupon</string>
-    <string name="smvc_download_voucher_description">Download kupon dengan ukuran yang sesuai dengan kebutuhanmu dari 3 ukuran berikut:</string>
+    <string name="smvc_placeholder_download_voucher_description">Download kupon dengan ukuran yang sesuai dengan kebutuhanmu dari %d ukuran berikut:</string>
     <string name="smvc_placeholder_download_voucher_image_success">Kupon %s berhasil di-download</string>
     <string name="smvc_download_voucher_image_failed">Download kupon gagal, cek koneksi internetmu dulu, ya.</string>
     <string name="smvc_storage_permission_enabled_needed">Anda tidak memberikan izin akses untuk Media Penyimpanan.</string>
@@ -268,7 +298,7 @@
     <string name="smvc_horizontal">Horizontal</string>
     <string name="smvc_horizontal_description">Untuk banner toko</string>
 
-    <!--Voucher List-->
+    <!--Summary Page-->
     <string name="smvc_summary_page_title">Ringkasan Kupon</string>
     <string name="smvc_summary_page_preview_button_text">Lihat Tampilan</string>
     <string name="smvc_summary_page_tnc_text"><![CDATA[Saya menyetujui <font color=#00AA5B><b>Syarat & Ketentuan</b></font> Pembuatan Kupon.]]></string>
@@ -315,7 +345,7 @@
     <string name="smvc_start_label">Mulai</string>
     <string name="smvc_end_label">Berakhir</string>
     <string name="smvc_repeat_period_label">Ulangi di Bulan Berikutnya</string>
-    <string name="smvc_repeat_for_label">Ulangi selama</string>
+    <string name="smvc_repeat_for_label">Ulangi Selama</string>
     <string name="smvc_input_count_error">Minimal 5 karakter.</string>
     <string name="smvc_input_empty_error">Kamu belum mengisi informasi ini.</string>
     <string name="smvc_voucher_name_placeholder_label">Contoh Diskon Extra 10%</string>
@@ -363,6 +393,13 @@
     <string name="smvc_create_voucher_confirmation_description">Jika tetap lanjut buat kupon, semua jadwal yang bermasalah tidak akan disertakan.</string>
     <string name="smvc_create_voucher_confirmation_primary_cta_label">Ya, Buat Kupon</string>
     <string name="smvc_create_voucher_confirmation_secondary_cta_label">Batalkan</string>
+    <string name="smvc_larang_label">larang</string>
+    <string name="smvc_pelajari_label">Pelajari</string>
+    <string name="smvc_check_here_label">Cek di sini</string>
+    <string name="smvc_forbidden_words_info_title">Informasi daftar larangan kata</string>
+    <string name="smvc_forbidden_words_info_content">Nama campaign tidak boleh mengandung kata-kata Kejar Diskon, Flash Sale, FlashSale, Toped, Tokopedia, Tkpd, Shopee, Bukalapak, BL, Lazada, kata-kata kasar, atau unsur SARA.</string>
+    <string name="smvc_voucher_creation_step_two_coachmark_title">Buat kupon berulang lebih praktis</string>
+    <string name="smvc_voucher_creation_step_two_coachmark_description">Sekarang kamu bisa ulangi masa aktif kupon untuk beberapa bulan ke depan (maks. 12 bulan) dan bebas tentukan durasinya, lho.</string>
 
     <!--VoucherCreationStepThree-->
     <string name="smvc_creation_step_three_out_of_three_sub_title_label">Langkah 3 dari 3</string>
@@ -435,12 +472,15 @@
     <string name="smvc_intro_voucher_carousel_cashback_1">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_cashback_1.png</string>
     <string name="smvc_intro_voucher_carousel_cashback_2">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_cashback_2.png</string>
 
-    <!--Summary Page-->
+    <!--Quota Info Page-->
     <string name="smvc_quota_info_page_title">Kuota Kupon Toko Saya</string>
     <string name="smvc_quota_info_bottomsheet_title">Sisa kuota per bulan</string>
     <string name="smvc_quota_info_bottomsheet_action_text">Tutup</string>
-    <string name="smvc_quota_info_quota_remaining_format">Sisa Kuota %s</string>
+    <string name="smvc_quota_info_quota_remaining_format">Sisa Kuota: %s</string>
     <string name="smvc_quota_info_quota_button_format">Cek %d Sumber Lainnya</string>
     <string name="smvc_quota_info_quota_total_format">/ %d</string>
+    <string name="smvc_quota_info_quota_source_desc">Kuota Kupon Toko Saya bersumber dari:</string>
+    <string name="smvc_quota_info_quota_remaining_prefix">Sisa Kuota:</string>
+    <string name="smvc_quota_info_date_limit_prefix">Kedaluwarsa:</string>
 
 </resources>

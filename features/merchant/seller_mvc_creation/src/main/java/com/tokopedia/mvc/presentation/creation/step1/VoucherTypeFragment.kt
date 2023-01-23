@@ -277,7 +277,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
         currentVoucherConfiguration: VoucherConfiguration
     ) {
         if (pageMode == PageMode.CREATE) {
-            if (voucherConfiguration.isFinishFilledStepOne) {
+            if (voucherConfiguration.isFinishedFillAllStep()) {
                 navigateToVoucherSummaryPage(voucherConfiguration)
             } else {
                 navigateToVoucherInformationPage(pageMode, currentVoucherConfiguration)

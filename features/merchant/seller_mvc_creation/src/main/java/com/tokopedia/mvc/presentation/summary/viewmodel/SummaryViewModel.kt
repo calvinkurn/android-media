@@ -20,6 +20,7 @@ import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.mvc.R
 
 class SummaryViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
@@ -55,6 +56,13 @@ class SummaryViewModel @Inject constructor(
     }
     val enableCouponTypeChange = Transformations.map(_configuration) {
         it.voucherId == ADDING_VOUCHER_ID
+    }
+    val submitButtonText = Transformations.map(_configuration) {
+        if (it.voucherId == ADDING_VOUCHER_ID) {
+            R.string.smvc_summary_page_submit_text
+        } else {
+            R.string.smvc_save
+        }
     }
 
     private val _products = MutableLiveData<List<SelectedProduct>>()

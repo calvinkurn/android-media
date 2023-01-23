@@ -44,11 +44,8 @@ import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNot
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
+import java.util.ArrayList
 import javax.inject.Inject
 
 @FlowPreview
@@ -357,7 +354,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
 
     private fun presetValue() {
         val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
-        if (pageMode == PageMode.EDIT) {
+        if (currentVoucherConfiguration.isFinishedFillAllStep() || pageMode == PageMode.EDIT) {
             freeShippingInputSectionBinding?.run {
                 tfFreeShippingNominal.editText.setText(currentVoucherConfiguration.benefitIdr.toString())
                 tfFreeShippingMinimumBuy.editText.setText(currentVoucherConfiguration.minPurchase.toString())
@@ -1110,11 +1107,10 @@ class VoucherSettingFragment : BaseDaggerFragment() {
 
     private fun backToPreviousStep(voucherConfiguration: VoucherConfiguration) {
         if (pageMode == PageMode.CREATE) {
-            context?.let { ctx ->
-                VoucherInformationActivity.buildCreateModeIntent(
-                    ctx,
-                    voucherConfiguration
-                )
+            if (voucherConfiguration.isFinishedFillAllStep()) {
+                navigateToVoucherSummaryPage(voucherConfiguration)
+            } else {
+                navigateToVoucherInfoPage(voucherConfiguration)
             }
             activity?.finish()
         } else {
@@ -1125,7 +1121,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun continueToNextStep(voucherConfiguration: VoucherConfiguration) {
         if (pageMode == PageMode.CREATE) {
             if (voucherConfiguration.isVoucherProduct) {
-                if (voucherConfiguration.isFinishFilledStepThree) {
+                if (voucherConfiguration.isFinishedFillAllStep()) {
                     navigateToVoucherSummaryPage(voucherConfiguration)
                 } else {
                     navigateToAddProductPage(voucherConfiguration)
@@ -1138,19 +1134,30 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun navigateToVoucherInfoPage(currentVoucherConfiguration: VoucherConfiguration) {
+        context?.let { ctx ->
+            VoucherInformationActivity.buildCreateModeIntent(
+                ctx,
+                currentVoucherConfiguration
+            )
+        }
+    }
+
     private fun navigateToAddProductPage(currentVoucherConfiguration: VoucherConfiguration) {
-        val intent = AddProductActivity.buildCreateModeIntent(
-            context ?: return,
-            currentVoucherConfiguration
-        )
-        startActivity(intent)
+        val intent = context?.let { ctx ->
+            AddProductActivity.buildCreateModeIntent(
+                ctx,
+                currentVoucherConfiguration.copy(isFinishFilledStepThree = true)
+            )
+        }
+        context?.startActivity(intent)
     }
 
     private fun navigateToVoucherSummaryPage(currentVoucherConfiguration: VoucherConfiguration) {
         context?.let { ctx ->
             SummaryActivity.start(
                 ctx,
-                currentVoucherConfiguration
+                currentVoucherConfiguration.copy(isFinishFilledStepThree = true)
             )
         }
         activity?.finish()
