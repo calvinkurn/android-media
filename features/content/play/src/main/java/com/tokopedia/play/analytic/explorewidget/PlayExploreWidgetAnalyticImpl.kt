@@ -71,10 +71,10 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             .send()
     }
 
-    override fun impressExploreTab(categoryName: String, channels: List<ChipWidgetUiModel>, position: Int) {
+    override fun impressExploreTab(categoryName: String, chips: Map<ChipWidgetUiModel, Int>) {
         val items = arrayListOf<Bundle>().apply {
-            channels.forEach {
-                add(itemToBundle(it, position))
+            chips.forEach {
+                add(itemToBundle(it.key, it.value))
             }
         }
 
@@ -82,7 +82,7 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             putString(TrackAppUtils.EVENT, "view_item")
             putString(KEY_EVENT_CATEGORY, KEY_TRACK_GROUP_CHAT_ROOM)
             putString(KEY_EVENT_ACTION, "impression - category tab")
-            putString(KEY_EVENT_LABEL, "$categoryName - $channelId $channelType")
+            putString(KEY_EVENT_LABEL, "$categoryName - $channelId - $channelType")
             putString(KEY_CURRENT_SITE, KEY_TRACK_CURRENT_SITE)
             putString(KEY_SESSION_IRIS, sessionIris)
             putString(KEY_USER_ID, userId)

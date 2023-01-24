@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -27,6 +28,8 @@ import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
 import com.tokopedia.play.ui.explorewidget.ChipItemDecoration
 import com.tokopedia.play.ui.explorewidget.ChipsViewHolder
 import com.tokopedia.play.ui.explorewidget.ChipsWidgetAdapter
+import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
+import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.util.isAnyChanged
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.withCache
@@ -84,6 +87,15 @@ class PlayExploreWidgetFragment @Inject constructor(
         }
     }
 
+    private val chipsScrollListener by lazy(LazyThreadSafetyMode.NONE) {
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                    analytic?.impressExploreTab(categoryName = viewModel.selectedChips, chips = getVisibleChips())
+            }
+        }
+    }
+
     private val chipsAdapter = ChipsWidgetAdapter(this)
     private val chipDecoration by lazy(LazyThreadSafetyMode.NONE) {
         ChipItemDecoration(binding.rvChips.context)
@@ -100,6 +112,10 @@ class PlayExploreWidgetFragment @Inject constructor(
                 viewModel.submitAction(EmptyPageWidget)
             }
         }
+    }
+
+    private val chipsLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
+        LinearLayoutManager(binding.rvChips.context, RecyclerView.HORIZONTAL, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -144,6 +160,8 @@ class PlayExploreWidgetFragment @Inject constructor(
     private fun setupView() {
         binding.rvChips.adapter = chipsAdapter
         binding.rvChips.addItemDecoration(chipDecoration)
+        binding.rvChips.layoutManager = chipsLayoutManager
+        binding.rvChips.addOnScrollListener(chipsScrollListener)
 
         binding.rvWidgets.adapter = widgetAdapter
         binding.rvWidgets.layoutManager = GridLayoutManager(binding.rvWidgets.context, SPAN_CHANNEL)
@@ -296,10 +314,6 @@ class PlayExploreWidgetFragment @Inject constructor(
         analytic?.clickExploreTab(item.text)
     }
 
-    override fun onChipsImpressed(item: ChipWidgetUiModel, position: Int) {
-        analytic?.impressExploreTab(categoryName = item.text, chips = arrayListOf(item), position = position)
-    }
-
     /**
      * Card Widget
      */
@@ -351,6 +365,20 @@ class PlayExploreWidgetFragment @Inject constructor(
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         dismiss()
+    }
+
+    private fun getVisibleChips(): Map<ChipWidgetUiModel, Int> {
+        val chips = chipsAdapter.getItems()
+        if (chips.isNotEmpty()) {
+            val firstPos = chipsLayoutManager.findFirstVisibleItemPosition()
+            val endPos = chipsLayoutManager.findLastVisibleItemPosition()
+            if (firstPos > -1 && endPos < chips.size) {
+                return (firstPos..endPos)
+                    .filter {chips[it] is ChipWidgetUiModel }
+                    .associateBy { chips[it] as ChipWidgetUiModel}
+            }
+        }
+        return emptyMap()
     }
 
     companion object {
