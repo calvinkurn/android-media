@@ -779,15 +779,18 @@ class FeedPlusFragment :
                 Observer {
                     when (it) {
                         is Success -> {
+                            val indexNeedToBeChanged = mutableSetOf<Int>()
+
                             adapter.getlist().mapIndexed { index, item ->
-                                var isChanged = false
                                 if (item is ShopRecomWidgetModel) {
                                     val newItems = item.shopRecomUiModel.items.toList()
+                                    var isChanged = false
 
                                     newItems.map { recomItem ->
                                         it.data[recomItem.id.toString()]?.let { followStatus ->
                                             recomItem.state =
                                                 if (followStatus) ShopRecomFollowState.FOLLOW else ShopRecomFollowState.UNFOLLOW
+                                            indexNeedToBeChanged.add(index)
                                             isChanged = true
                                         }
                                     }
@@ -822,27 +825,31 @@ class FeedPlusFragment :
                                             when (item) {
                                                 is DynamicPostModel -> {
                                                     item.header.followCta.isFollow = followStatus
-                                                    isChanged = true
+                                                    indexNeedToBeChanged.add(index)
                                                 }
                                                 is DynamicPostUiModel -> {
                                                     item.feedXCard.followers.isFollowed =
                                                         followStatus
-                                                    isChanged = true
+                                                    indexNeedToBeChanged.add(index)
                                                 }
                                                 else -> {
                                                 }
                                             }
                                         }
                                     }
-
-                                    if (isChanged) {
-                                        adapter.notifyItemChanged(
-                                            index,
-                                            DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
-                                        )
-                                    }
                                 }
                             }
+
+                            if (indexNeedToBeChanged.isNotEmpty()) {
+                                val indexSorted = indexNeedToBeChanged.sorted()
+                                val count = indexSorted[indexSorted.size - 1] - indexSorted[0]
+                                adapter.notifyItemRangeChanged(
+                                    indexSorted[0],
+                                    count,
+                                    DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
+                                )
+                            }
+
                             feedViewModel.clearFollowIdToUpdate()
                         }
                         is Fail -> {}
