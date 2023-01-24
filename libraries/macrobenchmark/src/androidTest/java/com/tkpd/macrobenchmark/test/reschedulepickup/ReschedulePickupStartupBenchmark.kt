@@ -1,4 +1,4 @@
-package com.tkpd.macrobenchmark.test.reschedule_pickup
+package com.tkpd.macrobenchmark.test.reschedulepickup
 
 import androidx.benchmark.macro.StartupMode
 import androidx.test.filters.LargeTest
