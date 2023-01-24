@@ -240,7 +240,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private PublishSubject<Boolean> logisticDonePublisher = null;
     private PublishSubject<Boolean> logisticPromoDonePublisher = null;
 
-    private boolean isUsingDynamicDataPassing = false;
+    public boolean isUsingDynamicDataPassing = false;
     private DynamicDataPassingParamRequest dynamicDataParam;
     private String dynamicData = "";
 
@@ -2959,11 +2959,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public boolean isUsingDynamicDataPassing() {
         return isUsingDynamicDataPassing;
-    }
-
-    @Override
-    public String getDynamicData() {
-        return dynamicData;
     }
 
     @Override

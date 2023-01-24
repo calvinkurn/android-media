@@ -13,11 +13,16 @@ import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
+import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
@@ -167,10 +172,32 @@ class ShipmentPresenterUpdateDynamicDataTest {
     }
 
     @Test
-    fun updateDynamicData_throwsException() {
+    fun updateDynamicData_throwsCartResponseErrorException() {
         // Given
         val error = CartResponseErrorException("error")
 
+        coEvery {
+            updateDynamicDataPassingUseCase.setParams(any())
+        } just Runs
+        coEvery { updateDynamicDataPassingUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(error)
+        }
+
+        // When
+        presenter.validateDynamicData()
+        presenter.updateDynamicData(updateDynamicDataParams, true)
+
+        // Then
+        verifyOrder {
+            view.showToastError(any())
+            view.stopTrace()
+        }
+    }
+
+    @Test
+    fun updateDynamicData_throwsException() {
+        // Given
+        val error = Exception("error")
         coEvery {
             updateDynamicDataPassingUseCase.setParams(any())
         } just Runs
@@ -199,6 +226,135 @@ class ShipmentPresenterUpdateDynamicDataTest {
             getShipmentAddressFormV3UseCase.cancelJobs()
             eligibleForAddressUseCase.cancelJobs()
             updateDynamicDataPassingUseCase.cancelJobs()
+        }
+    }
+
+    @Test
+    fun `WHEN update addOn product level data bottomsheet and is using ddp`() {
+        // Given
+        coEvery {
+            getShipmentAddressFormV3UseCase.setParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
+                CartShipmentAddressFormData(
+                    errorCode = 0,
+                    groupAddress = emptyList(),
+                    isUsingDdp = true
+                )
+            )
+        }
+        val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
+        shipmentCartItemModelList.add(
+            ShipmentCartItemModel().apply {
+                cartItemModels = arrayListOf(
+                    CartItemModel().apply {
+                        cartId = 88
+                        cartString = "239594-0-301643"
+                    }
+                )
+            }
+        )
+
+        val addOnResultList = arrayListOf<AddOnResult>()
+        addOnResultList.add(
+            AddOnResult().apply {
+                addOnKey = "239594-0-301643-88"
+            }
+        )
+        presenter.shipmentCartItemModelList = shipmentCartItemModelList
+
+        // When
+        presenter.processInitialLoadCheckoutPage(
+            false,
+            false,
+            false,
+            false,
+            false,
+            null,
+            "",
+            "",
+            false
+        )
+        presenter.updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
+
+        // Then
+        verify {
+            presenter.isUsingDynamicDataPassing = true
+            view.updateAddOnsData(AddOnsDataModel(), 0)
+            view.updateAddOnsDynamicDataPassing(any(), any(), any(), any(), any())
+        }
+    }
+
+    @Test
+    fun `WHEN update addOn product level data bottomsheet and not using ddp`() {
+        // Given
+        coEvery {
+            getShipmentAddressFormV3UseCase.setParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
+                CartShipmentAddressFormData(
+                    errorCode = 0,
+                    groupAddress = emptyList(),
+                    isUsingDdp = true
+                )
+            )
+        }
+        val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
+        shipmentCartItemModelList.add(
+            ShipmentCartItemModel().apply {
+                cartItemModels = arrayListOf(
+                    CartItemModel().apply {
+                        cartId = 88
+                        cartString = "239594-0-301643"
+                    }
+                )
+            }
+        )
+
+        val addOnResultList = arrayListOf<AddOnResult>()
+        addOnResultList.add(
+            AddOnResult().apply {
+                addOnKey = "239594-0-301643-88"
+            }
+        )
+        presenter.shipmentCartItemModelList = shipmentCartItemModelList
+
+        // When
+        presenter.processInitialLoadCheckoutPage(
+            false,
+            false,
+            false,
+            false,
+            false,
+            null,
+            "",
+            "",
+            false
+        )
+        presenter.updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
+
+        // Then
+        verify {
+            view.updateAddOnsData(AddOnsDataModel(), 0)
+            view.updateAddOnsDynamicDataPassing(any(), any(), any(), any(), any())
         }
     }
 }
