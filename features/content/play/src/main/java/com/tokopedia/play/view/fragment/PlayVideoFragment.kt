@@ -404,8 +404,8 @@ class PlayVideoFragment @Inject constructor(
         val isShown = startingChannel == channelId || channelId == "0" // 0 for handling channel recom
 
         playViewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
+            analytic.screenWithSwipeCoachMark(isShown = isShown)
             if (!orientation.isLandscape && isShown) {
-                analytic.screenWithSwipeCoachMark(isShown = true)
                 onboardingView?.showAnimated()
             }
         })
