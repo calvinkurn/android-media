@@ -1396,34 +1396,31 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun sendNewRelicLogRelatedToCsat(pojo: ChatSocketPojo, messageId: String) {
-        try {
-            val attachmentType = chatResponse?.attachment?.type
-            if (attachmentType == TYPE_HELPFULL_QUESTION) {
-                val helpFullQuestionPojo = GsonBuilder().create()
-                    .fromJson<HelpFullQuestionPojo>(
-                        pojo.attachment?.attributes,
-                        HelpFullQuestionPojo::class.java
-                    )
-                ChatbotNewRelicLogger.logNewRelicForCSAT(
-                    messageId,
-                    TYPE_HELPFULL_QUESTION,
-                    helpFullQuestionPojo.helpfulQuestion?.caseId.toBlankOrString(),
-                    helpFullQuestionPojo.helpfulQuestion?.caseChatId.toBlankOrString()
+        val attachmentType = chatResponse?.attachment?.type
+        if (attachmentType == TYPE_HELPFULL_QUESTION) {
+            val helpFullQuestionPojo = GsonBuilder().create()
+                .fromJson<HelpFullQuestionPojo>(
+                    pojo.attachment?.attributes,
+                    HelpFullQuestionPojo::class.java
                 )
-            } else if (attachmentType == TYPE_CSAT_OPTIONS) {
-                val csatAttributesPojo = GsonBuilder().create()
-                    .fromJson<CsatAttributesPojo>(
-                        pojo.attachment?.attributes,
-                        CsatAttributesPojo::class.java
-                    )
-                ChatbotNewRelicLogger.logNewRelicForCSAT(
-                    messageId,
-                    TYPE_CSAT_OPTIONS,
-                    csatAttributesPojo.csat?.caseId.toBlankOrString(),
-                    csatAttributesPojo.csat?.caseChatId.toBlankOrString()
+            ChatbotNewRelicLogger.logNewRelicForCSAT(
+                messageId,
+                TYPE_HELPFULL_QUESTION,
+                helpFullQuestionPojo.helpfulQuestion?.caseId.toBlankOrString(),
+                helpFullQuestionPojo.helpfulQuestion?.caseChatId.toBlankOrString()
+            )
+        } else if (attachmentType == TYPE_CSAT_OPTIONS) {
+            val csatAttributesPojo = GsonBuilder().create()
+                .fromJson<CsatAttributesPojo>(
+                    pojo.attachment?.attributes,
+                    CsatAttributesPojo::class.java
                 )
-            }
-        } catch (e: JsonSyntaxException) {
+            ChatbotNewRelicLogger.logNewRelicForCSAT(
+                messageId,
+                TYPE_CSAT_OPTIONS,
+                csatAttributesPojo.csat?.caseId.toBlankOrString(),
+                csatAttributesPojo.csat?.caseChatId.toBlankOrString()
+            )
         }
     }
 }
