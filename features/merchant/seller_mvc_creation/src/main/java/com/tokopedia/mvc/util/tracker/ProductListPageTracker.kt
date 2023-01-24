@@ -38,8 +38,6 @@ class ProductListPageTracker @Inject constructor(private val userSession: UserSe
     }
 
     fun sendClickToolbarBackButtonWithProductSelectedEvent(pageMode: PageMode) {
-
-
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
             .setEventAction("click kembali arrow - product selected - fourth step")

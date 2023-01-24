@@ -181,7 +181,7 @@ class ProductListFragment : BaseDaggerFragment() {
 
     private fun setupButton() {
         binding?.btnContinue?.setOnClickListener {
-            tracker.sendButtonContinueClickEvent()
+            tracker.sendButtonContinueClickEvent(pageMode ?: return@setOnClickListener)
             viewModel.processEvent(ProductListEvent.TapContinueButton)
         }
         binding?.btnBack?.setOnClickListener { backToPreviousPage() }
@@ -235,15 +235,15 @@ class ProductListFragment : BaseDaggerFragment() {
             is ProductListEffect.ShowError -> binding?.cardUnify2?.showToasterError(effect.error)
             ProductListEffect.BackToPreviousPage -> backToPreviousPage()
             is ProductListEffect.RedirectToAddProductPage -> redirectToAddProductPage(effect.voucherConfiguration)
-            is ProductListEffect.RedirectToPreviousPage -> redirectToPreviousPage(effect.selectedProductCount)
+            is ProductListEffect.RedirectToPreviousPage -> redirectToPreviousPage(effect.selectedProductCount, effect.pageMode)
         }
     }
 
-    private fun redirectToPreviousPage(selectedProductCount: Int) {
+    private fun redirectToPreviousPage(selectedProductCount: Int, pageMode: PageMode) {
         if (selectedProductCount.isZero()) {
-            tracker.sendClickToolbarBackButtonEvent()
+            tracker.sendClickToolbarBackButtonEvent(pageMode)
         } else {
-            tracker.sendClickToolbarBackButtonWithProductSelectedEvent()
+            tracker.sendClickToolbarBackButtonWithProductSelectedEvent(pageMode)
         }
 
         activity?.finish()

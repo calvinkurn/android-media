@@ -156,7 +156,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     private fun registerBackPressEvent() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                tracker.sendClickButtonBackToPreviousPageEvent()
+                tracker.sendClickButtonBackToPreviousPageEvent(pageMode ?: return)
                 activity?.finish()
             }
         }
@@ -175,7 +175,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     private fun setupToolbar() {
         binding?.header?.setNavigationOnClickListener {
-            tracker.sendClickToolbarBackButtonEvent()
+            tracker.sendClickToolbarBackButtonEvent(pageMode ?: return@setNavigationOnClickListener)
             activity?.finish()
         }
         binding?.header?.headerSubTitle = getString(R.string.smvc_add_product_subtitle)
@@ -183,7 +183,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     private fun setupButton() {
         binding?.btnAddProduct?.setOnClickListener {
-            tracker.sendClickAddProductButtonEvent()
+            tracker.sendClickAddProductButtonEvent(pageMode ?: return@setOnClickListener)
 
             if (pageMode == PageMode.CREATE) {
                 viewModel.processEvent(AddProductEvent.ConfirmAddProduct)

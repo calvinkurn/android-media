@@ -28,5 +28,5 @@ sealed class ProductListEffect {
     object ProductDeleted : ProductListEffect()
     data class BulkDeleteProductSuccess(val deletedProductCount : Int) : ProductListEffect()
     data class ShowError(val error: Throwable) : ProductListEffect()
-    data class RedirectToPreviousPage(val selectedProductCount: Int) : ProductListEffect()
+    data class RedirectToPreviousPage(val selectedProductCount: Int, val pageMode: PageMode) : ProductListEffect()
 }
