@@ -154,5 +154,6 @@ object TopAdsDashboardConstant {
         const val OTHER_GOLD_OS_VALUE = "other-goldos"
         const val TOP_ADS_DASHBOARD_VALUE = "top_ads_dashboard"
         const val IS_BONUS_ZERO = "Bonus Rp0"
+        const val TIME_DURATION_FOR_INTERRUPT_SHEET  = 30
     }
 }

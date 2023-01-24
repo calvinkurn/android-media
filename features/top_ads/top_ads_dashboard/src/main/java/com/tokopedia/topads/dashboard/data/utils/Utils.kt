@@ -30,6 +30,7 @@ import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.extension.ZERO
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TIME_DURATION_FOR_INTERRUPT_SHEET
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_ADS_TOP_UP_CREDIT_SP_KEY_NAME
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_ADS_TOP_UP_CREDIT_SP_NAME
 import com.tokopedia.unifycomponents.SearchBarUnify
@@ -283,8 +284,8 @@ object Utils {
         } else {
             val currentTime = Calendar.getInstance().timeInMillis
             val timeDiffMillis = currentTime - storedTime
-            val days = timeDiffMillis/(1000*60)
-            if (days >= 0) {
+            val days = timeDiffMillis/(1000*60*60*24)
+            if (days > TIME_DURATION_FOR_INTERRUPT_SHEET) {
                 storeNewTime(currentTime, sharedPref)
                 return true
             }

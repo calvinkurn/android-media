@@ -37,7 +37,7 @@ class TopAdsAddCreditActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    override fun getNewFragment() = null
+    override fun getNewFragment(): Fragment? = null
     private var creditResponse: CreditResponse? = null
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
