@@ -476,12 +476,9 @@ class ShippingWidget : ConstraintLayout {
     }
 
     private fun getSingleShippingTitleForScheduleWidget(
-        shipmentCartItemModel: ShipmentCartItemModel,
         selectedCourierItemData: CourierItemData
     ): CharSequence? {
-        return if (shipmentCartItemModel.voucherLogisticItemUiModel != null &&
-            selectedCourierItemData.freeShippingChosenCourierTitle.isNotEmpty()
-        ) {
+        return if (selectedCourierItemData.freeShippingChosenCourierTitle.isNotEmpty()) {
             // Change duration to promo title after promo is applied
             selectedCourierItemData.freeShippingChosenCourierTitle.convertToSpannedString()
         } else {
@@ -704,7 +701,6 @@ class ShippingWidget : ConstraintLayout {
 
         binding?.shippingNowWidget?.bind(
             titleNow2H = getSingleShippingTitleForScheduleWidget(
-                shipmentCartItemModel = shipmentCartItemModel,
                 selectedCourierItemData = selectedCourierItemData
             ),
             descriptionNow2H = getSingleShippingLabelEta(selectedCourierItemData),

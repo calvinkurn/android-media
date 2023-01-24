@@ -37,6 +37,8 @@ class ShippingScheduleWidget : ConstraintLayout {
     private var binding: ShippingNowWidgetBinding? = null
     private var mListener: ShippingScheduleWidgetListener? = null
     private var scheduleDeliveryPreferences: ScheduleDeliveryPreferences? = null
+    private var coachMarkHandler: Handler? = null
+    private var coachMarkRunnable: Runnable? = null
 
     interface ShippingScheduleWidgetListener {
         fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel)
@@ -219,8 +221,10 @@ class ShippingScheduleWidget : ConstraintLayout {
 
     private fun ItemShipmentNowTimeOptionBinding.showCoachMark(isShow: Boolean) {
         if (isShow) {
-            delayed {
+            coachMarkRunnable = Runnable {
                 rightIcon.apply {
+                    scheduleDeliveryPreferences?.isDisplayedCoachmark = true
+
                     val coachMarkItem = ArrayList<CoachMark2Item>()
                     val coachMark = CoachMark2(context)
                     coachMarkItem.add(
@@ -231,20 +235,16 @@ class ShippingScheduleWidget : ConstraintLayout {
                             CoachMark2.POSITION_BOTTOM
                         )
                     )
-                    coachMark.isOutsideTouchable = true
+                    coachMark.isOutsideTouchable = false
                     coachMark.showCoachMark(coachMarkItem)
-                    coachMark.setOnDismissListener {
-                        scheduleDeliveryPreferences?.isDisplayedCoachmark = true
-                    }
                 }
             }
-        }
-    }
 
-    private fun delayed(run: () -> Unit) {
-        Handler().postDelayed({
-            run.invoke()
-        }, DELAY_SHOWING_COACHMARK)
+            coachMarkHandler = Handler()
+            coachMarkRunnable?.apply {
+                coachMarkHandler?.postDelayed(this, DELAY_SHOWING_COACHMARK)
+            }
+        }
     }
 
     private fun ItemShipmentNowTimeOptionBinding.setTimeOptionEnable(isEnable: Boolean) {
@@ -323,7 +323,18 @@ class ShippingScheduleWidget : ConstraintLayout {
         }
     }
 
+    private fun removeCoachmarkHandler() {
+        coachMarkRunnable?.apply {
+            coachMarkHandler?.removeCallbacks(this)
+        }
+    }
+
+    override fun onDetachedFromWindow() {
+        removeCoachmarkHandler()
+        super.onDetachedFromWindow()
+    }
+
     companion object {
-        private const val DELAY_SHOWING_COACHMARK: Long = 300
+        private const val DELAY_SHOWING_COACHMARK: Long = 500
     }
 }
