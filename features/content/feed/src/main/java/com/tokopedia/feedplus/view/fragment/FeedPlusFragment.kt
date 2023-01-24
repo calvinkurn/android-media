@@ -789,6 +789,8 @@ class FeedPlusFragment :
                                             isChanged = true
                                         }
                                     }
+                                    if (isChanged) adapter.updateShopRecomWidget(item)
+
                                 } else {
                                     val shopId = when (item) {
                                         is DynamicPostModel -> {
@@ -815,12 +817,13 @@ class FeedPlusFragment :
                                             }
                                         }
                                     }
+
+                                    if (isChanged)
+                                        adapter.notifyItemChanged(
+                                            index,
+                                            DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
+                                        )
                                 }
-                                if (isChanged)
-                                    adapter.notifyItemChanged(
-                                        index,
-                                        DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
-                                    )
                             }
                             feedViewModel.clearFollowIdToUpdate()
                         }
