@@ -22,7 +22,8 @@
             android:layout_height="40dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_url_src="https://images.tokopedia.net/img/android/review/ic_bulk_review_announcement.png" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_bulk_review_announcement"
