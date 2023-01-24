@@ -79,19 +79,20 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
         }
 
         val dataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT, "promoView")
+            putString(TrackAppUtils.EVENT, "view_item")
             putString(KEY_EVENT_CATEGORY, KEY_TRACK_GROUP_CHAT_ROOM)
             putString(KEY_EVENT_ACTION, "impression - category tab")
             putString(KEY_EVENT_LABEL, "$categoryName - $channelId $channelType")
             putString(KEY_CURRENT_SITE, KEY_TRACK_CURRENT_SITE)
             putString(KEY_SESSION_IRIS, sessionIris)
             putString(KEY_USER_ID, userId)
+            putString(KEY_TRACK_TRACKER_ID, "39858")
             putString(KEY_BUSINESS_UNIT, KEY_TRACK_BUSINESS_UNIT)
-            putParcelableArrayList("items", items)
+            putParcelableArrayList("promotions", items)
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            "promotions", dataLayer
+            "view_item", dataLayer
         )
     }
 
