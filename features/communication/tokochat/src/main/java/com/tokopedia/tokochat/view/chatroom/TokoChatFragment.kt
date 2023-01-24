@@ -227,7 +227,6 @@ open class TokoChatFragment :
         observeTokoChatBackground()
         observeChatRoomTicker()
         observeChannelDetails()
-        observeMemberLeft()
         observeLoadOrderTransactionStatus()
         observeUpdateOrderTransactionStatus()
         observeChatConnection()
@@ -440,6 +439,7 @@ open class TokoChatFragment :
                     handleFailGetChannelDetails(it.throwable)
                 }
             }
+            observeMemberLeft()
         }
     }
 
@@ -496,7 +496,9 @@ open class TokoChatFragment :
         // reset member left live data before observe to remove old data
         viewModel.resetMemberLeft()
         observe(viewModel.getMemberLeft()) {
-            showUnavailableBottomSheet()
+            if (it != null && it != headerUiModel?.id) {
+                showUnavailableBottomSheet()
+            }
         }
     }
 

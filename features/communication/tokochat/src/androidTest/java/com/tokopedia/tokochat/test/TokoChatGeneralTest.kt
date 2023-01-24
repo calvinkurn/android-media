@@ -77,10 +77,10 @@ class TokoChatGeneralTest : BaseTokoChatTest() {
         // When
         launchChatRoomActivity()
         val adapter = getTokoChatAdapter()
-        val lastItem = adapter.lastIndex
+        val position = adapter.lastIndex - 1
 
         // Then
-        HeaderDateResult.assertHeaderDateVisibility(position = lastItem, isVisible = true)
+        HeaderDateResult.assertHeaderDateVisibility(position = position, isVisible = true)
     }
 
     @Test
@@ -104,7 +104,9 @@ class TokoChatGeneralTest : BaseTokoChatTest() {
         ReplyAreaRobot.typeInReplyArea(dummyText)
 
         // Then
-        ReplyAreaResult.assertButtonReply(isDisabled = false)
+        ReplyAreaResult.assertNoSnackbarText(
+            "Oops, tulis pesan dulu ya sebelum kirim chat."
+        )
     }
 
     @Test
@@ -113,8 +115,11 @@ class TokoChatGeneralTest : BaseTokoChatTest() {
         launchChatRoomActivity()
         ReplyAreaRobot.typeInReplyArea("Test 123")
         ReplyAreaRobot.clearReplyArea()
+        ReplyAreaRobot.clickReplyButton()
 
         // Then
-        ReplyAreaResult.assertButtonReply(isDisabled = true)
+        ReplyAreaResult.assertSnackbarText(
+            "Oops, tulis pesan dulu ya sebelum kirim chat."
+        )
     }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.tokochat.test.robot.reply_area
 
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions.clearText
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.tokochat_common.R
@@ -18,5 +19,11 @@ object ReplyAreaRobot {
         Espresso.onView(
             ViewMatchers.withId(R.id.tokochat_tf_new_comment)
         ).perform(clearText())
+    }
+
+    fun clickReplyButton() {
+        Espresso.onView(
+            ViewMatchers.withId(R.id.tokochat_ic_send_btn)
+        ).perform(click())
     }
 }
