@@ -19,7 +19,9 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.FinalAdResponse
+import com.tokopedia.topads.common.data.response.TopadsManageGroupAdsResponse
 import com.tokopedia.topads.create.databinding.MpAdGroupFragmentBinding
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.adapter.adgrouplist.AdGroupListAdapter
@@ -27,6 +29,7 @@ import com.tokopedia.topads.create.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupDetailViewActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
+import com.tokopedia.topads.trackers.MpTracker
 import com.tokopedia.topads.view.activity.RoutingCallback
 import com.tokopedia.topads.view.adapter.adgrouplist.model.ErrorUiModel
 import com.tokopedia.topads.view.adapter.adgrouplist.typefactory.AdGroupTypeFactory
@@ -35,6 +38,7 @@ import com.tokopedia.topads.view.adapter.adgrouplist.viewholder.AdGroupViewHolde
 import com.tokopedia.topads.view.adapter.adgrouplist.viewholder.CreateAdGroupViewHolder
 import com.tokopedia.topads.view.adapter.adgrouplist.viewholder.ErrorViewHolder
 import com.tokopedia.topads.view.adapter.adgrouplist.viewholder.ReloadInfiniteViewHolder
+import com.tokopedia.topads.view.customviews.AdGroupFilterBottomSheet
 import com.tokopedia.topads.view.model.MpAdsGroupsViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -112,7 +116,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         setupRecyclerView()
         setupCta()
         attachFilterClickListener()
-        attachSearchQueryListener()
+        setupAdSearchBar()
         observeViewModel()
         adGroupViewModel.loadFirstPage()
     }
@@ -120,6 +124,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
     private fun setupHeader(){
         binding?.adGroupHeader?.apply {
             setNavigationOnClickListener {
+                MpTracker.clickCloseAdGroupModal()
                 activity?.onBackPressed()
             }
         }
@@ -140,7 +145,8 @@ class MpAdGroupFragment : BaseDaggerFragment(),
             isEnabled = false
             setOnClickListener {
                 isLoading = true
-               adGroupViewModel.createTopAdsGroup(productId)
+               adGroupViewModel.moveTopAdsGroup(productId)
+                MpTracker.clickAdGroupSimpanCta()
             }
         }
     }
@@ -153,7 +159,12 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun attachSearchQueryListener(){
+    private fun setupAdSearchBar(){
+        binding?.adGroupSearch?.searchBarTextField?.setOnFocusChangeListener { _ , focus ->
+            if(focus){
+                MpTracker.clickAdSearchBar()
+            }
+        }
         binding?.adGroupSearch?.searchBarTextField?.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
@@ -168,11 +179,12 @@ class MpAdGroupFragment : BaseDaggerFragment(),
     private fun observeViewModel(){
         adGroupViewModel.mainListLiveData.observe(viewLifecycleOwner,::submitListToAdapter)
         adGroupViewModel.hasNextLiveData.observe(viewLifecycleOwner,::onMoreGroupsLoaded)
-        adGroupViewModel.createAdGroupLiveData.observe(viewLifecycleOwner,::onTopadsCreditCheck)
+        adGroupViewModel.topadsCreditLiveData.observe(viewLifecycleOwner,::onTopadsCreditCheck)
     }
 
     private fun attachFilterClickListener(){
         binding?.adGroupFilterBtn?.setOnClickListener {
+            MpTracker.clickAdGroupSortCta()
             showFilterBottomSheet()
         }
     }
@@ -201,14 +213,19 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         endlessScrollListener?.setHasNextPage(hasNext)
     }
 
-    private fun onTopadsCreditCheck(data:Result<FinalAdResponse>){
-        when(data){
+    private fun onTopadsCreditCheck(result:Result<Pair<TopadsManageGroupAdsResponse,Deposit>>){
+        when(result){
             is Success ->{
-                openSuccessDialog()
+                val depositAmount = result.data.second.topadsDashboardDeposits.data.amount
+                if(depositAmount > 0){
+                    val groupId = result.data.first.topAdsManageGroupAds.groupResponse.data.id
+                    openSuccessDialog(groupId.toString())
+                }
+                else{
+                    openInsufficientCreditsDialog()
+                }
             }
-            is Fail -> {
-                openInsufficientCreditsDialog()
-            }
+            is Fail -> {}
         }
     }
 
@@ -234,7 +251,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
 
     // Filter Logic
     private fun showFilterBottomSheet(){
-      FilterGeneralDetailBottomSheet().also {
+      getFilterBottomSheet().also {
           it.show(
               fragmentManager = childFragmentManager,
               filter = getFilerData(),
@@ -242,6 +259,20 @@ class MpAdGroupFragment : BaseDaggerFragment(),
               buttonApplyFilterDetailText = context?.getString(R.string.ad_group_filter_bottomsheet_cta)
           )
       }
+    }
+
+    private fun getFilterBottomSheet() : FilterGeneralDetailBottomSheet{
+        return AdGroupFilterBottomSheet{ option, isChecked ->
+            if(isChecked){
+                MpTracker.apply {
+                    when(option.value){
+                        IMPRESSION_VALUE -> clickAdGroupSortByImpression()
+                        CLICK_VALUE -> clickAdGroupSortByClick()
+                        CONVERSION_VALUE -> clickAdGroupSortByOrder()
+                    }
+                }
+            }
+        }
     }
 
     private fun getFilerData() = Filter(
@@ -255,11 +286,11 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         val conversionText = context?.getString(R.string.ad_group_conversion).orEmpty()
         return listOf(
             Option(name = impressionText, key = impressionText, value = IMPRESSION_VALUE, inputType = Option.INPUT_TYPE_RADIO,
-                inputState = "${isFilterOptionSelected(impressionText)}"),
+                inputState = "${isFilterOptionSelected(IMPRESSION_VALUE)}"),
             Option(name = clickText, key = clickText, value = CLICK_VALUE, inputType = Option.INPUT_TYPE_RADIO,
-                inputState = "${isFilterOptionSelected(clickText)}"),
+                inputState = "${isFilterOptionSelected(CLICK_VALUE)}"),
             Option(name = conversionText, key = conversionText, value = CONVERSION_VALUE, inputType = Option.INPUT_TYPE_RADIO,
-                inputState = "${isFilterOptionSelected(conversionText)}")
+                inputState = "${isFilterOptionSelected(CONVERSION_VALUE)}")
         )
     }
 
@@ -267,14 +298,12 @@ class MpAdGroupFragment : BaseDaggerFragment(),
 
     override fun onApplyButtonClicked(optionList: List<Option>?) {
         optionList?.let { it1 ->
+            adGroupViewModel.sortParam = ""
             it1.forEach {
                 if(it.inputState=="true"){
-                  adGroupViewModel.sortParam = it.key
-                  resetAdGroupList()
-                  return
+                  adGroupViewModel.sortParam = it.value
                 }
             }
-            adGroupViewModel.sortParam = ""
             resetAdGroupList()
         }
     }
@@ -282,8 +311,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
 
     //Call this method to reset the ad group list
     private fun resetAdGroupList(){
-        removeRecyclerViewScrollListeners()
-        addRecyclerViewScrollListeners()
+        endlessScrollListener?.resetState()
         adGroupViewModel.loadFirstPage()
     }
 
@@ -295,9 +323,11 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         if(active){
             binding?.adGroupCta?.isEnabled = true
             adGroupViewModel.chooseAdGroup(index)
+            MpTracker.clickExistingAdGroup()
         }
         else {
             binding?.adGroupCta?.isEnabled = false
+            binding?.adGroupCta?.isLoading = false
             adGroupViewModel.unChooseAdGroup(index)
         }
     }
@@ -324,7 +354,7 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         }, SEARCH_DELAY_TIME)
     }
 
-    private fun openSuccessDialog(){
+    private fun openSuccessDialog(groupId:String){
         val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION)
         dialog.setImageUrl(successImageUrl)
         dialog.setDescription(getString(R.string.success_dailog_description))
@@ -332,17 +362,20 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         dialog.setPrimaryCTAText(getString(R.string.manage_ads_group))
         dialog.setSecondaryCTAText(getString(R.string.stay_here))
         dialog.setPrimaryCTAClickListener {
+            MpTracker.clickAdGroupCreatedManageCta()
             val intent = Intent(context, TopAdsGroupDetailViewActivity::class.java)
-            intent.putExtra(TopAdsDashboardConstant.GROUP_ID, id)
+            intent.putExtra(TopAdsDashboardConstant.GROUP_ID,groupId)
             intent.putExtra(TopAdsDashboardConstant.PRICE_SPEND,"")
-            startActivityForResult(intent, TopAdsDashboardConstant.GROUP_UPDATED)
+            startActivity(intent)
             dialog.dismiss()
         }
         dialog.setSecondaryCTAClickListener {
+            MpTracker.clickAdGroupCreatedStayHereCta()
             requireActivity().finish()
         }
         dialog.setOnDismissListener {
             binding?.adGroupCta?.isLoading = false
+            adGroupViewModel.unChooseAdGroup(adGroupViewModel.getSelectedAdGroupPosition())
         }
         dialog.show()
     }
@@ -354,20 +387,24 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         dialog.setPrimaryCTAText(getString(R.string.add_credit))
         dialog.setSecondaryCTAText(getString(R.string.later))
         dialog.setPrimaryCTAClickListener {
+            MpTracker.clickAddCreditCta()
             val intent = Intent(activity, TopAdsAddCreditActivity::class.java)
             intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
             startActivityForResult(intent, 99)
         }
         dialog.setSecondaryCTAClickListener {
+            MpTracker.clickAddCreditLaterStayCta()
             requireActivity().finish()
         }
         dialog.setOnDismissListener {
             binding?.adGroupCta?.isLoading = false
+            adGroupViewModel.unChooseAdGroup(adGroupViewModel.getSelectedAdGroupPosition())
         }
         dialog.show()
     }
 
     override fun onCreateAdsClicked() {
+        MpTracker.clickAdCreateAdGroup()
       activity?.let{
           if(it is RoutingCallback){
               it.addCreateAds()

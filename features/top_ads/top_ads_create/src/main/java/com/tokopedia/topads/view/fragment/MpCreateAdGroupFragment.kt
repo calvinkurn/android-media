@@ -164,9 +164,9 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
         dialog.setSecondaryCTAText(getString(R.string.stay_here))
         dialog.setPrimaryCTAClickListener {
             val intent = Intent(context, TopAdsGroupDetailViewActivity::class.java)
-            intent.putExtra(TopAdsDashboardConstant.GROUP_ID, id)
+            intent.putExtra(TopAdsDashboardConstant.GROUP_ID, createdGroupId)
             intent.putExtra(TopAdsDashboardConstant.PRICE_SPEND, binding.dailyBudget.editText.text.toString())
-            startActivityForResult(intent, TopAdsDashboardConstant.GROUP_UPDATED)
+            startActivity(intent)
             dialog.dismiss()
         }
         dialog.setSecondaryCTAClickListener {

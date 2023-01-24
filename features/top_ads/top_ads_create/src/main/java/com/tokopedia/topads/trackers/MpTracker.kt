@@ -2,6 +2,7 @@ package com.tokopedia.topads.trackers
 
 import com.tokopedia.topads.trackers.MpTrackerConst.Action.CLICK_AD_ADVERTISE_CTA
 import com.tokopedia.topads.trackers.MpTrackerConst.Action.CLICK_AD_CLOSE
+import com.tokopedia.topads.trackers.MpTrackerConst.Action.CLICK_AD_CREATE
 import com.tokopedia.topads.trackers.MpTrackerConst.Action.CLICK_AD_CREATED_CREDIT_ADD
 import com.tokopedia.topads.trackers.MpTrackerConst.Action.CLICK_AD_CREATED_CREDIT_STAY
 import com.tokopedia.topads.trackers.MpTrackerConst.Action.CLICK_AD_CREATED_ENOUGH
@@ -50,17 +51,17 @@ object MpTracker : BaseTrackerConst() {
         trackApp.sendGeneralEvent(map)
     }
 
-    fun clickAdSearchBarEnter(){
-        val map = fillCommonData()
-        map[Action.KEY] = CLICK_AD_SEARCH_ENTER
-        map[TrackerId.KEY] = getTrackerId(CLICK_AD_SEARCH_ENTER)
-        trackApp.sendGeneralEvent(map)
-    }
-
     fun clickAdGroupSortCta(){
         val map = fillCommonData()
         map[Action.KEY] = CLICK_AD_SORT
         map[TrackerId.KEY] = getTrackerId(CLICK_AD_SORT)
+        trackApp.sendGeneralEvent(map)
+    }
+
+    fun clickAdCreateAdGroup(){
+        val map = fillCommonData()
+        map[Action.KEY] = CLICK_AD_CREATE
+        map[TrackerId.KEY] = getTrackerId(CLICK_AD_CREATE)
         trackApp.sendGeneralEvent(map)
     }
 

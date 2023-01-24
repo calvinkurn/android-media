@@ -13,6 +13,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.constants.SpanConstant
 import com.tokopedia.topads.create.databinding.MpAdCreationOnboardingFragmentBinding
+import com.tokopedia.topads.trackers.MpTracker
 import com.tokopedia.topads.utils.Span
 import com.tokopedia.topads.utils.SpannableUtils
 import com.tokopedia.topads.utils.SpannedString
@@ -60,6 +61,7 @@ class MpAdCreationOnboardingFragment : TkpdBaseV4Fragment() {
         loadOnboardingImage()
         setupFooterText()
         binding?.onboardingCta?.setOnClickListener {
+            MpTracker.clickAdvertiseProductCta()
             activity?.let{
                 if(it is RoutingCallback){
                     it.addCreateAds()
@@ -103,6 +105,7 @@ class MpAdCreationOnboardingFragment : TkpdBaseV4Fragment() {
     }
 
     private fun goToTopAdsOnboarding(){
+        MpTracker.clickMeetFirstCta()
         RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATION_ONBOARD)
     }
 
