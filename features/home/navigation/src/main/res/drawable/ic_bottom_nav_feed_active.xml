@@ -1,39 +1,31 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
+    android:width="20dp"
+    android:height="20dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
   <group>
-    <clip-path
-        android:pathData="M0,0h24v24h-24z"/>
-    <path
-        android:pathData="M9,24C9,22.895 9.895,22 11,22H13C14.105,22 15,22.895 15,24V30H9V24Z"
-        android:fillColor="#ffffff"/>
     <path
         android:pathData="M4,21L20,21"
         android:strokeWidth="1.5"
-        android:fillColor="#00000000"
-        android:strokeColor="#00AA5B"
+        android:strokeColor="@color/Unify_GN500"
         android:strokeLineCap="round"/>
     <path
         android:pathData="M6,3L18,3A4,4 0,0 1,22 7L22,14A4,4 0,0 1,18 18L6,18A4,4 0,0 1,2 14L2,7A4,4 0,0 1,6 3z"
-        android:fillColor="#00AA5B"/>
+        android:fillColor="@color/Unify_GN500"/>
     <path
         android:pathData="M6.5,12L9.5,9L12.5,12"
         android:strokeLineJoin="round"
         android:strokeWidth="1.5"
-        android:fillColor="#00000000"
-        android:strokeColor="#ffffff"
+        android:strokeColor="@color/Unify_NN0"
         android:strokeLineCap="round"/>
     <path
         android:pathData="M11.5,13L14.5,10L17.5,13"
         android:strokeLineJoin="round"
         android:strokeWidth="1.5"
-        android:fillColor="#00000000"
-        android:strokeColor="#ffffff"
+        android:strokeColor="@color/Unify_NN0"
         android:strokeLineCap="round"/>
     <path
         android:pathData="M17,8m-1,0a1,1 0,1 1,2 0a1,1 0,1 1,-2 0"
-        android:fillColor="#ffffff"/>
+        android:fillColor="@color/Unify_NN0"/>
   </group>
 </vector>

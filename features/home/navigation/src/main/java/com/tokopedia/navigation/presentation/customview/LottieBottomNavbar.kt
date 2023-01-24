@@ -7,7 +7,6 @@ import android.os.Handler
 import android.provider.Settings
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +18,7 @@ import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.navigation.R
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 
@@ -167,9 +167,10 @@ class LottieBottomNavbar : LinearLayout {
         titleList.clear()
         containerList.clear()
 
-        val llLayoutParam = LinearLayout.LayoutParams(itemWidth, 28f.toDpInt())
+        val rootLayoutParam = LinearLayout.LayoutParams(itemWidth, 28f.toDpInt())
+        val llLayoutParam = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         val imgLayoutParam = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-                28f.toDpInt())
+                24f.toDpInt())
 
         badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         badgeLayoutParam?.gravity = Gravity.END
@@ -206,13 +207,22 @@ class LottieBottomNavbar : LinearLayout {
         // create item container, draw image icon and title, add click listener if set
         menu.forEachIndexed { index, bottomMenu ->
             // add linear layout as container for menu item
+            val rootButtonContainer = LinearLayout(context)
+            rootButtonContainer.apply {
+                layoutParams = rootLayoutParam
+                gravity = Gravity.CENTER
+            }
+            containerList.add(index, rootButtonContainer)
+
+            val cardButtonContainer = CardUnify2(context, null)
+            cardButtonContainer.layoutParams = llLayoutParam
+
             val buttonContainer = LinearLayout(context)
 
             buttonContainer.layoutParams = llLayoutParam
             buttonContainer.orientation = LinearLayout.VERTICAL
             buttonContainer.gravity = Gravity.CENTER
-            buttonContainer.setBackgroundColor(Color.TRANSPARENT)
-            containerList.add(index, buttonContainer)
+            buttonContainer.setBackgroundColor(buttonContainerBackgroundColor)
 
             // add image view to display menu icon
             val icon = LottieAnimationView(context)
@@ -334,15 +344,21 @@ class LottieBottomNavbar : LinearLayout {
 
             titleList.add(index, title)
             buttonContainer.addView(title)
+            cardButtonContainer.addView(buttonContainer)
+            cardButtonContainer.cardType = CardUnify2.TYPE_CLEAR
+            cardButtonContainer.animateOnPress = CardUnify2.ANIMATE_OVERLAY
+            rootButtonContainer.addView(cardButtonContainer)
 
             // add click listener
-            buttonContainer.setOnClickListener {
+            cardButtonContainer.setOnClickListener {
                 setSelected(index)
             }
             buttonContainer.id = bottomMenu.id
+            cardButtonContainer.id = buttonContainer.id
+            rootButtonContainer.id = cardButtonContainer.id
 
             // add view to container
-            navbarContainer?.addView(buttonContainer)
+            navbarContainer?.addView(rootButtonContainer)
         }
         layoutContent()
     }

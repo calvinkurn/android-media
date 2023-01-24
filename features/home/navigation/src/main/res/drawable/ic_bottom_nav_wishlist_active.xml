@@ -1,44 +1,40 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
+    android:width="20dp"
+    android:height="20dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
   <path
       android:pathData="M20.178,6.356C19.729,5.648 19.106,5.063 18.367,4.656C17.633,4.253 16.81,4.035 15.971,4.023C15.184,4.019 14.41,4.214 13.721,4.589C13.035,4.949 12.451,5.472 12.022,6.112C11.605,5.486 11.042,4.968 10.38,4.601C9.721,4.227 8.979,4.021 8.22,4.001C7.364,3.988 6.52,4.194 5.769,4.599C5.018,5.004 4.386,5.594 3.934,6.312C3.323,7.286 3,8.41 3,9.556C3,10.702 3.323,11.825 3.934,12.8C5.655,16.133 9.255,18.588 11.224,19.755C11.476,19.922 11.775,20.008 12.078,20C12.37,20.006 12.656,19.925 12.9,19.766C13.743,19.266 18.108,16.555 20.268,12.755C20.77,11.757 21.02,10.655 20.999,9.541C20.977,8.427 20.684,7.334 20.144,6.356H20.178Z"
       android:strokeLineJoin="round"
       android:strokeWidth="1.5"
-      android:fillColor="#00AA5B"
+      android:fillColor="@color/Unify_GN500"
       android:strokeColor="#00AA5B"
       android:strokeLineCap="round"/>
   <path
       android:pathData="M17,9m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
-      android:fillColor="#ffffff"/>
+      android:fillColor="@color/Unify_N0"/>
   <path
       android:pathData="M2,19H4"
       android:strokeLineJoin="round"
       android:strokeWidth="1.5"
-      android:fillColor="#00000000"
-      android:strokeColor="#00AA5B"
+      android:strokeColor="@color/Unify_GN500"
       android:strokeLineCap="round"/>
   <path
       android:pathData="M3,18L3,20"
       android:strokeLineJoin="round"
       android:strokeWidth="1.5"
-      android:fillColor="#00000000"
-      android:strokeColor="#00AA5B"
+      android:strokeColor="@color/Unify_GN500"
       android:strokeLineCap="round"/>
   <path
       android:pathData="M20,19H22"
       android:strokeLineJoin="round"
       android:strokeWidth="1.5"
-      android:fillColor="#00000000"
-      android:strokeColor="#00AA5B"
+      android:strokeColor="@color/Unify_GN500"
       android:strokeLineCap="round"/>
   <path
       android:pathData="M21,18L21,20"
       android:strokeLineJoin="round"
       android:strokeWidth="1.5"
-      android:fillColor="#00000000"
-      android:strokeColor="#00AA5B"
+      android:strokeColor="@color/Unify_GN500"
       android:strokeLineCap="round"/>
 </vector>
