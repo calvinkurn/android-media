@@ -60,8 +60,6 @@
 /features/merchant/product_detail_common/               @tokopedia/android-minionstuart-dev
 /features/merchant/product_detail_additional_info/       @tokopedia/android-minionstuart-dev
 /features/merchant/atc_variant/                         @tokopedia/android-minionstuart-dev
-/features/merchant/product_manage_common/               @tokopedia/android-minionstuart-dev
-/features/merchant/product_manage_list/                 @tokopedia/android-minionstuart-dev
 /features/merchant/product_share/                       @tokopedia/android-minionstuart-dev
 /features/merchant/report/                              @tokopedia/android-minionstuart-dev
 /features/merchant/reputation_common/                   @tokopedia/android-minionstuart-dev
@@ -77,6 +75,7 @@
 /features/ordermanagement/buyer_order_detail            @tokopedia/android-minionstuart-dev
 /features/ordermanagement/snapshot/                     @tokopedia/android-minionstuart-dev
 /features/ordermanagement/buyercancellationorder/       @tokopedia/android-minionstuart-dev
+/features/ordermanagement/orderhistory/                 @tokopedia/android-minionstuart-dev
 /features/transaction/sellerorder/                      @tokopedia/android-minionstuart-dev
 /features/merchant/shop_score/                          @tokopedia/android-minionstuart-dev
 /features/tokofood/                                     @tokopedia/android-minionstuart-dev
@@ -104,6 +103,8 @@
 /features/merchant/seller_shop_flash_sale               @tokopedia/android-minionken-dev
 /features/promo/mvc_widget  					        @tokopedia/android-minionken-dev
 /features/merchant/seller_tokopedia_flash_sale          @tokopedia/android-minionken-dev
+/features/merchant/product_manage_common/               @tokopedia/android-minionken-dev
+/features/merchant/product_manage_list/                 @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_management_common/            @tokopedia/android-minionsolo-dev

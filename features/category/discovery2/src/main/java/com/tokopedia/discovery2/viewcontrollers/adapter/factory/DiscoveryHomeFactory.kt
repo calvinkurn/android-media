@@ -516,8 +516,13 @@ class DiscoveryHomeFactory {
                 ::ShopCardItemViewModel
             )
 
-            initializeComponent(ComponentsList.Section, ::SectionViewHolder, ::SectionViewModel)
+            initializeComponent(
+                ComponentsList.Section,
+                ::SectionViewHolder,
+                ::SectionViewModel)
+
 //            initializeComponent(ComponentsList.AnchorTabs,::AnchorTabsViewHolder,::AnchorTabsViewModel)
+
             initializeComponent(
                 ComponentsList.AnchorTabsItem,
                 ::AnchorTabsItemViewHolder,
