@@ -1,12 +1,14 @@
 package com.tokopedia.play.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.domain.GetUserReportListUseCase
 import com.tokopedia.play.domain.PostUserReportUseCase
 import com.tokopedia.play.domain.repository.PlayViewerUserReportRepository
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -17,6 +19,7 @@ class PlayViewerUserReportRepositoryImpl @Inject constructor(
     private val getUserReportListUseCase: GetUserReportListUseCase,
     private val postUserReportUseCase: PostUserReportUseCase,
     private val playUiModelMapper: PlayUiModelMapper,
+    private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) : PlayViewerUserReportRepository {
 
@@ -34,12 +37,11 @@ class PlayViewerUserReportRepositoryImpl @Inject constructor(
         timestamp: Long,
         reportDesc: String,
         partnerType: PartnerType,
-        userId: Long
     ): Boolean = withContext(dispatchers.io)
     {
         val request = postUserReportUseCase
             .createParam(
-                userId = userId,
+                userId = userSession.userId.toLongOrZero(),
                 channelId = channelId,
                 mediaUrl = mediaUrl,
                 partnerId = partnerId,

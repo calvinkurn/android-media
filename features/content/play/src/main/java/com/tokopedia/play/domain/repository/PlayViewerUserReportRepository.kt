@@ -18,6 +18,5 @@ interface PlayViewerUserReportRepository {
         timestamp: Long,
         reportDesc: String,
         partnerType: PartnerType,
-        userId: Long,
     ): Boolean
 }

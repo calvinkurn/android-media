@@ -2602,7 +2602,7 @@ class PlayViewModel @AssistedInject constructor(
             _userReportSubmission.value = ResultState.Loading
             val isSuccess = repo.submitReport(channelId = channelId.toLongOrZero(), partnerId = partnerId.orZero(),
                     partnerType = PartnerType.getTypeByValue(partnerType),
-                    reasonId = reasonId, timestamp = timestamp, reportDesc = reportDesc, userId = userId.toLongOrZero(), mediaUrl = mediaUrl)
+                    reasonId = reasonId, timestamp = timestamp, reportDesc = reportDesc, mediaUrl = mediaUrl)
             if(isSuccess){
                 _userReportSubmission.value = ResultState.Success
             }else{

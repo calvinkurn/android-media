@@ -8,10 +8,9 @@ import com.tokopedia.play.domain.PostUserReportUseCase
 import com.tokopedia.play.domain.repository.PlayViewerUserReportRepository
 import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.model.ModelBuilder
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.assertTrue
-import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
-import com.tokopedia.play.view.uimodel.mapper.PlayUserReportReasoningMapper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -47,7 +46,7 @@ class PlayViewerUserReportTest {
         Dispatchers.setMain(testDispatcher.coroutineDispatcher)
 
         userReportRepo = PlayViewerUserReportRepositoryImpl(
-            getUserReportListUseCase, postUserReportUseCase, mapper, testDispatcher
+            getUserReportListUseCase, postUserReportUseCase, mapper, userSession, testDispatcher
         )
     }
 
@@ -66,11 +65,11 @@ class PlayViewerUserReportTest {
             val result = userReportRepo.submitReport(
                 channelId = 1L,
                 mediaUrl = "htpp://tokopedia",
-                shopId = 111L,
+                partnerId = 111L,
                 timestamp = 9000L,
                 reasonId = 1,
-                reportDesc = "OK"
-            )
+                reportDesc = "OK",
+                partnerType = PartnerType.Shop)
 
             result.assertTrue()
         }
@@ -90,10 +89,11 @@ class PlayViewerUserReportTest {
             val result = userReportRepo.submitReport(
                 channelId = 1L,
                 mediaUrl = "htpp://tokopedia",
-                shopId = 111L,
+                partnerId = 111L,
                 timestamp = 9000L,
                 reasonId = 1,
-                reportDesc = "OK"
+                reportDesc = "OK",
+                partnerType = PartnerType.Shop
             )
 
             result.assertFalse()
