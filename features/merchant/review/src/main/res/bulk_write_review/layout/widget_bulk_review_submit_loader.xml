@@ -15,8 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        app:layout_constraintWidth_percent="0.75"
-        app:srcCompat="@drawable/ic_bulk_review_submit_loader_illustration" />
+        app:layout_constraintWidth_percent="0.75" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_bulk_review_submit_loader_title"
