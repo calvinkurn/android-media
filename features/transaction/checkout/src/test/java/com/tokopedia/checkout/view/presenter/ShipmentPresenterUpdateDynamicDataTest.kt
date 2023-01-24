@@ -16,6 +16,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesR
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
@@ -162,6 +163,29 @@ class ShipmentPresenterUpdateDynamicDataTest {
         verifyOrder {
             view.stopTrace()
             view.doCheckout()
+        }
+    }
+
+    @Test
+    fun updateDynamicData_throwsException() {
+        // Given
+        val error = CartResponseErrorException("error")
+
+        coEvery {
+            updateDynamicDataPassingUseCase.setParams(any())
+        } just Runs
+        coEvery { updateDynamicDataPassingUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(error)
+        }
+
+        // When
+        presenter.validateDynamicData()
+        presenter.updateDynamicData(updateDynamicDataParams, true)
+
+        // Then
+        verifyOrder {
+            view.showToastError(any())
+            view.stopTrace()
         }
     }
 
