@@ -12,8 +12,8 @@ public class EncoderDecoder {
     }
 
     public static String Encrypt(String text, String initialVector) {
-        byte[] raw = new byte[]{'g', 'g', 'g', 'g', 't', 't', 't', 't', 't', 'u', 'j', 'k', 'r', 'r', 'r', 'r'};
-        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+        int[] raw = getRawKey();
+        SecretKeySpec skeySpec = new SecretKeySpec(convertRaw(raw).getBytes(), "AES");
         String encode_result = null;
         IvParameterSpec ivs = new IvParameterSpec(initialVector.getBytes());
         try {
@@ -62,8 +62,8 @@ public class EncoderDecoder {
     }
 
     public static String Decrypt(String text, String initialVector) {
-        byte[] raw = new byte[]{'g', 'g', 'g', 'g', 't', 't', 't', 't', 't', 'u', 'j', 'k', 'r', 'r', 'r', 'r'};
-        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+        int[] raw = getRawKey();
+        SecretKeySpec skeySpec = new SecretKeySpec(convertRaw(raw).getBytes(), "AES");
         //String initialVector = "abcdefgh";
         String decode_result = isReturnNull() ? null : "";
         IvParameterSpec ivs = new IvParameterSpec(initialVector.getBytes());
@@ -77,6 +77,19 @@ public class EncoderDecoder {
             e.printStackTrace();
         }
         return decode_result;
+    }
+
+    private static int[] getRawKey() {
+        return new int[]{103, 103, 103, 103, 116, 116, 116, 116, 116, 117, 106, 107, 114, 114, 114, 114};
+    }
+
+    private static String convertRaw(int[] raw) {
+        StringBuilder sb = new StringBuilder();
+        for(int i=0;i<raw.length;i++) {
+            char a = (char) raw[i];
+            sb.append(a);
+        }
+        return sb.toString();
     }
 
 }

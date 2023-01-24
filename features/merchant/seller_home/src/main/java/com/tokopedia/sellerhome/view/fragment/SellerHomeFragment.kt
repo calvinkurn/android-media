@@ -2750,13 +2750,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun showNewSellerDialog() {
         recyclerView?.post {
-            newSellerJourneyHelper.showNewSellerDialog(
-                requireActivity(),
-                sectionWidgetAnchor = getSectionView(),
-                notificationAnchor = getNotificationView(),
-                navigationAnchor = navigationView,
-                otherMenuAnchor = otherMenuView
-            )
+            activity?.let {
+                if (!it.isFinishing) {
+                    newSellerJourneyHelper.showNewSellerDialog(
+                        it,
+                        sectionWidgetAnchor = getSectionView(),
+                        notificationAnchor = getNotificationView(),
+                        navigationAnchor = navigationView,
+                        otherMenuAnchor = otherMenuView
+                    )
+                }
+            }
         }
     }
 
