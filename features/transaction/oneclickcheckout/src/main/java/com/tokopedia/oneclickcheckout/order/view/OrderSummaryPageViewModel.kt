@@ -22,30 +22,13 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccMutableLiveData
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
+import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_ADDRESS
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_PAYMENT
 import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
-import com.tokopedia.oneclickcheckout.order.view.model.AddressState
-import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
-import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
-import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
-import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
-import com.tokopedia.oneclickcheckout.order.view.model.OccUIMessage
-import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
-import com.tokopedia.oneclickcheckout.order.view.model.OrderEnableAddressFeature
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletActionData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
-import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
-import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
+import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCalculator
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCartProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCheckoutProcessor
@@ -1029,6 +1012,16 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         )
     }
 
+    fun generateGoCicilInstallmentRequest(orderCost: OrderCost): GoCicilInstallmentRequest {
+        return paymentProcessor.get().generateGoCicilInstallmentRequest(
+            orderPayment.value,
+            userSession.userId,
+            orderCost,
+            orderCart,
+            orderProfile.value,
+            promoProcessor.getValidPromoCodes(validateUsePromoRevampUiModel)
+        )
+    }
     private suspend fun adjustGoCicilFee() {
         val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value,
                 validateUsePromoRevampUiModel, orderPayment.value)
@@ -1036,7 +1029,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (payment.minimumAmount <= orderCost.totalPriceWithoutPaymentFees
                 && orderCost.totalPriceWithoutPaymentFees <= payment.maximumAmount
                 && orderCost.totalPriceWithoutPaymentFees <= payment.walletAmount) {
-            val result = paymentProcessor.get().getGopayAdminFee(payment, userSession.userId, orderCost, orderCart, orderProfile.value)
+            val result = paymentProcessor.get().getGopayAdminFee(
+                generateGoCicilInstallmentRequest(orderCost),
+                orderPayment.value
+            )
             if (result != null) {
                 chooseInstallment(result.first, result.second, !result.third)
                 return

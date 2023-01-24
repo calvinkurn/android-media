@@ -29,7 +29,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common.payment.utils.LINK_ACCOUNT_BACK_BUTTON_APPLINK
 import com.tokopedia.common.payment.utils.LINK_ACCOUNT_SOURCE_PAYMENT
 import com.tokopedia.common.payment.utils.LinkStatusMatcher
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
@@ -37,6 +36,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.PAYMENT_LISTING_URL
+import com.tokopedia.oneclickcheckout.common.utils.generateAppVersionForPayment
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.databinding.FragmentPaymentMethodBinding
 import com.tokopedia.oneclickcheckout.payment.di.PaymentComponent
@@ -203,12 +203,14 @@ class PaymentListingFragment : BaseDaggerFragment() {
     }
 
     private fun generatePaymentListingRequest(): PaymentListingParamRequest {
-        return PaymentListingParamRequest(merchantCode,
-                profileCode,
-                paymentListingUrl,
-                addressId,
-                "android-${GlobalConfig.VERSION_NAME}",
-                bid)
+        return PaymentListingParamRequest(
+            merchantCode,
+            profileCode,
+            paymentListingUrl,
+            addressId,
+            generateAppVersionForPayment(),
+            bid
+        )
     }
 
     private fun handleError(throwable: Throwable?) {
