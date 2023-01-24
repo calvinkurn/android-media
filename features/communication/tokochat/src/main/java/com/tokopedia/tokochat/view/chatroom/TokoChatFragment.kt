@@ -493,6 +493,8 @@ class TokoChatFragment :
     }
 
     private fun observeMemberLeft() {
+        // reset member left live data before observe to remove old data
+        viewModel.resetMemberLeft()
         observe(viewModel.getMemberLeft()) {
             showUnavailableBottomSheet()
         }
