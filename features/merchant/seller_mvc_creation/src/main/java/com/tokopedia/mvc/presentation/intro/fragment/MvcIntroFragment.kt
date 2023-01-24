@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentIntroBinding
@@ -21,9 +22,11 @@ import com.tokopedia.mvc.presentation.intro.uimodel.IntroVoucherUiModel
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherIntroCarouselUiModel
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherIntroTypeData
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherTypeUiModel
+import com.tokopedia.mvc.presentation.intro.util.MvcIntroPageTracker
 import com.tokopedia.mvc.presentation.intro.util.MvcIntroRecyclerViewScrollListener
 import com.tokopedia.mvc.util.constant.FIRST_INDEX
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
 
 class MvcIntroFragment :
     BaseDaggerFragment(),
@@ -37,6 +40,9 @@ class MvcIntroFragment :
     private var contentList: List<Visitable<*>> = emptyList()
     private var mvcLayoutManager: LinearLayoutManager? = null
     private var scrollerListener: MvcIntroRecyclerViewScrollListener? = null
+
+    @Inject
+    lateinit var mvcIntroPageTracker: MvcIntroPageTracker
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,6 +79,11 @@ class MvcIntroFragment :
         binding?.recyclerView?.apply {
             adapter = mvcAdapter
             initRvScroller(this)
+        }
+        // TODO add Applink here
+        binding?.btnCreateVoucher?.setOnClickListener {
+            mvcIntroPageTracker.sendMvcIntroPageCreateVoucherEvent()
+            RouteManager.route(context, "")
         }
     }
 
@@ -112,7 +123,6 @@ class MvcIntroFragment :
                 it.getIntroTypeData(),
                 it.getIntroCarouselData(),
                 it.getChoiceOfVoucherData()
-
             )
         } ?: emptyList()
     }
@@ -230,7 +240,9 @@ class MvcIntroFragment :
             .inject(this)
     }
 
+    // When user clicks on the Arrow Button
     override fun enableRVScroll() {
+        mvcIntroPageTracker.sendMvcIntroPageArrowButton()
         mvcLayoutManager = object : LinearLayoutManager(context, VERTICAL, false) {
             override fun canScrollVertically(): Boolean {
                 return true
