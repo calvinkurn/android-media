@@ -17,8 +17,6 @@ sealed interface UserProfileAction {
 
     data class LoadProfile(val isRefresh: Boolean = false) : UserProfileAction
 
-    data class LoadShopRecom(val cursor: String = ""): UserProfileAction
-
     data class LoadNextPageShopRecom(val nextCurSor: String) : UserProfileAction
 
     data class RemoveShopRecomItem(val itemID: Long) : UserProfileAction

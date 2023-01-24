@@ -138,7 +138,6 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.LoadFeedPosts -> handleLoadFeedPosts(action.cursor, action.isRefresh)
             is UserProfileAction.LoadPlayVideo -> handleLoadPlayVideo(action.cursor)
             is UserProfileAction.LoadProfile -> handleLoadProfile(action.isRefresh)
-            is UserProfileAction.LoadShopRecom -> handleLoadShopRecom(action.cursor)
             is UserProfileAction.LoadNextPageShopRecom -> handleLoadNextPageShopRecom(action.nextCurSor)
             is UserProfileAction.RemoveShopRecomItem -> handleRemoveShopRecomItem(action.itemID)
             is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(
@@ -448,8 +447,11 @@ class UserProfileViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(
             block = {
                 val result = repo.getUserProfileTab(_profileInfo.value.userID)
+                val isEmpty = result == ProfileTabUiModel()
                 _profileTab.update { result }
-                _uiEvent.emit(UserProfileUiEvent.SuccessLoadTabs(result == ProfileTabUiModel()))
+                _uiEvent.emit(UserProfileUiEvent.SuccessLoadTabs(isEmpty))
+
+                if (isEmpty && isSelfProfile) loadShopRecom()
             },
             onError = {
                 _uiEvent.emit(UserProfileUiEvent.ErrorGetProfileTab(it))
@@ -457,7 +459,7 @@ class UserProfileViewModel @AssistedInject constructor(
         )
     }
 
-    private fun handleLoadShopRecom(cursor: String) {
+    private fun loadShopRecom(cursor: String = "") {
         viewModelScope.launchCatchError(
             block = {
                 val result = repo.getShopRecom(cursor)
@@ -492,7 +494,7 @@ class UserProfileViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(
             block = {
                 if (nextCursor.isEmpty()) return@launchCatchError
-                handleLoadShopRecom(nextCursor)
+                loadShopRecom(nextCursor)
             },
             onError = {
                 _uiEvent.emit(UserProfileUiEvent.ErrorLoadNextPageShopRecom(it))
