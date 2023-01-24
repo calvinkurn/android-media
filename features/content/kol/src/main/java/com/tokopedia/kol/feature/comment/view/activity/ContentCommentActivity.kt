@@ -25,10 +25,10 @@ import javax.inject.Inject
 
 /**
  * Deeplink format:
- * tokopedia-android-internal://content/comment-new/{post_id}
+ * tokopedia-android-internal://content/comment/{post_id}
  */
 
-class KolCommentNewActivity : BaseSimpleActivity() {
+class ContentCommentActivity : BaseSimpleActivity() {
     private var fromApplink = false
     var postId: String? = ""
 
@@ -123,7 +123,7 @@ class KolCommentNewActivity : BaseSimpleActivity() {
             isFollowed: Boolean? = true,
             postType: String?
         ): Intent {
-            val intent = Intent(context, KolCommentNewActivity::class.java)
+            val intent = Intent(context, ContentCommentActivity::class.java)
             val bundle = Bundle()
             bundle.putInt(ARGS_ID, id)
             bundle.putInt(COMMENT_ARGS_POSITION, rowNumber)

@@ -1,4 +1,4 @@
-package com.tokopedia.kol.feature.post.view.viewmodel
+package com.tokopedia.kol.feature.postdetail.view.datamodel
 
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Share
 
@@ -11,6 +11,4 @@ data class PostDetailFooterModel(
         var totalLike: Int = 0,
         var totalComment: Int = 0,
         var shareData : Share = Share()
-) {
-
-}
+)
