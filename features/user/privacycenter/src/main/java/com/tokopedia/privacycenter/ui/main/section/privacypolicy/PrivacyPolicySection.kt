@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.data.PrivacyPolicyDataModel
+import com.tokopedia.privacycenter.databinding.BottomSheetPrivacyInfoBinding
 import com.tokopedia.privacycenter.databinding.SectionPrivacyPolicyBinding
 import com.tokopedia.privacycenter.ui.main.analytics.MainPrivacyCenterAnalytics
 import com.tokopedia.privacycenter.ui.main.section.BasePrivacyCenterSection
@@ -23,6 +24,7 @@ import com.tokopedia.privacycenter.ui.main.section.privacypolicy.PrivacyPolicyCo
 import com.tokopedia.privacycenter.ui.main.section.privacypolicy.PrivacyPolicyConst.SECTION_ID
 import com.tokopedia.privacycenter.ui.main.section.privacypolicy.adapter.PrivacyPolicyAdapter
 import com.tokopedia.privacycenter.ui.privacypolicywebview.PrivacyPolicyWebViewActivity
+import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class PrivacyPolicySection constructor(
     private val context: Context?,
@@ -46,7 +48,7 @@ class PrivacyPolicySection constructor(
     override fun onViewRendered() {
         context?.let { NetworkClient.init(it) }
         showShimmering(false)
-
+        sectionViewBinding.menuCurrentPrivacyPolicy.setIcon(IconUnify.PROTECTION_CHECK)
         sectionViewBinding.apply {
             listPrivacyPolicy.apply {
                 adapter = privacyPolicyAdapter
@@ -80,9 +82,22 @@ class PrivacyPolicySection constructor(
                     privacyPolicySectionBottomSheet?.show(it, PrivacyPolicySectionBottomSheet.TAG)
                 }
             }
+
+            sectionViewBinding.informationIcon.setOnClickListener { showInformationBottomSheet() }
         }
 
         viewModel.getPrivacyPolicyTopFiveList()
+    }
+
+    private fun showInformationBottomSheet() {
+        fragmentManager?.let {
+            BottomSheetUnify().apply {
+                showCloseIcon = true
+                val view = BottomSheetPrivacyInfoBinding.inflate(LayoutInflater.from(this@PrivacyPolicySection.context), null, false)
+                setTitle(this@PrivacyPolicySection.context?.resources?.getString(R.string.privacy_policy_info_title).orEmpty())
+                setChild(view.root)
+            }.show(it, BOTTOM_SHEET_INFO_TAG)
+        }
     }
 
     override fun initObservers() {
@@ -160,5 +175,7 @@ class PrivacyPolicySection constructor(
 
     companion object {
         const val TAG = "PrivacyPolicySection"
+
+        const val BOTTOM_SHEET_INFO_TAG = "PrivacyPolicyInfoBottomSheet"
     }
 }

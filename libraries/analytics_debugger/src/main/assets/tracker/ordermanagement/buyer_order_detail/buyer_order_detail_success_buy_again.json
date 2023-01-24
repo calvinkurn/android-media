@@ -8,7 +8,7 @@
       "eventCategory": "my purchase list detail - mp",
       "eventLabel": "success - order_id: .+",
       "businessUnit": "Physical Goods",
-      "currentSite": "Marketplace",
+      "currentSite": "tokopediamarketplace",
       "items": [
         {
           "category_id": "\\d+",
