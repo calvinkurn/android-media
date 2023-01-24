@@ -54,7 +54,7 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
                 _changeQuotaUiModel.postValue(SuccessToGetDetailVoucher(response.toUpdateQuotaModelMapper()))
                 updateQuotaModel = response.toUpdateQuotaModelMapper()
 
-                //radiosMultipleCoupon always gone for now because BE not ready for recurring implementation
+                // TODO: uncomment this when BE ready to implement, radiosMultipleCoupon always gone for now
                 //setOptionsApplyPeriodCoupon(isNeedToDisableYesButton())
             },
             onError = { error ->
@@ -159,13 +159,13 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
         updateQuotaModel = updateQuotaModel.copy(isApplyToAllPeriodCoupon = false)
         _changeQuotaUiModel.postValue(SuccessToGetDetailVoucher(updateQuotaModel))
 
-        //radiosMultipleCoupon always gone for now because BE not ready for recurring implementation
+        // TODO: uncomment this when BE ready to implement, radiosMultipleCoupon always gone for now
         /*setOptionsApplyPeriodCoupon(
             isNeedToDisableYesButton()
         )*/
     }
 
-    //radiosMultipleCoupon always gone for now because BE not ready for recurring implementation
+    // TODO: uncomment this when BE ready to implement, radiosMultipleCoupon always gone for now
     /*
      private fun setOptionsApplyPeriodCoupon(optionsPosition: Int) {
         _inputQuotaValidation.update {

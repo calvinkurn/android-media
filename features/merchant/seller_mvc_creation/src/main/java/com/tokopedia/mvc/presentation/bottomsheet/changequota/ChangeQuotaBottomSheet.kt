@@ -160,7 +160,7 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
 
             formLayout?.btnMvcReset?.run {
                 setOnClickListener {
-                    //radiosMultipleCoupon always gone for now because BE not ready for recurring implementation
+                    // TODO: uncomment this when BE ready to implement, radiosMultipleCoupon always gone for now
                     //setOptionsPickerOnClickRestartButton()
                     viewModel.restartVoucher()
                     tracker.sendClickResetEvent(
@@ -174,7 +174,7 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
         }
     }
 
-    //radiosMultipleCoupon always gone for now because BE not ready for recurring implementation
+    // TODO: uncomment this when BE ready to implement, radiosMultipleCoupon always gone for now
     /*private fun setOptionsPickerOnClickRestartButton(){
         clearClickOptionsListener()
         formLayout?.radiosMultipleCoupon?.clearCheck()
@@ -293,7 +293,7 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
                 estimationSpending.getCurrencyFormatted()
             textFieldDiscountQuota.editText.setText(voucher.currentQuota.orZero().toString())
 
-            //radiosMultipleCoupon always gone for now because BE not ready for recurring implementation
+            // TODO: uncomment this when BE ready to implement, radiosMultipleCoupon always gone for now
             /*if (voucher.isMultiPeriod.orFalse()) {
                 radiosMultipleCoupon.visible()
             } else {
