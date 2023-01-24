@@ -50,7 +50,7 @@ class SellerHomeWidgetSSEImpl(
     }
 
     private var isSseConnected = false
-    private var retryCount = 0
+    private var retryCount = Int.ZERO
     private var sse: ServerSentEvent? = null
     private var sseFlow = MutableSharedFlow<WidgetSSEModel>(extraBufferCapacity = 100)
 
@@ -160,7 +160,6 @@ class SellerHomeWidgetSSEImpl(
     }
 
     private fun printLog(s: String) {
-        println("SSE : $s")
         SSELogger.getInstance(context).send(s)
     }
 }
