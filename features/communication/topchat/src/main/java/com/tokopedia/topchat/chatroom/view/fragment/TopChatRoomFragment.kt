@@ -3572,7 +3572,10 @@ open class TopChatRoomFragment :
     }
 
     protected fun isUploadImageSecure(): Boolean {
-        return abTestPlatform.getString(ROLLENCE_UPLOAD_SECURE, "") == ROLLENCE_UPLOAD_SECURE
+        return abTestPlatform.getString(
+            ROLLENCE_UPLOAD_SECURE,
+            ROLLENCE_UPLOAD_SECURE
+        ) == ROLLENCE_UPLOAD_SECURE
     }
 
     override fun onClickSRWTab() {
