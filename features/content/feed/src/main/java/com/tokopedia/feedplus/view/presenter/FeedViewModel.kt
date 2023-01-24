@@ -193,7 +193,6 @@ class FeedViewModel @Inject constructor(
         val authorIds = currentFollowState.keys.toList()
         if (authorIds.isNotEmpty())
             viewModelScope.launchCatchError(block = {
-                val shopIdChanged = mutableMapOf<String, Boolean>()
                 val shopIdsToUpdate = mutableMapOf<String, Boolean>()
                 val response = withContext(baseDispatcher.io) {
                     getFollowingUseCase(authorIds)
@@ -203,20 +202,17 @@ class FeedViewModel @Inject constructor(
                         item.favoriteData.isFollowing != currentFollowState[item.shopCore.shopID]
                     ) {
                         shopIdsToUpdate[item.shopCore.shopID] = item.favoriteData.isFollowing
-                        shopIdChanged[item.shopCore.shopID] = item.favoriteData.isFollowing
                         currentFollowState[item.shopCore.shopID] = item.favoriteData.isFollowing
                     }
                 }
                 response.feedXProfileIsFollowing.isUserFollowing.map { item ->
                     if (currentFollowState[item.userId] != null &&
-                        item.status != currentFollowState[item.userId] &&
-                        !shopIdChanged.containsKey(item.userId)
+                        item.status != currentFollowState[item.userId]
                     ) {
                         shopIdsToUpdate[item.userId] = item.status
                         currentFollowState[item.userId] = item.status
                     }
                 }
-                shopIdChanged.clear()
                 _shopIdsFollowStatusToUpdateData.value = Success(shopIdsToUpdate)
             }) {
                 _shopIdsFollowStatusToUpdateData.value = Fail(it)
