@@ -54,7 +54,7 @@ class ProductThumbnailVariantViewHolder(
     }
 
     fun scrollToPosition(position: Int) {
-        if (position != -1) {
+        if (position >= 0) {
             binding.thumbVariantList.post {
                 smoothScroller.scrollThumbnail(position)
             }
