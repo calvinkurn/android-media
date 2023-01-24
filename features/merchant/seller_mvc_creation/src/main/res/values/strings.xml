@@ -298,7 +298,7 @@
     <string name="smvc_horizontal">Horizontal</string>
     <string name="smvc_horizontal_description">Untuk banner toko</string>
 
-    <!--Voucher List-->
+    <!--Summary Page-->
     <string name="smvc_summary_page_title">Ringkasan Kupon</string>
     <string name="smvc_summary_page_preview_button_text">Lihat Tampilan</string>
     <string name="smvc_summary_page_tnc_text"><![CDATA[Saya menyetujui <font color=#00AA5B><b>Syarat & Ketentuan</b></font> Pembuatan Kupon.]]></string>
@@ -443,12 +443,15 @@
     <string name="smvc_intro_voucher_carousel_cashback_1">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_cashback_1.png</string>
     <string name="smvc_intro_voucher_carousel_cashback_2">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/mvc_intro_carousel_cashback_2.png</string>
 
-    <!--Summary Page-->
+    <!--Quota Info Page-->
     <string name="smvc_quota_info_page_title">Kuota Kupon Toko Saya</string>
     <string name="smvc_quota_info_bottomsheet_title">Sisa kuota per bulan</string>
     <string name="smvc_quota_info_bottomsheet_action_text">Tutup</string>
-    <string name="smvc_quota_info_quota_remaining_format">Sisa Kuota %s</string>
+    <string name="smvc_quota_info_quota_remaining_format">Sisa Kuota: %s</string>
     <string name="smvc_quota_info_quota_button_format">Cek %d Sumber Lainnya</string>
     <string name="smvc_quota_info_quota_total_format">/ %d</string>
+    <string name="smvc_quota_info_quota_source_desc">Kuota Kupon Toko Saya bersumber dari:</string>
+    <string name="smvc_quota_info_quota_remaining_prefix">Sisa Kuota:</string>
+    <string name="smvc_quota_info_date_limit_prefix">Kedaluwarsa:</string>
 
 </resources>

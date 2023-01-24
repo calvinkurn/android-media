@@ -79,6 +79,8 @@ object ApplinkConstInternalSellerapp {
     // Seller Tokopedia Flash Sale - CampaignDetailActivity
     const val SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL = "$INTERNAL_SELLERAPP/tokopedia-flash-sale/campaign-detail/{campaign_id}/"
 
+    // Seller MVC Creation Intro - MvcIntroActivity
+    const val SELLER_MVC_INTRO = "$INTERNAL_SELLERAPP/seller-mvc/intro"
     // Seller MVC Creation - MvcListActivity
     const val SELLER_MVC_LIST = "$INTERNAL_SELLERAPP/seller-mvc/list"
     const val SELLER_MVC_LIST_ACTIVE = "$INTERNAL_SELLERAPP/seller-mvc/list/active"

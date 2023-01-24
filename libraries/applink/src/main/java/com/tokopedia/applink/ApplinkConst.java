@@ -551,6 +551,7 @@ public interface ApplinkConst {
         String ADMIN_ACCEPTED = "sellerapp://shop-admin/accepted-page";
         String ADMIN_REDIRECTION = "sellerapp://shop-admin/redirection-page";
         String PRODUCT_MANAGE = "sellerapp://product/manage";
+        String SELLER_MVC_INTRO = "sellerapp://seller-mvc/intro";
         String SELLER_MVC_LIST = "sellerapp://seller-mvc/list";
         String SELLER_MVC_LIST_ACTIVE = "sellerapp://seller-mvc/list/active";
         String SELLER_MVC_LIST_HISTORY = "sellerapp://seller-mvc/list/history";
