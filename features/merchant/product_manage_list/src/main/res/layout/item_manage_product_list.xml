@@ -281,7 +281,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_information_filled_yellow"
             tools:ignore="ContentDescription"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.Barrier

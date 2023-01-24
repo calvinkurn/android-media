@@ -90,13 +90,14 @@ fun cropCenterImage(
     cropRaw: ImageRatioType
 ): Pair<Bitmap, EditorCropRotateUiModel>? {
     sourceBitmap?.let { bitmap ->
+        // ratio height to width (to get height value)
         val autoCropRatio = cropRaw.getRatioY().toFloat() / cropRaw.getRatioX()
 
         val bitmapWidth = bitmap.width
         val bitmapHeight = bitmap.height
 
         // if source image is already have ratio target then skip crop
-        if (bitmapWidth.toFloat() / bitmapHeight == autoCropRatio) {
+        if (bitmapWidth.toFloat() / bitmapHeight == cropRaw.getRatio()) {
             return null
         }
 

@@ -10,11 +10,10 @@ import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
 import com.tokopedia.media.picker.common.analytics.TestCameraAnalytics
 import com.tokopedia.media.picker.common.analytics.TestGalleryAnalytics
 import com.tokopedia.media.picker.common.analytics.TestPickerAnalytics
-import com.tokopedia.media.picker.common.data.repository.TestAlbumRepository
-import com.tokopedia.media.picker.common.data.repository.TestDeviceInfoRepository
-import com.tokopedia.media.picker.common.data.repository.TestMediaRepository
+import com.tokopedia.media.picker.common.data.repository.*
 import com.tokopedia.media.picker.data.loader.LoaderDataSource
 import com.tokopedia.media.picker.data.loader.LoaderDataSourceImpl
+import com.tokopedia.media.picker.data.repository.*
 import com.tokopedia.media.picker.data.repository.AlbumRepository
 import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
 import com.tokopedia.media.picker.data.repository.MediaRepository
@@ -80,6 +79,16 @@ object TestPickerModule {
         dispatcher: CoroutineDispatchers
     ) = TestDeviceInfoRepository(dispatcher)
 
+    @Provides
+    @ActivityScope
+    fun provideTestBitmapConverterRepository()
+    = TestBitmapConverterRepository()
+
+    @Provides
+    @ActivityScope
+    fun provideTestCreateMediaRepository()
+    = TestCreateMediaRepository()
+
     // -- stub real repository -- //
 
     @Provides
@@ -99,5 +108,17 @@ object TestPickerModule {
     fun provideDeviceInfoRepository(
         stub: TestDeviceInfoRepository
     ): DeviceInfoRepository = stub
+
+    @Provides
+    @ActivityScope
+    fun provideBitmapConverterRepository(
+        stub: TestBitmapConverterRepository
+    ): BitmapConverterRepository = stub
+
+    @Provides
+    @ActivityScope
+    fun provideCreateMediaRepository(
+        stub: TestCreateMediaRepository
+    ): CreateMediaRepository = stub
 
 }

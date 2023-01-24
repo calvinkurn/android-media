@@ -63,7 +63,10 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
         super.onViewRecycled()
         delayChangeQty?.cancel()
         delayChangeNotes?.cancel()
-        qtyTextWatcher = null
+        if (qtyTextWatcher != null) {
+            viewBinding.qtyEditorProduct.editText.removeTextChangedListener(qtyTextWatcher)
+            qtyTextWatcher = null
+        }
     }
 
     override fun bind(element: MiniCartProductUiModel) {

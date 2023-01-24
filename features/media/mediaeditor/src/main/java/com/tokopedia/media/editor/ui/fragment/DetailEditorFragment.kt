@@ -36,6 +36,7 @@ import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.component.*
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel.Companion.EMPTY_RATIO
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_WHITE
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_DEFAULT
@@ -314,11 +315,17 @@ class DetailEditorFragment @Inject constructor(
             overlayView.setTargetAspectRatio(ratio.getRatio())
             cropView.targetAspectRatio = ratio.getRatio()
 
-            val newRatio = Pair(ratio.getRatioX(), ratio.getRatioY())
-            if (data.cropRotateValue.cropRatio != newRatio) {
-                data.cropRotateValue.cropRatio = newRatio
-                isEdited = true
+            val newRatioPair = Pair(ratio.getRatioX(), ratio.getRatioY())
+            // check if any crop state before
+            if (data.cropRotateValue.cropRatio != EMPTY_RATIO) {
+                // if had crop state then compare if ratio is change
+                if (data.cropRotateValue.cropRatio != newRatioPair) {
+                    setCropRatio(newRatioPair)
+                }
+            } else if (data.originalRatio != ratio.getRatio()) { // if didn't have crop state, compare original ratio
+                setCropRatio(newRatioPair)
             }
+            data.cropRotateValue.cropRatio = newRatioPair
         }
     }
 
@@ -1173,6 +1180,11 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    private fun setCropRatio(newRatioPair: Pair<Int, Int>) {
+        data.cropRotateValue.cropRatio = newRatioPair
+        isEdited = true
+    }
+
     override fun getScreenName() = SCREEN_NAME
 
     companion object {
@@ -1183,6 +1195,9 @@ class DetailEditorFragment @Inject constructor(
 
         private const val DELAY_EXECUTION_PREVIOUS_CROP = 400L
         private const val DELAY_EXECUTION_PREVIOUS_ROTATE = 400L
+        private const val DELAY_CROP_ROTATE_PROCESS =
+            DELAY_EXECUTION_PREVIOUS_CROP + DELAY_EXECUTION_PREVIOUS_ROTATE + 100L
+
         private const val DELAY_REMOVE_BG_TOASTER = 300L
 
         private const val bottomSheetTag = "Add Logo BottomSheet"

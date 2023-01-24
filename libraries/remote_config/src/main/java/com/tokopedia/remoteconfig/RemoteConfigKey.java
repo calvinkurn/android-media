@@ -310,4 +310,8 @@ public class RemoteConfigKey {
     public static final String RECOM_USE_GQL_FED_QUERY = "android_recom_use_gql_fed_query";
 
     public static final String HOME_USE_NEW_PULL_REFRESH = "android_home_use_new_pull_refresh";
+
+    public static final String PAYMENT_OVERLONG_THRESHOLD = "android_payment_overlong_threshold";
+
+    public static final String ENABLE_WEBVIEW_PRINT_JS_INTERFACE = "android_enable_webview_print_jsinterface";
 }

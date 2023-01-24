@@ -111,7 +111,7 @@ import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.feedplus.view.di.FeedPlusComponent
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
-import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
+import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
@@ -542,7 +542,8 @@ class FeedPlusFragment :
                             if (data.isSuccess) {
                                 onSuccessDeletePost(data.rowNumber)
                             } else {
-                                data.errorMessage = getString(R.string.default_request_error_unknown)
+                                data.errorMessage =
+                                    getString(R.string.default_request_error_unknown)
                                 onErrorDeletePost(data)
                             }
                         }
@@ -912,7 +913,8 @@ class FeedPlusFragment :
                             adapter.getList()
                         )
                     }
-                } catch (e: Exception) { }
+                } catch (e: Exception) {
+                }
             }
         })
 
@@ -1632,7 +1634,11 @@ class FeedPlusFragment :
     ) {
         onGoToLink(redirectUrl)
         val trackerId = if (isCaption) {
-            getTrackerIdForCampaignSaleTracker(positionInFeed, trackerIdAsgc = "17981", trackerIdAsgcRecom = "40070")
+            getTrackerIdForCampaignSaleTracker(
+                positionInFeed,
+                trackerIdAsgc = "17981",
+                trackerIdAsgcRecom = "40070"
+            )
         } else {
             getTrackerIdForCampaignSaleTracker(
                 positionInFeed,
@@ -1715,7 +1721,11 @@ class FeedPlusFragment :
             val finalId =
                 if (postType == TYPE_FEED_X_CARD_PLAY) playChannelId else postId
             val trackerId =
-                getTrackerIdForCampaignSaleTracker(positionInFeed, trackerIdAsgc = "13452", trackerIdAsgcRecom = "40065")
+                getTrackerIdForCampaignSaleTracker(
+                    positionInFeed,
+                    trackerIdAsgc = "13452",
+                    trackerIdAsgcRecom = "40065"
+                )
             getFeedTrackerDataModelFromPosition(positionInFeed, trackerId)?.let {
                 feedAnalytics.evenClickMenu(
                     it
@@ -1731,7 +1741,11 @@ class FeedPlusFragment :
             sheet.show((context as FragmentActivity).supportFragmentManager, "")
             sheet.onReport = {
                 val trackerIdReport =
-                    getTrackerIdForCampaignSaleTracker(positionInFeed, trackerIdAsgc = "17985", trackerIdAsgcRecom = "40066")
+                    getTrackerIdForCampaignSaleTracker(
+                        positionInFeed,
+                        trackerIdAsgc = "17985",
+                        trackerIdAsgcRecom = "40066"
+                    )
                 feedAnalytics.eventClickThreeDotsOption(
                     finalId,
                     "laporkan",
@@ -1755,8 +1769,7 @@ class FeedPlusFragment :
                                         positionInFeed,
                                         postId,
                                         reasonType,
-                                        reasonDesc,
-                                        "content"
+                                        reasonDesc
                                     )
                                 }
                             }
@@ -1945,7 +1958,8 @@ class FeedPlusFragment :
                 campaignStatus = getTrackerLabelSuffixFromPosition(positionInFeed),
                 positionInFeed = positionInFeed,
                 contentSlotValue = getContentScoreFromPosition(positionInFeed),
-                authorType = authorType
+                authorType = authorType,
+                hasVoucher = getTrackerHasVoucherFromPosition(positionInFeed)
             ),
             doubleTap = type,
             isLiked = !isLiked
@@ -2956,7 +2970,7 @@ class FeedPlusFragment :
         hideAdapterLoading()
     }
 
-    private fun onSuccessFavoriteUnfavoriteShop(model: FeedPromotedShopViewModel) {
+    private fun onSuccessFavoriteUnfavoriteShop(model: FeedPromotedShopModel) {
         showSnackbar(model.resultString)
         if (hasFeed()) {
             updateFavorite()
@@ -4008,39 +4022,37 @@ class FeedPlusFragment :
             ""
         }
 
-    override fun onShopRecomCloseClicked(itemID: Long) {
-        feedShopRecomWidgetAnalytics.sendClickXShopRecommendationEvent(itemID.toString())
-        feedViewModel.handleClickRemoveButtonShopRecom(itemID)
+    override fun onShopRecomCloseClicked(item: ShopRecomUiModelItem) {
+        feedShopRecomWidgetAnalytics.sendClickXShopRecommendationEvent(getShopRecomEventLabel(item))
+        feedViewModel.handleClickRemoveButtonShopRecom(item.id)
     }
 
-    override fun onShopRecomFollowClicked(itemID: Long) {
+    override fun onShopRecomFollowClicked(item: ShopRecomUiModelItem) {
         if (userSession.isLoggedIn) {
-            feedShopRecomWidgetAnalytics.sendClickFollowShopRecommendationEvent(itemID.toString())
-            feedViewModel.handleClickFollowButtonShopRecom(itemID)
+            feedShopRecomWidgetAnalytics.sendClickFollowShopRecommendationEvent(getShopRecomEventLabel(item))
+            feedViewModel.handleClickFollowButtonShopRecom(item.id)
         } else {
             onGoToLogin()
         }
     }
 
     override fun onShopRecomItemClicked(
-        itemID: Long,
-        appLink: String,
-        imageUrl: String,
+        item: ShopRecomUiModelItem,
         postPosition: Int
     ) {
         feedShopRecomWidgetAnalytics.sendClickShopRecommendationEvent(
-            eventLabel = itemID.toString(),
-            shopId = itemID.toString(),
-            shopsImageUrl = imageUrl,
+            eventLabel = getShopRecomEventLabel(item),
+            shopId = item.id.toString(),
+            shopsImageUrl = item.logoImageURL,
             postPosition = postPosition
         )
-        RouteManager.route(requireContext(), appLink)
+        RouteManager.route(requireContext(), item.applink)
     }
 
     override fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int) {
         shopRecomImpression.initiateShopImpress(item) { shopImpress ->
             feedShopRecomWidgetAnalytics.sendImpressionShopRecommendationEvent(
-                item.id.toString(),
+                getShopRecomEventLabel(item),
                 shopImpress,
                 postPosition
             )
@@ -4050,4 +4062,15 @@ class FeedPlusFragment :
     override fun onShopRecomLoadingNextPage(nextCursor: String) {
         feedViewModel.getShopRecomWidget(nextCursor)
     }
+
+    private fun getShopRecomEventLabel(item: ShopRecomUiModelItem) =
+        when (item.type) {
+            ShopRecomUiModelItem.FOLLOW_TYPE_SHOP -> {
+                "shop - ${item.id}"
+            }
+            ShopRecomUiModelItem.FOLLOW_TYPE_BUYER -> {
+                "user - ${item.id}"
+            }
+            else -> String.EMPTY
+        }
 }
