@@ -44,7 +44,7 @@ data class SelectedShipperModel(
             timeslotId = scheduleDelivery.timeslotId
             shipperId = scheduleDelivery.deliveryProduct.shipperId.toInt()
             shipperProductId = scheduleDelivery.deliveryProduct.shipperProductId.toInt()
-            shipperPrice = scheduleDelivery.deliveryProduct.finalPrice.roundToInt()
+            shipperPrice = scheduleDelivery.deliveryProduct.realPrice.roundToInt()
             serviceId = scheduleDelivery.deliveryProduct.serviceId.toInt()
             insurancePrice = scheduleDelivery.deliveryProduct.insurance.insurancePrice.roundToInt()
             insuranceType = scheduleDelivery.deliveryProduct.insurance.insuranceType
