@@ -135,8 +135,6 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
                 viewModel.isValidInput(it.toLongOrZero())
             }
 
-            setClickOptionsListener()
-
             formLayout?.labelSpendingEstimation?.apply {
                 iconInfo?.setOnClickListener {
                     ExpenseEstimationBottomSheet.newInstance().show(childFragmentManager)
@@ -162,9 +160,8 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
 
             formLayout?.btnMvcReset?.run {
                 setOnClickListener {
-                    clearClickOptionsListener()
-                    formLayout?.radiosMultipleCoupon?.clearCheck()
-                    setClickOptionsListener()
+                    //radiosMultipleCoupon always gone for now because BE not ready for recurring implementation
+                    //setOptionsPickerOnClickRestartButton()
                     viewModel.restartVoucher()
                     tracker.sendClickResetEvent(
                         createLabelTracker(
@@ -175,6 +172,13 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
                 }
             }
         }
+    }
+
+    //radiosMultipleCoupon always gone for now because BE not ready for recurring implementation
+    /*private fun setOptionsPickerOnClickRestartButton(){
+        clearClickOptionsListener()
+        formLayout?.radiosMultipleCoupon?.clearCheck()
+        setClickOptionsListener()
     }
 
     private fun sendTrackerOptions(optionsId: Int){
@@ -189,12 +193,6 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun setOnDismissListener() {
-        this.setOnDismissListener {
-            tracker.sendClickCloseEvent(createLabelTracker(idVoucher, viewModel.getVoucherStatus()))
-        }
-    }
-
     private fun setClickOptionsListener(){
         formLayout?.radiosMultipleCoupon?.setOnCheckedChangeListener { _, optionsId ->
             viewModel.setOptionsApplyPeriodCoupon(getPositionOptions(optionsId))
@@ -204,6 +202,41 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
 
     private fun clearClickOptionsListener(){
         formLayout?.radiosMultipleCoupon?.setOnCheckedChangeListener(null)
+    }
+
+    private fun getOptionsName(optionsId: Int): String {
+        return when (optionsId) {
+            R.id.radio_just_one_coupon -> getString(R.string.smvc_just_for_this_coupon)
+            R.id.radio_apply_all_coupon -> getString(R.string.smvc_this_coupon_and_other)
+            else -> getString(R.string.smvc_just_for_this_coupon)
+        }
+    }
+
+    private fun createLabelTrackerOptions(
+        voucherId: Long,
+        voucherStatus: String,
+        optionsName: String
+    ): String {
+        return getString(
+            R.string.smvc_tracker_change_quota_lable_options,
+            voucherId.toString(),
+            voucherStatus,
+            optionsName
+        )
+    }
+
+    private fun getPositionOptions(optionsId: Int): Int {
+        return when (optionsId) {
+            R.id.radio_just_one_coupon -> APPLY_ONLY_PERIOD_COUPON
+            R.id.radio_apply_all_coupon -> APPLY_ALL_PERIOD_COUPON
+            else -> NOT_YET_APPLY_PERIOD_COUPON
+        }
+    }*/
+
+    private fun setOnDismissListener() {
+        this.setOnDismissListener {
+            tracker.sendClickCloseEvent(createLabelTracker(idVoucher, viewModel.getVoucherStatus()))
+        }
     }
 
     private fun clearDismissListener() {
@@ -259,11 +292,13 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
             labelSpendingEstimation.spendingEstimationText =
                 estimationSpending.getCurrencyFormatted()
             textFieldDiscountQuota.editText.setText(voucher.currentQuota.orZero().toString())
-            if (voucher.isMultiPeriod.orFalse()) {
+
+            //radiosMultipleCoupon always gone for now because BE not ready for recurring implementation
+            /*if (voucher.isMultiPeriod.orFalse()) {
                 radiosMultipleCoupon.visible()
             } else {
                 radiosMultipleCoupon.gone()
-            }
+            }*/
         }
     }
 
@@ -291,22 +326,6 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun getPositionOptions(optionsId: Int): Int {
-        return when (optionsId) {
-            R.id.radio_just_one_coupon -> APPLY_ONLY_PERIOD_COUPON
-            R.id.radio_apply_all_coupon -> APPLY_ALL_PERIOD_COUPON
-            else -> NOT_YET_APPLY_PERIOD_COUPON
-        }
-    }
-
-    private fun getOptionsName(optionsId: Int): String {
-        return when (optionsId) {
-            R.id.radio_just_one_coupon -> getString(R.string.smvc_just_for_this_coupon)
-            R.id.radio_apply_all_coupon -> getString(R.string.smvc_this_coupon_and_other)
-            else -> getString(R.string.smvc_just_for_this_coupon)
-        }
-    }
-
 
     private fun createLabelTracker(voucherId: Long, voucherStatus: String): String {
         return getString(
@@ -316,16 +335,5 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
         )
     }
 
-    private fun createLabelTrackerOptions(
-        voucherId: Long,
-        voucherStatus: String,
-        optionsName: String
-    ): String {
-        return getString(
-            R.string.smvc_tracker_change_quota_lable_options,
-            voucherId.toString(),
-            voucherStatus,
-            optionsName
-        )
-    }
+
 }

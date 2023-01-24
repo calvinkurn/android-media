@@ -53,7 +53,9 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
                 val response = merchantPromotionGetMVDataByIDUseCase.execute(param)
                 _changeQuotaUiModel.postValue(SuccessToGetDetailVoucher(response.toUpdateQuotaModelMapper()))
                 updateQuotaModel = response.toUpdateQuotaModelMapper()
-                setOptionsApplyPeriodCoupon(isNeedToDisableYesButton())
+
+                //radiosMultipleCoupon always gone for now because BE not ready for recurring implementation
+                //setOptionsApplyPeriodCoupon(isNeedToDisableYesButton())
             },
             onError = { error ->
                 _changeQuotaUiModel.postValue(UpdateQuotaEffect.FailToGetDetailVoucher(error))
@@ -109,16 +111,6 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
         }
     }
 
-    fun setOptionsApplyPeriodCoupon(optionsPosition: Int) {
-        _inputQuotaValidation.update {
-            it.copy(
-                isSelectedOptions = optionsPosition != NOT_YET_APPLY_PERIOD_COUPON
-            )
-        }
-        updateQuotaModel =
-            updateQuotaModel.copy(isApplyToAllPeriodCoupon = optionsPosition == APPLY_ALL_PERIOD_COUPON)
-    }
-
     fun calculateEstimation(maxBenefit: Long, quotaInput: Long): Long {
         return maxBenefit * quotaInput
     }
@@ -161,16 +153,30 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
         )
     }
 
+    fun getVoucherStatus() = updateQuotaModel.voucherStatus.name
+
     fun restartVoucher() {
         updateQuotaModel = updateQuotaModel.copy(isApplyToAllPeriodCoupon = false)
         _changeQuotaUiModel.postValue(SuccessToGetDetailVoucher(updateQuotaModel))
-        setOptionsApplyPeriodCoupon(
+
+        //radiosMultipleCoupon always gone for now because BE not ready for recurring implementation
+        /*setOptionsApplyPeriodCoupon(
             isNeedToDisableYesButton()
-        )
+        )*/
     }
 
-    fun getVoucherStatus() = updateQuotaModel.voucherStatus.name
+    //radiosMultipleCoupon always gone for now because BE not ready for recurring implementation
+    /*
+     private fun setOptionsApplyPeriodCoupon(optionsPosition: Int) {
+        _inputQuotaValidation.update {
+            it.copy(
+                isSelectedOptions = optionsPosition != NOT_YET_APPLY_PERIOD_COUPON
+            )
+        }
+        updateQuotaModel =
+            updateQuotaModel.copy(isApplyToAllPeriodCoupon = optionsPosition == APPLY_ALL_PERIOD_COUPON)
+    }
 
     private fun isNeedToDisableYesButton() =
-        if (updateQuotaModel.isMultiPeriod) NOT_YET_APPLY_PERIOD_COUPON else APPLY_ONLY_PERIOD_COUPON
+        if (updateQuotaModel.isMultiPeriod) NOT_YET_APPLY_PERIOD_COUPON else APPLY_ONLY_PERIOD_COUPON*/
 }

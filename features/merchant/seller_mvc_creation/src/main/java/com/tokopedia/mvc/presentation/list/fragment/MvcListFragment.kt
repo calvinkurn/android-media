@@ -669,7 +669,7 @@ class MvcListFragment :
     }
 
     private fun createLabelOnTracker(voucher: Voucher) : String{
-        return getString(R.string.smvc_tracker_stop_voucher_lable, voucher.id.toString(), "")
+        return getString(R.string.smvc_tracker_stop_voucher_lable, voucher.id.toString(), "0")
     }
 
     private fun getStringPositiveCtaStopVoucherDialog(voucherStatus: VoucherStatus): String {
