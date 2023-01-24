@@ -45,6 +45,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShippingDuration
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCalculator
@@ -54,7 +55,6 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogis
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.ResultRates
-import com.tokopedia.oneclickcheckout.order.view.model.OrderShippingDuration
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
@@ -76,16 +76,18 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class OrderSummaryPageViewModel @Inject constructor(private val executorDispatchers: CoroutineDispatchers,
-                                                    private val cartProcessor: OrderSummaryPageCartProcessor,
-                                                    private val logisticProcessor: OrderSummaryPageLogisticProcessor,
-                                                    private val checkoutProcessor: OrderSummaryPageCheckoutProcessor,
-                                                    private val promoProcessor: OrderSummaryPagePromoProcessor,
-                                                    val paymentProcessor: Lazy<OrderSummaryPagePaymentProcessor>,
-                                                    private val calculator: OrderSummaryPageCalculator,
-                                                    private val userSession: UserSessionInterface,
-                                                    private val orderSummaryAnalytics: OrderSummaryAnalytics,
-                                                    private val eligibleForAddressUseCase: EligibleForAddressUseCase) : BaseViewModel(executorDispatchers.immediate) {
+class OrderSummaryPageViewModel @Inject constructor(
+    private val executorDispatchers: CoroutineDispatchers,
+    private val cartProcessor: OrderSummaryPageCartProcessor,
+    private val logisticProcessor: OrderSummaryPageLogisticProcessor,
+    private val checkoutProcessor: OrderSummaryPageCheckoutProcessor,
+    private val promoProcessor: OrderSummaryPagePromoProcessor,
+    val paymentProcessor: Lazy<OrderSummaryPagePaymentProcessor>,
+    private val calculator: OrderSummaryPageCalculator,
+    private val userSession: UserSessionInterface,
+    private val orderSummaryAnalytics: OrderSummaryAnalytics,
+    private val eligibleForAddressUseCase: EligibleForAddressUseCase
+) : BaseViewModel(executorDispatchers.immediate) {
 
     init {
         initCalculator()
@@ -98,9 +100,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     var orderPreferenceData: OrderPreference = OrderPreference()
     val orderPreference: OccMutableLiveData<OccState<OrderPreference>> = OccMutableLiveData(OccState.Loading)
-    val orderShippingDuration: OccMutableLiveData<OccState<OrderShippingDuration>> = OccMutableLiveData(OccState.FirstLoad(
-        OrderShippingDuration()
-    ))
+    val orderShippingDuration: OccMutableLiveData<OccState<OrderShippingDuration>> =
+        OccMutableLiveData(
+            OccState.FirstLoad(
+                OrderShippingDuration()
+            )
+        )
 
     val orderProfile: OccMutableLiveData<OrderProfile> = OccMutableLiveData(OrderProfile(enable = false))
     val orderShipment: OccMutableLiveData<OrderShipment> = OccMutableLiveData(OrderShipment())
@@ -1018,19 +1023,25 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             selectedInstallmentTerm?.isSelected = true
             orderPayment.value = newOrderPayment.copy(creditCard = newOrderPayment.creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentTermList))
         }
-        calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
-                validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
+        calculator.calculateTotal(
+            orderCart,
+            orderProfile.value,
+            orderShipment.value,
+            validateUsePromoRevampUiModel,
+            orderPayment.value,
+            orderTotal.value
+        )
     }
 
     fun checkUserEligibilityForAnaRevamp(token: Token? = null) {
         eligibleForAddressUseCase.eligibleForAddressFeature(
-                {
-                    eligibleForAnaRevamp.value = OccState.Success(OrderEnableAddressFeature(it, token))
-                },
-                {
-                    eligibleForAnaRevamp.value = OccState.Failed(Failure(it))
-                },
-                AddressConstant.ANA_REVAMP_FEATURE_ID
+            {
+                eligibleForAnaRevamp.value = OccState.Success(OrderEnableAddressFeature(it, token))
+            },
+            {
+                eligibleForAnaRevamp.value = OccState.Failed(Failure(it))
+            },
+            AddressConstant.ANA_REVAMP_FEATURE_ID
         )
     }
 

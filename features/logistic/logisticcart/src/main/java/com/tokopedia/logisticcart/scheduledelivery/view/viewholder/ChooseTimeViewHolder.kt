@@ -108,7 +108,7 @@ class ChooseTimeViewHolder(
             DividerType.THIN -> {
                 viewBinding.divider.visibility = View.VISIBLE
                 val params = viewBinding.divider.layoutParams
-                params.height = 3
+                params.height = DIVIDER_THIN_HEIGHT
                 (params as ViewGroup.MarginLayoutParams).setMargins(
                     16.toPx(),
                     params.topMargin,
@@ -120,7 +120,7 @@ class ChooseTimeViewHolder(
             DividerType.THICK -> {
                 viewBinding.divider.visibility = View.VISIBLE
                 val params = viewBinding.divider.layoutParams
-                params.height = 16
+                params.height = DIVIDER_THICK_HEIGHT
                 (params as ViewGroup.MarginLayoutParams).setMargins(
                     0,
                     params.topMargin,
@@ -138,5 +138,7 @@ class ChooseTimeViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT_RES = com.tokopedia.logisticcart.R.layout.viewholder_choose_time
+        private const val DIVIDER_THIN_HEIGHT = 3
+        private const val DIVIDER_THICK_HEIGHT = 16
     }
 }

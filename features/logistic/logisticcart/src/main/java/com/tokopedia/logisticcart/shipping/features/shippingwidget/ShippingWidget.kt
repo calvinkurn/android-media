@@ -99,13 +99,19 @@ class ShippingWidget : ConstraintLayout {
                     .setDuration(VIBRATION_ANIMATION_DURATION)
                     .setInterpolator(CycleInterpolator(VIBRATION_ANIMATION_CYCLE))
                     .setListener(object : Animator.AnimatorListener {
-                        override fun onAnimationStart(animator: Animator) {}
+                        override fun onAnimationStart(animator: Animator) {
+                            // no op
+                        }
                         override fun onAnimationEnd(animator: Animator) {
                             shipmentCartItemModel.isTriggerShippingVibrationAnimation = false
                         }
 
-                        override fun onAnimationCancel(animator: Animator) {}
-                        override fun onAnimationRepeat(animator: Animator) {}
+                        override fun onAnimationCancel(animator: Animator) {
+                            // no op
+                        }
+                        override fun onAnimationRepeat(animator: Animator) {
+                            // no op
+                        }
                     })
                     .start()
             }

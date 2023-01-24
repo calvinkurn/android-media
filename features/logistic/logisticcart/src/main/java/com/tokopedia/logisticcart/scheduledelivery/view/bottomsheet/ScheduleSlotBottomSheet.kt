@@ -18,8 +18,7 @@ import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ChooseTimeUiMode
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class ScheduleSlotBottomSheet(private val data: BottomSheetUiModel) :
-    BottomSheetUnify(),
-    ScheduleSlotListener {
+    BottomSheetUnify(), ScheduleSlotListener {
 
     interface ScheduleSlotBottomSheetListener {
         fun onChooseTimeListener(timeId: Long, dateId: String)

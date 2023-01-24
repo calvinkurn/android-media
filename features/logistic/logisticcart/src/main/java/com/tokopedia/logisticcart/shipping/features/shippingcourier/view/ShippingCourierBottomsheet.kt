@@ -53,12 +53,15 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
     @Inject
     lateinit var courierConverter: ShippingCourierConverter
 
-    fun show(activity: Activity,
-             fragmentManager: FragmentManager,
-             shippingCourierBottomsheetListener: ShippingCourierBottomsheetListener,
-             shippingCourierUiModels: List<ShippingCourierUiModel>?,
-             recipientAddressModel: RecipientAddressModel?,
-             cartPosition: Int, isOcc: Boolean) {
+    fun show(
+        activity: Activity,
+        fragmentManager: FragmentManager,
+        shippingCourierBottomsheetListener: ShippingCourierBottomsheetListener,
+        shippingCourierUiModels: List<ShippingCourierUiModel>?,
+        recipientAddressModel: RecipientAddressModel?,
+        cartPosition: Int,
+        isOcc: Boolean
+    ) {
         this.activity = activity
         this.shippingCourierBottomsheetListener = shippingCourierBottomsheetListener
         this.isOcc = isOcc
@@ -92,8 +95,11 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         }
     }
 
-    fun setShippingCourierViewModels(shippingCourierUiModels: List<ShippingCourierUiModel>?,
-                                     cartPosition: Int, preOrderModel: PreOrderModel?) {
+    fun setShippingCourierViewModels(
+        shippingCourierUiModels: List<ShippingCourierUiModel>?,
+        cartPosition: Int,
+        preOrderModel: PreOrderModel?
+    ) {
         hideLoading()
         if (shippingCourierUiModels != null && shippingCourierUiModels.isNotEmpty()) {
             mCourierModelList = shippingCourierUiModels
@@ -106,8 +112,8 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
 
     private fun initializeInjector() {
         val component = DaggerShippingCourierComponent.builder()
-                .shippingCourierModule(ShippingCourierModule())
-                .build()
+            .shippingCourierModule(ShippingCourierModule())
+            .build()
         component.inject(this)
     }
 
@@ -145,7 +151,10 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         shippingCourierAdapter.setCartPosition(cartPosition)
         shippingCourierAdapter.setEndYearPromotion(isToogleYearEndPromotionOn())
         val linearLayoutManager = LinearLayoutManager(
-                activity, LinearLayoutManager.VERTICAL, false)
+            activity,
+            LinearLayoutManager.VERTICAL,
+            false
+        )
         rvCourier?.layoutManager = linearLayoutManager
         rvCourier?.adapter = shippingCourierAdapter
     }
@@ -166,8 +175,15 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         val courierItemData = courierConverter.convertToCourierItemData(shippingCourierUiModel)
         val isCod = productData.codProductData != null && productData.codProductData.isCodAvailable == 1
         shippingCourierBottomsheetListener?.onCourierChoosen(
-                shippingCourierUiModel, courierItemData, mRecipientAddress, cartPosition, isCod,
-                !TextUtils.isEmpty(productData.promoCode), isNeedPinpoint, mCourierModelList)
+            shippingCourierUiModel,
+            courierItemData,
+            mRecipientAddress,
+            cartPosition,
+            isCod,
+            !TextUtils.isEmpty(productData.promoCode),
+            isNeedPinpoint,
+            mCourierModelList
+        )
         bottomSheet?.dismiss()
     }
 
@@ -204,12 +220,13 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         }
     }
 
-    private fun convertCourierListToUiModel(shippingCourierUiModels: List<ShippingCourierUiModel>, preOrderModel: PreOrderModel?, isOcc: Boolean) : MutableList<RatesViewModelType>{
-        val eligibleCourierList = shippingCourierUiModels.filter { courier -> !courier.productData.isUiRatesHidden}.toMutableList()
-        val uiModel : MutableList<RatesViewModelType> = mutableListOf()
+    private fun convertCourierListToUiModel(shippingCourierUiModels: List<ShippingCourierUiModel>, preOrderModel: PreOrderModel?, isOcc: Boolean): MutableList<RatesViewModelType> {
+        val eligibleCourierList = shippingCourierUiModels.filter { courier -> !courier.productData.isUiRatesHidden }.toMutableList()
+        val uiModel: MutableList<RatesViewModelType> = mutableListOf()
         uiModel.addAll(eligibleCourierList)
         eligibleCourierList.getOrNull(0)?.let {
-            firstCourier -> setNotifierModel(uiModel, firstCourier, isOcc)
+                firstCourier ->
+            setNotifierModel(uiModel, firstCourier, isOcc)
         }
 
         if (preOrderModel?.display == true) {

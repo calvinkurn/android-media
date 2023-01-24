@@ -61,13 +61,12 @@ class DeliveryProduct(
     fun getFormattedPrice(): String {
         return StringBuilder().apply {
             if (realPrice != finalPrice) {
-                appendHtmlBoldText(" (${textFinalPrice} ")
+                appendHtmlBoldText(" ($textFinalPrice ")
                 appendHtmlStrikethroughText(textRealPrice)
                 appendHtmlBoldText(")")
             } else {
-                appendHtmlBoldText(" (${textFinalPrice})")
+                appendHtmlBoldText(" ($textFinalPrice)")
             }
-
         }.toString()
     }
 }

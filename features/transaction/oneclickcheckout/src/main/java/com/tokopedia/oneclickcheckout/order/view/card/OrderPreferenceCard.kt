@@ -160,7 +160,8 @@ class OrderPreferenceCard(
             logisticPromoUiModel = logisticPromoUiModel,
             onChangeDurationListener = {
                 onChangeDuration(shipping)
-            })
+            }
+        )
     }
 
     @SuppressLint("SetTextI18n")
@@ -228,7 +229,6 @@ class OrderPreferenceCard(
             )
         }
     }
-
 
     private fun renderErrorShipping(shipping: OrderShipment) {
         binding.apply {
@@ -500,10 +500,10 @@ class OrderPreferenceCard(
                 btnChangeInstallmentWrap.gone()
                 if (selectedTerm.term > 0) {
                     tvInstallmentDetail.text = "${selectedTerm.term} Bulan x ${
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            selectedTerm.monthlyAmount,
-                            false
-                        ).removeDecimalSuffix()
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        selectedTerm.monthlyAmount,
+                        false
+                    ).removeDecimalSuffix()
                     }"
                 } else {
                     tvInstallmentDetail.text =
@@ -749,9 +749,13 @@ class OrderPreferenceCard(
     private fun setAddressNameMargin(isMainAddress: Boolean) {
         val displayMetrics = binding.tvAddressName.context?.resources?.displayMetrics ?: return
         binding.tvAddressName.setMargin(
-            if (isMainAddress) MAIN_ADDRESS_LEFT_MARGIN.dpToPx(
-                displayMetrics
-            ) else NOT_MAIN_ADDRESS_LEFT_MARGIN.dpToPx(displayMetrics),
+            if (isMainAddress) {
+                MAIN_ADDRESS_LEFT_MARGIN.dpToPx(
+                    displayMetrics
+                )
+            } else {
+                NOT_MAIN_ADDRESS_LEFT_MARGIN.dpToPx(displayMetrics)
+            },
             ADDRESS_TOP_MARGIN.dpToPx(displayMetrics),
             ADDRESS_RIGHT_MARGIN,
             ADDRESS_BOTTOM_MARGIN

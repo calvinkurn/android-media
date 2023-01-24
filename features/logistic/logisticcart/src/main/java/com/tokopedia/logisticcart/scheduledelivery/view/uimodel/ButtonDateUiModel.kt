@@ -1,6 +1,6 @@
 package com.tokopedia.logisticcart.scheduledelivery.view.uimodel
 
-data class ButtonDateUiModel (
+data class ButtonDateUiModel(
     val title: String = "",
     val date: String = "",
     val isEnabled: Boolean = true,
