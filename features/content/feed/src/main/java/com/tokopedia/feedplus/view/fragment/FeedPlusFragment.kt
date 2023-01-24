@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -780,6 +781,7 @@ class FeedPlusFragment :
                     when (it) {
                         is Success -> {
                             adapter.getlist().mapIndexed { index, item ->
+                                Log.d("FEED_PLUS", item.toString());
                                 var isChanged = false
                                 if (item is ShopRecomWidgetModel) {
                                     item.shopRecomUiModel.items.map { recomItem ->
@@ -787,9 +789,13 @@ class FeedPlusFragment :
                                             recomItem.state =
                                                 if (followStatus) ShopRecomFollowState.FOLLOW else ShopRecomFollowState.UNFOLLOW
                                             isChanged = true
+                                            Log.d("FEED_PLUS", "CHANGE FOLLOW STATUS ${recomItem}");
                                         }
                                     }
-                                    if (isChanged) adapter.updateShopRecomWidget(item)
+                                    if (isChanged) {
+                                        adapter.updateShopRecomWidget(item)
+                                        Log.d("FEED_PLUS", "MASUK CHANGED RECOM");
+                                    }
 
                                 } else {
                                     val shopId = when (item) {
@@ -807,22 +813,34 @@ class FeedPlusFragment :
                                                 is DynamicPostModel -> {
                                                     item.header.followCta.isFollow = followStatus
                                                     isChanged = true
+                                                    Log.d(
+                                                        "FEED_PLUS",
+                                                        "CHANGE FOLLOW STATUS DYNAMIC POST ${item}"
+                                                    );
                                                 }
                                                 is DynamicPostUiModel -> {
                                                     item.feedXCard.followers.isFollowed =
                                                         followStatus
                                                     isChanged = true
+                                                    Log.d(
+                                                        "FEED_PLUS",
+                                                        "CHANGE FOLLOW STATUS DYNAMIC POST UI ${item}"
+                                                    );
                                                 }
-                                                else -> ""
+                                                else -> {
+                                                    Log.d("FEED_PLUS", "DO NOTHING");
+                                                }
                                             }
                                         }
                                     }
 
-                                    if (isChanged)
+                                    if (isChanged) {
                                         adapter.notifyItemChanged(
                                             index,
                                             DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
                                         )
+                                        Log.d("FEED_PLUS", "MASUK CHANGED");
+                                    }
                                 }
                             }
                             feedViewModel.clearFollowIdToUpdate()
