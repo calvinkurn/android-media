@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroSetupCoverBinding
@@ -19,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * Created by fachrizalmrsln on 11/01/23
@@ -118,9 +118,7 @@ class PlayBroadcastSetupCoverBottomSheet : BottomSheetUnify() {
         )
 
     private fun setupCoachMark() {
-        binding.root.addOneTimeGlobalLayoutListener {
-            coachMark = CoachMark2(requireContext())
-        }
+        coachMark = CoachMark2(requireContext())
     }
 
     fun showCoachMark() {
