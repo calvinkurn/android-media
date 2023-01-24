@@ -5,7 +5,6 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.ADD_TO_CART
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.PRODUCT_VIEW
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.SELECT_CONTENT
-import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.VIEW_ITEM_LIST
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.BUSINESS_UNIT_HOME
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CATEGORY_ID
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CATEGORY_PDP
@@ -31,9 +30,7 @@ import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstant
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.SHOP_TYPE
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.TRACKER_ID
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.track.TrackApp
-import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.track.constant.TrackerConstant.BUSINESS_UNIT
 import com.tokopedia.track.constant.TrackerConstant.CURRENT_SITE
@@ -43,7 +40,6 @@ import com.tokopedia.track.constant.TrackerConstant.EVENT_CATEGORY
 import com.tokopedia.track.constant.TrackerConstant.EVENT_LABEL
 import com.tokopedia.track.constant.TrackerConstant.USERID
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import kotlin.collections.HashMap
 
 object ViewToViewBottomSheetTracker: BaseTrackerConst() {
     private const val TOPADS = "topads"
