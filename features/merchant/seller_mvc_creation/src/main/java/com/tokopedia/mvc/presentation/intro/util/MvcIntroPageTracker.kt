@@ -1,6 +1,7 @@
 package com.tokopedia.mvc.presentation.intro.util
 
 import com.tokopedia.mvc.util.constant.MvcTrackerConstant
+import com.tokopedia.mvc.util.constant.MvcTrackerConstant.TRACKER_ID
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -39,6 +40,5 @@ class MvcIntroPageTracker @Inject constructor(private val userSession: UserSessi
         private const val CREATE_COUPON = "click create coupon"
         private const val VIEW_MORE = "click again"
         private const val EVENT_CATEGORY = "my shop coupons - intro"
-        private const val TRACKER_ID = "trackerId"
     }
 }

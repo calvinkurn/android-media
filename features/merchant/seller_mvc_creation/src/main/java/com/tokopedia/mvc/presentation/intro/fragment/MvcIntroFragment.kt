@@ -82,7 +82,7 @@ class MvcIntroFragment :
         }
         binding?.btnCreateVoucher?.setOnClickListener {
             mvcIntroPageTracker.sendMvcIntroPageCreateVoucherEvent()
-            RouteManager.route(context, CREATE_VOUCHER_SHOP)
+            RouteManager.route(context, CREATE_VOUCHER_SHOP_APPLINK)
         }
     }
 
@@ -282,6 +282,6 @@ class MvcIntroFragment :
     }
 
     companion object {
-        private const val CREATE_VOUCHER_SHOP = "sellerapp://seller-mvc/create/shop"
+        private const val CREATE_VOUCHER_SHOP_APPLINK = "sellerapp://seller-mvc/create/shop"
     }
 }
