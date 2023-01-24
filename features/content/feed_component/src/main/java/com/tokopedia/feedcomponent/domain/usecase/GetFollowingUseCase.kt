@@ -14,18 +14,19 @@ import javax.inject.Inject
 open class GetFollowingUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<List<String>, ShopFollowingEntity>(dispatcher.io) {
+) : CoroutineUseCase<List<Pair<String, Int>>, ShopFollowingEntity>(dispatcher.io) {
 
-    override suspend fun execute(params: List<String>): ShopFollowingEntity {
+    override suspend fun execute(params: List<Pair<String, Int>>): ShopFollowingEntity {
         val param = generateParam(params)
         return repository.request(graphqlQuery(), param)
     }
 
-    private fun generateParam(shopIds: List<String>): Map<String, Any> {
+    private fun generateParam(shopIds: List<Pair<String, Int>>): Map<String, Any> {
         val inputFields = listOf(DEFAULT_FAVORITE)
         return mapOf<String, Any>(
-            PARAM_SHOP_IDS to shopIds.map { it.toIntSafely() }.toList(),
-            PARAM_USER_IDS to shopIds,
+            PARAM_SHOP_IDS to shopIds.filter { it.second == SHOP_TYPE }
+                .map { it.first.toIntSafely() }.toList(),
+            PARAM_USER_IDS to shopIds.filter { it.second != SHOP_TYPE }.map { it.first }.toList(),
             PARAM_INPUT_FIELDS to inputFields
         )
     }
@@ -66,5 +67,7 @@ open class GetFollowingUseCase @Inject constructor(
         private const val PARAM_USER_IDS = "followingUserIDs"
         private const val PARAM_INPUT_FIELDS = "inputFields"
         private const val DEFAULT_FAVORITE: String = "favorite"
+
+        private const val SHOP_TYPE = 2
     }
 }

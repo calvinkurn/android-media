@@ -65,6 +65,7 @@ import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.ViewsKolModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -166,22 +167,26 @@ class FeedViewModel @Inject constructor(
     private var currentCursor = ""
     private val pagingHandler: PagingHandler = PagingHandler()
 
-    private val currentFollowState: MutableMap<String, Boolean> = mutableMapOf()
+    private val currentFollowState: MutableMap<String, Pair<Int, Boolean>> = mutableMapOf()
 
     fun updateCurrentFollowState(list: List<Visitable<*>>) {
         list.map { item ->
             when (item) {
                 is DynamicPostModel -> {
-                    currentFollowState[item.header.followCta.authorID] =
+                    currentFollowState[item.header.followCta.authorID] = Pair(
+                        item.header.followCta.authorType.toIntSafely(),
                         item.header.followCta.isFollow
+                    )
                 }
                 is DynamicPostUiModel -> {
-                    currentFollowState[item.feedXCard.author.id] =
+                    currentFollowState[item.feedXCard.author.id] = Pair(
+                        item.feedXCard.author.type,
                         item.feedXCard.followers.isFollowed
+                    )
                 }
                 is ShopRecomWidgetModel -> {
                     item.shopRecomUiModel.items.map {
-                        currentFollowState[it.id.toString()] = it.state == FOLLOW
+                        currentFollowState[it.id.toString()] = Pair(it.type, it.state == FOLLOW)
                     }
                 }
                 else -> {}
@@ -190,7 +195,7 @@ class FeedViewModel @Inject constructor(
     }
 
     fun updateFollowStatus() {
-        val authorIds = currentFollowState.keys.toList()
+        val authorIds = currentFollowState.map { item -> Pair(item.key, item.value.first) }.toList()
         if (authorIds.isNotEmpty())
             viewModelScope.launchCatchError(block = {
                 val shopIdsToUpdate = mutableMapOf<String, Boolean>()
@@ -199,18 +204,23 @@ class FeedViewModel @Inject constructor(
                 }
                 response.shopInfoById.result.map { item ->
                     if (currentFollowState[item.shopCore.shopID] != null &&
-                        item.favoriteData.isFollowing != currentFollowState[item.shopCore.shopID]
+                        item.favoriteData.isFollowing != currentFollowState[item.shopCore.shopID]?.second
                     ) {
                         shopIdsToUpdate[item.shopCore.shopID] = item.favoriteData.isFollowing
-                        currentFollowState[item.shopCore.shopID] = item.favoriteData.isFollowing
+                        currentFollowState[item.shopCore.shopID] = Pair(
+                            currentFollowState[item.shopCore.shopID]?.first ?: 0,
+                            item.favoriteData.isFollowing
+                        )
                     }
                 }
                 response.feedXProfileIsFollowing.isUserFollowing.map { item ->
                     if (currentFollowState[item.userId] != null &&
-                        item.status != currentFollowState[item.userId]
+                        item.status != currentFollowState[item.userId]?.second
                     ) {
                         shopIdsToUpdate[item.userId] = item.status
-                        currentFollowState[item.userId] = item.status
+                        currentFollowState[item.userId] = Pair(
+                            currentFollowState[item.userId]?.first ?: 0, item.status
+                        )
                     }
                 }
                 _shopIdsFollowStatusToUpdateData.value = Success(shopIdsToUpdate)
