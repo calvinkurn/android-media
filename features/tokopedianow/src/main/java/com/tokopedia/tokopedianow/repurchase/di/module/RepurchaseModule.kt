@@ -17,8 +17,8 @@ class RepurchaseModule {
 
     @RepurchaseScope
     @Provides
-    fun provideRepurchaseAnalytic(): RepurchaseAnalytics {
-        return RepurchaseAnalytics()
+    fun provideRepurchaseAnalytic(userSession: UserSessionInterface): RepurchaseAnalytics {
+        return RepurchaseAnalytics(userSession)
     }
 
     @RepurchaseScope

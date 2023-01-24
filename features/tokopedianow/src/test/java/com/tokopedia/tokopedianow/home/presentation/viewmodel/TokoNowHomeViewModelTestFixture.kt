@@ -24,11 +24,11 @@ import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
-import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
+import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.domain.model.GetQuestListResponse
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
@@ -173,7 +173,7 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun verifyGetCategoryListResponseSuccess(expectedResponse: Visitable<*>) {
         val homeLayoutList = viewModel.homeLayoutList.value
-        val actualResponse = (homeLayoutList as Success).data.items.find { it is TokoNowCategoryGridUiModel }
+        val actualResponse = (homeLayoutList as Success).data.items.find { it is TokoNowCategoryMenuUiModel }
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
