@@ -1,5 +1,6 @@
 package com.tokopedia.contactus.inboxtickets.view.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Typeface
 import android.text.SpannableString
@@ -70,6 +71,7 @@ class InboxDetailAdapter(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun enterSearchMode(text: String) {
         if (text.isNotEmpty()) {
             searchMode = true
@@ -78,6 +80,7 @@ class InboxDetailAdapter(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun exitSearchMode() {
         searchMode = false
         searchText = ""

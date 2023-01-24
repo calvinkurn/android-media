@@ -311,13 +311,13 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
         }
 
         private fun getQuestion(context: Context): ArrayList<String> {
-            val array = context.resources.getStringArray(R.array.contactus_csat_question)
-            return arrayListOf(*array)
+            val array = context.resources.getStringArray(R.array.contactus_csat_question).toString()
+            return arrayListOf(array)
         }
 
         private fun getCaption(context: Context): ArrayList<String> {
-            val array = context.resources.getStringArray(R.array.contactus_csat_caption)
-            return arrayListOf(*array)
+            val array = context.resources.getStringArray(R.array.contactus_csat_caption).toString()
+            return arrayListOf(array)
         }
     }
 

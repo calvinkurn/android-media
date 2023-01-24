@@ -1,5 +1,6 @@
 package com.tokopedia.contactus.inboxtickets.view.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -114,6 +115,7 @@ class TicketListAdapter(
         return position == itemList.size - 1
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun removeFooter() {
         if (isFooterAdded) {
             isFooterAdded = false

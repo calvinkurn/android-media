@@ -41,7 +41,7 @@ class ImageUploadAdapter(
         if (imageUpload.size < maxPicUpload) {
             image.imgSrc = DUMMY_IMAGE_RESOURCE_FOR_LOCAL_FILE
             imageUpload.add(image)
-            notifyDataSetChanged()
+            notifyItemChanged(imageUpload.size-1)
             if (imageUpload.size == maxPicUpload) {
                 Toast.makeText(context, R.string.max_image_warning, Toast.LENGTH_SHORT).show()
             }
@@ -83,7 +83,7 @@ class ImageUploadAdapter(
                 onClickCross()
             }
             imageUpload.remove(image)
-            notifyDataSetChanged()
+            notifyItemChanged(position)
         }
     }
 

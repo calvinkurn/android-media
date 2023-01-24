@@ -15,9 +15,11 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
-const val IMAGE_UPLOAD_URL = "https://u12.tokopedia.net"
 private const val IMAGE_UPLOAD_PATH = "/upload/attachment"
 private const val ATTACHMENT_TYPE = "fileToUpload\"; filename=\"image.jpg"
 const val IMAGE_QUALITY = 70
@@ -83,7 +85,7 @@ class ContactUsUploadImageUseCase @Inject constructor(
     private fun getParams(userId: String, pathFile: String): RequestParams {
         val reqParam = HashMap<String, RequestBody>()
         reqParam[PARAM_WEB_SERVICE] = createRequestBody("1")
-        reqParam[PARAM_ID] = createRequestBody(String.format("%s%s", userId, pathFile))
+        reqParam[PARAM_ID] = createRequestBody(String.format("%s%s", userId, pathFile, Locale.getDefault()))
 
         return uploadImageUseCase.createRequestParam(
             pathFile,
