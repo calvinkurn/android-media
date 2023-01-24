@@ -29,15 +29,15 @@ class ThumbnailVariantViewHolder(
 
     private val card get() = binding.pdpThumbnailVariantView
 
-    fun bind(element: VariantOptionWithAttribute) = with(binding) {
+    fun bind(element: VariantOptionWithAttribute) {
         setUI(element = element)
         setEvent(element = element)
         setState(element = element)
     }
 
-    private fun setUI(element: VariantOptionWithAttribute) = with(card) {
+    private fun setUI(element: VariantOptionWithAttribute) {
         val shouldRenderPromoIcon = shouldRenderFlashSale(element = element)
-        setData(
+        card.setData(
             title = element.variantName,
             thumbnailUrl = element.image100,
             showPromoIcon = shouldRenderPromoIcon
@@ -61,12 +61,12 @@ class ThumbnailVariantViewHolder(
         }
     }
 
-    private fun setState(element: VariantOptionWithAttribute): Unit = with(card) {
+    private fun setState(element: VariantOptionWithAttribute) {
         when (element.currentState) {
-            VariantConstant.STATE_SELECTED -> setSelectedState()
-            VariantConstant.STATE_SELECTED_EMPTY -> setSelectedStockEmptyState()
-            VariantConstant.STATE_UNSELECTED -> setUnselectedState()
-            else -> setDisableState()
+            VariantConstant.STATE_SELECTED -> card.setSelectedState()
+            VariantConstant.STATE_SELECTED_EMPTY -> card.setSelectedStockEmptyState()
+            VariantConstant.STATE_UNSELECTED -> card.setUnselectedState()
+            else -> card.setDisableState()
         }
     }
 
