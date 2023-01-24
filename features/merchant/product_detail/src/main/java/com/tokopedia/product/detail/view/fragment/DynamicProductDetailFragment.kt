@@ -297,8 +297,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
-import java.util.Locale
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -2506,7 +2505,7 @@ open class DynamicProductDetailFragment :
                 viewModel.userSessionInterface.isLoggedIn
             )
         }
-        pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo)
+        pdpUiUpdater?.updateDataP1(updatedDynamicProductInfo)
         pdpUiUpdater?.updateMediaScrollPosition(selectedChild?.optionIds?.firstOrNull())
         pdpUiUpdater?.updateNotifyMeAndContent(
             selectedChild?.productId.toString(),
@@ -3094,7 +3093,7 @@ open class DynamicProductDetailFragment :
             }
         )
 
-        pdpUiUpdater?.updateDataP1(context, productInfo, true)
+        pdpUiUpdater?.updateDataP1(productInfo, true)
         pdpUiUpdater?.updateInitialMedia(productInfo.data.media, productInfo.data.containerType)
         actionButtonView.setButtonP1(productInfo.data.preOrder)
 
@@ -4635,16 +4634,16 @@ open class DynamicProductDetailFragment :
             when (actionButton) {
                 ProductDetailCommonConstant.OCS_BUTTON -> {
                     val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
-                        productId = data.basic.productID.toLongOrNull() ?: 0
-                        shopId = data.basic.shopID.toIntOrZero()
+                        productId = data.basic.productID
+                        shopId = data.basic.shopID
                         quantity = data.basic.minOrder
                         notes = ""
-                        customerId = viewModel.userId.toIntOrZero()
-                        warehouseId = selectedWarehouseId
+                        customerId = viewModel.userId
+                        warehouseId = selectedWarehouseId.toString()
                         trackerAttribution = trackerAttributionPdp ?: ""
                         trackerListName = trackerListNamePdp ?: ""
                         isTradeIn = data.data.isTradeIn
-                        shippingPrice = viewModel.shippingMinimumPrice.roundToIntOrZero()
+                        shippingPrice = viewModel.shippingMinimumPrice
                         productName = data.getProductName
                         category = data.basic.category.name
                         price = data.finalPrice.toString()
@@ -4657,13 +4656,13 @@ open class DynamicProductDetailFragment :
                 }
                 else -> {
                     val addToCartRequestParams = AddToCartRequestParams().apply {
-                        productId = data.basic.productID.toLongOrNull() ?: 0
-                        shopId = data.basic.shopID.toIntOrZero()
+                        productId = data.basic.productID
+                        shopId = data.basic.shopID
                         quantity = data.basic.minOrder
                         notes = ""
                         attribution = trackerAttributionPdp ?: ""
                         listTracker = trackerListNamePdp ?: ""
-                        warehouseId = selectedWarehouseId
+                        warehouseId = selectedWarehouseId.toString()
                         atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
                         productName = data.getProductName
                         category = data.basic.category.name
@@ -4739,32 +4738,36 @@ open class DynamicProductDetailFragment :
         tickerDataResponse: ShopInfo.TickerDataResponse,
         componentTrackDataModel: ComponentTrackDataModel
     ) {
+        if (tickerDataResponse.action.isEmpty()) return
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
-        ShopCredibilityTracking.clickShopTicker(
-            ShopCredibilityTracker.ClickShopTicker(
-                productInfo,
-                componentTrackDataModel,
-                tickerDataResponse,
-                viewModel.userId
-            )
-        )
 
-        if (tickerDataResponse.action == "applink") {
-            val applink = tickerDataResponse.actionLink
-            if (activity != null && RouteManager.isSupportApplink(activity, applink)) {
-                goToApplink(applink)
-            } else {
-                openWebViewUrl(applink)
-            }
-        } else {
-            val bottomSheetData = tickerDataResponse.actionBottomSheet
-            goToBottomSheetTicker(
-                title = bottomSheetData.title,
-                message = bottomSheetData.message,
-                reason = bottomSheetData.reason,
-                buttonText = bottomSheetData.buttonText,
-                buttonLink = bottomSheetData.buttonLink
+        SingleClick.doSomethingBeforeTime(interval = DEBOUNCE_CLICK) {
+            ShopCredibilityTracking.clickShopTicker(
+                ShopCredibilityTracker.ClickShopTicker(
+                    productInfo,
+                    componentTrackDataModel,
+                    tickerDataResponse,
+                    viewModel.userId
+                )
             )
+
+            if (tickerDataResponse.action == "applink") {
+                val applink = tickerDataResponse.actionLink
+                if (activity != null && RouteManager.isSupportApplink(activity, applink)) {
+                    goToApplink(applink)
+                } else {
+                    openWebViewUrl(applink)
+                }
+            } else {
+                val bottomSheetData = tickerDataResponse.actionBottomSheet
+                goToBottomSheetTicker(
+                    title = bottomSheetData.title,
+                    message = bottomSheetData.message,
+                    reason = bottomSheetData.reason,
+                    buttonText = bottomSheetData.buttonText,
+                    buttonLink = bottomSheetData.buttonLink
+                )
+            }
         }
     }
 

@@ -211,7 +211,6 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_OPERATIONAL_CONTACT_US = "df_operational_contact_us"
     const val DF_SALAM_UMRAH = "df_salam_umrah"
     const val DF_TRAVEL = "df_travel"
-    const val DF_USER_PRIVACYCENTER = "df_user_privacycenter"
     const val DF_USER_LIVENESS = "df_user_liveness"
     const val DF_USER_SETTINGS = "df_user_settings"
     const val DF_USER_FINGERPRINT = "df_user_fingerprint"
@@ -567,11 +566,11 @@ object DeeplinkDFMapper : CoroutineScope {
                 it.startsWithPattern(ACCOUNT_LINKING_WEBVIEW) ||
                 it.startsWithPattern(SEARCH_HISTORY) ||
                 it.startsWithPattern(SHARING_WISHLIST)
-            }, DF_USER_PRIVACYCENTER, R.string.title_privacy_center))
+            }, DF_USER_SETTINGS, R.string.title_privacy_center))
 
             // Media
             add(DFP({
-                it.startsWith(INTERNAL_MEDIA_PICKER) ||
+                it.startsWithPattern(INTERNAL_MEDIA_PICKER) ||
                         it.startsWith(INTERNAL_MEDIA_PICKER_ALBUM) ||
                         it.startsWith(INTERNAL_MEDIA_PICKER_PREVIEW)
             }, DF_FEED_CONTENT_CREATION, R.string.title_image_picker))

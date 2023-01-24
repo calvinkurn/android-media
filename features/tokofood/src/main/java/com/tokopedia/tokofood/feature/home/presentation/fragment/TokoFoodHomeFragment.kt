@@ -18,8 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
+import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
+import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
@@ -48,6 +48,7 @@ import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.searchbar.data.HintData
@@ -112,8 +113,7 @@ import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class TokoFoodHomeFragment :
-    BaseDaggerFragment(),
-    IBaseMultiFragment,
+    BaseMultiFragment(),
     TokoFoodView,
     TokoFoodHomeUSPViewHolder.TokoFoodUSPListener,
     TokoFoodHomeChooseAddressViewHolder.TokoFoodChooseAddressWidgetListener,
@@ -237,8 +237,8 @@ class TokoFoodHomeFragment :
 
     override fun getFragmentToolbar(): Toolbar? = null
 
-    override fun navigateToNewFragment(fragment: Fragment) {
-        (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
+    override fun getLaunchMode(): BaseMultiFragmentLaunchMode {
+        return BaseMultiFragmentLaunchMode.SINGLE_TOP
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -533,15 +533,9 @@ class TokoFoodHomeFragment :
         )
     }
 
+    // Act as toggle
     private fun isGoToSearchPage(): Boolean {
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_GOFOOD_SEARCH,
-                ""
-            ) == RollenceKey.KEY_GOFOOD_SEARCH
-        } catch (e: Exception) {
-            true
-        }
+        return true
     }
 
     private fun onSearchBarClick() {

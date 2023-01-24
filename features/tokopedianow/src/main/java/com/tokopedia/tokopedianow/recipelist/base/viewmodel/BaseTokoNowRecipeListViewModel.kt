@@ -109,7 +109,7 @@ open class BaseTokoNowRecipeListViewModel(
             } else {
                 visitableItems.addEmptyStateItem(
                     isFilterSelected = selectedFilters.isNotEmpty(),
-                    title = getRecipeListParam.getValue(PARAM_TITLE)
+                    title = getRecipeListParam.decodeTitle()
                 )
             }
 
@@ -240,7 +240,7 @@ open class BaseTokoNowRecipeListViewModel(
     }
 
     fun setKeywordToSearchbar() {
-        _searchKeyword.postValue(getRecipeListParam.getValue(PARAM_TITLE))
+        _searchKeyword.postValue(getRecipeListParam.decodeTitle())
     }
 
     private fun loadMoreRecipe() {
