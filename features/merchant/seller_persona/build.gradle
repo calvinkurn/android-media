@@ -38,8 +38,15 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+
+    implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.navigationFragmentKtx
     implementation rootProject.ext.miscDependencies.navigationUiKtx
 
@@ -49,6 +56,10 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.design
+
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {
