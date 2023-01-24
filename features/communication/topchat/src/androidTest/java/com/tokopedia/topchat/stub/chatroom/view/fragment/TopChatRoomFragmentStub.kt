@@ -31,7 +31,7 @@ open class TopChatRoomFragmentStub : TopChatRoomFragment() {
         return FakeTopChatViewStateImpl(
             view, this, this, this,
             this, this, this,
-            this, this,
+            this,
             (activity as BaseChatToolbarActivity).getToolbar(), analytics, session
         ).also {
             topchatViewState = it

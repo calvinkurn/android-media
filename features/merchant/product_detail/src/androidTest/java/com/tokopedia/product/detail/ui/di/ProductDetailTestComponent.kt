@@ -15,6 +15,7 @@ import dagger.Component
     ViewModelModule::class,
     GqlRawQueryModule::class,
     ProductUserSessionModuleMock::class,
+    ProductDetailFragmentModule::class,
     ProductDetailDevModule::class],
         dependencies = [BaseAppComponent::class])
 interface ProductDetailTestComponent : ProductDetailComponent {

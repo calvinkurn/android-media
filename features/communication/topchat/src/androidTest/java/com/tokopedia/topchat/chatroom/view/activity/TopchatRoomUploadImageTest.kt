@@ -11,7 +11,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER
 import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
@@ -42,7 +42,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openChatRoom()
 
         // When
-        openImagePicker()
+        openMediaPicker()
         simulateWebSocketImageUploadResponse()
 
         // Then
@@ -58,7 +58,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openChatRoom()
 
         // When
-        openImagePicker()
+        openMediaPicker()
         simulateWebSocketImageUploadResponse()
 
         // Then
@@ -74,7 +74,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openChatRoom(replyResponse = replyChatGQLUseCase.uploadImageReplySecureResponse)
 
         // When
-        openImagePicker()
+        openMediaPicker()
         simulateWebSocketImageUploadResponse()
 
         // Then
@@ -89,7 +89,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openChatRoom(replyResponse = replyChatGQLUseCase.uploadImageReplySecureResponse)
 
         // When
-        openImagePicker()
+        openMediaPicker()
         simulateWebSocketImageUploadResponse()
 
         // Then
@@ -100,18 +100,15 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
     @Test
     fun upload_multiple_images_and_stay_in_chatroom() {
         // Given
-        Thread.sleep(10000)
         enableUploadImageByService()
         openChatRoom()
         // When
-
         // send first image
-        openImagePicker()
+        openMediaPicker()
         simulateWebSocketImageUploadResponse()
         // send second image
-        openImagePicker()
+        openMediaPicker()
         simulateWebSocketImageUploadResponse()
-
         // Then
         assertImageContainerAtPosition(0, matches(isDisplayed()))
         assertImageContainerAtPosition(1, matches(isDisplayed()))
@@ -125,7 +122,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openChatRoom()
 
         // When
-        openImagePicker()
+        openMediaPicker()
         finishActivity()
         openChatRoom()
 
@@ -141,7 +138,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openChatRoom()
 
         // When
-        openImagePicker()
+        openMediaPicker()
         finishActivity()
         openChatRoom()
 
@@ -159,7 +156,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openChatRoom()
 
         // When
-        openImagePicker()
+        openMediaPicker()
         finishActivity()
         openChatRoom()
         clickImageUploadErrorHandler()
@@ -180,7 +177,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openChatRoom()
 
         // When
-        openImagePicker()
+        openMediaPicker()
 
         // Then
         assertImageReadStatusAtPosition(0, matches(not(isDisplayed())))
@@ -225,7 +222,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         onView(withText("Kirim ulang")).perform(click())
     }
 
-    private fun openImagePicker() {
+    private fun openMediaPicker() {
         clickPlusIconMenu()
         clickAttachImageMenu()
     }
@@ -239,7 +236,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         replyChatGQLUseCase.delayResponse = replyChatGqlDelay
         replyChatGQLUseCase.response = replyResponse
         launchChatRoomActivity()
-        intending(hasData(ApplinkConstInternalGlobal.IMAGE_PICKER))
+        intending(hasData(INTERNAL_MEDIA_PICKER))
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, getImageData()))
     }
 

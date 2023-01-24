@@ -37,15 +37,16 @@ object NewShopPageHeaderMapper {
             SHOP_LOGO
         )?.image.orEmpty()
         return NewShopPageP1HeaderData(
-            shopInfoOsData.data.isOfficial,
-            shopInfoGoldData.data.powerMerchant.status == SHOP_PAGE_POWER_MERCHANT_ACTIVE,
-            shopPageHomeTypeData.shopHomeType,
-            shopName,
-            shopAvatar,
-            "",
-            feedWhitelistData.isWhitelist,
-            feedWhitelistData.url,
-            listShopHeaderWidget
+                shopInfoOsData.data.isOfficial,
+                shopInfoGoldData.data.powerMerchant.status == SHOP_PAGE_POWER_MERCHANT_ACTIVE,
+                shopInfoGoldData.data.powerMerchant.pmTier,
+                shopPageHomeTypeData.shopHomeType,
+                shopName,
+                shopAvatar,
+                "",
+                feedWhitelistData.isWhitelist,
+                feedWhitelistData.url,
+                listShopHeaderWidget
         )
     }
 
@@ -70,6 +71,7 @@ object NewShopPageHeaderMapper {
         return NewShopPageP1HeaderData(
             shopInfoOsData.data.isOfficial,
             shopInfoGoldData.data.powerMerchant.status == SHOP_PAGE_POWER_MERCHANT_ACTIVE,
+            shopInfoGoldData.data.powerMerchant.pmTier,
             "",
             shopName,
             shopAvatar,
