@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.buyerorderdetail.databinding.PartialOrderFulfillmentBottomsheetBinding
 import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.presentation.activity.PartialOrderFulfillmentActivity
@@ -173,9 +174,7 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
                 is Success -> {
                     if (it.data.isSuccess) {
                         dismiss()
-                        (activity as? PartialOrderFulfillmentActivity)?.setResultFinish(
-                            Activity.RESULT_OK
-                        )
+                        setupAfterPofSuccess()
                     } else {
                         showToasterError()
                     }
@@ -184,6 +183,20 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
                     showToasterError()
                 }
             }
+        }
+    }
+
+    private fun setupAfterPofSuccess() {
+        activity?.let {
+            val message = it.getString(com.tokopedia.buyerorderdetail.R.string.buyer_order_detail_pof_success_message)
+            val intent = it.intent?.apply {
+                putExtra(
+                    ApplinkConstInternalOrder.PartialOrderFulfillmentKey.TOASTER_MESSAGE,
+                    message
+                )
+            }
+            it.setResult(Activity.RESULT_OK, intent)
+            it.finish()
         }
     }
 

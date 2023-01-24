@@ -215,4 +215,8 @@ object ApplinkConstInternalOrder {
         const val TOASTER_TYPE = "toaster_type"
         const val IS_ORDER_EXTENDED = "is_order_extended"
     }
+
+    object PartialOrderFulfillmentKey {
+        const val TOASTER_MESSAGE = "pof_toaster_message"
+    }
 }

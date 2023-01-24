@@ -265,7 +265,7 @@ open class BuyerOrderDetailFragment :
             }
             BuyerOrderDetailIntentCode.REQUEST_CODE_PARTIAL_ORDER_FULFILLMENT -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    handleResultPartialOrderFulfillment()
+                    handleResultPartialOrderFulfillment(data)
                 }
             }
         }
@@ -674,8 +674,21 @@ open class BuyerOrderDetailFragment :
         bottomSheetManager.dismissBottomSheets()
     }
 
-    private fun handleResultPartialOrderFulfillment() {
+    private fun handleResultPartialOrderFulfillment(data: Intent?) {
         handleResultRefreshOnly()
+        val toasterMessage =
+            data?.getStringExtra(ApplinkConstInternalOrder.PartialOrderFulfillmentKey.TOASTER_MESSAGE)
+
+        if (!toasterMessage.isNullOrBlank()) {
+            view?.run {
+                Toaster.build(
+                    view = this,
+                    text = toasterMessage,
+                    type = Toaster.TYPE_NORMAL,
+                    duration = Toaster.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 
     private fun handleResultOrderExtension(data: Intent?) {
