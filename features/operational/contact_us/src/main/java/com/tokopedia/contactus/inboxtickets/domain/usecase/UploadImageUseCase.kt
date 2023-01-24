@@ -87,7 +87,7 @@ class ContactUsUploadImageUseCase @Inject constructor(
     private fun getParams(userId: String, pathFile: String): RequestParams {
         val reqParam = HashMap<String, RequestBody>()
         reqParam[PARAM_WEB_SERVICE] = createRequestBody("1")
-        reqParam[PARAM_ID] = createRequestBody(String.format("%s%s", userId, pathFile))
+        reqParam[PARAM_ID] = createRequestBody(String.format(Locale.getDefault(), "%s%s", userId, pathFile))
 
         return uploadImageUseCase.createRequestParam(
             pathFile,
