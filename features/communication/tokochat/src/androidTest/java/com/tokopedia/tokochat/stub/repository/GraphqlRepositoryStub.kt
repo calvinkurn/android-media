@@ -26,19 +26,19 @@ class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
             query.contains(chatBackgroundResponse.query) -> {
                 shouldThrow(chatBackgroundResponse)
                 GqlMockUtil.createSuccessResponse(
-                    chatBackgroundResponse.getResponseObject()
+                    chatBackgroundResponse.responseObject
                 )
             }
             query.contains(chatFirstTickerResponse.query) -> {
                 shouldThrow(chatFirstTickerResponse)
                 GqlMockUtil.createSuccessResponse(
-                    chatFirstTickerResponse.getResponseObject()
+                    chatFirstTickerResponse.responseObject
                 )
             }
             query.contains(chatOrderHistoryResponse.query) -> {
                 shouldThrow(chatOrderHistoryResponse)
                 GqlMockUtil.createSuccessResponse(
-                    chatOrderHistoryResponse.getResponseObject()
+                    chatOrderHistoryResponse.responseObject
                 )
             }
             else -> GqlMockUtil.createSuccessResponse(Unit)

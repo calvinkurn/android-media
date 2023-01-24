@@ -266,7 +266,7 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun loadChatRoomTicker() {
-        launchCatchError(block = {
+        launchCatchError(context = dispatcher.io, block = {
             val result = getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
             _chatRoomTicker.value = Success(result)
         }, onError = {

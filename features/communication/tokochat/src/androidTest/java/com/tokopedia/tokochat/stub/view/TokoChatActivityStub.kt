@@ -4,18 +4,18 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.tokochat.di.TokoChatComponent
-import com.tokopedia.tokochat.test.TokoChatTest
+import com.tokopedia.tokochat.test.base.BaseTokoChatTest
 import com.tokopedia.tokochat.util.TokoChatValueUtil
 import com.tokopedia.tokochat.view.chatroom.TokoChatActivity
 
-class TokoChatActivityStub: TokoChatActivity() {
+class TokoChatActivityStub : TokoChatActivity() {
 
     override fun setupFragmentFactory() {
         supportFragmentManager.fragmentFactory = TokoChatFragmentFactoryStub()
     }
 
     override fun getComponent(): TokoChatComponent {
-        return TokoChatTest.tokoChatComponent!!
+        return BaseTokoChatTest.tokoChatComponent!!
     }
 
     override fun getNewFragment(): Fragment {

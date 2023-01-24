@@ -7,7 +7,7 @@ import com.tokopedia.tokochat.di.TokoChatImageAttachmentNetworkModule
 import com.tokopedia.tokochat.di.TokoChatModule
 import com.tokopedia.tokochat.di.TokoChatViewModelModule
 import com.tokopedia.tokochat.stub.di.base.FakeBaseAppComponent
-import com.tokopedia.tokochat.test.TokoChatTest
+import com.tokopedia.tokochat.test.base.BaseTokoChatTest
 import dagger.Component
 
 @ActivityScope
@@ -28,5 +28,5 @@ import dagger.Component
     dependencies = [FakeBaseAppComponent::class]
 )
 interface TokoChatComponentStub : TokoChatComponent {
-    fun inject(test: TokoChatTest)
+    fun inject(test: BaseTokoChatTest)
 }

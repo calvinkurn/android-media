@@ -7,26 +7,16 @@ import com.tokopedia.tokochat.stub.common.util.AndroidFileUtil
 import java.lang.reflect.Type
 
 object GqlResponseStub {
-    var chatBackgroundResponse = ResponseStub<TokoChatBackgroundResponse>(
-        filePath = "chat_background/success_get_chat_background.json",
-        type = TokoChatBackgroundResponse::class.java,
-        query = "query tokoChatBackground",
-        isError = false
-    )
 
-    var chatFirstTickerResponse = ResponseStub<TokochatRoomTickerResponse>(
-        filePath = "ticker/success_get_first_ticker.json",
-        type = TokochatRoomTickerResponse::class.java,
-        query = "query getTokochatRoomTicker",
-        isError = false
-    )
+    lateinit var chatBackgroundResponse: ResponseStub<TokoChatBackgroundResponse>
 
-    var chatOrderHistoryResponse = ResponseStub<TokoChatOrderProgressResponse>(
-        filePath = "order_history/success_get_order_history.json",
-        type = TokoChatOrderProgressResponse::class.java,
-        query = "query getTokochatOrderProgress",
-        isError = false
-    )
+    lateinit var chatFirstTickerResponse: ResponseStub<TokochatRoomTickerResponse>
+
+    lateinit var chatOrderHistoryResponse: ResponseStub<TokoChatOrderProgressResponse>
+
+    init {
+        reset()
+    }
 
     fun reset() {
         chatBackgroundResponse = ResponseStub(
@@ -58,7 +48,20 @@ data class ResponseStub<T> (
     var query: String = "",
     var isError: Boolean = false
 ) {
-    fun getResponseObject(): T {
+
+    var responseObject: T
+
+    init {
+        responseObject = convertToResponseObject()
+    }
+
+    private fun convertToResponseObject(): T {
         return AndroidFileUtil.parse(filePath, type)
+    }
+
+    fun editAndGetResponseObject(altercation: (T) -> Unit) {
+        val response = convertToResponseObject()
+        altercation(response)
+        responseObject = response
     }
 }

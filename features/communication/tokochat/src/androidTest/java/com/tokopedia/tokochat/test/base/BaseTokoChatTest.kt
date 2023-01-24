@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.test
+package com.tokopedia.tokochat.test.base
 
 import android.content.Context
 import android.content.Intent
@@ -15,22 +15,24 @@ import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.tokochat.stub.common.BabbleCourierClientStub
 import com.tokopedia.tokochat.stub.common.ConversationsPreferencesStub
 import com.tokopedia.tokochat.stub.common.MockWebServerDispatcher
+import com.tokopedia.tokochat.stub.common.util.RecyclerViewUtil
 import com.tokopedia.tokochat.stub.di.DaggerTokoChatComponentStub
 import com.tokopedia.tokochat.stub.di.TokoChatComponentStub
 import com.tokopedia.tokochat.stub.di.base.DaggerFakeBaseAppComponent
 import com.tokopedia.tokochat.stub.di.base.FakeAppModule
+import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub
 import com.tokopedia.tokochat.stub.view.TokoChatActivityStub
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
+import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import org.junit.Test
 import javax.inject.Inject
 
 @UiTest
-class TokoChatTest {
+abstract class BaseTokoChatTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
@@ -39,8 +41,8 @@ class TokoChatTest {
         false
     )
 
-    protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
-    protected val applicationContext: Context
+    private val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
+    private val applicationContext: Context
         get() = InstrumentationRegistry
             .getInstrumentation().context.applicationContext
 
@@ -58,11 +60,12 @@ class TokoChatTest {
     @Inject
     lateinit var babbleCourierClient: BabbleCourierClientStub
 
-    protected open lateinit var activity: TokoChatActivityStub
+    protected lateinit var activity: TokoChatActivityStub
 
     @Before
-    open fun before() {
+    fun before() {
         AndroidThreeTen.init(applicationContext)
+        GqlResponseStub.reset()
         setupDaggerComponent()
         setupConversationAndCourier()
         okHttp3IdlingResource = OkHttp3IdlingResource.create("okhttp", okhttpClient)
@@ -71,7 +74,7 @@ class TokoChatTest {
     }
 
     @After
-    open fun tearDown() {
+    fun tearDown() {
         removeConversationAndCourier()
         tokoChatComponent = null
         mockWebServer.shutdown()
@@ -97,6 +100,7 @@ class TokoChatTest {
         isFromTokoFoodPostPurchase: Boolean = false,
         intentModifier: (Intent) -> Unit = {}
     ) {
+        mockWebServer.dispatcher = mockWebServerDispatcher
         if (isSellerApp) {
             GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
         }
@@ -129,14 +133,6 @@ class TokoChatTest {
         activity = activityTestRule.activity
     }
 
-    @Test
-    fun test123() {
-        Thread.sleep(10000)
-        mockWebServer.dispatcher = mockWebServerDispatcher
-        launchChatRoomActivity()
-        Thread.sleep(20000)
-    }
-
     private fun setupDaggerComponent() {
         val baseComponent = DaggerFakeBaseAppComponent.builder()
             .fakeAppModule(FakeAppModule(applicationContext))
@@ -146,6 +142,13 @@ class TokoChatTest {
             .tokoChatConfigContextModule(TokoChatConfigContextModule(context))
             .build()
         tokoChatComponent!!.inject(this)
+    }
+
+    protected fun getTokoChatAdapter(): TokoChatBaseAdapter {
+        return RecyclerViewUtil.getAdapter(
+            activity = activity,
+            recyclerViewId = com.tokopedia.tokochat_common.R.id.tokochat_chatroom_rv
+        )
     }
 
     companion object {

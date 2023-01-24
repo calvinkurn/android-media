@@ -407,7 +407,7 @@ open class TokoChatFragment :
         }
     }
 
-    private fun observeChatRoomTicker() {
+    protected open fun observeChatRoomTicker() {
         observe(viewModel.chatRoomTicker) {
             when (it) {
                 is Success -> {
