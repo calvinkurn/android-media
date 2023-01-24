@@ -103,7 +103,7 @@ class RMTransactionBottomSheet: BottomSheetUnify() {
 
     private fun goToNewMembershipScheme() {
         context?.let {
-            RouteManager.route(it, SellerBaseUrl.getNewMembershipEduApplink())
+            RouteManager.route(it, SellerBaseUrl.getRegularMerchantEduApplink())
         }
     }
 

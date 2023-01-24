@@ -22,15 +22,15 @@ class SellerBaseUrl {
 
         const val APPLINK_FORMAT_ALLOW_OVERRIDE = "%s?allow_override=%b&url=%s"
 
-        private const val NEW_MEMBERSHIP_EDU_SCHEME_PATH = "edu/skema-keanggotaan-seller-tokopedia/"
+        private const val RM_EDU_SCHEME_PATH = "edu/regular-merchant/"
 
         fun getNewMembershipSchemeApplink(): String {
             val url = "${SELLER_HOSTNAME}${NEW_MEMBERSHIP_SCHEME_PATH}"
             return String.format(APPLINK_FORMAT_ALLOW_OVERRIDE, ApplinkConst.WEBVIEW, false, url)
         }
 
-        fun getNewMembershipEduApplink(): String {
-            val url = "${SELLER_HOSTNAME}${NEW_MEMBERSHIP_EDU_SCHEME_PATH}"
+        fun getRegularMerchantEduApplink(): String {
+            val url = "${SELLER_HOSTNAME}${RM_EDU_SCHEME_PATH}"
             return String.format(APPLINK_FORMAT_ALLOW_OVERRIDE, ApplinkConst.WEBVIEW, false, url)
         }
 
