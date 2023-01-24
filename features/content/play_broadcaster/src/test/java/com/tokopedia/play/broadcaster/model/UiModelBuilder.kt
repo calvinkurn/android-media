@@ -85,6 +85,7 @@ class UiModelBuilder {
 
     fun buildConfigurationUiModel(
         streamAllowed: Boolean = true,
+        shortVideoAllowed: Boolean = false,
         channelId: String = "",
         channelStatus: ChannelStatus = ChannelStatus.Draft,
         durationConfig: DurationConfigUiModel = buildDurationConfigUiModel(),
@@ -95,6 +96,7 @@ class UiModelBuilder {
         tnc: List<TermsAndConditionUiModel> = emptyList(),
     ) = ConfigurationUiModel(
         streamAllowed = streamAllowed,
+        shortVideoAllowed = shortVideoAllowed,
         channelId = channelId,
         channelStatus = channelStatus,
         durationConfig = durationConfig,
