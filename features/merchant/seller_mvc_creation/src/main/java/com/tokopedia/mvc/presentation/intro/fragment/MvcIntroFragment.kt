@@ -80,10 +80,9 @@ class MvcIntroFragment :
             adapter = mvcAdapter
             initRvScroller(this)
         }
-        // TODO add Applink here
         binding?.btnCreateVoucher?.setOnClickListener {
             mvcIntroPageTracker.sendMvcIntroPageCreateVoucherEvent()
-            RouteManager.route(context, "")
+            RouteManager.route(context, CREATE_VOUCHER_SHOP)
         }
     }
 
@@ -280,5 +279,9 @@ class MvcIntroFragment :
             binding?.header?.setBackgroundColor(it)
             activity?.window?.statusBarColor = it
         }
+    }
+
+    companion object {
+        private const val CREATE_VOUCHER_SHOP = "sellerapp://seller-mvc/create/shop"
     }
 }
