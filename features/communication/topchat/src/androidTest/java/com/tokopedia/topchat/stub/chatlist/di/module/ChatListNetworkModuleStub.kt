@@ -154,7 +154,6 @@ class ChatListNetworkModuleStub {
     fun provideTopChatWebSocket(
         userSession: UserSessionInterface,
         client: OkHttpClient,
-        abTestPlatform: AbTestPlatform,
         irisSession: Session
     ): TopchatWebSocket {
         val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
@@ -166,7 +165,6 @@ class ChatListNetworkModuleStub {
             webSocketUrl,
             userSession.accessToken,
             "chatlist",
-            abTestPlatform,
             irisSession
         )
     }
