@@ -144,6 +144,7 @@ const val CART_REVAMP_V3_QUERY =
                       duration
                     }
                     enable_bo_affordability
+                    enable_shop_group_ticker_cart_aggregator
                   }
                   pinned {
                     is_pinned
@@ -371,6 +372,7 @@ const val CART_REVAMP_V3_QUERY =
                         variant_name
                         variant_description
                       }
+                      bundle_ids
                     }
                     errors
                     messages
