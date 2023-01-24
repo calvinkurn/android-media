@@ -8,7 +8,6 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -783,15 +782,29 @@ class FeedPlusFragment :
                             adapter.getlist().mapIndexed { index, item ->
                                 var isChanged = false
                                 if (item is ShopRecomWidgetModel) {
-                                    item.shopRecomUiModel.items.map { recomItem ->
+                                    val newItems = item.shopRecomUiModel.items.toList()
+
+                                    newItems.map { recomItem ->
                                         it.data[recomItem.id.toString()]?.let { followStatus ->
                                             recomItem.state =
                                                 if (followStatus) ShopRecomFollowState.FOLLOW else ShopRecomFollowState.UNFOLLOW
                                             isChanged = true
                                         }
                                     }
+
                                     if (isChanged) {
-                                        adapter.updateShopRecomWidget(item)
+                                        val newItem = item.copy(
+                                            item.shopRecomUiModel.copy(
+                                                isShown = item.shopRecomUiModel.isShown,
+                                                nextCursor = item.shopRecomUiModel.nextCursor,
+                                                title = item.shopRecomUiModel.title,
+                                                loadNextPage = item.shopRecomUiModel.loadNextPage,
+                                                items = newItems,
+                                                isRefresh = item.shopRecomUiModel.isRefresh
+                                            ),
+                                            ""
+                                        )
+                                        adapter.updateShopRecomWidget(newItem)
                                     }
 
                                 } else {
@@ -806,15 +819,12 @@ class FeedPlusFragment :
                                     }
                                     if (shopId != "") {
                                         it.data[shopId]?.let { followStatus ->
-                                            Log.d("FEED_PLUS", "CHANGE $item")
                                             when (item) {
                                                 is DynamicPostModel -> {
-                                                    Log.d("FEED_PLUS", "FROM ${item.header.followCta.isFollow} to $followStatus")
                                                     item.header.followCta.isFollow = followStatus
                                                     isChanged = true
                                                 }
                                                 is DynamicPostUiModel -> {
-                                                    Log.d("FEED_PLUS", "FROM ${item.feedXCard.followers.isFollowed} to $followStatus")
                                                     item.feedXCard.followers.isFollowed =
                                                         followStatus
                                                     isChanged = true
@@ -825,9 +835,7 @@ class FeedPlusFragment :
                                         }
                                     }
 
-                                    Log.d("FEED_PLUS", "STATUS $isChanged")
                                     if (isChanged) {
-                                        Log.d("FEED_PLUS", "CHANGE INDEX $index")
                                         adapter.notifyItemChanged(
                                             index,
                                             DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
