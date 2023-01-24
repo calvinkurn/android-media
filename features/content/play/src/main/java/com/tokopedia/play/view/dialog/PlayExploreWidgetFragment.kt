@@ -78,9 +78,8 @@ class PlayExploreWidgetFragment @Inject constructor(
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 viewModel.submitAction(NextPageWidgets)
             }
-            override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(view, dx, dy)
-                analytic?.scrollExplore()
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) analytic?.scrollExplore()
             }
         }
     }
