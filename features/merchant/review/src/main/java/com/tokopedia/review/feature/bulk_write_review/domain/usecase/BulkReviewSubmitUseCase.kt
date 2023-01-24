@@ -36,7 +36,9 @@ class BulkReviewSubmitUseCase @Inject constructor(
         params: List<BulkReviewSubmitRequestParam>
     ) = flow {
         emit(BulkReviewSubmitRequestState.Requesting())
-        emit(BulkReviewSubmitRequestState.Complete.Success(params, sendRequest(params).productRevBulkSubmitProductReview))
+        val request = sendRequest(params)
+        val response = request.productRevBulkSubmitProductReview
+        emit(BulkReviewSubmitRequestState.Complete.Success(params, response))
     }.catch {
         emit(BulkReviewSubmitRequestState.Complete.Error(it))
     }
