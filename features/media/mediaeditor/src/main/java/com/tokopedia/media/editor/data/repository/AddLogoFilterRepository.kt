@@ -24,7 +24,7 @@ interface AddLogoFilterRepository {
 class AddLogoFilterRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val saveImage: SaveImageRepository
-): AddLogoFilterRepository {
+) : AddLogoFilterRepository {
     private val localCacheHandler = LocalCacheHandler(context, PREF_NAME_CACHE_ADD_LOGO)
 
     override fun flattenImage(
@@ -35,7 +35,7 @@ class AddLogoFilterRepositoryImpl @Inject constructor(
         val latch = CountDownLatch(1)
 
         var baseBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
-        Thread{
+        Thread {
             baseBitmap = Glide
                 .with(context)
                 .asBitmap()
@@ -53,7 +53,12 @@ class AddLogoFilterRepositoryImpl @Inject constructor(
             val widthValidation = baseBitmap.width != addedBitmap.width
             val heightValidation = baseBitmap.height != addedBitmap.height
             if (widthValidation || heightValidation) {
-                addedBitmap = Bitmap.createScaledBitmap(addedBitmap, baseBitmap.width, baseBitmap.height, true)
+                addedBitmap = Bitmap.createScaledBitmap(
+                    addedBitmap,
+                    baseBitmap.width,
+                    baseBitmap.height,
+                    true
+                )
             }
 
             val canvas = Canvas(baseBitmap)

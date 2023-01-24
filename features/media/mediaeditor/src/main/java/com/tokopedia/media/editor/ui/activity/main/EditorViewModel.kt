@@ -1,12 +1,9 @@
 package com.tokopedia.media.editor.ui.activity.main
 
 import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.bumptech.glide.Glide
 import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
 import com.tokopedia.media.editor.data.repository.SaveImageRepository
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel

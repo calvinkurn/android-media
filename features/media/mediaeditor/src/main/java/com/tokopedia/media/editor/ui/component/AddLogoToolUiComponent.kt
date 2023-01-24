@@ -112,7 +112,10 @@ class AddLogoToolUiComponent constructor(
     }
 
     fun initUploadAvatar(imageUrl: String) {
-        loadImageWithEmptyTarget(context, imageUrl, {},
+        loadImageWithEmptyTarget(
+            context,
+            imageUrl,
+            {},
             MediaBitmapEmptyTarget(
                 onReady = {
                     uploadAvatarWrapper.show()
@@ -170,7 +173,10 @@ class AddLogoToolUiComponent constructor(
     }
 
     private fun initShopAvatar() {
-        loadImageWithEmptyTarget(context, shopAvatarUrl, {},
+        loadImageWithEmptyTarget(
+            context,
+            shopAvatarUrl,
+            {},
             MediaBitmapEmptyTarget(
                 onReady = {
                     shopAvatar.setImageBitmap(
@@ -257,7 +263,8 @@ class AddLogoToolUiComponent constructor(
             Bitmap.createBitmap(originalImageWidth, originalImageHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(resultBitmap)
         drawBitmap(
-            canvas, getDrawLogo(
+            canvas,
+            getDrawLogo(
                 uploadAvatar.drawable.toBitmap()
             )
         )
@@ -270,7 +277,8 @@ class AddLogoToolUiComponent constructor(
             Bitmap.createBitmap(originalImageWidth, originalImageHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(resultBitmap)
         drawBitmap(
-            canvas, getDrawLogo(
+            canvas,
+            getDrawLogo(
                 shopAvatar.drawable.toBitmap()
             )
         )
@@ -301,7 +309,8 @@ class AddLogoToolUiComponent constructor(
     private fun shopLoadFailedToaster() {
         toaster?.dismiss()
         Handler().postDelayed({
-            toaster = Toaster.build(container(),
+            toaster = Toaster.build(
+                container(),
                 resources().getString(editorR.string.editor_add_logo_toast_text),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,

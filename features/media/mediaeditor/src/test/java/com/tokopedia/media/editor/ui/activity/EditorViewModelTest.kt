@@ -10,7 +10,6 @@ import org.junit.Assert.*
 import org.junit.Test
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
-import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getTokopediaCacheDir
 import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
