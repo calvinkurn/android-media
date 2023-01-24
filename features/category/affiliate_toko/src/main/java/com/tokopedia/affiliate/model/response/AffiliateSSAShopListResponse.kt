@@ -84,13 +84,16 @@ data class AffiliateSSAShopListResponse(
                 val shopLocation: String? = null,
 
                 @SerializedName("SSAMessage")
-                val sSAMessage: String? = null,
+                val ssaMessage: String? = null,
+
+                @SerializedName("Label")
+                val label: Label? = null,
 
                 @SerializedName("ImageURL")
                 val imageURL: ImageURL? = null,
 
                 @SerializedName("SSAStatus")
-                val sSAStatus: Boolean? = null,
+                val ssaStatus: Boolean? = null,
 
                 @SerializedName("ShopId")
                 val shopId: Long? = null
@@ -125,8 +128,15 @@ data class AffiliateSSAShopListResponse(
                     @SerializedName("AndroidURL")
                     val androidURL: String? = null
                 )
+
+                data class Label(
+                    @SerializedName("LabelType")
+                    val labelType: String? = null,
+
+                    @SerializedName("LabelText")
+                    val labelText: String? = null
+                )
             }
         }
     }
 }
-

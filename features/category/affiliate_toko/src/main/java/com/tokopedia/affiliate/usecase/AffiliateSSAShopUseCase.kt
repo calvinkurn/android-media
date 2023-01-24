@@ -2,9 +2,12 @@ package com.tokopedia.affiliate.usecase
 
 import com.tokopedia.affiliate.model.response.AffiliateSSAShopListResponse
 import com.tokopedia.affiliate.repository.AffiliateRepository
+import com.tokopedia.affiliate.usecase.AffiliateSSAShopUseCase.Companion.GET_SSA_SHOP_LIST
+import com.tokopedia.gql_query_annotation.GqlQuery
 import javax.inject.Inject
 
-class AffiliateSSAShopUseCase @Inject constructor(
+@GqlQuery("GetSSAShopList", GET_SSA_SHOP_LIST)
+internal class AffiliateSSAShopUseCase @Inject constructor(
     private val repository: AffiliateRepository
 ) {
 
@@ -32,50 +35,63 @@ class AffiliateSSAShopUseCase @Inject constructor(
         private const val KEY_VERTICAL_ID = "verticalId"
         private const val SITE_ID = 1
         private const val VERTICAL_ID = 1
-        private val GET_SSA_SHOP_LIST =
-            """query getSSAShopList(${'$'}page: Int, ${'$'}limit: Int, ${'$'}siteId: Int, ${'$'}verticalId: Int){
-              getSSAShopList(
-               page: ${'$'}page, limit: ${'$'}limit, siteId: ${'$'}siteId, verticalId: ${'$'}verticalId
-               ) {
-                Data {
-                  ShopData {
-                    SSAShopDetail {
-                      ShopId
-                      ShopName
-                      ShopType
-                      ShopLocation
-                      SSAStatus
-                      QuantitySold
-                      Rating
-                      BadgeURL
-                      Message
-                      SSAMessage
-                      URLDetail {
-                        DesktopURL
-                        MobileURL
-                        AndroidURL
-                        IosURL
-                      }
-                      ImageURL {
-                        DesktopURL
-                        MobileURL
-                        AndroidURL
-                        IosURL
-                      }
-                    }
-                    CommissionDetail {
-                      CumulativePercentage
-                      CumulativePercentageFormatted
-                      SellerPercentage
-                      SellerPercentageformatted
-                      ExpiredDate
-                      ExpiredDate_formatted
-                    }
-                  }
-                }
-              }
-            }
-            }
-            """.trimIndent()
+        const val GET_SSA_SHOP_LIST =
+            "query getSSAShopList(${'$'}page: Int, ${'$'}limit: Int, ${'$'}siteId: Int, ${'$'}verticalId: Int) {\n" +
+                "  getSSAShopList(page: ${'$'}page, limit: ${'$'}limit, siteId: ${'$'}siteId, verticalId: ${'$'}verticalId) { \n" +
+                "    Data {\n" +
+                "      Status\n" +
+                "      Error {\n" +
+                "        Title\n" +
+                "        Message\n" +
+                "        ErrorCode\n" +
+                "      }\n" +
+                "      PageInfo {\n" +
+                "        hasNext\n" +
+                "        hasPrev\n" +
+                "        currentPage\n" +
+                "        totalPage\n" +
+                "        totalCount\n" +
+                "      }\n" +
+                "      ShopData {\n" +
+                "        SSAShopDetail {\n" +
+                "          ShopId\n" +
+                "          ShopName\n" +
+                "          ShopType\n" +
+                "          ShopLocation\n" +
+                "          SSAStatus\n" +
+                "          QuantitySold\n" +
+                "          Rating\n" +
+                "          Message\n" +
+                "          SSAMessage\n" +
+                "          BadgeURL\n" +
+                "          Label {\n" +
+                "            LabelType\n" +
+                "            LabelText \n" +
+                "          }\n" +
+                "          URLDetail {\n" +
+                "            DesktopURL\n" +
+                "            MobileURL\n" +
+                "            AndroidURL\n" +
+                "            IosURL\n" +
+                "          }\n" +
+                "          ImageURL {\n" +
+                "            DesktopURL\n" +
+                "            MobileURL\n" +
+                "            AndroidURL\n" +
+                "            IosURL\n" +
+                "          }\n" +
+                "        }\n" +
+                "        CommissionDetail {\n" +
+                "          CumulativePercentage\n" +
+                "          CumulativePercentageFormatted\n" +
+                "          SellerPercentage\n" +
+                "          SellerPercentageformatted\n" +
+                "          ExpiredDate\n" +
+                "          ExpiredDate_formatted\n" +
+                "        }\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }\n" +
+                "}\n"
     }
 }
