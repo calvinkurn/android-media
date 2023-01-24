@@ -7,7 +7,6 @@ import com.tokopedia.play.domain.GetUserReportListUseCase
 import com.tokopedia.play.domain.PostUserReportUseCase
 import com.tokopedia.play.domain.repository.PlayViewerUserReportRepository
 import com.tokopedia.play.helper.ClassBuilder
-import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.assertTrue
@@ -40,6 +39,12 @@ class PlayViewerUserReportTest {
 
     private val classBuilder = ClassBuilder()
     private val mapper = classBuilder.getPlayUiModelMapper()
+
+    /**
+     * Partner Id
+     */
+    private val userId = 10L
+    private val shopId = 12L
 
     @Before
     fun setUp(){
@@ -101,6 +106,55 @@ class PlayViewerUserReportTest {
     }
 
     @Test
+    fun `when submit report return success - kol`(){
+        runBlockingTest {
+            val response = UserReportSubmissionResponse(
+                submissionReport = UserReportSubmissionResponse.Result(
+                    "success"
+                )
+            )
+
+            coEvery { postUserReportUseCase.executeOnBackground() } returns response
+
+            val result = userReportRepo.submitReport(
+                channelId = 1L,
+                mediaUrl = "htpp://tokopedia",
+                partnerId = 111L,
+                timestamp = 9000L,
+                reasonId = 1,
+                reportDesc = "OK",
+                partnerType = PartnerType.Buyer)
+
+            result.assertTrue()
+        }
+    }
+
+    @Test
+    fun `when submit report return failed - kol`(){
+        runBlockingTest {
+            val response = UserReportSubmissionResponse(
+                submissionReport = UserReportSubmissionResponse.Result(
+                    "failed"
+                )
+            )
+
+            coEvery { postUserReportUseCase.executeOnBackground() } returns response
+
+            val result = userReportRepo.submitReport(
+                channelId = 1L,
+                mediaUrl = "htpp://tokopedia",
+                partnerId = 111L,
+                timestamp = 9000L,
+                reasonId = 1,
+                reportDesc = "OK",
+                partnerType = PartnerType.Buyer
+            )
+
+            result.assertFalse()
+        }
+    }
+
+    @Test
     fun `get reasoning list is success`(){
         runBlockingTest {
             val response = UserReportOptions.Response(
@@ -124,7 +178,6 @@ class PlayViewerUserReportTest {
             )
 
             coEvery { getUserReportListUseCase.executeOnBackground() } returns response
-
             val result = userReportRepo.getReasoningList()
 
             result.isNotEmpty().assertTrue()
