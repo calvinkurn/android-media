@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import com.tokopedia.dilayanitokopedia.common.model.DtShareUniversalModel
+import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
@@ -12,6 +13,7 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.requests.LinkerShareRequest
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import java.util.*
 
@@ -75,6 +77,32 @@ object DtUniversalShareUtil {
         onSuccess: () -> Unit = {},
         onError: () -> Unit = {}
     ) {
-        // next update
+        val linkerShareData = linkerDataMapper(shareData)
+        linkerShareData.linkerData.apply {
+            feature = shareModel.feature
+            channel = shareModel.channel
+            campaign = shareModel.campaign
+            isThrowOnError = false
+            if (shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
+                ogImageUrl = shareModel.ogImgUrl
+            }
+        }
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(
+                0, linkerShareData,
+                object : ShareCallback {
+                    override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                        val shareString =
+                            String.format(Locale.getDefault(), "%s %s", shareData?.sharingText, linkerShareData?.shareUri)
+                        SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
+                        onSuccess.invoke()
+                    }
+
+                    override fun onError(linkerError: LinkerError?) {
+                        onError.invoke()
+                    }
+                }
+            )
+        )
     }
 }
