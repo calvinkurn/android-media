@@ -503,7 +503,6 @@ class SellerHomeViewModel @Inject constructor(
         viewModelScope.launch(dispatcher.io) {
             val sse = widgetSse.get()
             if (realTimeDataKeys.isNotEmpty() && !sse.isConnected()) {
-                stopSSE()
                 sse.connect(SELLER_HOME_SSE, realTimeDataKeys)
                 sse.listen().handleSseMessage(_cardWidgetData, _milestoneWidgetData)
             }
