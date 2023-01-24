@@ -1,5 +1,6 @@
 package com.tokopedia.contactus.inboxtickets.domain.usecase
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -82,10 +83,11 @@ class ContactUsUploadImageUseCase @Inject constructor(
         )
     }
 
+    @SuppressLint("DefaultLocale")
     private fun getParams(userId: String, pathFile: String): RequestParams {
         val reqParam = HashMap<String, RequestBody>()
         reqParam[PARAM_WEB_SERVICE] = createRequestBody("1")
-        reqParam[PARAM_ID] = createRequestBody(String.format("%s%s", userId, pathFile, Locale.getDefault()))
+        reqParam[PARAM_ID] = createRequestBody(String.format("%s%s", userId, pathFile))
 
         return uploadImageUseCase.createRequestParam(
             pathFile,
