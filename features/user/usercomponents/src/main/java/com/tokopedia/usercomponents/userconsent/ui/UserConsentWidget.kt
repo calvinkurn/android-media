@@ -11,12 +11,14 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usercomponents.R
 import com.tokopedia.usercomponents.common.wrapper.UserComponentsStateResult
 import com.tokopedia.usercomponents.databinding.UiUserConsentBinding
@@ -68,10 +70,12 @@ class UserConsentWidget : FrameLayout,
 
     private var onCheckedChangeListener: (Boolean) -> Unit = {}
     private var onAllCheckBoxCheckedListener: (Boolean) -> Unit = {}
+    private var onNeedConsentListener: (Boolean) -> Unit = {}
     private var onFailedGetCollectionListener: (Throwable) -> Unit = {}
 
     /** set Default State if user got error when trying to get data collection from BE **/
     var defaultTemplate: UserConsentType = NONE
+    var hideWhenAlreadyHaveConsent: Boolean = false
     var tncPage = ""
     var privacyPage = ""
 
@@ -157,6 +161,7 @@ class UserConsentWidget : FrameLayout,
             TNC_PRIVACY_OPTIONAL.value -> TNC_PRIVACY_OPTIONAL
             else -> NONE
         }
+        hideWhenAlreadyHaveConsent = typedArray.getBoolean(R.styleable.UserConsentWidget_hide_when_already_have_consent, false)
 
         typedArray.recycle()
     }
@@ -183,7 +188,12 @@ class UserConsentWidget : FrameLayout,
                         setLoader(false)
                         result.data?.let { data ->
                             collection = data.collectionPoints.first()
-                            onSuccessGetConsentCollection()
+                            if (collection?.needConsent == false) {
+                                this.hide()
+                            } else {
+                                onSuccessGetConsentCollection()
+                            }
+                            onNeedConsentListener.invoke(collection?.needConsent == true)
                         }
                     }
                 }
@@ -363,7 +373,7 @@ class UserConsentWidget : FrameLayout,
                 title?.text = resources.getString(R.string.usercomponents_failed_load_data)
                 refreshBtn?.setOnClickListener {
                     consentCollectionParam?.let { param ->
-                        viewModel?.getConsentCollection(param)
+                        viewModel?.getConsentCollection(param, hideWhenAlreadyHaveConsent)
                     }
                 }
             }?.show()
@@ -436,6 +446,17 @@ class UserConsentWidget : FrameLayout,
         context.startActivity(intent)
     }
 
+    override fun openPrivacyPolicyPage() {
+        RouteManager.route(
+            context,
+            String.format(
+                STRING_FORMAT,
+                ApplinkConst.WEBVIEW,
+                "${TokopediaUrl.getInstance().MOBILEWEB}$PRIVACY_POLICY_PATH"
+            )
+        )
+    }
+
     fun load(
         lifecycleOwner: LifecycleOwner,
         viewModelStoreOwner: ViewModelStoreOwner,
@@ -447,7 +468,7 @@ class UserConsentWidget : FrameLayout,
         invalidate()
         initViewModel(viewModelStoreOwner)
         initObserver()
-        viewModel?.getConsentCollection(consentCollectionParam)
+        viewModel?.getConsentCollection(consentCollectionParam, hideWhenAlreadyHaveConsent)
     }
 
     fun onDestroy() {
@@ -469,7 +490,13 @@ class UserConsentWidget : FrameLayout,
         onFailedGetCollectionListener = listener
     }
 
+    fun setOnNeedConsentListener(listener: (Boolean) -> Unit) {
+        onNeedConsentListener = listener
+    }
+
     companion object {
+        private const val STRING_FORMAT = "%s?url=%s"
+        private const val PRIVACY_POLICY_PATH = "privacy?lang=id"
         private const val NUMBER_ONE = 1
         private const val NUMBER_TWO = 2
     }
