@@ -11,7 +11,7 @@ object EPharmacyInitiateConsultationQuery : GqlQueryInterface {
             mutation $OPERATION_NAME(${'$'}input: initiateConsultationParam!) {
               initiateConsultation(input: ${"$"}input) {
                 header {
-                    code
+                    error_code
                 }
                 data {
                     consultation_source {
