@@ -24,6 +24,7 @@ sealed class ProductListEvent {
     object TapBulkDeleteProduct : ProductListEvent()
     object ApplyBulkDeleteProduct : ProductListEvent()
     object TapContinueButton : ProductListEvent()
+    object TapToolbarBackIcon: ProductListEvent()
     data class TapVariant(val parentProduct: Product) : ProductListEvent()
     data class VariantUpdated(
         val modifiedParentProductId: Long,

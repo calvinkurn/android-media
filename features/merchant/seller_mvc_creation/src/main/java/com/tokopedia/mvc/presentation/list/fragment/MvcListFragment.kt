@@ -269,6 +269,7 @@ class MvcListFragment :
             if (!isVisible) return
 
             val bottomSheet = DownloadVoucherImageBottomSheet.newInstance(
+                voucher.id,
                 voucher.image,
                 voucher.imageSquare,
                 voucher.imagePortrait

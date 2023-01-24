@@ -7,7 +7,6 @@ import javax.inject.Inject
 
 class ProductListPageTracker @Inject constructor(private val userSession: UserSessionInterface) {
 
-    //31
     fun sendClickToolbarBackButtonEvent() {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
@@ -23,7 +22,6 @@ class ProductListPageTracker @Inject constructor(private val userSession: UserSe
     }
 
 
-    //32
     fun sendButtonContinueClickEvent() {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
@@ -38,8 +36,7 @@ class ProductListPageTracker @Inject constructor(private val userSession: UserSe
             .send()
     }
 
-    //33
-    fun sendClickToolbarBackButtonWithSelectionEvent() {
+    fun sendClickToolbarBackButtonWithProductSelectedEvent() {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
             .setEventAction("click kembali arrow - product selected - fourth step")

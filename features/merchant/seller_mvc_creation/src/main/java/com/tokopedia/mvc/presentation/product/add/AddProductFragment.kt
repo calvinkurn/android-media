@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.CompoundButton
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -55,6 +56,7 @@ import com.tokopedia.mvc.presentation.product.list.ProductListActivity
 import com.tokopedia.mvc.presentation.product.variant.dialog.ConfirmationDialog
 import com.tokopedia.mvc.presentation.product.variant.select.SelectVariantBottomSheet
 import com.tokopedia.mvc.util.constant.BundleConstant
+import com.tokopedia.mvc.util.tracker.AddProductTracker
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -112,6 +114,9 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     @Inject
     lateinit var userSession : UserSessionInterface
 
+    @Inject
+    lateinit var tracker: AddProductTracker
+
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(AddProductViewModel::class.java) }
 
@@ -145,6 +150,17 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         viewModel.processEvent(
             AddProductEvent.FetchRequiredData(pageMode ?: return, voucherConfiguration ?: return)
         )
+        registerBackPressEvent()
+    }
+
+    private fun registerBackPressEvent() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                tracker.sendClickButtonBackToPreviousPageEvent()
+                activity?.finish()
+            }
+        }
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, callback)
     }
 
     private fun setupView() {
@@ -159,6 +175,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     private fun setupToolbar() {
         binding?.header?.setNavigationOnClickListener {
+            tracker.sendClickToolbarBackButtonEvent()
             activity?.finish()
         }
         binding?.header?.headerSubTitle = getString(R.string.smvc_add_product_subtitle)
@@ -166,6 +183,8 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     private fun setupButton() {
         binding?.btnAddProduct?.setOnClickListener {
+            tracker.sendClickAddProductButtonEvent()
+
             if (pageMode == PageMode.CREATE) {
                 viewModel.processEvent(AddProductEvent.ConfirmAddProduct)
             } else {

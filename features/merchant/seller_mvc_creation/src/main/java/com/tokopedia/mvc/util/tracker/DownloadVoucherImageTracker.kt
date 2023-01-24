@@ -1,5 +1,7 @@
 package com.tokopedia.mvc.util.tracker
 
+import com.tokopedia.mvc.domain.entity.enums.ImageRatio
+import com.tokopedia.mvc.presentation.download.uimodel.VoucherImageUiModel
 import com.tokopedia.mvc.util.constant.TrackerConstant
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
@@ -8,7 +10,18 @@ import javax.inject.Inject
 class DownloadVoucherImageTracker @Inject constructor(private val userSession: UserSessionInterface) {
 
 
-    fun sendClickCheckboxEvent(eventLabel: String) {
+    fun sendClickDownloadButtonEvent(voucherId: Long, selectedImages: List<VoucherImageUiModel>) {
+        val selectedImageRatios = selectedImages.map { image ->
+            when (image.imageRatio) {
+                ImageRatio.SQUARE -> "square"
+                ImageRatio.HORIZONTAL -> "horizontal"
+                ImageRatio.VERTICAL -> "vertikal"
+            }
+        }
+
+        val imageRatios = selectedImageRatios.joinToString(separator = ", ")
+        val eventLabel = "voucher id: $voucherId - ukuran kupon: $imageRatios"
+
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
             .setEventAction("click checkbox")
@@ -23,7 +36,7 @@ class DownloadVoucherImageTracker @Inject constructor(private val userSession: U
     }
 
 
-    fun sendClickDownloadPopUpUkuranKuponEvent() {
+    fun sendBottomSheetVisibleImpression() {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
             .setEventAction("click download - pop up ukuran kupon")
