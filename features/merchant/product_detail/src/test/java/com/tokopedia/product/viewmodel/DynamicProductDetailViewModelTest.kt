@@ -1094,6 +1094,26 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         coVerify { getRecommendationUseCase.getData(any()) }
         Assert.assertTrue(viewModel.loadViewToView.value is Fail)
     }
+
+    @Test
+    fun `load view to view recommendation already hitted`() {
+        val recomWidget = listOf(RecommendationWidget(tid = "1", recommendationItemList = listOf(RecommendationItem())))
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns recomWidget
+
+        viewModel.loadViewToView("view_to_view", "", false)
+        Thread.sleep(500)
+        //hit again with same page name
+        viewModel.loadViewToView("view_to_view", "", false)
+
+        //make sure it will only called once
+        coVerify(exactly = 1) {
+            getRecommendationUseCase.getData(any())
+        }
+    }
+
     //endregion
 
     //region ticker p2

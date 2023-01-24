@@ -278,10 +278,10 @@ class ViewToViewBottomSheet @Inject constructor(
             }
         }
 
-        fun show(
+        @JvmStatic
+        fun newInstance(
             classLoader: ClassLoader,
             fragmentFactory: FragmentFactory,
-            fragmentManager: FragmentManager,
             data: ViewToViewItemData,
             productAnchorId: String,
         ): ViewToViewBottomSheet {
@@ -290,6 +290,23 @@ class ViewToViewBottomSheet @Inject constructor(
                 ViewToViewBottomSheet::class.java.name,
             ) as ViewToViewBottomSheet
             fragment.arguments = createBundle(data, productAnchorId)
+            return fragment
+        }
+
+        @JvmStatic
+        fun show(
+            classLoader: ClassLoader,
+            fragmentFactory: FragmentFactory,
+            fragmentManager: FragmentManager,
+            data: ViewToViewItemData,
+            productAnchorId: String,
+        ): ViewToViewBottomSheet {
+            val fragment = newInstance(
+                classLoader,
+                fragmentFactory,
+                data,
+                productAnchorId,
+            )
             fragment.show(fragmentManager, TAG)
             return fragment
         }

@@ -24,6 +24,10 @@ class ViewToViewWidgetViewHolder(
     private val viewToViewWidget: ViewToViewWidgetView =
         itemView.findViewById(R.id.widget_view_to_view)
 
+    private fun ViewToViewWidgetDataModel.shouldShowLoading() : Boolean {
+        return recomWidgetData == null || recomWidgetData?.recommendationItemList?.isEmpty() == true || isLoading
+    }
+
     override fun bind(element: ViewToViewWidgetDataModel) {
         viewToView = element
         itemView.visible()
@@ -33,7 +37,7 @@ class ViewToViewWidgetViewHolder(
                 viewToViewWidget.setPageName(element.name)
                 viewToViewWidget.showFailedState(itemView.context.getString(R.string.title_other_toppers))
             }
-            element.recomWidgetData == null || element.recomWidgetData?.recommendationItemList?.isEmpty() == true || element.isLoading -> {
+            element.shouldShowLoading() -> {
                 viewToViewWidget.showLoading()
             }
             else -> {
@@ -43,7 +47,7 @@ class ViewToViewWidgetViewHolder(
                             recommendationData = it,
                             state = RecommendationCarouselData.STATE_READY
                         ),
-                        adapterPosition = adapterPosition,
+                        adapterPosition = bindingAdapterPosition,
                         basicListener = this,
                     )
                 }
@@ -56,7 +60,7 @@ class ViewToViewWidgetViewHolder(
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        val title = viewToView?.recomWidgetData?.title ?: ""
+        val title = viewToView?.recomWidgetData?.title.orEmpty()
         listener.onViewToViewImpressed(data, title, itemPosition, adapterPosition)
     }
 
@@ -65,7 +69,7 @@ class ViewToViewWidgetViewHolder(
         itemPosition: Int,
         adapterPosition: Int,
     ) {
-        val title = viewToView?.recomWidgetData?.title ?: ""
+        val title = viewToView?.recomWidgetData?.title.orEmpty()
         listener.onViewToViewClicked(data, title, itemPosition, adapterPosition)
     }
 

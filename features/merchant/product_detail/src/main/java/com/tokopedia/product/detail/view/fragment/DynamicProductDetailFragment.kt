@@ -5809,13 +5809,17 @@ open class DynamicProductDetailFragment :
             viewModel.userId,
         )
         val activity = activity ?: return
-        ViewToViewBottomSheet.show(
-            activity.classLoader,
-            fragmentFactory,
+        showImmediately(
             childFragmentManager,
-            data,
-            viewModel.getDynamicProductInfoP1?.basic?.productID ?: "",
-        )
+            ViewToViewBottomSheet.TAG,
+        ) {
+            ViewToViewBottomSheet.newInstance(
+                activity.classLoader,
+                fragmentFactory,
+                data,
+                viewModel.getDynamicProductInfoP1?.basic?.productID ?: "",
+            )
+        }
     }
 
     override fun onViewToViewReload(pageName: String) {

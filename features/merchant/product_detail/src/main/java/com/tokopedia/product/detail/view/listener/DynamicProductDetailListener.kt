@@ -453,7 +453,7 @@ interface DynamicProductDetailListener {
     fun getRecommendationVerticalTrackData(): ComponentTrackDataModel?
 
     /**
-     * ViewToView
+     * ViewToView widget recommendation
      */
     fun onViewToViewImpressed(
         data: ViewToViewItemData,
