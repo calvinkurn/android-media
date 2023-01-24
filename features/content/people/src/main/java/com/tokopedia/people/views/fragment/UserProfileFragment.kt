@@ -620,9 +620,12 @@ class UserProfileFragment @Inject constructor(
         (mainBinding.btnAction.layoutParams as MarginLayoutParams)
             .updateMarginsRelative(
                 end = if (value.profileType == ProfileType.OtherUser ||
-                    value.profileType == ProfileType.NotLoggedIn) {
+                    value.profileType == ProfileType.NotLoggedIn
+                ) {
                     dp8
-                } else 0
+                } else {
+                    0
+                }
             )
     }
 
@@ -1021,31 +1024,26 @@ class UserProfileFragment @Inject constructor(
         if (dialog.isShowing) dialog.dismiss()
     }
 
-    override fun onShopRecomCloseClicked(itemID: Long) {
-        viewModel.submitAction(UserProfileAction.RemoveShopRecomItem(itemID))
+    override fun onShopRecomCloseClicked(item: ShopRecomUiModelItem) {
+        viewModel.submitAction(UserProfileAction.RemoveShopRecomItem(item.id))
     }
 
-    override fun onShopRecomFollowClicked(itemID: Long) {
+    override fun onShopRecomFollowClicked(item: ShopRecomUiModelItem) {
         userProfileTracker.clickFollowProfileRecommendation(
             viewModel.profileUserID,
-            itemID.toString()
+            item
         )
-        viewModel.submitAction(UserProfileAction.ClickFollowButtonShopRecom(itemID))
+        viewModel.submitAction(UserProfileAction.ClickFollowButtonShopRecom(item.id))
     }
 
-    override fun onShopRecomItemClicked(
-        itemID: Long,
-        appLink: String,
-        imageUrl: String,
-        postPosition: Int
-    ) {
+    override fun onShopRecomItemClicked(item: ShopRecomUiModelItem, postPosition: Int) {
         userProfileTracker.clickProfileRecommendation(
             viewModel.profileUserID,
-            itemID.toString(),
-            imageUrl,
+            item,
+            item.logoImageURL,
             postPosition
         )
-        RouteManager.route(requireContext(), appLink)
+        RouteManager.route(requireContext(), item.applink)
     }
 
     override fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int) {
