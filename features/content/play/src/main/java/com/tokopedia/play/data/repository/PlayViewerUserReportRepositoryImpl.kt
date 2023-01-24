@@ -41,7 +41,7 @@ class PlayViewerUserReportRepositoryImpl @Inject constructor(
     {
         val request = postUserReportUseCase
             .createParam(
-                userId = userSession.userId.toLongOrZero(),
+                reporterId = userSession.userId.toLongOrZero(),
                 channelId = channelId,
                 mediaUrl = mediaUrl,
                 partnerId = partnerId,

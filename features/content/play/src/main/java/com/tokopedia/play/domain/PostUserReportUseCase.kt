@@ -34,10 +34,10 @@ class PostUserReportUseCase @Inject constructor(
         reportDesc: String,
         partnerId: Long,
         partnerType: PartnerType,
-        userId: Long,
+        reporterId: Long,
     ): RequestParams{
         val param = mutableMapOf(
-            REPORTER_ID_PARAM to userId,
+            REPORTER_ID_PARAM to reporterId,
             CHANNEL_ID_PARAM to channelId,
             MEDIA_URL_PARAM to mediaUrl,
             REASON_ID_PARAM to reasonId,
