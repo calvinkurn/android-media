@@ -1144,13 +1144,11 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToAddProductPage(currentVoucherConfiguration: VoucherConfiguration) {
-        val intent = context?.let { ctx ->
-            AddProductActivity.buildCreateModeIntent(
-                ctx,
-                currentVoucherConfiguration.copy(isFinishFilledStepThree = true)
-            )
-        }
-        context?.startActivity(intent)
+        val intent = AddProductActivity.buildCreateModeIntent(
+            context ?: return,
+            currentVoucherConfiguration.copy(isFinishFilledStepThree = true)
+        )
+        startActivity(intent)
     }
 
     private fun navigateToVoucherSummaryPage(currentVoucherConfiguration: VoucherConfiguration) {
