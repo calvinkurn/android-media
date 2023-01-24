@@ -1,80 +1,51 @@
 package com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.dilayanitokopedia.home.domain.model.GetHomeAnchorTabResponse
-import com.tokopedia.dilayanitokopedia.home.domain.model.HomeLayoutResponse
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
+import java.net.URLDecoder
 
 /**
  * Created by irpan on 07/11/22.
  */
 object AnchorTabMapper {
 
-    /**
-     * Mapping layout list to list menu Anchor tab
-     */
-    fun MutableList<AnchorTabUiModel>.mapMenuList(
-        homeLayoutResponse: List<HomeLayoutResponse>,
-        homeLayoutList: List<Visitable<*>>
-    ): List<AnchorTabUiModel> {
-        var listMenu = mutableListOf<AnchorTabUiModel>()
-
-        /**
-         *
-         * looping list layout
-         * each layout will looping anchor tab hard code data
-         * if group id from hard code data same with groupId with visitable then add to list
-         * the item added to list and get modified the visitable since still null
-         */
-        homeLayoutList.forEachIndexed { index, visitable ->
-
-            this.forEach anchorTabForEach@{ anchorTab ->
-                if (anchorTab.groupId == homeLayoutResponse[index].groupId) {
-                    anchorTab.apply {
-                        // remove later
-                        this.title = homeLayoutResponse[index].groupId
-                    }
-                    listMenu.add(anchorTab)
-                    listMenu = listMenu.distinctBy { it.groupId }.toMutableList()
-                    return@anchorTabForEach
-                }
-            }
-        }
-        return listMenu.toList()
-    }
+    private const val KEY_ANCHOR_IDENTIFIER = "anchor_indentifier"
+    private const val KEYWOARD_CHANNEL_GROUP_ID = "channelgroupid_"
 
     /**
      * Mapping layout list to list menu Anchor tab
      */
-    fun GetHomeAnchorTabResponse.GetHomeIconV2.mapMenuList(
-        homeLayoutResponse: List<HomeLayoutResponse>,
-        homeLayoutList: List<Visitable<*>>
-    ): List<AnchorTabUiModel> {
+    fun GetHomeAnchorTabResponse.GetHomeIconV2.mapMenuList(): List<AnchorTabUiModel> {
         var listMenu = mutableListOf<AnchorTabUiModel>()
-
-        /**
-         *
-         * looping list layout
-         * each layout will looping anchor tab hard code data
-         * if group id from hard code data same with groupId with visitable then add to list
-         * the item added to list and get modified the visitable since still null
-         */
 
         this.icons.forEachIndexed anchorTabForEach@{ index, homeIcon ->
 
-            // remove later
-            // should homeIcon provide own group id, will get update later (the value should from be)
-            val dummyGroupId = homeLayoutResponse[index].groupId
+            val listFeParam = splitKeyValueAnchorTabParam(homeIcon.feParam)
+            val valueAnchorIdentifier = listFeParam?.getValue(KEY_ANCHOR_IDENTIFIER).toString()
+            val channelGroupId = valueAnchorIdentifier.replace(KEYWOARD_CHANNEL_GROUP_ID, "")
 
             val anchorTab = AnchorTabUiModel(
                 homeIcon.id.toString(),
-                homeIcon.feParam,
+                homeIcon.name,
                 homeIcon.imageUrl,
-                dummyGroupId
+                channelGroupId
             )
+
             listMenu.add(anchorTab)
             listMenu = listMenu.toMutableList()
         }
         return listMenu.toList()
+    }
+
+    private fun splitKeyValueAnchorTabParam(url: String): Map<String, String>? {
+        val queryPairs: MutableMap<String, String> = LinkedHashMap()
+
+        val pairs = url.split("&").toTypedArray()
+        for (pair in pairs) {
+            val idx = pair.indexOf("=")
+            queryPairs[URLDecoder.decode(pair.substring(0, idx), "UTF-8")] = URLDecoder.decode(pair.substring(idx + 1), "UTF-8")
+        }
+
+        return queryPairs
     }
 }
