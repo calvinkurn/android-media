@@ -16,7 +16,7 @@ import androidx.annotation.StringDef
     DtLayoutType.FEATURED_SHOP,
 
     // for loading
-    DtLayoutType.LOADING_RECOMMEDATION_FEED
+    DtLayoutType.LOADING_RECOMMENDATION_FEED
 )
 annotation class DtLayoutType {
     companion object {
@@ -28,6 +28,6 @@ annotation class DtLayoutType {
         const val MIX_LEFT_CAROUSEL = "left_carousel"
 
         // additional loading
-        const val LOADING_RECOMMEDATION_FEED = "loading_recomendation_feed"
+        const val LOADING_RECOMMENDATION_FEED = "loading_recommendation_feed"
     }
 }

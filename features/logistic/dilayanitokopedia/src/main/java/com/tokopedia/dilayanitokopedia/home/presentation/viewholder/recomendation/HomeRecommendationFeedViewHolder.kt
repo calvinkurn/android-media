@@ -13,12 +13,14 @@ import com.tokopedia.dilayanitokopedia.home.presentation.activity.DtHomeActivity
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.HomeRecommendationFeedDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.fragment.DtHomeRecommendationForYouFragment
 import com.tokopedia.dilayanitokopedia.home.presentation.listener.DtHomeCategoryListener
+import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeRecommendationFeedViewHolder(
     itemView: View,
     private val listener: DtHomeCategoryListener
 ) : AbstractViewHolder<HomeRecommendationFeedDataModel>(itemView) {
+
     private val context: Context = itemView.context
     private var binding: DtHomeRecommendationViewholderBinding? by viewBinding()
 
@@ -36,15 +38,17 @@ class HomeRecommendationFeedViewHolder(
         val container = binding?.homeRecommendationFeedContainer
         val layoutParams = container?.layoutParams
 
+        val paddingTopOutsideSticky = 16f.toDpInt()
+
         /**
-         * sticky Effect
+         * sticky Effect & scroll inside recommendation for you
          * specify height for viewpager, so it can't scroll up anymore and create sticky Effect
          */
-        layoutParams?.height = listener.windowHeight -
-            listener.homeMainAnchorTabHeight
+        layoutParams?.height = listener.windowHeight + paddingTopOutsideSticky - listener.homeMainAnchorTabHeight
         container?.layoutParams = layoutParams
 
-        val adapter = ViewPagerAdapter((context as DtHomeActivity)?.supportFragmentManager)
+
+        val adapter = ViewPagerAdapter((context as DtHomeActivity).supportFragmentManager)
         viewPager?.adapter = adapter
         viewPager?.currentItem = 0
         adapter.notifyDataSetChanged()

@@ -3,7 +3,7 @@ package com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.BANNER_CAROUSEL
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.FEATURED_SHOP
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.LEGO_6_IMAGE
-import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.LOADING_RECOMMEDATION_FEED
+import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.LOADING_RECOMMENDATION_FEED
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.MIX_LEFT_CAROUSEL
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.MIX_TOP_CAROUSEL
 import com.tokopedia.dilayanitokopedia.home.constant.HomeLayoutItemState
@@ -28,7 +28,7 @@ object HomeLayoutMapper {
         FEATURED_SHOP,
 
         // Additional Loading
-        LOADING_RECOMMEDATION_FEED
+        LOADING_RECOMMENDATION_FEED
     )
 
     fun MutableList<HomeLayoutItemUiModel>.mapHomeLayoutList(
