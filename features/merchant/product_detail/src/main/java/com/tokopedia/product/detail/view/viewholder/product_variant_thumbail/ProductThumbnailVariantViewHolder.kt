@@ -61,31 +61,47 @@ class ProductThumbnailVariantViewHolder(
         }
     }
 
-    override fun bind(element: ProductSingleVariantDataModel) = with(binding) {
-        element.variantLevelOne?.let {
-            thumbVariantTitle.text = pdpListener.getVariantString()
-            thumbVariantList.post {
-                containerAdapter.submitList(it.variantOptions)
-            }
+    override fun bind(element: ProductSingleVariantDataModel) {
+        binding.setTitle()
+        binding.setThumbnailItems(element = element)
+        setOnClick()
+        setImpression(element = element)
+    }
 
-            itemView.setOnClickListener {
-                // pass dummy object since we need to redirect to variant bottomsheet
-                variantListener.onVariantClicked(emptyVariantData)
-            }
+    override fun bind(element: ProductSingleVariantDataModel, payloads: MutableList<Any>) {
+        if (payloads.isNotEmpty()) {
+            binding.setThumbnailItems(element = element)
         }
+    }
+
+    private fun ItemThumbnailVariantViewHolderBinding.setTitle() {
+        thumbVariantTitle.text = pdpListener.getVariantString()
+    }
+
+    private fun setOnClick() {
+        itemView.setOnClickListener {
+            // pass dummy object since we need to redirect to variant bottomsheet
+            variantListener.onVariantClicked(emptyVariantData)
+        }
+    }
+
+    private fun setImpression(element: ProductSingleVariantDataModel) {
         view.addOnImpressionListener(element.impressHolder) {
             pdpListener.onImpressComponent(getComponentTrackData(element))
         }
     }
 
-    override fun bind(element: ProductSingleVariantDataModel, payloads: MutableList<Any>): Unit =
-        with(binding) {
-            element.variantLevelOne?.let {
-                thumbVariantList.post {
-                    containerAdapter.submitList(it.variantOptions)
-                }
-            }
+    private fun ItemThumbnailVariantViewHolderBinding.setThumbnailItems(
+        element: ProductSingleVariantDataModel
+    ) {
+        thumbVariantList.post {
+            containerAdapter.submitList(element.variantLevelOne?.variantOptions)
         }
+
+        if (element.mapOfSelectedVariant.isEmpty()) {
+            scrollToPosition(0)
+        }
+    }
 
     override fun onSelectionChanged(view: View, position: Int) {
         if (!layoutManager.isViewPartiallyVisible(view, true, true)) {
