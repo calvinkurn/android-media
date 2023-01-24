@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.bottomsheet
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -137,6 +138,7 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
     }
 
     override fun dismiss() {
+        if(!isVisible) return
         super.dismiss()
 
         playViewModel.submitAction(DismissFollowPopUp)
@@ -146,6 +148,11 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
         super.onDestroyView()
 
         _binding = null
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        dismiss()
     }
 
     companion object {

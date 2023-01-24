@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.bottomsheet
 
 import android.content.DialogInterface
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentManager
@@ -332,9 +333,10 @@ class PlayMoreActionBottomSheet @Inject constructor(
     private val listOfAction = mutableListOf<PlayMoreActionUiModel>()
 
     private fun buildListAction(action: PlayMoreActionUiModel) {
-        if (!listOfAction.contains(action) && action != PlayMoreActionUiModel.Empty) listOfAction.add(action)
         if (!listOfAction.contains(reportAction)) listOfAction.add(reportAction) // Report
-        if (!listOfAction.contains(watchAction)) listOfAction.add(watchAction) //Watch Mode
+        if (!listOfAction.contains(watchAction) && !playViewModel.videoOrientation.isHorizontal && !playViewModel.hasNoMedia) listOfAction.add(watchAction) //Watch Mode
+        if (action == PlayMoreActionUiModel.Empty) return
+        if (!listOfAction.contains(action)) listOfAction.add(action)
     }
 
     private fun removeAction(action: PlayMoreActionUiModel) {
@@ -506,6 +508,11 @@ class PlayMoreActionBottomSheet @Inject constructor(
     override fun onDestroy() {
         super.onDestroy()
         mListener = null
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        dismiss()
     }
 
     /***

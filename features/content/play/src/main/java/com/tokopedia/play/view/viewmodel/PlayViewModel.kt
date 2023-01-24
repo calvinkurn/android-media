@@ -169,6 +169,13 @@ class PlayViewModel @AssistedInject constructor(
     private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 50)
 
     private var _winnerStatus: MutableStateFlow<PlayUserWinnerStatusUiModel?> = MutableStateFlow(null)
+
+    /**
+     * Remote Config for Explore Widget
+     */
+    private val isExploreWidget: Boolean
+        get() = remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_EXPLORE_WIDGET, true)
+
     /***
      * User Report
      */
@@ -328,7 +335,7 @@ class PlayViewModel @AssistedInject constructor(
         status, bottomInsets, widgets -> ExploreWidgetUiState(
             shouldShow =  !bottomInsets.isAnyShown &&
                 status.channelStatus.statusType.isActive &&
-                !videoPlayer.isYouTube,
+                !videoPlayer.isYouTube && isExploreWidget,
             data = widgets,
         )
     }.flowOn(dispatchers.computation)
@@ -434,6 +441,12 @@ class PlayViewModel @AssistedInject constructor(
             val statusType = _status.value.channelStatus.statusType
             return statusType.isFreeze || statusType.isBanned
         }
+
+    val hasNoMedia : Boolean
+        get() = _videoProperty.value.state.hasNoData
+
+    val isExploreWidgetOpened : Boolean
+        get() = _exploreWidget.value.isOpened
 
     /**
      * Temporary
@@ -1610,7 +1623,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleAutoOpen(){
-        if(_autoOpenInteractive.value && !repo.hasJoined(_interactive.value.game.id) && !bottomInsets.isAnyShown && !_interactive.value.isPlaying){
+        if(_autoOpenInteractive.value && !repo.hasJoined(_interactive.value.game.id) && !bottomInsets.isAnyShown && !_interactive.value.isPlaying && !_exploreWidget.value.isOpened){
             _autoOpenInteractive.setValue { false }
             handlePlayingInteractive(shouldPlay = true)
         }
@@ -2743,7 +2756,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun fetchWidgets() {
         viewModelScope.launchCatchError(block = {
-            _exploreWidget.update { it.copy(state = ResultState.Loading, chips = it.chips.copy(state = ResultState.Loading)) }
+            _exploreWidget.update { it.copy(state = WidgetState.Loading, chips = it.chips.copy(state = ResultState.Loading)) }
             val data = getWidgets()
             val chips = data.getChips
 
@@ -2759,11 +2772,11 @@ class PlayViewModel @AssistedInject constructor(
                     it.copy(
                         param = it.param.copy(cursor = widgets.getConfig.cursor),
                         widgets = newList.getChannelBlocks,
-                        state = ResultState.Success
+                        state = if(newList.isEmpty()) WidgetState.Empty else WidgetState.Success
                     )
             }
         }) { exception ->
-            _exploreWidget.update { it.copy(state = ResultState.Fail(exception)) }
+            _exploreWidget.update { it.copy(state = WidgetState.Fail(exception)) }
         }
     }
 
@@ -2773,7 +2786,7 @@ class PlayViewModel @AssistedInject constructor(
     private fun onActionWidget(isNextPage : Boolean = false) {
         if(!_exploreWidget.value.param.hasNextPage && isNextPage) return
         viewModelScope.launchCatchError( block = {
-            _exploreWidget.update { it.copy(state = ResultState.Loading, param = it.param.copy(cursor = if (isNextPage) it.param.cursor else "")) }
+            _exploreWidget.update { it.copy(state = if(isNextPage) it.state else WidgetState.Loading, param = it.param.copy(cursor = if (isNextPage) it.param.cursor else "")) }
 
             val widgets = getWidgets()
 
@@ -2783,11 +2796,11 @@ class PlayViewModel @AssistedInject constructor(
                 it.copy(
                     widgets = newList.getChannelBlocks,
                     param = it.param.copy(cursor = widgets.getConfig.cursor),
-                    state = ResultState.Success
+                    state = if(newList.isEmpty()) WidgetState.Empty else WidgetState.Success
                 )
             }
         }){
-                exception -> _exploreWidget.update { it.copy(state = ResultState.Fail(exception)) }
+                exception -> _exploreWidget.update { it.copy(state = WidgetState.Fail(exception)) }
         }
     }
 
@@ -2897,6 +2910,7 @@ class PlayViewModel @AssistedInject constructor(
         private const val FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE = "android_main_app_enable_play_interactive"
         private const val FIREBASE_REMOTE_CONFIG_KEY_CAST = "android_main_app_enable_play_cast"
         private const val FIREBASE_REMOTE_CONFIG_KEY_LIKE_BUBBLE = "android_main_app_enable_play_bubbles"
+        private const val FIREBASE_REMOTE_CONFIG_KEY_EXPLORE_WIDGET = "android_main_app_enable_play_explore_widget"
         private const val ONBOARDING_DELAY = 5000L
         private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 2000L
 
