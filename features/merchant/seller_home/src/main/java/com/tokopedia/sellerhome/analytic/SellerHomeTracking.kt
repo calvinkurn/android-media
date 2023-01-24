@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.analytic
 
 import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
@@ -37,6 +38,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
  * https://mynakama.tokopedia.com/datatracker/product/requestdetail/1733
  * https://mynakama.tokopedia.com/datatracker/requestdetail/view/1732
  * https://mynakama.tokopedia.com/datatracker/requestdetail/781
+ * New Seller Journey Tracker : https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3581
  * */
 
 object SellerHomeTracking {
@@ -1098,6 +1100,48 @@ object SellerHomeTracking {
             .setEventAction(TrackingConstant.CLICK_POST_WIDGET_CANCEL_DISMISSAL)
             .setEventCategory(TrackingConstant.SELLER_APP_HOME)
             .setEventLabel(eventLabel)
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
+            .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
+            .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    fun sendImpressionFirstTransactionPopUpEvent() {
+        val trackerId = "38976"
+        Tracker.Builder()
+            .setEvent(TrackingConstant.VIEW_PG_IRIS)
+            .setEventAction(TrackingConstant.IMPRESSION_FIRST_TRANSACTION_POPUP)
+            .setEventCategory(TrackingConstant.SELLER_APP_HOME)
+            .setEventLabel(String.EMPTY)
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
+            .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
+            .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    fun sendClickOnFirstTransactionPopUpSecondaryCtaEvent() {
+        val trackerId = "38977"
+        Tracker.Builder()
+            .setEvent(TrackingConstant.CLICK_PG)
+            .setEventAction(TrackingConstant.CLICK_FIRST_TRANSACTION_POPUP_NANTI_SAJA)
+            .setEventCategory(TrackingConstant.SELLER_APP_HOME)
+            .setEventLabel(String.EMPTY)
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
+            .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
+            .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    fun sendClickOnFirstTransactionPopUpPrimaryCtaEvent() {
+        val trackerId = "38978"
+        Tracker.Builder()
+            .setEvent(TrackingConstant.CLICK_PG)
+            .setEventAction(TrackingConstant.CLICK_FIRST_TRANSACTION_POPUP_PROSES_PESANAN)
+            .setEventCategory(TrackingConstant.SELLER_APP_HOME)
+            .setEventLabel(String.EMPTY)
             .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
             .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
             .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)

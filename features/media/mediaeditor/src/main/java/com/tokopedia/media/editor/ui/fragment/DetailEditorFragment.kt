@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.values
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -31,6 +33,7 @@ import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.component.*
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel.Companion.EMPTY_RATIO
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_WHITE
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_DEFAULT
@@ -54,7 +57,6 @@ import com.yalantis.ucrop.util.FastBitmapDrawable
 import java.io.File
 import javax.inject.Inject
 import kotlin.math.max
-
 
 class DetailEditorFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
@@ -199,26 +201,16 @@ class DetailEditorFragment @Inject constructor(
                 } else {
                     viewModel.setRemoveBackground(it) { _ ->
                         if (activity?.isFinishing != false) return@setRemoveBackground
-                        viewBinding?.let {
-                            Toaster.build(
-                                it.editorFragmentDetailRoot,
-                                getString(editorR.string.editor_tool_remove_background_failed_normal),
-                                Toaster.LENGTH_LONG,
-                                Toaster.TYPE_NORMAL,
-                                getString(editorR.string.editor_tool_remove_background_failed_cta)
-                            ) {
-                                removeBackgroundRetryLimit--
-                                if (removeBackgroundRetryLimit == 0) {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        getString(editorR.string.editor_tool_remove_background_failed_normal),
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                    activity?.finish()
-                                } else
+                        removeBgConnectionToast {
+                            removeBackgroundRetryLimit--
+                            if (removeBackgroundRetryLimit == 0) {
+                                removeBgClosePage()
+                            } else {
+                                Handler().postDelayed({
                                     onRemoveBackgroundClicked(removeBackgroundType)
-                            }.show()
-                        }
+                                }, DELAY_REMOVE_BG_TOASTER)
+                            }
+                        }?.show()
                     }
                 }
             }
@@ -267,11 +259,17 @@ class DetailEditorFragment @Inject constructor(
             overlayView.setTargetAspectRatio(ratio.getRatio())
             cropView.targetAspectRatio = ratio.getRatio()
 
-            val newRatio = Pair(ratio.getRatioX(), ratio.getRatioY())
-            if (data.cropRotateValue.cropRatio != newRatio) {
-                data.cropRotateValue.cropRatio = newRatio
-                isEdited = true
+            val newRatioPair = Pair(ratio.getRatioX(), ratio.getRatioY())
+            // check if any crop state before
+            if (data.cropRotateValue.cropRatio != EMPTY_RATIO) {
+                // if had crop state then compare if ratio is change
+                if (data.cropRotateValue.cropRatio != newRatioPair) {
+                    setCropRatio(newRatioPair)
+                }
+            } else if (data.originalRatio != ratio.getRatio()) { // if didn't have crop state, compare original ratio
+                setCropRatio(newRatioPair)
             }
+            data.cropRotateValue.cropRatio = newRatioPair
         }
     }
 
@@ -279,7 +277,10 @@ class DetailEditorFragment @Inject constructor(
     override fun onLoadComplete() {
         viewBinding?.imgUcropPreview?.cropImageView?.post {
             readPreviousState()
-            initialImageMatrix = Matrix(viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix)
+            Handler().postDelayed({
+                initialImageMatrix =
+                    Matrix(viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix)
+            }, DELAY_CROP_ROTATE_PROCESS)
         }
     }
 
@@ -566,7 +567,11 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun watermarkRotateBitmap(rotateValue: EditorCropRotateUiModel, source: Bitmap, isInverse: Boolean = false): Bitmap {
+    private fun watermarkRotateBitmap(
+        rotateValue: EditorCropRotateUiModel,
+        source: Bitmap,
+        isInverse: Boolean = false
+    ): Bitmap {
         var finalRotateDegree = rotateValue.let {
             it.rotateDegree + (it.orientationChangeNumber * ROTATE_BTN_DEGREE)
         }
@@ -595,7 +600,8 @@ class DetailEditorFragment @Inject constructor(
 
     // neutralize rotate value on watermark result
     private fun neutralizeWatermarkResult(watermarkBitmap: Bitmap): Bitmap {
-        val neutralizeBitmap = watermarkRotateBitmap(data.cropRotateValue, watermarkBitmap, isInverse = true)
+        val neutralizeBitmap =
+            watermarkRotateBitmap(data.cropRotateValue, watermarkBitmap, isInverse = true)
 
         val cropX = (neutralizeBitmap.width - globalWidth) / 2
         val cropY = (neutralizeBitmap.height - globalHeight) / 2
@@ -898,6 +904,33 @@ class DetailEditorFragment @Inject constructor(
         return editHistory
     }
 
+    private fun removeBgConnectionToast(ctaAction: () -> Unit): Snackbar? {
+        viewBinding?.let {
+            return Toaster.build(
+                it.editorFragmentDetailRoot,
+                getString(editorR.string.editor_tool_remove_background_failed_normal),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(editorR.string.editor_tool_remove_background_failed_cta)
+            ) { ctaAction() }
+        }
+        return null
+    }
+
+    private fun removeBgClosePage() {
+        Toast.makeText(
+            requireContext(),
+            getString(editorR.string.editor_tool_remove_background_failed_normal),
+            Toast.LENGTH_LONG
+        ).show()
+        activity?.finish()
+    }
+
+    private fun setCropRatio(newRatioPair: Pair<Int, Int>) {
+        data.cropRotateValue.cropRatio = newRatioPair
+        isEdited = true
+    }
+
     override fun getScreenName() = SCREEN_NAME
 
     companion object {
@@ -908,5 +941,9 @@ class DetailEditorFragment @Inject constructor(
 
         private const val DELAY_EXECUTION_PREVIOUS_CROP = 400L
         private const val DELAY_EXECUTION_PREVIOUS_ROTATE = 400L
+        private const val DELAY_CROP_ROTATE_PROCESS =
+            DELAY_EXECUTION_PREVIOUS_CROP + DELAY_EXECUTION_PREVIOUS_ROTATE + 100L
+
+        private const val DELAY_REMOVE_BG_TOASTER = 300L
     }
 }

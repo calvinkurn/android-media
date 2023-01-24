@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usercomponents.databinding.FragmentDebugUserConsentBinding
 import com.tokopedia.usercomponents.userconsent.common.UserConsentPayload
-import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionParam
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.usercomponents.userconsent.ui.UserConsentActionListener
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
