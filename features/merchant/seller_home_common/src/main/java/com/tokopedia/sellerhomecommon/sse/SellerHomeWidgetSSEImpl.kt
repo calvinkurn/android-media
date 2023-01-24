@@ -74,6 +74,7 @@ class SellerHomeWidgetSSEImpl(
 
     override fun closeSse() {
         sse?.close()
+        isSseConnected = false
     }
 
     override fun listen(): Flow<BaseDataUiModel?> {
