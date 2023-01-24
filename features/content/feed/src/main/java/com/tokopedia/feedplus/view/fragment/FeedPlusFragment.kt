@@ -11,6 +11,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.annotation.RestrictTo
@@ -790,7 +791,12 @@ class FeedPlusFragment :
                                         }
                                     }
                                     if (isChanged) {
-                                        adapter.updateShopRecomWidget(item)
+                                        recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object: OnGlobalLayoutListener {
+                                            override fun onGlobalLayout() {
+                                                adapter.updateShopRecomWidget(item)
+                                                recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                            }
+                                        })
                                     }
 
                                 } else {
@@ -822,10 +828,15 @@ class FeedPlusFragment :
                                     }
 
                                     if (isChanged) {
-                                        adapter.notifyItemChanged(
-                                            index,
-                                            DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
-                                        )
+                                        recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object: OnGlobalLayoutListener {
+                                            override fun onGlobalLayout() {
+                                                adapter.notifyItemChanged(
+                                                    index,
+                                                    DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
+                                                )
+                                                recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                            }
+                                        })
                                     }
                                 }
                             }
