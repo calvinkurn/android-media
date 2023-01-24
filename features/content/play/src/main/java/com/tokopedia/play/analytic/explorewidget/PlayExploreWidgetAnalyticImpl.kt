@@ -120,11 +120,12 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
          * {channel_id live room} - {live/vod live room} - {channel_id clicked} - {card_type} - {position} -
          * {is_autoplay} - {category name} - {promo/no promo} - {recommendation_type}
          */
+        val promoValue = if (selectedChannel.hasPromo) "promo" else "no promo"
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_CONTENT)
             .setEventAction("click - channel card")
             .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
-            .setEventLabel("$channelId - $channelType - ${selectedChannel.channelId} - ${selectedChannel.channelType.value} - $position - $isAutoplay - $categoryName - ${selectedChannel.hasPromo} - ${selectedChannel.recommendationType}")
+            .setEventLabel("$channelId - $channelType - ${selectedChannel.channelId} - ${selectedChannel.channelType.value} - ${position + 1} - $isAutoplay - $categoryName - $promoValue - ${selectedChannel.recommendationType}")
             .setCustomProperty(KEY_TRACK_TRACKER_ID, "39860")
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(KEY_TRACK_CURRENT_SITE)

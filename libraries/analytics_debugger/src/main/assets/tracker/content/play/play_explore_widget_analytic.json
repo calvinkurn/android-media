@@ -218,17 +218,6 @@
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "userId": ".*"
-    },
-    {
-      "event": "clickContent",
-      "eventAction": "click - coba lagi toaster",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - (live|vod)",
-      "trackerId": "39876",
-      "businessUnit": "play",
-      "currentSite": "tokopediamarketplace",
-      "sessionIris": ".*",
-      "userId": ".*"
     }
   ]
 }
