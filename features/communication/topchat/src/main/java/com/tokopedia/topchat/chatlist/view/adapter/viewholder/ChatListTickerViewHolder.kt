@@ -30,7 +30,10 @@ class ChatListTickerViewHolder(
             setHtmlDescription(element.message)
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    chatListTickerListener.onChatListTickerClicked(element.applink)
+                    chatListTickerListener.onChatListTickerClicked(
+                        element.applink,
+                        element.isForBubble
+                    )
                 }
 
                 override fun onDismiss() {
@@ -38,7 +41,7 @@ class ChatListTickerViewHolder(
                 }
             })
             addOnImpressionListener(element.impressHolder) {
-                chatListTickerListener.onChatListTickerImpressed()
+                chatListTickerListener.onChatListTickerImpressed(element.isForBubble)
             }
         }
     }

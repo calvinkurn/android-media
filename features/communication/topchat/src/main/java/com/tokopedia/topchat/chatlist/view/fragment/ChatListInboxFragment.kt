@@ -543,7 +543,8 @@ open class ChatListInboxFragment :
     private fun addBubbleChatTicker() {
         val chatListTicker: ChatListTickerUiModel = ChatListTickerUiModel(
             message = getString(com.tokopedia.topchat.R.string.topchat_bubble_ticker_message),
-            applink = ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION
+            applink = ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION,
+            isForBubble = true
         ).apply {
             this.showCloseButton = true
             this.sharedPreferenceKey = ChatItemListViewModel.BUBBLE_TICKER_PREF_NAME
@@ -762,19 +763,28 @@ open class ChatListInboxFragment :
             .inject(this)
     }
 
-    override fun onChatListTickerClicked(appLink: String) {
+    override fun onChatListTickerClicked(appLink: String, isForBubble: Boolean) {
         if (appLink.isNotBlank()) {
             context?.let {
-                if (appLink == ApplinkConst.TokoFood.TOKOFOOD_ORDER) {
-                    chatListAnalytics.clickChatDriverTicker(getRoleStr())
+                when {
+                    isForBubble -> {
+                        TopChatAnalyticsKt.eventClickBubbleChatRecommendationTicker(userSession.shopId)
+                    }
+                    appLink == ApplinkConst.TokoFood.TOKOFOOD_ORDER -> {
+                        chatListAnalytics.clickChatDriverTicker(getRoleStr())
+                    }
                 }
                 RouteManager.route(it, appLink)
             }
         }
     }
 
-    override fun onChatListTickerImpressed() {
-        chatListAnalytics.impressOnChatDriverTicker(getRoleStr())
+    override fun onChatListTickerImpressed(isForBubble: Boolean) {
+        if (isForBubble) {
+            TopChatAnalyticsKt.eventImpressionBubbleChatRecommendationTicker(userSession.shopId)
+        } else {
+            chatListAnalytics.impressOnChatDriverTicker(getRoleStr())
+        }
     }
 
     protected open fun generateChatListComponent() = DaggerChatListComponent.builder()

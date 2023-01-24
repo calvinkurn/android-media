@@ -8,7 +8,8 @@ import com.tokopedia.topchat.chatlist.view.adapter.typefactory.ChatListTypeFacto
 data class ChatListTickerUiModel(
     var message: String = "",
     var tickerType: Int = Int.ZERO,
-    var applink: String = ""
+    var applink: String = "",
+    val isForBubble: Boolean = false
 ) : Visitable<ChatListTypeFactory> {
 
     val impressHolder = ImpressHolder()

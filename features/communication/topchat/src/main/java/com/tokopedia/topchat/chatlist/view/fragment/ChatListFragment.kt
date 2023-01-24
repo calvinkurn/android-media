@@ -426,7 +426,8 @@ open class ChatListFragment constructor() :
     private fun addBubbleChatTicker() {
         val chatListTicker: ChatListTickerUiModel = ChatListTickerUiModel(
             message = getString(com.tokopedia.topchat.R.string.topchat_bubble_ticker_message),
-            applink = ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION
+            applink = ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION,
+            isForBubble = true
         ).apply {
             this.showCloseButton = true
             this.sharedPreferenceKey = ChatItemListViewModel.BUBBLE_TICKER_PREF_NAME
@@ -434,11 +435,16 @@ open class ChatListFragment constructor() :
         adapter?.addElement(Int.ZERO, chatListTicker)
     }
 
-    override fun onChatListTickerClicked(applink: String) {
+    override fun onChatListTickerClicked(applink: String, isForBubble: Boolean) {
         if (applink.isNotBlank()) {
             context?.let {
-                if (applink == ApplinkConst.TokoFood.TOKOFOOD_ORDER) {
-                    chatListAnalytics.clickChatDriverTicker(getRoleStr())
+                when {
+                    isForBubble -> {
+                        TopChatAnalyticsKt.eventClickBubbleChatRecommendationTicker(userSession.shopId)
+                    }
+                    applink == ApplinkConst.TokoFood.TOKOFOOD_ORDER -> {
+                        chatListAnalytics.clickChatDriverTicker(getRoleStr())
+                    }
                 }
                 RouteManager.route(it, applink)
             }
@@ -583,8 +589,12 @@ open class ChatListFragment constructor() :
     override fun onItemClicked(t: Visitable<*>?) {
     }
 
-    override fun onChatListTickerImpressed() {
-        chatListAnalytics.impressOnChatDriverTicker(getRoleStr())
+    override fun onChatListTickerImpressed(isForBubble: Boolean) {
+        if (isForBubble) {
+            TopChatAnalyticsKt.eventImpressionBubbleChatRecommendationTicker(userSession.shopId)
+        } else {
+            chatListAnalytics.impressOnChatDriverTicker(getRoleStr())
+        }
     }
 
     private fun getRoleStr(): String {
