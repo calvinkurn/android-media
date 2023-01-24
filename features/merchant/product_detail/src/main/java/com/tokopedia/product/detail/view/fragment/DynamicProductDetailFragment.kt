@@ -449,7 +449,7 @@ open class DynamicProductDetailFragment :
     // This productId is only use for backend hit
     private var productId: String? = null
 
-    // product id after thumbnail variant selected, for vbs
+    // this product id will be assign after thumbnail variant selected, it will use when open vbs
     private var productIdThumbnailSelected: String? = null
     private var productKey: String? = null
     private var shopDomain: String? = null
@@ -3451,13 +3451,15 @@ open class DynamicProductDetailFragment :
                     val p2Data = viewModel.p2Data.value
                     var saveAfterClose = true
                     var cartTypeData = p2Data?.cartRedirection
-                    val isFromThumbnailVariant =
-                        pdpUiUpdater?.productSingleVariant?.isThumbnailType.orFalse()
-                    val pid = if (isFromThumbnailVariant) productIdThumbnailSelected else productId
                     if (customCartRedirection != null) {
                         saveAfterClose = false
                         cartTypeData = customCartRedirection
                     }
+                    // if pdp show single variant with thumbnail type, so product id from [productIdThumbnailSelected]
+                    // otherwise [productId]
+                    val isFromThumbnailVariant =
+                        pdpUiUpdater?.productSingleVariant?.isThumbnailType.orFalse()
+                    val pid = if (isFromThumbnailVariant) productIdThumbnailSelected else productId
 
                     viewModel.clearCacheP2Data()
 
