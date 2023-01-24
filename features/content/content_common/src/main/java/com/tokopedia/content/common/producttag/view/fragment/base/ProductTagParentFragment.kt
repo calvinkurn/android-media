@@ -110,7 +110,7 @@ class ProductTagParentFragment @Inject constructor(
         _binding = FragmentProductTagParentBinding.inflate(
             LayoutInflater.from(requireContext()),
             container,
-            false,
+            false
         )
         return _binding?.root
     }
@@ -123,12 +123,12 @@ class ProductTagParentFragment @Inject constructor(
 
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
-        if(childFragment is BaseProductTagChildFragment) {
+        if (childFragment is BaseProductTagChildFragment) {
             childFragment.createViewModelProvider(createViewModelProvider())
             childFragment.setAnalytic(mAnalytic)
         }
 
-        when(childFragment) {
+        when (childFragment) {
             is ProductTagSourceBottomSheet -> {
                 childFragment.setListener(object : ProductTagSourceBottomSheet.Listener {
                     override fun onSelectProductTagSource(source: ProductTagSource) {
@@ -163,7 +163,7 @@ class ProductTagParentFragment @Inject constructor(
 
     private fun setupView() {
         binding.icCcProductTagBack.setImage(
-            newIconId = when(viewModel.backButton) {
+            newIconId = when (viewModel.backButton) {
                 ContentProductTagConfig.BackButton.Back -> {
                     IconUnify.ARROW_BACK
                 }
@@ -213,7 +213,7 @@ class ProductTagParentFragment @Inject constructor(
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect {
-                when(it) {
+                when (it) {
                     is ProductTagUiEvent.FinishProductTag -> {
                         mAnalytic?.clickSaveProduct(viewModel.selectedTagSource)
                         mListener?.onFinishProductTag(it.products)
@@ -233,7 +233,7 @@ class ProductTagParentFragment @Inject constructor(
                             text = getString(abstractionR.string.default_request_error_unknown),
                             type = Toaster.TYPE_ERROR,
                             duration = Toaster.LENGTH_LONG,
-                            actionText = if(it.action != null) getString(R.string.feed_content_coba_lagi_text) else "",
+                            actionText = if (it.action != null) getString(R.string.feed_content_coba_lagi_text) else "",
                             clickListener = { view -> it.action?.invoke() }
                         ).show()
                     }
@@ -247,9 +247,9 @@ class ProductTagParentFragment @Inject constructor(
 
     private fun renderSelectedProductTagSource(
         prevState: ProductTagSourceUiState?,
-        currState: ProductTagSourceUiState,
+        currState: ProductTagSourceUiState
     ) {
-        if(prevState == currState) return
+        if (prevState == currState) return
 
         updateFragmentContent(prevState?.productTagSourceStack ?: emptySet(), currState.productTagSourceStack)
         updateBreadcrumb(currState.productTagSourceStack)
@@ -257,11 +257,15 @@ class ProductTagParentFragment @Inject constructor(
 
     private fun renderActionBar(
         prevState: ProductTagUiState?,
-        currState: ProductTagUiState,
+        currState: ProductTagUiState
     ) {
-        if(prevState?.selectedProduct == currState.selectedProduct &&
+        if (prevState?.selectedProduct == currState.selectedProduct &&
             prevState.productTagSource == currState.productTagSource
-        ) return
+        ) {
+            return
+        }
+
+        if (currState.productTagSource.productTagSourceStack.isEmpty()) return
 
         updateActionBar(currState.productTagSource.productTagSourceStack)
         updateTitle(currState.selectedProduct)
@@ -269,16 +273,20 @@ class ProductTagParentFragment @Inject constructor(
 
     private fun renderSaveButton(
         prevState: ProductTagUiState?,
-        currState: ProductTagUiState,
+        currState: ProductTagUiState
     ) {
-        if(prevState?.selectedProduct == currState.selectedProduct &&
+        if (prevState?.selectedProduct == currState.selectedProduct &&
             prevState.productTagSource == currState.productTagSource &&
             prevState.isSubmitting == currState.isSubmitting
-        ) return
+        ) {
+            return
+        }
+
+        if (currState.productTagSource.productTagSourceStack.isEmpty()) return
 
         binding.flBtnSave.showWithCondition(
             !currState.productTagSource.productTagSourceStack.isAutocomplete &&
-                    viewModel.isMultipleSelectionProduct
+                viewModel.isMultipleSelectionProduct
         )
 
         binding.btnSave.isEnabled = currState.selectedProduct.isNotEmpty() && !viewModel.isSameAsInitialSelectedProduct
@@ -294,15 +302,17 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun updateTitle(selectedProduct: List<SelectedProductUiModel>) {
-        val title = if(viewModel.isMultipleSelectionProduct)
+        val title = if (viewModel.isMultipleSelectionProduct) {
             getString(R.string.content_creation_multiple_product_tag_title).format(selectedProduct.size, viewModel.maxSelectedProduct)
-        else getString(R.string.content_creation_product_tag_title)
+        } else {
+            getString(R.string.content_creation_product_tag_title)
+        }
 
         binding.tvCcProductTagPageTitle.text = title
     }
 
     private fun updateFragmentContent(prevStack: Set<ProductTagSource>, currStack: Set<ProductTagSource>) {
-        if(currStack.isEmpty()) {
+        if (currStack.isEmpty()) {
             mListener?.onCloseProductTag() ?: run {
                 requireActivity().finish()
             }
@@ -311,16 +321,16 @@ class ProductTagParentFragment @Inject constructor(
 
         val selectedSource = currStack.currentSource
         val (fragment, tag) = getFragmentAndTag(selectedSource)
-        if(currStack.size >= prevStack.size) {
+        if (currStack.size >= prevStack.size) {
             childFragmentManager.beginTransaction()
                 .replace(binding.flCcProductTagContainer.id, fragment, tag)
                 .apply {
-                    if(currStack.size > prevStack.size)
+                    if (currStack.size > prevStack.size) {
                         addToBackStack(null)
+                    }
                 }
                 .commit()
-        }
-        else {
+        } else {
             repeat(prevStack.size - currStack.size) {
                 childFragmentManager.popBackStackImmediate()
             }
@@ -332,15 +342,14 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun updateBreadcrumb(productTagSourceStack: Set<ProductTagSource>) {
-        if(viewModel.isUser) {
-
-            if(productTagSourceStack.isAutocomplete) {
+        if (viewModel.isUser) {
+            if (productTagSourceStack.isAutocomplete) {
                 showBreadcrumb(false)
                 return
             }
 
-            /** Update the First Part */
-            if(productTagSourceStack.isNotEmpty()) {
+            if (productTagSourceStack.isNotEmpty()) {
+                /** Update the First Part */
                 val firstSource = productTagSourceStack.first()
 
                 binding.icCcProductTagChevron1.setImage(IconUnify.CHEVRON_DOWN)
@@ -350,36 +359,34 @@ class ProductTagParentFragment @Inject constructor(
                 binding.tvCcProductTagProductSource.show()
                 binding.icCcProductTagChevron1.show()
 
-                if(firstSource == ProductTagSource.MyShop && viewModel.shopBadge.isNotEmpty()) {
+                if (firstSource == ProductTagSource.MyShop && viewModel.shopBadge.isNotEmpty()) {
                     binding.imgCcProductTagShopBadge1.setImageUrl(viewModel.shopBadge)
                     binding.imgCcProductTagShopBadge1.show()
                     binding.icCcProductTagShopBadge1.hide()
-                }
-                else if(firstSource == ProductTagSource.Shop) {
+                } else if (firstSource == ProductTagSource.Shop) {
                     binding.icCcProductTagShopBadge1.setImage(viewModel.selectedShop.badge)
                     binding.icCcProductTagShopBadge1.showWithCondition(viewModel.selectedShop.isShopHasBadge)
                     binding.imgCcProductTagShopBadge1.hide()
-                }
-                else {
+                } else {
                     binding.imgCcProductTagShopBadge1.hide()
                     binding.icCcProductTagShopBadge1.hide()
                 }
-            }
 
-            /** Update the Last Part */
-            val hasLastPart = productTagSourceStack.size == 2
-            binding.icCcProductTagShopBadge2.showWithCondition(hasLastPart)
-            binding.tvCcProductTagProductSource2.showWithCondition(hasLastPart)
-            binding.icCcProductTagChevron2.showWithCondition(hasLastPart)
+                /** Update the Last Part */
+                val hasLastPart = productTagSourceStack.size == 2
+                binding.icCcProductTagShopBadge2.showWithCondition(hasLastPart)
+                binding.tvCcProductTagProductSource2.showWithCondition(hasLastPart)
+                binding.icCcProductTagChevron2.showWithCondition(hasLastPart)
 
-            if(hasLastPart) {
-                val lastSource = productTagSourceStack.last()
+                if (hasLastPart) {
+                    val lastSource = productTagSourceStack.last()
 
-                binding.icCcProductTagChevron1.setImage(IconUnify.CHEVRON_RIGHT)
-                binding.tvCcProductTagProductSource2.text = getProductTagSourceText(lastSource)
-                binding.icCcProductTagShopBadge2.apply {
-                    shouldShowWithAction(viewModel.selectedShop.isShopHasBadge) {
-                        setImage(viewModel.selectedShop.badge)
+                    binding.icCcProductTagChevron1.setImage(IconUnify.CHEVRON_RIGHT)
+                    binding.tvCcProductTagProductSource2.text = getProductTagSourceText(lastSource)
+                    binding.icCcProductTagShopBadge2.apply {
+                        shouldShowWithAction(viewModel.selectedShop.isShopHasBadge) {
+                            setImage(viewModel.selectedShop.badge)
+                        }
                     }
                 }
             }
@@ -388,7 +395,7 @@ class ProductTagParentFragment @Inject constructor(
 
     private fun getFragmentAndTag(productTagSource: ProductTagSource): Pair<BaseProductTagChildFragment, String> {
         val classLoader = requireActivity().classLoader
-        return when(productTagSource) {
+        return when (productTagSource) {
             ProductTagSource.LastTagProduct -> LastTaggedProductFragment.getFragmentPair(childFragmentManager, classLoader)
             ProductTagSource.LastPurchase -> LastPurchasedProductFragment.getFragmentPair(childFragmentManager, classLoader)
             ProductTagSource.MyShop -> MyShopProductFragment.getFragmentPair(childFragmentManager, classLoader)
@@ -396,14 +403,17 @@ class ProductTagParentFragment @Inject constructor(
             ProductTagSource.Shop -> ShopProductFragment.getFragmentPair(childFragmentManager, classLoader)
             ProductTagSource.Autocomplete -> ContentAutocompleteFragment.getFragmentPair(childFragmentManager, classLoader)
             else -> {
-                if(viewModel.isSeller) MyShopProductFragment.getFragmentPair(childFragmentManager, classLoader)
-                else LastTaggedProductFragment.getFragmentPair(childFragmentManager, classLoader)
+                if (viewModel.isSeller) {
+                    MyShopProductFragment.getFragmentPair(childFragmentManager, classLoader)
+                } else {
+                    LastTaggedProductFragment.getFragmentPair(childFragmentManager, classLoader)
+                }
             }
         }
     }
 
     private fun getProductTagSourceText(source: ProductTagSource): String {
-        return when(source) {
+        return when (source) {
             ProductTagSource.LastPurchase -> getString(R.string.content_creation_search_bs_item_last_purchase)
             ProductTagSource.Wishlist -> getString(R.string.content_creation_search_bs_item_wishlist)
             ProductTagSource.MyShop -> userSession.shopName
@@ -428,7 +438,7 @@ class ProductTagParentFragment @Inject constructor(
                     maxSelectedProduct = fragmentArgument.maxSelectedProduct,
                     backButton = fragmentArgument.backButton,
                     isShowActionBarDivider = fragmentArgument.isShowActionBarDivider,
-                    appLinkAfterAutocomplete = fragmentArgument.appLinkAfterAutocomplete,
+                    appLinkAfterAutocomplete = fragmentArgument.appLinkAfterAutocomplete
                 )
             )
         )
@@ -466,25 +476,27 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun showCoachmarkGlobalTag(isShow: Boolean) {
-        if(isShow) {
+        if (isShow) {
             coachmark = CoachMark2(activity as Context)
 
             viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
                 val isParentBottomSheet = getParentFragmentByInstance<BottomSheetUnify>() != null
-                if(isParentBottomSheet) {
+                if (isParentBottomSheet) {
                     withContext(dispatchers.computation) {
                         delay(COACHMARK_DELAY)
                     }
                 }
 
-                coachmark?.showCoachMark(arrayListOf(
-                    CoachMark2Item(
-                        binding.tvCcProductTagProductSource,
-                        getString(R.string.content_creation_search_coachmark_header),
-                        getString(R.string.content_creation_search_coachmark_desc),
-                        CoachMark2.POSITION_BOTTOM
+                coachmark?.showCoachMark(
+                    arrayListOf(
+                        CoachMark2Item(
+                            binding.tvCcProductTagProductSource,
+                            getString(R.string.content_creation_search_coachmark_header),
+                            getString(R.string.content_creation_search_coachmark_desc),
+                            CoachMark2.POSITION_BOTTOM
+                        )
                     )
-                ))
+                )
 
                 coachmark?.onDismissListener = {
                     sharedPref.setNotFirstGlobalTag()
@@ -495,9 +507,13 @@ class ProductTagParentFragment @Inject constructor(
 
     fun onNewIntent(intent: Intent?) {
         val path = intent?.data?.path.toString()
-        val source = if(path.contains(PRODUCT)) ProductTagSource.GlobalSearch
-        else if(path.contains(SHOP)) ProductTagSource.Shop
-        else ProductTagSource.Unknown
+        val source = if (path.contains(PRODUCT)) {
+            ProductTagSource.GlobalSearch
+        } else if (path.contains(SHOP)) {
+            ProductTagSource.Shop
+        } else {
+            ProductTagSource.Unknown
+        }
 
         val query = intent?.extras?.getString(SearchParamUiModel.KEY_QUERY).orEmpty()
         val shopId = intent?.data?.lastPathSegment.orEmpty()
@@ -538,7 +554,7 @@ class ProductTagParentFragment @Inject constructor(
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            argumentBuilder: ContentProductTagArgument.Builder,
+            argumentBuilder: ContentProductTagArgument.Builder
         ): ProductTagParentFragment {
             val oldInstance = findFragment(fragmentManager)
             return oldInstance ?: createFragment(fragmentManager, classLoader, argumentBuilder)
@@ -547,14 +563,14 @@ class ProductTagParentFragment @Inject constructor(
         private fun createFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            argumentBuilder: ContentProductTagArgument.Builder,
+            argumentBuilder: ContentProductTagArgument.Builder
         ): ProductTagParentFragment {
             return (
                 fragmentManager.fragmentFactory.instantiate(
                     classLoader,
                     ProductTagParentFragment::class.java.name
                 ) as ProductTagParentFragment
-            ).apply {
+                ).apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_QUERY, argumentBuilder.build())
                 }

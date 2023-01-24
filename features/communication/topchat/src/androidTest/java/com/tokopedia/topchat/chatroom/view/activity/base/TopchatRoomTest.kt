@@ -31,9 +31,8 @@ import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncement
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItemViewHolder
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.imagepicker.common.PICKER_RESULT_PATHS
-import com.tokopedia.imagepicker.common.RESULT_IMAGES_FED_INTO_IMAGE_PICKER
-import com.tokopedia.imagepicker.common.RESULT_PREVIOUS_IMAGE
+import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
+import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -76,8 +75,8 @@ import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseS
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
 import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.not
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
@@ -954,17 +953,11 @@ abstract class TopchatRoomTest {
 
     protected fun getImageData(): Intent {
         return Intent().apply {
-            putStringArrayListExtra(
-                PICKER_RESULT_PATHS,
-                arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg")
-            )
-            putStringArrayListExtra(
-                RESULT_PREVIOUS_IMAGE,
-                arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg")
-            )
-            putStringArrayListExtra(
-                RESULT_IMAGES_FED_INTO_IMAGE_PICKER,
-                arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg")
+            putExtra(
+                EXTRA_RESULT_PICKER,
+                PickerResult(
+                    originalPaths = listOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg")
+                )
             )
         }
     }

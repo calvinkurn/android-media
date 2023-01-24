@@ -111,6 +111,7 @@
                   "text_label": "Jaminan Tepat Waktu",
                   "text_detail": "Ongkir kembali jika barang tiba lebih dari 3 Jam <b>sejak diserahkan ke kurir</b> <a href=\"https://gw.tokopedia.com/rates/otdg_info\">S&K Berlaku</a>",
                   "url_detail": "https://gw.tokopedia.com/rates/otdg_info",
+                  "url_text": "Jaminan Tepat Waktu",
                   "icon_url": "https://images.tokopedia.net/img/ongkirapp/otdg-icon-v2.png"
                 },
                 "mvc": {
@@ -173,6 +174,7 @@
                 "ontime_delivery_guarantee": {
                   "available": false,
                   "value": 0,
+                  "url_text": "",
                   "text_label": "",
                   "text_detail": "",
                   "url_detail": "",
@@ -290,6 +292,7 @@
                 "ontime_delivery_guarantee": {
                   "available": false,
                   "value": 0,
+                  "url_text": "",
                   "text_label": "",
                   "text_detail": "",
                   "url_detail": "",
@@ -358,6 +361,7 @@
                   "text_label": "Jaminan Tepat Waktu",
                   "text_detail": "Ongkir kembali jika barang tiba lebih dari 8 Jam <b>sejak diserahkan ke kurir</b> <a href=\"https://gw.tokopedia.com/rates/otdg_info\">S&K Berlaku</a>",
                   "url_detail": "https://gw.tokopedia.com/rates/otdg_info",
+                  "url_text": "Jaminan Tepat Waktu",
                   "icon_url": "https://images.tokopedia.net/img/ongkirapp/otdg-icon-v2.png"
                 },
                 "mvc": {
@@ -472,6 +476,7 @@
                 "ontime_delivery_guarantee": {
                   "available": false,
                   "value": 0,
+                  "url_text": "",
                   "text_label": "",
                   "text_detail": "",
                   "url_detail": "",
@@ -538,6 +543,7 @@
                   "available": true,
                   "value": 86400,
                   "text_label": "Jaminan Tepat Waktu",
+                  "url_text": "Jaminan Tepat Waktu",
                   "text_detail": "Ongkir kembali jika barang tiba lebih dari 1 Hari <b>sejak diserahkan ke kurir</b> <a href=\"https://gw.tokopedia.com/rates/otdg_info\">S&K Berlaku</a>",
                   "url_detail": "https://gw.tokopedia.com/rates/otdg_info",
                   "icon_url": "https://images.tokopedia.net/img/ongkirapp/otdg-icon-v2.png"
@@ -602,6 +608,7 @@
                 "ontime_delivery_guarantee": {
                   "available": false,
                   "value": 0,
+                  "url_text": "",
                   "text_label": "",
                   "text_detail": "",
                   "url_detail": "",
@@ -719,6 +726,7 @@
                 "ontime_delivery_guarantee": {
                   "available": false,
                   "value": 0,
+                  "url_text": "",
                   "text_label": "",
                   "text_detail": "",
                   "url_detail": "",
@@ -784,6 +792,7 @@
                 "ontime_delivery_guarantee": {
                   "available": false,
                   "value": 0,
+                  "url_text": "",
                   "text_label": "",
                   "text_detail": "",
                   "url_detail": "",
@@ -849,6 +858,7 @@
                 "ontime_delivery_guarantee": {
                   "available": false,
                   "value": 0,
+                  "url_text": "",
                   "text_label": "",
                   "text_detail": "",
                   "url_detail": "",
@@ -966,6 +976,7 @@
                 "ontime_delivery_guarantee": {
                   "available": false,
                   "value": 0,
+                  "url_text": "",
                   "text_label": "",
                   "text_detail": "",
                   "url_detail": "",
@@ -1031,6 +1042,7 @@
                 "ontime_delivery_guarantee": {
                   "available": false,
                   "value": 0,
+                  "url_text": "",
                   "text_label": "",
                   "text_detail": "",
                   "url_detail": "",

@@ -15,8 +15,9 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_VIEW_ITEM_LIST = "view_item_list"
         const val EVENT_PRODUCT_VIEW = "productView"
         const val EVENT_PRODUCT_CLICK = "productClick"
-        const val EVENT_ATC = "addToCart"
+        const val EVENT_NAME_ADD_TO_CART = "addToCart"
         const val EVENT_ADD_TO_CART = "add_to_cart"
+        const val EVENT_NAME_REMOVE_FROM_CART = "removeFromCart"
         const val EVENT_REMOVE_FROM_CART = "remove_from_cart"
         const val EVENT_OPEN_SCREEN = "openScreen"
         const val EVENT_VIEW_PG_IRIS = "viewPGIris"
@@ -54,6 +55,7 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_DIMENSION_82 = "dimension82"
         const val KEY_DIMENSION_84 = "dimension84"
         const val KEY_DIMENSION_49 = "dimension49"
+        const val KEY_DIMENSION_56 = "dimension56"
         const val KEY_DIMENSION_40 = "dimension40"
         const val KEY_DIMENSION_45 = "dimension45"
         const val KEY_DIMENSION_90 = "dimension90"
@@ -92,6 +94,7 @@ object TokoNowCommonAnalyticConstants {
         const val DEFAULT_NULL_VALUE = "null"
         const val DEFAULT_CATEGORY_ID = "0"
         const val DEFAULT_EMPTY_VALUE = ""
+        const val DEFAULT_HEADER_CATEGORY_MENU = "Cek kategori lainnya"
     }
 
     object ACTION{
@@ -107,6 +110,9 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_ACTION_CLICK_CLOSE_SHARE_BOTTOM_SHEET  = "click - close share bottom sheet"
         const val EVENT_ACTION_CLICK_ADD_TO_WISHLIST  = "click bell add to wishlist"
         const val EVENT_ACTION_CLICK_REMOVE_FROM_WISHLIST  = "click bell remove from wishlist"
+        const val EVENT_ACTION_IMPRESSION_CATEGORY_MENU_WIDGET = "impression category menu widget"
+        const val EVENT_ACTION_CLICK_CATEGORY_MENU_WIDGET = "click category menu widget"
+        const val EVENT_ACTION_CLICK_SEE_ALL_CATEGORY = "click lihat semua category menu"
     }
 
     object TRACKER_ID{

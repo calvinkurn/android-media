@@ -542,7 +542,7 @@ class PlayCoverSetupFragment @Inject constructor(
     fun getViewModelFactory(): ViewModelProvider.Factory {
         if (!::viewModelFactory.isInitialized) {
             viewModelFactory = object : ViewModelProvider.Factory {
-                override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     return coverSetupViewModelFactory.create(
                         mDataSource?.getProductList().orEmpty(),
                         mDataSource?.getSelectedAccount().orUnknown(),

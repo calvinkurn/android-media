@@ -7,12 +7,10 @@ import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Fo
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.UnFollow
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.FOLLOW
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.LOADING_FOLLOW
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.LOADING_UNFOLLOW
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.UNFOLLOW
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.*
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.PlayGetContentSlot
 import com.tokopedia.people.model.UserPostModel
@@ -31,11 +29,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class UserProfileViewModel @AssistedInject constructor(
     @Assisted private val username: String,
     private val repo: UserProfileRepository,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : BaseViewModel(Dispatchers.Main) {
 
     @AssistedFactory
@@ -58,6 +57,9 @@ class UserProfileViewModel @AssistedInject constructor(
 
     val profileCover: String
         get() = _profileInfo.value.imageCover
+
+    val isBlocking: Boolean
+        get() = _profileInfo.value.isBlocking
 
     val totalFollower: String
         get() = _profileInfo.value.stats.totalFollowerFmt
@@ -94,6 +96,8 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _profileTab = MutableStateFlow(ProfileTabUiModel())
     private val _feedPostsContent = MutableStateFlow(UserFeedPostsUiModel())
     private val _videoPostContent = MutableStateFlow(UserPostModel())
+    private val _isLoading = MutableStateFlow(false)
+    private val _error = MutableStateFlow<Throwable?>(null)
 
     private val _uiEvent = MutableSharedFlow<UserProfileUiEvent>()
 
@@ -109,7 +113,10 @@ class UserProfileViewModel @AssistedInject constructor(
         _profileTab,
         _feedPostsContent,
         _videoPostContent,
-    ) { profileInfo, followInfo, profileType, profileWhitelist, shopRecom, profileTab, feedPostsContent, videoPostContent ->
+        _isLoading,
+        _error
+    ) { profileInfo, followInfo, profileType, profileWhitelist, shopRecom, profileTab, feedPostsContent, videoPostContent,
+        isLoading, error ->
         UserProfileUiState(
             profileInfo = profileInfo,
             followInfo = followInfo,
@@ -119,6 +126,8 @@ class UserProfileViewModel @AssistedInject constructor(
             profileTab = profileTab,
             feedPostsContent = feedPostsContent,
             videoPostsContent = videoPostContent,
+            isLoading = isLoading,
+            error = error
         )
     }
 
@@ -126,7 +135,7 @@ class UserProfileViewModel @AssistedInject constructor(
         when (action) {
             is UserProfileAction.ClickFollowButton -> handleClickFollowButton(action.isFromLogin)
             is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(
-                action.itemID,
+                action.itemID
             )
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.isFromLogin)
             is UserProfileAction.LoadFeedPosts -> handleLoadFeedPosts(action.cursor, action.isRefresh)
@@ -137,18 +146,24 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(
                 action.channelId,
                 action.position,
-                action.isActive,
+                action.isActive
             )
+            UserProfileAction.BlockUser -> handleBlockUser()
+            UserProfileAction.UnblockUser -> handleUnblockUser()
         }
     }
 
     /** Handle Action */
     private fun handleLoadProfile(isRefresh: Boolean) {
-        viewModelScope.launchCatchError(
-            block = {
-                loadProfileInfo(isRefresh)
-            },
-        ) {
+        _isLoading.value = true
+        _error.value = null
+        viewModelScope.launchCatchError(block = {
+            loadProfileInfo(isRefresh)
+            _isLoading.value = false
+            _error.value = null
+        }) {
+            _isLoading.value = false
+            _error.value = it
             _uiEvent.emit(UserProfileUiEvent.ErrorLoadProfile(it))
         }
     }
@@ -157,22 +172,30 @@ class UserProfileViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(
             block = {
                 val currentSize = _feedPostsContent.value.posts.size
-                val data = if (isRefresh) repo.getFeedPosts(profileUserID, "", if (currentSize == 0) DEFAULT_LIMIT else currentSize)
-                else repo.getFeedPosts(profileUserID, cursor, DEFAULT_LIMIT)
+                val data = if (isRefresh) {
+                    repo.getFeedPosts(profileUserID, "", if (currentSize == 0) DEFAULT_LIMIT else currentSize)
+                } else {
+                    repo.getFeedPosts(profileUserID, cursor, DEFAULT_LIMIT)
+                }
 
-                val finalPosts = (if (cursor.isEmpty() || isRefresh) data.posts
-                else _feedPostsContent.value.posts + data.posts).distinctBy { it.id }
+                val finalPosts = (
+                    if (cursor.isEmpty() || isRefresh) {
+                        data.posts
+                    } else {
+                        _feedPostsContent.value.posts + data.posts
+                    }
+                    ).distinctBy { it.id }
 
                 _feedPostsContent.update {
                     it.copy(
                         pagination = data.pagination,
-                        posts = finalPosts,
+                        posts = finalPosts
                     )
                 }
             },
             onError = {
                 _uiEvent.emit(UserProfileUiEvent.ErrorFeedPosts(it))
-            },
+            }
         )
     }
 
@@ -180,21 +203,24 @@ class UserProfileViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(
             block = {
                 val data = repo.getPlayVideo(profileUserID, cursor)
-                val finalPosts = if (cursor.isEmpty()) data.playGetContentSlot.data
-                else _videoPostContent.value.playGetContentSlot.data + data.playGetContentSlot.data
+                val finalPosts = if (cursor.isEmpty()) {
+                    data.playGetContentSlot.data
+                } else {
+                    _videoPostContent.value.playGetContentSlot.data + data.playGetContentSlot.data
+                }
 
                 _videoPostContent.update {
                     it.copy(
                         playGetContentSlot = PlayGetContentSlot(
                             data = finalPosts,
-                            playGetContentSlot = data.playGetContentSlot.playGetContentSlot,
-                        ),
+                            playGetContentSlot = data.playGetContentSlot.playGetContentSlot
+                        )
                     )
                 }
             },
             onError = {
                 _uiEvent.emit(UserProfileUiEvent.ErrorVideoPosts(it))
-            },
+            }
         )
     }
 
@@ -206,8 +232,28 @@ class UserProfileViewModel @AssistedInject constructor(
             },
             onError = {
                 _uiEvent.emit(UserProfileUiEvent.ErrorLoadNextPageShopRecom(it))
-            },
+            }
         )
+    }
+
+    private fun handleBlockUser() {
+        viewModelScope.launchCatchError(block = {
+            repo.blockUser(profileUserID)
+            _profileInfo.update { it.copy(isBlocking = true) }
+            _uiEvent.emit(UserProfileUiEvent.SuccessBlockUser(isBlocking = true))
+        }) {
+            _uiEvent.emit(UserProfileUiEvent.ErrorBlockUser(isBlocking = true))
+        }
+    }
+
+    private fun handleUnblockUser() {
+        viewModelScope.launchCatchError(block = {
+            repo.unblockUser(profileUserID)
+            _profileInfo.update { it.copy(isBlocking = false) }
+            _uiEvent.emit(UserProfileUiEvent.SuccessBlockUser(isBlocking = false))
+        }) {
+            _uiEvent.emit(UserProfileUiEvent.ErrorBlockUser(isBlocking = false))
+        }
     }
 
     private fun handleClickFollowButton(isFromLogin: Boolean) {
@@ -236,7 +282,7 @@ class UserProfileViewModel @AssistedInject constructor(
                         _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(Throwable(result.message)))
                     }
                 }
-            },
+            }
         ) {
             _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(Throwable()))
         }
@@ -258,32 +304,32 @@ class UserProfileViewModel @AssistedInject constructor(
                                 handleRemoveReminderActivityResult()
                                 UserProfileUiEvent.SuccessUpdateReminder(
                                     result.message,
-                                    data.position,
+                                    data.position
                                 )
                             }
                             is MutationUiModel.Error -> UserProfileUiEvent.ErrorUpdateReminder(
-                                Exception(result.message),
+                                Exception(result.message)
                             )
-                        },
+                        }
                     )
                 }
             },
             onError = {
                 _uiEvent.emit(UserProfileUiEvent.ErrorUpdateReminder(it))
-            },
+            }
         )
     }
 
     private fun handleSaveReminderActivityResult(
         channelId: String,
         position: Int,
-        isActive: Boolean,
+        isActive: Boolean
     ) {
         _savedReminderData.update {
             SavedReminderData.Saved(
                 channelId = channelId,
                 position = position,
-                isActive = isActive,
+                isActive = isActive
             )
         }
     }
@@ -312,7 +358,7 @@ class UserProfileViewModel @AssistedInject constructor(
                     FOLLOW_TYPE_SHOP -> {
                         repo.shopFollowUnfollow(
                             currentItem.id.toString(),
-                            if (currentState == FOLLOW) UnFollow else Follow,
+                            if (currentState == FOLLOW) UnFollow else Follow
                         )
                     }
                     FOLLOW_TYPE_BUYER -> {
@@ -336,7 +382,7 @@ class UserProfileViewModel @AssistedInject constructor(
                                     } else {
                                         it
                                     }
-                                },
+                                }
                             )
                         }
                     }
@@ -349,7 +395,7 @@ class UserProfileViewModel @AssistedInject constructor(
             onError = {
                 updateLoadingStateFollowShopRecom(itemId, currentState)
                 _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(Throwable()))
-            },
+            }
         )
     }
 
@@ -362,7 +408,7 @@ class UserProfileViewModel @AssistedInject constructor(
                     } else {
                         it
                     }
-                },
+                }
             )
         }
     }
@@ -402,6 +448,16 @@ class UserProfileViewModel @AssistedInject constructor(
             if (isRefresh) loadShopRecom()
         }
 
+        if (_profileInfo.value.isBlocking) {
+            _feedPostsContent.value = UserFeedPostsUiModel()
+            viewModelScope.launch {
+                _uiEvent.emit(UserProfileUiEvent.BlockingUserState(
+                    MessageErrorException("User ini diblokir")
+                ))
+            }
+            return
+        }
+
         if (isRefresh) loadProfileTab()
     }
 
@@ -414,15 +470,18 @@ class UserProfileViewModel @AssistedInject constructor(
             },
             onError = {
                 _uiEvent.emit(UserProfileUiEvent.ErrorGetProfileTab(it))
-            },
+            }
         )
     }
 
     private suspend fun loadShopRecom(cursor: String = "") {
         val result = repo.getShopRecom(cursor)
         if (result.isShown) {
-            val items = if (cursor.isEmpty()) result.items
-            else _shopRecom.value.items + result.items
+            val items = if (cursor.isEmpty()) {
+                result.items
+            } else {
+                _shopRecom.value.items + result.items
+            }
 
             _shopRecom.update {
                 it.copy(
@@ -431,10 +490,12 @@ class UserProfileViewModel @AssistedInject constructor(
                     title = result.title,
                     loadNextPage = result.loadNextPage,
                     items = items,
-                    isRefresh = cursor.isEmpty(),
+                    isRefresh = cursor.isEmpty()
                 )
             }
-        } else _shopRecom.update { ShopRecomUiModel() }
+        } else {
+            _shopRecom.update { ShopRecomUiModel() }
+        }
     }
 
     companion object {
