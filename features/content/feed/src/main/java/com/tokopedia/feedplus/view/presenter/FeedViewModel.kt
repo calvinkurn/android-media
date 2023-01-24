@@ -207,7 +207,6 @@ class FeedViewModel @Inject constructor(
                 }
                 response.feedXProfileIsFollowing.isUserFollowing.map { item ->
                     if (currentFollowState[item.userId] != null &&
-                        response.shopInfoById.result.firstOrNull { it.shopCore.shopID == item.userId } == null &&
                         item.status != currentFollowState[item.userId]
                     ) {
                         shopIdsToUpdate[item.userId] = item.status
