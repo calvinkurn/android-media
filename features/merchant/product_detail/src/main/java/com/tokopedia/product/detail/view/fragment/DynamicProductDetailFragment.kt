@@ -2078,7 +2078,7 @@ open class DynamicProductDetailFragment :
         val vh = getViewHolderByPosition(component) as? ProductThumbnailVariantViewHolder
         Handler(Looper.getMainLooper()).postDelayed({
             vh?.scrollToPosition(
-                position = singleVariant.variantLevelOne?.getPositionOfSelected() ?: -1
+                position = singleVariant.variantLevelOne?.getPositionOfSelected().orZero()
             )
         }, ProductDetailConstant.VARIANT_SCROLL_DELAY)
     }
