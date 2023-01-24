@@ -35,6 +35,8 @@ class PlayBroadcastSetupCoverBottomSheet : BottomSheetUnify() {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
+    private var isShowCoachMark = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupBottomSheet()
@@ -85,6 +87,8 @@ class PlayBroadcastSetupCoverBottomSheet : BottomSheetUnify() {
         }
 
         setupCoachMark()
+
+        if (isShowCoachMark) showCoachMark()
     }
 
     private fun selectedContent(isChecked: Boolean) = with(binding) {
@@ -121,7 +125,11 @@ class PlayBroadcastSetupCoverBottomSheet : BottomSheetUnify() {
         coachMark = CoachMark2(requireContext())
     }
 
-    fun showCoachMark() {
+    fun needToShowCoachMark(showCoachMark: Boolean) {
+        isShowCoachMark = showCoachMark
+    }
+
+    private fun showCoachMark() {
         if (coachMark != null && coachMark?.isShowing == true) return
         scope.launch {
             delay(COACH_MARK_DELAY)

@@ -259,10 +259,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
             is PlayBroadcastSetupCoverBottomSheet -> {
                 childFragment.setupListener(this)
-                if (viewModel.isShowSetupCoverCoachMark) {
-                    childFragment.showCoachMark()
-                    viewModel.setShowSetupCoverCoachMark()
-                }
+
+                val isShowCoachMark = viewModel.isShowSetupCoverCoachMark
+                childFragment.needToShowCoachMark(isShowCoachMark)
+                if (isShowCoachMark) viewModel.setShowSetupCoverCoachMark()
             }
         }
     }
