@@ -5,15 +5,15 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryGridTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryMenuTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateNoResultTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateOocTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowRepurchaseTypeFactory
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationOocTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationTypeFactory
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
@@ -73,7 +73,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     BaseSearchCategoryTypeFactory,
     TokoNowEmptyStateNoResultTypeFactory,
     TokoNowProductRecommendationOocTypeFactory,
-    TokoNowCategoryGridTypeFactory,
+    TokoNowCategoryMenuTypeFactory,
     TokoNowRepurchaseTypeFactory,
     TokoNowEmptyStateOocTypeFactory,
     TokoNowFeedbackWidgetTypeFactory,
@@ -99,7 +99,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
 
     override fun type(uiModel: TokoNowRepurchaseUiModel): Int = TokoNowRepurchaseViewHolder.LAYOUT
 
-    override fun type(uiModel: TokoNowCategoryGridUiModel): Int = TokoNowCategoryGridViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowCategoryMenuUiModel): Int = TokoNowCategoryMenuViewHolder.LAYOUT
 
     override fun type(uiModel: TokoNowProductRecommendationOocUiModel): Int = TokoNowProductRecommendationOocViewHolder.LAYOUT
 
