@@ -3527,7 +3527,7 @@ open class TopChatRoomFragment :
     protected fun isUploadImageSecure(): Boolean {
         return abTestPlatform.getString(
             key = ROLLENCE_UPLOAD_SECURE,
-            defaultValue = ROLLENCE_UPLOAD_SECURE
+            defaultValue = ""
         ) == ROLLENCE_UPLOAD_SECURE
     }
 
