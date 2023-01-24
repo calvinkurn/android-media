@@ -9,7 +9,7 @@ ext {
     kotlinVersion = "1.5.31"
 
     navigationVersion = "2.3.5"
-    lifeCycleVersion = "2.3.1"
+    lifeCycleVersion = "2.4.1"
     lifeCycleExtensionsVersion = "2.2.0"
     archCoreVersion = "2.1.0"
     workManagerVersion = "2.7.0"
@@ -106,7 +106,7 @@ ext {
     benchmarkTestVersion = '1.0.0'
     testCore = '1.4.0'
     fragmentTest = "1.4.1"
-    androidxFragment = '1.2.4'
+    androidxFragment = '1.4.1'
     debugToolsEnabled = true
 
     // Sort and categorize alphabetically by folder name
