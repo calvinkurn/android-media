@@ -6,8 +6,8 @@ import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutState
 import com.tokopedia.dilayanitokopedia.home.constant.HomeLayoutItemState
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
 import com.tokopedia.dilayanitokopedia.home.domain.model.HomeLayoutResponse
-import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetHomeAnchorTabUseCase
-import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetHomeLayoutDataUseCase
+import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetAnchorTabUseCase
+import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetLayoutDataUseCase
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
@@ -29,9 +29,9 @@ class DtHomeViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val getHomeLayoutDataUseCase = mockk<GetHomeLayoutDataUseCase>(relaxed = true)
+    private val getLayoutDataUseCase = mockk<GetLayoutDataUseCase>(relaxed = true)
     private val getChooseAddressWarehouseLocUseCase = mockk<GetChosenAddressWarehouseLocUseCase>(relaxed = true)
-    private val getAnchorTabUseCase = mockk<GetHomeAnchorTabUseCase>(relaxed = true)
+    private val getAnchorTabUseCase = mockk<GetAnchorTabUseCase>(relaxed = true)
     private val homeLayoutListObserver = mockk<Observer<Result<HomeLayoutListUiModel>>>(relaxed = true)
 
     lateinit var viewModel: DtHomeViewModel
@@ -41,7 +41,7 @@ class DtHomeViewModelTest {
     @Before
     fun setup() {
         viewModel = DtHomeViewModel(
-            getHomeLayoutDataUseCase,
+            getLayoutDataUseCase,
             getAnchorTabUseCase,
             CoroutineTestDispatchersProvider
         )
@@ -65,7 +65,7 @@ class DtHomeViewModelTest {
 
         // Given
         coEvery {
-            getHomeLayoutDataUseCase.execute(localCacheModel = any())
+            getLayoutDataUseCase.execute(localCacheModel = any())
         } returns mockResponse
 
         // When
@@ -81,7 +81,7 @@ class DtHomeViewModelTest {
     fun `verify when get home layout request error`() {
         // Given
         coEvery {
-            getHomeLayoutDataUseCase.execute(localCacheModel = any())
+            getLayoutDataUseCase.execute(localCacheModel = any())
         } throws mockThrowable
 
         // When

@@ -14,13 +14,15 @@ import javax.inject.Inject
  * https://tokopedia.atlassian.net/wiki/spaces/HP/pages/2053540091/HPB+Home+-+API+GQL+GraphQL+getHomeIconV2
  * Created by irpan on 10/01/23.
  */
-class GetHomeAnchorTabUseCase @Inject constructor(
+class GetAnchorTabUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<GetHomeAnchorTabResponse>(graphqlRepository) {
 
     companion object {
         private const val PARAM = "param"
         private const val PARAM_LOCATION = "location"
+
+        //value from backend home
         private const val PARAM_VALUE_PAGE_DT = "page=dt&type=anchor-icon"
     }
 

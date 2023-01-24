@@ -15,7 +15,7 @@ import javax.inject.Inject
  * https://tokopedia.atlassian.net/wiki/spaces/HP/pages/2043906993/HPB+Home+-+API+GQL+GraphQL+getHomeChannelV2
  */
 
-class GetHomeLayoutDataUseCase @Inject constructor(
+class GetLayoutDataUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<GetHomeLayoutResponse>(graphqlRepository) {
 

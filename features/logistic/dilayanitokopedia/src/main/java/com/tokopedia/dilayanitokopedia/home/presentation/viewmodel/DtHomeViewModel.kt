@@ -12,8 +12,8 @@ import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.AnchorTabMappe
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.dilayanitokopedia.home.domain.model.HomeLayoutResponse
-import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetHomeAnchorTabUseCase
-import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetHomeLayoutDataUseCase
+import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetAnchorTabUseCase
+import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetLayoutDataUseCase
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.HomeRecommendationFeedDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutItemUiModel
@@ -27,8 +27,8 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class DtHomeViewModel @Inject constructor(
-    private val getHomeLayoutDataUseCase: GetHomeLayoutDataUseCase,
-    private val getHomeAnchorTabUseCase: GetHomeAnchorTabUseCase,
+    private val getLayoutDataUseCase: GetLayoutDataUseCase,
+    private val getHomeAnchorTabUseCase: GetAnchorTabUseCase,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
@@ -69,7 +69,7 @@ class DtHomeViewModel @Inject constructor(
         launchCatchError(block = {
             homeLayoutItemList.clear()
 
-            val homeLayoutResponse = getHomeLayoutDataUseCase.execute(localCacheModel = localCacheModel)
+            val homeLayoutResponse = getLayoutDataUseCase.execute(localCacheModel = localCacheModel)
 
             homeLayoutItemList.mapHomeLayoutList(homeLayoutResponse)
 
