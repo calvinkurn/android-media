@@ -287,6 +287,10 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
+    fun resetMemberLeft() {
+        chatChannelUseCase.resetMemberLeftLiveData()
+    }
+
     /*
     * Order Transaction Section
      */
