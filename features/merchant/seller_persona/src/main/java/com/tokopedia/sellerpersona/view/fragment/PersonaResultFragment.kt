@@ -28,4 +28,8 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
 
         }
     }
+
+    override fun inject() {
+        daggerComponent?.inject(this)
+    }
 }

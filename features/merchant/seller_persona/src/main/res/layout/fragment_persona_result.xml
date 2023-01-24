@@ -1,8 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
     tools:context=".view.fragment.PersonaResultFragment">
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSpResultBackdrop"
+        android:layout_width="0dp"
+        android:layout_height="246dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSpResultAvatar"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:background="@color/Unify_Background"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imgSpResultBackdrop"
+        app:unify_image_type="circle"
+        tools:src="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSpLblSellerType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/sp_result_seller_type"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgSpResultAvatar"
+        app:typographyType="display_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSpSellerType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSpLblSellerType"
+        app:typographyType="heading_2"
+        tools:text="🌟 Rumahan 🌟" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSpSellerTypeNote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintBottom_toBottomOf="@+id/imgSpResultBackdrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSpSellerType"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="(Pemilik Toko)" />
 </androidx.constraintlayout.widget.ConstraintLayout>

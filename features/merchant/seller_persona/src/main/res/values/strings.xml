@@ -5,4 +5,5 @@
     <string name="sp_start_quiz">Mulai Kuis</string>
     <string name="sp_try_later">Nanti Saja</string>
     <string name="sp_seller_persona">Seller Persona</string>
+    <string name="sp_result_seller_type">Kamu termasuk tipe Seller:</string>
 </resources>

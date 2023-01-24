@@ -10,6 +10,7 @@
             android:name=".view.activity.SellerPersonaActivity"
             android:exported="false"
             android:launchMode="singleTask"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

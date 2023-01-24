@@ -3,17 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/personaOpeningFragment">
+    app:startDestination="@id/personaQuestionnaireFragment"
+    tools:startDestination="@id/openingFragment">
 
     <fragment
-        android:id="@+id/personaOpeningFragment"
+        android:id="@+id/openingFragment"
         android:name="com.tokopedia.sellerpersona.view.fragment.PersonaOpeningFragment"
         android:label="fragment_persona_opening"
-        tools:layout="@layout/fragment_persona_opening" />
-    
+        tools:layout="@layout/fragment_persona_opening">
+        <action
+            android:id="@+id/actionOpeningFragmentToQuestionnaireFragment"
+            app:destination="@id/personaQuestionnaireFragment"
+            app:popUpTo="@+id/openingFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
     <fragment
         android:id="@+id/resultFragment"
         android:name="com.tokopedia.sellerpersona.view.fragment.PersonaResultFragment"
         android:label="ResultFragment"
         tools:layout="@layout/fragment_persona_result" />
+    <fragment
+        android:id="@+id/personaQuestionnaireFragment"
+        android:name="com.tokopedia.sellerpersona.view.fragment.PersonaQuestionnaireFragment"
+        android:label="PersonaQuestionnaireFragment"
+        tools:layout="@layout/fragment_persona_questionnaire" />
 </navigation>
