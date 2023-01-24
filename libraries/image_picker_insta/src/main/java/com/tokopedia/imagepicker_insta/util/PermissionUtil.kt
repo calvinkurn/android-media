@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -19,6 +20,18 @@ object PermissionUtil {
     val READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE = 12
     val CAMERA_AND_WRITE_PERMISSION_REQUEST_CODE = 13
     val MIC_PERMISSION_REQUEST_CODE = 14
+
+    private fun getReadPermissions(): Array<String> {
+        return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.READ_MEDIA_VIDEO
+            )
+        }
+        else {
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+    }
 
     fun hasArrayOfPermissions(context: Context, arrayOfPermissions: ArrayList<String>): Boolean {
         var hasAllPermissions = true
@@ -39,16 +52,15 @@ object PermissionUtil {
     fun requestReadPermission(fragment: Fragment) {
         if (!isReadPermissionGranted(fragment.context)) {
             fragment.requestPermissions(
-                arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                ), READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE
+                getReadPermissions(),
+                READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE
             )
         }
     }
 
     fun isReadPermissionGranted(context: Context?): Boolean {
         if (context == null) return false
-        return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        return getReadPermissions().all { ContextCompat.checkSelfPermission(context, it).isGranted() }
     }
 
     fun hasCameraAndMicPermission(context: Context?): Boolean {
@@ -61,26 +73,25 @@ object PermissionUtil {
             when (StorageUtil.WRITE_LOCATION) {
                 WriteStorageLocation.EXTERNAL -> ActivityCompat.requestPermissions(
                     activity,
-                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA),
+                    getReadPermissions() + Manifest.permission.WRITE_EXTERNAL_STORAGE + Manifest.permission.CAMERA,
                     CAMERA_AND_WRITE_PERMISSION_REQUEST_CODE
                 )
                 WriteStorageLocation.INTERNAL -> ActivityCompat.requestPermissions(
                     activity,
-                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA),
+                    getReadPermissions() + Manifest.permission.CAMERA,
                     CAMERA_AND_WRITE_PERMISSION_REQUEST_CODE
                 )
             }
         } else {
             ActivityCompat.requestPermissions(
                 activity,
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA),
+                getReadPermissions() + Manifest.permission.CAMERA,
                 CAMERA_AND_WRITE_PERMISSION_REQUEST_CODE
             )
         }
-
     }
 
-
+    private fun Int.isGranted() = this == PackageManager.PERMISSION_GRANTED
 }
 
 fun CameraActivity.requestCameraAndMicPermission() {

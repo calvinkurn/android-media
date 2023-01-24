@@ -7,8 +7,13 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl
 import com.tokopedia.fcmcommon.R
+import com.tokopedia.fcmcommon.SendTokenToCMHandler
+import com.tokopedia.fcmcommon.common.FcmCacheHandler
 import com.tokopedia.fcmcommon.data.UpdateFcmTokenResponse
+import com.tokopedia.fcmcommon.domain.SendTokenToCMUseCase
 import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase
+import com.tokopedia.fcmcommon.utils.FcmRemoteConfigUtils
+import com.tokopedia.fcmcommon.utils.FcmTokenUtils
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -28,14 +33,16 @@ class FcmModule(@ApplicationContext private val context: Context) {
     @Provides
     @FcmScope
     fun provideFcmManager(
-            updateFcmTokenUseCase: UpdateFcmTokenUseCase,
-            sharedPreferences: SharedPreferences,
-            userSession: UserSessionInterface
+        updateFcmTokenUseCase: UpdateFcmTokenUseCase,
+        sharedPreferences: SharedPreferences,
+        userSession: UserSessionInterface,
+        sendTokenToCMHandler: SendTokenToCMHandler
     ): FirebaseMessagingManager {
         return FirebaseMessagingManagerImpl(
-                updateFcmTokenUseCase,
-                sharedPreferences,
-                userSession
+            updateFcmTokenUseCase,
+            sharedPreferences,
+            userSession,
+            sendTokenToCMHandler
         )
     }
 
@@ -58,7 +65,7 @@ class FcmModule(@ApplicationContext private val context: Context) {
     @Provides
     @FcmScope
     fun provideFcmTokenUseCase(
-            useCase: GraphqlUseCase<UpdateFcmTokenResponse>
+        useCase: GraphqlUseCase<UpdateFcmTokenResponse>
     ): UpdateFcmTokenUseCase {
         val query = loadRaw(context.resources, R.raw.query_update_fcm_token)
         return UpdateFcmTokenUseCase(useCase, query)
@@ -66,6 +73,57 @@ class FcmModule(@ApplicationContext private val context: Context) {
 
     @Provides
     @FcmScope
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
+    fun provideFcmTokenCMUseCase(
+        repository: GraphqlRepository
+    ): SendTokenToCMUseCase {
+        return SendTokenToCMUseCase(repository)
+    }
 
+    @Provides
+    @FcmScope
+    fun provideSendTokenToCMHandler(
+        sendTokenToCMUseCase: SendTokenToCMUseCase,
+        @ApplicationContext context: Context,
+        userSession: UserSessionInterface,
+        cmRemoteConfigUtils: FcmRemoteConfigUtils,
+        fcmTokenUtils: FcmTokenUtils,
+        fcmCacheHandler: FcmCacheHandler
+    ): SendTokenToCMHandler {
+        return SendTokenToCMHandler(
+            sendTokenToCMUseCase,
+            context,
+            userSession,
+            cmRemoteConfigUtils,
+            fcmTokenUtils,
+            fcmCacheHandler
+        )
+    }
+
+    @Provides
+    @FcmScope
+    fun provideFcmRemoteConfigUtils(
+        @ApplicationContext context: Context
+    ): FcmRemoteConfigUtils {
+        return FcmRemoteConfigUtils(context)
+    }
+
+    @Provides
+    @FcmScope
+    fun provideFcmCacheHandler(
+        @ApplicationContext context: Context
+    ): FcmCacheHandler {
+        return FcmCacheHandler(context)
+    }
+
+    @Provides
+    @FcmScope
+    fun provideFcmTokenUtils(
+        fcmCacheHandler: FcmCacheHandler
+    ): FcmTokenUtils {
+        return FcmTokenUtils(fcmCacheHandler)
+    }
+
+    @Provides
+    @FcmScope
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.home_component.viewholders
 
+import android.annotation.SuppressLint
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -23,6 +24,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by dhaba
  */
+@SuppressLint("PII Data Exposure")
 class MissionWidgetViewHolder(
     itemView: View,
     private val missionWidgetComponentListener: MissionWidgetComponentListener,
@@ -37,15 +39,18 @@ class MissionWidgetViewHolder(
     private var adapter: MissionWidgetAdapter? = null
 
     private fun setHeaderComponent(element: MissionWidgetListDataModel) {
-        binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
-            override fun onSeeAllClick(link: String) {
-                //no-op
-            }
+        binding?.homeComponentHeaderView?.setChannel(
+            element.channelModel,
+            object : HeaderListener {
+                override fun onSeeAllClick(link: String) {
+                    // no-op
+                }
 
-            override fun onChannelExpired(channelModel: ChannelModel) {
-                //no-op
+                override fun onChannelExpired(channelModel: ChannelModel) {
+                    // no-op
+                }
             }
-        })
+        )
     }
 
     private fun setChannelDivider(element: MissionWidgetListDataModel) {
@@ -57,9 +62,11 @@ class MissionWidgetViewHolder(
     }
 
     private fun valuateRecyclerViewDecoration() {
-        if (binding?.homeComponentMissionWidgetRcv?.itemDecorationCount == 0) binding?.homeComponentMissionWidgetRcv?.addItemDecoration(
-            MissionWidgetItemDecoration()
-        )
+        if (binding?.homeComponentMissionWidgetRcv?.itemDecorationCount == 0) {
+            binding?.homeComponentMissionWidgetRcv?.addItemDecoration(
+                MissionWidgetItemDecoration()
+            )
+        }
         binding?.homeComponentMissionWidgetRcv?.layoutManager = LinearLayoutManager(
             itemView.context,
             LinearLayoutManager.HORIZONTAL,
