@@ -19,6 +19,7 @@ import android.view.KeyEvent
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
@@ -255,6 +256,9 @@ import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
+import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
+import com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet.ViewToViewBottomSheet
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -423,6 +427,9 @@ open class DynamicProductDetailFragment :
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
 
     private var sharedViewModel: ProductDetailSharedViewModel? = null
     private var screenshotDetector: ScreenshotDetector? = null
@@ -713,6 +720,7 @@ open class DynamicProductDetailFragment :
         uuid = UUID.randomUUID().toString()
         firstOpenPage = true
         super.onCreate(savedInstanceState)
+        childFragmentManager.fragmentFactory = fragmentFactory
 
         ProductDetailServerLogger.logBreadCrumbFirstOpenPage(
             productId,
@@ -1712,6 +1720,15 @@ open class DynamicProductDetailFragment :
             productId = p1.basic.productID,
             isTokoNow = p1.basic.isTokoNow,
             miniCart = viewModel.p2Data.value?.miniCart
+        )
+    }
+
+    override fun loadViewToView(pageName: String) {
+        val p1 = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
+        viewModel.loadViewToView(
+            pageName = pageName,
+            productId = p1.basic.productID,
+            isTokoNow = p1.basic.isTokoNow,
         )
     }
 
@@ -2967,6 +2984,28 @@ open class DynamicProductDetailFragment :
         viewLifecycleOwner.observe(viewModel.filterTopAdsProduct) { data ->
             pdpUiUpdater?.updateFilterRecommendationData(data)
             updateUi()
+        }
+
+        observeViewToView()
+    }
+
+    private fun observeViewToView() {
+        observe(viewModel.loadViewToView) { data ->
+            data.doSuccessOrFail({
+                if (it.data.recommendationItemList.size > 1) {
+                    pdpUiUpdater?.updateViewToViewData(it.data.copy(
+                        recommendationItemList = it.data.recommendationItemList
+                    ))
+                    updateUi()
+                } else {
+                    pdpUiUpdater?.removeComponent(it.data.recomUiPageName)
+                    updateUi()
+                }
+            }, {
+                pdpUiUpdater?.updateViewToViewData(null, RecommendationCarouselData.STATE_FAILED)
+                updateUi()
+                logException(it)
+            })
         }
     }
 
@@ -5766,4 +5805,53 @@ open class DynamicProductDetailFragment :
     }
 
     override fun getRecommendationVerticalTrackData() = verticalRecommendationTrackDataModel
+
+    override fun onViewToViewImpressed(
+        data: ViewToViewItemData,
+        title: String,
+        itemPosition: Int,
+        adapterPosition: Int,
+    ) {
+        DynamicProductDetailTracking.ViewToView.eventImpressViewToView(
+            position = itemPosition,
+            product = data.recommendationData,
+            pageName = data.recommendationData.pageName,
+            pageTitle = title,
+            viewModel.getDynamicProductInfoP1,
+            viewModel.userId,
+            trackingQueue,
+        )
+    }
+
+    override fun onViewToViewClicked(
+        data: ViewToViewItemData,
+        title: String,
+        itemPosition: Int,
+        adapterPosition: Int,
+    ) {
+        DynamicProductDetailTracking.ViewToView.eventClickViewToView(
+            position = itemPosition,
+            product = data.recommendationData,
+            pageName = data.recommendationData.pageName,
+            pageTitle = title,
+            viewModel.getDynamicProductInfoP1,
+            viewModel.userId,
+        )
+        val activity = activity ?: return
+        showImmediately(
+            childFragmentManager,
+            ViewToViewBottomSheet.TAG,
+        ) {
+            ViewToViewBottomSheet.newInstance(
+                activity.classLoader,
+                fragmentFactory,
+                data,
+                viewModel.getDynamicProductInfoP1?.basic?.productID ?: "",
+            )
+        }
+    }
+
+    override fun onViewToViewReload(pageName: String) {
+        loadViewToView(pageName)
+    }
 }

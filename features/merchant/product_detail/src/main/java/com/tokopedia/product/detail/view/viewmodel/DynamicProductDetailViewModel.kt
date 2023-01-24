@@ -815,486 +815,539 @@ open class DynamicProductDetailViewModel @Inject constructor(
         }
     }
 
+    fun loadViewToView(
+        pageName: String,
+        productId: String,
+        isTokoNow: Boolean,
+    ) {
+        if (GlobalConfig.isSellerApp()) return
+
+        if (!alreadyHitRecom.contains(pageName)) {
+            alreadyHitRecom.add(pageName)
+        } else {
+            return
+        }
+
+        launchCatchError(dispatcher.main, block = {
+            val response = getRecommendationUseCase.get().getData(
+                GetRecommendationRequestParam(
+                    pageNumber = DEFAULT_PAGE_NUMBER,
+                    pageName = pageName,
+                    productIds = arrayListOf(productId),
+                    isTokonow = isTokoNow,
+                )
+            )
+
+            _loadViewToView.value = if (response.isNotEmpty()) {
+                Success(response.first())
+            } else {
+                Fail(MessageErrorException())
+            }
+        }) {
+            alreadyHitRecom.remove(pageName)
+            _loadViewToView.value = Throwable(pageName, it).asFail()
+        }
+    }
+
     fun recommendationChipClicked(
         recommendationDataModel: ProductRecommendationDataModel,
         annotationChip: AnnotationChip,
         productId: String
     ) {
-        launchCatchError(dispatcher.io, block = {
-            if (!GlobalConfig.isSellerApp()) {
-                val requestParams = GetRecommendationRequestParam(
-                    pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
-                    pageName = recommendationDataModel.recomWidgetData?.pageName ?: "",
-                    queryParam = if (annotationChip.recommendationFilterChip.isActivated) annotationChip.recommendationFilterChip.value else "",
-                    productIds = arrayListOf(productId)
-                )
-                val recommendationResponse = getRecommendationUseCase.get().getData(requestParams)
-                val updatedData = if (recommendationResponse.isNotEmpty() &&
-                    recommendationResponse.first().recommendationItemList.isNotEmpty()
-                ) {
-                    recommendationResponse.first()
-                } else {
-                    null
-                }
+        fun recommendationChipClicked(
+            recommendationDataModel: ProductRecommendationDataModel,
+            annotationChip: AnnotationChip,
+            productId: String
+        ) {
+            launchCatchError(dispatcher.io, block = {
+                if (!GlobalConfig.isSellerApp()) {
+                    val requestParams = GetRecommendationRequestParam(
+                        pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
+                        pageName = recommendationDataModel.recomWidgetData?.pageName ?: "",
+                        queryParam = if (annotationChip.recommendationFilterChip.isActivated) annotationChip.recommendationFilterChip.value else "",
+                        productIds = arrayListOf(productId)
+                    )
+                    val recommendationResponse =
+                        getRecommendationUseCase.get().getData(requestParams)
+                    val updatedData = if (recommendationResponse.isNotEmpty() &&
+                        recommendationResponse.first().recommendationItemList.isNotEmpty()
+                    ) {
+                        recommendationResponse.first()
+                    } else {
+                        null
+                    }
 
+                    updateFilterTopadsProduct(
+                        updatedData,
+                        recommendationDataModel,
+                        annotationChip
+                    )
+                }
+            }) { throwable ->
                 updateFilterTopadsProduct(
-                    updatedData,
+                    null,
                     recommendationDataModel,
                     annotationChip
                 )
+                _statusFilterTopAdsProduct.postValue(throwable.asFail())
             }
-        }) { throwable ->
-            updateFilterTopadsProduct(
-                null,
-                recommendationDataModel,
-                annotationChip
-            )
-            _statusFilterTopAdsProduct.postValue(throwable.asFail())
         }
-    }
 
-    private fun updateFilterTopadsProduct(
-        updatedData: RecommendationWidget?,
-        recommendationDataModel: ProductRecommendationDataModel,
-        annotationChip: AnnotationChip
-    ) {
-        _filterTopAdsProduct.postValue(
-            recommendationDataModel.copy(
-                recomWidgetData = updatedData ?: recommendationDataModel.recomWidgetData,
-                filterData = ProductRecommendationMapper.selectOrDeselectAnnotationChip(
-                    filterData = recommendationDataModel.filterData,
-                    name = annotationChip.recommendationFilterChip.name,
-                    isActivated = annotationChip.recommendationFilterChip.isActivated
+        private fun updateFilterTopadsProduct(
+            updatedData: RecommendationWidget?,
+            recommendationDataModel: ProductRecommendationDataModel,
+            annotationChip: AnnotationChip
+        ) {
+            _filterTopAdsProduct.postValue(
+                recommendationDataModel.copy(
+                    recomWidgetData = updatedData ?: recommendationDataModel.recomWidgetData,
+                    filterData = ProductRecommendationMapper.selectOrDeselectAnnotationChip(
+                        filterData = recommendationDataModel.filterData,
+                        name = annotationChip.recommendationFilterChip.name,
+                        isActivated = annotationChip.recommendationFilterChip.isActivated
+                    )
                 )
             )
-        )
-    }
+        }
 
-    fun getProductTopadsStatus(
-        productId: String,
-        queryParams: String = ""
-    ) {
-        if (queryParams.contains(PARAM_TXSC)) {
-            launchCatchError(coroutineContext, block = {
-                val timeOut = remoteConfig.getLong(TIMEOUT_REMOTE_CONFIG_KEY, PARAM_JOB_TIMEOUT)
-                ProductTopAdsLogger.logServer(
-                    tag = TOPADS_PDP_HIT_DYNAMIC_SLOTTING,
-                    productId = productId,
-                    queryParam = queryParams
-                )
-                val job = withTimeoutOrNull(timeOut) {
-                    getTopadsIsAdsUseCase.get().setParams(
+        fun getProductTopadsStatus(
+            productId: String,
+            queryParams: String = ""
+        ) {
+            if (queryParams.contains(PARAM_TXSC)) {
+                launchCatchError(coroutineContext, block = {
+                    val timeOut = remoteConfig.getLong(TIMEOUT_REMOTE_CONFIG_KEY, PARAM_JOB_TIMEOUT)
+                    ProductTopAdsLogger.logServer(
+                        tag = TOPADS_PDP_HIT_DYNAMIC_SLOTTING,
                         productId = productId,
-                        urlParam = queryParams,
-                        pageName = "im_pdp"
+                        queryParam = queryParams
                     )
-                    val adsStatus = getTopadsIsAdsUseCase.get().executeOnBackground()
-                    val errorCode = adsStatus.data.status.error_code
-                    val isTopAds = adsStatus.data.productList[0].isCharge
-                    if (errorCode in CODE_200..CODE_300 && isTopAds) {
-                        _topAdsRecomChargeData.postValue(adsStatus.data.productList[0].asSuccess())
-                    } else {
+                    val job = withTimeoutOrNull(timeOut) {
+                        getTopadsIsAdsUseCase.get().setParams(
+                            productId = productId,
+                            urlParam = queryParams,
+                            pageName = "im_pdp"
+                        )
+                        val adsStatus = getTopadsIsAdsUseCase.get().executeOnBackground()
+                        val errorCode = adsStatus.data.status.error_code
+                        val isTopAds = adsStatus.data.productList[0].isCharge
+                        if (errorCode in CODE_200..CODE_300 && isTopAds) {
+                            _topAdsRecomChargeData.postValue(adsStatus.data.productList[0].asSuccess())
+                        } else {
+                            ProductTopAdsLogger.logServer(
+                                tag = TOPADS_PDP_BE_ERROR,
+                                reason = "Error code $errorCode",
+                                productId = productId,
+                                queryParam = queryParams
+                            )
+                        }
+                        ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
+                            isSuccess = true,
+                            errorCode = errorCode,
+                            isTopAds = isTopAds
+                        )
+                    }
+                    if (job == null) {
                         ProductTopAdsLogger.logServer(
-                            tag = TOPADS_PDP_BE_ERROR,
-                            reason = "Error code $errorCode",
+                            tag = TOPADS_PDP_TIMEOUT_EXCEEDED,
                             productId = productId,
                             queryParam = queryParams
                         )
                     }
+                }) {
+                    it.printStackTrace()
+                    _topAdsRecomChargeData.postValue(it.asFail())
                     ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
-                        isSuccess = true,
-                        errorCode = errorCode,
-                        isTopAds = isTopAds
+                        isSuccess = false,
+                        errorMessage = it.message
                     )
-                }
-                if (job == null) {
                     ProductTopAdsLogger.logServer(
-                        tag = TOPADS_PDP_TIMEOUT_EXCEEDED,
-                        productId = productId,
-                        queryParam = queryParams
+                        tag = TOPADS_PDP_GENERAL_ERROR,
+                        throwable = it,
+                        productId = productId
                     )
+                    // nothing to do since fire and forget
+                }
+            }
+        }
+
+        fun getMiniCart(shopId: String) {
+            launchCatchError(dispatcher.io, block = {
+                miniCartListSimplifiedUseCase.get()
+                    .setParams(listOf(shopId), MiniCartSource.PDPRecommendationWidget)
+                val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
+                val data =
+                    result.miniCartItems.mapProductsWithProductId().values.associateBy({ it.productId }) {
+                        it
+                    }
+                _p2Data.value?.miniCart = data.toMutableMap()
+                _miniCartData.postValue(true)
+            }) {
+            }
+        }
+
+        fun hitAffiliateTracker(affiliateUniqueString: String, deviceId: String) {
+            trackAffiliateUseCase.get().params =
+                TrackAffiliateUseCase.createParams(affiliateUniqueString, deviceId)
+            trackAffiliateUseCase.get().execute({
+                // no op
+            }) {
+                Timber.d(it)
+            }
+        }
+
+        fun updateCartCounerUseCase(onSuccessRequest: (count: Int) -> Unit) {
+            updateCartCounterSubscription =
+                updateCartCounterUseCase.get().createObservable(RequestParams.EMPTY)
+                    .subscribeOn(Schedulers.io())
+                    .unsubscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Subscriber<Int>() {
+                        override fun onCompleted() {
+                        }
+
+                        override fun onError(e: Throwable) {
+                            e.printStackTrace()
+                        }
+
+                        override fun onNext(count: Int) {
+                            onSuccessRequest(count)
+                        }
+                    })
+        }
+
+        fun toggleTeaserNotifyMe(isNotifyMeActive: Boolean, campaignId: Long, productId: Long) {
+            launchCatchError(block = {
+                val action = if (isNotifyMeActive) {
+                    ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
+                } else {
+                    ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER
+                }
+
+                val result = toggleNotifyMeUseCase.get().executeOnBackground(
+                    ToggleNotifyMeUseCase.createParams(
+                        campaignId,
+                        productId,
+                        action,
+                        ProductDetailCommonConstant.VALUE_TEASER_SOURCE
+                    )
+                ).result
+
+                updateNotifyMeData(productId.toString())
+                _toggleTeaserNotifyMe.value = NotifyMeUiData(
+                    action,
+                    result.isSuccess,
+                    result.message
+                ).asSuccess()
+            }) {
+                _toggleTeaserNotifyMe.value = it.asFail()
+            }
+        }
+
+        fun getDiscussionMostHelpful(productId: String, shopId: String) {
+            launchCatchError(block = {
+                val response = withContext(dispatcher.io) {
+                    discussionMostHelpfulUseCase.get().createRequestParams(productId, shopId)
+                    discussionMostHelpfulUseCase.get().executeOnBackground()
+                }
+                _discussionMostHelpful.postValue(response.asSuccess())
+            }) {
+                _discussionMostHelpful.postValue(it.asFail())
+            }
+        }
+
+        fun shouldHideFloatingButton(): Boolean {
+            return p2Data.value?.cartRedirection?.get(getDynamicProductInfoP1?.basic?.productID)
+                ?.hideFloatingButton.orFalse()
+        }
+
+        fun onAtcRecomNonVariantQuantityChanged(recomItem: RecommendationItem, quantity: Int) {
+            if (!userSessionInterface.isLoggedIn) {
+                _atcRecomTokonowNonLogin.value = recomItem
+            } else {
+                if (recomItem.quantity == quantity) return
+                val miniCartItem = p2Data.value?.miniCart?.get(recomItem.productId.toString())
+                if (quantity == 0) {
+                    deleteRecomItemFromCart(recomItem, miniCartItem)
+                } else if (recomItem.quantity == 0) {
+                    atcRecomNonVariant(recomItem, quantity)
+                } else {
+                    updateRecomCartNonVariant(recomItem, quantity, miniCartItem)
+                }
+            }
+        }
+
+        fun deleteRecomItemFromCart(
+            recomItem: RecommendationItem,
+            miniCartItem: MiniCartItem.MiniCartItemProduct?
+        ) {
+            launchCatchError(block = {
+                miniCartItem?.let {
+                    deleteCartUseCase.get().setParams(listOf(miniCartItem.cartId))
+                    val result = deleteCartUseCase.get().executeOnBackground()
+                    val isFailed =
+                        result.data.success == 0 || result.status.equals(TEXT_ERROR, true)
+                    if (isFailed) {
+                        val error = result.errorMessage.firstOrNull()
+                            ?: result.data.message.firstOrNull()
+                        onFailedATCRecomTokonow(Throwable(error ?: ""), recomItem)
+                    } else {
+                        updateMiniCartAfterATCRecomTokonow(
+                            result.data.message.first(),
+                            false,
+                            recomItem
+                        )
+                    }
                 }
             }) {
-                it.printStackTrace()
-                _topAdsRecomChargeData.postValue(it.asFail())
-                ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
-                    isSuccess = false,
-                    errorMessage = it.message
-                )
-                ProductTopAdsLogger.logServer(
-                    tag = TOPADS_PDP_GENERAL_ERROR,
-                    throwable = it,
-                    productId = productId
-                )
-                // nothing to do since fire and forget
+                onFailedATCRecomTokonow(it, recomItem)
             }
         }
-    }
 
-    fun getMiniCart(shopId: String) {
-        launchCatchError(dispatcher.io, block = {
-            miniCartListSimplifiedUseCase.get()
-                .setParams(listOf(shopId), MiniCartSource.PDPRecommendationWidget)
-            val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
-            val data =
-                result.miniCartItems.mapProductsWithProductId().values.associateBy({ it.productId }) {
-                    it
+        fun atcRecomNonVariant(recomItem: RecommendationItem, quantity: Int) {
+            launchCatchError(block = {
+                val param = AddToCartUseCase.getMinimumParams(
+                    recomItem.productId.toString(),
+                    recomItem.shopId.toString(),
+                    quantity
+                )
+                val result = withContext(dispatcher.io) {
+                    addToCartUseCase.get().createObservable(param).toBlocking().single()
                 }
-            _p2Data.value?.miniCart = data.toMutableMap()
-            _miniCartData.postValue(true)
-        }) {
-        }
-    }
-
-    fun hitAffiliateTracker(affiliateUniqueString: String, deviceId: String) {
-        trackAffiliateUseCase.get().params =
-            TrackAffiliateUseCase.createParams(affiliateUniqueString, deviceId)
-        trackAffiliateUseCase.get().execute({
-            // no op
-        }) {
-            Timber.d(it)
-        }
-    }
-
-    fun updateCartCounerUseCase(onSuccessRequest: (count: Int) -> Unit) {
-        updateCartCounterSubscription =
-            updateCartCounterUseCase.get().createObservable(RequestParams.EMPTY)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<Int>() {
-                    override fun onCompleted() {
-                    }
-
-                    override fun onError(e: Throwable) {
-                        e.printStackTrace()
-                    }
-
-                    override fun onNext(count: Int) {
-                        onSuccessRequest(count)
-                    }
-                })
-    }
-
-    fun toggleTeaserNotifyMe(isNotifyMeActive: Boolean, campaignId: Long, productId: Long) {
-        launchCatchError(block = {
-            val action = if (isNotifyMeActive) {
-                ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
-            } else {
-                ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER
-            }
-
-            val result = toggleNotifyMeUseCase.get().executeOnBackground(
-                ToggleNotifyMeUseCase.createParams(
-                    campaignId,
-                    productId,
-                    action,
-                    ProductDetailCommonConstant.VALUE_TEASER_SOURCE
-                )
-            ).result
-
-            updateNotifyMeData(productId.toString())
-            _toggleTeaserNotifyMe.value = NotifyMeUiData(
-                action,
-                result.isSuccess,
-                result.message
-            ).asSuccess()
-        }) {
-            _toggleTeaserNotifyMe.value = it.asFail()
-        }
-    }
-
-    fun getDiscussionMostHelpful(productId: String, shopId: String) {
-        launchCatchError(block = {
-            val response = withContext(dispatcher.io) {
-                discussionMostHelpfulUseCase.get().createRequestParams(productId, shopId)
-                discussionMostHelpfulUseCase.get().executeOnBackground()
-            }
-            _discussionMostHelpful.postValue(response.asSuccess())
-        }) {
-            _discussionMostHelpful.postValue(it.asFail())
-        }
-    }
-
-    fun shouldHideFloatingButton(): Boolean {
-        return p2Data.value?.cartRedirection?.get(getDynamicProductInfoP1?.basic?.productID)?.hideFloatingButton
-            ?: false
-    }
-
-    fun onAtcRecomNonVariantQuantityChanged(recomItem: RecommendationItem, quantity: Int) {
-        if (!userSessionInterface.isLoggedIn) {
-            _atcRecomTokonowNonLogin.value = recomItem
-        } else {
-            if (recomItem.quantity == quantity) return
-            val miniCartItem = p2Data.value?.miniCart?.get(recomItem.productId.toString())
-            if (quantity == 0) {
-                deleteRecomItemFromCart(recomItem, miniCartItem)
-            } else if (recomItem.quantity == 0) {
-                atcRecomNonVariant(recomItem, quantity)
-            } else {
-                updateRecomCartNonVariant(recomItem, quantity, miniCartItem)
-            }
-        }
-    }
-
-    fun deleteRecomItemFromCart(
-        recomItem: RecommendationItem,
-        miniCartItem: MiniCartItem.MiniCartItemProduct?
-    ) {
-        launchCatchError(block = {
-            miniCartItem?.let {
-                deleteCartUseCase.get().setParams(listOf(miniCartItem.cartId))
-                val result = deleteCartUseCase.get().executeOnBackground()
-                val isFailed = result.data.success == 0 || result.status.equals(TEXT_ERROR, true)
-                if (isFailed) {
-                    val error = result.errorMessage.firstOrNull()
-                        ?: result.data.message.firstOrNull()
-                    onFailedATCRecomTokonow(Throwable(error ?: ""), recomItem)
-                } else {
-                    updateMiniCartAfterATCRecomTokonow(
-                        result.data.message.first(),
-                        false,
+                if (result.isStatusError()) {
+                    onFailedATCRecomTokonow(
+                        Throwable(
+                            result.errorMessage.firstOrNull()
+                                ?: result.status
+                        ),
                         recomItem
                     )
-                }
-            }
-        }) {
-            onFailedATCRecomTokonow(it, recomItem)
-        }
-    }
-
-    fun atcRecomNonVariant(recomItem: RecommendationItem, quantity: Int) {
-        launchCatchError(block = {
-            val param = AddToCartUseCase.getMinimumParams(
-                recomItem.productId.toString(),
-                recomItem.shopId.toString(),
-                quantity
-            )
-            val result = withContext(dispatcher.io) {
-                addToCartUseCase.get().createObservable(param).toBlocking().single()
-            }
-            if (result.isStatusError()) {
-                onFailedATCRecomTokonow(
-                    Throwable(
-                        result.errorMessage.firstOrNull()
-                            ?: result.status
-                    ),
-                    recomItem
-                )
-            } else {
-                recomItem.cartId = result.data.cartId
-                updateMiniCartAfterATCRecomTokonow(result.data.message.first(), true, recomItem)
-            }
-        }) {
-            onFailedATCRecomTokonow(it, recomItem)
-        }
-    }
-
-    fun updateRecomCartNonVariant(
-        recomItem: RecommendationItem,
-        quantity: Int,
-        miniCartItem: MiniCartItem.MiniCartItemProduct?
-    ) {
-        launchCatchError(block = {
-            miniCartItem?.let {
-                val copyOfMiniCartItem =
-                    UpdateCartRequest(cartId = it.cartId, quantity = quantity, notes = it.notes)
-                updateCartUseCase.get().setParams(
-                    updateCartRequestList = listOf(copyOfMiniCartItem),
-                    source = UpdateCartUseCase.VALUE_SOURCE_PDP_UPDATE_QTY_NOTES
-                )
-                val result = updateCartUseCase.get().executeOnBackground()
-
-                if (result.error.isNotEmpty()) {
-                    onFailedATCRecomTokonow(Throwable(result.error.firstOrNull() ?: ""), recomItem)
                 } else {
-                    updateMiniCartAfterATCRecomTokonow(result.data.message, false, recomItem)
+                    recomItem.cartId = result.data.cartId
+                    updateMiniCartAfterATCRecomTokonow(result.data.message.first(), true, recomItem)
                 }
+            }) {
+                onFailedATCRecomTokonow(it, recomItem)
             }
-        }) {
-            onFailedATCRecomTokonow(it, recomItem)
         }
-    }
 
-    fun hitAffiliateCookie(
-        productInfo: DynamicProductInfoP1,
-        affiliateUuid: String,
-        uuid: String,
-        affiliateChannel: String
-    ) {
-        launchCatchError(block = {
-            val affiliatePageDetail = DynamicProductDetailMapper.getAffiliatePageDetail(productInfo)
+        fun updateRecomCartNonVariant(
+            recomItem: RecommendationItem,
+            quantity: Int,
+            miniCartItem: MiniCartItem.MiniCartItemProduct?
+        ) {
+            launchCatchError(block = {
+                miniCartItem?.let {
+                    val copyOfMiniCartItem =
+                        UpdateCartRequest(cartId = it.cartId, quantity = quantity, notes = it.notes)
+                    updateCartUseCase.get().setParams(
+                        updateCartRequestList = listOf(copyOfMiniCartItem),
+                        source = UpdateCartUseCase.VALUE_SOURCE_PDP_UPDATE_QTY_NOTES
+                    )
+                    val result = updateCartUseCase.get().executeOnBackground()
 
-            affiliateCookieHelper.get().initCookie(
-                affiliateUUID = affiliateUuid,
-                affiliateChannel = affiliateChannel,
-                affiliatePageDetail = affiliatePageDetail,
-                uuid = uuid
-            )
-        }, onError = {
+                    if (result.error.isNotEmpty()) {
+                        onFailedATCRecomTokonow(
+                            Throwable(result.error.firstOrNull() ?: ""),
+                            recomItem
+                        )
+                    } else {
+                        updateMiniCartAfterATCRecomTokonow(result.data.message, false, recomItem)
+                    }
+                }
+            }) {
+                onFailedATCRecomTokonow(it, recomItem)
+            }
+        }
+
+        fun hitAffiliateCookie(
+            productInfo: DynamicProductInfoP1,
+            affiliateUuid: String,
+            uuid: String,
+            affiliateChannel: String
+        ) {
+            launchCatchError(block = {
+                val affiliatePageDetail =
+                    DynamicProductDetailMapper.getAffiliatePageDetail(productInfo)
+
+                affiliateCookieHelper.get().initCookie(
+                    affiliateUUID = affiliateUuid,
+                    affiliateChannel = affiliateChannel,
+                    affiliatePageDetail = affiliatePageDetail,
+                    uuid = uuid
+                )
+            }, onError = {
                 // no op, expect to be handled by Affiliate SDK
             })
-    }
-
-    private fun updateMiniCartAfterATCRecomTokonow(
-        message: String,
-        isAtc: Boolean,
-        recomItem: RecommendationItem
-    ) {
-        _atcRecomTokonow.value = message.asSuccess()
-        if (isAtc) {
-            _atcRecomTokonowSendTracker.value = recomItem.asSuccess()
         }
-        getMiniCart(getDynamicProductInfoP1?.basic?.shopID ?: "")
-    }
 
-    private fun onFailedATCRecomTokonow(throwable: Throwable, recomItem: RecommendationItem) {
-        recomItem.onFailedUpdateCart()
-        _atcRecomTokonow.value = throwable.asFail()
-        _atcRecomTokonowResetCard.value = recomItem
-    }
+        private fun updateMiniCartAfterATCRecomTokonow(
+            message: String,
+            isAtc: Boolean,
+            recomItem: RecommendationItem
+        ) {
+            _atcRecomTokonow.value = message.asSuccess()
+            if (isAtc) {
+                _atcRecomTokonowSendTracker.value = recomItem.asSuccess()
+            }
+            getMiniCart(getDynamicProductInfoP1?.basic?.shopID ?: "")
+        }
 
-    private fun getProductInfoP2OtherAsync(
-        productId: String,
-        shopId: Int
-    ): Deferred<ProductInfoP2Other> {
-        return async(dispatcher.io) {
-            getProductInfoP2OtherUseCase.get().executeOnBackground(
-                GetProductInfoP2OtherUseCase.createParams(productId, shopId),
-                forceRefresh
+        private fun onFailedATCRecomTokonow(throwable: Throwable, recomItem: RecommendationItem) {
+            recomItem.onFailedUpdateCart()
+            _atcRecomTokonow.value = throwable.asFail()
+            _atcRecomTokonowResetCard.value = recomItem
+        }
+
+        private fun getProductInfoP2OtherAsync(
+            productId: String,
+            shopId: Int
+        ): Deferred<ProductInfoP2Other> {
+            return async(dispatcher.io) {
+                getProductInfoP2OtherUseCase.get().executeOnBackground(
+                    GetProductInfoP2OtherUseCase.createParams(productId, shopId),
+                    forceRefresh
+                )
+            }
+        }
+
+        private fun getProductInfoP2LoginAsync(
+            shopId: Int,
+            productId: String
+        ): Deferred<ProductInfoP2Login> {
+            return async(dispatcher.io) {
+                getProductInfoP2LoginUseCase.get().requestParams =
+                    GetProductInfoP2LoginUseCase.createParams(shopId, productId, isShopOwner())
+                getProductInfoP2LoginUseCase.get().setErrorLogListener { logP2Login(it, productId) }
+                getProductInfoP2LoginUseCase.get().executeOnBackground()
+            }
+        }
+
+        private fun getProductInfoP2DataAsync(
+            productId: String,
+            pdpSession: String,
+            shopId: String,
+            isTokoNow: Boolean
+        ): Deferred<ProductInfoP2UiData> {
+            return async(dispatcher.io) {
+                getP2DataAndMiniCartUseCase.get().executeOnBackground(
+                    requestParams = GetProductInfoP2DataUseCase.createParams(
+                        productId,
+                        pdpSession,
+                        generatePdpSessionWithDeviceId(),
+                        generateUserLocationRequest(userLocationCache),
+                        generateTokoNowRequest(userLocationCache)
+                    ),
+                    isTokoNow = isTokoNow,
+                    shopId = shopId,
+                    forceRefresh = forceRefresh,
+                    isLoggedIn = isUserSessionActive,
+                    setErrorLogListener = {
+                        logP2Data(it, productId, pdpSession)
+                    }
+                )
+            }
+        }
+
+        private fun generatePdpSessionWithDeviceId(): String {
+            return if (getDynamicProductInfoP1?.data?.isTradeIn == false) {
+                ""
+            } else {
+                deviceId
+            }
+        }
+
+        private suspend fun getPdpLayout(
+            productId: String,
+            shopDomain: String,
+            productKey: String,
+            whId: String,
+            layoutId: String,
+            extParam: String
+        ): ProductDetailDataModel {
+            getPdpLayoutUseCase.get().requestParams = GetPdpLayoutUseCase.createParams(
+                productId,
+                shopDomain,
+                productKey,
+                whId,
+                layoutId,
+                generateUserLocationRequest(userLocationCache),
+                extParam,
+                generateTokoNowRequest(userLocationCache)
+            )
+            return getPdpLayoutUseCase.get().executeOnBackground()
+        }
+
+        private fun logP2Login(throwable: Throwable, productId: String) {
+            ProductDetailLogger.logThrowable(throwable, P2_LOGIN_ERROR_TYPE, productId, deviceId)
+        }
+
+        private fun logP2Data(throwable: Throwable, productId: String, pdpSession: String) {
+            val extras = mapOf(ProductDetailConstant.SESSION_KEY to pdpSession).toString()
+            ProductDetailLogger.logThrowable(
+                throwable,
+                P2_DATA_ERROR_TYPE,
+                productId,
+                deviceId,
+                extras
             )
         }
-    }
 
-    private fun getProductInfoP2LoginAsync(
-        shopId: Int,
-        productId: String
-    ): Deferred<ProductInfoP2Login> {
-        return async(dispatcher.io) {
-            getProductInfoP2LoginUseCase.get().requestParams =
-                GetProductInfoP2LoginUseCase.createParams(shopId, productId, isShopOwner())
-            getProductInfoP2LoginUseCase.get().setErrorLogListener { logP2Login(it, productId) }
-            getProductInfoP2LoginUseCase.get().executeOnBackground()
+        private fun updateNotifyMeData(productId: String) {
+            val selectedUpcoming = p2Data.value?.upcomingCampaigns?.get(productId)
+            p2Data.value?.upcomingCampaigns?.get(productId)?.notifyMe =
+                selectedUpcoming?.notifyMe != true
         }
-    }
 
-    private fun getProductInfoP2DataAsync(
-        productId: String,
-        pdpSession: String,
-        shopId: String,
-        isTokoNow: Boolean
-    ): Deferred<ProductInfoP2UiData> {
-        return async(dispatcher.io) {
-            getP2DataAndMiniCartUseCase.get().executeOnBackground(
-                requestParams = GetProductInfoP2DataUseCase.createParams(
-                    productId,
-                    pdpSession,
-                    generatePdpSessionWithDeviceId(),
-                    generateUserLocationRequest(userLocationCache),
-                    generateTokoNowRequest(userLocationCache)
-                ),
-                isTokoNow = isTokoNow,
-                shopId = shopId,
-                forceRefresh = forceRefresh,
-                isLoggedIn = isUserSessionActive,
-                setErrorLogListener = {
-                    logP2Data(it, productId, pdpSession)
+        fun getPlayWidgetData() {
+            launchCatchError(
+                block = {
+                    val productIds = variantData?.let { variant ->
+                        listOf(variant.parentId) + variant.children.map { it.productId }
+                    } ?: emptyList()
+                    val categoryIds = getDynamicProductInfoP1?.basic?.category?.detail?.map {
+                        it.id
+                    } ?: emptyList()
+
+                    val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(
+                        productIds,
+                        categoryIds
+                    )
+                    val response = playWidgetTools.getWidgetFromNetwork(widgetType)
+                    val uiModel = playWidgetTools.mapWidgetToModel(response)
+                    _playWidgetModel.value = Success(uiModel)
+                }, onError = {
+                    _playWidgetModel.value = Fail(it)
                 }
             )
         }
-    }
 
-    private fun generatePdpSessionWithDeviceId(): String {
-        return if (getDynamicProductInfoP1?.data?.isTradeIn == false) {
-            ""
-        } else {
-            deviceId
-        }
-    }
-
-    private suspend fun getPdpLayout(
-        productId: String,
-        shopDomain: String,
-        productKey: String,
-        whId: String,
-        layoutId: String,
-        extParam: String
-    ): ProductDetailDataModel {
-        getPdpLayoutUseCase.get().requestParams = GetPdpLayoutUseCase.createParams(
-            productId,
-            shopDomain,
-            productKey,
-            whId,
-            layoutId,
-            generateUserLocationRequest(userLocationCache),
-            extParam,
-            generateTokoNowRequest(userLocationCache)
-        )
-        return getPdpLayoutUseCase.get().executeOnBackground()
-    }
-
-    private fun logP2Login(throwable: Throwable, productId: String) {
-        ProductDetailLogger.logThrowable(throwable, P2_LOGIN_ERROR_TYPE, productId, deviceId)
-    }
-
-    private fun logP2Data(throwable: Throwable, productId: String, pdpSession: String) {
-        val extras = mapOf(ProductDetailConstant.SESSION_KEY to pdpSession).toString()
-        ProductDetailLogger.logThrowable(throwable, P2_DATA_ERROR_TYPE, productId, deviceId, extras)
-    }
-
-    private fun updateNotifyMeData(productId: String) {
-        val selectedUpcoming = p2Data.value?.upcomingCampaigns?.get(productId)
-        p2Data.value?.upcomingCampaigns?.get(productId)?.notifyMe =
-            selectedUpcoming?.notifyMe != true
-    }
-
-    fun getPlayWidgetData() {
-        launchCatchError(block = {
-            val productIds = variantData?.let { variant ->
-                listOf(variant.parentId) + variant.children.map { it.productId }
-            } ?: emptyList()
-            val categoryIds = getDynamicProductInfoP1?.basic?.category?.detail?.map {
-                it.id
-            } ?: emptyList()
-
-            val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(
-                productIds,
-                categoryIds
-            )
-            val response = playWidgetTools.getWidgetFromNetwork(widgetType)
-            val uiModel = playWidgetTools.mapWidgetToModel(response)
-            _playWidgetModel.value = Success(uiModel)
-        }, onError = {
-                _playWidgetModel.value = Fail(it)
-            })
-    }
-
-    fun updatePlayWidgetToggleReminder(
+        fun updatePlayWidgetToggleReminder(
         playWidgetState: PlayWidgetState,
         channelId: String,
         reminderType: PlayWidgetReminderType
-    ) {
-        launchCatchError(block = {
-            val updatedUi = playWidgetTools.updateActionReminder(
+        ) {
+            launchCatchError(block = {
+                val updatedUi = playWidgetTools.updateActionReminder(
                 playWidgetState,
                 channelId,
                 reminderType
-            )
-            _playWidgetModel.value = Success(updatedUi)
+                )
+                _playWidgetModel.value = Success(updatedUi)
 
-            val response = playWidgetTools.updateToggleReminder(channelId, reminderType)
-            if (playWidgetTools.mapWidgetToggleReminder(response)) {
-                _playWidgetReminderSwitch.value = Success(reminderType)
-            } else {
-                val reversedToggleUi = playWidgetTools.updateActionReminder(
+                val response = playWidgetTools.updateToggleReminder(channelId, reminderType)
+                if (playWidgetTools.mapWidgetToggleReminder(response)) {
+                    _playWidgetReminderSwitch.value = Success(reminderType)
+                } else {
+                    val reversedToggleUi = playWidgetTools.updateActionReminder(
                     playWidgetState,
                     channelId,
                     reminderType.switch()
-                )
-                _playWidgetModel.value = Success(reversedToggleUi)
-                _playWidgetReminderSwitch.value = Fail(Throwable())
-            }
-        }, onError = {
+                    )
+                    _playWidgetModel.value = Success(reversedToggleUi)
+                    _playWidgetReminderSwitch.value = Fail(Throwable())
+                }
+            }, onError = {
                 val reversedToggleUi = playWidgetTools.updateActionReminder(
                     playWidgetState,
                     channelId,
@@ -1303,32 +1356,32 @@ open class DynamicProductDetailViewModel @Inject constructor(
                 _playWidgetModel.value = Success(reversedToggleUi)
                 _playWidgetReminderSwitch.value = Fail(it)
             })
-    }
+        }
 
     fun getVerticalRecommendationData(
         pageName: String,
         page: Int? = DEFAULT_PAGE_NUMBER,
         productId: String?
     ) {
-        val nonNullPage = page ?: DEFAULT_PAGE_NUMBER
-        val nonNullProductId = productId.orEmpty()
-        launchCatchError(block = {
-            val requestParams = GetRecommendationRequestParam(
-                pageNumber = nonNullPage,
-                pageName = pageName,
-                productIds = arrayListOf(nonNullProductId)
-            )
-            val recommendationResponse = getRecommendationUseCase.get().getData(requestParams)
-            val dataResponse = recommendationResponse.firstOrNull()
+            val nonNullPage = page ?: DEFAULT_PAGE_NUMBER
+            val nonNullProductId = productId.orEmpty()
+            launchCatchError(block = {
+                val requestParams = GetRecommendationRequestParam(
+                    pageNumber = nonNullPage,
+                    pageName = pageName,
+                    productIds = arrayListOf(nonNullProductId)
+                )
+                val recommendationResponse = getRecommendationUseCase.get().getData(requestParams)
+                val dataResponse = recommendationResponse.firstOrNull()
             if (dataResponse == null) {
-                _verticalRecommendation.value = Fail(Throwable())
+                    _verticalRecommendation.value = Fail(Throwable())
             } else {
                 _verticalRecommendation.value = dataResponse.asSuccess()
             }
-        }, onError = {
+            }, onError = {
                 _verticalRecommendation.value = Fail(it)
             })
-    }
+        }
 
     fun getChildOfVariantSelected(
         singleVariant: ProductSingleVariantDataModel?,
@@ -1410,4 +1463,4 @@ open class DynamicProductDetailViewModel @Inject constructor(
 
         return variants
     }
-}
+    }

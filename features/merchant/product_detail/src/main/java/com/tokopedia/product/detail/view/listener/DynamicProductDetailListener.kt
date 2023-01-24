@@ -20,6 +20,7 @@ import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -271,6 +272,7 @@ interface DynamicProductDetailListener {
      * ProductRecom
      */
     fun loadTopads(pageName: String)
+    fun loadViewToView(pageName: String)
 
     fun loadPlayWidget()
 
@@ -450,4 +452,21 @@ interface DynamicProductDetailListener {
     fun onImpressRecommendationVertical(componentTrackDataModel: ComponentTrackDataModel)
     fun startVerticalRecommendation(pageName: String)
     fun getRecommendationVerticalTrackData(): ComponentTrackDataModel?
+
+    /**
+     * ViewToView widget recommendation
+     */
+    fun onViewToViewImpressed(
+        data: ViewToViewItemData,
+        title: String,
+        itemPosition: Int,
+        adapterPosition: Int,
+    )
+    fun onViewToViewClicked(
+        data: ViewToViewItemData,
+        title: String,
+        itemPosition: Int,
+        adapterPosition: Int,
+    )
+    fun onViewToViewReload(pageName: String)
 }
