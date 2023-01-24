@@ -17,6 +17,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
@@ -30,12 +31,14 @@ import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.viewholder.ProductVariantViewHolder
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.user.session.UserSession
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.AllOf.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 import java.util.concurrent.TimeUnit
 
 class ProductDetailThanosTest {
@@ -86,7 +89,6 @@ class ProductDetailThanosTest {
     fun setup() {
         setupGraphqlMockResponse(ProductDetailMockResponse())
         InstrumentationAuthHelper.clearUserSession()
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
         val intent = ProductDetailActivity.createIntent(targetContext,
             ProductDetailActivityTest.PRODUCT_ID
         )
@@ -112,7 +114,7 @@ class ProductDetailThanosTest {
     @Test
     fun tracker_journey_id_56() {
         actionTest {
-//            fakeLogin()
+            InstrumentationAuthHelper.loginInstrumentationTestUser1()
         } assertTest {
             assertIsLoggedIn(targetContext, true)
             waitFor()
