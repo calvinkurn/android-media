@@ -10,8 +10,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
@@ -163,7 +163,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
     @Test
     fun `when getting category list layout should run and give the success result`() {
-        onGetCategoryList_thenReturn(CategoryListResponse(
+        val warehouseId = "1"
+        val response = CategoryListResponse(
             header = Header(),
             data = listOf(
                 CategoryResponse(
@@ -187,14 +188,123 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                     isAdult = 1
                 )
             )
-        ))
+        )
 
-        privateLocalCacheModel.set(viewModel, LocalCacheModel(warehouse_id = "1"))
+        onGetCategoryList_thenReturn(response)
+
+        privateLocalCacheModel.set(viewModel, LocalCacheModel(warehouse_id = warehouseId))
 
         viewModel.showEmptyState(EMPTY_STATE_NO_RESULT)
 
         val layout = RepurchaseLayoutUiModel(
-            layoutList = createCategoryGridLayout("1"),
+            layoutList = createCategoryGridLayout(response, warehouseId),
+            state = TokoNowLayoutState.SHOW
+        )
+
+        verifyGetCategoryListUseCaseCalled()
+        verifyGetCategoryGridLayoutSuccess(layout)
+    }
+
+    @Test
+    fun `when getting category list layout and map the data with different data should give the success result with mapped data`() {
+        val warehouseId = "1"
+        var response = CategoryListResponse(
+            header = Header(),
+            data = listOf()
+        )
+
+        onGetCategoryList_thenReturn(response)
+
+        viewModel.showEmptyState(EMPTY_STATE_NO_RESULT)
+
+        privateLocalCacheModel.set(viewModel, LocalCacheModel(warehouse_id = warehouseId))
+
+        response = CategoryListResponse(
+            header = Header(),
+            data = listOf(
+                CategoryResponse(
+                    id = "3",
+                    name = "Category 3",
+                    url = "tokopedia://",
+                    appLinks = "tokoepdia://",
+                    imageUrl = "tokopedia://",
+                    parentId = "5",
+                    childList = listOf(),
+                    isAdult = 0
+                ),
+                CategoryResponse(
+                    id = "4",
+                    name = "Category 4",
+                    url = "tokopedia://",
+                    appLinks = "tokoepdia://",
+                    imageUrl = "tokopedia://",
+                    parentId = "5",
+                    childList = listOf(),
+                    isAdult = 1
+                )
+            )
+        )
+
+        onGetCategoryList_thenReturn(response)
+
+        viewModel.getCategoryMenu()
+
+        val layout = RepurchaseLayoutUiModel(
+            layoutList = createCategoryGridLayout(response, warehouseId),
+            state = TokoNowLayoutState.SHOW
+        )
+
+        verifyGetCategoryListUseCaseCalled()
+        verifyGetCategoryGridLayoutSuccess(layout)
+    }
+
+    @Test
+    fun `when getting category list layout and map the data with empty list should give the success result with empty list`() {
+        val warehouseId = "1"
+        val response = CategoryListResponse(
+            header = Header(),
+            data = listOf(
+                CategoryResponse(
+                    id = "3",
+                    name = "Category 3",
+                    url = "tokopedia://",
+                    appLinks = "tokoepdia://",
+                    imageUrl = "tokopedia://",
+                    parentId = "5",
+                    childList = listOf(),
+                    isAdult = 0
+                ),
+                CategoryResponse(
+                    id = "4",
+                    name = "Category 4",
+                    url = "tokopedia://",
+                    appLinks = "tokoepdia://",
+                    imageUrl = "tokopedia://",
+                    parentId = "5",
+                    childList = listOf(),
+                    isAdult = 1
+                )
+            )
+        )
+
+        onGetCategoryList_thenReturn(response)
+
+        viewModel.showEmptyState(EMPTY_STATE_NO_RESULT)
+
+        privateLocalCacheModel.set(viewModel, LocalCacheModel(warehouse_id = warehouseId))
+
+        onGetCategoryList_thenReturn(Throwable())
+
+        viewModel.getCategoryMenu()
+
+        val layout = RepurchaseLayoutUiModel(
+            layoutList = createCategoryGridLayout(
+                CategoryListResponse(
+                    data = listOf(),
+                    header = Header()
+                ),
+                warehouseId = warehouseId
+            ),
             state = TokoNowLayoutState.SHOW
         )
 

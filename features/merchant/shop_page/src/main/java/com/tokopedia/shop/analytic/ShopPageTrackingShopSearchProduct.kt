@@ -14,16 +14,6 @@ class ShopPageTrackingShopSearchProduct(
     trackingQueue: TrackingQueue
 ) : ShopPageTracking(trackingQueue) {
 
-    fun clickAutocompleteExternalShopPage(isOwner: Boolean, keyword: String, customDimensionShopPage: CustomDimensionShopPage) {
-        sendGeneralEvent(
-            CLICK_SHOP_PAGE,
-            getShopPageCategory(isOwner),
-            String.format(SHOP_SEARCH_PRODUCT_CLICK_GLOBAL_SEARCH, keyword),
-            "",
-            customDimensionShopPage
-        )
-    }
-
     fun clickAutocompleteProducts(pageName: String, keyword: String, pageUrl: String) {
         sendEvent(
             CLICK_TOP_NAV,

@@ -625,21 +625,23 @@ class WishlistCollectionDetailFragment :
                             }
                         }
 
-                        toolbarTitle = collectionDetail.headerTitle
-                        if (isBulkAddShow) {
-                            updateCustomToolbarSubTitle(collectionNameDestination)
-                        } else {
-                            if (collectionDetail.description.isNotEmpty()) {
-                                isToolbarHasDesc = true
-                                toolbarDesc = collectionDetail.description
-                                if (!isBulkAddFromOtherCollectionShow) updateCustomToolbarTitleAndSubTitle(collectionDetail.headerTitle, collectionDetail.description)
-                            } else {
-                                updateToolbarTitle(toolbarTitle)
-                            }
-                        }
-
                         if (currPage == 1 && collectionDetail.sortFilters.isNotEmpty()) {
                             renderChipsFilter(mapToSortFilterItem(collectionDetail.sortFilters))
+                            setupGearIcon()
+                            setupLayoutTypeIcon()
+
+                            toolbarTitle = collectionDetail.headerTitle
+                            if (isBulkAddShow) {
+                                updateCustomToolbarSubTitle(collectionNameDestination)
+                            } else {
+                                if (collectionDetail.description.isNotEmpty()) {
+                                    isToolbarHasDesc = true
+                                    toolbarDesc = collectionDetail.description
+                                    if (!isBulkAddFromOtherCollectionShow) updateCustomToolbarTitleAndSubTitle(collectionDetail.headerTitle, collectionDetail.description)
+                                } else {
+                                    updateToolbarTitle(toolbarTitle)
+                                }
+                            }
                         }
                         if (collectionDetail.hasNextPage) {
                             currPage += 1
@@ -674,9 +676,6 @@ class WishlistCollectionDetailFragment :
                                 SRC_WISHLIST_COLLECTION_SHARING
                             )
                         }
-
-                        setupLayoutTypeIcon()
-                        setupGearIcon()
                     }
                 }
                 is Fail -> {
