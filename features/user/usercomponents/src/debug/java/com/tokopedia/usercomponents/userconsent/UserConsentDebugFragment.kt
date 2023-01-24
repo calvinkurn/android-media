@@ -43,11 +43,9 @@ open class UserConsentDebugFragment: BaseDaggerFragment() {
     private fun loadConsentComponent(collectionId: String, version: String) {
         val consentParam = ConsentCollectionParam(
             collectionId = collectionId,
-            version = version,
-            identifier = "12345"
+            version = version
         )
-        viewBinding?.sampleUserConsent?.apply {
-        }?.load(viewLifecycleOwner, this, consentParam)
+        viewBinding?.sampleUserConsent?.load(viewLifecycleOwner, this, consentParam)
     }
 
     override fun onDestroy() {

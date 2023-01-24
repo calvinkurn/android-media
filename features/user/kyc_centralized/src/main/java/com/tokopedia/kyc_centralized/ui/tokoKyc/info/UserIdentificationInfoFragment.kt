@@ -150,7 +150,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
             viewBinding?.layoutKycBenefit?.userConsentKyc?.submitConsent()
         }
 
-        viewBinding?.layoutKycBenefit?.userConsentKyc?.setOnCheckedChangeListener {isChecked ->
+        viewBinding?.layoutKycBenefit?.userConsentKyc?.setOnCheckedChangeListener { isChecked ->
             analytics?.eventClickKycTnc(isChecked)
             viewBinding?.layoutKycBenefit?.kycBenefitBtn?.isEnabled = isChecked
         }
