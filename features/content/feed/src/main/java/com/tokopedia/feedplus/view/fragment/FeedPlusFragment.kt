@@ -11,7 +11,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.annotation.RestrictTo
@@ -779,69 +778,7 @@ class FeedPlusFragment :
                 lifecycleOwner,
                 Observer {
                     when (it) {
-                        is Success -> {
-                            adapter.getlist().mapIndexed { index, item ->
-                                var isChanged = false
-                                if (item is ShopRecomWidgetModel) {
-                                    item.shopRecomUiModel.items.map { recomItem ->
-                                        it.data[recomItem.id.toString()]?.let { followStatus ->
-                                            recomItem.state =
-                                                if (followStatus) ShopRecomFollowState.FOLLOW else ShopRecomFollowState.UNFOLLOW
-                                            isChanged = true
-                                        }
-                                    }
-                                    if (isChanged) {
-                                        recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object: OnGlobalLayoutListener {
-                                            override fun onGlobalLayout() {
-                                                adapter.updateShopRecomWidget(item)
-                                                recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                                            }
-                                        })
-                                    }
-
-                                } else {
-                                    val shopId = when (item) {
-                                        is DynamicPostModel -> {
-                                            item.header.followCta.authorID
-                                        }
-                                        is DynamicPostUiModel -> {
-                                            item.feedXCard.author.id
-                                        }
-                                        else -> ""
-                                    }
-                                    if (shopId != "") {
-                                        it.data[shopId]?.let { followStatus ->
-                                            when (item) {
-                                                is DynamicPostModel -> {
-                                                    item.header.followCta.isFollow = followStatus
-                                                    isChanged = true
-                                                }
-                                                is DynamicPostUiModel -> {
-                                                    item.feedXCard.followers.isFollowed =
-                                                        followStatus
-                                                    isChanged = true
-                                                }
-                                                else -> {
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    if (isChanged) {
-                                        recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object: OnGlobalLayoutListener {
-                                            override fun onGlobalLayout() {
-                                                adapter.notifyItemChanged(
-                                                    index,
-                                                    DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
-                                                )
-                                                recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                                            }
-                                        })
-                                    }
-                                }
-                            }
-                            feedViewModel.clearFollowIdToUpdate()
-                        }
+                        is Success -> onSuccessResyncFollowStatus(it.data)
                         is Fail -> {}
                     }
                 }
@@ -4143,5 +4080,68 @@ class FeedPlusFragment :
 
     override fun onShopRecomLoadingNextPage(nextCursor: String) {
         feedViewModel.getShopRecomWidget(nextCursor)
+    }
+
+    private fun onSuccessResyncFollowStatus(data: Map<String, Boolean>) {
+        adapter.getlist().mapIndexed { index, item ->
+            var isChanged = false
+
+            if (item is ShopRecomWidgetModel) {
+                val newItems = item.shopRecomUiModel.items.toMutableList()
+                newItems.mapIndexed { itemIndex, recomItem ->
+                    data[recomItem.id.toString()]?.let { followStatus ->
+                        newItems[itemIndex] = recomItem.copy(
+                            state = if (followStatus) ShopRecomFollowState.FOLLOW else ShopRecomFollowState.UNFOLLOW
+                        )
+                        isChanged = true
+                    }
+                }
+                if (isChanged) {
+                    adapter.updateShopRecomWidget(
+                        item.copy(
+                            item.shopRecomUiModel.copy(
+                                items = newItems
+                            )
+                        )
+                    )
+                }
+
+            } else {
+                val shopId = when (item) {
+                    is DynamicPostModel -> {
+                        item.header.followCta.authorID
+                    }
+                    is DynamicPostUiModel -> {
+                        item.feedXCard.author.id
+                    }
+                    else -> ""
+                }
+                if (shopId != "") {
+                    data[shopId]?.let { followStatus ->
+                        when (item) {
+                            is DynamicPostModel -> {
+                                item.header.followCta.isFollow = followStatus
+                                isChanged = true
+                            }
+                            is DynamicPostUiModel -> {
+                                item.feedXCard.followers.isFollowed =
+                                    followStatus
+                                isChanged = true
+                            }
+                            else -> {
+                            }
+                        }
+                    }
+                }
+
+                if (isChanged) {
+                    adapter.notifyItemChanged(
+                        index,
+                        DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
+                    )
+                }
+            }
+        }
+        feedViewModel.clearFollowIdToUpdate()
     }
 }
