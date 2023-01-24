@@ -2,6 +2,7 @@ package com.tokopedia.recommendation_widget_common.widget.viewtoview
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomViewToViewBinding
@@ -36,6 +37,9 @@ sealed class ViewToViewItemViewHolder(
         }
 
         private fun setUpListener(element: ViewToViewItemData) {
+            itemView.addOnImpressionListener(element.recommendationData) {
+                listener.onViewToViewItemImpressed(element, bindingAdapterPosition)
+            }
             val binding = binding ?: return
             binding.root.setOnClickListener {
                 listener.onViewToViewItemClicked(element, bindingAdapterPosition)

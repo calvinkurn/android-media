@@ -160,6 +160,16 @@ class ViewToViewWidgetView : FrameLayout, ViewToViewItemListener, CoroutineScope
         this.scrollListener = scrollListener
     }
 
+    override fun onViewToViewItemImpressed(item: ViewToViewItemData, position: Int) {
+        carouselData?.let {
+            basicListener?.onViewToViewItemImpressed(
+                data = item,
+                itemPosition = position,
+                adapterPosition = widgetMetadata.adapterPosition,
+            )
+        }
+    }
+
     override fun onViewToViewItemClicked(item: ViewToViewItemData, position: Int) {
         carouselData?.let {
             basicListener?.onViewToViewItemClicked(
@@ -234,15 +244,6 @@ class ViewToViewWidgetView : FrameLayout, ViewToViewItemListener, CoroutineScope
         }
     }
 
-    private fun impressChannel(carouselData: RecommendationCarouselData) {
-        itemView.addOnImpressionListener(carouselData) {
-            basicListener?.onViewToViewBannerImpressed(
-                data = carouselData.recommendationData,
-                adapterPosition = widgetMetadata.adapterPosition,
-            )
-        }
-    }
-
     private fun updateLayoutManager(itemSize: Int) {
         layoutManager = createLayoutManager(itemSize)
         recyclerView.layoutManager = layoutManager
@@ -311,7 +312,6 @@ class ViewToViewWidgetView : FrameLayout, ViewToViewItemListener, CoroutineScope
             onReady = {
                 headerView?.visible()
                 loadingView?.gone()
-                impressChannel(carouselData)
                 setHeaderComponent(carouselData)
                 setData(carouselData)
                 recyclerView.show()

@@ -14,12 +14,14 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.BottomSheetViewToViewBinding
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
@@ -38,6 +40,10 @@ class ViewToViewBottomSheet @Inject constructor(
     }
     private var binding: BottomSheetViewToViewBinding? = null
     private var recommendationAdapter: ViewToViewAdapter? = null
+
+    private val trackingQueue: TrackingQueue? by lazy {
+        activity?.let { TrackingQueue(it) }
+    }
 
     private val queryParams: String
         get() = arguments?.getString(KEY_RECOMMENDATION_PARAMS, "") ?: ""
@@ -122,15 +128,23 @@ class ViewToViewBottomSheet @Inject constructor(
     private fun renderRecommendationResult(result: Result<ViewToViewRecommendationResult>) {
         result.doSuccessOrFail(
             success = {
-                it.data.widget?.let { widget ->
-                    ViewToViewBottomSheetTracker.eventBottomSheetImpress(
-                        widget,
-                        headerTitle,
-                        viewModel.getUserId(),
-                        productAnchorId,
-                    )
+                when(val data = it.data) {
+                    is ViewToViewRecommendationResult.Loading -> {
+                        binding?.loadingViewToView?.run {
+                            if(!data.hasATCButton) {
+                                shimmering1.button.gone()
+                                shimmering2.button.gone()
+                                shimmering3.button.gone()
+                                shimmering4.button.gone()
+                            }
+                            root.visible()
+                        }
+                    }
+                    is ViewToViewRecommendationResult.Product -> {
+                        binding?.loadingViewToView?.root?.gone()
+                        recommendationAdapter?.submitList(data.products)
+                    }
                 }
-                recommendationAdapter?.submitList(it.data.data)
             },
             fail = { showGlobalError(it) }
         )
@@ -216,7 +230,18 @@ class ViewToViewBottomSheet @Inject constructor(
         super.onDestroyView()
     }
 
-    override fun onProductClicked(product: ViewToViewDataModel.Product, position: Int) {
+    override fun onProductImpressed(product: ViewToViewDataModel, position: Int) {
+        ViewToViewBottomSheetTracker.eventImpressProduct(
+            product.recommendationItem,
+            headerTitle,
+            position,
+            viewModel.getUserId(),
+            productAnchorId,
+            trackingQueue,
+        )
+    }
+
+    override fun onProductClicked(product: ViewToViewDataModel, position: Int) {
         ViewToViewBottomSheetTracker.eventProductClick(
             product.recommendationItem,
             headerTitle,
@@ -228,7 +253,7 @@ class ViewToViewBottomSheet @Inject constructor(
         RouteManager.route(context, ApplinkConst.PRODUCT_INFO, product.id)
     }
 
-    override fun onAddToCartClicked(product: ViewToViewDataModel.Product, position: Int) {
+    override fun onAddToCartClicked(product: ViewToViewDataModel, position: Int) {
         viewModel.addToCart(product)
     }
 

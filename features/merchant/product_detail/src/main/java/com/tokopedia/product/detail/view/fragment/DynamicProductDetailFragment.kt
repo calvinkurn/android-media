@@ -5778,17 +5778,19 @@ open class DynamicProductDetailFragment :
     override fun getRecommendationVerticalTrackData() = verticalRecommendationTrackDataModel
 
     override fun onViewToViewImpressed(
-        data: RecommendationWidget,
+        data: ViewToViewItemData,
         title: String,
+        itemPosition: Int,
         adapterPosition: Int,
     ) {
         DynamicProductDetailTracking.ViewToView.eventImpressViewToView(
-            position = adapterPosition,
-            widget = data,
-            pageName = data.pageName,
+            position = itemPosition,
+            product = data.recommendationData,
+            pageName = data.recommendationData.pageName,
             pageTitle = title,
             viewModel.getDynamicProductInfoP1,
             viewModel.userId,
+            trackingQueue,
         )
     }
 

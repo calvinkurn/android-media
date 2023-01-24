@@ -36,6 +36,24 @@ data class GetRecommendationRequestParam(
         return requestMap
     }
 
+    fun toViewToViewGqlRequest(): Map<String, Any?> {
+        val requestMap = mutableMapOf<String, Any?>()
+        requestMap[PAGE_NUMBER] = pageNumber
+        requestMap[QUERY_PARAM] = queryParam
+        if (userId != 0) {
+            requestMap[USER_ID] = userId
+        }
+        if (productIds.isNotEmpty())
+            requestMap[PRODUCT_IDS] = TextUtils.join(",", productIds)
+        if (categoryIds.isNotEmpty())
+            requestMap[CATEGORY_IDS] = TextUtils.join(",", categoryIds)
+        if(xSource.isNotEmpty())
+            requestMap[X_SOURCE] = xSource
+        if(xDevice.isNotEmpty())
+            requestMap[X_DEVICE] = xDevice
+        return requestMap
+    }
+
     companion object {
         private const val PAGE_NUMBER = "pageNumber"
         private const val PAGE_NAME = "pageName"

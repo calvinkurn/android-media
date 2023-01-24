@@ -48,11 +48,7 @@ class GetViewToViewRecommendationUseCase @Inject constructor(
     }
     override suspend fun getData(inputParameter: GetRecommendationRequestParam): List<RecommendationWidget> {
         val queryParam = context?.let { ChooseAddressUtils.getLocalizingAddressData(it).toQueryParam(inputParameter.queryParam) } ?: inputParameter.queryParam
-        graphqlUseCase.setRequestParams(inputParameter.copy(queryParam = queryParam).toGqlRequest().toMutableMap().apply {
-            remove("pageName")
-            remove("tokoNow")
-            remove("keywords")
-        })
+        graphqlUseCase.setRequestParams(inputParameter.copy(queryParam = queryParam).toViewToViewGqlRequest())
         return graphqlUseCase.executeOnBackground().productRecommendationWidget.data.mappingToRecommendationModel()
     }
 }

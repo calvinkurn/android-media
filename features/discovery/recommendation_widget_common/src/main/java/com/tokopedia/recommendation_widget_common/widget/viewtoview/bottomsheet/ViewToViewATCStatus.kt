@@ -5,8 +5,8 @@ sealed class ViewToViewATCStatus {
 
     data class Success(
         override val message: String,
-        val product: ViewToViewDataModel.Product,
-    ) : ViewToViewATCStatus()
+        val product: ViewToViewDataModel,
+    ): ViewToViewATCStatus()
 
     data class Failure(
         override val message: String
