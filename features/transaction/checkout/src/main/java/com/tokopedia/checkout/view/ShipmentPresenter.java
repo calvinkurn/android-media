@@ -2909,7 +2909,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
-    private void updateDynamicData(DynamicDataPassingParamRequest dynamicDataPassingParamRequest, boolean isFireAndForget) {
+    public void updateDynamicData(DynamicDataPassingParamRequest dynamicDataPassingParamRequest, boolean isFireAndForget) {
         updateDynamicDataPassingUseCase.setParams(dynamicDataPassingParamRequest);
         updateDynamicDataPassingUseCase.execute(
                 dynamicDataPassingUiModel -> {
@@ -2954,11 +2954,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void validateDynamicData() {
         updateDynamicData(dynamicDataParam, false);
-    }
-
-    @Override
-    public DynamicDataPassingParamRequest getDynamicDataParam() {
-        return dynamicDataParam;
     }
 
     @Override

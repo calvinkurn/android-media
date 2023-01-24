@@ -443,8 +443,6 @@ public interface ShipmentContract {
 
         void validateDynamicData();
 
-        DynamicDataPassingParamRequest getDynamicDataParam();
-
         boolean isUsingDynamicDataPassing();
 
         String getDynamicData();

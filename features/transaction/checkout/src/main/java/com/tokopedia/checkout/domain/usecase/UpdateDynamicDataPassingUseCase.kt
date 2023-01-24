@@ -3,7 +3,6 @@ package com.tokopedia.checkout.domain.usecase
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.checkout.data.model.response.dynamicdata.UpdateDynamicDataPassingResponse
 import com.tokopedia.checkout.data.model.response.dynamicdata.UpdateDynamicDataPassingUiModel
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormGqlResponse
 import com.tokopedia.checkout.domain.model.cartshipmentform.DynamicDataPassingParamRequest
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -32,7 +31,7 @@ class UpdateDynamicDataPassingUseCase @Inject constructor(
 
         val request = GraphqlRequest(
             UpdateDynamicDataPassingQuery(),
-            ShipmentAddressFormGqlResponse::class.java,
+            UpdateDynamicDataPassingResponse::class.java,
             params
         )
         val response = graphqlRepository.response(listOf(request))
