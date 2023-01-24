@@ -182,7 +182,7 @@ class MvcLockedToProductViewModelTest {
             AddToCartDataModel(
                 data = DataModel(
                     success = mockSuccessValue,
-                    productId = mockProductId.toLongOrZero()
+                    productId = mockProductId
                 )
             )
         )
