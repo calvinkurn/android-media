@@ -68,7 +68,6 @@ class UserProfileAnalytics {
     object Event {
         const val EVENT_OPEN_SCREEN = "openScreen"
         const val EVENT_CLICK_FEED = "clickFeed"
-        const val EVENT_CLICK_CONTENT = "clickContent"
         const val EVENT_VIEW_ITEM = "view_item"
         const val EVENT_SELECT_CONTENT = "select_content"
         const val EVENT_VIEW_HOME_PAGE = "viewHomepageIris"
