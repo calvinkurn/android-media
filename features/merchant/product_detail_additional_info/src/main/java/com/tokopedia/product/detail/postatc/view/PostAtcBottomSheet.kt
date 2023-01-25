@@ -5,15 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.product.detail.databinding.PostAtcBottomSheetBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcAdapter
 import com.tokopedia.product.detail.postatc.base.PostAtcLayoutManager
-import com.tokopedia.product.detail.postatc.component.productinfo.ProductInfoUiModel
+import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.product.detail.postatc.di.DaggerPostAtcComponent
 import com.tokopedia.product.detail.postatc.di.PostAtcModule
-import com.tokopedia.product.detail.postatc.viewmodel.PostAtcViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
@@ -51,31 +51,40 @@ class PostAtcBottomSheet : BottomSheetUnify() {
 
     private val adapter = PostAtcAdapter()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         component.inject(this)
         return super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initBottomSheet(inflater, container)
+        setupBottomSheet(inflater, container)
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
+        val binding = PostAtcBottomSheetBinding.inflate(inflater, container, false)
+        setupChildView(binding)
+        setChild(binding.root)
+    }
+
+    private fun setupChildView(binding: PostAtcBottomSheetBinding) = binding.apply {
+        postAtcRv.layoutManager = PostAtcLayoutManager()
+        postAtcRv.adapter = adapter
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeViewModel()
         initData()
     }
 
-    private fun initBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
-        val binding = PostAtcBottomSheetBinding.inflate(inflater, container, false)
-        initView(binding)
-        setChild(binding.root)
+    private fun observeViewModel() = with(viewModel) {
+        layouts.observe(viewLifecycleOwner, layoutsObserver)
     }
 
-    private fun initView(binding: PostAtcBottomSheetBinding) = binding.apply {
-        postAtcRv.layoutManager = PostAtcLayoutManager()
-        postAtcRv.adapter = adapter
+    private val layoutsObserver = Observer<List<PostAtcUiModel>> {
+        adapter.addItems(it)
+        adapter.notifyDataSetChanged()
     }
 
     private fun initData() {
@@ -84,17 +93,6 @@ class PostAtcBottomSheet : BottomSheetUnify() {
         val productId = arguments.getString(ARG_PRODUCT_ID) ?: return
         val cartId = arguments.getString(ARG_CART_ID) ?: return
         val layoutId = arguments.getString(ARG_LAYOUT_ID, DEFAULT_LAYOUT_ID)
-
-        val productInfo = ProductInfoUiModel(
-            "Produk berhasil ditambahkan",
-            "Apple iPhone 13 128GB | 256GB | 512GB...",
-            "",
-            "Lihat Keranjang"
-        )
-
-        adapter.addItem(productInfo)
-        adapter.addItem(productInfo)
-        adapter.addItem(productInfo)
 
         viewModel.fetchLayout(productId, cartId, layoutId)
     }

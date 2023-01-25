@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.product.detail.postatc.viewmodel.PostAtcViewModel
+import com.tokopedia.product.detail.postatc.view.PostAtcViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

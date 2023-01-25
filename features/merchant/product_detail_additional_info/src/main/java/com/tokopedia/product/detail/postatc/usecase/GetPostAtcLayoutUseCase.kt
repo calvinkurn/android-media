@@ -3,16 +3,17 @@ package com.tokopedia.product.detail.postatc.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.product.detail.postatc.model.PostAtcLayout
+import com.tokopedia.product.detail.postatc.model.PostAtcLayoutResponse
 import com.tokopedia.product.detail.postatc.query.GetPostAtcLayoutQuery
 import javax.inject.Inject
 
 class GetPostAtcLayoutUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
-) : GraphqlUseCase<PostAtcLayout>(graphqlRepository) {
+) : GraphqlUseCase<PostAtcLayoutResponse>(graphqlRepository) {
 
     init {
         setGraphqlQuery(GetPostAtcLayoutQuery)
-        setTypeClass(PostAtcLayout::class.java)
+        setTypeClass(PostAtcLayoutResponse::class.java)
     }
 
     suspend fun execute(
@@ -27,6 +28,6 @@ class GetPostAtcLayoutUseCase @Inject constructor(
                 layoutId = layoutId
             )
         )
-        return executeOnBackground()
+        return executeOnBackground().postAtcLayout
     }
 }
