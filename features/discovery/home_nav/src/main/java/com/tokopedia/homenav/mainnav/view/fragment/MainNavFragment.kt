@@ -345,6 +345,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             ClientMenuGenerator.IDENTIFIER_TITLE_ORDER_HISTORY -> sendTrackingAllTransaction()
             ClientMenuGenerator.IDENTIFIER_TITLE_WISHLIST -> TrackingTransactionSection.clickOnWishlistViewAll()
             ClientMenuGenerator.IDENTIFIER_TITLE_FAVORITE_SHOP -> TrackingTransactionSection.clickOnFavoriteShopViewAll()
+            ClientMenuGenerator.IDENTIFIER_TITLE_REVIEW -> TrackingTransactionSection.clickOnReviewViewAll()
         }
         if (!handleClickFromPageSource(homeNavTitleDataModel.applink)) {
             RouteManager.route(context, homeNavTitleDataModel.applink)
