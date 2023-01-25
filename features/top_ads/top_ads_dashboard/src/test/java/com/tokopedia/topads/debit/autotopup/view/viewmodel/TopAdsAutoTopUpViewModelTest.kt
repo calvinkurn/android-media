@@ -3,17 +3,18 @@ package com.tokopedia.topads.debit.autotopup.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topads.common.data.response.Error
-import com.tokopedia.topads.dashboard.data.model.CreditResponse
-import com.tokopedia.topads.dashboard.data.model.TKPDProduct
+import com.tokopedia.topads.common.domain.usecase.GetWhiteListedUserUseCase
 import com.tokopedia.topads.dashboard.data.model.TkpdProducts
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSaveSelectionUseCase
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsTopUpCreditUseCase
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.data.model.ResponseSaving
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
@@ -42,11 +43,18 @@ class TopAdsAutoTopUpViewModelTest {
     private var autoTopUpUSeCase: TopAdsAutoTopUpUSeCase = mockk(relaxed = true)
     private var saveSelectionUseCase: TopAdsSaveSelectionUseCase = mockk(relaxed = true)
     private var useCase: GraphqlUseCase<TkpdProducts> = mockk(relaxed = true)
+    private val  userSession: UserSessionInterface = mockk(relaxed = true)
+    private val whiteListedUserUseCase: GetWhiteListedUserUseCase = mockk(relaxed = true)
+    private val topAdsTopUpCreditUseCase: TopAdsTopUpCreditUseCase = mockk(relaxed = true)
 
     @Before
     fun setUp() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        viewModel = TopAdsAutoTopUpViewModel(useCase, autoTopUpUSeCase, saveSelectionUseCase, rule.dispatchers)
+        viewModel = TopAdsAutoTopUpViewModel(
+            useCase, autoTopUpUSeCase, topAdsTopUpCreditUseCase,
+            saveSelectionUseCase, userSession, whiteListedUserUseCase, rule.dispatchers
+        )
+        every { userSession.shopId } returns "123"
     }
 
     @Test
@@ -71,7 +79,7 @@ class TopAdsAutoTopUpViewModelTest {
 
     @Test
     fun `populate credit list success`() {
-        viewModel.populateCreditList("123") {}
+        viewModel.populateCreditList() {}
         verify {
             useCase.execute(any(), any())
         }
@@ -162,7 +170,7 @@ class TopAdsAutoTopUpViewModelTest {
         }
 
         var success = false
-        viewModel.populateCreditList("") {
+        viewModel.populateCreditList() {
             success = it == actual.tkpdProduct.creditResponse
         }
 
@@ -178,7 +186,7 @@ class TopAdsAutoTopUpViewModelTest {
             secondArg<(Throwable) -> Unit>().invoke(actual)
         }
 
-        viewModel.populateCreditList("") {}
+        viewModel.populateCreditList() {}
 
         verify(exactly = 1) { actual.printStackTrace() }
     }

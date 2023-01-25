@@ -13,6 +13,7 @@ import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopadsGetFreeDepositUseCase
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
+import com.tokopedia.topads.domain.usecase.TopAdsGetSelectedTopUpTypeUseCase
 import com.tokopedia.topads.domain.usecase.TopadsCreditHistoryUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -44,6 +45,7 @@ class TopAdsCreditHistoryViewModelTest {
     private var autoTopUpUSeCase: TopAdsAutoTopUpUSeCase = mockk(relaxed = true)
     private var topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase = mockk(relaxed = true)
     private val topAdsCreditHistoryUseCase: TopadsCreditHistoryUseCase = mockk(relaxed = true)
+    private val topAdsGetSelectedTopUpTypeUseCase: TopAdsGetSelectedTopUpTypeUseCase = mockk(relaxed = true)
 
     @ExperimentalCoroutinesApi
     @Before
@@ -51,7 +53,8 @@ class TopAdsCreditHistoryViewModelTest {
         MockitoAnnotations.initMocks(this)
         viewModel = TopAdsCreditHistoryViewModel(
             userSessionInterface, autoTopUpUSeCase, topAdsGetShopDepositUseCase,
-            topAdsCreditHistoryUseCase, Dispatchers.Main, pendingRewardUseCase
+            topAdsCreditHistoryUseCase, Dispatchers.Main, pendingRewardUseCase,
+            topAdsGetSelectedTopUpTypeUseCase
         )
         Mockito.`when`(userSessionInterface.userId).thenReturn("12345")
         Mockito.`when`(userSessionInterface.shopId).thenReturn("123456")

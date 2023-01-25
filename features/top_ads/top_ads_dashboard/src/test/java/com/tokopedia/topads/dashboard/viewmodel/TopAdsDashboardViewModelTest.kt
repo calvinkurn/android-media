@@ -5,13 +5,16 @@ import com.google.gson.Gson
 import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.data.response.TopadsDashboardDeposits
+import com.tokopedia.topads.common.domain.usecase.GetWhiteListedUserUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.dashboard.data.model.beranda.RecommendationStatistics
 import com.tokopedia.topads.dashboard.data.model.beranda.TopAdsLatestReading
 import com.tokopedia.topads.dashboard.data.model.beranda.TopadsWidgetSummaryStatisticsModel
 import com.tokopedia.topads.dashboard.data.raw.topAdsHomepageLatestReadingJson
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsWidgetSummaryStatisticsUseCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopadsRecommendationStatisticsUseCase
+import com.tokopedia.topads.domain.usecase.TopAdsGetSelectedTopUpTypeUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -36,6 +39,9 @@ class TopAdsDashboardViewModelTest {
     private lateinit var summaryStatisticsUseCase: TopAdsWidgetSummaryStatisticsUseCase
     private lateinit var recommendationStatisticsUseCase: TopadsRecommendationStatisticsUseCase
     private lateinit var topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase
+    private lateinit var autoTopUpUSeCase: TopAdsAutoTopUpUSeCase
+    private lateinit var topAdsGetSelectedTopUpTypeUseCase: TopAdsGetSelectedTopUpTypeUseCase
+    private lateinit var whiteListedUserUseCase: GetWhiteListedUserUseCase
     private lateinit var viewModel: TopAdsDashboardViewModel
 
     @Before
@@ -43,8 +49,13 @@ class TopAdsDashboardViewModelTest {
         summaryStatisticsUseCase = mockk(relaxed = true)
         recommendationStatisticsUseCase = mockk(relaxed = true)
         topAdsGetShopDepositUseCase = mockk(relaxed = true)
+        autoTopUpUSeCase = mockk(relaxed = true)
+        topAdsGetSelectedTopUpTypeUseCase = mockk(relaxed = true)
+        whiteListedUserUseCase = mockk(relaxed = true)
+
         viewModel = TopAdsDashboardViewModel(
-            summaryStatisticsUseCase, recommendationStatisticsUseCase, topAdsGetShopDepositUseCase
+            summaryStatisticsUseCase, recommendationStatisticsUseCase, topAdsGetShopDepositUseCase,
+            autoTopUpUSeCase, topAdsGetSelectedTopUpTypeUseCase, whiteListedUserUseCase
         )
     }
 
