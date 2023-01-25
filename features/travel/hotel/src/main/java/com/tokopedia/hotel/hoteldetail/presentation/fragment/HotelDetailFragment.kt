@@ -177,7 +177,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initializeShare()
+        initializeShare(view)
 
         if (savedInstanceState != null && savedInstanceState.containsKey(SAVED_SEARCH_PARAMETER)) {
             hotelHomepageModel = savedInstanceState.getParcelable(SAVED_SEARCH_PARAMETER)
@@ -382,7 +382,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         }
     }
 
-    private fun initializeShare() {
+    private fun initializeShare(view: View) {
         if (context != null) {
             activity?.run {
                 val ctx = WeakReference<Activity>(this)
