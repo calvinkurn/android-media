@@ -1,16 +1,19 @@
 package com.tokopedia.mvc.presentation.bottomsheet.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.mvc.data.mapper.UpdateVoucherMapper
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.usecase.UpdateCouponFacadeUseCase
 import com.tokopedia.mvc.util.DateTimeUtils.DASH_DATE_FORMAT
 import com.tokopedia.mvc.util.DateTimeUtils.HOUR_FORMAT
+import com.tokopedia.mvc.util.DateTimeUtils.getMaxDate
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
@@ -48,6 +51,13 @@ class VoucherEditPeriodViewModel @Inject constructor(
         _startDateCalendarLiveData.value = startDate
         _dateStartLiveData.value = startDate?.time?.toFormattedString(DASH_DATE_FORMAT)
         _hourStartLiveData.value = startDate?.time?.toFormattedString(HOUR_FORMAT)
+        if (getMaxDate(_startDateCalendarLiveData.value as? GregorianCalendar?)?.compareTo(
+                _endDateCalendarLiveData.value
+            ).isLessThanZero()) {
+            Log.d("FATAL", "setStartDateTime: Need to change the end date as well")
+            val modifiedEndDate = getMaxDate(_startDateCalendarLiveData.value as? GregorianCalendar)
+            setEndDateTime(modifiedEndDate)
+        }
     }
 
     fun setEndDateTime(endDate: Calendar?) {

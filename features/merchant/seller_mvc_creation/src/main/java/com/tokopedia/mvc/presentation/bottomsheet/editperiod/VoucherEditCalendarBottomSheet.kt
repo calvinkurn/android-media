@@ -9,6 +9,7 @@ import com.tokopedia.calendar.Legend
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.OnDateChangedListener
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetEditPeriodCalendarBinding
@@ -139,7 +140,11 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun initTimePicker(defaultDate: GregorianCalendar, start: GregorianCalendar?, end: GregorianCalendar?) {
+    private fun initTimePicker(
+        defaultDate: GregorianCalendar,
+        start: GregorianCalendar?,
+        end: GregorianCalendar?
+    ) {
         timePicker = context?.let { timePickerContext ->
             start?.let { start ->
                 end?.let { end ->
@@ -186,6 +191,12 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
     private fun renderCalendar(holidayArrayList: ArrayList<Legend>) {
         var selectedDates = startCalendar?.let {
             arrayListOf(it.time)
+        }
+
+        if (!startCalendar?.compareTo(endDate).isLessThanZero()) {
+            selectedDates = endDate?.let {
+                arrayListOf(it.time)
+            }
         }
 
         startDate?.time?.let {

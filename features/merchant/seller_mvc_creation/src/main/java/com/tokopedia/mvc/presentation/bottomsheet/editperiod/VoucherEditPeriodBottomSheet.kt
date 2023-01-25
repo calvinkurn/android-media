@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -86,6 +87,7 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
                 binding?.btnMvcSavePeriod?.isLoading = true
             }
         }
+        showDateToaster()
     }
 
     private fun initInjector() {
@@ -97,14 +99,24 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
             .inject(this)
     }
 
-    private fun setUpDate() {
-        voucher?.let {
-            startCalendar = getGregorianDate(it.startTime)
-            viewModel.setStartDateTime(startCalendar)
+    private fun showDateToaster() {
+        context?.resources?.let {
+            binding?.root?.showToaster(
+                it.getString(R.string.edit_period_date_picker_end_date_warning)
+                    .toBlankOrString(),
+                it.getString(R.string.smvc_ok).toBlankOrString()
+            )
         }
+    }
+
+    private fun setUpDate() {
         voucher?.let {
             endCalendar = getGregorianDate(it.finishTime)
             viewModel.setEndDateTime(endCalendar)
+        }
+        voucher?.let {
+            startCalendar = getGregorianDate(it.startTime)
+            viewModel.setStartDateTime(startCalendar)
         }
     }
 
