@@ -20,12 +20,18 @@ object ReplyAreaResult {
         ).check(ViewAssertions.matches(withText(text)))
     }
 
-    fun assertSnackbarText(msg: String) {
-        Espresso.onView(withText(msg))
+    fun assertSnackbarText(text: String) {
+        Espresso.onView(withText(text))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
-    fun assertNoSnackbarText(msg: String) {
-        Espresso.onView(withText(msg)).check(ViewAssertions.doesNotExist())
+    fun assertNoSnackbarText(text: String) {
+        Espresso.onView(withText(text)).check(ViewAssertions.doesNotExist())
+    }
+
+    fun assertReplyAreaErrorMessage(text: String) {
+        Espresso.onView(
+            ViewMatchers.withId(R.id.tokochat_tv_error_message)
+        ).check(ViewAssertions.matches(withText(text)))
     }
 }

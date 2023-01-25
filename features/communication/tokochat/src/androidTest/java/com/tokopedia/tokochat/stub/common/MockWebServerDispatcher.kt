@@ -1,41 +1,40 @@
 package com.tokopedia.tokochat.stub.common
 
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokochat.stub.common.util.ResponseReader
+import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.RecordedRequest
 
 class MockWebServerDispatcher : Dispatcher() {
 
-    var responseCode: Int = 200
-
     override fun dispatch(request: RecordedRequest): MockResponse {
+        return getMockResponse(request.path ?: "")
+    }
+
+    private fun getMockResponse(url: String): MockResponse {
+        val pairResponse = getPairResponse(url)
         return MockResponse()
-            .setResponseCode(responseCode)
-            .setBody(
-                ResponseReader.convertJsonToStream(getResponseString(request.path ?: ""))
-            )
+            .setResponseCode(pairResponse.first)
+            .setBody(getStreamResponse(pairResponse.second))
     }
 
-    private fun getResponseString(url: String): String {
-        return if (responseCode == 200) {
-            getSuccessResponseString(url)
-        } else {
-            throw MessageErrorException("Error $responseCode")
-        }
-    }
-
-    private fun getSuccessResponseString(url: String): String {
+    private fun getPairResponse(url: String): Pair<Int, String> {
         return when {
-            url.contains("v2/chat/connection") -> "connection/success_get_connection.json"
-            url.contains("/v1/chat/profile") -> "profile/success_get_profile.json"
-            url.contains("/v2/order") -> "channel_details/success_get_channel_id.json"
+            url.contains("v2/chat/connection") -> ApiResponseStub.connectionResponse
+            url.contains("/v1/chat/profile") -> ApiResponseStub.profileResponse
+            url.contains("/v2/order") -> {
+                ApiResponseStub.channelIdResponse
+            }
             (url.contains("/v2/chat/channels") && !url.contains("messages")) ->
-                "channel_details/success_get_channel_details.json"
+                ApiResponseStub.channelDetailsResponse
             (url.contains("/v2/chat/channels") && url.contains("messages")) ->
-                "chat_history/success_get_chat_history.json"
-            else -> ""
+                ApiResponseStub.chatHistoryResponse
+            else -> ApiResponseStub.generalEmptyResponse
         }
+    }
+
+    private fun getStreamResponse(fileName: String): String {
+        return ResponseReader.convertJsonToStream(fileName)
     }
 }

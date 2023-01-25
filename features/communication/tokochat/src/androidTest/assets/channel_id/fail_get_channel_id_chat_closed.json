@@ -1,0 +1,12 @@
+{
+  "success": false,
+  "data": null,
+  "errors": [
+    {
+      "code": "CHAT:SERVICE:CHAT_CLOSED",
+      "message": "chat clsoed",
+      "message_title": "message title chat closed",
+      "message_severity": "error"
+    }
+  ]
+}

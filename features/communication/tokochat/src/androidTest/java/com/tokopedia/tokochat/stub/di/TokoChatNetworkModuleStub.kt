@@ -100,7 +100,7 @@ object TokoChatNetworkModuleStub {
         @TokoChatQualifier okHttpClient: OkHttpClient
     ): Retrofit {
         return retrofitBuilder
-            .baseUrl("http://localhost:8080/") //local base url
+            .baseUrl("http://localhost:8090/") //local base url
             .addConverterFactory(StringResponseConverter())
             .client(okHttpClient).build()
     }

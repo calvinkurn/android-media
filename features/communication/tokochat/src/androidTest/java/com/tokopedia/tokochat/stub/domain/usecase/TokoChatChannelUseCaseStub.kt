@@ -8,6 +8,7 @@ import javax.inject.Inject
 class TokoChatChannelUseCaseStub @Inject constructor(
     @ActivityScope tokoChatRepositoryStub: TokoChatRepositoryStub
 ): TokoChatChannelUseCase(tokoChatRepositoryStub) {
+
     var isConnected: Boolean = true
 
     override fun isChatConnected(): Boolean {

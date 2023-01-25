@@ -8,7 +8,9 @@ import com.tokopedia.tokochat.test.robot.header_date.HeaderDateResult
 import com.tokopedia.tokochat.test.robot.reply_area.ReplyAreaResult
 import com.tokopedia.tokochat.test.robot.reply_area.ReplyAreaRobot
 import com.tokopedia.tokochat.test.robot.ticker.TickerResult
+import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.util.OrderStatusType
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil.MAX_DISPLAYED_STRING
 import org.junit.Test
 
 @UiTest
@@ -105,7 +107,7 @@ class TokoChatGeneralTest : BaseTokoChatTest() {
 
         // Then
         ReplyAreaResult.assertNoSnackbarText(
-            "Oops, tulis pesan dulu ya sebelum kirim chat."
+            activity.getString(R.string.tokochat_desc_empty_text_box)
         )
     }
 
@@ -119,7 +121,35 @@ class TokoChatGeneralTest : BaseTokoChatTest() {
 
         // Then
         ReplyAreaResult.assertSnackbarText(
-            "Oops, tulis pesan dulu ya sebelum kirim chat."
+            activity.getString(R.string.tokochat_desc_empty_text_box)
+        )
+    }
+
+    @Test
+    fun should_show_warning_offset_when_text_in_reply_area_more_than_offset() {
+        // When
+        launchChatRoomActivity()
+        val longText = context.resources.getString(
+            com.tokopedia.tokochat.test.R.string.tokochat_long_text)
+        ReplyAreaRobot.replaceTextInReplyArea(longText)
+
+        // Then
+        ReplyAreaResult.assertReplyAreaErrorMessage(
+            activity.getString(R.string.tokochat_desc_max_char_exceeded, "1")
+        )
+    }
+
+    @Test
+    fun should_show_warning_10_000_plus_when_text_in_reply_area_more_than_10_000() {
+        // When
+        launchChatRoomActivity()
+        val longText = context.resources.getString(
+            com.tokopedia.tokochat.test.R.string.tokochat_long_text)
+        ReplyAreaRobot.replaceTextInReplyArea(longText.repeat( 11))
+
+        // Then
+        ReplyAreaResult.assertReplyAreaErrorMessage(
+            activity.getString(R.string.tokochat_desc_max_char_exceeded, MAX_DISPLAYED_STRING)
         )
     }
 }

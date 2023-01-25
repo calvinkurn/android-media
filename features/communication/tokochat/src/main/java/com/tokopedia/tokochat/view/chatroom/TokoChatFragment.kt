@@ -125,7 +125,7 @@ open class TokoChatFragment :
         initializeChatRoom(savedInstanceState)
     }
 
-    private fun initializeChatRoom(savedInstanceState: Bundle?) {
+    protected open fun initializeChatRoom(savedInstanceState: Bundle?) {
         setDataFromArguments(savedInstanceState)
         if (viewModel.gojekOrderId.isNotBlank()) { // Do not init when order id empty
             initGroupBooking()
@@ -786,11 +786,7 @@ open class TokoChatFragment :
     private fun observeChatHistory() {
         observe(viewModel.getChatHistory(viewModel.channelId)) {
             // First time get Chat History
-            if (firstTimeOpen) {
-                firstTimeOpen = false
-                viewModel.loadChatRoomTicker()
-                observerTyping()
-            }
+            handleFirstTimeGetChatHistory()
 
             // It's from load more func, if recyclerview is loading more
             // Should skip if recyclerview is not loading more message
@@ -805,8 +801,20 @@ open class TokoChatFragment :
             scrollToBottom()
 
             // Mark the chat as read
-            viewModel.markChatAsRead(viewModel.channelId)
+            markChatAsRead()
         }
+    }
+
+    private fun handleFirstTimeGetChatHistory() {
+        if (firstTimeOpen) {
+            firstTimeOpen = false
+            viewModel.loadChatRoomTicker()
+            observerTyping()
+        }
+    }
+
+    protected open fun markChatAsRead() {
+        viewModel.markChatAsRead(viewModel.channelId)
     }
 
     override fun onStartTyping() {

@@ -1,0 +1,15 @@
+{
+  "data": [
+    {
+      "id": "89953ffd-6655-4581-b811-8e1a6145661b",
+      "channel_id": "b0c80252-c6a6-40f1-a3ce-a9894a32ac6d",
+      "text": "Order complete! You can continue this chat for 2 hours from the time of order completion.",
+      "data": "{\"type\":\"third_party_message\",\"data\":{\"visibility\":[\"9075737\"],\"message\":{\"en_ID\":\"Order complete! You can continue this chat for 2 hours from the time of order completion.\",\"en_TH\":\"Order complete! You can continue this chat for 2 hours from the time of order completion.\",\"en_VN\":\"Order complete! You can continue this chat for 2 hours from the time of order completion.\",\"id_ID\":\"Pesanan selesai! Kamu bisa liat riwayat chat dan juga nge-chat driver sampai 2 jam setelah pesanan diselesaikan.\",\"th_TH\":\"ออเดอร์ของคุณสิ้นสุดลงแล้ว คุณยังสามารถแชทต่อได้ภายใน 2 ชั่วโมงหลังจากที่ออเดอร์ได้สิ้นสุดลง\",\"vi_VN\":\"Đơn hàng đã hoàn thành. Bạn có thể xem tin nhắn và tiếp tục cuộc trò chuyện này với tài xế trong 2 tiếng kể từ lúc hoàn thành đơn hàng.\"},\"deeplink\":null,\"level\":\"alert\"}}",
+      "type": "system",
+      "sender": null,
+      "sent_at": 1673950390655
+    }
+  ],
+  "success": true,
+  "errors": []
+}
