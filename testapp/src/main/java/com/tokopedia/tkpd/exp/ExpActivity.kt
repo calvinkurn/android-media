@@ -2,14 +2,17 @@ package com.tokopedia.tkpd.exp
 
 import android.content.Intent
 import android.content.res.Configuration
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.Checkbox
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,10 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.room.util.TableInfo
 import com.tokopedia.common_compose.principles.NestButton
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
@@ -68,7 +68,10 @@ class ExpActivity : AppCompatActivity() {
                                     text = "Heading 3",
                                     textStyle = NestTheme.typography.heading3
                                 )
-                                NestTypography(text = "Display 3")
+                                NestTypography(
+                                    text = "Display 3",
+                                    textStyle = NestTheme.typography.display3
+                                )
                                 NestTypography(
                                     text = "Body 1",
                                     textStyle = NestTheme.typography.body1
@@ -85,11 +88,13 @@ class ExpActivity : AppCompatActivity() {
                                 TextUnify(
                                     text = "Heading 3",
                                     type = TextUnifyType.Heading3,
-                                    update = {})
+                                    update = {}
+                                )
                                 TextUnify(
                                     text = "Display 3",
                                     type = TextUnifyType.Display3,
-                                    update = {})
+                                    update = {}
+                                )
                                 TextUnify(text = "Body 1", type = TextUnifyType.Body1, update = {})
                                 UnifyButtonCompose(text = "Click me!")
                             }
