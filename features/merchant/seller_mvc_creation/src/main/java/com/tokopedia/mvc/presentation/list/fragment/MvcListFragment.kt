@@ -113,6 +113,8 @@ class MvcListFragment :
 
     @Inject
     lateinit var viewModel: MvcListViewModel
+    @Inject
+    lateinit var tracker: VoucherListTracker
 
     override fun getScreenName() = ""
 
@@ -165,6 +167,7 @@ class MvcListFragment :
             }
             moreMenuBottomSheet?.show(childFragmentManager, "")
         }
+        tracker.sendClickDotsOnEachVoucherEvent()
     }
 
     private fun onClickListenerForMoreMenu(menuUiModel: MoreMenuUiModel, voucher: Voucher) {
@@ -344,6 +347,7 @@ class MvcListFragment :
             otherPeriodBottomSheet = OtherPeriodBottomSheet.newInstance(it)
             otherPeriodBottomSheet?.setListener(this)
             otherPeriodBottomSheet?.show(this, it.size)
+            tracker.sendClickArrowOnJadwalLainEvent()
         }
         viewModel.pageState.observe(viewLifecycleOwner) {
             when (it) {
@@ -421,6 +425,7 @@ class MvcListFragment :
             setColorFilter(colorIcon, PorterDuff.Mode.MULTIPLY)
             setOnClickListener {
                 eduCenterBottomSheet?.show(childFragmentManager)
+                tracker.sendClickDotsOnUpperSideEvent()
             }
         }
         setNavigationOnClickListener {
@@ -580,6 +585,7 @@ class MvcListFragment :
         )
 
         startActivityForResult(intent, 100)
+        tracker.sendClickBuatKuponEvent()
     }
 
     private fun setEduCenterBottomSheet() {
@@ -752,6 +758,7 @@ class MvcListFragment :
 
     private fun redirectToQuotaVoucherPage(voucherCreationQuota: VoucherCreationQuota) {
         QuotaInfoActivity.start(context, voucherCreationQuota)
+        tracker.sendClickInfoOnSisaKuotaEvent()
     }
 
     private fun redirectToEditPage(voucher: Voucher) {
