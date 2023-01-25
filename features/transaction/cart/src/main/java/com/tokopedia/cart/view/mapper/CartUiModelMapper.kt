@@ -161,7 +161,7 @@ object CartUiModelMapper {
                 boMetadata = availableGroup.boMetadata
                 cartShopGroupTicker = CartShopGroupTickerData(
                         enableBoAffordability = availableGroup.shipmentInformation.enableBoAffordability,
-                        enableBundleCrossSell = hasPartialBundleProduct(availableGroup) || hasUncheckedBundleProduct(availableGroup),
+                        enableBundleCrossSell = hasUnselectedBundleProduct(availableGroup),
                         errorText = cartData.messages.errorBoAffordability
                 )
                 addOnText = availableGroup.giftingAddOn.tickerText
@@ -219,13 +219,7 @@ object CartUiModelMapper {
         return false
     }
 
-    private fun hasPartialBundleProduct(availableGroup: AvailableGroup): Boolean {
-        return availableGroup.cartDetails.any {
-            it.bundleDetail.bundleId == "0" && it.products.any { product -> product.bundleIds.isNotEmpty() }
-        }
-    }
-
-    private fun hasUncheckedBundleProduct(availableGroup: AvailableGroup): Boolean {
+    private fun hasUnselectedBundleProduct(availableGroup: AvailableGroup): Boolean {
         return availableGroup.cartDetails.any {
             it.products.any { product -> product.bundleIds.isNotEmpty() && !product.isCheckboxState }
         }
