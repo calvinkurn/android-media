@@ -40,7 +40,7 @@ data class CartShopHolderData(
     var latitude: String = "",
     var longitude: String = "",
     var boMetadata: BoMetadata = BoMetadata(),
-    var boAffordability: CartShopBoAffordabilityData = CartShopBoAffordabilityData(),
+    var cartShopGroupTicker: CartShopGroupTickerData = CartShopGroupTickerData(),
     var addOnText: String = "",
     var addOnImgUrl: String = "",
     var addOnId: String = "",
@@ -48,6 +48,7 @@ data class CartShopHolderData(
     var isPo: Boolean = false,
     var poDuration: String = "",
     var boCode: String = "",
+    var bundleIds: List<String> = emptyList(),
 ) {
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
@@ -93,7 +94,7 @@ data class CartShopHolderData(
             latitude = this.latitude,
             longitude = this.longitude,
             boMetadata = this.boMetadata,
-            boAffordability = this.boAffordability,
+            cartShopGroupTicker = this.cartShopGroupTicker,
             addOnText = this.addOnText,
             addOnImgUrl = this.addOnImgUrl,
             addOnId = this.addOnId,
@@ -101,6 +102,7 @@ data class CartShopHolderData(
             isPo = this.isPo,
             poDuration = this.poDuration,
             boCode = this.boCode,
+            bundleIds = this.bundleIds
         )
     }
 
@@ -109,17 +111,25 @@ data class CartShopHolderData(
     }
 }
 
-class CartShopBoAffordabilityData(
-    var enable: Boolean = true,
-    var state: CartShopBoAffordabilityState = CartShopBoAffordabilityState.FIRST_LOAD,
+class CartShopGroupTickerData(
+    var enableBoAffordability: Boolean = true,
+    var enableBundleCrossSell: Boolean = true,
+    var state: CartShopGroupTickerState = CartShopGroupTickerState.FIRST_LOAD,
     var tickerText: String = "",
     var errorText: String = "",
+    var leftIcon: String = "",
+    var rightIcon: String = "",
+    var cartBundlingBottomSheetData: CartBundlingBottomSheetData = CartBundlingBottomSheetData(),
 
     // list of cartIds for tracker
     var cartIds: String = "",
     var hasSeenTicker: Boolean = false,
-)
+) {
 
-enum class CartShopBoAffordabilityState {
+    val enableTicker: Boolean
+        get() = enableBoAffordability || enableBundleCrossSell
+}
+
+enum class CartShopGroupTickerState {
     FIRST_LOAD, LOADING, FAILED, SUCCESS_AFFORD, SUCCESS_NOT_AFFORD, EMPTY
 }

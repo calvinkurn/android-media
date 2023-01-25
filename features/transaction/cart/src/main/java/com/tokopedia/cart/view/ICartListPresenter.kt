@@ -139,7 +139,7 @@ interface ICartListPresenter {
 
     fun setLocalizingAddressData(lca: LocalCacheModel?)
 
-    fun checkBoAffordability(cartShopHolderData: CartShopHolderData)
+    fun checkCartShopGroupTicker(cartShopHolderData: CartShopHolderData)
 
     fun getPromoFlag(): Boolean
 

@@ -1,8 +1,8 @@
 package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityData
-import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityState
+import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
+import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.logisticcart.boaffordability.model.BoAffordabilityDataResponse
@@ -39,15 +39,15 @@ class BoAffordabilityTest : BaseCartTest() {
         )
 
         // WHEN
-        cartListPresenter.checkBoAffordability(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
         verify {
-            cartShopHolderData.boAffordability = CartShopBoAffordabilityData(
-                state = CartShopBoAffordabilityState.FAILED
+            cartShopHolderData.cartShopGroupTicker = CartShopGroupTickerData(
+                state = CartShopGroupTickerState.FAILED
             )
-            view.updateCartBoAffordability(cartShopHolderData)
+            view.updateCartShopGroupTicker(cartShopHolderData)
         }
 
         coVerify(inverse = true) {
@@ -85,16 +85,16 @@ class BoAffordabilityTest : BaseCartTest() {
         )
 
         // WHEN
-        cartListPresenter.checkBoAffordability(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
         verify {
-            cartShopHolderData.boAffordability = CartShopBoAffordabilityData(
-                state = CartShopBoAffordabilityState.SUCCESS_AFFORD,
+            cartShopHolderData.cartShopGroupTicker = CartShopGroupTickerData(
+                state = CartShopGroupTickerState.SUCCESS_AFFORD,
                 tickerText = ticker
             )
-            view.updateCartBoAffordability(cartShopHolderData)
+            view.updateCartShopGroupTicker(cartShopHolderData)
         }
 
         coVerify {
@@ -121,16 +121,16 @@ class BoAffordabilityTest : BaseCartTest() {
         )
 
         // WHEN
-        cartListPresenter.checkBoAffordability(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
         verify {
-            cartShopHolderData.boAffordability = CartShopBoAffordabilityData(
-                state = CartShopBoAffordabilityState.SUCCESS_NOT_AFFORD,
+            cartShopHolderData.cartShopGroupTicker = CartShopGroupTickerData(
+                state = CartShopGroupTickerState.SUCCESS_NOT_AFFORD,
                 tickerText = ticker
             )
-            view.updateCartBoAffordability(cartShopHolderData)
+            view.updateCartShopGroupTicker(cartShopHolderData)
         }
     }
 
@@ -152,16 +152,16 @@ class BoAffordabilityTest : BaseCartTest() {
         )
 
         // WHEN
-        cartListPresenter.checkBoAffordability(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
         verify {
-            cartShopHolderData.boAffordability = CartShopBoAffordabilityData(
-                state = CartShopBoAffordabilityState.SUCCESS_AFFORD,
+            cartShopHolderData.cartShopGroupTicker = CartShopGroupTickerData(
+                state = CartShopGroupTickerState.SUCCESS_AFFORD,
                 tickerText = ticker
             )
-            view.updateCartBoAffordability(cartShopHolderData)
+            view.updateCartShopGroupTicker(cartShopHolderData)
         }
     }
 
@@ -183,16 +183,16 @@ class BoAffordabilityTest : BaseCartTest() {
         )
 
         // WHEN
-        cartListPresenter.checkBoAffordability(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
         verify {
-            cartShopHolderData.boAffordability = CartShopBoAffordabilityData(
-                state = CartShopBoAffordabilityState.EMPTY,
+            cartShopHolderData.cartShopGroupTicker = CartShopGroupTickerData(
+                state = CartShopGroupTickerState.EMPTY,
                 tickerText = ticker
             )
-            view.updateCartBoAffordability(cartShopHolderData)
+            view.updateCartShopGroupTicker(cartShopHolderData)
         }
     }
 
@@ -209,15 +209,15 @@ class BoAffordabilityTest : BaseCartTest() {
         } throws IOException()
 
         // WHEN
-        cartListPresenter.checkBoAffordability(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
         verify {
-            cartShopHolderData.boAffordability = CartShopBoAffordabilityData(
-                state = CartShopBoAffordabilityState.FAILED
+            cartShopHolderData.cartShopGroupTicker = CartShopGroupTickerData(
+                state = CartShopGroupTickerState.FAILED
             )
-            view.updateCartBoAffordability(cartShopHolderData)
+            view.updateCartShopGroupTicker(cartShopHolderData)
         }
     }
 
@@ -239,9 +239,9 @@ class BoAffordabilityTest : BaseCartTest() {
         )
 
         // WHEN
-        cartListPresenter.checkBoAffordability(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceTimeBy(1)
-        cartListPresenter.checkBoAffordability(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
@@ -268,7 +268,7 @@ class BoAffordabilityTest : BaseCartTest() {
         )
 
         // WHEN
-        cartListPresenter.checkBoAffordability(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceTimeBy(1)
         cartListPresenter.detachView()
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
@@ -276,7 +276,7 @@ class BoAffordabilityTest : BaseCartTest() {
         // THEN
         coVerify(inverse = true) {
             boAffordabilityUseCase.setParam(any()).executeOnBackground()
-            view.updateCartBoAffordability(any())
+            view.updateCartShopGroupTicker(any())
         }
     }
 
@@ -305,7 +305,7 @@ class BoAffordabilityTest : BaseCartTest() {
 
         // WHEN
         cartListPresenter.setLocalizingAddressData(lca)
-        cartListPresenter.checkBoAffordability(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
@@ -340,7 +340,7 @@ class BoAffordabilityTest : BaseCartTest() {
 
         // WHEN
         cartListPresenter.setLocalizingAddressData(lca)
-        cartListPresenter.checkBoAffordability(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN

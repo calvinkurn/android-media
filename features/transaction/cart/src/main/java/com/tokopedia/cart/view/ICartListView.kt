@@ -160,5 +160,5 @@ interface ICartListView : CustomerView {
 
     fun sendATCTrackingURLRecent(productModel: CartRecentViewItemHolderData)
 
-    fun updateCartBoAffordability(cartShopHolderData: CartShopHolderData)
+    fun updateCartShopGroupTicker(cartShopHolderData: CartShopHolderData)
 }

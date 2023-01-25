@@ -13,6 +13,7 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
 import com.tokopedia.cart.domain.usecase.AddCartToWishlistUseCase
+import com.tokopedia.cart.domain.usecase.CartShopGroupTickerAggregatorUseCase
 import com.tokopedia.cart.domain.usecase.FollowShopUseCase
 import com.tokopedia.cart.domain.usecase.GetCartRevampV3UseCase
 import com.tokopedia.cart.domain.usecase.SetCartlistCheckboxStateUseCase
@@ -36,10 +37,11 @@ import com.tokopedia.cart.view.subscriber.UpdateCartAndValidateUseSubscriber
 import com.tokopedia.cart.view.subscriber.UpdateCartCounterSubscriber
 import com.tokopedia.cart.view.subscriber.UpdateCartSubscriber
 import com.tokopedia.cart.view.subscriber.ValidateUseSubscriber
+import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
-import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityState
+import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.cart.view.uimodel.PromoSummaryData
@@ -54,7 +56,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.logisticcart.boaffordability.usecase.BoAffordabilityUseCase
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
@@ -128,7 +129,7 @@ class CartListPresenter @Inject constructor(
     private val validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
     private val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
     private val followShopUseCase: FollowShopUseCase,
-    private val boAffordabilityUseCase: BoAffordabilityUseCase,
+    private val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase,
     private val schedulers: ExecutorSchedulers,
     private val dispatchers: CoroutineDispatchers
 ) : ICartListPresenter, CoroutineScope {
@@ -163,15 +164,15 @@ class CartListPresenter @Inject constructor(
     // Store LCA data for bo affordability
     var lca: LocalCacheModel? = null
 
-    // Store last bo affordability cart string for debounce handling
-    var lastBoAffordabilityCartString: String = ""
+    // Store last cart shop group ticker cart string for debounce handling
+    var lastCartShopGroupTickerCartString: String = ""
 
     // Bo affordability debounce job
-    var boAffordabilityJob: Job? = null
+    var cartShopGroupTickerJob: Job? = null
 
     companion object {
         private const val PERCENTAGE = 100.0f
-        private const val BO_AFFORDABILITY_DELAY = 500L
+        private const val CART_SHOP_GROUP_TICKER_DELAY = 500L
         private const val BO_AFFORDABILITY_WEIGHT_KILO = 1000
 
         const val ITEM_CHECKED_ALL_WITHOUT_CHANGES = 0
@@ -193,7 +194,7 @@ class CartListPresenter @Inject constructor(
 
     override fun detachView() {
         compositeSubscription.unsubscribe()
-        boAffordabilityJob?.cancel()
+        cartShopGroupTickerJob?.cancel()
         coroutineContext.cancelChildren()
         view = null
     }
@@ -1389,9 +1390,9 @@ class CartListPresenter @Inject constructor(
             setDimension117(cartItemHolderData.bundleType)
             setDimension118(cartItemHolderData.bundleId)
             setCampaignId(cartItemHolderData.campaignId)
-            if (cartItemHolderData.shopBoAffordabilityData.tickerText.isNotBlank()) {
+            if (cartItemHolderData.shopCartShopGroupTickerData.tickerText.isNotBlank()) {
                 val fulfillText =
-                    if (cartItemHolderData.shopBoAffordabilityData.state == CartShopBoAffordabilityState.SUCCESS_AFFORD) {
+                    if (cartItemHolderData.shopCartShopGroupTickerData.state == CartShopGroupTickerState.SUCCESS_AFFORD) {
                         ConstantTransactionAnalytics.EventLabel.BO_FULFILL
                     } else {
                         ConstantTransactionAnalytics.EventLabel.BO_UNFULFILL
@@ -1925,14 +1926,14 @@ class CartListPresenter @Inject constructor(
         this.lca = lca
     }
 
-    override fun checkBoAffordability(cartShopHolderData: CartShopHolderData) {
-        if (lastBoAffordabilityCartString == cartShopHolderData.cartString) {
-            boAffordabilityJob?.cancel()
+    override fun checkCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
+        if (lastCartShopGroupTickerCartString == cartShopHolderData.cartString) {
+            cartShopGroupTickerJob?.cancel()
         }
-        lastBoAffordabilityCartString = cartShopHolderData.cartString
-        boAffordabilityJob = launch(dispatchers.io) {
+        lastCartShopGroupTickerCartString = cartShopHolderData.cartString
+        cartShopGroupTickerJob = launch(dispatchers.io) {
             try {
-                delay(BO_AFFORDABILITY_DELAY)
+                delay(CART_SHOP_GROUP_TICKER_DELAY)
                 val shopShipments = cartShopHolderData.shopShipments
                 // Recalculate total price and total weight, to prevent racing condition
                 val (shopProductList, shopTotalWeight) = getAvailableCartItemDataListAndShopTotalWeight(
@@ -1940,10 +1941,10 @@ class CartListPresenter @Inject constructor(
                 )
                 if (cartShopHolderData.shouldValidateWeight && shopTotalWeight > cartShopHolderData.maximumShippingWeight) {
                     // overweight
-                    cartShopHolderData.boAffordability.state =
-                        CartShopBoAffordabilityState.FAILED
+                    cartShopHolderData.cartShopGroupTicker.state =
+                        CartShopGroupTickerState.FAILED
                     withContext(dispatchers.main) {
-                        view?.updateCartBoAffordability(cartShopHolderData)
+                        view?.updateCartShopGroupTicker(cartShopHolderData)
                     }
                     return@launch
                 }
@@ -1976,30 +1977,39 @@ class CartListPresenter @Inject constructor(
                     }
                 }
                 val ratesParam = RatesParam.Builder(shopShipments, shipping).build()
-                val response = boAffordabilityUseCase.setParam(ratesParam).executeOnBackground()
-                cartShopHolderData.boAffordability.cartIds =
+                cartShopGroupTickerAggregatorUseCase.enableBoAffordability = cartShopHolderData.cartShopGroupTicker.enableBoAffordability
+                cartShopGroupTickerAggregatorUseCase.enableBundleCrossSell = cartShopHolderData.cartShopGroupTicker.enableBundleCrossSell
+                val response = cartShopGroupTickerAggregatorUseCase(ratesParam)
+                cartShopHolderData.cartShopGroupTicker.cartIds =
                     shopProductList.joinToString(",") { it.cartId }
-                cartShopHolderData.boAffordability.tickerText = response.texts.tickerCart
-                cartShopHolderData.boAffordability.hasSeenTicker = false
-                if (response.texts.tickerCart.isBlank()) {
-                    cartShopHolderData.boAffordability.state =
-                        CartShopBoAffordabilityState.EMPTY
-                } else if (subtotalPrice >= response.minTransaction) {
-                    cartShopHolderData.boAffordability.state =
-                        CartShopBoAffordabilityState.SUCCESS_AFFORD
+                cartShopHolderData.cartShopGroupTicker.tickerText = response.data.ticker.text
+                cartShopHolderData.cartShopGroupTicker.leftIcon = response.data.ticker.leftIcon
+                cartShopHolderData.cartShopGroupTicker.rightIcon = response.data.ticker.rightIcon
+                cartShopHolderData.cartShopGroupTicker.cartBundlingBottomSheetData = CartBundlingBottomSheetData(
+                    title = response.data.bundleBottomSheet.title,
+                    description = response.data.bundleBottomSheet.description,
+                    bottomTicker = response.data.bundleBottomSheet.bottomTicker
+                )
+                cartShopHolderData.cartShopGroupTicker.hasSeenTicker = false
+                if (response.data.ticker.text.isBlank()) {
+                    cartShopHolderData.cartShopGroupTicker.state =
+                        CartShopGroupTickerState.EMPTY
+                } else if (subtotalPrice >= response.data.minTransaction) {
+                    cartShopHolderData.cartShopGroupTicker.state =
+                        CartShopGroupTickerState.SUCCESS_AFFORD
                 } else {
-                    cartShopHolderData.boAffordability.state =
-                        CartShopBoAffordabilityState.SUCCESS_NOT_AFFORD
+                    cartShopHolderData.cartShopGroupTicker.state =
+                        CartShopGroupTickerState.SUCCESS_NOT_AFFORD
                 }
                 withContext(dispatchers.main) {
-                    view?.updateCartBoAffordability(cartShopHolderData)
+                    view?.updateCartShopGroupTicker(cartShopHolderData)
                 }
             } catch (t: Throwable) {
                 if (t !is CancellationException) {
-                    cartShopHolderData.boAffordability.tickerText = ""
-                    cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.FAILED
+                    cartShopHolderData.cartShopGroupTicker.tickerText = ""
+                    cartShopHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.FAILED
                     withContext(dispatchers.main) {
-                        view?.updateCartBoAffordability(cartShopHolderData)
+                        view?.updateCartShopGroupTicker(cartShopHolderData)
                     }
                 }
             }

@@ -31,10 +31,10 @@ class CartShopViewHolderRobot(private val view: View) {
 
     // BO Affordability
     fun assertShowBoAffordabilityTicker() {
-        assertEquals(View.VISIBLE, view.findViewById<View>(R.id.layout_bo_affordability).visibility)
+        assertEquals(View.VISIBLE, view.findViewById<View>(R.id.layout_cart_shop_group_ticker).visibility)
     }
 
     fun assertNotShowBoAffordabilityTicker() {
-        assertEquals(View.GONE, view.findViewById<View>(R.id.layout_bo_affordability).visibility)
+        assertEquals(View.GONE, view.findViewById<View>(R.id.layout_cart_shop_group_ticker).visibility)
     }
 }

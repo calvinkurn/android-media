@@ -62,6 +62,7 @@ import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_AFTER
 import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_DEFAULT
 import com.tokopedia.cart.view.adapter.cart.CartAdapter
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
+import com.tokopedia.cart.view.bottomsheet.CartBundlingBottomSheet
 import com.tokopedia.cart.view.bottomsheet.showGlobalErrorBottomsheet
 import com.tokopedia.cart.view.bottomsheet.showSummaryTransactionBottomsheet
 import com.tokopedia.cart.view.compoundview.CartToolbar
@@ -74,6 +75,7 @@ import com.tokopedia.cart.view.mapper.CartUiModelMapper
 import com.tokopedia.cart.view.mapper.PromoRequestMapper
 import com.tokopedia.cart.view.mapper.RecentViewMapper
 import com.tokopedia.cart.view.mapper.WishlistMapper
+import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
@@ -82,7 +84,7 @@ import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.CartSectionHeaderHolderData
 import com.tokopedia.cart.view.uimodel.CartSelectAllHolderData
-import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityState
+import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
@@ -177,6 +179,7 @@ import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -465,6 +468,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        Timber.d("RequestCode: $requestCode, ResultCode: $resultCode")
 
         when (requestCode) {
             NAVIGATION_SHIPMENT -> onResultFromShipmentPage(resultCode, data)
@@ -1409,6 +1413,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
         cartPageAnalytics.eventViewGotoplusTicker()
     }
 
+    override fun showCartBundlingBottomSheet(data: CartBundlingBottomSheetData, bundleIds: List<String>) {
+        CartBundlingBottomSheet.newInstance(data, bundleIds).show(parentFragmentManager)
+    }
+
     private fun onErrorAddWishList(errorMessage: String, productId: String) {
         showToastMessageRed(errorMessage)
         cartAdapter.notifyByProductId(productId, false)
@@ -1953,7 +1961,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
         if (checked) {
             val data = cartAdapter.getData()[index]
             if (data is CartShopHolderData) {
-                checkBoAffordability(data)
+                checkCartShopGroupTicker(data)
             }
         }
         onNeedToUpdateViewItem(index)
@@ -1972,30 +1980,34 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
         setGlobalDeleteVisibility()
     }
 
-    override fun onCartBoAffordabilityClicked(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.isTokoNow) {
-            routeToTokoNowHomePage()
+    override fun onCartShopGroupTickerClicked(cartShopHolderData: CartShopHolderData) {
+        if (cartShopHolderData.bundleIds.isNotEmpty()) {
+            showCartBundlingBottomSheet(cartShopHolderData.cartShopGroupTicker.cartBundlingBottomSheetData, cartShopHolderData.bundleIds)
         } else {
-            routeToShopProductPage(cartShopHolderData.shopId)
+            if (cartShopHolderData.isTokoNow) {
+                routeToTokoNowHomePage()
+            } else {
+                routeToShopProductPage(cartShopHolderData.shopId)
+            }
         }
         cartPageAnalytics.eventClickArrowInBoTickerToReachShopPage(
-            cartShopHolderData.boAffordability.cartIds, cartShopHolderData.shopId
+            cartShopHolderData.cartShopGroupTicker.cartIds, cartShopHolderData.shopId
         )
     }
 
-    override fun onCartBoAffordabilityRefreshClicked(
+    override fun onCartShopGroupTickerRefreshClicked(
         index: Int, cartShopHolderData: CartShopHolderData
     ) {
-        cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.LOADING
+        cartShopHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
         cartShopHolderData.isNeedToRefreshWeight = true
         onNeedToUpdateViewItem(index)
-        dPresenter.checkBoAffordability(cartShopHolderData)
+        dPresenter.checkCartShopGroupTicker(cartShopHolderData)
     }
 
-    override fun onViewCartBoAffordabilityTicker(cartShopHolderData: CartShopHolderData) {
+    override fun onViewCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
         cartPageAnalytics.eventViewBoTickerWording(
-            cartShopHolderData.boAffordability.state == CartShopBoAffordabilityState.SUCCESS_AFFORD,
-            cartShopHolderData.boAffordability.cartIds,
+            cartShopHolderData.cartShopGroupTicker.state == CartShopGroupTickerState.SUCCESS_AFFORD,
+            cartShopHolderData.cartShopGroupTicker.cartIds,
             cartShopHolderData.shopId
         )
     }
@@ -2152,7 +2164,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
     override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData) {
         val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartItemHolderData.cartString)
         if (data != null) {
-            checkBoAffordability(data)
+            checkCartShopGroupTicker(data)
             onNeedToUpdateViewItem(index)
         }
     }
@@ -2161,14 +2173,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
         val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartItemHolderData.cartString)
         if (data != null) {
             data.isNeedToRefreshWeight = true
-            checkBoAffordability(data)
+            checkCartShopGroupTicker(data)
             onNeedToUpdateViewItem(index)
         }
     }
 
     override fun onNeedToRefreshMultipleShop() {
         val firstShopIndexAndCount = cartAdapter.getFirstShopAndShopCountWithIterateFunction {
-            checkBoAffordability(it)
+            checkCartShopGroupTicker(it)
         }
         onNeedToUpdateMultipleViewItem(firstShopIndexAndCount.first, firstShopIndexAndCount.second)
     }
@@ -4138,7 +4150,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
         }
     }
 
-    override fun updateCartBoAffordability(cartShopHolderData: CartShopHolderData) {
+    override fun updateCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
         val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartShopHolderData.cartString)
         if (data != null) {
             data.isNeedToRefreshWeight = true
@@ -4146,10 +4158,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
         }
     }
 
-    override fun checkBoAffordability(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.boAffordability.enable && !cartShopHolderData.isError && cartShopHolderData.hasSelectedProduct) {
-            cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.LOADING
-            dPresenter.checkBoAffordability(cartShopHolderData)
+    override fun checkCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
+        if (cartShopHolderData.cartShopGroupTicker.enableTicker && !cartShopHolderData.isError && cartShopHolderData.hasSelectedProduct) {
+            cartShopHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
+            dPresenter.checkCartShopGroupTicker(cartShopHolderData)
         }
     }
 }
