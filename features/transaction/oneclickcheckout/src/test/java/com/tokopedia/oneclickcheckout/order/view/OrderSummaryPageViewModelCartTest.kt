@@ -21,6 +21,7 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CartDetailsItem
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
+import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentData
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOption
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
@@ -1373,7 +1374,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             isActive = true,
             installmentTerm = 4
         )
-        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option1, option2, option3)
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns GoCicilInstallmentData(installmentOptions = listOf(option1, option2, option3))
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1434,7 +1435,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             isActive = true,
             installmentTerm = 4
         )
-        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option1, option2, option3)
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns GoCicilInstallmentData(installmentOptions = listOf(option1, option2, option3))
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1498,7 +1499,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             installmentTerm = 4,
             isRecommended = true
         )
-        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option1, option2, option3)
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns GoCicilInstallmentData(installmentOptions = listOf(option1, option2, option3))
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1562,7 +1563,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             installmentTerm = 4,
             isRecommended = false
         )
-        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option1, option2, option3)
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns GoCicilInstallmentData(installmentOptions = listOf(option1, option2, option3))
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1626,7 +1627,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             installmentTerm = 4,
             isRecommended = false
         )
-        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns listOf(option1, option2, option3)
+        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns GoCicilInstallmentData(installmentOptions = listOf(option1, option2, option3))
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1797,7 +1798,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         )
 
         // When
-        orderSummaryPageViewModel.chooseInstallment(OrderPaymentGoCicilTerms(), listOf(OrderPaymentGoCicilTerms()), true)
+        orderSummaryPageViewModel.chooseInstallment(OrderPaymentGoCicilTerms(), listOf(OrderPaymentGoCicilTerms()), "", true)
 
         // Then
         coVerify(inverse = true) {
@@ -1824,7 +1825,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         )
 
         // When
-        orderSummaryPageViewModel.chooseInstallment(OrderPaymentGoCicilTerms(), listOf(OrderPaymentGoCicilTerms()), false)
+        orderSummaryPageViewModel.chooseInstallment(OrderPaymentGoCicilTerms(), listOf(OrderPaymentGoCicilTerms()), "", false)
 
         // Then
         coVerify(inverse = true) {
