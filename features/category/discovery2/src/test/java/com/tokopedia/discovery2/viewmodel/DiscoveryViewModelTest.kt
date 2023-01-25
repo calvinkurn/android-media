@@ -260,7 +260,9 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.CAMPAIGN_ID to null,
             DiscoveryActivity.VARIANT_ID to null,
             DiscoveryActivity.SHOP_ID to null,
-            DiscoveryActivity.QUERY_PARENT to null
+            DiscoveryActivity.QUERY_PARENT to null,
+            DiscoveryActivity.AFFILIATE_UNIQUE_ID to null,
+            DiscoveryActivity.CHANNEL to null
         )
 
         viewModel.getQueryParameterMapFromBundle(null)
@@ -383,7 +385,9 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.CAMPAIGN_ID to null,
             DiscoveryActivity.VARIANT_ID to null,
             DiscoveryActivity.SHOP_ID to null,
-            DiscoveryActivity.QUERY_PARENT to null
+            DiscoveryActivity.QUERY_PARENT to null,
+            DiscoveryActivity.AFFILIATE_UNIQUE_ID to null,
+            DiscoveryActivity.CHANNEL to null
         )
 
         viewModel.getQueryParameterMapFromBundle(null)
