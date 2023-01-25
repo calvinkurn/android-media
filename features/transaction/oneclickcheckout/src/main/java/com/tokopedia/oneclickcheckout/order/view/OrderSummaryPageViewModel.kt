@@ -718,39 +718,19 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    fun chooseInstallment(
-        selectedInstallmentTerm: OrderPaymentGoCicilTerms,
-        installmentList: List<OrderPaymentGoCicilTerms>,
-        tickerMessage: String,
-        isSilent: Boolean
-    ) {
+    fun chooseInstallment(selectedInstallmentTerm: OrderPaymentGoCicilTerms, installmentList: List<OrderPaymentGoCicilTerms>, isSilent: Boolean) {
         launch(executorDispatchers.immediate) {
             val walletData = orderPayment.value.walletData
-            val newWalletData = walletData.copy(
-                goCicilData = walletData.goCicilData.copy(
-                    selectedTerm = selectedInstallmentTerm,
-                    availableTerms = installmentList,
-                    tickerMessage = tickerMessage
-                )
-            )
+            val newWalletData = walletData.copy(goCicilData = walletData.goCicilData.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentList))
             orderPayment.value = orderPayment.value.copy(walletData = newWalletData)
             calculateTotal(skipDynamicFee = true)
             if (isSilent) {
                 return@launch
             }
             orderSummaryAnalytics.eventViewTenureOption(selectedInstallmentTerm.installmentTerm.toString())
-            var param: UpdateCartOccRequest = cartProcessor.generateUpdateCartParam(
-                orderCart,
-                orderProfile.value,
-                orderShipment.value,
-                orderPayment.value
-            ) ?: return@launch
-            param = param.copy(
-                skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(
-                    orderShipment.value
-                ),
-                source = SOURCE_UPDATE_OCC_PAYMENT
-            )
+            var param: UpdateCartOccRequest = cartProcessor.generateUpdateCartParam(orderCart, orderProfile.value, orderShipment.value, orderPayment.value) ?: return@launch
+            param = param.copy(skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value),
+                    source = SOURCE_UPDATE_OCC_PAYMENT)
             // ignore result, result is important only in final update
             cartProcessor.updatePreference(param)
         }
@@ -1073,7 +1053,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             }
             val result = paymentProcessor.get().getGopayAdminFee(payment, userSession.userId, orderCost, orderCart, orderProfile.value)
             if (result != null) {
-                chooseInstallment(result.selectedInstallment, result.installmentList, result.tickerMessage, !result.shouldUpdateCart)
+                chooseInstallment(result.first, result.second, !result.third)
                 return
             } else {
                 val newWalletData = orderPayment.value.walletData

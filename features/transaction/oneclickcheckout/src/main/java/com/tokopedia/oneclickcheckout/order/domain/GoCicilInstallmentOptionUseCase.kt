@@ -6,21 +6,21 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentData
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentGqlResponse
+import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOption
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
 import javax.inject.Inject
 
 class GoCicilInstallmentOptionUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository) {
 
     @GqlQuery(GoCicilInstallmentOptionQuery, QUERY)
-    suspend fun executeSuspend(param: GoCicilInstallmentRequest): GoCicilInstallmentData {
+    suspend fun executeSuspend(param: GoCicilInstallmentRequest): List<GoCicilInstallmentOption> {
         val request = GraphqlRequest(GoCicilInstallmentOptionQuery(), GoCicilInstallmentGqlResponse::class.java, generateParam(param))
         val response = graphqlRepository.response(listOf(request)).getSuccessData<GoCicilInstallmentGqlResponse>()
         if (!response.response.success) {
             throw MessageErrorException()
         }
-        return response.response.data
+        return response.response.data.installmentOptions
     }
 
     private fun generateParam(param: GoCicilInstallmentRequest): Map<String, Any?> {
@@ -48,10 +48,6 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(@ApplicationContext pr
                 getInstallmentInfo(gatewayCode: ${'$'}gatewayCode, merchantCode: ${'$'}merchantCode, profileCode: ${'$'}profileCode, userDefinedValue: ${'$'}userDefinedValue, paymentAmount: ${'$'}paymentAmount, orderMetadata: ${'$'}orderMetadata) {
                     success
                     data {
-                        ticker {
-                            code
-                            message
-                        }
                         installment_options {
                             installment_term
                             option_id

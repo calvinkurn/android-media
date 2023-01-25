@@ -106,24 +106,23 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
         orderCost: OrderCost,
         orderCart: OrderCart,
         orderProfile: OrderProfile
-    ): ResultGetGoCicilInstallment? {
+    ): Triple<OrderPaymentGoCicilTerms, List<OrderPaymentGoCicilTerms>, Boolean>? {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val response = goCicilInstallmentOptionUseCase.executeSuspend(
-                    GoCicilInstallmentRequest(
-                        gatewayCode = orderPayment.gatewayCode,
-                        merchantCode = orderPayment.creditCard.additionalData.merchantCode,
-                        profileCode = orderPayment.creditCard.additionalData.profileCode,
-                        userId = userId,
-                        paymentAmount = orderCost.totalPriceWithoutPaymentFees,
-                        merchantType = orderCart.shop.merchantType,
-                        address = orderProfile.address,
-                        products = orderCart.products
-                    )
-                )
                 val installmentList = mapInstallmentOptions(
-                    response.installmentOptions
+                    goCicilInstallmentOptionUseCase.executeSuspend(
+                        GoCicilInstallmentRequest(
+                            gatewayCode = orderPayment.gatewayCode,
+                            merchantCode = orderPayment.creditCard.additionalData.merchantCode,
+                            profileCode = orderPayment.creditCard.additionalData.profileCode,
+                            userId = userId,
+                            paymentAmount = orderCost.totalPriceWithoutPaymentFees,
+                            merchantType = orderCart.shop.merchantType,
+                            address = orderProfile.address,
+                            products = orderCart.products
+                        )
+                    )
                 )
                 var selectedTerm = orderPayment.walletData.goCicilData.selectedTerm
                 var shouldUpdateCart = false
@@ -136,12 +135,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                 }
                 val selectedInstallment =
                     installmentList.first { it.installmentTerm == selectedTerm.installmentTerm }
-                return@withContext ResultGetGoCicilInstallment(
-                    selectedInstallment,
-                    installmentList,
-                    response.ticker.message,
-                    shouldUpdateCart
-                )
+                return@withContext Triple(selectedInstallment, installmentList, shouldUpdateCart)
             } catch (t: Throwable) {
                 Timber.d(t)
                 return@withContext null
@@ -217,10 +211,3 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
         return result
     }
 }
-
-class ResultGetGoCicilInstallment(
-    val selectedInstallment: OrderPaymentGoCicilTerms,
-    val installmentList: List<OrderPaymentGoCicilTerms>,
-    val tickerMessage: String,
-    val shouldUpdateCart: Boolean
-)
