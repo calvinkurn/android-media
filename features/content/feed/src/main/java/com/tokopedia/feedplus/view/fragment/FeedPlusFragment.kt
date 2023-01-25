@@ -9,10 +9,10 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.annotation.RestrictTo
@@ -4142,11 +4142,18 @@ class FeedPlusFragment :
                 }
             }
         }.toList()
-        Log.d("FEED_PLUS", newList.toString())
         if (data.isNotEmpty()) {
+            val scrollPosition = layoutManager?.findFirstCompletelyVisibleItemPosition() ?: 0
             adapter.clearData()
             adapter.addList(newList)
-            Log.d("FEED_PLUS", "Masuk ke notify")
+
+            recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
+                OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    recyclerView.scrollToPosition(scrollPosition)
+                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            })
         }
         feedViewModel.clearFollowIdToUpdate()
     }
