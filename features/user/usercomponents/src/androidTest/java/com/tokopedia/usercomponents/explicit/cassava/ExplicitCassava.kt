@@ -1,8 +1,8 @@
 package com.tokopedia.usercomponents.explicit.cassava
 
 import androidx.test.espresso.matcher.ViewMatchers
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 
 object ExplicitCassava {
 

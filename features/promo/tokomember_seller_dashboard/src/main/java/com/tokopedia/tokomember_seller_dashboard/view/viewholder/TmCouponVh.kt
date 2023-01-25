@@ -15,6 +15,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponActions
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponDetailCallback
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.model.Actions
 import com.tokopedia.tokomember_seller_dashboard.model.TripleDotsItem
 import com.tokopedia.tokomember_seller_dashboard.model.VouchersItem
@@ -56,8 +57,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
     lateinit var btnAddQuota: UnifyButton
 
     @SuppressLint("ResourcePackage", "SetTextI18n")
-    fun bind(item: VouchersItem, tmCouponActions: TmCouponActions,callback: TmCouponDetailCallback?,tmTracker:TmTracker?) {
-
+    fun bind(item: VouchersItem, tmCouponActions: TmCouponActions,callback: TmCouponDetailCallback?,tmTracker:TmTracker?, tmCouponListRefreshCallback: TmCouponListRefreshCallback) {
         viewStatus = itemView.findViewById(R.id.view_status)
         tvCouponState = itemView.findViewById(R.id.tv_coupon_state)
         tvDate = itemView.findViewById(R.id.tv_date)
@@ -359,7 +359,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
 
         itemView.setOnClickListener {
             tmTracker?.clickSpecificCoupon(item.shopId)
-            callback?.openCouponDetailFragment(item.voucherId.toIntOrZero())
+            callback?.openCouponDetailFragment(item.voucherId.toIntOrZero(), tmCouponListRefreshCallback)
         }
     }
 

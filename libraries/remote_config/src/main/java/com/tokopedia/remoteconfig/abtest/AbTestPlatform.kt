@@ -24,7 +24,7 @@ import rx.schedulers.Schedulers
 import java.util.*
 import kotlin.collections.HashMap
 
-class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteConfig {
+class AbTestPlatform @JvmOverloads constructor(val context: Context) : RemoteConfig {
 
     private lateinit var userSession: UserSession
     private lateinit var irisSession: IrisSession
@@ -43,7 +43,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
 
     override fun getBoolean(key: String?, defaultValue: Boolean): Boolean {
         val cacheValue: String = this.sharedPreferences.getString(key, defaultValue.toString()) ?: defaultValue.toString()
-        if (cacheValue.equals(defaultValue.toString(), ignoreCase = true) &&  !cacheValue.isEmpty()) {
+        if (cacheValue.equals(defaultValue.toString(), ignoreCase = true) && !cacheValue.isEmpty()) {
             return cacheValue.equals("true", ignoreCase = true)
         }
         return defaultValue
@@ -79,13 +79,13 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
     }
 
     override fun getString(key: String?, defaultValue: String): String {
-        //override customer app ab config features
+        // override customer app ab config features
         if (GlobalConfig.PACKAGE_APPLICATION == CONSUMER_PRO_APPLICATION_PACKAGE) {
             when (key) {
                 NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT -> return NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT
             }
         }
-        val cacheValue: String = this.sharedPreferences.getString(key, defaultValue)?: defaultValue
+        val cacheValue: String = this.sharedPreferences.getString(key, defaultValue) ?: defaultValue
         if (!cacheValue.isEmpty() && !cacheValue.equals(defaultValue, ignoreCase = true)) {
             return cacheValue
         }
@@ -99,7 +99,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         }
     }
 
-    fun deleteKeyLocally(key:String){
+    fun deleteKeyLocally(key: String) {
         editor?.let {
             it.remove(key)
             it.commit()
@@ -115,10 +115,11 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
 
     fun getFilteredKeyByKeyName(keyName: String): MutableSet<String> {
         return mutableSetOf<String>().apply {
-            for ((key, value) in sharedPreferences.all){
+            for ((key, value) in sharedPreferences.all) {
                 val valueClassType = value?.let { it::class.java }
-                if ((key.contains(keyName, true) || keyName.isEmpty()) && valueClassType == String::class.java)
+                if ((key.contains(keyName, true) || keyName.isEmpty()) && valueClassType == String::class.java) {
                     add(key)
+                }
             }
         }
     }
@@ -134,42 +135,49 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         if (userSession.isLoggedIn) {
             payloads[ID] = userSession.userId
         } else {
-            if(handleDeviceIdless()) {return}
+            if (handleDeviceIdless()) { return }
             payloads[ID] = userSession.deviceId
         }
         payloads[IRIS_SESSION_ID] = irisSession.getSessionId()
 
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.gql_rollout_feature_variant), AbTestVariantPojo::class.java, payloads, false)
+        val graphqlRequest = GraphqlRequest(
+            GraphqlHelper.loadRawString(
+                context.resources,
+                R.raw.gql_rollout_feature_variant
+            ),
+            AbTestVariantPojo::class.java, payloads, false
+        )
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         graphqlUseCase
-                .createObservable(RequestParams.EMPTY)
-                .map { graphqlResponse ->
-                    val featureVariants = gqlResponseHandler(graphqlResponse)
-                    return@map RolloutFeatureVariants(featureVariants.featureVariants)
-                }
-                .doOnError { error ->
-                    Log.d("doOnError", error.toString())
-                }
-                .doOnNext {
-                    sendTracking(it)
-                }
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe { object : Subscriber<GraphqlResponse>() {
+            .createObservable(RequestParams.EMPTY)
+            .map { graphqlResponse ->
+                val featureVariants = gqlResponseHandler(graphqlResponse)
+                return@map RolloutFeatureVariants(featureVariants.featureVariants)
+            }
+            .doOnError { error ->
+                Log.d("doOnError", error.toString())
+            }
+            .doOnNext {
+                sendTracking(it)
+                listener?.onComplete(this)
+            }
+            .subscribeOn(Schedulers.io())
+            .unsubscribeOn(Schedulers.io())
+            .subscribe {
+                object : Subscriber<GraphqlResponse>() {
                     override fun onNext(t: GraphqlResponse?) { }
 
                     override fun onCompleted() { }
 
                     override fun onError(e: Throwable?) { }
-
-                }}
+                } 
+            }
     }
 
-    private fun handleDeviceIdless() :Boolean {
-        if(userSession.deviceId == null){
+    private fun handleDeviceIdless(): Boolean {
+        if (userSession.deviceId == null) {
             return true
         }
         return false
@@ -196,7 +204,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
 
     private fun sendTracking(featureVariants: RolloutFeatureVariants) {
         featureVariants.featureVariants?.let { featureVariants ->
-            val userSession : UserSessionInterface = UserSession(context)
+            val userSession: UserSessionInterface = UserSession(context)
 
             val dataLayerAbTest = mapOf(
                 "event" to "abtesting",
@@ -219,8 +227,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         val KEY_SP_TIMESTAMP_AB_TEST = "key_sp_timestamp_ab_test"
         val SHARED_PREFERENCE_AB_TEST_PLATFORM = "tkpd-ab-test-platform"
 
-        private const val CONSUMER_PRO_APPLICATION = 3;
+        private const val CONSUMER_PRO_APPLICATION = 3
         private const val CONSUMER_PRO_APPLICATION_PACKAGE = "com.tokopedia.intl"
     }
-
 }

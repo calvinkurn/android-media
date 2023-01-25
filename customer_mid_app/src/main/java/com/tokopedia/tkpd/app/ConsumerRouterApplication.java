@@ -20,6 +20,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
+import com.tokochat.tokochat_config_common.util.TokoChatConnection;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
@@ -46,7 +47,12 @@ import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.fcmcommon.FirebaseMessagingManager;
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
+import com.tokopedia.fcmcommon.SendTokenToCMHandler;
+import com.tokopedia.fcmcommon.common.FcmCacheHandler;
+import com.tokopedia.fcmcommon.domain.SendTokenToCMUseCase;
 import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase;
+import com.tokopedia.fcmcommon.utils.FcmRemoteConfigUtils;
+import com.tokopedia.fcmcommon.utils.FcmTokenUtils;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -189,6 +195,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initCMDependencies();
         initDataStoreMigration();
         initSeamlessLoginWorker();
+        connectTokoChat(false);
         return true;
     }
 
@@ -297,6 +304,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private void forceLogout() {
         TrackApp.getInstance().getMoEngage().logoutEvent();
         userSession.logoutSession();
+        disconnectTokoChat();
     }
 
     @Override
@@ -596,7 +604,31 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.fcmcommon.R.raw.query_update_fcm_token)
                 ),
                 PreferenceManager.getDefaultSharedPreferences(context),
-                userSession
+                userSession,
+                provideCMHandler()
         );
+    }
+
+    private SendTokenToCMHandler provideCMHandler() {
+        return new SendTokenToCMHandler(
+                new SendTokenToCMUseCase(
+                GraphqlInteractor.getInstance().getGraphqlRepository()
+                ),
+                getApplicationContext(),
+                userSession,
+                new FcmRemoteConfigUtils(context),
+                new FcmTokenUtils(new FcmCacheHandler(context)),
+                new FcmCacheHandler(context)
+        );
+    }
+
+    @Override
+    public void connectTokoChat(Boolean isFromLoginFlow) {
+        TokoChatConnection.init(getApplicationContext(), isFromLoginFlow);
+    }
+
+    @Override
+    public void disconnectTokoChat() {
+        TokoChatConnection.disconnect();
     }
 }

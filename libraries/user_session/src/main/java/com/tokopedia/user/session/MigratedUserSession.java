@@ -234,7 +234,7 @@ public class MigratedUserSession {
             // Check for backup value
             String backupValue = EncoderDecoder.Decrypt(getBackupPiiData(keyName), UserSession.KEY_IV);
             if(!backupValue.isEmpty()) {
-                logUserSessionEvent("decrypt_string_exception_with_backup", e);
+                logUserSessionEventWithKey("decrypt_string_exception_with_backup", keyName, e);
                 return backupValue;
             } else {
                 return "";
@@ -289,6 +289,16 @@ public class MigratedUserSession {
         return true;
     }
 
+    private void logUserSessionEventWithKey(String method, String keyName, @Nullable Exception e) {
+        HashMap<String, String> data = new HashMap<>();
+        data.put("method", method);
+        data.put("pref_key_name", keyName);
+        if(e != null) {
+            data.put("error", Log.getStackTraceString(e));
+        }
+        ServerLogger.log(Priority.P2, USER_SESSION_LOGGER_TAG, data);
+    }
+
     private void logUserSessionEvent(String method, @Nullable Exception e) {
         HashMap<String, String> data = new HashMap<>();
         data.put("method", method);
@@ -319,6 +329,7 @@ public class MigratedUserSession {
                 internalCleanKey(prefName, keyName);
                 internalSetString(newPrefName, newKeyName, encryptString(oldValue, newKeyName));
                 UserSessionMap.map.put(key, oldValue);
+                logUserSessionEventWithKey("migrate_from_v1", keyName, null);
                 return oldValue;
             }
 

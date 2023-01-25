@@ -153,6 +153,7 @@
     "meta": {
       "is_bo": false,
       "bo_image_url": ""
-    }
+    },
+    "has_ppp": true
   }
 }
