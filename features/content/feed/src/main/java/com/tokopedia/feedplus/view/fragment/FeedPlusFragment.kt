@@ -9,6 +9,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -4085,29 +4086,21 @@ class FeedPlusFragment :
 
     @SuppressLint("NotifyDataSetChanged")
     private fun onSuccessResyncFollowStatus(data: Map<String, Boolean>) {
-        adapter.getlist().mapIndexed { index, item ->
-            var isChanged = false
-
+        val newList = adapter.getlist().mapIndexed { index, item ->
             if (item is ShopRecomWidgetModel) {
                 val newItems = item.shopRecomUiModel.items.toMutableList()
-                newItems.mapIndexed { itemIndex, recomItem ->
+                newItems.forEachIndexed { itemIndex, recomItem ->
                     data[recomItem.id.toString()]?.let { followStatus ->
                         newItems[itemIndex] = recomItem.copy(
                             state = if (followStatus) ShopRecomFollowState.FOLLOW else ShopRecomFollowState.UNFOLLOW
                         )
-                        isChanged = true
                     }
                 }
-                if (isChanged) {
-                    adapter.updateShopRecomWidget(
-                        item.copy(
-                            item.shopRecomUiModel.copy(
-                                items = newItems
-                            )
-                        )
+                item.copy(
+                    item.shopRecomUiModel.copy(
+                        items = newItems
                     )
-                }
-
+                )
             } else {
                 val shopId = when (item) {
                     is DynamicPostModel -> {
@@ -4122,22 +4115,38 @@ class FeedPlusFragment :
                     data[shopId]?.let { followStatus ->
                         when (item) {
                             is DynamicPostModel -> {
-                                item.header.followCta.isFollow = followStatus
-                                isChanged = true
+                                item.copy(
+                                    header = item.header.copy(
+                                        followCta = item.header.followCta.copy(
+                                            isFollow = followStatus
+                                        )
+                                    )
+                                )
                             }
                             is DynamicPostUiModel -> {
-                                item.feedXCard.followers.isFollowed =
-                                    followStatus
-                                isChanged = true
+                                item.copy(
+                                    feedXCard = item.feedXCard.copy(
+                                        followers = item.feedXCard.followers.copy(
+                                            isFollowed = followStatus
+                                        )
+                                    )
+                                )
                             }
                             else -> {
+                                item
                             }
                         }
-                    }
+                    } ?: item
+                } else {
+                    item
                 }
             }
+        }.toList()
+        Log.d("FEED_PLUS", newList.toString())
+        if (data.isNotEmpty()) {
+            adapter.notifyDataSetChanged()
+            Log.d("FEED_PLUS", "Masuk ke notify")
         }
-        if (data.isNotEmpty()) adapter.notifyDataSetChanged()
         feedViewModel.clearFollowIdToUpdate()
     }
 }
