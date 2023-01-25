@@ -14,6 +14,7 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
+import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
 import com.tokopedia.affiliate.model.response.AffiliatePerformanceListData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateProductCardMetricsModel
@@ -125,7 +126,16 @@ class AffiliatePerformaSharedProductCardsItemVH(
                     product.defaultLinkURL ?: "",
                     product.itemID!!,
                     product.status ?: PRODUCT_INACTIVE,
-                    if (product.itemType == PRODUCT_ITEM) PAGE_TYPE_PDP else PAGE_TYPE_SHOP
+                    if (product.itemType == PRODUCT_ITEM) PAGE_TYPE_PDP else PAGE_TYPE_SHOP,
+                    ssaInfo = AffiliatePromotionBottomSheetParams.SSAInfo(
+                        ssaStatus = product.ssaStatus.orFalse(),
+                        ssaMessage = product.ssaMessage.orEmpty(),
+                        message = product.message.orEmpty(),
+                        label = AffiliatePromotionBottomSheetParams.SSAInfo.Label(
+                            labelType = product.ssaLabel?.labelType.orEmpty(),
+                            labelText = product.ssaLabel?.labelText.orEmpty()
+                        )
+                    )
                 )
             }
         }
