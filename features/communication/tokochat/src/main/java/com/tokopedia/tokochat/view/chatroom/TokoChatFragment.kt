@@ -496,7 +496,9 @@ open class TokoChatFragment :
         // reset member left live data before observe to remove old data
         viewModel.resetMemberLeft()
         observe(viewModel.getMemberLeft()) {
-            if (it != null && it != headerUiModel?.id) {
+            // If the livedata gives null, then do nothing
+            // If the livedata gives old data, then do nothing
+            if (it != null && it == headerUiModel?.id) {
                 showUnavailableBottomSheet()
             }
         }
