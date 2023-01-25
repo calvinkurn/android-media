@@ -11,12 +11,15 @@ import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.domain.entity.VoucherListParam
 import com.tokopedia.mvc.domain.entity.enums.UpdateVoucherAction
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
+import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
 import com.tokopedia.mvc.domain.entity.enums.VoucherSort
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
-import com.tokopedia.mvc.domain.usecase.*
+import com.tokopedia.mvc.domain.usecase.CancelVoucherUseCase
+import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherListChildUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherQuotaUseCase
+import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
 import com.tokopedia.mvc.presentation.list.helper.MvcListPageStateHelper
 import com.tokopedia.mvc.presentation.list.model.DeleteVoucherUiEffect
 import com.tokopedia.mvc.presentation.list.model.FilterModel
@@ -71,6 +74,18 @@ class MvcListViewModel @Inject constructor(
         filter = filter.copy(
             status = status.toMutableList()
         )
+    }
+
+    fun setFilterType(type: VoucherServiceType, isEnabling: Boolean) {
+        filter.voucherType.apply {
+            if (isEnabling) {
+                add(type)
+            } else {
+                removeAll {
+                    it == type
+                }
+            }
+        }
     }
 
     fun getVoucherList(page: Int, pageSize: Int) {

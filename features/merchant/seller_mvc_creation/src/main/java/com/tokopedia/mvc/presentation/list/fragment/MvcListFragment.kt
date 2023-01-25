@@ -24,6 +24,7 @@ import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.campaign.utils.extension.slideDown
 import com.tokopedia.campaign.utils.extension.slideUp
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -42,6 +43,7 @@ import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
@@ -75,6 +77,7 @@ import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.ClipboardHandler
@@ -98,7 +101,7 @@ class MvcListFragment :
     }
 
     private val filterList = ArrayList<SortFilterItem>()
-    private val filterItem by lazy { SortFilterItem(getString(R.string.smvc_bottomsheet_filter_voucher_all)) }
+    private val filterItemStatus by lazy { SortFilterItem(getString(R.string.smvc_bottomsheet_filter_voucher_all)) }
     private var binding by autoClearedNullable<SmvcFragmentMvcListBinding>()
     private var moreMenuBottomSheet: MoreMenuBottomSheet? = null
     private var voucherEditPeriodBottomSheet: VoucherEditPeriodBottomSheet? = null
@@ -308,8 +311,8 @@ class MvcListFragment :
     }
 
     override fun onFilterVoucherStatusChanged(status: List<VoucherStatus>, statusText: String) {
-        filterItem.title = statusText
-        filterItem.selectedItem = arrayListOf(statusText)
+        filterItemStatus.title = statusText
+        filterItemStatus.selectedItem = arrayListOf(statusText)
         viewModel.setFilterStatus(status)
         loadInitialDataList()
     }
@@ -468,23 +471,52 @@ class MvcListFragment :
     }
 
     private fun SortFilter.setupFilter() {
-        filterList.add(filterItem)
+        val quickFilterItems = setupQuickFilterItems()
+        filterList.add(filterItemStatus)
+        filterList.addAll(quickFilterItems)
         addItem(filterList)
         parentListener = {
-            filterItem.selectedItem = arrayListOf()
+            filterItemStatus.selectedItem = arrayListOf()
             val bottomSheet = FilterVoucherBottomSheet.newInstance(viewModel.filter)
             bottomSheet.setListener(this@MvcListFragment)
             bottomSheet.show(childFragmentManager, "")
         }
         dismissListener = parentListener
 
-        filterItem.listener = {
+        filterItemStatus.listener = {
             val bottomSheet = FilterVoucherStatusBottomSheet()
-            bottomSheet.setSelected(filterItem.selectedItem)
+            bottomSheet.setSelected(filterItemStatus.selectedItem)
             bottomSheet.setListener(this@MvcListFragment)
             bottomSheet.show(childFragmentManager, "")
         }
-        filterItem.refChipUnify.setChevronClickListener { filterItem.listener.invoke() }
+        filterItemStatus.refChipUnify.setChevronClickListener { filterItemStatus.listener.invoke() }
+    }
+
+    private fun setupQuickFilterItems(): List<SortFilterItem> {
+        val voucherTypes = context?.resources?.getStringArray(R.array.type_items).orEmpty()
+        val filterVoucherTypeItems = voucherTypes.map { SortFilterItem(it) }
+        filterVoucherTypeItems.firstOrNull()?.listener = {
+            filterVoucherTypeItems.firstOrNull()?.toggleSelected()
+            applyQuickFilter(filterVoucherTypeItems)
+        }
+        filterVoucherTypeItems.lastOrNull()?.listener = {
+            filterVoucherTypeItems.lastOrNull()?.toggleSelected()
+            applyQuickFilter(filterVoucherTypeItems)
+        }
+        return filterVoucherTypeItems
+    }
+
+    private fun applyQuickFilter(filterVoucherTypeItems: List<SortFilterItem>) {
+        val isShopVoucherSelected = filterVoucherTypeItems.firstOrNull()?.isSelected().orFalse()
+        val isProductVoucherSelected = filterVoucherTypeItems.lastOrNull()?.isSelected().orFalse()
+        viewModel.setFilterType(VoucherServiceType.SHOP_VOUCHER, isShopVoucherSelected)
+        viewModel.setFilterType(VoucherServiceType.PRODUCT_VOUCHER, isProductVoucherSelected)
+        loadInitialDataList()
+        resetPaging()
+    }
+
+    fun SortFilterItem.isSelected(): Boolean {
+        return type == ChipsUnify.TYPE_SELECTED
     }
 
     private fun loadInitialDataList() {
