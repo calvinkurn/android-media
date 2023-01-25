@@ -53,6 +53,10 @@ data class AffiliatePerformanceListData(
                     var metrics: List<Metric?>?,
                     @SerializedName("Status")
                     var status: Int?,
+                    @SerializedName("message")
+                    var message: String?,
+                    @SerializedName("ssaMessage")
+                    var ssaMessage: String?,
                     @SerializedName("SSAStatus")
                     var ssaStatus: Boolean?,
                     @SerializedName("Label")

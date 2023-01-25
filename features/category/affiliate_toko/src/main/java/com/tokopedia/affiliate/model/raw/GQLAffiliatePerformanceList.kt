@@ -45,6 +45,8 @@ val GQL_Affiliate_Performance_List: String = """query getAffiliatePerformanceLis
             MetricDifferenceValueFmt
             Order
           }
+          message
+          ssaMessage
           SSAStatus
           Label{
             LabelType
