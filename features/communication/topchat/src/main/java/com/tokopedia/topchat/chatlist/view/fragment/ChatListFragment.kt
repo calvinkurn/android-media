@@ -426,8 +426,7 @@ open class ChatListFragment constructor() :
     private fun addBubbleChatTicker() {
         val chatListTicker: ChatListTickerUiModel = ChatListTickerUiModel(
             message = getString(com.tokopedia.topchat.R.string.topchat_bubble_ticker_message),
-            applink = ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION,
-            isForBubble = true
+            applink = ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION
         ).apply {
             this.showCloseButton = true
             this.sharedPreferenceKey = ChatItemListViewModel.BUBBLE_TICKER_PREF_NAME
@@ -435,14 +434,14 @@ open class ChatListFragment constructor() :
         adapter?.addElement(Int.ZERO, chatListTicker)
     }
 
-    override fun onChatListTickerClicked(applink: String, isForBubble: Boolean) {
+    override fun onChatListTickerClicked(applink: String) {
         if (applink.isNotBlank()) {
             context?.let {
-                when {
-                    isForBubble -> {
+                when (applink) {
+                    ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION -> {
                         TopChatAnalyticsKt.eventClickBubbleChatRecommendationTicker(userSession.shopId)
                     }
-                    applink == ApplinkConst.TokoFood.TOKOFOOD_ORDER -> {
+                    ApplinkConst.TokoFood.TOKOFOOD_ORDER -> {
                         chatListAnalytics.clickChatDriverTicker(getRoleStr())
                     }
                 }
@@ -589,8 +588,8 @@ open class ChatListFragment constructor() :
     override fun onItemClicked(t: Visitable<*>?) {
     }
 
-    override fun onChatListTickerImpressed(isForBubble: Boolean) {
-        if (isForBubble) {
+    override fun onChatListTickerImpressed(applink: String) {
+        if (applink == ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION) {
             TopChatAnalyticsKt.eventImpressionBubbleChatRecommendationTicker(userSession.shopId)
         } else {
             chatListAnalytics.impressOnChatDriverTicker(getRoleStr())
