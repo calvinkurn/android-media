@@ -1561,7 +1561,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(true);
                     mActionListener.onInsuranceChecked(getAdapterPosition());
                 }
-            } else if (selectedShipperModel.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_NO) {
+            } else if (selectedShipperModel.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_NO || selectedShipperModel.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_NONE) {
                 cbInsurance.setEnabled(true);
                 cbInsurance.setChecked(false);
                 llInsurance.setVisibility(View.GONE);
