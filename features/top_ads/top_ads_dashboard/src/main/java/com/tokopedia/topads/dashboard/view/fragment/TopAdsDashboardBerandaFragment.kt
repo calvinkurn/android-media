@@ -237,7 +237,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
 
     private fun initializeGraph() {
-        if (parentFragment?.isStateSaved == false){
+        if (parentFragment?.isStateSaved != true) {
             parentFragmentManager
                 .beginTransaction()
                 .replace(R.id.graph_layout_beranda, graphLayoutFragment, "")
