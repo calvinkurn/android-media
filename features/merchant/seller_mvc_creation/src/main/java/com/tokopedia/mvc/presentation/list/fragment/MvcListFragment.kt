@@ -102,6 +102,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
+import java.util.*
 import javax.inject.Inject
 
 class MvcListFragment :
@@ -119,7 +120,11 @@ class MvcListFragment :
     }
 
     private val filterList = ArrayList<SortFilterItem>()
-    private val filterItemStatus by lazy { SortFilterItem(getString(R.string.smvc_bottomsheet_filter_voucher_all)) }
+    private val filterItemStatus by lazy {
+        SortFilterItem(
+            getString(R.string.smvc_bottomsheet_filter_voucher_all)
+        )
+    }
     private var binding by autoClearedNullable<SmvcFragmentMvcListBinding>()
     private var moreMenuBottomSheet: MoreMenuBottomSheet? = null
     private var voucherEditPeriodBottomSheet: VoucherEditPeriodBottomSheet? = null
@@ -147,7 +152,9 @@ class MvcListFragment :
 
     override fun initInjector() {
         DaggerMerchantVoucherCreationComponent.builder()
-            .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+            .baseAppComponent(
+                (activity?.applicationContext as? BaseMainApplication)?.baseAppComponent
+            )
             .build()
             .inject(this)
     }
@@ -272,7 +279,10 @@ class MvcListFragment :
         loadInitialDataList()
         context?.resources?.let {
             binding?.footer?.root?.showToaster(
-                it.getString(R.string.edit_period_success_edit_period, voucher?.name.toBlankOrString()).toBlankOrString(),
+                it.getString(
+                    R.string.edit_period_success_edit_period,
+                    voucher?.name.toBlankOrString()
+                ).toBlankOrString(),
                 it.getString(R.string.edit_period_button_text).toBlankOrString()
             )
         }
@@ -328,16 +338,62 @@ class MvcListFragment :
 
     private fun displayShareBottomSheet(shareComponentMetaData: ShareComponentMetaData) {
         val voucher = shareComponentMetaData.voucher
-        val voucherStartTime = voucher.startTime.toDate(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601)
-        val voucherEndTime = voucher.finishTime.toDate(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601)
+        val voucherStartTime = voucher.startTime.toDate(
+            DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601
+        )
+        val voucherEndTime = voucher.finishTime.toDate(
+            DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601
+        )
         val promoType = PromoType.values().firstOrNull { value -> value.text == voucher.typeFormatted }
             ?: PromoType.FREE_SHIPPING
+
+        val shareComponentParam = getShareComponentData(
+            shareComponentMetaData,
+            voucherStartTime,
+            voucherEndTime,
+            promoType
+        )
+
+        val formattedShopName = MethodChecker.fromHtml(shareComponentParam.shopName).toString()
+
+        val titleTemplate = getTitleForShareComponent(shareComponentParam)
+
+        val title = String.format(
+            titleTemplate,
+            formattedShopName
+        )
+
+        val copyWritingParam = ShareCopyWritingGenerator.Param(
+            voucherStartDate = voucherStartTime,
+            voucherEndDate = voucherEndTime,
+            shopName = shareComponentMetaData.shopData.name,
+            discountAmount = voucher.discountAmt.toLong(),
+            discountAmountMax = voucher.discountAmtMax.toLong(),
+            discountPercentage = voucher.discountAmt
+        )
+
+        createAndShowUniversalShareBottomSheet(
+            voucher,
+            shareComponentParam,
+            copyWritingParam,
+            title,
+            promoType
+        )
+    }
+
+    private fun getShareComponentData(
+        shareComponentMetaData: ShareComponentMetaData,
+        voucherStartTime: Date,
+        voucherEndTime: Date,
+        promoType: PromoType
+    ): ShareComponentInstanceBuilder.Param {
+        val voucher = shareComponentMetaData.voucher
         val productImageUrls = if (voucher.isLockToProduct) {
             shareComponentMetaData.topSellingProductImageUrls
         } else {
             emptyList()
         }
-        val shareComponentParam = voucher.let {
+        return voucher.let {
             ShareComponentInstanceBuilder.Param(
                 isVoucherProduct = it.isLockToProduct,
                 voucherId = it.id,
@@ -357,29 +413,23 @@ class MvcListFragment :
                 targetBuyer = it.targetBuyer
             )
         }
+    }
 
-        val formattedShopName = MethodChecker.fromHtml(shareComponentParam.shopName).toString()
-
-        val titleTemplate = if (shareComponentParam.isVoucherProduct) {
+    private fun getTitleForShareComponent(shareComponentParam: ShareComponentInstanceBuilder.Param): String {
+        return if (shareComponentParam.isVoucherProduct) {
             getString(R.string.smvc_placeholder_share_component_outgoing_title_product_voucher)
         } else {
             getString(R.string.smvc_placeholder_share_component_outgoing_title_shop_voucher)
         }
+    }
 
-        val title = String.format(
-            titleTemplate,
-            formattedShopName
-        )
-
-        val copyWritingParam = ShareCopyWritingGenerator.Param(
-            voucherStartDate = voucherStartTime,
-            voucherEndDate = voucherEndTime,
-            shopName = shareComponentMetaData.shopData.name,
-            discountAmount = voucher.discountAmt.toLong(),
-            discountAmountMax = voucher.discountAmtMax.toLong(),
-            discountPercentage = voucher.discountAmt
-        )
-
+    private fun createAndShowUniversalShareBottomSheet(
+        voucher: Voucher,
+        shareComponentParam: ShareComponentInstanceBuilder.Param,
+        copyWritingParam: ShareCopyWritingGenerator.Param,
+        title: String,
+        promoType: PromoType
+    ) {
         val description = shareCopyWritingGenerator.findOutgoingDescription(
             isProductVoucher = voucher.isLockToProduct,
             voucherTarget = voucher.targetBuyer,
@@ -463,7 +513,9 @@ class MvcListFragment :
 
     override fun onVoucherListCopyCodeClicked(voucher: Voucher) {
         activity?.let { ClipboardHandler().copyToClipboard(it, voucher.code) }
-        binding?.footer?.root.showToaster(getString(R.string.smvc_voucherlist_copy_to_clipboard_message))
+        binding?.footer?.root.showToaster(
+            getString(R.string.smvc_voucherlist_copy_to_clipboard_message)
+        )
     }
 
     override fun onVoucherListMultiPeriodClicked(voucher: Voucher) {
@@ -593,7 +645,10 @@ class MvcListFragment :
     }
 
     private fun HeaderUnify.setupHeader() {
-        val colorIcon = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+        val colorIcon = MethodChecker.getColor(
+            context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950
+        )
         title = context.getString(R.string.smvc_voucherlist_page_title)
         addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_menu_kebab_horizontal).apply {
             setColorFilter(colorIcon, PorterDuff.Mode.MULTIPLY)
@@ -721,7 +776,10 @@ class MvcListFragment :
             errorPageSmall.gone()
             errorPageLarge.show()
             val statusName = MvcListPageStateHelper.getStatusName(context, viewModel.filter)
-            errorPageLarge.emptyStateTitleID.text = getString(R.string.smvc_voucherlist_empty_data_title_text, statusName)
+            errorPageLarge.emptyStateTitleID.text = getString(
+                R.string.smvc_voucherlist_empty_data_title_text,
+                statusName
+            )
             errorPageLarge.setPrimaryCTAClickListener {
                 binding?.footer?.btnAddCoupon?.performClick()
             }
