@@ -72,7 +72,8 @@ class AffiliatePerformaSharedProductCardsItemVH(
                 tempList.add(
                     AffiliateProductCardMetricsModel(
                         metric,
-                        element.product.status ?: PRODUCT_INACTIVE
+                        element.product,
+                        element.affiliateSSEAdpTotalClickItem
                     )
                 )
             }

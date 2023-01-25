@@ -51,6 +51,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         private const val NO_DISCOUNT_STRING = "0"
         private const val DEFAULT_MAX_LINES = 2
         private const val MAX_LINES_NEEDED_TO_CHANGE = 1
+        private const val PERCENTAGE_CHAR = '%'
     }
 
     private var similarProductListener: SimilarProductListener? = null
@@ -184,7 +185,11 @@ class TokoNowProductCardView @JvmOverloads constructor(
         val isDiscountNotBlankOrZero = (discount.isNotBlank() && discount != NO_DISCOUNT_STRING) || !discountInt.isZero()
         promoLayout.showIfWithBlock(isDiscountNotBlankOrZero || labelGroup != null) {
             if (isDiscountNotBlankOrZero) {
-                promoLabel.text = if (discountInt.isZero()) discount else context.getString(R.string.tokopedianow_product_card_percentage, discountInt)
+                promoLabel.text = if (discountInt.isZero()) {
+                    if (discount.last() != PERCENTAGE_CHAR) "$discount$PERCENTAGE_CHAR" else discount
+                } else {
+                    context.getString(R.string.tokopedianow_product_card_percentage, discountInt)
+                }
                 promoLabel.adjustLabelType(LIGHT_RED)
             } else {
                 labelGroup?.let { labelGroup ->

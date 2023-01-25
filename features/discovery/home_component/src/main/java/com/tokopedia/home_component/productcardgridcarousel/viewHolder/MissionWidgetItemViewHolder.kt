@@ -15,7 +15,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class MissionWidgetItemViewHolder(
     view: View,
-    private val cardInteraction: Boolean = false,
+    private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<CarouselMissionWidgetDataModel>(view) {
 
     private var binding: HomeBannerItemMissionWidgetBinding? by viewBinding()
@@ -29,16 +29,18 @@ class MissionWidgetItemViewHolder(
         setLayout(element)
     }
 
-    private fun setLayout(element: CarouselMissionWidgetDataModel){
+    private fun setLayout(element: CarouselMissionWidgetDataModel) {
         binding?.run {
             cardContainerMissionWidget.animateOnPress = if (cardInteraction) {
                 CardUnify2.ANIMATE_OVERLAY_BOUNCE
-            } else CardUnify2.ANIMATE_OVERLAY
+            } else {
+                CardUnify2.ANIMATE_OVERLAY
+            }
             cardContainerMissionWidget.rootView.setOnClickListener {
-                element.missionWidgetComponentListener.onMissionClicked(element, adapterPosition)
+                element.missionWidgetComponentListener.onMissionClicked(element, absoluteAdapterPosition)
             }
             cardContainerMissionWidget.rootView.addOnImpressionListener(element) {
-                element.missionWidgetComponentListener.onMissionImpressed(element, adapterPosition)
+                element.missionWidgetComponentListener.onMissionImpressed(element, absoluteAdapterPosition)
             }
             imageMissionWidget.setImageUrl(element.imageURL)
             titleMissionWidget.text = element.title
