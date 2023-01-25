@@ -30,7 +30,7 @@ class DynamicIconMacroAdapter(private val listener: DynamicIconComponentListener
     override fun onBindViewHolder(holder: DynamicIconMacroItemViewHolder, position: Int) {
         iconList.getOrNull(position)?.let {
             holder
-                .bind(it, iconList.size > DynamicIconViewHolder.SCROLLABLE_ITEM, this.position, type, isCache)
+                .bind(it, iconList.size > DynamicIconViewHolder.SCROLLABLE_ITEM_MACRO, this.position, type, isCache)
         }
     }
 
