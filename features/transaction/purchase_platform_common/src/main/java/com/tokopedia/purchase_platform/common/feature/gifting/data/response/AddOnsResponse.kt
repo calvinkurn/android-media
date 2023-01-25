@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.common.feature.gifting.data.response
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class AddOnsResponse(
@@ -74,7 +73,7 @@ data class AddOnsResponse(
 	data class AddOnDataItem(
 
 			@SerializedName("add_on_price")
-			val addOnPrice: Long = 0L,
+			val addOnPrice: Double = 0.0,
 
 			@SerializedName("add_on_id")
 			val addOnId: String = "",
