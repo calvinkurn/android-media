@@ -102,11 +102,11 @@ class DiscoveryViewModelTest {
 
     /**************************** test for addProductToCart() *******************************************/
     @Test
-    fun `test for addProductToCart when isGeneralCartATC is true and quantity is 0 and isGeneralCartATC is true`() {
+    fun `test for addProductToCart when isGeneralCartATC is true and quantity is 1 and isGeneralCartATC is true and its success`() {
         val discoATCRequestParams: DiscoATCRequestParams = mockk(relaxed = true)
         every { discoATCRequestParams.productId } returns "1"
         every { discoATCRequestParams.shopId } returns "1"
-        every { discoATCRequestParams.quantity } returns 0
+        every { discoATCRequestParams.quantity } returns 1
         every { discoATCRequestParams.parentPosition } returns 1
         every { discoATCRequestParams.isGeneralCartATC } returns true
 
@@ -123,11 +123,11 @@ class DiscoveryViewModelTest {
     }
 
     @Test
-    fun `test for addProductToCart when isGeneralCartATC is true and quantity is 0 and isGeneralCartATC is false`() {
+    fun `test for addProductToCart when quantity is 1 and isGeneralCartATC is false`() {
         val discoATCRequestParams: DiscoATCRequestParams = mockk(relaxed = true)
         every { discoATCRequestParams.productId } returns "1"
         every { discoATCRequestParams.shopId } returns "1"
-        every { discoATCRequestParams.quantity } returns 0
+        every { discoATCRequestParams.quantity } returns 1
         every { discoATCRequestParams.parentPosition } returns 1
         every { discoATCRequestParams.isGeneralCartATC } returns false
 
@@ -142,6 +142,47 @@ class DiscoveryViewModelTest {
         viewModel.addProductToCart(discoATCRequestParams)
 
         verify { addToCartUseCase.execute(any(), any()) }
+    }
+
+    @Test
+    fun `test for addProductToCart when quantity is 0 and isGeneralCartATC is false and product present in minicart so remove must be called`() {
+        val discoATCRequestParams: DiscoATCRequestParams = mockk(relaxed = true)
+        every { discoATCRequestParams.productId } returns "1"
+        every { discoATCRequestParams.shopId } returns "1"
+        every { discoATCRequestParams.quantity } returns 0
+        every { discoATCRequestParams.parentPosition } returns 1
+        every { discoATCRequestParams.isGeneralCartATC } returns false
+
+        val miniCartSimplifiedData: MiniCartSimplifiedData = mockk(relaxed = true)
+        val miniCartItemKey: MiniCartItemKey = MiniCartItemKey("1")
+        val miniCartItem: MiniCartItem = mockk<MiniCartItem.MiniCartItemProduct>(relaxed = true)
+        val mapItem: Map<MiniCartItemKey, MiniCartItem> = mapOf(miniCartItemKey to miniCartItem)
+        viewModel.miniCartSimplifiedData = miniCartSimplifiedData
+        every { miniCartSimplifiedData.miniCartItems } returns mapItem
+
+        viewModel.addProductToCart(discoATCRequestParams)
+
+        verify { deleteCartUseCase.execute(any(), any()) }
+    }
+    @Test
+    fun `test for addProductToCart when quantity is greater than 0 and isGeneralCartATC is false and product present in minicart so update must be called`() {
+        val discoATCRequestParams: DiscoATCRequestParams = mockk(relaxed = true)
+        every { discoATCRequestParams.productId } returns "1"
+        every { discoATCRequestParams.shopId } returns "1"
+        every { discoATCRequestParams.quantity } returns 2
+        every { discoATCRequestParams.parentPosition } returns 1
+        every { discoATCRequestParams.isGeneralCartATC } returns false
+
+        val miniCartSimplifiedData: MiniCartSimplifiedData = mockk(relaxed = true)
+        val miniCartItemKey: MiniCartItemKey = MiniCartItemKey("1")
+        val miniCartItem: MiniCartItem = mockk<MiniCartItem.MiniCartItemProduct>(relaxed = true)
+        val mapItem: Map<MiniCartItemKey, MiniCartItem> = mapOf(miniCartItemKey to miniCartItem)
+        viewModel.miniCartSimplifiedData = miniCartSimplifiedData
+        every { miniCartSimplifiedData.miniCartItems } returns mapItem
+
+        viewModel.addProductToCart(discoATCRequestParams)
+
+        verify { updateCartUseCase.execute(any(), any()) }
     }
 
     /**************************** test for getQueryParameterMapFromBundle() *******************************************/
@@ -167,7 +208,8 @@ class DiscoveryViewModelTest {
         every { bundle.getString(DiscoveryActivity.AFFILIATE_UNIQUE_ID, "") } returns "q"
         every { bundle.getString(DiscoveryActivity.CHANNEL, "") } returns "r"
 
-        val discoComponentQuery: MutableMap<String, String?> = mutableMapOf(DiscoveryActivity.CATEGORY_ID to "p")
+        val discoComponentQuery: MutableMap<String, String?> =
+            mutableMapOf(DiscoveryActivity.CATEGORY_ID to "p")
         com.tokopedia.discovery2.datamapper.discoComponentQuery = discoComponentQuery
 
         val map: MutableMap<String, String?> = mutableMapOf(
@@ -193,6 +235,37 @@ class DiscoveryViewModelTest {
         viewModel.getQueryParameterMapFromBundle(bundle)
 
         TestCase.assertEquals(viewModel.getQueryParameterMapFromBundle(bundle), map)
+    }
+
+    @Test
+    fun `test for getQueryParameterMapFromBundle when discoComponentQuery returns non null value and bundle is null`() {
+        com.tokopedia.discovery2.datamapper.discoComponentQuery = null
+
+        val discoComponentQuery: MutableMap<String, String?> =
+            mutableMapOf(DiscoveryActivity.CATEGORY_ID to "p")
+        com.tokopedia.discovery2.datamapper.discoComponentQuery = discoComponentQuery
+
+        val map: MutableMap<String, String?> = mutableMapOf(
+            DiscoveryActivity.SOURCE to null,
+            DiscoveryActivity.COMPONENT_ID to null,
+            DiscoveryActivity.ACTIVE_TAB to null,
+            DiscoveryActivity.TARGET_COMP_ID to null,
+            DiscoveryActivity.PRODUCT_ID to null,
+            DiscoveryActivity.PIN_PRODUCT to null,
+            DiscoveryActivity.EMBED_CATEGORY to null,
+            DiscoveryActivity.RECOM_PRODUCT_ID to null,
+            DiscoveryActivity.CATEGORY_ID to "p",
+            DiscoveryActivity.DYNAMIC_SUBTITLE to null,
+            DiscoveryActivity.TARGET_TITLE_ID to null,
+            DiscoveryActivity.CAMPAIGN_ID to null,
+            DiscoveryActivity.VARIANT_ID to null,
+            DiscoveryActivity.SHOP_ID to null,
+            DiscoveryActivity.QUERY_PARENT to null
+        )
+
+        viewModel.getQueryParameterMapFromBundle(null)
+
+        TestCase.assertEquals(viewModel.getQueryParameterMapFromBundle(null), map)
     }
 
     @Test
@@ -291,6 +364,33 @@ class DiscoveryViewModelTest {
         com.tokopedia.discovery2.datamapper.discoComponentQuery = null
     }
 
+    @Test
+    fun `test for getQueryParameterMapFromBundle when discoComponentQuery returns null value and bundle is null`() {
+        com.tokopedia.discovery2.datamapper.discoComponentQuery = null
+
+        val map: MutableMap<String, String?> = mutableMapOf(
+            DiscoveryActivity.SOURCE to null,
+            DiscoveryActivity.COMPONENT_ID to null,
+            DiscoveryActivity.ACTIVE_TAB to null,
+            DiscoveryActivity.TARGET_COMP_ID to null,
+            DiscoveryActivity.PRODUCT_ID to null,
+            DiscoveryActivity.PIN_PRODUCT to null,
+            DiscoveryActivity.EMBED_CATEGORY to null,
+            DiscoveryActivity.RECOM_PRODUCT_ID to null,
+            DiscoveryActivity.CATEGORY_ID to "",
+            DiscoveryActivity.DYNAMIC_SUBTITLE to null,
+            DiscoveryActivity.TARGET_TITLE_ID to null,
+            DiscoveryActivity.CAMPAIGN_ID to null,
+            DiscoveryActivity.VARIANT_ID to null,
+            DiscoveryActivity.SHOP_ID to null,
+            DiscoveryActivity.QUERY_PARENT to null
+        )
+
+        viewModel.getQueryParameterMapFromBundle(null)
+
+        TestCase.assertEquals(viewModel.getQueryParameterMapFromBundle(null), map)
+    }
+
     /**************************** test for getDiscoveryData() *******************************************/
     @Test
     fun `test for getDiscoveryData when redirectionUrl is not null`() {
@@ -306,8 +406,12 @@ class DiscoveryViewModelTest {
 
         viewModel.getDiscoveryData(mutableMapOf(), localCacheModel)
 
-        TestCase.assertEquals(viewModel.getDiscoveryLiveStateData().value, RouteToApplink("tokopedia://discovery/test-campaign-7"))
+        TestCase.assertEquals(
+            viewModel.getDiscoveryLiveStateData().value,
+            RouteToApplink("tokopedia://discovery/test-campaign-7")
+        )
         TestCase.assertEquals(viewModel.checkAddressVisibility().value, true)
+        TestCase.assertEquals(viewModel.getAddressVisibilityValue(), true)
     }
 
     @Test
@@ -325,7 +429,10 @@ class DiscoveryViewModelTest {
 
         viewModel.getDiscoveryData(mutableMapOf(), localCacheModel)
 
-        TestCase.assertEquals(viewModel.getDiscoveryLiveStateData().value, GoToAgeRestriction("xyz", 0))
+        TestCase.assertEquals(
+            viewModel.getDiscoveryLiveStateData().value,
+            GoToAgeRestriction("xyz", 0)
+        )
     }
 
     @Test
@@ -418,7 +525,10 @@ class DiscoveryViewModelTest {
 
         viewModel.getShareUTM(pageInfo)
 
-        TestCase.assertEquals(viewModel.getShareUTM(pageInfo), "-${campCode.substring(CONSTANT_0, CONSTANT_11)}")
+        TestCase.assertEquals(
+            viewModel.getShareUTM(pageInfo),
+            "-${campCode.substring(CONSTANT_0, CONSTANT_11)}"
+        )
     }
 
     @Test
@@ -491,7 +601,11 @@ class DiscoveryViewModelTest {
         mockkStatic(RouteManager::class)
         every { RouteManager.route(any(), any()) } returns true
 
-        viewModel.openCustomTopChat(context = context, appLinks = "tokopedia://discovery/test-campaign-2", shopId = 2)
+        viewModel.openCustomTopChat(
+            context = context,
+            appLinks = "tokopedia://discovery/test-campaign-2",
+            shopId = 2
+        )
 
         verify { RouteManager.route(context, ApplinkConst.LOGIN) }
     }
@@ -508,7 +622,11 @@ class DiscoveryViewModelTest {
         every { userSessionInterface.isLoggedIn } returns true
         coEvery { customTopChatUseCase.getCustomTopChatMessageId(any()) } returns customChatResponse
 
-        viewModel.openCustomTopChat(context = context, appLinks = "tokopedia://discovery/test-campaign-7", shopId = 23)
+        viewModel.openCustomTopChat(
+            context = context,
+            appLinks = "tokopedia://discovery/test-campaign-7",
+            shopId = 23
+        )
 
         verify { RouteManager.route(any(), any()) }
     }
@@ -521,7 +639,11 @@ class DiscoveryViewModelTest {
         every { userSessionInterface.isLoggedIn } returns true
         coEvery { customTopChatUseCase.getCustomTopChatMessageId(any()) } throws Exception("error")
 
-        viewModel.openCustomTopChat(context = context, appLinks = "tokopedia://discovery/test-campaign-7", shopId = 23)
+        viewModel.openCustomTopChat(
+            context = context,
+            appLinks = "tokopedia://discovery/test-campaign-7",
+            shopId = 23
+        )
 
         verify(inverse = true) { RouteManager.route(any(), any()) }
     }
