@@ -68,18 +68,6 @@ class PrivacyPolicySection constructor(
             menuListPrivacyPolicy.setOnClickListener {
                 viewModel.toggleContentVisibility()
             }
-
-            buttonShowAllList.setOnClickListener {
-                MainPrivacyCenterAnalytics.sendClickOnButtonLihatSemuaEvent()
-
-                if (privacyPolicySectionBottomSheet == null) {
-                    privacyPolicySectionBottomSheet = PrivacyPolicySectionBottomSheet()
-                }
-
-                fragmentManager?.let {
-                    privacyPolicySectionBottomSheet?.show(it, PrivacyPolicySectionBottomSheet.TAG)
-                }
-            }
         }
 
         viewModel.getPrivacyPolicyTopFiveList()
@@ -119,7 +107,6 @@ class PrivacyPolicySection constructor(
             localLoadPrivacyPolicy.hide()
             loaderListPrivacyPolicy.hide()
             listPrivacyPolicy.show()
-            buttonShowAllList.show()
         }
         privacyPolicyAdapter.apply {
             clearAllItems()
@@ -140,7 +127,6 @@ class PrivacyPolicySection constructor(
             loaderListPrivacyPolicy.show()
             listPrivacyPolicy.hide()
             localLoadPrivacyPolicy.hide()
-            buttonShowAllList.hide()
         }
     }
 
@@ -148,7 +134,6 @@ class PrivacyPolicySection constructor(
         sectionViewBinding.apply {
             loaderListPrivacyPolicy.hide()
             listPrivacyPolicy.hide()
-            buttonShowAllList.hide()
             localLoadPrivacyPolicy.apply {
                 localLoadTitle = context.getString(R.string.privacy_center_error_network_title)
                 refreshBtn?.setOnClickListener {

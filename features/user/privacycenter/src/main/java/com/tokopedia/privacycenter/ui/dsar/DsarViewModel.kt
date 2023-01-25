@@ -11,6 +11,8 @@ import com.tokopedia.privacycenter.domain.SearchRequestUseCase
 import com.tokopedia.privacycenter.domain.SubmitRequestUseCase
 import com.tokopedia.privacycenter.ui.dsar.uimodel.CustomDateModel
 import com.tokopedia.privacycenter.ui.dsar.uimodel.SubmitRequestUiModel
+import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
+import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toString
@@ -22,6 +24,7 @@ import javax.inject.Inject
 class DsarViewModel @Inject constructor(
     val submitRequestUseCase: SubmitRequestUseCase,
     val searchRequestUseCase: SearchRequestUseCase,
+    val getProfileUseCase: GetProfileUseCase,
     val userSession: UserSessionInterface,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
@@ -128,6 +131,19 @@ class DsarViewModel @Inject constructor(
                 _mainLoader.value = false
             }
         }
+    }
+
+    fun fetchInitialData() {
+        getProfileUseCase.execute(GetProfileSubscriber(userSession,
+            { checkRequestStatus() },
+            {
+                _globalError.value = true
+                _mainLoader.value = false
+            },
+            showLocationAdminPopUp = {},
+            onLocationAdminRedirection = {},
+            showErrorGetAdminType = {}
+        ), skipCache = true)
     }
 
     fun checkRequestStatus() {

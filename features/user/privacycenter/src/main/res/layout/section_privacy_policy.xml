@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.privacycenter.common.customview.PrivacyCenterItemView
         android:id="@+id/menuCurrentPrivacyPolicy"
@@ -25,7 +25,7 @@
         android:id="@+id/menuListPrivacyPolicy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="8dp"
+        android:paddingTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/menuCurrentPrivacyPolicy">
@@ -33,7 +33,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Riwayat Kebijakan Privasi"
+            android:text="@string/privacy_history_section_title"
             android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -61,6 +61,7 @@
         app:layout_constraintTop_toBottomOf="@+id/menuListPrivacyPolicy">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="4dp"
             android:id="@+id/listPrivacyPolicy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -83,15 +84,13 @@
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/loaderListPrivacyPolicy" />
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/buttonShowAllList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_marginTop="8dp"
-            android:text="@string/privacy_policy_show_all_list_button"
-            app:unifyButtonSize="medium"
-            app:unifyButtonType="alternate"
-            app:unifyButtonVariant="ghost" />
+            android:text="@string/privacy_policy_subtitle"
+            app:typographyType="paragraph_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
