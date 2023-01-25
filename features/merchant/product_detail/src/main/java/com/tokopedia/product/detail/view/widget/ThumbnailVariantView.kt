@@ -6,8 +6,6 @@ import android.graphics.ColorMatrixColorFilter
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
-import com.bumptech.glide.load.resource.bitmap.TransformationUtils.centerCrop
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.getColorChecker
@@ -18,7 +16,6 @@ import com.tokopedia.product.detail.databinding.ThumbnailVariantViewBinding
  * Created by yovi.putra on 13/01/23"
  * Project name: android-tokopedia-core
  **/
-
 
 class ThumbnailVariantView(
     context: Context,
@@ -54,7 +51,7 @@ class ThumbnailVariantView(
     }
 
     private fun setThumbnail(url: String) {
-       binding.variantThumbnail.loadImage(url, properties = {
+        binding.variantThumbnail.loadImage(url, properties = {
             centerCrop()
         })
     }
@@ -70,9 +67,9 @@ class ThumbnailVariantView(
     }
 
     fun setSelectedStockEmptyState() {
-        setSelectedState()
+        setDisableState()
         setThumbGrayscale()
-        setCardBackground(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         setCardBorder(R.drawable.pdp_thumbnail_variant_border_selected)
     }
 
