@@ -24,6 +24,7 @@ import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.presentation.quota.adapter.QuotaSourceAdapter
 import com.tokopedia.mvc.presentation.quota.viewmodel.QuotaInfoViewModel
 import com.tokopedia.mvc.util.constant.BundleConstant
+import com.tokopedia.mvc.util.tracker.QuotaInfoTracker
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -51,6 +52,8 @@ class QuotaInfoFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModel: QuotaInfoViewModel
+    @Inject
+    lateinit var tracker: QuotaInfoTracker
 
     override fun getScreenName() = ""
 
@@ -121,6 +124,7 @@ class QuotaInfoFragment: BaseDaggerFragment() {
         btnAction.setOnClickListener {
             val uri = Uri.parse(quotaInfo.ctaLink)
             val intent = Intent(Intent.ACTION_VIEW, uri)
+            tracker.sendClickButtonUpgradeEvent(quotaInfo.ctaText)
             startActivity(intent)
         }
         tickerQuotaInfo.setHtmlDescription(quotaInfo.tickerTitle)
@@ -160,6 +164,7 @@ class QuotaInfoFragment: BaseDaggerFragment() {
         navigationIcon = iconClose
         setNavigationOnClickListener {
             activity?.finish()
+            tracker.sendClickCloseEvent()
         }
         isVisible = showToolbar.orFalse()
     }
