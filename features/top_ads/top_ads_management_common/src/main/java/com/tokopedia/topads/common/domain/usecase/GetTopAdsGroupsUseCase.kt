@@ -46,7 +46,7 @@ class GetTopAdsGroupsUseCase @Inject constructor() : GraphqlUseCase<TopAdsGroups
                 keyword = keyword,
                 page = page,
                 sort = sort,
-                separateStatistic = "true",
+                separateStatistic = null,
                 goalId = "1",
                 groupType = 1,
                 startDate = startDate,

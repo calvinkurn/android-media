@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class AdGroupsParams(
     @SerializedName("separate_statistic")
-  val separateStatistic:String = "",
+  val separateStatistic:String? = "",
     @SerializedName("shop_id")
     val shopId:String = "",
     @SerializedName("start_date")
