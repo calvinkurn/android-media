@@ -17,6 +17,7 @@ import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -176,6 +177,7 @@ class DiscoveryFragment :
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var chooseAddressWidgetDivider: View? = null
     private var shouldShowChooseAddressWidget: Boolean = true
+    private var hideShowChangeAvailable: Boolean = true
     private lateinit var coordinatorLayout: CoordinatorLayout
     private lateinit var parentLayout: FrameLayout
     private lateinit var appBarLayout: AppBarLayout
@@ -354,34 +356,36 @@ class DiscoveryFragment :
                     ivToTop.show()
                 }
                 scrollDist += dy
+                if (recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION)) {
+                    if (dy > 0 && shouldShowChooseAddressWidget && scrollDist > MINIMUM) {
+                        shouldShowChooseAddressWidget = false
+                        hideShowChangeAvailable = true
+                        recyclerView.postDelayed(100) {
+                            hideShowChooseAddressOnScroll()
+                        }
+                    }
+                } else {
+                    if (dy <= 0 && !shouldShowChooseAddressWidget && discoveryViewModel.getAddressVisibilityValue()) {
+                        shouldShowChooseAddressWidget = true
+                        hideShowChangeAvailable = true
+                        recyclerView.postDelayed(100) {
+                            hideShowChooseAddressOnScroll()
+                        }
+                    }
+                }
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION) &&
-                    newState == RecyclerView.SCROLL_STATE_IDLE
-                ) {
+                if (!recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION) && (newState == RecyclerView.SCROLL_STATE_IDLE))
                     ivToTop.hide()
-                }
                 if (scrollDist > MINIMUM) {
-                    chooseAddressWidget?.hide()
-                    chooseAddressWidgetDivider?.hide()
-                    shouldShowChooseAddressWidget = false
                     scrollDist = 0
                     discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         scrollToLastSection()
                     }
                 } else if (scrollDist < -MINIMUM) {
-                    if (discoveryViewModel.getAddressVisibilityValue()) {
-                        chooseAddressWidget?.show()
-                        if (isLightThemeStatusBar != true) {
-                            chooseAddressWidgetDivider?.show()
-                        } else {
-                            chooseAddressWidgetDivider?.hide()
-                        }
-                        shouldShowChooseAddressWidget = true
-                    }
                     scrollDist = 0
                     discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
                     if (mAnchorHeaderView.childCount == 0) {
@@ -443,13 +447,6 @@ class DiscoveryFragment :
                             requestStatusBarDark()
                             navToolbar.setShowShadowEnabled(true)
                             navToolbar.showShadow(true)
-                            if (discoveryViewModel.getAddressVisibilityValue()) {
-                                context?.let {
-                                    chooseAddressWidget?.background =
-                                        ColorDrawable(it.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
-                                    chooseAddressWidget?.updateWidget()
-                                }
-                            }
                         }
                     }
                 }
@@ -459,6 +456,23 @@ class DiscoveryFragment :
             }
         )
 
+    }
+
+    private fun hideShowChooseAddressOnScroll(){
+        if(!hideShowChangeAvailable)
+            return
+        hideShowChangeAvailable = false
+        if(!shouldShowChooseAddressWidget) {
+            chooseAddressWidget?.hide()
+            chooseAddressWidgetDivider?.hide()
+        }else{
+            chooseAddressWidget?.show()
+            if (isLightThemeStatusBar != true) {
+                chooseAddressWidgetDivider?.show()
+            } else {
+                chooseAddressWidgetDivider?.hide()
+            }
+        }
     }
 
     private fun scrollToLastSection() {

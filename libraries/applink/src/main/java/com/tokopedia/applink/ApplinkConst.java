@@ -330,9 +330,6 @@ public interface ApplinkConst {
 
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
     String CONTENT_DETAIL = "tokopedia://content/{post_id}";
-    String KOL_COMMENT = "tokopedia://kolcomment/{id}";
-    String KOL_YOUTUBE_HOST_BASE = "kolyoutube";
-    String KOL_YOUTUBE = "tokopedia://" + KOL_YOUTUBE_HOST_BASE+ "/{youtube_url}";
 
     String AFFILIATE_PRODUCT_PICKER_FROM_SHOP_NO_PARAM = "tokopedia://productpickerfromshop";
     String AFFILIATE_PRODUCT_PICKER_FROM_SHOP_HOST = "productpickerfromshop";
