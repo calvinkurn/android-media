@@ -1,7 +1,7 @@
 package com.tokopedia.mvc.util.tracker
 
-import com.tokopedia.mvc.util.constant.TrackerConstant.BUSINESS_UNIT
-import com.tokopedia.mvc.util.constant.TrackerConstant.CURRENT_SITE
+import com.tokopedia.mvc.util.constant.MvcTrackerConstant.BUSINESS_UNIT
+import com.tokopedia.mvc.util.constant.MvcTrackerConstant.CURRENT_SITE
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
