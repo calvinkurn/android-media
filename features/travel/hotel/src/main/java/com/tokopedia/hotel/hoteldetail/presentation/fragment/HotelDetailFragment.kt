@@ -177,12 +177,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (context != null) {
-            activity?.run {
-                val ctx = WeakReference<Activity>(this)
-                hotelShare = HotelShare(ctx, requireContext(), view, trackingHotelUtil)
-            }
-        }
+        initializeShare()
 
         if (savedInstanceState != null && savedInstanceState.containsKey(SAVED_SEARCH_PARAMETER)) {
             hotelHomepageModel = savedInstanceState.getParcelable(SAVED_SEARCH_PARAMETER)
@@ -383,6 +378,15 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                         hotelHomepageModel
                     )
                 }
+            }
+        }
+    }
+
+    private fun initializeShare() {
+        if (context != null) {
+            activity?.run {
+                val ctx = WeakReference<Activity>(this)
+                hotelShare = HotelShare(ctx, requireContext(), view, trackingHotelUtil)
             }
         }
     }
