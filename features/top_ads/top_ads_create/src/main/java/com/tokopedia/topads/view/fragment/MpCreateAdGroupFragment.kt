@@ -20,6 +20,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupDetailViewActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.di.CreateAdsComponent
+import com.tokopedia.topads.trackers.MpTracker
 import com.tokopedia.topads.view.model.MpAdsCreateGroupViewModel
 import com.tokopedia.topads.view.sheet.MpCreateGroupBudgetHelpSheet
 import com.tokopedia.utils.date.DateUtil
@@ -31,11 +32,11 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
 
     private lateinit var binding: FragmentMpCreateAdGroupBinding
     private var minDailyBudget: Int = 0
-    private var maxDailyBudget: Int = 0
+    private var maxDailyBudget: Int = 10000000
     private var createdGroupId: String? = null
-    private var counter : Int = 1
+    private var counter: Int = 1
     private var autofillGroupName: String? = null
-    private var validGroupName : Boolean = false
+    private var validGroupName: Boolean = false
     private var validBudget: Boolean = false
 
     private val successImageUrl = "https://images.tokopedia.net/img/android/topads/createads_success/mp_group_creation_success_dialog.png"
@@ -98,7 +99,23 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
             MpCreateGroupBudgetHelpSheet().show(childFragmentManager, MpCreateAdGroupFragment::class.java.name)
         }
 
-        binding.groupName.editText.addTextChangedListener(object : TextWatcher{
+        binding.groupName.addOnFocusChangeListener = { _, hasFocus ->
+            if (hasFocus) {
+                MpTracker.clickNewAdGroupEditName()
+            } else {
+                MpTracker.clickNewAdGroupEditName()
+            }
+        }
+
+        binding.dailyBudget.addOnFocusChangeListener = { _, hasFocus ->
+            if (hasFocus) {
+                MpTracker.clickNewAdGroupEditBudget()
+            } else {
+                MpTracker.clickNewAdGroupEditBudget()
+            }
+        }
+
+        binding.groupName.editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -106,8 +123,8 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
 
             override fun afterTextChanged(p0: Editable?) {
                 binding.groupName.setMessage("")
-                if(p0 != null && !p0.isEmpty()) {
-                    if(p0.toString().length > 70){
+                if (p0 != null && !p0.isEmpty()) {
+                    if (p0.toString().length > 70) {
                         binding.groupName.setMessage(getString(R.string.ad_groups_character_limit_error_msg))
                         binding.groupName.isInputError = true
                         validGroupName = false
@@ -128,13 +145,13 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
             }
         })
 
-        binding.dailyBudget.editText.addTextChangedListener(object : TextWatcher{
+        binding.dailyBudget.editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(p0: Editable?) {
-                if(p0 != null && !p0.toString().isEmpty() && p0.toString().toDouble() < minDailyBudget){
+                if (p0 != null && !p0.toString().isEmpty() && p0.toString().toDouble() < minDailyBudget) {
                     binding.dailyBudget.isInputError = true
                     binding.dailyBudget.setMessage("${getString(R.string.min_budget_rp)} $minDailyBudget")
                     validBudget = false
@@ -144,7 +161,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
                     binding.dailyBudget.setMessage("${getString(R.string.max_budget_rp)} $maxDailyBudget")
                     validBudget = false
                     checkAllFieldsValidations()
-                } else if (p0 == null){
+                } else if (p0 == null) {
                     binding.dailyBudget.isInputError = true
                     binding.dailyBudget.setMessage("")
                     validBudget = false
@@ -161,6 +178,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
         binding.btnSubmit.setOnClickListener {
             if (!binding.btnSubmit.isLoading) {
                 binding.btnSubmit.isLoading = true
+                MpTracker.clickCreateNewAdGroupCta()
                 createGroupViewModel.topAdsCreate(
                     listOf(productId ?: ""),
                     binding.groupName.editText.text.toString(),
@@ -174,21 +192,21 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
 
     private fun onSuccessBidSuggestion(data: List<TopadsBidInfo.DataItem>) {
         data.firstOrNull()?.let {
-            binding.dailyBudget.editText.text = Editable.Factory().newEditable(it.minDailyBudget.toString())
             minDailyBudget = it.minDailyBudget
-            maxDailyBudget = it.maxDailyBudget
+            maxDailyBudget = if (it.maxDailyBudget == 0) 10000000 else it.maxDailyBudget
+            binding.dailyBudget.editText.text = Editable.Factory().newEditable(it.minDailyBudget.toString())
         }
     }
 
     private fun onSuccessNameSuggestion(response: TopAdsProductResponse) {
         response.product.let {
-            var groupName : String = (it.category?.name ?: getString(R.string.group)) + " " + DateUtil.getCurrentDate().formatTo("dd/MM/yy")
+            var groupName: String = (it.category?.name ?: getString(R.string.group)) + " " + DateUtil.getCurrentDate().formatTo("dd/MM/yy")
             autofillGroupName = groupName
             createGroupViewModel.validateGroup(groupName, this::checkAutofillGroupNameValidation)
         }
     }
 
-    private fun checkAutofillGroupNameValidation(data: ResponseGroupValidateName.TopAdsGroupValidateNameV2){
+    private fun checkAutofillGroupNameValidation(data: ResponseGroupValidateName.TopAdsGroupValidateNameV2) {
         if (data.errors.isEmpty()) {
             binding.groupName.editText.text = Editable.Factory().newEditable(data.data.groupName)
             binding.groupName.isLoading = false
@@ -223,7 +241,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun checkGroupNameValidation(data: ResponseGroupValidateName.TopAdsGroupValidateNameV2){
+    private fun checkGroupNameValidation(data: ResponseGroupValidateName.TopAdsGroupValidateNameV2) {
         if (data.errors.isEmpty()) {
             validGroupName = true
             checkAllFieldsValidations()
@@ -236,7 +254,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
         binding.groupName.isLoading = false
     }
 
-    private fun checkAllFieldsValidations(){
+    private fun checkAllFieldsValidations() {
         binding.btnSubmit.isEnabled = validGroupName && validBudget
     }
 
@@ -248,6 +266,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
         dialog.setPrimaryCTAText(getString(R.string.manage_ads_group))
         dialog.setSecondaryCTAText(getString(R.string.stay_here))
         dialog.setPrimaryCTAClickListener {
+            MpTracker.clickAdGroupCreatedManageCta()
             val intent = Intent(context, TopAdsGroupDetailViewActivity::class.java)
             intent.putExtra(TopAdsDashboardConstant.GROUP_ID, id)
             intent.putExtra(TopAdsDashboardConstant.PRICE_SPEND, binding.dailyBudget.editText.text.toString())
@@ -255,6 +274,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
             dialog.dismiss()
         }
         dialog.setSecondaryCTAClickListener {
+            MpTracker.clickAdGroupCreatedStayHereCta()
             requireActivity().finish()
         }
         dialog.show()
@@ -262,16 +282,18 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
 
     private fun openInsufficientCreditsDialog(data: DepositAmount) {
         var dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setDescription(getString(R.string.success_group_creation_insufficient_credits_text).replace("Rpx.xxx","Rp ${data.amount}"))
+        dialog.setDescription(getString(R.string.success_group_creation_insufficient_credits_text).replace("Rpx.xxx", "Rp ${data.amount}"))
         dialog.setTitle(getString(R.string.ads_created_successfully_but_cant_appear_yet))
         dialog.setPrimaryCTAText(getString(R.string.add_credit))
         dialog.setSecondaryCTAText(getString(R.string.later))
         dialog.setPrimaryCTAClickListener {
+            MpTracker.clickAddCreditCta()
             val intent = Intent(activity, TopAdsAddCreditActivity::class.java)
             intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
             startActivityForResult(intent, 99)
         }
         dialog.setSecondaryCTAClickListener {
+            MpTracker.clickAddCreditLaterStayCta()
             requireActivity().finish()
         }
         dialog.show()
