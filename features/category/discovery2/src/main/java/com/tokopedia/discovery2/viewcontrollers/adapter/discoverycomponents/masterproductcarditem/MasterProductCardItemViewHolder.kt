@@ -227,8 +227,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             productCardView -> {
                 masterProductCardItemViewModel.sendTopAdsClick()
                 var applink = dataItem?.applinks ?: ""
-//                Todo:: Route call through viewModel
-//               Todo:: Add trackerId, will there be any issue with randomized trackerID.
                 if ((fragment as DiscoveryFragment).isAffiliateInitialized)
                     applink =
                         fragment.createAffiliateLink(applink)

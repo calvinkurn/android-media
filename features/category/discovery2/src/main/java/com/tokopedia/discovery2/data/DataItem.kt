@@ -506,7 +506,7 @@ data class DataItem(
         var gtmItemName : String? = "",
 
     @SerializedName("department_id")
-    var categoryDeptId : String? = "",
+    var categoryDeptId: String? = "",
 
     @field:SerializedName("products")
         val products: List<ProductsItem?>? = null,
