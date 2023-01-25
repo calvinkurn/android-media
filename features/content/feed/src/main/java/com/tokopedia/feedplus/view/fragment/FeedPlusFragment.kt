@@ -4144,7 +4144,8 @@ class FeedPlusFragment :
         }.toList()
         Log.d("FEED_PLUS", newList.toString())
         if (data.isNotEmpty()) {
-            adapter.notifyDataSetChanged()
+            adapter.clearData()
+            adapter.addList(newList)
             Log.d("FEED_PLUS", "Masuk ke notify")
         }
         feedViewModel.clearFollowIdToUpdate()
