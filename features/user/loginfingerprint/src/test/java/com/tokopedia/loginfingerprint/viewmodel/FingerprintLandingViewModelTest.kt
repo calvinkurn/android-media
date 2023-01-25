@@ -115,4 +115,31 @@ class FingerprintLandingViewModelTest {
         assert((viewModel.verifyFingerprint.value as Fail).throwable is RuntimeException)
     }
 
+    @Test
+    fun `verify fingerprint - signature null `() {
+        coEvery { keyPairManager.get()?.generateFingerprintSignature(any(), any()) } returns null
+
+        viewModel.verifyFingerprint()
+    }
+
+    @Test
+    fun `verify fingerprint - keypair null `() {
+        coEvery { keyPairManager.get() } returns null
+        viewModel.verifyFingerprint()
+    }
+
+    @Test
+    fun `on Has Error Verify Fingerprint - all empty`() {
+        /* When */
+        val data = VerifyFingerprint(isSuccess = true,  validateToken = "", errorMessage = "")
+        val response = VerifyFingerprintPojo(data)
+
+        coEvery { verifyFingerprintUseCase.invoke(any()) } returns response
+
+        viewModel.verifyFingerprint()
+
+        /* Then */
+        assert((viewModel.verifyFingerprint.value as Fail).throwable is RuntimeException)
+    }
+
 }
