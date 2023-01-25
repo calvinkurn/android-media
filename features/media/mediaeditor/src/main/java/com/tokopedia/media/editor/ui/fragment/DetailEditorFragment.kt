@@ -58,7 +58,6 @@ import java.io.File
 import javax.inject.Inject
 import kotlin.math.max
 
-
 class DetailEditorFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val editorDetailAnalytics: EditorDetailAnalytics
@@ -278,7 +277,10 @@ class DetailEditorFragment @Inject constructor(
     override fun onLoadComplete() {
         viewBinding?.imgUcropPreview?.cropImageView?.post {
             readPreviousState()
-            initialImageMatrix = Matrix(viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix)
+            Handler().postDelayed({
+                initialImageMatrix =
+                    Matrix(viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix)
+            }, DELAY_CROP_ROTATE_PROCESS)
         }
     }
 
@@ -939,6 +941,8 @@ class DetailEditorFragment @Inject constructor(
 
         private const val DELAY_EXECUTION_PREVIOUS_CROP = 400L
         private const val DELAY_EXECUTION_PREVIOUS_ROTATE = 400L
+        private const val DELAY_CROP_ROTATE_PROCESS =
+            DELAY_EXECUTION_PREVIOUS_CROP + DELAY_EXECUTION_PREVIOUS_ROTATE + 100L
 
         private const val DELAY_REMOVE_BG_TOASTER = 300L
     }

@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst.SellerApp.TOPADS_HEADLINE_CREATE
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MVC_LIST
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.dialog.DialogUnify
@@ -20,7 +21,6 @@ import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.getPercentFormatted
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -39,7 +39,6 @@ import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherSettingSectionBindi
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.SelectedProduct
-import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.ImageRatio
@@ -54,7 +53,9 @@ import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.universal_sharing.view.bottomsheet.ClipboardHandler
 import com.tokopedia.utils.date.DateUtil.DEFAULT_LOCALE
 import com.tokopedia.utils.date.DateUtil.DEFAULT_VIEW_TIME_FORMAT
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -162,6 +163,13 @@ class SummaryFragment :
     }
 
     private fun setupObservables() {
+        observeInitialData()
+        observeUploadCouponState()
+        observeMaxExpense()
+        observeCouponImage()
+    }
+
+    private fun observeInitialData() {
         viewModel.configuration.observe(viewLifecycleOwner) {
             binding?.apply {
                 layoutPreview.updateLayoutPreview(it)
@@ -171,12 +179,14 @@ class SummaryFragment :
                 layoutInfo.updatePageInfo(it)
             }
         }
-        viewModel.maxExpense.observe(viewLifecycleOwner) {
-            binding?.layoutSubmission?.labelSpendingEstimation
-                ?.spendingEstimationText = it.getCurrencyFormatted()
+        viewModel.enableCouponTypeChange.observe(viewLifecycleOwner) {
+            binding?.layoutType?.apply {
+                tpgEditAction.isEnabled = it
+                tickerTypeEditingDisabled.isVisible = !it
+            }
         }
-        viewModel.couponImage.observe(viewLifecycleOwner) {
-            binding?.layoutPreview?.ivPreview?.loadImage(it)
+        viewModel.submitButtonText.observe(viewLifecycleOwner) {
+            binding?.layoutSubmission?.btnSubmit?.text = context?.getString(it).orEmpty()
         }
         viewModel.error.observe(viewLifecycleOwner) {
             view?.showToasterError(it)
@@ -187,14 +197,17 @@ class SummaryFragment :
                 it.size
             )
         }
+    }
+
+    private fun observeUploadCouponState() {
         viewModel.uploadCouponSuccess.observe(viewLifecycleOwner) {
             if (it.voucherId.isZero()) {
                 showSuccessUploadBottomSheet(it)
             } else {
-                activity?.run {
+                context?.run {
                     val message = getString(R.string.smvc_summary_page_success_upload_message, it.voucherName)
                     SharedPreferencesUtil.setUploadResult(this, message)
-                    finish()
+                    RouteManager.route(this, SELLER_MVC_LIST)
                 }
             }
         }
@@ -211,11 +224,18 @@ class SummaryFragment :
                 loadingDialog?.dismiss()
             }
         }
-        viewModel.enableCouponTypeChange.observe(viewLifecycleOwner) {
-            binding?.layoutType?.apply {
-                tpgEditAction.isEnabled = it
-                tickerTypeEditingDisabled.isVisible = !it
-            }
+    }
+
+    private fun observeMaxExpense() {
+        viewModel.maxExpense.observe(viewLifecycleOwner) {
+            binding?.layoutSubmission?.labelSpendingEstimation
+                ?.spendingEstimationText = it.getCurrencyFormatted()
+        }
+    }
+
+    private fun observeCouponImage() {
+        viewModel.couponImage.observe(viewLifecycleOwner) {
+            binding?.layoutPreview?.ivPreview?.loadImage(it)
         }
     }
 
@@ -251,6 +271,9 @@ class SummaryFragment :
             onTypeCouponBtnChangeClicked(configuration ?: return@setOnClickListener)
         }
         tpgEditAction.visible()
+        tickerTypeEditingDisabled.setHtmlDescription(
+            context?.getString(R.string.smvc_voucher_type_editing_disabled).orEmpty()
+        )
     }
 
     private fun SmvcVoucherDetailVoucherInfoSectionBinding.setupLayoutInfo() {
@@ -259,6 +282,17 @@ class SummaryFragment :
             onInformationCouponBtnChangeClicked(configuration ?: return@setOnClickListener)
         }
         tpgEditAction.visible()
+        iconCopy.setOnClickListener {
+            activity?.let { nonNullActivity ->
+                ClipboardHandler().copyToClipboard(nonNullActivity, tpgVoucherCode.text.toString())
+                Toaster.build(
+                    requireView(),
+                    getString(R.string.smvc_voucherlist_copy_to_clipboard_message),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL
+                ).show()
+            }
+        }
     }
 
     private fun SmvcVoucherDetailVoucherSettingSectionBinding.setupLayoutSetting() {
