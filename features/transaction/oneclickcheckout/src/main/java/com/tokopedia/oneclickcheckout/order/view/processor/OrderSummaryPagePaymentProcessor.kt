@@ -103,14 +103,18 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
     suspend fun getGopayAdminFee(
         request: GoCicilInstallmentRequest,
         orderPayment: OrderPayment
-    ): Triple<OrderPaymentGoCicilTerms, List<OrderPaymentGoCicilTerms>, Boolean>? {
+    )): ResultGetGoCicilInstallment? {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
+                val response = goCicilInstallmentOptionUseCase.executeSuspend(
+                    request
+                )
                 val installmentList = mapInstallmentOptions(
-                    goCicilInstallmentOptionUseCase.executeSuspend(
-                        request
-                    )
+                    response.installmentOptions
+                )
+                val installmentList = mapInstallmentOptions(
+                    response.installmentOptions
                 )
                 var selectedTerm = orderPayment.walletData.goCicilData.selectedTerm
                 var shouldUpdateCart = false
@@ -118,8 +122,14 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
                     shouldUpdateCart = true
                     selectedTerm = autoSelectGoCicilTerm(orderPayment.walletData.goCicilData.selectedTenure, installmentList)
                 }
-                val selectedInstallment = installmentList.first { it.installmentTerm == selectedTerm.installmentTerm }
-                return@withContext Triple(selectedInstallment, installmentList, shouldUpdateCart)
+                val selectedInstallment =
+                    installmentList.first { it.installmentTerm == selectedTerm.installmentTerm }
+                return@withContext ResultGetGoCicilInstallment(
+                    selectedInstallment,
+                    installmentList,
+                    response.ticker.message,
+                    shouldUpdateCart
+                )
             } catch (t: Throwable) {
                 Timber.d(t)
                 return@withContext null
@@ -167,3 +177,10 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
         return selectedTerm
     }
 }
+
+class ResultGetGoCicilInstallment(
+    val selectedInstallment: OrderPaymentGoCicilTerms,
+    val installmentList: List<OrderPaymentGoCicilTerms>,
+    val tickerMessage: String,
+    val shouldUpdateCart: Boolean
+)
