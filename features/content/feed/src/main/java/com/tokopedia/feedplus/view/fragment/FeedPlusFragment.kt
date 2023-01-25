@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -4082,6 +4083,7 @@ class FeedPlusFragment :
         feedViewModel.getShopRecomWidget(nextCursor)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun onSuccessResyncFollowStatus(data: Map<String, Boolean>) {
         adapter.getlist().mapIndexed { index, item ->
             var isChanged = false
@@ -4133,15 +4135,9 @@ class FeedPlusFragment :
                         }
                     }
                 }
-
-                if (isChanged) {
-                    adapter.notifyItemChanged(
-                        index,
-                        DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
-                    )
-                }
             }
         }
+        if (data.isNotEmpty()) adapter.notifyDataSetChanged()
         feedViewModel.clearFollowIdToUpdate()
     }
 }
