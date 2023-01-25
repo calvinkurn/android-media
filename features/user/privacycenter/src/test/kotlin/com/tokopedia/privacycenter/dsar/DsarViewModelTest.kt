@@ -10,8 +10,14 @@ import com.tokopedia.privacycenter.ui.dsar.DsarConstants
 import com.tokopedia.privacycenter.ui.dsar.DsarUtils
 import com.tokopedia.privacycenter.ui.dsar.DsarViewModel
 import com.tokopedia.privacycenter.ui.dsar.uimodel.CustomDateModel
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo
+import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
+import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toString
@@ -19,6 +25,7 @@ import io.mockk.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mockito.doNothing
 import java.util.*
 
 class DsarViewModelTest {
@@ -31,6 +38,8 @@ class DsarViewModelTest {
 
     val submitRequestUseCase = mockk<SubmitRequestUseCase>(relaxed = true)
     val searchRequestUseCase = mockk<SearchRequestUseCase>(relaxed = true)
+    val getProfileUseCase = mockk<GetProfileUseCase>(relaxed = true)
+
     val userSession = mockk<UserSessionInterface>(relaxed = true)
 
     private var toasterErrorObserver = mockk<Observer<String>>(relaxed = true)
@@ -44,7 +53,7 @@ class DsarViewModelTest {
     fun setup() {
         mockkObject(DsarUtils)
 
-        viewModel = DsarViewModel(submitRequestUseCase, searchRequestUseCase, userSession, dispatcherProviderTest)
+        viewModel = DsarViewModel(submitRequestUseCase, searchRequestUseCase, getProfileUseCase, userSession, dispatcherProviderTest)
         viewModel.toasterError.observeForever(toasterErrorObserver)
         viewModel.mainLoader.observeForever(mainLoaderObserver)
         viewModel.showMainLayout.observeForever(mainLayoutObserver)
@@ -294,4 +303,86 @@ class DsarViewModelTest {
         assert(viewModel.getSelectedRangeItems()?.startDate == startDate.toString(DateUtil.YYYYMMDD))
         assert(viewModel.getSelectedRangeItems()?.endDate == endDate.toString(DateUtil.YYYYMMDD))
     }
+
+    @Test
+    fun `fetchInitialData success`() {
+        /* When */
+        val profileInfo = ProfileInfo(firstName = "yoris")
+        val response = ProfilePojo(profileInfo = profileInfo)
+
+        coEvery { getProfileUseCase.execute(any(), any()) } answers {
+            firstArg<GetProfileSubscriber>().onSuccessGetProfile(response)
+        }
+
+        val searchRequestResp = GetRequestDetailResponse()
+        coEvery { searchRequestUseCase(any()) } returns searchRequestResp
+
+        viewModel.fetchInitialData()
+
+        /* Then */
+        verify(exactly = 1) {
+            mainLoaderObserver.onChanged(true)
+            mainLoaderObserver.onChanged(false)
+            mainLayoutObserver.onChanged(true)
+        }
+    }
+
+    @Test
+    fun `fetchInitialData failed`() {
+        /* When */
+        coEvery { getProfileUseCase.execute(any(), any()) } answers {
+            firstArg<GetProfileSubscriber>().onErrorGetProfile(Throwable())
+        }
+
+        viewModel.fetchInitialData()
+        val globalError = viewModel.globalError.getOrAwaitValue()
+
+        assert(globalError)
+    }
+
+    @Test
+    fun `on Show Location Admin Popup`() {
+
+        every { getProfileUseCase.execute(any(), any()) } answers {
+            firstArg<GetProfileSubscriber>().showLocationAdminPopUp?.invoke()
+        }
+
+        viewModel.fetchInitialData()
+
+        /* Then */
+        verify {
+            getProfileUseCase.execute(any(), any())
+        }
+    }
+
+    @Test
+    fun `on Admin Redirection`() {
+
+        every { getProfileUseCase.execute(any(), any()) } answers {
+            firstArg<GetProfileSubscriber>().onLocationAdminRedirection?.invoke()
+        }
+
+        viewModel.fetchInitialData()
+
+        /* Then */
+        verify {
+            getProfileUseCase.execute(any(), any())
+        }
+    }
+
+    @Test
+    fun `on Show Location Admin Popup Error`() {
+
+        every { getProfileUseCase.execute(any(), any()) } answers {
+            firstArg<GetProfileSubscriber>().showErrorGetAdminType?.invoke(Throwable())
+        }
+
+        viewModel.fetchInitialData()
+
+        /* Then */
+        verify {
+            getProfileUseCase.execute(any(), any())
+        }
+    }
+
 }
