@@ -1,5 +1,6 @@
 package com.tokopedia.dilayanitokopedia.home.domain.mapper.recommendationforyou
 
+import androidx.annotation.VisibleForTesting
 import com.tokopedia.dilayanitokopedia.home.domain.model.GetHomeRecommendationProductV2
 import com.tokopedia.dilayanitokopedia.home.domain.model.Product
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationDataModel
@@ -9,7 +10,8 @@ import java.util.*
 
 object HomeRecommendationMapper {
 
-    private const val TYPE_PRODUCT = "product"
+    @VisibleForTesting
+    const val TYPE_PRODUCT = "product"
     private const val TYPE_BANNER = "banner"
     private const val TYPE_BANNER_ADS = "banner_ads"
 

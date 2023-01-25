@@ -454,17 +454,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             }
         }
 
-        observe(viewModelDtHome.chooseAddress) {
-            when (it) {
-                is Success -> {
-                    setupChooseAddress(it.data)
-                }
-                is Fail -> {
-                    showEmptyStateNoAddress()
-                }
-            }
-        }
-
         observeMenuList()
     }
 

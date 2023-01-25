@@ -42,10 +42,6 @@ class DtHomeViewModel @Inject constructor(
         get() = _menuList
     private val _menuList = MutableLiveData<List<AnchorTabUiModel>>()
 
-    private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
-    val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
-        get() = _chooseAddress
-
     private val homeRecommendationDataModel = HomeRecommendationFeedDataModel()
 
     fun getEmptyState(@HomeStaticLayoutId id: String, serviceType: String) {
@@ -61,8 +57,8 @@ class DtHomeViewModel @Inject constructor(
     }
 
     fun getAnchorTabByVisitablePosition(indexVisitable: Int): AnchorTabUiModel? {
-        val getGroupId = homeLayoutItemList.get(indexVisitable).groupId
-        return _menuList.value?.find { getGroupId == it.groupId }
+        val getGroupId = homeLayoutItemList.getOrNull(indexVisitable)?.groupId
+        return menuList.value?.find { getGroupId == it.groupId }
     }
 
     fun getHomeLayout(localCacheModel: LocalCacheModel) {
@@ -80,7 +76,7 @@ class DtHomeViewModel @Inject constructor(
 
             _homeLayoutList.postValue(Success(data))
 
-            getAnchorTabMenu(homeLayoutResponse, localCacheModel)
+            getAnchorTabMenu(localCacheModel)
             getRecommendationForYouNew()
         }) {
             _homeLayoutList.postValue(Fail(it))
@@ -90,7 +86,7 @@ class DtHomeViewModel @Inject constructor(
     /**
      * anchor tab contain info and visitable of click to scroll
      */
-    private fun getAnchorTabMenu(homeLayoutResponse: List<HomeLayoutResponse>, localCacheModel: LocalCacheModel) {
+    private fun getAnchorTabMenu(localCacheModel: LocalCacheModel) {
         launchCatchError(block = {
             val anchorTabResponse = getHomeAnchorTabUseCase.execute(localCacheModel)
             val menuList = anchorTabResponse.mapMenuList()
