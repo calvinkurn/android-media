@@ -29,6 +29,14 @@
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_installment_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:closeButtonVisibility="gone"
+            app:tickerShapeType="loose"
+            app:tickerType="announcement" />
+
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>
