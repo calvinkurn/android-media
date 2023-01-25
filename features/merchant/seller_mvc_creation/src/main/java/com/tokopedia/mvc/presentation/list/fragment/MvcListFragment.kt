@@ -211,8 +211,7 @@ class MvcListFragment :
         moreMenuBottomSheet?.dismiss()
         when (menuUiModel) {
             is MoreMenuUiModel.Coupon -> {
-                //   showUpdateQuotaBottomSheet(voucher)
-                showDisplayVoucherBottomSheet(voucher)
+                showUpdateQuotaBottomSheet(voucher)
             }
             is MoreMenuUiModel.EditPeriod -> {
                 showEditPeriodBottomSheet(voucher)
@@ -300,16 +299,6 @@ class MvcListFragment :
             context?.getString(R.string.smvc_general_error).toBlankOrString()
         }
         view?.showToasterError(errorMessage)
-    }
-
-    private fun showDisplayVoucherBottomSheet(voucher: Voucher) {
-        activity?.let {
-            displayVoucherBottomSheet =
-                DisplayVoucherBottomSheet.newInstance(
-                    voucher
-                )
-            displayVoucherBottomSheet?.show(childFragmentManager, "")
-        }
     }
 
     private fun showDownloadVoucherBottomSheet(voucher: Voucher) {
@@ -938,7 +927,7 @@ class MvcListFragment :
         }
     }
 
-    private fun createLabelOnTracker(voucher: Voucher) : String{
+    private fun createLabelOnTracker(voucher: Voucher): String {
         return getString(R.string.smvc_tracker_stop_voucher_lable, voucher.id.toString(), "0")
     }
 
