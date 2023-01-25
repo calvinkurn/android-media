@@ -234,6 +234,7 @@ object AffiliateAnalytics {
             const val AFFILIATE_EDUKASI_CATEGORY_LANDING_ARTICLE = "affiliate edukasi page - category landing page - article"
             const val AFFILIATE_EDUKASI_CATEGORY_LANDING_EVENT = "affiliate edukasi page - category landing page - event"
             const val AFFILIATE_EDUKASI_CATEGORY_LANDING_TUTORIAL = "affiliate edukasi page - category landing page - tutorial"
+            const val AFFILIATE_PROMOSIKAN_SSA_PAGE = "affiliate promosikan page - ssa shop list"
         }
     }
 
@@ -327,6 +328,7 @@ object AffiliateAnalytics {
             const val CLICK_KAMUS_AFFILIATE = "click - kamus affiliate"
             const val CLICK_BANTUAN = "click - bantuan"
             const val CLICK_EVENT_CATEGORY = "click - event category"
+            const val CLICK_SSA_SHOP_PAGE = "click - shop - ssa shop list"
         }
     }
 
@@ -362,6 +364,7 @@ object AffiliateAnalytics {
             const val AFFILAITE_HOME_SHOP_SELECT_CONTENT = "/affiliate home page - link dengan performa - shop"
             const val AFFILIATE_SEARCH_SHOP_CLICK = "/affiliate promosikan page - search result page - shop"
             const val AFFILIATE_EDUCATION_PAGE = "/affiliate edukasi page"
+            const val AFFILIATE_SSA_SHOP_CLICK = "/affiliate promosikan page - ssa shop list"
         }
     }
 

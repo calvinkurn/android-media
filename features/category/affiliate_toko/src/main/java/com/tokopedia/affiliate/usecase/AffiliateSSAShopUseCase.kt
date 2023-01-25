@@ -7,7 +7,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import javax.inject.Inject
 
 @GqlQuery("GetSSAShopList", GET_SSA_SHOP_LIST)
-internal class AffiliateSSAShopUseCase @Inject constructor(
+class AffiliateSSAShopUseCase @Inject constructor(
     private val repository: AffiliateRepository
 ) {
 
