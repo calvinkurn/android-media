@@ -10,12 +10,28 @@ data class AffiliateSSAShopListResponse(
         @SerializedName("Status")
         val status: Int? = null,
 
+        @SerializedName("PageInfo")
+        val pageInfo: PageInfo? = null,
+
         @SerializedName("Error")
         val error: Error? = null,
 
         @SerializedName("ShopData")
         val shopData: List<ShopDataItem?>? = null
     ) {
+
+        data class PageInfo(
+            @SerializedName("hasNext")
+            val hasNext: Boolean? = null,
+            @SerializedName("hasPrev")
+            val hasPrev: Boolean? = null,
+            @SerializedName("currentPage")
+            val currentPage: Int? = null,
+            @SerializedName("totalPage")
+            val totalPage: Int? = null,
+            @SerializedName("totalCount")
+            val totalCount: Int? = null
+        )
 
         data class Error(
             @SerializedName("Message")
@@ -48,7 +64,7 @@ data class AffiliateSSAShopListResponse(
                 val expiredDateFormatted: String? = null,
 
                 @SerializedName("SellerPercentageformatted")
-                val sellerPercentageformatted: String? = null,
+                val sellerPercentageFormatted: String? = null,
 
                 @SerializedName("SellerPercentage")
                 val sellerPercentage: Double? = null,
