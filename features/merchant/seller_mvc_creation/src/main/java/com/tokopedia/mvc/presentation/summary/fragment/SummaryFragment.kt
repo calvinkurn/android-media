@@ -434,11 +434,14 @@ class SummaryFragment :
     }
 
     private fun showSuccessUploadBottomSheet(configuration: VoucherConfiguration) {
-        SuccessUploadBottomSheet
+        val bottomSheet = SuccessUploadBottomSheet
             .createInstance(configuration)
             .setOnAdsClickListener(::onSuccessBottomsheetAdsClick)
             .setOnBroadCastClickListener(::onSuccessBottomsheetBroadCastClick)
-            .show(childFragmentManager)
+        bottomSheet.setOnDismissListener {
+            RouteManager.route(context, SELLER_MVC_LIST)
+        }
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun onMultiPeriodClicked(configuration: VoucherConfiguration) {
