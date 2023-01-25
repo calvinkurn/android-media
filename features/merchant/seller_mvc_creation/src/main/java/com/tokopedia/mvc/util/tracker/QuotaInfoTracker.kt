@@ -2,6 +2,7 @@ package com.tokopedia.mvc.util.tracker
 
 import com.tokopedia.mvc.util.constant.MvcTrackerConstant.MVC_BUSINESS_UNIT
 import com.tokopedia.mvc.util.constant.MvcTrackerConstant.MVC_CURRENT_SITE
+import com.tokopedia.mvc.util.constant.MvcTrackerConstant.MVC_EVENT
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -10,7 +11,7 @@ class QuotaInfoTracker @Inject constructor(private val userSession: UserSessionI
 
     fun sendClickCloseEvent() {
         Tracker.Builder()
-            .setEvent("clickPG")
+            .setEvent(MVC_EVENT)
             .setEventAction("click close")
             .setEventCategory("kupon toko saya - sumber kuota")
             .setEventLabel("")
@@ -24,7 +25,7 @@ class QuotaInfoTracker @Inject constructor(private val userSession: UserSessionI
 
     fun sendClickButtonUpgradeEvent(buttonName: String) {
         Tracker.Builder()
-            .setEvent("clickPG")
+            .setEvent(MVC_EVENT)
             .setEventAction("click button upgrade")
             .setEventCategory("kupon toko saya - sumber kuota")
             .setEventLabel(buttonName)
