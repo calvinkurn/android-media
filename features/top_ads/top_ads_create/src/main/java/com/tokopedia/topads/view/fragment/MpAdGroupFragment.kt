@@ -15,6 +15,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
 import com.tokopedia.filter.common.data.Filter
@@ -363,9 +365,11 @@ class MpAdGroupFragment : BaseDaggerFragment(),
         dialog.setSecondaryCTAText(getString(R.string.stay_here))
         dialog.setPrimaryCTAClickListener {
             MpTracker.clickAdGroupCreatedManageCta()
-            val intent = Intent(context, TopAdsGroupDetailViewActivity::class.java)
-            intent.putExtra(TopAdsDashboardConstant.GROUP_ID,groupId)
-            intent.putExtra(TopAdsDashboardConstant.PRICE_SPEND,"")
+            val intent = RouteManager.getIntent(context,ApplinkConstInternalTopAds.TOPADS_EDIT_ADS).apply {
+                putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
+                putExtra(TopAdsDashboardConstant.GROUPID, groupId)
+                putExtra(TopAdsDashboardConstant.GROUP_STRATEGY,"auto_bid")
+            }
             startActivity(intent)
             dialog.dismiss()
         }

@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.topads.common.data.model.DataSuggestions
@@ -17,7 +19,6 @@ import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.create.databinding.FragmentMpCreateAdGroupBinding
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
-import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupDetailViewActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.trackers.MpTracker
@@ -200,7 +201,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
 
     private fun onSuccessNameSuggestion(response: TopAdsProductResponse) {
         response.product.let {
-            var groupName: String = (it.category?.name ?: getString(R.string.group)) + " " + DateUtil.getCurrentDate().formatTo("dd/MM/yy")
+            var groupName: String = (if(it.category?.name.isNullOrEmpty()) getString(R.string.group) else it.category?.name) + " " + DateUtil.getCurrentDate().formatTo("dd/MM/yy")
             autofillGroupName = groupName
             createGroupViewModel.validateGroup(groupName, this::checkAutofillGroupNameValidation)
         }
@@ -267,9 +268,11 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
         dialog.setSecondaryCTAText(getString(R.string.stay_here))
         dialog.setPrimaryCTAClickListener {
             MpTracker.clickAdGroupCreatedManageCta()
-            val intent = Intent(context, TopAdsGroupDetailViewActivity::class.java)
-            intent.putExtra(TopAdsDashboardConstant.GROUP_ID, createdGroupId)
-            intent.putExtra(TopAdsDashboardConstant.PRICE_SPEND, binding.dailyBudget.editText.text.toString())
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS).apply {
+                putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
+                putExtra(TopAdsDashboardConstant.GROUPID, createdGroupId)
+                putExtra(TopAdsDashboardConstant.GROUP_STRATEGY,"auto_bid")
+            }
             startActivity(intent)
             dialog.dismiss()
         }
