@@ -171,7 +171,8 @@ class MvcListFragment :
         moreMenuBottomSheet?.dismiss()
         when (menuUiModel) {
             is MoreMenuUiModel.Coupon -> {
-                showUpdateQuotaBottomSheet(voucher)
+                //   showUpdateQuotaBottomSheet(voucher)
+                showDisplayVoucherBottomSheet(voucher)
             }
             is MoreMenuUiModel.EditPeriod -> {
                 showEditPeriodBottomSheet(voucher)
@@ -322,7 +323,7 @@ class MvcListFragment :
         binding?.sortFilter?.indicatorCounter = viewModel.getFilterCount()
     }
 
-    override fun onOtherPeriodMoreMenuClicked(dialog : OtherPeriodBottomSheet, voucher: Voucher) {
+    override fun onOtherPeriodMoreMenuClicked(dialog: OtherPeriodBottomSheet, voucher: Voucher) {
         dialog.dismiss()
         showMoreMenuBottomSheet(voucher)
     }
@@ -398,8 +399,11 @@ class MvcListFragment :
         voucherCreationQuota: VoucherCreationQuota
     ) {
         tfQuotaCounter.text = MethodChecker.fromHtml(
-            getString(R.string.smvc_voucherlist_quota_usage_format, voucherCreationQuota.remaining,
-                voucherCreationQuota.total)
+            getString(
+                R.string.smvc_voucherlist_quota_usage_format,
+                voucherCreationQuota.remaining,
+                voucherCreationQuota.total
+            )
         )
         iconInfo.setOnClickListener {
             redirectToQuotaVoucherPage(voucherCreationQuota)
@@ -593,11 +597,11 @@ class MvcListFragment :
     }
 
     override fun onMenuClicked(menu: EduCenterMenuModel) {
-        when(menu.urlRoute){
-            URL_MAIN_ARTICLE ->{
+        when (menu.urlRoute) {
+            URL_MAIN_ARTICLE -> {
                 routeToUrl(menu.urlRoute.toString())
             }
-            else-> {
+            else -> {
                 val introPage = Intent(context, MvcIntroActivity::class.java)
                 startActivity(introPage)
             }
@@ -667,7 +671,7 @@ class MvcListFragment :
         }
     }
 
-    private fun getStringDescStopVoucherDialog(voucherStatus: VoucherStatus, voucherName : String): String {
+    private fun getStringDescStopVoucherDialog(voucherStatus: VoucherStatus, voucherName: String): String {
         return if (voucherStatus == VoucherStatus.NOT_STARTED) {
             getString(R.string.smvc_delete_voucher_confirmation_body_dialog)
         } else {

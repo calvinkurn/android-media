@@ -80,10 +80,6 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
     var listener = object : OnDateChangedListener {
         override fun onDateChanged(date: Long) {}
     }
-
-    /**
-     * If the selected date is today then add 3 hours to it . What will happen if the endDate is selected as today ? Should I add 3 hours in the end
-     * */
     private fun setUpTimePickerBottomSheet(selectedDate: Date) {
         val pickerStartTime = GregorianCalendar()
         val pickerEndTime = GregorianCalendar()
@@ -102,9 +98,9 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
 
             if (date1 == date2 && month1 == month2) {
                 pickerStartTime.apply {
-                    val start = startDate?.get(Calendar.HOUR_OF_DAY) ?: MIN_TIME_OF_DAY
-                    set(Calendar.HOUR_OF_DAY, start + ADD_3_HOURS)
-                    set(Calendar.MINUTE, MIN_TIME_OF_DAY)
+                    val (startHour, startMinute) = getStartTime(startDate)
+                    set(Calendar.HOUR_OF_DAY, startHour)
+                    set(Calendar.MINUTE, startMinute)
                 }
             } else {
                 pickerStartTime.apply {
@@ -124,11 +120,11 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
                 set(Calendar.MINUTE, minute)
             }
 
+            pickerEndTime.time = selectedDate
             pickerEndTime.apply {
                 set(Calendar.HOUR_OF_DAY, MAX_HOUR_OF_DAY)
                 set(Calendar.MINUTE, MAX_MINUTE_OF_DAY)
             }
-
             initTimePicker(defaultDate, pickerStartTime, pickerEndTime)
             initTitleForTimePicker(selectedDate)
 
@@ -138,6 +134,19 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
                     .toBlankOrString()
             )
         }
+    }
+
+    fun GregorianCalendar.getStartTime(startDate: GregorianCalendar?): Pair<Int, Int> {
+        var startHour = startDate?.get(Calendar.HOUR_OF_DAY) ?: MIN_TIME_OF_DAY
+        var startMinute = startDate?.get(Calendar.MINUTE) ?: MIN_TIME_OF_DAY
+        if (startMinute >= MINUTE_INTERVAL) {
+            startHour += HOUR_INTERVAL
+            startMinute = MIN_TIME_OF_DAY
+        } else if (startMinute < MINUTE_INTERVAL) {
+            startMinute = MINUTE_INTERVAL
+        }
+        startHour += ADD_3_HOURS
+        return Pair(startHour, startMinute)
     }
 
     private fun initTimePicker(

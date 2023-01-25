@@ -1,6 +1,5 @@
 package com.tokopedia.mvc.presentation.bottomsheet.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -48,22 +47,28 @@ class VoucherEditPeriodViewModel @Inject constructor(
         get() = _updateVoucherPeriodStateLiveData
 
     fun setStartDateTime(startDate: Calendar?) {
+        if (startDate == null) {
+            return
+        }
         _startDateCalendarLiveData.value = startDate
-        _dateStartLiveData.value = startDate?.time?.toFormattedString(DASH_DATE_FORMAT)
-        _hourStartLiveData.value = startDate?.time?.toFormattedString(HOUR_FORMAT)
+        _dateStartLiveData.value = startDate.time.toFormattedString(DASH_DATE_FORMAT)
+        _hourStartLiveData.value = startDate.time.toFormattedString(HOUR_FORMAT)
         if (getMaxDate(_startDateCalendarLiveData.value as? GregorianCalendar?)?.compareTo(
                 _endDateCalendarLiveData.value
-            ).isLessThanZero()) {
-            Log.d("FATAL", "setStartDateTime: Need to change the end date as well")
+            ).isLessThanZero()
+        ) {
             val modifiedEndDate = getMaxDate(_startDateCalendarLiveData.value as? GregorianCalendar)
             setEndDateTime(modifiedEndDate)
         }
     }
 
     fun setEndDateTime(endDate: Calendar?) {
+        if (endDate == null) {
+            return
+        }
         _endDateCalendarLiveData.value = endDate
-        _dateEndLiveData.value = endDate?.time?.toFormattedString(DASH_DATE_FORMAT)
-        _hourEndLiveData.value = endDate?.time?.toFormattedString(HOUR_FORMAT)
+        _dateEndLiveData.value = endDate.time.toFormattedString(DASH_DATE_FORMAT)
+        _hourEndLiveData.value = endDate.time.toFormattedString(HOUR_FORMAT)
     }
 
     fun validateAndUpdateDateTime(voucher: Voucher) {
