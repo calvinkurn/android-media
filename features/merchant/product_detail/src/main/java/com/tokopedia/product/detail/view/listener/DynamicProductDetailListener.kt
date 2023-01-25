@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
@@ -475,5 +476,5 @@ interface DynamicProductDetailListener {
      */
     fun onThumbnailVariantSelected(variantId: String, categoryKey: String)
 
-    fun onThumbnailVariantImpress(trackData: ComponentTrackDataModel)
+    fun onThumbnailVariantImpress(data: VariantOptionWithAttribute, position: Int)
 }

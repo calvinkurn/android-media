@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ad
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.VariantConstant
@@ -17,8 +18,8 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
 class ThumbnailVariantViewHolder(
     val view: View,
-    val atcListener: AtcVariantListener,
-    val pdpListener: DynamicProductDetailListener
+    private val atcListener: AtcVariantListener,
+    private val pdpListener: DynamicProductDetailListener
 ) : RecyclerView.ViewHolder(view) {
 
     companion object {
@@ -35,6 +36,7 @@ class ThumbnailVariantViewHolder(
         setUI(element = element)
         setEvent(element = element)
         setState(element = element)
+        setImpression(element = element)
     }
 
     private fun setUI(element: VariantOptionWithAttribute) {
@@ -76,5 +78,14 @@ class ThumbnailVariantViewHolder(
         return element.currentState != VariantConstant.STATE_EMPTY &&
             element.currentState != VariantConstant.STATE_SELECTED_EMPTY &&
             element.flashSale
+    }
+
+    private fun setImpression(element: VariantOptionWithAttribute) {
+        view.addOnImpressionListener(element.impressHolder) {
+            pdpListener.onThumbnailVariantImpress(
+                data = element,
+                position = bindingAdapterPosition
+            )
+        }
     }
 }

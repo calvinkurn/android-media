@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.tracking
 
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.util.TrackingUtil
@@ -47,16 +48,23 @@ object ProductThumbnailVariantTracking {
 
     fun onImpression(
         trackingQueue: TrackingQueue?,
-        componentTrackDataModel: ComponentTrackDataModel,
+        singleVariant: ProductSingleVariantDataModel?,
+        data: VariantOptionWithAttribute,
+        position: Int,
         productInfo: DynamicProductInfoP1?,
         userId: String
     ) {
         val action = "impression - product media variant thumbnail with image"
-        val itemName = ""
+        val itemName = "${data.variantCategoryKey} - ${data.variantId}"
         val trackerId = "40921"
+        val trackData = ComponentTrackDataModel(
+            componentType = singleVariant?.type.orEmpty(),
+            componentName = singleVariant?.getComponentNameAsThumbnail().orEmpty(),
+            adapterPosition = position
+        )
         val mapEvent = TrackingUtil.createCommonImpressionTracker(
             productInfo = productInfo,
-            componentTrackDataModel = componentTrackDataModel,
+            componentTrackDataModel = trackData,
             userId = userId,
             customAction = action,
             customItemName = itemName,

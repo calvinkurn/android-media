@@ -3463,10 +3463,12 @@ open class DynamicProductDetailFragment :
         )
     }
 
-    override fun onThumbnailVariantImpress(trackData: ComponentTrackDataModel) {
+    override fun onThumbnailVariantImpress(data: VariantOptionWithAttribute, position: Int) {
         ProductThumbnailVariantTracking.onImpression(
             trackingQueue = trackingQueue,
-            componentTrackDataModel = trackData,
+            singleVariant = pdpUiUpdater?.productSingleVariant,
+            data = data,
+            position = position,
             productInfo = viewModel.getDynamicProductInfoP1,
             userId = viewModel.userId
         )

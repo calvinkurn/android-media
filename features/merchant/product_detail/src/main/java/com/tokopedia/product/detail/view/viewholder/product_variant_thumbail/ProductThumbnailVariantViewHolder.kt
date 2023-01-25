@@ -87,8 +87,9 @@ class ProductThumbnailVariantViewHolder(
 
     private fun setImpression(element: ProductSingleVariantDataModel) {
         view.addOnImpressionListener(element.impressHolder) {
-            pdpListener.onThumbnailVariantImpress(
-                getComponentTrackData(element)
+            val trackData = getComponentTrackData(element)
+            pdpListener.onImpressComponent(
+                trackData.copy(componentName = element.getComponentNameAsThumbnail())
             )
         }
     }
