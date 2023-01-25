@@ -8,6 +8,7 @@ import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.databinding.ItemThumbnailVariantBinding
+import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
 /**
  * Created by yovi.putra on 10/01/23"
@@ -16,7 +17,8 @@ import com.tokopedia.product.detail.databinding.ItemThumbnailVariantBinding
 
 class ThumbnailVariantViewHolder(
     val view: View,
-    val listener: AtcVariantListener
+    val atcListener: AtcVariantListener,
+    val pdpListener: DynamicProductDetailListener
 ) : RecyclerView.ViewHolder(view) {
 
     companion object {
@@ -47,14 +49,14 @@ class ThumbnailVariantViewHolder(
     private fun setEvent(element: VariantOptionWithAttribute) {
         // trigger to adapter for scroll smooth to position
         if (element.currentState == VariantConstant.STATE_SELECTED) {
-            listener.onSelectionChanged(
+            atcListener.onSelectionChanged(
                 itemView,
                 bindingAdapterPosition
             )
         }
 
         card.onClickListener {
-            listener.onThumbnailVariantSelected(
+            pdpListener.onThumbnailVariantSelected(
                 variantId = element.variantId,
                 categoryKey = element.variantCategoryKey
             )

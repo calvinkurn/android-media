@@ -26,7 +26,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDat
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.util.TrackingUtil.removeCurrencyPrice
 import com.tokopedia.product.detail.data.util.TrackingUtil.sendTrackingBundle
-import com.tokopedia.product.detail.tracking.TrackingConstant
 import com.tokopedia.product.util.processor.Product
 import com.tokopedia.product.util.processor.ProductDetailViewsBundler
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
@@ -35,7 +34,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import com.tokopedia.track.constant.TrackerConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import org.json.JSONObject
@@ -525,33 +523,6 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, generateComponentTrackModel(variantData, variantPosition), ProductTrackingConstant.Action.CLICK_CHOOSE_PRODUCT_VARIANT)
-        }
-
-        fun onThumbnailVariantClicked(
-            productInfo: DynamicProductInfoP1?,
-            singleVariant: ProductSingleVariantDataModel?,
-            componentPosition: Int
-        ) {
-            val action = "click - product media variant thumbnail with image"
-
-            TrackingUtil.addComponentTracker(
-                mutableMapOf(
-                    TrackerConstant.EVENT to ProductTrackingConstant.PDP.EVENT_CLICK_PG,
-                    TrackerConstant.EVENT_ACTION to action,
-                    TrackerConstant.EVENT_CATEGORY to ProductTrackingConstant.Category.PDP,
-                    TrackerConstant.EVENT_LABEL to "",
-                    TrackingConstant.Hit.TRACKER_ID to "40926",
-                    TrackerConstant.BUSINESS_UNIT to ProductTrackingConstant.Category.PDP,
-                    TrackerConstant.CURRENT_SITE to ProductTrackingConstant.Tracking.CURRENT_SITE
-                ),
-                productInfo = productInfo,
-                componentTrackDataModel = ComponentTrackDataModel(
-                    adapterPosition = componentPosition,
-                    componentType = singleVariant?.type().orEmpty(),
-                    componentName = singleVariant?.name().orEmpty()
-                ),
-                elementName = action
-            )
         }
 
         fun eventFollowShop(

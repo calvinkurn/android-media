@@ -210,6 +210,7 @@ import com.tokopedia.product.detail.tracking.ProductArTracking
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracker
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracking
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
+import com.tokopedia.product.detail.tracking.ProductThumbnailVariantTracking
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_ADS_TRACKER
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_IS_NOT_ADS
@@ -1728,7 +1729,7 @@ open class DynamicProductDetailFragment :
         viewModel.loadViewToView(
             pageName = pageName,
             productId = p1.basic.productID,
-            isTokoNow = p1.basic.isTokoNow,
+            isTokoNow = p1.basic.isTokoNow
         )
     }
 
@@ -2993,9 +2994,11 @@ open class DynamicProductDetailFragment :
         observe(viewModel.loadViewToView) { data ->
             data.doSuccessOrFail({
                 if (it.data.recommendationItemList.size > 1) {
-                    pdpUiUpdater?.updateViewToViewData(it.data.copy(
-                        recommendationItemList = it.data.recommendationItemList
-                    ))
+                    pdpUiUpdater?.updateViewToViewData(
+                        it.data.copy(
+                            recommendationItemList = it.data.recommendationItemList
+                        )
+                    )
                     updateUi()
                 } else {
                     pdpUiUpdater?.removeComponent(it.data.recomUiPageName)
@@ -3449,12 +3452,24 @@ open class DynamicProductDetailFragment :
             categoryKey = categoryKey
         )
 
-        DynamicProductDetailTracking.Click
-            .onThumbnailVariantClicked(
-                productInfo = viewModel.getDynamicProductInfoP1,
-                singleVariant = singleVariantUiData,
-                componentPosition = getComponentPositionBeforeUpdate(singleVariantUiData)
-            )
+        ProductThumbnailVariantTracking.onItemClicked(
+            trackingQueue = trackingQueue,
+            productInfo = viewModel.getDynamicProductInfoP1,
+            singleVariant = singleVariantUiData,
+            componentPosition = getComponentPositionBeforeUpdate(singleVariantUiData),
+            userId = viewModel.userId,
+            variantId = variantId,
+            variantKey = categoryKey
+        )
+    }
+
+    override fun onThumbnailVariantImpress(trackData: ComponentTrackDataModel) {
+        ProductThumbnailVariantTracking.onImpression(
+            trackingQueue = trackingQueue,
+            componentTrackDataModel = trackData,
+            productInfo = viewModel.getDynamicProductInfoP1,
+            userId = viewModel.userId
+        )
     }
 
     private fun selectVariantInPdp(variantOptions: VariantOptionWithAttribute, state: Int) {
@@ -5810,7 +5825,7 @@ open class DynamicProductDetailFragment :
         data: ViewToViewItemData,
         title: String,
         itemPosition: Int,
-        adapterPosition: Int,
+        adapterPosition: Int
     ) {
         DynamicProductDetailTracking.ViewToView.eventImpressViewToView(
             position = itemPosition,
@@ -5819,7 +5834,7 @@ open class DynamicProductDetailFragment :
             pageTitle = title,
             viewModel.getDynamicProductInfoP1,
             viewModel.userId,
-            trackingQueue,
+            trackingQueue
         )
     }
 
@@ -5827,7 +5842,7 @@ open class DynamicProductDetailFragment :
         data: ViewToViewItemData,
         title: String,
         itemPosition: Int,
-        adapterPosition: Int,
+        adapterPosition: Int
     ) {
         DynamicProductDetailTracking.ViewToView.eventClickViewToView(
             position = itemPosition,
@@ -5835,18 +5850,18 @@ open class DynamicProductDetailFragment :
             pageName = data.recommendationData.pageName,
             pageTitle = title,
             viewModel.getDynamicProductInfoP1,
-            viewModel.userId,
+            viewModel.userId
         )
         val activity = activity ?: return
         showImmediately(
             childFragmentManager,
-            ViewToViewBottomSheet.TAG,
+            ViewToViewBottomSheet.TAG
         ) {
             ViewToViewBottomSheet.newInstance(
                 activity.classLoader,
                 fragmentFactory,
                 data,
-                viewModel.getDynamicProductInfoP1?.basic?.productID ?: "",
+                viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
             )
         }
     }

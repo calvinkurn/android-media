@@ -22,7 +22,4 @@ interface AtcVariantListener {
     fun hideVariantName(): Boolean = false
     fun shouldHideTextHabis(): Boolean = false
     fun showVariantWithChipGroup(): Boolean = false
-
-    // thumbnail variant
-    fun onThumbnailVariantSelected(variantId: String, categoryKey: String) {}
 }

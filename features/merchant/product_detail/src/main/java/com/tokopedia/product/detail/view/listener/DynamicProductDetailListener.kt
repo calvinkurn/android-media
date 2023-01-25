@@ -460,13 +460,20 @@ interface DynamicProductDetailListener {
         data: ViewToViewItemData,
         title: String,
         itemPosition: Int,
-        adapterPosition: Int,
+        adapterPosition: Int
     )
     fun onViewToViewClicked(
         data: ViewToViewItemData,
         title: String,
         itemPosition: Int,
-        adapterPosition: Int,
+        adapterPosition: Int
     )
     fun onViewToViewReload(pageName: String)
+
+    /**
+     * Thumbnail Variant
+     */
+    fun onThumbnailVariantSelected(variantId: String, categoryKey: String)
+
+    fun onThumbnailVariantImpress(trackData: ComponentTrackDataModel)
 }

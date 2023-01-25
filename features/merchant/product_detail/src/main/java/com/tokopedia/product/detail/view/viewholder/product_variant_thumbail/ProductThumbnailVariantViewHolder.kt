@@ -20,10 +20,10 @@ import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ada
  */
 class ProductThumbnailVariantViewHolder(
     val view: View,
-    private val variantListener: AtcVariantListener,
+    private val atcListener: AtcVariantListener,
     private val pdpListener: DynamicProductDetailListener
 ) : ProductDetailPageViewHolder<ProductSingleVariantDataModel>(view),
-    AtcVariantListener by variantListener {
+    AtcVariantListener by atcListener {
 
     companion object {
         val LAYOUT = R.layout.item_thumbnail_variant_view_holder
@@ -34,7 +34,7 @@ class ProductThumbnailVariantViewHolder(
     }
 
     private val containerAdapter by lazyThreadSafetyNone {
-        ProductThumbnailVariantAdapter(variantListener)
+        ProductThumbnailVariantAdapter(atcListener = atcListener, pdpListener = pdpListener)
     }
 
     private val smoothScroller by lazyThreadSafetyNone {
@@ -81,13 +81,15 @@ class ProductThumbnailVariantViewHolder(
     private fun setOnClick() {
         itemView.setOnClickListener {
             // pass dummy object since we need to redirect to variant bottomsheet
-            variantListener.onVariantClicked(emptyVariantData)
+            atcListener.onVariantClicked(emptyVariantData)
         }
     }
 
     private fun setImpression(element: ProductSingleVariantDataModel) {
         view.addOnImpressionListener(element.impressHolder) {
-            pdpListener.onImpressComponent(getComponentTrackData(element))
+            pdpListener.onThumbnailVariantImpress(
+                getComponentTrackData(element)
+            )
         }
     }
 
