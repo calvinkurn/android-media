@@ -8,155 +8,134 @@ import com.google.gson.annotations.SerializedName
 
 data class EventRedeem(
     @SerializedName("data")
-    @Expose
     val data: Data = Data(),
     @SerializedName("status")
-    @Expose
     val status: String = ""
 )
 
 data class Data(
-        @SerializedName("action")
-        @Expose
-        val action: List<Action> = emptyList(),
-        @SerializedName("product")
-        @Expose
-        val product: Product = Product(),
-        @SerializedName("quantity")
-        @Expose
-        val quantity: Int = 0,
-        @SerializedName("schedule")
-        @Expose
-        val schedule: Schedule = Schedule(),
-        @SerializedName("user")
-        @Expose
-        val user: User = User()
+    @SerializedName("action")
+    val action: List<Action> = emptyList(),
+    @SerializedName("product")
+    val product: Product = Product(),
+    @SerializedName("quantity")
+    val quantity: Int = 0,
+    @SerializedName("schedule")
+    val schedule: Schedule = Schedule(),
+    @SerializedName("user")
+    val user: User = User(),
+    @SerializedName("redemptions")
+    val redemptions: List<Participant>? = emptyList(),
+    @SerializedName("redemption_status")
+    val redemptionStatus: Int = 0,
 )
 
 data class Product(
-        @SerializedName("category_id")
-        @Expose
-        val categoryId: String = "0",
-        @SerializedName("created_at")
-        @Expose
-        val createdAt: String = "",
-        @SerializedName("display_name")
-        @Expose
-        val displayName: String = "",
-        @SerializedName("facility_group_id")
-        @Expose
-        val facilityGroupId: String = "0",
-        @SerializedName("id")
-        @Expose
-        val id: String = "0",
-        @SerializedName("image_app")
-        @Expose
-        val imageApp: String = "",
-        @SerializedName("image_web")
-        @Expose
-        val imageWeb: String = "",
-        @SerializedName("long_rich_desc")
-        @Expose
-        val longRichDesc: String = "",
-        @SerializedName("max_end_date")
-        @Expose
-        val maxEndDate: Int = 0,
-        @SerializedName("min_start_date")
-        @Expose
-        val minStartDate: Int = 0,
-        @SerializedName("mrp")
-        @Expose
-        val mrp: Int = 0,
-        @SerializedName("provider_id")
-        @Expose
-        val providerId: String = "0",
-        @SerializedName("provider_product_id")
-        @Expose
-        val providerProductId: String = "",
-        @SuppressLint("Invalid Data Type")
-        @SerializedName("sales_price")
-        @Expose
-        val salesPrice: Long = 0,
-        @SerializedName("seo_url")
-        @Expose
-        val seoUrl: String = "",
-        @SerializedName("thumbnail_app")
-        @Expose
-        val thumbnailApp: String = "",
-        @SerializedName("thumbnail_web")
-        @Expose
-        val thumbnailWeb: String = "",
-        @SerializedName("title")
-        @Expose
-        val title: String = "",
-        @SerializedName("tnc")
-        @Expose
-        val tnc: String = "",
-        @SerializedName("updated_at")
-        @Expose
-        val updatedAt: String = "",
-        @SerializedName("url")
-        @Expose
-        val url: String = ""
+    @SerializedName("category_id")
+    val categoryId: String = "0",
+    @SerializedName("created_at")
+    val createdAt: String = "",
+    @SerializedName("display_name")
+    val displayName: String = "",
+    @SerializedName("facility_group_id")
+    val facilityGroupId: String = "0",
+    @SerializedName("id")
+    val id: String = "0",
+    @SerializedName("image_app")
+    val imageApp: String = "",
+    @SerializedName("image_web")
+    val imageWeb: String = "",
+    @SerializedName("long_rich_desc")
+    val longRichDesc: String = "",
+    @SerializedName("max_end_date")
+    val maxEndDate: Int = 0,
+    @SerializedName("min_start_date")
+    val minStartDate: Int = 0,
+    @SerializedName("mrp")
+    val mrp: Int = 0,
+    @SerializedName("provider_id")
+    val providerId: String = "0",
+    @SerializedName("provider_product_id")
+    val providerProductId: String = "",
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("sales_price")
+    val salesPrice: Long = 0,
+    @SerializedName("seo_url")
+    val seoUrl: String = "",
+    @SerializedName("thumbnail_app")
+    val thumbnailApp: String = "",
+    @SerializedName("thumbnail_web")
+    val thumbnailWeb: String = "",
+    @SerializedName("title")
+    val title: String = "",
+    @SerializedName("tnc")
+    val tnc: String = "",
+    @SerializedName("updated_at")
+    val updatedAt: String = "",
+    @SerializedName("url")
+    val url: String = ""
 )
 
 data class Schedule(
-        @SerializedName("description")
-        @Expose
-        val description: String = "",
-        @SerializedName("name")
-        @Expose
-        val name: String = "",
-        @SerializedName("show_data")
-        @Expose
-        val showData: String = ""
+    @SerializedName("description")
+    val description: String = "",
+    @SerializedName("name")
+    val name: String = "",
+    @SerializedName("show_data")
+    val showData: String = ""
 )
 
 data class User(
-        @SerializedName("name")
-        @Expose
-        val name: String = ""
+    @SerializedName("name")
+    val name: String = ""
 )
 
 data class Action(
-        @SerializedName("border_color")
-        @Expose
-        val borderColor: String = "",
-        @SerializedName("button_type")
-        @Expose
-        val buttonType: String = "",
-        @SerializedName("color")
-        @Expose
-        val color: String = "",
-        @SerializedName("key")
-        @Expose
-        val key: String = "",
-        @SerializedName("label")
-        @Expose
-        val label: String = "",
-        @SerializedName("text_color")
-        @Expose
-        val textColor: String = "",
-        @SerializedName("ui_control")
-        @Expose
-        val uiControl: String = "",
-        @SerializedName("value")
-        @Expose
-        val value: String = "",
-        @SerializedName("weight")
-        @Expose
-        val weight: Int = 0,
-        @SerializedName("url_params")
-        @Expose
-        val urlParams: UrlParams = UrlParams()
+    @SerializedName("border_color")
+    val borderColor: String = "",
+    @SerializedName("button_type")
+    val buttonType: String = "",
+    @SerializedName("color")
+    val color: String = "",
+    @SerializedName("key")
+    val key: String = "",
+    @SerializedName("label")
+    val label: String = "",
+    @SerializedName("text_color")
+    val textColor: String = "",
+    @SerializedName("ui_control")
+    val uiControl: String = "",
+    @SerializedName("value")
+    val value: String = "",
+    @SerializedName("weight")
+    val weight: Int = 0,
+    @SerializedName("url_params")
+    val urlParams: UrlParams = UrlParams()
 
 )
 
 data class UrlParams(
-        @SerializedName("app_url")
-        @Expose
-        val appUrl: String = "",
-        @SerializedName("method")
-        @Expose
-        val method: String = ""
+    @SerializedName("app_url")
+    val appUrl: String = "",
+    @SerializedName("method")
+    val method: String = ""
+)
+
+data class Participant(
+    @SerializedName("id")
+    val id: String = "",
+    @SerializedName("day")
+    val day: Int = 0,
+    @SerializedName("redemption_time")
+    val redemptionTime: Int = 0,
+    @SerializedName("participant_details")
+    val participantDetails: List<ParticipantDetail> = emptyList(),
+    var checked: Boolean = false
+)
+
+data class ParticipantDetail(
+    @SerializedName("label")
+    val label: String = "",
+    @SerializedName("value")
+    val value: String = ""
 )

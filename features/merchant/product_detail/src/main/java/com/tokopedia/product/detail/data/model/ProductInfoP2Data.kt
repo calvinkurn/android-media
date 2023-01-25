@@ -11,8 +11,10 @@ import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.usp.UniqueSellingPointTokoCabang
 import com.tokopedia.product.detail.common.data.model.warehouse.NearestWarehouseResponse
+import com.tokopedia.product.detail.data.model.custom_info_title.CustomInfoTitle
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
+import com.tokopedia.product.detail.data.model.generalinfo.ObatKeras
 import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
 import com.tokopedia.product.detail.data.model.navbar.NavBar
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
@@ -152,8 +154,15 @@ data class ProductInfoP2Data(
 
     @SerializedName("arInfo")
     @Expose
-    var arInfo: ProductArInfo = ProductArInfo()
+    var arInfo: ProductArInfo = ProductArInfo(),
 
+    @SerializedName("obatKeras")
+    @Expose
+    var obatKeras: ObatKeras = ObatKeras(),
+
+    @SerializedName("customInfoTitle")
+    @Expose
+    val customInfoTitle: List<CustomInfoTitle> = emptyList()
 ) {
     data class Response(
         @SerializedName("pdpGetData")

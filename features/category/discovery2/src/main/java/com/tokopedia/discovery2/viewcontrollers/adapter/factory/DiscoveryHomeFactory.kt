@@ -489,6 +489,13 @@ class DiscoveryHomeFactory {
                 ::CategoryBestSellerViewModel
             )
 
+            // Category Best Seller
+            initializeComponent(
+                ComponentsList.CLPFeatureProducts,
+                ::CategoryBestSellerViewHolder,
+                ::CategoryBestSellerViewModel
+            )
+
             //Topads Headline View
             initializeComponent(
                 ComponentsList.TopadsHeadlineView,
@@ -509,8 +516,13 @@ class DiscoveryHomeFactory {
                 ::ShopCardItemViewModel
             )
 
-            initializeComponent(ComponentsList.Section, ::SectionViewHolder, ::SectionViewModel)
+            initializeComponent(
+                ComponentsList.Section,
+                ::SectionViewHolder,
+                ::SectionViewModel)
+
 //            initializeComponent(ComponentsList.AnchorTabs,::AnchorTabsViewHolder,::AnchorTabsViewModel)
+
             initializeComponent(
                 ComponentsList.AnchorTabsItem,
                 ::AnchorTabsItemViewHolder,

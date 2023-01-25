@@ -57,7 +57,7 @@ data class Carousel(
         return 0
     }
 
-    override fun writeToParcel(dest: Parcel?, flags: Int) {
+    override fun writeToParcel(dest: Parcel, flags: Int) {
         dest?.writeString(this.appLink)
         dest?.writeString(this.text)
         dest?.writeString(this.icon)

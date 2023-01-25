@@ -150,6 +150,10 @@
     <string name="driver_call_enabled_title_bottomsheet">Nomor HP-mu akan disamarkan</string>
     <string name="driver_call_enabled_desc_bottomsheet">Kontakmu aman. Driver tidak bisa lihat nomor HP kamu di panggilan ini.</string>
 
+    <string name="tokofood_masking_phone_number_title">Nomor HP kamu akan disamarkan</string>
+    <string name="tokofood_masking_phone_number_desc">Demi menjaga privasi, nomor HP-mu nggak bisa dilihat oleh driver. Pulsamu akan terpakai untuk panggilan ini.</string>
+    <string name="tokofood_driver_call_button_text">Oke, Telepon</string>
+
     <string name="driver_call_disabled_title_bottomsheet">Oops, kamu tidak bisa telepon driver</string>
     <string name="driver_call_disabled_desc_bottomsheet">Sesi kamu untuk telpon driver sudah habis.</string>
     <string name="error_message_hit_driver_phone_number">Oops, ada gangguan yang perlu kami bereskan. Balik lagi nanti, ya.</string>

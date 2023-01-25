@@ -20,7 +20,7 @@ class ShopDiscountMultiLocEduFragment : BaseDaggerFragment() {
     companion object {
         const val MODE_ARG = "mode_arg"
         private const val URL_IMAGE_SELLER_EDU =
-            "https://ecs7.tokopedia.net/img/android/shop-discount/multi_loc_seller_edu.png"
+            "https://images.tokopedia.net/img/android/shop-discount/multi_loc_seller_edu.png"
 
         fun createInstance(
             mode: String

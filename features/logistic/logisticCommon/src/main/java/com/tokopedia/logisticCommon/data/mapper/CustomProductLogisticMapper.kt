@@ -6,78 +6,120 @@ import javax.inject.Inject
 
 class CustomProductLogisticMapper @Inject constructor() {
 
-    fun mapCPLData(response: GetCPLData, productId: String, draftShipperServices: List<Long>? = null): CustomProductLogisticModel {
+    fun mapCPLData(
+        response: GetCPLData,
+        draftShipperServices: List<Long>? = null,
+        showOnBoarding: Boolean
+    ): CustomProductLogisticModel {
         return CustomProductLogisticModel().apply {
-            cplProduct = mapCPLProduct(response.cplProduct, productId, draftShipperServices)
-            shipperList = mapShipperList(response.shipperList)
+            shipperList = mapShipperList(response.shipperList, draftShipperServices)
+            shouldShowOnBoarding = showOnBoarding
         }
     }
 
-    private fun mapCPLProduct(response: List<CPLProduct>, productId: String, draftShipperServices: List<Long>? = null): List<CPLProductModel> {
-        return if (response.isNotEmpty()) {
-            response.map {
-                CPLProductModel(
-                    productId = it.productId,
-                    cplStatus = draftShipperServices?.getCplStatus() ?: it.cplStatus,
-                    shipperServices = draftShipperServices ?: it.shipperServices
+    fun mapShipperList(
+        response: List<ShipperList>,
+        draftShipperServices: List<Long>?
+    ): List<ShipperListCPLModel> {
+        val allShipper = mutableListOf<ShipperListCPLModel>()
+        response.forEach {
+            val allShipperService = mutableListOf<ShipperCPLModel>()
+            allShipperService.addAll(
+                mapWhitelabelShipper(
+                    it.whitelabelShipper,
+                    draftShipperServices
+                )
+            )
+            allShipperService.addAll(mapShipperData(it.shipper, draftShipperServices))
+            allShipperService.takeIf { services -> services.isNotEmpty() }?.let { services ->
+                allShipper.add(
+                    ShipperListCPLModel(
+                        it.header,
+                        it.description,
+                        services
+                    )
                 )
             }
-        } else {
-            draftShipperServices?.mapCPLProductFromDraft(productId) ?: arrayListOf()
         }
+        return allShipper
     }
 
-    private fun List<Long>.mapCPLProductFromDraft(productId: String): List<CPLProductModel>  {
-        return arrayListOf(
-            CPLProductModel(
-                productId = productId.toLong(),
-                cplStatus = getCplStatus(),
-                shipperServices = this
+    private fun mapWhitelabelShipper(
+        whitelabelShipper: List<WhitelabelShipper>,
+        draftShipperServices: List<Long>?
+    ): MutableList<ShipperCPLModel> {
+        val shipperCPLModel = mutableListOf<ShipperCPLModel>()
+        whitelabelShipper.forEach {
+            val shipperProducts =
+                mapWhitelabelShipperService(it.shipperProductIds, it.isActive, draftShipperServices, it.title)
+            val model = ShipperCPLModel(
+                shipperName = it.title,
+                isWhitelabel = true,
+                isActive = shipperProducts.any { sp -> sp.isActive },
+                description = it.description,
+                shipperProduct = shipperProducts
             )
-        )
-    }
-
-    private fun List<Long>.getCplStatus(): Int {
-        return if (isNotEmpty()) {
-            CPL_CUSTOM_SHIPMENT_STATUS
-        } else {
-            CPL_STANDARD_SHIPMENT_STATUS
+            shipperCPLModel.add(model)
         }
+        return shipperCPLModel
     }
 
-    fun mapShipperList(response: List<ShipperList>): List<ShipperListCPLModel> {
-        return response.map {
-            ShipperListCPLModel(
-                it.header,
-                it.description,
-                mapShipperData(it.shipper)
-            )
-        }
-    }
-
-    fun mapShipperData(response: List<Shipper>): List<ShipperCPLModel> {
-        return response.map {
-            ShipperCPLModel(
-                it.shipperId,
-                it.shipperName,
-                it.logo,
-                mapShipperProduct(it.shipperProduct)
-            )
-        }
-    }
-
-    fun mapShipperProduct(response: List<ShipperProduct>): List<ShipperProductCPLModel> {
-        return response.map {
+    private fun mapWhitelabelShipperService(
+        spIds: List<Long>,
+        isWhitelabelServiceActive: Boolean,
+        draftShipperServices: List<Long>?,
+        serviceName: String
+    ): List<ShipperProductCPLModel> {
+        val isWhitelabelShipperServiceActive = draftShipperServices?.containsAll(spIds) ?: isWhitelabelServiceActive
+        return spIds.map { id ->
             ShipperProductCPLModel(
-                it.shipperProductId,
-                it.shipperProductName,
-                it.uiHidden
+                shipperProductId = id,
+                isActive = isWhitelabelShipperServiceActive,
+                shipperServiceName = serviceName
             )
         }
     }
 
-    companion object {
-        const val CPL_STANDARD_SHIPMENT_STATUS = 0
-        const val CPL_CUSTOM_SHIPMENT_STATUS = 1
+    fun mapShipperData(
+        response: List<Shipper>,
+        draftShipperServices: List<Long>?
+    ): List<ShipperCPLModel> {
+        val allShipperData = mutableListOf<ShipperCPLModel>()
+        response.forEach {
+            val shipperProductData = it.shipperProduct.filter { product -> !product.uiHidden }
+            shipperProductData.takeIf { products -> products.isNotEmpty() }?.let { products ->
+                val shipperProducts = mapShipperProduct(products, draftShipperServices)
+                val isShipperActive = shipperProducts.any { sp -> sp.isActive }
+                val description =
+                    shipperProductData.joinToString(" | ") { shipperProduct -> shipperProduct.shipperProductName }
+
+                val shipperCplModel = ShipperCPLModel(
+                    shipperId = it.shipperId,
+                    shipperName = it.shipperName,
+                    logo = it.logo,
+                    description = description,
+                    isActive = isShipperActive,
+                    shipperProduct = shipperProducts,
+                )
+                allShipperData.add(shipperCplModel)
+            }
+        }
+        return allShipperData
+    }
+
+    private fun mapShipperProduct(
+        response: List<ShipperProduct>,
+        draftShipperServices: List<Long>?
+    ): List<ShipperProductCPLModel> {
+        return response.filter { !it.uiHidden }.map {
+            val isActiveState = draftShipperServices?.contains(it.shipperProductId) ?: it.isActive
+            ShipperProductCPLModel(
+                shipperProductId = it.shipperProductId,
+                shipperProductName = it.shipperProductName,
+                uiHidden = it.uiHidden,
+                shipperServiceName = it.shipperServiceName,
+                isActive = isActiveState
+            )
+        }
     }
 }

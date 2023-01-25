@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import com.github.anrwatchdog.ANRWatchDog
 import com.gu.toolargetool.TooLargeTool
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dev_monitoring_tools.anr.ANRListener
 import com.tokopedia.dev_monitoring_tools.config.DevMonitoringToolsConfig
 import com.tokopedia.dev_monitoring_tools.config.DevMonitoringToolsRemoteConfig
@@ -42,7 +43,11 @@ class DevMonitoring(private var context: Context) {
         TooLargeTool.startLogging(application, TooLargeToolFormatter(minSizeLog, devMonitoringToolsConfig.userJourneySize), TooLargeToolLogger())
     }
 
-    fun initLeakCanary(enable: Boolean = true) {
-        DevMonitoringExtension.initLeakCanary(enable)
+    fun initLeakCanary(enable: Boolean = true, isEnableStrictMode: Boolean = false, application: Application) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            DevMonitoringExtension.initLeakCanary(enable, isEnableStrictMode, application)
+        } else {
+            // no-op
+        }
     }
 }

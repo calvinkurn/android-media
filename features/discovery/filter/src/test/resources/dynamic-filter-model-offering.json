@@ -8591,7 +8591,7 @@
           {
             "name": "Official Store",
             "key": "shop_tier",
-            "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+            "icon": "https://images.tokopedia.net/img/autocomplete/ic_os.png",
             "Description": "",
             "value": "2",
             "inputType": "checkbox",
@@ -8621,7 +8621,7 @@
           {
             "name": "Power Merchant",
             "key": "shop_tier",
-            "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+            "icon": "https://images.tokopedia.net/img/autocomplete/ic_pm.png",
             "Description": "",
             "value": "1",
             "inputType": "checkbox",
@@ -8838,7 +8838,7 @@
           {
             "name": "Handphone \u0026 Tablet",
             "key": "sc",
-            "icon": "https://ecs7.tokopedia.net/img/WgKiGm/2021/6/23/5be18c91-a22d-4f52-aec2-36952621fd4b.png",
+            "icon": "https://images.tokopedia.net/img/WgKiGm/2021/6/23/5be18c91-a22d-4f52-aec2-36952621fd4b.png",
             "Description": "",
             "value": "65",
             "inputType": "checkbox",
@@ -8853,7 +8853,7 @@
                 "key": "sc",
                 "value": "65",
                 "name": "Semua Handphone \u0026 Tablet",
-                "icon": "https://ecs7.tokopedia.net/img/WgKiGm/2021/6/23/5be18c91-a22d-4f52-aec2-36952621fd4b.png",
+                "icon": "https://images.tokopedia.net/img/WgKiGm/2021/6/23/5be18c91-a22d-4f52-aec2-36952621fd4b.png",
                 "inputType": "checkbox",
                 "totalData": "12.927",
                 "isPopular": false,
@@ -8863,7 +8863,7 @@
                 "key": "sc",
                 "value": "24",
                 "name": "Handphone",
-                "icon": "https://ecs7.tokopedia.net/img/attachment/2020/3/18/77305583/77305583_917f556f-1474-4c5c-9218-4ed1859d0061.png",
+                "icon": "https://images.tokopedia.net/img/attachment/2020/3/18/77305583/77305583_917f556f-1474-4c5c-9218-4ed1859d0061.png",
                 "inputType": "checkbox",
                 "totalData": "12.927",
                 "isPopular": true,
@@ -8872,7 +8872,7 @@
                     "key": "sc",
                     "value": "24",
                     "name": "Semua Handphone",
-                    "icon": "https://ecs7.tokopedia.net/img/attachment/2020/3/18/77305583/77305583_917f556f-1474-4c5c-9218-4ed1859d0061.png",
+                    "icon": "https://images.tokopedia.net/img/attachment/2020/3/18/77305583/77305583_917f556f-1474-4c5c-9218-4ed1859d0061.png",
                     "inputType": "checkbox",
                     "totalData": "12.927",
                     "isPopular": false
@@ -8881,7 +8881,7 @@
                     "key": "sc",
                     "value": "3054",
                     "name": "Android OS",
-                    "icon": "https://ecs7.tokopedia.net/img/attachment/2019/3/7/3054/3054_21c83ee4-4f88-4359-979d-a7106a444874.png",
+                    "icon": "https://images.tokopedia.net/img/attachment/2019/3/7/3054/3054_21c83ee4-4f88-4359-979d-a7106a444874.png",
                     "inputType": "checkbox",
                     "totalData": "12.927",
                     "isPopular": false

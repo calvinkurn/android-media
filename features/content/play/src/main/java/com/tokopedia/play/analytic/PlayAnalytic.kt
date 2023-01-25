@@ -10,6 +10,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -304,13 +305,13 @@ class PlayAnalytic(
                     }
                     else -> clickAtcButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
                 }
-            ProductAction.Buy -> {
+            ProductAction.Buy, ProductAction.OCC -> {
                 when (bottomInsetsType) {
                     BottomInsetsType.VariantSheet -> {
                         if(sectionInfo.config.type != ProductSectionType.Active) clickBeliButtonInVariant(trackingQueue, product, cartId, shopInfo)
                         else clickATCBuyWithVariantRSProduct(product, productAction, sectionInfo, shopInfo)
                     }
-                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
+                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, product, sectionInfo, action = productAction, shopInfo)
                 }
             }
         }
@@ -632,11 +633,11 @@ class PlayAnalytic(
     private fun clickBeliButtonProductWithNoVariant(trackingQueue: TrackingQueue,
                                                     product: PlayProductUiModel.Product,
                                                     sectionInfo: ProductSectionUiModel.Section,
-                                                    cartId: String,
+                                                    action: ProductAction,
                                                     shopInfo: PlayPartnerInfo) {
         val (eventAction, eventLabel) = when (sectionInfo.config.type) {
-            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - buy in ongoing section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id))
-            else -> Pair("click buy in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value} - is pinned product ${product.isPinned}")
+            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - buy in ongoing section", "${generateBaseEventLabel(product = product, campaignId = sectionInfo.id)} - beli langsung ${action == ProductAction.OCC}")
+            else -> Pair("click buy in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value} - is pinned product ${product.isPinned} - beli langsung ${action == ProductAction.OCC}")
         }
         trackingQueue.putEETracking(
                 EventModel(
@@ -812,6 +813,41 @@ class PlayAnalytic(
         )
     }
 
+    fun sendScreenArchived(channelId: String) {
+        val customDimension = mapOf(KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE, KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT, KEY_TRACKER_ID to "40353")
+        TrackApp.getInstance().gtm.sendScreenAuthenticated("/${KEY_TRACK_SCREEN_NAME}/$channelId/archive delete channel", customDimension)
+    }
+
+    fun clickCtaArchived(channelId: String) {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEventAction("click - to tokopedia play")
+            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventLabel(channelId)
+            .setCustomProperty(KEY_TRACKER_ID, "40354")
+            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .setCustomProperty(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    fun clickExitArchived (channelId: String) {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEventAction("click - exit archive page")
+            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventLabel(channelId)
+            .setCustomProperty(KEY_TRACKER_ID, "40355")
+            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .setCustomProperty(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
     private fun generateSwipeSession(): String {
         val identifier = if (userId.isNotBlank() && userId.isNotEmpty()) userId else "nonlogin"
         return identifier + System.currentTimeMillis()
@@ -872,6 +908,7 @@ class PlayAnalytic(
         private const val KEY_TRACK_BUSINESS_UNIT = "play"
 
         private const val KEY_TRACK_CLICK = "click"
+        private const val KEY_TRACK_CLICK_CONTENT = "clickContent"
         private const val KEY_TRACK_GROUP_CHAT_ROOM = "groupchat room"
 
         private const val ERR_STATE_VIDEO = "Video Player"

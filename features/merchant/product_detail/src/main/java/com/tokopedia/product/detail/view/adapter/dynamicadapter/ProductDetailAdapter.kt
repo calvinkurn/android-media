@@ -19,6 +19,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductLoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -28,6 +29,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductRecomWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalPlaceholderViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
+import com.tokopedia.product.detail.view.viewholder.ViewToViewWidgetViewHolder
 
 /**
  * Created by Yehezkiel on 04/01/21
@@ -81,6 +83,11 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
             holder.adapterPosition < currentList.size &&
             (dataModel as? ProductRecomWidgetDataModel)?.recomWidgetData == null
         ) listener?.loadTopads((dataModel as ProductRecomWidgetDataModel).name)
+
+        if (holder is ViewToViewWidgetViewHolder &&
+            holder.adapterPosition < currentList.size &&
+            (dataModel as? ViewToViewWidgetDataModel)?.recomWidgetData == null
+        ) listener?.loadViewToView((dataModel as ViewToViewWidgetDataModel).name)
 
         if (holder is ContentWidgetViewHolder &&
             holder.adapterPosition < currentList.size &&

@@ -4,4 +4,10 @@
         <attr name="category_filter_chip_on" format="boolean" />
         <attr name="category_filter_chip_off" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="TokoNowQuantityEditorView">
+        <attr name="minQuantity" format="integer"/>
+        <attr name="maxQuantity" format="integer"/>
+        <attr name="quantity" format="integer"/>
+    </declare-styleable>
 </resources>

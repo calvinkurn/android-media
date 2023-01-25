@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class AddOnData(
         var addOnId: String = "",
         var addOnMetadata: AddOnMetadata = AddOnMetadata(),
-        var addOnPrice: Long = 0,
+        var addOnPrice: Double = 0.0,
         var addOnQty: Int = 0
 ) : Parcelable
 

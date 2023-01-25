@@ -10,20 +10,19 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.favorite.R
 import com.tokopedia.favorite.view.adapter.TopAdsShopAdapter
+import com.tokopedia.favorite.view.adapter.TopAdsShopAdapter_v2
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_13
 import com.tokopedia.topads.sdk.domain.model.ShopProductModel
 import com.tokopedia.topads.sdk.listener.FollowButtonClickListener
 import com.tokopedia.topads.sdk.listener.ShopAdsProductListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.topads.sdk.widget.ShopAdsWithOneProductView
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * @author kulomady on 1/24/17.
@@ -45,11 +44,9 @@ class TopAdsShopViewHolder(
     private var recShopRecyclerView: RecyclerView =
         itemView.findViewById(R.id.rec_shop_recycler_view)
 
-    private var recShopRecyclerViewContainer: RelativeLayout =
-        itemView.findViewById(R.id.recShopRecyclerViewContainer)
+    private var title: Typography = itemView.findViewById(R.id.favorite_title)
+    private var subtitle: Typography = itemView.findViewById(R.id.favorite_subtitle)
 
-    private var shopAdsProductView: ShopAdsWithOneProductView =
-        itemView.findViewById<View>(R.id.shopAdsProductView) as ShopAdsWithOneProductView
     private val context: Context = itemView.context
 
     override fun bind(element: TopAdsShopUiModel?) {
@@ -59,59 +56,59 @@ class TopAdsShopViewHolder(
             val linearLayoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             recShopRecyclerView.layoutManager = linearLayoutManager
-            recShopRecyclerView.setHasFixedSize(true)
             recShopRecyclerView.adapter = topAdsShopAdapter
             element?.adsShopItems?.let { topAdsShopAdapter.setData(it) }
-            recShopRecyclerViewContainer.show()
-            shopAdsProductView.hide()
+            title.text = getString(R.string.shop_reccomendation)
+            subtitle.visibility = View.GONE
         } else {
-            shopAdsProductView.setShopProductModel(
-                ShopProductModel(
-                    title = "",
-                    items = getShopProductItem(element)
-                ),
-                object : ShopAdsProductListener {
-                    override fun onItemImpressed(position: Int) {
-                        val item = element.adsShopItems?.getOrNull(position)
-                        topAdsUrlHitter.hitImpressionUrl(
-                            this.javaClass.name,
-                            item?.shopImageUrl,
-                            item?.shopId,
-                            item?.shopName,
-                            item?.shopImageUrl
-                        )
-                    }
-
-                    override fun onItemClicked(position: Int) {
-                        RouteManager.route(context, element.adsShopItems?.getOrNull(position)?.applink)
-                        recordCLick(element.adsShopItems?.getOrNull(position))
-                    }
-
-                },
-                object : FollowButtonClickListener {
-                    override fun onItemClicked(shopProductModelItem: ShopProductModel.ShopProductModelItem) {
-                        recordCLick(element.adsShopItems?.getOrNull(shopProductModelItem.position))
-                        if (shopProductModelItem.isFollowed) {
-                            Toaster.build(
-                                itemView,
-                                context.getString(R.string.favorite_error_text_for_followed),
-                                Toaster.LENGTH_SHORT,
-                                Toaster.TYPE_ERROR
-                            ) { }.show()
-                        } else {
-                            shopProductModelItem.isFollowed = true
-                            favoriteClickListener.onFavoriteShopClicked(
-                                null,
-                                getShopItem(shopProductModelItem)
+            title.text = getString(R.string.recommendations_for_you)
+            subtitle.visibility = View.VISIBLE
+            val topAdsShopAdapter_v2 =
+                TopAdsShopAdapter_v2(
+                    object : ShopAdsProductListener {
+                        override fun onItemImpressed(position: Int) {
+                            val item = element.adsShopItems?.getOrNull(position)
+                            topAdsUrlHitter.hitImpressionUrl(
+                                this.javaClass.name,
+                                item?.shopImageUrl,
+                                item?.shopId,
+                                item?.shopName,
+                                item?.shopImageUrl
                             )
                         }
 
-                    }
+                        override fun onItemClicked(position: Int) {
+                            RouteManager.route(context, element.adsShopItems?.getOrNull(position)?.applink)
+                            recordCLick(element.adsShopItems?.getOrNull(position))
+                        }
+                    },
+                    object : FollowButtonClickListener {
+                        override fun onItemClicked(shopProductModelItem: ShopProductModel.ShopProductModelItem) {
+                            recordCLick(element.adsShopItems?.getOrNull(shopProductModelItem.position))
+                            if (shopProductModelItem.isFollowed) {
+                                Toaster.build(
+                                    itemView,
+                                    context.getString(R.string.favorite_error_text_for_followed),
+                                    Toaster.LENGTH_SHORT,
+                                    Toaster.TYPE_ERROR
+                                ) { }.show()
+                            } else {
+                                shopProductModelItem.isFollowed = true
+                                favoriteClickListener.onFavoriteShopClicked(
+                                    null,
+                                    getShopItem(shopProductModelItem)
+                                )
+                                element?.adsShopItems?.forEachIndexed{index, it -> if(it.shopId == shopProductModelItem.shopId) it.isFollowed = true }
+                            }
 
-                }
-            )
-            recShopRecyclerViewContainer.hide()
-            shopAdsProductView.show()
+                        }
+                    }
+                )
+            val linearLayoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            recShopRecyclerView.layoutManager = linearLayoutManager
+            recShopRecyclerView.adapter = topAdsShopAdapter_v2
+            topAdsShopAdapter_v2.setList(getShopProductItem(element))
         }
     }
 

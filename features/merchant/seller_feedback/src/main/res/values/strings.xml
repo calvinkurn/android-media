@@ -41,7 +41,7 @@
     <string name="feedback_from_add_product">Tambah Produk</string>
     <string name="feedback_from_edit_product">Ubah Produk</string>
     <string name="feedback_from_product_manage">Produk Toko</string>
-    <string name="feedback_from_som">Penjualan</string>
+    <string name="feedback_from_som">Pesanan</string>
     <string name="feedback_from_statistic">Statistik</string>
     <string name="feedback_from_centralized_promo">Iklan dan Promosi</string>
     <string name="feedback_from_shop_page">Toko</string>
@@ -50,5 +50,15 @@
     <string name="feedback_from_shop_setting">Pengaturan Toko</string>
     <string name="feedback_from_others">Lainnya</string>
     <string name="feedback_form_feature_reqeust">Request Fitur</string>
+    <string name="feedback_from_topads">Iklan Topads</string>
+    <string name="feedback_from_flashsaletokopedia">Flash Sale Tokopedia</string>
+    <string name="feedback_from_tokopedia_play">Tokopedia Play</string>
+    <string name="feedback_from_bebasongkir">Bebas Ongkir</string>
+    <string name="feedback_from_broadcastchat">Broadcast Chat</string>
+    <string name="feedback_from_flash_sale_toko">Flash Sale Toko</string>
+    <string name="feedback_from_diskon_toko">Diskon Toko</string>
+    <string name="feedback_from_tokomember">Tokomember</string>
+    <string name="feedback_from_bebas_ongkir">Bebas Ongkir</string>
+    <string name="feedback_from_broadcast_chat">Broadcast Chat</string>
 
 </resources>

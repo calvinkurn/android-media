@@ -29,10 +29,14 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.*
+import com.tokopedia.tkpd.flashsale.common.bottomsheet.sse_submission_error.FlashSaleProductListSseSubmissionErrorBottomSheet
+import com.tokopedia.tkpd.flashsale.common.dialog.FlashSaleProductSseSubmissionDialog
+import com.tokopedia.tkpd.flashsale.common.dialog.FlashSaleProductSseSubmissionProgressDialog
 import com.tokopedia.tkpd.flashsale.common.extension.enablePaging
 import com.tokopedia.tkpd.flashsale.common.extension.toCalendar
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionSseResult
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.*
 import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.ProductCheckBottomSheet
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.ChooseProductActivity
@@ -60,6 +64,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     companion object {
         private const val PAGE_SIZE = 10
         private const val APPLINK_SEGMENTS_SIZE = 2
+        private const val DEFAULT_FOR_EMPTY_FLASH_SALE_ID = 0L
         private const val DELAY = 1500L
         private const val IMAGE_PRODUCT_ELIGIBLE_URL =
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/seller_toped_new.png"
@@ -71,7 +76,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/finished_campaign_banner.png"
 
         @JvmStatic
-        fun newInstance(flashSaleId: Long, totalSubmittedProduct: Long = 0): CampaignDetailFragment {
+        fun newInstance(
+            flashSaleId: Long,
+            totalSubmittedProduct: Long = 0
+        ): CampaignDetailFragment {
             val fragment = CampaignDetailFragment()
             val bundle = Bundle()
             bundle.putLong(BundleConstant.BUNDLE_FLASH_SALE_ID, flashSaleId)
@@ -87,40 +95,41 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private val viewModel by lazy { viewModelProvider.get(CampaignDetailViewModel::class.java) }
     private val checkProductBottomSheet = ProductCheckBottomSheet()
 
-    //main binding
+    // main binding
     private var binding by autoClearedNullable<StfsFragmentCampaignDetailBinding>()
 
-    //reusable binding
+    // reusable binding
     private var cdpHeaderBinding by autoClearedNullable<StfsCdpHeaderBinding>()
     private var cdpBodyBinding by autoClearedNullable<StfsCdpBodyBinding>()
 
-    //upcoming
+    // upcoming
     private var upcomingCdpMidBinding by autoClearedNullable<StfsCdpUpcomingMidBinding>()
     private var upcomingCdpBodyBinding by autoClearedNullable<StfsCdpUpcomingBodyBinding>()
 
-    //registered
+    // registered
     private var registeredCdpMidBinding by autoClearedNullable<StfsCdpRegisteredMidBinding>()
 
-    //ongoing
+    // ongoing
     private var ongoingCdpHeaderBinding by autoClearedNullable<StfsCdpHeaderBinding>()
     private var ongoingCdpMidBinding by autoClearedNullable<StfsCdpOngoingMidBinding>()
 
-    //finished
+    // finished
     private var finishedCdpHeaderBinding by autoClearedNullable<StfsCdpHeaderBinding>()
     private var finishedCdpMidBinding by autoClearedNullable<StfsCdpOngoingMidBinding>()
 
+    private var flashSaleName: String = ""
     private val flashSaleId by lazy {
         val appLinkData = RouteManager.getIntent(activity, activity?.intent?.data.toString()).data
         if (isOpenedFromApplink(appLinkData)) {
-            appLinkData?.lastPathSegment?.toLong().orZero()
+            getFLashSaleIdFromApplink(appLinkData)
         } else {
-            arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
+            getFlashSaleIdFromBundle()
         }
     }
 
     private var totalSubmittedProduct: Long = Int.ZERO.toLong()
 
-    //coachmark
+    // coachmark
     private val coachMark by lazy {
         context?.let {
             CoachMark2(it)
@@ -137,23 +146,33 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                             itemPosition,
                             isChecked
                         )
-                    })
+                    }
+                )
             )
-            .add(OnSelectionProcessDelegateAdapter(
-                onProductItemClicked = { onProductClicked(it) }
-            ))
-            .add(FinishedProcessSelectionDelegateAdapter(
-                onProductItemClicked = { onProductClicked(it) }
-            ))
-            .add(OngoingDelegateAdapter(
-                onProductItemClicked = { onProductClicked(it) }
-            ))
-            .add(OngoingRejectedDelegateAdapter(
-                onProductItemClicked = { onProductClicked(it) }
-            ))
+            .add(
+                OnSelectionProcessDelegateAdapter(
+                    onProductItemClicked = { onProductClicked(it) }
+                )
+            )
+            .add(
+                FinishedProcessSelectionDelegateAdapter(
+                    onProductItemClicked = { onProductClicked(it) }
+                )
+            )
+            .add(
+                OngoingDelegateAdapter(
+                    onProductItemClicked = { onProductClicked(it) }
+                )
+            )
+            .add(
+                OngoingRejectedDelegateAdapter(
+                    onProductItemClicked = { onProductClicked(it) }
+                )
+            )
             .add(LoadingDelegateAdapter())
             .build()
     }
+    private var sseProgressDialog: FlashSaleProductSseSubmissionProgressDialog? = null
 
     override fun getScreenName(): String =
         CampaignDetailFragment::class.java.canonicalName.orEmpty()
@@ -166,7 +185,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = StfsFragmentCampaignDetailBinding.inflate(inflater, container, false)
@@ -175,6 +195,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        init()
         setupProductSubmissionCount()
         setupChooseProductRedirection()
         observeCampaignDetail()
@@ -187,6 +208,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         loadCampaignDetailData()
     }
 
+    private fun init() {
+        context?.let {
+            sseProgressDialog = FlashSaleProductSseSubmissionProgressDialog(it)
+        }
+    }
+
     private fun observeCampaignDetail() {
         viewModel.campaign.observe(viewLifecycleOwner) { flashSale ->
             hideLoading()
@@ -194,8 +221,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 when (flashSale) {
                     is Success -> {
                         setupView(flashSale.data)
+                        getFlashSaleSubmissionProgress(flashSaleId)
                     }
                     is Fail -> {
+                        binding?.run { header.setNavigationOnClickListener { activity?.finish() } }
                         showGlobalError()
                     }
                 }
@@ -320,13 +349,84 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun handleEffect(effect: CampaignDetailViewModel.UiEffect) {
         when (effect) {
-            is CampaignDetailViewModel.UiEffect.ShowGlobalError -> {
-                showGlobalError()
-            }
             CampaignDetailViewModel.UiEffect.ShowIneligibleAccessWarning -> {
                 navigateToIneligibleAccessPage()
             }
+            is CampaignDetailViewModel.UiEffect.OnSseOpen -> {
+                listenToExistingSse()
+            }
+            is CampaignDetailViewModel.UiEffect.OnProductSseSubmissionProgress -> {
+                checkProductSubmissionProgressStatus(effect.flashSaleProductSubmissionSseResult)
+            }
+            is CampaignDetailViewModel.UiEffect.OnSuccessAcknowledgeProductSubmissionSse -> {
+                totalSubmittedProduct = effect.totalSubmittedProduct.toLong()
+                showProductSubmissionResultToaster(flashSaleName)
+            }
         }
+    }
+
+    private fun checkProductSubmissionProgressStatus(
+        flashSaleProductSubmissionSseResult: FlashSaleProductSubmissionSseResult
+    ) {
+        val currentProcessedProduct = flashSaleProductSubmissionSseResult.countProcessedProduct
+        val totalProduct = flashSaleProductSubmissionSseResult.countAllProduct
+        when (flashSaleProductSubmissionSseResult.status) {
+            FlashSaleProductSubmissionSseResult.Status.IN_PROGRESS -> {
+                showProductSubmissionSseProgressDialog()
+            }
+            FlashSaleProductSubmissionSseResult.Status.PARTIAL_SUCCESS -> {
+                hideProductSubmissionSseProgressDialog()
+                showDialogProductSubmissionSsePartialSuccess()
+            }
+            FlashSaleProductSubmissionSseResult.Status.COMPLETE -> {
+                hideProductSubmissionSseProgressDialog()
+                acknowledgeProductSubmissionSse(
+                    flashSaleProductSubmissionSseResult.campaignId,
+                    flashSaleProductSubmissionSseResult.countProcessedProduct
+                )
+            }
+            else -> {}
+        }
+        updateProductSubmissionProgressDialog(currentProcessedProduct, totalProduct)
+    }
+
+    private fun showProductSubmissionSseProgressDialog() {
+        sseProgressDialog?.show()
+    }
+
+    private fun hideProductSubmissionSseProgressDialog() {
+        sseProgressDialog?.hide()
+    }
+
+    private fun acknowledgeProductSubmissionSse(campaignId: String, totalSubmittedProduct: Int) {
+        viewModel.acknowledgeProductSubmissionSse(campaignId, totalSubmittedProduct)
+    }
+
+    private fun updateProductSubmissionProgressDialog(
+        currentProcessedProduct: Int,
+        totalProduct: Int
+    ) {
+        sseProgressDialog?.updateData(currentProcessedProduct, totalProduct)
+    }
+
+    private fun showDialogProductSubmissionSsePartialSuccess() {
+        context?.let {
+            val productSseSubmissionErrorDialog = FlashSaleProductSseSubmissionDialog(it)
+            productSseSubmissionErrorDialog.show(getString(R.string.stfs_dialog_error_product_submission_sse_title_partial_success)) {
+                openFlashSaleProductListSseSubmissionErrorBottomSheet()
+            }
+        }
+    }
+
+    private fun openFlashSaleProductListSseSubmissionErrorBottomSheet() {
+        val bottomSheet = FlashSaleProductListSseSubmissionErrorBottomSheet.createInstance(
+            flashSaleId.toString()
+        )
+        bottomSheet.show(childFragmentManager)
+    }
+
+    private fun listenToExistingSse() {
+        viewModel.listenToOpenedSse(flashSaleId.toString())
     }
 
     private fun setupHeader(flashSale: FlashSale) {
@@ -342,7 +442,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupView(flashSale: FlashSale) {
-        showProductSubmissionResultToaster(flashSale.name)
+        flashSaleName = flashSale.name
+        showProductSubmissionResultToaster(flashSaleName)
         setupHeader(flashSale)
         when (flashSale.tabName) {
             FlashSaleListPageTab.UPCOMING -> setupUpcoming(flashSale)
@@ -365,7 +466,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupProductSubmissionCount() {
-        totalSubmittedProduct = arguments?.getLong(BundleConstant.BUNDLE_KEY_TOTAL_SUBMITTED_PRODUCT).orZero()
+        totalSubmittedProduct =
+            arguments?.getLong(BundleConstant.BUNDLE_KEY_TOTAL_SUBMITTED_PRODUCT).orZero()
     }
 
     private fun showProductSubmissionResultToaster(flashSaleName: String) {
@@ -384,6 +486,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 totalSubmittedProduct = Int.ZERO.toLong()
             }
         }
+    }
+
+    private fun getFlashSaleSubmissionProgress(flashSaleId: Long) {
+        viewModel.getFlashSaleSubmissionProgress(flashSaleId.toString())
     }
 
     /**
@@ -720,7 +826,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun navigateToChooseProductPage() {
         ChooseProductActivity.start(
-            context ?: return, flashSaleId,
+            context ?: return,
+            flashSaleId,
             viewModel.getTabName()
         )
     }
@@ -1472,7 +1579,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             globalError.apply {
                 show()
                 setActionClickListener {
-                    loadCampaignDetailData()
+                    activity?.finish()
                 }
             }
         }
@@ -1548,5 +1655,21 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun isOpenedFromApplink(appLinkData: Uri?): Boolean {
         return appLinkData?.lastPathSegment?.isNotEmpty() == true && appLinkData.pathSegments.size >= APPLINK_SEGMENTS_SIZE
+    }
+
+    private fun getFLashSaleIdFromApplink(appLinkData: Uri?): Long {
+        return try {
+            appLinkData?.lastPathSegment?.toLong().orZero()
+        } catch (e: NumberFormatException) {
+            DEFAULT_FOR_EMPTY_FLASH_SALE_ID
+        }
+    }
+
+    private fun getFlashSaleIdFromBundle(): Long {
+        return try {
+            arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
+        } catch (e: NumberFormatException) {
+            DEFAULT_FOR_EMPTY_FLASH_SALE_ID
+        }
     }
 }

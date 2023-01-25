@@ -17,6 +17,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
@@ -60,7 +61,7 @@ class TrackingRepository(
                     Calendar.getInstance().timeInMillis, GlobalConfig.VERSION_NAME)
                 trackingDao.insert(tracking)
                 IrisLogger.getInstance(context).putSaveIrisEvent(tracking.toString())
-
+                setRelicLog("getCount", "total count")
                 val dbCount = trackingDao.getCount()
                 if (dbCount >= getLineDBFlush()) {
                     ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "dbCountFlush", "no" to dbCount.toString()))
@@ -81,10 +82,21 @@ class TrackingRepository(
 
     private fun getFromOldest(maxRow: Int): List<Tracking> {
         return try {
+            setRelicLog("getFromOldest", maxRow.toString())
             trackingDao.getFromOldest(maxRow)
         } catch (e: Throwable) {
             ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to String.format("getFromOldest %s", e.toString())))
             ArrayList()
+        }
+    }
+
+    private fun setRelicLog(queryName: String, queryParam: String) {
+        if (getRemoteConfig()?.getBoolean(RemoteConfigKey.ENABLE_CURSOR_EMBRACE_LOGGING) ?: false) {
+            val relicMap = mapOf(
+                "queryName" to queryName,
+                "detail" to queryParam
+            )
+            ServerLogger.log(Priority.P2, NEW_RELIC_CUSTOMER_TAG, relicMap)
         }
     }
 
@@ -194,5 +206,6 @@ class TrackingRepository(
 
     companion object {
         const val ERROR_MAX_LENGTH = 1000
+        const val NEW_RELIC_CUSTOMER_TAG = "CURSOR_INDEX_OUTOFBOUND"
     }
 }

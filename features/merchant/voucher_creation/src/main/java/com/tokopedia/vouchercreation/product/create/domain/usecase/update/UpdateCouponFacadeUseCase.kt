@@ -175,7 +175,7 @@ class UpdateCouponFacadeUseCase @Inject constructor(
             ImageGeneratorUseCase(GraphqlInteractor.getInstance().graphqlRepository)
         val params = GenerateImageUseCase.createParam(sourceId, requestParams)
         imageGeneratorUseCase.params = params
-        return imageGeneratorUseCase.executeOnBackground()
+        return imageGeneratorUseCase.executeOnBackground().imageUrl
     }
 
     private suspend fun initiateCoupon(isUpdateMode: Boolean): InitiateVoucherUiModel {

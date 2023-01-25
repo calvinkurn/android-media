@@ -7,8 +7,12 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_AFFILIATE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_NOT_AFFILIATE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_SHOP_PAGE_OPEN_SCREEN
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
+import com.tokopedia.shop.common.data.model.ShopAffiliateData
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_ACTION
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_BASIC_INFO
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_PERFORMANCE
@@ -157,11 +161,14 @@ open class ShopPageTracking(
         isLogin: Boolean,
         selectedTabName: String,
         campaignId: String,
-        variantId: String
+        variantId: String,
+        affiliateData: ShopAffiliateData?
     ) {
         val screenName = joinDash(SHOPPAGE, shopId)
         val loginNonLoginEventValue = if (isLogin) ShopPageTrackingConstant.LOGIN else ShopPageTrackingConstant.NON_LOGIN
-        val pageSource = String.format(ShopPageTrackingConstant.FIRST_LANDING_PAGE, selectedTabName)
+        val shopAffiliateStatus = getShopAffiliateStatus(affiliateData?.affiliateUUId.orEmpty())
+        val affiliateTrackerId = getShopAffiliateTrackerId(affiliateData)
+        val pageSource = String.format(ShopPageTrackingConstant.FIRST_LANDING_PAGE, selectedTabName, shopAffiliateStatus)
         val customDimension: MutableMap<String, String> = HashMap()
         customDimension[ShopPageTrackingConstant.PAGE_TYPE] = SHOPPAGE
         customDimension[ShopPageTrackingConstant.BUSINESS_UNIT] = ShopPageTrackingConstant.PHYSICAL_GOODS
@@ -171,11 +178,32 @@ open class ShopPageTracking(
         customDimension[ShopPageTrackingConstant.SHOP_ID] = shopId
         customDimension[ShopPageTrackingConstant.Key.CAMPAIGN_ID] = campaignId
         customDimension[ShopPageTrackingConstant.Key.VARIANT_ID] = variantId
+        customDimension[ShopPageTrackingConstant.TRACKER_ID] = TRACKER_SHOP_PAGE_OPEN_SCREEN
+        customDimension[ShopPageTrackingConstant.Key.AFFILIATE_CHANNEL_ID] = affiliateTrackerId
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, customDimension)
     }
 
     fun sendBranchScreenShop(userId: String) {
         LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.ENUM_EVENT_PAGE_VIEW_STORE, userId))
+    }
+
+    private fun getShopAffiliateTrackerId(affiliateData: ShopAffiliateData?): String {
+        return if (affiliateData?.affiliateUUId?.isNotEmpty() == true) {
+            joinDash(
+                affiliateData.affiliateUUId,
+                affiliateData.affiliateTrackerId
+            )
+        } else {
+            ""
+        }
+    }
+
+    private fun getShopAffiliateStatus(affiliateUuid: String): String {
+        return if (affiliateUuid.isNotEmpty()) {
+            SHOP_AFFILIATE
+        } else {
+            SHOP_NOT_AFFILIATE
+        }
     }
 
     fun sendOpenScreenAddProduct(shopId: String?, shopType: String) {
@@ -259,52 +287,12 @@ open class ShopPageTracking(
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 
-    fun clickRequestOpenShop(customDimensionShopPage: CustomDimensionShopPage?) {
-        sendEvent(
-            ShopPageTrackingConstant.CLICK_SHOP_PAGE,
-            ShopPageTrackingConstant.SHOP_PAGE_SELLER,
-            joinDash(ShopPageTrackingConstant.MANAGE_SHOP, ShopPageTrackingConstant.CLICK),
-            ShopPageTrackingConstant.CLICK_REQUEST_OPEN_SHOP,
-            customDimensionShopPage
-        )
-    }
-
-    fun impressionRequestOpenShop(customDimensionShopPage: CustomDimensionShopPage?) {
-        sendEvent(
-            ShopPageTrackingConstant.VIEW_SHOP_PAGE,
-            ShopPageTrackingConstant.SHOP_PAGE_SELLER,
-            joinDash(ShopPageTrackingConstant.MANAGE_SHOP, ShopPageTrackingConstant.IMPRESSION),
-            ShopPageTrackingConstant.IMPRESSION_OF_REQUEST_OPEN_SHOP,
-            customDimensionShopPage
-        )
-    }
-
-    fun impressionOpenOperationalShop(customDimensionShopPage: CustomDimensionShopPage?) {
-        sendEvent(
-            ShopPageTrackingConstant.VIEW_SHOP_PAGE,
-            ShopPageTrackingConstant.SHOP_PAGE_SELLER,
-            joinDash(ShopPageTrackingConstant.MANAGE_SHOP, ShopPageTrackingConstant.IMPRESSION),
-            ShopPageTrackingConstant.IMPRESSION_OPEN_OPERATIONAL_SHOP,
-            customDimensionShopPage
-        )
-    }
-
     fun clickOpenOperationalShop(customDimensionShopPage: CustomDimensionShopPage?) {
         sendEvent(
             ShopPageTrackingConstant.CLICK_SHOP_PAGE,
             ShopPageTrackingConstant.SHOP_PAGE_SELLER,
             joinDash(ShopPageTrackingConstant.MANAGE_SHOP, ShopPageTrackingConstant.CLICK),
             ShopPageTrackingConstant.CLICK_OPEN_OPERATIONAL_SHOP,
-            customDimensionShopPage
-        )
-    }
-
-    fun impressionHowToActivateShop(customDimensionShopPage: CustomDimensionShopPage?) {
-        sendEvent(
-            ShopPageTrackingConstant.VIEW_SHOP_PAGE,
-            ShopPageTrackingConstant.SHOP_PAGE_SELLER,
-            joinDash(ShopPageTrackingConstant.MANAGE_SHOP, ShopPageTrackingConstant.IMPRESSION),
-            ShopPageTrackingConstant.IMPRESSION_HOW_TO_ACTIVATE_SHOP,
             customDimensionShopPage
         )
     }
@@ -365,20 +353,6 @@ open class ShopPageTracking(
         )
     }
 
-    fun clickSortBy(
-        isOwner: Boolean,
-        sortName: String?,
-        customDimensionShopPage: CustomDimensionShopPage?
-    ) {
-        sendGeneralEvent(
-            ShopPageTrackingConstant.CLICK_SHOP_PAGE,
-            getShopPageCategory(isOwner),
-            ShopPageTrackingConstant.SORT_PRODUCT,
-            String.format(ShopPageTrackingConstant.CLICK_SORT_BY, sortName),
-            customDimensionShopPage
-        )
-    }
-
     fun clickHighLightSeeAll(customDimensionShopPage: CustomDimensionShopPage?) {
         sendGeneralEvent(
             ShopPageTrackingConstant.CLICK_SHOP_PAGE,
@@ -414,32 +388,6 @@ open class ShopPageTracking(
             ShopPageTrackingConstant.USER_ID to userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
-    }
-
-    fun clickReview(
-        isOwner: Boolean,
-        customDimensionShopPage: CustomDimensionShopPage?
-    ) {
-        sendEvent(
-            ShopPageTrackingConstant.CLICK_SHOP_PAGE,
-            getShopPageCategory(isOwner),
-            joinDash(ShopPageTrackingConstant.INFO, ShopPageTrackingConstant.CLICK),
-            ShopPageTrackingConstant.CLICK_REVIEW,
-            customDimensionShopPage
-        )
-    }
-
-    fun clickDiscussion(
-        isOwner: Boolean,
-        customDimensionShopPage: CustomDimensionShopPage?
-    ) {
-        sendEvent(
-            ShopPageTrackingConstant.CLICK_SHOP_PAGE,
-            getShopPageCategory(isOwner),
-            joinDash(ShopPageTrackingConstant.INFO, ShopPageTrackingConstant.CLICK),
-            ShopPageTrackingConstant.CLICK_DISCUSSION,
-            customDimensionShopPage
-        )
     }
 
     fun clickAddNote(customDimensionShopPage: CustomDimensionShopPage?) {
@@ -492,26 +440,6 @@ open class ShopPageTracking(
         sendDataLayerEvent(eventMap)
     }
 
-    fun impressionUseMerchantVoucher(isOwner: Boolean, merchantVoucherViewModelList: List<MerchantVoucherViewModel>, shopId: String) {
-        if (isOwner || merchantVoucherViewModelList.isEmpty()) return
-        val index = 0
-        val voucherId = merchantVoucherViewModelList[index].voucherId.toString()
-        val eventMap = HashMap<String, Any>()
-        eventMap[ShopPageTrackingConstant.EVENT] = ShopPageTrackingConstant.PROMO_VIEW
-        eventMap[ShopPageTrackingConstant.EVENT_CATEGORY] = ShopPageTrackingConstant.SHOP_PAGE_BUYER
-        eventMap[ShopPageTrackingConstant.EVENT_ACTION] = joinDash(ShopPageTrackingConstant.IMPRESSION, ShopPageTrackingConstant.MERCHANT_VOUCHER, ShopPageTrackingConstant.USE_VOUCHER)
-        eventMap[ShopPageTrackingConstant.EVENT_LABEL] = ""
-        eventMap[ShopPageTrackingConstant.EVENT_PROMO_ID] = voucherId
-        eventMap[ShopPageTrackingConstant.ECOMMERCE] = DataLayer.mapOf(
-            ShopPageTrackingConstant.PROMO_VIEW,
-            DataLayer.mapOf(
-                ShopPageTrackingConstant.PROMOTIONS,
-                createMvcListMap(merchantVoucherViewModelList, shopId, index)
-            )
-        )
-        sendDataLayerEvent(eventMap)
-    }
-
     protected fun followUnfollowShop(
         event: String?,
         action: String?,
@@ -527,16 +455,6 @@ open class ShopPageTracking(
         eventMap[ShopPageTrackingConstant.CURRENT_SITE] = ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
         eventMap[ShopPageTrackingConstant.USER_ID] = userId.orEmpty()
         sendDataLayerEvent(eventMap)
-    }
-
-    fun clickReviewMore(shopId: String, myShop: Boolean) {
-        val eventMap = HashMap<String, Any>()
-        eventMap["event"] = "clickOfficialStore"
-        eventMap["eventCategory"] = getEventReputationCategory(myShop)
-        eventMap["eventAction"] = "Ulasan - bottom navigation - click"
-        eventMap["eventLabel"] = "click see more"
-        eventMap["shop_id"] = shopId
-        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 
     private fun getEventReputationCategory(myShop: Boolean): String {

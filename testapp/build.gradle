@@ -15,6 +15,7 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+
 kapt {
     correctErrorTypes = true
     generateStubs = false
@@ -132,6 +133,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.loginregister)
     implementation projectOrAar(rootProject.ext.features.logout)
     implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)
+
+    /*
+        Do not remove this dependency, because we use it in Abstraction
+     */
+    implementation project(rootProject.ext.features.tokochat_config_common)
 
     //you can delete below line if you are not using developer options, then Build -> Switch to TestApp again
     //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented

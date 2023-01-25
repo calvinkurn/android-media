@@ -35,6 +35,7 @@ class ProductBundleWidgetViewModel @Inject constructor(
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 getBundleInfoUseCase.setParams(
+                    activateSorting = true,
                     type = param.widgetType.typeCode,
                     squad = ProductServiceWidgetConstant.SQUAD_VALUE,
                     usecase = ProductServiceWidgetConstant.USECASE_BUNDLE_VALUE,
