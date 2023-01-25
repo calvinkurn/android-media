@@ -35,7 +35,7 @@
 
     <string name="path_atc_variant" translatable="false">/atc-variant/.*\\/.*\\/</string>
     <string name="path_product_educational" translatable="false">/product-edu/.*\\/</string>
-    <string name="path_post_atc" translatable="false">/post-atc/.*\\/</string>
+    <string name="path_post_atc" translatable="false">/post-atc/.*\\/.*\\/</string>
     <string name="path_product_category_picker" translatable="false">/product-category-picker/.*\\/</string>
     <string name="path_product_detail" translatable="false">/product-detail/.*\\/</string>
     <string name="path_product_detail_domain" translatable="false">/product-detail/.*\\/.*\\/</string>

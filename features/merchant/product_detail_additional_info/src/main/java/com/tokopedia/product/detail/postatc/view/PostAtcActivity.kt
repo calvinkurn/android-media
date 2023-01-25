@@ -8,6 +8,21 @@ import com.tokopedia.product.detail.common.showImmediately
 
 
 class PostAtcActivity : BaseSimpleActivity() {
+
+    companion object {
+
+        /**
+         * Mandatory Parameters
+         */
+        private const val PATH_INDEX_PRODUCT_ID = 1
+        private const val PATH_INDEX_CART_ID = 2
+
+        /**
+         * Additional Parameters
+         */
+        private const val PARAM_LAYOUT_ID = "layoutID"
+    }
+
     override fun getNewFragment(): Fragment? = null
 
     override fun getLayoutRes(): Int {
@@ -17,8 +32,19 @@ class PostAtcActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val pathSegments = intent.data?.pathSegments ?: emptyList()
+        val productId = pathSegments.getOrNull(PATH_INDEX_PRODUCT_ID) ?: return
+        val cartId = pathSegments.getOrNull(PATH_INDEX_CART_ID) ?: return
+
+        val extras = intent.extras ?: return
+        val layoutId = extras.getString(PARAM_LAYOUT_ID, "0")
+
         showImmediately(supportFragmentManager, PostAtcBottomSheet.TAG) {
-            PostAtcBottomSheet.instance()
+            PostAtcBottomSheet.instance(
+                productId,
+                layoutId,
+                cartId
+            )
         }
     }
 }

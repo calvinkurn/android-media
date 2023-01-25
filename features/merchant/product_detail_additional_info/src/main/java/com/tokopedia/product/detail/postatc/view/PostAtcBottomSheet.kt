@@ -5,11 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.product.detail.databinding.PostAtcBottomSheetBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcAdapter
 import com.tokopedia.product.detail.postatc.base.PostAtcLayoutManager
 import com.tokopedia.product.detail.postatc.component.productinfo.ProductInfoUiModel
+import com.tokopedia.product.detail.postatc.di.DaggerPostAtcComponent
+import com.tokopedia.product.detail.postatc.di.PostAtcModule
+import com.tokopedia.product.detail.postatc.viewmodel.PostAtcViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import javax.inject.Inject
 
 class PostAtcBottomSheet : BottomSheetUnify() {
 
@@ -17,12 +23,48 @@ class PostAtcBottomSheet : BottomSheetUnify() {
 
         const val TAG = "post_atc_bs"
 
-        fun instance() = PostAtcBottomSheet()
+        private const val ARG_PRODUCT_ID = "productId"
+        private const val ARG_CART_ID = "cartId"
+        private const val ARG_LAYOUT_ID = "layoutId"
+
+        private const val DEFAULT_LAYOUT_ID = "0"
+
+        fun instance(
+            productId: String,
+            cartId: String,
+            layoutId: String
+        ) = PostAtcBottomSheet().apply {
+            arguments = Bundle().apply {
+                putString(ARG_PRODUCT_ID, productId)
+                putString(ARG_CART_ID, cartId)
+                putString(ARG_LAYOUT_ID, layoutId)
+            }
+        }
+    }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(PostAtcViewModel::class.java)
+    }
+
+    private val adapter = PostAtcAdapter()
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
+        return super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initBottomSheet(inflater, container)
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initData()
     }
 
     private fun initBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
@@ -33,9 +75,15 @@ class PostAtcBottomSheet : BottomSheetUnify() {
 
     private fun initView(binding: PostAtcBottomSheetBinding) = binding.apply {
         postAtcRv.layoutManager = PostAtcLayoutManager()
-
-        val adapter = PostAtcAdapter()
         postAtcRv.adapter = adapter
+    }
+
+    private fun initData() {
+        val arguments = arguments ?: return
+
+        val productId = arguments.getString(ARG_PRODUCT_ID) ?: return
+        val cartId = arguments.getString(ARG_CART_ID) ?: return
+        val layoutId = arguments.getString(ARG_LAYOUT_ID, DEFAULT_LAYOUT_ID)
 
         val productInfo = ProductInfoUiModel(
             "Produk berhasil ditambahkan",
@@ -47,6 +95,8 @@ class PostAtcBottomSheet : BottomSheetUnify() {
         adapter.addItem(productInfo)
         adapter.addItem(productInfo)
         adapter.addItem(productInfo)
+
+        viewModel.fetchLayout(productId, cartId, layoutId)
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -54,4 +104,10 @@ class PostAtcBottomSheet : BottomSheetUnify() {
         activity?.finish()
     }
 
+    private val component by lazy {
+        DaggerPostAtcComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .postAtcModule(PostAtcModule())
+            .build()
+    }
 }
