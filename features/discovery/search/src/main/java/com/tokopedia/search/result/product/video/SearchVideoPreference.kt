@@ -1,5 +1,5 @@
 package com.tokopedia.search.result.product.video
 
-interface VideoSneakpeekPreference {
+interface SearchVideoPreference {
     val isSneakPeekEnabled: Boolean
 }

@@ -91,7 +91,7 @@ import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaLi
 import com.tokopedia.search.result.product.suggestion.SuggestionListenerDelegate
 import com.tokopedia.search.result.product.tdn.TopAdsImageViewListenerDelegate
 import com.tokopedia.search.result.product.ticker.TickerListenerDelegate
-import com.tokopedia.search.result.product.video.VideoSneakpeekPreference
+import com.tokopedia.search.result.product.video.SearchVideoPreference
 import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.result.product.wishlist.WishlistHelper
@@ -210,7 +210,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     @Suppress("LateinitUsage")
     @Inject
-    lateinit var videoSneakpeekPreference: VideoSneakpeekPreference
+    lateinit var searchVideoPreference: SearchVideoPreference
 
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
@@ -226,7 +226,7 @@ class ProductListFragment: BaseDaggerFragment(),
         private set
 
     private val isSneakPeekEnabled: Boolean by lazy {
-        videoSneakpeekPreference.isSneakPeekEnabled
+        searchVideoPreference.isSneakPeekEnabled
     }
 
     private lateinit var videoCarouselWidgetCoordinator : VideoCarouselWidgetCoordinator

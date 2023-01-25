@@ -24,7 +24,7 @@ object VideoModule {
     @JvmStatic
     @Provides
     @SearchScope
-    fun provideVideoSneakpeekPreference(
-        preferenceImpl: VideoSneakpeekPreferenceImpl,
-    ): VideoSneakpeekPreference = preferenceImpl
+    fun provideSearchVideoPreference(
+        preferenceImpl: SearchVideoPreferenceImpl,
+    ): SearchVideoPreference = preferenceImpl
 }

@@ -5,9 +5,9 @@ import android.preference.PreferenceManager
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import javax.inject.Inject
 
-class VideoSneakpeekPreferenceImpl @Inject constructor(
+class SearchVideoPreferenceImpl @Inject constructor(
     @ApplicationContext context: Context
-) : VideoSneakpeekPreference {
+) : SearchVideoPreference {
     private val sharedPref = PreferenceManager.getDefaultSharedPreferences(
         context.applicationContext
     )
