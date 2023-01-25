@@ -265,6 +265,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     }
 
     fun setProductAddToCartQuantity(miniCart: MiniCartSimplifiedData) {
+        if (_getLayout.value == null) return
+
         launchCatchError(block = {
             setMiniCartAndProductQuantity(miniCart)
 

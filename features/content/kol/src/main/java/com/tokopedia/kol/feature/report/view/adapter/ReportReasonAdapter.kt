@@ -1,23 +1,23 @@
 package com.tokopedia.kol.feature.report.view.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.report.view.listener.ContentReportContract
-import com.tokopedia.kol.feature.report.view.model.ReportReasonViewModel
+import com.tokopedia.kol.feature.report.view.model.ReportReasonUiModel
 
 /**
  * @author by milhamj on 12/11/18.
  */
-class ReportReasonAdapter(val view: ContentReportContract.View)
-    : RecyclerView.Adapter<ReportReasonAdapter.ViewHolder>() {
+class ReportReasonAdapter(val view: ContentReportContract.View) :
+    RecyclerView.Adapter<ReportReasonAdapter.ViewHolder>() {
 
-    private val list: MutableList<ReportReasonViewModel> = ArrayList()
+    private val list: MutableList<ReportReasonUiModel> = ArrayList()
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val model = list[position]
@@ -26,9 +26,13 @@ class ReportReasonAdapter(val view: ContentReportContract.View)
             view.enableSendBtn()
         }
 
-        MethodChecker.getDrawable(holder.radio.getContext(),
-                if (model.isSelected) com.tokopedia.design.R.drawable.ic_radiobutton_selected
-                else com.tokopedia.design.R.drawable.ic_radiobutton_normal
+        MethodChecker.getDrawable(
+            holder.radio.getContext(),
+            if (model.isSelected) {
+                com.tokopedia.design.R.drawable.ic_radiobutton_selected
+            } else {
+                com.tokopedia.design.R.drawable.ic_radiobutton_normal
+            }
         )?.apply {
             holder.radio.setImageDrawable(this)
         }
@@ -48,13 +52,13 @@ class ReportReasonAdapter(val view: ContentReportContract.View)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_report_reason, parent, false)
+            .inflate(R.layout.item_report_reason, parent, false)
         return ViewHolder(view)
     }
 
     override fun getItemCount(): Int = list.size
 
-    fun addAll(list: MutableList<ReportReasonViewModel>) {
+    fun addAll(list: MutableList<ReportReasonUiModel>) {
         this.list.clear()
         this.list.addAll(list)
         notifyDataSetChanged()
@@ -67,7 +71,7 @@ class ReportReasonAdapter(val view: ContentReportContract.View)
         notifyDataSetChanged()
     }
 
-    fun getSelectedItem(): ReportReasonViewModel = list.first { it.isSelected }
+    fun getSelectedItem(): ReportReasonUiModel = list.first { it.isSelected }
 
     fun getCustomTypeString(): String {
         return view.getContext()?.getString(R.string.kol_reason_type_others) ?: ""
