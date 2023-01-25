@@ -20,7 +20,7 @@ internal class ProductCardOptionsViewModelFactory(
 ): ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ProductCardOptionsViewModel::class.java)) {
             return createProductCardOptionsViewModel() as T
         }

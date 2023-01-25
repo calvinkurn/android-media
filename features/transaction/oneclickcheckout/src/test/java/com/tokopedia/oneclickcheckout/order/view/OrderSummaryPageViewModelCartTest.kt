@@ -1848,10 +1848,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(
-            1000L,
+            1000.0,
             orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
-                ?: 0
-        )
+                ?: 0.0, 0.0)
     }
 
     @Test
@@ -1867,9 +1866,10 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(
-            2000L,
+            2000.0,
             orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
-                ?: 0
+                ?: 0.0,
+            0.0
         )
     }
 
@@ -1883,7 +1883,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                     cartId = "456",
                     orderQuantity = 1,
                     addOn = AddOnsDataModel(
-                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000L))
+                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000.0))
                     )
                 )
             ),
@@ -1897,9 +1897,10 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(
-            0L,
+            0.0,
             orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
-                ?: 0
+                ?: 0.0,
+            0.0
         )
     }
 
@@ -1910,7 +1911,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = OrderCart(
             shop = OrderShop(
                 addOn = AddOnsDataModel(
-                    addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000L))
+                    addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000.0))
                 ),
                 isFulfillment = true
             ),
@@ -1926,9 +1927,10 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(
-            0L,
+            0.0,
             orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
-                ?: 0
+                ?: 0.0,
+            0.0
         )
     }
 
@@ -1942,7 +1944,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                     cartId = "123",
                     orderQuantity = 1,
                     addOn = AddOnsDataModel(
-                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000L))
+                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000.0))
                     )
                 )
             ),
@@ -1956,9 +1958,10 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(
-            1000L,
+            1000.0,
             orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
-                ?: 0
+                ?: 0.0,
+            0.0
         )
     }
 
@@ -1969,7 +1972,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = OrderCart(
             shop = OrderShop(
                 addOn = AddOnsDataModel(
-                    addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000L))
+                    addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000.0))
                 ),
                 isFulfillment = true
             ),
@@ -1985,9 +1988,10 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(
-            2000L,
+            2000.0,
             orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
-                ?: 0
+                ?: 0.0,
+            0.0
         )
     }
 
@@ -2001,7 +2005,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                     cartId = "123",
                     orderQuantity = 1,
                     addOn = AddOnsDataModel(
-                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000L))
+                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000.0))
                     )
                 )
             ),
@@ -2015,9 +2019,10 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(
-            1000L,
+            1000.0,
             orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
-                ?: 0
+                ?: 0.0,
+            0.0
         )
     }
 
@@ -2028,7 +2033,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = OrderCart(
             shop = OrderShop(
                 addOn = AddOnsDataModel(
-                    addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000L))
+                    addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000.0))
                 ),
                 isFulfillment = true
             ),
@@ -2044,9 +2049,10 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(
-            2000L,
+            2000.0,
             orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
-                ?: 0
+                ?: 0.0,
+            0.0
         )
     }
 

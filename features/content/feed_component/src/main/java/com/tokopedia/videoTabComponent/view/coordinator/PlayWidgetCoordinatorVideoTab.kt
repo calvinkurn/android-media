@@ -11,6 +11,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
+import com.tokopedia.play.widget.ui.model.PlayWidgetType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -72,17 +73,17 @@ class PlayWidgetCoordinatorVideoTab(
 
     fun connect(widget: PlayWidgetMediumView, model: PlayWidgetUiModel) {
         widget.setData(model)
-        autoPlayCoordinator.configureAutoPlay(widget.context, model.config)
+        autoPlayCoordinator.configureAutoPlay(widget.context, model.config, PlayWidgetType.Medium)
     }
 
     fun connect(widget: PlayWidgetLargeView, model: PlayWidgetUiModel) {
         widget.setData(model)
-        autoPlayCoordinator.configureAutoPlay(widget.context, model.config)
+        autoPlayCoordinator.configureAutoPlay(widget.context, model.config, PlayWidgetType.Large)
     }
 
     fun connect(widget: PlayWidgetJumboView, model: PlayWidgetUiModel) {
         widget.setData(model)
-        autoPlayCoordinator.configureAutoPlay(widget.context, model.config)
+        autoPlayCoordinator.configureAutoPlay(widget.context, model.config, PlayWidgetType.Jumbo)
     }
 
     fun setListener(listener: PlayWidgetListener?) {
