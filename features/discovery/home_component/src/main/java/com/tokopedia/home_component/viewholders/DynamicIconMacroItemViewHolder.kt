@@ -97,7 +97,7 @@ class DynamicIconMacroItemViewHolder(
             val value = it.animatedValue as Float
             containerRipple?.scaleX = value
             containerRipple?.scaleY = value
-            containerRipple?.alpha = ((value - SCALE_MIN_IMAGE) / (SCALE_MAX_IMAGE - SCALE_MIN_IMAGE) ) * MAX_ALPHA_RIPPLE
+            containerRipple?.alpha = ((value - SCALE_MIN_IMAGE) / (SCALE_MAX_IMAGE - SCALE_MIN_IMAGE)) * MAX_ALPHA_RIPPLE
 //            if (!isShow && it.animatedValue as Float == SCALE_MIN_IMAGE) containerRipple?.invisible()
         }
         rippleAnimator.duration = duration
@@ -129,29 +129,39 @@ class DynamicIconMacroItemViewHolder(
                     longPressHandler.removeCallbacks(onLongPress)
                     Handler(Looper.getMainLooper()).postDelayed(
                         {
-                            animateScaling(SCALE_MIN_IMAGE, SCALE_MAX_IMAGE, DURATION_OUTPUT_CLICK)
-                            scalingRipple(
-                                SCALE_MIN_IMAGE,
-                                SCALE_MIN_IMAGE,
-                                DURATION_OUTPUT_CLICK,
-                                false
-                            )
-                        }, 0
+                            if (iconImageView?.scaleX == SCALE_MIN_IMAGE) {
+                                animateScaling(
+                                    SCALE_MIN_IMAGE,
+                                    SCALE_MAX_IMAGE,
+                                    DURATION_OUTPUT_CLICK
+                                )
+                            }
+                            if (containerRipple?.alpha == MAX_ALPHA_RIPPLE) {
+                                scalingRipple(
+                                    SCALE_MIN_IMAGE,
+                                    SCALE_MIN_IMAGE,
+                                    DURATION_OUTPUT_CLICK,
+                                    false
+                                )
+                            }
+                        },
+                        0
                     )
                     rippleAnimator.addListener(object : Animator.AnimatorListener {
                         override fun onAnimationStart(p0: Animator) {
-                             val a = 1+1
+                            val a = 1 + 1
                         }
 
                         override fun onAnimationEnd(p0: Animator) {
-                            val a = 1+1
-                            if (containerRipple?.alpha == MAX_ALPHA_RIPPLE)
+                            val a = 1 + 1
+                            if (containerRipple?.alpha == MAX_ALPHA_RIPPLE) {
                                 scalingRipple(
                                     SCALE_MAX_IMAGE,
                                     SCALE_MIN_IMAGE,
                                     DURATION_OUTPUT_CLICK,
                                     false
                                 )
+                            }
                         }
 
                         override fun onAnimationCancel(p0: Animator) {
@@ -164,7 +174,7 @@ class DynamicIconMacroItemViewHolder(
                         }
 
                         override fun onAnimationRepeat(p0: Animator) {
-                            val a = 1+1
+                            val a = 1 + 1
                         }
                     })
                     scaleAnimator.addListener(object : Animator.AnimatorListener {
@@ -182,7 +192,8 @@ class DynamicIconMacroItemViewHolder(
                                         SCALE_MAX_IMAGE,
                                         DURATION_OUTPUT_CLICK
                                     )
-                                }, 0
+                                },
+                                0
                             )
                         }
                     })
@@ -197,11 +208,12 @@ class DynamicIconMacroItemViewHolder(
                             scalingRipple(
                                 SCALE_MIN_IMAGE,
                                 SCALE_MAX_IMAGE,
-                                DURATION_INPUT_CLICK,
+                                200,
                                 true
                             )
-                            animateScaling(SCALE_MAX_IMAGE, SCALE_MIN_IMAGE, DURATION_INPUT_CLICK)
-                        }, 0
+                            animateScaling(SCALE_MAX_IMAGE, SCALE_MIN_IMAGE, 200)
+                        },
+                        0
                     )
                 }
             }
