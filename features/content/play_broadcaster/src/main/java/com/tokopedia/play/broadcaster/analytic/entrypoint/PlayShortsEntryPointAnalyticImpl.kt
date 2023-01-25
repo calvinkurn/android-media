@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.analytic.entrypoint
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.analytic.*
@@ -48,7 +49,7 @@ class PlayShortsEntryPointAnalyticImpl @Inject constructor(
                 KEY_USER_ID to userSession.userId,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_TRACKER_ID to "37525"
+                KEY_TRACKER_ID to getTrackerIdBySite("37525", "37607")
             )
         )
     }
@@ -67,7 +68,7 @@ class PlayShortsEntryPointAnalyticImpl @Inject constructor(
                 KEY_USER_ID to userSession.userId,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_TRACKER_ID to "37592"
+                KEY_TRACKER_ID to getTrackerIdBySite("37592", "37674")
             )
         )
     }
@@ -86,7 +87,7 @@ class PlayShortsEntryPointAnalyticImpl @Inject constructor(
                 KEY_USER_ID to userSession.userId,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_TRACKER_ID to "37603"
+                KEY_TRACKER_ID to getTrackerIdBySite("37603", "37685")
             )
         )
     }
@@ -96,6 +97,14 @@ class PlayShortsEntryPointAnalyticImpl @Inject constructor(
             ContentCommonUserType.TYPE_SHOP -> SHORTS_TYPE_SELLER
             ContentCommonUserType.TYPE_USER -> SHORTS_TYPE_USER
             else -> ""
+        }
+    }
+
+    private fun getTrackerIdBySite(mainAppTrackerId: String, sellerAppTrackerId: String): String {
+        return if (GlobalConfig.isSellerApp()) {
+            sellerAppTrackerId
+        } else {
+            mainAppTrackerId
         }
     }
 

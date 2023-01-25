@@ -65,8 +65,10 @@ class CreateChannelUseCase @Inject constructor(
         private const val PARAMS_GROUP_ID = "groupID"
         private const val PARAMS_TYPE = "type"
 
-        private const val VALUE_GROUP_ID_SHOP = "1" //Seller Generated Content
-        private const val VALUE_GROUP_ID_USER = "69" //User Generated Content LIVE UGC
+        private const val VALUE_LIVE_STREAM_GROUP_ID_SHOP = "1"
+        private const val VALUE_LIVE_STREAM_GROUP_ID_USER = "69"
+        private const val VALUE_SHORTS_GROUP_ID_SHOP = "75"
+        private const val VALUE_SHORTS_GROUP_ID_USER = "76"
 
         fun createParams(
             authorId: String,
@@ -81,16 +83,40 @@ class CreateChannelUseCase @Inject constructor(
                 else -> 0
             },
             PARAMS_STATUS to status.value.toIntOrZero(),
-            PARAMS_GROUP_ID to when (authorType) {
-                TYPE_USER -> VALUE_GROUP_ID_USER
-                TYPE_SHOP -> VALUE_GROUP_ID_SHOP
-                else -> ""
-            },
+            PARAMS_GROUP_ID to getGroupId(type, authorType).value,
             PARAMS_TYPE to type.value,
         )
+
+        private fun getGroupId(type: Type, authorType: String): GroupId {
+            return when(type) {
+                Type.Livestream -> {
+                    when(authorType) {
+                        TYPE_SHOP -> GroupId.LivestreamShop
+                        TYPE_USER -> GroupId.LivestreamUGC
+                        else -> GroupId.Unknown
+                    }
+                }
+                Type.Shorts -> {
+                    when(authorType) {
+                        TYPE_SHOP -> GroupId.ShortsShop
+                        TYPE_USER -> GroupId.ShortsUGC
+                        else -> GroupId.Unknown
+                    }
+                }
+                else -> GroupId.Unknown
+            }
+        }
     }
 
     enum class Type(val value: Int) {
         Livestream(1), Shorts(3)
+    }
+
+    enum class GroupId(val value: String) {
+        LivestreamUGC(VALUE_LIVE_STREAM_GROUP_ID_USER),
+        LivestreamShop(VALUE_LIVE_STREAM_GROUP_ID_SHOP),
+        ShortsUGC(VALUE_SHORTS_GROUP_ID_USER),
+        ShortsShop(VALUE_SHORTS_GROUP_ID_SHOP),
+        Unknown(""),
     }
 }

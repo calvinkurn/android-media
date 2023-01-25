@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.shorts.helper
 
 import androidx.test.espresso.matcher.ViewMatchers
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.play.broadcaster.helper.containsEventAction
 import com.tokopedia.play.broadcaster.helper.containsScreenName
 

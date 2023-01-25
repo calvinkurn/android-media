@@ -242,7 +242,7 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     private fun setupView() {
         binding.toolbar.apply {
-            navIcon = IconUnify.CLOSE
+            navIcon = IconUnify.ARROW_BACK
             setCustomizeContentColor(ContentColor.TRANSPARENT, false)
         }
     }
@@ -381,32 +381,52 @@ class PlayShortsPreparationFragment @Inject constructor(
     }
 
     private fun setupCoachMark() {
-        val coachMarkItems = listOf(
-            CoachMark2Item(
-                anchorView = binding.preparationMenu,
-                title = getString(R.string.play_shorts_preparation_coachmark_title),
-                description = getString(R.string.play_shorts_preparation_coachmark_description),
-                position = CoachMark2.POSITION_TOP
-            ),
-            CoachMark2Item(
-                anchorView = binding.toolbar,
-                title = requireContext().getString(contentCommonR.string.sa_coach_mark_title),
-                description = requireContext().getString(contentCommonR.string.sa_shorts_coach_mark_subtitle),
-                position = CoachMark2.POSITION_BOTTOM
-            ),
-        )
 
-        if(coachMark == null) {
-            coachMark = CoachMark2(requireContext())
+        fun onCloseCoachMark() {
+            analytic.clickCloseCoachMarkOnPreparationPage(viewModel.selectedAccount)
+            coachMark?.dismissCoachMark()
         }
 
-        if(!coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)) {
-            coachMark?.showCoachMark(ArrayList(coachMarkItems))
-            coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)
+        if(coachMark != null) return
 
-            coachMark?.simpleCloseIcon?.setOnClickListener {
-                analytic.clickCloseCoachMarkOnPreparationPage(viewModel.selectedAccount)
-                coachMark?.dismissCoachMark()
+        val coachMarkItems = mutableListOf<CoachMark2Item>().apply {
+            if(!coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)) {
+                add(
+                    CoachMark2Item(
+                        anchorView = binding.preparationMenu,
+                        title = getString(R.string.play_shorts_preparation_coachmark_title),
+                        description = getString(R.string.play_shorts_preparation_coachmark_description),
+                        position = CoachMark2.POSITION_TOP
+                    )
+                )
+                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)
+            }
+
+            if(viewModel.isAllowChangeAccount && viewModel.isFirstSwitchAccount) {
+                add(
+                    CoachMark2Item(
+                        anchorView = binding.toolbar,
+                        title = requireContext().getString(contentCommonR.string.sa_coach_mark_title),
+                        description = requireContext().getString(contentCommonR.string.sa_shorts_coach_mark_subtitle),
+                        position = CoachMark2.POSITION_BOTTOM
+                    )
+                )
+                viewModel.submitAction(PlayShortsAction.SetNotFirstSwitchAccount)
+            }
+        }
+
+        if(coachMarkItems.isNotEmpty()) {
+            if(coachMark == null) {
+                coachMark = CoachMark2(requireContext())
+            }
+
+            coachMark?.showCoachMark(ArrayList(coachMarkItems))
+
+            if(coachMarkItems.size == 1) {
+                coachMark?.simpleCloseIcon?.setOnClickListener { onCloseCoachMark() }
+            }
+            else {
+                coachMark?.stepCloseIcon?.setOnClickListener { onCloseCoachMark() }
             }
         }
     }

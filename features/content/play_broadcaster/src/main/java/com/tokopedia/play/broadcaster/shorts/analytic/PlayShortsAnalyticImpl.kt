@@ -17,22 +17,12 @@ class PlayShortsAnalyticImpl @Inject constructor(
      * https://mynakama.tokopedia.com/datatracker/requestdetail/view/3511
      */
 
-    /**
-     * Notes:
-     * 1. Row 16 & 18 -> is it expected we use suffix "bottom sheet" while we are showing a popup dialog?
-     * 2. Row 34 -> is it expected we just have label "click - simpan" without more context on what data is being saved?
-     * 3. Row 53 - 56 -> its not applicable since android still using old cover picker
-     * 4. Row 58 -> we dont have "Simpan" button in existing feature
-     * 5. Row 59 & 60 -> is it expected we use suffix "bottom sheet" while we are showing a popup dialog?
-     * 6. Row 20 - 24 -> theres a possiblity where eventLabel is " - " bcs theres no selected account, so how?
-     */
-
     /** Row 10 */
     override fun clickBackOnPreparationPage(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - back post creation",
             account = account,
-            trackerId = "37533"
+            trackerId = getTrackerIdBySite("37533", "37615")
         )
     }
 
@@ -41,7 +31,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - close coachmark",
             account = account,
-            trackerId = "37534"
+            trackerId = getTrackerIdBySite("37534", "37616")
         )
     }
 
@@ -176,7 +166,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralViewEvent(
             eventAction = "view - post creation page",
             account = account,
-            trackerId = "37551"
+            trackerId = getTrackerIdBySite("37551", "37633")
         )
     }
 
@@ -185,7 +175,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - edit title",
             account = account,
-            trackerId = "37552"
+            trackerId = getTrackerIdBySite("37552", "37634")
         )
     }
 
@@ -194,7 +184,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - add product tag",
             account = account,
-            trackerId = "37553"
+            trackerId = getTrackerIdBySite("37553", "37635")
         )
     }
 
@@ -203,7 +193,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - add cover on preparation page",
             account = account,
-            trackerId = "37554"
+            trackerId = getTrackerIdBySite("37554", "37636")
         )
     }
 
@@ -212,7 +202,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - back title page",
             account = account,
-            trackerId = "37555"
+            trackerId = getTrackerIdBySite("37555", "37637")
         )
     }
 
@@ -221,7 +211,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - fill text title",
             account = account,
-            trackerId = "37556"
+            trackerId = getTrackerIdBySite("37556", "37638")
         )
     }
 
@@ -230,7 +220,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - simpan",
             account = account,
-            trackerId = "37557"
+            trackerId = getTrackerIdBySite("37557", "37639")
         )
     }
 
@@ -239,7 +229,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - delete text title",
             account = account,
-            trackerId = "37558"
+            trackerId = getTrackerIdBySite("37558", "37640")
         )
     }
 
@@ -247,7 +237,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     override fun openScreenTitleForm(account: ContentAccountUiModel) {
         sendGeneralOpenScreen(
             screenName = "/play broadcast short - title page - ${PlayShortsAnalyticHelper.getEventLabelByAccount(account)}",
-            trackerId = "37559",
+            trackerId = getTrackerIdBySite("37559", "37641")
         )
     }
 
@@ -256,7 +246,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - close cover page",
             account = account,
-            trackerId = "37574"
+            trackerId = getTrackerIdBySite("37574", "37656")
         )
     }
 
@@ -265,7 +255,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - edit cover",
             account = account,
-            trackerId = "37575"
+            trackerId = getTrackerIdBySite("37575", "37657")
         )
     }
 
@@ -273,7 +263,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     override fun openScreenCoverForm(account: ContentAccountUiModel) {
         sendGeneralOpenScreen(
             screenName = "/play broadcast short - cover page - ${PlayShortsAnalyticHelper.getEventLabelByAccount(account)}",
-            trackerId = "37580"
+            trackerId = getTrackerIdBySite("37580", "37662")
         )
     }
 
@@ -282,7 +272,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralViewEvent(
             eventAction = "view - yakin mau keluar botom sheet",
             account = account,
-            trackerId = "37582"
+            trackerId = getTrackerIdBySite("37582", "37664")
         )
     }
 
@@ -291,7 +281,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - lanjut persiapan bottom sheet",
             account = account,
-            trackerId = "37583"
+            trackerId = getTrackerIdBySite("37583", "37665")
         )
     }
 
@@ -300,7 +290,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - back summary page",
             account = account,
-            trackerId = "37584"
+            trackerId = getTrackerIdBySite("37584", "37666")
         )
     }
 
@@ -309,7 +299,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - content tag",
             eventLabel = "${account.id} - $tag - ${PlayShortsAnalyticHelper.getAccountType(account)}",
-            trackerId = "37585"
+            trackerId = getTrackerIdBySite("37585", "37667")
         )
     }
 
@@ -318,7 +308,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - upload video",
             eventLabel = "${PlayShortsAnalyticHelper.getEventLabelByAccount(account)} - $channelId",
-            trackerId = "37586"
+            trackerId = getTrackerIdBySite("37586", "37668")
         )
     }
 
@@ -326,7 +316,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     override fun openScreenSummaryPage(account: ContentAccountUiModel) {
         sendGeneralOpenScreen(
             screenName = "/play broadcast short - summary page - ${PlayShortsAnalyticHelper.getEventLabelByAccount(account)}",
-            trackerId = "37588",
+            trackerId = getTrackerIdBySite("37588", "37670"),
         )
     }
 
@@ -335,7 +325,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - refresh content tags",
             account = account,
-            trackerId = "37590"
+            trackerId = getTrackerIdBySite("37590", "37672")
         )
     }
 
@@ -344,8 +334,12 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - lanjut post creation",
             account = account,
-            trackerId = "37605"
+            trackerId = getTrackerIdBySite("37605", "37687")
         )
+    }
+
+    private fun getTrackerIdBySite(mainAppTrackerId: String, sellerAppTrackerId: String): String {
+        return PlayShortsAnalyticHelper.getTrackerIdBySite(mainAppTrackerId, sellerAppTrackerId)
     }
 
     private fun sendGeneralOpenScreen(

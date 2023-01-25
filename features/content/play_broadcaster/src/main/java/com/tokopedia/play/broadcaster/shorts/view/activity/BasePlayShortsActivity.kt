@@ -11,8 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.types.ContentCommonUserType
-import com.tokopedia.content.common.ui.bottomsheet.SellerTncBottomSheet
-import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -117,27 +115,6 @@ abstract class BasePlayShortsActivity : BaseActivity() {
                     }
                 })
             }
-            is SellerTncBottomSheet -> {
-                fragment.setDataSource(object : SellerTncBottomSheet.DataSource {
-                    override fun getTitle(): String {
-                        return getString(R.string.play_shorts_shop_cant_create_content)
-                    }
-
-                    override fun getTermsAndCondition(): List<TermsAndConditionUiModel> {
-                        return viewModel.tncList
-                    }
-                })
-
-                fragment.setListener(object : SellerTncBottomSheet.Listener {
-                    override fun clickOkButton() {
-
-                    }
-
-                    override fun clickCloseIcon() {
-                        if(isFragmentContainerEmpty()) finish()
-                    }
-                })
-            }
             is ShortsAccountNotEligibleBottomSheet -> {
                 fragment.setListener(object : ShortsAccountNotEligibleBottomSheet.Listener {
                     override fun onClose() {
@@ -185,13 +162,12 @@ abstract class BasePlayShortsActivity : BaseActivity() {
 
                         if(isFragmentContainerEmpty()) showNoEligibleAccountBackground(true)
                     }
-                    is PlayShortsUiEvent.AccountNotEligible -> {
-                        showNoEligibleAccountBottomSheet()
-
-                        if(isFragmentContainerEmpty()) showNoEligibleAccountBackground(true)
-                    }
+                    is PlayShortsUiEvent.AccountNotEligible,
                     is PlayShortsUiEvent.SellerNotEligible -> {
-                        showSellerNotEligibleBottomSheet()
+                        /**
+                         * For MVP, apps only use 1 bottomsheet for both user & seller ineligibility
+                         */
+                        showNoEligibleAccountBottomSheet()
 
                         if(isFragmentContainerEmpty()) showNoEligibleAccountBackground(true)
                     }
@@ -285,13 +261,6 @@ abstract class BasePlayShortsActivity : BaseActivity() {
 
     private fun showNoEligibleAccountBottomSheet() {
         ShortsAccountNotEligibleBottomSheet
-            .getFragment(supportFragmentManager, classLoader)
-            .show(supportFragmentManager)
-
-    }
-
-    private fun showSellerNotEligibleBottomSheet() {
-        SellerTncBottomSheet
             .getFragment(supportFragmentManager, classLoader)
             .show(supportFragmentManager)
     }

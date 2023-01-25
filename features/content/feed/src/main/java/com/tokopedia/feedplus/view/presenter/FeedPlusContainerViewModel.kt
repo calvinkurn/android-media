@@ -19,7 +19,7 @@ import javax.inject.Inject
 class FeedPlusContainerViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
     private val repo: FeedPlusRepository,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main){
 
     val tabResp = MutableLiveData<Result<FeedTabs>>()
@@ -39,7 +39,7 @@ class FeedPlusContainerViewModel @Inject constructor(
 
     val isShowShortsButton: Boolean
         get() = when(val whitelist = whitelistResp.value) {
-            is Success -> whitelist.data.authors.isNotEmpty()
+            is Success -> whitelist.data.isShopAccountShortsEligible || whitelist.data.isBuyerAccountExists
             else -> false
         }
 

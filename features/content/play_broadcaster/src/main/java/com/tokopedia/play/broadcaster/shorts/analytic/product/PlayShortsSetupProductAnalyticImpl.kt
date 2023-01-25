@@ -32,7 +32,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         analyticSender.sendGeneralClickEvent(
             eventAction = "click - search product",
             account = account,
-            trackerId = "37560",
+            trackerId = PlayShortsAnalyticHelper.getTrackerIdBySite("37560", "37642"),
         )
     }
 
@@ -43,7 +43,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         analyticSender.sendGeneralClickEvent(
             eventAction = "click - product sort",
             account = account,
-            trackerId = "37561",
+            trackerId = PlayShortsAnalyticHelper.getTrackerIdBySite("37561", "37643"),
         )
     }
 
@@ -54,7 +54,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         analyticSender.sendGeneralClickEvent(
             eventAction = "click - filter product etalase",
             account = account,
-            trackerId = "37562",
+            trackerId = PlayShortsAnalyticHelper.getTrackerIdBySite("37562", "37644"),
         )
     }
 
@@ -65,7 +65,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         analyticSender.sendGeneralClickEvent(
             eventAction = "click - close button on product bottom sheet",
             account = account,
-            trackerId = "37563",
+            trackerId = PlayShortsAnalyticHelper.getTrackerIdBySite("37563", "37645"),
         )
     }
 
@@ -76,7 +76,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         analyticSender.sendGeneralClickEvent(
             eventAction = "click - product card",
             eventLabel = "${PlayShortsAnalyticHelper.getEventLabelByAccount(account)} - $productId",
-            trackerId = "37564",
+            trackerId = PlayShortsAnalyticHelper.getTrackerIdBySite("37564", "37646"),
         )
     }
 
@@ -87,7 +87,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         analyticSender.sendGeneralClickEvent(
             eventAction = "click - close sort product",
             account = account,
-            trackerId = "37565",
+            trackerId = PlayShortsAnalyticHelper.getTrackerIdBySite("37565", "37647"),
         )
     }
 
@@ -98,7 +98,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         analyticSender.sendGeneralClickEvent(
             eventAction = "click - sort type",
             account = account,
-            trackerId = "37566",
+            trackerId = PlayShortsAnalyticHelper.getTrackerIdBySite("37566", "37648"),
         )
     }
 
@@ -109,7 +109,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         analyticSender.sendGeneralViewEvent(
             eventAction = "view - sorting bottom sheet",
             account = account,
-            trackerId = "37567"
+            trackerId = PlayShortsAnalyticHelper.getTrackerIdBySite("37567", "37649")
         )
     }
 
@@ -120,7 +120,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         analyticSender.sendGeneralClickEvent(
             eventAction = "click - close filter bottom sheet",
             account = account,
-            trackerId = "37568",
+            trackerId = PlayShortsAnalyticHelper.getTrackerIdBySite("37568", "37650"),
         )
     }
 
@@ -131,7 +131,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         analyticSender.sendGeneralClickEvent(
             eventAction = "click - campaign card",
             eventLabel = "${PlayShortsAnalyticHelper.getEventLabelByAccount(account)} - $campaignName",
-            trackerId = "37569",
+            trackerId = PlayShortsAnalyticHelper.getTrackerIdBySite("37569", "37651"),
         )
     }
 
@@ -142,7 +142,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         analyticSender.sendGeneralClickEvent(
             eventAction = "click - etalase card",
             eventLabel = "${PlayShortsAnalyticHelper.getEventLabelByAccount(account)} - $etalaseName",
-            trackerId = "37570",
+            trackerId = PlayShortsAnalyticHelper.getTrackerIdBySite("37570", "37652"),
         )
     }
 
@@ -153,7 +153,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         analyticSender.sendGeneralViewEvent(
             eventAction = "view - filter bottom sheet",
             account = account,
-            trackerId = "37571"
+            trackerId = PlayShortsAnalyticHelper.getTrackerIdBySite("37571", "37653")
         )
     }
 
@@ -164,7 +164,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         analyticSender.sendGeneralViewEvent(
             eventAction = "view - product selection bottom sheet",
             account = account,
-            trackerId = "37572"
+            trackerId = PlayShortsAnalyticHelper.getTrackerIdBySite("37572", "37654")
         )
     }
 
@@ -175,7 +175,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         analyticSender.sendGeneralClickEvent(
             eventAction = "click - save product card",
             eventLabel = "",
-            trackerId = "37573",
+            trackerId = PlayShortsAnalyticHelper.getTrackerIdBySite("37573", "37655"),
         )
     }
 
@@ -186,7 +186,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         analyticSender.sendGeneralClickEvent(
             eventAction = "click - add product card",
             account = account,
-            trackerId = "37594",
+            trackerId = PlayShortsAnalyticHelper.getTrackerIdBySite("37594", "37676"),
         )
     }
 
@@ -197,7 +197,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         analyticSender.sendGeneralClickEvent(
             eventAction = "click - back product selection page",
             account = account,
-            trackerId = "37595",
+            trackerId = PlayShortsAnalyticHelper.getTrackerIdBySite("37595", "37677"),
         )
     }
 
@@ -208,7 +208,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         analyticSender.sendGeneralClickEvent(
             eventAction = "click - delete a product tagged",
             eventLabel = "${PlayShortsAnalyticHelper.getEventLabelByAccount(account)} - $productId",
-            trackerId = "37596",
+            trackerId = PlayShortsAnalyticHelper.getTrackerIdBySite("37596", "37678"),
         )
     }
 
@@ -219,7 +219,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         analyticSender.sendGeneralClickEvent(
             eventAction = "click - save product tag",
             account = account,
-            trackerId = "37597",
+            trackerId = PlayShortsAnalyticHelper.getTrackerIdBySite("37597", "37679"),
         )
     }
 
@@ -230,7 +230,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         analyticSender.sendGeneralViewEvent(
             eventAction = "view - product selection summary",
             account = account,
-            trackerId = "37598"
+            trackerId = PlayShortsAnalyticHelper.getTrackerIdBySite("37598", "37680")
         )
     }
 
