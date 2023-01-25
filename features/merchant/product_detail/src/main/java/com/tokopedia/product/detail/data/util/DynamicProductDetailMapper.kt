@@ -143,7 +143,7 @@ object DynamicProductDetailMapper {
                     }
                 }
                 ProductDetailConstant.VIEW_TO_VIEW -> {
-                    listOfComponent.add(ViewToViewWidgetDataModel(type = component.type, name= component.componentName, position = index))
+                    listOfComponent.add(ViewToViewWidgetDataModel(type = component.type, name = component.componentName, position = index))
                 }
                 ProductDetailConstant.PRODUCT_LIST_VERTICAL -> {
                     listOfComponent.add(
@@ -160,7 +160,8 @@ object DynamicProductDetailMapper {
                             ProductSingleVariantDataModel(
                                 type = component.type,
                                 name = component.componentName,
-                                isThumbnailType = component.componentData.firstOrNull()?.componentType == ProductDetailConstant.THUMB_MINI_VARIANT_OPTIONS
+                                thumbnailType = component.componentData.firstOrNull()
+                                    ?.componentType.orEmpty()
                             )
                         )
                     } else {

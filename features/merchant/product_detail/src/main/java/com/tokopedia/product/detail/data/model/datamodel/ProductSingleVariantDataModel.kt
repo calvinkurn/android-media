@@ -16,7 +16,7 @@ data class ProductSingleVariantDataModel(
     var mapOfSelectedVariant: MutableMap<String, String> = mutableMapOf(),
     var isVariantError: Boolean = false,
     var isRefreshing: Boolean = false,
-    var isThumbnailType: Boolean = false // single variant for thumbnail variant in pdp
+    var thumbnailType: String = "" // single variant for thumbnail variant in pdp
 ) : DynamicPdpDataModel {
 
     override fun type(): String = type
@@ -64,6 +64,8 @@ data class ProductSingleVariantDataModel(
         }
         return isChanged
     }
+
+    val isThumbnailType get() = thumbnailType == ProductDetailConstant.THUMB_MINI_VARIANT_OPTIONS
 
     fun getComponentNameAsThumbnail(): String = name() + " - thumbnail"
 }
