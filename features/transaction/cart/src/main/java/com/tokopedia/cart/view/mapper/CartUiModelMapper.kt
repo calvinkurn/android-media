@@ -24,7 +24,7 @@ import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
-import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityData
+import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
@@ -159,8 +159,9 @@ object CartUiModelMapper {
                 longitude = availableGroup.shop.longitude
                 latitude = availableGroup.shop.latitude
                 boMetadata = availableGroup.boMetadata
-                boAffordability = CartShopBoAffordabilityData(
-                        enable = availableGroup.shipmentInformation.enableBoAffordability,
+                cartShopGroupTicker = CartShopGroupTickerData(
+                        enableBoAffordability = availableGroup.shipmentInformation.enableBoAffordability,
+                        enableBundleCrossSell = hasPartialBundleProduct(availableGroup) || hasUncheckedBundleProduct(availableGroup),
                         errorText = cartData.messages.errorBoAffordability
                 )
                 addOnText = availableGroup.giftingAddOn.tickerText
@@ -175,6 +176,8 @@ object CartUiModelMapper {
                     it.uniqueId == cartString && it.shippingId > 0 &&
                     it.spId > 0 && it.type == "logistic"
                 }?.code ?: ""
+                bundleIds = availableGroup.cartDetails.filter { cartDetail -> cartDetail.bundleDetail.bundleId == "0" }
+                    .flatMap { cartDetail -> cartDetail.products.flatMap { product -> product.bundleIds } }
             }
             cartShopHolderDataList.add(shopUiModel)
         }
@@ -214,6 +217,18 @@ object CartUiModelMapper {
         }
 
         return false
+    }
+
+    private fun hasPartialBundleProduct(availableGroup: AvailableGroup): Boolean {
+        return availableGroup.cartDetails.any {
+            it.bundleDetail.bundleId == "0" && it.products.any { product -> product.bundleIds.isNotEmpty() }
+        }
+    }
+
+    private fun hasUncheckedBundleProduct(availableGroup: AvailableGroup): Boolean {
+        return availableGroup.cartDetails.any {
+            it.products.any { product -> product.bundleIds.isNotEmpty() && !product.isCheckboxState }
+        }
     }
 
     fun mapUnavailableShopUiModel(context: Context?, cartData: CartData): Pair<List<Any>, DisabledAccordionHolderData?> {
