@@ -71,6 +71,7 @@ class ProductListViewModel @Inject constructor(
             ProductListEvent.TapCtaChangeProduct -> handleSwitchPageMode()
             is ProductListEvent.AddNewProductToSelection -> handleAddNewProductToSelection(event.newProducts)
             ProductListEvent.TapCtaAddProduct -> handleCtaAddNewProduct()
+            ProductListEvent.TapToolbarBackIcon -> handleTapToolbarBackIcon()
         }
     }
 
@@ -406,4 +407,11 @@ class ProductListViewModel @Inject constructor(
         val modifiedVoucherConfiguration = currentState.voucherConfiguration.copy(productIds = currentlySelectedParentProduct)
         _uiEffect.tryEmit(ProductListEffect.RedirectToAddProductPage(modifiedVoucherConfiguration))
     }
+
+
+    private fun handleTapToolbarBackIcon() {
+        val selectedProductCount = uiState.value.products.count()
+        _uiEffect.tryEmit(ProductListEffect.RedirectToPreviousPage(selectedProductCount, uiState.value.originalPageMode))
+    }
+
 }
