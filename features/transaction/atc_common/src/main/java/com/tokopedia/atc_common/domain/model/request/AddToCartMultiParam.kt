@@ -28,7 +28,7 @@ data class AddToCartMultiParam(
         val custId: String = "",
 
         @SerializedName("warehouse_id")
-        val warehouseId: String = "",
+        val warehouseId: String = "0",
 
         @SerializedName("category")
         val category: String = ""
