@@ -96,13 +96,6 @@
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/loaderListPrivacyPolicy" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_marginTop="8dp"
-            android:text="@string/privacy_policy_subtitle"
-            app:typographyType="paragraph_3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
