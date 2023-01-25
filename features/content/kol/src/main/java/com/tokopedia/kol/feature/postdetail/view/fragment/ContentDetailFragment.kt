@@ -12,9 +12,11 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -103,9 +105,12 @@ class ContentDetailFragment :
     ContentDetailPostViewHolder.CDPListener,
     ProductItemInfoBottomSheet.Listener,
     ShareBottomsheetListener,
-    FeedFollowersOnlyBottomSheet.Listener {
+    FeedFollowersOnlyBottomSheet.Listener,
+    SwipeRefreshLayout.OnRefreshListener {
 
     private var cdpRecyclerView: RecyclerView? = null
+    private var swipeToRefresh: SwipeToRefresh? = null
+
     private var postId = "0"
     private var visitedUserID = ""
     private var visitedUserEncryptedID = ""
@@ -188,19 +193,27 @@ class ContentDetailFragment :
                 viewLifecycleOwner
             ) {
                 when (it) {
-                    is Success -> onSuccessGetUserProfileFeedPost(it.data)
-                    is Fail -> showToast(
-                        getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder),
-                        Toaster.TYPE_ERROR
-                    )
+                    is Success -> {
+                        finishLoading()
+                        onSuccessGetUserProfileFeedPost(it.data)
+                    }
+                    is Fail -> {
+                        finishLoading()
+                        showToast(
+                            getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder),
+                            Toaster.TYPE_ERROR
+                        )
+                    }
                 }
             }
             getCDPPostFirstPostData.observe(viewLifecycleOwner) {
                 when (it) {
                     is Success -> {
+                        finishLoading()
                         onSuccessGetFirstPostCDPData(it.data)
                     }
                     else -> {
+                        finishLoading()
                         showToast(
                             getString(feedComponentR.string.feed_video_tab_error_reminder),
                             Toaster.TYPE_ERROR
@@ -211,9 +224,11 @@ class ContentDetailFragment :
             cDPPostRecomData.observe(viewLifecycleOwner) {
                 when (it) {
                     is Success -> {
+                        finishLoading()
                         onSuccessGetCDPRecomData(it.data)
                     }
                     else -> {
+                        finishLoading()
                         showToast(
                             getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder),
                             Toaster.TYPE_ERROR
@@ -238,6 +253,10 @@ class ContentDetailFragment :
 
         val backBtn = activity.getHeaderView()
             ?.findViewById<AppCompatImageView>(kolR.id.content_detail_back_icon)
+        swipeToRefresh = view.findViewById(kolR.id.cdp_swipe_refresh_layout)
+
+        swipeToRefresh?.isRefreshing = true
+        swipeToRefresh?.isEnabled = false
         backBtn?.setOnClickListener {
             viewModel.getCDPPostFirstPostData.value?.let {
                 if (it is Success && it.data.postList.firstOrNull()?.isTypeSgcVideo == true) {
@@ -279,6 +298,7 @@ class ContentDetailFragment :
             cdpRecyclerView?.addOnScrollListener(it)
             it.resetState()
         }
+        swipeToRefresh?.setOnRefreshListener(this)
 
         cdpRecyclerView?.adapter = adapter
     }
@@ -368,7 +388,6 @@ class ContentDetailFragment :
         (activity as? ContentDetailActivity)?.setContentDetailMainPostData(
             data.postList.firstOrNull()
         )
-
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(viewModel.currentCursor.isNotEmpty())
         adapter.setItemsAndAnimateChanges(data.postList)
@@ -378,7 +397,17 @@ class ContentDetailFragment :
     private fun onSuccessGetCDPRecomData(data: ContentDetailUiModel) {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(viewModel.currentCursor.isNotEmpty())
-        adapter.addItemsAndAnimateChanges(data.postList)
+        if (data.isPostRefresh) {
+            val firstPost = (activity as? ContentDetailActivity)?.contentDetailFirstPostData
+            val newList: MutableList<FeedXCard> = mutableListOf()
+            newList.addAll(data.postList)
+            if (firstPost != null) {
+                newList.add(0, firstPost)
+            }
+            adapter.setItemsAndAnimateChanges(newList)
+        } else {
+            adapter.addItemsAndAnimateChanges(data.postList)
+        }
     }
 
     private fun showToast(message: String, type: Int, actionText: String? = null) {
@@ -569,7 +598,7 @@ class ContentDetailFragment :
         val intent = RouteManager.getIntent(
             requireContext(),
             UriUtil.buildUriAppendParam(
-                ApplinkConstInternalContent.COMMENT_NEW,
+                ApplinkConstInternalContent.COMMENT,
                 mapOf(
                     COMMENT_ARGS_POSITION to rowNumber.toString()
                 )
@@ -1871,20 +1900,24 @@ class ContentDetailFragment :
         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
     }
 
-    private fun onSuccessDeletePost(rowNumber: Int) {
+    private fun onSuccessDeletePost(rowNumber: Int, isPostReported: Boolean = false) {
         if (contentDetailSource == SOURCE_USER_PROFILE) {
             (activity as ContentDetailActivity).setActionToRefresh(true)
         }
         if (adapter.getList().size > rowNumber) {
             adapter.getList().removeAt(rowNumber)
             adapter.notifyItemRemoved(rowNumber)
-            Toaster.build(
-                requireView(),
-                getString(kolR.string.feed_post_deleted),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                getString(com.tokopedia.kolcommon.R.string.content_action_ok)
-            ).show()
+            adapter.notifyItemRangeChanged(rowNumber, adapter.getList().size)
+
+            if (!isPostReported) {
+                Toaster.build(
+                    requireView(),
+                    getString(kolR.string.feed_post_deleted),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(com.tokopedia.kolcommon.R.string.content_action_ok)
+                ).show()
+            }
         }
     }
 
@@ -2099,7 +2132,7 @@ class ContentDetailFragment :
                 }
                 is ContentDetailResult.Success -> {
                     reportBottomSheet.setFinalView()
-                    onSuccessDeletePost(it.data.rowNumber)
+                    onSuccessDeletePost(it.data.rowNumber, isPostReported = true)
                 }
                 is ContentDetailResult.Failure -> {
                     reportBottomSheet.dismiss()
@@ -2241,7 +2274,8 @@ class ContentDetailFragment :
         val linkerShareData = DataMapper().getLinkerShareData(shareData)
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(
-                0, linkerShareData,
+                0,
+                linkerShareData,
                 object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
                         context?.let {
@@ -2444,5 +2478,20 @@ class ContentDetailFragment :
             onFollowUnfollowClicked(card, position, isFollowedFromRSRestrictionBottomSheet = true)
         }
     }
+
+    override fun onRefresh() {
+        if (contentDetailSource == SOURCE_USER_PROFILE) {
+            viewModel.fetchUserProfileFeedPost(visitedUserID, currentPosition)
+        } else {
+            viewModel.getContentDetailRecommendation(postId, true)
+        }
+        swipeToRefresh?.isRefreshing = true
+        swipeToRefresh?.isEnabled = false
+    }
+    private fun finishLoading() {
+        swipeToRefresh?.isRefreshing = false
+        swipeToRefresh?.isEnabled = true
+    }
+
     //endregion
 }

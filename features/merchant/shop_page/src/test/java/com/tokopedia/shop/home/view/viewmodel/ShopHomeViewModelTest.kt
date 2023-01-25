@@ -1841,7 +1841,7 @@ class ShopHomeViewModelTest {
                 AddToCartDataModel(
                     data = DataModel(
                         success = 1,
-                        productId = 33
+                        productId = "33"
                     )
                 )
             )
