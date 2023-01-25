@@ -3,18 +3,16 @@ package com.tokopedia.search.analytics
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
-import com.tokopedia.filter.common.data.Option
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
-import com.tokopedia.search.utils.joinActiveOptionsToString
 import com.tokopedia.search.utils.orNone
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
-import java.util.Locale
+import java.util.*
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -367,19 +365,6 @@ object SearchTracking {
                 SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT_PAGE,
                 SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_DROPDOWN_QUICK_FILTER,
                 SearchTrackingConstant.EVENT_LABEL, "$filterTitle",
-                SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-                SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
-            )
-        )
-    }
-
-    fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            DataLayer.mapOf(
-                SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_SEARCH,
-                SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT_PAGE,
-                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.APPLY_DROPDOWN_QUICK_FILTER,
-                SearchTrackingConstant.EVENT_LABEL, optionList?.joinActiveOptionsToString(),
                 SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
                 SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
             )

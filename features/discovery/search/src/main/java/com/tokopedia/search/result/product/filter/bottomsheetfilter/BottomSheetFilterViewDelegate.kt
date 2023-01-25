@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
@@ -18,6 +19,7 @@ import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import com.tokopedia.search.utils.getUserId
+import com.tokopedia.search.utils.updateComponentId
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -43,6 +45,10 @@ class BottomSheetFilterViewDelegate @Inject constructor(
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
 
     private var callback: BottomSheetFilterCallback? = null
+
+    private val pageSource: String by lazy {
+        Dimension90Utils.getDimension90(getSearchParameter()?.getSearchParameterMap().orEmpty())
+    }
 
     override fun sendTrackingOpenFilterPage() {
         SearchSortFilterTracking.eventOpenFilterPage()
@@ -88,7 +94,10 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         applySort(applySortFilterModel)
         applyFilter(applySortFilterModel)
 
-        parameterListener.refreshSearchParameter(applySortFilterModel.mapParameter)
+        val requestParams = applySortFilterModel.mapParameter
+            .updateComponentId(SearchSortFilterTracking.FILTER_COMPONENT_ID)
+
+        parameterListener.refreshSearchParameter(requestParams)
 
         lastFilterListener.updateLastFilter()
 
@@ -109,8 +118,9 @@ class BottomSheetFilterViewDelegate @Inject constructor(
 
     private fun applyFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
         SearchSortFilterTracking.eventApplyFilter(
-            getScreenName(),
-            applySortFilterModel.selectedFilterMapParameter,
+            keyword = getSearchParameter()?.getSearchQuery().orEmpty(),
+            pageSource = pageSource,
+            selectedFilter = applySortFilterModel.selectedFilterMapParameter,
         )
     }
 
