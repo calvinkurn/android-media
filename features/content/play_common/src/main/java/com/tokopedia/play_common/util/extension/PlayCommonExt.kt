@@ -286,11 +286,13 @@ fun Dialog.updateNavigationBarColor(@ColorRes colorRes: Int, useDarkIcon: Boolea
 }
 
 fun Fragment.recreateView() {
-    fragmentManager?.beginTransaction()
-            ?.setReorderingAllowed(false)
-            ?.detach(this)
-            ?.attach(this)
-            ?.commit()
+    parentFragmentManager.commit {
+        detach(this@recreateView)
+    }
+
+    parentFragmentManager.commit {
+        attach(this@recreateView)
+    }
 }
 
 inline fun FragmentManager.commit(
