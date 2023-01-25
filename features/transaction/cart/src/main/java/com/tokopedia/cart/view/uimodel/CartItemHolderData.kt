@@ -84,6 +84,7 @@ data class CartItemHolderData(
     var bundleType: String = "",
     var shopBoMetadata: BoMetadata = BoMetadata(),
     var shopCartShopGroupTickerData: CartShopGroupTickerData = CartShopGroupTickerData(),
+    var bundleIds: List<String> = emptyList(),
 
         // Will be set after calculation
     var wholesalePrice: Double = 0.0,

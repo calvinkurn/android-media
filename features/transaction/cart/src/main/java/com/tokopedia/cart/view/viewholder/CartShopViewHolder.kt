@@ -448,7 +448,8 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
 
     private fun renderCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
         if (cartShopHolderData.hasSelectedProduct && !cartShopHolderData.isError
-                && cartShopHolderData.cartShopGroupTicker.enableTicker && !cartShopHolderData.isOverweight) {
+            && cartShopHolderData.cartShopGroupTicker.enableTicker
+            && !cartShopHolderData.isOverweight) {
             binding.apply {
                 val cartShopGroupTicker = cartShopHolderData.cartShopGroupTicker
                 when (cartShopGroupTicker.state) {

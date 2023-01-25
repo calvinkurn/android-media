@@ -1981,18 +1981,26 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
     }
 
     override fun onCartShopGroupTickerClicked(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.bundleIds.isNotEmpty()) {
-            showCartBundlingBottomSheet(cartShopHolderData.cartShopGroupTicker.cartBundlingBottomSheetData, cartShopHolderData.bundleIds)
-        } else {
-            if (cartShopHolderData.isTokoNow) {
-                routeToTokoNowHomePage()
-            } else {
-                routeToShopProductPage(cartShopHolderData.shopId)
+        if (cartShopHolderData.cartShopGroupTicker.enableBundleCrossSell) {
+            // TODO: ask need filter product non-bundle non-selected aja? .filter { !it.isBundlingItem && !it.isSelected }
+            val bundleIds = cartShopHolderData.productUiModelList
+                .flatMap { it.bundleIds }
+            showCartBundlingBottomSheet(cartShopHolderData.cartShopGroupTicker.cartBundlingBottomSheetData, bundleIds)
+            cartPageAnalytics.eventClickArrowInBoTickerToReachShopPage(
+                cartShopHolderData.cartShopGroupTicker.cartIds, cartShopHolderData.shopId
+            )
+        } else if (cartShopHolderData.cartShopGroupTicker.enableBoAffordability) {
+            if (cartShopHolderData.cartShopGroupTicker.state == CartShopGroupTickerState.SUCCESS_NOT_AFFORD) {
+                if (cartShopHolderData.isTokoNow) {
+                    routeToTokoNowHomePage()
+                } else {
+                    routeToShopProductPage(cartShopHolderData.shopId)
+                }
+                cartPageAnalytics.eventClickArrowInBoTickerToReachShopPage(
+                    cartShopHolderData.cartShopGroupTicker.cartIds, cartShopHolderData.shopId
+                )
             }
         }
-        cartPageAnalytics.eventClickArrowInBoTickerToReachShopPage(
-            cartShopHolderData.cartShopGroupTicker.cartIds, cartShopHolderData.shopId
-        )
     }
 
     override fun onCartShopGroupTickerRefreshClicked(

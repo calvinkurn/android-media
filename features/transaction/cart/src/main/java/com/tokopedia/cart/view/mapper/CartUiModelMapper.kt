@@ -48,6 +48,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
+import com.tokopedia.purchase_platform.common.utils.isBlankOrZero
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import kotlin.math.min
 
@@ -161,7 +162,8 @@ object CartUiModelMapper {
                 boMetadata = availableGroup.boMetadata
                 cartShopGroupTicker = CartShopGroupTickerData(
                         enableBoAffordability = availableGroup.shipmentInformation.enableBoAffordability,
-                        enableBundleCrossSell = hasUnselectedBundleProduct(availableGroup),
+                        enableBundleCrossSell = availableGroup.shipmentInformation.enableShopGroupTickerCartAggregator
+                            && (hasProductWithBundle(availableGroup) || hasUnselectedBundleProduct(availableGroup)),
                         errorText = cartData.messages.errorBoAffordability
                 )
                 addOnText = availableGroup.giftingAddOn.tickerText
@@ -176,8 +178,6 @@ object CartUiModelMapper {
                     it.uniqueId == cartString && it.shippingId > 0 &&
                     it.spId > 0 && it.type == "logistic"
                 }?.code ?: ""
-                bundleIds = availableGroup.cartDetails.filter { cartDetail -> cartDetail.bundleDetail.bundleId == "0" }
-                    .flatMap { cartDetail -> cartDetail.products.flatMap { product -> product.bundleIds } }
             }
             cartShopHolderDataList.add(shopUiModel)
         }
@@ -219,9 +219,17 @@ object CartUiModelMapper {
         return false
     }
 
+    private fun hasProductWithBundle(availableGroup: AvailableGroup): Boolean {
+        return availableGroup.cartDetails.any { cartDetail ->
+            cartDetail.bundleDetail.bundleId.isBlankOrZero()
+                && cartDetail.products.any { product -> product.bundleIds.isNotEmpty() }
+        }
+    }
+
     private fun hasUnselectedBundleProduct(availableGroup: AvailableGroup): Boolean {
-        return availableGroup.cartDetails.any {
-            it.products.any { product -> product.bundleIds.isNotEmpty() && !product.isCheckboxState }
+        return availableGroup.cartDetails.any { cartDetail ->
+            cartDetail.bundleDetail.bundleId.isNotBlankOrZero()
+                && cartDetail.products.any { product -> product.bundleIds.isNotEmpty() && !product.isCheckboxState }
         }
     }
 
@@ -475,6 +483,7 @@ object CartUiModelMapper {
             freeShippingName = product.freeShippingGeneral.boName
             campaignId = product.campaignId
             warehouseId = product.warehouseId
+            bundleIds = product.bundleIds
         }
     }
 
