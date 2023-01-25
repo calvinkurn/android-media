@@ -40,6 +40,7 @@
     <string name="menu_transaction_menu_all_transaction">Daftar Transaksi</string>
     <string name="menu_transaction_menu_ticket">E-tiket &#38; E-voucher Aktif</string>
     <string name="menu_transaction_menu_review">Ulasan</string>
+    <string name="title_activity_revamp">Aktivitasmu</string>
 
     <string name="transaction_item_default_status">Menunggu pembayaran</string>
     <string name="transaction_item_total_product">%s\nBarang</string>
@@ -75,7 +76,7 @@
 
     <string name="empty_state_wishlist">Punya produk incaran? Tandai pakai ikon 💚, nanti akan muncul disini</string>
 
-    <string name="empty_state_favorite_shop">Follow toko yang kamu suka biar dapat info produk &amp; promo terbaru!</string>
+    <string name="empty_state_favorite_shop">Follow toko yang kamu suka, biar bisa dicek lagi lewat sini!</string>
     <string name="content_desc_image_empty_wishlist">image empty wishlist</string>
     <string name="content_desc_image_favorite_shop">image favorite shop</string>
     <string name="content_desc_image_wishlist">image wishlist</string>
@@ -83,5 +84,12 @@
 
     <string name="global_view_all">Lihat Semua</string>
 
-    <string name="wishlist_cashback">Cashback</string>
+    <string name="wishlist_item_count_format">%d Barang</string>
+
+    <string name="empty_state_review">Kasih ulasan untuk barang belanjaanmu nanti lewat sini.</string>
+
+    <string name="transaction_view_all_desc">Transaksi lainnya</string>
+    <string name="review_view_all_desc">Ulasan lainnya</string>
+    <string name="wishlist_view_all_desc">Wishlist lainnya</string>
+    <string name="favorite_shop_view_all_desc">Toko lainnya</string>
 </resources>
