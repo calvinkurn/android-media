@@ -867,4 +867,71 @@ class AddressFormViewModelTest {
         // Then
         Assert.assertEquals(addressFormViewModel.validateFields, validateNegativeFlow)
     }
+
+    @Test
+    fun `verify when isDifferentLatLong is true`() {
+        // Inject
+        val pinpointLat = "123"
+        val pinpointLong = "123"
+
+        // Then
+        Assert.assertTrue(
+            addressFormViewModel.isDifferentLatLong(
+                pinpointLat = pinpointLat,
+                pinpointLong = pinpointLong
+            )
+        )
+    }
+
+    @Test
+    fun `verify when isDifferentLatLong is false`() {
+        // Inject
+        val pinpointLat = "123"
+        val pinpointLong = "123"
+
+        // When
+        addressFormViewModel.saveDataModel = saveAddressDataModel.apply {
+            latitude = pinpointLat
+            longitude = pinpointLong
+        }
+
+        // Then
+        Assert.assertFalse(
+            addressFormViewModel.isDifferentLatLong(
+                pinpointLat = pinpointLat,
+                pinpointLong = pinpointLong
+            )
+        )
+    }
+
+    @Test
+    fun `verify when isDifferentDistrictId is true`() {
+        // Inject
+        val pinpointDistrictId = 1L
+
+        // Then
+        Assert.assertTrue(
+            addressFormViewModel.isDifferentDistrictId(
+                pinpointDistrictId = pinpointDistrictId
+            )
+        )
+    }
+
+    @Test
+    fun `verify when isDifferentDistrictId is false`() {
+        // Inject
+        val pinpointDistrictId = 1L
+
+        // When
+        addressFormViewModel.saveDataModel = saveAddressDataModel.apply {
+            districtId = pinpointDistrictId
+        }
+
+        // Then
+        Assert.assertFalse(
+            addressFormViewModel.isDifferentDistrictId(
+                pinpointDistrictId = pinpointDistrictId
+            )
+        )
+    }
 }

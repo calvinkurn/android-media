@@ -61,7 +61,6 @@ class PinpointNewPageViewModel @Inject constructor(
         longitude: Double,
         addressData: SaveAddressDataModel?,
         isPositiveFlow: Boolean,
-        districtId: Long,
         isPolygon: Boolean,
         isFromAddressForm: Boolean,
         isEdit: Boolean,
@@ -73,13 +72,6 @@ class PinpointNewPageViewModel @Inject constructor(
             setAddress(this)
         }
         this.isPositiveFlow = isPositiveFlow
-        if (getAddress().districtId == 0L) {
-            districtId.takeIf { value -> value != 0L }?.let { id ->
-                setAddress(
-                    getAddress().copy(districtId = id)
-                )
-            }
-        }
         this.isPolygon = isPolygon
         this.isFromAddressForm = isFromAddressForm
         this.isEdit = isEdit

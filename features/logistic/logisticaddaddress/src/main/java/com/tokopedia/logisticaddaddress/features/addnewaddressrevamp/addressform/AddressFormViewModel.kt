@@ -325,4 +325,17 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
             }
         } ?: onError.invoke()
     }
+
+    fun isDifferentLatLong(
+        pinpointLat: String,
+        pinpointLong: String
+    ): Boolean {
+        return pinpointLat != saveDataModel?.latitude || pinpointLong != saveDataModel?.longitude
+    }
+
+    fun isDifferentDistrictId(
+        pinpointDistrictId: Long
+    ): Boolean {
+        return pinpointDistrictId != saveDataModel?.districtId
+    }
 }

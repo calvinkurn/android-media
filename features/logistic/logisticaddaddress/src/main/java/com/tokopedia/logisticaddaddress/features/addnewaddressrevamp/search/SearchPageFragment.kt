@@ -39,14 +39,12 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.domain.model.Place
 import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_DISTRICT_ID
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_PINPOINT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POLYGON
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_KOTA_KECAMATAN
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LAT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LONG
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_UI_MODEL
@@ -146,23 +144,15 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_PINPOINT_PAGE) {
-                val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
-                var newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
-                if (newAddress == null) {
-                    newAddress = data?.getParcelableExtra(EXTRA_SAVE_DATA_UI_MODEL)
+            when (requestCode) {
+                REQUEST_PINPOINT_PAGE -> {
+                    onResultFromPinpoint(data)
                 }
-                if (isFromAddressForm != null && newAddress != null) {
-                    finishActivity(newAddress, isFromAddressForm)
+                REQUEST_ADDRESS_FORM_PAGE -> {
+                    onResultFromAddressForm(data)
                 }
-            } else if (requestCode == REQUEST_ADDRESS_FORM_PAGE) {
-                val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
-                newAddress?.let { finishActivity(it, false) }
-            } else if (requestCode == GPS_REQUEST) {
-                bottomSheetLocUndefined?.dismiss()
-                if (allPermissionsGranted()) {
-                    binding?.loaderCurrentLocation?.visibility = View.VISIBLE
-                    Handler().postDelayed({ getLocation() }, GPS_DELAY)
+                GPS_REQUEST -> {
+                    onResultFromGpsRequest()
                 }
             }
         } else {
@@ -170,6 +160,30 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             if (requestCode == REQUEST_ADDRESS_FORM_PAGE && !viewModel.isGmsAvailable) {
                 activity?.finish()
             }
+        }
+    }
+
+    private fun onResultFromPinpoint(data: Intent?) {
+        val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
+        var newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
+        if (newAddress == null) {
+            newAddress = data?.getParcelableExtra(EXTRA_SAVE_DATA_UI_MODEL)
+        }
+        if (isFromAddressForm != null && newAddress != null) {
+            finishActivity(newAddress, isFromAddressForm)
+        }
+    }
+
+    private fun onResultFromAddressForm(data: Intent?) {
+        val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
+        newAddress?.let { finishActivity(it, false) }
+    }
+
+    private fun onResultFromGpsRequest() {
+        bottomSheetLocUndefined?.dismiss()
+        if (allPermissionsGranted()) {
+            binding?.loaderCurrentLocation?.visibility = View.VISIBLE
+            Handler().postDelayed({ getLocation() }, GPS_DELAY)
         }
     }
 
@@ -599,12 +613,10 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         fun newInstance(bundle: Bundle): SearchPageFragment {
             return SearchPageFragment().apply {
                 arguments = Bundle().apply {
-                    putString(EXTRA_KOTA_KECAMATAN, bundle.getString(EXTRA_KOTA_KECAMATAN))
                     putParcelable(EXTRA_SAVE_DATA_UI_MODEL, bundle.getParcelable(EXTRA_SAVE_DATA_UI_MODEL))
                     putBoolean(EXTRA_IS_POSITIVE_FLOW, bundle.getBoolean(EXTRA_IS_POSITIVE_FLOW))
                     putBoolean(EXTRA_FROM_PINPOINT, bundle.getBoolean(EXTRA_FROM_PINPOINT))
                     putBoolean(EXTRA_IS_POLYGON, bundle.getBoolean(EXTRA_IS_POLYGON))
-                    putLong(EXTRA_DISTRICT_ID, bundle.getLong(EXTRA_DISTRICT_ID))
                     putBoolean(EXTRA_IS_EDIT, bundle.getBoolean(EXTRA_IS_EDIT))
                     putString(PARAM_SOURCE, bundle.getString(PARAM_SOURCE, ""))
                 }

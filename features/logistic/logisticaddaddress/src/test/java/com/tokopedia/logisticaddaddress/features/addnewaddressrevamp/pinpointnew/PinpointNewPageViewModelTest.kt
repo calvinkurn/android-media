@@ -146,7 +146,6 @@ class PinpointNewPageViewModelTest {
         val longitude = 1.0
         val addressData = spyk(SaveAddressDataModel())
         val isPositiveFlow = true
-        val districtId = 1L
         val isPolygon = false
         val isFromAddressForm = false
         val isEdit = false
@@ -159,7 +158,6 @@ class PinpointNewPageViewModelTest {
             longitude,
             addressData,
             isPositiveFlow,
-            districtId,
             isPolygon,
             isFromAddressForm,
             isEdit,
@@ -172,7 +170,6 @@ class PinpointNewPageViewModelTest {
             Assert.assertNotEquals(this.getAddress().latitude, latitude.toString())
             Assert.assertNotEquals(this.getAddress().longitude, longitude.toString())
             Assert.assertEquals(this.isPositiveFlow, isPositiveFlow)
-            Assert.assertEquals(this.getAddress().districtId, districtId)
             Assert.assertEquals(this.isPolygon, isPolygon)
             Assert.assertEquals(this.isFromAddressForm, isFromAddressForm)
             Assert.assertEquals(this.isEdit, isEdit)
@@ -187,7 +184,6 @@ class PinpointNewPageViewModelTest {
         val latitude = 1.0
         val longitude = 1.0
         val isPositiveFlow = true
-        val districtId = 1L
         val isPolygon = false
         val isFromAddressForm = false
         val isEdit = false
@@ -200,7 +196,6 @@ class PinpointNewPageViewModelTest {
             longitude,
             null,
             isPositiveFlow,
-            districtId,
             isPolygon,
             isFromAddressForm,
             isEdit,
@@ -213,7 +208,6 @@ class PinpointNewPageViewModelTest {
             Assert.assertEquals(this.getAddress().latitude, latitude.toString())
             Assert.assertEquals(this.getAddress().longitude, longitude.toString())
             Assert.assertEquals(this.isPositiveFlow, isPositiveFlow)
-            Assert.assertEquals(this.getAddress().districtId, districtId)
             Assert.assertEquals(this.isPolygon, isPolygon)
             Assert.assertEquals(this.isFromAddressForm, isFromAddressForm)
             Assert.assertEquals(this.isEdit, isEdit)

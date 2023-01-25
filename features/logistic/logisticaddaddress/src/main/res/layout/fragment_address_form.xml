@@ -1,60 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_Background"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:background="@color/Unify_Background">
 
     <ScrollView
         android:id="@+id/sv_add_address"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:isScrollContainer="false"
         android:background="@color/Unify_Background"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:isScrollContainer="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
             android:layout_marginTop="16dp"
-            android:paddingBottom="16dp"
-            android:orientation="vertical">
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
 
-            <include
-                android:id="@+id/card_address_pinpoint"
-                layout="@layout/card_address_new_loc"
-                android:visibility="visible"/>
+            <com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.widget.CardAddressPinpointWidget
+                android:id="@+id/card_address_pinpoint_widget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-            <include
-                android:id="@+id/form_address"
+            <com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.widget.FormAddressPositiveWidget
+                android:id="@+id/form_address_positive_widget"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="16dp"
-                layout="@layout/form_address_new_alamat"
-                android:visibility="visible"/>
+                android:layout_marginTop="16dp" />
 
-            <include
-                android:id="@+id/form_account"
+            <com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.widget.FormAccountWidget
+                android:id="@+id/form_account_widget"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="16dp"
-                layout="@layout/form_address_new_akun" />
+                android:layout_marginTop="16dp" />
 
-            <include
-                android:id="@+id/form_address_negative"
+            <com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.widget.FormAddressNegativeWidget
+                android:id="@+id/form_address_negative_widget"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
                 android:layout_marginTop="16dp"
-                layout="@layout/form_address_new_alamat_negative"
                 android:visibility="gone"/>
 
-            <include
-                android:id="@+id/card_address_negative"
-                layout="@layout/card_address_new_loc_negative"
+            <com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.widget.CardAddressNegativeWidget
+                android:id="@+id/card_address_negative_widget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:visibility="gone"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -67,9 +64,9 @@
                     android:id="@+id/cb_default_loc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="@id/address_district"
                     app:layout_constraintBottom_toBottomOf="@id/address_district"
-                    app:layout_constraintStart_toStartOf="parent"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/address_district" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/address_district"
@@ -77,15 +74,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
                     android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="@string/cb_jadikan_alamat_utama"
                     android:textColor="@color/Unify_N700_96"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/cb_default_loc"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:typographyType="body_1"
-                    android:text="@string/cb_jadikan_alamat_utama"/>
+                    app:layout_constraintStart_toEndOf="@id/cb_default_loc"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="body_1" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -93,9 +90,9 @@
                 android:id="@+id/user_consent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:typographyType="body_3"
-                android:textColor="@color/Unify_N700_68"
                 android:textAlignment="center"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="body_3"
                 tools:text="Dengan klik Simpan, kamu menyetujui kebijakan privasi dan syarat dan ketentuan." />
 
             <com.tokopedia.unifycomponents.UnifyButton
@@ -104,11 +101,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                app:unifyButtonVariant="filled"
-                app:unifyButtonType="main"
-                android:textStyle="bold"
                 android:text="@string/btn_simpan"
-                android:textAlignment="center"/>
+                android:textAlignment="center"
+                android:textStyle="bold"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="filled" />
 
         </LinearLayout>
 
@@ -119,10 +116,10 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:visibility="gone"
-        tools:visibility="visible"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
