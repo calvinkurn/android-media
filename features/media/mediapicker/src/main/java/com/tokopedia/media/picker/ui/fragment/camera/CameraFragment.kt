@@ -32,6 +32,7 @@ import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnCameraCapturePublished
 import com.tokopedia.media.picker.ui.widget.LoaderDialogWidget
 import com.tokopedia.media.picker.utils.exceptionHandler
+import com.tokopedia.media.picker.utils.generateKey
 import com.tokopedia.media.picker.utils.wrapper.FlingGestureWrapper
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.uimodel.MediaUiModel
@@ -319,7 +320,7 @@ open class CameraFragment @Inject constructor(
 
     private fun onShowMediaThumbnail(element: MediaUiModel?) {
         if (element == null) return
-        stateOnCameraCapturePublished(element)
+        stateOnCameraCapturePublished(element, param.get().generateKey())
     }
 
     private fun setCameraFlashState() {

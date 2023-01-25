@@ -32,6 +32,7 @@ import com.tokopedia.media.picker.ui.observer.stateOnRemovePublished
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
 import com.tokopedia.media.picker.utils.exceptionHandler
+import com.tokopedia.media.picker.utils.generateKey
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
@@ -118,9 +119,9 @@ open class GalleryFragment @Inject constructor(
         if (!param.get().isMultipleSelectionType()) return
 
         when (action) {
-            is DrawerActionType.Add -> stateOnAddPublished(action.media)
-            is DrawerActionType.Remove -> stateOnRemovePublished(action.mediaToRemove)
-            is DrawerActionType.Reorder -> stateOnChangePublished(action.data)
+            is DrawerActionType.Add -> stateOnAddPublished(action.media, param.get().generateKey())
+            is DrawerActionType.Remove -> stateOnRemovePublished(action.mediaToRemove, param.get().generateKey())
+            is DrawerActionType.Reorder -> stateOnChangePublished(action.data, param.get().generateKey())
         }
     }
 
@@ -267,10 +268,10 @@ open class GalleryFragment @Inject constructor(
 
         // publish the state and send tracking
         if (!isSelected) {
-            stateOnAddPublished(media)
+            stateOnAddPublished(media, param.get().generateKey())
             galleryAnalytics.selectGalleryItem()
         } else {
-            stateOnRemovePublished(media)
+            stateOnRemovePublished(media, param.get().generateKey())
         }
 
         return true

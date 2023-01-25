@@ -26,6 +26,7 @@ import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
 import com.tokopedia.media.picker.utils.isOppoManufacturer
 import com.tokopedia.media.picker.ui.observer.stateOnRemovePublished
+import com.tokopedia.media.picker.utils.generateKey
 import com.tokopedia.media.picker.utils.permission.hasPermissionRequiredGranted
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
 import com.tokopedia.picker.common.*
@@ -120,12 +121,12 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
     override fun onPause() {
         super.onPause()
-        EventFlowFactory.dispose()
+        EventFlowFactory.dispose(param.get().generateKey())
     }
 
-    override fun onStop() {
-        super.onStop()
-        EventFlowFactory.reset()
+    override fun onDestroy() {
+        super.onDestroy()
+        EventFlowFactory.reset(param.get().generateKey())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -134,7 +135,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         // get data from preview if user had an updated the media elements
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_PREVIEW_PAGE && data != null) {
             data.getParcelableArrayListExtra<MediaUiModel>(RESULT_INTENT_PREVIEW)?.toList()?.let {
-                stateOnChangePublished(it)
+                stateOnChangePublished(it, param.get().generateKey())
             }
 
             // exit picker
@@ -169,7 +170,9 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     private fun setupParam() {
         val mParam = intent?.getParcelableExtra<PickerParam>(EXTRA_PICKER_PARAM)
 
-        if (mParam?.pageSourceName()?.isNotEmpty() == true && mParam.subPageSourceName().isEmpty()) {
+        if (mParam?.pageSourceName()?.isNotEmpty() == true && mParam.subPageSourceName()
+                .isEmpty()
+        ) {
             param.disposeSubPicker()
         }
 
@@ -183,7 +186,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             // restore the last media selection to the drawer
             it.getParcelableArrayList<MediaUiModel>(LAST_MEDIA_SELECTION)
                 ?.let { elements ->
-                    stateOnChangePublished(elements)
+                    stateOnChangePublished(elements, param.get().generateKey())
                 }
         }
     }
@@ -251,7 +254,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
                 mPickerFile?.toUiModel()
             }
 
-            stateOnChangePublished(fileToUiModel)
+            stateOnChangePublished(fileToUiModel, param.get().generateKey())
         }
     }
 
@@ -288,7 +291,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
     private fun onRemoveSubSourceMedia() {
         if (param.get().subPageSourceName().isNotEmpty() && medias.isNotEmpty()) {
-            stateOnRemovePublished(medias.last())
+            stateOnRemovePublished(medias.last(), param.get().generateKey())
         }
     }
 

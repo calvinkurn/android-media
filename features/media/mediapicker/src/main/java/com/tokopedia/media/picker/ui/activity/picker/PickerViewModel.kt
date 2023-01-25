@@ -7,13 +7,16 @@ import com.tokopedia.media.picker.data.mapper.mediaToUiModel
 import com.tokopedia.media.picker.data.repository.BitmapConverterRepository
 import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
 import com.tokopedia.media.picker.data.repository.MediaRepository
+import com.tokopedia.media.picker.utils.generateKey
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.observer.EventFlowFactory
+import com.tokopedia.picker.common.observer.EventState
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.utils.isUrl
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,7 +29,7 @@ class PickerViewModel @Inject constructor(
     private val param: PickerCacheManager,
     private val featureToggle: FeatureToggleManager,
     private val dispatchers: CoroutineDispatchers
-): ViewModel() {
+) : ViewModel() {
 
     private var _medias = MediatorLiveData<List<MediaUiModel>>()
     val medias: LiveData<List<MediaUiModel>> get() = _medias
@@ -40,9 +43,12 @@ class PickerViewModel @Inject constructor(
     private var _editorParam = MutableLiveData<Pair<PickerResult, EditorParam>>()
     val editorParam: LiveData<Pair<PickerResult, EditorParam>> get() = _editorParam
 
-    val uiEvent = EventFlowFactory
-        .subscriber(viewModelScope)
-        .flowOn(dispatchers.computation)
+    val uiEvent: Flow<EventState>
+        get() {
+            return EventFlowFactory
+                .subscriber(viewModelScope, pickerParam.value?.generateKey() ?: "")
+                .flowOn(dispatchers.computation)
+        }
 
     fun navigateToEditorPage(result: PickerResult) {
         viewModelScope.launch {
