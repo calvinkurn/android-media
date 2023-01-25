@@ -322,8 +322,9 @@ class AddBankFragment : BaseDaggerFragment() {
         add_account_button.isEnabled = true
         groupAccountNameAuto.gone()
         textAreaBankAccountHolderName.visible()
+        textAreaBankAccountHolderName.editText.isEnabled = true
         if (data.accountName.isNotEmpty())
-            textAreaBankAccountHolderName.editText.setTextWithMaximumOf20(data.accountName)
+            textAreaBankAccountHolderName.editText.setText(data.accountName)
 
         showManualAccountNameError(data.message)
     }
@@ -335,13 +336,15 @@ class AddBankFragment : BaseDaggerFragment() {
         } else {
             groupAccountNameAuto.gone()
             textAreaBankAccountHolderName.visible()
-            textAreaBankAccountHolderName.editText.setTextWithMaximumOf20(data.accountName)
-            showManualAccountNameError(data.message)
+            textAreaBankAccountHolderName.editText.setText(
+                if (data.successCode == SUCCESS_CODE_428) "" else data.accountName
+            )
+            textAreaBankAccountHolderName.editText.isEnabled = data.successCode == SUCCESS_CODE_428
+            showManualAccountNameError(
+                data.message,
+                if (data.successCode == SUCCESS_CODE_428) false else null,
+            )
         }
-    }
-
-    private fun TextView.setTextWithMaximumOf20(str: String) {
-        text = str.substring(min(MAX_AUTO_FILL_ACCOUNT_HOLDER_NAME, str.length))
     }
 
     private fun checkAccountNumber() {
@@ -365,14 +368,14 @@ class AddBankFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showManualAccountNameError(errorStr: String?) {
+    private fun showManualAccountNameError(errorStr: String?, isInputError: Boolean? = null) {
         textAreaBankAccountHolderName.setMessage(
             if (errorStr != null && errorStr.isNotEmpty())
                 errorStr
             else
                 getString(R.string.account_name_info)
         )
-        textAreaBankAccountHolderName.isInputError = errorStr?.isNotEmpty() ?: false
+        textAreaBankAccountHolderName.isInputError = isInputError ?: errorStr?.isNotEmpty() ?: false
     }
 
     private fun onValidateAccountNumber(onTextChanged: ValidateAccountNumberSuccess) {
@@ -565,7 +568,7 @@ class AddBankFragment : BaseDaggerFragment() {
         private const val BANK_ACC_START_IDX = 3
         private const val BANK_ACC_LAST_IDX = 50
         private const val TEXT_PERIKSA_MARGIN_OFFSET_DP = 5
-        private const val MAX_AUTO_FILL_ACCOUNT_HOLDER_NAME = 20
+        private const val SUCCESS_CODE_428 = 428
     }
 
     private fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {

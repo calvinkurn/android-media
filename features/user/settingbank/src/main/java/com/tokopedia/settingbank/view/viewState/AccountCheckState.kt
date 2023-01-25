@@ -4,8 +4,12 @@ sealed class CheckAccountNameState
 data class EditableAccountName(val accountName: String,
                                val isValidBankAccount : Boolean,
                                 val message : String?) : CheckAccountNameState()
-data class AccountNameCheckError(val accountName: String,
-                                    val message : String?) : CheckAccountNameState()
+data class AccountNameCheckError(
+    val accountName: String,
+    val message : String?,
+    val successCode: Int,
+) : CheckAccountNameState()
+
 data class AccountNameFinalValidationSuccess(val accountHolderName : String,
                                              val checkAccountAction: CheckAccountAction) : CheckAccountNameState()
 

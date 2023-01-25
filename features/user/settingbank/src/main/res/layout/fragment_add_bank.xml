@@ -131,24 +131,12 @@
 
     </com.tokopedia.unifycomponents.CardUnify2>
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvAccountHolderNameInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/Unify_NN600"
-        android:layout_marginTop="8dp"
-        android:text="@string/account_name_info"
-        app:typographyType="display_3"
-        app:layout_constraintTop_toBottomOf="@id/accountHolderNameCard"
-        app:layout_constraintStart_toStartOf="@id/guidelineStart"
-        tools:text="@string/account_name_info" />
-
     <androidx.constraintlayout.widget.Group
         android:id="@+id/groupAccountNameAuto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="accountHolderNameCard, tvAccountHolderNameInfo" />
+        app:constraint_referenced_ids="accountHolderNameCard" />
 
     <View
         android:id="@+id/view_btn_top_shadow"
