@@ -66,6 +66,7 @@ import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
 import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.mvc.util.constant.VoucherTargetConstant.VOUCHER_TARGET_PUBLIC
+import com.tokopedia.mvc.util.tracker.ShareBottomSheetTracker
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.constants.BroadcastChannelType
@@ -125,6 +126,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     lateinit var shareCopyWritingGenerator: ShareCopyWritingGenerator
 
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+
+    @Inject
+    lateinit var tracker: ShareBottomSheetTracker
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(VoucherDetailViewModel::class.java) }
@@ -842,6 +846,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     description,
                     shareComponentParam.shopDomain
                 )
+
+                tracker.sendClickShareToSocialMediaEvent(shareModel.socialMediaName.orEmpty())
             },
             onBottomSheetClosed = {}
         )
@@ -908,6 +914,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         if (!isVisible) return
 
         val bottomSheet = DownloadVoucherImageBottomSheet.newInstance(
+            voucherId,
             voucherDetail.voucherImage,
             voucherDetail.voucherImageSquare,
             voucherDetail.voucherImagePortrait

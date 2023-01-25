@@ -29,12 +29,10 @@ class DownloadVoucherImageViewModel @Inject constructor(
 
     fun processEvent(event: VoucherImageEvent) {
         when(event) {
-            is VoucherImageEvent.PopulateInitialData -> handlePopulateInitialData(event.voucherImages)
+            is VoucherImageEvent.PopulateInitialData -> handlePopulateInitialData(event.voucherId, event.voucherImages)
             is VoucherImageEvent.AddImageToSelection -> handleAddImageUrlToSelection(event.imageUrl)
             is VoucherImageEvent.RemoveImageFromSelection -> handleRemoveImageUrlFromSelection(event.imageUrl)
-            VoucherImageEvent.TapDownloadButton -> {
-                _uiEffect.tryEmit(VoucherImageEffect.DownloadImages(currentState.selectedImageUrls))
-            }
+            VoucherImageEvent.TapDownloadButton -> handleTapDownloadButton()
             is VoucherImageEvent.TapDropdownIcon -> handleTapDropdown(event.imageUrl)
         }
     }
@@ -77,9 +75,13 @@ class DownloadVoucherImageViewModel @Inject constructor(
         }
     }
 
-    private fun handlePopulateInitialData(voucherImages: List<VoucherImageUiModel>, ) {
+    private fun handlePopulateInitialData(
+        voucherId: Long,
+        voucherImages: List<VoucherImageUiModel>,
+    ) {
         _uiState.update {
             it.copy(
+                voucherId = voucherId,
                 voucherImages = voucherImages,
                 selectedImageUrls = voucherImages.selectedImagesOnly()
             )
@@ -122,7 +124,17 @@ class DownloadVoucherImageViewModel @Inject constructor(
 
     }
 
-    private fun List<VoucherImageUiModel>.selectedImagesOnly(): Set<String> {
-       return filter { it.isSelected }.map { it.imageUrl }.toSet()
+    private fun handleTapDownloadButton() {
+        _uiEffect.tryEmit(
+            VoucherImageEffect.DownloadImages(
+                currentState.voucherId,
+                currentState.selectedImageUrls.selectedImagesOnly()
+            )
+        )
     }
+
+    private fun List<VoucherImageUiModel>.selectedImagesOnly(): List<VoucherImageUiModel> {
+        return filter { it.isSelected }
+    }
+
 }
