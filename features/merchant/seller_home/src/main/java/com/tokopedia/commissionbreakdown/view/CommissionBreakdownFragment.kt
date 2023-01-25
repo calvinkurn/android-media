@@ -49,8 +49,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-
-class CommissionBreakdownFragment : BaseDaggerFragment(),
+class CommissionBreakdownFragment :
+    BaseDaggerFragment(),
     CommissionBreakdownDateRangePickerBottomSheet.OnDateRangeSelectListener {
 
     companion object {
@@ -136,26 +136,36 @@ class CommissionBreakdownFragment : BaseDaggerFragment(),
     }
 
     private fun showSuccessToaster() {
-        Toaster.toasterCustomBottomHeight = requireContext().dpToPx(TOASTER_BOTTOM_MARGIN).toInt()
-        Toaster.build(
-            requireView(),
-            getString(R.string.sah_commission_download_complete_message),
-            Snackbar.LENGTH_SHORT,
-            Toaster.TYPE_NORMAL
-        ).show()
+        context?.let {
+            Toaster.toasterCustomBottomHeight =
+                it.dpToPx(TOASTER_BOTTOM_MARGIN).toInt()
+            view?.let { view ->
+                Toaster.build(
+                    view,
+                    getString(R.string.sah_commission_download_complete_message),
+                    Snackbar.LENGTH_SHORT,
+                    Toaster.TYPE_NORMAL
+                ).show()
+            }
+        }
     }
 
     private fun showErrorToaster(message: String) {
-        Toaster.toasterCustomBottomHeight = requireContext().dpToPx(TOASTER_BOTTOM_MARGIN).toInt()
-        Toaster.build(
-            requireView(),
-            message,
-            Snackbar.LENGTH_SHORT,
-            Toaster.TYPE_ERROR,
-            getString(R.string.trx_refresh)
-        ) {
-            openWebView()
-        }.show()
+        context?.let {
+            Toaster.toasterCustomBottomHeight =
+                it.dpToPx(TOASTER_BOTTOM_MARGIN).toInt()
+            view?.let { view ->
+                Toaster.build(
+                    view,
+                    message,
+                    Snackbar.LENGTH_SHORT,
+                    Toaster.TYPE_ERROR,
+                    getString(R.string.trx_refresh)
+                ) {
+                    openWebView()
+                }.show()
+            }
+        }
     }
 
     private fun initView() {
@@ -207,7 +217,8 @@ class CommissionBreakdownFragment : BaseDaggerFragment(),
                     override fun onPermissionGranted() {
                         onGranted()
                     }
-                })
+                }
+            )
         } else {
             onGranted()
         }
@@ -223,7 +234,8 @@ class CommissionBreakdownFragment : BaseDaggerFragment(),
             val authorization = String.format(FORMAT_AUTHORIZATION, userSession.accessToken)
             settings.javaScriptEnabled = true
             webViewClient = CommissionWebViewClient.getWebViewClient(
-                authorization, ::setOnDownloadError
+                authorization,
+                ::setOnDownloadError
             )
             setDownloadListener { url, _, _, _, _ ->
                 try {

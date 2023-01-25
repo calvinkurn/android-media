@@ -1,20 +1,14 @@
 package com.tokopedia.shop.open.presentation.view.fragment
 
 import android.content.Context
-import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,7 +22,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainSuggestionResult
 import com.tokopedia.shop.open.R
@@ -51,6 +44,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.text.style.UserConsentTncPolicyUtil
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -72,6 +66,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     private lateinit var txtInputShopName: TextFieldUnify
     private lateinit var txtInputDomainName: TextFieldUnify
     private lateinit var txtTermsAndConditions: TextView
+    private lateinit var layoutTncPolicy: LinearLayout
     private lateinit var btnShopRegistration: UnifyButton
     private var recyclerView: RecyclerView? = null
     private var layoutManager: LinearLayoutManager? = null
@@ -87,11 +82,6 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     companion object {
         const val FIRST_FRAGMENT_TAG = "first"
         const val DEFAULT_SELECTED_POSITION = -1
-        const val ZERO_SPAN_SIZE = 0
-        const val TWENTY_SPAN_SIZE = 20
-        const val TWENTY_ONE_SPAN_SIZE = 21
-        const val TWENTY_FOUR_SPAN_SIZE = 24
-        const val TWENTY_FIVE_SPAN_SIZE = 25
         const val MINIMUM_SHOP_LENGTH = 3
     }
 
@@ -104,6 +94,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         val view = inflater.inflate(R.layout.fragment_shop_open_revamp_input_shop, container, false)
         setupToolbarActions(view)
         txtTermsAndConditions = view.findViewById(R.id.txt_shop_open_revamp_tnc)
+        layoutTncPolicy = view.findViewById(R.id.layout_tnc)
         txtInputShopName = view.findViewById(R.id.text_input_shop_open_revamp_shop_name)
         txtInputDomainName = view.findViewById(R.id.text_input_shop_open_revamp_domain_name)
         btnShopRegistration = view.findViewById(R.id.shop_registration_button)
@@ -475,45 +466,27 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     }
 
     private fun setupTncShopOpenRevamp() {
-        val textTnc = SpannableString(getString(R.string.open_shop_revamp_tnc_open_shop))
-        val tncClickableSpan = setupClickableSpan(URL_TNC, getString(R.string.open_shop_revamp_tnc_webview_title))
-        val tncUnclickableAreaSpan = setupClickableSpan("", getString(R.string.open_shop_revamp_tnc_unclickable))
-        val privacyPolicyClickableSpan = setupClickableSpan(URL_PRIVACY_POLICY, getString(R.string.open_shop_revamp_tnc_privacy_policy_webview_title))
-
-        textTnc.setSpan(tncClickableSpan, ZERO_SPAN_SIZE, TWENTY_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(StyleSpan(Typeface.BOLD), ZERO_SPAN_SIZE, TWENTY_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(ForegroundColorSpan(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)), ZERO_SPAN_SIZE, TWENTY_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-        textTnc.setSpan(tncUnclickableAreaSpan, TWENTY_ONE_SPAN_SIZE, TWENTY_FOUR_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(StyleSpan(Typeface.NORMAL), TWENTY_ONE_SPAN_SIZE, TWENTY_FOUR_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(ForegroundColorSpan(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400)), TWENTY_ONE_SPAN_SIZE, TWENTY_FOUR_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-        textTnc.setSpan(privacyPolicyClickableSpan, TWENTY_FIVE_SPAN_SIZE, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(StyleSpan(Typeface.BOLD), TWENTY_FIVE_SPAN_SIZE, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(ForegroundColorSpan(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)), TWENTY_FIVE_SPAN_SIZE, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-        txtTermsAndConditions.setText(textTnc)
-        txtTermsAndConditions.setMovementMethod(LinkMovementMethod.getInstance())
+        val tncPolicyText = UserConsentTncPolicyUtil.generateText(
+            message = getString(R.string.open_shop_revamp_tnc_open_shop),
+            tncTitle = getString(R.string.open_shop_revamp_tnc_webview_title),
+            policyTitle = getString(R.string.open_shop_revamp_tnc_privacy_policy_webview_title),
+            actionTnc = { onClickUrl(URL_TNC, getString(R.string.open_shop_revamp_tnc_webview_title)) },
+            actionPolicy = { onClickUrl(URL_PRIVACY_POLICY, getString(R.string.open_shop_revamp_tnc_privacy_policy_webview_title))},
+            colorSpan = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        )
+        txtTermsAndConditions.text = tncPolicyText
+        txtTermsAndConditions.movementMethod = LinkMovementMethod.getInstance()
+        layoutTncPolicy.visibility = View.VISIBLE
     }
 
-    private fun setupClickableSpan(url: String, title: String): ClickableSpan {
-        return object : ClickableSpan() {
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.isUnderlineText = false
+    private fun onClickUrl(url: String, title: String) {
+        if (activity != null) {
+            if (url == URL_TNC) {
+                shopOpenRevampTracking?.clickTextTermsAndConditions()
+            } else {
+                shopOpenRevampTracking?.clickTextPrivacyPolicy()
             }
-
-            override fun onClick(textView: View) {
-                if (activity != null) {
-                    if (url == URL_TNC) {
-                        shopOpenRevampTracking?.clickTextTermsAndConditions()
-                    } else {
-                        shopOpenRevampTracking?.clickTextPrivacyPolicy()
-                    }
-                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW_TITLE, title, url)
-                }
-            }
+            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW_TITLE, title, url)
         }
     }
-
 }
