@@ -59,7 +59,7 @@ class ShopHomeNplCampaignViewHolder(
     private val bannerBackground: ShopCarouselBannerImageUnify? = viewBinding?.bannerBackground
     private val timerUnify: TimerUnifySingle? = viewBinding?.nplTimer
     private val timerMoreThanOneDay: Typography? = viewBinding?.textTimerMoreThan1Day
-    private val textDescription: Typography? = viewBinding?.nplTimerDescription
+    private val textTimeDescription: Typography? = viewBinding?.nplTimerDescription
     private val textSeeAll: Typography? = viewBinding?.textSeeAll
     private val loaderRemindMe: LoaderUnify? = viewBinding?.loaderRemindMe
     private val nplReminderView: CardUnify2? = viewBinding?.nplReminderView
@@ -318,7 +318,8 @@ class ShopHomeNplCampaignViewHolder(
         if (!isStatusCampaignFinished(statusCampaign) && statusCampaign.isNotEmpty()) {
             val timeDescription = model.data?.firstOrNull()?.timeDescription ?: ""
             val timeCounter = model.data?.firstOrNull()?.timeCounter ?: ""
-            textDescription?.text = timeDescription
+            textTimeDescription?.text = timeDescription
+            textTimeDescription?.show()
             val days = model.data?.firstOrNull()?.timeCounter?.millisecondsToDays().orZero()
             val dateCampaign = when {
                 isStatusCampaignUpcoming(statusCampaign) -> {
@@ -356,18 +357,8 @@ class ShopHomeNplCampaignViewHolder(
             }
         } else {
             timerUnify?.gone()
-            textDescription?.gone()
+            textTimeDescription?.gone()
             timerMoreThanOneDay?.gone()
-        }
-    }
-
-    private fun setCampaignDescription(description: String, statusCampaign: String) {
-        if (description.isEmpty() || isStatusCampaignFinished(statusCampaign)) {
-            textDescription?.text = ""
-            textDescription?.hide()
-        } else {
-            textDescription?.text = MethodChecker.fromHtml(description)
-            textDescription?.show()
         }
     }
 
@@ -392,12 +383,9 @@ class ShopHomeNplCampaignViewHolder(
 
     private fun setHeader(model: ShopHomeNewProductLaunchCampaignUiModel) {
         val title = model.data?.firstOrNull()?.name.orEmpty()
-        val dynamicRuleDescription = model.data?.firstOrNull()?.dynamicRule?.descriptionHeader.orEmpty()
-        val statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty()
         setTitle(title)
         setTnc(title, model)
         setCta(model)
-        setCampaignDescription(dynamicRuleDescription, statusCampaign)
     }
 
     private fun setTnc(title: String, model: ShopHomeNewProductLaunchCampaignUiModel) {
