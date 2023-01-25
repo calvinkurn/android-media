@@ -1,10 +1,6 @@
 package com.tokopedia.checkout.data.model.response.shipmentaddressform
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellBottomSheet
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellInfoData
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellOrderSummary
 
 /**
  * Created by fwidjaja on 26/10/21.
@@ -19,9 +15,8 @@ data class CrossSellResponse(
         @SerializedName("is_checked")
         val isChecked: Boolean = false,
 
-        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
-        val price: Long = 0,
+        val price: Double = 0.0,
 
         @SerializedName("info")
         val info: CrossSellInfoData = CrossSellInfoData(),

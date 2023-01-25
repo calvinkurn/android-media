@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
+    android:fitsSystemWindows="true"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/hu_category_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        app:unify_header_title="@string/tokopedianow_category_list_bottom_sheet_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_category_menu"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="true"
+        android:paddingBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hu_category_menu"
+        tools:listitem="@layout/item_tokopedianow_see_all_category" />
+
+    <include
+        android:id="@+id/loading_state"
+        layout="@layout/layout_tokopedianow_see_all_category_shimmering"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hu_category_menu"
+        app:loader_type="circular" />
+
+    <include
+        android:id="@+id/empty_state"
+        android:visibility="gone"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/rv_category_menu"
+        app:layout_constraintEnd_toEndOf="@+id/rv_category_menu"
+        app:layout_constraintStart_toStartOf="@+id/rv_category_menu"
+        app:layout_constraintTop_toBottomOf="@+id/hu_category_menu"
+        layout="@layout/layout_tokopedianow_empty_state_recipe_bookmark" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/error_state"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/Unify_Background"
+        android:visibility="gone"
+        android:gravity="center"
+        app:globalerrors_type="SERVER_ERROR"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hu_category_menu" />
+</androidx.constraintlayout.widget.ConstraintLayout>

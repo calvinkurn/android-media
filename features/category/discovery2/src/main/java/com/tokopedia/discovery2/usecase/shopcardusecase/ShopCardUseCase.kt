@@ -31,7 +31,9 @@ class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCa
                             shopLimit,
                             it.nextPageKey,
                             paramWithoutRpc,
-                            it.userAddressData
+                            it.userAddressData,
+                            it.selectedFilters,
+                            it.selectedSort
                     ),
                     pageEndPoint, it.name)
             it.showVerticalLoader = shopCardListData.isNotEmpty()
@@ -57,7 +59,9 @@ class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCa
                             shopLimit,
                             it.nextPageKey,
                             paramWithoutRpc,
-                            it.userAddressData),
+                            it.userAddressData,
+                            it.selectedFilters,
+                            it.selectedSort),
                     pageEndPoint,
                     it.name)
             component.nextPageKey = nextPage
@@ -82,7 +86,9 @@ class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCa
                             shopLimit,
                             component1.nextPageKey,
                             paramWithoutRpc,
-                            component1.userAddressData),
+                            component1.userAddressData,
+                            component1.selectedFilters,
+                            component1.selectedSort),
                     pageEndPoint,
                     component1.name)
             component1.nextPageKey = nextPage
@@ -91,7 +97,7 @@ class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCa
             } else {
                 component1.pageLoadedCounter += 1
                 component1.showVerticalLoader = true
-                updatePaginatedData(shopCardListData,component1)
+                updatePaginatedData(shopCardListData, component1)
                 (component1.getComponentsItem() as ArrayList<ComponentsItem>).addAll(shopCardListData)
             }
             component1.verticalProductFailState = false
@@ -104,7 +110,9 @@ class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCa
                                      shopPerPage: Int,
                                      nextPageKey: String?,
                                      queryParameterMapWithoutRpc: Map<String, String>?,
-                                     userAddressData: LocalCacheModel?): MutableMap<String, Any> {
+                                     userAddressData: LocalCacheModel?,
+                                     selectedFilters: HashMap<String, String>?,
+                                     selectedSort: HashMap<String, String>?): MutableMap<String, Any> {
 
         val queryParameterMap = mutableMapOf<String, Any>()
 
@@ -115,12 +123,23 @@ class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCa
             queryParameterMap.putAll(it)
         }
 
+        selectedFilters?.let {
+            for (map in it) {
+                queryParameterMap[Utils.RPC_FILTER_KEY + map.key] = map.value
+            }
+        }
+        selectedSort?.let {
+            for (map in it) {
+                queryParameterMap[Utils.RPC_FILTER_KEY + map.key] = map.value
+            }
+        }
+
         queryParameterMap.putAll(addAddressQueryMapWithWareHouse(userAddressData))
 
         return queryParameterMap
     }
 
-    private fun updatePaginatedData(shopListData:ArrayList<ComponentsItem>,parentComponentsItem: ComponentsItem){
+    private fun updatePaginatedData(shopListData: ArrayList<ComponentsItem>, parentComponentsItem: ComponentsItem) {
         shopListData.forEach {
             it.parentComponentId = parentComponentsItem.id
             it.pageEndPoint = parentComponentsItem.pageEndPoint

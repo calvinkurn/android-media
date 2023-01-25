@@ -598,7 +598,6 @@ open class TopChatRoomActivity :
 
     companion object {
         const val SOURCE_ASK_BUYER = "tx_ask_buyer"
-        val REQUEST_ATTACH_IMAGE = 2325
         val LABEL_USER = "Pengguna"
         val LABEL_SELLER = "Penjual"
         val ROLE_SELLER = "shop"

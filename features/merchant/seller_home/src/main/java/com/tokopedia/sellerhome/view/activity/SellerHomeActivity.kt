@@ -170,7 +170,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         super.onResume()
         homeViewModel.getNotifications()
         homeViewModel.getAdminInfo()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 && remoteConfig.isWatchAppCheckingEnabled()) {
             homeViewModel.checkIfWearHasCompanionApp()
         }
 
@@ -391,13 +391,16 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             userSession,
             navigationHomeMenuView
         )
-        setNavigationOtherMenuView()
+        setNavigationView()
     }
 
-    private fun setNavigationOtherMenuView() {
-        val navigationOtherMenuView =
-            binding?.sahBottomNav?.getMenuViewByIndex(NAVIGATION_OTHER_MENU_POSITION)
-        navigator?.getHomeFragment()?.setNavigationOtherMenuView(navigationOtherMenuView)
+    private fun setNavigationView() {
+        val navigationOtherMenuView = binding
+            ?.sahBottomNav?.getMenuViewByIndex(NAVIGATION_OTHER_MENU_POSITION)
+        navigator?.getHomeFragment()?.setNavigationNavigationView(
+            navigationView = binding?.sahBottomNav,
+            otherMenuView = navigationOtherMenuView
+        )
     }
 
     private fun setupShadow() {
