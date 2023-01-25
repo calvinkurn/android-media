@@ -20,4 +20,11 @@ object VideoModule {
     ): VideoPlayerAutoplay {
         return VideoPlayerAutoplay(remoteConfig, context)
     }
+
+    @JvmStatic
+    @Provides
+    @SearchScope
+    fun provideVideoSneakpeekPreference(
+        preferenceImpl: VideoSneakpeekPreferenceImpl,
+    ): VideoSneakpeekPreference = preferenceImpl
 }

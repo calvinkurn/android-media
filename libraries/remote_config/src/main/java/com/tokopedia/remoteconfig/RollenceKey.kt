@@ -50,14 +50,6 @@ object RollenceKey {
     const val WISHLIST_COLLECTION_SHARING = "WL_sharing_andro"
     const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
 
-    // SRP Video Sneak Peek Autoplay
-    const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY = "srp_prodvideo_3"
-    const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_VARIANT = "experiment_variant"
-
-    // Typo Correction
-    const val SEARCH_TYPO_CORRECTION_ADS = "typo_correction_ads2"
-    const val SEARCH_TYPO_CORRECTION_ADS_VARIANT = "typo2"
-
     // Global Menu (Me Page)
     const val ME_PAGE_EXP = "mepage_secondexp"
     const val ME_PAGE_CONTROL = "control_variant"

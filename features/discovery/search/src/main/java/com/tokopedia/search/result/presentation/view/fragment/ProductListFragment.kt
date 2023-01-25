@@ -49,7 +49,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_MPC_LIFECYCLE_OBSERVER
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_PRODUCT_CARD_VIEWSTUB
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.ProductClickAnalyticsData
@@ -92,6 +91,7 @@ import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaLi
 import com.tokopedia.search.result.product.suggestion.SuggestionListenerDelegate
 import com.tokopedia.search.result.product.tdn.TopAdsImageViewListenerDelegate
 import com.tokopedia.search.result.product.ticker.TickerListenerDelegate
+import com.tokopedia.search.result.product.video.VideoSneakpeekPreference
 import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.result.product.wishlist.WishlistHelper
@@ -208,6 +208,10 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject
     lateinit var bottomSheetFilterViewDelegate: BottomSheetFilterViewDelegate
 
+    @Suppress("LateinitUsage")
+    @Inject
+    lateinit var videoSneakpeekPreference: VideoSneakpeekPreference
+
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var searchNavigationListener: SearchNavigationListener? = null
@@ -222,19 +226,7 @@ class ProductListFragment: BaseDaggerFragment(),
         private set
 
     private val isSneakPeekEnabled: Boolean by lazy {
-        getABTestVideoSneakPeek()
-    }
-
-    private fun getABTestVideoSneakPeek(): Boolean {
-        return try {
-            val abTestVideoSneakPeekAutoPlay = abTestRemoteConfig?.getString(
-                RollenceKey.SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY,
-                ""
-            )
-            RollenceKey.SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_VARIANT == abTestVideoSneakPeekAutoPlay
-        } catch (e: Exception) {
-            false
-        }
+        videoSneakpeekPreference.isSneakPeekEnabled
     }
 
     private lateinit var videoCarouselWidgetCoordinator : VideoCarouselWidgetCoordinator
