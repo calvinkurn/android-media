@@ -342,7 +342,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onTitleClicked(homeNavTitleDataModel: HomeNavTitleDataModel) {
         when (homeNavTitleDataModel.identifier) {
-            ClientMenuGenerator.IDENTIFIER_TITLE_ORDER_HISTORY -> sendTrackingAllTransaction()
+            ClientMenuGenerator.IDENTIFIER_TITLE_ORDER_HISTORY -> TrackingTransactionSection.getClickViewAllTransaction()
             ClientMenuGenerator.IDENTIFIER_TITLE_WISHLIST -> TrackingTransactionSection.clickOnWishlistViewAll()
             ClientMenuGenerator.IDENTIFIER_TITLE_FAVORITE_SHOP -> TrackingTransactionSection.clickOnFavoriteShopViewAll()
             ClientMenuGenerator.IDENTIFIER_TITLE_REVIEW -> TrackingTransactionSection.clickOnReviewViewAll()
