@@ -16,7 +16,7 @@ import com.tokopedia.review.feature.bulk_write_review.presentation.adapter.viewh
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewMiniActionsUiState
 import com.tokopedia.review.feature.createreputation.presentation.widget.BaseReviewCustomView
 
-class WidgetBulkReviewMiniActions @JvmOverloads constructor(
+class WidgetBulkReviewMiniActions(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO

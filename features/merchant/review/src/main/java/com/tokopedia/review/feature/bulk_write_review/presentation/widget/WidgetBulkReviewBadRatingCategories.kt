@@ -11,7 +11,7 @@ import com.tokopedia.review.databinding.WidgetBulkReviewBadRatingCategoryBinding
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewBadRatingCategoryUiState
 import com.tokopedia.review.feature.createreputation.presentation.widget.BaseReviewCustomView
 
-class WidgetBulkReviewBadRatingCategories @JvmOverloads constructor(
+class WidgetBulkReviewBadRatingCategories(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO

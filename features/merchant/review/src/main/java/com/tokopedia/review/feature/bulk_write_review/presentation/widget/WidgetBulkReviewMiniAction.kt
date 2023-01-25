@@ -10,7 +10,7 @@ import com.tokopedia.review.databinding.WidgetBulkReviewMiniActionBinding
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewMiniActionUiState
 import com.tokopedia.unifycomponents.BaseCustomView
 
-class WidgetBulkReviewMiniAction @JvmOverloads constructor(
+class WidgetBulkReviewMiniAction(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO

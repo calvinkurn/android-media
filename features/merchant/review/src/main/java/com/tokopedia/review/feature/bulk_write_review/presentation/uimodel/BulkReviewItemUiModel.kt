@@ -1,13 +1,16 @@
 package com.tokopedia.review.feature.bulk_write_review.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.review.feature.bulk_write_review.presentation.adapter.typefactory.BulkReviewAdapterTypeFactory
 import com.tokopedia.review.feature.bulk_write_review.presentation.mapper.BulkReviewRatingUiStateMapper
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewBadRatingCategoryUiState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewItemUiState
+import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewProductInfoUiState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewRatingUiState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewTextAreaUiState
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewMediaPickerUiState
 import com.tokopedia.reviewcommon.uimodel.StringRes
 
@@ -34,7 +37,7 @@ data class BulkReviewItemUiModel(
             uiState.textAreaUiState.areContentsTheSame(other.uiState.textAreaUiState) &&
             uiState.mediaPickerUiState == other.uiState.mediaPickerUiState &&
             uiState.miniActionsUiState == other.uiState.miniActionsUiState &&
-            uiState::class.java == other.uiState::class.java
+            !isOverlayVisibilityChanged(other)
     }
 
     override fun getChangePayload(other: BulkReviewVisitable<BulkReviewAdapterTypeFactory>): Any? {
@@ -52,7 +55,7 @@ data class BulkReviewItemUiModel(
                 if (uiState.miniActionsUiState != other.uiState.miniActionsUiState) {
                     add(ChangePayload.MiniActionsChanged)
                 }
-                if (uiState::class.java != other.uiState::class.java) {
+                if (isOverlayVisibilityChanged(other)) {
                     add(ChangePayload.OverlayVisibilityChanged)
                 }
             }
@@ -74,47 +77,132 @@ data class BulkReviewItemUiModel(
     }
 
     fun getReviewItemProductId(): String {
-        return uiState.getReviewItemProductId()
+        return uiState.productCardUiState.let { productCardUiState ->
+            if (productCardUiState is BulkReviewProductInfoUiState.Showing) {
+                productCardUiState.productID
+            } else {
+                ""
+            }
+        }
     }
 
     fun getReviewItemRating(): Int {
-        return uiState.getReviewItemRating()
+        return uiState.ratingUiState.let { ratingUiState ->
+            if (ratingUiState is BulkReviewRatingUiState.Showing) {
+                ratingUiState.rating
+            } else {
+                Int.ZERO
+            }
+        }
     }
 
     fun isReviewItemHasEmptyReview(): Boolean {
-        return uiState.isReviewItemHasEmptyReview()
+        return uiState.textAreaUiState.let { textAreaUiState ->
+            if (textAreaUiState is BulkReviewTextAreaUiState.Showing) {
+                textAreaUiState.text.isBlank()
+            } else {
+                true
+            }
+        }
     }
 
     fun getReviewItemReviewLength(): Int {
-        return uiState.getReviewItemReviewLength()
+        return uiState.textAreaUiState.let { textAreaUiState ->
+            if (textAreaUiState is BulkReviewTextAreaUiState.Showing) {
+                textAreaUiState.text.length
+            } else {
+                Int.ZERO
+            }
+        }
     }
 
     fun getReviewItemImageAttachmentCount(): Int {
-        return uiState.getReviewItemImageAttachmentCount()
+        return uiState.mediaPickerUiState.let { mediaPickerUiState ->
+            if (mediaPickerUiState is CreateReviewMediaPickerUiState.HasMedia) {
+                mediaPickerUiState.getImageCount()
+            } else {
+                Int.ZERO
+            }
+        }
     }
 
     fun getReviewItemImageAttachmentIds(): List<String> {
-        return uiState.getReviewItemImageAttachmentIds()
+        return uiState.mediaPickerUiState.let { mediaPickerUiState ->
+            if (mediaPickerUiState is CreateReviewMediaPickerUiState.HasMedia) {
+                mediaPickerUiState
+                    .mediaItems
+                    .filterIsInstance<CreateReviewMediaUiModel.Image>()
+                    .map { it.uploadId }
+            } else {
+                emptyList()
+            }
+        }
     }
 
-    fun getReviewItemImageAttachmentPaths(): List<String> {
-        return uiState.getReviewItemImageAttachmentPaths()
+    fun getReviewItemAttachmentPaths(): List<String> {
+        return uiState.mediaPickerUiState.let { mediaPickerUiState ->
+            if (mediaPickerUiState is CreateReviewMediaPickerUiState.HasMedia) {
+                mediaPickerUiState
+                    .mediaItems
+                    .mapNotNull {
+                        if (it is CreateReviewMediaUiModel.Image || it is CreateReviewMediaUiModel.Video) {
+                            it.uri
+                        } else {
+                            null
+                        }
+                    }
+            } else {
+                emptyList()
+            }
+        }
     }
 
     fun getReviewItemVideoAttachmentCount(): Int {
-        return uiState.getReviewItemVideoAttachmentCount()
+        return uiState.mediaPickerUiState.let { mediaPickerUiState ->
+            if (mediaPickerUiState is CreateReviewMediaPickerUiState.HasMedia) {
+                mediaPickerUiState.getVideoCount()
+            } else {
+                Int.ZERO
+            }
+        }
     }
 
     fun getReviewItemTextAreaHint(): StringRes {
-        return uiState.getReviewItemTextAreaHint()
+        return uiState.textAreaUiState.let { textAreaUiState ->
+            if (textAreaUiState is BulkReviewTextAreaUiState.Showing) {
+                textAreaUiState.hint
+            } else {
+                StringRes(Int.ZERO)
+            }
+        }
     }
 
     fun getReviewItemTextAreaText(): String {
-        return uiState.getReviewItemTextAreaText()
+        return uiState.textAreaUiState.let { textAreaUiState ->
+            if (textAreaUiState is BulkReviewTextAreaUiState.Showing) {
+                textAreaUiState.text
+            } else {
+                ""
+            }
+        }
     }
 
     fun getReviewItemSelectedBadRatingCategoryIds(): List<String> {
-        return uiState.getReviewItemSelectedBadRatingCategoryIds()
+        return uiState.badRatingCategoriesUiState.let { badRatingCategoriesUiState ->
+            if (badRatingCategoriesUiState is BulkReviewBadRatingCategoryUiState.Showing) {
+                badRatingCategoriesUiState
+                    .badRatingCategory
+                    .filter { badRatingCategory -> badRatingCategory.selected }
+                    .map { badRatingCategory -> badRatingCategory.id }
+            } else {
+                emptyList()
+            }
+        }
+    }
+
+    private fun isOverlayVisibilityChanged(other: BulkReviewItemUiModel): Boolean {
+        return (uiState is BulkReviewItemUiState.Dimmed && other.uiState !is BulkReviewItemUiState.Dimmed) ||
+            (uiState !is BulkReviewItemUiState.Dimmed && other.uiState is BulkReviewItemUiState.Dimmed)
     }
 
     sealed interface ChangePayload {

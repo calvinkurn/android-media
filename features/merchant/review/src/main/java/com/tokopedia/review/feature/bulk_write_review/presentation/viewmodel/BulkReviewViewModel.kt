@@ -714,7 +714,7 @@ class BulkReviewViewModel @Inject constructor(
     }
 
     fun getReviewItemMedia(inboxID: String): List<String> {
-        return getReviewItem(inboxID)?.getReviewItemImageAttachmentPaths().orEmpty()
+        return getReviewItem(inboxID)?.getReviewItemAttachmentPaths().orEmpty()
     }
 
     fun enqueueToasterDisabledAddMoreMedia() {

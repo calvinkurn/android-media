@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.review.R
 import com.tokopedia.unifycomponents.BaseCustomView
 
-class WidgetBulkReviewSubmitLoader @JvmOverloads constructor(
+class WidgetBulkReviewSubmitLoader(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = Int.ZERO
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 

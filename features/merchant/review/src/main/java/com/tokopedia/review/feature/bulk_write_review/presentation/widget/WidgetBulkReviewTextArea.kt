@@ -13,7 +13,7 @@ import com.tokopedia.review.databinding.WidgetBulkReviewTextAreaBinding
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewTextAreaUiState
 import com.tokopedia.review.feature.createreputation.presentation.widget.BaseReviewCustomView
 
-class WidgetBulkReviewTextArea @JvmOverloads constructor(
+class WidgetBulkReviewTextArea(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
@@ -49,8 +49,8 @@ class WidgetBulkReviewTextArea @JvmOverloads constructor(
                 animateShow(animate = animate, onAnimationStart = {
                     show()
                 }, onAnimationEnd = {
-                        if (uiState.focused) binding.root.requestFocus()
-                    })
+                    if (uiState.focused) binding.root.requestFocus()
+                })
             }
         }
     }

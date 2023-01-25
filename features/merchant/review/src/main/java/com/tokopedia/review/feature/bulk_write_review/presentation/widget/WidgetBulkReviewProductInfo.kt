@@ -12,7 +12,7 @@ import com.tokopedia.review.databinding.WidgetBulkReviewProductInfoBinding
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewProductInfoUiState
 import com.tokopedia.unifycomponents.BaseCustomView
 
-class WidgetBulkReviewProductInfo @JvmOverloads constructor(
+class WidgetBulkReviewProductInfo(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
@@ -25,9 +25,6 @@ class WidgetBulkReviewProductInfo @JvmOverloads constructor(
 
     fun updateUiState(uiState: BulkReviewProductInfoUiState) {
         when (uiState) {
-            is BulkReviewProductInfoUiState.Hidden -> {
-                gone()
-            }
             is BulkReviewProductInfoUiState.Showing -> {
                 setupProductImage(uiState.productImageUrl)
                 setupProductPurchaseDate(uiState.productPurchaseDate)

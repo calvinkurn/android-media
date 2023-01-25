@@ -274,6 +274,15 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         }
     }
 
+    /**
+     * Setup an inset listener so that the page can react when the keyboard is showed or dismissed.
+     * * When the keyboard is showed because the user is tapping on the TextArea on any review item,
+     *   the page need to automatically scroll to that visitable to make the review item focused on
+     *   the screen.
+     * * When the keyboard is dismissed (imeInsets.bottom is zero) because the user is dismissing the
+     *   keyboard without making the TextArea lost focus, the page need to clear the focus from that
+     *   TextArea.
+     */
     private fun setupInsetListener() {
         binding?.root?.let { view ->
             ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->

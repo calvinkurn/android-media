@@ -54,11 +54,11 @@ abstract class BaseReviewCustomView<VB : ViewBinding> @JvmOverloads constructor(
 
     protected open fun calculateWrapHeight(): Int {
         return runCatching {
-            val matchParentMeasureSpec = (binding.root.parent as? View)?.let { parent ->
+            val widthMeasureSpec = (binding.root.parent as? View)?.let { parent ->
                 MeasureSpec.makeMeasureSpec(parent.width, MeasureSpec.EXACTLY)
             } ?: MeasureSpec.makeMeasureSpec(Int.ZERO, MeasureSpec.UNSPECIFIED)
-            val wrapContentMeasureSpec = MeasureSpec.makeMeasureSpec(Int.ZERO, MeasureSpec.UNSPECIFIED)
-            binding.root.measure(matchParentMeasureSpec, wrapContentMeasureSpec)
+            val heightMeasureSpec = MeasureSpec.makeMeasureSpec(Int.ZERO, MeasureSpec.UNSPECIFIED)
+            binding.root.measure(widthMeasureSpec, heightMeasureSpec)
             binding.root.measuredHeight
         }.getOrNull().orZero()
     }
