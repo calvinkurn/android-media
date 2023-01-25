@@ -290,6 +290,8 @@ fun Fragment.recreateView() {
         detach(this@recreateView)
     }
 
+    parentFragmentManager.executePendingTransactions()
+
     parentFragmentManager.commit {
         attach(this@recreateView)
     }
