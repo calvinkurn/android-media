@@ -17,7 +17,9 @@ data class Product(
     @SerializedName("price")
     val price: String,
     @SerializedName("description")
-    val description: String
+    val description: String,
+    @SerializedName("category")
+    val category: Category?
 )
 
 data class TopAdsProductError(
@@ -29,3 +31,12 @@ data class OptionV3(
     @SerializedName("basic")
     val basic: Boolean
 )
+
+data class Category(
+    @SerializedName("id")
+    val id : String,
+    @SerializedName("name")
+    val name : String,
+    @SerializedName("title")
+    val title : String,
+    )
