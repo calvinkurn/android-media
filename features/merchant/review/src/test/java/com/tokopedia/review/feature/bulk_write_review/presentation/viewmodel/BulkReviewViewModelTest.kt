@@ -1540,14 +1540,8 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         runCollectingBulkReviewPageUiState { uiStates ->
             runCollectingBulkReviewPageToasterQueue {
                 val reviewItem = getFirstReviewItem()
-                var previousUploadBatchNumber = Int.ZERO
+                var previousUploadBatchNumber = 0
                 var passed = false
-
-                mockErrorUploadMedia()
-                doSuccessGetInitialData()
-
-                viewModel.getAndUpdateActiveMediaPickerInboxID(reviewItem.inboxID)
-                viewModel.onReceiveMediaPickerResult(listOf("1.mp4", "2.jpg", "3.jpg", "4.jpg", "5.jpg"))
 
                 mockErrorUploadMedia {
                     (uiStates.last() as BulkReviewPageUiState.Showing)
@@ -1560,9 +1554,14 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
                             passed = (currentUploadBatchNumber - previousUploadBatchNumber) == Int.ONE
                         }
                 }
+                doSuccessGetInitialData()
+
+                viewModel.getAndUpdateActiveMediaPickerInboxID(reviewItem.inboxID)
+                viewModel.onReceiveMediaPickerResult(listOf("1.mp4", "2.jpg", "3.jpg", "4.jpg", "5.jpg"))
+                previousUploadBatchNumber = 1
 
                 viewModel.onRetryUploadClicked(reviewItem.inboxID)
-                previousUploadBatchNumber = Int.ONE
+                previousUploadBatchNumber = 2
                 viewModel.onRetryUploadClicked(reviewItem.inboxID)
                 assertTrue(passed)
             }

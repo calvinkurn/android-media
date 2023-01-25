@@ -23,83 +23,125 @@ class BulkReviewMediaPickerUiStateMapper @Inject constructor() {
     ): Map<String, CreateReviewMediaPickerUiState> {
         return when (getFormRequestState) {
             is BulkReviewGetFormRequestState.Complete.Success -> {
-                mapOf(
-                    *getFormRequestState.result.reviewForm.map { reviewForm ->
-                        val inboxID = reviewForm.inboxID
-                        val reviewItemMediaItems = mediaItems[inboxID]
-                        if (reviewItemMediaItems.isNullOrEmpty()) {
-                            inboxID to CreateReviewMediaPickerUiState.Hidden
-                        } else {
-                            val currentMediaPickerUiState = currentMediaPickerUiStates[inboxID]
-                            val reviewItemPoem = poem[inboxID]?.second ?: StringRes(Int.ZERO)
-                            val reviewItemUploadBatchNumber = reviewItemsUploadBatchNumber.find {
-                                it.inboxID == inboxID
-                            }?.batchNumber.orZero()
-                            inboxID to if (reviewItemMediaItems.any { it.state == CreateReviewMediaUiModel.State.UPLOADING }) {
-                                if (currentMediaPickerUiState is CreateReviewMediaPickerUiState.Uploading) {
-                                    currentMediaPickerUiState.copy(
-                                        mediaItems = reviewItemMediaItems,
-                                        poem = reviewItemPoem,
-                                        currentUploadBatchNumber = reviewItemUploadBatchNumber
-                                    )
-                                } else {
-                                    CreateReviewMediaPickerUiState.Uploading(
-                                        failedOccurrenceCount = currentMediaPickerUiState?.failedOccurrenceCount.orZero(),
-                                        mediaItems = reviewItemMediaItems,
-                                        poem = reviewItemPoem,
-                                        currentUploadBatchNumber = reviewItemUploadBatchNumber
-                                    )
-                                }
-                            } else if (reviewItemMediaItems.any { it.state == CreateReviewMediaUiModel.State.UPLOAD_FAILED }) {
-                                val concatenatedErrorMessage = reviewItemMediaItems.filter {
-                                    it.state == CreateReviewMediaUiModel.State.UPLOAD_FAILED
-                                }.joinToString("|") {
-                                    String.format(
-                                        ReviewConstants.MEDIA_UPLOAD_ERROR_MESSAGE,
-                                        it.uri,
-                                        it.message
-                                    )
-                                }
-                                val errorCode = ErrorHandler.getErrorMessagePair(
-                                    context = null,
-                                    e = MessageErrorException(concatenatedErrorMessage),
-                                    builder = ErrorHandler.Builder()
-                                ).second
-                                if (currentMediaPickerUiState is CreateReviewMediaPickerUiState.FailedUpload) {
-                                    currentMediaPickerUiState.copy(
-                                        mediaItems = reviewItemMediaItems,
-                                        shouldQueueToaster = false
-                                    )
-                                } else {
-                                    if (currentMediaPickerUiState?.failedOccurrenceCount.isMoreThanZero()) {
-                                        CreateReviewMediaPickerUiState.FailedUpload(
-                                            failedOccurrenceCount = currentMediaPickerUiState?.failedOccurrenceCount.orZero()
-                                                .inc(),
-                                            mediaItems = reviewItemMediaItems,
-                                            errorCode = errorCode,
-                                            shouldQueueToaster = true
-                                        )
-                                    } else {
-                                        CreateReviewMediaPickerUiState.FailedUpload(
-                                            failedOccurrenceCount = currentMediaPickerUiState?.failedOccurrenceCount.orZero()
-                                                .inc(),
-                                            mediaItems = reviewItemMediaItems,
-                                            errorCode = errorCode,
-                                            shouldQueueToaster = false
-                                        )
-                                    }
-                                }
-                            } else {
-                                CreateReviewMediaPickerUiState.SuccessUpload(
-                                    mediaItems = reviewItemMediaItems,
-                                    poem = reviewItemPoem
-                                )
+                getFormRequestState.result.reviewForm.associateBy(
+                    keySelector = { reviewForm ->
+                        reviewForm.inboxID
+                    },
+                    valueTransform = { reviewForm ->
+                        mapReviewFormToMediaPickerUiState(
+                            mediaItems = mediaItems[reviewForm.inboxID],
+                            poem = poem[reviewForm.inboxID]?.second ?: StringRes(Int.ZERO),
+                            currentMediaPickerUiState = currentMediaPickerUiStates[reviewForm.inboxID],
+                            reviewItemsUploadBatchNumber = reviewItemsUploadBatchNumber.find {
+                                it.inboxID == reviewForm.inboxID
                             }
-                        }
-                    }.toTypedArray()
+                        )
+                    }
                 )
             }
             else -> emptyMap()
         }
+    }
+
+    private fun mapReviewFormToMediaPickerUiState(
+        mediaItems: List<CreateReviewMediaUiModel>?,
+        poem: StringRes,
+        currentMediaPickerUiState: CreateReviewMediaPickerUiState?,
+        reviewItemsUploadBatchNumber: BulkReviewItemMediaUploadBatchNumberUiModel?
+    ): CreateReviewMediaPickerUiState {
+        return if (mediaItems.isNullOrEmpty()) {
+            CreateReviewMediaPickerUiState.Hidden
+        } else {
+            if (mediaItems.any { it.state == CreateReviewMediaUiModel.State.UPLOADING }) {
+                mapOnMediaPickerIsUploading(
+                    mediaItems = mediaItems,
+                    poem = poem,
+                    currentMediaPickerUiState = currentMediaPickerUiState,
+                    reviewItemsUploadBatchNumber = reviewItemsUploadBatchNumber
+                )
+            } else if (mediaItems.any { it.state == CreateReviewMediaUiModel.State.UPLOAD_FAILED }) {
+                mapOnMediaPickerIsFailedUpload(
+                    mediaItems = mediaItems,
+                    currentMediaPickerUiState = currentMediaPickerUiState
+                )
+            } else {
+                CreateReviewMediaPickerUiState.SuccessUpload(
+                    mediaItems = mediaItems,
+                    poem = poem
+                )
+            }
+        }
+    }
+
+    private fun mapOnMediaPickerIsUploading(
+        mediaItems: List<CreateReviewMediaUiModel>,
+        poem: StringRes,
+        currentMediaPickerUiState: CreateReviewMediaPickerUiState?,
+        reviewItemsUploadBatchNumber: BulkReviewItemMediaUploadBatchNumberUiModel?
+    ): CreateReviewMediaPickerUiState.Uploading {
+        return if (currentMediaPickerUiState is CreateReviewMediaPickerUiState.Uploading) {
+            currentMediaPickerUiState.copy(
+                mediaItems = mediaItems,
+                poem = poem,
+                currentUploadBatchNumber = reviewItemsUploadBatchNumber?.batchNumber.orZero()
+            )
+        } else {
+            CreateReviewMediaPickerUiState.Uploading(
+                failedOccurrenceCount = currentMediaPickerUiState?.failedOccurrenceCount.orZero(),
+                mediaItems = mediaItems,
+                poem = poem,
+                currentUploadBatchNumber = reviewItemsUploadBatchNumber?.batchNumber.orZero()
+            )
+        }
+    }
+
+    private fun mapOnMediaPickerIsFailedUpload(
+        mediaItems: List<CreateReviewMediaUiModel>,
+        currentMediaPickerUiState: CreateReviewMediaPickerUiState?
+    ): CreateReviewMediaPickerUiState.FailedUpload {
+        val concatenatedErrorMessage = concatMediaItemsUploadErrorMessage(mediaItems)
+        val errorCode = logErrorAndGetErrorCode(concatenatedErrorMessage)
+        return if (currentMediaPickerUiState is CreateReviewMediaPickerUiState.FailedUpload) {
+            currentMediaPickerUiState.copy(
+                mediaItems = mediaItems,
+                shouldQueueToaster = false
+            )
+        } else {
+            if (currentMediaPickerUiState?.failedOccurrenceCount.isMoreThanZero()) {
+                CreateReviewMediaPickerUiState.FailedUpload(
+                    failedOccurrenceCount = currentMediaPickerUiState?.failedOccurrenceCount.orZero().inc(),
+                    mediaItems = mediaItems,
+                    errorCode = errorCode,
+                    shouldQueueToaster = true
+                )
+            } else {
+                CreateReviewMediaPickerUiState.FailedUpload(
+                    failedOccurrenceCount = currentMediaPickerUiState?.failedOccurrenceCount.orZero().inc(),
+                    mediaItems = mediaItems,
+                    errorCode = errorCode,
+                    shouldQueueToaster = false
+                )
+            }
+        }
+    }
+
+    private fun concatMediaItemsUploadErrorMessage(mediaItems: List<CreateReviewMediaUiModel>): String {
+        return mediaItems.filter {
+            it.state == CreateReviewMediaUiModel.State.UPLOAD_FAILED
+        }.joinToString("|") {
+            String.format(
+                ReviewConstants.MEDIA_UPLOAD_ERROR_MESSAGE,
+                it.uri,
+                it.message
+            )
+        }
+    }
+
+    private fun logErrorAndGetErrorCode(concatenatedErrorMessage: String): String {
+        return ErrorHandler.getErrorMessagePair(
+            context = null,
+            e = MessageErrorException(concatenatedErrorMessage),
+            builder = ErrorHandler.Builder()
+        ).second
     }
 }
