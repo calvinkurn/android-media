@@ -32,8 +32,10 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
+import org.junit.FixMethodOrder
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runners.MethodSorters
 import kotlin.reflect.KClass
 
 /**
@@ -41,6 +43,7 @@ import kotlin.reflect.KClass
  */
 private const val TAG = "MainNavAnalyticsTest"
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @CassavaTest
 class MainNavAnalyticsTest {
     @get:Rule
