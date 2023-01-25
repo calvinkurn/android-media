@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -43,14 +44,14 @@ class DynamicHeaderCustomView: FrameLayout {
 
     fun setModel(model: DynamicHeaderUiModel, listener: HeaderCustomViewListener? = null) {
         this.listener = listener
-        handleHeaderComponent(model)
+        setHeaderComponent(model)
     }
 
-    private fun handleHeaderComponent(model: DynamicHeaderUiModel) {
+    private fun setHeaderComponent(model: DynamicHeaderUiModel) {
         setupUi()
-        handleTitle(model.title)
-        handleSubtitle(model.subTitle, model.statusCampaign, model.endDate)
-        handleSeeAllAppLink(model.ctaText, model.ctaTextLink)
+        setTitle(model.title)
+        setSubtitle(model.subTitle, model.statusCampaign, model.endDate)
+        setSeeAllAppLink(model.ctaText, model.ctaTextLink)
     }
 
     private fun setupUi() {
@@ -61,7 +62,7 @@ class DynamicHeaderCustomView: FrameLayout {
         tpSeeAll =  itemView?.findViewById(R.id.tp_see_all)
     }
 
-    private fun handleTitle(title: String) {
+    private fun setTitle(title: String) {
         if (title.isNotBlank()) {
             headerContainer?.show()
             tpTitle?.text = title
@@ -71,7 +72,7 @@ class DynamicHeaderCustomView: FrameLayout {
         }
     }
 
-    private fun handleSubtitle(subtitle: String, statusCampaign: String, endDate: String) {
+    private fun setSubtitle(subtitle: String, statusCampaign: String, endDate: String) {
         if (subtitle.isNotBlank()) {
             tpSubtitle?.text = subtitle
             handleCountDownTimer(statusCampaign, endDate)
@@ -81,7 +82,7 @@ class DynamicHeaderCustomView: FrameLayout {
         }
     }
 
-    private fun handleSeeAllAppLink(ctaText: String, ctaTextLink: String) {
+    private fun setSeeAllAppLink(ctaText: String, ctaTextLink: String) {
         if (ctaTextLink.isNotBlank()) {
             tpSeeAll?.text = if (ctaText.isNotBlank()) {
                 ctaText
@@ -140,6 +141,24 @@ class DynamicHeaderCustomView: FrameLayout {
 
     private fun isStatusCampaignOngoing(statusCampaign: String): Boolean {
         return statusCampaign.equals(StatusCampaign.ONGOING.statusCampaign, true)
+    }
+
+    fun configFestivity(){
+        val festivityTextColor = MethodChecker.getColor(context, com.tokopedia.shop.common.R.color.dms_shop_festivity_text_color)
+        tpTitle?.setTextColor(festivityTextColor)
+        tpSubtitle?.setTextColor(festivityTextColor)
+        tpSeeAll?.setTextColor(festivityTextColor)
+        tusCountDown?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
+    }
+
+    fun configNonFestivity(){
+        val defaultTitleColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+        val defaultSubTitleColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+        val defaultCtaColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        tpTitle?.setTextColor(defaultTitleColor)
+        tpSubtitle?.setTextColor(defaultSubTitleColor)
+        tpSeeAll?.setTextColor(defaultCtaColor)
+        tusCountDown?.timerVariant = TimerUnifySingle.VARIANT_MAIN
     }
 
     interface HeaderCustomViewListener {

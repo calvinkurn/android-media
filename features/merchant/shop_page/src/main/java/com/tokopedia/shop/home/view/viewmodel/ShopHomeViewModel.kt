@@ -22,7 +22,6 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -208,6 +207,10 @@ class ShopHomeViewModel @Inject constructor(
         get() = _createAffiliateCookieAtcProduct
     private val _createAffiliateCookieAtcProduct = MutableLiveData<AffiliateAtcProductModel>()
 
+    val isShowHomeTabConfettiLiveData: LiveData<Boolean>
+        get() = _isShowHomeTabConfettiLiveData
+    private val _isShowHomeTabConfettiLiveData = MutableLiveData<Boolean>()
+
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
     val isLogin: Boolean
@@ -264,7 +267,11 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
-    fun getMerchantVoucherCoupon(shopId: String, context: Context?, shopHomeVoucherUiModel: ShopHomeVoucherUiModel) {
+    fun getMerchantVoucherCoupon(
+        shopId: String,
+        context: Context?,
+        shopHomeVoucherUiModel: ShopHomeVoucherUiModel
+    ) {
         launchCatchError(dispatcherProvider.io, block = {
             var uiModel = shopHomeVoucherUiModel
             val response = mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
@@ -838,7 +845,8 @@ class ShopHomeViewModel @Inject constructor(
                 isLogin,
                 isThematicWidgetShown,
                 isEnableDirectPurchase,
-                shopId
+                shopId,
+                listWidgetLayout
             )
             updateProductCardQuantity(listShopHomeWidget.toMutableList())
             val mapShopHomeWidgetData = mutableMapOf<Pair<String, String>, Visitable<*>?>().apply {
@@ -1220,5 +1228,17 @@ class ShopHomeViewModel @Inject constructor(
 
     fun isWidgetBundle(data: ShopPageWidgetLayoutUiModel): Boolean {
         return data.widgetType == WidgetType.BUNDLE
+    }
+
+    fun checkShowConfetti(
+        listShopHomeWidgetData: List<BaseShopHomeWidgetUiModel>,
+        showConfetti: Boolean
+    ) {
+        val anyFestivityWidget = listShopHomeWidgetData.any {
+            it.isFestivity
+        }
+        if(anyFestivityWidget && showConfetti) {
+            _isShowHomeTabConfettiLiveData.postValue(true)
+        }
     }
 }

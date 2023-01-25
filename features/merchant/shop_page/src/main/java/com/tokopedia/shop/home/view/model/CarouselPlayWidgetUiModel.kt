@@ -14,6 +14,7 @@ data class CarouselPlayWidgetUiModel(
     override val name: String,
     override val type: String,
     override val header: BaseShopHomeWidgetUiModel.Header,
+    override val isFestivity: Boolean,
     val actionEvent: Event<Action> = Event(Action.Refresh),
     val playWidgetState: PlayWidgetState = PlayWidgetState(isLoading = true)
 ) : BaseShopHomeWidgetUiModel() {

@@ -19,7 +19,8 @@ data class ThematicWidgetUiModel(
     var isNewData: Boolean = false,
     var widgetMasterId: String = "",
     var imageBanner: String = "",
-    var rvState: Int = 0
+    var rvState: Int = 0,
+    val isFestivity: Boolean = false
 ): Visitable<ThematicWidgetTypeFactory> {
     override fun type(typeFactory: ThematicWidgetTypeFactory): Int {
         return typeFactory.type(this)

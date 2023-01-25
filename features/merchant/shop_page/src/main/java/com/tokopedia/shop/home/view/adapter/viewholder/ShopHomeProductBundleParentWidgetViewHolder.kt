@@ -69,6 +69,25 @@ class ShopHomeProductBundleParentWidgetViewHolder(
         productBundleWidgetView?.setListener(this)
         productBundleWidgetView?.setTitleText(bundleWidgetTitle)
         productBundleWidgetView?.getBundleData(param)
+        checkFestivity(element)
+    }
+
+    private fun checkFestivity(element: ShopHomeProductBundleListUiModel) {
+        if (element.isFestivity) {
+            configFestivity()
+        } else {
+            configNonFestivity()
+        }
+    }
+
+    private fun configFestivity() {
+        val festivityTextColorRes = com.tokopedia.shop.common.R.color.dms_shop_festivity_text_color
+        productBundleWidgetView?.setTitleTextColor(festivityTextColorRes)
+    }
+
+    private fun configNonFestivity() {
+        val defaultTitleColorRes = com.tokopedia.unifyprinciples.R.color.Unify_NN950
+        productBundleWidgetView?.setTitleTextColor(defaultTitleColorRes)
     }
 
     override fun onBundleProductClicked(

@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -52,6 +53,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.analytic.global.model.PlayWidgetShopAnalyticModel
@@ -141,6 +143,7 @@ import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -205,6 +208,7 @@ open class ShopPageHomeFragment :
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
         private const val MIN_BUNDLE_SIZE = 1
+        private const val CONFETTI_URL = "https://lottie.host/4f90b6ee-99d3-4ebc-bffa-77743ef1c969/qct14qmgfM.json"
 
         fun createInstance(
             shopId: String,
@@ -287,6 +291,14 @@ open class ShopPageHomeFragment :
     private val shopHomeAdapter: ShopHomeAdapter
         get() = adapter as ShopHomeAdapter
     private val shopHomeWidgetCarouselPositionSavedState = SparseIntArray()
+    private var listHomeTabBackgroundColor: List<String> = listOf()
+    private var homeTabBackgroundPatternImage: String = ""
+    private var topView: View? = null
+    private var centerView: View? = null
+    private var bottomView: View? = null
+    private val imageBackgroundPattern: ImageUnify? by lazy {
+        viewBinding?.imageBackgroundPattern
+    }
 
     private val shopHomeAdapterTypeFactory by lazy {
         val userSession = UserSession(context)
@@ -438,17 +450,33 @@ open class ShopPageHomeFragment :
             endlessRecyclerViewScrollListener = createEndlessRecyclerViewListener()
             it.addOnScrollListener(endlessRecyclerViewScrollListener)
             it.itemAnimator = null
+            context?.let { ctx ->
+                it.addItemDecoration(ShopFestivityRvItemDecoration(ctx))
+            }
         }
         observeShopProductFilterParameterSharedViewModel()
         observeShopChangeProductGridSharedViewModel()
         observeLiveData()
         observeShopHomeWidgetContentData()
         observeShopPageMiniCartSharedViewModel()
+        observeShowHomeTabConfetti()
         isLoadInitialData = true
+    }
+
+    private fun observeShowHomeTabConfetti() {
+        viewModel?.isShowHomeTabConfettiLiveData?.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                setConfettiAlreadyShown()
+                showConfetti()
+            }
+        })
     }
 
     open fun initView() {
         globalErrorShopPage = viewBinding?.globalErrorShopPage
+        topView = viewBinding?.topView
+        centerView = viewBinding?.centerView
+        bottomView = viewBinding?.bottomView
     }
 
     private fun observeShopHomeWidgetContentData() {
@@ -460,6 +488,9 @@ open class ShopPageHomeFragment :
                 when (it) {
                     is Success -> {
                         onSuccessGetShopHomeWidgetContentData(it.data)
+                        checkShowConfetti()
+                        setHomeTabBackgroundGradient()
+                        setHomeTabBackgroundPattern()
                     }
                     is Fail -> {
                         val throwable = it.throwable
@@ -510,6 +541,20 @@ open class ShopPageHomeFragment :
 
             viewModel?.shopHomeWidgetContentDataError?.collect {
                 shopHomeAdapter.removeShopHomeWidget(it)
+            }
+        }
+    }
+
+    private fun setHomeTabBackgroundPattern() {
+        imageBackgroundPattern?.apply {
+            if (homeTabBackgroundPatternImage.isNotEmpty()) {
+                show()
+                loadImage(homeTabBackgroundPatternImage){
+                    setPlaceHolder(-1)
+                    setErrorDrawable(-1)
+                }
+            } else {
+                hide()
             }
         }
     }
@@ -3706,6 +3751,52 @@ open class ShopPageHomeFragment :
 
     override fun getWidgetCarouselPositionSavedState(): SparseIntArray {
         return shopHomeWidgetCarouselPositionSavedState
+    }
+
+    private fun checkShowConfetti() {
+        viewModel?.checkShowConfetti(shopHomeAdapter.getShopHomeWidgetData(), isShowConfetti())
+    }
+
+    private fun showConfetti() {
+        (parentFragment as? NewShopPageFragment)?.setupShopPageLottieAnimation(CONFETTI_URL)
+    }
+
+    private fun isShowConfetti(): Boolean {
+        return (parentFragment as? NewShopPageFragment)?.isShowConfetti().orFalse()
+    }
+
+    private fun setConfettiAlreadyShown() {
+        (parentFragment as? NewShopPageFragment)?.setConfettiAlreadyShown()
+    }
+
+    fun setHomeTabListBackgroundColor(listBackgroundColor: List<String>) {
+        this.listHomeTabBackgroundColor = listBackgroundColor
+    }
+
+    fun setHomeTabBackgroundPatternImage(backgroundPatternImage: String) {
+        this.homeTabBackgroundPatternImage = backgroundPatternImage
+    }
+
+
+    private fun setHomeTabBackgroundGradient() {
+        if (listHomeTabBackgroundColor.isNotEmpty()) {
+            topView?.show()
+            centerView?.show()
+            bottomView?.show()
+            val colors = IntArray(listHomeTabBackgroundColor.size)
+            for (i in listHomeTabBackgroundColor.indices) {
+                colors[i] = ShopUtil.parseColorFromHexString(listHomeTabBackgroundColor.getOrNull(i).orEmpty())
+            }
+            val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
+            gradient.cornerRadius = 0f
+            topView?.setBackgroundColor(ShopUtil.parseColorFromHexString(listHomeTabBackgroundColor.firstOrNull().orEmpty()))
+            centerView?.background = gradient
+            bottomView?.setBackgroundColor(ShopUtil.parseColorFromHexString(listHomeTabBackgroundColor.lastOrNull().orEmpty()))
+        } else {
+            topView?.hide()
+            centerView?.hide()
+            bottomView?.hide()
+        }
     }
 
     //region play widget

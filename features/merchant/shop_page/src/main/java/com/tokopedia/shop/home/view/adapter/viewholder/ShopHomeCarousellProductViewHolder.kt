@@ -84,6 +84,31 @@ class ShopHomeCarousellProductViewHolder(
             }
         }
         setWidgetImpressionListener(shopHomeCarousellProductUiModel)
+        checkFestivity(shopHomeCarousellProductUiModel)
+    }
+
+    private fun checkFestivity(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
+        if (shopHomeCarousellProductUiModel.isFestivity) {
+            configFestivity()
+        } else {
+            configNonFestivity()
+        }
+    }
+
+    private fun configFestivity() {
+        val festivityTextColor = MethodChecker.getColor(
+            itemView.context,
+            com.tokopedia.shop.common.R.color.dms_shop_festivity_text_color
+        )
+        textViewTitle?.setTextColor(festivityTextColor)
+    }
+
+    private fun configNonFestivity() {
+        val defaultTitleColor = MethodChecker.getColor(
+            itemView.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950
+        )
+        textViewTitle?.setTextColor(defaultTitleColor)
     }
 
     private fun setWidgetImpressionListener(model: ShopHomeCarousellProductUiModel) {

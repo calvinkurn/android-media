@@ -4,6 +4,7 @@ import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -24,6 +25,7 @@ import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.common.util.ColorUtil.getBackGroundColor
 import com.tokopedia.shop_widget.databinding.ItemThematicWidgetBinding
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,6 +46,9 @@ class ThematicWidgetViewHolder (
         private const val IMG_PARALLAX_TRANSLATE_X_VALUE = 0f
         private const val IMG_PARALLAX_TRANSLATE_X_MULTIPLIER = 0.2f
         private const val IMG_PARALLAX_ALPHA_MULTIPLIER = 0.80f
+        private const val RV_DEFAULT_MARGIN_TOP = 12f
+        private const val RV_DEFAULT_MARGIN_BOTTOM = 12f
+        private const val BIG_CAMPAIGN_THEMATIC = "big_campaign_thematic"
     }
 
     private var binding: ItemThematicWidgetBinding? by viewBinding()
@@ -99,10 +104,63 @@ class ThematicWidgetViewHolder (
         setupImage(
             imageBanner = element.imageBanner
         )
+        checkFestivity(element)
+    }
+
+    private fun checkFestivity(uiModel: ThematicWidgetUiModel) {
+        if (uiModel.isFestivity) {
+            configFestivity(uiModel)
+        } else {
+            configNonFestivity(uiModel)
+        }
+    }
+
+    private fun configNonFestivity(uiModel: ThematicWidgetUiModel) {
+        dynamicHeaderCustomView?.configNonFestivity()
+        configMarginNonFestivity()
         setupBackgroundColor(
-            startBackGroundColor = element.firstBackgroundColor,
-            endBackGroundColor = element.secondBackgroundColor
+            startBackGroundColor = uiModel.firstBackgroundColor,
+            endBackGroundColor = uiModel.secondBackgroundColor
         )
+    }
+
+    private fun configFestivity(uiModel: ThematicWidgetUiModel) {
+        dynamicHeaderCustomView?.configFestivity()
+        when(uiModel.name){
+            BIG_CAMPAIGN_THEMATIC -> {
+                configMarginFestivity()
+                viewParallaxBackground?.background = null
+            }
+            else -> {
+                configMarginNonFestivity()
+                setupBackgroundColor(
+                    startBackGroundColor = uiModel.firstBackgroundColor,
+                    endBackGroundColor = uiModel.secondBackgroundColor
+                )
+            }
+        }
+    }
+
+    private fun configMarginFestivity(){
+        val rvLayoutParams = rvProduct?.layoutParams as? ConstraintLayout.LayoutParams
+        rvLayoutParams?.setMargins(
+            rvLayoutParams.leftMargin,
+            Int.ZERO,
+            rvLayoutParams.rightMargin,
+            Int.ZERO
+        )
+        rvProduct?.layoutParams = rvLayoutParams
+    }
+
+    private fun configMarginNonFestivity(){
+        val rvLayoutParams = rvProduct?.layoutParams as? ConstraintLayout.LayoutParams
+        rvLayoutParams?.setMargins(
+            rvLayoutParams.leftMargin,
+            RV_DEFAULT_MARGIN_TOP.dpToPx().toInt(),
+            rvLayoutParams.rightMargin,
+            RV_DEFAULT_MARGIN_BOTTOM.dpToPx().toInt()
+        )
+        rvProduct?.layoutParams = rvLayoutParams
     }
 
     override fun onSeeAllClick(appLink: String) {

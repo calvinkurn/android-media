@@ -99,6 +99,7 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                           widgetMasterID
                           widgetType
                           widgetName
+                          isFestivity
                           header {
                             title
                             ctaText

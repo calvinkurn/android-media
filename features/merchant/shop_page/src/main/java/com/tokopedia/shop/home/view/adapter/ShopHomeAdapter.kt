@@ -667,4 +667,8 @@ open class ShopHomeAdapter(
             }
         }
     }
+
+    fun getShopHomeWidgetData(): List<BaseShopHomeWidgetUiModel> {
+        return visitables.filterIsInstance<BaseShopHomeWidgetUiModel>()
+    }
 }

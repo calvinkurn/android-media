@@ -342,7 +342,12 @@ class ShopHomeViewModelTest {
         coEvery {
             mvcSummaryUseCase.getResponse(any())
         } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(resultStatus = ResultStatus(code = CODE_STATUS_SUCCESS, null, null, null), null, null, null))
-        viewModel.getMerchantVoucherCoupon(mockShopId, context, ShopHomeVoucherUiModel())
+        viewModel.getMerchantVoucherCoupon(
+            mockShopId,
+            context,
+            ShopHomeVoucherUiModel(),
+            isShopFestivity
+        )
         coVerify { mvcSummaryUseCase.getResponse(any()) }
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)
     }
@@ -352,7 +357,12 @@ class ShopHomeViewModelTest {
         coEvery {
             mvcSummaryUseCase.getResponse(any())
         } throws Throwable()
-        viewModel.getMerchantVoucherCoupon(mockShopId, context, ShopHomeVoucherUiModel())
+        viewModel.getMerchantVoucherCoupon(
+            mockShopId,
+            context,
+            ShopHomeVoucherUiModel(),
+            isShopFestivity
+        )
         coVerify { mvcSummaryUseCase.getResponse(any()) }
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Fail)
     }
@@ -369,7 +379,12 @@ class ShopHomeViewModelTest {
                 null
             )
         )
-        viewModel.getMerchantVoucherCoupon(mockShopId, null, ShopHomeVoucherUiModel())
+        viewModel.getMerchantVoucherCoupon(
+            mockShopId,
+            null,
+            ShopHomeVoucherUiModel(),
+            isShopFestivity
+        )
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)
 
         coEvery {
@@ -387,13 +402,23 @@ class ShopHomeViewModelTest {
                 null
             )
         )
-        viewModel.getMerchantVoucherCoupon(mockShopId, context, ShopHomeVoucherUiModel())
+        viewModel.getMerchantVoucherCoupon(
+            mockShopId,
+            context,
+            ShopHomeVoucherUiModel(),
+            isShopFestivity
+        )
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)
 
         coEvery {
             mvcSummaryUseCase.getResponse(any())
         } returns TokopointsCatalogMVCSummaryResponse(null)
-        viewModel.getMerchantVoucherCoupon(mockShopId, context, ShopHomeVoucherUiModel())
+        viewModel.getMerchantVoucherCoupon(
+            mockShopId,
+            context,
+            ShopHomeVoucherUiModel(),
+            isShopFestivity
+        )
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)
     }
 
@@ -1500,7 +1525,15 @@ class ShopHomeViewModelTest {
                 getShopPageHomeLayoutV2UseCase.get().executeOnBackground()
             } returns ShopLayoutWidgetV2()
             mockkObject(ShopPageHomeMapper)
-            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any(), false, any(), any()) } returns listOf(
+            every { ShopPageHomeMapper.mapToListShopHomeWidget(
+                any(),
+                any(),
+                any(),
+                false,
+                any(),
+                any(),
+                listWidgetLayout
+            ) } returns listOf(
                 ShopHomeCarousellProductUiModel(widgetId = "1")
             )
             viewModel.getWidgetContentData(
@@ -1553,7 +1586,15 @@ class ShopHomeViewModelTest {
             )
 
             mockkObject(ShopPageHomeMapper)
-            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any(), false, any(), any()) } returns listOf(
+            every { ShopPageHomeMapper.mapToListShopHomeWidget(
+                any(),
+                any(),
+                any(),
+                false,
+                any(),
+                any(),
+                listWidgetLayout
+            ) } returns listOf(
                 resultWidget
             )
 
@@ -1585,7 +1626,15 @@ class ShopHomeViewModelTest {
             } returns ShopLayoutWidgetV2()
 
             mockkObject(ShopPageHomeMapper)
-            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any(), false, any(), any()) } returns listOf(
+            every { ShopPageHomeMapper.mapToListShopHomeWidget(
+                any(),
+                any(),
+                any(),
+                false,
+                any(),
+                any(),
+                listWidgetLayout
+            ) } returns listOf(
                 ProductCardUiModel()
             )
 

@@ -2,6 +2,7 @@ package com.tokopedia.shop.common.util
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.text.TextUtils
 import androidx.core.content.ContextCompat
 import com.tokopedia.device.info.DeviceScreenInfo
@@ -166,5 +167,13 @@ object ShopUtil {
 
     fun String.isUrlJson(): Boolean {
         return endsWith(".json")
+    }
+
+    fun parseColorFromHexString(colorHex: String): Int {
+        return try {
+            Color.parseColor(colorHex)
+        } catch (e: Throwable) {
+            0
+        }
     }
 }

@@ -13,6 +13,7 @@ data class ShopHomeDisplayWidgetUiModel(
     override val name: String = "",
     override val type: String = "",
     override val header: BaseShopHomeWidgetUiModel.Header = BaseShopHomeWidgetUiModel.Header(),
+    override val isFestivity: Boolean,
     val data: List<DisplayWidgetItem>? = null
 ) : BaseShopHomeWidgetUiModel() {
     val impressHolder = ImpressHolder()

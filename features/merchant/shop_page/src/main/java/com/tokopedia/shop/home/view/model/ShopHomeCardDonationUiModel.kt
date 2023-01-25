@@ -8,7 +8,8 @@ data class ShopHomeCardDonationUiModel(
     override val layoutOrder: Int,
     override val name: String,
     override val type: String,
-    override val header: Header
+    override val header: Header,
+    override val isFestivity: Boolean
 ) : BaseShopHomeWidgetUiModel() {
 
     val impressHolder = ImpressHolder()

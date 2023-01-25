@@ -9,6 +9,7 @@ data class ShopHomeFlashSaleUiModel(
     override val name: String,
     override val type: String,
     override val header: Header,
+    override val isFestivity: Boolean,
     val data: List<FlashSaleItem>? = null
 ) : BaseShopHomeWidgetUiModel() {
 
