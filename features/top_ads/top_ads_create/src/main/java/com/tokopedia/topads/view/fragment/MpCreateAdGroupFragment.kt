@@ -275,6 +275,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
             }
             startActivity(intent)
             dialog.dismiss()
+            requireActivity().finish()
         }
         dialog.setSecondaryCTAClickListener {
             MpTracker.clickAdGroupCreatedStayHereCta()
