@@ -129,7 +129,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     private var statusBarState = AnchorTabStatus.MAXIMIZE
 
-    private var shareHome = createShareHome()
+    private var shareHome = DtShareUniversalModel()
 
     private var screenshotDetector: ScreenshotDetector? = null
 
@@ -157,6 +157,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     private var anchorTabAdapter: DtAnchorTabAdapter? = null
 
+    private var binding by autoClearedNullable<FragmentDtHomeBinding>()
+
     override fun onAttach(context: Context) {
         initInjector()
         super.onAttach(context)
@@ -168,8 +170,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             .build()
             .inject(this)
     }
-
-    private var binding by autoClearedNullable<FragmentDtHomeBinding>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentDtHomeBinding.inflate(inflater, container, false)
@@ -339,7 +339,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         pageIdConstituents: List<String>,
         isScreenShot: Boolean,
         linkerType: String,
-        id: String = "",
+        id: String = ""
     ) {
         val thumbNailTitle = "Dilayani Tokopedia | Tokopedia"
         val url = "https://www.tokopedia.com/discovery/dilayani-tokopedia"
@@ -610,8 +610,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 serviceType = chooseAddressData.tokonow.serviceType,
                 lastUpdate = chooseAddressData.tokonow.tokonowLastUpdate
             )
-
-
         }
         checkIfChooseAddressWidgetDataUpdated()
     }
@@ -913,22 +911,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             ivHeaderBackground?.setImageDrawable(background)
             ivHeaderBackground?.show()
         }
-    }
-
-    private fun createShareHome(): DtShareUniversalModel {
-
-        // add later
-        val imageShareUrl = ""
-
-        return DtShareUniversalModel(
-            sharingText = "sharingText",
-            thumbNailImage = imageShareUrl,
-            ogImageUrl = imageShareUrl,
-            specificPageName = "",
-            specificPageDescription = "",
-            linkerType = "dt",
-            sharingUrl = "https://www.tokopedia.com/now"
-        )
     }
 
     override fun screenShotTaken() {
