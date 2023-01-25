@@ -79,10 +79,10 @@ object MacroInteration {
         device.waitForIdle(IDLE_DURATION)
     }
 
-    fun basicComposableListInteraction(
+    fun basicComposableFlingInteraction(
         contentDescription: String,
         scrollDirection: Direction = Direction.DOWN,
-        scrollPercent: Float = 2f
+        flingSpeed: Int = 500
     ) {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
@@ -94,7 +94,7 @@ object MacroInteration {
         // with input events from automation.
         list.setGestureMargin(device.displayWidth / 5)
         for (i in 1..(MacroArgs.getRecyclerViewScrollIterations(InstrumentationRegistry.getArguments()))) {
-            list.scroll(scrollDirection, scrollPercent)
+            list.fling(scrollDirection, flingSpeed)
             device.waitForIdle()
         }
     }
