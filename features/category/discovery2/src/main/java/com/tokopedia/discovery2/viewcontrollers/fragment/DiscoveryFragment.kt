@@ -96,6 +96,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -125,13 +126,14 @@ import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScro
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.universal_sharing.view.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -1082,9 +1084,15 @@ class DiscoveryFragment :
         }
     }
 
-    private fun linkerDataMapper(data: PageInfo?): LinkerShareData {
+    private fun linkerDataMapper(data: PageInfo?, isAffiliate: Boolean = false): LinkerShareData {
         val linkerData = LinkerData()
-        linkerData.id = data?.id?.toString() ?: ""
+        if (isAffiliate) {
+            linkerData.id = data?.name ?: ""
+            linkerData.linkAffiliateType = AffiliateLinkType.CAMPAIGN.value
+            linkerData.isAffiliate = true
+        } else {
+            linkerData.id = data?.id?.toString() ?: ""
+        }
         linkerData.name = data?.name ?: ""
         linkerData.uri = Utils.getShareUrlQueryParamAppended(
             data?.share?.url
@@ -1103,6 +1111,16 @@ class DiscoveryFragment :
     private fun showUniversalShareBottomSheet(data: PageInfo?) {
         data?.let { pageInfo ->
             universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                if (this@DiscoveryFragment.isAffiliateInitialized) {
+                    val inputShare = AffiliatePDPInput().apply {
+                        pageDetail = PageDetail(pageId = "0", pageType = "campaign", siteId = "1", verticalId = "1", pageName = pageEndPoint)
+                        pageType = PageType.CAMPAIGN.value
+                        product = Product()
+                        shop = Shop(shopID = "0", shopStatus = 0, isOS = false, isPM = false)
+                    }
+                    setAffiliateRequestHolder(inputShare)
+                    affiliateRequestDataReceived(true)
+                }
                 init(this@DiscoveryFragment)
                 setUtmCampaignData(
                     this@DiscoveryFragment.context?.resources?.getString(R.string.discovery) ?: UTM_DISCOVERY,
@@ -1131,7 +1149,7 @@ class DiscoveryFragment :
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
-        val linkerShareData = linkerDataMapper(pageInfoHolder)
+        val linkerShareData = linkerDataMapper(pageInfoHolder, shareModel.isAffiliate)
         linkerShareData.linkerData.apply {
             feature = shareModel.feature
             channel = shareModel.channel

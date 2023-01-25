@@ -51,7 +51,11 @@ data class PageDetail(
         val siteId: String = "",
 
         @SerializedName("VerticalID")
-        val verticalId: String = ""
+        val verticalId: String = "",
+
+        @SerializedName("PageName")
+        val pageName:String = "",
+
 )
 
 data class AffiliatePDPInput (
