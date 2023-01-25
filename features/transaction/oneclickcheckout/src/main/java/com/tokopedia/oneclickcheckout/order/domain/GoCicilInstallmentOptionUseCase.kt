@@ -18,8 +18,13 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(
 
     @GqlQuery(GoCicilInstallmentOptionQuery, QUERY)
     suspend fun executeSuspend(param: GoCicilInstallmentRequest): GoCicilInstallmentData {
-        val request = GraphqlRequest(GoCicilInstallmentOptionQuery(), GoCicilInstallmentGqlResponse::class.java, generateParam(param))
-        val response = graphqlRepository.response(listOf(request)).getSuccessData<GoCicilInstallmentGqlResponse>()
+        val request = GraphqlRequest(
+            GoCicilInstallmentOptionQuery(),
+            GoCicilInstallmentGqlResponse::class.java,
+            generateParam(param)
+        )
+        val response = graphqlRepository.response(listOf(request))
+            .getSuccessData<GoCicilInstallmentGqlResponse>()
         if (!response.response.success) {
             throw MessageErrorException()
         }

@@ -103,7 +103,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
     suspend fun getGopayAdminFee(
         request: GoCicilInstallmentRequest,
         orderPayment: OrderPayment
-    )): ResultGetGoCicilInstallment? {
+    ): ResultGetGoCicilInstallment? {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
@@ -113,14 +113,14 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
                 val installmentList = mapInstallmentOptions(
                     response.installmentOptions
                 )
-                val installmentList = mapInstallmentOptions(
-                    response.installmentOptions
-                )
                 var selectedTerm = orderPayment.walletData.goCicilData.selectedTerm
                 var shouldUpdateCart = false
                 if (selectedTerm == null) {
                     shouldUpdateCart = true
-                    selectedTerm = autoSelectGoCicilTerm(orderPayment.walletData.goCicilData.selectedTenure, installmentList)
+                    selectedTerm = autoSelectGoCicilTerm(
+                        orderPayment.walletData.goCicilData.selectedTenure,
+                        installmentList
+                    )
                 }
                 val selectedInstallment =
                     installmentList.first { it.installmentTerm == selectedTerm.installmentTerm }

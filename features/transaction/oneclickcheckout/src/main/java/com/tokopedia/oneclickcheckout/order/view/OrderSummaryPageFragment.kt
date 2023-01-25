@@ -1513,8 +1513,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     viewModel.orderPayment.value,
                     object :
                         GoCicilInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
-                        override fun onSelectInstallment(selectedInstallment: OrderPaymentGoCicilTerms, installmentList: List<OrderPaymentGoCicilTerms>, tickerMessage: String, isSilent: Boolean) {
-                            viewModel.chooseInstallment(selectedInstallment, installmentList, tickerMessage, isSilent)
+                        override fun onSelectInstallment(
+                            selectedInstallment: OrderPaymentGoCicilTerms,
+                            installmentList: List<OrderPaymentGoCicilTerms>,
+                            tickerMessage: String,
+                            isSilent: Boolean
+                        ) {
+                            viewModel.chooseInstallment(
+                                selectedInstallment,
+                                installmentList,
+                                tickerMessage,
+                                isSilent
+                            )
                         }
 
                         override fun onFailedLoadInstallment() {

@@ -1043,27 +1043,47 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         )
     }
     private suspend fun adjustGoCicilFee() {
-        val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value,
-                validateUsePromoRevampUiModel, orderPayment.value)
+        val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(
+            orderCart,
+            orderShipment.value,
+            validateUsePromoRevampUiModel,
+            orderPayment.value
+        )
         val payment = orderPayment.value
-        if (payment.minimumAmount <= orderCost.totalPriceWithoutPaymentFees
-                && orderCost.totalPriceWithoutPaymentFees <= payment.maximumAmount
-                && orderCost.totalPriceWithoutPaymentFees <= payment.walletAmount) {
+        if (payment.minimumAmount <= orderCost.totalPriceWithoutPaymentFees &&
+            orderCost.totalPriceWithoutPaymentFees <= payment.maximumAmount &&
+            orderCost.totalPriceWithoutPaymentFees <= payment.walletAmount
+        ) {
             val result = paymentProcessor.get().getGopayAdminFee(
                 generateGoCicilInstallmentRequest(orderCost),
                 orderPayment.value
             )
             if (result != null) {
-                chooseInstallment(result.selectedInstallment, result.installmentList, result.tickerMessage, !result.shouldUpdateCart)
+                chooseInstallment(
+                    result.selectedInstallment,
+                    result.installmentList,
+                    result.tickerMessage,
+                    !result.shouldUpdateCart
+                )
                 return
             } else {
                 val newWalletData = orderPayment.value.walletData
-                orderPayment.value = orderPayment.value.copy(walletData = newWalletData.copy(goCicilData = newWalletData.goCicilData.copy(availableTerms = emptyList())))
+                orderPayment.value = orderPayment.value.copy(
+                    walletData = newWalletData.copy(
+                        goCicilData = newWalletData.goCicilData.copy(availableTerms = emptyList())
+                    )
+                )
                 globalEvent.value = OccGlobalEvent.AdjustAdminFeeError
             }
         }
-        calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
-                validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
+        calculator.calculateTotal(
+            orderCart,
+            orderProfile.value,
+            orderShipment.value,
+            validateUsePromoRevampUiModel,
+            orderPayment.value,
+            orderTotal.value
+        )
     }
 
     fun updateAddOn(saveAddOnStateResult: SaveAddOnStateResult) {
