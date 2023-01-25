@@ -20,8 +20,7 @@ object HomeRecommendationMapper {
     ): HomeRecommendationDataModel {
         val visitables = mutableListOf<HomeRecommendationVisitable>()
         val productStack = Stack<HomeRecommendationItemDataModel>()
-        // reverse stack because to get the first in
-        Collections.reverse(productStack)
+
         productStack.addAll(
             convertToHomeProductFeedModel(
                 graphqlResponse.products,

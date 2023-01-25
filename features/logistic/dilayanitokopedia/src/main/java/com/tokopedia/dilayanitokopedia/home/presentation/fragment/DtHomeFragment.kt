@@ -129,7 +129,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     private var statusBarState = AnchorTabStatus.MAXIMIZE
 
-    private var shareHome = createShareHomeTokonow()
+    private var shareHome = createShareHome()
 
     private var screenshotDetector: ScreenshotDetector? = null
 
@@ -171,9 +171,9 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     private var binding by autoClearedNullable<FragmentDtHomeBinding>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentDtHomeBinding.inflate(inflater, container, false)
-        return binding?.root as View
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -329,7 +329,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         updateShareHomeData(
             pageIdConstituents = listOf("home"),
             isScreenShot = false,
-            thumbNailTitle = "thumbnail title".orEmpty(),
             linkerType = LinkerData.NOW_TYPE
         )
 
@@ -339,17 +338,17 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     private fun updateShareHomeData(
         pageIdConstituents: List<String>,
         isScreenShot: Boolean,
-        thumbNailTitle: String,
         linkerType: String,
         id: String = "",
-        url: String = "https://www.tokopedia.com/now"
     ) {
-        shareHome?.pageIdConstituents = pageIdConstituents
-        shareHome?.isScreenShot = isScreenShot
-        shareHome?.thumbNailTitle = thumbNailTitle
-        shareHome?.linkerType = linkerType
-        shareHome?.id = id
-        shareHome?.sharingUrl = url
+        val thumbNailTitle = "Dilayani Tokopedia | Tokopedia"
+        val url = "https://www.tokopedia.com/discovery/dilayani-tokopedia"
+        shareHome.pageIdConstituents = pageIdConstituents
+        shareHome.isScreenShot = isScreenShot
+        shareHome.thumbNailTitle = thumbNailTitle
+        shareHome.linkerType = linkerType
+        shareHome.id = id
+        shareHome.sharingUrl = url
     }
 
     private fun shareClicked(shareHomeTokonow: DtShareUniversalModel?) {
@@ -740,7 +739,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 add(it)
             }
         }
-        if (!coachMarkList.isNullOrEmpty()) {
+        if (coachMarkList.isNotEmpty()) {
             coachMark = CoachMark2(requireContext())
             coachMark?.isOutsideTouchable = true
             coachMark?.showCoachMark(coachMarkList)
@@ -750,12 +749,14 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     private fun getChooseAddressWidgetCoachMarkItem(): CoachMark2Item? {
         val isNeedToShowCoachMark = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(requireContext())
         return if (isNeedToShowCoachMark == true && chooseAddressWidget?.isShown == true) {
-            chooseAddressWidget?.let {
-                CoachMark2Item(
-                    it,
-                    requireContext().getString(R.string.dt_home_choose_address_widget_coachmark_title),
-                    requireContext().getString(R.string.dt_home_choose_address_widget_coachmark_description)
-                )
+            chooseAddressWidget?.let { chooseAddressWidget ->
+                context?.getString(R.string.dt_home_choose_address_widget_coachmark_title)?.let { context ->
+                    CoachMark2Item(
+                        chooseAddressWidget,
+                        context,
+                        getString(R.string.dt_home_choose_address_widget_coachmark_description)
+                    )
+                }
             }
         } else {
             return null
@@ -914,15 +915,17 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         }
     }
 
-    private fun createShareHomeTokonow(): DtShareUniversalModel {
-        val imageShareUrl = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg"
+    private fun createShareHome(): DtShareUniversalModel {
+
+        // add later
+        val imageShareUrl = ""
 
         return DtShareUniversalModel(
-            sharingText = "sharingText".orEmpty(),
+            sharingText = "sharingText",
             thumbNailImage = imageShareUrl,
             ogImageUrl = imageShareUrl,
-            specificPageName = "title",
-            specificPageDescription = "desc".orEmpty(),
+            specificPageName = "",
+            specificPageDescription = "",
             linkerType = "dt",
             sharingUrl = "https://www.tokopedia.com/now"
         )
@@ -932,7 +935,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         updateShareHomeData(
             pageIdConstituents = listOf("home"),
             isScreenShot = true,
-            thumbNailTitle = "thumbnail title",
             linkerType = LinkerData.NOW_TYPE
         )
 

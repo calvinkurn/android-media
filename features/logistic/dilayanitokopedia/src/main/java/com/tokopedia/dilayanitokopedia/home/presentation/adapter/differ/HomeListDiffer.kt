@@ -8,8 +8,8 @@ class HomeListDiffer : BaseDtDiffer() {
     private var newList: List<Visitable<*>> = emptyList()
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = oldList[oldItemPosition]
-        val newItem = newList[newItemPosition]
+        val oldItem = oldList.getOrNull(oldItemPosition)
+        val newItem = newList.getOrNull(newItemPosition)
         return oldItem == newItem
     }
 

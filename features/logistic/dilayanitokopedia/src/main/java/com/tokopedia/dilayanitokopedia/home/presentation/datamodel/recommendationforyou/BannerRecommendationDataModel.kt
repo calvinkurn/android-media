@@ -63,19 +63,20 @@ data class BannerRecommendationDataModel(
     }
 
     override fun hashCode(): Int {
+        val mainId = 31
         var result = id
-        result = 31 * result + name.hashCode()
-        result = 31 * result + imageUrl.hashCode()
-        result = 31 * result + url.hashCode()
-        result = 31 * result + applink.hashCode()
-        result = 31 * result + buAttribution.hashCode()
-        result = 31 * result + creativeName.hashCode()
-        result = 31 * result + target.hashCode()
-        result = 31 * result + position
-        result = 31 * result + galaxyAttribution.hashCode()
-        result = 31 * result + affinityLabel.hashCode()
-        result = 31 * result + shopId.hashCode()
-        result = 31 * result + categoryPersona.hashCode()
+        result = mainId * result + name.hashCode()
+        result = mainId * result + imageUrl.hashCode()
+        result = mainId * result + url.hashCode()
+        result = mainId * result + applink.hashCode()
+        result = mainId * result + buAttribution.hashCode()
+        result = mainId * result + creativeName.hashCode()
+        result = mainId * result + target.hashCode()
+        result = mainId * result + position
+        result = mainId * result + galaxyAttribution.hashCode()
+        result = mainId * result + affinityLabel.hashCode()
+        result = mainId * result + shopId.hashCode()
+        result = mainId * result + categoryPersona.hashCode()
         return result
     }
 }
