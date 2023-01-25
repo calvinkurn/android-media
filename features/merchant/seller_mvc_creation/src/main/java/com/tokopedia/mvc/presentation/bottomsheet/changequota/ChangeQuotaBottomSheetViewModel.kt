@@ -15,6 +15,9 @@ import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaM
 import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaUiState
 import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaEffect
 import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaEffect.SuccessToGetDetailVoucher
+import com.tokopedia.mvc.util.constant.ChangeQuotaConstant.APPLY_ALL_PERIOD_COUPON
+import com.tokopedia.mvc.util.constant.ChangeQuotaConstant.APPLY_ONLY_PERIOD_COUPON
+import com.tokopedia.mvc.util.constant.ChangeQuotaConstant.NOT_YET_APPLY_PERIOD_COUPON
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,11 +33,8 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
-        private const val APPLY_ALL_PERIOD_COUPON = 1
-        private const val APPLY_ONLY_THIS_PERIOD_COUPON = 0
         private const val MAX_QUOTA = 999L
         private const val MIN_QUOTA_FOR_NOT_STARTED_CAMPAIGN = 1
-        private const val RESTART_DATA_ACTIVITY = -1
     }
 
     private val _inputQuotaValidation = MutableStateFlow(UpdateQuotaUiState())
@@ -53,7 +53,9 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
                 val response = merchantPromotionGetMVDataByIDUseCase.execute(param)
                 _changeQuotaUiModel.postValue(SuccessToGetDetailVoucher(response.toUpdateQuotaModelMapper()))
                 updateQuotaModel = response.toUpdateQuotaModelMapper()
-                setOptionsApplyPeriodCoupon(APPLY_ONLY_THIS_PERIOD_COUPON)
+
+                // TODO: uncomment this when BE ready to implement, radiosMultipleCoupon always gone for now
+                //setOptionsApplyPeriodCoupon(isNeedToDisableYesButton())
             },
             onError = { error ->
                 _changeQuotaUiModel.postValue(UpdateQuotaEffect.FailToGetDetailVoucher(error))
@@ -109,16 +111,6 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
         }
     }
 
-    fun setOptionsApplyPeriodCoupon(position: Int) {
-        _inputQuotaValidation.update {
-            it.copy(
-                isSelectedOptions = position != RESTART_DATA_ACTIVITY
-            )
-        }
-        updateQuotaModel =
-            updateQuotaModel.copy(isApplyToAllPeriodCoupon = position == APPLY_ALL_PERIOD_COUPON)
-    }
-
     fun calculateEstimation(maxBenefit: Long, quotaInput: Long): Long {
         return maxBenefit * quotaInput
     }
@@ -161,15 +153,30 @@ class ChangeQuotaBottomSheetViewModel @Inject constructor(
         )
     }
 
+    fun getVoucherStatus() = updateQuotaModel.voucherStatus.name
+
     fun restartVoucher() {
         updateQuotaModel = updateQuotaModel.copy(isApplyToAllPeriodCoupon = false)
         _changeQuotaUiModel.postValue(SuccessToGetDetailVoucher(updateQuotaModel))
-        setOptionsApplyPeriodCoupon(
-            if (isMultiPeriod()) RESTART_DATA_ACTIVITY else APPLY_ONLY_THIS_PERIOD_COUPON
-        )
+
+        // TODO: uncomment this when BE ready to implement, radiosMultipleCoupon always gone for now
+        /*setOptionsApplyPeriodCoupon(
+            isNeedToDisableYesButton()
+        )*/
     }
 
-    private fun isMultiPeriod(): Boolean {
-        return updateQuotaModel.isMultiPeriod
+    // TODO: uncomment this when BE ready to implement, radiosMultipleCoupon always gone for now
+    /*
+     private fun setOptionsApplyPeriodCoupon(optionsPosition: Int) {
+        _inputQuotaValidation.update {
+            it.copy(
+                isSelectedOptions = optionsPosition != NOT_YET_APPLY_PERIOD_COUPON
+            )
+        }
+        updateQuotaModel =
+            updateQuotaModel.copy(isApplyToAllPeriodCoupon = optionsPosition == APPLY_ALL_PERIOD_COUPON)
     }
+
+    private fun isNeedToDisableYesButton() =
+        if (updateQuotaModel.isMultiPeriod) NOT_YET_APPLY_PERIOD_COUPON else APPLY_ONLY_PERIOD_COUPON*/
 }

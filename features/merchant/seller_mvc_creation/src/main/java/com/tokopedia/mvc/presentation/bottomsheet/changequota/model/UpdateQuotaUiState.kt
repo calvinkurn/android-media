@@ -2,7 +2,7 @@ package com.tokopedia.mvc.presentation.bottomsheet.changequota.model
 
 data class UpdateQuotaUiState(
     val isValidInput: Boolean = true,
-    val isSelectedOptions : Boolean = false,
+    val isSelectedOptions : Boolean = true,
     val estimationSpending : Long = 0,
     val quotaReq : Long = 0,
     val isInputOnUnderMinimumReq : Boolean = false
