@@ -13,7 +13,7 @@ object RollenceKey {
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
 
-    //home component rollence section
+    // home component rollence section
     const val HOME_COMPONENT_LEGO24BANNER_EXP = "lego24_new"
     const val HOME_COMPONENT_LEGO24BANNER_OLD = "lego24_old"
     const val HOME_COMPONENT_LEGO24BANNER_VARIANT = "lego24_new"
@@ -28,26 +28,27 @@ object RollenceKey {
 
     const val NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT = "control_variant"
 
-    //TBD
+    // TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
 
-    //Recommendation page section
+    // Recommendation page section
     const val RECOM_PAGE_CPM_EXP = "ShopAdsIM3"
     const val RECOM_PAGE_CPM_OLD = "ShopAdsIMControl"
     const val RECOM_PAGE_CPM_VARIANT = "ShopAdsIMVariant"
     // end of Recommendation page section
 
-    //Auto Complete
+    // Auto Complete
     const val AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING = "keyword_track_init"
     const val AUTOCOMPLETE_SUGGESTION_COMPONENT_TRACKING = "keyword_track_autoc"
 
     const val SEARCH_BROAD_MATCH_TRACKER_UNIFICATION = "keyword_track_broad"
 
     // Purchase Platform
-    const val WISHLIST_CONTROL_VARIANT = "control_variant"
-    const val WISHLIST_EXPERIMENT_VARIANT = "experiment_variant"
+    const val CONTROL_VARIANT = "control_variant"
+    const val EXPERIMENT_VARIANT = "experiment_variant"
     const val WISHLIST_COLLECTION = "WL_collection_andro"
     const val WISHLIST_COLLECTION_SHARING = "WL_sharing_andro"
+    const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
 
     // SRP Video Sneak Peek Autoplay
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY = "srp_prodvideo_3"
@@ -58,14 +59,13 @@ object RollenceKey {
     const val SEARCH_TYPO_CORRECTION_ADS_VARIANT = "typo2"
 
     // Global Menu (Me Page)
-    const val ME_PAGE_REVAMP = "Navigation_Mepage"
-    const val ME_PAGE_REVAMP_VARIANT = "Mepage_Variant"
-
-    // Food
-    const val KEY_GOFOOD_SEARCH = "gofood_search"
+    const val ME_PAGE_EXP = "mepage_secondexp"
+    const val ME_PAGE_CONTROL = "control_variant"
+    const val ME_PAGE_VARIANT_1 = "Mepage_1"
+    const val ME_PAGE_VARIANT_2 = "Mepage_2"
 
     // TokoChat
-    const val KEY_ROLLENCE_TOKOCHAT = "gofood_chat"
+    const val KEY_ROLLENCE_TOKOCHAT = "gofood_chat_2"
 
     // PDP
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
@@ -74,16 +74,16 @@ object RollenceKey {
     const val PDP_SHOW_SHARE_AFFILIATE = "pdp_share_icon"
 
     // Saldo
-    const val SALDO_MODAL_TOKO_WIDGET = "saldo_mclremoval";
+    const val SALDO_MODAL_TOKO_WIDGET = "saldo_mclremoval"
 
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
 
-    //Play
+    // Play
     const val SWIPE_LIVE_ROOM = "play_sc"
 
     // Bubbles
-    const val KEY_ROLLENCE_BUBBLE_CHAT = "seller_bubble_chat"
+    const val KEY_ROLLENCE_BUBBLE_CHAT = "seller_bubble_chat_2"
 
     // Logistic
     const val KEY_SHARE_ADDRESS_LOGI = "share_address_logi"

@@ -1,0 +1,77 @@
+{
+  "readme": "Home Nav impress and click review",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "view_item",
+      "eventAction": "impression review card",
+      "eventCategory": "global menu",
+      "eventLabel": "",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "pageSource": "pageSource:global menu;",
+      "promotions": [
+        {
+          "creative_name": "",
+          "creative_slot": ".*",
+          "item_id": ".*_.*_.*",
+          "item_name": "/global_menu - review_card",
+          "creative_url": ""
+        }
+      ],
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click review card - product star rating",
+      "eventCategory": "global menu",
+      "eventLabel": "star rating - .* - .* - .*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "pageSource": "pageSource:global menu;",
+      "promotions": [
+        {
+          "creative_name": "star rating_.*",
+          "creative_slot": ".*",
+          "item_id": ".*_.*_.*",
+          "item_name": "/global_menu - review_card"
+        }
+      ],
+      "userId": ".*",
+      "sessionIris": ".*",
+      "clientId": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click review card - product card",
+      "eventCategory": "global menu",
+      "eventLabel": "product card - .* - .*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "pageSource": "pageSource:global menu;",
+      "promotions": [
+        {
+          "creative_name": "product card_.*",
+          "creative_slot": ".*",
+          "item_id": ".*_.*_.*",
+          "item_name": "/global_menu - review_card"
+        }
+      ],
+      "userId": ".*",
+      "sessionIris": ".*",
+      "clientId": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click view all review",
+      "eventCategory": "global menu",
+      "eventLabel": "",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "clientId": ".*",
+      "userId": ".*"
+    }
+  ]
+}

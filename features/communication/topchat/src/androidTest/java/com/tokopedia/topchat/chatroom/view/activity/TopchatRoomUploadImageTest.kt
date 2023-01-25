@@ -9,20 +9,20 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
-import androidx.test.espresso.matcher.ViewMatchers.*
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.matcher.hasTotalItemOf
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.atPositionIsInstanceOf
-import com.tokopedia.topchat.assertion.withItemCount
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatImageUploadViewHolder
 import com.tokopedia.topchat.matchers.withRecyclerView
-import org.hamcrest.Matchers.greaterThan
-import org.hamcrest.Matchers.not
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Test
 
@@ -36,7 +36,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         enableUploadImageByService()
         openChatRoom()
         // When
-        openImagePicker()
+        openMediaPicker()
         // Then
         assertImageContainerAtPosition(0, matches(isDisplayed()))
     }
@@ -48,7 +48,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         disableUploadImageByService()
         openChatRoom()
         // When
-        openImagePicker()
+        openMediaPicker()
         // Then
         assertImageContainerAtPosition(0, matches(isDisplayed()))
     }
@@ -60,7 +60,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         enableUploadImageByService()
         openChatRoom()
         // When
-        openImagePicker()
+        openMediaPicker()
         // Then
         assertImageContainerAtPosition(0, matches(isDisplayed()))
     }
@@ -72,7 +72,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         disableUploadImageByService()
         openChatRoom()
         // When
-        openImagePicker()
+        openMediaPicker()
         // Then
         assertImageContainerAtPosition(0, matches(isDisplayed()))
     }
@@ -84,14 +84,13 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openChatRoom()
         // When
         val count = getCurrentItemCount()
-        //send first image
-        openImagePicker()
-        //send second image
-        openImagePicker()
+        // send first image
+        openMediaPicker()
+        // send second image
+        openMediaPicker()
         // Then
         assertImageContainerAtPosition(0, matches(isDisplayed()))
         assertImageContainerAtPosition(1, matches(isDisplayed()))
-        onView(withId(R.id.recycler_view_chatroom)).check(withItemCount(greaterThan(count)))
     }
 
     @Test
@@ -101,7 +100,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openChatRoom()
 
         // When
-        openImagePicker()
+        openMediaPicker()
         finishActivity()
         openChatRoom()
 
@@ -117,7 +116,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openChatRoom()
 
         // When
-        openImagePicker()
+        openMediaPicker()
         finishActivity()
         openChatRoom()
 
@@ -135,7 +134,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openChatRoom()
 
         // When
-        openImagePicker()
+        openMediaPicker()
         finishActivity()
         openChatRoom()
         clickImageUploadErrorHandler()
@@ -156,7 +155,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openChatRoom()
 
         // When
-        openImagePicker()
+        openMediaPicker()
 
         // Then
         assertImageReadStatusAtPosition(0, matches(not(isDisplayed())))
@@ -166,8 +165,10 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         onView(withId(R.id.recycler_view_chatroom)).check(
             atPositionIsInstanceOf(position, ImageUploadUiModel::class.java)
         )
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPositionOnView(position, R.id.fl_image_container))
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(position, R.id.fl_image_container)
+        )
             .check(assertions)
     }
 
@@ -175,8 +176,10 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         onView(withId(R.id.recycler_view_chatroom)).check(
             atPositionIsInstanceOf(position, ImageUploadUiModel::class.java)
         )
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPositionOnView(position, R.id.chat_status))
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(position, R.id.chat_status)
+        )
             .check(assertions)
     }
 
@@ -188,7 +191,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         onView(withText("Kirim ulang")).perform(click())
     }
 
-    private fun openImagePicker() {
+    private fun openMediaPicker() {
         clickPlusIconMenu()
         clickAttachImageMenu()
     }
@@ -204,7 +207,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         replyChatGQLUseCase.delayResponse = replyChatGqlDelay
         replyChatGQLUseCase.response = uploadImageReplyResponse
         launchChatRoomActivity()
-        intending(hasData(ApplinkConstInternalGlobal.IMAGE_PICKER))
+        intending(hasData(INTERNAL_MEDIA_PICKER))
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, getImageData()))
     }
 

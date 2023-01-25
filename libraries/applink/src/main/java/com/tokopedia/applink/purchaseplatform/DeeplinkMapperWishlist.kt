@@ -1,10 +1,7 @@
 package com.tokopedia.applink.purchaseplatform
 
 import android.content.Context
-import android.net.Uri
 import com.tokopedia.applink.FirebaseRemoteConfigInstance
-import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -27,9 +24,8 @@ object DeeplinkMapperWishlist {
 
     private fun isEnableRollenceWishlistCollection(): Boolean {
         return try {
-            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.WISHLIST_COLLECTION, RollenceKey.WISHLIST_CONTROL_VARIANT)
-            return (remoteConfigRollenceValue == RollenceKey.WISHLIST_EXPERIMENT_VARIANT)
-
+            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.WISHLIST_COLLECTION, RollenceKey.CONTROL_VARIANT)
+            return (remoteConfigRollenceValue == RollenceKey.EXPERIMENT_VARIANT)
         } catch (e: Exception) {
             true
         }

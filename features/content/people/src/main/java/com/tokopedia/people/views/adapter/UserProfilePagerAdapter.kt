@@ -43,6 +43,10 @@ class UserProfilePagerAdapter(
 
     fun getTabs() = listFragment
 
+    fun getFeedsTabs() = listFragment.filter { it.key == FRAGMENT_KEY_FEEDS }
+
+    fun getVideoTabs() = listFragment.filter { it.key == FRAGMENT_KEY_VIDEO }
+
     private fun attachTab() {
         TabsUnifyMediator(tabLayout, viewPager) { tab, position ->
             addNewTab(tab, position)
