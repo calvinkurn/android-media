@@ -428,9 +428,7 @@ class UserProfileViewModel @AssistedInject constructor(
         _followInfo.update { followInfo }
         _profileType.update { profileType }
 
-        if (profileType == ProfileType.Self) _profileWhitelist.update { repo.getWhitelist() }
-
-        if (_profileInfo.value.isBlocking) {
+        if (isBlocking) {
             _feedPostsContent.value = UserFeedPostsUiModel()
             viewModelScope.launch {
                 _uiEvent.emit(UserProfileUiEvent.BlockingUserState(
@@ -439,6 +437,8 @@ class UserProfileViewModel @AssistedInject constructor(
             }
             return
         }
+
+        if (profileType == ProfileType.Self) _profileWhitelist.update { repo.getWhitelist() }
 
         if (isRefresh) loadProfileTab()
     }
