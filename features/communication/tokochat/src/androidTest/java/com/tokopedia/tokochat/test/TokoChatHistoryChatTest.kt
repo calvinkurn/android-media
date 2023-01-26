@@ -8,6 +8,7 @@ import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
 import com.tokopedia.tokochat.test.base.BaseTokoChatTest
+import com.tokopedia.tokochat.test.robot.header_date.HeaderDateResult
 import com.tokopedia.tokochat.test.robot.message_bubble.MessageBubbleResult
 import com.tokopedia.tokochat.test.robot.message_bubble.MessageBubbleRobot
 import com.tokopedia.tokochat.test.robot.reply_area.ReplyAreaRobot
@@ -16,7 +17,7 @@ import com.tokopedia.tokochat.view.chatroom.TokoChatViewModel
 import org.junit.Test
 
 @UiTest
-class TokoChatBubbleChatTest : BaseTokoChatTest() {
+class TokoChatHistoryChatTest : BaseTokoChatTest() {
 
     // Need to prepare before class,
     // in case the database is not ready after been deleted from other test class
@@ -36,6 +37,28 @@ class TokoChatBubbleChatTest : BaseTokoChatTest() {
             },
             OrderChatType.Unknown
         )
+    }
+
+    @Test
+    fun should_show_date_header_in_chat_history() {
+        // When
+        launchChatRoomActivity()
+        val adapter = getTokoChatAdapter()
+        val position = adapter.lastIndex - 1
+
+        // Then
+        HeaderDateResult.assertHeaderDateVisibility(position = position, isVisible = true)
+    }
+
+    @Test
+    fun should_show_first_ticker() {
+        // When
+        launchChatRoomActivity()
+        val adapter = getTokoChatAdapter()
+        val lastItem = adapter.lastIndex
+
+        // Then
+        TickerResult.assertTickerVisibility(position = lastItem, isVisible = true)
     }
 
     @Test

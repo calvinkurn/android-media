@@ -4,10 +4,8 @@ import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.chatOrderHistoryResponse
 import com.tokopedia.tokochat.test.base.BaseTokoChatTest
 import com.tokopedia.tokochat.test.robot.header.HeaderResult
-import com.tokopedia.tokochat.test.robot.header_date.HeaderDateResult
 import com.tokopedia.tokochat.test.robot.reply_area.ReplyAreaResult
 import com.tokopedia.tokochat.test.robot.reply_area.ReplyAreaRobot
-import com.tokopedia.tokochat.test.robot.ticker.TickerResult
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.util.OrderStatusType
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.MAX_DISPLAYED_STRING
@@ -64,28 +62,6 @@ class TokoChatGeneralTest : BaseTokoChatTest() {
     }
 
     @Test
-    fun should_show_first_ticker() {
-        // When
-        launchChatRoomActivity()
-        val adapter = getTokoChatAdapter()
-        val lastItem = adapter.lastIndex
-
-        // Then
-        TickerResult.assertTickerVisibility(position = lastItem, isVisible = true)
-    }
-
-    @Test
-    fun should_show_date_header_in_chat_history() {
-        // When
-        launchChatRoomActivity()
-        val adapter = getTokoChatAdapter()
-        val position = adapter.lastIndex - 1
-
-        // Then
-        HeaderDateResult.assertHeaderDateVisibility(position = position, isVisible = true)
-    }
-
-    @Test
     fun should_show_reply_area_and_can_type() {
         // When
         val dummyText = "Ditunggu ya"
@@ -130,7 +106,8 @@ class TokoChatGeneralTest : BaseTokoChatTest() {
         // When
         launchChatRoomActivity()
         val longText = context.resources.getString(
-            com.tokopedia.tokochat.test.R.string.tokochat_long_text)
+            com.tokopedia.tokochat.test.R.string.tokochat_long_text
+        )
         ReplyAreaRobot.replaceTextInReplyArea(longText)
 
         // Then
@@ -144,8 +121,9 @@ class TokoChatGeneralTest : BaseTokoChatTest() {
         // When
         launchChatRoomActivity()
         val longText = context.resources.getString(
-            com.tokopedia.tokochat.test.R.string.tokochat_long_text)
-        ReplyAreaRobot.replaceTextInReplyArea(longText.repeat( 11))
+            com.tokopedia.tokochat.test.R.string.tokochat_long_text
+        )
+        ReplyAreaRobot.replaceTextInReplyArea(longText.repeat(11))
 
         // Then
         ReplyAreaResult.assertReplyAreaErrorMessage(
