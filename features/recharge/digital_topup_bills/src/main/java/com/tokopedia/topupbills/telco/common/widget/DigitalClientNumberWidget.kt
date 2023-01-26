@@ -5,7 +5,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
@@ -165,7 +164,8 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
                 chipImageResource = getIconUnifyDrawable(
                     context,
                     IconUnify.VIEW_LIST,
-                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                )
                 setOnClickListener {
                     listener.onNavigateToContact(true)
                 }
@@ -173,19 +173,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
             } else {
                 hide()
             }
-        }
-
-        // create extra chip for navigation
-        val isMoreThanFive = favnum.size > MAX_CHIP_SIZE
-        if (isMoreThanFive) {
-            val sortFilterItem = SortFilterItem(
-                "",
-                type = ChipsUnify.TYPE_ALTERNATE
-            )
-            sortFilterItem.listener = {
-                listener.onNavigateToContact(true)
-            }
-            sortFilter.add(sortFilterItem)
         }
 
         // create each chip
@@ -216,20 +203,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
         }
 
         sortFilterChip.addItem(sortFilter)
-
-        // init navigation chip's icon & color
-        if (isMoreThanFive) {
-            val chevronRight = IconUnify(
-                context,
-                IconUnify.CHEVRON_RIGHT,
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-            )
-            chevronRight.layoutParams = ViewGroup.LayoutParams(
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3),
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
-            )
-            sortFilterChip.chipItems?.first()?.refChipUnify?.addCustomView(chevronRight)
-        }
     }
 
     fun clearFocusAutoComplete() {
