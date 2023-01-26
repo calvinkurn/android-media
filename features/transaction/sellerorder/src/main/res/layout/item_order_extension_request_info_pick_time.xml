@@ -31,7 +31,7 @@
         app:layout_constraintEnd_toStartOf="@id/ivInformation"
         android:clickable="true"
         android:focusable="true"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         android:textColor="@color/Unify_NN600"
         android:layout_marginEnd="16dp"
         tools:text="tess"/>
