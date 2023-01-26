@@ -50,22 +50,5 @@ open class HomeAccountShortcutUseCase @Inject constructor(
 
     override suspend fun execute(params: Unit): ShortcutResponse {
         return graphqlRepository.request(graphqlQuery(), params)
-//        val gqlRequest = GraphqlRequest(graphqlQuery(),
-//                ShortcutResponse::class.java, mapOf<String, Any>())
-//        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
-//                .Builder(CacheType.ALWAYS_CLOUD).build())
-//        val errors = gqlResponse.getError(ShortcutResponse::class.java)
-//        if (!errors.isNullOrEmpty()) {
-//            throw MessageErrorException(errors[0].message)
-//        } else {
-//            var data: ShortcutResponse? = gqlResponse.getData(ShortcutResponse::class.java)
-//            if(data == null) {
-//                val mapResponse = Utils.convertResponseToJson(gqlResponse)
-//                data = ShortcutResponse()
-//                AccountErrorHandler.logDataNull("Account_GetShortcutDataUseCase",
-//                        Throwable("Results : ${mapResponse[Utils.M_RESULT]} - Errors : ${mapResponse[Utils.M_ERRORS]}"))
-//            }
-//            return data
-//        }
     }
 }
