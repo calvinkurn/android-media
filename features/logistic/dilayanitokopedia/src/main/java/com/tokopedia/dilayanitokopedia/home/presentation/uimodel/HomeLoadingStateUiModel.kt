@@ -7,6 +7,6 @@ data class HomeLoadingStateUiModel(
 ) : HomeLayoutUiModel(id) {
 
     override fun type(typeFactory: DtHomeAdapterTypeFactory?): Int {
-        return typeFactory!!.type(this)
+        return typeFactory?.type(this) ?: 0
     }
 }

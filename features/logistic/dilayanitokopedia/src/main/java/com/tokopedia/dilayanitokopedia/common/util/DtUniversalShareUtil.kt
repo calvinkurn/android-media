@@ -83,13 +83,15 @@ object DtUniversalShareUtil {
             channel = shareModel.channel
             campaign = shareModel.campaign
             isThrowOnError = false
-            if (shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
+            if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
                 ogImageUrl = shareModel.ogImgUrl
             }
+            deepLink = shareData?.deeplink
         }
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(
-                0, linkerShareData,
+                0,
+                linkerShareData,
                 object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
                         val shareString =
