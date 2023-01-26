@@ -19,6 +19,7 @@ import com.tokopedia.hotel.destination.data.model.SearchDestination
 import com.tokopedia.hotel.destination.usecase.GetHotelRecentSearchUseCase
 import com.tokopedia.hotel.destination.usecase.GetPropertyPopularUseCase
 import com.tokopedia.hotel.destination.view.fragment.HotelRecommendationFragment
+import com.tokopedia.hotel.destination.view.mapper.HotelDestinationMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.locationmanager.DeviceLocation
@@ -37,6 +38,7 @@ class HotelDestinationViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     private val getPropertyPopularUseCase: GetPropertyPopularUseCase,
     private val getHotelRecentSearchUseCase: GetHotelRecentSearchUseCase,
+    private val hotelDestinationMapper: HotelDestinationMapper,
     val graphqlRepository: GraphqlRepository,
     val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io) {
@@ -76,11 +78,7 @@ class HotelDestinationViewModel @Inject constructor(
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_SEARCH_RESPONSE, dataParams)
                 graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<HotelSuggestion.Response>()
-            val list = data.propertySearchSuggestion.searchDestinationList.map {
-                it.source = data.propertySearchSuggestion.source
-                it
-            }
-            searchDestination.postValue(Loaded(Success(list.toMutableList())))
+            searchDestination.postValue(Loaded(Success(hotelDestinationMapper.mapSource(data).toMutableList())))
         }) {
             searchDestination.postValue(Loaded(Fail(it)))
         }
