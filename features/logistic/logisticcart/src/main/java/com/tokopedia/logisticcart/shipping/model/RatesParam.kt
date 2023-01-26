@@ -112,7 +112,8 @@ data class RatesParam(
             "mvc" to mvc,
             "po_time" to po_time,
             "is_fulfillment" to is_fulfillment,
-            "bo_metadata" to bo_metadata
+            "bo_metadata" to bo_metadata,
+            "warehouse_id" to warehouse_id,
     )
 
     fun toMetadata(): Map<String, Any?> = mapOf(
