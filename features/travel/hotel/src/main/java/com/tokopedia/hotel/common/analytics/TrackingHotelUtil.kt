@@ -120,9 +120,9 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun hotelSelectDestination(context: Context?, destType: String, destination: String, screenName: String) {
+    fun hotelSelectDestination(context: Context?, destType: String, destination: String, source: String, screenName: String) {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
-        map.addGeneralEvent(CLICK_HOTEL, SELECT_DESTINATION, "$HOTEL_LABEL - $destType - $destination")
+        map.addGeneralEvent(CLICK_HOTEL, SELECT_DESTINATION, "$HOTEL_LABEL - $destType - $destination - $source")
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 

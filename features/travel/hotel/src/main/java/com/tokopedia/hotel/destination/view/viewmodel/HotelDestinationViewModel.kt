@@ -34,11 +34,12 @@ import javax.inject.Inject
  */
 
 class HotelDestinationViewModel @Inject constructor(
-        private val userSessionInterface: UserSessionInterface,
-        private val getPropertyPopularUseCase: GetPropertyPopularUseCase,
-        private val getHotelRecentSearchUseCase: GetHotelRecentSearchUseCase,
-        val graphqlRepository: GraphqlRepository,
-        val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.io) {
+    private val userSessionInterface: UserSessionInterface,
+    private val getPropertyPopularUseCase: GetPropertyPopularUseCase,
+    private val getHotelRecentSearchUseCase: GetHotelRecentSearchUseCase,
+    val graphqlRepository: GraphqlRepository,
+    val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.io) {
 
     val popularSearch = MutableLiveData<Result<List<PopularSearch>>>()
     val recentSearch = MutableLiveData<Result<List<RecentSearch>>>()
@@ -75,7 +76,11 @@ class HotelDestinationViewModel @Inject constructor(
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_SEARCH_RESPONSE, dataParams)
                 graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<HotelSuggestion.Response>()
-            searchDestination.postValue(Loaded(Success(data.propertySearchSuggestion.searchDestinationList.toMutableList())))
+            val list = data.propertySearchSuggestion.searchDestinationList.map {
+                it.source = data.propertySearchSuggestion.source
+                it
+            }
+            searchDestination.postValue(Loaded(Success(list.toMutableList())))
         }) {
             searchDestination.postValue(Loaded(Fail(it)))
         }
@@ -104,8 +109,11 @@ class HotelDestinationViewModel @Inject constructor(
                 if (locationResult == null) return
                 locationResult.locations.forEach {
                     if (it != null) {
-                        if (it.latitude == 0.0 && it.longitude == 0.0) longLat.postValue(Fail(Throwable()))
-                        else longLat.postValue(Success(Pair(it.longitude, it.latitude)))
+                        if (it.latitude == 0.0 && it.longitude == 0.0) {
+                            longLat.postValue(Fail(Throwable()))
+                        } else {
+                            longLat.postValue(Success(Pair(it.longitude, it.latitude)))
+                        }
                         try {
                             fusedLocationProviderClient.removeLocationUpdates(locationCallback)
                         } catch (e: Throwable) {
@@ -122,15 +130,18 @@ class HotelDestinationViewModel @Inject constructor(
 
         try {
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
-        }catch (e: SecurityException){
+        } catch (e: SecurityException) {
             e.printStackTrace()
         }
     }
 
     fun onGetLocation(): Function1<DeviceLocation, Unit> {
         return { (latitude, longitude) ->
-            if (latitude == 0.0 && longitude == 0.0) longLat.postValue(Fail(Throwable()))
-            else longLat.postValue(Success(Pair(longitude, latitude)))
+            if (latitude == 0.0 && longitude == 0.0) {
+                longLat.postValue(Fail(Throwable()))
+            } else {
+                longLat.postValue(Success(Pair(longitude, latitude)))
+            }
         }
     }
 
