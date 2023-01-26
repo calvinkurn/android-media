@@ -91,13 +91,16 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
         mListener = listener
     }
 
-    private fun setupView() = with(binding.clCoverFormPreview) {
-        setAuthorName(parentViewModel.authorName)
-        setTitle(parentViewModel.channelTitle)
-        setOnClickListener {
-            if (binding.clCoverFormPreview.isCoverAvailable) analytic.clickEditCover()
+    private fun setupView() = with(binding) {
+        clCoverFormPreview.setAuthorName(parentViewModel.authorName)
+        clCoverFormPreview.setTitle(parentViewModel.channelTitle)
+        clCoverFormPreview.setOnClickListener {
+            if (clCoverFormPreview.isCoverAvailable) analytic.clickEditCover()
             else analytic.clickAddNewCover()
             openCoverSetupFragment()
+        }
+        btnSetupCoverUploadImage.setOnClickListener {
+            if (btnSetupCoverUploadImage.isEnabled) mListener?.setupCoverButtonSaveClicked()
         }
     }
 
@@ -109,10 +112,13 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
                         croppedCover.coverImage.toString().contains(HTTP)
                     ) {
                         binding.clCoverFormPreview.setCover(croppedCover.coverImage.toString())
+                        binding.btnSetupCoverUploadImage.isEnabled = true
                     } else if (!croppedCover.localImage?.toString().isNullOrEmpty()) {
                         binding.clCoverFormPreview.setCover(croppedCover.localImage.toString())
+                        binding.btnSetupCoverUploadImage.isEnabled = true
                     } else {
                         binding.clCoverFormPreview.setInitialCover()
+                        binding.btnSetupCoverUploadImage.isEnabled = false
                     }
                 }
                 else -> {}

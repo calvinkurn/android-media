@@ -158,7 +158,10 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                     is PlayBroadcastSummaryEvent.PostVideo -> {
                         when (val networkResult = it.networkResult) {
                             is NetworkResult.Loading -> binding.btnPostVideo.isLoading = true
-                            is NetworkResult.Success -> openShopPageWithBroadcastStatus()
+                            is NetworkResult.Success -> {
+                                // TODO
+                                openShopPageWithBroadcastStatus()
+                            }
                             is NetworkResult.Fail -> {
                                 binding.btnPostVideo.isLoading = false
                                 toaster.showError(
