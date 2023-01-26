@@ -11,6 +11,10 @@ class TokoChatFragmentStub : TokoChatFragment() {
 
     override fun initializeChatRoom(savedInstanceState: Bundle?) {
         super.initializeChatRoom(savedInstanceState)
+    }
+
+    override fun onGroupBookingChannelCreationStarted() {
+        super.onGroupBookingChannelCreationStarted()
         BaseTokoChatTest.idlingResourceGroupBooking.increment()
     }
 
@@ -23,6 +27,11 @@ class TokoChatFragmentStub : TokoChatFragment() {
 
     override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
         super.onGroupBookingChannelCreationSuccess(channelUrl)
+        if (!BaseTokoChatTest.shouldWaitForChatHistory &&
+            !BaseTokoChatTest.idlingResourceGroupBooking.isIdleNow
+        ) {
+            BaseTokoChatTest.idlingResourceGroupBooking.decrement()
+        }
     }
 
     override fun mapConversationMessageToUiModel(list: List<ConversationsMessage>) {

@@ -92,9 +92,11 @@ abstract class BaseTokoChatTest {
             okHttp3IdlingResource,
             idlingResourceDatabaseMessage,
             idlingResourceDatabaseChannel,
-            idlingResourceGroupBooking
+            idlingResourceGroupBooking,
+            idlingResourceBeforeClass
         )
         mockWebServer.start(8090)
+        shouldWaitForChatHistory = true
     }
 
     @After
@@ -107,7 +109,8 @@ abstract class BaseTokoChatTest {
             okHttp3IdlingResource,
             idlingResourceDatabaseMessage,
             idlingResourceDatabaseChannel,
-            idlingResourceGroupBooking
+            idlingResourceGroupBooking,
+            idlingResourceBeforeClass
         )
     }
 
@@ -232,5 +235,10 @@ abstract class BaseTokoChatTest {
         val idlingResourceGroupBooking = CountingIdlingResource(
             "tokochat-groupbooking"
         )
+        val idlingResourceBeforeClass = CountingIdlingResource(
+            "tokochat-beforeclass"
+        )
+
+        var shouldWaitForChatHistory: Boolean = true
     }
 }

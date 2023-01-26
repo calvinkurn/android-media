@@ -379,7 +379,7 @@ class TokoChatViewModel @Inject constructor(
     }
 
     companion object {
-        private const val TOKOFOOD_SERVICE_TYPE = 5
+        const val TOKOFOOD_SERVICE_TYPE = 5
         const val DELAY_UPDATE_ORDER_STATE = 5000L
         private const val DELAY_FETCH_IMAGE = 500L
     }
