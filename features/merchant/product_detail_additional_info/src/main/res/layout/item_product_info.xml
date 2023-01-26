@@ -36,12 +36,15 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/post_atc_product_info_subtitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/Unify_NN1000"
             app:layout_constraintBottom_toBottomOf="@id/post_atc_product_info_image"
             app:layout_constraintStart_toStartOf="@id/post_atc_product_info_title"
             app:layout_constraintTop_toBottomOf="@id/post_atc_product_info_title"
+            app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="display_2"
             tools:text="Apple iPhone 13 128GB | 256GB | 512GB | 1TB | 2TB" />
 
