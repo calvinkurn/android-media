@@ -16,8 +16,6 @@ import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toString
@@ -25,7 +23,6 @@ import io.mockk.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito.doNothing
 import java.util.*
 
 class DsarViewModelTest {
@@ -310,7 +307,7 @@ class DsarViewModelTest {
         val profileInfo = ProfileInfo(firstName = "yoris")
         val response = ProfilePojo(profileInfo = profileInfo)
 
-        coEvery { getProfileUseCase.execute(any(), any()) } answers {
+        coEvery { getProfileUseCase.execute(any()) } answers {
             firstArg<GetProfileSubscriber>().onSuccessGetProfile(response)
         }
 
@@ -330,7 +327,7 @@ class DsarViewModelTest {
     @Test
     fun `fetchInitialData failed`() {
         /* When */
-        coEvery { getProfileUseCase.execute(any(), any()) } answers {
+        coEvery { getProfileUseCase.execute(any()) } answers {
             firstArg<GetProfileSubscriber>().onErrorGetProfile(Throwable())
         }
 
@@ -343,7 +340,7 @@ class DsarViewModelTest {
     @Test
     fun `on Show Location Admin Popup`() {
 
-        every { getProfileUseCase.execute(any(), any()) } answers {
+        every { getProfileUseCase.execute(any()) } answers {
             firstArg<GetProfileSubscriber>().showLocationAdminPopUp?.invoke()
         }
 
@@ -351,14 +348,14 @@ class DsarViewModelTest {
 
         /* Then */
         verify {
-            getProfileUseCase.execute(any(), any())
+            getProfileUseCase.execute(any())
         }
     }
 
     @Test
     fun `on Admin Redirection`() {
 
-        every { getProfileUseCase.execute(any(), any()) } answers {
+        every { getProfileUseCase.execute(any()) } answers {
             firstArg<GetProfileSubscriber>().onLocationAdminRedirection?.invoke()
         }
 
@@ -366,14 +363,14 @@ class DsarViewModelTest {
 
         /* Then */
         verify {
-            getProfileUseCase.execute(any(), any())
+            getProfileUseCase.execute(any())
         }
     }
 
     @Test
     fun `on Show Location Admin Popup Error`() {
 
-        every { getProfileUseCase.execute(any(), any()) } answers {
+        every { getProfileUseCase.execute(any()) } answers {
             firstArg<GetProfileSubscriber>().showErrorGetAdminType?.invoke(Throwable())
         }
 
@@ -381,7 +378,7 @@ class DsarViewModelTest {
 
         /* Then */
         verify {
-            getProfileUseCase.execute(any(), any())
+            getProfileUseCase.execute(any())
         }
     }
 
