@@ -21,7 +21,7 @@ import javax.inject.Inject
 /**
  * Created by kenny.hadisaputra on 26/01/22
  */
-@Suppress("LateInitUsage")
+@Suppress("LateinitUsage")
 class ProductSetupFragment @Inject constructor(
     private val productSetupViewModelFactory: PlayBroProductSetupViewModel.Factory
 ) : Fragment(), ViewModelFactoryProvider {
