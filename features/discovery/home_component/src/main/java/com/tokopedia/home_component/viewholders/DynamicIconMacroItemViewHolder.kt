@@ -147,7 +147,9 @@ class DynamicIconMacroItemViewHolder(
                         Int.ZERO.toLong()
                     )
                     rippleAnimator.addListener(object : Animator.AnimatorListener {
-                        override fun onAnimationStart(p0: Animator) {}
+                        override fun onAnimationStart(p0: Animator) {
+                            // no-op
+                        }
 
                         override fun onAnimationEnd(p0: Animator) {
                             if (currentScaleRipple == SCALE_MAX_IMAGE) {
