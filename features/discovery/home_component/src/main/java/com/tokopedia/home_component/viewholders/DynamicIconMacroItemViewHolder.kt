@@ -159,16 +159,26 @@ class DynamicIconMacroItemViewHolder(
                             }
                         }
 
-                        override fun onAnimationCancel(p0: Animator) {}
+                        override fun onAnimationCancel(p0: Animator) {
+                            // no-op
+                        }
 
-                        override fun onAnimationRepeat(p0: Animator) {}
+                        override fun onAnimationRepeat(p0: Animator) {
+                            // no-op
+                        }
                     })
                     scaleAnimator.addListener(object : Animator.AnimatorListener {
-                        override fun onAnimationRepeat(p0: Animator) {}
+                        override fun onAnimationRepeat(p0: Animator) {
+                            // no-op
+                        }
 
-                        override fun onAnimationCancel(p0: Animator) {}
+                        override fun onAnimationCancel(p0: Animator) {
+                            // no-op
+                        }
 
-                        override fun onAnimationStart(p0: Animator) {}
+                        override fun onAnimationStart(p0: Animator) {
+                            // no-op
+                        }
 
                         override fun onAnimationEnd(p0: Animator) {
                             animateScaling(
