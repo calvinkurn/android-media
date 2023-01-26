@@ -163,12 +163,14 @@ class HomeAccountUserViewModel @Inject constructor(
     }
 
     fun getShortcutData() {
-        launchCatchError(block = {
-            val shortcutResponse = getUserShortcutUseCase(Unit)
-            _shortcutData.value = Success(shortcutResponse)
-        }, onError = {
-            _shortcutData.value = Fail(it)
-        })
+        launch {
+            try {
+                val shortcutResponse = getUserShortcutUseCase(Unit)
+                _shortcutData.value = Success(shortcutResponse)
+            } catch (e: Exception) {
+                _shortcutData.value = Fail(e)
+            }
+        }
     }
 
     fun getBuyerData(isSupportBiometric: Boolean = false) {
