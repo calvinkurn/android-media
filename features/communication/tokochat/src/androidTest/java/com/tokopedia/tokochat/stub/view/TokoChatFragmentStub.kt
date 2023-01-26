@@ -2,6 +2,7 @@ package com.tokopedia.tokochat.stub.view
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
+import com.gojek.conversations.database.chats.ConversationsMessage
 import com.gojek.conversations.network.ConversationsNetworkError
 import com.tokopedia.tokochat.test.base.BaseTokoChatTest
 import com.tokopedia.tokochat.view.chatroom.TokoChatFragment
@@ -22,6 +23,10 @@ class TokoChatFragmentStub : TokoChatFragment() {
 
     override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
         super.onGroupBookingChannelCreationSuccess(channelUrl)
+    }
+
+    override fun mapConversationMessageToUiModel(list: List<ConversationsMessage>) {
+        super.mapConversationMessageToUiModel(list)
         if (!BaseTokoChatTest.idlingResourceGroupBooking.isIdleNow) {
             BaseTokoChatTest.idlingResourceGroupBooking.decrement()
         }
