@@ -74,12 +74,22 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     private val widgetAdapter = PlayWidgetChannelMediumAdapter(cardChannelListener = this)
 
+    private val chipsLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
+        LinearLayoutManager(binding.rvChips.context, RecyclerView.HORIZONTAL, false)
+    }
+
+    private val widgetLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
+        GridLayoutManager(binding.rvWidgets.context, SPAN_CHANNEL)
+    }
+
     private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
-        object : EndlessRecyclerViewScrollListener(binding.rvWidgets.layoutManager) {
+        object : EndlessRecyclerViewScrollListener(widgetLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 viewModel.submitAction(NextPageWidgets)
             }
+
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) analytic?.scrollExplore()
             }
         }
@@ -111,10 +121,6 @@ class PlayExploreWidgetFragment @Inject constructor(
                 viewModel.submitAction(EmptyPageWidget)
             }
         }
-    }
-
-    private val chipsLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        LinearLayoutManager(binding.rvChips.context, RecyclerView.HORIZONTAL, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -165,7 +171,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         binding.rvChips.addOnScrollListener(chipsScrollListener)
 
         binding.rvWidgets.adapter = widgetAdapter
-        binding.rvWidgets.layoutManager = GridLayoutManager(binding.rvWidgets.context, SPAN_CHANNEL)
+        binding.rvWidgets.layoutManager = widgetLayoutManager
         binding.rvWidgets.addOnScrollListener(scrollListener)
 
         binding.srExploreWidget.setOnRefreshListener {
