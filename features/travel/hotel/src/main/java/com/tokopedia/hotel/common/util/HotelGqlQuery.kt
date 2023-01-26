@@ -153,6 +153,7 @@ internal object HotelPropertySearchQuery {
             values
             selected
         }
+        source
     }
     }
     """
