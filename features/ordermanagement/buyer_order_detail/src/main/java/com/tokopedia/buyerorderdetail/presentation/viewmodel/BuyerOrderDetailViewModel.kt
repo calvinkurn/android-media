@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
@@ -179,7 +178,11 @@ class BuyerOrderDetailViewModel @Inject constructor(
                 product to atcUseCase.get().execute(
                     userSession.get().userId,
                     atcMultiQuery.get(),
-                    arrayListOf(product.mapToAddToCartParam())
+                    AddToCartParamsMapper.mapSingleAddToCartParams(
+                        product = product,
+                        shopId = getShopId(),
+                        userId = getUserId()
+                    )
                 )
                 ).let { result ->
                 singleAtcRequestStates.update {
@@ -431,18 +434,6 @@ class BuyerOrderDetailViewModel @Inject constructor(
         } else {
             ""
         }
-    }
-
-    private fun ProductListUiModel.ProductUiModel.mapToAddToCartParam(): AddToCartMultiParam {
-        return AddToCartMultiParam(
-            productId = productId,
-            productName = productName,
-            productPrice = price,
-            qty = quantity,
-            notes = productNote,
-            shopId = getShopId(),
-            custId = userSession.get().userId
-        )
     }
 
     private fun mapMultiATCResult(result: Result<AtcMultiData>): MultiATCState {
