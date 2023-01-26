@@ -12,6 +12,8 @@ class TopchatWebSocketLogViewHolder(itemView: View) : WebSocketViewHolder(itemVi
     private val tvSource = itemView.findViewById<Typography>(R.id.tv_websocket_log_source)
     private val tvDateTime = itemView.findViewById<Typography>(R.id.tv_websocket_log_date_time)
     private val tvUrl = itemView.findViewById<Typography>(R.id.tv_websocket_log_url)
+    private val tvCodeId = itemView.findViewById<Typography>(R.id.tv_websocket_log_code_id)
+    private val tvMessageId = itemView.findViewById<Typography>(R.id.tv_websocket_log_message_id)
 
     override fun bind(model: WebSocketLogUiModel, listener: ((WebSocketLogUiModel) -> Unit)?) {
         tvTitle.text = model.event
@@ -20,6 +22,8 @@ class TopchatWebSocketLogViewHolder(itemView: View) : WebSocketViewHolder(itemVi
         if (model.topchatDetailInfo != null) {
             tvSource.text = model.topchatDetailInfo.source
             tvUrl.text = model.topchatDetailInfo.url
+            tvCodeId.text = model.topchatDetailInfo.code
+            tvMessageId.text = model.topchatDetailInfo.messageId
         }
 
         itemView.setOnClickListener {

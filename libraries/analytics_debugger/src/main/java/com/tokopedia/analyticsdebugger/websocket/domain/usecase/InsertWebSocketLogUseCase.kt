@@ -57,6 +57,8 @@ class InsertWebSocketLogUseCase @Inject constructor(
                     TopchatWebSocketLogEntity(
                         source = it.topchatDetailInfo.source,
                         url = it.topchatDetailInfo.url,
+                        code = it.topchatDetailInfo.code,
+                        messageId = it.topchatDetailInfo.messageId,
                         event = it.event,
                         message = it.message,
                         timestamp = System.currentTimeMillis()

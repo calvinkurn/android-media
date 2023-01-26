@@ -15,5 +15,7 @@ data class PlayWebSocketLogGeneralInfoUiModel(
 // Topchat
 data class TopchatWebSocketLogDetailInfoUiModel(
     val source: String = "",
-    val url: String = ""
+    val url: String = "",
+    val code: String = "",
+    val messageId: String = "",
 )

@@ -35,7 +35,9 @@ class WebSocketLogMapper @Inject constructor() {
             id = it.id,
             topchatDetailInfo = TopchatWebSocketLogDetailInfoUiModel(
                 source = it.source.ifEmpty { "-" },
-                url = it.url.ifEmpty { "-" }
+                url = it.url.ifEmpty { "-" },
+                code = it.code.ifEmpty { "-" },
+                messageId = it.messageId.ifEmpty { "-" }
             ),
             event = it.event,
             message = it.message,
