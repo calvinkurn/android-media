@@ -859,43 +859,37 @@ open class DynamicProductDetailViewModel @Inject constructor(
         annotationChip: AnnotationChip,
         productId: String
     ) {
-        fun recommendationChipClicked(
-            recommendationDataModel: ProductRecommendationDataModel,
-            annotationChip: AnnotationChip,
-            productId: String
-        ) {
-            launchCatchError(dispatcher.io, block = {
-                if (!GlobalConfig.isSellerApp()) {
-                    val requestParams = GetRecommendationRequestParam(
-                        pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
-                        pageName = recommendationDataModel.recomWidgetData?.pageName ?: "",
-                        queryParam = if (annotationChip.recommendationFilterChip.isActivated) annotationChip.recommendationFilterChip.value else "",
-                        productIds = arrayListOf(productId)
-                    )
-                    val recommendationResponse =
-                        getRecommendationUseCase.get().getData(requestParams)
-                    val updatedData = if (recommendationResponse.isNotEmpty() &&
-                        recommendationResponse.first().recommendationItemList.isNotEmpty()
-                    ) {
-                        recommendationResponse.first()
-                    } else {
-                        null
-                    }
-
-                    updateFilterTopadsProduct(
-                        updatedData,
-                        recommendationDataModel,
-                        annotationChip
-                    )
+        launchCatchError(dispatcher.io, block = {
+            if (!GlobalConfig.isSellerApp()) {
+                val requestParams = GetRecommendationRequestParam(
+                    pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
+                    pageName = recommendationDataModel.recomWidgetData?.pageName ?: "",
+                    queryParam = if (annotationChip.recommendationFilterChip.isActivated) annotationChip.recommendationFilterChip.value else "",
+                    productIds = arrayListOf(productId)
+                )
+                val recommendationResponse =
+                    getRecommendationUseCase.get().getData(requestParams)
+                val updatedData = if (recommendationResponse.isNotEmpty() &&
+                    recommendationResponse.first().recommendationItemList.isNotEmpty()
+                ) {
+                    recommendationResponse.first()
+                } else {
+                    null
                 }
-            }) { throwable ->
+
                 updateFilterTopadsProduct(
-                    null,
+                    updatedData,
                     recommendationDataModel,
                     annotationChip
                 )
-                _statusFilterTopAdsProduct.postValue(throwable.asFail())
             }
+        }) { throwable ->
+            updateFilterTopadsProduct(
+                null,
+                recommendationDataModel,
+                annotationChip
+            )
+            _statusFilterTopAdsProduct.postValue(throwable.asFail())
         }
     }
 
