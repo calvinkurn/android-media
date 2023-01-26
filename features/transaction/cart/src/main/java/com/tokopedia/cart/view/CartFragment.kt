@@ -1414,8 +1414,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
         cartPageAnalytics.eventViewGotoplusTicker()
     }
 
+<<<<<<< HEAD
     override fun showCartBundlingBottomSheet(data: CartBundlingBottomSheetData, bundleIds: List<String>) {
         val bottomSheet = CartBundlingBottomSheet.newInstance(data, bundleIds)
+=======
+    override fun showCartBundlingBottomSheet(data: CartBundlingBottomSheetData) {
+        val bottomSheet = CartBundlingBottomSheet.newInstance(data)
+>>>>>>> feature/bbbyngkrm/bundling_cross_sell_bottom_sheet
         bottomSheet.setListener(this)
         bottomSheet.show(childFragmentManager)
     }

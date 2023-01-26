@@ -93,8 +93,6 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
             RouteManager.route(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, PRODUCT_ID_DEFAULT_VALUE,
                 selectedBundle.bundleId, pageSource)
         }
-        RouteManager.route(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, PRODUCT_ID_DEFAULT_VALUE,
-            selectedBundle.bundleId, pageSource)
         listener?.onSingleBundleActionButtonClicked(selectedBundle, bundleProducts)
     }
 
