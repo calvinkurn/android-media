@@ -7,7 +7,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.databinding.ItemLoadingBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 
-class LoadingDelegate : TypedAdapterDelegate<LoadingUiModel, PostAtcUiModel, LoadingViewHolder>(R.layout.item_loading) {
+class LoadingDelegate : TypedAdapterDelegate<LoadingUiModel, PostAtcUiModel, LoadingViewHolder>(R.layout.item_post_atc_loading) {
     override fun onBindViewHolder(item: LoadingUiModel, holder: LoadingViewHolder) {
         holder.bind(item)
     }

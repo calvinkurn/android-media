@@ -10,7 +10,7 @@ import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 
 class ErrorDelegate(
     private val listener: PostAtcListener
-) : TypedAdapterDelegate<ErrorUiModel, PostAtcUiModel, ErrorViewHolder>(R.layout.item_error) {
+) : TypedAdapterDelegate<ErrorUiModel, PostAtcUiModel, ErrorViewHolder>(R.layout.item_post_atc_error) {
     override fun onBindViewHolder(item: ErrorUiModel, holder: ErrorViewHolder) {
         holder.bind(item)
     }
