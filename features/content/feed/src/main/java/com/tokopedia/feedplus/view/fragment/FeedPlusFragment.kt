@@ -9,6 +9,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -4113,6 +4114,7 @@ class FeedPlusFragment :
                 }
                 if (shopId != "") {
                     data[shopId]?.let { followStatus ->
+                        Log.d("FEED_PLUS", "CHANGE STATUS FOR ${shopId} to $followStatus")
                         when (item) {
                             is DynamicPostModel -> {
                                 item.copy(
