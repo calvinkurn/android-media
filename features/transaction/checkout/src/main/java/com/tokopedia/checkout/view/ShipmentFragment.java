@@ -248,7 +248,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public static String EXTRA_CHECKOUT_ID_STRING = "extra_checkout_id_string";
 
     private static final long TOASTER_THROTTLE = 2000;
-    private static final long SCHEDULE_DELIVERY_RADIO_BUTTON_DEBOUNCE = 500;
+    private static final long SCHEDULE_DELIVERY_RADIO_BUTTON_DEBOUNCE = 1500;
 
     private RecyclerView rvShipment;
     private SwipeToRefresh swipeToRefresh;
