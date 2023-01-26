@@ -1,6 +1,7 @@
 package com.tokopedia.media.picker.ui.activity.picker
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MotionEvent
@@ -8,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -23,6 +25,7 @@ import com.tokopedia.media.picker.ui.component.ParentContainerComponent
 import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
+import com.tokopedia.media.picker.utils.isOppoManufacturer
 import com.tokopedia.media.picker.utils.permission.hasPermissionRequiredGranted
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
 import com.tokopedia.picker.common.*
@@ -105,6 +108,14 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
         initView()
         initObservable()
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+
+        if (isOppoManufacturer()) {
+            SplitCompat.installActivity(this)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
