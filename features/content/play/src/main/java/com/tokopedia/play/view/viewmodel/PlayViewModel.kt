@@ -2839,7 +2839,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun fetchWidgets() {
         viewModelScope.launchCatchError(block = {
-            _exploreWidget.update { it.copy(state = WidgetState.Loading, chips = it.chips.copy(state = ResultState.Loading)) }
+            _exploreWidget.update { it.copy(state = ExploreWidgetState.Loading, chips = it.chips.copy(state = ResultState.Loading)) }
             val data = getWidgets()
             val chips = data.getChips
 
@@ -2855,11 +2855,11 @@ class PlayViewModel @AssistedInject constructor(
                 it.copy(
                     param = it.param.copy(cursor = widgets.getConfig.cursor),
                     widgets = newList.getChannelBlocks,
-                    state = if (newList.isEmpty()) WidgetState.Empty else WidgetState.Success
+                    state = if (newList.isEmpty()) ExploreWidgetState.Empty else ExploreWidgetState.Success
                 )
             }
         }) { exception ->
-            _exploreWidget.update { it.copy(state = WidgetState.Fail(exception)) }
+            _exploreWidget.update { it.copy(state = ExploreWidgetState.Fail(exception)) }
         }
     }
 
@@ -2869,7 +2869,7 @@ class PlayViewModel @AssistedInject constructor(
     private fun onActionWidget(isNextPage: Boolean = false) {
         if (!_exploreWidget.value.param.hasNextPage && isNextPage) return
         viewModelScope.launchCatchError(block = {
-            _exploreWidget.update { it.copy(state = if (isNextPage) it.state else WidgetState.Loading, param = it.param.copy(cursor = if (isNextPage) it.param.cursor else "")) }
+            _exploreWidget.update { it.copy(state = if (isNextPage) it.state else ExploreWidgetState.Loading, param = it.param.copy(cursor = if (isNextPage) it.param.cursor else "")) }
 
             val widgets = getWidgets()
 
@@ -2879,12 +2879,12 @@ class PlayViewModel @AssistedInject constructor(
                 it.copy(
                     widgets = newList.getChannelBlocks,
                     param = it.param.copy(cursor = widgets.getConfig.cursor),
-                    state = if (newList.isEmpty()) WidgetState.Empty else WidgetState.Success
+                    state = if (newList.isEmpty()) ExploreWidgetState.Empty else ExploreWidgetState.Success
                 )
             }
         }) {
                 exception ->
-            _exploreWidget.update { it.copy(state = WidgetState.Fail(exception)) }
+            _exploreWidget.update { it.copy(state = ExploreWidgetState.Fail(exception)) }
         }
     }
 

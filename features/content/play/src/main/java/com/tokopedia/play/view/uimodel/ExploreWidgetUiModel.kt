@@ -14,7 +14,7 @@ data class ExploreWidgetUiModel(
     val param: WidgetParamUiModel,
     val chips: TabMenuUiModel,
     val widgets: List<WidgetItemUiModel>,
-    val state: WidgetState
+    val state: ExploreWidgetState
 ) {
     companion object {
         val Empty: ExploreWidgetUiModel
@@ -22,7 +22,7 @@ data class ExploreWidgetUiModel(
                 chips = TabMenuUiModel.Empty,
                 param = WidgetParamUiModel.Empty,
                 widgets = emptyList(),
-                state = WidgetState.Loading
+                state = ExploreWidgetState.Loading
             )
     }
 }
@@ -141,11 +141,11 @@ internal val getChipsShimmering: List<ChipsShimmering>
         }
     }
 
-sealed class WidgetState {
-    object Success : WidgetState()
-    object Loading : WidgetState()
-    object Empty : WidgetState()
-    data class Fail(val error: Throwable) : WidgetState()
+sealed class ExploreWidgetState {
+    object Success : ExploreWidgetState()
+    object Loading : ExploreWidgetState()
+    object Empty : ExploreWidgetState()
+    data class Fail(val error: Throwable) : ExploreWidgetState()
 
     val isSuccess: Boolean
         get() = this == Success
