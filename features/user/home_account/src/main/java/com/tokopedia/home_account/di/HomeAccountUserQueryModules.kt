@@ -22,13 +22,6 @@ class HomeAccountUserQueryModules {
 
     @ActivityScope
     @Provides
-    @IntoMap
-    @StringKey(AccountConstants.Query.NEW_QUERY_BUYER_ACCOUNT_HOME)
-    fun provideRawQueryUserData(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_account_buyer)
-
-    @ActivityScope
-    @Provides
     @Named("recommendationQuery")
     fun provideRecommendationRawQuery(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
