@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
+import com.tokopedia.analyticsdebugger.debugger.ws.PlayWebSocketLogger
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -159,6 +161,7 @@ class PlayModule(val mContext: Context) {
         userSession: UserSessionInterface,
         dispatchers: CoroutineDispatchers,
         localCacheHandler: LocalCacheHandler,
+        webSocketLogger: WebSocketLogger
     ): PlayWebSocket {
         return PlayWebSocketImpl(
             OkHttpClient.Builder(),
@@ -166,7 +169,23 @@ class PlayModule(val mContext: Context) {
             dispatchers,
             context,
             localCacheHandler,
+            webSocketLogger
         )
+    }
+
+    @Provides
+    fun provideWebSocketLogger(
+        @ApplicationContext context: Context
+    ): WebSocketLogger {
+        return if (GlobalConfig.isAllowDebuggingTools()) {
+            PlayWebSocketLogger(context)
+        } else {
+            object : WebSocketLogger {
+                override fun init(data: String) = Unit
+                override fun send(event: String, message: String) = Unit
+                override fun send(event: String) = Unit
+            }
+        }
     }
 
     @Provides

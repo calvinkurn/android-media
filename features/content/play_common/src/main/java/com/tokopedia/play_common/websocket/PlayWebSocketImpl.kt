@@ -25,6 +25,7 @@ class PlayWebSocketImpl(
         private val dispatchers: CoroutineDispatchers,
         @ApplicationContext private val context: Context,
         private val localCacheHandler: LocalCacheHandler,
+        private val webSocketLogger: WebSocketLogger
 ) : PlayWebSocket {
 
     private val client: OkHttpClient
@@ -53,13 +54,13 @@ class PlayWebSocketImpl(
     private val webSocketListener = object : WebSocketListener() {
         override fun onOpen(webSocket: WebSocket, response: Response) {
             mWebSocket = webSocket
-            WebSocketLogger.getInstance(context).send("Web Socket Open")
+            webSocketLogger.send("Web Socket Open")
         }
 
         override fun onMessage(webSocket: WebSocket, text: String) {
             val newMessage = WebSocketAction.NewMessage(gson.fromJson(text, WebSocketResponse::class.java))
             webSocketFlow.tryEmit(newMessage)
-            WebSocketLogger.getInstance(context).send(newMessage.message.type, newMessage.message.jsonElement.toString())
+            webSocketLogger.send(newMessage.message.type, newMessage.message.jsonElement.toString())
         }
 
         override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
@@ -72,13 +73,13 @@ class PlayWebSocketImpl(
         override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
             mWebSocket = null
             webSocketFlow.tryEmit(WebSocketAction.Closed(WebSocketClosedReason.Intended))
-            WebSocketLogger.getInstance(context).send("Web Socket Close (Intended)")
+            webSocketLogger.send("Web Socket Close (Intended)")
         }
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
             mWebSocket = null
             webSocketFlow.tryEmit(WebSocketAction.Closed(WebSocketClosedReason.Error(t)))
-            WebSocketLogger.getInstance(context).send("Web Socket Close (Error)")
+            webSocketLogger.send("Web Socket Close (Error)")
         }
     }
 
@@ -86,7 +87,7 @@ class PlayWebSocketImpl(
         close()
         val url = generateUrl(channelId, warehouseId, gcToken)
         mWebSocket = client.newWebSocket(getRequest(url, userSession.accessToken), webSocketListener)
-        WebSocketLogger.getInstance(context).init(buildGeneralInfo(channelId, warehouseId, gcToken, source).toString())
+        webSocketLogger.init(buildGeneralInfo(channelId, warehouseId, gcToken, source).toString())
     }
 
     override fun close() {
