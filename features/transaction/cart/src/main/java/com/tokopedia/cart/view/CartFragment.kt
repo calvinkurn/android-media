@@ -63,6 +63,7 @@ import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_DEFAU
 import com.tokopedia.cart.view.adapter.cart.CartAdapter
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.bottomsheet.CartBundlingBottomSheet
+import com.tokopedia.cart.view.bottomsheet.CartBundlingBottomSheetListener
 import com.tokopedia.cart.view.bottomsheet.showGlobalErrorBottomsheet
 import com.tokopedia.cart.view.bottomsheet.showSummaryTransactionBottomsheet
 import com.tokopedia.cart.view.compoundview.CartToolbar
@@ -189,7 +190,7 @@ import javax.inject.Inject
 @Keep
 class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
     CartItemAdapter.ActionListener, RefreshHandler.OnRefreshHandlerListener, CartToolbarListener,
-    TickerAnnouncementActionListener, SellerCashbackListener {
+    TickerAnnouncementActionListener, SellerCashbackListener, CartBundlingBottomSheetListener {
 
     private var binding by autoClearedNullable<FragmentCartBinding>()
 
@@ -1414,7 +1415,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
     }
 
     override fun showCartBundlingBottomSheet(data: CartBundlingBottomSheetData, bundleIds: List<String>) {
-        CartBundlingBottomSheet.newInstance(data, bundleIds).show(parentFragmentManager)
+        val bottomSheet = CartBundlingBottomSheet.newInstance(data, bundleIds)
+        bottomSheet.setListener(this)
+        bottomSheet.show(childFragmentManager)
+    }
+
+    override fun onProductBundleAdded() {
+        refreshCartWithSwipeToRefresh()
     }
 
     private fun onErrorAddWishList(errorMessage: String, productId: String) {
@@ -1982,9 +1989,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
 
     override fun onCartShopGroupTickerClicked(cartShopHolderData: CartShopHolderData) {
         if (cartShopHolderData.cartShopGroupTicker.enableBundleCrossSell) {
-            // TODO: ask need filter product non-bundle non-selected aja? .filter { !it.isBundlingItem && !it.isSelected }
-            val bundleIds = cartShopHolderData.productUiModelList
-                .flatMap { it.bundleIds }
+            val bundleIds = cartShopHolderData.productUiModelList.flatMap { it.bundleIds }
             showCartBundlingBottomSheet(cartShopHolderData.cartShopGroupTicker.cartBundlingBottomSheetData, bundleIds)
             cartPageAnalytics.eventClickArrowInBoTickerToReachShopPage(
                 cartShopHolderData.cartShopGroupTicker.cartIds, cartShopHolderData.shopId
