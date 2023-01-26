@@ -83,6 +83,7 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
         setTitle(getString(R.string.ugc_complete_onboarding_title))
     }
 
+    @Suppress("ClickableViewAccessibility")
     private fun setupListener() {
         binding.textFieldUsername.editText.apply {
             setOnTouchListener { _, motionEvent ->

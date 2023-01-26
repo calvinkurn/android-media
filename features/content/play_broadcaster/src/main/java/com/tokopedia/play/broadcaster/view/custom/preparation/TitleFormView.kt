@@ -66,6 +66,7 @@ class TitleFormView : ConstraintLayout {
         }
     }
 
+    @Suppress("ClickableViewAccessibility")
     private fun setupView() {
         with(binding) {
             textFieldTitle.labelText.visibility = View.GONE

@@ -50,6 +50,13 @@ class ShopHeaderPlayWidgetViewHolder(
     private val widgetPlayRootContainer: FrameLayout? = viewBinding?.widgetPlayRootContainer
 
     override fun bind(shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel) {
+        viewBinding?.tvStartCreateContent?.setCompoundDrawablesWithIntrinsicBounds(
+            MethodChecker.getDrawable(itemView.context, R.drawable.ic_content_creation),
+            null,
+            null,
+            null
+        )
+
         val modelComponent = shopHeaderWidgetUiModel.components.filterIsInstance<ShopHeaderPlayWidgetButtonComponentUiModel>().firstOrNull()
         modelComponent?.shopPageHeaderDataModel?.let { shopPageHeaderDataModel ->
             if (allowContentCreation(shopPageHeaderDataModel)) {

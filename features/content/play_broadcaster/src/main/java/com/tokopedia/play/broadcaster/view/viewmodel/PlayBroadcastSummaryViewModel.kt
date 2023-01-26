@@ -41,6 +41,7 @@ import kotlinx.coroutines.withContext
 /**
  * @author by jessica on 27/05/20
  */
+@Suppress("LateInitUsage")
 class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     @Assisted("account") val account: ContentAccountUiModel,
     @Assisted("channelId") val channelId: String,

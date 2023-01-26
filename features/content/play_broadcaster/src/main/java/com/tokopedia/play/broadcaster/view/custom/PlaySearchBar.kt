@@ -93,6 +93,7 @@ class PlaySearchBar : ConstraintLayout {
         ivClear.visibility = savedState.clearBtnVisibility
     }
 
+    @Suppress("ClickableViewAccessibility")
     private fun setupView(view: View) {
         etSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
@@ -112,6 +113,7 @@ class PlaySearchBar : ConstraintLayout {
                 true
             } else false
         }
+
         etSearch.setOnTouchListener { _, motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_UP) {
                 mListener?.onSearchBarClicked(this@PlaySearchBar)

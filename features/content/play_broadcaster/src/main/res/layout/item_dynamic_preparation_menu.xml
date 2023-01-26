@@ -32,7 +32,7 @@
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
         android:visibility="invisible"
-        android:src="@drawable/ic_play_bro_preparation_checked"
+        app:srcCompat="@drawable/ic_play_bro_preparation_checked"
         app:layout_constraintEnd_toEndOf="@id/ic_menu"
         app:layout_constraintTop_toTopOf="@id/ic_menu"
         tools:visibility="visible" />
