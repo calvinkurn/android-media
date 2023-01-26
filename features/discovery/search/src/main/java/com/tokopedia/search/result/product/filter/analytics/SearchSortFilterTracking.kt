@@ -47,22 +47,26 @@ object SearchSortFilterTracking {
         FilterTracking.eventOpenFilterPage(filterTrackingData)
     }
 
+    private fun Map<String, String>?.toSearchFilterString() = this?.map { with(it) { "&$key=$value" } }
+        ?.joinToString("")
+        .orEmpty()
+
     @JvmStatic
     fun eventApplyFilter(
         keyword: String,
         pageSource: String,
+        selectedSort: Map<String, String>?,
         selectedFilter: Map<String, String>?,
     ) {
-        val searchFilters = selectedFilter?.map { with(it) { "&$key=$value" } }
-            ?.joinToString("")
-            .orEmpty()
+        val searchSorts = selectedSort.toSearchFilterString()
+        val searchFilters = selectedFilter.toSearchFilterString()
         SearchSortFilterTrackingModel(
             keyword = keyword,
             valueId = "0",
             valueName = FILTER_VALUE_NAME,
             componentId = FILTER_COMPONENT_ID,
             dimension90 = pageSource,
-            searchFilters = searchFilters,
+            searchFilters = searchSorts+searchFilters,
         )
             .click(TrackApp.getInstance().gtm)
     }
@@ -76,13 +80,14 @@ object SearchSortFilterTracking {
         pageSource: String,
     ) {
         if (!isSelected) return
+        val searchFilter = mapOf(filterName to filterValue).toSearchFilterString()
         SearchSortFilterTrackingModel(
             keyword = keyword,
             valueId = "0",
             valueName = QUICK_FILTER_VALUE_NAME,
             componentId = QUICK_FILTER_COMPONENT_ID,
             dimension90 = pageSource,
-            searchFilters = "&$filterName=$filterValue",
+            searchFilters = searchFilter,
         )
             .click(TrackApp.getInstance().gtm)
     }

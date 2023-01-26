@@ -120,6 +120,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         SearchSortFilterTracking.eventApplyFilter(
             keyword = getSearchParameter()?.getSearchQuery().orEmpty(),
             pageSource = pageSource,
+            selectedSort = applySortFilterModel.selectedSortMapParameter,
             selectedFilter = applySortFilterModel.selectedFilterMapParameter,
         )
     }
