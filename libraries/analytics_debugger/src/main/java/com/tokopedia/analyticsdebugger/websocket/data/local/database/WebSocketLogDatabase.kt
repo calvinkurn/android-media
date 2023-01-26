@@ -4,17 +4,25 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.tokopedia.analyticsdebugger.websocket.data.local.dao.WebSocketLogDao
-import com.tokopedia.analyticsdebugger.websocket.data.local.entity.WebSocketLogEntity
+import com.tokopedia.analyticsdebugger.websocket.data.local.dao.PlayWebSocketLogDao
+import com.tokopedia.analyticsdebugger.websocket.data.local.dao.TopchatWebSocketLogDao
+import com.tokopedia.analyticsdebugger.websocket.data.local.entity.PlayWebSocketLogEntity
+import com.tokopedia.analyticsdebugger.websocket.data.local.entity.TopchatWebSocketLogEntity
 
 /**
  * Created By : Jonathan Darwin on December 01, 2021
  */
 
-@Database(entities = [WebSocketLogEntity::class], version = 2)
-abstract class WebSocketLogDatabase: RoomDatabase() {
+@Database(
+    entities = [
+        PlayWebSocketLogEntity::class,
+        TopchatWebSocketLogEntity::class,
+    ], version = 3
+)
+abstract class WebSocketLogDatabase : RoomDatabase() {
 
-    abstract fun webSocketLogDao(): WebSocketLogDao
+    abstract fun playWebSocketLogDao(): PlayWebSocketLogDao
+    abstract fun topchatWebSocketLogDao(): TopchatWebSocketLogDao
 
     companion object {
         private val DATABASE_NAME = "tkpd_websocket_logging"
@@ -25,13 +33,14 @@ abstract class WebSocketLogDatabase: RoomDatabase() {
 
         fun getInstance(context: Context): WebSocketLogDatabase {
             var r = instance
-            if(r == null) {
+            if (r == null) {
                 synchronized(lock) {
                     r = instance
-                    if(r == null) {
-                        r = Room.databaseBuilder(context,
-                                WebSocketLogDatabase::class.java, DATABASE_NAME
-                            ).fallbackToDestructiveMigration().build()
+                    if (r == null) {
+                        r = Room.databaseBuilder(
+                            context,
+                            WebSocketLogDatabase::class.java, DATABASE_NAME
+                        ).fallbackToDestructiveMigration().build()
                         instance = r
                     }
                 }
