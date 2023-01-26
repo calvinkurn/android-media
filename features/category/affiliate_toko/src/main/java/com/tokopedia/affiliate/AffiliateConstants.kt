@@ -218,3 +218,5 @@ val SOCIAL_CHANNEL_LINK = mapOf(
     TELEGRAM to "https://t.me/+shJRVBgfGXc1MzZl",
     YOUTUBE to "https://www.youtube.com/c/AkademiKreatorTokopedia"
 )
+const val AFFILIATE_SSE_URL_STAGING = "https://sse-staging.tokopedia.com/affiliate/sse/connect"
+const val AFFILIATE_SSE_URL_PROD = "https://sse.tokopedia.com/affiliate/sse/connect"
