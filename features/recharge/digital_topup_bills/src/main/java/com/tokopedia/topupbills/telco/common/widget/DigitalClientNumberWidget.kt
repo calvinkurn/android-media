@@ -46,6 +46,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
     protected val imgOperator: ImageView
     protected val inputNumberField: TextFieldUnify2
     protected val layoutInputNumber: ConstraintLayout
+    protected val seeAllChip: ChipsUnify
     protected val sortFilterChip: SortFilter
     protected val sortFilterChipShimmer: LoaderUnify
 
@@ -63,6 +64,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
         view = View.inflate(context, getLayout(), this)
         imgOperator = view.findViewById(R.id.telco_img_operator)
         layoutInputNumber = view.findViewById(R.id.telco_input_number_layout)
+        seeAllChip = view.findViewById(R.id.telco_chip_see_all)
         sortFilterChip = view.findViewById(R.id.telco_filter_chip)
         sortFilterChipShimmer = view.findViewById(R.id.telco_filter_chip_shimmer)
 
@@ -73,7 +75,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
 
         sortFilterChip.run {
             sortFilterHorizontalScrollView.setPadding(
-                SORT_FILTER_PADDING_16.toPx(),
+                SORT_FILTER_PADDING_8.toPx(),
                 0,
                 SORT_FILTER_PADDING_8.toPx(),
                 0
@@ -155,6 +157,23 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
 
     private fun initSortFilterChip(favnum: List<TopupBillsSeamlessFavNumberItem>) {
         val sortFilter = arrayListOf<SortFilterItem>()
+
+        seeAllChip.run {
+            if (favnum.isNotEmpty()) {
+                chip_text.hide()
+                chipType = ChipsUnify.TYPE_ALTERNATE
+                chipImageResource = getIconUnifyDrawable(
+                    context,
+                    IconUnify.VIEW_LIST,
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                setOnClickListener {
+                    listener.onNavigateToContact(true)
+                }
+                show()
+            } else {
+                hide()
+            }
+        }
 
         // create extra chip for navigation
         val isMoreThanFive = favnum.size > MAX_CHIP_SIZE

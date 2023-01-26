@@ -12,7 +12,6 @@ import com.tokopedia.unifycomponents.toPx
 
 
 private const val SORT_FILTER_PADDING_8 = 8
-private const val SORT_FILTER_PADDING_16 = 16
 private const val REGEX_IS_ALPHABET_AND_SPACE_ONLY = "^[a-zA-Z0-9\\s]*$"
 private const val REGEX_IS_NUMERIC = "^[0-9\\s]*$"
 private const val LABEL_MAX_CHAR = 18
@@ -39,7 +38,7 @@ fun TextFieldUnify2.onClickClearIconUnify(textFieldStaticLabel: String,
 
 fun SortFilter.setMainPadding(){
     sortFilterHorizontalScrollView.setPadding(
-        SORT_FILTER_PADDING_16.toPx(), 0 ,
+        SORT_FILTER_PADDING_8, 0 ,
         SORT_FILTER_PADDING_8.toPx() ,0)
     sortFilterHorizontalScrollView.clipToPadding = false
 }

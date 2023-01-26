@@ -153,15 +153,22 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(
     private fun setSortFilterChip(favnum: List<RechargeClientNumberChipModel>) {
         val sortFilter = arrayListOf<SortFilterItem>()
 
-        // create extra chip for navigation
-        val sortFilterItem = SortFilterItem(
-            "",
-            type = ChipsUnify.TYPE_ALTERNATE
-        )
-        sortFilterItem.listener = {
-            mFilterChipListener?.onClickIcon(true)
+        binding.clientNumberWidgetBase.clientNumberWidgetSeeAll.run {
+            if (favnum.isNotEmpty()) {
+                chip_text.hide()
+                chipType = ChipsUnify.TYPE_ALTERNATE
+                chipImageResource = getIconUnifyDrawable(
+                    context,
+                    IconUnify.VIEW_LIST,
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                setOnClickListener {
+                    mFilterChipListener?.onClickIcon(true)
+                }
+                show()
+            } else {
+                hide()
+            }
         }
-        sortFilter.add(sortFilterItem)
 
         // create each chip
         for (number in favnum) {
@@ -186,19 +193,6 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(
         }
 
         binding.clientNumberWidgetBase.clientNumberWidgetSortFilter.addItem(sortFilter)
-
-        // init navigation chip's icon & color
-        val chevronRight = IconUnify(
-            context,
-            IconUnify.VIEW_LIST,
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-        )
-        chevronRight.layoutParams = ViewGroup.LayoutParams(
-            getDimens(unifyDimens.layout_lvl3),
-            getDimens(unifyDimens.layout_lvl3)
-        )
-        binding.clientNumberWidgetBase.clientNumberWidgetSortFilter.chipItems
-            ?.first()?.refChipUnify?.addCustomView(chevronRight)
     }
 
     fun setFavoriteNumber(favNumberItems: List<RechargeClientNumberChipModel>) {

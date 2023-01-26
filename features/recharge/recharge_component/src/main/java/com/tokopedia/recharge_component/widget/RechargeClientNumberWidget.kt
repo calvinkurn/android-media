@@ -165,15 +165,22 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
     private fun setSortFilterChip(favnum: List<RechargeClientNumberChipModel>) {
         val sortFilter = arrayListOf<SortFilterItem>()
 
-        // create extra chip for navigation
-        val sortFilterItem = SortFilterItem(
-            "",
-            type = ChipsUnify.TYPE_ALTERNATE
-        )
-        sortFilterItem.listener = {
-            mFilterChipListener?.onClickIcon(true)
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetSeeAll.run {
+            if (favnum.isNotEmpty()) {
+                chip_text.hide()
+                chipType = ChipsUnify.TYPE_ALTERNATE
+                chipImageResource = getIconUnifyDrawable(
+                    context,
+                    IconUnify.VIEW_LIST,
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                setOnClickListener {
+                    mFilterChipListener?.onClickIcon(true)
+                }
+                show()
+            } else {
+                hide()
+            }
         }
-        sortFilter.add(sortFilterItem)
 
         // create each chip
         for (number in favnum) {
@@ -200,19 +207,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         }
 
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetSortFilter.addItem(sortFilter)
-
-        // init navigation chip's icon & color
-        val chevronRight = IconUnify(
-            context,
-            IconUnify.VIEW_LIST,
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-        )
-        chevronRight.layoutParams = ViewGroup.LayoutParams(
-            getDimens(unifyDimens.layout_lvl3),
-            getDimens(unifyDimens.layout_lvl3)
-        )
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetSortFilter.chipItems
-            ?.first()?.refChipUnify?.addCustomView(chevronRight)
     }
 
     private fun onClickClearIcon() {
