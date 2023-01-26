@@ -8,16 +8,21 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.databinding.PostAtcBottomSheetBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcAdapter
 import com.tokopedia.product.detail.postatc.base.PostAtcLayoutManager
+import com.tokopedia.product.detail.postatc.base.PostAtcListener
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.product.detail.postatc.di.DaggerPostAtcComponent
 import com.tokopedia.product.detail.postatc.di.PostAtcModule
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
-class PostAtcBottomSheet : BottomSheetUnify() {
+class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     companion object {
 
@@ -49,7 +54,8 @@ class PostAtcBottomSheet : BottomSheetUnify() {
         ViewModelProvider(this, viewModelFactory).get(PostAtcViewModel::class.java)
     }
 
-    private val adapter = PostAtcAdapter()
+    private val adapter = PostAtcAdapter(this)
+//    private val uiUpdater = PostAtcUiUpdater(adapter)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         component.inject(this)
@@ -62,6 +68,7 @@ class PostAtcBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
+        clearContentPadding = true
         val binding = PostAtcBottomSheetBinding.inflate(inflater, container, false)
         setupChildView(binding)
         setChild(binding.root)
@@ -80,11 +87,16 @@ class PostAtcBottomSheet : BottomSheetUnify() {
 
     private fun observeViewModel() = with(viewModel) {
         layouts.observe(viewLifecycleOwner, layoutsObserver)
+        recommendations.observe(viewLifecycleOwner, recommendationsObserver)
     }
 
     private val layoutsObserver = Observer<List<PostAtcUiModel>> {
         adapter.addItems(it)
         adapter.notifyDataSetChanged()
+    }
+
+    private val recommendationsObserver = Observer<List<RecommendationWidget>> {
+        adapter.updateRecommendation(it)
     }
 
     private fun initData() {
@@ -108,4 +120,27 @@ class PostAtcBottomSheet : BottomSheetUnify() {
             .postAtcModule(PostAtcModule())
             .build()
     }
+
+    /**
+     * Listener Area
+     */
+    override fun goToCart(cartId: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConst.CART)
+        intent.putExtra("cart_id", cartId)
+        startActivity(intent)
+        dismissAllowingStateLoss()
+    }
+
+    override fun goToAppLink(applink: String) {
+        RouteManager.route(context, applink)
+    }
+
+    override fun goToProduct(productId: String) {
+        RouteManager.route(
+            context,
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            productId
+        )
+    }
+
 }

@@ -6,5 +6,7 @@ class ProductInfoUiModel(
     val title: String,
     val subtitle: String,
     val imageLink: String,
-    val buttonText: String
+    val buttonText: String,
+    val cartId: String,
+    override val name: String
 ) : PostAtcUiModel

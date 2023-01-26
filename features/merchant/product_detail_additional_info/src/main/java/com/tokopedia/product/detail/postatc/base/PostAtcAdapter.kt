@@ -3,11 +3,26 @@ package com.tokopedia.product.detail.postatc.base
 import com.tokopedia.adapterdelegate.BaseAdapter
 import com.tokopedia.product.detail.postatc.component.productinfo.ProductInfoDelegate
 import com.tokopedia.product.detail.postatc.component.recommendation.RecommendationDelegate
+import com.tokopedia.product.detail.postatc.component.recommendation.RecommendationUiModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
-class PostAtcAdapter : BaseAdapter<Any>() {
+class PostAtcAdapter(
+    listener: PostAtcListener
+) : BaseAdapter<PostAtcUiModel>() {
     init {
         delegatesManager
-            .addDelegate(ProductInfoDelegate())
-            .addDelegate(RecommendationDelegate())
+            .addDelegate(ProductInfoDelegate(listener))
+            .addDelegate(RecommendationDelegate(listener))
+    }
+
+
+    fun updateRecommendation(widgets: List<RecommendationWidget>) {
+        val items = getItems()
+        widgets.forEach { widget ->
+            items.filter { widget.pageName == it.name }.forEach { item ->
+                (item as RecommendationUiModel).widget = widget
+            }
+        }
+        notifyDataSetChanged()
     }
 }

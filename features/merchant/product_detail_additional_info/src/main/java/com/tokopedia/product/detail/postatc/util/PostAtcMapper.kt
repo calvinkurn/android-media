@@ -10,13 +10,14 @@ import com.tokopedia.product.detail.postatc.model.PostAtcLayout
 
 internal fun List<PostAtcLayout.Component>.mapToUiModel(): List<PostAtcUiModel> = mapNotNull {
     when (it.type) {
-        PRODUCT_INFO -> toProductInfoUiModel(it.data)
-        RECOMMENDATION -> toRecommendationUiModel()
+        PRODUCT_INFO -> toProductInfoUiModel(it.name, it.data)
+        RECOMMENDATION -> toRecommendationUiModel(it.name)
         else -> null
     }
 }
 
 private fun toProductInfoUiModel(
+    name: String,
     datas: List<PostAtcComponentData>
 ): ProductInfoUiModel? {
     val data = datas.firstOrNull() ?: return null
@@ -24,10 +25,12 @@ private fun toProductInfoUiModel(
         title = data.title,
         subtitle = data.subtitle,
         imageLink = data.image,
-        buttonText = data.button.text
+        buttonText = data.button.text,
+        cartId = data.button.cartId,
+        name = name,
     )
 }
 
-private fun toRecommendationUiModel(): RecommendationUiModel {
-    return RecommendationUiModel()
+private fun toRecommendationUiModel(name: String): RecommendationUiModel {
+    return RecommendationUiModel(name = name)
 }

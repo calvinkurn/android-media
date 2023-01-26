@@ -23,6 +23,10 @@ data class PostAtcComponentData(
     data class Button(
         @SerializedName("text")
         @Expose
-        val text: String = ""
+        val text: String = "",
+
+        @SerializedName("cartID")
+        @Expose
+        val cartId: String = ""
     )
 }
