@@ -125,8 +125,7 @@ class FilterVoucherBottomSheet: BottomSheetUnify() {
 
     private fun onRvStatusItemClicked(position: Int, isSelected: Boolean) {
         val status = VoucherStatus.values().find { it.id == position } ?: return
-        val adapter = binding?.rvStatus?.adapter as? FilterVoucherAdapter
-        adapter?.setSelectionAt(position)
+        binding?.rvStatus.setSelection(position)
         viewModel.setStatusFilter(status)
     }
 
@@ -137,13 +136,13 @@ class FilterVoucherBottomSheet: BottomSheetUnify() {
 
     private fun onRvSourceItemClicked(position: Int, isSelected: Boolean) {
         val source = VoucherSource.values().find { it.id == position } ?: return
+        binding?.rvSource?.setSelection(position)
         viewModel.setSource(source)
     }
 
     private fun onRvPromoTypeItemClicked(position: Int, isSelected: Boolean) {
         val promo = PromoType.values().getOrNull(position) ?: return
-        val adapter = binding?.rvPromoType?.adapter as? FilterVoucherAdapter
-        adapter?.setSelectionAt(position)
+        binding?.rvPromoType.setSelection(position)
         viewModel.setPromoType(promo)
     }
 
@@ -169,6 +168,10 @@ class FilterVoucherBottomSheet: BottomSheetUnify() {
             setDataList(getListFromResource(itemsResource, selectedIds))
             setOnClickListener(onItemClicked)
         }
+    }
+
+    private fun RecyclerView?.setSelection(position: Int) {
+        (this?.adapter as? FilterVoucherAdapter)?.setSelectionAt(position)
     }
 
     private fun RecyclerView.resetSelection() {
