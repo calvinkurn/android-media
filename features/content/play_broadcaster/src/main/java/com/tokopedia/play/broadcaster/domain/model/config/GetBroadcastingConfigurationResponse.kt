@@ -13,12 +13,8 @@ data class GetBroadcastingConfigurationResponse(
         val authorType: Int = 0,
         @SerializedName("config")
         val config: Config = Config(),
-        @SerializedName("__typename")
-        val typename: String = "",
     ) {
         data class Config(
-            @SerializedName("__typename")
-            val typename: String = "",
             @SerializedName("audioRate")
             val audioRate: String = "",
             @SerializedName("bitrateMode")
