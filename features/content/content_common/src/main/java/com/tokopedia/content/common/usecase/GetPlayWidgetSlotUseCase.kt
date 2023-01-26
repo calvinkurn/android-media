@@ -6,7 +6,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.videoTabComponent.domain.usecase.GetPlayContentUseCaseQuery
 import javax.inject.Inject
 
 @GqlQuery(GetPlayWidgetSlotUseCase.QUERY_NAME, GetPlayWidgetSlotUseCase.QUERY)
@@ -15,7 +14,7 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
 ) : GraphqlUseCase<WidgetSlot>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(GetPlayContentUseCaseQuery())
+        setGraphqlQuery(GetPlayWidgetSlotUseCaseQuery())
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(WidgetSlot::class.java)
     }
