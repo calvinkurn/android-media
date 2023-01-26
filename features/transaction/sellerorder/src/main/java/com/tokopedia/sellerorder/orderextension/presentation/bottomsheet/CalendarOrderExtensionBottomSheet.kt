@@ -4,16 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerorder.databinding.BottomSheetPickTimeOrderExtentionBinding
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.orderextension.presentation.util.toColorString
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 class CalendarOrderExtensionBottomSheet(
     val orderExtensionDate: OrderExtensionRequestInfoUiModel.OrderExtensionDate,
@@ -70,19 +72,31 @@ class CalendarOrderExtensionBottomSheet(
             it.date
         }
 
-        binding?.tvDeadline?.text = getString(
-            R.string.bottomsheet_order_extension_request_deadline,
-            orderExtensionDate.deadLineTime.toFormattedString(FORMAT_DATE_DEADLINETIME)
-        ).parseAsHtml()
+        context.let {
 
-        if (currentSelectDate.extensionTime != Int.ZERO) {
+        }
+
+        context?.let {
+            binding?.tvDeadline?.text = HtmlLinkHelper(
+                it,
+                it.getString(
+                    R.string.bottomsheet_order_extension_request_deadline,
+                    ContextCompat.getColor(
+                        it,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                    ).toColorString(),
+                    orderExtensionDate.deadLineTime.toFormattedString(FORMAT_DATE_DEADLINETIME),
+                )
+            ).spannedString ?: ""
+        }
+
+        if (currentSelectDate.extensionTime == Int.ZERO) {
             calendar?.init(
                 currentDate.time,
                 orderExtensionDate.deadLineTime,
                 listOf(),
                 activeDates
             )?.inMode(CalendarPickerView.SelectionMode.SINGLE)
-                ?.withSelectedDate(currentSelectDate.date)
         } else {
             calendar?.init(
                 currentDate.time,
@@ -90,11 +104,13 @@ class CalendarOrderExtensionBottomSheet(
                 listOf(),
                 activeDates
             )?.inMode(CalendarPickerView.SelectionMode.SINGLE)
+                ?.withSelectedDate(currentSelectDate.date)
         }
 
     }
 
-    fun setSelectedDate(currentSelectDate: OrderExtensionRequestInfoUiModel.OrderExtensionDate.EligibleDateUIModel){
+    fun setSelectedDate(currentSelectDate: OrderExtensionRequestInfoUiModel.OrderExtensionDate.EligibleDateUIModel) {
         this.currentSelectDate = currentSelectDate
     }
+
 }

@@ -4,9 +4,9 @@ import android.content.Context
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerorder.R
@@ -24,12 +24,22 @@ class ResourceProvider @Inject constructor() {
 
     private fun createBoldText(text: String): Spannable {
         return SpannableString(text).apply {
-            setSpan(StyleSpan(Typeface.BOLD), Int.ZERO, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(
+                StyleSpan(Typeface.BOLD),
+                Int.ZERO,
+                text.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
         }
     }
 
     private fun Spannable.setColor(context: Context?, color: Int): Spannable {
-        setSpan(ForegroundColorSpan(getColor(context, color)), Int.ZERO, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        setSpan(
+            ForegroundColorSpan(getColor(context, color)),
+            Int.ZERO,
+            length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
         return this
     }
 
@@ -87,7 +97,13 @@ class ResourceProvider @Inject constructor() {
         return StringComposer {
             HtmlLinkHelper(
                 it,
-                it.getString(R.string.bottomsheet_order_extension_request_footer)
+                it.getString(
+                    R.string.bottomsheet_order_extension_request_footer,
+                    ContextCompat.getColor(
+                        it,
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    ).toColorString()
+                )
             ).spannedString ?: ""
         }
     }

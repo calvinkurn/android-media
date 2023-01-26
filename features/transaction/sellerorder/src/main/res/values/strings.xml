@@ -331,7 +331,7 @@
     <!--  Bottomsheet Order Extension Request  -->
     <string name="bottomsheet_order_extension_request_title">Perpanjang waktu proses pesanan ini?</string>
     <string name="bottomsheet_order_extension_request_header">%1s &lt;b&gt;%2s&lt;/b&gt;</string>
-    <string name="bottomsheet_order_extension_request_footer"><![CDATA[Pesanan batal otomatis jika pengajuan ditolak pembeli. Tokomu berpotensi kena penalti jika keseringan perpanjang. <a href="tokopedia://webview?url=https://seller.tokopedia.com/edu/mekanisme-perpanjangan-waktu-pesanan/" target="_blank"><span style=color:#00AA5B;>Selengkapnya</span></a>]]></string>
+    <string name="bottomsheet_order_extension_request_footer"><![CDATA[Pesanan batal otomatis jika pengajuan ditolak pembeli. Tokomu berpotensi kena penalti jika keseringan perpanjang. <a href="tokopedia://webview?url=https://seller.tokopedia.com/edu/mekanisme-perpanjangan-waktu-pesanan/" target="_blank"><span style=color:%s;>Selengkapnya</span></a>]]></string>
     <string name="bottomsheet_order_extension_request_pick_time_header">Pilih waktu perpanjangan pesanan</string>
     <string name="bottomsheet_order_extension_request_options_header">Pilih alasan perpanjangan</string>
     <string name="bottomsheet_order_extension_request_button_text">Kirim Pengajuan</string>
@@ -343,10 +343,10 @@
     <string name="bottomsheet_order_extension_request_comment_not_less_than_fifteen_characters_regex">^.{0,14}$</string>
     <string name="bottomsheet_order_extension_request_comment_not_allowed_characters_regex">[^,.?!\n A-Za-z0-9]+</string>
     <string name="bottomsheet_order_extension_request_other_options_text_field_time">Pilih Tanggal</string>
-    <string name="bottomsheet_order_extension_request_pick_time_rules"><![CDATA[Kirim pesanan sebelum pukul <b><span style=color:#212121;>13:00 WIB</span></b>]]></string>
+    <string name="bottomsheet_order_extension_request_pick_time_rules"><![CDATA[Kirim pesanan sebelum pukul <b><span style=color:%s;>13:00 WIB</span></b>]]></string>
     <string name="bottomsheet_order_extension_request_info_pick_time_desc">Jam mengikuti waktu kamu menerima pesanan ini.</string>
     <string name="bottomsheet_order_extension_request_info_pick_time_title">Batas waktu pengiriman</string>
-    <string name="bottomsheet_order_extension_request_deadline"><![CDATA[Batas pengiriman hingga <b><span style=color:#212121;>%s</span></b>]]></string>
+    <string name="bottomsheet_order_extension_request_deadline"><![CDATA[Batas pengiriman hingga <b><span style=color:%s;>%s</span></b>]]></string>
     <string name="bottomsheet_order_extension_failed_pick_date">Oops, gagal memilih waktu perpanjang pesanan. Coba lagi ya</string>
     <string name="bottomsheet_order_extension_title_pick_date">Pilih tanggal</string>
 

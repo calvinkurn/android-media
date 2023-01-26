@@ -1,12 +1,15 @@
 package com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.ItemOrderExtensionRequestInfoPickTimeBinding
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
+import com.tokopedia.sellerorder.orderextension.presentation.util.toColorString
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.view.binding.viewBinding
+
 
 class OrderExtensionRequestInfoPickTimeViewHolder(
     itemView: View?,
@@ -39,7 +42,13 @@ class OrderExtensionRequestInfoPickTimeViewHolder(
         binding?.tvDescription?.text =
             HtmlLinkHelper(
                 itemView.context,
-                getString(R.string.bottomsheet_order_extension_request_pick_time_rules)
+                getString(
+                    R.string.bottomsheet_order_extension_request_pick_time_rules,
+                    ContextCompat.getColor(
+                        itemView.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                    ).toColorString()
+                )
             ).spannedString ?: ""
 
     }
