@@ -1077,7 +1077,7 @@ object TopChatAnalyticsKt {
         val bubbleEvent = createBubbleEvent(
             Event.VIEW_COMMUNICATION_IRIS,
             Category.CHAT_SETTINGS,
-            Bubbles.IMPRESSION_ON_BUBBLE_CHAT_RECOMMENDATION_TICKER,
+            Bubbles.IMPRESSION_OF_SELLER_BUBBLE_INTRODUCTION_PAGE,
             shopId,
             COMMUNICATION,
             CURRENT_SITE_TOKOPEDIA,
@@ -1090,7 +1090,7 @@ object TopChatAnalyticsKt {
         val bubbleEvent = createBubbleEvent(
             Event.CLICK_COMMUNICATION,
             Category.CHAT_SETTINGS,
-            Bubbles.CLICK_ON_BUBBLE_CHAT_RECOMMENDATION_TICKER,
+            Bubbles.CLICK_ON_DIRECTION_TO_HELP_PAGE,
             shopId,
             COMMUNICATION,
             CURRENT_SITE_TOKOPEDIA,
