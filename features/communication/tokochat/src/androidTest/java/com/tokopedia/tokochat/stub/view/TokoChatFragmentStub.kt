@@ -6,7 +6,7 @@ import com.gojek.conversations.network.ConversationsNetworkError
 import com.tokopedia.tokochat.test.base.BaseTokoChatTest
 import com.tokopedia.tokochat.view.chatroom.TokoChatFragment
 
-class TokoChatFragmentStub: TokoChatFragment() {
+class TokoChatFragmentStub : TokoChatFragment() {
 
     override fun initializeChatRoom(savedInstanceState: Bundle?) {
         super.initializeChatRoom(savedInstanceState)
@@ -15,12 +15,16 @@ class TokoChatFragmentStub: TokoChatFragment() {
 
     override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
         super.onGroupBookingChannelCreationError(error)
-        BaseTokoChatTest.idlingResourceGroupBooking.decrement()
+        if (!BaseTokoChatTest.idlingResourceGroupBooking.isIdleNow) {
+            BaseTokoChatTest.idlingResourceGroupBooking.decrement()
+        }
     }
 
-    override fun markChatAsRead() {
-        super.markChatAsRead()
-        BaseTokoChatTest.idlingResourceGroupBooking.decrement()
+    override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
+        super.onGroupBookingChannelCreationSuccess(channelUrl)
+        if (!BaseTokoChatTest.idlingResourceGroupBooking.isIdleNow) {
+            BaseTokoChatTest.idlingResourceGroupBooking.decrement()
+        }
     }
 
     companion object {
@@ -30,14 +34,14 @@ class TokoChatFragmentStub: TokoChatFragment() {
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             bundle: Bundle
-        ): TokoChatFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? TokoChatFragment
+        ): TokoChatFragmentStub {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? TokoChatFragmentStub
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                TokoChatFragment::class.java.name
+                TokoChatFragmentStub::class.java.name
             ).apply {
                 arguments = bundle
-            } as TokoChatFragment
+            } as TokoChatFragmentStub
         }
     }
 }

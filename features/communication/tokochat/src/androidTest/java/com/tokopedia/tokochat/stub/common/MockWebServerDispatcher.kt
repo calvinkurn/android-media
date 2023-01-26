@@ -30,6 +30,7 @@ class MockWebServerDispatcher : Dispatcher() {
                 ApiResponseStub.channelDetailsResponse
             (url.contains("/v2/chat/channels") && url.contains("messages")) ->
                 ApiResponseStub.chatHistoryResponse
+            (url.contains("/v1/image")) -> ApiResponseStub.imageAttachmentResponse
             else -> ApiResponseStub.generalEmptyResponse
         }
     }

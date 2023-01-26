@@ -6,10 +6,13 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokochat.tokochat_config_common.repository.interceptor.ErrorResponseInterceptor
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.data.model.response.TkpdV4ResponseError
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.tokochat.data.repository.api.TokoChatDownloadImageApi
+import com.tokopedia.tokochat.data.repository.api.TokoChatImageApi
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -100,7 +103,7 @@ object TokoChatNetworkModuleStub {
         @TokoChatQualifier okHttpClient: OkHttpClient
     ): Retrofit {
         return retrofitBuilder
-            .baseUrl("http://localhost:8090/") //local base url
+            .baseUrl("http://localhost:8090/") // local base url
             .addConverterFactory(StringResponseConverter())
             .client(okHttpClient).build()
     }
@@ -117,5 +120,17 @@ object TokoChatNetworkModuleStub {
     @TokoChatQualifier
     fun provideErrorResponseInterceptor(): ErrorResponseInterceptor {
         return ErrorResponseInterceptor(TkpdV4ResponseError::class.java)
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideTokoChatImageApi(@TokoChatQualifier retrofit: Retrofit): TokoChatImageApi {
+        return retrofit.create(TokoChatImageApi::class.java)
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideTokoChatImageApiDownload(@TokoChatQualifier retrofit: Retrofit): TokoChatDownloadImageApi {
+        return retrofit.create(TokoChatDownloadImageApi::class.java)
     }
 }

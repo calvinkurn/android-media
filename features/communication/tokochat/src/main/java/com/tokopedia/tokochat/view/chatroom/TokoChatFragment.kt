@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.gojek.conversations.database.chats.ConversationsMessage
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.gojek.conversations.network.ConversationsNetworkError
@@ -796,13 +797,17 @@ open class TokoChatFragment :
             }
 
             // Map conversation message into ui model
-            val result = mapper.mapToChatUiModel(it, viewModel.getUserId())
-            adapter.setItemsAndAnimateChanges(result)
-            scrollToBottom()
+            mapConversationMessageToUiModel(it)
 
             // Mark the chat as read
-            markChatAsRead()
+            viewModel.markChatAsRead(viewModel.channelId)
         }
+    }
+
+    protected open fun mapConversationMessageToUiModel(list: List<ConversationsMessage>) {
+        val result = mapper.mapToChatUiModel(list, viewModel.getUserId())
+        adapter.setItemsAndAnimateChanges(result)
+        scrollToBottom()
     }
 
     private fun handleFirstTimeGetChatHistory() {
@@ -811,10 +816,6 @@ open class TokoChatFragment :
             viewModel.loadChatRoomTicker()
             observerTyping()
         }
-    }
-
-    protected open fun markChatAsRead() {
-        viewModel.markChatAsRead(viewModel.channelId)
     }
 
     override fun onStartTyping() {
@@ -1040,7 +1041,7 @@ open class TokoChatFragment :
         )
     }
 
-    private fun showUnavailableBottomSheet() {
+    protected open fun showUnavailableBottomSheet() {
         if (unavailableBottomSheet.isVisible) return
         unavailableBottomSheet.setListener(buttonAction = {
             activity?.finish()

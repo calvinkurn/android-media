@@ -1,12 +1,13 @@
 package com.tokopedia.tokochat.test.base
 
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.gojek.conversations.ConversationsRepository
+import com.gojek.conversations.database.ConversationsDatabase
 import com.jakewharton.espresso.OkHttp3IdlingResource
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokochat.tokochat_config_common.di.module.TokoChatConfigContextModule
@@ -21,6 +22,7 @@ import com.tokopedia.tokochat.stub.common.MockWebServerDispatcher
 import com.tokopedia.tokochat.stub.common.util.RecyclerViewUtil
 import com.tokopedia.tokochat.stub.di.DaggerTokoChatComponentStub
 import com.tokopedia.tokochat.stub.di.TokoChatComponentStub
+import com.tokopedia.tokochat.stub.di.TokoChatCourierConversationModule
 import com.tokopedia.tokochat.stub.di.base.DaggerFakeBaseAppComponent
 import com.tokopedia.tokochat.stub.di.base.FakeAppModule
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
@@ -73,27 +75,40 @@ abstract class BaseTokoChatTest {
     @Inject
     lateinit var tokoChatChannelUseCase: TokoChatChannelUseCaseStub
 
+    @Inject
+    @TokoChatQualifier
+    lateinit var database: ConversationsDatabase
+
     protected lateinit var activity: TokoChatActivityStub
 
     @Before
-    fun before() {
+    open fun before() {
         AndroidThreeTen.init(applicationContext)
         resetResponses()
         setupDaggerComponent()
         setupConversationAndCourier()
         okHttp3IdlingResource = OkHttp3IdlingResource.create("okhttp", okhttpClient)
         IdlingRegistry.getInstance().register(
-            okHttp3IdlingResource, idlingResourceDatabase, idlingResourceGroupBooking)
+            okHttp3IdlingResource,
+            idlingResourceDatabaseMessage,
+            idlingResourceDatabaseChannel,
+            idlingResourceGroupBooking
+        )
         mockWebServer.start(8090)
     }
 
     @After
-    fun tearDown() {
+    open fun tearDown() {
         mockWebServer.shutdown()
         removeConversationAndCourier()
+        resetDatabase()
         tokoChatComponent = null
         IdlingRegistry.getInstance().unregister(
-            okHttp3IdlingResource, idlingResourceDatabase, idlingResourceGroupBooking)
+            okHttp3IdlingResource,
+            idlingResourceDatabaseMessage,
+            idlingResourceDatabaseChannel,
+            idlingResourceGroupBooking
+        )
     }
 
     private fun resetResponses() {
@@ -104,7 +119,7 @@ abstract class BaseTokoChatTest {
     }
 
     private fun setupConversationAndCourier() {
-        runBlocking (Dispatchers.Main) {
+        runBlocking(Dispatchers.Main) {
             babbleCourierClient.init(USER_ID_DUMMY)
             babbleCourierClient.setClientId(USER_ID_DUMMY)
             conversationsPreferences.setProfileDetails(USER_ID_DUMMY)
@@ -165,6 +180,9 @@ abstract class BaseTokoChatTest {
         tokoChatComponent = DaggerTokoChatComponentStub.builder()
             .fakeBaseAppComponent(baseComponent)
             .tokoChatConfigContextModule(TokoChatConfigContextModule(context))
+            .tokoChatCourierConversationModule(
+                TokoChatCourierConversationModule(applicationContext as Application)
+            )
             .build()
         tokoChatComponent!!.inject(this)
     }
@@ -176,25 +194,43 @@ abstract class BaseTokoChatTest {
         )
     }
 
+    protected open fun resetDatabase() {
+        runBlocking(Dispatchers.Main) {
+            try {
+                idlingResourceDatabaseMessage.increment()
+                database.messageDao().deleteAll()
+            } finally {
+                idlingResourceDatabaseMessage.decrement()
+            }
+        }
+    }
+
+    protected fun resetChannelDetailDatabase() {
+        runBlocking(Dispatchers.Main) {
+            try {
+                idlingResourceDatabaseChannel.increment()
+                database.channelDao().deleteChannelById(CHANNEL_ID_DUMMY)
+            } finally {
+                idlingResourceDatabaseChannel.decrement()
+            }
+        }
+    }
+
     companion object {
-        const val USER_ID_DUMMY = "9075737"
+        const val USER_ID_DUMMY = "835a69de-577e-4881-bf1d-4e3eed13c643"
         const val GOJEK_ORDER_ID_DUMMY = "F-68720537282"
         const val TKPD_ORDER_ID_DUMMY = "52af8a53-86cc-40b7-bb98-cc3adde8e32a"
         const val CHANNEL_ID_DUMMY = "b0c80252-c6a6-40f1-a3ce-a9894a32ac6d"
 
         var tokoChatComponent: TokoChatComponentStub? = null
-        val idlingResourceDatabase = CountingIdlingResource(
-            "tokochat-database")
+        val idlingResourceDatabaseMessage = CountingIdlingResource(
+            "tokochat-database-message"
+        )
+        val idlingResourceDatabaseChannel = CountingIdlingResource(
+            "tokochat-database-channel"
+        )
         val idlingResourceGroupBooking = CountingIdlingResource(
             "tokochat-groupbooking"
         )
-
-        fun resetDatabase() {
-            idlingResourceDatabase.increment()
-            runBlocking (Dispatchers.IO) {
-                ConversationsRepository.instance!!.resetConversationsData()
-                idlingResourceDatabase.decrement()
-            }
-        }
     }
 }
