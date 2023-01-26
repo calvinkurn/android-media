@@ -101,5 +101,5 @@ interface ActionListener {
 
     fun onViewFreeShippingPlusBadge()
 
-    fun showCartBundlingBottomSheet(data: CartBundlingBottomSheetData, bundleIds: List<String>)
+    fun showCartBundlingBottomSheet(data: CartBundlingBottomSheetData)
 }

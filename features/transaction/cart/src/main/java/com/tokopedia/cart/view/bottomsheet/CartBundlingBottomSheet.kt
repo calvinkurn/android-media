@@ -37,16 +37,13 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
         private const val BUNDLING_WIDGET_MARGIN_START_ADJUSTMENT = -6
         private const val TAG = "CartBundlingBottomSheet"
         private const val KEY_DATA = "key_data"
-        private const val KEY_BUNDLE_IDS = "key_bundle_ids"
 
         fun newInstance(
             data: CartBundlingBottomSheetData,
-            bundleIds: List<String>,
         ): CartBundlingBottomSheet {
             return CartBundlingBottomSheet().apply {
                 arguments = Bundle().apply {
                     putParcelable(KEY_DATA, data)
-                    putStringArray(KEY_BUNDLE_IDS, bundleIds.toTypedArray())
                 }
             }
         }
@@ -55,9 +52,6 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
     private var binding by autoClearedNullable<LayoutBottomsheetCartBundlingCrossSellBinding>()
     private val data by lazy {
         requireNotNull(arguments?.getParcelable<CartBundlingBottomSheetData>(KEY_DATA))
-    }
-    private val bundleIds by lazy {
-        requireNotNull(arguments?.getStringArray(KEY_BUNDLE_IDS)).asList()
     }
     private var listener: CartBundlingBottomSheetListener? = null
 
@@ -70,7 +64,7 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
         setTitle(data.title)
         binding?.descriptionLabel?.text = MethodChecker.fromHtml(data.description)
         val bundleParam = GetBundleParamBuilder()
-            .setBundleId(bundleIds)
+            .setBundleId(data.bundleIds)
             .setWidgetType(WidgetType.TYPE_3)
             .setPageSource(BundlingPageSource.CART_PAGE)
             .build()
