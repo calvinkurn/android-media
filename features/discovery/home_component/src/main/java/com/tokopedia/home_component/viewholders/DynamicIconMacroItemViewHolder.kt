@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.animation.Interpolator
-import android.view.animation.LinearInterpolator
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -140,7 +139,7 @@ class DynamicIconMacroItemViewHolder(
                                     SCALE_MIN_IMAGE,
                                     SCALE_MAX_IMAGE,
                                     DURATION_OUTPUT_CLICK,
-                                    LinearInterpolator()
+                                    pathOutputClick
                                 )
                             }
                             if (currentScaleRipple == SCALE_MAX_IMAGE) {
@@ -183,7 +182,7 @@ class DynamicIconMacroItemViewHolder(
                                 SCALE_MIN_IMAGE,
                                 SCALE_MAX_IMAGE,
                                 DURATION_OUTPUT_CLICK,
-                                LinearInterpolator()
+                                pathOutputClick
                             )
                         }
                     })
