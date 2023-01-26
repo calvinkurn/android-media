@@ -27,12 +27,11 @@ import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomItem
 import com.tokopedia.feedcomponent.shoprecom.model.UserShopRecomModel
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedWidgetData
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
+import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopModel
 import com.tokopedia.kolcommon.data.SubmitActionContentResponse
 import com.tokopedia.kolcommon.data.SubmitReportContentResponse
 import com.tokopedia.kolcommon.data.pojo.like.LikeKolPostData
@@ -85,10 +84,10 @@ class FeedViewModelTest {
     private val mockFollowShop: ShopFollowUseCase = mockk(relaxed = true)
     private val mockFollowKol: ProfileFollowUseCase = mockk(relaxed = true)
     private val mockUnFollowKol: ProfileUnfollowedUseCase = mockk(relaxed = true)
-    private val mockDynamicFeed : GetDynamicFeedNewUseCase = mockk(relaxed = true)
-    private val mockShopRecom : ShopRecomUseCase = mockk(relaxed = true)
-    private val mockAtc : AddToCartUseCase = mockk(relaxed = true)
-    private val mockPlayWidget : PlayWidgetTools = mockk(relaxed = true)
+    private val mockDynamicFeed: GetDynamicFeedNewUseCase = mockk(relaxed = true)
+    private val mockShopRecom: ShopRecomUseCase = mockk(relaxed = true)
+    private val mockAtc: AddToCartUseCase = mockk(relaxed = true)
+    private val mockPlayWidget: PlayWidgetTools = mockk(relaxed = true)
     private val mockPostReminderCampaign: PostUpcomingCampaignReminderUseCase = mockk(relaxed = true)
 
     private val gqlFailed = MessageErrorException("ooPs")
@@ -222,9 +221,14 @@ class FeedViewModelTest {
      * Follow Kol - havent handle already follow?
      */
     @Test
-    fun `follow kol - success` () {
-        val expected = ProfileDoFollowModelBase(profileFollowers = ProfileDoFollowedData(data =
-            ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "200", relation = ""), messages = emptyList(), errorCode = ""))
+    fun `follow kol - success`() {
+        val expected = ProfileDoFollowModelBase(
+            profileFollowers = ProfileDoFollowedData(
+                data =
+                ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "200", relation = ""),
+                messages = emptyList(), errorCode = ""
+            )
+        )
 
         coEvery { mockFollowKol.executeOnBackground(any()) } returns expected
 
@@ -232,17 +236,22 @@ class FeedViewModelTest {
             .use {
                 it.vm.doFollowKol("1", 2)
                 it.vm.followKolResp.getOrAwaitValue().assertType<Success<FollowKolViewModel>> {
-                    dt ->
-                        dt.data.isSuccess.assertTrue()
-                        dt.data.status.assertEqualTo(FollowKolPostGqlUseCase.PARAM_FOLLOW)
+                        dt ->
+                    dt.data.isSuccess.assertTrue()
+                    dt.data.status.assertEqualTo(FollowKolPostGqlUseCase.PARAM_FOLLOW)
                 }
             }
     }
 
     @Test
-    fun `follow kol - success but failed` () {
-        val expected = ProfileDoFollowModelBase(profileFollowers = ProfileDoFollowedData(data =
-        ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "200", relation = ""), messages = listOf("Error aja"), errorCode = "404"))
+    fun `follow kol - success but failed`() {
+        val expected = ProfileDoFollowModelBase(
+            profileFollowers = ProfileDoFollowedData(
+                data =
+                ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "200", relation = ""),
+                messages = listOf("Error aja"), errorCode = "404"
+            )
+        )
 
         coEvery { mockFollowKol.executeOnBackground(any()) } returns expected
 
@@ -258,14 +267,14 @@ class FeedViewModelTest {
     }
 
     @Test
-    fun `follow kol - error` () {
+    fun `follow kol - error`() {
         coEvery { mockFollowKol.executeOnBackground(any()) } throws gqlFailed
         create(dispatcher = testDispatcher, doFollowUseCase = mockFollowKol)
             .use {
                 it.vm.doFollowKol("1", 2)
                 it.vm.followKolResp.getOrAwaitValue().assertType<Fail> {
                         dt ->
-                    dt.throwable.assertType<Exception> {  }
+                    dt.throwable.assertType<Exception> { }
                 }
             }
     }
@@ -274,9 +283,14 @@ class FeedViewModelTest {
      * Unfollow Kol - havent handle already unfollow?
      */
     @Test
-    fun `unfollow kol - success` () {
-        val expected = ProfileDoUnFollowModelBase(profileFollowers = ProfileDoFollowedData(data =
-        ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "1", relation = ""), messages = listOf("Yeay, success"), errorCode = ""))
+    fun `unfollow kol - success`() {
+        val expected = ProfileDoUnFollowModelBase(
+            profileFollowers = ProfileDoFollowedData(
+                data =
+                ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "1", relation = ""),
+                messages = listOf("Yeay, success"), errorCode = ""
+            )
+        )
 
         coEvery { mockUnFollowKol.executeOnBackground(any()) } returns expected
 
@@ -293,9 +307,14 @@ class FeedViewModelTest {
     }
 
     @Test
-    fun `unfollow kol - success but failed` () {
-        val expected = ProfileDoUnFollowModelBase(profileFollowers = ProfileDoFollowedData(data =
-        ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "200", relation = ""), messages = listOf("Error Aja"), errorCode = "404"))
+    fun `unfollow kol - success but failed`() {
+        val expected = ProfileDoUnFollowModelBase(
+            profileFollowers = ProfileDoFollowedData(
+                data =
+                ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "200", relation = ""),
+                messages = listOf("Error Aja"), errorCode = "404"
+            )
+        )
 
         coEvery { mockUnFollowKol.executeOnBackground(any()) } returns expected
 
@@ -311,7 +330,7 @@ class FeedViewModelTest {
     }
 
     @Test
-    fun `unfollow kol - error` () {
+    fun `unfollow kol - error`() {
         val expected = MessageErrorException("Error Aja")
 
         coEvery { mockUnFollowKol.executeOnBackground(any()) } throws expected
@@ -321,7 +340,7 @@ class FeedViewModelTest {
                 it.vm.doUnfollowKol("1", 2)
                 it.vm.followKolResp.getOrAwaitValue().assertType<Fail> {
                         dt ->
-                    dt.throwable.assertType<Exception> {  }
+                    dt.throwable.assertType<Exception> { }
                 }
             }
     }
@@ -446,9 +465,14 @@ class FeedViewModelTest {
      * follow Kol  from rec- havent handle already unfollow?
      */
     @Test
-    fun `follow kol from rec - success` () {
-        val expected = ProfileDoFollowModelBase(profileFollowers = ProfileDoFollowedData(data =
-        ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "200", relation = ""), messages = emptyList(), errorCode = ""))
+    fun `follow kol from rec - success`() {
+        val expected = ProfileDoFollowModelBase(
+            profileFollowers = ProfileDoFollowedData(
+                data =
+                ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "200", relation = ""),
+                messages = emptyList(), errorCode = ""
+            )
+        )
 
         coEvery { mockFollowKol.executeOnBackground(any()) } returns expected
 
@@ -465,9 +489,14 @@ class FeedViewModelTest {
     }
 
     @Test
-    fun `follow kol from rec - success but failed` () {
-        val expected = ProfileDoFollowModelBase(profileFollowers = ProfileDoFollowedData(data =
-        ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "", relation = ""), messages = listOf("Error aja"), errorCode = "404"))
+    fun `follow kol from rec - success but failed`() {
+        val expected = ProfileDoFollowModelBase(
+            profileFollowers = ProfileDoFollowedData(
+                data =
+                ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "", relation = ""),
+                messages = listOf("Error aja"), errorCode = "404"
+            )
+        )
 
         coEvery { mockFollowKol.executeOnBackground(any()) } returns expected
 
@@ -484,7 +513,7 @@ class FeedViewModelTest {
     }
 
     @Test
-    fun `follow kol from rec - error` () {
+    fun `follow kol from rec - error`() {
         coEvery { mockFollowKol.executeOnBackground(any()) } throws gqlFailed
         create(dispatcher = testDispatcher, doFollowUseCase = mockFollowKol)
             .use {
@@ -502,9 +531,14 @@ class FeedViewModelTest {
      * unfollow Kol  from rec- havent handle already unfollow?
      */
     @Test
-    fun `unfollow kol from rec - success` () {
-        val expected = ProfileDoUnFollowModelBase(profileFollowers = ProfileDoFollowedData(data =
-        ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "1", relation = ""), messages = listOf("Yeay, success"), errorCode = ""))
+    fun `unfollow kol from rec - success`() {
+        val expected = ProfileDoUnFollowModelBase(
+            profileFollowers = ProfileDoFollowedData(
+                data =
+                ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "1", relation = ""),
+                messages = listOf("Yeay, success"), errorCode = ""
+            )
+        )
 
         coEvery { mockUnFollowKol.executeOnBackground(any()) } returns expected
         create(dispatcher = testDispatcher, doUnfollowUseCase = mockUnFollowKol)
@@ -520,9 +554,14 @@ class FeedViewModelTest {
     }
 
     @Test
-    fun `unfollow kol from rec - success but failed` () {
-        val expected = ProfileDoUnFollowModelBase(profileFollowers = ProfileDoFollowedData(data =
-        ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "200", relation = ""), messages = listOf("Error aja"), errorCode = "404"))
+    fun `unfollow kol from rec - success but failed`() {
+        val expected = ProfileDoUnFollowModelBase(
+            profileFollowers = ProfileDoFollowedData(
+                data =
+                ProfileDoFollowedDataVal(userIdSource = "", userIdTarget = "", isSuccess = "200", relation = ""),
+                messages = listOf("Error aja"), errorCode = "404"
+            )
+        )
 
         coEvery { mockUnFollowKol.executeOnBackground(any()) } returns expected
         create(dispatcher = testDispatcher, doUnfollowUseCase = mockUnFollowKol)
@@ -538,7 +577,7 @@ class FeedViewModelTest {
     }
 
     @Test
-    fun `unfollow kol from rec - error` () {
+    fun `unfollow kol from rec - error`() {
         coEvery { mockUnFollowKol.executeOnBackground(any()) } throws gqlFailed
         create(dispatcher = testDispatcher, doUnfollowUseCase = mockUnFollowKol)
             .use {
@@ -619,7 +658,6 @@ class FeedViewModelTest {
                 )
                 verify { mockTopAdsTracker.hitClick(any(), any(), any(), any()) }
             }
-
     }
 
     @Test
@@ -635,7 +673,6 @@ class FeedViewModelTest {
                 )
                 verify { mockTopAdsTracker.hitImpressions(any(), any(), any(), any()) }
             }
-
     }
 
     /**
@@ -643,15 +680,15 @@ class FeedViewModelTest {
      */
 
     @Test
-    fun `fav shop - success` () {
+    fun `fav shop - success`() {
         val expected = ShopFollowModel(followShop = FollowShop(success = true))
         coEvery { mockFollowShop.executeOnBackground(any()) } returns expected
 
         create(dispatcher = testDispatcher, shopFollowUseCase = mockFollowShop)
             .use {
                 it.vm.doFavoriteShop(Data(), 1)
-                it.vm.doFavoriteShopResp.getOrAwaitValue().assertType<Success<FeedPromotedShopViewModel>> {
-                    dt ->
+                it.vm.doFavoriteShopResp.getOrAwaitValue().assertType<Success<FeedPromotedShopModel>> {
+                        dt ->
                     dt.data.adapterPosition.assertEqualTo(1)
                     dt.data.isSuccess.assertEqualTo(expected.followShop.success)
                     dt.data.isSuccess.assertTrue()
@@ -660,15 +697,16 @@ class FeedViewModelTest {
     }
 
     @Test
-    fun `fav shop - failed from gql` () {
+    fun `fav shop - failed from gql`() {
         coEvery { mockFollowShop.executeOnBackground(any()) } throws gqlFailed
 
         create(dispatcher = testDispatcher, shopFollowUseCase = mockFollowShop)
             .use {
                 it.vm.doFavoriteShop(Data(), 1)
                 it.vm.doFavoriteShopResp.getOrAwaitValue().assertType<Fail> {
-                        dt -> dt.throwable.assertEqualTo(gqlFailed)
-                        dt.throwable.assertType<MessageErrorException> {  }
+                        dt ->
+                    dt.throwable.assertEqualTo(gqlFailed)
+                    dt.throwable.assertType<MessageErrorException> { }
                 }
             }
     }
@@ -678,43 +716,45 @@ class FeedViewModelTest {
      */
 
     @Test
-    fun `fetch latest widget success not empty` () {
+    fun `fetch latest widget success not empty`() {
         val expected = FeedXData(feedXHome = FeedXHome(items = listOf(FeedXCard(), FeedXCard()), mods = emptyList(), pagination = FeedXPaginationInfo(cursor = "", hasNext = false, totalData = 0)))
         coEvery { mockDynamicFeed.executeForCDP(any(), any(), any()) } returns expected
 
         create(dispatcher = testDispatcher, getDynamicFeedNewUseCase = mockDynamicFeed)
             .use {
-                it.vm.fetchLatestFeedPostWidgetData("1",1)
+                it.vm.fetchLatestFeedPostWidgetData("1", 1)
                 it.vm.feedWidgetLatestData.getOrAwaitValue().assertType<Success<FeedWidgetData>> {
-                        dt -> dt.data.feedXCard.assertEqualTo(expected.feedXHome.items.first())
+                        dt ->
+                    dt.data.feedXCard.assertEqualTo(expected.feedXHome.items.first())
                 }
             }
-
     }
 
     @Test
-    fun `fetch latest widget success  empty` () {
+    fun `fetch latest widget success  empty`() {
         val expected = FeedXData(feedXHome = FeedXHome(items = emptyList(), mods = emptyList(), pagination = FeedXPaginationInfo(cursor = "", hasNext = false, totalData = 0)))
         coEvery { mockDynamicFeed.executeForCDP(any(), any(), any()) } returns expected
 
         create(dispatcher = testDispatcher, getDynamicFeedNewUseCase = mockDynamicFeed)
             .use {
-                it.vm.fetchLatestFeedPostWidgetData("1",1)
+                it.vm.fetchLatestFeedPostWidgetData("1", 1)
                 it.vm.feedWidgetLatestData.getOrAwaitValue().assertType<Fail> {
-                        dt -> dt.throwable.assertType<CustomUiMessageThrowable> {it.errorMessageId.assertEqualTo(R.string.feed_result_empty)  }
+                        dt ->
+                    dt.throwable.assertType<CustomUiMessageThrowable> { it.errorMessageId.assertEqualTo(R.string.feed_result_empty) }
                 }
             }
     }
 
     @Test
-    fun `fetch latest widget failed` () {
+    fun `fetch latest widget failed`() {
         coEvery { mockDynamicFeed.executeForCDP(any(), any(), any()) } throws gqlFailed
 
         create(dispatcher = testDispatcher, getDynamicFeedNewUseCase = mockDynamicFeed)
             .use {
-                it.vm.fetchLatestFeedPostWidgetData("1",1)
+                it.vm.fetchLatestFeedPostWidgetData("1", 1)
                 it.vm.feedWidgetLatestData.getOrAwaitValue().assertType<Fail> {
-                        dt -> dt.throwable.assertType<CustomUiMessageThrowable> {it.errorMessageId.assertEqualTo(R.string.feed_result_empty)  }
+                        dt ->
+                    dt.throwable.assertType<CustomUiMessageThrowable> { it.errorMessageId.assertEqualTo(R.string.feed_result_empty) }
                 }
             }
     }
@@ -724,9 +764,9 @@ class FeedViewModelTest {
      */
 
     @Test
-    fun `shop recom is shown` () {
+    fun `shop recom is shown`() {
         val expected = UserShopRecomModel(feedXRecomWidget = FeedXRecomWidget(isShown = true, items = listOf(ShopRecomItem())))
-        coEvery { mockShopRecom.executeOnBackground(any(),any(), any()) } returns expected
+        coEvery { mockShopRecom.executeOnBackground(any(), any(), any()) } returns expected
 
         create(dispatcher = testDispatcher, shopRecomUseCase = mockShopRecom)
             .use {
@@ -737,9 +777,9 @@ class FeedViewModelTest {
     }
 
     @Test
-    fun `shop recom is not shown` () {
+    fun `shop recom is not shown`() {
         val expected = UserShopRecomModel(feedXRecomWidget = FeedXRecomWidget(isShown = false, items = listOf(ShopRecomItem())))
-        coEvery { mockShopRecom.executeOnBackground(any(),any(), any()) } returns expected
+        coEvery { mockShopRecom.executeOnBackground(any(), any(), any()) } returns expected
 
         create(dispatcher = testDispatcher, shopRecomUseCase = mockShopRecom)
             .use {
@@ -749,11 +789,11 @@ class FeedViewModelTest {
     }
 
     @Test
-    fun `shop recom is failed` () {
-        coEvery { mockShopRecom.executeOnBackground(any(),any(), any()) } throws gqlFailed
+    fun `shop recom is failed`() {
+        coEvery { mockShopRecom.executeOnBackground(any(), any(), any()) } throws gqlFailed
         create(dispatcher = testDispatcher, shopRecomUseCase = mockShopRecom)
             .use {
-                it.vm.getShopRecomWidget("1",)
+                it.vm.getShopRecomWidget("1")
                 it.vm.shopRecom.value.onError.assertEqualTo(gqlFailed.message)
             }
     }
@@ -763,13 +803,13 @@ class FeedViewModelTest {
      */
 
     @Test
-    fun `atc gql return not success` () {
+    fun `atc gql return not success`() {
         val expected = AddToCartDataModel(status = "NOT FOUND", data = DataModel(success = 0), errorMessage = arrayListOf("Error"))
         coEvery { mockAtc.executeOnBackground() } returns expected
 
         create(dispatcher = testDispatcher, atcUseCase = mockAtc)
             .use {
-                it.vm.addtoCartProduct(FeedXProduct(), "1","1", true, "")
+                it.vm.addtoCartProduct(FeedXProduct(), "1", "1", true, "")
                 it.vm.atcResp.getOrAwaitValue().assertType<Fail> {}
             }
     }
@@ -779,7 +819,7 @@ class FeedViewModelTest {
      */
 
     @Test
-    fun `auto refresh play widget - success` () {
+    fun `auto refresh play widget - success`() {
         val expected = PlayWidget()
 
         coEvery { mockPlayWidget.mapWidgetToModel(any(), any(), any()) } returns PlayWidgetState()
@@ -793,14 +833,15 @@ class FeedViewModelTest {
     }
 
     @Test
-    fun `auto refresh play widget - failed` () {
+    fun `auto refresh play widget - failed`() {
         coEvery { mockPlayWidget.getWidgetFromNetwork(any(), any()) } throws gqlFailed
 
         create(dispatcher = testDispatcher, playWidgetTools = mockPlayWidget)
             .use {
                 it.vm.doAutoRefreshPlayWidget()
                 it.vm.playWidgetModel.getOrAwaitValue().assertType<Fail> {
-                        dt ->  dt.throwable.assertEqualTo(gqlFailed)
+                        dt ->
+                    dt.throwable.assertEqualTo(gqlFailed)
                 }
             }
     }
@@ -810,7 +851,7 @@ class FeedViewModelTest {
      */
 
     @Test
-    fun `set unset reminder - succes from gql` () {
+    fun `set unset reminder - succes from gql`() {
         val expected = PostUpcomingCampaign(response = UpcomingCampaignResponse(success = true))
         coEvery { mockPostReminderCampaign.executeOnBackground() } returns expected
         create(dispatcher = testDispatcher, postUpcomingCampaignReminderUseCase = mockPostReminderCampaign)
@@ -823,27 +864,29 @@ class FeedViewModelTest {
     }
 
     @Test
-    fun `set unset reminder - error from gql` () {
+    fun `set unset reminder - error from gql`() {
         val expected = PostUpcomingCampaign(response = UpcomingCampaignResponse(errorMessage = "Error Aja", success = false))
         coEvery { mockPostReminderCampaign.executeOnBackground() } returns expected
         create(dispatcher = testDispatcher, postUpcomingCampaignReminderUseCase = mockPostReminderCampaign)
             .use {
                 it.vm.setUnsetReminder(FeedXCampaign(id = "123"), 1)
                 it.vm.asgcReminderButtonStatus.getOrAwaitValue().assertType<Fail> {
-                    dt -> dt.throwable.message.assertEqualTo(expected.response.errorMessage)
+                        dt ->
+                    dt.throwable.message.assertEqualTo(expected.response.errorMessage)
                 }
             }
     }
 
     @Test
-    fun `set unset reminder - failed` () {
+    fun `set unset reminder - failed`() {
         coEvery { mockPostReminderCampaign.executeOnBackground() } throws gqlFailed
 
         create(dispatcher = testDispatcher, postUpcomingCampaignReminderUseCase = mockPostReminderCampaign)
             .use {
                 it.vm.setUnsetReminder(FeedXCampaign(id = "123"), 1)
                 it.vm.asgcReminderButtonStatus.getOrAwaitValue().assertType<Fail> {
-                        dt ->  dt.throwable.assertEqualTo(gqlFailed)
+                        dt ->
+                    dt.throwable.assertEqualTo(gqlFailed)
                 }
             }
     }

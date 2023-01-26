@@ -198,6 +198,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
+import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.Serializable
 import java.net.SocketTimeoutException
@@ -347,7 +348,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
     private fun isAutoRefreshEnabled(): Boolean {
         return try {
-            return getFirebaseRemoteConfig()?.getBoolean(HOME_ENABLE_AUTO_REFRESH_UOH) ?: false
+            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+            return firebaseRemoteConfig.getBoolean(HOME_ENABLE_AUTO_REFRESH_UOH)
         } catch (e: Exception) {
             false
         }
@@ -510,6 +512,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         observingTrainResendEmail()
         observeTdnBanner()
         observeUohPmsCounter()
+        observingUohItemDelay()
     }
 
     private fun observeTdnBanner() {
@@ -671,6 +674,12 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
+    private fun loadUohItemDelay(uuid: String, index: Int) {
+        paramUohOrder.uUID = uuid
+        paramUohOrder.page = 1
+        uohListViewModel.loadUohItemDelay(true, paramUohOrder.copy(), index)
+    }
+
     private fun loadRecommendationList() {
         isFetchRecommendation = true
         uohListViewModel.loadRecommendationList(currRecommendationListPage)
@@ -759,6 +768,40 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
+    private fun observingUohItemDelay() {
+        uohListViewModel.uohItemDelayResult.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    if (it.data.second > -1 && it.data.first.uohOrders.orders.isNotEmpty()) {
+                        uohItemAdapter.updateDataAtIndex(it.data.second, it.data.first.uohOrders.orders[0])
+                    }
+                }
+                is Fail -> {
+                    val errorType = when (it.throwable) {
+                        is MessageErrorException -> null
+                        is SocketTimeoutException, is UnknownHostException -> GlobalError.NO_CONNECTION
+                        else -> GlobalError.SERVER_ERROR
+                    }
+                    if (errorType != null) {
+                        binding?.run {
+                            rvOrderList.gone()
+                            globalErrorUoh.visible()
+                            globalErrorUoh.setType(errorType)
+                            globalErrorUoh.setActionClickListener {
+                                initialLoadOrderHistoryList()
+                            }
+                        }
+                    }
+
+                    showToaster(
+                        ErrorHandler.getErrorMessage(context, it.throwable),
+                        Toaster.TYPE_ERROR
+                    )
+                }
+            }
+        }
+    }
+
     private fun observingRecommendationList() {
         uohListViewModel.recommendationListResult.observe(viewLifecycleOwner) {
             when (it) {
@@ -782,7 +825,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     if (responseFinishOrder.success == 1) {
                         responseFinishOrder.message.firstOrNull()
                             ?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
-                        loadOrderHistoryList(orderIdNeedUpdated)
+                        loadUohItemDelay(orderIdNeedUpdated, currIndexNeedUpdate)
                     } else {
                         if (responseFinishOrder.message.isNotEmpty()) {
                             responseFinishOrder.message.firstOrNull()
@@ -1927,7 +1970,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     } else if (dotMenu.actionType.equals(TYPE_ACTION_CANCEL_ORDER, true)) {
                         if (dotMenu.appURL.contains(APPLINK_BASE)) {
                             var helpLinkUrl = ""
-                            currIndexNeedUpdate = index
+                            currIndexNeedUpdate = orderIndex
                             orderIdNeedUpdated = orderData.orderUUID
                             orderData.metadata.dotMenus.forEach {
                                 if (it.label.equals(LABEL_HELP_LINK)) {
@@ -2152,14 +2195,13 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                                 UohLsFinishOrderBottomSheet.newInstance(index, order.verticalID)
                             if (lsFinishOrderBottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
-                            lsFinishOrderBottomSheet.setListener(object :
-                                    UohLsFinishOrderBottomSheet.UohLsFinishOrderBottomSheetListener {
-                                    override fun onClickLsFinishOrder(index: Int, orderId: String) {
-                                        currIndexNeedUpdate = index
-                                        uohItemAdapter.showLoaderAtIndex(index)
-                                        uohListViewModel.doLsPrintFinishOrder(orderId)
-                                    }
-                                })
+                            lsFinishOrderBottomSheet.setListener(object : UohLsFinishOrderBottomSheet.UohLsFinishOrderBottomSheetListener {
+                                override fun onClickLsFinishOrder(index: Int, orderId: String) {
+                                    currIndexNeedUpdate = index
+                                    uohItemAdapter.showLoaderAtIndex(index)
+                                    uohListViewModel.doLsPrintFinishOrder(orderId)
+                                }
+                            })
                             lsFinishOrderBottomSheet.show(childFragmentManager)
                         }
                         button.actionType.equals(GQL_LS_LACAK, true) -> {
