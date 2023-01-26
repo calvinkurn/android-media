@@ -63,7 +63,6 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -329,7 +328,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         updateShareHomeData(
             pageIdConstituents = listOf("home"),
             isScreenShot = false,
-            linkerType = LinkerData.DILAYANI_TOKOPEDIA_HOMEPAGE
+            linkerType = "Dilayani-tokopedia"
         )
 
         shareClicked(shareHome)
@@ -919,7 +918,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         updateShareHomeData(
             pageIdConstituents = listOf("home"),
             isScreenShot = true,
-            linkerType = LinkerData.DILAYANI_TOKOPEDIA_HOMEPAGE
+            linkerType = "Dilayani-tokopedia"
         )
 
         showUniversalShareBottomSheet(shareHome)
