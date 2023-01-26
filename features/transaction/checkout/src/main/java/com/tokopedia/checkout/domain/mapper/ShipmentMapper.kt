@@ -244,7 +244,7 @@ class ShipmentMapper @Inject constructor() {
                             shopTypeInfoData
                     )
                     if (product.tradeInInfo.isValidTradeIn) {
-                        productPrice = product.tradeInInfo.newDevicePrice.toLong()
+                        productPrice = product.tradeInInfo.newDevicePrice
                     }
                     isError = !product.errors.isNullOrEmpty() ||
                             shipmentAddressFormDataResponse.errorTicker.isNotEmpty() ||
@@ -620,9 +620,9 @@ class ShipmentMapper @Inject constructor() {
     private fun mapTradeInInfoData(tradeInInfo: TradeInInfo): TradeInInfoData {
         return TradeInInfoData().apply {
             isValidTradeIn = tradeInInfo.isValidTradeIn
-            newDevicePrice = tradeInInfo.newDevicePrice
+            newDevicePrice = tradeInInfo.newDevicePrice.toLong()
             newDevicePriceFmt = tradeInInfo.newDevicePriceFmt
-            oldDevicePrice = tradeInInfo.oldDevicePrice
+            oldDevicePrice = tradeInInfo.oldDevicePrice.toLong()
             oldDevicePriceFmt = tradeInInfo.oldDevicePriceFmt
             isDropOffEnable = tradeInInfo.isDropOffEnable
             deviceModel = tradeInInfo.deviceModel
