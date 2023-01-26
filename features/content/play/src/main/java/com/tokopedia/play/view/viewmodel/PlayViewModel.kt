@@ -1087,7 +1087,7 @@ class PlayViewModel @AssistedInject constructor(
                 _exploreWidget.update {
                     it.copy(widgets = emptyList(), chips = TabMenuUiModel.Empty)
                 }
-                mChannelData?.channelDetail?.exploreWidgetConfig?.let {
+                _channelDetail.value.exploreWidgetConfig.let {
                     updateWidgetParam(group = it.group, sourceId = it.sourceId, sourceType = it.sourceType)
                 }
                 _isBottomSheetsShown.update { false }
