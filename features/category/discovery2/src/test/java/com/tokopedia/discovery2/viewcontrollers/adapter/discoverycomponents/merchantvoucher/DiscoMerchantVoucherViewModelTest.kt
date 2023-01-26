@@ -62,6 +62,20 @@ class DiscoMerchantVoucherViewModelTest {
 
     }
 
+    @Test
+    fun `test for getProductId`(){
+        every { componentsItem.data } returns null
+        assert(viewModel.getProductId().isEmpty())
+        every { componentsItem.data } returns list
+        assert(viewModel.getProductId().isEmpty())
+        list.add(mockDataItem)
+        every { mockDataItem.productId } returns ""
+        assert(viewModel.getProductId().isEmpty())
+        every { mockDataItem.productId} returns "1283"
+        assert(viewModel.getProductId()=="1283")
+
+    }
+
     /**************************** test for update data *******************************************/
     @Test
     fun`test for update data`(){
@@ -113,6 +127,33 @@ class DiscoMerchantVoucherViewModelTest {
         viewModel.fetchDataForCoupons()
 
         assert(viewModel.mvcData.value != null)
+
+    }
+
+    @Test
+    fun`test for fetchDataForCoupons when response data is null`() {
+        val viewModel: DiscoMerchantVoucherViewModel = spyk(DiscoMerchantVoucherViewModel(application, componentsItem, 99))
+        list.clear()
+        val listOfShopIds = ArrayList<Int>()
+        listOfShopIds.add(101)
+        listOfShopIds.add(102)
+        every { mockDataItem.shopIds} returns listOfShopIds
+        list.add(mockDataItem)
+        every { componentsItem.data } returns list
+        val tokopointsCatalogMVCSummaryResponse = TokopointsCatalogMVCSummaryResponse(data = null)
+        viewModel.mvcSummaryUseCase = mvcSummaryUseCase
+        coEvery {
+            mvcSummaryUseCase.getQueryParams(
+                any())
+        } returns HashMap()
+        coEvery {
+            mvcSummaryUseCase.getResponse(
+                any())
+        } returns tokopointsCatalogMVCSummaryResponse
+
+        viewModel.fetchDataForCoupons()
+
+        assert(viewModel.mvcData.value == null)
 
     }
 
