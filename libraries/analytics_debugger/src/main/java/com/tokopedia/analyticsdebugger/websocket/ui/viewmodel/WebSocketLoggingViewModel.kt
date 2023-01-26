@@ -4,13 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.websocket.domain.param.GetWebSocketLogParam
 import com.tokopedia.analyticsdebugger.websocket.domain.usecase.DeleteAllWebSocketLogUseCase
 import com.tokopedia.analyticsdebugger.websocket.domain.usecase.GetSourcesLogUseCase
 import com.tokopedia.analyticsdebugger.websocket.domain.usecase.GetWebSocketLogUseCase
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLog
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPlaceHolder
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketSourceUiModel
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.*
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.action.WebSocketLoggingAction
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.event.WebSocketLoggingEvent
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.helper.UiString
@@ -35,6 +33,7 @@ class WebSocketLoggingViewModel @Inject constructor(
     private val _websocketLogPagination = MutableStateFlow(WebSocketLogPagination())
     private val _loading = MutableStateFlow(false)
     private val _chips = MutableStateFlow(listOf<ChipModel>())
+    private val _pageSource = MutableStateFlow(PageSource.NONE)
 
     private val _uiEvent = MutableSharedFlow<WebSocketLoggingEvent>()
 
@@ -52,6 +51,10 @@ class WebSocketLoggingViewModel @Inject constructor(
 
     val uiEvent: Flow<WebSocketLoggingEvent>
         get() = _uiEvent
+
+    fun setPageSource(source: PageSource) {
+        _pageSource.value = source
+    }
 
     fun submitAction(action: WebSocketLoggingAction) {
         when(action) {
@@ -109,7 +112,7 @@ class WebSocketLoggingViewModel @Inject constructor(
 
     private fun handleDeleteAllLog() {
         viewModelScope.launchCatchError(block = {
-            deleteAllWebSocketLogUseCase.executeOnBackground()
+            deleteAllWebSocketLogUseCase(_pageSource.value)
 
             emitMessage(UiString.Resource(R.string.websocket_log_delete_all_message))
             _uiEvent.emit(WebSocketLoggingEvent.DeleteAllLogEvent)
@@ -157,7 +160,7 @@ class WebSocketLoggingViewModel @Inject constructor(
         if(!isLoading()) {
             setLoading(true)
 
-            val newChips = getSourcesLogUseCase.executeOnBackground()
+            val newChips = getSourcesLogUseCase(_pageSource.value)
             val selectedChip = getSelectedSource()
 
             newChips.forEach { it.selected = it.value == selectedChip }
@@ -189,10 +192,15 @@ class WebSocketLoggingViewModel @Inject constructor(
     }
 
     private suspend fun getWebSocketLog(query: String, page: Int): List<WebSocketLogUiModel> {
-        return getWebSocketLogUseCase.let {
-            it.setParam(query, getSelectedSource(), page, PAGINATION_LIMIT)
-            it.executeOnBackground()
-        }
+        return getWebSocketLogUseCase(
+            GetWebSocketLogParam(
+                pageSource = _pageSource.value,
+                query = query,
+                source = getSelectedSource(),
+                page = page,
+                limit = PAGINATION_LIMIT
+            )
+        )
     }
 
     private fun getSelectedSource(): String {
