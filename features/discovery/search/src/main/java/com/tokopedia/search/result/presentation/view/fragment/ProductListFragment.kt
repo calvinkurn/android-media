@@ -49,6 +49,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_MPC_LIFECYCLE_OBSERVER
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_PRODUCT_CARD_VIEWSTUB
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.ProductClickAnalyticsData
@@ -226,7 +227,20 @@ class ProductListFragment: BaseDaggerFragment(),
         private set
 
     private val isSneakPeekEnabled: Boolean by lazy {
-        searchVideoPreference.isSneakPeekEnabled
+        searchVideoPreference.isSneakPeekEnabled && getABTestVideoSneakPeek()
+    }
+
+    private fun getABTestVideoSneakPeek(): Boolean {
+        return try {
+            val abTestVideoSneakPeekAutoPlay = abTestRemoteConfig?.getString(
+                RollenceKey.SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY,
+                ""
+            )
+            RollenceKey.SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_VARIANT == abTestVideoSneakPeekAutoPlay
+                || RollenceKey.SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_OTHER_VARIANT == abTestVideoSneakPeekAutoPlay
+        } catch (e: Exception) {
+            false
+        }
     }
 
     private lateinit var videoCarouselWidgetCoordinator : VideoCarouselWidgetCoordinator
