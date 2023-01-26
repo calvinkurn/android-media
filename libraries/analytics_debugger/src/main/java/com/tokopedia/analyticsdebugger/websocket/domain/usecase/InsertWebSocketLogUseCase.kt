@@ -7,7 +7,6 @@ import com.tokopedia.analyticsdebugger.websocket.domain.repository.TopchatWebSoc
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.PlayWebSocketLogGeneralInfoUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.TopchatWebSocketLogDetailInfoUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.topchat.TopchatWebSocketInfoUiModel
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
