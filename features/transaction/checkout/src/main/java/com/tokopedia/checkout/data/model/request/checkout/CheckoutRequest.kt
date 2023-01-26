@@ -3,6 +3,8 @@ package com.tokopedia.checkout.data.model.request.checkout
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.FREE_SHIPPING_METADATA
+import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.SCHEDULE_DELIVERY_META_DATA_KEY
+import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.UPLOAD_PRESCRIPTION_META_DATA_KEY
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.AddOnGiftingRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest
@@ -19,8 +21,7 @@ import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 
 const val FEATURE_TYPE_REGULAR_PRODUCT = 3
 const val FEATURE_TYPE_TOKONOW_PRODUCT = 12
-const val UPLOAD_PRESCRIPTION_META_DATA_KEY = "prescription_ids"
-const val SCHEDULE_DELIVERY_META_DATA_KEY = "shipping_validation_metadata"
+
 data class Carts(
     @SerializedName("has_promo_stacking")
     var hasPromoStacking: Boolean = false,
@@ -191,6 +192,8 @@ data class OrderMetadata(
 ) {
     companion object {
         const val FREE_SHIPPING_METADATA = "free_shipping_metadata"
+        const val UPLOAD_PRESCRIPTION_META_DATA_KEY = "prescription_ids"
+        const val SCHEDULE_DELIVERY_META_DATA_KEY = "shipping_validation_metadata"
     }
 }
 
