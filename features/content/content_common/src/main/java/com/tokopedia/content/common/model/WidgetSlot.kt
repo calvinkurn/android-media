@@ -120,7 +120,7 @@ data class ContentItem(
     val slugId: String,
 
     @SerializedName("recommendationType")
-    val recommendationType: String
+    val recommendationType: String = ""
 ) {
 
     data class Partner(
