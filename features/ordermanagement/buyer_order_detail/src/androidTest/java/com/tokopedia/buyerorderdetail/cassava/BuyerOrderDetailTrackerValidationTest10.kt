@@ -23,6 +23,7 @@ class BuyerOrderDetailTrackerValidationTest10 : BuyerOrderDetailTrackerValidatio
             testClickProduct(activityRule.activity)
             testClickProductActionButton(activityRule.activity)
             testClickPrimaryActionButton()
+            testScrollToBottom(activityRule.activity)
             testClickSecondaryActionButtonHelp(activityRule.activity)
         } validate {
             clearQueries()
