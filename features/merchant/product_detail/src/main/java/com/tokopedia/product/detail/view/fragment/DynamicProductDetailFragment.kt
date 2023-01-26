@@ -3632,35 +3632,39 @@ open class DynamicProductDetailFragment :
     }
 
     private fun showAddToCartDoneBottomSheet(cartId: String) {
+//        viewModel.getDynamicProductInfoP1?.let {
+//            val addToCartDoneBottomSheet = AddToCartDoneBottomSheet()
+//            val productName = it.getProductName
+//            val productImageUrl = it.data.getFirstProductImage()
+//            val addedProductDataModel = AddToCartDoneAddedProductDataModel(
+//                it.basic.productID,
+//                productName,
+//                productImageUrl,
+//                it.data.variant.isVariant,
+//                it.basic.getShopId(),
+//                viewModel.getBebasOngkirDataByProductId().imageURL,
+//                cartId = if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) "" else cartId
+//            )
+//            val bundleData = Bundle()
+//            bundleData.putParcelable(
+//                AddToCartDoneBottomSheet.KEY_ADDED_PRODUCT_DATA_MODEL,
+//                addedProductDataModel
+//            )
+//            addToCartDoneBottomSheet.arguments = bundleData
+//            addToCartDoneBottomSheet.setDismissListener {
+//                shouldShowCartAnimation = true
+//                updateCartNotification()
+//            }
+//            fragmentManager?.let {
+//                addToCartDoneBottomSheet.show(
+//                    it,
+//                    "TAG"
+//                )
+//            }
+//        }
         viewModel.getDynamicProductInfoP1?.let {
-            val addToCartDoneBottomSheet = AddToCartDoneBottomSheet()
-            val productName = it.getProductName
-            val productImageUrl = it.data.getFirstProductImage()
-            val addedProductDataModel = AddToCartDoneAddedProductDataModel(
-                it.basic.productID,
-                productName,
-                productImageUrl,
-                it.data.variant.isVariant,
-                it.basic.getShopId(),
-                viewModel.getBebasOngkirDataByProductId().imageURL,
-                cartId = if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) "" else cartId
-            )
-            val bundleData = Bundle()
-            bundleData.putParcelable(
-                AddToCartDoneBottomSheet.KEY_ADDED_PRODUCT_DATA_MODEL,
-                addedProductDataModel
-            )
-            addToCartDoneBottomSheet.arguments = bundleData
-            addToCartDoneBottomSheet.setDismissListener {
-                shouldShowCartAnimation = true
-                updateCartNotification()
-            }
-            fragmentManager?.let {
-                addToCartDoneBottomSheet.show(
-                    it,
-                    "TAG"
-                )
-            }
+            RouteManager.route(context, ApplinkConst.POST_ATC, it.basic.productID, cartId)
+
         }
     }
 
