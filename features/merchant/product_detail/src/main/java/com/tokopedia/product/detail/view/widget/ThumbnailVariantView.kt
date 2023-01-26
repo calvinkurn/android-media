@@ -64,11 +64,11 @@ class ThumbnailVariantView(
         setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         setCardBackground(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         setCardBorder(R.drawable.pdp_thumbnail_variant_border_selected)
+        resetThumbGrayscale()
     }
 
     fun setSelectedStockEmptyState() {
         setDisableState()
-        setThumbGrayscale()
         setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         setCardBorder(R.drawable.pdp_thumbnail_variant_border_selected)
     }
@@ -77,6 +77,7 @@ class ThumbnailVariantView(
         setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
         setCardBackground(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         setCardBorder(R.drawable.pdp_thumbnail_variant_border_default)
+        resetThumbGrayscale()
     }
 
     fun setDisableState() {
@@ -87,22 +88,33 @@ class ThumbnailVariantView(
     }
 
     private fun setThumbGrayscale() {
-        val colorMatrix = ColorMatrix()
-        colorMatrix.setSaturation(0f)
-        val filter = ColorMatrixColorFilter(colorMatrix)
-        binding.variantThumbnail.colorFilter = filter
+        if (binding.variantThumbnail.colorFilter == null) {
+            val colorMatrix = ColorMatrix()
+            colorMatrix.setSaturation(0f)
+            val filter = ColorMatrixColorFilter(colorMatrix)
+            binding.variantThumbnail.colorFilter = filter
+        }
+    }
+
+    private fun resetThumbGrayscale() {
+        if (binding.variantThumbnail.colorFilter != null) {
+            binding.variantThumbnail.colorFilter = null
+        }
     }
 
     private fun setVariantTitleColor(resId: Int) {
-        binding.variantTitle.setTextColor(getColor(resId))
+        val color = getColor(resId)
+        binding.variantTitle.setTextColor(color)
     }
 
     private fun setCardBorder(resId: Int) {
-        binding.variantCard.foreground = context.getDrawableChecker(resId)
+        val drawable = context.getDrawableChecker(resId)
+        binding.variantCard.foreground = drawable
     }
 
     private fun setCardBackground(colorId: Int) {
-        binding.variantCard.setCardBackgroundColor(context.getColorChecker(colorId))
+        val color = context.getColorChecker(colorId)
+        binding.variantCard.setCardBackgroundColor(color)
     }
 
     private fun getColor(resId: Int): Int {
