@@ -4143,7 +4143,7 @@ class FeedPlusFragment :
             }
         }.toList()
         if (data.isNotEmpty()) {
-            val scrollPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
+            val scrollPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
             adapter.clearData()
             adapter.addList(newList)
 
