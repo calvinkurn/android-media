@@ -123,7 +123,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             qty = product.quantity,
             notes = product.productNote,
             shopId = shopId,
-            custId = userId
+            custId = userId,
+            warehouseId = "0"
         )
     )
 

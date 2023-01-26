@@ -4,6 +4,7 @@ import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
+import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 
 object AddToCartParamsMapper {
     fun mapMultiAddToCartParams(
@@ -35,18 +36,36 @@ object AddToCartParamsMapper {
         }
     }
 
+    fun mapSingleAddToCartParams(
+        product: ProductListUiModel.ProductUiModel,
+        shopId: String,
+        userId: String
+    ): ArrayList<AddToCartMultiParam> {
+        return arrayListOf(
+            createAddToCartMultiParam(
+                productId = product.productId,
+                productName = product.productName,
+                productPrice = product.price,
+                quantity = product.quantity,
+                notes = product.productNote,
+                shopId = shopId,
+                userId = userId
+            )
+        )
+    }
+
     private fun GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle.mapToAddToCartParam(
         shopId: String,
         userId: String
     ): AddToCartMultiParam {
-        return AddToCartMultiParam(
+        return createAddToCartMultiParam(
             productId = productId,
             productName = productName,
             productPrice = price,
-            qty = quantity,
+            quantity = quantity,
             notes = notes,
             shopId = shopId,
-            custId = userId
+            userId = userId
         )
     }
 
@@ -54,14 +73,35 @@ object AddToCartParamsMapper {
         shopId: String,
         userId: String
     ): AddToCartMultiParam {
-        return AddToCartMultiParam(
+        return createAddToCartMultiParam(
             productId = productId,
             productName = productName,
             productPrice = price,
+            quantity = quantity,
+            notes = notes,
+            shopId = shopId,
+            userId = userId
+        )
+    }
+
+    private fun createAddToCartMultiParam(
+        productId: String,
+        productName: String,
+        productPrice: Double,
+        quantity: Int,
+        notes: String,
+        shopId: String,
+        userId: String
+    ): AddToCartMultiParam {
+        return AddToCartMultiParam(
+            productId = productId,
+            productName = productName,
+            productPrice = productPrice,
             qty = quantity,
             notes = notes,
             shopId = shopId,
-            custId = userId
+            custId = userId,
+            warehouseId = "0"
         )
     }
 }
