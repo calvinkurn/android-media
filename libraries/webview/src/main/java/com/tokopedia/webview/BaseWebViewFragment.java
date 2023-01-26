@@ -64,7 +64,6 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.RouteManagerKt;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.globalerror.GlobalError;
@@ -76,10 +75,12 @@ import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
+import com.tokopedia.webview.jsinterface.PrintWebPageInterface;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
@@ -135,6 +136,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public static final String CUST_OVERLAY_URL = "imgurl";
     private static final String CUST_HEADER = "header_text";
     private static final String HELP_URL = "tokopedia.com/help";
+    private static final String ANDROID_PRINT_JS_INTERFACE = "AndroidPrint";
 
     @NonNull
     protected String url = "";
@@ -260,8 +262,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             swipeRefreshLayout.setOnRefreshListener(this::reloadPage);
         }
 
+        Boolean isEnablePrintJsInterface = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_WEBVIEW_PRINT_JS_INTERFACE, true);
+
         webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");
+        if (isEnablePrintJsInterface) {
+            webView.addJavascriptInterface(new PrintWebPageInterface(getActivity(), webView), ANDROID_PRINT_JS_INTERFACE);
+        }
         WebSettings webSettings = webView.getSettings();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " Mobile webview ");
         webSettings.setJavaScriptEnabled(true);

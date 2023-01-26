@@ -17,6 +17,7 @@ import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.mvc.R
@@ -27,6 +28,8 @@ import com.tokopedia.mvc.presentation.download.uimodel.VoucherImageEffect
 import com.tokopedia.mvc.presentation.download.uimodel.VoucherImageEvent
 import com.tokopedia.mvc.presentation.download.uimodel.VoucherImageUiModel
 import com.tokopedia.mvc.presentation.download.uimodel.VoucherImageUiState
+import com.tokopedia.mvc.util.constant.BundleConstant
+import com.tokopedia.mvc.util.tracker.DownloadVoucherImageTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -40,14 +43,17 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
         private const val SQUARE_URL = "square_url"
         private const val PORTRAIT_URL = "portrait_url"
 
+
         @JvmStatic
         fun newInstance(
+            voucherId: Long,
             bannerUrl: String,
             squareUrl: String,
             portraitUrl: String
         ): DownloadVoucherImageBottomSheet {
             return DownloadVoucherImageBottomSheet().apply {
                 arguments = Bundle().apply {
+                    putLong(BundleConstant.BUNDLE_VOUCHER_ID, voucherId)
                     putString(BANNER_URL, bannerUrl)
                     putString(SQUARE_URL, squareUrl)
                     putString(PORTRAIT_URL, portraitUrl)
@@ -63,6 +69,7 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
     }
 
     private val voucherImageAdapter by lazy { DownloadVoucherImageAdapter() }
+    private val voucherId by lazy { arguments?.getLong(BundleConstant.BUNDLE_VOUCHER_ID).orZero() }
     private val bannerUrl by lazy { arguments?.getString(BANNER_URL).toBlankOrString() }
     private val squareUrl by lazy { arguments?.getString(SQUARE_URL).toBlankOrString() }
     private val portraitUrl by lazy { arguments?.getString(PORTRAIT_URL).toBlankOrString() }
@@ -72,6 +79,9 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
+
+    @Inject
+    lateinit var tracker: DownloadVoucherImageTracker
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(DownloadVoucherImageViewModel::class.java) }
@@ -98,17 +108,23 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         setupBottomSheet(inflater, container)
+        setCloseClickListener {
+            tracker.sendClickCancelEvent()
+            dismiss()
+        }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        tracker.sendBottomSheetVisibleImpression()
+
         val images = populateImages()
         setupView(images)
         applyUnifyBackgroundColor()
         observeUiEffect()
         observeUiState()
-        viewModel.processEvent(VoucherImageEvent.PopulateInitialData(images))
+        viewModel.processEvent(VoucherImageEvent.PopulateInitialData(voucherId, images))
     }
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
@@ -171,8 +187,15 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
 
     private fun handleEffect(effect: VoucherImageEffect) {
         when (effect) {
-            is VoucherImageEffect.DownloadImages -> checkDownloadPermission(effect.selectedImageUrls)
+            is VoucherImageEffect.DownloadImages -> {
+                checkDownloadPermission(effect.selectedImageUrls)
+                sendDownloadVoucherTracker(effect.voucherId, effect.selectedImageUrls)
+            }
         }
+    }
+
+    private fun sendDownloadVoucherTracker(voucherId: Long, selectedImages: List<VoucherImageUiModel>) {
+        tracker.sendClickDownloadButtonEvent(voucherId, selectedImages)
     }
 
     private fun renderButton(selectedImageCount: Int) {
@@ -191,7 +214,7 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
         this.onDownloadError = onDownloadError
     }
 
-    private fun checkDownloadPermission(imageUrls: Set<String>) {
+    private fun checkDownloadPermission(imageUrls: List<VoucherImageUiModel>) {
         val listener = object : PermissionCheckerHelper.PermissionCheckListener {
             override fun onPermissionDenied(permissionText: String) {
                 permissionCheckerHelper.onPermissionDenied(requireActivity(), permissionText)
@@ -208,7 +231,7 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
                     ) == PackageManager.PERMISSION_GRANTED
                 ) {
-                    imageUrls.forEach { downloadFile(it) }
+                    imageUrls.forEach { downloadFile(it.imageUrl) }
                 }
             }
         }

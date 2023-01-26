@@ -23,6 +23,10 @@ import com.tokopedia.mvc.databinding.SmvcBottomsheetChangeQuotaFormBinding
 import com.tokopedia.mvc.databinding.SmvcBottomsheetChangeQuotaShimmerBinding
 import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaModel
 import com.tokopedia.mvc.presentation.bottomsheet.changequota.model.UpdateQuotaEffect
+import com.tokopedia.mvc.util.constant.ChangeQuotaConstant.APPLY_ALL_PERIOD_COUPON
+import com.tokopedia.mvc.util.constant.ChangeQuotaConstant.APPLY_ONLY_PERIOD_COUPON
+import com.tokopedia.mvc.util.constant.ChangeQuotaConstant.NOT_YET_APPLY_PERIOD_COUPON
+import com.tokopedia.mvc.util.tracker.ChangeQuotaVoucherTracker
 import javax.inject.Inject
 
 class ChangeQuotaBottomSheet : BottomSheetUnify() {
@@ -30,6 +34,7 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
     companion object {
         private const val ARG_ID_VOUCHER = "ARG_ID_VOUCHER"
         private const val TITLE_BOTTOM_SHEET = "ARG_TITLE"
+        private const val CLEAR_OPTIONS = -1
         private val TAG = ChangeQuotaBottomSheet::class.java.simpleName
 
         @JvmStatic
@@ -58,6 +63,9 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
         {}
     private var onFailedListener: (String) -> Unit =
         {}
+
+    @Inject
+    lateinit var tracker: ChangeQuotaVoucherTracker
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -121,34 +129,118 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
     }
 
     private fun setViewListener() {
+        setOnDismissListener()
         binding?.run {
             formLayout?.textFieldDiscountQuota?.editText?.afterTextChanged {
                 viewModel.isValidInput(it.toLongOrZero())
             }
-            formLayout?.radiosMultipleCoupon?.setOnCheckedChangeListener { _, position ->
-                viewModel.setOptionsApplyPeriodCoupon(position)
-            }
+
             formLayout?.labelSpendingEstimation?.apply {
                 iconInfo?.setOnClickListener {
                     ExpenseEstimationBottomSheet.newInstance().show(childFragmentManager)
                 }
             }
 
-            formLayout?.btnMvcSaveP?.run {
+            formLayout?.btnMvcSave?.run {
                 setOnClickListener {
                     this@ChangeQuotaBottomSheet.isCancelable = false
-                    viewModel.changeQuota(formLayout?.textFieldDiscountQuota?.editText?.text.toString().toIntOrZero())
+                    viewModel.changeQuota(
+                        formLayout?.textFieldDiscountQuota?.editText?.text.toString().toIntOrZero()
+                    )
                     isLoading = true
+                    clearDismissListener()
+                    tracker.sendClickOkEvent(
+                        createLabelTracker(
+                            idVoucher,
+                            viewModel.getVoucherStatus()
+                        )
+                    )
                 }
             }
 
-            formLayout?.btnMvcCancel?.run {
+            formLayout?.btnMvcReset?.run {
                 setOnClickListener {
-                    formLayout?.radiosMultipleCoupon?.clearCheck()
+                    // TODO: uncomment this when BE ready to implement, radiosMultipleCoupon always gone for now
+                    //setOptionsPickerOnClickRestartButton()
                     viewModel.restartVoucher()
+                    tracker.sendClickResetEvent(
+                        createLabelTracker(
+                            idVoucher,
+                            viewModel.getVoucherStatus()
+                        )
+                    )
                 }
             }
         }
+    }
+
+    // TODO: uncomment this when BE ready to implement, radiosMultipleCoupon always gone for now
+    /*private fun setOptionsPickerOnClickRestartButton(){
+        clearClickOptionsListener()
+        formLayout?.radiosMultipleCoupon?.clearCheck()
+        setClickOptionsListener()
+    }
+
+    private fun sendTrackerOptions(optionsId: Int){
+        if (optionsId != CLEAR_OPTIONS) {
+            tracker.sendClickOptionsEvent(
+                createLabelTrackerOptions(
+                    idVoucher,
+                    viewModel.getVoucherStatus(),
+                    getOptionsName(optionsId)
+                )
+            )
+        }
+    }
+
+    private fun setClickOptionsListener(){
+        formLayout?.radiosMultipleCoupon?.setOnCheckedChangeListener { _, optionsId ->
+            viewModel.setOptionsApplyPeriodCoupon(getPositionOptions(optionsId))
+            sendTrackerOptions(optionsId)
+        }
+    }
+
+    private fun clearClickOptionsListener(){
+        formLayout?.radiosMultipleCoupon?.setOnCheckedChangeListener(null)
+    }
+
+    private fun getOptionsName(optionsId: Int): String {
+        return when (optionsId) {
+            R.id.radio_just_one_coupon -> getString(R.string.smvc_just_for_this_coupon)
+            R.id.radio_apply_all_coupon -> getString(R.string.smvc_this_coupon_and_other)
+            else -> getString(R.string.smvc_just_for_this_coupon)
+        }
+    }
+
+    private fun createLabelTrackerOptions(
+        voucherId: Long,
+        voucherStatus: String,
+        optionsName: String
+    ): String {
+        return getString(
+            R.string.smvc_tracker_change_quota_lable_options,
+            voucherId.toString(),
+            voucherStatus,
+            optionsName
+        )
+    }
+
+    private fun getPositionOptions(optionsId: Int): Int {
+        return when (optionsId) {
+            R.id.radio_just_one_coupon -> APPLY_ONLY_PERIOD_COUPON
+            R.id.radio_apply_all_coupon -> APPLY_ALL_PERIOD_COUPON
+            else -> NOT_YET_APPLY_PERIOD_COUPON
+        }
+    }*/
+
+    private fun setOnDismissListener() {
+        this.setOnDismissListener {
+            tracker.sendClickCloseEvent(createLabelTracker(idVoucher, viewModel.getVoucherStatus()))
+        }
+    }
+
+    private fun clearDismissListener() {
+        this.setOnDismissListener { }
     }
 
     private fun setObservableUiEffect() {
@@ -197,13 +289,16 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
                 voucher.maxBenefit.orZero(),
                 voucher.currentQuota.orZero()
             )
-            labelSpendingEstimation.spendingEstimationText = estimationSpending.getCurrencyFormatted()
+            labelSpendingEstimation.spendingEstimationText =
+                estimationSpending.getCurrencyFormatted()
             textFieldDiscountQuota.editText.setText(voucher.currentQuota.orZero().toString())
-            if (voucher.isMultiPeriod.orFalse()) {
+
+            // TODO: uncomment this when BE ready to implement, radiosMultipleCoupon always gone for now
+            /*if (voucher.isMultiPeriod.orFalse()) {
                 radiosMultipleCoupon.visible()
             } else {
                 radiosMultipleCoupon.gone()
-            }
+            }*/
         }
     }
 
@@ -213,14 +308,15 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
             state.quotaReq
         ) else getString(R.string.smvc_error_max_quota, state.quotaReq)
         binding?.layoutFormChangeQuota?.run {
-            labelSpendingEstimation.spendingEstimationText = state.estimationSpending.getCurrencyFormatted()
+            labelSpendingEstimation.spendingEstimationText =
+                state.estimationSpending.getCurrencyFormatted()
             textFieldDiscountQuota.isInputError = !state.isValidInput
             if (!state.isValidInput) {
                 textFieldDiscountQuota.setMessage(messageError)
             } else {
                 textFieldDiscountQuota.setMessage("")
             }
-            btnMvcSaveP.isEnabled = state.isValidInput && state.isSelectedOptions
+            btnMvcSave.isEnabled = state.isValidInput && state.isSelectedOptions
         }
     }
 
@@ -229,5 +325,15 @@ class ChangeQuotaBottomSheet : BottomSheetUnify() {
             show(it, TAG)
         }
     }
+
+
+    private fun createLabelTracker(voucherId: Long, voucherStatus: String): String {
+        return getString(
+            R.string.smvc_tracker_change_quota_lable,
+            voucherId.toString(),
+            voucherStatus
+        )
+    }
+
 
 }

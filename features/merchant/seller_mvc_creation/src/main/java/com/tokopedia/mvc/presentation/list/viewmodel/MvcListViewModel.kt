@@ -6,6 +6,7 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.mvc.domain.entity.ShareComponentMetaData
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.domain.entity.VoucherListParam
@@ -20,9 +21,15 @@ import com.tokopedia.mvc.domain.usecase.GetVoucherListChildUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherQuotaUseCase
 import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
+import com.tokopedia.mvc.domain.usecase.ProductListUseCase
+import com.tokopedia.mvc.domain.usecase.ShopBasicDataUseCase
 import com.tokopedia.mvc.presentation.list.helper.MvcListPageStateHelper
 import com.tokopedia.mvc.presentation.list.model.DeleteVoucherUiEffect
 import com.tokopedia.mvc.presentation.list.model.FilterModel
+import com.tokopedia.mvc.util.constant.NumberConstant
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -36,7 +43,9 @@ class MvcListViewModel @Inject constructor(
     private val getVoucherListChildUseCase: GetVoucherListChildUseCase,
     private val cancelVoucherUseCase: CancelVoucherUseCase,
     private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
-    private val merchantPromotionGetMVDataByIDUseCase: MerchantPromotionGetMVDataByIDUseCase
+    private val merchantPromotionGetMVDataByIDUseCase: MerchantPromotionGetMVDataByIDUseCase,
+    private val shopBasicDataUseCase: ShopBasicDataUseCase,
+    private val getProductsUseCase: ProductListUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _voucherList = MutableLiveData<List<Voucher>>()
@@ -53,6 +62,11 @@ class MvcListViewModel @Inject constructor(
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
+
+    private val _generateShareComponentMetaData =
+        MutableLiveData<Result<ShareComponentMetaData>>()
+    val generateShareComponentMetaData: LiveData<Result<ShareComponentMetaData>>
+        get() = _generateShareComponentMetaData
 
     val pageState = Transformations.map(voucherList) {
         MvcListPageStateHelper.getPageState(it, filter, page)
@@ -130,7 +144,8 @@ class MvcListViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val result = getVoucherListChildUseCase.execute(
-                    voucherId, arrayListOf(
+                    voucherId,
+                    arrayListOf(
                         VoucherStatus.NOT_STARTED,
                         VoucherStatus.ONGOING
                     )
@@ -198,5 +213,51 @@ class MvcListViewModel @Inject constructor(
                 )
             }
         )
+    }
+
+    fun generateShareComponentMetaData(voucher: Voucher) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val parentProductIds = voucher.productIds.map { it.parentProductId }
+                val shopDataDeferred = async { shopBasicDataUseCase.execute() }
+
+                val productListParam = ProductListUseCase.Param(
+                    searchKeyword = "",
+                    warehouseId = 0,
+                    categoryIds = emptyList(),
+                    showcaseIds = emptyList(),
+                    page = NumberConstant.FIRST_PAGE,
+                    pageSize = parentProductIds.size,
+                    sortId = "DEFAULT",
+                    sortDirection = "DESC",
+                    productIdInclude = parentProductIds
+                )
+
+                val productsDeferred = async { getProductsUseCase.execute(productListParam) }
+
+                val shopData = shopDataDeferred.await()
+                val products = productsDeferred.await()
+
+                val topSellingProductImageUrls = products.products
+                    .sortedByDescending { it.txStats.sold }
+                    .take(THREE_TOP_SELLING_PRODUCT)
+                    .map { it.picture }
+
+                val metadata = ShareComponentMetaData(
+                    voucher,
+                    shopData,
+                    topSellingProductImageUrls
+                )
+                _generateShareComponentMetaData.postValue(Success(metadata))
+            },
+            onError = { error ->
+                _generateShareComponentMetaData.postValue(Fail(error))
+            }
+        )
+    }
+
+    companion object {
+        private const val THREE_TOP_SELLING_PRODUCT = 3
     }
 }
