@@ -1,9 +1,13 @@
 package com.tokopedia.analyticsdebugger.websocket.domain.usecase
 
-import com.tokopedia.analyticsdebugger.websocket.data.local.entity.WebSocketLogEntity
-import com.tokopedia.analyticsdebugger.websocket.domain.repository.WebSocketLogRespository
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogGeneralInfoUiModel
+import com.tokopedia.analyticsdebugger.websocket.data.local.entity.PlayWebSocketLogEntity
+import com.tokopedia.analyticsdebugger.websocket.data.local.entity.TopchatWebSocketLogEntity
+import com.tokopedia.analyticsdebugger.websocket.domain.repository.PlayWebSocketLogRepository
+import com.tokopedia.analyticsdebugger.websocket.domain.repository.TopchatWebSocketLogRepository
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.PlayWebSocketLogGeneralInfoUiModel
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.TopchatWebSocketLogDetailInfoUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.topchat.TopchatWebSocketInfoUiModel
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -11,15 +15,25 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on December 01, 2021
  */
 class InsertWebSocketLogUseCase @Inject constructor(
-    private val webSocketLogRespository: WebSocketLogRespository,
+    private val playWebSocketLogRepository: PlayWebSocketLogRepository,
+    private val topchatWebSocketLogRepository: TopchatWebSocketLogRepository,
 ): UseCase<Unit>()  {
 
     private var param: WebSocketLogUiModel? = null
 
-    fun setParam(event: String, message: String, generalInfo: WebSocketLogGeneralInfoUiModel) {
+    fun setParam(event: String, message: String, generalInfo: PlayWebSocketLogGeneralInfoUiModel) {
         param = WebSocketLogUiModel(
             event = event,
-            generalInfo = generalInfo,
+            playGeneralInfo = generalInfo,
+            message = message,
+            dateTime = "",
+        )
+    }
+
+    fun setParam(event: String, message: String, detailInfo: TopchatWebSocketLogDetailInfoUiModel) {
+        param = WebSocketLogUiModel(
+            event = event,
+            topchatDetailInfo = detailInfo,
             message = message,
             dateTime = "",
         )
@@ -27,16 +41,29 @@ class InsertWebSocketLogUseCase @Inject constructor(
 
     override suspend fun executeOnBackground() {
         param?.let {
-            val request = WebSocketLogEntity(
-                source = it.generalInfo.source,
-                channelId = it.generalInfo.channelId,
-                gcToken = it.generalInfo.gcToken,
-                event = it.event,
-                message = it.message,
-                timestamp = System.currentTimeMillis(),
-                warehouseId = it.generalInfo.warehouseId,
-            )
-            webSocketLogRespository.insert(request)
+            if (it.playGeneralInfo != null) {
+                playWebSocketLogRepository.insert(
+                    PlayWebSocketLogEntity(
+                        source = it.playGeneralInfo.source,
+                        channelId = it.playGeneralInfo.channelId,
+                        gcToken = it.playGeneralInfo.gcToken,
+                        event = it.event,
+                        message = it.message,
+                        timestamp = System.currentTimeMillis(),
+                        warehouseId = it.playGeneralInfo.warehouseId,
+                    )
+                )
+            } else if (it.topchatDetailInfo != null) {
+                topchatWebSocketLogRepository.insert(
+                    TopchatWebSocketLogEntity(
+                        source = it.topchatDetailInfo.source,
+                        url = it.topchatDetailInfo.url,
+                        event = it.event,
+                        message = it.message,
+                        timestamp = System.currentTimeMillis()
+                    )
+                )
+            }
         }
     }
 }
