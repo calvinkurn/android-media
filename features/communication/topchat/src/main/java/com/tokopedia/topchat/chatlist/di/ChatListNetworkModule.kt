@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
+import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
+import com.tokopedia.analyticsdebugger.debugger.ws.TopchatWebSocketLogger
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.util.Session
@@ -167,7 +169,9 @@ class ChatListNetworkModule {
     fun provideTopChatWebSocket(
         userSession: UserSessionInterface,
         client: OkHttpClient,
-        irisSession: Session
+        irisSession: Session,
+        webSocketParser: WebSocketParser,
+        webSocketLogger: WebSocketLogger
     ): TopchatWebSocket {
         val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
             "?os_type=1" +
@@ -178,8 +182,25 @@ class ChatListNetworkModule {
             webSocketUrl,
             userSession.accessToken,
             PAGE_CHATLIST,
-            irisSession
+            irisSession,
+            webSocketParser,
+            webSocketLogger
         )
+    }
+
+    @Provides
+    fun provideWebSocketLogger(
+        @ApplicationContext context: Context
+    ) : WebSocketLogger {
+        return if (GlobalConfig.isAllowDebuggingTools()) {
+            TopchatWebSocketLogger(context)
+        } else {
+            object : WebSocketLogger {
+                override fun init(data: String) = Unit
+                override fun send(event: String, message: String) = Unit
+                override fun send(event: String) = Unit
+            }
+        }
     }
 
     @ChatListScope
