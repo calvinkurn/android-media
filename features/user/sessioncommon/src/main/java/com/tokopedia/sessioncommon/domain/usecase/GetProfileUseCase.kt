@@ -18,14 +18,13 @@ import javax.inject.Inject
 open class GetProfileUseCase @Inject constructor(val resources: Resources, val graphqlUseCase: GraphqlUseCase
 ) {
 
-    open fun execute(subscriber: Subscriber<GraphqlResponse>, skipCache: Boolean = false) {
+    open fun execute(subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(resources, R.raw.query_profile)
         val graphqlRequest = GraphqlRequest(query,
                 ProfilePojo::class.java, RequestParams.create().parameters)
 
-        if(skipCache) {
-            graphqlRequest.variables = mapOf(PARAM_SKIP_CACHE to true)
-        }
+        // we are always set skipCache = true, to always get the latest data
+        graphqlRequest.variables = mapOf(PARAM_SKIP_CACHE to true)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

@@ -143,7 +143,7 @@ class DsarViewModel @Inject constructor(
             showLocationAdminPopUp = {},
             onLocationAdminRedirection = {},
             showErrorGetAdminType = {}
-        ), skipCache = true)
+        ))
     }
 
     fun checkRequestStatus() {
