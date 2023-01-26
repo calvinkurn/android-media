@@ -547,7 +547,7 @@ class PlayViewModel @AssistedInject constructor(
 
     // Explore Widget
     val selectedChips: String
-        get() = _exploreWidget.value.chips.items.firstOrNull { it.isSelected }?.text ?: ""
+        get() = _exploreWidget.value.chips.items.find { it.isSelected }?.text ?: ""
 
     val exploreWidgetConfig: PlayWidgetConfigUiModel
         get() = _exploreWidget.value.widgets.firstOrNull()?.item?.config ?: PlayWidgetConfigUiModel.Empty
