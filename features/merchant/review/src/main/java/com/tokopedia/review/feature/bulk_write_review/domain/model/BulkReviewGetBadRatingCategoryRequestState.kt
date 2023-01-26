@@ -2,6 +2,11 @@ package com.tokopedia.review.feature.bulk_write_review.domain.model
 
 import com.tokopedia.review.feature.createreputation.model.BadRatingCategoriesResponse
 
+/**
+ * An interface representing the state of BulkReviewGetBadRatingCategoryUseCase. If you're adding
+ * new child of the BulkReviewGetBadRatingCategoryRequestState, please register it on the Gson
+ * provider (ex: Inside the BulkReviewModule).
+ */
 sealed interface BulkReviewGetBadRatingCategoryRequestState {
     val type: String
 

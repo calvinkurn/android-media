@@ -337,6 +337,12 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         }
     }
 
+    /**
+     * Collect the enqueued toaster and display them in order. The next toaster will only show if
+     * currently showing toaster is dismissed. To do this we use the suspendCoroutine function to
+     * convert the Snackbar.Callback into a suspend function which will cause the flow collector to
+     * wait until current toaster is dismissed before collecting the next emitted value.
+     */
     private fun collectToasterQueue() {
         collectWhenResumed(viewModel.bulkReviewPageToasterQueue) {
             suspendCoroutine { cont ->
@@ -413,6 +419,11 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         }
     }
 
+    /**
+     * Handle showing the error state UI. We use suspendCoroutine to make this function a suspend
+     * function. This is necessary because we want to make sure that the next emitted value will
+     * be collected only after the animation/transition to the error state UI is finished.
+     */
     private suspend fun onBulkReviewPageError(throwable: Throwable?) {
         suspendCoroutine<Unit> { continuation ->
             binding?.run {
@@ -435,6 +446,11 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         }
     }
 
+    /**
+     * Handle showing the loading state UI. We use suspendCoroutine to make this function a suspend
+     * function. This is necessary because we want to make sure that the next emitted value will
+     * be collected only after the animation/transition to the loading state UI is finished.
+     */
     private suspend fun onBulkReviewPageLoading() {
         suspendCoroutine<Unit> { continuation ->
             binding?.run {
@@ -456,6 +472,16 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         }
     }
 
+    /**
+     * Handle showing the showing state UI. We use suspendCancellableCoroutine to make this function
+     * a suspend function. This is necessary because we want to make sure that the next emitted
+     * value will be collected only after the animation/transition to the showing state UI is
+     * finished. You might notice that we use suspendCancellableCoroutine instead of suspendCoroutine.
+     * This is because we use rvBulkReviewItems.post which will post the runnable instead of run it
+     * immediately. Therefore we want to make this function to be cancellable if the runnable isn't
+     * running yet. We use rvBulkReviewItems.post to fix the crash where the app is updating the
+     * RecyclerView while it is scrolling or computing layout.
+     */
     private suspend fun onBulkReviewPageShowing(
         bulkReviewVisitableList: List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>,
         stickyButtonUiState: BulkReviewStickyButtonUiState
@@ -488,6 +514,11 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         }
     }
 
+    /**
+     * Handle showing the submitting state UI. We use suspendCoroutine to make this function a suspend
+     * function. This is necessary because we want to make sure that the next emitted value will
+     * be collected only after the animation/transition to the submitting state UI is finished.
+     */
     private suspend fun onBulkReviewPageSubmitting() {
         suspendCoroutine<Unit> { continuation ->
             binding?.run {

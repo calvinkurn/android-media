@@ -1,5 +1,9 @@
 package com.tokopedia.review.feature.bulk_write_review.domain.model
 
+/**
+ * An interface representing the state of BulkReviewSubmitUseCase. If you're adding new child of the
+ * BulkReviewSubmitRequestState, please register it on the Gson provider (ex: Inside the BulkReviewModule).
+ */
 sealed interface BulkReviewSubmitRequestState {
     val type: String
 

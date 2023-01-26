@@ -17,6 +17,12 @@ import dagger.Provides
 
 @Module
 class BulkReviewModule {
+
+    /**
+     * Create an instance of Gson which support various interface serialization and deserialization.
+     * If you want to serialize or deserialize an interface you can register your interface and it's
+     * child here and use the injected Gson.
+     */
     @Provides
     @BulkReviewScope
     @BulkReviewGson
