@@ -32,5 +32,7 @@ private fun toProductInfoUiModel(
 }
 
 private fun toRecommendationUiModel(name: String): RecommendationUiModel {
-    return RecommendationUiModel(name = name)
+    return RecommendationUiModel(
+        name = name
+    )
 }

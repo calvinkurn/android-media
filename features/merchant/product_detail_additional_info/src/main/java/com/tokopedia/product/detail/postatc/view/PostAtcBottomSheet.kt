@@ -11,15 +11,23 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.product.detail.databinding.PostAtcBottomSheetBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcAdapter
 import com.tokopedia.product.detail.postatc.base.PostAtcLayoutManager
 import com.tokopedia.product.detail.postatc.base.PostAtcListener
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
+import com.tokopedia.product.detail.postatc.component.error.ErrorUiModel
+import com.tokopedia.product.detail.postatc.component.loading.LoadingUiModel
 import com.tokopedia.product.detail.postatc.di.DaggerPostAtcComponent
 import com.tokopedia.product.detail.postatc.di.PostAtcModule
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.usecase.coroutines.Result
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
@@ -90,9 +98,14 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         recommendations.observe(viewLifecycleOwner, recommendationsObserver)
     }
 
-    private val layoutsObserver = Observer<List<PostAtcUiModel>> {
-        adapter.addItems(it)
-        adapter.notifyDataSetChanged()
+    private val layoutsObserver = Observer<Result<List<PostAtcUiModel>>> { result ->
+        result.doSuccessOrFail(success = {
+            adapter.clearAllItems()
+            adapter.addItems(it.data)
+            adapter.notifyDataSetChanged()
+        }, fail = {
+            showError(it)
+        })
     }
 
     private val recommendationsObserver = Observer<List<RecommendationWidget>> {
@@ -100,6 +113,14 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
     }
 
     private fun initData() {
+
+        /**
+         * Init Loading
+         */
+        adapter.addItem(LoadingUiModel())
+        adapter.notifyDataSetChanged()
+
+
         val arguments = arguments ?: return
 
         val productId = arguments.getString(ARG_PRODUCT_ID) ?: return
@@ -107,6 +128,18 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         val layoutId = arguments.getString(ARG_LAYOUT_ID, DEFAULT_LAYOUT_ID)
 
         viewModel.fetchLayout(productId, cartId, layoutId)
+    }
+
+    private fun showError(it: Throwable) {
+        val errorType = if (it is SocketTimeoutException || it is UnknownHostException || it is ConnectException) {
+            GlobalError.NO_CONNECTION
+        } else {
+            GlobalError.SERVER_ERROR
+        }
+
+        adapter.clearAllItems()
+        adapter.addItem(ErrorUiModel(errorType = errorType))
+        adapter.notifyDataSetChanged()
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -141,6 +174,16 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
             ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
             productId
         )
+    }
+
+    override fun refreshPage() {
+        adapter.clearAllItems()
+        initData()
+    }
+
+    override fun fetchRecommendation(pageName: String) {
+        val productId = arguments?.getString(ARG_PRODUCT_ID) ?: return
+        viewModel.fetchRecommendation(productId, pageName)
     }
 
 }

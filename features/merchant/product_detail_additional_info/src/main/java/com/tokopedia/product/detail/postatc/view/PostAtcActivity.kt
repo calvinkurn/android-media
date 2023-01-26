@@ -6,7 +6,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.showImmediately
 
-
+/**
+ * RouteManager.route(context, ApplinkConst.POST_ATC. productId)
+ */
 class PostAtcActivity : BaseSimpleActivity() {
 
     companion object {
@@ -15,11 +17,11 @@ class PostAtcActivity : BaseSimpleActivity() {
          * Mandatory Parameters
          */
         private const val PATH_INDEX_PRODUCT_ID = 1
-        private const val PATH_INDEX_CART_ID = 2
 
         /**
          * Additional Parameters
          */
+        private const val PARAM_CART_ID = "cartID"
         private const val PARAM_LAYOUT_ID = "layoutID"
     }
 
@@ -34,16 +36,16 @@ class PostAtcActivity : BaseSimpleActivity() {
 
         val pathSegments = intent.data?.pathSegments ?: emptyList()
         val productId = pathSegments.getOrNull(PATH_INDEX_PRODUCT_ID) ?: return
-        val cartId = pathSegments.getOrNull(PATH_INDEX_CART_ID) ?: return
 
         val extras = intent.extras ?: return
-        val layoutId = extras.getString(PARAM_LAYOUT_ID, "0")
+        val layoutId = extras.getString(PARAM_LAYOUT_ID, "")
+        val cartId = extras.getString(PARAM_CART_ID, "")
 
         showImmediately(supportFragmentManager, PostAtcBottomSheet.TAG) {
             PostAtcBottomSheet.instance(
                 productId,
-                layoutId,
-                cartId
+                cartId,
+                layoutId
             )
         }
     }

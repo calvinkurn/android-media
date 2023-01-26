@@ -615,8 +615,7 @@ object DeeplinkMapper {
         DLP.matchPattern(ApplinkConst.POST_ATC, targetDeeplink = { _, _, _, idList ->
             UriUtil.buildUri(
                 ApplinkConstInternalMarketplace.POST_ATC,
-                idList?.get(0),
-                idList?.get(1)
+                idList?.get(0)
             )
         }),
         DLP.startWith(ApplinkConst.TokoFood.MAIN_PATH) { _, uri, _, _ -> DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(uri) },

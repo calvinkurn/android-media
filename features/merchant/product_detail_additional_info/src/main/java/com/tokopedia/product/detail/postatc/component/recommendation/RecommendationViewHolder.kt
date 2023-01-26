@@ -15,16 +15,25 @@ class RecommendationViewHolder(
 
     override fun bind(element: RecommendationUiModel) {
         binding.apply {
-            val widget = element.widget ?: return
-            postAtcRecommCarousel.bind(
-                carouselData = RecommendationCarouselData(
-                    recommendationData = widget,
-                    state = RecommendationCarouselData.STATE_READY
-                ),
-                adapterPosition = 0,
-                basicListener = this@RecommendationViewHolder,
-                tokonowListener = this@RecommendationViewHolder
-            )
+            val widget = element.widget
+
+            if (widget == null) {
+                postAtcRecommCarousel.bind(
+                    basicListener = this@RecommendationViewHolder,
+                    tokonowListener = this@RecommendationViewHolder
+                )
+                listener.fetchRecommendation(element.name)
+            } else {
+                postAtcRecommCarousel.bind(
+                    carouselData = RecommendationCarouselData(
+                        recommendationData = widget,
+                        state = RecommendationCarouselData.STATE_READY
+                    ),
+                    adapterPosition = 0,
+                    basicListener = this@RecommendationViewHolder,
+                    tokonowListener = this@RecommendationViewHolder
+                )
+            }
         }
     }
 
