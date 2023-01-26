@@ -9,8 +9,8 @@ import org.hamcrest.Description
 import org.hamcrest.Matcher
 
 internal class TokoNowItemPositionDisplayedMatcher(
-        private val position: Int,
-        private val itemMatcherList: Map<Int, Matcher<View>>
+    private val position: Int,
+    private val itemMatcherList: Map<Int, Matcher<View>>
 ): BoundedMatcher<View?, RecyclerView>(RecyclerView::class.java) {
 
     private var currentViewName = ""

@@ -6,7 +6,7 @@ import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
 
-internal class TokoNowQuantityEditorViewDisplayedMatcher(
+internal class TokoNowQuantityEditorDisplayedMatcher(
     private val minOrder: Int,
     private val maxOrder: Int,
     private val orderQuantity: Int

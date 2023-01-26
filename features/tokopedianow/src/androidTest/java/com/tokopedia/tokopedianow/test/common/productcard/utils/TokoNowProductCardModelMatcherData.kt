@@ -19,7 +19,9 @@ import com.tokopedia.tokopedianow.test.common.productcard.model.TokoNowProductCa
 import com.tokopedia.tokopedianow.test.utils.ViewMatchersUtil.isDisplayedWithText
 import com.tokopedia.tokopedianow.test.utils.ViewMatchersUtil.isNotDisplayed
 import com.tokopedia.tokopedianow.test.utils.ViewMatchersUtil.isTokoNowProductCardNameTypographyDisplayed
+import com.tokopedia.tokopedianow.test.utils.ViewMatchersUtil.isTokoNowProductCardProgressBarDisplayed
 import com.tokopedia.tokopedianow.test.utils.ViewMatchersUtil.isTokoNowQuantityEditorViewDisplayed
+import com.tokopedia.tokopedianow.test.utils.ViewMatchersUtil.isTokoNowWishlistButtonDisplayedMatcher
 import org.hamcrest.Matcher
 
 internal object TokoNowProductCardModelMatcherData {
@@ -28,6 +30,8 @@ internal object TokoNowProductCardModelMatcherData {
     fun getProductCardModelMatcherData(): List<TokoNowProductCardMatcherModel> {
         return listOf(
             getProduct(),
+            getOosProductCard(),
+            getOosProductCardWithWishlistAndSimilarProduct(),
             getFlashSaleProductWithGreyTextColor(),
             getFlashSaleProductWithRedTextColor(),
             getNormalProductWithAssignedValueBestSeller(),
@@ -51,7 +55,10 @@ internal object TokoNowProductCardModelMatcherData {
         rating: String = "4.5",
         additionalMatchers: Map<Int, Matcher<View>> = emptyMap(),
         progressBarLabel: String = "",
-        progressBarPercentage: Int = 0
+        progressBarPercentage: Int = 0,
+        hasBeenWishlist:Boolean = false,
+        isWishlistShown: Boolean = false,
+        isSimilarProductShown: Boolean = false
     ): TokoNowProductCardMatcherModel {
         val productCardModel = TokoNowProductCardViewUiModel(
             imageUrl = PRODUCT_IMAGE_URL,
@@ -68,7 +75,10 @@ internal object TokoNowProductCardModelMatcherData {
             usePreDraw = usePreDraw,
             labelGroupList = labelGroupList,
             progressBarLabel = progressBarLabel,
-            progressBarPercentage = progressBarPercentage
+            progressBarPercentage = progressBarPercentage,
+            hasBeenWishlist = hasBeenWishlist,
+            isWishlistShown = isWishlistShown,
+            isSimilarProductShown = isSimilarProductShown
         )
 
         val productCardMatcher = mapOf(
@@ -90,7 +100,15 @@ internal object TokoNowProductCardModelMatcherData {
             ),
             Pair(
                 first = R.id.promo_label,
-                second = isDisplayedWithText(productCardModel.discount.ifBlank { labelGroupList.getLabelGroupPriceTitle() })
+                second = if (productCardModel.discount.isNotBlank()) {
+                    isDisplayedWithText(productCardModel.discount)
+                } else {
+                    if (labelGroupList.getLabelGroupPriceTitle().isNotBlank()) {
+                        isDisplayedWithText(labelGroupList.getLabelGroupPriceTitle())
+                    } else {
+                        isNotDisplayed()
+                    }
+                }
             ),
             Pair(
                 first = R.id.slash_price_typography,
@@ -115,13 +133,21 @@ internal object TokoNowProductCardModelMatcherData {
                 first = R.id.rating_typography,
                 second = if (productCardModel.isFlashSale()) isNotDisplayed() else isDisplayedWithText(productCardModel.rating)
             ),
-//            Pair(
-//                first = R.id.progress_bar,
-//                second = isDisplayed()
-//            ),
+            Pair(
+                first = R.id.progress_bar,
+                second = if (progressBarLabel.isNotBlank()) isTokoNowProductCardProgressBarDisplayed(progressBarPercentage) else isNotDisplayed()
+            ),
             Pair(
                 first = R.id.progress_typography,
                 second = if (progressBarLabel.isNotBlank()) isDisplayedWithText(progressBarLabel) else isNotDisplayed()
+            ),
+            Pair(
+                first = R.id.wishlist_button,
+                second = if (isWishlistShown) isTokoNowWishlistButtonDisplayedMatcher(hasBeenWishlist) else isNotDisplayed()
+            ),
+            Pair(
+                first = R.id.similar_product_typography,
+                second = if (isSimilarProductShown) isDisplayed() else isNotDisplayed()
             )
         )
 
@@ -209,7 +235,6 @@ internal object TokoNowProductCardModelMatcherData {
         return getProduct(
             discount = String.EMPTY,
             slashPrice = String.EMPTY,
-            needToShowQuantityEditor = true,
             labelGroupList = labelGroupList,
             additionalMatchers = mapOf(
                 Pair(
@@ -237,64 +262,46 @@ internal object TokoNowProductCardModelMatcherData {
     )
 
     /**
-     * Oos Product
+     * Out Of Stock (OOS) Product
      */
 
-    private fun getOosProductCardMatcherModel(
-        labelGroups: List<LabelGroup> = emptyList(),
-        discount: String = "25%"
-    ): TokoNowProductCardMatcherModel {
-        val labelGroupList = mutableListOf(
-            LabelGroup(
-                position = LABEL_WEIGHT,
-                type = "",
-                title = "500gr"
-            )
-        )
-        labelGroupList.addAll(labelGroups)
-
-        val productCardModel = TokoNowProductCardViewUiModel(
-            productId = "111111",
-            imageUrl = PRODUCT_IMAGE_URL,
-            minOrder = 3,
-            maxOrder = 10,
-            availableStock = 1,
-            orderQuantity = 0,
-            price = "Rp1.500.000",
-            discount = discount,
-            slashPrice = if (discount.isNotBlank()) "Rp500.000" else String.EMPTY,
-            name = "Strawberry Impor",
-            rating = "4.5",
-            usePreDraw = true,
-            needToShowQuantityEditor = true,
-            labelGroupList = labelGroupList
-        )
-
-        val productCardMatcher = mapOf(
-            R.id.image_filter_view to isCompletelyDisplayed(),
-            R.id.promo_label to isDisplayedWithText(productCardModel.discount),
-            R.id.slash_price_typography to isDisplayedWithText(productCardModel.slashPrice),
-            R.id.main_price_typography to isDisplayedWithText(productCardModel.price),
-            R.id.product_name_typography to isTokoNowProductCardNameTypographyDisplayed(
-                productName = productCardModel.name,
-                needToChangeMaxLinesName = productCardModel.needToChangeMaxLinesName
-            ),
-            R.id.rating to isDisplayedWithText(productCardModel.rating),
-            R.id.rating_typography to isCompletelyDisplayed()
-        )
-
-        return TokoNowProductCardMatcherModel(productCardModel, productCardMatcher)
-    }
-
-    private fun oos() = getOosProductCardMatcherModel(
-        labelGroups = listOf(
+    private fun getOosProductCard() : TokoNowProductCardMatcherModel {
+        val labelGroupList = listOf(
             LabelGroup(
                 position = LABEL_STATUS,
                 type = TRANSPARENT_BLACK,
                 title = "Stok Habis"
             )
         )
-    )
+
+        return getProduct(
+            discount = String.EMPTY,
+            slashPrice = String.EMPTY,
+            minOrder = 10,
+            availableStock = 2,
+            labelGroupList = labelGroupList
+        )
+    }
+
+    private fun getOosProductCardWithWishlistAndSimilarProduct() : TokoNowProductCardMatcherModel {
+        val labelGroupList = listOf(
+            LabelGroup(
+                position = LABEL_STATUS,
+                type = TRANSPARENT_BLACK,
+                title = "Stok Habis"
+            )
+        )
+
+        return getProduct(
+            discount = String.EMPTY,
+            slashPrice = String.EMPTY,
+            minOrder = 10,
+            availableStock = 2,
+            isWishlistShown = true,
+            isSimilarProductShown = true,
+            labelGroupList = labelGroupList
+        )
+    }
 
     private fun List<LabelGroup>.getLabelGroupPriceTitle(): String = find { it.isPricePosition() }?.title.orEmpty()
 
