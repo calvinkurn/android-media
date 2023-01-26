@@ -367,7 +367,6 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         recreateView()
-        closeExploreWidget() //move to view component
     }
 
     override fun onDestroyView() {
@@ -1315,7 +1314,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun isAllowAutoSwipe(state: PlayViewerVideoState) =
-        state == PlayViewerVideoState.End && !playViewModel.bottomInsets.isAnyShown && playNavigation.canNavigateNextPage()
+        state == PlayViewerVideoState.End && !playViewModel.bottomInsets.isAnyShown && playNavigation.canNavigateNextPage() && !playViewModel.isExploreWidgetOpened
 
     private fun doAutoSwipe() {
         viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
@@ -1636,7 +1635,6 @@ class PlayUserInteractionFragment @Inject constructor(
             cancelAllAnimations()
 
             triggerImmersive(false)
-            closeExploreWidget()
         }
 
         endLiveInfoViewOnStateChanged(event = status)

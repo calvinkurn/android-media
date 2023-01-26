@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.home.presentation.viewmodel
 
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
@@ -28,12 +29,12 @@ import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryListUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
@@ -42,6 +43,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemSeeAllUiModel
 import com.tokopedia.tokopedianow.data.createCategoryGridDataModel
 import com.tokopedia.tokopedianow.data.createCategoryGridListFirstFetch
 import com.tokopedia.tokopedianow.data.createCategoryGridListSecondFetch
@@ -381,8 +383,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when getting data category grid should run and give the success result`() {
+        val warehouseId = "1"
         val localCacheModel = LocalCacheModel(
-            warehouse_id = "1"
+            warehouse_id = warehouseId
         )
 
         //set mock data
@@ -396,38 +399,25 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         //set second mock data to replace first mock data category list
         onGetCategoryList_thenReturn(createCategoryGridListSecondFetch())
 
-        //prepare model that need to be changed
-        val model = TokoNowCategoryGridUiModel(
-                id="11111",
-                title="Category Tokonow",
-                categoryListUiModel = null,
-                state= TokoNowLayoutState.SHOW
-        )
-
-        viewModel.getCategoryGrid(model, "1")
+        viewModel.getCategoryMenu(warehouseId)
 
         //prepare model for expectedResult
-        val expectedResponse = TokoNowCategoryGridUiModel(
+        val expectedResponse = TokoNowCategoryMenuUiModel(
             id = "11111",
             title = "Category Tokonow",
-            categoryListUiModel = TokoNowCategoryListUiModel(
-                categoryList = listOf(
-                    TokoNowCategoryItemUiModel(
-                        id = "",
-                        title = "",
-                        imageUrl = null,
-                        appLink = "tokopedia-android-internal://now/category-list?warehouse_id={warehouse_id}",
-                        warehouseId = "1",
-                    ),
-                    TokoNowCategoryItemUiModel(
-                        id = "1",
-                        title = "Category 1",
-                        imageUrl = "tokopedia://",
-                        appLink = "tokoepdia://",
-                        headerName = "Category Tokonow"
-                    )
+            categoryListUiModel = listOf(
+                TokoNowCategoryMenuItemUiModel(
+                    id = "1",
+                    title = "Category 1",
+                    imageUrl = "tokopedia://",
+                    appLink = "tokoepdia://",
+                    headerName = "Category Tokonow"
+                ),
+                TokoNowCategoryMenuItemSeeAllUiModel(
+                    appLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID + warehouseId,
                 )
             ),
+            seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID + warehouseId,
             state = TokoNowLayoutState.SHOW
         )
 
@@ -439,9 +429,11 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when get category grid should not add adult category to category list`() {
+        val warehouseId = "1"
         val localCacheModel = LocalCacheModel(
-            warehouse_id = "1"
+            warehouse_id = warehouseId
         )
+        val appLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID + warehouseId
 
         //set mock data
         onGetHomeLayoutData_thenReturn(createHomeLayoutList(), localCacheModel)
@@ -451,45 +443,32 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = listOf())
         viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
 
-        //prepare model that need to be changed
-        val model = TokoNowCategoryGridUiModel(
-            id="11111",
-            title="Category Tokonow",
-            categoryListUiModel = null,
-            state= TokoNowLayoutState.SHOW
-        )
-
-        viewModel.getCategoryGrid(model, "1")
+        viewModel.getCategoryMenu(warehouseId)
 
         //prepare model for expectedResult
-        val expectedResponse = TokoNowCategoryGridUiModel(
+        val expectedResponse = TokoNowCategoryMenuUiModel(
             id = "11111",
             title = "Category Tokonow",
-            categoryListUiModel = TokoNowCategoryListUiModel(
-                categoryList = listOf(
-                    TokoNowCategoryItemUiModel(
-                        id = "",
-                        title = "",
-                        imageUrl = null,
-                        appLink = "tokopedia-android-internal://now/category-list?warehouse_id={warehouse_id}",
-                        warehouseId = "1"
-                    ),
-                    TokoNowCategoryItemUiModel(
-                        id = "1",
-                        title = "Category 1",
-                        imageUrl = "tokopedia://",
-                        appLink = "tokoepdia://",
-                        headerName = "Category Tokonow"
-                    ),
-                    TokoNowCategoryItemUiModel(
-                        id="3",
-                        title="Category 3",
-                        imageUrl="tokopedia://",
-                        appLink="tokoepdia://",
-                        headerName = "Category Tokonow"
-                    )
+            categoryListUiModel = listOf(
+                TokoNowCategoryMenuItemUiModel(
+                    id = "1",
+                    title = "Category 1",
+                    imageUrl = "tokopedia://",
+                    appLink = "tokoepdia://",
+                    headerName = "Category Tokonow"
+                ),
+                TokoNowCategoryMenuItemUiModel(
+                    id="3",
+                    title="Category 3",
+                    imageUrl="tokopedia://",
+                    appLink="tokoepdia://",
+                    headerName = "Category Tokonow"
+                ),
+                TokoNowCategoryMenuItemSeeAllUiModel(
+                    appLink = appLink
                 )
             ),
+            seeAllAppLink = appLink,
             state = TokoNowLayoutState.SHOW
         )
 
@@ -515,17 +494,17 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetCategoryList_thenReturn(Exception())
 
         //prepare model that need to be changed
-        val model = TokoNowCategoryGridUiModel(
+        val model = TokoNowCategoryMenuUiModel(
                 id="11111",
                 title="Category Tokonow",
                 categoryListUiModel = null,
                 state= TokoNowLayoutState.SHOW
         )
 
-        viewModel.getCategoryGrid(model, "1")
+        viewModel.getCategoryMenu("1")
 
         //prepare model for expectedResult
-        val expectedResponse = TokoNowCategoryGridUiModel(
+        val expectedResponse = TokoNowCategoryMenuUiModel(
             id = "11111",
             title = "Category Tokonow",
             categoryListUiModel = null,
@@ -737,7 +716,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     "",
                     "Lego Banner"
                 ),
-                TokoNowCategoryGridUiModel(
+                TokoNowCategoryMenuUiModel(
                     id = "11111",
                     title = "Category Tokonow",
                     categoryListUiModel = null,

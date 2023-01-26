@@ -169,6 +169,13 @@ class PlayViewModel @AssistedInject constructor(
     private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 50)
 
     private var _winnerStatus: MutableStateFlow<PlayUserWinnerStatusUiModel?> = MutableStateFlow(null)
+
+    /**
+     * Remote Config for Explore Widget
+     */
+    private val isExploreWidget: Boolean
+        get() = remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_EXPLORE_WIDGET, true)
+
     /***
      * User Report
      */
@@ -328,7 +335,7 @@ class PlayViewModel @AssistedInject constructor(
         status, bottomInsets, widgets -> ExploreWidgetUiState(
             shouldShow =  !bottomInsets.isAnyShown &&
                 status.channelStatus.statusType.isActive &&
-                !videoPlayer.isYouTube,
+                !videoPlayer.isYouTube && isExploreWidget,
             data = widgets,
         )
     }.flowOn(dispatchers.computation)
@@ -437,6 +444,9 @@ class PlayViewModel @AssistedInject constructor(
 
     val hasNoMedia : Boolean
         get() = _videoProperty.value.state.hasNoData
+
+    val isExploreWidgetOpened : Boolean
+        get() = _exploreWidget.value.isOpened
 
     /**
      * Temporary
@@ -2900,6 +2910,7 @@ class PlayViewModel @AssistedInject constructor(
         private const val FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE = "android_main_app_enable_play_interactive"
         private const val FIREBASE_REMOTE_CONFIG_KEY_CAST = "android_main_app_enable_play_cast"
         private const val FIREBASE_REMOTE_CONFIG_KEY_LIKE_BUBBLE = "android_main_app_enable_play_bubbles"
+        private const val FIREBASE_REMOTE_CONFIG_KEY_EXPLORE_WIDGET = "android_main_app_enable_play_explore_widget"
         private const val ONBOARDING_DELAY = 5000L
         private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 2000L
 

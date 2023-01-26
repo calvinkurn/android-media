@@ -17,7 +17,7 @@ interface PlayExploreWidgetAnalytic {
     fun impressExploreIcon()
     fun clickExploreIcon()
     fun impressExploreTab(
-        categoryName: String, chips: List<ChipWidgetUiModel>, position: Int
+        categoryName: String, chips: Map<ChipWidgetUiModel, Int>
     )
 
     fun clickExploreTab(categoryName: String)

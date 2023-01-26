@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 @GqlQuery(GetPlayWidgetSlotUseCase.QUERY_NAME, GetPlayWidgetSlotUseCase.QUERY)
 class GetPlayWidgetSlotUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository,
+    graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<WidgetSlot>(graphqlRepository) {
 
     init {
@@ -25,15 +25,15 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
         cursor: String,
         sourceType: String,
         sourceId: String,
-        isWifi: Boolean,
+        isWifi: Boolean
     ): WidgetSlot {
         val request = mapOf(
-            KEY_REQ to  mapOf(
+            KEY_REQ to mapOf(
                 KEY_GROUP to group,
                 KEY_CURSOR to cursor,
                 KEY_SOURCE_TYPE to sourceType,
                 KEY_SOURCE_ID to sourceId,
-                KEY_WIFI to isWifi,
+                KEY_WIFI to isWifi
             )
         )
         setRequestParams(request)
@@ -121,6 +121,7 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
                         app_link
                         web_link
                         display_type
+                        recommendationType
                       }
                     }
                     hash

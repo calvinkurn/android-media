@@ -71,27 +71,28 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             .send()
     }
 
-    override fun impressExploreTab(categoryName: String, channels: List<ChipWidgetUiModel>, position: Int) {
+    override fun impressExploreTab(categoryName: String, chips: Map<ChipWidgetUiModel, Int>) {
         val items = arrayListOf<Bundle>().apply {
-            channels.forEach {
-                add(itemToBundle(it, position))
+            chips.forEach {
+                add(itemToBundle(it.key, it.value))
             }
         }
 
         val dataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT, "promoView")
+            putString(TrackAppUtils.EVENT, "view_item")
             putString(KEY_EVENT_CATEGORY, KEY_TRACK_GROUP_CHAT_ROOM)
             putString(KEY_EVENT_ACTION, "impression - category tab")
-            putString(KEY_EVENT_LABEL, "$categoryName - $channelId $channelType")
+            putString(KEY_EVENT_LABEL, "$categoryName - $channelId - $channelType")
             putString(KEY_CURRENT_SITE, KEY_TRACK_CURRENT_SITE)
             putString(KEY_SESSION_IRIS, sessionIris)
             putString(KEY_USER_ID, userId)
+            putString(KEY_TRACK_TRACKER_ID, "39858")
             putString(KEY_BUSINESS_UNIT, KEY_TRACK_BUSINESS_UNIT)
-            putParcelableArrayList("items", items)
+            putParcelableArrayList("promotions", items)
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            "promotions", dataLayer
+            "view_item", dataLayer
         )
     }
 
@@ -120,11 +121,12 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
          * {channel_id live room} - {live/vod live room} - {channel_id clicked} - {card_type} - {position} -
          * {is_autoplay} - {category name} - {promo/no promo} - {recommendation_type}
          */
+        val promoValue = if (selectedChannel.hasPromo) "promo" else "no promo"
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_CONTENT)
             .setEventAction("click - channel card")
             .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
-            .setEventLabel("$channelId - $channelType - ${selectedChannel.channelId} - ${selectedChannel.channelType.value} - $position - $isAutoplay - $categoryName - ${selectedChannel.hasPromo} - ${selectedChannel.recommendationType}")
+            .setEventLabel("$channelId - $channelType - ${selectedChannel.channelId} - ${selectedChannel.channelType.value} - ${position + 1} - $isAutoplay - $categoryName - $promoValue - ${selectedChannel.recommendationType}")
             .setCustomProperty(KEY_TRACK_TRACKER_ID, "39860")
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(KEY_TRACK_CURRENT_SITE)

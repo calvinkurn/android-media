@@ -36,7 +36,6 @@
         android:layout_marginStart="@dimen/content_common_space_16"
         android:layout_marginTop="@dimen/content_common_space_16"
         android:orientation="horizontal"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
