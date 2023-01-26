@@ -23,20 +23,42 @@ object MvcListPageStateHelper {
     }
 
     private fun getIsFiltering(filter: FilterModel): Boolean {
-        val defaultNoFilter = FilterModel()
-        val useStatusFilter = defaultNoFilter.status != filter.status
-        val useVoucherTypeFilter = defaultNoFilter.voucherType != filter.voucherType
-        val usePromoTypeFilter = defaultNoFilter.promoType != filter.promoType
-        val useSourceFilter = defaultNoFilter.source != filter.source
-        val useTargetFilter = defaultNoFilter.target != filter.target
-        val useTargetBuyerFilter = defaultNoFilter.targetBuyer != filter.targetBuyer
+        return useStatusFilter(filter) ||
+            useVoucherTypeFilter(filter) ||
+            usePromoTypeFilter(filter) ||
+            useSourceFilter(filter) ||
+            useTargetFilter(filter) ||
+            useTargetBuyerFilter(filter)
+    }
 
-        return useStatusFilter ||
-            useVoucherTypeFilter ||
-            usePromoTypeFilter ||
-            useSourceFilter ||
-            useTargetFilter ||
-            useTargetBuyerFilter
+    private fun useStatusFilter(filter: FilterModel): Boolean {
+        val defaultNoFilter = FilterModel()
+        return defaultNoFilter.status != filter.status
+    }
+
+    private fun useVoucherTypeFilter(filter: FilterModel): Boolean {
+        val defaultNoFilter = FilterModel()
+        return defaultNoFilter.voucherType != filter.voucherType
+    }
+
+    private fun usePromoTypeFilter(filter: FilterModel): Boolean {
+        val defaultNoFilter = FilterModel()
+        return defaultNoFilter.promoType != filter.promoType
+    }
+
+    private fun useSourceFilter(filter: FilterModel): Boolean {
+        val defaultNoFilter = FilterModel()
+        return defaultNoFilter.source != filter.source
+    }
+
+    private fun useTargetFilter(filter: FilterModel): Boolean {
+        val defaultNoFilter = FilterModel()
+        return defaultNoFilter.target != filter.target
+    }
+
+    private fun useTargetBuyerFilter(filter: FilterModel): Boolean {
+        val defaultNoFilter = FilterModel()
+        return defaultNoFilter.targetBuyer != filter.targetBuyer
     }
 
     fun getStatusName(context: Context?, filter: FilterModel): String {
