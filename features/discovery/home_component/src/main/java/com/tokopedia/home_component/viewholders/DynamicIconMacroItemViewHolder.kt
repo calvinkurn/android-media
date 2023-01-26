@@ -5,7 +5,6 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
@@ -39,8 +38,11 @@ class DynamicIconMacroItemViewHolder(
     private var isLongPress = false
     private var scaleAnimator = ValueAnimator.ofFloat()
     private var rippleAnimator = ValueAnimator.ofFloat()
-    private var currentScaleImage = 0f
     private var currentScaleRipple = 0f
+    private val pathInputClick = UnifyMotion.EASE_OUT
+    private val pathOutputClick = UnifyMotion.EASE_IN_OUT
+    private val durationInputClick = UnifyMotion.T2
+    private val durationOutputClick = UnifyMotion.T1
     private var onLongPress = Runnable {
         isLongPress = true
         itemView.performLongClick()
@@ -51,16 +53,11 @@ class DynamicIconMacroItemViewHolder(
         val LAYOUT = R.layout.home_component_dynamic_icon_item_interaction
         private const val SCALE_MIN_IMAGE = 0.8f
         private const val SCALE_MAX_IMAGE = 1f
-
-        private val pathInputClick = UnifyMotion.EASE_OUT
-        private val pathOutputClick = UnifyMotion.EASE_IN_OUT
-        private val DURATION_INPUT_CLICK = UnifyMotion.T2
-        private val DURATION_OUTPUT_CLICK = UnifyMotion.T1
         private const val MAX_ALPHA_RIPPLE = 0.6f
     }
 
     private fun animateScaling(
-        start: Float = currentScaleImage,
+        start: Float,
         end: Float,
         duration: Long,
         pathInterpolator: Interpolator
@@ -71,10 +68,8 @@ class DynamicIconMacroItemViewHolder(
         scaleAnimator.removeAllUpdateListeners()
         scaleAnimator.addUpdateListener {
             val value = it.animatedValue as Float
-            Log.d("dhabalog", "start $start, end $end, $value")
             iconImageView?.scaleX = value
             iconImageView?.scaleY = value
-            currentScaleImage = value
         }
         scaleAnimator.duration = duration
         scaleAnimator.interpolator = pathInterpolator
@@ -94,14 +89,12 @@ class DynamicIconMacroItemViewHolder(
         rippleAnimator.addUpdateListener {
             containerRipple?.visible()
             val value = it.animatedValue as Float
-//            Log.d("dhabalog", "end $end ${value}" )
             if (start < end) {
                 containerRipple?.scaleX = value
                 containerRipple?.scaleY = value
             }
             val alpha =
                 ((value - SCALE_MIN_IMAGE) / (SCALE_MAX_IMAGE - SCALE_MIN_IMAGE)) * MAX_ALPHA_RIPPLE
-//            Log.d("dhabalog", "alpha $alpha" )
             containerRipple?.alpha = alpha
             currentScaleRipple = value
         }
@@ -138,7 +131,7 @@ class DynamicIconMacroItemViewHolder(
                                 animateScaling(
                                     SCALE_MIN_IMAGE,
                                     SCALE_MAX_IMAGE,
-                                    DURATION_OUTPUT_CLICK,
+                                    durationOutputClick,
                                     pathOutputClick
                                 )
                             }
@@ -146,7 +139,7 @@ class DynamicIconMacroItemViewHolder(
                                 scalingRipple(
                                     SCALE_MAX_IMAGE,
                                     SCALE_MIN_IMAGE,
-                                    DURATION_OUTPUT_CLICK,
+                                    durationOutputClick,
                                     pathOutputClick
                                 )
                             }
@@ -160,7 +153,7 @@ class DynamicIconMacroItemViewHolder(
                             if (currentScaleRipple == SCALE_MAX_IMAGE) {
                                 scalingRipple(
                                     end = SCALE_MIN_IMAGE,
-                                    duration = DURATION_OUTPUT_CLICK,
+                                    duration = durationOutputClick,
                                     pathInterpolator = pathOutputClick
                                 )
                             }
@@ -181,7 +174,7 @@ class DynamicIconMacroItemViewHolder(
                             animateScaling(
                                 SCALE_MIN_IMAGE,
                                 SCALE_MAX_IMAGE,
-                                DURATION_OUTPUT_CLICK,
+                                durationOutputClick,
                                 pathOutputClick
                             )
                         }
@@ -197,13 +190,13 @@ class DynamicIconMacroItemViewHolder(
                             scalingRipple(
                                 SCALE_MIN_IMAGE,
                                 SCALE_MAX_IMAGE,
-                                DURATION_INPUT_CLICK,
+                                durationInputClick,
                                 pathInputClick
                             )
                             animateScaling(
                                 SCALE_MAX_IMAGE,
                                 SCALE_MIN_IMAGE,
-                                DURATION_INPUT_CLICK,
+                                durationInputClick,
                                 pathInputClick
                             )
                         },
