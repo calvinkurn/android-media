@@ -41,12 +41,17 @@ import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
  * @author by firman on 10/02/22
  * */
 
-class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                                  defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(
+    @NotNull context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) :
+    BaseCustomView(context, attrs, defStyleAttr) {
 
-        private var binding: WidgetRechargeClientNumberGeneralBinding = WidgetRechargeClientNumberGeneralBinding.inflate(
-            LayoutInflater.from(context), this)
+    private var binding: WidgetRechargeClientNumberGeneralBinding = WidgetRechargeClientNumberGeneralBinding.inflate(
+        LayoutInflater.from(context),
+        this
+    )
 
     private var mInputFieldListener: ClientNumberInputFieldListener? = null
     private var mAutoCompleteListener: ClientNumberAutoCompleteListener? = null
@@ -74,7 +79,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
         }
     }
 
-    private fun initSortFilterChip(){
+    private fun initSortFilterChip() {
         binding.clientNumberWidgetBase.clientNumberWidgetSortFilter.setMainPadding()
     }
 
@@ -86,11 +91,9 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
 
                 addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(s: Editable?) {
-
                     }
 
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
                     }
 
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -139,7 +142,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
                 override fun getFilterText(): String {
                     return binding.clientNumberWidgetBase.clientNumberWidgetInputField.editText.text.toString()
                 }
-            },
+            }
         )
 
         binding.clientNumberWidgetBase.clientNumberWidgetInputField.editText.run {
@@ -149,6 +152,16 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
 
     private fun setSortFilterChip(favnum: List<RechargeClientNumberChipModel>) {
         val sortFilter = arrayListOf<SortFilterItem>()
+
+        // create extra chip for navigation
+        val sortFilterItem = SortFilterItem(
+            "",
+            type = ChipsUnify.TYPE_ALTERNATE
+        )
+        sortFilterItem.listener = {
+            mFilterChipListener?.onClickIcon(true)
+        }
+        sortFilter.add(sortFilterItem)
 
         // create each chip
         for (number in favnum) {
@@ -172,28 +185,20 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
             sortFilter.add(sortFilterItem)
         }
 
-        // create extra chip for navigation
-        val sortFilterItem = SortFilterItem(
-            "",
-            type = ChipsUnify.TYPE_ALTERNATE
-        )
-        sortFilterItem.listener = {
-            mFilterChipListener?.onClickIcon(true)
-        }
-        sortFilter.add(sortFilterItem)
-
         binding.clientNumberWidgetBase.clientNumberWidgetSortFilter.addItem(sortFilter)
 
         // init navigation chip's icon & color
         val chevronRight = IconUnify(
-            context, IconUnify.VIEW_LIST,
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+            context,
+            IconUnify.VIEW_LIST,
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        )
         chevronRight.layoutParams = ViewGroup.LayoutParams(
             getDimens(unifyDimens.layout_lvl3),
             getDimens(unifyDimens.layout_lvl3)
         )
-        binding.clientNumberWidgetBase.clientNumberWidgetSortFilter.chipItems?.
-        last()?.refChipUnify?.addCustomView(chevronRight)
+        binding.clientNumberWidgetBase.clientNumberWidgetSortFilter.chipItems
+            ?.first()?.refChipUnify?.addCustomView(chevronRight)
     }
 
     fun setFavoriteNumber(favNumberItems: List<RechargeClientNumberChipModel>) {
@@ -204,7 +209,8 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
         autoCompleteAdapter?.updateItems(
             suggestions.map {
                 TopupBillsAutoCompleteContactModel(it.clientName, it.clientNumber)
-            }.toMutableList())
+            }.toMutableList()
+        )
     }
 
     fun setInputFieldType(type: InputFieldType) {
@@ -279,7 +285,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
         }
     }
 
-    private fun onClickClearIcon(){
+    private fun onClickClearIcon() {
         clearErrorState()
         mInputFieldListener?.onClearInput()
     }
@@ -321,7 +327,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
         mSortFilterListener = sortFilterListener
     }
 
-    fun setTitleGeneral(title: String){
+    fun setTitleGeneral(title: String) {
         if (!title.isNullOrEmpty()) {
             binding.clientNumberWidgetGeneralTgTitle.run {
                 show()
@@ -330,7 +336,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
         }
     }
 
-    fun setChipOperators(operators: List<CatalogOperator>, selectedOperator: CatalogOperator){
+    fun setChipOperators(operators: List<CatalogOperator>, selectedOperator: CatalogOperator) {
         binding.clientNumberWidgetGeneralChipOperator.run {
             show()
             val filterItems = arrayListOf<SortFilterItem>()
@@ -339,13 +345,13 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
                 filterItems.add(item)
             }
 
-            filterItems.forEachIndexed{ index, sortFilterItem ->
-                if (selectedOperator.id == operators.get(index).id){
+            filterItems.forEachIndexed { index, sortFilterItem ->
+                if (selectedOperator.id == operators.get(index).id) {
                     sortFilterItem.type = ChipsUnify.TYPE_SELECTED
                 }
                 sortFilterItem.listener = {
                     sortFilterItem.toggle()
-                    if (sortFilterItem.type == ChipsUnify.TYPE_SELECTED){
+                    if (sortFilterItem.type == ChipsUnify.TYPE_SELECTED) {
                         mSortFilterListener?.getSelectedChipOperator(operators.get(index))
                     }
                 }
@@ -366,13 +372,15 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
         }
     }
 
-    fun setInquiryList(attribute: TopupBillsEnquiryAttribute){
+    fun setInquiryList(attribute: TopupBillsEnquiryAttribute) {
         val listInquiry = attribute.mainInfoList.toMutableList()
-        if (!attribute.additionalMainInfo.isNullOrEmpty()){
+        if (!attribute.additionalMainInfo.isNullOrEmpty()) {
             attribute.additionalMainInfo.forEach {
-                listInquiry.addAll(it.detail.map {
-                    TopupBillsEnquiryMainInfo(it.label, it.value)
-                })
+                listInquiry.addAll(
+                    it.detail.map {
+                        TopupBillsEnquiryMainInfo(it.label, it.value)
+                    }
+                )
             }
         }
         val adapterInquiry = InquiryRechargeClientNumberAdapter()
@@ -385,6 +393,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
 
     fun startShakeAnimation() {
         binding.clientNumberWidgetBase.clientNumberWidgetInputField.startAnimation(
-            AnimationUtils.loadAnimation(context, R.anim.client_number_widget_shake_anim))
+            AnimationUtils.loadAnimation(context, R.anim.client_number_widget_shake_anim)
+        )
     }
 }
