@@ -396,6 +396,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             toasterThrottleSubscription.unsubscribe();
         }
         if (scheduleDeliveryRadioButtonChangedPublisher != null) {
+            scheduleDeliveryRadioButtonChangedPublisher.onCompleted();
             scheduleDeliveryRadioButtonChangedPublisher = null;
         }
         shippingCourierBottomsheet = null;
