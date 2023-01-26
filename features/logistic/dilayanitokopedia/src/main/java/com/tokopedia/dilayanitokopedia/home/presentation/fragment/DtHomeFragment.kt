@@ -341,14 +341,12 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         id: String = ""
     ) {
         val thumbNailTitle = "Dilayani Tokopedia | Tokopedia"
-        val url = "https://www.tokopedia.com/discovery/dilayani-tokopedia"
         var deeplink = "tokopedia://dilayani-tokopedia"
         shareHome.pageIdConstituents = pageIdConstituents
         shareHome.isScreenShot = isScreenShot
         shareHome.thumbNailTitle = thumbNailTitle
         shareHome.linkerType = linkerType
         shareHome.id = id
-        shareHome.sharingUrl = url
         shareHome.deeplink = deeplink
     }
 
