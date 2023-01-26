@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerorder.databinding.BottomSheetInfoPickTimeOrderExtentionBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.sellerorder.R
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 class InfoPickTimeOrderExtentionBottomSheet(
     private val fm: FragmentManager? = null
@@ -54,14 +54,23 @@ class InfoPickTimeOrderExtentionBottomSheet(
     }
 
     private fun setupView() {
-        val title = context?.getString(R.string.bottomsheet_order_extension_request_info_pick_time_title).orEmpty()
+        val title =
+            context?.getString(R.string.bottomsheet_order_extension_request_info_pick_time_title)
+                .orEmpty()
         setTitle(title)
 
-        val description = context?.getString(R.string.bottomsheet_order_extension_request_info_pick_time_desc).orEmpty().parseAsHtml()
-        val padding =
-            context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
+        context?.let {
+            val description = HtmlLinkHelper(
+                it,
+                it.getString(R.string.bottomsheet_order_extension_request_info_pick_time_desc)
+            ).spannedString ?: ""
 
-        binding?.textDescription?.text = description
+            binding?.textDescription?.text = description
+        }
+        val padding =
+            context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+                .orZero()
+
         binding?.root?.setPadding(0, 0, 0, padding)
     }
 }

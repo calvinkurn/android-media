@@ -85,16 +85,19 @@ class ResourceProvider @Inject constructor() {
 
     fun getOrderExtensionRequestBottomSheetFooterComposer(): StringComposer {
         return StringComposer {
-            it.getString(R.string.bottomsheet_order_extension_request_footer)
+            HtmlLinkHelper(
+                it,
+                it.getString(R.string.bottomsheet_order_extension_request_footer)
+            ).spannedString ?: ""
         }
     }
 
-    fun getOrderExtensionDescriptionComposer(text: String?, newDeadline: String?): StringComposer {
+    fun getOrderExtensionDescriptionComposer(text: String?): StringComposer {
         return StringComposer {
-            SpannableStringBuilder().append(text.orEmpty())
-                .append(" ")
-                .append(createBoldText(newDeadline.orEmpty()).setColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
-                .append(".")
+            HtmlLinkHelper(
+                it,
+                text.orEmpty()
+            ).spannedString ?: ""
         }
     }
 

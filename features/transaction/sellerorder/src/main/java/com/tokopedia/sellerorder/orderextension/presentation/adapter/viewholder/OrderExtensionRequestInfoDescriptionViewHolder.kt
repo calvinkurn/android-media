@@ -63,7 +63,7 @@ class OrderExtensionRequestInfoDescriptionViewHolder(
     }
 
     private fun setupDescription(description: CharSequence) {
-        binding?.root?.text = description.toString().parseAsHtml()
+        binding?.root?.text = description
     }
 
     private fun setupAlignment(alignment: OrderExtensionRequestInfoUiModel.DescriptionUiModel.DescriptionAlignment) {

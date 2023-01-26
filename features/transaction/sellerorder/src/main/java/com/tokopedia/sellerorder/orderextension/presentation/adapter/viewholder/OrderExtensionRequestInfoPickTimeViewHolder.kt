@@ -2,10 +2,10 @@ package com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.ItemOrderExtensionRequestInfoPickTimeBinding
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.view.binding.viewBinding
 
 class OrderExtensionRequestInfoPickTimeViewHolder(
@@ -37,7 +37,11 @@ class OrderExtensionRequestInfoPickTimeViewHolder(
         }
 
         binding?.tvDescription?.text =
-            getString(R.string.bottomsheet_order_extension_request_pick_time_rules).parseAsHtml()
+            HtmlLinkHelper(
+                itemView.context,
+                getString(R.string.bottomsheet_order_extension_request_pick_time_rules)
+            ).spannedString ?: ""
+
     }
 
     interface SomRequestExtensionPickTimeListener {

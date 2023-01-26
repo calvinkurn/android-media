@@ -148,8 +148,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
                 fontColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
                 typographyType = OrderExtensionRequestInfoUiModel.DescriptionUiModel.DescriptionTextType.BODY_2,
                 description = resourceProvider.getOrderExtensionDescriptionComposer(
-                    text,
-                    newDeadline
+                    text
                 )
             )
         )
@@ -214,7 +213,9 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
         )
     }
 
-    private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionDescriptionShimmer(@DimenRes widthResId: Int) {
+    private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionDescriptionShimmer(
+        @DimenRes widthResId: Int
+    ) {
         add(
             OrderExtensionRequestInfoUiModel.DescriptionShimmerUiModel(
                 com.tokopedia.sellerorder.orderextension.presentation.model.DimenRes(
