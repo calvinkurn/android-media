@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.databinding.WidgetBulkReviewMiniActionsBinding
@@ -18,9 +17,8 @@ import com.tokopedia.review.feature.createreputation.presentation.widget.BaseRev
 
 class WidgetBulkReviewMiniActions(
     context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = Int.ZERO
-) : BaseReviewCustomView<WidgetBulkReviewMiniActionsBinding>(context, attrs, defStyleAttr),
+    attrs: AttributeSet?
+) : BaseReviewCustomView<WidgetBulkReviewMiniActionsBinding>(context, attrs),
     BulkReviewMiniActionViewHolder.Listener {
     override val binding = WidgetBulkReviewMiniActionsBinding.inflate(
         LayoutInflater.from(context),

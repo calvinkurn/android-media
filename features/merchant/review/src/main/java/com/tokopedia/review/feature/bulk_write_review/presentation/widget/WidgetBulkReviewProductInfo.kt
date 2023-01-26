@@ -3,7 +3,6 @@ package com.tokopedia.review.feature.bulk_write_review.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -14,9 +13,8 @@ import com.tokopedia.unifycomponents.BaseCustomView
 
 class WidgetBulkReviewProductInfo(
     context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = Int.ZERO
-) : BaseCustomView(context, attrs, defStyleAttr) {
+    attrs: AttributeSet?
+) : BaseCustomView(context, attrs) {
     private val binding = WidgetBulkReviewProductInfoBinding.inflate(
         LayoutInflater.from(context),
         this,
@@ -52,7 +50,8 @@ class WidgetBulkReviewProductInfo(
             binding.tvBulkReviewProductVariant.gone()
         } else {
             binding.tvBulkReviewProductVariant.text = binding.root.context.getString(
-                R.string.tv_bulk_review_variant, productVariantName
+                R.string.tv_bulk_review_variant,
+                productVariantName
             )
             binding.tvBulkReviewProductVariant.show()
         }

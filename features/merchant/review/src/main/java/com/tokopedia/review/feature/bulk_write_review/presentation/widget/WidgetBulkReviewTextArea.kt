@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
@@ -15,9 +14,8 @@ import com.tokopedia.review.feature.createreputation.presentation.widget.BaseRev
 
 class WidgetBulkReviewTextArea(
     context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = Int.ZERO
-) : BaseReviewCustomView<WidgetBulkReviewTextAreaBinding>(context, attrs, defStyleAttr) {
+    attrs: AttributeSet?
+) : BaseReviewCustomView<WidgetBulkReviewTextAreaBinding>(context, attrs) {
 
     companion object {
         private const val MAX_LINES = 3
@@ -49,8 +47,8 @@ class WidgetBulkReviewTextArea(
                 animateShow(animate = animate, onAnimationStart = {
                     show()
                 }, onAnimationEnd = {
-                    if (uiState.focused) binding.root.requestFocus()
-                })
+                        if (uiState.focused) binding.root.requestFocus()
+                    })
             }
         }
     }

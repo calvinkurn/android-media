@@ -3,7 +3,6 @@ package com.tokopedia.review.feature.bulk_write_review.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
@@ -13,9 +12,8 @@ import com.tokopedia.review.feature.createreputation.presentation.widget.BaseRev
 
 class WidgetBulkReviewBadRatingCategories(
     context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = Int.ZERO
-) : BaseReviewCustomView<WidgetBulkReviewBadRatingCategoryBinding>(context, attrs, defStyleAttr) {
+    attrs: AttributeSet?
+) : BaseReviewCustomView<WidgetBulkReviewBadRatingCategoryBinding>(context, attrs) {
     override val binding = WidgetBulkReviewBadRatingCategoryBinding.inflate(
         LayoutInflater.from(context),
         this,

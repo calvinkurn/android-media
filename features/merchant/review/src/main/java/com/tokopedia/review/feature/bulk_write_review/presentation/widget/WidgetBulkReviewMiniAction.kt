@@ -3,7 +3,6 @@ package com.tokopedia.review.feature.bulk_write_review.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.databinding.WidgetBulkReviewMiniActionBinding
@@ -12,9 +11,8 @@ import com.tokopedia.unifycomponents.BaseCustomView
 
 class WidgetBulkReviewMiniAction(
     context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = Int.ZERO
-) : BaseCustomView(context, attrs, defStyleAttr) {
+    attrs: AttributeSet?
+) : BaseCustomView(context, attrs) {
     private val binding = WidgetBulkReviewMiniActionBinding.inflate(
         LayoutInflater.from(context),
         this,
