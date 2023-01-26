@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:background="@color/Unify_Background"
+    android:paddingStart="16dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="8dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_websocket_log_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@id/tv_websocket_log_source"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_3"
+        app:typographyWeight="bold"
+        tools:text="Contoh Event Name" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_websocket_log_source"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/analyticsdebugger_dms_black_36"
+        app:layout_constraintBottom_toBottomOf="@id/tv_websocket_log_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_websocket_log_title"
+        app:layout_constraintTop_toTopOf="@id/tv_websocket_log_title"
+        tools:text="viewer" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_websocket_log_date_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/analyticsdebugger_dms_black_55"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_websocket_log_title"
+        app:typographyType="body_3"
+        tools:text="11 Nov 2021 12:12:12.123" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_websocket_log_url"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/analyticsdebugger_dms_black_55"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_websocket_log_date_time"
+        app:typographyType="body_3"
+        tools:text="https://tokopedia.com/" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
