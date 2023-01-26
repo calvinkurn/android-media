@@ -14,7 +14,7 @@ class HomeListDiffer : BaseDtDiffer() {
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
+        return oldList.getOrNull(oldItemPosition) == newList.getOrNull(newItemPosition)
     }
 
     override fun getOldListSize() = oldList.size
