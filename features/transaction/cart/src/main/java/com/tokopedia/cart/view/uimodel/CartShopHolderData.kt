@@ -116,7 +116,9 @@ class CartShopGroupTickerData(
     var tickerText: String = "",
     var errorText: String = "",
     var leftIcon: String = "",
+    var leftIconDark: String = "",
     var rightIcon: String = "",
+    var rightIconDark: String = "",
     var cartBundlingBottomSheetData: CartBundlingBottomSheetData = CartBundlingBottomSheetData(),
 
     // list of cartIds for tracker
@@ -126,6 +128,9 @@ class CartShopGroupTickerData(
 
     val enableTicker: Boolean
         get() = enableBoAffordability || enableBundleCrossSell
+
+    val hasAction: Boolean
+        get() = rightIcon.isNotBlank() && rightIconDark.isNotBlank()
 }
 
 enum class CartShopGroupTickerState {

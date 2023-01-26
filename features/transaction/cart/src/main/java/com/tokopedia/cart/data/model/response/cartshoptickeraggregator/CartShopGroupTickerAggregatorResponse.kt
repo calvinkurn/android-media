@@ -14,17 +14,24 @@ data class CartShopGroupTickerAggregatorData(
     val ticker: CartShopGroupTickerAggregatorTicker = CartShopGroupTickerAggregatorTicker(),
     @SerializedName("bundle_bottomsheet")
     val bundleBottomSheet: CartShopGroupTickerAggregatorBundleBottomSheet = CartShopGroupTickerAggregatorBundleBottomSheet(),
-    @SerializedName("aggregator_type")
-    val aggregatorType: Int = 0,
 )
 
 data class CartShopGroupTickerAggregatorTicker(
     @SerializedName("text")
     val text: String = "",
+    @SerializedName("icon")
+    val icon: CartShopGroupTickerAggregatorTickerIcon = CartShopGroupTickerAggregatorTickerIcon(),
+)
+
+data class CartShopGroupTickerAggregatorTickerIcon(
     @SerializedName("left_icon")
     val leftIcon: String = "",
+    @SerializedName("left_icon_dark")
+    val leftIconDark: String = "",
     @SerializedName("right_icon")
     val rightIcon: String = "",
+    @SerializedName("right_icon_dark")
+    val rightIconDark: String = "",
 )
 
 data class CartShopGroupTickerAggregatorBundleBottomSheet(

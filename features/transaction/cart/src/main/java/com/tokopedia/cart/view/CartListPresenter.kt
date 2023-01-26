@@ -1983,8 +1983,10 @@ class CartListPresenter @Inject constructor(
                 cartShopHolderData.cartShopGroupTicker.cartIds =
                     shopProductList.joinToString(",") { it.cartId }
                 cartShopHolderData.cartShopGroupTicker.tickerText = response.data.ticker.text
-                cartShopHolderData.cartShopGroupTicker.leftIcon = response.data.ticker.leftIcon
-                cartShopHolderData.cartShopGroupTicker.rightIcon = response.data.ticker.rightIcon
+                cartShopHolderData.cartShopGroupTicker.leftIcon = response.data.ticker.icon.leftIcon
+                cartShopHolderData.cartShopGroupTicker.leftIconDark = response.data.ticker.icon.leftIconDark
+                cartShopHolderData.cartShopGroupTicker.rightIcon = response.data.ticker.icon.rightIcon
+                cartShopHolderData.cartShopGroupTicker.rightIconDark = response.data.ticker.icon.rightIconDark
                 cartShopHolderData.cartShopGroupTicker.cartBundlingBottomSheetData = CartBundlingBottomSheetData(
                     title = response.data.bundleBottomSheet.title,
                     description = response.data.bundleBottomSheet.description,

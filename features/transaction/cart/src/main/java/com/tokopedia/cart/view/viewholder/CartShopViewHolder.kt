@@ -30,6 +30,7 @@ import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
+import com.tokopedia.utils.resources.isDarkMode
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.text.NumberFormat
@@ -464,52 +465,32 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                         layoutCartShopTicker.setOnClickListener(null)
                         layoutCartShopTicker.show()
                     }
-                    CartShopGroupTickerState.SUCCESS_NOT_AFFORD -> {
+                    CartShopGroupTickerState.SUCCESS_AFFORD, CartShopGroupTickerState.SUCCESS_NOT_AFFORD -> {
                         cartShopTickerLargeLoader.gone()
                         cartShopTickerSmallLoader.gone()
                         cartShopTickerText.text = MethodChecker.fromHtml(cartShopGroupTicker.tickerText)
                         cartShopTickerText.show()
-                        if (cartShopGroupTicker.leftIcon.isNotBlank()) {
-                            cartShopTickerLeftIcon.setImageUrl(cartShopGroupTicker.leftIcon)
+                        if (cartShopGroupTicker.leftIcon.isNotBlank() && cartShopGroupTicker.leftIconDark.isNotBlank()) {
+                            if (root.context.isDarkMode()) {
+                                cartShopTickerLeftIcon.setImageUrl(cartShopGroupTicker.leftIconDark)
+                            } else {
+                                cartShopTickerLeftIcon.setImageUrl(cartShopGroupTicker.leftIcon)
+                            }
                             cartShopTickerLeftIcon.show()
                         } else {
                             cartShopTickerLeftIcon.gone()
                         }
-                        if (cartShopGroupTicker.rightIcon.isNotBlank()) {
-                            cartShopTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIcon)
+                        if (cartShopGroupTicker.rightIcon.isNotBlank() && cartShopGroupTicker.rightIconDark.isNotBlank()) {
+                            if (root.context.isDarkMode()) {
+                                cartShopTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIconDark)
+                            } else {
+                                cartShopTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIcon)
+                            }
                             cartShopTickerRightIcon.show()
                         } else {
                             cartShopTickerRightIcon.gone()
                         }
                         cartShopTickerReloadIcon.gone()
-                        layoutCartShopTicker.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
-                        layoutCartShopTicker.setOnClickListener {
-                            actionListener.onCartShopGroupTickerClicked(cartShopHolderData)
-                        }
-                        if (!cartShopHolderData.cartShopGroupTicker.hasSeenTicker) {
-                            actionListener.onViewCartShopGroupTicker(cartShopHolderData)
-                            cartShopHolderData.cartShopGroupTicker.hasSeenTicker = true
-                        }
-                        layoutCartShopTicker.show()
-                    }
-                    CartShopGroupTickerState.SUCCESS_AFFORD -> {
-                        cartShopTickerLargeLoader.gone()
-                        cartShopTickerSmallLoader.gone()
-                        if (cartShopGroupTicker.leftIcon.isNotBlank()) {
-                            cartShopTickerLeftIcon.setImageUrl(cartShopGroupTicker.leftIcon)
-                            cartShopTickerLeftIcon.show()
-                        } else {
-                            cartShopTickerLeftIcon.gone()
-                        }
-                        if (cartShopGroupTicker.rightIcon.isNotBlank()) {
-                            cartShopTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIcon)
-                            cartShopTickerRightIcon.show()
-                        } else {
-                            cartShopTickerRightIcon.gone()
-                        }
-                        cartShopTickerReloadIcon.gone()
-                        cartShopTickerText.text = MethodChecker.fromHtml(cartShopGroupTicker.tickerText)
-                        cartShopTickerText.show()
                         layoutCartShopTicker.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
                         layoutCartShopTicker.setOnClickListener {
                             actionListener.onCartShopGroupTickerClicked(cartShopHolderData)

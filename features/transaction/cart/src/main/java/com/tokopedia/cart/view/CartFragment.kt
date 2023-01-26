@@ -1988,14 +1988,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
     }
 
     override fun onCartShopGroupTickerClicked(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.cartShopGroupTicker.enableBundleCrossSell) {
-            val bundleIds = cartShopHolderData.productUiModelList.flatMap { it.bundleIds }
-            showCartBundlingBottomSheet(cartShopHolderData.cartShopGroupTicker.cartBundlingBottomSheetData, bundleIds)
-            cartPageAnalytics.eventClickArrowInBoTickerToReachShopPage(
-                cartShopHolderData.cartShopGroupTicker.cartIds, cartShopHolderData.shopId
-            )
-        } else if (cartShopHolderData.cartShopGroupTicker.enableBoAffordability) {
-            if (cartShopHolderData.cartShopGroupTicker.state == CartShopGroupTickerState.SUCCESS_NOT_AFFORD) {
+        if (cartShopHolderData.cartShopGroupTicker.hasAction) {
+            if (cartShopHolderData.cartShopGroupTicker.enableBundleCrossSell) {
+                val bundleIds = cartShopHolderData.productUiModelList.flatMap { it.bundleIds }
+                showCartBundlingBottomSheet(cartShopHolderData.cartShopGroupTicker.cartBundlingBottomSheetData, bundleIds)
+            } else if (cartShopHolderData.cartShopGroupTicker.enableBoAffordability) {
                 if (cartShopHolderData.isTokoNow) {
                     routeToTokoNowHomePage()
                 } else {
