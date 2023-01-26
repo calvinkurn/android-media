@@ -14,11 +14,6 @@ class TokoChatStateChatRoomTest : BaseTokoChatTest() {
         resetChannelDetailDatabase()
     }
 
-    override fun before() {
-        super.before()
-        resetChannelDetailDatabase()
-    }
-
     @Test
     fun should_show_global_error_when_fail_get_channel_id() {
         // Given

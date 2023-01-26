@@ -1,9 +1,5 @@
 package com.tokopedia.tokochat.test
 
-import com.gojek.conversations.ConversationsRepository
-import com.gojek.conversations.babble.network.data.OrderChatType
-import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
-import com.gojek.conversations.network.ConversationsNetworkError
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
@@ -13,31 +9,10 @@ import com.tokopedia.tokochat.test.robot.message_bubble.MessageBubbleResult
 import com.tokopedia.tokochat.test.robot.message_bubble.MessageBubbleRobot
 import com.tokopedia.tokochat.test.robot.reply_area.ReplyAreaRobot
 import com.tokopedia.tokochat.test.robot.ticker.TickerResult
-import com.tokopedia.tokochat.view.chatroom.TokoChatViewModel
 import org.junit.Test
 
 @UiTest
 class TokoChatHistoryChatTest : BaseTokoChatTest() {
-
-    // Need to prepare before class,
-    // in case the database is not ready after been deleted from other test class
-    override fun before() {
-        super.before()
-        ConversationsRepository.instance!!.initGroupBookingChat(
-            GOJEK_ORDER_ID_DUMMY,
-            TokoChatViewModel.TOKOFOOD_SERVICE_TYPE,
-            object : ConversationsGroupBookingListener {
-                override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {}
-                override fun onGroupBookingChannelCreationStarted() {
-                    idlingResourceBeforeClass.increment()
-                }
-                override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
-                    idlingResourceBeforeClass.decrement()
-                }
-            },
-            OrderChatType.Unknown
-        )
-    }
 
     @Test
     fun should_show_date_header_in_chat_history() {
