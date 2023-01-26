@@ -17,7 +17,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.websocket.di.DaggerWebSocketLoggingComponent
+import com.tokopedia.analyticsdebugger.websocket.ui.activity.WebSocketLoggingActivity
 import com.tokopedia.analyticsdebugger.websocket.ui.adapter.WebSocketLogAdapter
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.PageSource
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLog
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.action.WebSocketLoggingAction
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.event.WebSocketLoggingEvent
@@ -81,7 +83,12 @@ class WebSocketLoggingFragment: Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        viewModel = ViewModelProvider(this, viewModelFactory).get(WebSocketLoggingViewModel::class.java)
+        val pageSource = requireArguments()
+            .getString(WebSocketLoggingActivity.EXTRA_PAGE_SOURCE)
+            .orEmpty()
+
+        viewModel = ViewModelProvider(this, viewModelFactory)[WebSocketLoggingViewModel::class.java]
+        viewModel.setPageSource(PageSource.fromString(pageSource))
         viewModel.submitAction(WebSocketLoggingAction.InitPage)
     }
 
@@ -170,10 +177,10 @@ class WebSocketLoggingFragment: Fragment() {
             val bundle = bundleOf(
                 WebSocketDetailLoggingFragment.EXTRA_TITLE to it.event,
                 WebSocketDetailLoggingFragment.EXTRA_DATE_TIME to it.dateTime,
-                WebSocketDetailLoggingFragment.EXTRA_CHANNEL_ID to it.generalInfo.channelId,
-                WebSocketDetailLoggingFragment.EXTRA_GC_TOKEN to it.generalInfo.gcToken,
+                WebSocketDetailLoggingFragment.EXTRA_CHANNEL_ID to it.playGeneralInfo?.channelId,
+                WebSocketDetailLoggingFragment.EXTRA_GC_TOKEN to it.playGeneralInfo?.gcToken,
                 WebSocketDetailLoggingFragment.EXTRA_MESSAGE to it.message,
-                WebSocketDetailLoggingFragment.EXTRA_WAREHOUSE_ID to it.generalInfo.warehouseId
+                WebSocketDetailLoggingFragment.EXTRA_WAREHOUSE_ID to it.playGeneralInfo?.warehouseId
             )
             findNavController().navigate(R.id.action_webSocketLoggingFragment_to_webSocketDetailLoggingFragment, bundle)
         }

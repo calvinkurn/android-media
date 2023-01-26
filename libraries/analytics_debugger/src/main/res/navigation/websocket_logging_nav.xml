@@ -11,6 +11,10 @@
         <action
             android:id="@+id/action_webSocketLoggingFragment_to_webSocketDetailLoggingFragment"
             app:destination="@id/webSocketDetailLoggingFragment" />
+        <argument
+            android:name="pageSource"
+            app:argType="string"
+            />
     </fragment>
     <fragment
         android:id="@+id/webSocketDetailLoggingFragment"
