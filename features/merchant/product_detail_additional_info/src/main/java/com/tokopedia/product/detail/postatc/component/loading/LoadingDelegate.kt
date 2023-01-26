@@ -4,7 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.databinding.ItemLoadingBinding
+import com.tokopedia.product.detail.databinding.ItemPostAtcLoadingBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 
 class LoadingDelegate : TypedAdapterDelegate<LoadingUiModel, PostAtcUiModel, LoadingViewHolder>(R.layout.item_post_atc_loading) {
@@ -13,7 +13,7 @@ class LoadingDelegate : TypedAdapterDelegate<LoadingUiModel, PostAtcUiModel, Loa
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): LoadingViewHolder {
-        val binding = ItemLoadingBinding.bind(basicView)
+        val binding = ItemPostAtcLoadingBinding.bind(basicView)
         return LoadingViewHolder(binding)
     }
 }

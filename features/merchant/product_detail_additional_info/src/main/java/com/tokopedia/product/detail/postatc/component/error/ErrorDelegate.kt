@@ -4,7 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.databinding.ItemErrorBinding
+import com.tokopedia.product.detail.databinding.ItemPostAtcErrorBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcListener
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 
@@ -16,7 +16,7 @@ class ErrorDelegate(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ErrorViewHolder {
-        val binding = ItemErrorBinding.bind(basicView)
+        val binding = ItemPostAtcErrorBinding.bind(basicView)
         return ErrorViewHolder(binding, listener)
     }
 
