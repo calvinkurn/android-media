@@ -20,14 +20,17 @@ class BulkReviewMiniActionsUiStateMapper @Inject constructor() {
     ): Map<String, BulkReviewMiniActionsUiState> {
         return when (getFormRequestState) {
             is BulkReviewGetFormRequestState.Complete.Success -> {
-                mapOf(
-                    *getFormRequestState.result.reviewForm.map { reviewForm ->
+                getFormRequestState.result.reviewForm.associateBy(
+                    keySelector = { reviewForm ->
+                        reviewForm.inboxID
+                    },
+                    valueTransform = { reviewForm ->
                         mapMiniActionsUiState(
                             reviewForm = reviewForm,
                             bulkReviewTextAreaUiState = bulkReviewTextAreaUiState,
                             bulkReviewMediaPickerUiState = bulkReviewMediaPickerUiState
                         )
-                    }.toTypedArray()
+                    }
                 )
             }
             else -> emptyMap()
@@ -38,7 +41,7 @@ class BulkReviewMiniActionsUiStateMapper @Inject constructor() {
         reviewForm: BulkReviewGetFormResponse.Data.ProductRevGetBulkForm.ReviewForm,
         bulkReviewTextAreaUiState: Map<String, BulkReviewTextAreaUiState>,
         bulkReviewMediaPickerUiState: Map<String, CreateReviewMediaPickerUiState>
-    ): Pair<String, BulkReviewMiniActionsUiState> {
+    ): BulkReviewMiniActionsUiState {
         val inboxID = reviewForm.inboxID
         val miniActions = mutableListOf<BulkReviewMiniActionUiModel>().apply {
             if (bulkReviewTextAreaUiState[inboxID] is BulkReviewTextAreaUiState.Hidden) {
@@ -62,16 +65,13 @@ class BulkReviewMiniActionsUiStateMapper @Inject constructor() {
                 )
             }
         }
-        return Pair(
-            inboxID,
-            if (miniActions.isEmpty()) {
-                BulkReviewMiniActionsUiState.Hidden
-            } else {
-                BulkReviewMiniActionsUiState.Showing(
-                    inboxID = reviewForm.inboxID,
-                    miniActions = miniActions
-                )
-            }
-        )
+        return if (miniActions.isEmpty()) {
+            BulkReviewMiniActionsUiState.Hidden
+        } else {
+            BulkReviewMiniActionsUiState.Showing(
+                inboxID = reviewForm.inboxID,
+                miniActions = miniActions
+            )
+        }
     }
 }

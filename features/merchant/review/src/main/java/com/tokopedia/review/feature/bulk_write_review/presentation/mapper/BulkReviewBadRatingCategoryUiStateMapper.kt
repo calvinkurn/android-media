@@ -13,15 +13,18 @@ class BulkReviewBadRatingCategoryUiStateMapper @Inject constructor() {
     ): Map<String, BulkReviewBadRatingCategoryUiState> {
         return when (getFormRequestState) {
             is BulkReviewGetFormRequestState.Complete.Success -> {
-                mapOf(
-                    *getFormRequestState.result.reviewForm.map { reviewForm ->
+                getFormRequestState.result.reviewForm.associateBy(
+                    keySelector = { reviewForm ->
+                        reviewForm.inboxID
+                    },
+                    valueTransform = { reviewForm ->
                         mapBulkReviewBadRatingCategoryUiState(
                             reviewForm = reviewForm,
                             reviewItemBadRatingCategory = reviewItemsBadRatingCategory.find {
                                 it.inboxID == reviewForm.inboxID
                             }
                         )
-                    }.toTypedArray()
+                    }
                 )
             }
             else -> emptyMap()
@@ -31,18 +34,15 @@ class BulkReviewBadRatingCategoryUiStateMapper @Inject constructor() {
     private fun mapBulkReviewBadRatingCategoryUiState(
         reviewForm: BulkReviewGetFormResponse.Data.ProductRevGetBulkForm.ReviewForm,
         reviewItemBadRatingCategory: BulkReviewItemBadRatingCategoryUiModel?
-    ): Pair<String, BulkReviewBadRatingCategoryUiState> {
+    ): BulkReviewBadRatingCategoryUiState {
         val badRatingCategory = reviewItemBadRatingCategory?.badRatingCategory
         return if (badRatingCategory.isNullOrEmpty()) {
-            Pair(reviewForm.inboxID, BulkReviewBadRatingCategoryUiState.Hidden)
+            BulkReviewBadRatingCategoryUiState.Hidden
         } else {
             if (badRatingCategory.any { it.selected }) {
-                Pair(
-                    reviewForm.inboxID,
-                    BulkReviewBadRatingCategoryUiState.Showing(badRatingCategory = badRatingCategory)
-                )
+                BulkReviewBadRatingCategoryUiState.Showing(badRatingCategory = badRatingCategory)
             } else {
-                Pair(reviewForm.inboxID, BulkReviewBadRatingCategoryUiState.Hidden)
+                BulkReviewBadRatingCategoryUiState.Hidden
             }
         }
     }

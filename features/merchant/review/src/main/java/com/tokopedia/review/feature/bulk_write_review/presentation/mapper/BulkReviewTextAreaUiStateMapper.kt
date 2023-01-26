@@ -22,8 +22,11 @@ class BulkReviewTextAreaUiStateMapper @Inject constructor() {
     ): Map<String, BulkReviewTextAreaUiState> {
         return when (getFormRequestState) {
             is BulkReviewGetFormRequestState.Complete.Success -> {
-                mapOf(
-                    *getFormRequestState.result.reviewForm.map { reviewForm ->
+                getFormRequestState.result.reviewForm.associateBy(
+                    keySelector = { reviewForm ->
+                        reviewForm.inboxID
+                    },
+                    valueTransform = { reviewForm ->
                         mapTextAreaUiState(
                             reviewForm = reviewForm,
                             reviewItemTestimony = reviewItemsTestimony.find {
@@ -32,7 +35,7 @@ class BulkReviewTextAreaUiStateMapper @Inject constructor() {
                             bulkReviewBadRatingCategoryUiState = bulkReviewBadRatingCategoryUiState,
                             bulkReviewRatingUiState = bulkReviewRatingUiState
                         )
-                    }.toTypedArray()
+                    }
                 )
             }
             else -> emptyMap()
@@ -44,7 +47,7 @@ class BulkReviewTextAreaUiStateMapper @Inject constructor() {
         reviewItemTestimony: BulkReviewItemTestimonyUiModel?,
         bulkReviewBadRatingCategoryUiState: Map<String, BulkReviewBadRatingCategoryUiState>,
         bulkReviewRatingUiState: Map<String, BulkReviewRatingUiState>
-    ): Pair<String, BulkReviewTextAreaUiState> {
+    ): BulkReviewTextAreaUiState {
         val inboxID = reviewForm.inboxID
         val badRatingCategoryUiState = bulkReviewBadRatingCategoryUiState[inboxID]
         val isOnlyBadRatingOtherCategorySelected =
@@ -63,26 +66,23 @@ class BulkReviewTextAreaUiStateMapper @Inject constructor() {
             BulkReviewRatingUiStateMapper.DEFAULT_PRODUCT_RATING
         }
         return if (reviewItemTestimony?.testimonyUiModel?.showTextArea == true) {
-            Pair(
-                inboxID,
-                BulkReviewTextAreaUiState.Showing(
-                    text = reviewItemTestimony.testimonyUiModel.text,
-                    hint = if (rating <= BulkReviewViewModel.BAD_RATING_CATEGORY_THRESHOLD) {
-                        if (isOnlyBadRatingOtherCategorySelected) {
-                            StringRes(R.string.review_form_bad_helper_must_fill)
-                        } else {
-                            StringRes(R.string.review_form_bad_helper)
-                        }
-                    } else if (rating == CreateReviewFragment.RATING_3) {
-                        StringRes(R.string.review_form_neutral_helper)
+            BulkReviewTextAreaUiState.Showing(
+                text = reviewItemTestimony.testimonyUiModel.text,
+                hint = if (rating <= BulkReviewViewModel.BAD_RATING_CATEGORY_THRESHOLD) {
+                    if (isOnlyBadRatingOtherCategorySelected) {
+                        StringRes(R.string.review_form_bad_helper_must_fill)
                     } else {
-                        StringRes(R.string.review_form_good_helper)
-                    },
-                    focused = reviewItemTestimony.testimonyUiModel.focused
-                )
+                        StringRes(R.string.review_form_bad_helper)
+                    }
+                } else if (rating == CreateReviewFragment.RATING_3) {
+                    StringRes(R.string.review_form_neutral_helper)
+                } else {
+                    StringRes(R.string.review_form_good_helper)
+                },
+                focused = reviewItemTestimony.testimonyUiModel.focused
             )
         } else {
-            Pair(inboxID, BulkReviewTextAreaUiState.Hidden)
+            BulkReviewTextAreaUiState.Hidden
         }
     }
 }
