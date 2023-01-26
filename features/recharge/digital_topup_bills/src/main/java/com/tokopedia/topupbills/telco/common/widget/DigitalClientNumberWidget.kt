@@ -74,7 +74,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
 
         sortFilterChip.run {
             sortFilterHorizontalScrollView.setPadding(
-                SORT_FILTER_PADDING_8.toPx(),
+                SORT_FILTER_PADDING_4.toPx(),
                 0,
                 SORT_FILTER_PADDING_8.toPx(),
                 0
@@ -348,8 +348,8 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
 
     companion object {
         private const val REGEX_IS_ALPHABET_AND_SPACE_ONLY = "^[a-zA-Z0-9\\s]*$"
+        private const val SORT_FILTER_PADDING_4 = 4
         private const val SORT_FILTER_PADDING_8 = 8
-        private const val SORT_FILTER_PADDING_16 = 16
         private const val LABEL_MAX_CHAR = 18
         private const val ELLIPSIZE = "..."
         private const val MAX_CHIP_SIZE = 5
