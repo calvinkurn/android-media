@@ -64,6 +64,7 @@ class UserConsentWidget : FrameLayout,
     private var submissionParam = ConsentSubmissionParam()
     private var collection: UserConsentCollectionDataModel.CollectionPointDataModel? = null
     private var isErrorGetConsent = false
+    private var needConsent: Boolean? = null
 
     private var userConsentDescription: UserConsentDescription? = null
     private var userConsentPurposeAdapter: UserConsentPurposeAdapter? = null
@@ -119,21 +120,23 @@ class UserConsentWidget : FrameLayout,
             userConsentAnalytics.trackOnActionButtonClicked(it)
         }
 
-        submissionParam.collectionId = consentCollectionParam?.collectionId.orEmpty()
-        submissionParam.version = consentCollectionParam?.version.orEmpty()
-        submissionParam.default = isErrorGetConsent
-        submissionParam.dataElements = consentCollectionParam?.dataElements
-        submissionParam.purposes.clear()
-        collection?.purposes?.forEach {
-            submissionParam.purposes.add(
-                Purpose(
-                    purposeID = it.id,
-                    transactionType = CONSENT_OPT_IN,
-                    version = it.version,
+        if (needConsent != false) {
+            submissionParam.collectionId = consentCollectionParam?.collectionId.orEmpty()
+            submissionParam.version = consentCollectionParam?.version.orEmpty()
+            submissionParam.default = isErrorGetConsent
+            submissionParam.dataElements = consentCollectionParam?.dataElements
+            submissionParam.purposes.clear()
+            collection?.purposes?.forEach {
+                submissionParam.purposes.add(
+                    Purpose(
+                        purposeID = it.id,
+                        transactionType = CONSENT_OPT_IN,
+                        version = it.version,
+                    )
                 )
-            )
+            }
+            viewModel?.submitConsent(submissionParam)
         }
-        viewModel?.submitConsent(submissionParam)
     }
 
     private fun initInjector() {
@@ -188,7 +191,8 @@ class UserConsentWidget : FrameLayout,
                         setLoader(false)
                         result.data?.let { data ->
                             collection = data.collectionPoints.first()
-                            if (collection?.needConsent == false) {
+                            needConsent = collection?.needConsent
+                            if (needConsent == false) {
                                 this.hide()
                             } else {
                                 onSuccessGetConsentCollection()
@@ -215,21 +219,25 @@ class UserConsentWidget : FrameLayout,
             userConsentAnalytics.trackOnActionButtonClicked(it)
         }
 
-        val purposes: MutableList<UserConsentPayload.PurposeDataModel> = mutableListOf()
-        collection?.purposes?.forEach {
-            purposes.add(UserConsentPayload.PurposeDataModel(
-                it.id,
-                it.version,
-                collection?.consentType.orEmpty()
-            ))
+        return if (needConsent == false) {
+            ""
+        } else {
+            val purposes: MutableList<UserConsentPayload.PurposeDataModel> = mutableListOf()
+            collection?.purposes?.forEach {
+                purposes.add(UserConsentPayload.PurposeDataModel(
+                    it.id,
+                    it.version,
+                    collection?.consentType.orEmpty()
+                ))
+            }
+            UserConsentPayload(
+                identifier = consentCollectionParam?.identifier.orEmpty(),
+                collectionId = collection?.id.orEmpty(),
+                dataElements = consentCollectionParam?.dataElements,
+                default = isErrorGetConsent,
+                purposes = purposes
+            ).toString()
         }
-        return UserConsentPayload(
-            identifier = consentCollectionParam?.identifier.orEmpty(),
-            collectionId = collection?.id.orEmpty(),
-            dataElements = consentCollectionParam?.dataElements,
-            default = isErrorGetConsent,
-            purposes = purposes
-        ).toString()
     }
 
     private fun renderView() {
