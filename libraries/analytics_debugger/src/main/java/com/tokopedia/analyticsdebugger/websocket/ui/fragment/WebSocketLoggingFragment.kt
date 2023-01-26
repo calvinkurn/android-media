@@ -19,7 +19,7 @@ import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.websocket.di.DaggerWebSocketLoggingComponent
 import com.tokopedia.analyticsdebugger.websocket.ui.activity.WebSocketLoggingActivity
 import com.tokopedia.analyticsdebugger.websocket.ui.adapter.WebSocketLogAdapter
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.PageSource
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPageSource
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLog
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.action.WebSocketLoggingAction
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.event.WebSocketLoggingEvent
@@ -88,7 +88,7 @@ class WebSocketLoggingFragment: Fragment() {
             .orEmpty()
 
         viewModel = ViewModelProvider(this, viewModelFactory)[WebSocketLoggingViewModel::class.java]
-        viewModel.setPageSource(PageSource.fromString(pageSource))
+        viewModel.setPageSource(WebSocketLogPageSource.fromString(pageSource))
         viewModel.submitAction(WebSocketLoggingAction.InitPage)
     }
 

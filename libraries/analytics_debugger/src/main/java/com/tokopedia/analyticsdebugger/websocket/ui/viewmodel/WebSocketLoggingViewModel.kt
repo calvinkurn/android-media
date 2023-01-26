@@ -15,7 +15,6 @@ import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.helper.UiString
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.state.WebSocketLogPagination
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.state.WebSocketLoggingState
 import com.tokopedia.analyticsdebugger.websocket.ui.view.ChipModel
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -33,7 +32,7 @@ class WebSocketLoggingViewModel @Inject constructor(
     private val _websocketLogPagination = MutableStateFlow(WebSocketLogPagination())
     private val _loading = MutableStateFlow(false)
     private val _chips = MutableStateFlow(listOf<ChipModel>())
-    private val _pageSource = MutableStateFlow(PageSource.NONE)
+    private val _pageSource = MutableStateFlow(WebSocketLogPageSource.NONE)
 
     private val _uiEvent = MutableSharedFlow<WebSocketLoggingEvent>()
 
@@ -52,7 +51,7 @@ class WebSocketLoggingViewModel @Inject constructor(
     val uiEvent: Flow<WebSocketLoggingEvent>
         get() = _uiEvent
 
-    fun setPageSource(source: PageSource) {
+    fun setPageSource(source: WebSocketLogPageSource) {
         _pageSource.value = source
     }
 

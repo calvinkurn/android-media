@@ -1,9 +1,9 @@
 package com.tokopedia.analyticsdebugger.websocket.domain.param
 
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.PageSource
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPageSource
 
 data class GetWebSocketLogParam(
-    val pageSource: PageSource,
+    val pageSource: WebSocketLogPageSource,
     val query: String = "",
     val source: String = "",
     val page: Int = 0,

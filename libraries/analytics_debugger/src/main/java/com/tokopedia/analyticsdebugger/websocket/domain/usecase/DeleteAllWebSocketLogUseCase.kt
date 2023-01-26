@@ -3,7 +3,7 @@ package com.tokopedia.analyticsdebugger.websocket.domain.usecase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticsdebugger.websocket.domain.repository.PlayWebSocketLogRepository
 import com.tokopedia.analyticsdebugger.websocket.domain.repository.TopchatWebSocketLogRepository
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.PageSource
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPageSource
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
 
@@ -14,12 +14,12 @@ class DeleteAllWebSocketLogUseCase @Inject constructor(
     private val playWebSocketLogRepository: PlayWebSocketLogRepository,
     private val topchatWebSocketLogRepository: TopchatWebSocketLogRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<PageSource, Unit>(dispatchers.io) {
+) : CoroutineUseCase<WebSocketLogPageSource, Unit>(dispatchers.io) {
 
-    override suspend fun execute(params: PageSource) {
-        if (params == PageSource.PLAY) {
+    override suspend fun execute(params: WebSocketLogPageSource) {
+        if (params == WebSocketLogPageSource.PLAY) {
             playWebSocketLogRepository.deleteAll()
-        } else if (params == PageSource.TOPCHAT) {
+        } else if (params == WebSocketLogPageSource.TOPCHAT) {
             topchatWebSocketLogRepository.deleteAll()
         }
     }

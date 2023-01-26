@@ -10,7 +10,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.PageSource
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPageSource
 
 /**
  * Created By : Jonathan Darwin on December 03, 2021
@@ -50,7 +50,7 @@ class WebSocketLoggingActivity: AppCompatActivity() {
         const val EXTRA_PAGE_SOURCE = "page_source"
 
         @JvmStatic
-        fun newInstance(context: Context, pageSource: PageSource): Intent {
+        fun newInstance(context: Context, pageSource: WebSocketLogPageSource): Intent {
             return Intent(context, WebSocketLoggingActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 putExtra(EXTRA_PAGE_SOURCE, pageSource.value)

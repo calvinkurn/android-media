@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticsdebugger.websocket.domain.repository.PlayWebSocketLogRepository
 import com.tokopedia.analyticsdebugger.websocket.domain.repository.TopchatWebSocketLogRepository
 import com.tokopedia.analyticsdebugger.websocket.ui.mapper.WebSocketLogMapper
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.PageSource
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPageSource
 import com.tokopedia.analyticsdebugger.websocket.ui.view.ChipModel
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
@@ -17,14 +17,14 @@ class GetSourcesLogUseCase @Inject constructor(
     private val topchatWebSocketLogRepository: TopchatWebSocketLogRepository,
     private val webSocketLogMapper: WebSocketLogMapper,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<PageSource, List<ChipModel>>(dispatchers.io) {
+) : CoroutineUseCase<WebSocketLogPageSource, List<ChipModel>>(dispatchers.io) {
 
-    override suspend fun execute(params: PageSource): List<ChipModel> {
-        if (params == PageSource.NONE) return emptyList()
+    override suspend fun execute(params: WebSocketLogPageSource): List<ChipModel> {
+        if (params == WebSocketLogPageSource.NONE) return emptyList()
 
         val sources = when (params) {
-            PageSource.PLAY -> playWebSocketLogRepository.getSources()
-            PageSource.TOPCHAT -> topchatWebSocketLogRepository.getSources()
+            WebSocketLogPageSource.PLAY -> playWebSocketLogRepository.getSources()
+            WebSocketLogPageSource.TOPCHAT -> topchatWebSocketLogRepository.getSources()
             else -> emptyList()
         }
 

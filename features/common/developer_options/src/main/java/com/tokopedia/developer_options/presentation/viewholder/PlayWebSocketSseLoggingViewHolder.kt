@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analyticsdebugger.sse.ui.activity.SSELoggingActivity
 import com.tokopedia.analyticsdebugger.websocket.ui.activity.WebSocketLoggingActivity
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.PageSource
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPageSource
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.PlayWebSocketSseLoggingUiModel
 import com.tokopedia.unifycomponents.UnifyButton
@@ -25,7 +25,7 @@ class PlayWebSocketSseLoggingViewHolder(
         }
         btnViewWebSocketLogging.setOnClickListener {
             itemView.context.apply {
-                startActivity(WebSocketLoggingActivity.newInstance(this, PageSource.PLAY))
+                startActivity(WebSocketLoggingActivity.newInstance(this, WebSocketLogPageSource.PLAY))
             }
         }
     }

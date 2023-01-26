@@ -5,7 +5,7 @@ import com.tokopedia.analyticsdebugger.websocket.domain.param.GetWebSocketLogPar
 import com.tokopedia.analyticsdebugger.websocket.domain.repository.PlayWebSocketLogRepository
 import com.tokopedia.analyticsdebugger.websocket.domain.repository.TopchatWebSocketLogRepository
 import com.tokopedia.analyticsdebugger.websocket.ui.mapper.WebSocketLogMapper
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.PageSource
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPageSource
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
@@ -23,7 +23,7 @@ class GetWebSocketLogUseCase @Inject constructor(
     override suspend fun execute(params: GetWebSocketLogParam): List<WebSocketLogUiModel> {
         val offset = params.limit * params.page
 
-        return if (params.pageSource == PageSource.PLAY) {
+        return if (params.pageSource == WebSocketLogPageSource.PLAY) {
             webSocketLogMapper.mapPlayEntityToUiModel(
                 playWebSocketLogRepository.get(
                     params.query,
@@ -32,7 +32,7 @@ class GetWebSocketLogUseCase @Inject constructor(
                     offset
                 )
             )
-        } else if (params.pageSource == PageSource.TOPCHAT) {
+        } else if (params.pageSource == WebSocketLogPageSource.TOPCHAT) {
             webSocketLogMapper.mapTopchatEntityToUiModel(
                 topchatWebSocketLogRepository.get(
                     params.query,
