@@ -50,7 +50,6 @@ class AffiliatePerformaSharedProductCardsItemVH(
         const val PRODUCT_INACTIVE = 0
         const val SPAN_COUNT = 3
         private const val PRODUCT_ITEM = 0
-
     }
 
     override fun bind(element: AffiliatePerformaSharedProductCardsModel?) {
@@ -66,7 +65,8 @@ class AffiliatePerformaSharedProductCardsItemVH(
                 tempList.add(
                     AffiliateProductCardMetricsModel(
                         metric,
-                        element.product.status ?: PRODUCT_INACTIVE
+                        element.product,
+                        element.affiliateSSEAdpTotalClickItem
                     )
                 )
             }
@@ -100,13 +100,21 @@ class AffiliatePerformaSharedProductCardsItemVH(
             )
 
             itemView.setOnClickListener {
-                if (product.itemType == PRODUCT_ITEM) sendSelectContentEvent(product) else sendShopClickEvent(
-                    product
-                )
+                if (product.itemType == PRODUCT_ITEM) {
+                    sendSelectContentEvent(product)
+                } else {
+                    sendShopClickEvent(
+                        product
+                    )
+                }
                 productClickInterface?.onProductClick(
-                    product.itemID!!, product.itemTitle ?: "", product.image?.androidURL
-                        ?: "", product.defaultLinkURL ?: "",
-                    product.itemID!!, product.status ?: PRODUCT_INACTIVE,
+                    product.itemID!!,
+                    product.itemTitle ?: "",
+                    product.image?.androidURL
+                        ?: "",
+                    product.defaultLinkURL ?: "",
+                    product.itemID!!,
+                    product.status ?: PRODUCT_INACTIVE,
                     if (product.itemType == PRODUCT_ITEM) PAGE_TYPE_PDP else PAGE_TYPE_SHOP
                 )
             }
@@ -130,9 +138,15 @@ class AffiliatePerformaSharedProductCardsItemVH(
         } ?: ""
     }
 
-    private fun sendSelectContentEvent(product: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item) {
+    private fun sendSelectContentEvent(
+        product: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item
+    ) {
         val label =
-            if (product.status == PRODUCT_ACTIVE) AffiliateAnalytics.LabelKeys.ACTIVE else AffiliateAnalytics.LabelKeys.INACTIVE
+            if (product.status == PRODUCT_ACTIVE) {
+                AffiliateAnalytics.LabelKeys.ACTIVE
+            } else {
+                AffiliateAnalytics.LabelKeys.INACTIVE
+            }
         AffiliateAnalytics.trackEventImpression(
             AffiliateAnalytics.EventKeys.SELECT_CONTENT,
             AffiliateAnalytics.ActionKeys.CLICK_PRODUCT_PRODUL_YANG_DIPROMOSIKAN,
@@ -140,14 +154,22 @@ class AffiliatePerformaSharedProductCardsItemVH(
             UserSession(itemView.context).userId,
             product.itemID,
             bindingAdapterPosition - 1,
-            "${product.itemID} - ${product.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue} - ${product.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue} - ${product.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue} - $label",
+            "${product.itemID}" +
+                " - ${product.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue}" +
+                " - ${product.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue}" +
+                " - ${product.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue}" +
+                " - $label",
             AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SELECT_CONTENT
         )
     }
 
     private fun sendShopClickEvent(shop: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item) {
         val label =
-            if (shop.status == PRODUCT_ACTIVE) AffiliateAnalytics.LabelKeys.ACTIVE else AffiliateAnalytics.LabelKeys.INACTIVE
+            if (shop.status == PRODUCT_ACTIVE) {
+                AffiliateAnalytics.LabelKeys.ACTIVE
+            } else {
+                AffiliateAnalytics.LabelKeys.INACTIVE
+            }
         AffiliateAnalytics.trackEventImpression(
             AffiliateAnalytics.EventKeys.SELECT_CONTENT,
             AffiliateAnalytics.ActionKeys.CLICK_SHOP_LINK_DENGAN_PERFORMA,
@@ -156,7 +178,11 @@ class AffiliatePerformaSharedProductCardsItemVH(
             shop.itemID,
             bindingAdapterPosition - 1,
             shop.itemTitle,
-            "${shop.itemID} - ${shop.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue} - ${shop.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue} - ${shop.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue} - $label",
+            "${shop.itemID}" +
+                " - ${shop.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue}" +
+                " - ${shop.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue}" +
+                " - ${shop.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue}" +
+                " - $label",
             AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SHOP_SELECT_CONTENT
         )
     }

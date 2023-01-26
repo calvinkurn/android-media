@@ -86,7 +86,6 @@ class ProductDetailThanosTest {
     fun setup() {
         setupGraphqlMockResponse(ProductDetailMockResponse())
         InstrumentationAuthHelper.clearUserSession()
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
         val intent = ProductDetailActivity.createIntent(targetContext,
             ProductDetailActivityTest.PRODUCT_ID
         )
@@ -112,7 +111,7 @@ class ProductDetailThanosTest {
     @Test
     fun tracker_journey_id_56() {
         actionTest {
-//            fakeLogin()
+            InstrumentationAuthHelper.loginInstrumentationTestUser1()
         } assertTest {
             assertIsLoggedIn(targetContext, true)
             waitFor()
