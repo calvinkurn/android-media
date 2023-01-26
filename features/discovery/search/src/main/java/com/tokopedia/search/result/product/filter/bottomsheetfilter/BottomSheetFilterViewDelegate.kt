@@ -18,7 +18,6 @@ import com.tokopedia.search.result.product.lastfilter.LastFilterListener
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
-import com.tokopedia.search.utils.getUserId
 import com.tokopedia.search.utils.updateComponentId
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -91,8 +90,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
 
         sortFilterBottomSheet = null
 
-        applySort(applySortFilterModel)
-        applyFilter(applySortFilterModel)
+        applySortAndFilter(applySortFilterModel)
 
         val requestParams = applySortFilterModel.mapParameter
             .updateComponentId(SearchSortFilterTracking.FILTER_COMPONENT_ID)
@@ -104,19 +102,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         parameterListener.reloadData()
     }
 
-    private fun applySort(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
-        if (applySortFilterModel.selectedSortName.isEmpty()
-            || applySortFilterModel.selectedSortMapParameter.isEmpty()
-        ) return
-
-        SearchSortFilterTracking.eventSearchResultSort(
-            getScreenName(),
-            applySortFilterModel.selectedSortName,
-            getUserId(userSessionInterface),
-        )
-    }
-
-    private fun applyFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+    private fun applySortAndFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
         SearchSortFilterTracking.eventApplyFilter(
             keyword = getSearchParameter()?.getSearchQuery().orEmpty(),
             pageSource = pageSource,

@@ -30,19 +30,6 @@ object SearchSortFilterTracking {
     }
 
     @JvmStatic
-    fun eventSearchResultSort(screenName: String, sortByValue: String?, userId: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            DataLayer.mapOf(
-                SearchTrackingConstant.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
-                SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SORT_BY,
-                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.SORT_BY + " - " + screenName,
-                SearchTrackingConstant.EVENT_LABEL, sortByValue,
-                SearchTrackingConstant.USER_ID, userId
-            )
-        )
-    }
-
-    @JvmStatic
     fun eventOpenFilterPage() {
         FilterTracking.eventOpenFilterPage(filterTrackingData)
     }
