@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.bottomsheet
 
 import android.content.res.Configuration
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -140,6 +141,12 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
     override fun dismiss() {
         if(!isVisible) return
         super.dismiss()
+
+        playViewModel.submitAction(DismissFollowPopUp)
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
 
         playViewModel.submitAction(DismissFollowPopUp)
     }

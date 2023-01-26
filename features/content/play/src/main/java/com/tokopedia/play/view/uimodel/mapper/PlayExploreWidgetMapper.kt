@@ -21,73 +21,73 @@ class PlayExploreWidgetMapper @Inject constructor() {
     fun map(widgetSlot: WidgetSlot): List<WidgetUiModel> {
         return buildList {
             widgetSlot.playGetContentSlot.data.map {
-                when(it.type){
+                when (it.type) {
                     TAB_MENU_TYPE -> add(mapChips(it))
                     SUB_SLOT_TYPE -> add(SubSlotUiModel)
                     CHANNEL_BLOCK_TYPE -> add(mapWidgets(it))
                     else -> {}
                 }
             }
-            with(widgetSlot.playGetContentSlot.playGetContentSlot){
+            with(widgetSlot.playGetContentSlot.playGetContentSlot) {
                 add(PageConfig(isAutoPlay = this.isAutoplay, cursor = this.nextCursor))
             }
         }
     }
 
-    private fun mapChips(content: Content) : TabMenuUiModel {
+    private fun mapChips(content: Content): TabMenuUiModel {
         val newList = content.items.map {
             ChipWidgetUiModel(
                 group = it.group,
                 sourceType = it.sourceType,
                 sourceId = it.sourceId,
-                text = it.label,
+                text = it.label
             )
         }
         return TabMenuUiModel(items = newList, state = ResultState.Success)
     }
 
-    private fun mapWidgets(content: Content) : WidgetItemUiModel {
-           return WidgetItemUiModel(
-               item =
-               PlayWidgetUiModel(
-                   title = content.title,
-                   actionAppLink = "",
-                   actionTitle = content.title,
-                   isActionVisible = false,
-                   config = PlayWidgetConfigUiModel(
-                       autoPlay = false,
-                       autoRefresh = false,
-                       autoPlayAmount = 0,
-                       autoRefreshTimer = 0,
-                       maxAutoPlayWifiDuration = 0,
-                       maxAutoPlayCellularDuration = 0,
-                       businessWidgetPosition = 1,
-                   ),
-                   background = PlayWidgetBackgroundUiModel(overlayImageAppLink = "", overlayImageUrl = "", overlayImageWebLink = "", backgroundUrl = "", gradientColors = emptyList()),
-                   items = content.items.map {
-                       val channelType = PlayWidgetChannelType.getByValue(it.airTime)
-                       PlayWidgetChannelUiModel(
-                           channelId = it.id,
-                           title = it.title,
-                           appLink = it.appLink,
-                           startTime = PlayDateTimeFormatter.formatDate(it.startTime),
-                           totalView = PlayWidgetTotalView(totalViewFmt = it.stats.view.formatted, isVisible = channelType != PlayWidgetChannelType.Upcoming),
-                           promoType = PlayWidgetPromoType.getByType(it.configurations.promoLabels.firstOrNull()?.type.orEmpty(), it.configurations.promoLabels.firstOrNull()?.text.orEmpty()),
-                           reminderType = getReminderType(it.configurations.reminder.isSet),
-                           partner = PlayWidgetPartnerUiModel(it.partner.id, it.partner.name),
-                           video = PlayWidgetVideoUiModel(it.video.id, it.isLive,it.coverUrl,it.video.streamUrl),
-                           channelType = channelType,
-                           hasGame = it.configurations.promoLabels.firstOrNull { it.type == GIVEAWAY } != null,
-                           share = PlayWidgetShareUiModel(fullShareContent = "", isShow = false),
-                           performanceSummaryLink = "",
-                           poolType = "",
-                           recommendationType = "",
-                           hasAction = false,
-                           channelTypeTransition = PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Unknown, PlayWidgetChannelType.Unknown),
-                       )
-                   }
-               )
-           )
+    private fun mapWidgets(content: Content): WidgetItemUiModel {
+        return WidgetItemUiModel(
+            item =
+            PlayWidgetUiModel(
+                title = content.title,
+                actionAppLink = "",
+                actionTitle = content.title,
+                isActionVisible = false,
+                config = PlayWidgetConfigUiModel(
+                    autoPlay = false,
+                    autoRefresh = false,
+                    autoPlayAmount = 0,
+                    autoRefreshTimer = 0,
+                    maxAutoPlayWifiDuration = 0,
+                    maxAutoPlayCellularDuration = 0,
+                    businessWidgetPosition = 1
+                ),
+                background = PlayWidgetBackgroundUiModel(overlayImageAppLink = "", overlayImageUrl = "", overlayImageWebLink = "", backgroundUrl = "", gradientColors = emptyList()),
+                items = content.items.map {
+                    val channelType = PlayWidgetChannelType.getByValue(it.airTime)
+                    PlayWidgetChannelUiModel(
+                        channelId = it.id,
+                        title = it.title,
+                        appLink = it.appLink,
+                        startTime = PlayDateTimeFormatter.formatDate(it.startTime),
+                        totalView = PlayWidgetTotalView(totalViewFmt = it.stats.view.formatted, isVisible = channelType != PlayWidgetChannelType.Upcoming),
+                        promoType = PlayWidgetPromoType.getByType(it.configurations.promoLabels.firstOrNull()?.type.orEmpty(), it.configurations.promoLabels.firstOrNull()?.text.orEmpty()),
+                        reminderType = getReminderType(it.configurations.reminder.isSet),
+                        partner = PlayWidgetPartnerUiModel(it.partner.id, it.partner.name),
+                        video = PlayWidgetVideoUiModel(it.video.id, it.isLive, it.coverUrl, it.video.streamUrl),
+                        channelType = channelType,
+                        hasGame = it.configurations.promoLabels.firstOrNull { it.type == GIVEAWAY } != null,
+                        share = PlayWidgetShareUiModel(fullShareContent = "", isShow = false),
+                        performanceSummaryLink = "",
+                        poolType = "",
+                        recommendationType = it.recommendationType,
+                        hasAction = false,
+                        channelTypeTransition = PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Unknown, PlayWidgetChannelType.Unknown)
+                    )
+                }
+            )
+        )
     }
 
     companion object {

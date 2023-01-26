@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class WidgetSlot(
     @SerializedName("playGetContentSlot")
-    val playGetContentSlot: ContentSlot,
+    val playGetContentSlot: ContentSlot
 )
 
 data class ContentSlot(
@@ -15,7 +15,7 @@ data class ContentSlot(
     val data: List<Content>,
 
     @SerializedName("meta")
-    val playGetContentSlot: ContentSlotMeta,
+    val playGetContentSlot: ContentSlotMeta
 )
 
 data class ContentSlotMeta(
@@ -26,7 +26,7 @@ data class ContentSlotMeta(
     val maxAutoplayInCell: Int,
 
     @SerializedName("next_cursor")
-    val nextCursor: String,
+    val nextCursor: String
 )
 
 data class Content(
@@ -43,7 +43,7 @@ data class Content(
     val id: String,
 
     @SerializedName("items")
-    val items: List<ContentItem>,
+    val items: List<ContentItem>
 )
 
 data class ContentItem(
@@ -86,7 +86,7 @@ data class ContentItem(
     @SerializedName("video")
     val video: Video,
 
-    //Banner
+    // Banner
     @SerializedName("created_time")
     val createdTime: String,
 
@@ -102,7 +102,7 @@ data class ContentItem(
     @SerializedName("image_url")
     val imageUrl: String,
 
-    //Tab
+    // Tab
     @SerializedName("label")
     val label: String,
     @SerializedName("icon_url")
@@ -118,6 +118,9 @@ data class ContentItem(
 
     @SerializedName("slug_id")
     val slugId: String,
+
+    @SerializedName("recommendationType")
+    val recommendationType: String = ""
 ) {
 
     data class Partner(
@@ -125,10 +128,10 @@ data class ContentItem(
         val id: String,
 
         @SerializedName("name")
-        val name: String,
+        val name: String
     )
 
-    data class Video (
+    data class Video(
         @SerializedName("id")
         val id: String,
 
@@ -139,13 +142,13 @@ data class ContentItem(
         val orientation: String,
 
         @SerializedName("type")
-        val type: String,
+        val type: String
     )
 }
 
 data class ContentStats(
     @SerializedName("view")
-    val view: StatsView,
+    val view: StatsView
 )
 
 data class StatsView(
@@ -153,7 +156,7 @@ data class StatsView(
     val value: String,
 
     @SerializedName("formatted")
-    val formatted: String,
+    val formatted: String
 )
 
 data class ContentItemConfiguration(
@@ -164,18 +167,17 @@ data class ContentItemConfiguration(
     val reminder: Reminder,
 
     @SerializedName("promo_labels")
-    val promoLabels: List<PromoLabel>,
+    val promoLabels: List<PromoLabel>
 ) {
     data class Reminder(
         @SerializedName("is_set")
-        val isSet: Boolean,
+        val isSet: Boolean
     )
 
     data class PromoLabel(
         @SerializedName("text")
         val text: String,
         @SerializedName("type")
-        val type: String,
+        val type: String
     )
 }
-

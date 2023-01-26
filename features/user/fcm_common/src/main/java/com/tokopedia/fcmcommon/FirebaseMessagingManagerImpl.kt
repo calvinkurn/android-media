@@ -10,25 +10,25 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class FirebaseMessagingManagerImpl @Inject constructor(
-        private val updateFcmTokenUseCase: UpdateFcmTokenUseCase,
-        private val sharedPreferences: SharedPreferences,
-        private val userSession: UserSessionInterface
+    private val updateFcmTokenUseCase: UpdateFcmTokenUseCase,
+    private val sharedPreferences: SharedPreferences,
+    private val userSession: UserSessionInterface,
+    private val sendTokenToCMHandler: SendTokenToCMHandler
 ) : FirebaseMessagingManager {
 
     override fun onNewToken(newToken: String?) {
-        if(newToken == null) return
+        if (newToken == null) return
 
         storeNewToken(newToken)
 
-        if(isNewToken(newToken)){
-            if(userSession.isLoggedIn){
+        if (isNewToken(newToken)) {
+            if (userSession.isLoggedIn) {
                 updateTokenOnServer(newToken)
             } else {
                 setDeviceId(newToken)
                 saveNewTokenToPref(newToken)
             }
         }
-
     }
 
     override fun isNewToken(token: String): Boolean {
@@ -65,12 +65,12 @@ class FirebaseMessagingManagerImpl @Inject constructor(
     }
 
     override fun currentToken(): String {
-        return getTokenFromPref()?: ""
+        return getTokenFromPref() ?: ""
     }
 
     private fun updateTokenOnServer(
-            newToken: String,
-            listener: FirebaseMessagingManager.SyncListener? = null
+        newToken: String,
+        listener: FirebaseMessagingManager.SyncListener? = null
     ) {
         try {
             val params = createUpdateTokenParams(newToken)
@@ -85,6 +85,7 @@ class FirebaseMessagingManagerImpl @Inject constructor(
                 listener?.onError(error)
                 logFailUpdateFcmToken(error, newToken, "Error")
             })
+            updateTokenOnCMServer(newToken)
         } catch (exception: Exception) {
             exception.printStackTrace()
             listener?.onError(exception)
@@ -94,6 +95,10 @@ class FirebaseMessagingManagerImpl @Inject constructor(
 
     private fun setDeviceId(newToken: String) {
         userSession.deviceId = newToken
+    }
+
+    private fun updateTokenOnCMServer(token: String) {
+        sendTokenToCMHandler.updateToken(token)
     }
 
     private fun logFailUpdateFcmToken(error: Throwable, token: String, type: String) {
@@ -116,8 +121,8 @@ class FirebaseMessagingManagerImpl @Inject constructor(
     private fun createUpdateTokenParams(newToken: String): Map<String, String> {
         val currentToken = getTokenFromPref() ?: newToken
         return mapOf(
-                FirebaseMessagingManager.PARAM_OLD_TOKEN to currentToken,
-                FirebaseMessagingManager.PARAM_NEW_TOKEN to newToken
+            FirebaseMessagingManager.PARAM_OLD_TOKEN to currentToken,
+            FirebaseMessagingManager.PARAM_NEW_TOKEN to newToken
         )
     }
 
