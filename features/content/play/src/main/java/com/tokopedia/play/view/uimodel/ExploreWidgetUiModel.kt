@@ -14,8 +14,7 @@ data class ExploreWidgetUiModel(
     val param: WidgetParamUiModel,
     val chips: TabMenuUiModel,
     val widgets: List<WidgetItemUiModel>,
-    val state: WidgetState,
-    val isOpened: Boolean,
+    val state: WidgetState
 ) {
     companion object {
         val Empty: ExploreWidgetUiModel
@@ -23,8 +22,7 @@ data class ExploreWidgetUiModel(
                 chips = TabMenuUiModel.Empty,
                 param = WidgetParamUiModel.Empty,
                 widgets = emptyList(),
-                state = WidgetState.Loading,
-                isOpened = false,
+                state = WidgetState.Loading
             )
     }
 }
@@ -33,12 +31,15 @@ data class WidgetParamUiModel(
     val group: String,
     val sourceType: String,
     val sourceId: String,
-    val cursor: String,
+    val cursor: String
 ) {
     companion object {
         val Empty: WidgetParamUiModel
             get() = WidgetParamUiModel(
-                group = "", sourceId = "", sourceType = "", cursor = "",
+                group = "",
+                sourceId = "",
+                sourceType = "",
+                cursor = ""
             )
     }
 }
@@ -50,7 +51,7 @@ data class ChipWidgetUiModel(
     val sourceType: String,
     val sourceId: String,
     val text: String,
-    @TrackingField val impressHolder: ImpressHolder = ImpressHolder(),
+    @TrackingField val impressHolder: ImpressHolder = ImpressHolder()
 ) : ChipWidgetsUiModel()
 
 object ChipsShimmering : ChipWidgetsUiModel()
@@ -58,18 +59,19 @@ object ChipsShimmering : ChipWidgetsUiModel()
 sealed class WidgetUiModel
 data class TabMenuUiModel(
     val items: List<ChipWidgetUiModel>,
-    val state: ResultState,
+    val state: ResultState
 ) : WidgetUiModel() {
     companion object {
         val Empty: TabMenuUiModel
             get() = TabMenuUiModel(
-                items = emptyList(), state = ResultState.Loading,
+                items = emptyList(),
+                state = ResultState.Loading
             )
     }
 }
 
 data class WidgetItemUiModel(
-    val item: PlayWidgetUiModel,
+    val item: PlayWidgetUiModel
 ) : WidgetUiModel() {
     companion object {
         val Empty: WidgetItemUiModel
@@ -102,7 +104,7 @@ val WidgetParamUiModel.hasNextPage: Boolean
 val List<WidgetUiModel>.getChannelBlock: WidgetItemUiModel
     get() {
         val newList = mutableListOf<List<PlayWidgetItemUiModel>>()
-        val filteredList =  this.filterIsInstance<WidgetItemUiModel>()
+        val filteredList = this.filterIsInstance<WidgetItemUiModel>()
         filteredList.forEach {
             newList.add(it.item.items)
         }
