@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.destination
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -46,6 +47,8 @@ class HotelDestinationViewModelTest {
     private val userSessionInterface = mockk<UserSessionInterface>()
     private val graphqlRepository = mockk<GraphqlRepository>()
     private val hotelDestinationMapper = mockk<HotelDestinationMapper>()
+
+    private val fusedLocationProviderClient = mockk<FusedLocationProviderClient>()
 
     @RelaxedMockK
     lateinit var getPropertyPopularUseCase: GetPropertyPopularUseCase
@@ -331,10 +334,42 @@ class HotelDestinationViewModelTest {
     }
 
     @Test
-    fun getCurrentLocationFromUpdates_shouldUpdateLongLat() {
+    fun getCurrentLocationFromUpdatesThrowException_latLongShouldNull() {
+        // given
+        coEvery { fusedLocationProviderClient.requestLocationUpdates(any(), any(), any()) } throws SecurityException()
+
+        // when
+        hotelDestinationViewModel.getLocationFromUpdates(fusedLocationProviderClient)
+
+        // then
+        assert(hotelDestinationViewModel.longLat.value == null)
     }
 
     @Test
-    fun getCurrentLocationFromUpdates_shouldRepresentFailToFetch() {
+    fun validateLocationWithLatitudeAndLongitudeIsZero_latLongShouldBeFail() {
+        // given
+        val lat = 0.0
+        val long = 0.0
+
+        // when
+        hotelDestinationViewModel.validateLocation(lat, long)
+
+        // then
+        assert(hotelDestinationViewModel.longLat.value is Fail)
+    }
+
+    @Test
+    fun validateLocationWithLatitudeIsNotZeroAndLongitudeZero_latLongShouldBeValid() {
+        // given
+        val lat = 0.0111
+        val long = 0.0
+
+        // when
+        hotelDestinationViewModel.validateLocation(lat, long)
+
+        // then
+        assert(hotelDestinationViewModel.longLat.value is Success)
+        assert((hotelDestinationViewModel.longLat.value as Success).data.first == long)
+        assert((hotelDestinationViewModel.longLat.value as Success).data.second == lat)
     }
 }

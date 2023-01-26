@@ -107,11 +107,7 @@ class HotelDestinationViewModel @Inject constructor(
                 if (locationResult == null) return
                 locationResult.locations.forEach {
                     if (it != null) {
-                        if (it.latitude == 0.0 && it.longitude == 0.0) {
-                            longLat.postValue(Fail(Throwable()))
-                        } else {
-                            longLat.postValue(Success(Pair(it.longitude, it.latitude)))
-                        }
+                        validateLocation(it.latitude, it.longitude)
                         try {
                             fusedLocationProviderClient.removeLocationUpdates(locationCallback)
                         } catch (e: Throwable) {
@@ -130,6 +126,14 @@ class HotelDestinationViewModel @Inject constructor(
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
         } catch (e: SecurityException) {
             e.printStackTrace()
+        }
+    }
+
+    fun validateLocation(latitude: Double, longitude: Double) {
+        if (latitude == 0.0 && longitude == 0.0) {
+            longLat.postValue(Fail(Throwable()))
+        } else {
+            longLat.postValue(Success(Pair(longitude, latitude)))
         }
     }
 
