@@ -13,7 +13,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.annotation.RestrictTo
@@ -4145,17 +4144,18 @@ class FeedPlusFragment :
             }
         }.toList()
         if (data.isNotEmpty()) {
-            val scrollPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
-            adapter.clearData()
-            adapter.addList(newList)
-
-            recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
-                OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    recyclerView.scrollToPosition(scrollPosition)
-                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                }
-            })
+//            val scrollPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
+//            adapter.clearData()
+//            adapter.addList(newList)
+//
+//            recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
+//                OnGlobalLayoutListener {
+//                override fun onGlobalLayout() {
+//                    recyclerView.scrollToPosition(scrollPosition)
+//                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+//                }
+//            })
+            adapter.notifyDataSetChanged()
         }
         feedViewModel.clearFollowIdToUpdate()
     }
