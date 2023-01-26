@@ -181,9 +181,10 @@ class MvcListFragment :
                 redirectToEditPage(voucher)
             }
             is MoreMenuUiModel.Clipboard -> {
+                VoucherDetailActivity.start(context ?: return, voucher.id)
             }
             is MoreMenuUiModel.Broadcast -> {
-                SharingUtil.shareToBroadCastChat(requireContext(), voucher.id)
+                SharingUtil.shareToBroadCastChat(context ?: return, voucher.id)
             }
             is MoreMenuUiModel.Download -> {
                 showDownloadVoucherBottomSheet(voucher)
