@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MVC_CREATE
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.utils.extension.routeToUrl
@@ -180,9 +181,10 @@ class MvcListFragment :
                 redirectToEditPage(voucher)
             }
             is MoreMenuUiModel.Clipboard -> {
+                VoucherDetailActivity.start(context ?: return, voucher.id)
             }
             is MoreMenuUiModel.Broadcast -> {
-                SharingUtil.shareToBroadCastChat(requireContext(), voucher.id)
+                SharingUtil.shareToBroadCastChat(context ?: return, voucher.id)
             }
             is MoreMenuUiModel.Download -> {
                 showDownloadVoucherBottomSheet(voucher)
@@ -560,26 +562,7 @@ class MvcListFragment :
     }
 
     private fun redirectToCreateVoucherPage() {
-        // For sample only. Will redirect to add product page.
-        val voucherConfiguration = VoucherConfiguration(
-            benefitIdr = 25_000,
-            benefitMax = 500_000,
-            benefitPercent = 0,
-            benefitType = BenefitType.NOMINAL,
-            promoType = PromoType.FREE_SHIPPING,
-            isVoucherProduct = true,
-            minPurchase = 50_000,
-            productIds = emptyList(),
-            targetBuyer = VoucherTargetBuyer.ALL_BUYER,
-            totalPeriod = 0
-        )
-
-        val intent = AddProductActivity.buildCreateModeIntent(
-            activity ?: return,
-            voucherConfiguration
-        )
-
-        startActivityForResult(intent, 100)
+        RouteManager.route(context, SELLER_MVC_CREATE)
     }
 
     private fun setEduCenterBottomSheet() {

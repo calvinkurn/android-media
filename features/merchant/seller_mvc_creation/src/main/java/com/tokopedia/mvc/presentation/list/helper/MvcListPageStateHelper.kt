@@ -11,16 +11,32 @@ object MvcListPageStateHelper {
     fun getPageState(vouchers: List<Voucher>, filter: FilterModel, page: Int): PageState {
         val isVoucherNoData = vouchers.isEmpty()
         val isKeywordEmpty = filter.keyword.isEmpty()
-        if (isKeywordEmpty) {
-            if (isVoucherNoData && page == PaginationConstant.INITIAL_PAGE) {
-                return PageState.NO_DATA_PAGE
-            }
-        } else {
-            if (isVoucherNoData && page == PaginationConstant.INITIAL_PAGE) {
-                return PageState.NO_DATA_SEARCH_PAGE
+        val isFiltering = getIsFiltering(filter)
+        if (isVoucherNoData && page == PaginationConstant.INITIAL_PAGE) {
+            return if (isFiltering || !isKeywordEmpty) {
+                PageState.NO_DATA_SEARCH_PAGE
+            } else {
+                PageState.NO_DATA_PAGE
             }
         }
         return PageState.DISPLAY_LIST
+    }
+
+    private fun getIsFiltering(filter: FilterModel): Boolean {
+        val defaultNoFilter = FilterModel()
+        val useStatusFilter = defaultNoFilter.status != filter.status
+        val useVoucherTypeFilter = defaultNoFilter.voucherType != filter.voucherType
+        val usePromoTypeFilter = defaultNoFilter.promoType != filter.promoType
+        val useSourceFilter = defaultNoFilter.source != filter.source
+        val useTargetFilter = defaultNoFilter.target != filter.target
+        val useTargetBuyerFilter = defaultNoFilter.targetBuyer != filter.targetBuyer
+
+        return useStatusFilter ||
+            useVoucherTypeFilter ||
+            usePromoTypeFilter ||
+            useSourceFilter ||
+            useTargetFilter ||
+            useTargetBuyerFilter
     }
 
     fun getStatusName(context: Context?, filter: FilterModel): String {

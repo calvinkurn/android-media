@@ -21,8 +21,8 @@
 
     <string-array name="promo_type_items">
         <item>Gratis Ongkir</item>
-        <item>Cashback</item>
         <item>Diskon</item>
+        <item>Cashback</item>
     </string-array>
 
     <string-array name="target_items">

@@ -47,8 +47,6 @@ import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.SuccessUploadBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
-import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
-import com.tokopedia.mvc.presentation.creation.step3.VoucherSettingActivity
 import com.tokopedia.mvc.presentation.summary.helper.SummaryPageRedirectionHelper
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
 import com.tokopedia.mvc.util.SharingUtil
@@ -148,7 +146,7 @@ class SummaryFragment :
     }
 
     override fun onVoucherTypePageResult() {
-        // TODO("Not yet implemented")
+        activity?.finish()
     }
 
     private fun setupPageMode() {
@@ -436,11 +434,14 @@ class SummaryFragment :
     }
 
     private fun showSuccessUploadBottomSheet(configuration: VoucherConfiguration) {
-        SuccessUploadBottomSheet
+        val bottomSheet = SuccessUploadBottomSheet
             .createInstance(configuration)
             .setOnAdsClickListener(::onSuccessBottomsheetAdsClick)
             .setOnBroadCastClickListener(::onSuccessBottomsheetBroadCastClick)
-            .show(childFragmentManager)
+        bottomSheet.setOnDismissListener {
+            RouteManager.route(context, SELLER_MVC_LIST)
+        }
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun onMultiPeriodClicked(configuration: VoucherConfiguration) {
@@ -456,17 +457,13 @@ class SummaryFragment :
     }
 
     private fun onInformationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
-        context?.let {
-            VoucherInformationActivity.buildCreateModeIntent(it, configuration)
-        }
-        activity?.finish()
+        val isAdding = viewModel.checkIsAdding(configuration)
+        redirectionHelper.redirectToCouponInfoPage(this, configuration, isAdding)
     }
 
     private fun onConfigurationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
-        context?.let {
-            VoucherSettingActivity.buildCreateModeIntent(it, configuration)
-        }
-        activity?.finish()
+        val isAdding = viewModel.checkIsAdding(configuration)
+        redirectionHelper.redirectToCouponConfigurationPage(this, configuration, isAdding)
     }
 
     private fun onChangeProductBtnChangeClicked(configuration: VoucherConfiguration) {

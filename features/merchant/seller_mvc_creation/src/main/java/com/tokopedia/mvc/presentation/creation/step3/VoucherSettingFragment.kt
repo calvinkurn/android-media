@@ -13,7 +13,11 @@ import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.textChangesAsFlow
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentCreationVoucherSettingBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreeButtonSectionBinding
@@ -24,7 +28,11 @@ import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreeFreeShippingInp
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreePromoTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
-import com.tokopedia.mvc.domain.entity.enums.*
+import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.PageMode
+import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherCreationStepThreeFieldValidation
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeAction
@@ -1136,13 +1144,11 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToAddProductPage(currentVoucherConfiguration: VoucherConfiguration) {
-        val intent = context?.let { ctx ->
-            AddProductActivity.buildCreateModeIntent(
-                ctx,
-                currentVoucherConfiguration.copy(isFinishFilledStepThree = true)
-            )
-        }
-        context?.startActivity(intent)
+        val intent = AddProductActivity.buildCreateModeIntent(
+            context ?: return,
+            currentVoucherConfiguration.copy(isFinishFilledStepThree = true)
+        )
+        startActivity(intent)
     }
 
     private fun navigateToVoucherSummaryPage(currentVoucherConfiguration: VoucherConfiguration) {
