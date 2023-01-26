@@ -1,5 +1,6 @@
 package com.tokopedia.cart.view.bottomsheet
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
@@ -12,6 +13,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.databinding.LayoutBottomsheetCartBundlingCrossSellBinding
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
+import com.tokopedia.common.ProductServiceWidgetConstant
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
@@ -57,6 +59,7 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
     private val bundleIds by lazy {
         requireNotNull(arguments?.getStringArray(KEY_BUNDLE_IDS)).asList()
     }
+    private var listener: CartBundlingBottomSheetListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,10 +88,25 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
         } else {
             binding?.cardBottomTicker?.gone()
         }
+        binding?.productBundleWidget?.startActivityResult { intent, requestCode ->
+            startActivityForResult(intent, requestCode)
+        }
         binding?.productBundleWidget?.getBundleData(bundleParam)
+    }
+
+    fun setListener(listener: CartBundlingBottomSheetListener) {
+        this.listener = listener
     }
 
     fun show(fragmentManager: FragmentManager) {
         super.show(fragmentManager, TAG)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == ProductServiceWidgetConstant.PRODUCT_BUNDLE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            dismiss()
+            listener?.onProductBundleAdded()
+        }
     }
 }
