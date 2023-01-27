@@ -24,7 +24,7 @@ class UniversalSharebottomSheetTracker(private val userSession: UserSession) {
         private const val VALUE_ACTION_CLICK_AFFILIATE = "click - ticker affiliate"
         private const val VALUE_ACTION_IMPRESSION_AFFILIATE = "impression - ticker affiliate"
         private const val VALUE_ACTION_CLICK_SHARE = "click - share button"
-        private const val VALUE_ACTION_CLOSE_SHARE = "click - close share"
+        private const val VALUE_ACTION_CLOSE_SHARE = "click - close share bottom sheet"
         private const val VALUE_ACTION_VIEW_SHARE = "view on sharing channel"
         private const val VALUE_ACTION_CLICK_CHANNEL = "click - sharing channel"
         private const val VALUE_EVENT_VIEW = "view_item"
