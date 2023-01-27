@@ -187,7 +187,7 @@ class AffiliateSSAShopListFragment :
         AffiliatePromotionBottomSheet.newInstance(
             AffiliatePromotionBottomSheetParams(
                 null, productId, productName, productImage, productUrl, productIdentifier,
-                AffiliatePromotionBottomSheet.ORIGIN_HOME, true, type = type,
+                AffiliatePromotionBottomSheet.ORIGIN_SSA_SHOP, true, type = type,
                 ssaInfo = ssaInfo
             ),
             AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,

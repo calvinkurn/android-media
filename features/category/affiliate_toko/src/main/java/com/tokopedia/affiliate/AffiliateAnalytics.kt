@@ -330,6 +330,7 @@ object AffiliateAnalytics {
             const val CLICK_EVENT_CATEGORY = "click - event category"
             const val CLICK_SSA_SHOP_BANNER = "click - ssa shop bannert"
             const val CLICK_SSA_SHOP_PAGE = "click - shop - ssa shop list"
+            const val CLICK_SALIN_LINK_SSA_SHOP = "click - salin link - ssa shop list"
         }
     }
 
