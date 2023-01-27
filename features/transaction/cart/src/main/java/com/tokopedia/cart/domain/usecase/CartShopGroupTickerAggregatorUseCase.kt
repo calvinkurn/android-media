@@ -1,42 +1,37 @@
 package com.tokopedia.cart.domain.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorResponse
+import com.tokopedia.cart.data.model.request.CartShopGroupTickerAggregatorParam
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.logisticcart.shipping.model.RatesParam
 import javax.inject.Inject
 
 @GqlQuery("CartShopGroupTickerAggregatorQuery", CartShopGroupTickerAggregatorUseCase.QUERY)
 class CartShopGroupTickerAggregatorUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
     dispatchers: CoroutineDispatchers,
-) : CoroutineUseCase<RatesParam, CartShopGroupTickerAggregatorResponse>(dispatchers.io) {
-
-    var enableBoAffordability: Boolean = false
-    var enableBundleCrossSell: Boolean = false
+) : CoroutineUseCase<CartShopGroupTickerAggregatorParam, CartShopGroupTickerAggregatorResponse>(
+    dispatchers.io
+) {
 
     override fun graphqlQuery(): String {
         return QUERY
     }
 
-    override suspend fun execute(params: RatesParam): CartShopGroupTickerAggregatorResponse {
-        val cartAggregatorParams = params.toCartShopGroupTickerAggregatorMap().toMutableMap()
-        cartAggregatorParams[PARAM_ENABLE_BO_AFFORDABILITY] = enableBoAffordability
-        cartAggregatorParams[PARAM_ENABLE_BUNDLE_CROSS_SELL] = enableBundleCrossSell
-        return graphqlRepository.request(CartShopGroupTickerAggregatorQuery(), cartAggregatorParams)
+    // buat class baru untuk param, include RatesParam + enableBo + enableBundle
+    override suspend fun execute(params: CartShopGroupTickerAggregatorParam): CartShopGroupTickerAggregatorResponse {
 //        TODO: Remove this after staging BE available
-//        return Gson().fromJson(DUMMY_SUCCESS, CartShopGroupTickerAggregatorResponse::class.java)
+        return Gson().fromJson(DUMMY_SUCCESS, CartShopGroupTickerAggregatorResponse::class.java)
 //        return Gson().fromJson(DUMMY_FAILED, CartShopGroupTickerAggregatorResponse::class.java)
+        return graphqlRepository.request(CartShopGroupTickerAggregatorQuery(), params.toMap())
     }
 
     companion object {
-        private const val PARAM_ENABLE_BO_AFFORDABILITY = "enable_bo_affordability"
-        private const val PARAM_ENABLE_BUNDLE_CROSS_SELL = "enable_bundle_cross_sell"
-
         const val QUERY = """
             query cartShopGroupTickerAggregator(${'$'}params: CartShopGroupTickerAggregatorParams!) {
                 cart_shop_group_ticker_aggregator(cartShopGroupTickerAggregatorParams: ${'$'}params) {
@@ -46,15 +41,20 @@ class CartShopGroupTickerAggregatorUseCase @Inject constructor(
                         min_transaction
                         ticker {
                             text
-                            left_icon
-                            right_icon
+                            icon {
+                                left_icon
+                                left_icon_dark
+                                right_icon
+                                right_icon_dark
+                            }
+                            applink
+                            action
                         }
                         bundle_bottomsheet {
                             title
                             description
                             bottom_ticker
                         }
-                        aggregator_type
                     }
                 }
             }
@@ -74,12 +74,14 @@ class CartShopGroupTickerAggregatorUseCase @Inject constructor(
                     "left_icon_dark": "https://assets.tokopedia.net/asts/cartapp/icons/courier_fast.svg",
                     "right_icon": "https://images.tokopedia.net/img/cartapp/icons/chevron_right_grey.png",
                     "right_icon_dark": "https://images.tokopedia.net/img/cartapp/icons/chevron_right_grey.png"
-                  }
+                  },
+                  "applink": "tokopedia://now",
+                  "action": "open_bottomsheet_bundling"
                 },
                 "bundle_bottomsheet": {
                     "title": "Dapatkan bebas ongkir",
                     "description": "Dengan beli Paket Bundling atau beli produk lain, kamu bisa dapat Bebas Ongkir.",
-                    "bottom_ticker": "Tidak mau beli paketan? Cek produk lain di <a href=\"tokopedia://shop/{{shopid}}\">toko ini</a>"
+                    "bottom_ticker": "Tidak mau beli paketan? Cek produk lain di <a href=\"tokopedia://shop/480552\">toko ini</a> dan <a href=\"tokopedia://now\">toko 2</a>"
                 }
               }
             }
@@ -91,8 +93,7 @@ class CartShopGroupTickerAggregatorUseCase @Inject constructor(
               "data": {
                 "min_transaction": 0,
                 "ticker": {},
-                "bundle_bottomsheet": {},
-                "aggregator_type": 0
+                "bundle_bottomsheet": {}
               }
             }
         """

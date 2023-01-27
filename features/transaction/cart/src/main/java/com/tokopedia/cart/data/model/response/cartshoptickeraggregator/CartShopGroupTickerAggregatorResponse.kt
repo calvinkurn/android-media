@@ -21,6 +21,10 @@ data class CartShopGroupTickerAggregatorTicker(
     val text: String = "",
     @SerializedName("icon")
     val icon: CartShopGroupTickerAggregatorTickerIcon = CartShopGroupTickerAggregatorTickerIcon(),
+    @SerializedName("applink")
+    val applink: String = "",
+    @SerializedName("action")
+    val action: String = "",
 )
 
 data class CartShopGroupTickerAggregatorTickerIcon(

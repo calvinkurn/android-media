@@ -10,6 +10,7 @@ import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.data.model.request.AddCartToWishlistRequest
 import com.tokopedia.cart.data.model.response.promo.CartPromoTicker
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.data.model.request.CartShopGroupTickerAggregatorParam
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
 import com.tokopedia.cart.domain.usecase.AddCartToWishlistUseCase
@@ -1934,13 +1935,24 @@ class CartListPresenter @Inject constructor(
         cartShopGroupTickerJob = launch(dispatchers.io) {
             try {
                 delay(CART_SHOP_GROUP_TICKER_DELAY)
+                // kalo user ada centang salah satu product bundle berarti enableBundle=false,
+                // cek juga kalo user hanya centang product2 yang ga ada bundleIds => enableBundle=false
+                val enableBundleCrossSell = checkEnableBundleCrossSell(cartShopHolderData)
+                if (!cartShopHolderData.cartShopGroupTicker.enableBoAffordability && !enableBundleCrossSell) {
+                    cartShopHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.EMPTY
+                    withContext(dispatchers.main) {
+                        view?.updateCartShopGroupTicker(cartShopHolderData)
+                    }
+                    return@launch
+                }
                 val shopShipments = cartShopHolderData.shopShipments
                 // Recalculate total price and total weight, to prevent racing condition
-                val (shopProductList, shopTotalWeight) = getAvailableCartItemDataListAndShopTotalWeight(
-                    cartShopHolderData
-                )
-                if (cartShopHolderData.shouldValidateWeight && shopTotalWeight > cartShopHolderData.maximumShippingWeight) {
-                    // overweight
+                val (shopProductList, shopTotalWeight) =
+                    getAvailableCartItemDataListAndShopTotalWeight(cartShopHolderData)
+                if (cartShopHolderData.cartShopGroupTicker.enableBoAffordability
+                    && cartShopHolderData.shouldValidateWeight
+                    && shopTotalWeight > cartShopHolderData.maximumShippingWeight) {
+                    // Check for overweight (only when BO Affordability is enabled)
                     cartShopHolderData.cartShopGroupTicker.state =
                         CartShopGroupTickerState.FAILED
                     withContext(dispatchers.main) {
@@ -1976,21 +1988,28 @@ class CartListPresenter @Inject constructor(
                         )
                     }
                 }
-                val ratesParam = RatesParam.Builder(shopShipments, shipping).build()
-                cartShopGroupTickerAggregatorUseCase.enableBoAffordability = cartShopHolderData.cartShopGroupTicker.enableBoAffordability
-                cartShopGroupTickerAggregatorUseCase.enableBundleCrossSell = cartShopHolderData.cartShopGroupTicker.enableBundleCrossSell
-                val response = cartShopGroupTickerAggregatorUseCase(ratesParam)
+                val cartAggregatorParam = CartShopGroupTickerAggregatorParam(
+                    ratesParam = RatesParam.Builder(shopShipments, shipping).build(),
+                    enableBoAffordability = cartShopHolderData.cartShopGroupTicker.enableBoAffordability,
+                    enableBundleCrossSell = enableBundleCrossSell
+                )
+                val response = cartShopGroupTickerAggregatorUseCase(cartAggregatorParam)
                 cartShopHolderData.cartShopGroupTicker.cartIds =
                     shopProductList.joinToString(",") { it.cartId }
+                cartShopHolderData.cartShopGroupTicker.enableBundleCrossSell = enableBundleCrossSell
                 cartShopHolderData.cartShopGroupTicker.tickerText = response.data.ticker.text
                 cartShopHolderData.cartShopGroupTicker.leftIcon = response.data.ticker.icon.leftIcon
                 cartShopHolderData.cartShopGroupTicker.leftIconDark = response.data.ticker.icon.leftIconDark
                 cartShopHolderData.cartShopGroupTicker.rightIcon = response.data.ticker.icon.rightIcon
                 cartShopHolderData.cartShopGroupTicker.rightIconDark = response.data.ticker.icon.rightIconDark
+                cartShopHolderData.cartShopGroupTicker.applink = response.data.ticker.applink
+                cartShopHolderData.cartShopGroupTicker.action = response.data.ticker.action
                 cartShopHolderData.cartShopGroupTicker.cartBundlingBottomSheetData = CartBundlingBottomSheetData(
                     title = response.data.bundleBottomSheet.title,
                     description = response.data.bundleBottomSheet.description,
-                    bottomTicker = response.data.bundleBottomSheet.bottomTicker
+                    bottomTicker = response.data.bundleBottomSheet.bottomTicker,
+                    bundleIds = cartShopHolderData.productUiModelList
+                        .filter { it.isSelected }.flatMap { it.bundleIds }
                 )
                 cartShopHolderData.cartShopGroupTicker.hasSeenTicker = false
                 if (response.data.ticker.text.isBlank()) {
@@ -2096,5 +2115,14 @@ class CartListPresenter @Inject constructor(
         )
         shop.promoCodes = ArrayList(shop.promoCodes).apply { remove(shop.boCode) }
         shop.boCode = ""
+    }
+
+    private fun checkEnableBundleCrossSell(cartShopHolderData: CartShopHolderData): Boolean {
+        val hasCheckedProductWithBundle = cartShopHolderData.productUiModelList
+            .any { it.isSelected && !it.isBundlingItem  && it.bundleIds.isNotEmpty() }
+        val hasCheckedBundleProduct = cartShopHolderData.productUiModelList
+            .any { it.isSelected && it.isBundlingItem &&  it.bundleIds.isNotEmpty() }
+        return cartShopHolderData.cartShopGroupTicker.enableBundleCrossSell
+            && hasCheckedProductWithBundle && !hasCheckedBundleProduct
     }
 }

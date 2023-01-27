@@ -180,7 +180,6 @@ import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
-import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -469,7 +468,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Timber.d("RequestCode: $requestCode, ResultCode: $resultCode")
 
         when (requestCode) {
             NAVIGATION_SHIPMENT -> onResultFromShipmentPage(resultCode, data)
@@ -1414,13 +1412,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
         cartPageAnalytics.eventViewGotoplusTicker()
     }
 
-<<<<<<< HEAD
-    override fun showCartBundlingBottomSheet(data: CartBundlingBottomSheetData, bundleIds: List<String>) {
-        val bottomSheet = CartBundlingBottomSheet.newInstance(data, bundleIds)
-=======
     override fun showCartBundlingBottomSheet(data: CartBundlingBottomSheetData) {
         val bottomSheet = CartBundlingBottomSheet.newInstance(data)
->>>>>>> feature/bbbyngkrm/bundling_cross_sell_bottom_sheet
         bottomSheet.setListener(this)
         bottomSheet.show(childFragmentManager)
     }
@@ -1993,20 +1986,23 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
     }
 
     override fun onCartShopGroupTickerClicked(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.cartShopGroupTicker.hasAction) {
-            if (cartShopHolderData.cartShopGroupTicker.enableBundleCrossSell) {
-                val bundleIds = cartShopHolderData.productUiModelList.flatMap { it.bundleIds }
-                showCartBundlingBottomSheet(cartShopHolderData.cartShopGroupTicker.cartBundlingBottomSheetData, bundleIds)
-            } else if (cartShopHolderData.cartShopGroupTicker.enableBoAffordability) {
-                if (cartShopHolderData.isTokoNow) {
-                    routeToTokoNowHomePage()
-                } else {
-                    routeToShopProductPage(cartShopHolderData.shopId)
+        when (cartShopHolderData.cartShopGroupTicker.action) {
+            CartConstant.TICKER_ACTION_REDIRECT_PAGE -> {
+                if (cartShopHolderData.cartShopGroupTicker.applink.isNotBlank()) {
+                    RouteManager.route(context, cartShopHolderData.cartShopGroupTicker.applink)
                 }
-                cartPageAnalytics.eventClickArrowInBoTickerToReachShopPage(
-                    cartShopHolderData.cartShopGroupTicker.cartIds, cartShopHolderData.shopId
-                )
             }
+            CartConstant.TICKER_ACTION_OPEN_BOTTOM_SHEET_BUNDLING -> {
+                showCartBundlingBottomSheet(cartShopHolderData.cartShopGroupTicker.cartBundlingBottomSheetData)
+            }
+            else -> {
+                // no-op
+            }
+        }
+        if (cartShopHolderData.cartShopGroupTicker.enableBoAffordability) {
+            cartPageAnalytics.eventClickArrowInBoTickerToReachShopPage(
+                cartShopHolderData.cartShopGroupTicker.cartIds, cartShopHolderData.shopId
+            )
         }
     }
 

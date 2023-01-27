@@ -48,7 +48,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
-import com.tokopedia.purchase_platform.common.utils.isBlankOrZero
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import kotlin.math.min
 
@@ -162,8 +161,7 @@ object CartUiModelMapper {
                 boMetadata = availableGroup.boMetadata
                 cartShopGroupTicker = CartShopGroupTickerData(
                         enableBoAffordability = availableGroup.shipmentInformation.enableBoAffordability,
-                        enableBundleCrossSell = availableGroup.shipmentInformation.enableShopGroupTickerCartAggregator
-                            && (hasProductWithBundle(availableGroup) || hasUnselectedBundleProduct(availableGroup)),
+                        enableBundleCrossSell = availableGroup.shipmentInformation.enableShopGroupTickerCartAggregator,
                         errorText = cartData.messages.errorBoAffordability
                 )
                 addOnText = availableGroup.giftingAddOn.tickerText
@@ -217,20 +215,6 @@ object CartUiModelMapper {
         }
 
         return false
-    }
-
-    private fun hasProductWithBundle(availableGroup: AvailableGroup): Boolean {
-        return availableGroup.cartDetails.any { cartDetail ->
-            cartDetail.bundleDetail.bundleId.isBlankOrZero()
-                && cartDetail.products.any { product -> product.bundleIds.isNotEmpty() }
-        }
-    }
-
-    private fun hasUnselectedBundleProduct(availableGroup: AvailableGroup): Boolean {
-        return availableGroup.cartDetails.any { cartDetail ->
-            cartDetail.bundleDetail.bundleId.isNotBlankOrZero()
-                && cartDetail.products.any { product -> product.bundleIds.isNotEmpty() && !product.isCheckboxState }
-        }
     }
 
     fun mapUnavailableShopUiModel(context: Context?, cartData: CartData): Pair<List<Any>, DisabledAccordionHolderData?> {

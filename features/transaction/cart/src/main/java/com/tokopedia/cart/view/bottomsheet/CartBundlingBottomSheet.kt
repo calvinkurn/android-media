@@ -3,14 +3,19 @@ package com.tokopedia.cart.view.bottomsheet
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.Spannable
 import android.text.method.LinkMovementMethod
+import android.text.style.URLSpan
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.widget.TextView
 import androidx.core.view.marginBottom
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
 import androidx.core.view.marginTop
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.cart.databinding.LayoutBottomsheetCartBundlingBinding
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.common.ProductServiceWidgetConstant
@@ -81,7 +86,36 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
                 )
             }
             binding?.bottomTickerLabel?.text = MethodChecker.fromHtml(data.bottomTicker)
-            binding?.bottomTickerLabel?.movementMethod = LinkMovementMethod.getInstance()
+            binding?.bottomTickerLabel?.movementMethod = object : LinkMovementMethod() {
+                override fun onTouchEvent(
+                    widget: TextView,
+                    buffer: Spannable,
+                    event: MotionEvent
+                ): Boolean {
+                    val action = event.action
+
+                    if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
+                        var x = event.x
+                        var y = event.y.toInt()
+
+                        x -= widget.totalPaddingLeft
+                        y -= widget.totalPaddingTop
+
+                        x += widget.scrollX
+                        y += widget.scrollY
+
+                        val layout = widget.layout
+                        val line = layout.getLineForVertical(y)
+                        val off = layout.getOffsetForHorizontal(line, x)
+
+                        val link = buffer.getSpans(off, off, URLSpan::class.java)
+                        if (link.isNotEmpty() && action == MotionEvent.ACTION_UP) {
+                            return RouteManager.route(context, link.first().url)
+                        }
+                    }
+                    return super.onTouchEvent(widget, buffer, event)
+                }
+            }
             binding?.cardBottomTicker?.visible()
         } else {
             binding?.cardBottomTicker?.gone()
