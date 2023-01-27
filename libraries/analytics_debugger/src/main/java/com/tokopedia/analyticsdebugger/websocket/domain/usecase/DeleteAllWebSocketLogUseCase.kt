@@ -17,10 +17,10 @@ class DeleteAllWebSocketLogUseCase @Inject constructor(
 ) : CoroutineUseCase<WebSocketLogPageSource, Unit>(dispatchers.io) {
 
     override suspend fun execute(params: WebSocketLogPageSource) {
-        if (params == WebSocketLogPageSource.PLAY) {
-            playWebSocketLogRepository.deleteAll()
-        } else if (params == WebSocketLogPageSource.TOPCHAT) {
-            topchatWebSocketLogRepository.deleteAll()
+        when(params) {
+            WebSocketLogPageSource.PLAY -> playWebSocketLogRepository.deleteAll()
+            WebSocketLogPageSource.TOPCHAT -> topchatWebSocketLogRepository.deleteAll()
+            else -> Unit
         }
     }
 
