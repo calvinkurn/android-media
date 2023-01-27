@@ -13,10 +13,6 @@ import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_N
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.VALUE_TRADE_IN;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ADD_ON_DETAILS;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.IS_DONATION;
-import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.KEY_ATTRIBUTE;
-import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.KEY_LEVEL;
-import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.KEY_PARENT_UNIQUE_ID;
-import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.KEY_UNIQUE_ID;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ORDER_LEVEL;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PAYMENT_LEVEL;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PRODUCT_LEVEL;

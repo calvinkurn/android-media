@@ -5,6 +5,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.DynamicDataPassingPa
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
 
 object DynamicDataPassingMapper {
@@ -66,6 +67,33 @@ object DynamicDataPassingMapper {
                 )
                 listAddOnData.add(addOnData)
             }
+        }
+
+        return DynamicDataPassingParamRequest.AddOn(
+            source = if (isOcs) SOURCE_OCS else SOURCE_NORMAL,
+            addOnData = listAddOnData
+        )
+    }
+
+    fun getAddOnFromSAF(
+        addOnResult: AddOnsDataModel,
+        isOcs: Boolean
+    ): DynamicDataPassingParamRequest.AddOn {
+        val listAddOnData = arrayListOf<DynamicDataPassingParamRequest.AddOn.AddOnDataParam>()
+        addOnResult.addOnsDataItemModelList.forEach { dataItem ->
+            val addOnData = DynamicDataPassingParamRequest.AddOn.AddOnDataParam(
+                addOnId = dataItem.addOnId.toLongOrZero(),
+                addOnQty = dataItem.addOnQty.toInt(),
+                addOnMetadata = DynamicDataPassingParamRequest.AddOn.AddOnDataParam.AddOnMetadataParam(
+                    addOnNote = DynamicDataPassingParamRequest.AddOn.AddOnDataParam.AddOnMetadataParam.AddOnNoteParam(
+                        from = dataItem.addOnMetadata.addOnNoteItemModel.from,
+                        isCustomNote = dataItem.addOnMetadata.addOnNoteItemModel.isCustomNote,
+                        notes = dataItem.addOnMetadata.addOnNoteItemModel.notes,
+                        to = dataItem.addOnMetadata.addOnNoteItemModel.to
+                    )
+                )
+            )
+            listAddOnData.add(addOnData)
         }
 
         return DynamicDataPassingParamRequest.AddOn(

@@ -2,6 +2,10 @@ package com.tokopedia.checkout.view;
 
 import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_REGULAR_PRODUCT;
 import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_TOKONOW_PRODUCT;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ADD_ON_DETAILS;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.IS_DONATION;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ORDER_LEVEL;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PRODUCT_LEVEL;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO;
 
@@ -37,10 +41,12 @@ import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentState
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateRequestData;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShippingInfoData;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShopProductData;
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.model.cartshipmentform.DynamicDataPassingParamRequest;
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase;
@@ -688,6 +694,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             } else {
                 getView().updateLocalCacheAddressData(userAddress);
                 initializePresenterData(cartShipmentAddressFormData);
+                setCurrentDynamicDataParamFromSAF(cartShipmentAddressFormData, isOneClickShipment);
                 getView().renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHigher, isOneClickShipment);
                 if (cartShipmentAddressFormData.getPopUpMessage().length() > 0) {
                     getView().showToastNormal(cartShipmentAddressFormData.getPopUpMessage());
@@ -2906,6 +2913,51 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
+    public void setCurrentDynamicDataParamFromSAF(CartShipmentAddressFormData cartShipmentAddressFormData, boolean isOneClickShipment) {
+        DynamicDataPassingParamRequest ddpParam = new DynamicDataPassingParamRequest();
+        ArrayList<DynamicDataPassingParamRequest.DynamicDataParam> listDataParam = new ArrayList<DynamicDataPassingParamRequest.DynamicDataParam>();
+        // donation
+        if (cartShipmentAddressFormData.getDonation().isChecked()) {
+            DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
+            dynamicDataParam.setLevel(DynamicDataPassingMapper.PAYMENT_LEVEL);
+            dynamicDataParam.setUniqueId("");
+            dynamicDataParam.setAttribute(IS_DONATION);
+            dynamicDataParam.setDonation(cartShipmentAddressFormData.getDonation().isChecked());
+            listDataParam.add(dynamicDataParam);
+        }
+
+        // addons
+        for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
+            for (GroupShop groupShop : groupAddress.getGroupShop()) {
+                // order level
+                if (groupShop.getAddOns().getStatus() == 1) {
+                    DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
+                    dynamicDataParam.setLevel(ORDER_LEVEL);
+                    dynamicDataParam.setUniqueId(groupShop.getCartString());
+                    dynamicDataParam.setAttribute(ADD_ON_DETAILS);
+                    dynamicDataParam.setAddOn(DynamicDataPassingMapper.INSTANCE.getAddOnFromSAF(groupShop.getAddOns(), isOneClickShipment));
+                    listDataParam.add(dynamicDataParam);
+                }
+
+                for (com.tokopedia.checkout.domain.model.cartshipmentform.Product product : groupShop.getProducts()) {
+                    // product level
+                    if (product.getAddOnProduct().getStatus() == 1) {
+                        DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
+                        dynamicDataParam.setLevel(PRODUCT_LEVEL);
+                        dynamicDataParam.setParentUniqueId(groupShop.getCartString());
+                        dynamicDataParam.setUniqueId(String.valueOf(product.getCartId()));
+                        dynamicDataParam.setAttribute(ADD_ON_DETAILS);
+                        dynamicDataParam.setAddOn(DynamicDataPassingMapper.INSTANCE.getAddOnFromSAF(product.getAddOnProduct(), isOneClickShipment));
+                        listDataParam.add(dynamicDataParam);
+                    }
+                }
+            }
+        }
+
+        ddpParam.setData(listDataParam);
+        this.dynamicDataParam = ddpParam;
+    }
+
     public void updateDynamicData(DynamicDataPassingParamRequest dynamicDataPassingParamRequest, boolean isFireAndForget) {
         updateDynamicDataPassingUseCase.setParams(dynamicDataPassingParamRequest);
         updateDynamicDataPassingUseCase.execute(
@@ -2916,7 +2968,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         if (!isFireAndForget) {
                             getView().doCheckout();
                         } else {
-                            dynamicData = dynamicDataPassingUiModel.getDynamicData();
+                            this.dynamicData = dynamicDataPassingUiModel.getDynamicData();
                         }
                     }
                     return Unit.INSTANCE;
@@ -2950,7 +3002,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void validateDynamicData() {
-        updateDynamicData(dynamicDataParam, false);
+        updateDynamicData(this.dynamicDataParam, false);
     }
 
     @Override
