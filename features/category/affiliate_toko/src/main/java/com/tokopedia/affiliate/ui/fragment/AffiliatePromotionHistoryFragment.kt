@@ -23,6 +23,7 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
+import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.viewholder.AffiliateSharedProductCardsItemVH
@@ -126,7 +127,6 @@ class AffiliatePromotionHistoryFragment :
             errorIllustration.hide()
             errorTitle.text = getString(R.string.affiliate_choose_product)
             errorDescription.text = getString(R.string.affiliate_choose_product_description)
-            setButtonFull(true)
             errorAction.text = getString(R.string.affiliate_promote_affiliatw)
             errorSecondaryAction.gone()
             setActionClickListener {
@@ -261,13 +261,25 @@ class AffiliatePromotionHistoryFragment :
         productUrl: String,
         productIdentifier: String,
         status: Int?,
-        type: String?
+        type: String?,
+        ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?
     ) {
         if (status == AffiliateSharedProductCardsItemVH.PRODUCT_ACTIVE) {
             AffiliatePromotionBottomSheet.newInstance(
+                AffiliatePromotionBottomSheetParams(
+                    null,
+                    productId,
+                    productName,
+                    productImage,
+                    productUrl,
+                    productIdentifier,
+                    AffiliatePromotionBottomSheet.ORIGIN_HOME_GENERATED,
+                    !isUserBlackListed,
+                    type = type,
+                    ssaInfo = ssaInfo
+                ),
                 AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
-                null, null, productId, productName, productImage, productUrl, productIdentifier,
-                AffiliatePromotionBottomSheet.ORIGIN_HOME_GENERATED, !isUserBlackListed, type = type
+                null
             ).show(childFragmentManager, "")
         } else {
             AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_PRODUCT_INACTIVE)
