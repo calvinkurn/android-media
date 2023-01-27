@@ -779,10 +779,15 @@ open class ChatListInboxFragment :
     }
 
     override fun onChatListTickerImpressed(appLink: String) {
-        if (appLink == ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION) {
-            TopChatAnalyticsKt.eventImpressionBubbleChatRecommendationTicker(userSession.shopId)
-        } else {
-            chatListAnalytics.impressOnChatDriverTicker(getRoleStr())
+        if (appLink.isNotBlank()) {
+            when (appLink) {
+                ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION -> {
+                    TopChatAnalyticsKt.eventImpressionBubbleChatRecommendationTicker(userSession.shopId)
+                }
+                ApplinkConst.TokoFood.TOKOFOOD_ORDER -> {
+                    chatListAnalytics.impressOnChatDriverTicker(getRoleStr())
+                }
+            }
         }
     }
 
