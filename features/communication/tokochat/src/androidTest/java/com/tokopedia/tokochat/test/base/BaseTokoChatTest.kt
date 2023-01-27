@@ -179,7 +179,7 @@ abstract class BaseTokoChatTest {
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
-        Thread.sleep(5000) // Test sleep for every test cases
+        Thread.sleep(2000) // Waiting for all network call and databases from conversation sdk
     }
 
     private fun setupDaggerComponent() {
