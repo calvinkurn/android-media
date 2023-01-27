@@ -16,7 +16,7 @@
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
-        <com.tokopedia.chatbot.view.customview.ChatbotFloatingInvoice
+        <com.tokopedia.chatbot.chatbot2.view.customview.floatinginvoice.ChatbotFloatingInvoice
             android:id="@+id/floating_invoice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
                 android:visibility="visible"
                 tools:visibility="visible"/>
 
-            <com.tokopedia.chatbot.view.customview.chatroom.BigReplyBox
+            <com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBox
                 android:id="@+id/big_reply_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -141,13 +141,14 @@
         android:layout_above="@+id/footer"
         android:layout_below="@id/chatbot_ticker"
         android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/unify_space_8">
+        android:layout_marginBottom="8dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
+            android:paddingBottom="8dp"
             android:descendantFocusability="beforeDescendants"
             android:scrollbars="vertical" />
 

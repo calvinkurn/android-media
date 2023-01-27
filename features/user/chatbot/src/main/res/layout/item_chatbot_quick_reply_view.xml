@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/dp_3"
     android:layout_marginRight="2dp"
+    android:paddingBottom="8dp"
     android:background="@color/chatbot_dms_quick_reply_bg"
     android:layout_marginLeft="2dp">
 

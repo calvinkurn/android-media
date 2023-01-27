@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:itemCount="2"
-            tools:listitem="@layout/item_chat_helpfull" />
+            tools:listitem="@layout/item_chatbot_helpful" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline

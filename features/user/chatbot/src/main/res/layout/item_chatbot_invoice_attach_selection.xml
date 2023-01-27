@@ -11,7 +11,7 @@
         android:layout_marginLeft="@dimen/unify_space_12"
         android:orientation="horizontal"
         tools:itemCount="2"
-        tools:listitem="@layout/invoice_card_layout">
+        tools:listitem="@layout/item_chatbot_invoice_card_layout">
 
     </androidx.recyclerview.widget.RecyclerView>
 </RelativeLayout>

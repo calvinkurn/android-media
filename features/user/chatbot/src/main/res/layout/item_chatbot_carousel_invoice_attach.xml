@@ -6,7 +6,7 @@
 
     <include
         android:id="@+id/container_all_invoice_attach"
-        layout="@layout/invoice_card_layout"
+        layout="@layout/item_chatbot_invoice_card_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"

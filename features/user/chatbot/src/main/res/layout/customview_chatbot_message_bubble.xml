@@ -8,10 +8,10 @@
         android:id="@+id/chat_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/spacing_lvl4"
-        android:paddingTop="@dimen/chatcommon_10dp"
-        android:paddingRight="@dimen/spacing_lvl4"
-        android:paddingBottom="@dimen/chatcommon_10dp"
+        android:paddingLeft="16dp"
+        android:paddingTop="10dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,7 +24,5 @@
         app:layout_constraintEnd_toEndOf="@+id/chat_message"
         app:layout_constraintStart_toStartOf="@+id/chat_message"
         app:layout_constraintTop_toTopOf="parent" />
-
-
 
 </merge>

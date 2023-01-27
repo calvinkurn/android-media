@@ -127,7 +127,7 @@
             android:layout_marginRight="8dp"
             android:layout_marginBottom="24dp"
             android:layout_marginTop="16dp"
-            layout="@layout/bot_reason_layout"
+            layout="@layout/customview_botrating_reason"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:visibility="visible"

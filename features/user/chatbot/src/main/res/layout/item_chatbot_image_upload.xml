@@ -57,7 +57,7 @@
 
             <include
                 android:id="@+id/progress_bar"
-                layout="@layout/image_loading_layout"
+                layout="@layout/customview_chatbot_image_loading_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
