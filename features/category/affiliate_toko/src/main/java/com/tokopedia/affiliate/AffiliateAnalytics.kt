@@ -328,9 +328,10 @@ object AffiliateAnalytics {
             const val CLICK_KAMUS_AFFILIATE = "click - kamus affiliate"
             const val CLICK_BANTUAN = "click - bantuan"
             const val CLICK_EVENT_CATEGORY = "click - event category"
-            const val CLICK_SSA_SHOP_BANNER = "click - ssa shop bannert"
+            const val CLICK_SSA_SHOP_BANNER = "click - ssa shop banner"
             const val CLICK_SSA_SHOP_PAGE = "click - shop - ssa shop list"
             const val CLICK_SALIN_LINK_SSA_SHOP = "click - salin link - ssa shop list"
+            const val IMPRESSION_SSA_SHOP = "impression - shop - ssa shop list"
         }
     }
 

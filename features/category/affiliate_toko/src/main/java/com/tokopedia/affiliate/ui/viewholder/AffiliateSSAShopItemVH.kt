@@ -132,7 +132,10 @@ class AffiliateSSAShopItemVH(
             item?.ssaShopDetail?.shopId.toString(),
             bindingAdapterPosition + 1,
             item?.ssaShopDetail?.shopName,
-            "${item?.ssaShopDetail?.shopId} - ${item?.ssaCommissionDetail?.sellerPercentage} - active - komisi extra",
+            "${item?.ssaShopDetail?.shopId}" +
+                " - ${item?.ssaCommissionDetail?.cumulativePercentageFormatted}" +
+                " - active" +
+                " - komisi extra",
             AffiliateAnalytics.ItemKeys.AFFILIATE_SSA_SHOP_CLICK
         )
     }

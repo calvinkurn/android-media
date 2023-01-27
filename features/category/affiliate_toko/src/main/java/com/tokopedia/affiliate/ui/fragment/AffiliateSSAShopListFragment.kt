@@ -51,7 +51,10 @@ class AffiliateSSAShopListFragment :
 
     private var affiliateSSAShopViewModel: AffiliateSSAShopViewModel? = null
     private val ssaAdapter: AffiliateAdapter by lazy {
-        AffiliateAdapter(AffiliateAdapterFactory(productClickInterface = this))
+        AffiliateAdapter(
+            AffiliateAdapterFactory(productClickInterface = this),
+            source = AffiliateAdapter.SOURCE_SSA_SHOP
+        )
     }
 
     private var isNoMoreData: Boolean = false
