@@ -77,6 +77,7 @@ class UserConsentViewModelTest {
             )
         )
 
+        coEvery { userSession.isLoggedIn } returns true
         coEvery {
             getConsentCollectionUseCase(mockCollectionParam)
         } returns mockResponse
@@ -110,6 +111,7 @@ class UserConsentViewModelTest {
         )
         val hideWhenAlreadyHaveConsent = false
 
+        coEvery { userSession.isLoggedIn } returns true
         coEvery {
             getConsentCollectionUseCase(mockCollectionParam)
         } returns mockResponse
@@ -130,6 +132,7 @@ class UserConsentViewModelTest {
         )
         val hideWhenAlreadyHaveConsent = false
 
+        coEvery { userSession.isLoggedIn } returns true
         coEvery {
             getConsentCollectionUseCase(mockCollectionParam)
         } returns mockResponse
@@ -147,6 +150,23 @@ class UserConsentViewModelTest {
             getConsentCollectionUseCase(mockCollectionParam)
         } throws mockThrowable
         val hideWhenAlreadyHaveConsent = false
+
+        coEvery { userSession.isLoggedIn } returns true
+
+        viewModel?.getConsentCollection(mockCollectionParam, hideWhenAlreadyHaveConsent)
+
+        val result = viewModel?.consentCollection?.value
+        assert(result is UserComponentsStateResult.Fail)
+    }
+
+    @Test
+    fun `Get Consent Collection - Throw error - Not Login`() {
+        coEvery {
+            getConsentCollectionUseCase(mockCollectionParam)
+        } throws mockThrowable
+        val hideWhenAlreadyHaveConsent = false
+
+        coEvery { userSession.isLoggedIn } returns false
 
         viewModel?.getConsentCollection(mockCollectionParam, hideWhenAlreadyHaveConsent)
 
