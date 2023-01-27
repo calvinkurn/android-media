@@ -9,7 +9,6 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -4110,11 +4109,13 @@ class FeedPlusFragment :
                     is DynamicPostUiModel -> {
                         item.feedXCard.author.id
                     }
+                    is TopadsHeadLineV2Model -> {
+                        item.feedXCard.author.id
+                    }
                     else -> ""
                 }
                 if (shopId != "") {
                     data[shopId]?.let { followStatus ->
-                        Log.d("FEED_PLUS", "CHANGE STATUS FOR ${shopId} to $followStatus")
                         when (item) {
                             is DynamicPostModel -> {
                                 item.copy(
@@ -4134,6 +4135,15 @@ class FeedPlusFragment :
                                     )
                                 )
                             }
+                            is TopadsHeadLineV2Model -> {
+                                item.copy(
+                                    feedXCard = item.feedXCard.copy(
+                                        followers = item.feedXCard.followers.copy(
+                                            isFollowed = followStatus
+                                        )
+                                    )
+                                )
+                            }
                             else -> {
                                 item
                             }
@@ -4144,8 +4154,8 @@ class FeedPlusFragment :
                 }
             }
         }.toList()
-        if (data.isNotEmpty()) {
 
+        if (data.isNotEmpty()) {
             val scrollPosition = getCurrentPosition()
             clearData()
             adapter.addList(newList)

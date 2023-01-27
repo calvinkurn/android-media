@@ -55,6 +55,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopMode
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedWidgetData
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopModel
@@ -188,6 +189,12 @@ class FeedViewModel @Inject constructor(
                     item.shopRecomUiModel.items.map {
                         currentFollowState[it.id.toString()] = Pair(it.type, it.state == FOLLOW)
                     }
+                }
+                is TopadsHeadLineV2Model -> {
+                    currentFollowState[item.feedXCard.author.id] = Pair(
+                        item.feedXCard.author.type,
+                        item.feedXCard.followers.isFollowed
+                    )
                 }
                 else -> {}
             }
