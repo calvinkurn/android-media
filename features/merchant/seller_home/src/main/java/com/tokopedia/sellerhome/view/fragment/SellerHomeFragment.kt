@@ -340,11 +340,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         context?.let { UpdateShopActiveWorker.execute(it) }
     }
 
-    override fun onResume() {
-        super.onResume()
-        startWidgetSse()
-    }
-
     override fun onPause() {
         super.onPause()
         stopWidgetSse()
@@ -382,6 +377,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             if (!isFirstLoad) {
                 getShopStateInfoIfEligible()
             }
+            startWidgetSse()
         }
     }
 
@@ -2750,13 +2746,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun showNewSellerDialog() {
         recyclerView?.post {
-            newSellerJourneyHelper.showNewSellerDialog(
-                requireActivity(),
-                sectionWidgetAnchor = getSectionView(),
-                notificationAnchor = getNotificationView(),
-                navigationAnchor = navigationView,
-                otherMenuAnchor = otherMenuView
-            )
+            activity?.let {
+                if (!it.isFinishing) {
+                    newSellerJourneyHelper.showNewSellerDialog(
+                        it,
+                        sectionWidgetAnchor = getSectionView(),
+                        notificationAnchor = getNotificationView(),
+                        navigationAnchor = navigationView,
+                        otherMenuAnchor = otherMenuView
+                    )
+                }
+            }
         }
     }
 

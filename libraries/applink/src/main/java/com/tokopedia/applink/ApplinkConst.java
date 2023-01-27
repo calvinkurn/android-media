@@ -82,6 +82,8 @@ public interface ApplinkConst {
     String REPUTATION_DETAIL = "tokopedia://review/{reputation_id}";
     String REVIEW_DETAIL = "tokopedia://review/detail/{feedback_id}";
     String PRODUCT_CREATE_REVIEW = "tokopedia://product-review/create/";
+
+    String PRODUCT_BULK_CREATE_REVIEW = "tokopedia://product-review/bulk-create/";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
     String SELLER_REVIEW = "tokopedia://seller-review-detail";
     String REVIEW_REMINDER_PREVIOUS = "tokopedia://review-reminder";
@@ -343,6 +345,7 @@ public interface ApplinkConst {
 
     String PLAY_DETAIL = "tokopedia://play/{channel_id}";
     String PLAY_BROADCASTER = "tokopedia://play-broadcaster";
+    String PLAY_SHORTS = "tokopedia://play-shorts";
 
     String CHALLENGE = "tokopedia://challenges";
     String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";

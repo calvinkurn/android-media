@@ -180,7 +180,6 @@ class ProductChooserUGCRobot(
                 else -> {
                     ProductPickerUGCBottomSheet(
                         mockk(relaxed = true),
-                        parentViewModelFactoryCreator,
                         ProductPickerUGCAnalytic(analyticUserSession)
                     )
                 }
