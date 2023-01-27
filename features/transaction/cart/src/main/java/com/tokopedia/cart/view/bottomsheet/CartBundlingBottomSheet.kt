@@ -104,7 +104,7 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ProductServiceWidgetConstant.PRODUCT_BUNDLE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             dismiss()
-            listener?.onProductBundleAdded()
+            listener?.onNewBundleProductAddedToCart()
         }
     }
 }
