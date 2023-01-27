@@ -1,5 +1,8 @@
 package com.tokopedia.chatbot
 
+import com.tokopedia.url.TokopediaUrl
+import java.util.*
+
 object ChatbotConstant {
 
     const val TOKOPEDIA_ATTACH_INVOICE_REQ_CODE = 114
@@ -107,5 +110,32 @@ object ChatbotConstant {
         const val MAX_IMAGE_COUNT = 3
         const val MAX_MEDIA_ITEM_COUNT = 0
         const val MAX_DURATION_FOR_VIDEO = 300000
+    }
+
+    object SecureImageUploadUrl {
+
+        private val BASE_URL = TokopediaUrl.getInstance().CHAT
+
+        private const val UPLOAD_SECURE_PATH = "/tc/v1/upload_secure"
+
+        fun getUploadSecureUrl(): String {
+            return BASE_URL + UPLOAD_SECURE_PATH
+        }
+    }
+
+    object ChatbotUrl {
+        fun getPathWebsocket(deviceId: String?, userId: String?): String {
+            return String.format(
+                Locale.getDefault(),
+                "%s%s?os_type=1&device_id=%s&user_id=%s&source=chatbot",
+                WEBSOCKET_URL,
+                CONNECT_WEBSOCKET,
+                deviceId,
+                userId
+            )
+        }
+
+        private const val CONNECT_WEBSOCKET = "/connect"
+        val WEBSOCKET_URL = TokopediaUrl.getInstance().WS_CHAT
     }
 }

@@ -19,8 +19,6 @@ class QuickReplyAdapter(
     val sendAnalyticsFromAdapter: (impressionType: String) -> Unit
 ) : RecyclerView.Adapter<QuickReplyAdapter.Holder>() {
 
-    private val END_CHAT = "end chat"
-
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): Holder {
         val view = ItemChatbotQuickReplyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
         return Holder(view)

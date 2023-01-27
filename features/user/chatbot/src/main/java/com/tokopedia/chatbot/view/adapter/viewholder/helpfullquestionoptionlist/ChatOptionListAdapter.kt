@@ -3,17 +3,16 @@ package com.tokopedia.chatbot.view.adapter.viewholder.helpfullquestionoptionlist
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.helpfullquestion.ChatOptionListUiModel
-import com.tokopedia.chatbot.databinding.ItemChatHelpfullBinding
+import com.tokopedia.chatbot.databinding.ItemChatbotHelpfulBinding
 import java.util.*
 
 class ChatOptionListAdapter(private val onOptionListSelected: (ChatOptionListUiModel) -> Unit) : RecyclerView.Adapter<ChatOptionListViewHolder>() {
     private val data = ArrayList<ChatOptionListUiModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatOptionListViewHolder {
-        val itemView = ItemChatHelpfullBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val itemView = ItemChatbotHelpfulBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ChatOptionListViewHolder(itemView, onOptionListSelected)
     }
 

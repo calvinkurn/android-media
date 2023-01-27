@@ -36,11 +36,12 @@ import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.user.session.UserSessionInterface
 
-class ChatbotImageUploadViewHolder(itemView: View?,
-                                   private val listener: ImageUploadListener,
-                                   private val userSession: UserSessionInterface
-)
-    : ImageUploadViewHolder(itemView, listener) {
+class ChatbotImageUploadViewHolder(
+    itemView: View?,
+    private val listener: ImageUploadListener,
+    private val userSession: UserSessionInterface
+) :
+    ImageUploadViewHolder(itemView, listener) {
 
     override fun alwaysShowTime() = true
     override fun useWhiteReadStatus() = true
@@ -54,18 +55,18 @@ class ChatbotImageUploadViewHolder(itemView: View?,
     private val cancelUpload = itemView?.findViewById<ImageView>(R.id.progress_cross)
 
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
-            chatBalloon,
-            com.tokopedia.unifyprinciples.R.color.Unify_G200,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_chatbot_2,
-            R.dimen.dp_chatbot_1,
-            Gravity.CENTER,
-            R.color.chatbot_dms_stroke,
-            getStrokeWidthSenderDimenRes()
+        chatBalloon,
+        com.tokopedia.unifyprinciples.R.color.Unify_G200,
+        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        R.dimen.dp_chatbot_2,
+        R.dimen.dp_chatbot_1,
+        Gravity.CENTER,
+        R.color.chatbot_dms_stroke,
+        getStrokeWidthSenderDimenRes()
     )
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
         view = chatBalloon,
@@ -93,10 +94,11 @@ class ChatbotImageUploadViewHolder(itemView: View?,
     }
 
     private fun bindBackground(sender: Boolean) {
-        if (sender)
+        if (sender) {
             chatBalloon?.background = bgSender
-        else
+        } else {
             chatBalloon?.background = bgOpposite
+        }
     }
 
     override fun bindClickListener(element: ImageUploadUiModel) {
@@ -105,7 +107,10 @@ class ChatbotImageUploadViewHolder(itemView: View?,
             val replyTime = element.replyTime.toEmptyStringIfNull()
             if (imageUrl.isNotEmpty() && replyTime.isNotEmpty()) {
                 listener.onImageUploadClicked(
-                    imageUrl, replyTime, false)
+                    imageUrl,
+                    replyTime,
+                    false
+                )
             }
         }
     }
@@ -184,7 +189,8 @@ class ChatbotImageUploadViewHolder(itemView: View?,
         )
         return if (attachmentType == TYPE_SECURE_IMAGE_UPLOAD) {
             GlideUrl(
-                url, LazyHeaders.Builder()
+                url,
+                LazyHeaders.Builder()
                     .addHeader(AUTHORIZATION, map[AUTHORIZATION] ?: "")
                     .addHeader(TKPD_USERID, map[X_USER_ID] ?: "")
                     .addHeader(X_APP_VERSION, map[X_APP_VERSION] ?: "")
@@ -195,7 +201,6 @@ class ChatbotImageUploadViewHolder(itemView: View?,
             GlideUrl(url)
         }
     }
-
 
     private fun bindChatReadStatus(element: ImageUploadUiModel, checkMark: ImageView) {
         if (element.isShowTime && element.isSender) {
@@ -233,6 +238,6 @@ class ChatbotImageUploadViewHolder(itemView: View?,
         get() = R.id.date
 
     companion object {
-        val LAYOUT = R.layout.item_chatbot_chat_image_upload
+        val LAYOUT = R.layout.item_chatbot_image_upload
     }
 }

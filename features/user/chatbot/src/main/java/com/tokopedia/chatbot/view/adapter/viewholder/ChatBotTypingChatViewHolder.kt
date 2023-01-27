@@ -10,25 +10,25 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.TypingChatModel
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.databinding.ChatbotTypingChatLayoutBinding
+import com.tokopedia.chatbot.databinding.ItemChatbotBotTypingBinding
 import com.tokopedia.chatbot.util.ViewUtil
 
 class ChatBotTypingChatViewHolder(itemView: View) : AbstractViewHolder<TypingChatModel>(itemView) {
-    val view = ChatbotTypingChatLayoutBinding.bind(itemView)
+    val view = ItemChatbotBotTypingBinding.bind(itemView)
     var logo: ImageView = view.image
     var typingDotContainer: LinearLayout = view.typingDotContainer
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
-            typingDotContainer,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
-            R.dimen.dp_chatbot_0,
-            R.dimen.dp_chatbot_20,
-            R.dimen.dp_chatbot_20,
-            R.dimen.dp_chatbot_20,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_chatbot_2,
-            R.dimen.dp_chatbot_1,
-            Gravity.CENTER
+        typingDotContainer,
+        com.tokopedia.unifyprinciples.R.color.Unify_N0,
+        R.dimen.dp_chatbot_0,
+        R.dimen.dp_chatbot_20,
+        R.dimen.dp_chatbot_20,
+        R.dimen.dp_chatbot_20,
+        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        R.dimen.dp_chatbot_2,
+        R.dimen.dp_chatbot_1,
+        Gravity.CENTER
     )
 
     override fun bind(element: TypingChatModel) {
@@ -49,10 +49,8 @@ class ChatBotTypingChatViewHolder(itemView: View) : AbstractViewHolder<TypingCha
         setPadding(pl, pt, pr, pb)
     }
 
-
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.chatbot_typing_chat_layout
+        val LAYOUT = R.layout.item_chatbot_bot_typing
     }
-
 }

@@ -28,16 +28,16 @@ class StickyActionButtonViewHolder(
     private val actionButton: TextView = itemView.findViewById<UnifyButton>(R.id.actionButton)
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
-            customChatLayoutContainer,
-            R.color.chatbot_dms_left_message_bg,
-            R.dimen.dp_chatbot_0,
-            R.dimen.dp_chatbot_20,
-            R.dimen.dp_chatbot_20,
-            R.dimen.dp_chatbot_20,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_chatbot_2,
-            R.dimen.dp_chatbot_1,
-            Gravity.CENTER
+        customChatLayoutContainer,
+        R.color.chatbot_dms_left_message_bg,
+        R.dimen.dp_chatbot_0,
+        R.dimen.dp_chatbot_20,
+        R.dimen.dp_chatbot_20,
+        R.dimen.dp_chatbot_20,
+        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        R.dimen.dp_chatbot_2,
+        R.dimen.dp_chatbot_1,
+        Gravity.CENTER
     )
 
     override fun bind(viewModel: StickyActionButtonUiModel) {
@@ -80,7 +80,7 @@ class StickyActionButtonViewHolder(
     companion object {
 
         @LayoutRes
-        val LAYOUT = R.layout.sticky_action_buton_chat_layout
+        val LAYOUT = R.layout.item_chatbot_sticky_action_buton
     }
 }
 

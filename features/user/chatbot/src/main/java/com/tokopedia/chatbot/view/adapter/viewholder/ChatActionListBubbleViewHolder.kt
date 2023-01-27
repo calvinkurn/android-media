@@ -14,7 +14,7 @@ import com.tokopedia.chatbot.ChatbotConstant.RENDER_INVOICE_LIST_AND_BUTTON_ACTI
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleUiModel
-import com.tokopedia.chatbot.databinding.ItemChatActionBubbleSelectionListBinding
+import com.tokopedia.chatbot.databinding.ItemChatbotBubbleActionSelectionListBinding
 import com.tokopedia.chatbot.util.OptionListRecyclerItemDecorator
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
@@ -30,22 +30,22 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
     BaseChatBotViewHolder<ChatActionSelectionBubbleUiModel>(itemView), ChatActionBubbleAdapter.OnChatActionSelectedListener {
     private val adapter: ChatActionBubbleAdapter
     private var model: ChatActionSelectionBubbleUiModel? = null
-    var viewBinding = ItemChatActionBubbleSelectionListBinding.bind(itemView)
+    var viewBinding = ItemChatbotBubbleActionSelectionListBinding.bind(itemView)
     private var chatActionListSelection: RecyclerView = viewBinding.chatActionBubbleSelection
     private var chatActionListSelectionContainer: LinearLayout = viewBinding.chatActionBubbleSelectionContainer
     private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
-            chatActionListSelectionContainer,
-            R.color.chatbot_dms_left_message_bg,
-            R.dimen.dp_chatbot_0,
-            R.dimen.dp_chatbot_20,
-            R.dimen.dp_chatbot_20,
-            R.dimen.dp_chatbot_20,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_chatbot_2,
-            R.dimen.dp_chatbot_1,
-            Gravity.CENTER
+        chatActionListSelectionContainer,
+        R.color.chatbot_dms_left_message_bg,
+        R.dimen.dp_chatbot_0,
+        R.dimen.dp_chatbot_20,
+        R.dimen.dp_chatbot_20,
+        R.dimen.dp_chatbot_20,
+        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        R.dimen.dp_chatbot_2,
+        R.dimen.dp_chatbot_1,
+        Gravity.CENTER
     )
 
     init {
@@ -96,7 +96,7 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_chat_action_bubble_selection_list
+        val LAYOUT = R.layout.item_chatbot_bubble_action_selection_list
     }
 }
 

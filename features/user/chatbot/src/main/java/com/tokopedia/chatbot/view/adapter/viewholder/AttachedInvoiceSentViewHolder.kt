@@ -36,22 +36,20 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
     private val pricePrefix: TextView? = itemView.findViewById(R.id.tv_price_prefix)
     private val radiusInvoice: Float = itemView.context.resources.getDimension(R.dimen.dp_chatbot_6)
 
-
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
-            clContainer,
-            R.color.chatbot_dms_left_message_bg,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_chatbot_2,
-            R.dimen.dp_chatbot_1,
-            Gravity.CENTER,
-            R.color.chatbot_dms_stroke,
-            getStrokeWidthSenderDimenRes()
+        clContainer,
+        R.color.chatbot_dms_left_message_bg,
+        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        R.dimen.dp_chatbot_2,
+        R.dimen.dp_chatbot_1,
+        Gravity.CENTER,
+        R.color.chatbot_dms_stroke,
+        getStrokeWidthSenderDimenRes()
     )
-
 
     override fun bind(element: AttachInvoiceSentUiModel) {
         alignLayout(element)
@@ -66,28 +64,27 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
         invoiceDesc?.text = invoice.description
         setPrice(invoice.totalAmount)
         invoiceDate?.text = invoice.createTime
-
     }
 
     private fun setStatus(invoice: AttachInvoiceSentUiModel) {
         if (invoice.status.isNotEmpty()) {
-            val labelType: Int = if (invoice.color.isEmpty())
+            val labelType: Int = if (invoice.color.isEmpty()) {
                 InvoiceStatusLabelHelper.getLabelTypeWithStatusId(invoice.statusId)
-            else
+            } else {
                 InvoiceStatusLabelHelper.getLabelType(invoice.color)
+            }
             status?.text = invoice.status
             status?.setLabelType(labelType)
         } else {
             status?.invisible()
         }
-
     }
 
     private fun setPrice(totalAmount: String?) {
         if (totalAmount.isNullOrEmpty()) {
             pricePrefix?.hide()
             price?.hide()
-        }else{
+        } else {
             pricePrefix?.show()
             price?.text = totalAmount
             price?.show()
@@ -95,11 +92,11 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
     }
 
     private fun bindBackground() {
-            clContainer?.background = bgSender
+        clContainer?.background = bgSender
     }
 
     private fun alignLayout(uiModel: AttachInvoiceSentUiModel) {
-            alignBubble(Gravity.END)
+        alignBubble(Gravity.END)
     }
 
     private fun alignBubble(gravity: Int) {
@@ -119,6 +116,6 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.attached_invoice_sent_chat_item
+        val LAYOUT = R.layout.item_chatbot_attached_invoice_sent
     }
 }
