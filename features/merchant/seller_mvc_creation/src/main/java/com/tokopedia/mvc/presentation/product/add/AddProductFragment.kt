@@ -142,7 +142,6 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        applyUnifyBackgroundColor()
         setupView()
         observeUiEffect()
         observeUiState()
