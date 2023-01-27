@@ -171,31 +171,23 @@ class FeedViewModel @Inject constructor(
     private val currentFollowState: MutableMap<String, Pair<Int, Boolean>> = mutableMapOf()
 
     fun updateCurrentFollowState(list: List<Visitable<*>>) {
-        list.map { item ->
+        list.forEach { item ->
             when (item) {
-                is DynamicPostModel -> {
-                    currentFollowState[item.header.followCta.authorID] = Pair(
-                        item.header.followCta.authorType.toIntSafely(),
-                        item.header.followCta.isFollow
-                    )
+                is DynamicPostModel -> currentFollowState[item.header.followCta.authorID] = Pair(
+                    item.header.followCta.authorType.toIntSafely(),
+                    item.header.followCta.isFollow
+                )
+                is DynamicPostUiModel -> currentFollowState[item.feedXCard.author.id] = Pair(
+                    item.feedXCard.author.type,
+                    item.feedXCard.followers.isFollowed
+                )
+                is ShopRecomWidgetModel -> item.shopRecomUiModel.items.map {
+                    currentFollowState[it.id.toString()] = Pair(it.type, it.state == FOLLOW)
                 }
-                is DynamicPostUiModel -> {
-                    currentFollowState[item.feedXCard.author.id] = Pair(
-                        item.feedXCard.author.type,
-                        item.feedXCard.followers.isFollowed
-                    )
-                }
-                is ShopRecomWidgetModel -> {
-                    item.shopRecomUiModel.items.map {
-                        currentFollowState[it.id.toString()] = Pair(it.type, it.state == FOLLOW)
-                    }
-                }
-                is TopadsHeadLineV2Model -> {
-                    currentFollowState[item.feedXCard.author.id] = Pair(
-                        item.feedXCard.author.type,
-                        item.feedXCard.followers.isFollowed
-                    )
-                }
+                is TopadsHeadLineV2Model -> currentFollowState[item.feedXCard.author.id] = Pair(
+                    item.feedXCard.author.type,
+                    item.feedXCard.followers.isFollowed
+                )
                 else -> {}
             }
         }
@@ -209,7 +201,7 @@ class FeedViewModel @Inject constructor(
                 val response = withContext(baseDispatcher.io) {
                     getFollowingUseCase(authorIds)
                 }
-                response.shopInfoById.result.map { item ->
+                response.shopInfoById.result.forEach { item ->
                     if (currentFollowState[item.shopCore.shopID] != null &&
                         item.favoriteData.isFollowing != currentFollowState[item.shopCore.shopID]?.second
                     ) {
@@ -220,7 +212,7 @@ class FeedViewModel @Inject constructor(
                         )
                     }
                 }
-                response.feedXProfileIsFollowing.isUserFollowing.map { item ->
+                response.feedXProfileIsFollowing.isUserFollowing.forEach { item ->
                     if (currentFollowState[item.userId] != null &&
                         item.status != currentFollowState[item.userId]?.second
                     ) {

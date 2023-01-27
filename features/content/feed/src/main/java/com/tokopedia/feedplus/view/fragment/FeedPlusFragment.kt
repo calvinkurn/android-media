@@ -4086,7 +4086,7 @@ class FeedPlusFragment :
 
     @SuppressLint("NotifyDataSetChanged")
     private fun onSuccessResyncFollowStatus(data: Map<String, Boolean>) {
-        val newList = adapter.getlist().mapIndexed { index, item ->
+        val newList = adapter.getlist().map { item ->
             if (item is ShopRecomWidgetModel) {
                 val newItems = item.shopRecomUiModel.items.toMutableList()
                 newItems.forEachIndexed { itemIndex, recomItem ->
@@ -4103,50 +4103,40 @@ class FeedPlusFragment :
                 )
             } else {
                 val shopId = when (item) {
-                    is DynamicPostModel -> {
-                        item.header.followCta.authorID
-                    }
-                    is DynamicPostUiModel -> {
-                        item.feedXCard.author.id
-                    }
-                    is TopadsHeadLineV2Model -> {
-                        item.feedXCard.author.id
-                    }
+                    is DynamicPostModel -> item.header.followCta.authorID
+                    is DynamicPostUiModel -> item.feedXCard.author.id
+                    is TopadsHeadLineV2Model -> item.feedXCard.author.id
                     else -> ""
                 }
                 if (shopId != "") {
                     data[shopId]?.let { followStatus ->
                         when (item) {
-                            is DynamicPostModel -> {
-                                item.copy(
-                                    header = item.header.copy(
-                                        followCta = item.header.followCta.copy(
-                                            isFollow = followStatus
-                                        )
+                            is DynamicPostModel -> item.copy(
+                                header = item.header.copy(
+                                    followCta = item.header.followCta.copy(
+                                        isFollow = followStatus
                                     )
                                 )
-                            }
-                            is DynamicPostUiModel -> {
-                                item.copy(
-                                    feedXCard = item.feedXCard.copy(
-                                        followers = item.feedXCard.followers.copy(
-                                            isFollowed = followStatus
-                                        )
+                            )
+
+                            is DynamicPostUiModel -> item.copy(
+                                feedXCard = item.feedXCard.copy(
+                                    followers = item.feedXCard.followers.copy(
+                                        isFollowed = followStatus
                                     )
                                 )
-                            }
-                            is TopadsHeadLineV2Model -> {
-                                item.copy(
-                                    feedXCard = item.feedXCard.copy(
-                                        followers = item.feedXCard.followers.copy(
-                                            isFollowed = followStatus
-                                        )
+                            )
+
+                            is TopadsHeadLineV2Model -> item.copy(
+                                feedXCard = item.feedXCard.copy(
+                                    followers = item.feedXCard.followers.copy(
+                                        isFollowed = followStatus
                                     )
                                 )
-                            }
-                            else -> {
-                                item
-                            }
+                            )
+
+                            else -> item
+
                         }
                     } ?: item
                 } else {
