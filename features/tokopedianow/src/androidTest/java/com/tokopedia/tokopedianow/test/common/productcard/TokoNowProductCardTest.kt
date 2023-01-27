@@ -12,6 +12,8 @@ import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.tokopedianow.test.R
 import com.tokopedia.tokopedianow.test.common.productcard.adapter.TokoNowProductCardViewHolder
 import com.tokopedia.tokopedianow.test.common.productcard.model.TokoNowProductCardMatcherModel
+import com.tokopedia.tokopedianow.test.common.productcard.presentation.TokoNowProductCardGridActivityTest
+import com.tokopedia.tokopedianow.test.common.productcard.presentation.TokoNowProductCardLinearActivityTest
 import com.tokopedia.tokopedianow.test.common.productcard.utils.TokoNowProductCardModelMatcherData.getProductCardModelMatcherData
 import com.tokopedia.tokopedianow.test.utils.ViewMatchersUtil.isTokoNowProductCardInThePosition
 import org.hamcrest.Matcher
@@ -24,12 +26,21 @@ internal class TokoNowProductCardTest {
     private lateinit var tokoNowProductCardMatcherModelData: List<TokoNowProductCardMatcherModel>
 
     @Test
-    fun testProductCardGrid() {
-        startTestActivity(TokoNowProductCardActivityTest::class.java.name)
-        Thread.sleep(6000)
+    fun testProductCardLinear() {
+        startTestActivity(TokoNowProductCardLinearActivityTest::class.java.name)
 
         recyclerViewViewInteraction = onView(withId(R.id.rv_product_card))
-        tokoNowProductCardMatcherModelData = getProductCardModelMatcherData()
+        tokoNowProductCardMatcherModelData = getProductCardModelMatcherData(isCarousel = true)
+
+        startTest()
+    }
+
+    @Test
+    fun testProductCardGrid() {
+        startTestActivity(TokoNowProductCardGridActivityTest::class.java.name)
+
+        recyclerViewViewInteraction = onView(withId(R.id.rv_product_card))
+        tokoNowProductCardMatcherModelData = getProductCardModelMatcherData(isCarousel = false)
 
         startTest()
     }

@@ -4,8 +4,8 @@ package com.tokopedia.tokopedianow.test.utils
 
 import android.view.View
 import com.tokopedia.tokopedianow.test.utils.matcher.TokoNowItemPositionDisplayedMatcher
-import com.tokopedia.tokopedianow.test.utils.matcher.TokoNowProductCardNameTypographyDisplayedMatcher
-import com.tokopedia.tokopedianow.test.utils.matcher.TokoNowProductCardProgressBarDisplayedMatcher
+import com.tokopedia.tokopedianow.test.common.productcard.utils.matcher.TokoNowProductCardNameTypographyDisplayedMatcher
+import com.tokopedia.tokopedianow.test.common.productcard.utils.matcher.TokoNowProductCardProgressBarDisplayedMatcher
 import com.tokopedia.tokopedianow.test.utils.matcher.TokoNowQuantityEditorDisplayedMatcher
 import com.tokopedia.tokopedianow.test.utils.matcher.TokoNowWishlistButtonDisplayedMatcher
 import com.tokopedia.tokopedianow.test.utils.matcher.ViewDisplayedWithTextMatcher
@@ -30,10 +30,12 @@ internal object ViewMatchersUtil {
 
     fun isTokoNowProductCardNameTypographyDisplayed(
         productName: String,
-        needToChangeMaxLinesName: Boolean
+        needToChangeMaxLinesName: Boolean,
+        promoLabelAvailable: Boolean
     ) = TokoNowProductCardNameTypographyDisplayedMatcher(
         productName = productName,
-        needToChangeMaxLinesName = needToChangeMaxLinesName
+        needToChangeMaxLinesName = needToChangeMaxLinesName,
+        promoLabelAvailable = promoLabelAvailable
     ) as Matcher<View>
 
     fun isTokoNowProductCardProgressBarDisplayed(

@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.test.utils.matcher
+package com.tokopedia.tokopedianow.test.common.productcard.utils.matcher
 
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.unifycomponents.ProgressBarUnify

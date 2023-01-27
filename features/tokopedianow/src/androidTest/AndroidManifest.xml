@@ -9,7 +9,11 @@
         tools:replace="android:label">
 
         <activity
-            android:name=".common.productcard.TokoNowProductCardActivityTest"
+            android:name=".common.productcard.presentation.TokoNowProductCardLinearActivityTest"
+            android:theme="@style/Theme.AppCompat"/>
+
+        <activity
+            android:name=".common.productcard.presentation.TokoNowProductCardGridActivityTest"
             android:theme="@style/Theme.AppCompat"/>
 
     </application>
