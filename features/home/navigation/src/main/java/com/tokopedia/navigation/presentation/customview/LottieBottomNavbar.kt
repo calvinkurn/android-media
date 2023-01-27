@@ -1,31 +1,35 @@
 package com.tokopedia.navigation.presentation.customview
 
 import android.animation.Animator
+import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.MotionEvent
+import android.view.ViewConfiguration
+import android.view.animation.Interpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation.R
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.utils.resources.isDarkMode
 
-private const val DEFAULT_HEIGHT = 56f
-private const val DEFAULT_ICON_PADDING = 2
-private const val DEFAULT_TITLE_PADDING = 2
-private const val DEFAULT_TITLE_PADDING_BOTTOM = 4
 
 class LottieBottomNavbar : LinearLayout {
     private val badgeTextViewList: MutableList<TextView>? = mutableListOf()
@@ -36,7 +40,7 @@ class LottieBottomNavbar : LinearLayout {
     private var iconList: MutableList<Pair<LottieAnimationView, Boolean>> = ArrayList()
     private var iconPlaceholderList: MutableList<ImageView> = ArrayList()
     private var titleList: MutableList<TextView> = ArrayList()
-    private var containerList: MutableList<LinearLayout> = ArrayList()
+    private var containerList: MutableList<FrameLayout> = ArrayList()
     private var itemCount: Int = 1
     private var buttonContainerBackgroundColor: Int = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
     private var buttonsHeight: Float = DEFAULT_HEIGHT
@@ -46,6 +50,12 @@ class LottieBottomNavbar : LinearLayout {
     private var buttonColor: Int = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300)
     private var activeButtonColor: Int = Color.TRANSPARENT
     private val isDarkMode = context?.isDarkMode() ?: false
+    private var rippleAnimator = ValueAnimator.ofFloat()
+    private var currentScaleRipple = 0f
+    private val pathInputClick = UnifyMotion.EASE_OUT
+    private val pathOutputClick = UnifyMotion.EASE_IN_OUT
+    private val durationInputClick = UnifyMotion.T3
+    private val durationOutputClick = UnifyMotion.T2
 
     constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs) {
         getLayoutAtr(attrs)
@@ -53,6 +63,17 @@ class LottieBottomNavbar : LinearLayout {
 
     constructor(ctx: Context, attrs: AttributeSet, defStyle: Int) : super(ctx, attrs, defStyle) {
         getLayoutAtr(attrs)
+    }
+
+    companion object {
+        private const val DEFAULT_HEIGHT = 56f
+        private const val DEFAULT_ICON_PADDING = 2
+        private const val DEFAULT_TITLE_PADDING = 2
+        private const val DEFAULT_TITLE_PADDING_BOTTOM = 4
+        private const val SCALE_MIN_IMAGE = 0.6f
+        private const val SCALE_MAX_IMAGE = 1f
+        private const val INITIAL_ALPHA_RIPPLE = 0f
+        private const val MAX_ALPHA_RIPPLE = 0.6f
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -159,6 +180,7 @@ class LottieBottomNavbar : LinearLayout {
         orientation = VERTICAL
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupMenuItems() {
         // menu item width is equal: container width / size of menu item
         val itemWidth = containerWidth / itemCount
@@ -167,8 +189,8 @@ class LottieBottomNavbar : LinearLayout {
         titleList.clear()
         containerList.clear()
 
-        val rootLayoutParam = LinearLayout.LayoutParams(itemWidth, 28f.toDpInt())
-        val llLayoutParam = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        val rootLayoutParam = FrameLayout.LayoutParams(itemWidth, 28f.toDpInt())
+        val containerLayoutParam = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         val imgLayoutParam = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 24f.toDpInt())
 
@@ -206,23 +228,18 @@ class LottieBottomNavbar : LinearLayout {
         // for each menu:
         // create item container, draw image icon and title, add click listener if set
         menu.forEachIndexed { index, bottomMenu ->
-            // add linear layout as container for menu item
-            val rootButtonContainer = LinearLayout(context)
-            rootButtonContainer.apply {
-                layoutParams = rootLayoutParam
-                gravity = Gravity.CENTER
-            }
+            // add root layout
+            val rootButtonContainer = FrameLayout(context)
+            rootButtonContainer.layoutParams = rootLayoutParam
+            rootButtonContainer.setBackgroundColor(Color.TRANSPARENT)
             containerList.add(index, rootButtonContainer)
 
-            val cardButtonContainer = CardUnify2(context, null)
-            cardButtonContainer.layoutParams = llLayoutParam
-
+            // add linear layout as container for image and text
             val buttonContainer = LinearLayout(context)
-
-            buttonContainer.layoutParams = llLayoutParam
+            buttonContainer.layoutParams = containerLayoutParam
             buttonContainer.orientation = LinearLayout.VERTICAL
             buttonContainer.gravity = Gravity.CENTER
-            buttonContainer.setBackgroundColor(buttonContainerBackgroundColor)
+            buttonContainer.setBackgroundColor(Color.TRANSPARENT)
 
             // add image view to display menu icon
             val icon = LottieAnimationView(context)
@@ -344,18 +361,97 @@ class LottieBottomNavbar : LinearLayout {
 
             titleList.add(index, title)
             buttonContainer.addView(title)
-            cardButtonContainer.addView(buttonContainer)
-            cardButtonContainer.cardType = CardUnify2.TYPE_CLEAR
-            cardButtonContainer.animateOnPress = CardUnify2.ANIMATE_OVERLAY
-            rootButtonContainer.addView(cardButtonContainer)
+
+            //add ripple layer
+            val rippleView = View(context)
+            val rippleLayoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            )
+            rippleView.layoutParams = rippleLayoutParams
+            rippleView.setBackgroundResource(R.drawable.bg_ripple_container)
+            rippleView.alpha = INITIAL_ALPHA_RIPPLE
+
+            // add button container and ripple to root layout
+            rootButtonContainer.addView(rippleView)
+            rootButtonContainer.addView(buttonContainer)
+            buttonContainer.bringToFront()
+
+            // handle ripple on touch
+            val longPressHandler = Handler(Looper.getMainLooper())
+            val onLongPress = Runnable {
+                rootButtonContainer.performLongClick()
+            }
+            rootButtonContainer.setOnTouchListener { _, event ->
+                when (event?.action) {
+                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                        longPressHandler.removeCallbacks(onLongPress)
+                        Handler(Looper.getMainLooper()).postDelayed(
+                            {
+                                if (currentScaleRipple == SCALE_MAX_IMAGE) {
+                                    scalingRipple(
+                                        SCALE_MAX_IMAGE,
+                                        SCALE_MIN_IMAGE,
+                                        durationOutputClick,
+                                        pathOutputClick,
+                                        rippleView
+                                    )
+                                }
+                            },
+                            Int.ZERO.toLong()
+                        )
+                        rippleAnimator.addListener(object : Animator.AnimatorListener {
+                            override fun onAnimationStart(p0: Animator) {
+                                // no-op
+                            }
+
+                            override fun onAnimationEnd(p0: Animator) {
+                                if (currentScaleRipple == SCALE_MAX_IMAGE) {
+                                    scalingRipple(
+                                        end = SCALE_MIN_IMAGE,
+                                        duration = durationOutputClick,
+                                        pathInterpolator = pathOutputClick,
+                                        rippleView = rippleView
+                                    )
+                                }
+                            }
+
+                            override fun onAnimationCancel(p0: Animator) {
+                                // no-op
+                            }
+
+                            override fun onAnimationRepeat(p0: Animator) {
+                                // no-op
+                            }
+                        })
+                    }
+                    MotionEvent.ACTION_DOWN -> {
+                        longPressHandler.postDelayed(
+                            onLongPress,
+                            ViewConfiguration.getLongPressTimeout().toLong()
+                        )
+                        Handler(Looper.getMainLooper()).postDelayed(
+                            {
+                                scalingRipple(
+                                    SCALE_MIN_IMAGE,
+                                    SCALE_MAX_IMAGE,
+                                    durationInputClick,
+                                    pathInputClick,
+                                    rippleView
+                                )
+                            },
+                            Int.ZERO.toLong()
+                        )
+                    }
+                }
+                false
+            }
 
             // add click listener
-            cardButtonContainer.setOnClickListener {
+            rootButtonContainer.setOnClickListener {
                 setSelected(index)
             }
-            buttonContainer.id = bottomMenu.id
-            cardButtonContainer.id = buttonContainer.id
-            rootButtonContainer.id = cardButtonContainer.id
+            rootButtonContainer.id = bottomMenu.id
 
             // add view to container
             navbarContainer?.addView(rootButtonContainer)
@@ -470,11 +566,39 @@ class LottieBottomNavbar : LinearLayout {
         invalidate()
     }
 
-    fun isDeviceAnimationDisabled() = getAnimationScale(context) == 0f
+    private fun isDeviceAnimationDisabled() = getAnimationScale(context) == 0f
 
-    fun getAnimationScale(context: Context): Float {
+    private fun getAnimationScale(context: Context): Float {
         return Settings.System.getFloat(context.contentResolver,
             Settings.System.ANIMATOR_DURATION_SCALE, 1.0f)
+    }
+
+    private fun scalingRipple(
+        start: Float = currentScaleRipple,
+        end: Float,
+        duration: Long,
+        pathInterpolator: Interpolator,
+        rippleView: View
+    ) {
+        rippleAnimator = ValueAnimator.ofFloat()
+        rippleAnimator.setFloatValues(start, end)
+        rippleAnimator.removeAllListeners()
+        rippleAnimator.removeAllUpdateListeners()
+        rippleAnimator.addUpdateListener {
+            rippleView.visible()
+            val value = it.animatedValue as Float
+            if (start < end) {
+                rippleView.scaleX = value
+                rippleView.scaleY = value
+            }
+            val alpha =
+                ((value - SCALE_MIN_IMAGE) / (SCALE_MAX_IMAGE - SCALE_MIN_IMAGE)) * MAX_ALPHA_RIPPLE
+            rippleView.alpha = alpha
+            currentScaleRipple = value
+        }
+        rippleAnimator.duration = duration
+        rippleAnimator.interpolator = pathInterpolator
+        rippleAnimator.start()
     }
 }
 
