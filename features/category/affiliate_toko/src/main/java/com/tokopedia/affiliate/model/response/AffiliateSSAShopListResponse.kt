@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class AffiliateSSAShopListResponse(
 
     @SerializedName("getSSAShopList")
-    val data: Data? = null
+    val getSSAShopList: Data? = null
 ) {
 
     data class Data(

@@ -8,6 +8,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSSAShopUiModel
 import com.tokopedia.affiliate.usecase.AffiliateSSAShopUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import javax.inject.Inject
 
 class AffiliateSSAShopViewModel @Inject constructor(
@@ -16,8 +17,8 @@ class AffiliateSSAShopViewModel @Inject constructor(
 
     private val ssaShopList = MutableLiveData<List<Visitable<AffiliateAdapterTypeFactory>>>()
     private val errorMessage = MutableLiveData<Throwable>()
-    private val progressBar = MutableLiveData<Boolean>(true)
-    private val noMoreDataAvailable = MutableLiveData(true)
+    private val progressBar = MutableLiveData(true)
+    private val noMoreDataAvailable = MutableLiveData(false)
 
     companion object {
         private const val SUCCESS = 1
@@ -26,12 +27,16 @@ class AffiliateSSAShopViewModel @Inject constructor(
     fun fetchSSAShopList(page: Int, limit: Int = 10) {
         launchCatchError(
             block = {
-                affiliateSSAShopUseCase.getSSAShopList(page, limit).data?.let {
+                affiliateSSAShopUseCase.getSSAShopList(page, limit).getSSAShopList?.let {
                     if (it.data?.status == SUCCESS) {
                         progressBar.value = false
-                        noMoreDataAvailable.value = it.data.shopData.isNullOrEmpty()
+                        noMoreDataAvailable.value = !it.data.pageInfo?.hasNext.orFalse()
                         ssaShopList.value =
-                            it.data.shopData?.map { ssaShop -> AffiliateSSAShopUiModel(ssaShop) }
+                            it.data.shopData?.mapNotNull { ssaShop ->
+                                AffiliateSSAShopUiModel(
+                                    ssaShop
+                                )
+                            }
                     } else {
                         progressBar.value = false
                         errorMessage.value = Throwable(it.data?.error?.message)
