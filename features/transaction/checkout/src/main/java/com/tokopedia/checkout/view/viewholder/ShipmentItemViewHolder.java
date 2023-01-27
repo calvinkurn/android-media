@@ -78,9 +78,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import kotlin.Unit;
+import rx.Emitter;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -95,7 +97,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private static final int FIRST_ELEMENT = 0;
     private static final int DEBOUNCE_TIME = 1000;
-
     private static final int DROPSHIPPER_MIN_NAME_LENGTH = 3;
     private static final int DROPSHIPPER_MAX_NAME_LENGTH = 100;
     private static final int DROPSHIPPER_MIN_PHONE_LENGTH = 6;
@@ -1727,36 +1728,28 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void initScheduleDeliveryDebouncer() {
         scheduleDeliveryCompositeSubscription.add(
-                Observable.create(new Observable.OnSubscribe<ShipmentScheduleDeliveryHolderData>() {
+                Observable.create((Action1<Emitter<ShipmentScheduleDeliveryHolderData>>) emitter ->
+                                        scheduleDeliveryDebouncedListener = emitter::onNext,
+                                Emitter.BackpressureMode.LATEST)
+                        .debounce(DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<>() {
                             @Override
-                            public void call(Subscriber<? super ShipmentScheduleDeliveryHolderData> subscriber) {
-                                scheduleDeliveryDebouncedListener = new ScheduleDeliveryDebouncedListener() {
-                                    @Override
-                                    public void onScheduleDeliveryChanged(ShipmentScheduleDeliveryHolderData shipmentScheduleDeliveryHolderData) {
-                                        subscriber.onNext(shipmentScheduleDeliveryHolderData);
-                                    }
-                                };
+                            public void onCompleted() {
+                                // no-op
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                // no-op
+                            }
+
+                            @Override
+                            public void onNext(ShipmentScheduleDeliveryHolderData shipmentScheduleDeliveryHolderData) {
+                                mActionListener.onChangeScheduleDelivery(shipmentScheduleDeliveryHolderData.getScheduleDeliveryUiModel(), shipmentScheduleDeliveryHolderData.getPosition());
                             }
                         })
-                .debounce(DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ShipmentScheduleDeliveryHolderData>() {
-                    @Override
-                    public void onCompleted() {
-                        // no-op
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        // no-op
-                    }
-
-                    @Override
-                    public void onNext(ShipmentScheduleDeliveryHolderData shipmentScheduleDeliveryHolderData) {
-                        mActionListener.onChangeScheduleDelivery(shipmentScheduleDeliveryHolderData.getScheduleDeliveryUiModel(), shipmentScheduleDeliveryHolderData.getPosition());
-                    }
-                })
         );
     }
 
