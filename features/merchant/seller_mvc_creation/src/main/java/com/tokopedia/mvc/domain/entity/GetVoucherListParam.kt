@@ -7,7 +7,6 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
 import com.tokopedia.mvc.domain.entity.enums.VoucherSort
 import com.tokopedia.mvc.domain.entity.enums.VoucherSource
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
-import com.tokopedia.mvc.domain.entity.enums.VoucherSubsidy
 import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.domain.entity.enums.VoucherVps
@@ -40,6 +39,9 @@ data class VoucherListParam (
 ) {
     companion object {
         private const val VALUE_DELIMITER = ","
+        private const val VALUE_SUBSIDY_SELLER = 0
+        private const val VALUE_SUBSIDY_TOKOPEDIA = 1
+        private const val VALUE_SUBSIDY_VPS = 2
 
         @JvmStatic
         fun createParam(
@@ -71,14 +73,11 @@ data class VoucherListParam (
         }
 
         private fun List<VoucherSource>.mapToSubsidy(): Int {
-            return if (any { it == VoucherSource.SELLER_BUDGET } && any { it == VoucherSource.SELLER_BUDGET }) {
-                VoucherSubsidy.SELLER_AND_TOKOPEDIA.id
-            } else if (any { it == VoucherSource.TOKOPEDIA_BUDGET }) {
-                VoucherSubsidy.SELLER.id
-            } else if (any { it == VoucherSource.TOKOPEDIA_BUDGET }) {
-                VoucherSubsidy.TOKOPEDIA.id
-            } else {
-                VoucherSubsidy.SELLER_AND_TOKOPEDIA.id
+            return when (firstOrNull()) {
+                VoucherSource.SELLER_BUDGET -> VALUE_SUBSIDY_SELLER
+                VoucherSource.TOKOPEDIA_BUDGET -> VALUE_SUBSIDY_TOKOPEDIA
+                VoucherSource.VPS_PROMOTION -> VALUE_SUBSIDY_VPS
+                else -> VALUE_SUBSIDY_VPS
             }
         }
     }

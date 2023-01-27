@@ -80,8 +80,8 @@
         android:layout_height="wrap_content"
         android:src="@drawable/smvc_shape_download_overlay"
         app:layout_constraintBottom_toBottomOf="@+id/img_voucher"
-        app:layout_constraintStart_toStartOf="@+id/img_voucher"
-        app:layout_constraintEnd_toEndOf="@+id/img_voucher"/>
+        app:layout_constraintEnd_toEndOf="@+id/img_voucher"
+        app:layout_constraintStart_toStartOf="@+id/img_voucher" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/label_voucher_source"
@@ -131,8 +131,8 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
             android:gravity="start"
-            android:textColor="@color/Unify_NN600"
-            android:text="@string/smvc_dash_label" />
+            android:text="@string/smvc_dash_label"
+            android:textColor="@color/Unify_NN600" />
 
         <com.tokopedia.mvc.common.customview.VerticalDateTimeView
             android:id="@+id/tpg_date_time_end"
@@ -157,11 +157,13 @@
         android:id="@+id/pgb_used_voucher"
         android:layout_width="0dp"
         android:layout_height="12dp"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:paddingTop="4dp"
         app:layout_constraintEnd_toStartOf="@+id/tpg_used_voucher_quota"
         app:layout_constraintStart_toStartOf="@+id/tpg_progress_bar_title"
-        app:layout_constraintTop_toBottomOf="@+id/tpg_progress_bar_title" />
+        app:layout_constraintTop_toBottomOf="@+id/tpg_progress_bar_title"
+        app:unify_progress_bar_height="6" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpg_used_voucher_quota"

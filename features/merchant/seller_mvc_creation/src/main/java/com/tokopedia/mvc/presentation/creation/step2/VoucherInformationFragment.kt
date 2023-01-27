@@ -15,10 +15,16 @@ import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_TIME_MINUTE_PRECISION
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_YEAR_PRECISION
+import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.formatTo
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.textChangesAsFlow
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.common.customview.RecurringDateScheduleCustomView
 import com.tokopedia.mvc.databinding.SmvcFragmentCreationVoucherInformationBinding
@@ -31,7 +37,11 @@ import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import com.tokopedia.mvc.domain.entity.enums.PageMode
+import com.tokopedia.mvc.domain.entity.enums.UnavailableRecurringDateErrorType.NEW_FOLLOWER_VOUCHER_ALREADY_EXIST
+import com.tokopedia.mvc.domain.entity.enums.UnavailableRecurringDateErrorType.SAME_DATE_VOUCHER_ALREADY_EXIST
+import com.tokopedia.mvc.domain.entity.enums.VoucherCreationStepTwoFieldValidation
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import com.tokopedia.mvc.presentation.bottomsheet.ForbiddenWordsBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.SelectRepeatPeriodBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.editperiod.VoucherEditCalendarBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
@@ -39,8 +49,8 @@ import com.tokopedia.mvc.presentation.creation.step1.VoucherTypeActivity
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoAction
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoEvent
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
+import com.tokopedia.mvc.presentation.creation.step3.VoucherSettingActivity
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
-import com.tokopedia.mvc.util.DateTimeUtils
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
 import com.tokopedia.mvc.util.convertUnsafeDateTime
@@ -48,7 +58,10 @@ import com.tokopedia.mvc.util.extension.setToAllCapsMode
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import java.util.*
 import javax.inject.Inject
 
@@ -97,6 +110,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     }
     private var startCalendar: GregorianCalendar? = null
     private var endCalendar: GregorianCalendar? = null
+    private var minCalendar: GregorianCalendar? = null
+    private var maxCalendar: GregorianCalendar? = null
     private var startHour: Int = 0
     private var startMinute: Int = 0
 
@@ -116,6 +131,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     private var voucherEditCalendarBottomSheet: VoucherEditCalendarBottomSheet? = null
     private var repeatPeriodBottomSheet: SelectRepeatPeriodBottomSheet? = null
     private var voucherRecurringPeriodBottomSheet: VoucherPeriodBottomSheet? = null
+    private var forbiddenWordsBottomSheet: ForbiddenWordsBottomSheet? = null
 
     // coachmark
     private val coachMark by lazy {
@@ -147,6 +163,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.processEvent(
             VoucherCreationStepTwoEvent.InitVoucherConfiguration(
+                pageMode ?: PageMode.CREATE,
                 voucherConfiguration
             )
         )
@@ -170,33 +187,73 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     }
 
     private fun handleUiState(state: VoucherCreationStepTwoUiState) {
-        renderVoucherTargetSelection(state.voucherConfiguration.isVoucherPublic)
-        renderVoucherNameValidation(state.isVoucherNameError, state.voucherNameErrorMsg)
-        renderVoucherCodeValidation(
+        when (state.fieldValidated) {
+            VoucherCreationStepTwoFieldValidation.VOUCHER_TARGET -> {
+                renderVoucherTargetSelection(state.voucherConfiguration.isVoucherPublic)
+            }
+            VoucherCreationStepTwoFieldValidation.VOUCHER_NAME -> {
+                renderVoucherNameValidation(state.isVoucherNameError, state.voucherNameErrorMsg)
+            }
+            VoucherCreationStepTwoFieldValidation.VOUCHER_CODE -> {
+                renderVoucherCodeValidation(state.isVoucherCodeError, state.voucherCodeErrorMsg)
+            }
+            VoucherCreationStepTwoFieldValidation.VOUCHER_START_DATE -> {
+                renderVoucherStartPeriodSelection(
+                    state.voucherConfiguration,
+                    state.isStartDateError,
+                    state.startDateErrorMsg
+                )
+            }
+            VoucherCreationStepTwoFieldValidation.VOUCHER_END_DATE -> {
+                renderVoucherEndPeriodSelection(
+                    state.voucherConfiguration,
+                    state.isEndDateError,
+                    state.endDateErrorMsg
+                )
+            }
+            VoucherCreationStepTwoFieldValidation.ALL -> {
+                renderVoucherTargetSelection(state.voucherConfiguration.isVoucherPublic)
+                renderVoucherNameValidation(state.isVoucherNameError, state.voucherNameErrorMsg)
+                renderVoucherCodeValidation(state.isVoucherCodeError, state.voucherCodeErrorMsg)
+                renderVoucherStartPeriodSelection(
+                    state.voucherConfiguration,
+                    state.isStartDateError,
+                    state.startDateErrorMsg
+                )
+                renderVoucherEndPeriodSelection(
+                    state.voucherConfiguration,
+                    state.isEndDateError,
+                    state.endDateErrorMsg
+                )
+                renderVoucherRecurringToggleChanges(state.voucherConfiguration)
+                renderVoucherRecurringPeriodSelection(state.voucherConfiguration)
+                renderAvailableRecurringPeriod(state.validationDate)
+            }
+        }
+        renderButtonValidation(
             state.voucherConfiguration,
-            state.isVoucherCodeError,
-            state.voucherCodeErrorMsg
+            state.isInputValid(),
+            state.validationDate
         )
-        renderVoucherRecurringToggleChanges(state.voucherConfiguration)
         renderVoucherStartPeriodSelection(
             state.voucherConfiguration,
-            state.isStartDateError,
-            state.startDateErrorMsg
+        state.isStartDateError,
+        state.startDateErrorMsg
         )
         renderVoucherEndPeriodSelection(
             state.voucherConfiguration,
             state.isEndDateError,
             state.endDateErrorMsg
         )
-        renderVoucherRecurringPeriodSelection(state.voucherConfiguration)
-        renderAvailableRecurringPeriod(state.validationDate)
-        renderButtonValidation(state.isInputValid(), state.validationDate, state.voucherConfiguration)
     }
 
     private fun handleAction(action: VoucherCreationStepTwoAction) {
         when (action) {
             is VoucherCreationStepTwoAction.BackToPreviousStep -> backToPreviousStep(action.voucherConfiguration)
-            is VoucherCreationStepTwoAction.ContinueToNextStep -> continueToNextStep(action.voucherConfiguration)
+            is VoucherCreationStepTwoAction.NavigateToNextStep -> navigateToNextStep(
+                action.pageMode,
+                action.voucherConfiguration
+            )
             is VoucherCreationStepTwoAction.ShowError -> TODO()
             is VoucherCreationStepTwoAction.ShowCoachmark -> showCoachmark()
         }
@@ -208,8 +265,9 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             coachMarkItem.add(
                 CoachMark2Item(
                     cbRepeatPeriod,
-                    getString(R.string.smvc_voucher_creation_step_one_coachmark_title),
-                    getString(R.string.smvc_voucher_creation_step_one_coachmark_description)
+                    getString(R.string.smvc_voucher_creation_step_two_coachmark_title),
+                    getString(R.string.smvc_voucher_creation_step_two_coachmark_description),
+                    CoachMark2.POSITION_TOP
                 )
             )
             coachMark?.showCoachMark(coachMarkItem)
@@ -246,6 +304,46 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         setupVoucherCodeSection()
         setupVoucherPeriodSection()
         setupButtonSection()
+        presetValue()
+        hideTextFieldLabel()
+    }
+
+    private fun presetValue() {
+        setVoucherTarget(voucherConfiguration.isVoucherPublic)
+        val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
+        if (currentVoucherConfiguration.isFinishFilledStepTwo || pageMode == PageMode.EDIT) {
+            voucherNameSectionBinding?.tfVoucherName?.run {
+                editText.setText(voucherConfiguration.voucherName)
+            }
+            voucherCodeSectionBinding?.tfVoucherCode?.run {
+                editText.setText(voucherConfiguration.voucherCode)
+            }
+        }
+        if (pageMode == PageMode.EDIT) {
+            voucherCodeSectionBinding?.run {
+                tfVoucherCode.disable()
+            }
+            voucherPeriodSectionBinding?.run {
+                cbRepeatPeriod.disable()
+            }
+        }
+        voucherPeriodSectionBinding?.run {
+            tfVoucherStartPeriod.editText.setText(
+                voucherConfiguration.startPeriod.formatTo(
+                    DATE_TIME_MINUTE_PRECISION
+                )
+            )
+            tfVoucherEndPeriod.editText.setText(
+                voucherConfiguration.endPeriod.formatTo(
+                    DATE_TIME_MINUTE_PRECISION
+                )
+            )
+        }
+    }
+
+    private fun hideTextFieldLabel() {
+        voucherNameSectionBinding?.tfVoucherName?.labelText?.gone()
+        voucherCodeSectionBinding?.tfVoucherCode?.labelText?.gone()
     }
 
     private fun setupHeader() {
@@ -261,25 +359,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun backToPreviousStep(voucherConfiguration: VoucherConfiguration) {
-        if (pageMode == PageMode.CREATE) {
-            VoucherTypeActivity.start(requireContext(), voucherConfiguration)
-            activity?.finish()
-        } else {
-            activity?.finish()
-        }
-    }
-
-    private fun continueToNextStep(voucherConfiguration: VoucherConfiguration) {
-        if (pageMode == PageMode.CREATE) {
-            // TODO
-        } else {
-            SummaryActivity.start(requireContext(), voucherConfiguration)
-            activity?.finish()
-        }
-    }
-
-    // Voucher target section
+    // Voucher target region
     private fun setupVoucherTargetSection() {
         binding?.run {
             if (viewVoucherTarget.parent != null) {
@@ -290,18 +370,17 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     }
 
     private fun setupVoucherTargetSelection() {
-        setVoucherTarget(voucherConfiguration.isVoucherPublic)
         voucherTargetSectionBinding?.run {
             viewVoucherTargetPublic.apply {
                 imgVoucherTarget?.setImageUrl(ImageUrlConstant.IMAGE_URL_PUBLIC_VOUCHER)
                 cardParent?.setOnClickListener {
-                    setVoucherTarget(true)
+                    if (pageMode == PageMode.CREATE) setVoucherTarget(true)
                 }
             }
             viewVoucherTargetPrivate.apply {
                 imgVoucherTarget?.setImageUrl(ImageUrlConstant.IMAGE_URL_PRIVATE_VOUCHER)
                 cardParent?.setOnClickListener {
-                    setVoucherTarget(false)
+                    if (pageMode == PageMode.CREATE) setVoucherTarget(false)
                 }
             }
         }
@@ -330,7 +409,12 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             setPrimaryCTAText(getString(R.string.smvc_voucher_target_confirmation_primary_cta_label))
             setSecondaryCTAText(getString(R.string.smvc_voucher_target_confirmation_secondary_cta_label))
             setPrimaryCTAClickListener {
-                viewModel.processEvent(VoucherCreationStepTwoEvent.ChooseVoucherTarget(isPublic))
+                viewModel.processEvent(
+                    VoucherCreationStepTwoEvent.ChooseVoucherTarget(
+                        isPublic,
+                        true
+                    )
+                )
                 dismiss()
             }
             setSecondaryCTAClickListener { dismiss() }
@@ -347,25 +431,33 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun setVoucherPublicSelected() {
         binding?.run {
-            viewVoucherCode.gone()
+            voucherCodeSectionBinding?.apply {
+                tpgVoucherCodeTitle.gone()
+                tfVoucherCode.gone()
+            }
         }
         voucherTargetSectionBinding?.run {
             viewVoucherTargetPublic.isActive = true
             viewVoucherTargetPrivate.isActive = false
+            if (pageMode == PageMode.EDIT) viewVoucherTargetPrivate.disable()
         }
     }
 
     private fun setVoucherPrivateSelected() {
         binding?.run {
-            viewVoucherCode.visible()
+            voucherCodeSectionBinding?.apply {
+                tpgVoucherCodeTitle.visible()
+                tfVoucherCode.visible()
+            }
         }
         voucherTargetSectionBinding?.run {
             viewVoucherTargetPublic.isActive = false
             viewVoucherTargetPrivate.isActive = true
+            if (pageMode == PageMode.EDIT) viewVoucherTargetPublic.disable()
         }
     }
 
-    // Voucher name section
+    // Voucher name region
     private fun setupVoucherNameSection() {
         binding?.run {
             if (viewVoucherName.parent != null) {
@@ -374,15 +466,12 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
 
         voucherNameSectionBinding?.run {
-            tfVoucherName.editText.setText(voucherConfiguration.voucherName)
             tfVoucherName.editText.textChangesAsFlow()
-                .filterNot { it.isEmpty() }
                 .debounce { DEBOUNCE }
                 .distinctUntilChanged()
                 .onEach {
-                    val formattedText = it.uppercase(Locale.getDefault()).trim()
                     viewModel.processEvent(
-                        VoucherCreationStepTwoEvent.OnVoucherNameChanged(formattedText)
+                        VoucherCreationStepTwoEvent.OnVoucherNameChanged(it)
                     )
                 }
                 .launchIn(lifecycleScope)
@@ -396,10 +485,17 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         voucherNameSectionBinding?.run {
             tfVoucherName.isInputError = isVoucherNameError
             tfVoucherName.setMessage(voucherNameErrorMsg)
+            tpgCheckHere.apply {
+                isVisible = voucherNameErrorMsg.contains(
+                    getString(R.string.smvc_larang_label),
+                    ignoreCase = true
+                )
+                setOnClickListener { showForbiddenWordsBottomSheet() }
+            }
         }
     }
 
-    // Voucher code section
+    // Voucher code region
     private fun setupVoucherCodeSection() {
         binding?.run {
             if (viewVoucherCode.parent != null) {
@@ -410,10 +506,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         voucherCodeSectionBinding?.run {
             tfVoucherCode.apply {
                 prependText(voucherConfiguration.voucherCodePrefix)
-                editText.setText(voucherConfiguration.voucherCode)
                 editText.setToAllCapsMode()
                 editText.textChangesAsFlow()
-                    .filterNot { it.isEmpty() }
                     .debounce { DEBOUNCE }
                     .distinctUntilChanged()
                     .onEach {
@@ -428,18 +522,28 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     }
 
     private fun renderVoucherCodeValidation(
-        voucherConfiguration: VoucherConfiguration,
         isVoucherCodeError: Boolean,
         voucherCodeErrorMsg: String
     ) {
         voucherCodeSectionBinding?.run {
-            tfVoucherCode.editText.setText(voucherConfiguration.voucherCode)
             tfVoucherCode.isInputError = isVoucherCodeError
             tfVoucherCode.setMessage(voucherCodeErrorMsg)
+            tpgPelajari.apply {
+                isVisible = voucherCodeErrorMsg.contains(
+                    getString(R.string.smvc_larang_label),
+                    ignoreCase = true
+                )
+                setOnClickListener { showForbiddenWordsBottomSheet() }
+            }
         }
     }
 
-    // Voucher period section
+    private fun showForbiddenWordsBottomSheet() {
+        forbiddenWordsBottomSheet = ForbiddenWordsBottomSheet()
+        forbiddenWordsBottomSheet?.show(childFragmentManager)
+    }
+
+    // Voucher period region
     private fun setupVoucherPeriodSection() {
         binding?.run {
             if (viewVoucherActivePeriod.parent != null) {
@@ -465,16 +569,18 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             }
 
             tfRepeat.run {
+                isVisible = voucherConfiguration.isPeriod
                 disableText(editText)
                 editText.setOnClickListener { onClickListenerForRecurringPeriod() }
             }
+            iconChevronDown.isVisible = voucherConfiguration.isPeriod
         }
     }
 
     private fun onClickListenerForStartDate() {
         context?.run {
-            startCalendar?.let { minDate ->
-                DateTimeUtils.getMaxDate(startCalendar)?.let { maxDate ->
+            minCalendar?.let { minDate ->
+                maxCalendar?.let { maxDate ->
                     voucherEditCalendarBottomSheet =
                         VoucherEditCalendarBottomSheet.newInstance(
                             startCalendar,
@@ -495,8 +601,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun onClickListenerForEndDate() {
         context?.run {
-            startCalendar?.let { minDate ->
-                DateTimeUtils.getMaxDate(startCalendar)?.let { maxDate ->
+            minCalendar?.let { minDate ->
+                maxCalendar?.let { maxDate ->
                     voucherEditCalendarBottomSheet =
                         VoucherEditCalendarBottomSheet.newInstance(
                             endCalendar,
@@ -534,6 +640,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         val endDate = voucherConfiguration.endPeriod.formatTo(DATE_WITH_SECOND_PRECISION_ISO_8601)
         startCalendar = getGregorianDate(startDate)
         endCalendar = getGregorianDate(endDate)
+        minCalendar = getGregorianDate(startDate)
+        maxCalendar = getGregorianDate(endDate)
     }
 
     private fun renderVoucherRecurringToggleChanges(voucherConfiguration: VoucherConfiguration) {
@@ -550,16 +658,20 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     ) {
         voucherPeriodSectionBinding?.run {
             tfVoucherStartPeriod.run {
-                isInputError = isStartDateError
-                setMessage(startDateErrorMsg)
-                editText.setText(
-                    voucherConfiguration.startPeriod.formatTo(
-                        DATE_TIME_MINUTE_PRECISION
+                try {
+                    isInputError = isStartDateError
+                    setMessage(startDateErrorMsg)
+                    editText.setText(
+                        voucherConfiguration.startPeriod.formatTo(
+                            DATE_TIME_MINUTE_PRECISION
+                        )
                     )
-                )
+                    val startDate =
+                        voucherConfiguration.startPeriod.formatTo(DATE_WITH_SECOND_PRECISION_ISO_8601)
+                    startCalendar = getGregorianDate(startDate)
+                } catch (_: Throwable) {}
             }
         }
-        setupTime()
     }
 
     private fun renderVoucherEndPeriodSelection(
@@ -569,12 +681,16 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     ) {
         voucherPeriodSectionBinding?.run {
             tfVoucherEndPeriod.run {
-                isInputError = isEndDateError
-                setMessage(endDateErrorMsg)
-                editText.setText(voucherConfiguration.endPeriod.formatTo(DATE_TIME_MINUTE_PRECISION))
+                try {
+                    isInputError = isEndDateError
+                    setMessage(endDateErrorMsg)
+                    editText.setText(voucherConfiguration.endPeriod.formatTo(DATE_TIME_MINUTE_PRECISION))
+
+                    val endDate = voucherConfiguration.endPeriod.formatTo(DATE_WITH_SECOND_PRECISION_ISO_8601)
+                    endCalendar = getGregorianDate(endDate)
+                } catch (_: Throwable) {}
             }
         }
-        setupTime()
     }
 
     private fun renderVoucherRecurringPeriodSelection(voucherConfiguration: VoucherConfiguration) {
@@ -656,8 +772,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 unavailableRecurringPeriodView.run {
                     type = RecurringDateScheduleCustomView.TYPE_ERROR
                     title = when (unAvailableDate.first().type) {
-                        1 -> getString(R.string.smvc_recurring_date_error_type_1_title)
-                        2 -> getString(R.string.smvc_recurring_date_error_type_2_title)
+                        SAME_DATE_VOUCHER_ALREADY_EXIST.type -> getString(R.string.smvc_recurring_date_error_type_1_title)
+                        NEW_FOLLOWER_VOUCHER_ALREADY_EXIST.type -> getString(R.string.smvc_recurring_date_error_type_2_title)
                         else -> getString(R.string.smvc_recurring_date_error_type_3_title)
                     }
                     isVisible = tfRepeat.isVisible
@@ -740,7 +856,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
     }
 
-    // Button section
+    // Button region
     private fun setupButtonSection() {
         binding?.run {
             if (viewButton.parent != null) {
@@ -750,24 +866,90 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
         buttonSectionBinding?.run {
             btnBack.setOnClickListener { viewModel.processEvent(VoucherCreationStepTwoEvent.TapBackButton) }
+            btnContinue.text = if (pageMode == PageMode.CREATE) {
+                getString(R.string.smvc_continue)
+            } else {
+                getText(R.string.smvc_save)
+            }
         }
     }
 
-    private fun renderButtonValidation(
-        isEnabled: Boolean,
-        validationDate: List<VoucherValidationResult.ValidationDate>,
+    private fun backToPreviousStep(currentVoucherConfiguration: VoucherConfiguration) {
+        if (pageMode == PageMode.CREATE) {
+            if (voucherConfiguration.isFinishedFillAllStep()) {
+                navigateToVoucherSummaryPage(currentVoucherConfiguration)
+            } else {
+                navigateToVoucherTypePage(currentVoucherConfiguration)
+            }
+        } else {
+            navigateToVoucherSummaryPage(currentVoucherConfiguration)
+        }
+    }
+
+    private fun navigateToNextStep(
+        pageMode: PageMode,
         voucherConfiguration: VoucherConfiguration
     ) {
-        buttonSectionBinding?.run {
-            btnContinue.apply {
-                val unAvailableDate = validationDate.filter { !it.available }
-                this.isEnabled = isEnabled
-                if (unAvailableDate.isNotEmpty()) {
-                    showCreateVoucherConfirmationDialog(voucherConfiguration)
-                } else {
-                    setOnClickListener { viewModel.processEvent(VoucherCreationStepTwoEvent.NavigateToNextStep(voucherConfiguration)) }
-                }
+        if (pageMode == PageMode.CREATE) {
+            if (voucherConfiguration.isFinishedFillAllStep()) {
+                navigateToVoucherSummaryPage(voucherConfiguration)
+            } else {
+                navigateToVoucherSettingPage(pageMode, voucherConfiguration)
             }
+        } else {
+            navigateToVoucherSummaryPage(voucherConfiguration)
+        }
+    }
+
+    private fun navigateToVoucherTypePage(currentVoucherConfiguration: VoucherConfiguration) {
+        if (this.pageMode == PageMode.CREATE) {
+            context?.let { ctx ->
+                VoucherTypeActivity.buildCreateModeIntent(
+                    ctx,
+                    currentVoucherConfiguration
+                )
+            }
+            activity?.finish()
+        } else {
+            context?.let { ctx ->
+                VoucherTypeActivity.buildEditModeIntent(
+                    ctx,
+                    currentVoucherConfiguration
+                )
+            }
+            activity?.finish()
+        }
+    }
+
+    private fun navigateToVoucherSettingPage(
+        pageMode: PageMode,
+        currentVoucherConfiguration: VoucherConfiguration
+    ) {
+        if (pageMode == PageMode.CREATE) {
+            context?.let { ctx ->
+                VoucherSettingActivity.buildCreateModeIntent(
+                    ctx,
+                    currentVoucherConfiguration
+                )
+            }
+            activity?.finish()
+        } else {
+            context?.let { ctx ->
+                VoucherSettingActivity.buildEditModeIntent(
+                    ctx,
+                    currentVoucherConfiguration
+                )
+            }
+            activity?.finish()
+        }
+    }
+
+    private fun navigateToVoucherSummaryPage(currentVoucherConfiguration: VoucherConfiguration) {
+        context?.let { ctx ->
+            SummaryActivity.start(
+                ctx,
+                currentVoucherConfiguration
+            )
         }
     }
 
@@ -785,10 +967,38 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             setPrimaryCTAText(getString(R.string.smvc_create_voucher_confirmation_primary_cta_label))
             setSecondaryCTAText(getString(R.string.smvc_create_voucher_confirmation_secondary_cta_label))
             setPrimaryCTAClickListener {
-                viewModel.processEvent(VoucherCreationStepTwoEvent.NavigateToNextStep(voucherConfiguration))
+                viewModel.processEvent(
+                    VoucherCreationStepTwoEvent.NavigateToNextStep(
+                        voucherConfiguration
+                    )
+                )
                 dismiss()
             }
             setSecondaryCTAClickListener { dismiss() }
         }?.show()
+    }
+
+    private fun renderButtonValidation(
+        voucherConfiguration: VoucherConfiguration,
+        isEnabled: Boolean,
+        validationDate: List<VoucherValidationResult.ValidationDate>
+    ) {
+        buttonSectionBinding?.run {
+            btnContinue.apply {
+                val unAvailableDate = validationDate.filter { !it.available }
+                this.isEnabled = isEnabled
+                if (unAvailableDate.isNotEmpty()) {
+                    showCreateVoucherConfirmationDialog(voucherConfiguration)
+                } else {
+                    setOnClickListener {
+                        viewModel.processEvent(
+                            VoucherCreationStepTwoEvent.NavigateToNextStep(
+                                voucherConfiguration
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 }

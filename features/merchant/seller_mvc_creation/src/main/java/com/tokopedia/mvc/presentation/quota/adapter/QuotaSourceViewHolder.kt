@@ -12,7 +12,7 @@ class QuotaSourceViewHolder(
     fun bind(item: VoucherCreationQuota.Sources) {
         with(binding) {
             tfText.text = item.name
-            tfQuotaUsage.text = item.used.toString()
+            tfQuotaUsage.text = item.remaining.toString()
             tfQuotaTotal.text = root.context.getString(
                 R.string.smvc_quota_info_quota_total_format,
                 item.total

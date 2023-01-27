@@ -161,7 +161,7 @@
     <string name="mvc_bottomsheet_expense_estimation_point_one">Kuota penggunaan kupon akan berkurang saat transaksi selesai.</string>
     <string name="mvc_bottomsheet_expense_estimation_point_two">1 kuota penggunaan berlaku untuk 1 kali transaksi dari 1 pembeli selama periode berlangsung kupon. Kamu tidak perlu membayar kupon yang tidak digunakan oleh pembeli.</string>
     <string name="mvc_bottomsheet_expense_estimation_footnote_header">Perhitungan pengeluaran</string>
-    <string name="mvc_bottomsheet_expense_estimation_footnote_body">Estimasi = Nominal Promo x Kuota Penggunaan Kupon</string>
+    <string name="mvc_bottomsheet_expense_estimation_footnote_body">Pengeluaran = Nominal Promo x Kuota Penggunaan Kupon</string>
 
     <!--  Promotion Type Bottom Sheet  -->
     <string name="mvc_bottomsheet_promotion_type_title">Tipe Promo</string>
@@ -328,22 +328,25 @@
     <string name="smvc_creation_step_one_out_of_three_sub_title_label">Langkah 1 dari 3</string>
     <string name="smvc_creation_step_one_out_of_four_sub_title_label">Langkah 1 dari 4</string>
     <string name="smvc_ineligible_voucher_creation_error_text">ineligible</string>
+    <string name="smvc_change_voucher_type_confirmation_label">Ganti Jenis Kupon?</string>
+    <string name="smvc_change_voucher_type_confirmation_primary_cta_label">Ya, Ganti</string>
+    <string name="smvc_change_voucher_type_confirmation_description">Mengganti jenis kupon akan mengubah informasi yang harus kamu isi.</string>
     <string name="smvc_voucher_creation_step_one_coachmark_title">Pilih jenis kupon sesuai kebutuhan</string>
     <string name="smvc_voucher_creation_step_one_coachmark_description">Pilih Kupon Toko untuk pasang promo ke semua produk atau pilih Kupon Produk untuk produk-produk pilihanmu saja.</string>
 
     <!--Voucher Creation Step Two-->
     <string name="smvc_creation_step_two_out_of_three_sub_title_label">Langkah 2 dari 3</string>
     <string name="smvc_creation_step_two_out_of_four_sub_title_label">Langkah 2 dari 4</string>
-    <string name="smvc_description_public_voucher_target">Bisa langsung digunakan oleh semua pembeli.</string>
+    <string name="smvc_description_public_voucher_target"><![CDATA[Bisa langsung digunakan oleh <b>semua pembeli.</b>]]></string>
     <string name="smvc_choose_voucher_target_label">Pilih Target Kupon</string>
-    <string name="smvc_description_private_voucher_target">Hanya bisa digunakan pembeli yang menerima kode.</string>
+    <string name="smvc_description_private_voucher_target"><![CDATA[Hanya bisa digunakan <b>pembeli yang menerima kode.</b>]]></string>
     <string name="smvc_voucher_name_label">Nama Kupon</string>
     <string name="smvc_voucher_code_label">Kode Kupon</string>
     <string name="smvc_voucher_active_period_label">Periode Kupon Aktif</string>
     <string name="smvc_start_label">Mulai</string>
     <string name="smvc_end_label">Berakhir</string>
     <string name="smvc_repeat_period_label">Ulangi di Bulan Berikutnya</string>
-    <string name="smvc_repeat_for_label">Ulangi selama</string>
+    <string name="smvc_repeat_for_label">Ulangi Selama</string>
     <string name="smvc_input_count_error">Minimal 5 karakter.</string>
     <string name="smvc_input_empty_error">Kamu belum mengisi informasi ini.</string>
     <string name="smvc_voucher_name_placeholder_label">Contoh Diskon Extra 10%</string>
@@ -391,6 +394,32 @@
     <string name="smvc_create_voucher_confirmation_description">Jika tetap lanjut buat kupon, semua jadwal yang bermasalah tidak akan disertakan.</string>
     <string name="smvc_create_voucher_confirmation_primary_cta_label">Ya, Buat Kupon</string>
     <string name="smvc_create_voucher_confirmation_secondary_cta_label">Batalkan</string>
+    <string name="smvc_larang_label">larang</string>
+    <string name="smvc_pelajari_label">Pelajari</string>
+    <string name="smvc_check_here_label">Cek di sini</string>
+    <string name="smvc_forbidden_words_info_title">Informasi daftar larangan kata</string>
+    <string name="smvc_forbidden_words_info_content">Nama campaign tidak boleh mengandung kata-kata Kejar Diskon, Flash Sale, FlashSale, Toped, Tokopedia, Tkpd, Shopee, Bukalapak, BL, Lazada, kata-kata kasar, atau unsur SARA.</string>
+    <string name="smvc_voucher_creation_step_two_coachmark_title">Buat kupon berulang lebih praktis</string>
+    <string name="smvc_voucher_creation_step_two_coachmark_description">Sekarang kamu bisa ulangi masa aktif kupon untuk beberapa bulan ke depan (maks. 12 bulan) dan bebas tentukan durasinya, lho.</string>
+
+    <!--VoucherCreationStepThree-->
+    <string name="smvc_creation_step_three_out_of_three_sub_title_label">Langkah 3 dari 3</string>
+    <string name="smvc_creation_step_three_out_of_four_sub_title_label">Langkah 3 dari 4</string>
+    <string name="smvc_voucher_setting_label">Pengaturan Kupon</string>
+    <string name="smvc_promo_type_label">Tipe Promo</string>
+    <string name="smvc_deduction_type_label">Tipe Potongan</string>
+    <string name="smvc_rupiah_label">Rp</string>
+    <string name="smvc_percent_symbol">%</string>
+    <string name="smvc_max_deduction_label">Maks. Potongan Harga</string>
+    <string name="smvc_minimum_buy_label">Minimum Pembelian</string>
+    <string name="smvc_quota_label">Kuota</string>
+    <string name="smvc_free_shipping_nominal_label">Nominal Gratis Ongkir</string>
+    <string name="smvc_minimum_buy_desc_label">Nominal harus lebih tinggi dari potongan harga.</string>
+    <string name="smvc_follower_baru_label">Follower Baru</string>
+    <string name="smvc_voucher_creation_step_three_first_coachmark_title">Pilih tipe promo untuk kuponmu</string>
+    <string name="smvc_voucher_creation_step_three_first_coachmark_description">Tentukan mau kasih promo berupa potongan ongkir, cashback, atau potongan harga langsung saat checkout, ke pembeli yang pakai kuponmu.</string>
+    <string name="smvc_voucher_creation_step_three_second_coachmark_title">Tepat sasaran dengan target pembeli yang sesuai</string>
+    <string name="smvc_voucher_creation_step_three_second_coachmark_description">Tentukan target pembeli yang bisa pakai kuponmu agar kupon lebih tepat sasaran.</string>
 
     <!--Success Upload Bottomsheet-->
     <string name="smvc_success_upload_title">Yay, kupon berhasil dibuat!</string>

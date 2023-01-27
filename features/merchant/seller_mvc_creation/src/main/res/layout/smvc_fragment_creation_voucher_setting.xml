@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/voucher_setting"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_shadow="false"
+        app:unify_header_title="@string/smvc_voucher_setting_label" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nsv_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/layout_button_group"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ViewStub
+                android:id="@+id/view_promo_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inflatedId="@+id/promo_type_selection"
+                android:layout="@layout/smvc_voucher_creation_step_three_promo_type_section"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ViewStub
+                android:id="@+id/view_free_shipping_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inflatedId="@+id/free_shipping_input"
+                android:layout="@layout/smvc_voucher_creation_step_three_free_shipping_input_section"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view_promo_type" />
+
+            <ViewStub
+                android:id="@+id/view_cashback_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inflatedId="@+id/cashback_input"
+                android:layout="@layout/smvc_voucher_creation_step_three_cashback_input_section"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view_promo_type" />
+
+            <ViewStub
+                android:id="@+id/view_discount_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inflatedId="@+id/discount_input"
+                android:layout="@layout/smvc_voucher_creation_step_three_discount_input_section"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view_promo_type" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="view_free_shipping_input, view_cashback_input, view_discount_input" />
+
+            <ViewStub
+                android:id="@+id/view_buyer_target"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inflatedId="@+id/buyer_target_selection"
+                android:layout="@layout/smvc_voucher_creation_step_three_buyer_target_section"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/barrier_input" />
+
+            <com.tokopedia.mvc.common.customview.SpendingEstimationLabelView
+                android:id="@+id/label_spending_estimation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="24dp"
+                tools:description_placeholder_text="Tidak ada pemotongan karena kupon berasal dari Tokopedia"
+                tools:spending_estimation_placeholder_text="Rp3.200.000"
+                tools:title_placeholder_text="Pengeluaran hingga saat ini" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <RelativeLayout
+        android:id="@+id/layout_button_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ViewStub
+            android:id="@+id/view_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inflatedId="@+id/button_section"
+            android:layout="@layout/smvc_voucher_creation_step_two_button_section" />
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

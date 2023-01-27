@@ -37,7 +37,7 @@ class VoucherTypeViewModel @Inject constructor(
     fun processEvent(event: VoucherCreationStepOneEvent) {
         when (event) {
             is VoucherCreationStepOneEvent.InitVoucherConfiguration -> {
-                initVoucherConfiguration(event.voucherConfiguration)
+                initVoucherConfiguration(event.pageMode, event.voucherConfiguration)
             }
             is VoucherCreationStepOneEvent.ChooseVoucherType -> {
                 handleVoucherTypeSelection(event.pageMode, event.isVoucherProduct)
@@ -51,9 +51,16 @@ class VoucherTypeViewModel @Inject constructor(
         }
     }
 
-    private fun initVoucherConfiguration(voucherConfiguration: VoucherConfiguration) {
+    private fun initVoucherConfiguration(
+        pageMode: PageMode,
+        voucherConfiguration: VoucherConfiguration
+    ) {
         _uiState.update {
-            it.copy(isLoading = false, voucherConfiguration = voucherConfiguration)
+            it.copy(
+                isLoading = false,
+                pageMode = pageMode,
+                voucherConfiguration = voucherConfiguration
+            )
         }
     }
 
@@ -107,6 +114,16 @@ class VoucherTypeViewModel @Inject constructor(
                 currentState.voucherConfiguration
             )
         )
+        setVoucherCreationStepOneIsFilled()
+    }
+
+    private fun setVoucherCreationStepOneIsFilled() {
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                voucherConfiguration = it.voucherConfiguration.copy(isFinishFilledStepOne = true)
+            )
+        }
     }
 
     private fun handleCoachmark() {

@@ -6,6 +6,7 @@ import com.tokopedia.mvc.domain.entity.enums.PeriodType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.utils.date.addTimeToSpesificDate
+import com.tokopedia.utils.date.removeTime
 import kotlinx.parcelize.Parcelize
 import java.util.*
 
@@ -27,10 +28,17 @@ data class VoucherConfiguration(
     val voucherCodePrefix: String = "",
     val voucherCode: String = "",
     val startPeriod: Date = Date(),
-    val endPeriod: Date = startPeriod.addTimeToSpesificDate(Calendar.MONTH, 1),
+    val endPeriod: Date = startPeriod.addTimeToSpesificDate(Calendar.MONTH, 1).removeTime(),
     val isPeriod: Boolean = false,
     val periodType: Int = PeriodType.MONTH.type,
     val periodRepeat: Int = 0,
     val totalPeriod: Int = 1,
-    val warehouseId: Long = 0
-) : Parcelable
+    val warehouseId: Long = 0,
+    val isFinishFilledStepOne: Boolean = false,
+    val isFinishFilledStepTwo: Boolean = false,
+    val isFinishFilledStepThree: Boolean = false
+) : Parcelable {
+    fun isFinishedFillAllStep(): Boolean {
+        return isFinishFilledStepOne && isFinishFilledStepTwo && isFinishFilledStepThree
+    }
+}

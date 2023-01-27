@@ -15,7 +15,7 @@ class VoucherTypeActivity : BaseSimpleActivity() {
 
     companion object {
         @JvmStatic
-        fun start(
+        fun buildCreateModeIntent(
             context: Context,
             voucherConfiguration: VoucherConfiguration
         ) {

@@ -153,7 +153,8 @@ class VoucherValidationPartialUseCase @Inject constructor(
             startDate = param.startDate,
             endDate = param.endDate,
             startHour = param.startHour,
-            endHour = param.endHour
+            endHour = param.endHour,
+            quota = param.quota
         )
 
         val params = mapOf(REQUEST_PARAM_VOUCHER_VALIDATION_PARTIAL_INPUT to payload)
@@ -184,7 +185,8 @@ class VoucherValidationPartialUseCase @Inject constructor(
         val startDate: String,
         val endDate: String,
         val startHour: String,
-        val endHour: String
+        val endHour: String,
+        val quota: Long
     )
 }
 

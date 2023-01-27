@@ -16,4 +16,7 @@ object BundleConstant {
     const val BUNDLE_KEY_ENABLE_DUPLICATE_VOUCHER = "enable_duplicate_voucher"
     const val BUNDLE_KEY_VOUCHER_QUOTA = "voucher_quota"
     const val BUNDLE_KEY_SHOW_TOOLBAR = "show_toolbar"
+    const val BUNDLE_KEY_VOUCHER_CREATION_STEP_ONE = "voucher_type"
+    const val BUNDLE_KEY_VOUCHER_CREATION_STEP_TWO = "voucher_information"
+    const val BUNDLE_KEY_VOUCHER_CREATION_STEP_THREE = "voucher_setting"
 }
