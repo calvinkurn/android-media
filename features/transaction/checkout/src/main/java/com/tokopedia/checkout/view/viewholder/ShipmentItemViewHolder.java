@@ -37,6 +37,7 @@ import com.tokopedia.checkout.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.adapter.ShipmentInnerProductListAdapter;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
+import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryHolderData;
 import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.kotlin.extensions.view.TextViewExtKt;
 import com.tokopedia.logisticCommon.data.constant.CourierConstant;
@@ -77,9 +78,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import kotlin.Unit;
+import rx.Emitter;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -93,7 +96,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     public static final int ITEM_VIEW_SHIPMENT_ITEM = R.layout.item_shipment_checkout;
 
     private static final int FIRST_ELEMENT = 0;
-
+    private static final int DEBOUNCE_TIME = 1000;
     private static final int DROPSHIPPER_MIN_NAME_LENGTH = 3;
     private static final int DROPSHIPPER_MAX_NAME_LENGTH = 100;
     private static final int DROPSHIPPER_MIN_PHONE_LENGTH = 6;
@@ -216,14 +219,18 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography tvAddOnCostLabel;
     private Typography tvAddOnPrice;
 
+    private ScheduleDeliveryDebouncedListener scheduleDeliveryDebouncedListener;
+    private CompositeSubscription scheduleDeliveryCompositeSubscription;
+
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
     }
 
-    public ShipmentItemViewHolder(View itemView, ShipmentAdapterActionListener actionListener) {
+    public ShipmentItemViewHolder(View itemView, ShipmentAdapterActionListener actionListener, CompositeSubscription scheduleDeliveryCompositeSubscription) {
         super(itemView);
         this.mActionListener = actionListener;
         phoneNumberRegexPattern = Pattern.compile(PHONE_NUMBER_REGEX_PATTERN);
+        this.scheduleDeliveryCompositeSubscription = scheduleDeliveryCompositeSubscription;
 
         bindViewIds(itemView);
     }
@@ -333,6 +340,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
+        initScheduleDeliveryDebouncer();
     }
 
     @Override
@@ -871,7 +879,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     public void onChangeScheduleDelivery(@NonNull ScheduleDeliveryUiModel scheduleDeliveryUiModel) {
         int position = getAdapterPosition();
         if (position != RecyclerView.NO_POSITION) {
-            mActionListener.onChangeScheduleDelivery(scheduleDeliveryUiModel, position);
+            mActionListener.onNeedUpdateViewItem(position);
+            scheduleDeliveryDebouncedListener.onScheduleDeliveryChanged(new ShipmentScheduleDeliveryHolderData(
+                    scheduleDeliveryUiModel,
+                    position
+            ));
         }
     }
 
@@ -1714,6 +1726,33 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 }));
     }
 
+    private void initScheduleDeliveryDebouncer() {
+        scheduleDeliveryCompositeSubscription.add(
+                Observable.create((Action1<Emitter<ShipmentScheduleDeliveryHolderData>>) emitter ->
+                                        scheduleDeliveryDebouncedListener = emitter::onNext,
+                                Emitter.BackpressureMode.LATEST)
+                        .debounce(DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<>() {
+                            @Override
+                            public void onCompleted() {
+                                // no-op
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                // no-op
+                            }
+
+                            @Override
+                            public void onNext(ShipmentScheduleDeliveryHolderData shipmentScheduleDeliveryHolderData) {
+                                mActionListener.onChangeScheduleDelivery(shipmentScheduleDeliveryHolderData.getScheduleDeliveryUiModel(), shipmentScheduleDeliveryHolderData.getPosition());
+                            }
+                        })
+        );
+    }
+
     private void showBottomSheet(Context context, String title, String message, int image) {
         GeneralBottomSheet generalBottomSheet = new GeneralBottomSheet();
         generalBottomSheet.setTitle(title);
@@ -1870,6 +1909,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         void onNeedToSaveState(ShipmentCartItemModel shipmentCartItemModel);
 
+    }
+
+    private interface ScheduleDeliveryDebouncedListener {
+        void onScheduleDeliveryChanged(ShipmentScheduleDeliveryHolderData shipmentScheduleDeliveryHolderData);
     }
 
 }
