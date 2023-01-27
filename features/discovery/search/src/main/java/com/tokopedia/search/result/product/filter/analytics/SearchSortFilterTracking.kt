@@ -1,12 +1,9 @@
 package com.tokopedia.search.result.product.filter.analytics
 
-import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
-import com.tokopedia.search.analytics.SearchEventTracking
-import com.tokopedia.search.analytics.SearchTrackingConstant
 import com.tokopedia.search.utils.joinActiveOptionsToString
 import com.tokopedia.track.TrackApp
 
@@ -44,8 +41,10 @@ object SearchSortFilterTracking {
         pageSource: String,
         selectedSort: Map<String, String>?,
         selectedFilter: Map<String, String>?,
+        sortApplyFilter: Map<String, String>?,
     ) {
         val searchSorts = selectedSort.toSearchFilterString()
+        val applyFilters = sortApplyFilter.toSearchFilterString()
         val searchFilters = selectedFilter.toSearchFilterString()
         SearchSortFilterTrackingModel(
             keyword = keyword,
@@ -53,7 +52,7 @@ object SearchSortFilterTracking {
             valueName = FILTER_VALUE_NAME,
             componentId = FILTER_COMPONENT_ID,
             dimension90 = pageSource,
-            searchFilters = searchSorts+searchFilters,
+            searchFilters = searchSorts+applyFilters+searchFilters,
         )
             .click(TrackApp.getInstance().gtm)
     }

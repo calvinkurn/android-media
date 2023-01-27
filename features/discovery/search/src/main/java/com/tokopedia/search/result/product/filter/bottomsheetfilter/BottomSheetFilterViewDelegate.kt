@@ -108,6 +108,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
             pageSource = pageSource,
             selectedSort = applySortFilterModel.selectedSortMapParameter,
             selectedFilter = applySortFilterModel.selectedFilterMapParameter,
+            sortApplyFilter = applySortFilterModel.sortAutoFilterMapParameter,
         )
     }
 
