@@ -35,8 +35,8 @@ object ProductThumbnailVariantTracking {
             ),
             userId = userId,
             customAction = action,
-            customItemName = itemName,
-            customItemId = "",
+            customItemName = "",
+            customItemId = itemName,
             lcaWarehouseId = ""
         )?.apply {
             put(TrackingConstant.Hit.TRACKER_ID, trackerId)
@@ -67,8 +67,8 @@ object ProductThumbnailVariantTracking {
             componentTrackDataModel = trackData,
             userId = userId,
             customAction = action,
-            customItemName = itemName,
-            customItemId = "",
+            customItemName = "",
+            customItemId = itemName,
             lcaWarehouseId = ""
         )?.apply {
             put(TrackingConstant.Hit.TRACKER_ID, trackerId)
