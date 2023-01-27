@@ -1,6 +1,8 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.core.view.marginBottom
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
@@ -11,9 +13,9 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 
 class TickerViewHolder(
-        itemView: View?,
-        private val navigator: BuyerOrderDetailNavigator,
-        private val listener: TickerViewHolderListener
+    itemView: View?,
+    private val navigator: BuyerOrderDetailNavigator,
+    private val listener: TickerViewHolderListener
 ) : AbstractViewHolder<TickerUiModel>(itemView), TickerCallback {
 
     companion object {
@@ -30,6 +32,12 @@ class TickerViewHolder(
         element?.let {
             this.element = it
             setupTicker(element)
+            val marginVertical = if (element.marginTop == null && element.marginBottom == null) {
+                null
+            } else {
+                Pair(element.marginTop, element.marginBottom)
+            }
+            setupMarginTicker(marginVertical)
         }
     }
 
@@ -52,6 +60,21 @@ class TickerViewHolder(
             setHtmlDescription(tickerDescription)
             setDescriptionClickEvent(this@TickerViewHolder)
             tickerType = Utils.mapTickerType(element.type)
+        }
+    }
+
+    private fun setupMarginTicker(marginVertical: Pair<Int?, Int?>?) {
+        marginVertical?.let {
+            (itemView as? Ticker)?.apply {
+                val layoutParamsMargin = layoutParams as? RecyclerView.LayoutParams
+                marginVertical.first?.let { marginBottom ->
+                    layoutParamsMargin?.bottomMargin = marginBottom
+                }
+                marginVertical.second?.let { marginTop ->
+                    layoutParamsMargin?.topMargin = marginTop
+                }
+                layoutParams = layoutParamsMargin
+            }
         }
     }
 

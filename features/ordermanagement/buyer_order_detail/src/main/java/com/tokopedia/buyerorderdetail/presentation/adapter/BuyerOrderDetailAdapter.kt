@@ -26,6 +26,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
+import com.tokopedia.recommendation_widget_common.R
 
 @Suppress("UNCHECKED_CAST")
 open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFactory) :
@@ -207,7 +208,16 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         context: Context?,
         tickerUiModel: TickerUiModel?
     ) {
-        if (tickerUiModel != null && tickerUiModel.shouldShow(context)) add(tickerUiModel)
+        if (tickerUiModel != null && tickerUiModel.shouldShow(context)) {
+            tickerUiModel.marginBottom = context?.resources?.getDimensionPixelSize(
+                com.tokopedia.buyerorderdetail.R.dimen.unify_space_8
+            )
+            tickerUiModel.marginTop = context?.resources?.getDimensionPixelSize(
+                com.tokopedia.buyerorderdetail.R.dimen.unify_space_8
+            )
+
+            add(tickerUiModel)
+        }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductListSection(
