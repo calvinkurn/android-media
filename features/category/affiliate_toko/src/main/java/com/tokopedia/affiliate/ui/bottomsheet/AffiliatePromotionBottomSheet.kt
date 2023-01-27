@@ -230,7 +230,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     findViewById<Group>(R.id.ssa_group).isVisible = true
                     findViewById<Typography>(R.id.ssa_message).text = params.ssaInfo.message
                     findViewById<Typography>(R.id.ssa_label).text =
-                        params.ssaInfo.label.labelMessage
+                        params.ssaInfo.label.labelText
                     findViewById<Typography>(R.id.ssa_expiry_date).text = params.ssaInfo.ssaMessage
                 }
                 productId = bundle.getString(KEY_PRODUCT_ID, "")

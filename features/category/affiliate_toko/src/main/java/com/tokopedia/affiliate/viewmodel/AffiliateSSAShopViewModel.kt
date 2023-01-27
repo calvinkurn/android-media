@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSSAShopUiModel
 import com.tokopedia.affiliate.usecase.AffiliateSSAShopUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -26,12 +27,13 @@ class AffiliateSSAShopViewModel @Inject constructor(
         launchCatchError(
             block = {
                 affiliateSSAShopUseCase.getSSAShopList(page, limit).data?.let {
-                    if (it.status == SUCCESS) {
-                        noMoreDataAvailable.value = it.shopData.isNullOrEmpty()
-                        // TODO convert to promotion shop model
+                    if (it.data?.status == SUCCESS) {
+                        noMoreDataAvailable.value = it.data.shopData.isNullOrEmpty()
+                        ssaShopList.value =
+                            it.data.shopData?.map { ssaShop -> AffiliateSSAShopUiModel(ssaShop) }
                     } else {
                         progressBar.value = false
-                        errorMessage.value = Throwable(it.error?.message)
+                        errorMessage.value = Throwable(it.data?.error?.message)
                     }
                 }
             },

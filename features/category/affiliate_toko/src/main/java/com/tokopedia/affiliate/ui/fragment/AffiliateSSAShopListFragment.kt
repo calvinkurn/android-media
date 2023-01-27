@@ -45,7 +45,7 @@ class AffiliateSSAShopListFragment : BaseViewModelFragment<AffiliateSSAShopViewM
     var userSessionInterface: UserSessionInterface? = null
 
     private var affiliateSSAShopViewModel: AffiliateSSAShopViewModel? = null
-    private val adapter: AffiliateAdapter by lazy {
+    private val ssaAdapter: AffiliateAdapter by lazy {
         AffiliateAdapter(AffiliateAdapterFactory())
     }
 
@@ -93,22 +93,22 @@ class AffiliateSSAShopListFragment : BaseViewModelFragment<AffiliateSSAShopViewM
         }
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         loadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
-        adapter.setVisitables(ArrayList())
-        view?.findViewById<RecyclerView>(R.id.promotion_recycler_view)?.apply {
+        ssaAdapter.setVisitables(ArrayList())
+        view?.findViewById<RecyclerView>(R.id.ssa_shop_recycler_view)?.apply {
             this.layoutManager = layoutManager
-            this.adapter = adapter
+            this.adapter = ssaAdapter
             loadMoreTriggerListener?.let { this.addOnScrollListener(it) }
         }
         view?.findViewById<SwipeToRefresh>(R.id.ssa_shop_swipe_refresh)?.setOnRefreshListener {
             loadMoreTriggerListener?.resetState()
-            adapter.resetList()
+            ssaAdapter.resetList()
             affiliateSSAShopViewModel?.fetchSSAShopList(PAGE_ZERO)
         }
     }
 
     private fun setObservers() {
         affiliateSSAShopViewModel?.getSSAShopList()?.observe(this) {
-            adapter.addMoreData(it)
+            ssaAdapter.setVisitables(it)
             loadMoreTriggerListener?.updateStateAfterGetData()
         }
         affiliateSSAShopViewModel?.getErrorMessage()?.observe(this) {

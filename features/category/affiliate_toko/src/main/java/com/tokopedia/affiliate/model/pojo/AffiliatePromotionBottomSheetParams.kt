@@ -24,7 +24,7 @@ data class AffiliatePromotionBottomSheetParams(
     ) {
         data class Label(
             val labelType: String,
-            val labelMessage: String
+            val labelText: String
         )
     }
 }

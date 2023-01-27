@@ -1,5 +1,7 @@
 package com.tokopedia.affiliate.ui.viewholder
 
+import android.os.Build
+import android.text.Html
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
@@ -16,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifycomponents.DividerUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
@@ -30,54 +33,66 @@ class AffiliateSSAShopItemVH(
         var LAYOUT = R.layout.affiliate_ssa_shop_item_layout
     }
 
+    private val shopImage = itemView.findViewById<ImageView>(R.id.imageMain)
+    private val shopName = itemView.findViewById<Typography>(R.id.textViewTitle)
+    private val imageBadge = itemView.findViewById<ImageView>(R.id.imageTitleEmblem)
+    private val ssaMessage = itemView.findViewById<Typography>(R.id.ssa_message)
+    private val textRating = itemView.findViewById<Typography>(R.id.textViewRating)
+    private val imageRating = itemView.findViewById<ImageView>(R.id.imageRating)
+    private val textLocation = itemView.findViewById<Typography>(R.id.textViewFooterLocation)
+    private val imageLocation = itemView.findViewById<ImageUnify>(R.id.imageFooter)
+    private val itemSold = itemView.findViewById<Typography>(R.id.textViewItemSold)
+    private val buttonPromotion = itemView.findViewById<UnifyButton>(R.id.buttonPromotion)
+    private val ratingDivider = itemView.findViewById<DividerUnify>(R.id.ratingDivider)
+
     override fun bind(element: AffiliateSSAShopUiModel?) {
         element?.ssaShop?.let {
-            itemView.findViewById<ImageView>(R.id.imageMain)
-                .loadImageRounded(it.ssaShopDetail?.imageURL?.androidURL)
-            itemView.findViewById<Typography>(R.id.textViewTitle).text = it.ssaShopDetail?.shopName
+            shopImage.loadImageRounded(it.ssaShopDetail?.imageURL?.androidURL)
+            shopName.text = it.ssaShopDetail?.shopName
             if (it.ssaShopDetail?.badgeURL?.isNotEmpty() == true) {
-                itemView.findViewById<ImageView>(R.id.imageTitleEmblem).apply {
+                imageBadge.apply {
                     visible()
                     loadImage(it.ssaShopDetail.badgeURL)
                 }
             }
-            itemView.findViewById<Typography>(R.id.ssa_message).apply {
+            ssaMessage.apply {
                 visible()
-                text = it.ssaShopDetail?.message
+                text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    Html.fromHtml(it.ssaShopDetail?.message, Html.FROM_HTML_MODE_LEGACY)
+                } else {
+                    Html.fromHtml(it.ssaShopDetail?.message)
+                }
             }
-
             setUpFooterData(it.ssaShopDetail)
             setUpPromotionClickListener(it)
         }
     }
 
-    private fun setUpFooterData(item: AffiliateSSAShopListResponse.Data.ShopDataItem.SSAShopDetail?) {
+    private fun setUpFooterData(item: AffiliateSSAShopListResponse.Data.SSAShop.ShopDataItem.SSAShopDetail?) {
         item?.rating?.let { rating ->
             if (rating > 0) {
-                itemView.findViewById<Typography>(R.id.textViewRating).apply {
+                textRating.apply {
                     visible()
                     text = item.rating.toString()
                 }
-                itemView.findViewById<ImageView>(R.id.imageRating).visible()
+                imageRating.visible()
             }
         }
-
-        itemView.findViewById<Typography>(R.id.textViewFooterLocation).apply {
-            itemView.findViewById<ImageView>(R.id.imageFooter).visible()
+        textLocation.apply {
+            imageLocation.visible()
             visible()
             text = item?.shopLocation
         }
-
-        itemView.findViewById<Typography>(R.id.textViewItemSold).apply {
+        itemSold.apply {
             visible()
             text = getString(R.string.affiliate_ssa_terjual, item?.quantitySold.toString())
-            itemView.findViewById<DividerUnify>(R.id.ratingDivider).isVisible =
+            ratingDivider.isVisible =
                 item?.rating != null && item.rating > 0 && item.quantitySold != null
         }
     }
 
-    private fun setUpPromotionClickListener(item: AffiliateSSAShopListResponse.Data.ShopDataItem?) {
-        itemView.findViewById<UnifyButton>(R.id.buttonPromotion)?.run {
+    private fun setUpPromotionClickListener(item: AffiliateSSAShopListResponse.Data.SSAShop.ShopDataItem?) {
+        buttonPromotion?.run {
             visibility = View.VISIBLE
             buttonType = UnifyButton.Type.MAIN
             buttonVariant = UnifyButton.Variant.GHOST
@@ -97,7 +112,7 @@ class AffiliateSSAShopItemVH(
         }
     }
 
-    private fun sendClickEvent(item: AffiliateSSAShopListResponse.Data.ShopDataItem?) {
+    private fun sendClickEvent(item: AffiliateSSAShopListResponse.Data.SSAShop.ShopDataItem?) {
         AffiliateAnalytics.trackEventImpression(
             AffiliateAnalytics.EventKeys.SELECT_CONTENT,
             AffiliateAnalytics.ActionKeys.CLICK_SSA_SHOP_PAGE,
