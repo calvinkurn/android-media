@@ -22,6 +22,8 @@ import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProduc
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DESC_ERROR_NO_IMAGE_FILENAME
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DESC_ERROR_NO_IMAGE_URL
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TITLE_ERROR_DOWNLOAD_IMAGE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TITLE_ERROR_SAVING_DRAFT
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -270,6 +272,14 @@ open class AddEditProductAddService : AddEditProductBaseService() {
                     downloadFile(url = picture.urlOriginal, filename = picture.fileName)
                     picture.picID = String.EMPTY
                     picture.urlOriginal = path
+                } else if (picture.urlOriginal.isBlank()) {
+                    val picId = picture.picID
+                    AddEditProductErrorHandler.logMessage("$TITLE_ERROR_DOWNLOAD_IMAGE - $DESC_ERROR_NO_IMAGE_URL - $picId")
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(IllegalArgumentException())
+                } else if (picture.fileName.isBlank()) {
+                    val picId = picture.picID
+                    AddEditProductErrorHandler.logMessage("$TITLE_ERROR_DOWNLOAD_IMAGE - $DESC_ERROR_NO_IMAGE_FILENAME - $picId")
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(IllegalArgumentException())
                 }
             }
         }

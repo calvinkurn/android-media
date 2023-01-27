@@ -34,6 +34,8 @@ class AddEditProductPreviewConstants {
         const val TITLE_ERROR_UPLOAD_IMAGE = "Error upload image"
         const val TITLE_ERROR_DOWNLOAD_IMAGE = "Error download image"
         const val TITLE_ERROR_SAVING_DRAFT = "Error saving draft"
+        const val DESC_ERROR_NO_IMAGE_URL = "No image url"
+        const val DESC_ERROR_NO_IMAGE_FILENAME = "No image filename"
         const val DRAFT_SHOWCASE_ID = "0"
         const val SHOP_ID = "shop_id"
         const val POSTAL_CODE = "postal_code"
