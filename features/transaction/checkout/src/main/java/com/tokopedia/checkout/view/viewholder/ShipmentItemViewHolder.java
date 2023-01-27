@@ -96,7 +96,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     public static final int ITEM_VIEW_SHIPMENT_ITEM = R.layout.item_shipment_checkout;
 
     private static final int FIRST_ELEMENT = 0;
-    private static final int DEBOUNCE_TIME = 1000;
+    private static final int DEBOUNCE_TIME = 1500;
     private static final int DROPSHIPPER_MIN_NAME_LENGTH = 3;
     private static final int DROPSHIPPER_MAX_NAME_LENGTH = 100;
     private static final int DROPSHIPPER_MIN_PHONE_LENGTH = 6;
