@@ -11,7 +11,7 @@ import androidx.core.view.marginRight
 import androidx.core.view.marginTop
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.cart.databinding.LayoutBottomsheetCartBundlingCrossSellBinding
+import com.tokopedia.cart.databinding.LayoutBottomsheetCartBundlingBinding
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.common.ProductServiceWidgetConstant
 import com.tokopedia.kotlin.extensions.view.gone
@@ -38,9 +38,7 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
         private const val TAG = "CartBundlingBottomSheet"
         private const val KEY_DATA = "key_data"
 
-        fun newInstance(
-            data: CartBundlingBottomSheetData,
-        ): CartBundlingBottomSheet {
+        fun newInstance(data: CartBundlingBottomSheetData): CartBundlingBottomSheet {
             return CartBundlingBottomSheet().apply {
                 arguments = Bundle().apply {
                     putParcelable(KEY_DATA, data)
@@ -49,18 +47,24 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private var binding by autoClearedNullable<LayoutBottomsheetCartBundlingCrossSellBinding>()
-    private val data by lazy {
-        requireNotNull(arguments?.getParcelable<CartBundlingBottomSheetData>(KEY_DATA))
-    }
+    private var binding by autoClearedNullable<LayoutBottomsheetCartBundlingBinding>()
     private var listener: CartBundlingBottomSheetListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = LayoutBottomsheetCartBundlingCrossSellBinding
+        binding = LayoutBottomsheetCartBundlingBinding
             .inflate(LayoutInflater.from(context), null, false)
         setChild(binding?.root)
 
+        val data = arguments?.getParcelable<CartBundlingBottomSheetData>(KEY_DATA)
+        if (data != null) {
+            renderContent(data)
+        } else {
+            dismiss()
+        }
+    }
+
+    private fun renderContent(data: CartBundlingBottomSheetData) {
         setTitle(data.title)
         binding?.descriptionLabel?.text = MethodChecker.fromHtml(data.description)
         val bundleParam = GetBundleParamBuilder()
