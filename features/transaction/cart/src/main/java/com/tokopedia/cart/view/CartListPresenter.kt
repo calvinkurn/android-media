@@ -2120,8 +2120,8 @@ class CartListPresenter @Inject constructor(
         val hasCheckedProductWithBundle = cartShopHolderData.productUiModelList
             .any { it.isSelected && !it.isBundlingItem  && it.bundleIds.isNotEmpty() }
         val hasCheckedBundleProduct = cartShopHolderData.productUiModelList
-            .any { it.isSelected && it.isBundlingItem &&  it.bundleIds.isNotEmpty() }
-        return cartShopHolderData.cartShopGroupTicker.enableBundleCrossSell
-            && hasCheckedProductWithBundle && !hasCheckedBundleProduct
+            .any { it.isSelected && it.isBundlingItem && it.bundleIds.isNotEmpty() }
+        return cartShopHolderData.cartShopGroupTicker.enableBundleCrossSell &&
+            hasCheckedProductWithBundle && !hasCheckedBundleProduct
     }
 }
