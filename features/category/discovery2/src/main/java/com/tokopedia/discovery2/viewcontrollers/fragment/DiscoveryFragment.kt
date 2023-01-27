@@ -1111,16 +1111,6 @@ class DiscoveryFragment :
     private fun showUniversalShareBottomSheet(data: PageInfo?) {
         data?.let { pageInfo ->
             universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-                if (this@DiscoveryFragment.isAffiliateInitialized) {
-                    val inputShare = AffiliatePDPInput().apply {
-                        pageDetail = PageDetail(pageId = "0", pageType = "campaign", siteId = "1", verticalId = "1", pageName = pageEndPoint)
-                        pageType = PageType.CAMPAIGN.value
-                        product = Product()
-                        shop = Shop(shopID = "0", shopStatus = 0, isOS = false, isPM = false)
-                    }
-                    setAffiliateRequestHolder(inputShare)
-                    affiliateRequestDataReceived(true)
-                }
                 init(this@DiscoveryFragment)
                 setUtmCampaignData(
                     this@DiscoveryFragment.context?.resources?.getString(R.string.discovery) ?: UTM_DISCOVERY,
@@ -1138,7 +1128,24 @@ class DiscoveryFragment :
                 )
                 setOgImageUrl(pageInfo.share?.image ?: "")
             }
-            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment, screenshotDetector)
+            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment, screenshotDetector) {
+                if (this@DiscoveryFragment.isAffiliateInitialized) {
+                    val inputShare = AffiliatePDPInput().apply {
+                        pageDetail = PageDetail(
+                            pageId = "0",
+                            pageType = "campaign",
+                            siteId = "1",
+                            verticalId = "1",
+                            pageName = pageEndPoint
+                        )
+                        pageType = PageType.CAMPAIGN.value
+                        product = Product()
+                        shop = Shop(shopID = "0", shopStatus = 0, isOS = false, isPM = false)
+                    }
+                    universalShareBottomSheet?.setAffiliateRequestHolder(inputShare)
+                    universalShareBottomSheet?.affiliateRequestDataReceived(true)
+                }
+            }
             shareType = UniversalShareBottomSheet.getShareBottomSheetType()
             getDiscoveryAnalytics().trackUnifyShare(
                 VIEW_DISCOVERY_IRIS,
