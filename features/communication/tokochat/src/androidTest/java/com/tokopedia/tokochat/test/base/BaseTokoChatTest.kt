@@ -7,7 +7,11 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
+import com.gojek.conversations.ConversationsRepository
+import com.gojek.conversations.babble.network.data.OrderChatType
 import com.gojek.conversations.database.ConversationsDatabase
+import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
+import com.gojek.conversations.network.ConversationsNetworkError
 import com.jakewharton.espresso.OkHttp3IdlingResource
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokochat.tokochat_config_common.di.module.TokoChatConfigContextModule
@@ -29,6 +33,7 @@ import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub
 import com.tokopedia.tokochat.stub.domain.usecase.TokoChatChannelUseCaseStub
 import com.tokopedia.tokochat.stub.view.TokoChatActivityStub
+import com.tokopedia.tokochat.view.chatroom.TokoChatViewModel
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import kotlinx.coroutines.Dispatchers
@@ -92,7 +97,8 @@ abstract class BaseTokoChatTest {
             okHttp3IdlingResource,
             idlingResourceDatabaseMessage,
             idlingResourceDatabaseChannel,
-            idlingResourceGroupBooking
+            idlingResourceGroupBooking,
+            idlingResourcePrepareDb
         )
         mockWebServer.start(8090)
         resetDatabase()
@@ -108,7 +114,8 @@ abstract class BaseTokoChatTest {
             okHttp3IdlingResource,
             idlingResourceDatabaseMessage,
             idlingResourceDatabaseChannel,
-            idlingResourceGroupBooking
+            idlingResourceGroupBooking,
+            idlingResourcePrepareDb
         )
     }
 
@@ -217,6 +224,31 @@ abstract class BaseTokoChatTest {
         }
     }
 
+    // Need to prepare before class,
+    // in case the database is not ready after been deleted from other test class
+    private fun prepareDatabase() {
+        ConversationsRepository.instance!!.initGroupBookingChat(
+            GOJEK_ORDER_ID_DUMMY,
+            TokoChatViewModel.TOKOFOOD_SERVICE_TYPE,
+            object : ConversationsGroupBookingListener {
+                override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
+                    if (!idlingResourcePrepareDb.isIdleNow) {
+                        idlingResourcePrepareDb.decrement()
+                    }
+                }
+                override fun onGroupBookingChannelCreationStarted() {
+                    idlingResourcePrepareDb.increment()
+                }
+                override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
+                    if (!idlingResourcePrepareDb.isIdleNow) {
+                        idlingResourcePrepareDb.decrement()
+                    }
+                }
+            },
+            OrderChatType.Unknown
+        )
+    }
+
     companion object {
         const val USER_ID_DUMMY = "835a69de-577e-4881-bf1d-4e3eed13c643"
         const val GOJEK_ORDER_ID_DUMMY = "F-68720537282"
@@ -232,6 +264,9 @@ abstract class BaseTokoChatTest {
         )
         val idlingResourceGroupBooking = CountingIdlingResource(
             "tokochat-groupbooking"
+        )
+        val idlingResourcePrepareDb = CountingIdlingResource(
+            "tokochat-prepare-db"
         )
 
         var shouldWaitForChatHistory: Boolean = true
