@@ -14,10 +14,11 @@
         android:background="@drawable/bg_macro_container_dynamic_icon"
         android:visibility="visible"
         android:alpha="0"
+        android:maxWidth="60dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintStart_toStartOf="@id/dynamic_icon_typography"
+        app:layout_constraintEnd_toEndOf="@id/dynamic_icon_typography"/>
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/dynamic_icon_image_view"
@@ -31,11 +32,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/dynamic_icon_typography"
-        android:layout_width="56dp"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginHorizontal="2dp"
+        android:paddingHorizontal="2dp"
         android:ellipsize="end"
         android:maxLines="2"
         android:gravity="center_horizontal"
