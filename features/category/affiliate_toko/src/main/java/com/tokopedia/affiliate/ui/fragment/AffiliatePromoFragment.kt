@@ -118,6 +118,7 @@ class AffiliatePromoFragment :
             AffiliateBottomSheetPromoCopyPasteInfo.newInstance().show(childFragmentManager, "")
         }
         view?.findViewById<CardUnify2>(R.id.card_ssa_entry)?.setOnClickListener {
+            sendClickEvent()
             context?.let {
                 startActivity(
                     Intent(it, AffiliateSSAShopListActivity::class.java)
@@ -127,6 +128,16 @@ class AffiliatePromoFragment :
         setupViewPager()
         showDefaultState()
         affiliatePromoViewModel.getAffiliateValidateUser()
+    }
+
+    private fun sendClickEvent() {
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_SSA_SHOP_BANNER,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
+            "",
+            userSessionInterface.userId
+        )
     }
 
     fun handleBack() {
