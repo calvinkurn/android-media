@@ -67,20 +67,30 @@ class ChooseDateAdapter(
         }
 
         private fun setTextColor(buttonDateUiModel: ButtonDateUiModel) {
-            if (!buttonDateUiModel.isEnabled) {
-                binding.tvTitleDate.setTextColor(
-                    MethodChecker.getColor(
-                        itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN400
-                    )
+            updateTextColor(
+                colorId = if (!buttonDateUiModel.isEnabled) {
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                } else if (buttonDateUiModel.isSelected) {
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                } else {
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                }
+            )
+        }
+
+        private fun updateTextColor(colorId: Int) {
+            binding.tvTitleDate.setTextColor(
+                MethodChecker.getColor(
+                    itemView.context,
+                    colorId
                 )
-                binding.tvDate.setTextColor(
-                    MethodChecker.getColor(
-                        itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN400
-                    )
+            )
+            binding.tvDate.setTextColor(
+                MethodChecker.getColor(
+                    itemView.context,
+                    colorId
                 )
-            }
+            )
         }
 
         private fun setLabelOufOfSlot(buttonDateUiModel: ButtonDateUiModel) {
