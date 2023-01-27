@@ -336,6 +336,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private var imageGeneratorParam: ImageGeneratorParamModel? = null
 
+    private var imageThumbnailListener: ((imageUrl: String) -> Unit)? = null
+
+    private var isInitialClickThumbnail = true
+
     // parent fragment lifecycle observer
     private val parentFragmentLifecycleObserver by lazy {
         object : DefaultLifecycleObserver {
@@ -673,6 +677,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                     revImageOptionsContainer?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     Handler(Looper.getMainLooper()).postDelayed({
                         revImageOptionsContainer?.findViewHolderForAdapterPosition(0)?.itemView?.performClick()
+                        isInitialClickThumbnail = false
                     }, DELAY_TIME_MILLISECOND)
                 }
             })
@@ -1015,8 +1020,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     fun updateThumbnailImage(imgUrl: String) {
+        if (!isInitialClickThumbnail) {
+            imageThumbnailListener?.invoke(imgUrl)
+        }
         thumbNailImage?.setImageUrl(imgUrl)
         ogImageUrl = imgUrl
+    }
+
+    fun setSelectThumbnailImageListener(listener: (imgUrl: String) -> Unit) {
+        imageThumbnailListener = listener
     }
 
     fun setUtmCampaignData(pageName: String, userId: String, pageId: String, feature: String) {
@@ -1219,6 +1231,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         try {
             onViewReadyAction = null
             affiliateListener = null
+            imageThumbnailListener = null
             clearData()
             removeLifecycleObserverAndSavedImage()
             if (gqlCallJob?.isActive == true) {
@@ -1237,6 +1250,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         try {
             onViewReadyAction = null
             affiliateListener = null
+            imageThumbnailListener = null
             clearData()
             removeLifecycleObserverAndSavedImage()
             if (gqlCallJob?.isActive == true) {

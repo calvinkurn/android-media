@@ -1,69 +1,21 @@
 <resources>
-    <string name="app_name">TkpdContent</string>
-    <string name="action_share">Share</string>
-    <string name="action_share_detail">Share</string>
-    <string name="action_like">Like</string>
-    <string name="action_follow_english">Follow</string>
-    <string name="read_more_english">Read More</string>
-    <string name="comment">Comment</string>
-    <string name="following">Following</string>
-    <string name="empty_kol_post">Belum ada post</string>
-    <string name="explore_more_button">Explore More</string>
-    <string name="kol_post_deleted">Post berhasil dihapus</string>
-    <string name="kol_error_delete">Terjadi kesalahan saat menghapus post.</string>
-
     <!--Kol Comment-->
     <string name="kol_title_comment">Comments</string>
-    <string name="prompt_delete_comment_kol">Apakah anda ingin menghapus komen ini?</string>
-    <string name="success_delete_kol_comment">Sukses menghapus komentar</string>
     <string name="see_more_comments">Lihat komen sebelumnya</string>
     <string name="write_comment">Tulis komentar…</string>
-
-    <!-- Kol Comment New -->
+    <string name="kol_reply">Balas</string>
     <string name="kol_activity_title">Komentar</string>
     <string name="kol_delete_1_comment">1 Komentar dihapus.</string>
     <string name="kol_delete_comment_ok">Kembalikan</string>
     <string name="kol_adding_comment_error">Oops, tidak bisa memberi komentar.</string>
     <string name="kol_deleting_comment_error">Oops, tidak bisa menghapus komentar.</string>
 
-    <!--Kol Following List-->
-    <string name="title_following_kol">Following</string>
-    <string name="title_follower_kol">Followers</string>
-    <string name="title_create_post">Create Post</string>
-
     <!--Kol Post Detail-->
     <string name="kol_title_post_detail">Postingan</string>
-    <string name="add_your_comment">Masukan komen kamu</string>
-    <string name="see_all_comment">Lihat Semua Comments (%d)</string>
-    <string name="post_detail_follow_success_toast">Cek Feeds mu sekarang untuk melihat update TopProfile ini</string>
-    <string name="post_detail_follow_success_check_now">Cek Sekarang</string>
-    <string name="post_detail_empty_title">Duh, halamannya gak ketemu</string>
-    <string name="post_detail_empty_sub">Sabar ya, mungkin halamannya udah dihapus</string>
-    <string name="post_detail_empty_btn">Kembali</string>
-    <!--Kol Post-->
-    <string name="title_post">Pilih gambar</string>
-    <string name="empty_own_feed_title">Feed Tokomu Kosong</string>
-    <string name="empty_own_feed_subtitle">Post sesuatu untuk follower tokomu, yuk!</string>
-    <string name="empty_own_feed_button">Mulai Buat Post</string>
-    <string name="kol_post_something">Post sesuatu untuk follower tokomu, yuk!</string>
-    <string name="kol_create_post">Buat Post</string>
-    <string name="kol_add_image">Tambah Gambar</string>
-    <string name="kol_add_photo">Tambah Foto</string>
-
-    <!--Kol Comment-->
-    <string name="kol_reply">Balas</string>
-
-    <!--Kol Media Preview-->
-    <string name="kol_title_media_preview">Media Preview</string>
-    <string name="kol_invalid_protocol_format">TkpdVideoPlayer: invalid source media format.</string>
-    <string name="kol_invalid_protocol_type">TkpdVideoPlayer: Only supported http, https, rtmp, and file format.</string>
 
     <!--Kol Video Detail-->
     <string name="kol_title_video_detail">Video Detail</string>
     <string name="kol_error_unknown">Kesalahan tidak diketahui</string>
-
-    <!--Kol Post Youtube-->
-    <string name="kol_title_post_youtube">Post Youtube</string>
 
     <!--Report-->
     <string name="kol_title_report">Laporan Konten</string>

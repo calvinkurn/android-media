@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_back"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_margin="@dimen/spacing_lvl4"
+        app:icon_name="ARROW_BACK"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:text="@string/play_shorts_summary_title"
+        app:layout_constraintBottom_toBottomOf="@id/ic_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ic_back"
+        app:layout_constraintTop_toTopOf="@id/ic_back"
+        app:typographyType="heading_3" />
+
+    <View
+        android:id="@+id/view_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/play_shorts_summary_divider_height"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:background="@color/Unify_NN200"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_cover"
+        android:layout_width="@dimen/play_summary_cover_width"
+        android:layout_height="@dimen/play_summary_cover_height"
+        android:scaleType="centerInside"
+        android:layout_margin="@dimen/spacing_lvl4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_divider"
+        app:unify_image_corner_radius="3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_short_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_cover"
+        app:layout_constraintTop_toTopOf="@id/iv_cover"
+        app:typographyType="heading_4"
+        tools:text="Sneakers Hypebeast with Cashback 10%" />
+
+    <View
+        android:id="@+id/view_title_divider"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/play_shorts_summary_divider_height"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:background="@color/Unify_NN200"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toBottomOf="@id/tv_short_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_cover"
+        />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_profile"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:icon_name="CALENDAR"
+        app:layout_constraintStart_toStartOf="@id/tv_short_title"
+        app:layout_constraintTop_toBottomOf="@id/view_title_divider" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:layout_constraintBottom_toBottomOf="@id/iv_profile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_profile"
+        app:layout_constraintTop_toTopOf="@id/iv_profile"
+        app:typographyType="body_3"
+        tools:text="Jonathan Darwin" />
+
+    <include
+        android:id="@+id/layout_tag_recommendation"
+        layout="@layout/layout_tag_recommendation"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_cover"
+        app:layout_constraintBottom_toTopOf="@id/fl_button_sticky"
+        />
+
+    <FrameLayout
+        android:id="@+id/fl_button_sticky"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_Background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_upload_video"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_lvl4"
+            android:text="@string/play_shorts_summary_upload_action"
+            app:unifyButtonSize="medium" />
+
+    </FrameLayout>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/toaster_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/fl_button_sticky"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

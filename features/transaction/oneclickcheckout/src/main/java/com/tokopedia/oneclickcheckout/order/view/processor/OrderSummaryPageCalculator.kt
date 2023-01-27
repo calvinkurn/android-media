@@ -286,7 +286,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             // This is for add on shop level
             val addOnShopLevel = orderCart.shop.addOn.addOnsDataItemModelList.firstOrNull()
             if (addOnShopLevel != null) {
-                totalAddOnPrice += addOnShopLevel.addOnPrice.toDouble()
+                totalAddOnPrice += addOnShopLevel.addOnPrice
                 hasAddOn = true
             }
 
@@ -331,7 +331,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     // This is for add on product level
                     val addOnProductLevel = product.addOn.addOnsDataItemModelList.firstOrNull()
                     if (addOnProductLevel != null) {
-                        totalAddOnPrice += addOnProductLevel.addOnPrice.toDouble()
+                        totalAddOnPrice += addOnProductLevel.addOnPrice
                         hasAddOn = true
                     }
                 }
