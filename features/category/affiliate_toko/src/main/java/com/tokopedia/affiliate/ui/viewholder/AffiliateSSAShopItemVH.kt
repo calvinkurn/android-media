@@ -10,9 +10,11 @@ import com.tokopedia.affiliate.AVAILABLE
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.PAGE_TYPE_SHOP
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
+import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
 import com.tokopedia.affiliate.model.response.AffiliateSSAShopListResponse
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSSAShopUiModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -106,7 +108,16 @@ class AffiliateSSAShopItemVH(
                     item?.ssaShopDetail?.uRLDetail?.androidURL.orEmpty(),
                     item?.ssaShopDetail?.shopId.toString(),
                     AVAILABLE,
-                    PAGE_TYPE_SHOP
+                    PAGE_TYPE_SHOP,
+                    ssaInfo = AffiliatePromotionBottomSheetParams.SSAInfo(
+                        ssaStatus = item?.ssaShopDetail?.ssaStatus.orFalse(),
+                        ssaMessage = item?.ssaShopDetail?.ssaMessage.orEmpty(),
+                        message = item?.ssaShopDetail?.message.orEmpty(),
+                        label = AffiliatePromotionBottomSheetParams.SSAInfo.Label(
+                            labelType = item?.ssaShopDetail?.label?.labelType.orEmpty(),
+                            labelText = item?.ssaShopDetail?.label?.labelText.orEmpty()
+                        )
+                    )
                 )
             }
         }

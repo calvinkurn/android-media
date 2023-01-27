@@ -14,7 +14,10 @@ import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.interfaces.ProductClickInterface
+import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.viewmodel.AffiliateSSAShopViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
@@ -34,7 +37,9 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class AffiliateSSAShopListFragment : BaseViewModelFragment<AffiliateSSAShopViewModel>() {
+class AffiliateSSAShopListFragment :
+    BaseViewModelFragment<AffiliateSSAShopViewModel>(),
+    ProductClickInterface {
 
     @JvmField
     @Inject
@@ -46,7 +51,7 @@ class AffiliateSSAShopListFragment : BaseViewModelFragment<AffiliateSSAShopViewM
 
     private var affiliateSSAShopViewModel: AffiliateSSAShopViewModel? = null
     private val ssaAdapter: AffiliateAdapter by lazy {
-        AffiliateAdapter(AffiliateAdapterFactory())
+        AffiliateAdapter(AffiliateAdapterFactory(productClickInterface = this))
     }
 
     private var isNoMoreData: Boolean = false
@@ -167,5 +172,26 @@ class AffiliateSSAShopListFragment : BaseViewModelFragment<AffiliateSSAShopViewM
         DaggerAffiliateComponent.builder()
             .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
             .build().injectSSAShopListFragment(this)
+    }
+
+    override fun onProductClick(
+        productId: String,
+        productName: String,
+        productImage: String,
+        productUrl: String,
+        productIdentifier: String,
+        status: Int?,
+        type: String?,
+        ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?
+    ) {
+        AffiliatePromotionBottomSheet.newInstance(
+            AffiliatePromotionBottomSheetParams(
+                null, productId, productName, productImage, productUrl, productIdentifier,
+                AffiliatePromotionBottomSheet.ORIGIN_HOME, true, type = type,
+                ssaInfo = ssaInfo
+            ),
+            AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
+            null
+        ).show(childFragmentManager, "")
     }
 }

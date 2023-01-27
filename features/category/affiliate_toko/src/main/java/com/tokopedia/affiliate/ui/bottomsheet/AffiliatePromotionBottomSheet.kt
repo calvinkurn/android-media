@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,6 +47,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -210,13 +212,6 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
     private fun afterViewSet() {
         contentView?.run {
             arguments?.let { bundle ->
-                findViewById<Typography>(R.id.product_name).text =
-                    bundle.getString(KEY_PRODUCT_NAME)
-                findViewById<ImageUnify>(R.id.product_image).loadImage(
-                    bundle.getString(
-                        KEY_PRODUCT_IMAGE
-                    )
-                )
                 val params: AffiliatePromotionBottomSheetParams? =
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         bundle.getSerializable(
@@ -226,21 +221,34 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     } else {
                         bundle.getSerializable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
                     }
+                findViewById<Typography>(R.id.product_name).text =
+                    params?.itemName ?: bundle.getString(KEY_PRODUCT_NAME)
+                findViewById<ImageUnify>(R.id.product_image).loadImage(
+                    params?.itemImage ?: bundle.getString(KEY_PRODUCT_IMAGE)
+                )
+
                 if (params?.ssaInfo?.ssaStatus == true) {
                     findViewById<Group>(R.id.ssa_group).isVisible = true
-                    findViewById<Typography>(R.id.ssa_message).text = params.ssaInfo.message
-                    findViewById<Typography>(R.id.ssa_label).text =
+                    findViewById<Typography>(R.id.ssa_message).text =
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            Html.fromHtml(params.ssaInfo.message, Html.FROM_HTML_MODE_LEGACY)
+                        } else {
+                            Html.fromHtml(params.ssaInfo.message)
+                        }
+                    findViewById<Label>(R.id.ssa_label).text =
                         params.ssaInfo.label.labelText
                     findViewById<Typography>(R.id.ssa_expiry_date).text = params.ssaInfo.ssaMessage
                 }
-                productId = bundle.getString(KEY_PRODUCT_ID, "")
-                url = bundle.getString(KEY_PRODUCT_URL, "")
-                identifier = bundle.getString(KEY_PRODUCT_IDENTIFIER)
-                originScreen = bundle.getInt(KEY_ORIGIN, ORIGIN_PROMOSIKAN)
-                isLinkGenerationEnabled = bundle.getBoolean(KEY_LINK_GEN_ENABLED)
-                commission = bundle.getString(KEY_COMMISON_PRICE, "")
-                status = bundle.getString(KEY_STATUS, "")
-                type = bundle.getString(KEY_TYPE, PAGE_TYPE_PDP)
+                productId =
+                    params?.itemId ?: bundle.getString(KEY_PRODUCT_ID, "")
+                url = params?.itemUrl ?: bundle.getString(KEY_PRODUCT_URL, "")
+                identifier = params?.productIdentifier ?: bundle.getString(KEY_PRODUCT_IDENTIFIER)
+                originScreen = params?.origin ?: bundle.getInt(KEY_ORIGIN, ORIGIN_PROMOSIKAN)
+                isLinkGenerationEnabled =
+                    params?.isLinkGenerationEnabled ?: bundle.getBoolean(KEY_LINK_GEN_ENABLED)
+                commission = params?.commission ?: bundle.getString(KEY_COMMISON_PRICE, "")
+                status = params?.status ?: bundle.getString(KEY_STATUS, "")
+                type = params?.type ?: bundle.getString(KEY_TYPE, PAGE_TYPE_PDP)
             }
 
             if (sheetType == SheetType.ADD_SOCIAL) {
