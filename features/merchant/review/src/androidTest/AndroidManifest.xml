@@ -50,5 +50,22 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".stub.bulk_write_review.presentation.activity.BulkReviewActivityStub"
+            android:exported="false"
+            android:label="@string/title_activity_bulk_review"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_bulk_create_review"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>
