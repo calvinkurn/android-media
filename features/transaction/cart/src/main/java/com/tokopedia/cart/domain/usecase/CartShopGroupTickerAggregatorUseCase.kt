@@ -23,11 +23,7 @@ class CartShopGroupTickerAggregatorUseCase @Inject constructor(
         return QUERY
     }
 
-    // buat class baru untuk param, include RatesParam + enableBo + enableBundle
     override suspend fun execute(params: CartShopGroupTickerAggregatorParam): CartShopGroupTickerAggregatorResponse {
-//        TODO: Remove this after staging BE available
-        return Gson().fromJson(DUMMY_SUCCESS, CartShopGroupTickerAggregatorResponse::class.java)
-//        return Gson().fromJson(DUMMY_FAILED, CartShopGroupTickerAggregatorResponse::class.java)
         return graphqlRepository.request(CartShopGroupTickerAggregatorQuery(), params.toMap())
     }
 
@@ -57,44 +53,6 @@ class CartShopGroupTickerAggregatorUseCase @Inject constructor(
                         }
                     }
                 }
-            }
-        """
-
-        // TODO: Remove this after staging BE available
-        const val DUMMY_SUCCESS = """
-            {
-              "error_message": [],
-              "status": "SUCCESS",
-              "data": {
-                "min_transaction": 50000,
-                "ticker": {
-                  "text": "+Rp10.900 lagi di toko ini, ongkir Rp10.000 <s>Rp30.000</s>",
-                  "icon": {
-                    "left_icon": "https://assets.tokopedia.net/asts/cartapp/icons/courier_fast.svg",
-                    "left_icon_dark": "https://assets.tokopedia.net/asts/cartapp/icons/courier_fast.svg",
-                    "right_icon": "https://images.tokopedia.net/img/cartapp/icons/chevron_right_grey.png",
-                    "right_icon_dark": "https://images.tokopedia.net/img/cartapp/icons/chevron_right_grey.png"
-                  },
-                  "applink": "tokopedia://now",
-                  "action": "open_bottomsheet_bundling"
-                },
-                "bundle_bottomsheet": {
-                    "title": "Dapatkan bebas ongkir",
-                    "description": "Dengan beli Paket Bundling atau beli produk lain, kamu bisa dapat Bebas Ongkir.",
-                    "bottom_ticker": "Tidak mau beli paketan? Cek produk lain di <a href=\"tokopedia://shop/480552\">toko ini</a> dan <a href=\"tokopedia://now\">toko 2</a>"
-                }
-              }
-            }
-        """
-        const val DUMMY_FAILED = """
-            {
-              "error_message": ["Internal Server Error"],
-              "status": "ERROR",
-              "data": {
-                "min_transaction": 0,
-                "ticker": {},
-                "bundle_bottomsheet": {}
-              }
             }
         """
     }

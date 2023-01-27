@@ -168,7 +168,7 @@ class CartListPresenter @Inject constructor(
     // Store last cart shop group ticker cart string for debounce handling
     var lastCartShopGroupTickerCartString: String = ""
 
-    // Bo affordability debounce job
+    // Cart shop ticker debounce job
     var cartShopGroupTickerJob: Job? = null
 
     companion object {
@@ -1935,8 +1935,6 @@ class CartListPresenter @Inject constructor(
         cartShopGroupTickerJob = launch(dispatchers.io) {
             try {
                 delay(CART_SHOP_GROUP_TICKER_DELAY)
-                // kalo user ada centang salah satu product bundle berarti enableBundle=false,
-                // cek juga kalo user hanya centang product2 yang ga ada bundleIds => enableBundle=false
                 val enableBundleCrossSell = checkEnableBundleCrossSell(cartShopHolderData)
                 if (!cartShopHolderData.cartShopGroupTicker.enableBoAffordability && !enableBundleCrossSell) {
                     cartShopHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.EMPTY
