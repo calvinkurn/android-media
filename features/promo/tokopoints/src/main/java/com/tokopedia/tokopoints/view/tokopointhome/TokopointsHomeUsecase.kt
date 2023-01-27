@@ -63,6 +63,7 @@ class TokopointsHomeUsecase @Inject constructor(@Named(CommonConstant.GQLQuery.T
         variables[CommonConstant.GraphqlVariableKeys.SAVING_YEAR] = Calendar.getInstance().get(Calendar.YEAR)
         variables[CommonConstant.GraphqlVariableKeys.SAVING_MONTH] = 0
         variables[CommonConstant.GraphqlVariableKeys.SAVING_TYPE] = 1
+        variables[CommonConstant.GraphqlVariableKeys.APIVERSION] = "2.0"
         tpHomeUsecase.clearRequest()
         val requestSaving = GraphqlRequest(tp_gql_usersaving,UserSavingResponse::class.java,variables,false)
         tpHomeUsecase.addRequest(requestSaving)
