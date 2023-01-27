@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorderdetail.domain.models
 
-
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -284,7 +283,7 @@ data class GetBuyerOrderDetailResponse(
                         @SerializedName("title")
                         val title: String = "",
                         @SerializedName("info")
-                        val info: String = "",
+                        val info: String = ""
                     )
                 }
             }
@@ -453,7 +452,10 @@ data class GetBuyerOrderDetailResponse(
                 @Expose
                 val nonBundles: List<NonBundle>? = listOf(),
                 @SerializedName("partial_fulfillment")
-                val partialFulfillment: PartialFulfillment = PartialFulfillment(),                @SerializedName("total_products")
+                val partialFulfillment: PartialFulfillment = PartialFulfillment(),
+                @SerializedName("ticker_info")
+                val tickerInfo: TickerInfo = TickerInfo(),
+                @SerializedName("total_products")
                 @Expose
                 val totalProducts: Long = 0
             ) {
@@ -757,7 +759,7 @@ data class GetBuyerOrderDetailResponse(
                                 val to: String = "",
                                 @SerializedName("from")
                                 @Expose
-                                val from: String = "",
+                                val from: String = ""
                             )
                         }
                     }

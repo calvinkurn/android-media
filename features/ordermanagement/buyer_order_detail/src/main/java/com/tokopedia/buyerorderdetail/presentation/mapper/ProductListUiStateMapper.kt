@@ -13,6 +13,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.StringRes
+import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -91,8 +92,10 @@ object ProductListUiStateMapper {
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean
     ): ProductListUiState {
-        return when (val insuranceDetailRequestState =
-            p1DataRequestState.getInsuranceDetailRequestState) {
+        return when (
+            val insuranceDetailRequestState =
+                p1DataRequestState.getInsuranceDetailRequestState
+        ) {
             is GetInsuranceDetailRequestState.Requesting -> {
                 mapOnGetInsuranceDetailRequesting(
                     buyerOrderDetailData,
@@ -324,7 +327,7 @@ object ProductListUiStateMapper {
         isPof: Boolean,
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
-        collapseProductList: Boolean,
+        collapseProductList: Boolean
     ): ProductListUiModel {
         val (numOfRemovedProductBundle, productBundlingList) = mapProductBundle(
             details?.bundles,
@@ -365,6 +368,7 @@ object ProductListUiStateMapper {
                 isPof = isPof
             )
         } ?: (Int.ZERO to emptyList())
+        val tickerDetails = mapTickerDetails(details?.tickerInfo)
         return ProductListUiModel(
             productList = nonProductBundlingList,
             productUnFulfilledList = unFulfilledProductList,
@@ -380,7 +384,7 @@ object ProductListUiStateMapper {
                 numOfRemovedAddOnsList = numOfRemovedAddOn,
                 numOfRemovedUnFulfilledProduct = numOfRemovedUnfulfilled
             ),
-            isPof = isPof
+            tickerInfo = tickerDetails
         )
     }
 
@@ -439,7 +443,7 @@ object ProductListUiStateMapper {
                 orderStatusId,
                 isPof,
                 insuranceDetailData,
-                singleAtcResultFlow,
+                singleAtcResultFlow
             )
         }.orEmpty()
         return numOfRemovedNonBundles to mappedNonBundles
@@ -512,6 +516,18 @@ object ProductListUiStateMapper {
         }
     }
 
+    private fun mapTickerDetails(tickerInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.TickerInfo?): TickerUiModel? {
+        return tickerInfo?.let {
+            TickerUiModel(
+                actionKey = tickerInfo.actionKey,
+                actionText = tickerInfo.actionText,
+                actionUrl = tickerInfo.actionUrl,
+                description = tickerInfo.text,
+                type = tickerInfo.type
+            )
+        }
+    }
+
     private fun mapPofUnfulfilledHeaderLabelUiModel(
         partialFulfillment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.PartialFulfillment?
     ): ProductListUiModel.ProductPofHeaderLabelUiModel? {
@@ -523,7 +539,6 @@ object ProductListUiStateMapper {
             )
         }
     }
-
 
     private fun getAddonsSectionOrderLevel(
         addonInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.AddonInfo?,

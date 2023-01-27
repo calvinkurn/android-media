@@ -3,7 +3,6 @@ package com.tokopedia.buyerorderdetail.presentation.model
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
-import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.PartialOrderFulfillmentTypeFactoryImpl
 import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 import com.tokopedia.kotlin.extensions.view.orZero
 
@@ -16,7 +15,7 @@ data class ProductListUiModel(
     val productListHeaderUiModel: ProductListHeaderUiModel,
     val addonsListUiModel: AddonsListUiModel?,
     val productListToggleUiModel: ProductListToggleUiModel?,
-    val isPof: Boolean
+    val tickerInfo: TickerUiModel?
 ) {
 
     fun getAllProduct(): List<ProductUiModel> {
@@ -117,7 +116,7 @@ data class ProductListUiModel(
         val title: String,
         val quantity: String,
         val isUnfulfilled: Boolean
-    ): BaseVisitableUiModel {
+    ) : BaseVisitableUiModel {
         override fun shouldShow(context: Context?): Boolean {
             return title.isNotBlank() || quantity.isNotBlank()
         }
@@ -129,6 +128,5 @@ data class ProductListUiModel(
         override fun type(typeFactory: BuyerOrderDetailTypeFactory): Int {
             return typeFactory.type(this)
         }
-
     }
 }

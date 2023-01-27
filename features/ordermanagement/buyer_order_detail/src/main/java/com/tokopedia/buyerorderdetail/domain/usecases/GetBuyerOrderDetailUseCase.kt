@@ -12,7 +12,8 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class GetBuyerOrderDetailUseCase @Inject constructor(
-    dispatchers: CoroutineDispatchers, private val repository: GraphqlRepository
+    dispatchers: CoroutineDispatchers,
+    private val repository: GraphqlRepository
 ) : BaseGraphqlUseCase<GetBuyerOrderDetailParams, GetBuyerOrderDetailRequestState>(dispatchers) {
 
     override fun graphqlQuery() = QUERY
@@ -385,6 +386,13 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                         }
                       }
                     }
+                  }
+                  ticker_info {
+                    text
+                    action_text
+                    action_key
+                    action_url
+                    type
                   }
                 }
                 addon_info {
