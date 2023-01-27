@@ -2641,8 +2641,9 @@ open class DynamicProductDetailFragment :
             singleVariant = singleVariant,
             optionalVariant = null // because thumb variant is not optional variant but single variant
         )
+        val optionId = selectedChild?.optionIds?.firstOrNull().orEmpty()
         pdpUiUpdater?.updateSingleVariant(singleVariant)
-        pdpUiUpdater?.updateMediaScrollPosition(selectedChild?.optionIds?.firstOrNull())
+        pdpUiUpdater?.updateMediaScrollPosition(optionId)
 
         // store the product id to this variable to open vbs later
         productIdThumbnailSelected = selectedChild?.productId.ifNull { productId.orEmpty() }
