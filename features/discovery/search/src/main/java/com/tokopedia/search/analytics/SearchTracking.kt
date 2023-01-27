@@ -12,7 +12,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
-import java.util.*
+import java.util.Locale
 
 /**
  * Created by henrypriyono on 1/5/18.
