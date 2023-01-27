@@ -40,6 +40,7 @@ import com.tokopedia.affiliate.interfaces.AffiliatePerformaClickInterfaces
 import com.tokopedia.affiliate.interfaces.AffiliatePerformanceChipClick
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
+import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
 import com.tokopedia.affiliate.model.response.AffiliateUserPerformaListItemData
 import com.tokopedia.affiliate.model.response.ItemTypesItem
 import com.tokopedia.affiliate.setAnnouncementData
@@ -471,7 +472,8 @@ class AffiliateHomeFragment :
         productUrl: String,
         productIdentifier: String,
         status: Int?,
-        type: String?
+        type: String?,
+        ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?
     ) {
         if (status == AffiliateSharedProductCardsItemVH.PRODUCT_ACTIVE) {
             AffiliatePromotionBottomSheet.newInstance(
