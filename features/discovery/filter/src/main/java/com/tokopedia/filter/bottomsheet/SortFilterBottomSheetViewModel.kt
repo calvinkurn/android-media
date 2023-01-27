@@ -580,7 +580,7 @@ internal class SortFilterBottomSheetViewModel {
     fun getSortAutoFilterMap(): Map<String, String> {
         val activeFilterMap = filterController.getActiveFilterMap()
         val hasNoDuplicateFilter = sortApplyFilterMap.none { activeFilterMap.containsKey(it.key) }
-        return if (hasNoDuplicateFilter) sortApplyFilterMap else mapOf()
+        return if (hasNoDuplicateFilter) sortApplyFilterMap else emptyMap()
     }
 
     fun resetSortAndFilter() {
