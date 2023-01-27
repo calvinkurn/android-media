@@ -76,7 +76,7 @@ class PofConfirmRejectBottomSheet : BottomSheetUnify() {
 
     private fun setupViews() {
         binding?.run {
-            ivPovConfirmReject.loadImage("")
+            ivPovConfirmReject.loadImage(POF_REJECT_IMAGE_URL)
             setBtnPrimaryCancellation()
             setBtnSecondaryBack()
         }
@@ -144,6 +144,7 @@ class PofConfirmRejectBottomSheet : BottomSheetUnify() {
 
     companion object {
         const val POF_REJECT_ORDER_ID_KEY = "pof_reject_order_id_key"
+        private const val POF_REJECT_IMAGE_URL = "https://images.tokopedia.net/img/android/buyer_order_detail/pof_livingroom.png"
 
         private val TAG = PofConfirmRejectBottomSheet::class.java.simpleName
 
