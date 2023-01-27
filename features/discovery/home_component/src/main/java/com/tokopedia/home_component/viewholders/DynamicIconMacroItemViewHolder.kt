@@ -11,17 +11,16 @@ import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.animation.Interpolator
 import androidx.annotation.LayoutRes
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.R
+import com.tokopedia.home_component.databinding.HomeComponentDynamicIconItemInteractionBinding
 import com.tokopedia.home_component.listener.DynamicIconComponentListener
 import com.tokopedia.home_component.model.DynamicIconComponent
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by dhaba
@@ -30,10 +29,6 @@ class DynamicIconMacroItemViewHolder(
     itemView: View,
     private val listener: DynamicIconComponentListener
 ) : RecyclerView.ViewHolder(itemView) {
-    private var iconTvName: Typography? = null
-    private var iconImageView: ImageUnify? = null
-    private var iconContainer: ConstraintLayout? = null
-    private var containerRipple: ConstraintLayout? = null
     private val longPressHandler = Handler(Looper.getMainLooper())
     private var isLongPress = false
     private var scaleAnimator = ValueAnimator.ofFloat()
@@ -47,6 +42,7 @@ class DynamicIconMacroItemViewHolder(
         isLongPress = true
         itemView.performLongClick()
     }
+    private var binding: HomeComponentDynamicIconItemInteractionBinding? by viewBinding()
 
     companion object {
         @LayoutRes
@@ -68,8 +64,8 @@ class DynamicIconMacroItemViewHolder(
         scaleAnimator.removeAllUpdateListeners()
         scaleAnimator.addUpdateListener {
             val value = it.animatedValue as Float
-            iconImageView?.scaleX = value
-            iconImageView?.scaleY = value
+            binding?.dynamicIconImageView?.scaleX = value
+            binding?.dynamicIconImageView?.scaleY = value
         }
         scaleAnimator.duration = duration
         scaleAnimator.interpolator = pathInterpolator
@@ -87,15 +83,15 @@ class DynamicIconMacroItemViewHolder(
         rippleAnimator.removeAllListeners()
         rippleAnimator.removeAllUpdateListeners()
         rippleAnimator.addUpdateListener {
-            containerRipple?.visible()
+            binding?.containerRippleDynamicIcons?.visible()
             val value = it.animatedValue as Float
             if (start < end) {
-                containerRipple?.scaleX = value
-                containerRipple?.scaleY = value
+                binding?.containerRippleDynamicIcons?.scaleX = value
+                binding?.containerRippleDynamicIcons?.scaleY = value
             }
             val alpha =
                 ((value - SCALE_MIN_IMAGE) / (SCALE_MAX_IMAGE - SCALE_MIN_IMAGE)) * MAX_ALPHA_RIPPLE
-            containerRipple?.alpha = alpha
+            binding?.containerRippleDynamicIcons?.alpha = alpha
             currentScaleRipple = value
         }
         rippleAnimator.duration = duration
@@ -111,23 +107,19 @@ class DynamicIconMacroItemViewHolder(
         type: Int,
         isCache: Boolean
     ) {
-        iconTvName = itemView.findViewById(R.id.dynamic_icon_typography)
-        iconImageView = itemView.findViewById(R.id.dynamic_icon_image_view)
-        iconContainer = itemView.findViewById(R.id.dynamic_icon_container)
-        containerRipple = itemView.findViewById(R.id.container_ripple_dynamic_icons)
-        iconTvName?.text = item.name
-        iconImageView?.setImageUrl(item.imageUrl)
-        iconContainer?.layoutParams = ViewGroup.LayoutParams(
+        binding?.dynamicIconTypography?.text = item.name
+        binding?.dynamicIconImageView?.setImageUrl(item.imageUrl)
+        binding?.dynamicIconContainer?.layoutParams = ViewGroup.LayoutParams(
             if (isScrollable) ViewGroup.LayoutParams.WRAP_CONTENT else ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
-        iconContainer?.setOnTouchListener { _, event ->
+        binding?.dynamicIconContainer?.setOnTouchListener { _, event ->
             when (event?.action) {
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     longPressHandler.removeCallbacks(onLongPress)
                     Handler(Looper.getMainLooper()).postDelayed(
                         {
-                            if (iconImageView?.scaleX == SCALE_MIN_IMAGE) {
+                            if (binding?.dynamicIconImageView?.scaleX == SCALE_MIN_IMAGE) {
                                 animateScaling(
                                     SCALE_MIN_IMAGE,
                                     SCALE_MAX_IMAGE,
