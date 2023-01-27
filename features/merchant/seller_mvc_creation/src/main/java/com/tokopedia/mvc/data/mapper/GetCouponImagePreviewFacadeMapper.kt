@@ -116,12 +116,6 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
                 else -> BENEFIT_TYPE_IDR
             }
 
-            val couponType = when (voucherConfiguration.promoType) {
-                PromoType.CASHBACK -> "cashback"
-                PromoType.FREE_SHIPPING -> "shipping"
-                else -> ""
-            }
-
             return UpdateCouponRequestParams(
                 voucherId = couponId,
                 benefitIdr = voucherConfiguration.benefitIdr,
@@ -130,7 +124,7 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
                 benefitType = benefitType,
                 code = voucherConfiguration.voucherCode,
                 couponName = voucherConfiguration.voucherName,
-                couponType = couponType,
+                couponType = voucherConfiguration.promoType.text,
                 dateStart = startDate,
                 dateEnd = endDate,
                 hourStart = startHour,
@@ -165,11 +159,6 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
                 voucherConfiguration.promoType == PromoType.CASHBACK && voucherConfiguration.benefitType == BenefitType.PERCENTAGE -> BENEFIT_TYPE_PERCENT
                 else -> BENEFIT_TYPE_IDR
             }
-            val couponType = when (voucherConfiguration.promoType) {
-                PromoType.CASHBACK -> "cashback"
-                PromoType.FREE_SHIPPING -> "shipping"
-                else -> ""
-            }
 
             return CreateCouponProductParams(
                 benefitIdr = voucherConfiguration.benefitIdr,
@@ -178,7 +167,7 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
                 benefitType = benefitType,
                 code = voucherConfiguration.voucherCode,
                 couponName = voucherConfiguration.voucherName,
-                couponType = couponType,
+                couponType = voucherConfiguration.promoType.text,
                 dateStart = startDate,
                 dateEnd = endDate,
                 hourStart = startHour,
