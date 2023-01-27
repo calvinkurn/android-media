@@ -508,6 +508,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
         var eventAction = ""
         var eventCategory = ""
         var eventLabel = ""
+        var event = AffiliateAnalytics.EventKeys.CLICK_PG
         when (originScreen) {
             ORIGIN_HOME -> {
                 eventAction =
@@ -521,13 +522,14 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 eventLabel = "$linkID - $entryFlag - $status"
             }
             ORIGIN_SSA_SHOP -> {
+                event = AffiliateAnalytics.EventKeys.CLICK_CONTENT
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_SSA_SHOP
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
                 eventLabel = "$linkID - active - $status - komisi extra"
             }
         }
         AffiliateAnalytics.sendEvent(
-            AffiliateAnalytics.EventKeys.CLICK_PG,
+            event,
             eventAction,
             eventCategory,
             eventLabel,

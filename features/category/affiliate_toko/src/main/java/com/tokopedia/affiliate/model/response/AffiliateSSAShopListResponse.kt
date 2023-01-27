@@ -56,7 +56,7 @@ data class AffiliateSSAShopListResponse(
                 @SerializedName("SSAShopDetail")
                 val ssaShopDetail: SSAShopDetail? = null,
 
-                @SerializedName("SSACommissionDetail")
+                @SerializedName("CommissionDetail")
                 val ssaCommissionDetail: SSACommissionDetail? = null
             ) {
 
