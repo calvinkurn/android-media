@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.usercomponents.databinding.FragmentDebugUserConsentBinding
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -36,6 +37,12 @@ open class UserConsentDebugFragment: BaseDaggerFragment() {
             )
             viewBinding?.sampleUserConsent?.show()
             viewBinding?.textPayloadData?.hide()
+        }
+        viewBinding?.buttonAction?.setOnClickListener {
+            viewBinding?.sampleUserConsent?.submitConsent()
+        }
+        viewBinding?.sampleUserConsent?.setOnNeedConsentListener { needConsent ->
+            viewBinding?.buttonAction?.showWithCondition(needConsent)
         }
     }
 

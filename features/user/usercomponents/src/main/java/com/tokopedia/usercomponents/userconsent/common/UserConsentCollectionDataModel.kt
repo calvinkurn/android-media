@@ -26,7 +26,7 @@ data class UserConsentCollectionDataModel(
         @SerializedName("attributes")
         var attributes: AttributeDataModel = AttributeDataModel(),
         @SerializedName("needConsent")
-        val needConsent: Boolean? = null
+        var needConsent: Boolean? = null
     ) {
         data class PurposeDataModel(
             @SerializedName("id")

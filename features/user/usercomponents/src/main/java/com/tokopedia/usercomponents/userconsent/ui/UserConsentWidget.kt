@@ -197,7 +197,7 @@ class UserConsentWidget : FrameLayout,
                             } else {
                                 onSuccessGetConsentCollection()
                             }
-                            onNeedConsentListener.invoke(collection?.needConsent == true)
+                            onNeedConsentListener.invoke(needConsent != false)
                         }
                     }
                 }
@@ -500,6 +500,10 @@ class UserConsentWidget : FrameLayout,
 
     fun setOnNeedConsentListener(listener: (Boolean) -> Unit) {
         onNeedConsentListener = listener
+    }
+
+    fun isNeedConsent(): Boolean {
+        return needConsent != false
     }
 
     companion object {
