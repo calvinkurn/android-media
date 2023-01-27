@@ -2917,7 +2917,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         DynamicDataPassingParamRequest ddpParam = new DynamicDataPassingParamRequest();
         ArrayList<DynamicDataPassingParamRequest.DynamicDataParam> listDataParam = new ArrayList<DynamicDataPassingParamRequest.DynamicDataParam>();
         // donation
-        if (cartShipmentAddressFormData.getDonation().isChecked()) {
+        if (cartShipmentAddressFormData.getDonation() != null && cartShipmentAddressFormData.getDonation().isChecked()) {
             DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
             dynamicDataParam.setLevel(DynamicDataPassingMapper.PAYMENT_LEVEL);
             dynamicDataParam.setUniqueId("");
