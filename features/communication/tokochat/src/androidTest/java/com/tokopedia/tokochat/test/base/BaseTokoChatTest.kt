@@ -179,6 +179,7 @@ abstract class BaseTokoChatTest {
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
+        Thread.sleep(5000) // Test sleep for every test cases
     }
 
     private fun setupDaggerComponent() {
