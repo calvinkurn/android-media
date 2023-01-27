@@ -173,11 +173,11 @@
         app:typographyType="display_3"
         tools:text="Tidak ada kurir yang mendukung pengiriman barang ini ke alamatmu. Caring barang lain atau Ganti Alamat." />
 
-<!--    <androidx.constraintlayout.widget.Group-->
-<!--        android:id="@+id/pdp_shipment_group_tc"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:constraint_referenced_ids="pdp_shipment_tc_label, pdp_shipment_tc_icon, pdp_shipment_tc_value"-->
-<!--        tools:visibility="gone" />-->
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/pdp_shipment_group_tc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="pdp_shipment_tc_label, pdp_shipment_tc_icon, pdp_shipment_tc_value"
+        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
