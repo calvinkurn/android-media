@@ -60,7 +60,6 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import java.util.*
@@ -236,6 +235,16 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             state.isInputValid(),
             state.validationDate
         )
+        renderVoucherStartPeriodSelection(
+            state.voucherConfiguration,
+        state.isStartDateError,
+        state.startDateErrorMsg
+        )
+        renderVoucherEndPeriodSelection(
+            state.voucherConfiguration,
+            state.isEndDateError,
+            state.endDateErrorMsg
+        )
     }
 
     private fun handleAction(action: VoucherCreationStepTwoAction) {
@@ -296,6 +305,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         setupVoucherPeriodSection()
         setupButtonSection()
         presetValue()
+        hideTextFieldLabel()
     }
 
     private fun presetValue() {
@@ -308,18 +318,6 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             voucherCodeSectionBinding?.tfVoucherCode?.run {
                 editText.setText(voucherConfiguration.voucherCode)
             }
-            voucherPeriodSectionBinding?.run {
-                tfVoucherStartPeriod.editText.setText(
-                    voucherConfiguration.startPeriod.formatTo(
-                        DATE_TIME_MINUTE_PRECISION
-                    )
-                )
-                tfVoucherEndPeriod.editText.setText(
-                    voucherConfiguration.endPeriod.formatTo(
-                        DATE_TIME_MINUTE_PRECISION
-                    )
-                )
-            }
         }
         if (pageMode == PageMode.EDIT) {
             voucherCodeSectionBinding?.run {
@@ -329,6 +327,23 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 cbRepeatPeriod.disable()
             }
         }
+        voucherPeriodSectionBinding?.run {
+            tfVoucherStartPeriod.editText.setText(
+                voucherConfiguration.startPeriod.formatTo(
+                    DATE_TIME_MINUTE_PRECISION
+                )
+            )
+            tfVoucherEndPeriod.editText.setText(
+                voucherConfiguration.endPeriod.formatTo(
+                    DATE_TIME_MINUTE_PRECISION
+                )
+            )
+        }
+    }
+
+    private fun hideTextFieldLabel() {
+        voucherNameSectionBinding?.tfVoucherName?.labelText?.gone()
+        voucherCodeSectionBinding?.tfVoucherCode?.labelText?.gone()
     }
 
     private fun setupHeader() {

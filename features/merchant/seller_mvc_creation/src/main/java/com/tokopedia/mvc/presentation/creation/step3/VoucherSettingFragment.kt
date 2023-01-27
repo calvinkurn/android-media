@@ -34,6 +34,7 @@ import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherCreationStepThreeFieldValidation
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.QuotaInformationBottomSheet
 import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeAction
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeEvent
@@ -41,6 +42,7 @@ import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStep
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
+import com.tokopedia.mvc.util.extension.setMaxLength
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
@@ -68,6 +70,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
 
         private const val DEBOUNCE = 300L
+        private const val NOMINAL_INPUT_MAX_LENGTH = 9
     }
 
     // binding
@@ -349,6 +352,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             setupSpendingEstimationSection()
             setupButtonSection()
             presetValue()
+            hideTextFieldLabel()
         }
     }
 
@@ -374,6 +378,28 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 tfDiscountMinimumBuy.editText.setText(currentVoucherConfiguration.minPurchase.toString())
                 tfDiscountQuota.editText.setText(currentVoucherConfiguration.quota.toString())
             }
+        }
+    }
+
+    private fun hideTextFieldLabel() {
+        freeShippingInputSectionBinding?.apply {
+            tfFreeShippingNominal.labelText.gone()
+            tfFreeShippingMinimumBuy.labelText.gone()
+            tfFreeShippingQuota.labelText.gone()
+        }
+        cashbackInputSectionBinding?.apply {
+            tfCashbackNominal.labelText.gone()
+            tfCashbackPercentage.labelText.gone()
+            tfCahsbackMaxDeduction.labelText.gone()
+            tfCashbackMinimumBuy.labelText.gone()
+            tfCashbackQuota.labelText.gone()
+        }
+        discountInputSectionBinding?.apply {
+            tfDiscountNominal.labelText.gone()
+            tfDiscountPercentage.labelText.gone()
+            tfDiscountMaxDeduction.labelText.gone()
+            tfDiscountMinimumBuy.labelText.gone()
+            tfDiscountQuota.labelText.gone()
         }
     }
 
@@ -477,6 +503,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setFreeShippingNominalInput() {
         freeShippingInputSectionBinding?.run {
             tfFreeShippingNominal.apply {
+                setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
                         VoucherCreationStepThreeEvent.OnInputNominalChanged(editText.text.toString())
@@ -499,6 +526,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setFreeShippingMinimumBuyInput() {
         freeShippingInputSectionBinding?.run {
             tfFreeShippingMinimumBuy.apply {
+                setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
                         VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(editText.text.toString())
@@ -521,6 +549,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setFreeShippingQuotaInput() {
         freeShippingInputSectionBinding?.run {
             tfFreeShippingQuota.apply {
+                setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
                         VoucherCreationStepThreeEvent.OnInputQuotaChanged(editText.text.toString())
@@ -536,6 +565,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                         )
                     }
                     .launchIn(lifecycleScope)
+            }
+            icInfo.setOnClickListener {
+                QuotaInformationBottomSheet.newInstance().show(childFragmentManager)
             }
         }
     }
@@ -621,6 +653,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setCashbackNominalInput() {
         cashbackInputSectionBinding?.run {
             tfCashbackNominal.apply {
+                setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
                         VoucherCreationStepThreeEvent.OnInputNominalChanged(editText.text.toString())
@@ -650,6 +683,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setCashbackPercentageInput() {
         cashbackInputSectionBinding?.run {
             tfCashbackPercentage.apply {
+                setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
                         VoucherCreationStepThreeEvent.OnInputPercentageChanged(editText.text.toString())
@@ -679,6 +713,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setCashbackMaxDeductionInput() {
         cashbackInputSectionBinding?.run {
             tfCahsbackMaxDeduction.apply {
+                setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
                         VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged(editText.text.toString())
@@ -701,6 +736,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setCashbackMinimumBuyInput() {
         cashbackInputSectionBinding?.run {
             tfCashbackMinimumBuy.apply {
+                setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
                         VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(editText.text.toString())
@@ -723,6 +759,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setCashbackQuotaInput() {
         cashbackInputSectionBinding?.run {
             tfCashbackQuota.apply {
+                setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
                         VoucherCreationStepThreeEvent.OnInputQuotaChanged(editText.text.toString())
@@ -738,6 +775,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                         )
                     }
                     .launchIn(lifecycleScope)
+            }
+            icInfo.setOnClickListener {
+                QuotaInformationBottomSheet.newInstance().show(childFragmentManager)
             }
         }
     }
@@ -843,6 +883,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountNominalInput() {
         discountInputSectionBinding?.run {
             tfDiscountNominal.apply {
+                setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
                         VoucherCreationStepThreeEvent.OnInputNominalChanged(editText.text.toString())
@@ -872,6 +913,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountPercentageInput() {
         discountInputSectionBinding?.run {
             tfDiscountPercentage.apply {
+                setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
                         VoucherCreationStepThreeEvent.OnInputPercentageChanged(editText.text.toString())
@@ -901,6 +943,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountMaxDeductionInput() {
         discountInputSectionBinding?.run {
             tfDiscountMaxDeduction.apply {
+                setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
                         VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged(editText.text.toString())
@@ -923,6 +966,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountMinimumBuyInput() {
         discountInputSectionBinding?.run {
             tfDiscountMinimumBuy.apply {
+                setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
                         VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(editText.text.toString())
@@ -945,6 +989,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountQuotaInput() {
         discountInputSectionBinding?.run {
             tfDiscountQuota.apply {
+                setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
                         VoucherCreationStepThreeEvent.OnInputQuotaChanged(editText.text.toString())
@@ -960,6 +1005,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                         )
                     }
                     .launchIn(lifecycleScope)
+            }
+            icInfo.setOnClickListener {
+                QuotaInformationBottomSheet.newInstance().show(childFragmentManager)
             }
         }
     }

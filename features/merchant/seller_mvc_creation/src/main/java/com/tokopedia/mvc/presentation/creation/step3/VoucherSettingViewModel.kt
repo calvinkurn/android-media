@@ -343,8 +343,7 @@ class VoucherSettingViewModel @Inject constructor(
                 VoucherTargetBuyer.ALL_BUYER
             )
             voucherType.isProductVoucher() && voucherTarget.isPublic() && promoType.isCashback() -> listOf(
-                VoucherTargetBuyer.ALL_BUYER,
-                VoucherTargetBuyer.NEW_FOLLOWER
+                VoucherTargetBuyer.ALL_BUYER
             )
             voucherType.isProductVoucher() && voucherTarget.isPublic() && promoType.isFreeShipping() -> listOf(
                 VoucherTargetBuyer.ALL_BUYER

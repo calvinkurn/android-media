@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parent_free_shipping"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/parent_free_shipping">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpg_free_shipping_nominal_label"
@@ -71,6 +71,16 @@
         app:layout_constraintTop_toBottomOf="@+id/tf_free_shipping_minimum_buy"
         app:typographyType="display_2"
         app:typographyWeight="bold" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_info"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="4dp"
+        app:icon_name="INFORMATION"
+        app:layout_constraintBottom_toBottomOf="@+id/tpg_free_shipping_quota_label"
+        app:layout_constraintStart_toEndOf="@+id/tpg_free_shipping_quota_label"
+        app:layout_constraintTop_toTopOf="@+id/tpg_free_shipping_quota_label" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/tf_free_shipping_quota"
