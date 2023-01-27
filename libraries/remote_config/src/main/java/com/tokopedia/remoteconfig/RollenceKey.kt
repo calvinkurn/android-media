@@ -73,9 +73,6 @@ object RollenceKey {
     const val PDP_HIDE_THUMBNAIL = "pdp_hide_thumbnail"
     const val PDP_SHOW_SHARE_AFFILIATE = "pdp_share_icon"
 
-    // Saldo
-    const val SALDO_MODAL_TOKO_WIDGET = "saldo_mclremoval"
-
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
 
