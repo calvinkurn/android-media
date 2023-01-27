@@ -59,10 +59,10 @@ class CalendarOrderExtensionBottomSheet(
                     it.date == date
                 }
                 dismiss()
-                if (selectedDate != null) {
-                    onSelectDate.invoke(selectedDate)
-                } else {
+                if (selectedDate == null) {
                     onErrorSelectDate.invoke()
+                } else {
+                    onSelectDate.invoke(selectedDate)
                 }
             }
 
