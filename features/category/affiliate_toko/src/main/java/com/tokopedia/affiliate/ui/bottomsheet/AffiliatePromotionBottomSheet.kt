@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -228,7 +229,12 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
 
                 if (params?.ssaInfo?.ssaStatus == true) {
                     findViewById<Group>(R.id.ssa_group).isVisible = true
-                    findViewById<Typography>(R.id.ssa_message).text = params.ssaInfo.message
+                    findViewById<Typography>(R.id.ssa_message).text =
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            Html.fromHtml(params.ssaInfo.message, Html.FROM_HTML_MODE_LEGACY)
+                        } else {
+                            Html.fromHtml(params.ssaInfo.message)
+                        }
                     findViewById<Label>(R.id.ssa_label).text =
                         params.ssaInfo.label.labelText
                     findViewById<Typography>(R.id.ssa_expiry_date).text = params.ssaInfo.ssaMessage

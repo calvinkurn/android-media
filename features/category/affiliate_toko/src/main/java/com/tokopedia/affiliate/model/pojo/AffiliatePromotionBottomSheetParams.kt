@@ -21,10 +21,10 @@ data class AffiliatePromotionBottomSheetParams(
         val ssaMessage: String,
         val message: String,
         val label: Label
-    ) {
+    ) : Serializable {
         data class Label(
             val labelType: String,
             val labelText: String
-        )
+        ) : Serializable
     }
 }
