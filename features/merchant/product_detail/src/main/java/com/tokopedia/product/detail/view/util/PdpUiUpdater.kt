@@ -347,7 +347,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         selectedProductId: String,
         variantData: ProductVariant?,
         productInfo: DynamicProductInfoP1?,
-        loggedIn: Boolean
+        loggedIn: Boolean,
     ) {
         productInfo?.let { productDetail ->
             val productIdToPriceURLMap = HashMap<String, FintechPriceDataModel>()
@@ -370,6 +370,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     categoryId = productCategoryId
                     idToPriceUrlMap = productIdToPriceURLMap
                     isLoggedIn = loggedIn
+                    shopId = productDetail.basic.shopID
                 }
             }
         }

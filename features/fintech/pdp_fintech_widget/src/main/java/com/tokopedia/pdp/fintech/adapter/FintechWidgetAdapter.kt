@@ -92,11 +92,20 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
                 )
                 holder.subheaderPartner.weightType = Typography.BOLD
             }
+            it.equals("blue", true) -> {
+                holder.subheaderPartner.setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_BN500
+                    )
+                )
+                holder.subheaderPartner.weightType = Typography.BOLD
+            }
             else -> {
                 holder.subheaderPartner.setTextColor(
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
                     )
                 )
                 holder.subheaderPartner.weightType = Typography.REGULAR
