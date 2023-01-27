@@ -177,10 +177,10 @@ class WebSocketLoggingFragment: Fragment() {
             val bundle = bundleOf(
                 WebSocketDetailLoggingFragment.EXTRA_TITLE to it.event,
                 WebSocketDetailLoggingFragment.EXTRA_DATE_TIME to it.dateTime,
-                WebSocketDetailLoggingFragment.EXTRA_CHANNEL_ID to it.playGeneralInfo?.channelId,
-                WebSocketDetailLoggingFragment.EXTRA_GC_TOKEN to it.playGeneralInfo?.gcToken,
+                WebSocketDetailLoggingFragment.EXTRA_CHANNEL_ID to it.play?.channelId,
+                WebSocketDetailLoggingFragment.EXTRA_GC_TOKEN to it.play?.gcToken,
                 WebSocketDetailLoggingFragment.EXTRA_MESSAGE to it.message,
-                WebSocketDetailLoggingFragment.EXTRA_WAREHOUSE_ID to it.playGeneralInfo?.warehouseId
+                WebSocketDetailLoggingFragment.EXTRA_WAREHOUSE_ID to it.play?.warehouseId
             )
             findNavController().navigate(R.id.action_webSocketLoggingFragment_to_webSocketDetailLoggingFragment, bundle)
         }

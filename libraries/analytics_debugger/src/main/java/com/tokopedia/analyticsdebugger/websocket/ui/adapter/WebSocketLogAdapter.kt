@@ -37,8 +37,8 @@ class WebSocketLogAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int {
         val data = data[position]
 
-        return if (data is WebSocketLogUiModel && data.playGeneralInfo != null) return PLAY
-        else if (data is WebSocketLogUiModel && data.topchatDetailInfo != null) return TOPCHAT
+        return if (data is WebSocketLogUiModel && data.play != null) return PLAY
+        else if (data is WebSocketLogUiModel && data.topchat != null) return TOPCHAT
         else PLACEHOLDER
     }
 

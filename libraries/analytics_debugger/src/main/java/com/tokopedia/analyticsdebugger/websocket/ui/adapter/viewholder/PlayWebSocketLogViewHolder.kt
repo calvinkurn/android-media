@@ -1,7 +1,6 @@
 package com.tokopedia.analyticsdebugger.websocket.ui.adapter.viewholder
 
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.websocket.ui.adapter.WebSocketViewHolder
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
@@ -22,10 +21,10 @@ class PlayWebSocketLogViewHolder(itemView: View): WebSocketViewHolder(itemView) 
         tvTitle.text = model.event
         tvDateTime.text = model.dateTime
 
-        if (model.playGeneralInfo != null) {
-            tvSource.text = model.playGeneralInfo.source
-            tvChannelId.text = model.playGeneralInfo.channelId
-            tvGcToken.text = model.playGeneralInfo.gcToken
+        if (model.play != null) {
+            tvSource.text = model.play.source
+            tvChannelId.text = model.play.channelId
+            tvGcToken.text = model.play.gcToken
         }
         
         itemView.setOnClickListener { 

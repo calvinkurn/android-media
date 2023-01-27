@@ -1,12 +1,15 @@
 package com.tokopedia.topchat.common.websocket
 
+import com.google.gson.Gson
 import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
+import com.tokopedia.chat_common.data.WebsocketEvent
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.util.Session
 import com.tokopedia.network.authentication.AuthHelper.Companion.getUserAgent
-import com.tokopedia.topchat.common.websocket.logger.parseInitPayload
+import com.tokopedia.topchat.chatlist.domain.pojo.reply.WebSocketResponseData
 import com.tokopedia.url.TokopediaUrl
 import okhttp3.*
+import okio.ByteString
 import javax.inject.Inject
 
 class DefaultTopChatWebSocket @Inject constructor(
@@ -71,48 +74,54 @@ class DefaultTopChatWebSocket @Inject constructor(
      */
     private fun webSocketListener(listener: WebSocketListener) = object : WebSocketListener() {
         override fun onOpen(webSocket: WebSocket, response: Response) {
-            listener.onOpen(webSocket, response)
             webSocketLogger.send("Web Socket Open")
+            listener.onOpen(webSocket, response)
         }
 
         override fun onMessage(webSocket: WebSocket, text: String) {
-            listener.onMessage(webSocket, text)
+            val response = webSocketParser.parseResponse(text)
+            val data = Gson().fromJson(response.jsonObject, WebSocketResponseData::class.java)
+            val messageId = data?.msgId.toString()
 
-            // Parse to get the code and messageId only
-            val parseSimplePayload = parseInitPayload(text)
             webSocketLogger.init(
                 buildDetailInfo(
-                    parseSimplePayload?.code,
-                    parseSimplePayload?.messageId
+                    response.code,
+                    messageId
                 ).toString()
             )
 
-            // Parse for common type
-            val response = webSocketParser.parseResponse(text)
-            webSocketLogger.send(response.type, response.jsonElement.toString())
+            webSocketLogger.send(
+                WebsocketEvent.Event.mapToEventName(response.code),
+                response.jsonElement.toString()
+            )
+
+            listener.onMessage(webSocket, text)
+        }
+
+        override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
+            listener.onMessage(webSocket, bytes)
         }
 
         override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+            webSocketLogger.send("Web Socket Closing")
             listener.onClosing(webSocket, code, reason)
-            webSocket.close(1000, "Closing Socket")
         }
 
         override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-            listener.onClosed(webSocket, code, reason)
             webSocketLogger.send("Web Socket Close (Intended)")
+            listener.onClosed(webSocket, code, reason)
         }
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-            listener.onFailure(webSocket, t, response)
             webSocketLogger.send("Web Socket Close (Error)")
+            listener.onFailure(webSocket, t, response)
         }
     }
 
     private fun buildDetailInfo(code: Int? = 0, messageId: String? = "") = mapOf(
-        "source" to page,
-        "url" to webSocketUrl,
-        "code" to code.toString(),
-        "messageId" to messageId,
+        "source" to page.ifEmpty { "\"\"" },
+        "code" to code.toString().ifEmpty { "\"\"" },
+        "messageId" to messageId?.ifEmpty { "\"\"" },
     )
 
     companion object {

@@ -1,13 +1,13 @@
 package com.tokopedia.analyticsdebugger.websocket.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticsdebugger.websocket.data.local.entity.PlayWebSocketLogEntity
 import com.tokopedia.analyticsdebugger.websocket.data.local.entity.TopchatWebSocketLogEntity
+import com.tokopedia.analyticsdebugger.websocket.domain.param.InsertWebSocketLogParam
 import com.tokopedia.analyticsdebugger.websocket.domain.repository.PlayWebSocketLogRepository
 import com.tokopedia.analyticsdebugger.websocket.domain.repository.TopchatWebSocketLogRepository
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.PlayWebSocketLogGeneralInfoUiModel
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.TopchatWebSocketLogDetailInfoUiModel
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
-import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPageSource
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
 
 /**
@@ -16,55 +16,47 @@ import javax.inject.Inject
 class InsertWebSocketLogUseCase @Inject constructor(
     private val playWebSocketLogRepository: PlayWebSocketLogRepository,
     private val topchatWebSocketLogRepository: TopchatWebSocketLogRepository,
-): UseCase<Unit>()  {
+    dispatchers: CoroutineDispatchers
+) : CoroutineUseCase<InsertWebSocketLogParam, Unit>(dispatchers.io) {
 
-    private var param: WebSocketLogUiModel? = null
-
-    fun setParam(event: String, message: String, generalInfo: PlayWebSocketLogGeneralInfoUiModel) {
-        param = WebSocketLogUiModel(
-            event = event,
-            playGeneralInfo = generalInfo,
-            message = message,
-            dateTime = "",
-        )
-    }
-
-    fun setParam(event: String, message: String, detailInfo: TopchatWebSocketLogDetailInfoUiModel) {
-        param = WebSocketLogUiModel(
-            event = event,
-            topchatDetailInfo = detailInfo,
-            message = message,
-            dateTime = "",
-        )
-    }
-
-    override suspend fun executeOnBackground() {
-        param?.let {
-            if (it.playGeneralInfo != null) {
-                playWebSocketLogRepository.insert(
-                    PlayWebSocketLogEntity(
-                        source = it.playGeneralInfo.source,
-                        channelId = it.playGeneralInfo.channelId,
-                        gcToken = it.playGeneralInfo.gcToken,
-                        event = it.event,
-                        message = it.message,
-                        timestamp = System.currentTimeMillis(),
-                        warehouseId = it.playGeneralInfo.warehouseId,
-                    )
-                )
-            } else if (it.topchatDetailInfo != null) {
-                topchatWebSocketLogRepository.insert(
-                    TopchatWebSocketLogEntity(
-                        source = it.topchatDetailInfo.source,
-                        url = it.topchatDetailInfo.url,
-                        code = it.topchatDetailInfo.code,
-                        messageId = it.topchatDetailInfo.messageId,
-                        event = it.event,
-                        message = it.message,
-                        timestamp = System.currentTimeMillis()
-                    )
-                )
-            }
+    override suspend fun execute(params: InsertWebSocketLogParam) {
+        when(params.pageSource) {
+            WebSocketLogPageSource.PLAY -> playInsertWebSocketLog(params)
+            WebSocketLogPageSource.TOPCHAT -> topchatInsertWebSocketLog(params)
+            else -> Unit
         }
     }
+
+    private suspend fun playInsertWebSocketLog(param: InsertWebSocketLogParam) {
+        if (param.info.play == null) return
+
+        playWebSocketLogRepository.insert(
+            PlayWebSocketLogEntity(
+                source = param.info.play.source,
+                channelId = param.info.play.channelId,
+                gcToken = param.info.play.gcToken,
+                event = param.info.event,
+                message = param.info.message,
+                timestamp = System.currentTimeMillis(),
+                warehouseId = param.info.play.warehouseId,
+            )
+        )
+    }
+
+    private suspend fun topchatInsertWebSocketLog(param: InsertWebSocketLogParam) {
+        if (param.info.topchat == null) return
+
+        topchatWebSocketLogRepository.insert(
+            TopchatWebSocketLogEntity(
+                source = param.info.topchat.source,
+                code = param.info.topchat.code,
+                messageId = param.info.topchat.messageId,
+                event = param.info.event,
+                message = param.info.message,
+                timestamp = System.currentTimeMillis()
+            )
+        )
+    }
+
+    override fun graphqlQuery() = "" // No-op
 }

@@ -23,28 +23,36 @@ class GetWebSocketLogUseCase @Inject constructor(
     override suspend fun execute(params: GetWebSocketLogParam): List<WebSocketLogUiModel> {
         val offset = params.limit * params.page
 
-        return if (params.pageSource == WebSocketLogPageSource.PLAY) {
-            webSocketLogMapper.mapPlayEntityToUiModel(
-                playWebSocketLogRepository.get(
-                    params.query,
-                    params.source,
-                    params.limit,
-                    offset
-                )
-            )
-        } else if (params.pageSource == WebSocketLogPageSource.TOPCHAT) {
-            webSocketLogMapper.mapTopchatEntityToUiModel(
-                topchatWebSocketLogRepository.get(
-                    params.query,
-                    params.source,
-                    params.limit,
-                    offset
-                )
-            )
-        } else {
-            emptyList()
+        return when (params.pageSource) {
+            WebSocketLogPageSource.PLAY -> getPlayWebSocketLog(params, offset)
+            WebSocketLogPageSource.TOPCHAT -> getTopchatWebSocketLog(params, offset)
+            else -> emptyList()
         }
     }
+
+    private suspend fun getPlayWebSocketLog(
+        params: GetWebSocketLogParam,
+        offset: Int
+    ) = webSocketLogMapper.mapPlayEntityToUiModel(
+        playWebSocketLogRepository.get(
+            "%${params.query}%",
+            "%${params.source}%",
+            params.limit,
+            offset
+        )
+    )
+
+    private suspend fun getTopchatWebSocketLog(
+        params: GetWebSocketLogParam,
+        offset: Int
+    ) = webSocketLogMapper.mapTopchatEntityToUiModel(
+        topchatWebSocketLogRepository.get(
+            "%${params.query}%",
+            "%${params.source}%",
+            params.limit,
+            offset
+        )
+    )
 
     override fun graphqlQuery() = "" // no-op
 }

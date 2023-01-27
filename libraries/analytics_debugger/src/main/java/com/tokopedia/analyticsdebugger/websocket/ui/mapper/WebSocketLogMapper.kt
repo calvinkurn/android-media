@@ -18,7 +18,7 @@ class WebSocketLogMapper @Inject constructor() {
     fun mapPlayEntityToUiModel(entities: List<PlayWebSocketLogEntity>) = entities.map {
         WebSocketLogUiModel(
             id = it.id,
-            playGeneralInfo = PlayWebSocketLogGeneralInfoUiModel(
+            play = PlayWebSocketLogGeneralInfoUiModel(
                 source = it.source.ifEmpty { "-" },
                 channelId = it.channelId.ifEmpty { "-" },
                 gcToken = it.gcToken.ifEmpty { "-" },
@@ -33,9 +33,8 @@ class WebSocketLogMapper @Inject constructor() {
     fun mapTopchatEntityToUiModel(entities: List<TopchatWebSocketLogEntity>) = entities.map {
         WebSocketLogUiModel(
             id = it.id,
-            topchatDetailInfo = TopchatWebSocketLogDetailInfoUiModel(
+            topchat = TopchatWebSocketLogDetailInfoUiModel(
                 source = it.source.ifEmpty { "-" },
-                url = it.url.ifEmpty { "-" },
                 code = it.code.ifEmpty { "-" },
                 messageId = it.messageId.ifEmpty { "-" }
             ),
@@ -48,7 +47,7 @@ class WebSocketLogMapper @Inject constructor() {
     fun mapSources(sources: List<String>) = sources.map {
         ChipModel(
             label = it,
-            value = if(it == GetSourcesLogUseCase.ALL) "" else it,
+            value = if (it == GetSourcesLogUseCase.ALL) "" else it,
             selected = it == GetSourcesLogUseCase.ALL,
         )
     }

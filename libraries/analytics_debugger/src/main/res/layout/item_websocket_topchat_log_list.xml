@@ -49,20 +49,6 @@
         tools:text="11 Nov 2021 12:12:12.123" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_websocket_log_url"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/analyticsdebugger_dms_black_55"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_websocket_log_date_time"
-        app:typographyType="body_3"
-        tools:text="https://tokopedia.com/" />
-
-    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_websocket_log_code_id_label"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -73,7 +59,7 @@
         app:layout_constraintEnd_toStartOf="@id/tv_websocket_log_code_id"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_websocket_log_url"
+        app:layout_constraintTop_toBottomOf="@id/tv_websocket_log_date_time"
         app:typographyType="body_3"
         app:typographyWeight="bold" />
 
@@ -99,7 +85,7 @@
         android:layout_marginTop="4dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="@string/websocket_log_gc_token_label"
+        android:text="@string/websocket_log_message_id_label"
         app:layout_constraintEnd_toStartOf="@id/tv_websocket_log_message_id"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"

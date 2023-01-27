@@ -25,7 +25,7 @@ class PlayWebSocketSseLoggingViewHolder(
         }
         btnViewWebSocketLogging.setOnClickListener {
             itemView.context.apply {
-                startActivity(WebSocketLoggingActivity.newInstance(this, WebSocketLogPageSource.PLAY))
+                startActivity(WebSocketLoggingActivity.newInstance(this, WebSocketLogPageSource.TOPCHAT))
             }
         }
     }

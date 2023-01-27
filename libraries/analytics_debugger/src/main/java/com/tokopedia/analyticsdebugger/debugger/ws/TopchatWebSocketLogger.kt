@@ -2,31 +2,32 @@ package com.tokopedia.analyticsdebugger.debugger.ws
 
 import android.content.Context
 import com.tokopedia.analyticsdebugger.debugger.BaseWebSocketLogger
+import com.tokopedia.analyticsdebugger.websocket.domain.param.InsertWebSocketLogParam
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.TopchatWebSocketLogDetailInfoUiModel
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPageSource
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
 import kotlinx.coroutines.launch
 
 class TopchatWebSocketLogger constructor(mContext: Context) : BaseWebSocketLogger(mContext) {
 
-    private var detailInfo: TopchatWebSocketLogDetailInfoUiModel? = null
+    private var detail: TopchatWebSocketLogDetailInfoUiModel? = null
 
     override fun init(data: String) {
-        detailInfo = parseDetailInfo(data)
+        detail = gson.parseDetailInfo(data)
     }
 
     override fun send(event: String, message: String) {
         launch {
-            detailInfo?.let {
-                insertWebSocketLogUseCase.setParam(event, beautifyMessage(message), it)
-                insertWebSocketLogUseCase.executeOnBackground()
-            }
-        }
-    }
+            val param = InsertWebSocketLogParam(
+                pageSource = WebSocketLogPageSource.PLAY,
+                info = WebSocketLogUiModel(
+                    event = event,
+                    message = message.jsonHumanized(),
+                    topchat = detail
+                )
+            )
 
-    private fun parseDetailInfo(detailInfo: String): TopchatWebSocketLogDetailInfoUiModel? {
-        return try {
-            gson.fromJson(detailInfo, TopchatWebSocketLogDetailInfoUiModel::class.java)
-        } catch (e: Exception) {
-            null
+            insertWebSocketLogUseCase(param)
         }
     }
 }

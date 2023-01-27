@@ -29,11 +29,11 @@ class WebSocketLoggingViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
 ): ViewModel() {
 
+    private var pageSource = WebSocketLogPageSource.NONE
+
     private val _websocketLogPagination = MutableStateFlow(WebSocketLogPagination())
     private val _loading = MutableStateFlow(false)
     private val _chips = MutableStateFlow(listOf<ChipModel>())
-    private val _pageSource = MutableStateFlow(WebSocketLogPageSource.NONE)
-
     private val _uiEvent = MutableSharedFlow<WebSocketLoggingEvent>()
 
     val uiState: Flow<WebSocketLoggingState> = combine(
@@ -52,7 +52,7 @@ class WebSocketLoggingViewModel @Inject constructor(
         get() = _uiEvent
 
     fun setPageSource(source: WebSocketLogPageSource) {
-        _pageSource.value = source
+        pageSource = source
     }
 
     fun submitAction(action: WebSocketLoggingAction) {
@@ -111,7 +111,7 @@ class WebSocketLoggingViewModel @Inject constructor(
 
     private fun handleDeleteAllLog() {
         viewModelScope.launchCatchError(block = {
-            deleteAllWebSocketLogUseCase(_pageSource.value)
+            deleteAllWebSocketLogUseCase(pageSource)
 
             emitMessage(UiString.Resource(R.string.websocket_log_delete_all_message))
             _uiEvent.emit(WebSocketLoggingEvent.DeleteAllLogEvent)
@@ -159,7 +159,7 @@ class WebSocketLoggingViewModel @Inject constructor(
         if(!isLoading()) {
             setLoading(true)
 
-            val newChips = getSourcesLogUseCase(_pageSource.value)
+            val newChips = getSourcesLogUseCase(pageSource)
             val selectedChip = getSelectedSource()
 
             newChips.forEach { it.selected = it.value == selectedChip }
@@ -193,7 +193,7 @@ class WebSocketLoggingViewModel @Inject constructor(
     private suspend fun getWebSocketLog(query: String, page: Int): List<WebSocketLogUiModel> {
         return getWebSocketLogUseCase(
             GetWebSocketLogParam(
-                pageSource = _pageSource.value,
+                pageSource = pageSource,
                 query = query,
                 source = getSelectedSource(),
                 page = page,

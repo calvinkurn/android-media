@@ -28,7 +28,7 @@ class GetSourcesLogUseCase @Inject constructor(
             else -> emptyList()
         }
 
-        return webSocketLogMapper.mapSources(sources)
+        return webSocketLogMapper.mapSources(listOf(ALL) + sources)
     }
 
     override fun graphqlQuery() = "" // no-op

@@ -25,27 +25,22 @@ abstract class WebSocketLogDatabase : RoomDatabase() {
     abstract fun topchatWebSocketLogDao(): TopchatWebSocketLogDao
 
     companion object {
-        private val DATABASE_NAME = "tkpd_websocket_logging"
+        private const val DATABASE_NAME = "tkpd_websocket_logging"
 
-        @Volatile
-        private var instance: WebSocketLogDatabase? = null
+        @Volatile private var instance: WebSocketLogDatabase? = null
         private val lock = Any()
 
         fun getInstance(context: Context): WebSocketLogDatabase {
-            var r = instance
-            if (r == null) {
-                synchronized(lock) {
-                    r = instance
-                    if (r == null) {
-                        r = Room.databaseBuilder(
-                            context,
-                            WebSocketLogDatabase::class.java, DATABASE_NAME
-                        ).fallbackToDestructiveMigration().build()
-                        instance = r
+            return instance ?: synchronized(lock) {
+                Room.databaseBuilder(
+                    context,
+                    WebSocketLogDatabase::class.java, DATABASE_NAME
+                ).fallbackToDestructiveMigration()
+                    .build()
+                    .also {
+                        instance = it
                     }
-                }
             }
-            return r!!
         }
     }
 }

@@ -4,12 +4,11 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.analyticsdebugger.websocket.data.local.database.WebSocketLogDatabase
 import com.tokopedia.analyticsdebugger.websocket.data.repository.PlayWebSocketLogRepositoryImpl
 import com.tokopedia.analyticsdebugger.websocket.data.repository.TopchatWebSocketLogRepositoryImpl
 import com.tokopedia.analyticsdebugger.websocket.domain.usecase.InsertWebSocketLogUseCase
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.PlayWebSocketLogGeneralInfoUiModel
-import com.tokopedia.config.GlobalConfig
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -19,28 +18,32 @@ import kotlin.coroutines.CoroutineContext
 
 interface WebSocketLogger {
     fun init(data: String)
-    fun send(event: String, message: String)
     fun send(event: String)
+    fun send(event: String, message: String)
 }
 
 abstract class BaseWebSocketLogger(val context: Context) : WebSocketLogger, CoroutineScope {
 
-    override val coroutineContext: CoroutineContext
-        get() = SupervisorJob() + Dispatchers.IO
-
     var insertWebSocketLogUseCase: InsertWebSocketLogUseCase
+        private set
 
-    protected var gson: Gson = GsonBuilder()
+    private val dispatchers = CoroutineDispatchersProvider
+
+    protected val gson: Gson = GsonBuilder()
         .disableHtmlEscaping()
         .setPrettyPrinting()
         .create()
 
+    override val coroutineContext: CoroutineContext
+        get() = SupervisorJob() + dispatchers.io
+
     init {
-        val db = WebSocketLogDatabase.getInstance(context.applicationContext)
+        val db = WebSocketLogDatabase.getInstance(context)
 
         insertWebSocketLogUseCase = InsertWebSocketLogUseCase(
             PlayWebSocketLogRepositoryImpl(db),
-            TopchatWebSocketLogRepositoryImpl(db)
+            TopchatWebSocketLogRepositoryImpl(db),
+            dispatchers
         )
     }
 
@@ -48,7 +51,27 @@ abstract class BaseWebSocketLogger(val context: Context) : WebSocketLogger, Coro
         send(event, "")
     }
 
-    protected open fun beautifyMessage(message: String): String {
-        return if (message.isEmpty()) message else gson.toJson(JsonParser.parseString(message))
+    /**
+     * Encode the data object into json string
+     */
+    protected open fun String.jsonHumanized(): String {
+        return if (this.isEmpty()) {
+            this
+        } else {
+            gson.toJson(JsonParser.parseString(this))
+        }
+    }
+
+    /**
+     * Util to decode from the string to gson object.
+     *
+     * @param data
+     */
+    inline fun <reified T> Gson.parseDetailInfo(data: String): T? {
+        return try {
+            fromJson(data, T::class.java)
+        } catch (e: Exception) {
+            null
+        }
     }
 }

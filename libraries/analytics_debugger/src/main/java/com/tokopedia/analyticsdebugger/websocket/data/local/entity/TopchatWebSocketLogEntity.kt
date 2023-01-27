@@ -18,14 +18,11 @@ data class TopchatWebSocketLogEntity (
     @ColumnInfo(name = "source")
     val source: String,
 
-    @ColumnInfo(name = "url")
-    val url: String,
+    @ColumnInfo(name = "message_id")
+    val messageId: String,
 
     @ColumnInfo(name = "code")
     val code: String,
-
-    @ColumnInfo(name = "message_id")
-    val messageId: String,
 
     @ColumnInfo(name = "event")
     val event: String,
