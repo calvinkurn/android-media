@@ -26,6 +26,7 @@ class BuyerOrderDetailTrackerValidationTest700 : BuyerOrderDetailTrackerValidati
             testClickInsuranceWidget()
             testClickCopyAWB(activityRule.activity)
             testClickPrimaryActionButton()
+            testScrollToBottom(activityRule.activity)
             testClickSecondaryActionButtonSeePoD(activityRule.activity)
             testClickSecondaryActionButtonHelp(activityRule.activity)
         } validate {
