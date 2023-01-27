@@ -1425,7 +1425,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
         bottomSheet.show(childFragmentManager)
     }
 
-    override fun onProductBundleAdded() {
+    override fun onNewBundleProductAddedToCart() {
         refreshCartWithSwipeToRefresh()
     }
 
