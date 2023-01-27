@@ -1991,7 +1991,8 @@ class CartListPresenter @Inject constructor(
                 val cartAggregatorParam = CartShopGroupTickerAggregatorParam(
                     ratesParam = RatesParam.Builder(shopShipments, shipping).build(),
                     enableBoAffordability = cartShopHolderData.cartShopGroupTicker.enableBoAffordability,
-                    enableBundleCrossSell = enableBundleCrossSell
+                    enableBundleCrossSell = enableBundleCrossSell,
+                    isTokoNow = cartShopHolderData.isTokoNow
                 )
                 val response = cartShopGroupTickerAggregatorUseCase(cartAggregatorParam)
                 cartShopHolderData.cartShopGroupTicker.cartIds =
