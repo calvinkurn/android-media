@@ -134,7 +134,7 @@ class SomOrderExtensionViewModelTest {
             resourceProvider.getOrderExtensionRequestBottomSheetFooterComposer()
         } returns StringComposer { ORDER_REQUEST_EXTENSION_INFO_FOOTER }
         every {
-            resourceProvider.getOrderExtensionDescriptionComposer(any(), any())
+            resourceProvider.getOrderExtensionDescriptionComposer(any())
         } answers {
             StringComposer { "${firstArg<String?>().orEmpty()} ${secondArg<String?>().orEmpty()}." }
         }
