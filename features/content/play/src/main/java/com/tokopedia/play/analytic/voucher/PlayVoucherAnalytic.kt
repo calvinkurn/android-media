@@ -17,4 +17,5 @@ interface PlayVoucherAnalytic {
     fun impressToasterPublic()
     fun swipeWidget(voucherId: String)
     fun clickCopyVoucher(voucherId: String)
+    fun clickInfoVoucher()
 }

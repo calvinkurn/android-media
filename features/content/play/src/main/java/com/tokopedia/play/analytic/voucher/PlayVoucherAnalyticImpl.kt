@@ -11,7 +11,7 @@ import javax.inject.Inject
  * @author by astidhiyaa on 06/09/22
  */
 class PlayVoucherAnalyticImpl @Inject constructor(
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : PlayVoucherAnalytic {
 
     private var channelInfo = PlayChannelInfoUiModel()
@@ -28,7 +28,7 @@ class PlayVoucherAnalyticImpl @Inject constructor(
     private val channelType: String
         get() = channelInfo.channelType.value
 
-    override fun setData(channelInfoUiModel: PlayChannelInfoUiModel){
+    override fun setData(channelInfoUiModel: PlayChannelInfoUiModel) {
         channelInfo = channelInfoUiModel
     }
 
@@ -104,7 +104,6 @@ class PlayVoucherAnalyticImpl @Inject constructor(
             .send()
     }
 
-
     override fun clickToasterPublic() {
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_CONTENT)
@@ -158,6 +157,21 @@ class PlayVoucherAnalyticImpl @Inject constructor(
             .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
             .setCustomProperty(KEY_IS_LOGGED_IN_STATUS, userSession.isLoggedIn)
             .setCustomProperty(KEY_CHANNEL, channelInfo.title)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    override fun clickInfoVoucher() {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEventAction("click - entry point voucher bottomsheet")
+            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventLabel("$channelId - $channelType")
+            .setCustomProperty(KEY_TRACK_TRACKER_ID, "40976")
+            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
             .setUserId(userId)
             .build()
             .send()

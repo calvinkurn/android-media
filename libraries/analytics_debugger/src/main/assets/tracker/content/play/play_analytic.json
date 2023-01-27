@@ -740,6 +740,17 @@
       "userId": ".*",
       "sessionIris": ".*",
       "theme": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - entry point voucher bottomsheet",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod)",
+      "trackerId": "40976",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }
