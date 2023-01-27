@@ -1,17 +1,19 @@
 package com.tokopedia.mvc.presentation.bottomsheet.displayvoucher
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.media.loader.clearImage
-import com.tokopedia.media.loader.loadBitmapWithoutPlaceHolder
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetCouponDisplayBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -46,7 +48,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
         binding = SmvcBottomsheetCouponDisplayBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)
         setTitle(
-            context?.resources?.getString(R.string.voucher_bs_coupon_display_title).toBlankOrString() // ktlint-disable max-line-length
+            context?.resources?.getString(R.string.voucher_bs_coupon_display_title).toBlankOrString()
         )
         initInjector()
         initObservers()
@@ -94,13 +96,33 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
 
         viewModel.couponImage.observe(viewLifecycleOwner) {
             binding?.apply {
-                voucherImage.loadBitmapWithoutPlaceHolder(it)
+                Glide.with(voucherImage.context)
+                    .asBitmap()
+                    .load(it)
+                    .placeholder(-1)
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onLoadCleared(placeholder: Drawable?) {
+                        }
+
+                        override fun onResourceReady(
+                            resource: Bitmap,
+                            transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?
+                        ) {
+                            voucherImage.setImageBitmap(resource)
+                        }
+                    })
                 voucherLoader.hide()
             }
             when (currentVoucherSize) {
-                ImageRatio.HORIZONTAL -> changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_FULL)
-                ImageRatio.SQUARE -> changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_ONE_HALF)
-                ImageRatio.VERTICAL -> changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_MULTIPLIED)
+                ImageRatio.HORIZONTAL -> changeImageViewHeight(
+                    getDeviceHeight() * SCREEN_HEIGHT_FULL
+                )
+                ImageRatio.SQUARE -> changeImageViewHeight(
+                    getDeviceHeight() * SCREEN_HEIGHT_ONE_HALF
+                )
+                ImageRatio.VERTICAL -> changeImageViewHeight(
+                    getDeviceHeight() * SCREEN_HEIGHT_MULTIPLIED
+                )
             }
         }
     }
@@ -111,7 +133,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
     }
 
     private fun setUpImage(imageRatio: ImageRatio) {
-        binding?.voucherImage?.clearImage()
+        binding?.voucherImage?.setImageBitmap(null)
         binding?.voucherLoader?.show()
         voucherConfiguration?.let {
             viewModel.previewImage(
