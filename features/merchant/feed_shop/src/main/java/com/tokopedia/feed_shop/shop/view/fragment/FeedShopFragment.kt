@@ -69,8 +69,8 @@ import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.kolcommon.util.PostMenuListener
-import com.tokopedia.kolcommon.util.createBottomMenu
+import com.tokopedia.feed_shop.shop.view.util.PostMenuListener
+import com.tokopedia.feed_shop.shop.view.util.createBottomMenu
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
@@ -1162,10 +1162,10 @@ class FeedShopFragment :
         return context?.let {
             val dialog =
                 DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(getString(com.tokopedia.kolcommon.R.string.kol_delete_post))
-            dialog.setDescription(getString(com.tokopedia.kolcommon.R.string.kol_delete_post_desc))
-            dialog.setPrimaryCTAText(getString(com.tokopedia.kolcommon.R.string.kol_title_delete))
-            dialog.setSecondaryCTAText(getString(com.tokopedia.kolcommon.R.string.kol_title_cancel))
+            dialog.setTitle(getString(R.string.kol_delete_post))
+            dialog.setDescription(getString(R.string.kol_delete_post_desc))
+            dialog.setPrimaryCTAText(getString(R.string.kol_title_delete))
+            dialog.setSecondaryCTAText(getString(R.string.kol_title_cancel))
             dialog.setPrimaryCTAClickListener {
                 presenter.deletePost(id, rowNumber)
                 dialog.dismiss()

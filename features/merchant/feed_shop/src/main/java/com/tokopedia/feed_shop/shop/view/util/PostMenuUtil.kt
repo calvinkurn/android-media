@@ -1,9 +1,9 @@
-package com.tokopedia.kolcommon.util
+package com.tokopedia.feed_shop.shop.view.util
 
 import android.content.Context
 import com.tokopedia.design.component.Menus
-import com.tokopedia.kolcommon.R
 import java.util.*
+import com.tokopedia.feed_shop.R
 
 /**
  * @author by milhamj on 13/11/18.

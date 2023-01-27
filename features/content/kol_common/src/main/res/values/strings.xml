@@ -1,13 +1,4 @@
 <resources>
-    <string name="app_name">Kol Common</string>
-
-    <string name="kol_title_delete">Hapus</string>
-    <string name="kol_title_cancel">Batal</string>
-    <string name="kol_delete_post">Hapus Post</string>
-    <string name="kol_delete_post_desc">Setelah dihapus, kamu tidak akan bisa melihat post ini lagi.</string>
-
-    <string name="kol_edit_post">Edit Post</string>
-    <string name="kol_report">Laporkan</string>
 
     <string name="post_time_just_now">Baru saja</string>
     <string name="post_time_minutes_ago">\u0020menit yang lalu</string>
