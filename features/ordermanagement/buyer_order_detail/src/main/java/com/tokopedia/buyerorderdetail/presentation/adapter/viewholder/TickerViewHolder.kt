@@ -67,10 +67,10 @@ class TickerViewHolder(
         marginVertical?.let {
             (itemView as? Ticker)?.apply {
                 val layoutParamsMargin = layoutParams as? RecyclerView.LayoutParams
-                marginVertical.first?.let { marginBottom ->
+                it.first?.let { marginBottom ->
                     layoutParamsMargin?.bottomMargin = marginBottom
                 }
-                marginVertical.second?.let { marginTop ->
+                it.second?.let { marginTop ->
                     layoutParamsMargin?.topMargin = marginTop
                 }
                 layoutParams = layoutParamsMargin
