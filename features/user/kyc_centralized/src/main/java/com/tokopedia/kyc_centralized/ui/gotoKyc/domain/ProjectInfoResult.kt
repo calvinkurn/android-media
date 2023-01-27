@@ -1,12 +1,21 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.domain
 
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.StatusSubmissionParam
+
 sealed class ProjectInfoResult(
-    isAccountLinked: Boolean? = null,
-    isKtpAlreadyTaken: Boolean? = null,
-    throwable: Throwable? = null
+    val status: String = "",
+    val dataSource: String = "",
+    val listReason: List<String> = emptyList(),
+    val isAccountLinked: Boolean? = null,
+    val isKtpAlreadyTaken: Boolean? = null,
+    val throwable: Throwable? = null
 ) {
-    class NotGoToKyc() : ProjectInfoResult()
-    class StatusSubmission() : ProjectInfoResult()
+    class TokoKyc() : ProjectInfoResult()
+    class StatusSubmission(status: String, dataSource: String, listReason: List<String>) : ProjectInfoResult(
+        status = status,
+        dataSource = dataSource,
+        listReason = listReason
+    )
     class Progressive() : ProjectInfoResult()
     class NonProgressive(isAccountLinked: Boolean, isKtpAlreadyTaken: Boolean) : ProjectInfoResult(
         isAccountLinked = isAccountLinked, isKtpAlreadyTaken = isKtpAlreadyTaken

@@ -350,6 +350,11 @@ object ApplinkConstInternalUserPlatform {
     const val TELEPHONY_MASKING = "$NEW_INTERNAL_USER/telephony-masking"
 
     /**
+     * This param is used to identify the source page
+     **/
+    const val PARAM_SOURCE = "source"
+
+    /**
      * ## KYC Param | projectId
      * This param is used to identify the source
      **/

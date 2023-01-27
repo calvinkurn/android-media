@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.gotoKyc.main
+package com.tokopedia.kyc_centralized.ui.gotoKyc.transparent
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +11,7 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class OnboardNonProgressiveBottomSheet(private val title: String, private val isAccountLinked: Boolean, private val isKtpTaken: Boolean): BottomSheetUnify() {
+class OnboardNonProgressiveBottomSheet(private val source: String = "", private val isAccountLinked: Boolean, private val isKtpTaken: Boolean): BottomSheetUnify() {
 
     private var binding by autoClearedNullable<LayoutGotoKycOnboardNonProgressiveBinding>()
 
@@ -21,7 +21,6 @@ class OnboardNonProgressiveBottomSheet(private val title: String, private val is
         savedInstanceState: Bundle?
     ): View? {
         binding = LayoutGotoKycOnboardNonProgressiveBinding.inflate(inflater, container, false)
-        setTitle(title)
         setChild(binding?.root)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -33,6 +32,12 @@ class OnboardNonProgressiveBottomSheet(private val title: String, private val is
 
     private fun initView() {
         binding?.apply {
+            tvTitle.text = if (source.isEmpty()) {
+                getString(R.string.goto_kyc_onboard_non_progressive_title_account_page)
+            } else {
+                getString(R.string.goto_kyc_onboard_non_progressive_title_not_account_page, source)
+            }
+
             layoutAccountLinking.imgItemOnboard.loadImageWithoutPlaceholder(
                 getString(R.string.img_url_goto_kyc_onboard_account_linking)
             )
@@ -43,8 +48,10 @@ class OnboardNonProgressiveBottomSheet(private val title: String, private val is
                 getString(R.string.img_url_goto_kyc_onboard_selfie)
             )
 
+            layoutAccountLinking.tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_account_linking_title)
             if (isAccountLinked) {
-                layoutAccountLinking.tvItemTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_checklist_circle_green, 0)
+                layoutAccountLinking.tvItemTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0,
+                    R.drawable.ic_checklist_circle_green, 0)
             }
 
             layoutAccountLinking.tvItemSubtitle.text = if (isAccountLinked) {
@@ -53,8 +60,10 @@ class OnboardNonProgressiveBottomSheet(private val title: String, private val is
                 getString(R.string.goto_kyc_onboard_non_progressive_item_account_linking_subtitle_unlinked)
             }
 
+            layoutKtp.tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_ktp_title)
             if (isKtpTaken) {
-                layoutKtp.tvItemTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_checklist_circle_green, 0)
+                layoutKtp.tvItemTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0,
+                    R.drawable.ic_checklist_circle_green, 0)
                 layoutKtp.tvShowFile.show()
             }
 
@@ -63,6 +72,9 @@ class OnboardNonProgressiveBottomSheet(private val title: String, private val is
             } else {
                 getString(R.string.goto_kyc_onboard_non_progressive_item_ktp_subtitle_not_taken)
             }
+
+            layoutSelfie.tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_title)
+            layoutSelfie.tvItemSubtitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_subtitle)
         }
     }
 

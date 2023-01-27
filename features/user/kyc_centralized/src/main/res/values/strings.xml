@@ -256,8 +256,9 @@
     <string name="goto_kyc_onboard_progressive_title_account_page">Selangkah lagi buat dapetin keuntungannya!</string>
     <string name="goto_kyc_onboard_progressive_title_not_account_page">Selangkah lagi buat jadi %s!</string>
     <string name="goto_kyc_onboard_progressive_subtitle">Kamu udah terdaftar di GoPay, nih. Mau pakai KTP ini buat lanjut verifikasi?</string>
-    <string name="goto_kyc_onboard_progressive_item_title">Nama KTP</string>
+    <string name="goto_kyc_onboard_progressive_item_title">KTP di GoPay</string>
     <string name="goto_kyc_onboard_progressive_tokopedia_care">Bukan KTP kamu? Hubungi Tokopedia Care</string>
     <string name="goto_kyc_onboard_progressive_tokopedia_care_spannable">Hubungi Tokopedia Care</string>
+    <string name="goto_kyc_transparent_something_wrong">Terjadi kesalahan!</string>
 
 </resources>

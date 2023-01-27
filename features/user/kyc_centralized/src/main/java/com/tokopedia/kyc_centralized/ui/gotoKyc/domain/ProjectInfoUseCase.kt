@@ -12,7 +12,7 @@ import javax.inject.Inject
 class ProjectInfoUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<String, ProjectInfoResult>(dispatchers.io) {
+) : CoroutineUseCase<Int, ProjectInfoResult>(dispatchers.io) {
     override fun graphqlQuery(): String =
         """
             query kycProjectInfo (${'$'}projectID: Int!){
@@ -31,20 +31,19 @@ class ProjectInfoUseCase @Inject constructor(
                 IsSelfie
                 DataSource
                 IsGotoKyc
-                GotoLinked
-                AccountLinkingStatus
               }
             }
         """.trimIndent()
 
-    override suspend fun execute(params: String): ProjectInfoResult {
-        val response: ProjectInfoResponse = repository.request(graphqlQuery(), params)
+    override suspend fun execute(params: Int): ProjectInfoResult {
+        val parameter = mapOf(PROJECT_ID to params)
+        val response: ProjectInfoResponse = repository.request(graphqlQuery(), parameter)
         response.kycProjectInfo.apply {
             return if (!isGoToKyc) {
-                ProjectInfoResult.NotGoToKyc()
+                ProjectInfoResult.TokoKyc()
             } else {
                 if (status == NOT_VERIFIED) {
-                    if (dataSource.toString() == KYCConstant.GotoDataSource.GOTO_PROGRESSIVE) {
+                    if (dataSource == KYCConstant.GotoDataSource.GOTO_PROGRESSIVE) {
                         ProjectInfoResult.Progressive()
                     } else {
                         ProjectInfoResult.NonProgressive(
@@ -54,15 +53,20 @@ class ProjectInfoUseCase @Inject constructor(
                         )
                     }
                 } else {
-                    ProjectInfoResult.StatusSubmission()
+                    ProjectInfoResult.StatusSubmission(
+                        status = status,
+                        dataSource = dataSource,
+                        listReason = reason
+                    )
                 }
             }
         }
     }
 
     companion object {
-        const val NOT_VERIFIED = 3
+        const val NOT_VERIFIED = "3"
         const val ACCOUNT_NOT_LINKED = -1
         const val ACCOUNT_LINKED = 1
+        private const val PROJECT_ID = "projectID"
     }
 }

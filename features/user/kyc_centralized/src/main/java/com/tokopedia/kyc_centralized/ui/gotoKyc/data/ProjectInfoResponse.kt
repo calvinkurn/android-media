@@ -9,7 +9,7 @@ data class ProjectInfoResponse(
 
 data class KycProjectInfo(
     @SerializedName("Status")
-	val status: Int = 0,
+	val status: String = "",
 
     @SerializedName("AccountLinkingStatus")
 	val accountLinkingStatus: Int = 0,
@@ -39,7 +39,7 @@ data class KycProjectInfo(
 	val gotoLinked: Boolean = false,
 
     @SerializedName("DataSource")
-	val dataSource: Int = 0
+	val dataSource: String = ""
 )
 
 data class TypeListItem(
