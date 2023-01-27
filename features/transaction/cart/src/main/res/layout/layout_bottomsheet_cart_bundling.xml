@@ -21,20 +21,19 @@
         android:id="@+id/product_bundle_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_8"
-        android:minHeight="@dimen/dp_200"
+        android:layout_marginBottom="8dp"
+        android:minHeight="200dp"
         app:layout_constraintBottom_toTopOf="@+id/card_bottom_ticker"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/description_label"
-        app:layout_goneMarginBottom="@dimen/dp_16"
-        tools:layout_height="@dimen/dp_200" />
+        app:layout_goneMarginBottom="16dp" />
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/card_bottom_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,7 +42,7 @@
         <com.tokopedia.unifycomponents.ContainerUnify
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_12"
+            android:padding="12dp"
             app:container_color="GREEN">
 
             <com.tokopedia.unifyprinciples.Typography
