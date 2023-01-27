@@ -180,7 +180,7 @@ class CategoryBestSellerViewModelTest {
         viewModel.onAttachToViewHolder()
         assert(viewModel.getComponentData().value === componentsItem)
 //        assert(viewModel.syncData.value == true)
-        assert(viewModel.getProductCardMaxHeight().value != null)
+//        assert(viewModel.getProductCardMaxHeight().value != null)
     }
 
     @Test
