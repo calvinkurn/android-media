@@ -1,9 +1,8 @@
 package com.tokopedia.feed_shop.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.feedcomponent.di.FeedComponentModule
-import com.tokopedia.kolcommon.di.KolCommonModule
 import com.tokopedia.feed_shop.shop.view.fragment.FeedShopFragment
+import com.tokopedia.feedcomponent.di.FeedComponentModule
 import dagger.Component
 
 /**
@@ -11,8 +10,8 @@ import dagger.Component
  */
 @FeedShopScope
 @Component(
-        modules = [FeedShopModule::class, FeedComponentModule::class, KolCommonModule::class],
-        dependencies = [BaseAppComponent::class]
+    modules = [FeedShopModule::class, FeedComponentModule::class],
+    dependencies = [BaseAppComponent::class]
 )
 interface FeedShopComponent {
 
