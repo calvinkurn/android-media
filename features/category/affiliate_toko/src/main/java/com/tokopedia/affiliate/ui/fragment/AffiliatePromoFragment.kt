@@ -125,6 +125,8 @@ class AffiliatePromoFragment :
                 )
             }
         }
+        view?.findViewById<CardUnify2>(R.id.card_ssa_entry)?.isVisible =
+            affiliatePromoViewModel.isAffiliateSSAShopEnabled()
         setupViewPager()
         showDefaultState()
         affiliatePromoViewModel.getAffiliateValidateUser()
