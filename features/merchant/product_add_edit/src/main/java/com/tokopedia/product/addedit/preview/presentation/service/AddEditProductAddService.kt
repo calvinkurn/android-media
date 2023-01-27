@@ -254,6 +254,14 @@ open class AddEditProductAddService : AddEditProductBaseService() {
                 downloadFile(url = data.urlOriginal, filename = data.fileName)
                 data.picID = String.EMPTY
                 data.filePath = path
+            } else if (data.urlOriginal.isBlank()) {
+                val picId = data.picID
+                AddEditProductErrorHandler.logMessage("$TITLE_ERROR_DOWNLOAD_IMAGE - $DESC_ERROR_NO_IMAGE_URL - $picId")
+                AddEditProductErrorHandler.logExceptionToCrashlytics(IllegalArgumentException())
+            } else if (data.fileName.isBlank()) {
+                val picId = data.picID
+                AddEditProductErrorHandler.logMessage("$TITLE_ERROR_DOWNLOAD_IMAGE - $DESC_ERROR_NO_IMAGE_FILENAME - $picId")
+                AddEditProductErrorHandler.logExceptionToCrashlytics(IllegalArgumentException())
             }
         }
         val imagePathList = mutableListOf<String>()
@@ -293,6 +301,14 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             downloadFile(url = variantSizeChart.urlOriginal, filename = variantSizeChart.fileName)
             variantSizeChart.picID = String.EMPTY
             variantSizeChart.urlOriginal = path
+        } else if (variantSizeChart.urlOriginal.isBlank()) {
+            val picId = variantSizeChart.picID
+            AddEditProductErrorHandler.logMessage("$TITLE_ERROR_DOWNLOAD_IMAGE - $DESC_ERROR_NO_IMAGE_URL - $picId")
+            AddEditProductErrorHandler.logExceptionToCrashlytics(IllegalArgumentException())
+        } else if (variantSizeChart.fileName.isBlank()) {
+            val picId = variantSizeChart.picID
+            AddEditProductErrorHandler.logMessage("$TITLE_ERROR_DOWNLOAD_IMAGE - $DESC_ERROR_NO_IMAGE_FILENAME - $picId")
+            AddEditProductErrorHandler.logExceptionToCrashlytics(IllegalArgumentException())
         }
     }
 }
