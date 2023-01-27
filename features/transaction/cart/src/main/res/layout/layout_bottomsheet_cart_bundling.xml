@@ -9,6 +9,7 @@
         android:id="@+id/description_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -49,6 +50,7 @@
                 android:id="@+id/bottom_ticker_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/Unify_NN600"
                 app:typographyType="paragraph_3"
                 app:typographyWeight="reguler"
                 tools:text="Bottom Sheet Label" />
