@@ -641,6 +641,7 @@ open class ProductManageFragment :
 
         observeEditVariantPrice()
         observeEditVariantStock()
+        observeClickTopAdsMenu()
         observeProductManageAccess()
         observeDeleteProductDialog()
         observeOptionsMenu()
@@ -2303,7 +2304,7 @@ open class ProductManageFragment :
     }
 
     private fun onPromoTopAdsClicked(productId: String) {
-        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_MP_ADS_CREATION,productId)
+        viewModel.onPromoTopAdsClicked(productId)
     }
 
     private fun onSeeTopAdsClicked(productId: String) {
@@ -3079,6 +3080,16 @@ open class ProductManageFragment :
         }
     }
 
+    private fun observeClickTopAdsMenu() {
+        viewLifecycleOwner.observe(viewModel.onClickPromoTopAds) {
+            when (it) {
+                is OnBoarding -> goToTopAdsOnBoarding()
+                is ManualAds -> goToCreateTopAds()
+                is AutoAds -> goToPDP(it.productId, showTopAdsSheet = true)
+            }
+        }
+    }
+
     private fun observeProductManageAccess() {
         observe(viewModel.productManageAccess) {
             when (it) {
@@ -3156,6 +3167,18 @@ open class ProductManageFragment :
 
     private fun hideErrorPage() {
         errorPage?.hide()
+    }
+
+    private fun goToTopAdsOnBoarding() {
+        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATION_ONBOARD)
+    }
+
+    private fun goToCreateTopAds() {
+        val intent =
+            RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS).apply {
+                putExtra(DIRECTED_FROM_MANAGE_OR_PDP, true)
+            }
+        startActivity(intent)
     }
 
     private fun updateVariantStock(data: EditVariantResult) {

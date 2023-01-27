@@ -61,15 +61,16 @@ object CreateReviewMapper {
     }
 
     fun mapMediaItems(
-        mediaUris: List<String>,
-        mediaUploadResults: MediaUploadResultMap,
-        mediaUploadJobs: MediaUploadJobMap,
+        reviewItemMediaUris: List<String>,
+        reviewItemsMediaUploadResults: MediaUploadResultMap,
+        reviewItemMediaUploadJobs: MediaUploadJobMap,
         existingMediaItems: List<CreateReviewMediaUiModel>,
-        uploadBatchNumber: Int
+        uploadBatchNumber: Int,
+        showLargeAddMediaItem: Boolean
     ): List<CreateReviewMediaUiModel> {
         return mutableListOf<CreateReviewMediaUiModel>().apply {
-            includeMediaItems(mediaUris, mediaUploadResults, mediaUploadJobs, existingMediaItems, uploadBatchNumber)
-            includeAddMediaUiModel(mediaUris)
+            includeMediaItems(reviewItemMediaUris, reviewItemsMediaUploadResults, reviewItemMediaUploadJobs, existingMediaItems, uploadBatchNumber)
+            includeAddMediaUiModel(showLargeAddMediaItem, reviewItemMediaUris)
         }
     }
 
@@ -235,9 +236,14 @@ object CreateReviewMapper {
         }
     }
 
-    private fun MutableList<CreateReviewMediaUiModel>.includeAddMediaUiModel(mediaUris: List<String>) {
+    private fun MutableList<CreateReviewMediaUiModel>.includeAddMediaUiModel(
+        showLargeAddMediaItem: Boolean,
+        mediaUris: List<String>
+    ) {
         if (mediaUris.isEmpty()) {
-            add(CreateReviewMediaUiModel.AddLarge)
+            if (showLargeAddMediaItem) {
+                add(CreateReviewMediaUiModel.AddLarge)
+            }
         } else if (mediaUris.size < MAX_MEDIA_COUNT) {
             add(
                 CreateReviewMediaUiModel.AddSmall(

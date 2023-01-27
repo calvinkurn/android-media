@@ -95,4 +95,9 @@ class VideoPlayerView @JvmOverloads constructor(
         job.cancelChildren()
         super.onDetachedFromWindow()
     }
+
+    private fun String?.toIntOrZero(): Int {
+        return this?.toIntOrZero {
+        } ?: 0
+    }
 }

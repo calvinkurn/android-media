@@ -286,7 +286,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             // This is for add on shop level
             val addOnShopLevel = orderCart.shop.addOn.addOnsDataItemModelList.firstOrNull()
             if (addOnShopLevel != null) {
-                totalAddOnPrice += addOnShopLevel.addOnPrice.toDouble()
+                totalAddOnPrice += addOnShopLevel.addOnPrice
                 hasAddOn = true
             }
 
@@ -302,7 +302,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     }
                     if (product.wholesalePriceList.isNotEmpty()) {
                         var finalPrice = product.productPrice
-                        product.wholesalePrice = 0
+                        product.wholesalePrice = 0.0
                         for (price in product.wholesalePriceList) {
                             if (itemQty >= price.qtyMin) {
                                 finalPrice = price.prdPrc
@@ -314,14 +314,14 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                             updatedProductIndex.add(productIndex)
                         }
                         if (!mapParentWholesalePrice.containsKey(product.parentId)) {
-                            val totalPrice = itemQty * product.finalPrice.toDouble()
+                            val totalPrice = itemQty * product.finalPrice
                             totalProductWholesalePrice += totalPrice
                             mapParentWholesalePrice[product.parentId] = totalPrice
                         }
                     } else {
-                        product.wholesalePrice = 0
+                        product.wholesalePrice = 0.0
                         product.finalPrice = product.productPrice
-                        totalProductPrice += itemQty * product.finalPrice.toDouble()
+                        totalProductPrice += itemQty * product.finalPrice
                     }
                     var purchaseProtectionPriceMultiplier = product.orderQuantity
                     if (product.purchaseProtectionPlanData.source.equals(PurchaseProtectionPlanData.SOURCE_READINESS, true)) {
@@ -331,7 +331,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     // This is for add on product level
                     val addOnProductLevel = product.addOn.addOnsDataItemModelList.firstOrNull()
                     if (addOnProductLevel != null) {
-                        totalAddOnPrice += addOnProductLevel.addOnPrice.toDouble()
+                        totalAddOnPrice += addOnProductLevel.addOnPrice
                         hasAddOn = true
                     }
                 }

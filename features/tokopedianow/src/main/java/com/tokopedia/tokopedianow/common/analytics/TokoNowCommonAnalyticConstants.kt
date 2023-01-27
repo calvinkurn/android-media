@@ -8,13 +8,16 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_VIEW_TOKONOW_IRIS = "viewTokoNowIris"
         const val EVENT_CLICK_TOKONOW = "clickTokoNow"
         const val EVENT_CLICK_PG = "clickPG"
+        const val EVENT_CLICK_GROCERIES = "clickGroceries"
+        const val EVENT_VIEW_GROCERIES = "viewGroceriesIris"
         const val EVENT_SELECT_CONTENT = "select_content"
         const val EVENT_VIEW_ITEM = "view_item"
         const val EVENT_VIEW_ITEM_LIST = "view_item_list"
         const val EVENT_PRODUCT_VIEW = "productView"
         const val EVENT_PRODUCT_CLICK = "productClick"
-        const val EVENT_ATC = "addToCart"
+        const val EVENT_NAME_ADD_TO_CART = "addToCart"
         const val EVENT_ADD_TO_CART = "add_to_cart"
+        const val EVENT_NAME_REMOVE_FROM_CART = "removeFromCart"
         const val EVENT_REMOVE_FROM_CART = "remove_from_cart"
         const val EVENT_OPEN_SCREEN = "openScreen"
         const val EVENT_VIEW_PG_IRIS = "viewPGIris"
@@ -25,12 +28,18 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_WAREHOUSE_ID = "warehouseId"
         const val EVENT_PROMO_VIEW = "promoView"
         const val EVENT_PROMO_CLICK = "promoClick"
+        const val EVENT_VIEW_IRIS = "viewIris"
+        const val EVENT_CLICK = "click"
     }
 
     object CATEGORY{
         const val EVENT_CATEGORY_TOP_NAV = "tokonow - top nav"
         const val EVENT_CATEGORY_TOKOPEDIA_NOW = "tokopedia now"
+        const val EVENT_CATEGORY_TOKOPEDIA_NOW_SEARCH = "tokonow - search result"
+        const val EVENT_CATEGORY_TOKOPEDIA_CATEGORY_PAGE = "tokonow category page"
+        const val EVENT_CATEGORY_TOKOPEDIA_REPURCHASE_PAGE = "tokonow repurchase page"
         const val EVENT_CATEGORY_TOP_NAV_TOKOPEDIA_NOW = "top nav - tokopedia now"
+        const val EVENT_CATEGORY_TOKONOW_HOMEPAGE = "tokonow - homepage"
     }
 
     object KEY {
@@ -44,7 +53,9 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_DIMENSION_38 = "dimension38"
         const val KEY_DIMENSION_79 = "dimension79"
         const val KEY_DIMENSION_82 = "dimension82"
+        const val KEY_DIMENSION_84 = "dimension84"
         const val KEY_DIMENSION_49 = "dimension49"
+        const val KEY_DIMENSION_56 = "dimension56"
         const val KEY_DIMENSION_40 = "dimension40"
         const val KEY_DIMENSION_45 = "dimension45"
         const val KEY_DIMENSION_90 = "dimension90"
@@ -54,6 +65,7 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_SHOP_TYPE = "shop_type"
         const val KEY_USER_ID = "userId"
         const val KEY_PRODUCT_ID = "productId"
+        const val KEY_TRACKER_ID = "trackerId"
         const val KEY_CATEGORY_ID = "category_id"
         const val KEY_CHANNEL_ID = "channelId"
         const val KEY_CAMPAIGN_CODE = "campaignCode"
@@ -82,6 +94,7 @@ object TokoNowCommonAnalyticConstants {
         const val DEFAULT_NULL_VALUE = "null"
         const val DEFAULT_CATEGORY_ID = "0"
         const val DEFAULT_EMPTY_VALUE = ""
+        const val DEFAULT_HEADER_CATEGORY_MENU = "Cek kategori lainnya"
     }
 
     object ACTION{
@@ -95,5 +108,19 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_ACTION_IMPRESSION_SHARING_CHANNEL = "view on sharing channel"
         const val EVENT_ACTION_CLICK_SHARING_CHANNEL = "click - sharing channel"
         const val EVENT_ACTION_CLICK_CLOSE_SHARE_BOTTOM_SHEET  = "click - close share bottom sheet"
+        const val EVENT_ACTION_CLICK_ADD_TO_WISHLIST  = "click bell add to wishlist"
+        const val EVENT_ACTION_CLICK_REMOVE_FROM_WISHLIST  = "click bell remove from wishlist"
+        const val EVENT_ACTION_IMPRESSION_CATEGORY_MENU_WIDGET = "impression category menu widget"
+        const val EVENT_ACTION_CLICK_CATEGORY_MENU_WIDGET = "click category menu widget"
+        const val EVENT_ACTION_CLICK_SEE_ALL_CATEGORY = "click lihat semua category menu"
+    }
+
+    object TRACKER_ID{
+        const val TRACKER_ID_ADD_TO_WISHLIST_CATEGORY = "39601"
+        const val TRACKER_ID_REMOVE_FROM_WISHLIST_CATEGORY = "39602"
+        const val TRACKER_ID_ADD_TO_WISHLIST_SEARCH = "39572"
+        const val TRACKER_ID_REMOVE_FROM_WISHLIST_SEARCH = "39573"
+        const val TRACKER_ID_ADD_TO_WISHLIST_REPURCHASE = "39957"
+        const val TRACKER_ID_REMOVE_FROM_WISHLIST_REPURCHASE = "39958"
     }
 }

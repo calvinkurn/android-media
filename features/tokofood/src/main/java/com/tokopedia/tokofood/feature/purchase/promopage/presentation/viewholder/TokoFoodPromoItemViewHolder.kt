@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.feature.purchase.promopage.presentation.viewholde
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokofood.R
@@ -37,22 +38,22 @@ class TokoFoodPromoItemViewHolder(private val viewBinding: ItemTokofoodPromoCard
                 textPromoHighlightIdentifierTokofood.text = element.highlightWording
                 textPromoHighlightIdentifierTokofood.showWithCondition(element.highlightWording.isNotBlank())
                 promoHighlightIdentifierTokofood.showWithCondition(element.highlightWording.isNotBlank())
-                containerErrorInfoTokofood.gone()
-                imageSelectPromoTokofood.show()
+                imageSelectPromoTokofood.showWithCondition(element.isSelected)
                 itemView.setOnClickListener {  }
             } else {
                 promoHighlightIdentifierTokofood.gone()
                 textPromoHighlightIdentifierTokofood.gone()
-                if (element.additionalInformation.isNotBlank()) {
-                    containerErrorInfoTokofood.show()
-                    textErrorInfoTokofood.text = element.additionalInformation
-                } else {
-                    containerErrorInfoTokofood.gone()
-                }
                 imageSelectPromoTokofood.gone()
                 itemView.setOnClickListener {
                     listener.onClickUnavailablePromoItem()
                 }
+            }
+
+            if (element.additionalInformation.isNotBlank()) {
+                containerErrorInfoTokofood.show()
+                textErrorInfoTokofood.text = element.additionalInformation
+            } else {
+                containerErrorInfoTokofood.gone()
             }
 
             promoBenefitDetail.text = element.title
@@ -62,15 +63,22 @@ class TokoFoodPromoItemViewHolder(private val viewBinding: ItemTokofoodPromoCard
 
     private fun renderPromoState(viewBinding: ItemTokofoodPromoCardBinding,
                                  element: TokoFoodPromoItemUiModel) {
-        if (element.isAvailable) {
-            renderPromoEnabled(viewBinding)
-        } else {
-            renderPromoDisabled(viewBinding)
+        when {
+            element.isAvailable && element.isSelected -> {
+                renderPromoSelected(viewBinding)
+            }
+            element.isAvailable -> {
+                renderPromoUnselected(viewBinding, element.additionalInformation.isNotBlank())
+            }
+            else -> {
+                renderPromoDisabled(viewBinding)
+            }
         }
     }
 
-    private fun renderPromoEnabled(viewBinding: ItemTokofoodPromoCardBinding) {
+    private fun renderPromoSelected(viewBinding: ItemTokofoodPromoCardBinding) {
         with(viewBinding) {
+            dividerUserValidityTokofood.show()
             promoBenefitDetail.setTextColor(colorTextEnabledDefault)
             textTimeValidityTokofood.setTextColor(colorTextEnabledLowEmphasis)
             promoCell.cardType = CardUnify.TYPE_BORDER_ACTIVE
@@ -78,8 +86,23 @@ class TokoFoodPromoItemViewHolder(private val viewBinding: ItemTokofoodPromoCard
         }
     }
 
+    private fun renderPromoUnselected(viewBinding: ItemTokofoodPromoCardBinding,
+                                      hasAdditionalInformation: Boolean) {
+        with(viewBinding) {
+            if (hasAdditionalInformation) {
+                dividerUserValidityTokofood.gone()
+            } else {
+                dividerUserValidityTokofood.invisible()
+            }
+            promoBenefitDetail.setTextColor(colorTextEnabledDefault)
+            textTimeValidityTokofood.setTextColor(colorTextEnabledLowEmphasis)
+            promoCell.cardType = CardUnify.TYPE_BORDER
+        }
+    }
+
     private fun renderPromoDisabled(viewBinding: ItemTokofoodPromoCardBinding) {
         with(viewBinding) {
+            dividerUserValidityTokofood.show()
             promoBenefitDetail.setTextColor(colorTextDisabled)
             textTimeValidityTokofood.setTextColor(colorTextDisabled)
             promoCell.cardType = CardUnify.TYPE_BORDER

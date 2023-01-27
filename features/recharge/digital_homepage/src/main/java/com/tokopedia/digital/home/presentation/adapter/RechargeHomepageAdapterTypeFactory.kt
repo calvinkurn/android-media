@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeMyBillsBinding
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeMyBillsEntrypointBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardCustomLastItemBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardsUnifyBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeRecommendationBannerBinding
@@ -16,6 +18,8 @@ import com.tokopedia.digital.home.model.RechargeHomepageCarousellModel
 import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
 import com.tokopedia.digital.home.model.RechargeHomepageDualBannersModel
 import com.tokopedia.digital.home.model.RechargeHomepageFavoriteModel
+import com.tokopedia.digital.home.model.RechargeHomepageMyBillsEntryPointModel
+import com.tokopedia.digital.home.model.RechargeHomepageMyBillsWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageOfferingWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageProductBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomBannerV2Model
@@ -39,6 +43,8 @@ import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepa
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageFavoriteViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageLegoBannerViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageLoadingViewholder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageMyBillsEntryPointWidgetViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageMyBillsWidgetViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageOfferingWidgetViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductBannerViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardCustomBannerV2ViewHolder
@@ -152,6 +158,12 @@ class RechargeHomepageAdapterTypeFactory(
 
     fun type(offeringWidget: RechargeHomepageOfferingWidgetModel): Int =
         RechargeHomepageOfferingWidgetViewHolder.LAYOUT
+
+    fun type(myBillsWidget: RechargeHomepageMyBillsWidgetModel): Int =
+        RechargeHomepageMyBillsWidgetViewHolder.LAYOUT
+
+    fun type(myBillsEntryPointWidget: RechargeHomepageMyBillsEntryPointModel): Int =
+        RechargeHomepageMyBillsEntryPointWidgetViewHolder.LAYOUT
 
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return RechargeHomepageLegoBannerViewHolder.LAYOUT
@@ -320,8 +332,29 @@ class RechargeHomepageAdapterTypeFactory(
                 parent,
                 listener
             )
+            RechargeHomepageMyBillsWidgetViewHolder.LAYOUT -> {
+                val binding = ViewRechargeHomeMyBillsBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent as ViewGroup,
+                    false
+                )
+                RechargeHomepageMyBillsWidgetViewHolder(
+                    binding,
+                    listener
+                )
+            }
+            RechargeHomepageMyBillsEntryPointWidgetViewHolder.LAYOUT -> {
+                val binding = ViewRechargeHomeMyBillsEntrypointBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent as ViewGroup,
+                    false
+                )
+                RechargeHomepageMyBillsEntryPointWidgetViewHolder(
+                    binding,
+                    listener
+                )
+            }
             else -> super.createViewHolder(parent, type)
         }
     }
-
 }

@@ -43,7 +43,7 @@
             {
               "title": "Kupon saya",
               "sub_title": "Promo dipilih",
-              "icon_url": "https://ecs7.tokopedia.net/img/blog/promo/2020/03/color%403x.png",
+              "icon_url": "https://images.tokopedia.net/img/blog/promo/2020/03/color%403x.png",
               "is_enabled": true,
               "tags": [],
               "id": "my_coupons",
@@ -354,7 +354,7 @@
             {
               "title": "Fitwear Official 1",
               "sub_title": "Promo dipilih",
-              "icon_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
+              "icon_url": "https://images.tokopedia.net/img/official_store/badge_os128.png",
               "is_enabled": true,
               "tags": [],
               "id": "merchant_vouchers",

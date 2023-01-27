@@ -60,7 +60,7 @@ import javax.inject.Inject
 class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecoration: MiniCartListDecoration,
                                                   var summaryTransactionBottomSheet: SummaryTransactionBottomSheet,
                                                   var analytics: MiniCartAnalytics)
-    : MiniCartListActionListener {
+    : MiniCartListActionListener, MiniCartBottomSheetUnifyListener {
 
     companion object {
         const val STATE_PRODUCT_BUNDLE_RECOM_ATC = "product_bundle_recom_atc"
@@ -158,13 +158,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     }
 
     private fun initializeBottomSheet(viewBinding: LayoutBottomsheetMiniCartListBinding, fragmentManager: FragmentManager) {
-        bottomSheet = MiniCartBottomSheetUnify(object : MiniCartBottomSheetUnifyListener {
-            override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-                if (requestCode == REQUEST_EDIT_BUNDLE) {
-                    onResultFromEditBundle(resultCode, data)
-                }
-            }
-        }).apply {
+        bottomSheet = MiniCartBottomSheetUnify().apply {
+            listener = this@MiniCartListBottomSheet
             showCloseIcon = false
             showHeader = true
             isDragable = true
@@ -981,6 +976,12 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             analytics.eventClickChangeProductBundle()
             toBeDeletedBundleGroupId = element.bundleGroupId
             bottomSheet?.startActivityForResult(intent, REQUEST_EDIT_BUNDLE)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_EDIT_BUNDLE) {
+            onResultFromEditBundle(resultCode, data)
         }
     }
 }

@@ -1,0 +1,966 @@
+[
+    {
+        "data": {
+            "pdpGetData": {
+                "error": {
+                    "Code": 0,
+                    "Message": "",
+                    "DevMessage": ""
+                },
+                "ppGetItemDetailPage": {
+                    "program": {
+                        "protectionAvailable": false,
+                        "title": "",
+                        "subTitle": "",
+                        "titlePDP": "",
+                        "subTitlePDP": "",
+                        "iconURL": "",
+                        "partnerText": "",
+                        "partnerLogo": "",
+                        "linkURL": "",
+                        "isAppLink": true
+                    }
+                },
+                "productView": "7",
+                "wishlistCount": "0",
+                "shopCommitment": {
+                    "result": {
+                        "isNowActive": false,
+                        "staticMessages": {
+                            "pdpMessage": ""
+                        }
+                    },
+                    "error": {
+                        "message": ""
+                    }
+                },
+                "reputationShop": {
+                    "badge": "https://ecs7.tokopedia.net/img/repsys/badges-off.jpg",
+                    "badgeHD": "https://ecs7.tokopedia.net/img/repsys/badges-off-hd.jpg",
+                    "score": "0",
+                    "scoreMap": "0"
+                },
+                "shopInfo": {
+                    "shopMultilocation": {
+                        "warehouseCount": "",
+                        "eduLink": {
+                            "appLink": ""
+                        }
+                    },
+                    "closedInfo": {
+                        "closedNote": "",
+                        "reason": "Terima kasih telah mempercayakan Tokopedia sebagai tempat bertransaksi online pilihan Anda.\u003cbr\u003e\u003cbr\u003eDengan ini kami informasikan bahwa ditemukan adanya indikasi crawling/scraping atau tindakan-tindakan lain termasuk namun tidak terbatas pada spam produk dan duplikasi toko yang dapat diindikasikan sebagai persaingan usaha tidak sehat pada Toko Anda, yang merupakan pelanggaran Syarat dan Ketentuan Tokopedia poin B No 9 sehingga \u003cb\u003etoko Anda kami moderasi\u003c/b\u003e. Info selengkapnya bisa Anda cek pada laman \u003ca href=\"https://www.tokopedia.com/terms#akun\" target=\"_blank\"\u003eberikut.\u003c/a\u003e\u003cbr\u003e\u003cbr\u003eUntuk membantu Anda memahami definisi Pelanggaran Produk dan Toko di Tokopedia, Anda bisa cek pada laman berikut ini:\u003col\u003e\u003cli\u003e\u003ca href=\"https://www.tokopedia.com/help/article/a-0586\" target=\"_blank\"\u003ePelanggaran Produk\u003c/a\u003e \u003c/li\u003e\u003cli\u003e\u003ca href=\"https://www.tokopedia.com/help/article/a-1948\" target=\"_blank\"\u003ePelanggaran Toko\u003c/a\u003e\u003c/li\u003e\u003c/ol\u003eKe depannya kami harap Anda dapat memperhatikan Syarat dan Ketentuan Tokopedia untuk kenyamanan bertransaksi dan meningkatkan penjualan toko Anda. Jika Anda butuh bantuan atau ada pertanyaan, jangan ragu untuk menghubungi Tim Tokopedia Care yang akan selalu siap membantu Anda melalui \"Layanan Pengguna\" pada laman berikut ini: \u003ca href='https://www.tokopedia.com/help/article/a-1948'\u003etkp.me/help.\u003c/a\u003e",
+                        "until": "",
+                        "detail": {
+                            "openDateUTC": "0"
+                        }
+                    },
+                    "shipmentInfo": [
+                        {
+                            "code": "grab",
+                            "isAvailable": 1,
+                            "shipmentID": "13",
+                            "image": "https://ecs7.tokopedia.net/img/kurir-grab.png",
+                            "name": "GrabExpress",
+                            "isPickup": 0,
+                            "maxAddFee": 0,
+                            "awbStatus": 0,
+                            "product": [
+                                {
+                                    "isAvailable": 1,
+                                    "productName": "Same Day",
+                                    "shipProdID": "24",
+                                    "additionalFee": "0.000000",
+                                    "minimumWeight": "0.000000",
+                                    "uiHidden": false
+                                },
+                                {
+                                    "isAvailable": 1,
+                                    "productName": "Instant",
+                                    "shipProdID": "37",
+                                    "additionalFee": "0.000000",
+                                    "minimumWeight": "0.000000",
+                                    "uiHidden": false
+                                }
+                            ]
+                        },
+                        {
+                            "code": "anteraja",
+                            "isAvailable": 1,
+                            "shipmentID": "23",
+                            "image": "https://ecs7.tokopedia.net/img/kurir-anteraja.png",
+                            "name": "AnterAja",
+                            "isPickup": 0,
+                            "maxAddFee": 0,
+                            "awbStatus": 0,
+                            "product": [
+                                {
+                                    "isAvailable": 1,
+                                    "productName": "Economy",
+                                    "shipProdID": "55",
+                                    "additionalFee": "0.000000",
+                                    "minimumWeight": "0.000000",
+                                    "uiHidden": false
+                                },
+                                {
+                                    "isAvailable": 1,
+                                    "productName": "Cargo",
+                                    "shipProdID": "56",
+                                    "additionalFee": "0.000000",
+                                    "minimumWeight": "0.000000",
+                                    "uiHidden": false
+                                },
+                                {
+                                    "isAvailable": 1,
+                                    "productName": "Same Day",
+                                    "shipProdID": "49",
+                                    "additionalFee": "0.000000",
+                                    "minimumWeight": "0.000000",
+                                    "uiHidden": false
+                                },
+                                {
+                                    "isAvailable": 1,
+                                    "productName": "Next Day",
+                                    "shipProdID": "46",
+                                    "additionalFee": "0.000000",
+                                    "minimumWeight": "0.000000",
+                                    "uiHidden": false
+                                },
+                                {
+                                    "isAvailable": 1,
+                                    "productName": "Reguler",
+                                    "shipProdID": "45",
+                                    "additionalFee": "0.000000",
+                                    "minimumWeight": "0.000000",
+                                    "uiHidden": false
+                                }
+                            ]
+                        },
+                        {
+                            "code": "gojek",
+                            "isAvailable": 1,
+                            "shipmentID": "10",
+                            "image": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+                            "name": "GoSend",
+                            "isPickup": 0,
+                            "maxAddFee": 0,
+                            "awbStatus": 0,
+                            "product": [
+                                {
+                                    "isAvailable": 1,
+                                    "productName": "Same Day",
+                                    "shipProdID": "20",
+                                    "additionalFee": "0.000000",
+                                    "minimumWeight": "0.000000",
+                                    "uiHidden": false
+                                },
+                                {
+                                    "isAvailable": 1,
+                                    "productName": "Instant Courier",
+                                    "shipProdID": "28",
+                                    "additionalFee": "0.000000",
+                                    "minimumWeight": "0.000000",
+                                    "uiHidden": false
+                                },
+                                {
+                                    "isAvailable": 1,
+                                    "productName": "Instant Car",
+                                    "shipProdID": "59",
+                                    "additionalFee": "0.000000",
+                                    "minimumWeight": "0.000000",
+                                    "uiHidden": true
+                                }
+                            ]
+                        }
+                    ],
+                    "activeProduct": "0",
+                    "createInfo": {
+                        "shopCreated": "2019-08-28",
+                        "epochShopCreated": "1566989192",
+                        "openSince": "August 2019",
+                        "epochShopCreatedUTC": "1566963992"
+                    },
+                    "shopTerms": "0",
+                    "shopAssets": {
+                        "avatar": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/11/19/dfcae136-2a58-42e0-9fd2-39601d7c508d.png",
+                        "cover": "https://images.tokopedia.net/img/cache/1334/BpoSLE/seller_no_cover_3.png"
+                    },
+                    "shopCore": {
+                        "description": "toko bos hajjar",
+                        "domain": "h4jj45",
+                        "shopID": "6690355",
+                        "name": "h4jJ45",
+                        "tagLine": "hajjar boss bakar! bakar!",
+                        "url": "https://www.tokopedia.com/h4jj45",
+                        "ownerID": "72840053"
+                    },
+                    "shopLastActive": "1668411099",
+                    "location": "Jakarta Selatan",
+                    "statusInfo": {
+                        "shopStatus": 1,
+                        "statusMessage": "",
+                        "statusTitle": "",
+                        "isIdle": false
+                    },
+                    "isAllowManage": 0,
+                    "isFreeReturns": 0,
+                    "shippingLoc": {
+                        "districtID": "2270",
+                        "districtName": "Setiabudi",
+                        "postalCode": "12930",
+                        "addressStreet": "Jl. Prof. DR. Satrio No.Kav. 11, RT.3/RW.3, Karet Semanggi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12950",
+                        "latitude": "-6.221316299999984",
+                        "longitude": "106.81944450000003",
+                        "provinceID": "13",
+                        "cityID": "175",
+                        "cityName": "Jakarta Selatan",
+                        "countryName": "Indonesia",
+                        "provinceName": "DKI Jakarta"
+                    },
+                    "shopStats": {
+                        "productSold": "229",
+                        "totalTx": "171",
+                        "totalShowcase": "1"
+                    },
+                    "shopType": 1,
+                    "badgeURL": "https://images.tokopedia.net/img/official_store/badge_os.png",
+                    "shopTier": 2,
+                    "tickerData": [],
+                    "partnerLabel": ""
+                },
+                "nearestWarehouse": [
+                    {
+                        "product_id": "6961809885",
+                        "warehouse_info": {
+                            "warehouse_id": "6899088",
+                            "is_fulfillment": false,
+                            "district_id": "2270",
+                            "postal_code": "12930",
+                            "geolocation": "-6.221316299999984,106.81944450000003"
+                        }
+                    },
+                    {
+                        "product_id": "6961809886",
+                        "warehouse_info": {
+                            "warehouse_id": "6899088",
+                            "is_fulfillment": false,
+                            "district_id": "2270",
+                            "postal_code": "12930",
+                            "geolocation": "-6.221316299999984,106.81944450000003"
+                        }
+                    },
+                    {
+                        "product_id": "6961809887",
+                        "warehouse_info": {
+                            "warehouse_id": "6899088",
+                            "is_fulfillment": false,
+                            "district_id": "2270",
+                            "postal_code": "12930",
+                            "geolocation": "-6.221316299999984,106.81944450000003"
+                        }
+                    },
+                    {
+                        "product_id": "6961809889",
+                        "warehouse_info": {
+                            "warehouse_id": "6899088",
+                            "is_fulfillment": false,
+                            "district_id": "2270",
+                            "postal_code": "12930",
+                            "geolocation": "-6.221316299999984,106.81944450000003"
+                        }
+                    },
+                    {
+                        "product_id": "6961809890",
+                        "warehouse_info": {
+                            "warehouse_id": "6899088",
+                            "is_fulfillment": false,
+                            "district_id": "2270",
+                            "postal_code": "12930",
+                            "geolocation": "-6.221316299999984,106.81944450000003"
+                        }
+                    },
+                    {
+                        "product_id": "6961809891",
+                        "warehouse_info": {
+                            "warehouse_id": "6899088",
+                            "is_fulfillment": false,
+                            "district_id": "2270",
+                            "postal_code": "12930",
+                            "geolocation": "-6.221316299999984,106.81944450000003"
+                        }
+                    },
+                    {
+                        "product_id": "6961809892",
+                        "warehouse_info": {
+                            "warehouse_id": "6899088",
+                            "is_fulfillment": false,
+                            "district_id": "2270",
+                            "postal_code": "12930",
+                            "geolocation": "-6.221316299999984,106.81944450000003"
+                        }
+                    },
+                    {
+                        "product_id": "6961809893",
+                        "warehouse_info": {
+                            "warehouse_id": "6899088",
+                            "is_fulfillment": false,
+                            "district_id": "2270",
+                            "postal_code": "12930",
+                            "geolocation": "-6.221316299999984,106.81944450000003"
+                        }
+                    },
+                    {
+                        "product_id": "6961809894",
+                        "warehouse_info": {
+                            "warehouse_id": "6899088",
+                            "is_fulfillment": false,
+                            "district_id": "2270",
+                            "postal_code": "12930",
+                            "geolocation": "-6.221316299999984,106.81944450000003"
+                        }
+                    },
+                    {
+                        "product_id": "6961809895",
+                        "warehouse_info": {
+                            "warehouse_id": "6899088",
+                            "is_fulfillment": false,
+                            "district_id": "2270",
+                            "postal_code": "12930",
+                            "geolocation": "-6.221316299999984,106.81944450000003"
+                        }
+                    },
+                    {
+                        "product_id": "6961809896",
+                        "warehouse_info": {
+                            "warehouse_id": "6899088",
+                            "is_fulfillment": false,
+                            "district_id": "2270",
+                            "postal_code": "12930",
+                            "geolocation": "-6.221316299999984,106.81944450000003"
+                        }
+                    },
+                    {
+                        "product_id": "6961809897",
+                        "warehouse_info": {
+                            "warehouse_id": "6899088",
+                            "is_fulfillment": false,
+                            "district_id": "2270",
+                            "postal_code": "12930",
+                            "geolocation": "-6.221316299999984,106.81944450000003"
+                        }
+                    },
+                    {
+                        "product_id": "6961809898",
+                        "warehouse_info": {
+                            "warehouse_id": "6899088",
+                            "is_fulfillment": false,
+                            "district_id": "2270",
+                            "postal_code": "12930",
+                            "geolocation": "-6.221316299999984,106.81944450000003"
+                        }
+                    },
+                    {
+                        "product_id": "6961809899",
+                        "warehouse_info": {
+                            "warehouse_id": "6899088",
+                            "is_fulfillment": false,
+                            "district_id": "2270",
+                            "postal_code": "12930",
+                            "geolocation": "-6.221316299999984,106.81944450000003"
+                        }
+                    },
+                    {
+                        "product_id": "6961809900",
+                        "warehouse_info": {
+                            "warehouse_id": "6899088",
+                            "is_fulfillment": false,
+                            "district_id": "2270",
+                            "postal_code": "12930",
+                            "geolocation": "-6.221316299999984,106.81944450000003"
+                        }
+                    }
+                ],
+                "installmentRecommendation": {
+                    "data": {
+                        "monthly_price": 152284,
+                        "os_monthly_price": 152284,
+                        "partner_code": "KDV",
+                        "subtitle": "Beli sekarang, bayar akhir bulan atau 30 hari lagi"
+                    }
+                },
+                "installmentCalculation": {
+                    "message": "",
+                    "data": {
+                        "credit_card": [],
+                        "non_credit_card": [],
+                        "tnc": []
+                    }
+                },
+                "validateTradeIn": {
+                    "isEligible": false,
+                    "usedPrice": "0",
+                    "widgetString": ""
+                },
+                "cartRedirection": {
+                    "status": "OK",
+                    "error_message": [],
+                    "alternate_copy": [
+                        {
+                            "text": "Cek Wishlist Kamu",
+                            "cart_type": "remind_me",
+                            "color": "secondary_gray"
+                        },
+                        {
+                            "text": "Simpan Perubahan",
+                            "cart_type": "update_cart",
+                            "color": "primary_green"
+                        }
+                    ],
+                    "data": [
+                        {
+                            "product_id": "6961809872",
+                            "available_buttons": [
+                                {
+                                    "text": "Beli",
+                                    "color": "secondary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": false
+                                },
+                                {
+                                    "text": "+ Keranjang",
+                                    "color": "primary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": true
+                                }
+                            ],
+                            "unavailable_buttons": [],
+                            "hide_floating_button": false
+                        },
+                        {
+                            "product_id": "6961809885",
+                            "available_buttons": [
+                                {
+                                    "text": "Beli",
+                                    "color": "secondary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": false
+                                },
+                                {
+                                    "text": "+ Keranjang",
+                                    "color": "primary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": true
+                                }
+                            ],
+                            "unavailable_buttons": [],
+                            "hide_floating_button": false
+                        },
+                        {
+                            "product_id": "6961809886",
+                            "available_buttons": [
+                                {
+                                    "text": "Beli",
+                                    "color": "secondary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": false
+                                },
+                                {
+                                    "text": "+ Keranjang",
+                                    "color": "primary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": true
+                                }
+                            ],
+                            "unavailable_buttons": [],
+                            "hide_floating_button": false
+                        },
+                        {
+                            "product_id": "6961809887",
+                            "available_buttons": [
+                                {
+                                    "text": "Beli",
+                                    "color": "secondary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": false
+                                },
+                                {
+                                    "text": "+ Keranjang",
+                                    "color": "primary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": true
+                                }
+                            ],
+                            "unavailable_buttons": [],
+                            "hide_floating_button": false
+                        },
+                        {
+                            "product_id": "6961809889",
+                            "available_buttons": [
+                                {
+                                    "text": "Beli",
+                                    "color": "secondary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": false
+                                },
+                                {
+                                    "text": "+ Keranjang",
+                                    "color": "primary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": true
+                                }
+                            ],
+                            "unavailable_buttons": [],
+                            "hide_floating_button": false
+                        },
+                        {
+                            "product_id": "6961809890",
+                            "available_buttons": [
+                                {
+                                    "text": "Beli",
+                                    "color": "secondary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": false
+                                },
+                                {
+                                    "text": "+ Keranjang",
+                                    "color": "primary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": true
+                                }
+                            ],
+                            "unavailable_buttons": [],
+                            "hide_floating_button": false
+                        },
+                        {
+                            "product_id": "6961809891",
+                            "available_buttons": [
+                                {
+                                    "text": "Beli",
+                                    "color": "secondary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": false
+                                },
+                                {
+                                    "text": "+ Keranjang",
+                                    "color": "primary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": true
+                                }
+                            ],
+                            "unavailable_buttons": [],
+                            "hide_floating_button": false
+                        },
+                        {
+                            "product_id": "6961809892",
+                            "available_buttons": [
+                                {
+                                    "text": "Beli",
+                                    "color": "secondary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": false
+                                },
+                                {
+                                    "text": "+ Keranjang",
+                                    "color": "primary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": true
+                                }
+                            ],
+                            "unavailable_buttons": [],
+                            "hide_floating_button": false
+                        },
+                        {
+                            "product_id": "6961809893",
+                            "available_buttons": [
+                                {
+                                    "text": "Beli",
+                                    "color": "secondary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": false
+                                },
+                                {
+                                    "text": "+ Keranjang",
+                                    "color": "primary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": true
+                                }
+                            ],
+                            "unavailable_buttons": [],
+                            "hide_floating_button": false
+                        },
+                        {
+                            "product_id": "6961809894",
+                            "available_buttons": [
+                                {
+                                    "text": "Beli",
+                                    "color": "secondary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": false
+                                },
+                                {
+                                    "text": "+ Keranjang",
+                                    "color": "primary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": true
+                                }
+                            ],
+                            "unavailable_buttons": [],
+                            "hide_floating_button": false
+                        },
+                        {
+                            "product_id": "6961809895",
+                            "available_buttons": [
+                                {
+                                    "text": "Beli",
+                                    "color": "secondary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": false
+                                },
+                                {
+                                    "text": "+ Keranjang",
+                                    "color": "primary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": true
+                                }
+                            ],
+                            "unavailable_buttons": [],
+                            "hide_floating_button": false
+                        },
+                        {
+                            "product_id": "6961809896",
+                            "available_buttons": [
+                                {
+                                    "text": "Beli",
+                                    "color": "secondary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": false
+                                },
+                                {
+                                    "text": "+ Keranjang",
+                                    "color": "primary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": true
+                                }
+                            ],
+                            "unavailable_buttons": [],
+                            "hide_floating_button": false
+                        },
+                        {
+                            "product_id": "6961809897",
+                            "available_buttons": [
+                                {
+                                    "text": "Beli",
+                                    "color": "secondary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": false
+                                },
+                                {
+                                    "text": "+ Keranjang",
+                                    "color": "primary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": true
+                                }
+                            ],
+                            "unavailable_buttons": [],
+                            "hide_floating_button": false
+                        },
+                        {
+                            "product_id": "6961809898",
+                            "available_buttons": [
+                                {
+                                    "text": "Beli",
+                                    "color": "secondary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": false
+                                },
+                                {
+                                    "text": "+ Keranjang",
+                                    "color": "primary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": true
+                                }
+                            ],
+                            "unavailable_buttons": [],
+                            "hide_floating_button": false
+                        },
+                        {
+                            "product_id": "6961809899",
+                            "available_buttons": [
+                                {
+                                    "text": "Beli",
+                                    "color": "secondary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": false
+                                },
+                                {
+                                    "text": "+ Keranjang",
+                                    "color": "primary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": true
+                                }
+                            ],
+                            "unavailable_buttons": [],
+                            "hide_floating_button": false
+                        },
+                        {
+                            "product_id": "6961809900",
+                            "available_buttons": [
+                                {
+                                    "text": "Beli",
+                                    "color": "secondary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": false
+                                },
+                                {
+                                    "text": "+ Keranjang",
+                                    "color": "primary_green",
+                                    "cart_type": "normal",
+                                    "onboarding_message": "",
+                                    "show_recommendation": true
+                                }
+                            ],
+                            "unavailable_buttons": [],
+                            "hide_floating_button": false
+                        }
+                    ]
+                },
+                "upcomingCampaigns": [],
+                "shopTopChatSpeed": {
+                    "messageResponseTime": "-1"
+                },
+                "shopRatingsQuery": {
+                    "ratingScore": 0
+                },
+                "shopPackSpeed": {
+                    "hour": 0,
+                    "speedFmt": "Tidak ada data"
+                },
+                "restrictionInfo": {
+                    "message": "",
+                    "restrictionData": []
+                },
+                "uniqueSellingPoint": {
+                    "bebasOngkirExtra": {
+                        "icon": "https://images.tokopedia.net/img/pdp/icon/usp/boextoped.png"
+                    }
+                },
+                "bebasOngkir": {
+                    "products": [
+                        {
+                            "productID": "6961809897",
+                            "boType": 1
+                        },
+                        {
+                            "productID": "6961809892",
+                            "boType": 1
+                        },
+                        {
+                            "productID": "6961809889",
+                            "boType": 1
+                        },
+                        {
+                            "productID": "6961809893",
+                            "boType": 1
+                        },
+                        {
+                            "productID": "6961809885",
+                            "boType": 1
+                        },
+                        {
+                            "productID": "6961809896",
+                            "boType": 1
+                        },
+                        {
+                            "productID": "6961809899",
+                            "boType": 1
+                        },
+                        {
+                            "productID": "6961809900",
+                            "boType": 1
+                        },
+                        {
+                            "productID": "6961809891",
+                            "boType": 1
+                        },
+                        {
+                            "productID": "6961809894",
+                            "boType": 1
+                        },
+                        {
+                            "productID": "6961809898",
+                            "boType": 1
+                        },
+                        {
+                            "productID": "6961809890",
+                            "boType": 1
+                        },
+                        {
+                            "productID": "6961809886",
+                            "boType": 1
+                        },
+                        {
+                            "productID": "6961809895",
+                            "boType": 1
+                        },
+                        {
+                            "productID": "6961809887",
+                            "boType": 1
+                        }
+                    ],
+                    "images": [
+                        {
+                            "boType": 1,
+                            "imageURL": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png",
+                            "tokoCabangImageURL": ""
+                        }
+                    ]
+                },
+                "ratesEstimate": [
+                    {
+                        "warehouseID": "6899088",
+                        "products": [
+                            "6961809885",
+                            "6961809886",
+                            "6961809887",
+                            "6961809889",
+                            "6961809890",
+                            "6961809891",
+                            "6961809892",
+                            "6961809893",
+                            "6961809894",
+                            "6961809895",
+                            "6961809896",
+                            "6961809897",
+                            "6961809898",
+                            "6961809899",
+                            "6961809900",
+                            "6961809872"
+                        ],
+                        "bottomsheet": {
+                            "title": "",
+                            "iconURL": "",
+                            "subtitle": "",
+                            "buttonCopy": ""
+                        },
+                        "data": {
+                            "totalService": 2,
+                            "courierLabel": "Instan",
+                            "cheapestShippingPrice": 0,
+                            "destination": "Dikirim ke \u003cb\u003eGambir, Kota Administrasi Jakarta Pusat\u003c/b\u003e",
+                            "icon": "https://ecs7.tokopedia.net/img/pdp/info/icon/courier@3x.png",
+                            "title": "Tersedia Bebas Ongkir",
+                            "subtitle": "Kurir lainnya: ",
+                            "eTAText": "Estimasi tiba 16 - 18 Nov",
+                            "errors": [],
+                            "shippingCtxDesc": "",
+                            "originalShippingRate": 0,
+                            "fulfillmentData": {
+                                "icon": "",
+                                "prefix": "",
+                                "description": ""
+                            },
+                            "chipsLabel": [
+                                "Instan"
+                            ],
+                            "hasUsedBenefit": false
+                        },
+                        "boMetadata": "{\"bo_metadata\":{\"bo_type\":1,\"bo_eligibilities\":[{\"key\":\"campaign_ids\",\"value\":\"139,54,96,134\"}]}}"
+                    }
+                ],
+                "merchantVoucherSummary": {
+                    "animatedInfo": [],
+                    "isShown": false
+                },
+                "reviewImage": {
+                    "list": [],
+                    "detail": {
+                        "reviews": [],
+                        "images": [],
+                        "videos": [],
+                        "mediaCountFmt": "",
+                        "mediaCount": "0",
+                        "mediaCountTitle": ""
+                    },
+                    "hasNext": false,
+                    "hasPrev": false
+                },
+                "mostHelpFulReviewData": {
+                    "list": []
+                },
+                "rating": {
+                    "ratingScore": "0.0",
+                    "totalRating": "0",
+                    "totalReviewTextAndImage": "0"
+                },
+                "bundleInfo": [],
+                "ticker": {
+                    "tickerInfo": []
+                },
+                "navBar": {
+                    "name": "default_navbar",
+                    "items": [
+                        {
+                            "title": "Detail Produk",
+                            "componentName": "product_detail"
+                        },
+                        {
+                            "title": "Info Toko",
+                            "componentName": "shop_credibility"
+                        },
+                        {
+                            "title": "Rekomendasi",
+                            "componentName": "pdp_3"
+                        }
+                    ]
+                },
+                "shopFinishRate": {
+                    "finishRate": ""
+                },
+                "shopAdditional": {
+                    "icon": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png",
+                    "title": "Dilayani Tokopedia",
+                    "applink": "",
+                    "link": "",
+                    "linkText": "Pelajari",
+                    "subtitle": "Barang dikirim dari gudang Tokopedia terdekat",
+                    "label": [
+                        "Pasti Tersedia",
+                        "Proses Cepat",
+                        "Dikemas Tokopedia"
+                    ]
+                }
+            }
+        }
+    }
+]

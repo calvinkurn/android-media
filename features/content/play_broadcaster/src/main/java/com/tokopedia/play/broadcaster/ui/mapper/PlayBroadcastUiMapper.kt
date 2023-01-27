@@ -1,16 +1,11 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
-import android.graphics.Typeface
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.StyleSpan
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetSellerLeaderboardSlotResponse
@@ -114,6 +109,7 @@ class PlayBroadcastUiMapper @Inject constructor(
 
         return ConfigurationUiModel(
             streamAllowed = config.streamAllowed,
+            shortVideoAllowed = config.shortVideoAllowed,
             channelId = channelStatus.first,
             channelStatus = channelStatus.second,
             durationConfig = DurationConfigUiModel(
@@ -200,13 +196,15 @@ class PlayBroadcastUiMapper @Inject constructor(
         coverUrl: String,
         date: String,
         duration: String,
-        isEligiblePostVideo: Boolean
+        isEligiblePostVideo: Boolean,
+        author: ContentAccountUiModel,
     ) = ChannelSummaryUiModel(
         title = title,
         coverUrl = coverUrl,
         date = date,
         duration = duration,
         isEligiblePostVideo = isEligiblePostVideo,
+        author = author,
     )
 
     override fun mapIncomingChat(chat: Chat): PlayChatUiModel = PlayChatUiModel(
@@ -511,7 +509,7 @@ class PlayBroadcastUiMapper @Inject constructor(
         audioBufferTimestamp = metric.audioBufferTimestamp,
     )
 
-    override fun mapAuthorList(response: WhitelistQuery): List<ContentAccountUiModel> {
+    override fun mapAuthorList(response: GetCheckWhitelistResponse): List<ContentAccountUiModel> {
         return response.whitelist.authors.map {
             ContentAccountUiModel(
                 id = it.id,
@@ -520,7 +518,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                 badge = it.badge,
                 type = it.type,
                 hasUsername = it.livestream.hasUsername,
-                hasAcceptTnc = it.livestream.enable,
+                enable = it.livestream.enable,
             )
         }
     }

@@ -7,6 +7,7 @@ object MainNavConst {
         const val ORDER = 2
         const val USER_MENU = 3
         const val HOME = 4
+        const val ACTIVITY = 5
     }
 
     object MainNavState{
@@ -14,7 +15,7 @@ object MainNavConst {
     }
 
     object ImageUrl {
-        const val CDN_URL = "https://ecs7.tokopedia.net"
+        const val CDN_URL = "https://images.tokopedia.net"
         const val KEY_IMAGE_HOST = "image_host"
         const val OVO_IMG = "/img/android/ovo/drawable-xxxhdpi/ovo.png"
         const val TOKOCASH_IMG = "/img/wallet/ic_tokocash_circle.png";
