@@ -84,4 +84,32 @@ class AffiliateEducationSeeAllViewModelTest {
         assertEquals(true, affiliateEducationSeeAllViewModel.hasMoreData().value)
         assertTrue(affiliateEducationSeeAllViewModel.getTotalCount().value.isMoreThanZero())
     }
+
+    @Test
+    fun `fetches category list if it is empty`() {
+        val categoryChildren =
+            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem.ChildrenItem()
+        val category =
+            AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem(
+                listOf(categoryChildren),
+                id = 382
+            )
+        val educationCategoryTreeResponse = AffiliateEducationCategoryResponse(
+            AffiliateEducationCategoryResponse.CategoryTree(
+                AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData(
+                    listOf(category)
+                )
+            )
+        )
+        val educationArticleResponse: AffiliateEducationArticleCardsResponse = spyk()
+
+        coEvery { educationCategoryUseCase.getEducationCategoryTree() } returns educationCategoryTreeResponse
+        coEvery {
+            educationArticleCardsUseCase.getEducationArticleCards(any(), offset = any())
+        } returns educationArticleResponse
+
+        affiliateEducationSeeAllViewModel.fetchSeeAllData("education_event", "")
+
+        assertFalse(affiliateEducationSeeAllViewModel.getEducationCategoryChip().value.isNullOrEmpty())
+    }
 }
