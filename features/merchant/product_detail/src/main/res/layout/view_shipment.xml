@@ -126,7 +126,7 @@
         android:id="@+id/pdp_shipment_courier_label_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="14dp"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_estimation"
@@ -173,11 +173,11 @@
         app:typographyType="display_3"
         tools:text="Tidak ada kurir yang mendukung pengiriman barang ini ke alamatmu. Caring barang lain atau Ganti Alamat." />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/pdp_shipment_group_tc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="pdp_shipment_tc_label, pdp_shipment_tc_icon, pdp_shipment_tc_value"
-        tools:visibility="gone" />
+<!--    <androidx.constraintlayout.widget.Group-->
+<!--        android:id="@+id/pdp_shipment_group_tc"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:constraint_referenced_ids="pdp_shipment_tc_label, pdp_shipment_tc_icon, pdp_shipment_tc_value"-->
+<!--        tools:visibility="gone" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
