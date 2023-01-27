@@ -125,7 +125,6 @@ class UserProfileViewModelTest {
                 followInfo equalTo mockOwnFollow
                 profileType equalTo ProfileType.Self
                 profileWhitelist equalTo mockHasAcceptTnc
-                shopRecom equalTo mockShopRecom
             }
         }
     }
