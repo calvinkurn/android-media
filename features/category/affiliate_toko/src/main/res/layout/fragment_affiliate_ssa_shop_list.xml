@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:visibility="visible"
             tools:itemCount="1"
-            tools:listitem="@layout/affiliate_promotion_product_card_item_layout"
+            tools:listitem="@layout/affiliate_ssa_shop_item_layout"
             tools:visibility="gone" />
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
@@ -46,7 +46,7 @@
         app:globalerrors_type="SERVER_ERROR"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ssa_shop_navToolbar"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/ssa_shop_progress_bar"

@@ -16,7 +16,7 @@ class AffiliateSSAShopViewModel @Inject constructor(
 
     private val ssaShopList = MutableLiveData<List<Visitable<AffiliateAdapterTypeFactory>>>()
     private val errorMessage = MutableLiveData<Throwable>()
-    private val progressBar = MutableLiveData<Boolean>()
+    private val progressBar = MutableLiveData<Boolean>(true)
     private val noMoreDataAvailable = MutableLiveData(true)
 
     companion object {
@@ -28,6 +28,7 @@ class AffiliateSSAShopViewModel @Inject constructor(
             block = {
                 affiliateSSAShopUseCase.getSSAShopList(page, limit).data?.let {
                     if (it.data?.status == SUCCESS) {
+                        progressBar.value = false
                         noMoreDataAvailable.value = it.data.shopData.isNullOrEmpty()
                         ssaShopList.value =
                             it.data.shopData?.map { ssaShop -> AffiliateSSAShopUiModel(ssaShop) }
