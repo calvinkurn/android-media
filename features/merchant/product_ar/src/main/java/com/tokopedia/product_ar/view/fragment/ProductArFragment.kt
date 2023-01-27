@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import com.modiface.mfemakeupkit.MFEMakeupEngine
 import com.modiface.mfemakeupkit.data.MFETrackingData
 import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -33,7 +35,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.ProductCartHelper
 import com.tokopedia.product.detail.common.SingleClick
@@ -68,7 +69,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageProcessingUtil.getBitmapFromPath
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -136,14 +136,21 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
 
         binding?.icCompareAr?.run {
             show()
+            disableCompareIcon()
             setOnClickListener {
                 binding?.arLoader?.show()
                 goToArComparissonPage()
             }
         }
 
-        binding?.imgShadowBackground?.setBackgroundResource(R.drawable.ic_gradient_ar)
+        setupHeaderBackground()
         setupNavToolbar()
+    }
+
+    private fun setupHeaderBackground() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            binding?.imgShadowBackground?.setBackgroundResource(R.drawable.ic_gradient_ar)
+        }
     }
 
     private fun setupCoachMark() {

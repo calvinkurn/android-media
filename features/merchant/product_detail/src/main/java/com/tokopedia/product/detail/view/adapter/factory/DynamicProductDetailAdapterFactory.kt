@@ -14,6 +14,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataMode
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoTitleDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLoadingDataModel
@@ -37,6 +38,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataMo
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 
 interface DynamicProductDetailAdapterFactory {
@@ -76,5 +78,7 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: GlobalBundlingDataModel): Int
     fun type(data: ProductShopAdditionalDataModel): Int
     fun type(data: ArButtonDataModel): Int
+    fun type(data: ViewToViewWidgetDataModel): Int
+    fun type(data: ProductCustomInfoTitleDataModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }
