@@ -47,7 +47,6 @@ import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.SuccessUploadBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
-import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
 import com.tokopedia.mvc.presentation.summary.helper.SummaryPageRedirectionHelper
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
 import com.tokopedia.mvc.util.SharingUtil
@@ -147,7 +146,7 @@ class SummaryFragment :
     }
 
     override fun onVoucherTypePageResult() {
-        //TODO("Not yet implemented")
+        activity?.finish()
     }
 
     private fun setupPageMode() {
@@ -340,7 +339,7 @@ class SummaryFragment :
         with(configuration) {
             tpgPromoType.text = promoTypeWordings.getOrNull(promoType.id.dec()).orEmpty()
             if (benefitType == BenefitType.NOMINAL) {
-                tpgVoucherNominal.text = benefitPercent.getCurrencyFormatted()
+                tpgVoucherNominal.text = benefitIdr.getCurrencyFormatted()
                 llVoucherMaxPriceDeduction.gone()
                 tpgVoucherMaxPriceDeduction.text = benefitIdr.getCurrencyFormatted()
                 tpgDeductionType.text = getString(R.string.smvc_summary_page_deduction_nominal_text)
@@ -363,8 +362,11 @@ class SummaryFragment :
         with(configuration) {
             tpgVoucherName.text = voucherName
             tpgVoucherCode.text = voucherCode
-            tpgVoucherTarget.text = if (isVoucherPublic) getString(R.string.smvc_voucher_public_label)
-                                    else getString(R.string.smvc_voucher_private_label)
+            tpgVoucherTarget.text = if (isVoucherPublic) {
+                getString(R.string.smvc_voucher_public_label)
+            } else {
+                getString(R.string.smvc_voucher_private_label)
+            }
             llVoucherCode.isVisible = !isVoucherPublic
             llVoucherMultiperiod.isVisible = isPeriod
             tpgVoucherMultiperiod.text = getString(R.string.smvc_summary_page_multiperiod_format, totalPeriod)
@@ -432,11 +434,14 @@ class SummaryFragment :
     }
 
     private fun showSuccessUploadBottomSheet(configuration: VoucherConfiguration) {
-        SuccessUploadBottomSheet
+        val bottomSheet = SuccessUploadBottomSheet
             .createInstance(configuration)
             .setOnAdsClickListener(::onSuccessBottomsheetAdsClick)
             .setOnBroadCastClickListener(::onSuccessBottomsheetBroadCastClick)
-            .show(childFragmentManager)
+        bottomSheet.setOnDismissListener {
+            RouteManager.route(context, SELLER_MVC_LIST)
+        }
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun onMultiPeriodClicked(configuration: VoucherConfiguration) {
@@ -452,14 +457,13 @@ class SummaryFragment :
     }
 
     private fun onInformationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
-        context?.let {
-            val intent = VoucherInformationActivity.buildEditModeIntent(it, configuration)
-            startActivity(intent)
-        }
+        val isAdding = viewModel.checkIsAdding(configuration)
+        redirectionHelper.redirectToCouponInfoPage(this, configuration, isAdding)
     }
 
     private fun onConfigurationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
-        // TODO: redirect to step 3
+        val isAdding = viewModel.checkIsAdding(configuration)
+        redirectionHelper.redirectToCouponConfigurationPage(this, configuration, isAdding)
     }
 
     private fun onChangeProductBtnChangeClicked(configuration: VoucherConfiguration) {

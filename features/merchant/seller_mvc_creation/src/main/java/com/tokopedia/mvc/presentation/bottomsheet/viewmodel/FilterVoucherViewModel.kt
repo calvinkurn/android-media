@@ -56,7 +56,10 @@ class FilterVoucherViewModel @Inject constructor(
     }
 
     fun setSource(source: VoucherSource) {
-        _filterData.getValueOrDefault().source.toggleData(source)
+        _filterData.getValueOrDefault().source.apply {
+            clear()
+            add(source)
+        }
         _filterData.triggerChange()
     }
 

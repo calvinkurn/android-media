@@ -6,11 +6,17 @@
 
     <application>
         <activity
-            android:name=".presentation.creation.step2.VoucherInformationActivity"
-            android:exported="false"
+            android:name=".presentation.creation.step3.VoucherSettingActivity"
             android:configChanges="orientation"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"/>
+        <activity
+            android:name=".presentation.creation.step2.VoucherInformationActivity"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name=".presentation.creation.step1.VoucherTypeActivity"
             android:configChanges="orientation"
@@ -80,9 +86,7 @@
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
-        </activity>
-
+            android:theme="@style/Theme.White"></activity>
         <activity
             android:name=".presentation.summary.SummaryActivity"
             android:configChanges="orientation"

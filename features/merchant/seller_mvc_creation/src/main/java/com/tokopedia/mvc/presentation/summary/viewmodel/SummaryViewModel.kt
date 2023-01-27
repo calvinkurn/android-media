@@ -206,4 +206,8 @@ class SummaryViewModel @Inject constructor(
     fun validateTnc(checked: Boolean) {
         _isInputValid.value = checked
     }
+
+    fun checkIsAdding(configuration: VoucherConfiguration): Boolean {
+        return configuration.voucherId == ADDING_VOUCHER_ID
+    }
 }

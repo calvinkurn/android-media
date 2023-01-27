@@ -28,6 +28,8 @@ class SummaryActivity: BaseSimpleActivity() {
             }
             val starter = Intent(context, SummaryActivity::class.java)
                 .putExtras(bundle)
+            starter.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            starter.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             context?.startActivity(starter)
         }
 
