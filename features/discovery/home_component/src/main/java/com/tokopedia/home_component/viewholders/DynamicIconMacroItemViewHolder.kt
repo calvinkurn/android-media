@@ -30,7 +30,6 @@ class DynamicIconMacroItemViewHolder(
     private val listener: DynamicIconComponentListener
 ) : RecyclerView.ViewHolder(itemView) {
     private val longPressHandler = Handler(Looper.getMainLooper())
-    private var isLongPress = false
     private var scaleAnimator = ValueAnimator.ofFloat()
     private var rippleAnimator = ValueAnimator.ofFloat()
     private var currentScaleRipple = 0f
@@ -39,7 +38,6 @@ class DynamicIconMacroItemViewHolder(
     private val durationInputClick = UnifyMotion.T2
     private val durationOutputClick = UnifyMotion.T1
     private var onLongPress = Runnable {
-        isLongPress = true
         itemView.performLongClick()
     }
     private var binding: HomeComponentDynamicIconItemInteractionBinding? by viewBinding()
