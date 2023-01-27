@@ -2,7 +2,9 @@ package com.tokopedia.sellerpersona.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.sellerpersona.di.module.SellerPersonaModule
+import com.tokopedia.sellerpersona.di.module.ViewModelModule
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
+import com.tokopedia.sellerpersona.view.fragment.PersonaSelectTypeFragment
 import com.tokopedia.sellerpersona.view.fragment.PersonaOpeningFragment
 import com.tokopedia.sellerpersona.view.fragment.PersonaQuestionnaireFragment
 import com.tokopedia.sellerpersona.view.fragment.PersonaResultFragment
@@ -16,7 +18,8 @@ import dagger.Component
 @Component(
     dependencies = [BaseAppComponent::class],
     modules = [
-        SellerPersonaModule::class
+        SellerPersonaModule::class,
+        ViewModelModule::class
     ]
 )
 interface SellerPersonaComponent {
@@ -28,4 +31,6 @@ interface SellerPersonaComponent {
     fun inject(fragment: PersonaOpeningFragment)
 
     fun inject(fragment: PersonaResultFragment)
+
+    fun inject(fragment: PersonaSelectTypeFragment)
 }

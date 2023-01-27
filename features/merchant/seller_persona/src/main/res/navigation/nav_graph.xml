@@ -3,17 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/personaQuestionnaireFragment"
+    app:startDestination="@id/questionnaireFragment"
     tools:startDestination="@id/openingFragment">
 
     <fragment
         android:id="@+id/openingFragment"
         android:name="com.tokopedia.sellerpersona.view.fragment.PersonaOpeningFragment"
-        android:label="fragment_persona_opening"
+        android:label="@string/sp_opening_page_type"
         tools:layout="@layout/fragment_persona_opening">
         <action
             android:id="@+id/actionOpeningFragmentToQuestionnaireFragment"
-            app:destination="@id/personaQuestionnaireFragment"
+            app:destination="@id/questionnaireFragment"
             app:popUpTo="@+id/openingFragment"
             app:popUpToInclusive="true" />
     </fragment>
@@ -21,11 +21,24 @@
     <fragment
         android:id="@+id/resultFragment"
         android:name="com.tokopedia.sellerpersona.view.fragment.PersonaResultFragment"
-        android:label="ResultFragment"
-        tools:layout="@layout/fragment_persona_result" />
+        android:label="@string/sp_this_is_your_seller_type"
+        tools:layout="@layout/fragment_persona_result">
+        <action
+            android:id="@+id/actionResultFragmentToQuestionnaireFragment"
+            app:destination="@id/questionnaireFragment" />
+        <action
+            android:id="@+id/actionResultFragmentToSelectTyoeFragment"
+            app:destination="@id/selectTypeFragment" />
+    </fragment>
+
     <fragment
-        android:id="@+id/personaQuestionnaireFragment"
+        android:id="@+id/questionnaireFragment"
         android:name="com.tokopedia.sellerpersona.view.fragment.PersonaQuestionnaireFragment"
-        android:label="PersonaQuestionnaireFragment"
+        android:label="@string/sp_opening_page_type"
         tools:layout="@layout/fragment_persona_questionnaire" />
+    <fragment
+        android:id="@+id/selectTypeFragment"
+        android:name="com.tokopedia.sellerpersona.view.fragment.PersonaSelectTypeFragment"
+        android:label="@string/sp_select_seller_type"
+        tools:layout="@layout/fragment_persona_select_type" />
 </navigation>

@@ -35,7 +35,7 @@ abstract class BaseFragment<T : ViewBinding> : Fragment() {
         return viewBinding.root
     }
 
-    abstract fun inject()
+    open fun inject() {}
 
     abstract fun bind(layoutInflater: LayoutInflater, container: ViewGroup?): T
 }

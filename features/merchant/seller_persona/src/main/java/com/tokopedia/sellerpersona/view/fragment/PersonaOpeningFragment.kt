@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.findNavController
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerpersona.R
+import com.tokopedia.sellerpersona.common.Constants
 import com.tokopedia.sellerpersona.data.local.PersonaSharedPreference
 import com.tokopedia.sellerpersona.databinding.FragmentPersonaOpeningBinding
 import javax.inject.Inject
@@ -42,11 +44,16 @@ class PersonaOpeningFragment : BaseFragment<FragmentPersonaOpeningBinding>() {
 
     private fun setupView() {
         binding?.run {
+            showIllustrationImage()
             setupQuestionnaireNavigation()
             btnOpeningTryLater.setOnClickListener {
                 activity?.finish()
             }
         }
+    }
+
+    private fun showIllustrationImage() {
+        binding?.imgSpOpening?.loadImage(Constants.IMG_INTRODUCTION)
     }
 
     private fun setupQuestionnaireNavigation() {

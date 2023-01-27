@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.sellerpersona.databinding.FragmentPersonaManualSelectBinding
+import com.tokopedia.sellerpersona.databinding.FragmentPersonaSelectTypeBinding
 
 /**
  * Created by @ilhamsuaib on 26/01/23.
  */
 
-class PersonaManualSelectFragment : BaseFragment<FragmentPersonaManualSelectBinding>() {
+class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>() {
 
     override fun inject() {
         daggerComponent?.inject(this)
@@ -19,8 +19,8 @@ class PersonaManualSelectFragment : BaseFragment<FragmentPersonaManualSelectBind
     override fun bind(
         layoutInflater: LayoutInflater,
         container: ViewGroup?
-    ): FragmentPersonaManualSelectBinding {
-        return FragmentPersonaManualSelectBinding.inflate(layoutInflater, container, false)
+    ): FragmentPersonaSelectTypeBinding {
+        return FragmentPersonaSelectTypeBinding.inflate(layoutInflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

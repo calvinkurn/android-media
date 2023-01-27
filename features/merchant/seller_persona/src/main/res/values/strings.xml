@@ -6,4 +6,12 @@
     <string name="sp_try_later">Nanti Saja</string>
     <string name="sp_seller_persona">Seller Persona</string>
     <string name="sp_result_seller_type">Kamu termasuk tipe Seller:</string>
+    <string name="sp_persona_activation_content_description">Konten rekomendasi dan tampilan Home akan disesuaikan dengan kebutuhanmu.</string>
+    <string name="sp_apply">Terapkan</string>
+    <string name="sp_retry_questionnaire">Ulangi Kuis</string>
+    <string name="sp_persona_result_select_manual"><![CDATA[Hasil kurang sesuai? <font color=\"%1$s\"><b>Pilih Sendiri Tipemu</b></font>]]></string>
+    <string name="sp_opening_page_type">Tipe Seller Apakah Kamu?</string>
+    <string name="sp_this_is_your_seller_type">Ini tipe Seller kamu!</string>
+    <string name="sp_result_create_admin_account">Beritahu pemilik toko untuk membuat akun khusus admin, ya.</string>
+    <string name="sp_select_seller_type">Pilih tipe Seller kamu</string>
 </resources>
