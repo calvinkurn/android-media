@@ -41,6 +41,7 @@ class GetVoucherQuotaUseCase @Inject constructor(
                   sources {
                     name
                     used
+                    remaining
                     total
                     expired
                   }

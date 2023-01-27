@@ -39,6 +39,7 @@ class GetVoucherQuotaMapper @Inject constructor(@ApplicationContext private val 
         VoucherCreationQuota.Sources(
             name = it.name,
             used = it.used,
+            remaining = it.remaining,
             total = it.total,
             expired = it.expired,
         )

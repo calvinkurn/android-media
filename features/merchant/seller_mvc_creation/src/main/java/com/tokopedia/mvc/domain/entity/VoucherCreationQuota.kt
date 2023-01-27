@@ -20,6 +20,7 @@ data class VoucherCreationQuota (
     data class Sources (
         val name: String = "",
         val used: Int = 0,
+        val remaining: Int = 0,
         val total: Int = 0,
         val expired: String = ""
     ): Parcelable
