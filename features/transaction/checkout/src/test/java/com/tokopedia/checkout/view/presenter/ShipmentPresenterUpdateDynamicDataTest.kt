@@ -9,6 +9,7 @@ import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
@@ -20,8 +21,11 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.*
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnMetadata
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
@@ -356,5 +360,301 @@ class ShipmentPresenterUpdateDynamicDataTest {
             view.updateAddOnsData(AddOnsDataModel(), 0)
             view.updateAddOnsDynamicDataPassing(any(), any(), any(), any(), any())
         }
+    }
+
+    @Test
+    fun `WHEN SAF returns donation already checked THEN verify set param with donation`() {
+        // Given
+        val listGroupAddress = arrayListOf<GroupAddress>()
+        val groupAddress = GroupAddress(
+            isError = false,
+            userAddress = UserAddress(addressId = "1")
+        )
+        listGroupAddress.add(groupAddress)
+        coEvery {
+            getShipmentAddressFormV3UseCase.setParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
+                CartShipmentAddressFormData(
+                    errorCode = 0,
+                    groupAddress = listGroupAddress,
+                    isUsingDdp = true,
+                    donation = Donation(isChecked = true)
+                )
+            )
+        }
+        val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
+        shipmentCartItemModelList.add(
+            ShipmentCartItemModel().apply {
+                cartItemModels = arrayListOf(
+                    CartItemModel().apply {
+                        cartId = 88
+                        cartString = "239594-0-301643"
+                    }
+                )
+            }
+        )
+
+        val addOnResultList = arrayListOf<AddOnResult>()
+        addOnResultList.add(
+            AddOnResult().apply {
+                addOnKey = "239594-0-301643-88"
+            }
+        )
+        presenter.shipmentCartItemModelList = shipmentCartItemModelList
+
+        // When
+        presenter.processInitialLoadCheckoutPage(
+            false,
+            false,
+            false,
+            false,
+            false,
+            null,
+            "",
+            "",
+            false
+        )
+
+        // Then
+        assert(presenter.dynamicDataParam.data.isNotEmpty())
+    }
+
+    @Test
+    fun `WHEN SAF returns addons order level already checked THEN verify set param with addons order level`() {
+        // Given
+        val listGroupAddress = arrayListOf<GroupAddress>()
+        val listGroupShop = arrayListOf<GroupShop>()
+        val listAddOnDataItemModel = arrayListOf<AddOnDataItemModel>()
+        val addOnDataItemModel = AddOnDataItemModel(
+            addOnPrice = 5000.0,
+            addOnId = "id",
+            addOnMetadata = AddOnMetadataItemModel(
+                addOnNoteItemModel = AddOnNoteItemModel(
+                    isCustomNote = true,
+                    to = "to",
+                    from = "from",
+                    notes = "notes"
+                )
+            )
+        )
+        listAddOnDataItemModel.add(addOnDataItemModel)
+        val groupShop = GroupShop(
+            addOns = AddOnsDataModel(
+                status = 1,
+                addOnsButtonModel = AddOnButtonModel(
+                    title = "test title button",
+                    description = "test description button"
+                ),
+                addOnsBottomSheetModel = AddOnBottomSheetModel(
+                    headerTitle = "test header title bottom sheet",
+                    description = "test description bottom sheet",
+                    ticker = AddOnTickerModel(
+                        text = "test ticker model"
+                    )
+                ),
+                addOnsDataItemModelList = listAddOnDataItemModel
+            )
+        )
+        listGroupShop.add(groupShop)
+        val groupAddress = GroupAddress(
+            isError = false,
+            userAddress = UserAddress(addressId = "1"),
+            groupShop = listGroupShop
+        )
+
+        listGroupAddress.add(groupAddress)
+        coEvery {
+            getShipmentAddressFormV3UseCase.setParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
+                CartShipmentAddressFormData(
+                    errorCode = 0,
+                    groupAddress = listGroupAddress,
+                    isUsingDdp = true,
+                    addOnWording = AddOnWordingData(
+                        packagingAndGreetingCard = "packaging and greeting",
+                        onlyGreetingCard = "only greeting card",
+                        invoiceNotSendToRecipient = "invoice not send"
+                    )
+                )
+            )
+        }
+        val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
+        shipmentCartItemModelList.add(
+            ShipmentCartItemModel(
+                cartItemModels = arrayListOf(
+                    CartItemModel().apply {
+                        cartId = 88
+                        cartString = "239594-0-301643"
+                    }
+                ),
+                addOnWordingModel = AddOnWordingModel(
+                    packagingAndGreetingCard = "packaging and greeting",
+                    onlyGreetingCard = "only greeting card",
+                    invoiceNotSendToRecipient = "invoice not send"
+                )
+            )
+        )
+
+        presenter.shipmentCartItemModelList = shipmentCartItemModelList
+
+        // When
+        presenter.processInitialLoadCheckoutPage(
+            false,
+            false,
+            false,
+            false,
+            false,
+            null,
+            "",
+            "",
+            false
+        )
+
+        // Then
+        assert(presenter.dynamicDataParam.data.isNotEmpty())
+    }
+
+    @Test
+    fun `WHEN SAF returns addons product level already checked THEN verify set param with addons product level`() {
+        // Given
+        val listGroupAddress = arrayListOf<GroupAddress>()
+        val listGroupShop = arrayListOf<GroupShop>()
+        val listAddOnDataItemModel = arrayListOf<AddOnDataItemModel>()
+        val addOnDataItemModel = AddOnDataItemModel(
+            addOnPrice = 5000.0,
+            addOnId = "id",
+            addOnMetadata = AddOnMetadataItemModel(
+                addOnNoteItemModel = AddOnNoteItemModel(
+                    isCustomNote = true,
+                    to = "to",
+                    from = "from",
+                    notes = "notes"
+                )
+            )
+        )
+        listAddOnDataItemModel.add(addOnDataItemModel)
+        val listProduct = arrayListOf<Product>()
+        val listAddonItem = arrayListOf<AddOnsResponse.AddOnDataItem>()
+        val addOnDataItem = AddOnsResponse.AddOnDataItem(
+            addOnPrice = 5000.0,
+            addOnId = "id",
+            addOnMetadata = AddOnsResponse.AddOnDataItem.AddOnMetadata(
+                addOnNote = AddOnsResponse.AddOnDataItem.AddOnMetadata.AddOnNote(
+                    isCustomNote = true,
+                    to = "to",
+                    from = "from",
+                    notes = "notes"
+                )
+            )
+        )
+        listAddonItem.add(addOnDataItem)
+        val product = Product(
+            addOnProduct = AddOnsDataModel(
+                status = 1,
+                addOnsButtonModel = AddOnButtonModel(
+                    title = "test title button",
+                    description = "test description button"
+                ),
+                addOnsBottomSheetModel = AddOnBottomSheetModel(
+                    headerTitle = "test header title bottom sheet",
+                    description = "test description bottom sheet",
+                    ticker = AddOnTickerModel(
+                        text = "test ticker model"
+                    )
+                ),
+                addOnsDataItemModelList = listAddOnDataItemModel
+            )
+        )
+        listProduct.add(product)
+        val groupShop = GroupShop(
+            products = listProduct
+        )
+        listGroupShop.add(groupShop)
+        val groupAddress = GroupAddress(
+            isError = false,
+            userAddress = UserAddress(addressId = "1"),
+            groupShop = listGroupShop
+        )
+
+        listGroupAddress.add(groupAddress)
+        coEvery {
+            getShipmentAddressFormV3UseCase.setParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
+                CartShipmentAddressFormData(
+                    errorCode = 0,
+                    groupAddress = listGroupAddress,
+                    isUsingDdp = true,
+                    addOnWording = AddOnWordingData(
+                        packagingAndGreetingCard = "packaging and greeting",
+                        onlyGreetingCard = "only greeting card",
+                        invoiceNotSendToRecipient = "invoice not send"
+                    )
+                )
+            )
+        }
+        val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
+        shipmentCartItemModelList.add(
+            ShipmentCartItemModel(
+                cartItemModels = arrayListOf(
+                    CartItemModel().apply {
+                        cartId = 88
+                        cartString = "239594-0-301643"
+                    }
+                ),
+                addOnWordingModel = AddOnWordingModel(
+                    packagingAndGreetingCard = "packaging and greeting",
+                    onlyGreetingCard = "only greeting card",
+                    invoiceNotSendToRecipient = "invoice not send"
+                )
+            )
+        )
+
+        presenter.shipmentCartItemModelList = shipmentCartItemModelList
+
+        // When
+        presenter.processInitialLoadCheckoutPage(
+            false,
+            false,
+            false,
+            false,
+            false,
+            null,
+            "",
+            "",
+            false
+        )
+
+        // Then
+        assert(presenter.dynamicDataParam.data.isNotEmpty())
     }
 }

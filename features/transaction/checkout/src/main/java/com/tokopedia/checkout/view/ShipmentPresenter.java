@@ -247,7 +247,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private PublishSubject<Boolean> logisticPromoDonePublisher = null;
 
     public boolean isUsingDynamicDataPassing = false;
-    private DynamicDataPassingParamRequest dynamicDataParam;
+    public DynamicDataPassingParamRequest dynamicDataParam;
     private String dynamicData = "";
 
     @Inject
@@ -2915,7 +2915,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     public void setCurrentDynamicDataParamFromSAF(CartShipmentAddressFormData cartShipmentAddressFormData, boolean isOneClickShipment) {
         DynamicDataPassingParamRequest ddpParam = new DynamicDataPassingParamRequest();
-        ArrayList<DynamicDataPassingParamRequest.DynamicDataParam> listDataParam = new ArrayList<DynamicDataPassingParamRequest.DynamicDataParam>();
+        ArrayList<DynamicDataPassingParamRequest.DynamicDataParam> listDataParam = new ArrayList<>();
         // donation
         if (cartShipmentAddressFormData.getDonation() != null && cartShipmentAddressFormData.getDonation().isChecked()) {
             DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
