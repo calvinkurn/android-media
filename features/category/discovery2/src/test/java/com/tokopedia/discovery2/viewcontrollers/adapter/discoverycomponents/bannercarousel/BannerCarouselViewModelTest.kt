@@ -1,11 +1,13 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannercarousel
 
 import android.app.Application
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import io.mockk.*
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +29,7 @@ class BannerCarouselViewModelTest {
     private val list = ArrayList<DataItem>()
     private val mockedDataItem:DataItem = mockk(relaxed = true)
     private val mockedDiscoDataMapper :DiscoveryDataMapper = mockk(relaxed = true)
+    var context: Context = mockk(relaxed = true)
     private val dataList = ArrayList<DataItem>().apply {
         add(DataItem())
     }
@@ -290,6 +293,15 @@ class BannerCarouselViewModelTest {
         every { componentsItem.verticalProductFailState } returns false
         assert(!viewModel.shouldShowShimmer())
 
+    }
+
+    @Test
+    fun `test for checkForDarkMode`() {
+        spyk(context.isDarkMode())
+
+        viewModel.checkForDarkMode(context)
+
+        verify { viewModel.checkForDarkMode(context) }
     }
 
     @After

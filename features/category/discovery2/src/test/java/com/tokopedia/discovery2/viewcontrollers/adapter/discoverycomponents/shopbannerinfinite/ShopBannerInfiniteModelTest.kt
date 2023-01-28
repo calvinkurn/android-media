@@ -1,11 +1,13 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite
 
 import android.app.Application
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.usecase.bannerinfiniteusecase.BannerInfiniteUseCase
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import io.mockk.*
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +25,7 @@ class ShopBannerInfiniteModelTest {
     val rule = InstantTaskExecutorRule()
     private val componentsItem: ComponentsItem = mockk(relaxed = true)
     private val application: Application = mockk()
+    var context: Context = mockk(relaxed = true)
     private var viewModel: ShopBannerInfiniteViewModel =
         spyk(ShopBannerInfiniteViewModel(application, componentsItem, 99))
 
@@ -106,6 +109,15 @@ class ShopBannerInfiniteModelTest {
     @Test
     fun `test for component position`(){
         TestCase.assertEquals(viewModel.position, 99)
+    }
+
+    @Test
+    fun `test for checkForDarkMode`() {
+        spyk(context.isDarkMode())
+
+        viewModel.checkForDarkMode(context)
+
+        verify { viewModel.checkForDarkMode(context) }
     }
 
 }

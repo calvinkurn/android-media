@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
@@ -153,7 +154,10 @@ class CategoryBestSellerViewModelTest {
     fun `backgroundImage is present`() {
         viewModel.productCardsUseCase = productCardsUseCase
         val list = ArrayList<ComponentsItem>()
-        val item = ComponentsItem(id = "2", pageEndPoint = "s")
+        val dataList = arrayListOf<DataItem>()
+        val dataItem = DataItem(hasNotifyMe = true)
+        dataList.add(dataItem)
+        val item = ComponentsItem(id = "2", pageEndPoint = "s", data = dataList)
         list.add(item)
         every { componentsItem.id } returns "s"
         every { componentsItem.pageEndPoint } returns "s"
@@ -161,6 +165,7 @@ class CategoryBestSellerViewModelTest {
         every { componentsItem.properties } returns null
         coEvery { application.applicationContext } returns context
         val productArray : ArrayList<ProductCardModel> = mockk(relaxed = true)
+        val productCardModel = ProductCardModel()
         coEvery {
             viewModel.productCardsUseCase.loadFirstPageComponents(
                 any(),

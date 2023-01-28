@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore
 
 import android.app.Application
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -10,6 +11,7 @@ import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
 import com.tokopedia.discovery2.usecase.bannerinfiniteusecase.BannerInfiniteUseCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.usecase.shopcardusecase.ShopCardUseCase
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import io.mockk.*
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +25,7 @@ class LoadMoreViewModelTest {
     val rule = InstantTaskExecutorRule()
     private val componentsItem: ComponentsItem = mockk(relaxed = true)
     private val application: Application = mockk()
+    var context: Context = mockk(relaxed = true)
     private var viewModel: LoadMoreViewModel =
             spyk(LoadMoreViewModel(application, componentsItem, 99))
 
@@ -301,5 +304,14 @@ class LoadMoreViewModelTest {
     }
 
     /**************************** end of onAttachViewHolder() *******************************************/
+
+    @Test
+    fun `test for checkForDarkMode`() {
+        spyk(context.isDarkMode())
+
+        viewModel.checkForDarkMode(context)
+
+        verify { viewModel.checkForDarkMode(context) }
+    }
 
 }
