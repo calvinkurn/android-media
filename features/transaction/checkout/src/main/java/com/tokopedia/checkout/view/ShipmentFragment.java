@@ -1888,7 +1888,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataList);
                 } else {
                     hasClearPromoBeforeCheckout = false;
-                    shipmentPresenter.validateDynamicData();
+                    if (shipmentPresenter.isUsingDynamicDataPassing()) {
+                        shipmentPresenter.validateDynamicData();
+                    } else {
+                        doCheckout();
+                    }
                 }
             } else {
                 boolean hasRedStatePromo = false;
@@ -1918,7 +1922,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     showToastError(errorMessage);
                     sendAnalyticsPromoRedState();
                 } else {
-                    shipmentPresenter.validateDynamicData();
+                    if (shipmentPresenter.isUsingDynamicDataPassing()) {
+                        shipmentPresenter.validateDynamicData();
+                    } else {
+                        doCheckout();
+                    }
                 }
             }
         } else if (shipmentData != null && !result) {
@@ -3015,7 +3023,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         }
 
-        shipmentPresenter.validateDynamicData();
+        if (shipmentPresenter.isUsingDynamicDataPassing()) {
+            shipmentPresenter.validateDynamicData();
+        } else {
+            doCheckout();
+        }
     }
 
     @Override
