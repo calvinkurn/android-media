@@ -115,26 +115,23 @@ class SwitchAccountRobot(
         scheduleAnalytic = mockk(relaxed = true),
         pinProductAnalytic = mockk(relaxed = true),
         accountAnalytic = PlayBroadcastAccountAnalyticImpl(analyticUserSession, hydraConfigStore),
+        shortsEntryPointAnalytic = mockk(relaxed = true),
     )
 
     private val ugcViewModelFactory = object : UGCOnboardingViewModelFactory.Creator {
         override fun create(
             owner: SavedStateRegistryOwner,
-            onboardingType: Int,
             onboardingStrategy: UGCOnboardingStrategy
         ): UGCOnboardingViewModelFactory {
             return UGCOnboardingViewModelFactory(
                 owner,
-                onboardingType,
                 onboardingStrategy,
                 UGCOnboardingViewModelFactory = object :
                     UGCOnboardingViewModel.Factory {
                     override fun create(
-                        onboardingType: Int,
                         onboardingStrategy: UGCOnboardingStrategy
                     ): UGCOnboardingViewModel {
                         return UGCOnboardingViewModel(
-                            onboardingType,
                             onboardingStrategy
                         )
                     }
@@ -168,7 +165,9 @@ class SwitchAccountRobot(
                     parentViewModelFactoryCreator = parentViewModelFactoryCreator,
                     viewModelFactory = viewModelFactory,
                     analytic = playAnalytic,
-                    analyticManager = mockk(relaxed = true)
+                    analyticManager = mockk(relaxed = true),
+                    userSession = mockk(relaxed = true),
+                    coachMarkSharedPref = mockk(relaxed = true),
                 )
             },
             UserCompleteOnboardingBottomSheet::class.java to {

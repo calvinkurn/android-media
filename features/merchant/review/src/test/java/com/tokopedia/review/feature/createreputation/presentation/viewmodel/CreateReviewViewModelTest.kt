@@ -928,7 +928,8 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
             message = StringRes(R.string.review_create_fail_toaster),
             actionText = StringRes(R.string.review_oke),
             duration = Toaster.LENGTH_SHORT,
-            type = Toaster.TYPE_ERROR
+            type = Toaster.TYPE_ERROR,
+            payload = Unit
         )
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
@@ -951,7 +952,8 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
             message = StringRes(R.string.review_form_media_picker_toaster_failed_upload_message),
             actionText = StringRes(Int.ZERO),
             duration = Toaster.LENGTH_SHORT,
-            type = Toaster.TYPE_ERROR
+            type = Toaster.TYPE_ERROR,
+            payload = Unit
         )
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
@@ -975,7 +977,8 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
             message = StringRes(R.string.review_form_media_picker_toaster_failed_upload_message),
             actionText = StringRes(Int.ZERO),
             duration = Toaster.LENGTH_SHORT,
-            type = Toaster.TYPE_ERROR
+            type = Toaster.TYPE_ERROR,
+            payload = Unit
         )
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
@@ -999,7 +1002,8 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
             message = StringRes(R.string.review_form_media_picker_toaster_wait_for_upload_message),
             actionText = StringRes(Int.ZERO),
             duration = Toaster.LENGTH_SHORT,
-            type = Toaster.TYPE_NORMAL
+            type = Toaster.TYPE_NORMAL,
+            payload = Unit
         )
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
@@ -1024,7 +1028,8 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
             message = StringRes(R.string.review_form_media_picker_toaster_wait_for_upload_message),
             actionText = StringRes(Int.ZERO),
             duration = Toaster.LENGTH_SHORT,
-            type = Toaster.TYPE_NORMAL
+            type = Toaster.TYPE_NORMAL,
+            payload = Unit
         )
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
@@ -1445,11 +1450,12 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
 
     @Test
     fun `enqueueDisabledAddMoreMediaToaster should enqueue new toaster`() = runBlockingTest {
-        val expectedToasterQueue = CreateReviewToasterUiModel(
+        val expectedToasterQueue = CreateReviewToasterUiModel<Unit>(
             message = StringRes(R.string.review_form_cannot_add_more_media_while_uploading),
             actionText = StringRes(Int.ZERO),
             duration = Toaster.LENGTH_SHORT,
-            type = Toaster.TYPE_NORMAL
+            type = Toaster.TYPE_NORMAL,
+            payload = Unit
         )
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()

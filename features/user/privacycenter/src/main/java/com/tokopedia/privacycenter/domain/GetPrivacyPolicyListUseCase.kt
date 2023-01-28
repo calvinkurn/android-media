@@ -9,6 +9,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.privacycenter.data.PrivacyPolicyDataModel
 import com.tokopedia.privacycenter.data.PrivacyPolicyListResponse
 import com.tokopedia.privacycenter.ui.main.section.privacypolicy.PrivacyPolicyConst
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.date.DateUtil
 import javax.inject.Inject
 
@@ -23,7 +24,7 @@ class GetPrivacyPolicyListUseCase @Inject constructor(
         val request = RestRequest.Builder(
             PrivacyPolicyConst.GET_LIST_URL,
             PrivacyPolicyListResponse::class.java
-        ).setRequestType(RequestType.GET).build()
+        ).setHeaders(mapOf(PrivacyPolicyConst.ORIGIN_HEADER to TokopediaUrl.getInstance().WEB)).setRequestType(RequestType.GET).build()
 
         val response = restRepository.getResponse(request)
         return if (response.isError) {

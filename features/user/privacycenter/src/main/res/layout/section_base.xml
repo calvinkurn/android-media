@@ -42,9 +42,11 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="display_2"
                 app:typographyWeight="bold"
+                android:textColor="@color/Unify_NN950"
                 tools:text="Section Titile" />
 
             <com.tokopedia.unifyprinciples.Typography
+                android:layout_marginTop="2dp"
                 android:id="@+id/sectionSubtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -53,6 +55,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/sectionTitle"
                 app:typographyType="display_3"
+                android:textColor="@color/Unify_N600"
                 tools:text="Lorem ipsum dolor sit amet" />
 
             <com.tokopedia.iconunify.IconUnify

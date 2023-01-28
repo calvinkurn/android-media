@@ -59,14 +59,11 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generat
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PAGE_NUMBER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PRICE_MINIMUM_SHIPPING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_ERROR_TYPE
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_STATUS_KEY
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_BE_ERROR
@@ -111,7 +108,6 @@ import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import dagger.Lazy
-import javax.inject.Inject
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
@@ -129,6 +125,7 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import timber.log.Timber
+import javax.inject.Inject
 
 open class DynamicProductDetailViewModel @Inject constructor(private val dispatcher: CoroutineDispatchers,
                                                              private val getPdpLayoutUseCase: Lazy<GetPdpLayoutUseCase>,
@@ -275,6 +272,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private val _verticalRecommendation = MutableLiveData<Result<RecommendationWidget>>()
     val verticalRecommendation: LiveData<Result<RecommendationWidget>> = _verticalRecommendation
+
+    private val _loadViewToView = MutableLiveData<Result<RecommendationWidget>>()
+    val loadViewToView: LiveData<Result<RecommendationWidget>>
+        get() = _loadViewToView
 
     var videoTrackerData: Pair<Long, Long>? = null
 
@@ -713,6 +714,40 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             _loadTopAdsProduct.value = response.asSuccess()
         }) {
             _loadTopAdsProduct.value = Throwable(pageName).asFail()
+        }
+    }
+
+    fun loadViewToView(
+        pageName: String,
+        productId: String,
+        isTokoNow: Boolean,
+    ) {
+        if (GlobalConfig.isSellerApp()) return
+
+        if (!alreadyHitRecom.contains(pageName)) {
+            alreadyHitRecom.add(pageName)
+        } else {
+            return
+        }
+
+        launchCatchError(dispatcher.main, block = {
+            val response = getRecommendationUseCase.get().getData(
+                GetRecommendationRequestParam(
+                    pageNumber = DEFAULT_PAGE_NUMBER,
+                    pageName = pageName,
+                    productIds = arrayListOf(productId),
+                    isTokonow = isTokoNow,
+                )
+            )
+
+            _loadViewToView.value = if (response.isNotEmpty()) {
+                Success(response.first())
+            } else {
+                Fail(MessageErrorException())
+            }
+        }) {
+            alreadyHitRecom.remove(pageName)
+            _loadViewToView.value = Throwable(pageName, it).asFail()
         }
     }
 
