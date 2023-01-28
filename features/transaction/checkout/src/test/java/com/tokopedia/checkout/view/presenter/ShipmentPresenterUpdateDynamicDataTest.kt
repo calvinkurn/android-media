@@ -427,6 +427,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
 
         // Then
         assert(presenter.dynamicDataParam.data.isNotEmpty())
+        assert(presenter.isUsingDynamicDataPassing)
     }
 
     @Test
@@ -532,6 +533,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
 
         // Then
         assert(presenter.dynamicDataParam.data.isNotEmpty())
+        assert(presenter.isUsingDynamicDataPassing)
     }
 
     @Test
@@ -656,5 +658,73 @@ class ShipmentPresenterUpdateDynamicDataTest {
 
         // Then
         assert(presenter.dynamicDataParam.data.isNotEmpty())
+        assert(presenter.isUsingDynamicDataPassing)
+    }
+
+    @Test
+    fun `WHEN SAF returns isDdp is false THEN verify param is empty`() {
+        // Given
+        val listGroupAddress = arrayListOf<GroupAddress>()
+        val groupAddress = GroupAddress(
+            isError = false,
+            userAddress = UserAddress(addressId = "1")
+        )
+        listGroupAddress.add(groupAddress)
+        coEvery {
+            getShipmentAddressFormV3UseCase.setParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
+                CartShipmentAddressFormData(
+                    errorCode = 0,
+                    groupAddress = listGroupAddress,
+                    isUsingDdp = false
+                )
+            )
+        }
+        val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
+        shipmentCartItemModelList.add(
+            ShipmentCartItemModel().apply {
+                cartItemModels = arrayListOf(
+                    CartItemModel().apply {
+                        cartId = 88
+                        cartString = "239594-0-301643"
+                    }
+                )
+            }
+        )
+
+        val addOnResultList = arrayListOf<AddOnResult>()
+        addOnResultList.add(
+            AddOnResult().apply {
+                addOnKey = "239594-0-301643-88"
+            }
+        )
+        presenter.shipmentCartItemModelList = shipmentCartItemModelList
+
+        // When
+        presenter.processInitialLoadCheckoutPage(
+            false,
+            false,
+            false,
+            false,
+            false,
+            null,
+            "",
+            "",
+            false
+        )
+
+        // Then
+        assert(presenter.dynamicDataParam.data.isEmpty())
+        assert(!presenter.isUsingDynamicDataPassing)
     }
 }
