@@ -33,6 +33,7 @@ import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import rx.subscriptions.CompositeSubscription
@@ -427,7 +428,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
 
         // Then
         assert(presenter.dynamicDataParam.data.isNotEmpty())
-        assert(presenter.isUsingDynamicDataPassing)
+        assertEquals(true, presenter.isUsingDynamicDataPassing)
     }
 
     @Test
@@ -533,7 +534,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
 
         // Then
         assert(presenter.dynamicDataParam.data.isNotEmpty())
-        assert(presenter.isUsingDynamicDataPassing)
+        assertEquals(true, presenter.isUsingDynamicDataPassing)
     }
 
     @Test
@@ -658,7 +659,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
 
         // Then
         assert(presenter.dynamicDataParam.data.isNotEmpty())
-        assert(presenter.isUsingDynamicDataPassing)
+        assertEquals(true, presenter.isUsingDynamicDataPassing)
     }
 
     @Test
@@ -725,6 +726,6 @@ class ShipmentPresenterUpdateDynamicDataTest {
 
         // Then
         assert(presenter.dynamicDataParam.data.isEmpty())
-        assert(!presenter.isUsingDynamicDataPassing)
+        assertEquals(false, presenter.isUsingDynamicDataPassing)
     }
 }
