@@ -240,6 +240,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private PublishSubject<Boolean> logisticDonePublisher = null;
     private PublishSubject<Boolean> logisticPromoDonePublisher = null;
 
+    private Map<String, PublishSubject<Boolean>> scheduleDeliveryDonePublisherMap = null;
+
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
                              CheckoutGqlUseCase checkoutGqlUseCase,
@@ -1318,6 +1320,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     }
                                     if (logisticPromoDonePublisher != null) {
                                         logisticPromoDonePublisher.onCompleted();
+                                    }
+                                    if (getScheduleDeliveryDonePublisher(cartString) != null) {
+                                        getScheduleDeliveryDonePublisher(cartString).onCompleted();
                                     }
                                 }
 
@@ -2913,5 +2918,20 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public PublishSubject<Boolean> getLogisticDonePublisher() {
         return logisticDonePublisher;
+    }
+
+    public PublishSubject<Boolean> getScheduleDeliveryDonePublisher(String cartString) {
+        if (scheduleDeliveryDonePublisherMap != null) {
+            return scheduleDeliveryDonePublisherMap.get(cartString);
+        }
+        return null;
+    }
+
+    @Override
+    public void setScheduleDeliveryDonePublisherMap(String cartString, PublishSubject<Boolean> donePublisher) {
+        if (this.scheduleDeliveryDonePublisherMap == null) {
+            this.scheduleDeliveryDonePublisherMap = new HashMap<>();
+        }
+        this.scheduleDeliveryDonePublisherMap.put(cartString, donePublisher);
     }
 }

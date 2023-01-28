@@ -208,6 +208,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -3694,7 +3695,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onChangeScheduleDelivery(ScheduleDeliveryUiModel scheduleDeliveryUiModel, int position) {
+    public void onChangeScheduleDelivery(ScheduleDeliveryUiModel scheduleDeliveryUiModel, int position, PublishSubject<Boolean> donePublisher) {
         if (getView() != null) {
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
             if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
@@ -3712,6 +3713,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipmentCartItemModel.setTimeslotId(0);
                     shipmentCartItemModel.setValidationMetadata("");
                 }
+
+                shipmentPresenter.setScheduleDeliveryDonePublisherMap(shipmentCartItemModel.getCartString(), donePublisher);
 
                 if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
                         !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode()) &&
@@ -3734,12 +3737,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipmentAdapter.updateCheckoutButtonData(null);
                 }
 
-                shipmentAdapter.setSelectedCourier(position, newCourierItemData, true, false);
+                SelectedShipperModel selectedShipperModel = newCourierItemData.getSelectedShipper();
+                boolean shouldValidateUse = selectedShipperModel.getLogPromoCode() != null && !selectedShipperModel.getLogPromoCode().isEmpty();
+
+                shipmentAdapter.setSelectedCourier(position, newCourierItemData, true, shouldValidateUse);
                 shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
 
-                SelectedShipperModel selectedShipperModel = newCourierItemData.getSelectedShipper();
-
-                if (selectedShipperModel.getLogPromoCode() != null && !selectedShipperModel.getLogPromoCode().isEmpty()) {
+                if (shouldValidateUse) {
                     ValidateUsePromoRequest validateUsePromoRequest = generateValidateUsePromoRequest();
                     if (selectedShipperModel.getLogPromoCode() != null && selectedShipperModel.getLogPromoCode().length() > 0) {
                         for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {

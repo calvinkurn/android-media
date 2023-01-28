@@ -109,6 +109,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private ShipmentDataRequestConverter shipmentDataRequestConverter;
     private RatesDataConverter ratesDataConverter;
     private CompositeSubscription compositeSubscription;
+    private CompositeSubscription scheduleDeliverySubscription;
 
     private boolean isShowOnboarding;
     private int lastChooseCourierItemPosition;
@@ -183,10 +184,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {
             return new ShipmentRecipientAddressViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM) {
-            if (compositeSubscription == null || compositeSubscription.isUnsubscribed()) {
-                compositeSubscription = new CompositeSubscription();
+            if (scheduleDeliverySubscription == null || scheduleDeliverySubscription.isUnsubscribed()) {
+                scheduleDeliverySubscription = new CompositeSubscription();
             }
-            return new ShipmentItemViewHolder(view, shipmentAdapterActionListener, compositeSubscription);
+            return new ShipmentItemViewHolder(view, shipmentAdapterActionListener, scheduleDeliverySubscription);
         } else if (viewType == ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST) {
             return new ShipmentCostViewHolder(view, layoutInflater);
         } else if (viewType == PromoCheckoutViewHolder.getITEM_VIEW_PROMO_CHECKOUT()) {

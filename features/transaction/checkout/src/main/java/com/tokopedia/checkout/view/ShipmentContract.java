@@ -265,6 +265,8 @@ public interface ShipmentContract {
 
         PublishSubject<Boolean> getLogisticDonePublisher();
 
+        void setScheduleDeliveryDonePublisherMap(String cartString, PublishSubject<Boolean> donePublisher);
+
         void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
                                             boolean isTradeIn, boolean skipUpdateOnboardingState,
                                             boolean isReloadAfterPriceChangeHinger,
