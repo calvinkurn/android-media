@@ -771,7 +771,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             if (userAccount == null) {
                 ivFeedUser.setOnClickListener(null)
                 ivFeedUser.hide()
-                onCoachmarkFinish()
+                showOnboardingStepsCoachmark(
+                    showShortVideoCoachmark = userSession.isLoggedIn && feedFloatingButton.isVisible && viewModel.isShowShortsButton,
+                    showUserProfileCoachmark = false
+                )
                 return
             }
 
