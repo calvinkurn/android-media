@@ -85,16 +85,16 @@ class ProductShippingSellyViewHolder(
         val isExpanded = isExpandedProperty.get()
         pdpSellyTimeList.removeAllViews()
 
-        renderScheduledTimes(binding, products.filter{
+        renderScheduledTimes(binding, products.filter {
             if (isExpanded) it.isRecommend
             else true
         })
         isExpandedProperty.set(!isExpanded)
 
-        if(isExpanded){
+        if (isExpanded) {
             pdpSellyExpandableButton.text = "Jadwal Lainnya"
             pdpSellyExpandableIcon.animate().rotation(0f).start()
-        }else{
+        } else {
             pdpSellyExpandableButton.text = "Tampilkan lebih sedikit"
             pdpSellyExpandableIcon.animate().rotation(180f).start()
         }
@@ -155,7 +155,7 @@ class ProductShippingSellyViewHolder(
 
         val scheduledTime = product.scheduledTime
         pdpSellyTime.showIfWithBlock(scheduledTime.isNotEmpty()) {
-            text = context.getString(R.string.location_dot_builder, scheduledTime)
+            text = context.getString(R.string.pdp_selly_time_format, scheduledTime)
         }
 
         val finalPrice = product.finalPrice
@@ -177,7 +177,7 @@ class ProductShippingSellyViewHolder(
 
         val scheduledTime = product.scheduledTime
         pdpSellyTime.showIfWithBlock(scheduledTime.isNotEmpty()) {
-            text = context.getString(R.string.location_dot_builder, scheduledTime)
+            text = context.getString(R.string.pdp_selly_time_format, scheduledTime)
         }
 
         val messageText = product.text

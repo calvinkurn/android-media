@@ -69,6 +69,7 @@ class RatesEstimationBoeViewModel @Inject constructor(
             productMetadata = request.productMetadata,
             boMetadata = request.boMetadata,
             orderValue = request.orderValue,
+            categoryId = request.categoryId,
             forceRefresh = true
         )
     }

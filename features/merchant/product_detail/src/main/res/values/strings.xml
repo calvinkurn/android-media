@@ -201,4 +201,7 @@
     <string name="pdp_general_info_see">Lihat</string>
     <string name="text_info_shop_moderated">Fitur tidak dapat diakses karena toko sedang ditangguhkan</string>
 
+    <string name="pdp_selly_time_format"> • %s</string>
+    <string name="pdp_selly_button_expand">Jadwal Lainnya</string>
+
 </resources>

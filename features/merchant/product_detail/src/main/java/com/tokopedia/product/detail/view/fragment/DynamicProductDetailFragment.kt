@@ -2565,8 +2565,10 @@ open class DynamicProductDetailFragment :
             )
         }
 
-        pdpUiUpdater?.updateArData(productId ?: "",
-                viewModel.p2Data.value?.arInfo ?: ProductArInfo())
+        pdpUiUpdater?.updateArData(
+            productId ?: "",
+            viewModel.p2Data.value?.arInfo ?: ProductArInfo()
+        )
 
         updateUi()
         doSomethingAfterVariantUpdated?.invoke()
@@ -2577,7 +2579,7 @@ open class DynamicProductDetailFragment :
             val cartTypeData = viewModel.getCartTypeByProductId()
             val selectedMiniCartItem =
                 if (it.basic.isTokoNow && cartTypeData?.availableButtons?.firstOrNull()
-                        ?.isCartTypeDisabledOrRemindMe() == false
+                    ?.isCartTypeDisabledOrRemindMe() == false
                 ) {
                     viewModel.getMiniCartItem()
                 } else {
@@ -2589,7 +2591,7 @@ open class DynamicProductDetailFragment :
 
             val shouldShowTokoNow = it.basic.isTokoNow &&
                 cartTypeData?.availableButtons?.firstOrNull()
-                    ?.isCartTypeDisabledOrRemindMe() == false &&
+                ?.isCartTypeDisabledOrRemindMe() == false &&
                 (totalStockAtcVariant != 0 || selectedMiniCartItem != null)
 
             val tokonowVariantButtonData = if (shouldShowTokoNow) {
@@ -3060,7 +3062,7 @@ open class DynamicProductDetailFragment :
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailCommonConstant.OVO_INACTIVE_STATUS -> {
                         val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
-                            viewModel.getDynamicProductInfoP1?.parentProductId.orEmpty()
+                        viewModel.getDynamicProductInfoP1?.parentProductId.orEmpty()
                         }"
                         DynamicProductDetailTracking.Click.eventActivationOvo(
                             viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
@@ -3562,7 +3564,8 @@ open class DynamicProductDetailFragment :
                     warehouseId = viewModel.getMultiOriginByProductId().id,
                     orderValue = it.data.price.value.roundToIntOrZero(),
                     boMetadata = viewModel.p2Data.value?.getRatesEstimateBoMetadata(productId) ?: "",
-                    productMetadata = viewModel.p2Data.value?.getRatesProductMetadata(productId) ?: ""
+                    productMetadata = viewModel.p2Data.value?.getRatesProductMetadata(productId) ?: "",
+                    categoryId = it.basic.category.id
                 )
             )
             shouldRefreshShippingBottomSheet = false
@@ -4173,8 +4176,11 @@ open class DynamicProductDetailFragment :
             RollenceKey.PDP_SHOW_SHARE_AFFILIATE
         ) == RollenceKey.PDP_SHOW_SHARE_AFFILIATE
 
-        if (isAbTestEnabled) return IconList.ID_SHARE_AB_TEST
-        else return IconList.ID_SHARE
+        if (isAbTestEnabled) {
+            return IconList.ID_SHARE_AB_TEST
+        } else {
+            return IconList.ID_SHARE
+        }
     }
 
     private fun getDarkToolbarIconColor(): Int = ContextCompat.getColor(
@@ -4889,7 +4895,7 @@ open class DynamicProductDetailFragment :
     private fun setLoadingNplShopFollowers(isLoading: Boolean) {
         val restrictionData = viewModel.p2Data.value?.restrictionInfo
         if (restrictionData?.restrictionData?.firstOrNull()
-                ?.restrictionShopFollowersType() == false
+            ?.restrictionShopFollowersType() == false
         ) {
             return
         }

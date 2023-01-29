@@ -46,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Jadwal Lainnya"
+        android:text="@string/pdp_selly_button_expand"
         android:textColor="@color/Unify_GN500"
         app:layout_constraintEnd_toStartOf="@id/pdp_selly_expandable_icon"
         app:layout_constraintStart_toStartOf="parent"
