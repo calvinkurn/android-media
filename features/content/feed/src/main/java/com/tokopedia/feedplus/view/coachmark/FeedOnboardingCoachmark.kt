@@ -2,16 +2,15 @@ package com.tokopedia.feedplus.view.coachmark
 
 import android.content.Context
 import android.view.View
-import android.widget.Toast
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class FeedOnboardingCoachmark  @Inject constructor(
-    private val userSession: UserSessionInterface,
-){
+class FeedOnboardingCoachmark @Inject constructor(
+    private val userSession: UserSessionInterface
+) {
     private var anchorMap: Map<String, View>? = null
     private var context: Context? = null
     private var affiliatePreference: AffiliatePreference? = null
@@ -24,34 +23,33 @@ class FeedOnboardingCoachmark  @Inject constructor(
         context: Context? = null,
         affiliatePreference: AffiliatePreference,
         listener: FeedOnboardingCoachmark.Listener?,
-        showShortVideoCoachMark :Boolean,
-        showUserProfileCoachMark :Boolean
+        showShortVideoCoachMark: Boolean,
+        showUserProfileCoachMark: Boolean
     ) {
         initializeFields(anchorMap, context, affiliatePreference)
         mListener = listener
         mShouldShowShortVideoCoachMark = showShortVideoCoachMark
         mShouldShowUserProfileCoachMark = showUserProfileCoachMark
         showFeedOnboardingCoachmark()
-
     }
 
     private fun showFeedOnboardingCoachmark() {
         context?.let {
-            if(anchorMap == null) return
+            if (anchorMap == null) return
 
             val isUserProfileEntryShown =
                 affiliatePreference?.isUserProfileEntryPointCoachMarkShown(userSession.userId)
                     ?: false
-            val isUserEligibleForShortVideo =
+            val isShortVideoCoachmarkShown =
                 affiliatePreference?.isShortVideoEntryPointCoachMarkShown(userSession.userId)
                     ?: false
-            val isUserEligibleForVideoTab =
+            val isVideoTabCoachmarkShown =
                 affiliatePreference?.isVideoTabEntryPointCoachMarkShown(userSession.userId) ?: false
 
-            //If no coahmark is to be shown then screen should not be freezed
-            if (isUserProfileEntryShown && isUserEligibleForShortVideo && isUserEligibleForVideoTab)
+            // If no coahmark is to be shown then screen should not be freezed
+            if (isVideoTabCoachmarkShown && (isShortVideoCoachmarkShown || !mShouldShowShortVideoCoachMark) && (isUserProfileEntryShown || mShouldShowUserProfileCoachMark)) {
                 mListener?.onCoachmarkFinish()
-
+            }
 
             val coachMarkItem = ArrayList<CoachMark2Item>()
             val coachMark = CoachMark2(it)
@@ -59,31 +57,32 @@ class FeedOnboardingCoachmark  @Inject constructor(
             coachMark.onFinishListener = {
                 mListener?.onCoachmarkFinish()
                 markAsShowed()
-
             }
             coachMark.onDismissListener = {
                 mListener?.onCoachmarkFinish()
                 markAsShowed()
             }
 
-            if (!isUserProfileEntryShown && mShouldShowUserProfileCoachMark)
+            if (!isUserProfileEntryShown && mShouldShowUserProfileCoachMark) {
                 addUserProfileCoachmarkItem(coachMarkItem)
+            }
 
-            if (!isUserEligibleForVideoTab)
-             addVideoTabCoachmarkItem(coachMarkItem)
+            if (!isVideoTabCoachmarkShown) {
+                addVideoTabCoachmarkItem(coachMarkItem)
+            }
 
-            if (!isUserEligibleForShortVideo && mShouldShowShortVideoCoachMark)
+            if (!isShortVideoCoachmarkShown && mShouldShowShortVideoCoachMark) {
                 addShortVideoCoachmarkItem(coachMarkItem)
+            }
 
             coachMark.showCoachMark(coachMarkItem)
-
         }
     }
 
     private fun markAsShowed() {
-            affiliatePreference?.setUserProfileEntryPointCoachMarkShown(userSession.userId)
-            affiliatePreference?.setShortVideoEntryPointCoachMarkShown(userSession.userId)
-            affiliatePreference?.setVideoTabEntryPointCoachMarkShown(userSession.userId)
+        affiliatePreference?.setUserProfileEntryPointCoachMarkShown(userSession.userId)
+        affiliatePreference?.setShortVideoEntryPointCoachMarkShown(userSession.userId)
+        affiliatePreference?.setVideoTabEntryPointCoachMarkShown(userSession.userId)
     }
 
     private fun addUserProfileCoachmarkItem(coachMarkItem: ArrayList<CoachMark2Item>) {
@@ -93,11 +92,14 @@ class FeedOnboardingCoachmark  @Inject constructor(
         val description =
             context?.getString(com.tokopedia.feedplus.R.string.feed_onboarding_user_profile_coachmark_description)
                 ?: ""
-        val view : View? =  anchorMap?.get(USER_PROFILE_COACH_MARK_ANCHOR)
+        val view: View? = anchorMap?.get(USER_PROFILE_COACH_MARK_ANCHOR)
         if (view != null) {
             coachMarkItem.add(
                 CoachMark2Item(
-                    view , title, description, CoachMark2.POSITION_BOTTOM
+                    view,
+                    title,
+                    description,
+                    CoachMark2.POSITION_BOTTOM
                 )
             )
         }
@@ -110,11 +112,14 @@ class FeedOnboardingCoachmark  @Inject constructor(
         val description =
             context?.getString(com.tokopedia.feedplus.R.string.feed_onboarding_video_tab_coachmark_description)
                 ?: ""
-        val view : View? =  anchorMap?.get(VIDEO_TAB_COACH_MARK_ANCHOR)
+        val view: View? = anchorMap?.get(VIDEO_TAB_COACH_MARK_ANCHOR)
         if (view != null) {
             coachMarkItem.add(
                 CoachMark2Item(
-                    view , title, description, CoachMark2.POSITION_BOTTOM
+                    view,
+                    title,
+                    description,
+                    CoachMark2.POSITION_BOTTOM
                 )
             )
         }
@@ -127,11 +132,14 @@ class FeedOnboardingCoachmark  @Inject constructor(
         val description =
             context?.getString(com.tokopedia.feedplus.R.string.feed_onboarding_short_video_coachmark_description)
                 ?: ""
-        val view : View? = anchorMap?.get(SHORT_VIDEO_COACH_MARK_ANCHOR)
+        val view: View? = anchorMap?.get(SHORT_VIDEO_COACH_MARK_ANCHOR)
         if (view != null) {
             coachMarkItem.add(
                 CoachMark2Item(
-                    view , title, description, CoachMark2.POSITION_TOP
+                    view,
+                    title,
+                    description,
+                    CoachMark2.POSITION_TOP
                 )
             )
         }
