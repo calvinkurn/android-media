@@ -6,11 +6,10 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
-import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.Keep
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -19,8 +18,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -49,15 +46,14 @@ import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter
 import com.tokopedia.feedplus.view.analytics.FeedToolBarAnalytics
 import com.tokopedia.feedplus.view.analytics.entrypoint.FeedEntryPointAnalytic
 import com.tokopedia.feedplus.view.analytics.shorts.PlayShortsInFeedAnalytic
+import com.tokopedia.feedplus.view.coachmark.FeedOnboardingCoachmark
 import com.tokopedia.feedplus.view.customview.PostProgressUpdateView
 import com.tokopedia.feedplus.view.di.FeedInjector
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
@@ -65,14 +61,13 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.play_common.shortsuploader.const.PlayShortsUploadConst
-import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
-import com.tokopedia.play_common.shortsuploader.worker.PlayShortsUploadWorker
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
@@ -90,7 +85,8 @@ import com.tokopedia.feedcomponent.R as feedComponentR
  * @author by milhamj on 25/07/18.
  */
 @Keep
-class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, PostProgressUpdateView.PostUpdateSwipe, FeedPlusContainerListener {
+class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener,
+    PostProgressUpdateView.PostUpdateSwipe, FeedPlusContainerListener,FeedOnboardingCoachmark.Listener {
 
     private var showOldToolbar: Boolean = false
     private var shouldHitFeedTracker: Boolean = false
@@ -101,7 +97,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private lateinit var newFeedReceiver: BroadcastReceiver
     private var postProgressUpdateView: PostProgressUpdateView? = null
     private var viewPager: ViewPager? = null
+    private var tabLayout: TabsUnify? = null
     private var mInProgress = false
+    private var coachMarkOverlay: View? = null
 
     companion object {
         const val PARAM_SHOW_PROGRESS_BAR = "show_posting_progress_bar"
@@ -154,6 +152,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     @JvmField @Inject
     var coachMarkManager: ContentCoachMarkManager? = null
+
+    @Inject
+    lateinit var onboardingCoachmark: FeedOnboardingCoachmark
+
 
     /** View */
     private lateinit var fabFeed: FloatingButtonUnify
@@ -455,6 +457,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun initView() {
         postProgressUpdateView = view?.findViewById(R.id.postUpdateView)
         viewPager = view?.findViewById(R.id.view_pager)
+        tabLayout = view?.findViewById(R.id.tab_layout)
+        coachMarkOverlay = view?.findViewById(R.id.transparent_overlay_coachmark)
         postProgressUpdateView?.setCreatePostData(CreatePostViewModel())
         postProgressUpdateView?.setPostUpdateListener(this)
         hideAllFab()
@@ -707,12 +711,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 fabFeed.addItem(items)
                 feedFloatingButton.show()
 
-                if (viewModel.isShowShortsButton) {
-                    showPlayShortsOnBoarding()
-                }
-                else {
-                    showCreatePostOnBoarding()
-                }
             } else {
                 feedFloatingButton.hide()
             }
@@ -791,20 +789,11 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             }
             ivFeedUser.show()
 
-            if (!affiliatePreference.isUserProfileEntryPointCoachMarkShown(userSession.userId)) {
-                coachMarkManager?.showCoachMark(
-                    ContentCoachMarkConfig(ivFeedUser).apply {
-                        subtitle = getString(R.string.feed_user_profile_entry_point_coach_mark)
-                        duration = USER_ICON_COACH_MARK_DURATION
-                        onClickCloseListener = {
-                            affiliatePreference.setUserProfileEntryPointCoachMarkShown(userSession.userId)
-                        }
-                        onClickListener = {
-                            dismissUserProfileCoachMark()
-                        }
-                    }
-                )
-            }
+            showOnboardingStepsCoachmark(
+                showShortVideoCoachmark = userSession.isLoggedIn && feedFloatingButton.isVisible && viewModel.isShowShortsButton,
+                showUserProfileCoachmark = true
+            )
+
         }
     }
 
@@ -871,7 +860,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 activity?.getString(R.string.feed_onboarding_create_post_detail) ?: ""
             ).withCustomTarget(intArrayOf(x1, y1, x2, y2))
 
-            showFabCoachMark()
+//            showFabCoachMark()
         }
     }
 
@@ -883,6 +872,23 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             coachMark.show(activity = activity, tag = null, tutorList = arrayListOf(coachMarkItem))
             affiliatePreference.setCreatePostEntryOnBoardingShown(userSession.userId)
         }
+    }
+
+    private fun showOnboardingStepsCoachmark(showShortVideoCoachmark: Boolean, showUserProfileCoachmark: Boolean){
+        val tab = tabLayout?.tabLayout?.getTabAt(2)
+        val anchorMap = mapOf<String, View>(
+            Pair(FeedOnboardingCoachmark.USER_PROFILE_COACH_MARK_ANCHOR, ivFeedUser!!),
+            Pair(FeedOnboardingCoachmark.VIDEO_TAB_COACH_MARK_ANCHOR, tab?.view!!),
+            Pair(FeedOnboardingCoachmark.SHORT_VIDEO_COACH_MARK_ANCHOR, feedFloatingButton),
+        )
+        onboardingCoachmark.showFeedOnboardingCoachmark(
+            anchorMap,
+            context,
+            affiliatePreference,
+            this,
+            showShortVideoCoachmark,
+            showUserProfileCoachmark
+        )
     }
 
     private fun showPlayShortsOnBoarding() {
@@ -973,5 +979,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         } else {
             postProgressUpdateView?.hide()
         }
+    }
+
+    override fun onCoachmarkFinish() {
+        coachMarkOverlay?.isClickable = false
+        coachMarkOverlay?.gone()
     }
 }

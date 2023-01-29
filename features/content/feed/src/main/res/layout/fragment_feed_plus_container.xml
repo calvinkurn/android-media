@@ -7,6 +7,16 @@
     android:orientation="vertical"
     android:background="@color/Unify_Background">
 
+    <View
+        android:id="@+id/transparent_overlay_coachmark"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="@dimen/dp_8"
+        android:clickable="true"
+        android:background="@color/transparent"
+        android:visibility="visible"/>
+
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/feed_appbar"
         android:layout_width="match_parent"
