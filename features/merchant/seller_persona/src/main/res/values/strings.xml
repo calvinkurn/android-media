@@ -14,4 +14,7 @@
     <string name="sp_this_is_your_seller_type">Ini tipe Seller kamu!</string>
     <string name="sp_result_create_admin_account">Beritahu pemilik toko untuk membuat akun khusus admin, ya.</string>
     <string name="sp_select_seller_type">Pilih tipe Seller kamu</string>
+    <string name="sp_select">Pilih</string>
+    <string name="sp_label_seller_type">Tipe Seller:</string>
+    <string name="sp_select_this_type_if">Pilih tipe ini jika kamu:</string>
 </resources>

@@ -52,7 +52,7 @@
         app:typographyType="display_2" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvSpSellerTypeName"
+        android:id="@+id/tvSpPersonaType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
@@ -69,7 +69,7 @@
         android:layout_marginTop="2dp"
         android:textColor="@color/Unify_GN500"
         app:layout_constraintStart_toStartOf="@+id/guidelineSpBegin"
-        app:layout_constraintTop_toBottomOf="@+id/tvSpSellerTypeName"
+        app:layout_constraintTop_toBottomOf="@+id/tvSpPersonaType"
         app:typographyType="heading_5"
         tools:text="(Pemilik Toko)" />
 
