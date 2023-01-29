@@ -766,10 +766,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun renderUserProfileEntryPoint(userAccount: GetCheckWhitelistResponse.Author?) {
+        ivFeedUser ?: onCoachmarkFinish()
         ivFeedUser?.let { ivFeedUser ->
             if (userAccount == null) {
                 ivFeedUser.setOnClickListener(null)
                 ivFeedUser.hide()
+                onCoachmarkFinish()
                 return
             }
 

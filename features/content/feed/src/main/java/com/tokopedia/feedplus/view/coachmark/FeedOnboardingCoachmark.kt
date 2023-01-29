@@ -48,6 +48,10 @@ class FeedOnboardingCoachmark  @Inject constructor(
             val isUserEligibleForVideoTab =
                 affiliatePreference?.isVideoTabEntryPointCoachMarkShown(userSession.userId) ?: false
 
+            //If no coahmark is to be shown then screen should not be freezed
+            if (isUserProfileEntryShown && isUserEligibleForShortVideo && isUserEligibleForVideoTab)
+                mListener?.onCoachmarkFinish()
+
 
             val coachMarkItem = ArrayList<CoachMark2Item>()
             val coachMark = CoachMark2(it)
