@@ -185,7 +185,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         initRecyclerScrollListener()
         initRefreshLayout()
         initScreenSootListener()
-        initChooseAddressWidget()
         initStatusBar()
 
         updateCurrentPageLocalCacheModelData()
