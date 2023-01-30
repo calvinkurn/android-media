@@ -482,7 +482,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 eventAction =
                     AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PRODUK_YANG_DIPROMOSIKAN
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
-                eventLabel += " - ${if (params?.ssaInfo?.ssaStatus == true) "komisi extra" else ""}"
+                if (params?.ssaInfo?.ssaStatus == true) {
+                    eventLabel += "komisi extra"
+                }
             }
             ORIGIN_HOME_GENERATED -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_DAFTAR_LINK_PRODUK

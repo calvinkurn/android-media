@@ -161,12 +161,15 @@ class AffiliatePerformaSharedProductCardsItemVH(
     private fun sendSelectContentEvent(
         product: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item
     ) {
-        val label =
+        var label =
             if (product.status == PRODUCT_ACTIVE) {
                 AffiliateAnalytics.LabelKeys.ACTIVE
             } else {
                 AffiliateAnalytics.LabelKeys.INACTIVE
             }
+        if (product.ssaStatus == true) {
+            label += "komisi extra"
+        }
         AffiliateAnalytics.trackEventImpression(
             AffiliateAnalytics.EventKeys.SELECT_CONTENT,
             AffiliateAnalytics.ActionKeys.CLICK_PRODUCT_PRODUL_YANG_DIPROMOSIKAN,
@@ -178,20 +181,21 @@ class AffiliatePerformaSharedProductCardsItemVH(
                 " - ${product.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue}" +
                 " - ${product.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue}" +
                 " - ${product.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue}" +
-                " - $label - ${
-                if (product.ssaStatus == true) "komisi extra" else ""
-                }",
+                " - $label",
             AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SELECT_CONTENT
         )
     }
 
     private fun sendShopClickEvent(shop: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item) {
-        val label =
+        var label =
             if (shop.status == PRODUCT_ACTIVE) {
                 AffiliateAnalytics.LabelKeys.ACTIVE
             } else {
                 AffiliateAnalytics.LabelKeys.INACTIVE
             }
+        if (shop.ssaStatus == true) {
+            label += "komisi extra"
+        }
         AffiliateAnalytics.trackEventImpression(
             AffiliateAnalytics.EventKeys.SELECT_CONTENT,
             AffiliateAnalytics.ActionKeys.CLICK_SHOP_LINK_DENGAN_PERFORMA,
@@ -204,9 +208,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
                 " - ${shop.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue}" +
                 " - ${shop.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue}" +
                 " - ${shop.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue}" +
-                " - $label - ${
-                if (shop.ssaStatus == true) "komisi extra" else ""
-                }",
+                " - $label",
             AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SHOP_SELECT_CONTENT
         )
     }

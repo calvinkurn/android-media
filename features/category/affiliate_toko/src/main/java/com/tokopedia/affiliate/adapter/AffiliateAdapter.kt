@@ -139,12 +139,15 @@ class AffiliateAdapter(
         item: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item,
         position: Int
     ) {
-        val status =
+        var label =
             if (item.status == PRODUCT_ACTIVE) {
                 AffiliateAnalytics.LabelKeys.ACTIVE
             } else {
                 AffiliateAnalytics.LabelKeys.INACTIVE
             }
+        if (item.ssaStatus == true) {
+            label += " - komisi extra"
+        }
         AffiliateAnalytics.trackEventImpression(
             AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
             AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUK_YANG_DIPROMOSIKAN,
@@ -159,9 +162,7 @@ class AffiliateAdapter(
             item.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue
             } - ${
             item.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue
-            } - $status - ${
-            if (item.ssaStatus == true) "komisi extra" else ""
-            }"
+            } - $label"
         )
     }
 
@@ -169,12 +170,15 @@ class AffiliateAdapter(
         item: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item,
         position: Int
     ) {
-        val status =
+        var label =
             if (item.status == PRODUCT_ACTIVE) {
                 AffiliateAnalytics.LabelKeys.ACTIVE
             } else {
                 AffiliateAnalytics.LabelKeys.INACTIVE
             }
+        if (item.ssaStatus == true) {
+            label += " - komisi extra"
+        }
         AffiliateAnalytics.trackEventImpression(
             AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
             AffiliateAnalytics.ActionKeys.IMPRESSION_SHOP_LINK_DENGAN_PERFORMA,
@@ -189,9 +193,7 @@ class AffiliateAdapter(
             item.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue
             } - ${
             item.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue
-            } - $status - ${
-            if (item.ssaStatus == true) "komisi extra" else ""
-            }",
+            } - $label",
             AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SHOP_SELECT_CONTENT
         )
     }
