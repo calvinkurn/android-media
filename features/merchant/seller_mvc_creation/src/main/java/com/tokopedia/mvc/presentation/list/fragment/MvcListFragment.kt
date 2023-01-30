@@ -49,13 +49,11 @@ import com.tokopedia.mvc.databinding.SmvcFragmentMvcListFooterBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.ShareComponentMetaData
 import com.tokopedia.mvc.domain.entity.Voucher
-import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
-import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherStatusBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
@@ -81,7 +79,6 @@ import com.tokopedia.mvc.presentation.list.model.DeleteVoucherUiEffect
 import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
-import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.mvc.presentation.quota.QuotaInfoActivity
 import com.tokopedia.mvc.presentation.share.LinkerDataGenerator
 import com.tokopedia.mvc.presentation.share.ShareComponentInstanceBuilder
@@ -89,6 +86,7 @@ import com.tokopedia.mvc.presentation.share.ShareCopyWritingGenerator
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.mvc.util.tracker.StopVoucherTracker
+import com.tokopedia.mvc.util.tracker.VoucherListTracker
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -151,10 +149,10 @@ class MvcListFragment :
     lateinit var viewModel: MvcListViewModel
 
     @Inject
-    lateinit var tracker: VoucherListTracker
+    lateinit var voucherListTracker: VoucherListTracker
 
     @Inject
-    lateinit var tracker: StopVoucherTracker
+    lateinit var stopVoucherTracker: StopVoucherTracker
 
     override fun getScreenName() = ""
 
@@ -209,7 +207,7 @@ class MvcListFragment :
             }
             moreMenuBottomSheet?.show(childFragmentManager, "")
         }
-        tracker.sendClickDotsOnEachVoucherEvent()
+        voucherListTracker.sendClickDotsOnEachVoucherEvent()
     }
 
     private fun onClickListenerForMoreMenu(menuUiModel: MoreMenuUiModel, voucher: Voucher) {
@@ -572,7 +570,7 @@ class MvcListFragment :
             otherPeriodBottomSheet = OtherPeriodBottomSheet.newInstance(it)
             otherPeriodBottomSheet?.setListener(this)
             otherPeriodBottomSheet?.show(this, it.size)
-            tracker.sendClickArrowOnJadwalLainEvent()
+            voucherListTracker.sendClickArrowOnJadwalLainEvent()
         }
         viewModel.pageState.observe(viewLifecycleOwner) {
             when (it) {
@@ -666,7 +664,7 @@ class MvcListFragment :
             setColorFilter(colorIcon, PorterDuff.Mode.MULTIPLY)
             setOnClickListener {
                 eduCenterBottomSheet?.show(childFragmentManager)
-                tracker.sendClickDotsOnUpperSideEvent()
+                voucherListTracker.sendClickDotsOnUpperSideEvent()
             }
         }
         setNavigationOnClickListener {
@@ -810,7 +808,7 @@ class MvcListFragment :
 
     private fun redirectToCreateVoucherPage() {
         RouteManager.route(context, SELLER_MVC_CREATE)
-        tracker.sendClickBuatKuponEvent()
+        voucherListTracker.sendClickBuatKuponEvent()
     }
 
     private fun setEduCenterBottomSheet() {
@@ -913,17 +911,17 @@ class MvcListFragment :
 
     private fun sendTrackerOnPositiveButton(voucher: Voucher) {
         if (voucher.status == VoucherStatus.NOT_STARTED) {
-            tracker.sendClickYesCancelEvent(createLabelOnTracker(voucher))
+            stopVoucherTracker.sendClickYesCancelEvent(createLabelOnTracker(voucher))
         } else {
-            tracker.sendClickYesStopEvent(createLabelOnTracker(voucher))
+            stopVoucherTracker.sendClickYesStopEvent(createLabelOnTracker(voucher))
         }
     }
 
     private fun sendTrackerOnNegativeButton(voucher: Voucher) {
         if (voucher.status == VoucherStatus.NOT_STARTED) {
-            tracker.sendClickNoCancelEvent(createLabelOnTracker(voucher))
+            stopVoucherTracker.sendClickNoCancelEvent(createLabelOnTracker(voucher))
         } else {
-            tracker.sendClickNoStopEvent(createLabelOnTracker(voucher))
+            stopVoucherTracker.sendClickNoStopEvent(createLabelOnTracker(voucher))
         }
     }
 
@@ -1008,7 +1006,7 @@ class MvcListFragment :
 
     private fun redirectToQuotaVoucherPage(voucherCreationQuota: VoucherCreationQuota) {
         QuotaInfoActivity.start(context, voucherCreationQuota)
-        tracker.sendClickInfoOnSisaKuotaEvent()
+        voucherListTracker.sendClickInfoOnSisaKuotaEvent()
     }
 
     private fun redirectToEditPage(voucher: Voucher) {
