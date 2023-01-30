@@ -342,12 +342,14 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     ) {
         val thumbNailTitle = "Dilayani Tokopedia | Tokopedia"
         var deeplink = "tokopedia://dilayani-tokopedia"
+        val url = "https://www.tokopedia.com/discovery/dilayani-tokopedia"
         shareHome.pageIdConstituents = pageIdConstituents
         shareHome.isScreenShot = isScreenShot
         shareHome.thumbNailTitle = thumbNailTitle
         shareHome.linkerType = linkerType
         shareHome.id = id
         shareHome.deeplink = deeplink
+        shareHome.sharingUrl = url
     }
 
     private fun shareClicked(shareHomeTokonow: DtShareUniversalModel?) {
@@ -369,6 +371,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 pageIdConstituents = shareHomeTokonow?.pageIdConstituents.orEmpty(),
                 feature = SHARE
             )
+
             setMetaData(
                 tnTitle = shareHomeTokonow?.thumbNailTitle.orEmpty(),
                 tnImage = shareHomeTokonow?.thumbNailImage.orEmpty()
