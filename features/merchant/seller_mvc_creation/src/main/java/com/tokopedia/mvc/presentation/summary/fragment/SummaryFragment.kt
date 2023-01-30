@@ -47,6 +47,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.SuccessUploadBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
+import com.tokopedia.mvc.presentation.summary.helper.SummaryPagePageNameMapper
 import com.tokopedia.mvc.presentation.summary.helper.SummaryPageRedirectionHelper
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
 import com.tokopedia.mvc.util.SharingUtil
@@ -105,6 +106,8 @@ class SummaryFragment :
 
     @Inject
     lateinit var viewModel: SummaryViewModel
+    @Inject
+    lateinit var pageNameMapper: SummaryPagePageNameMapper
 
     override fun getScreenName() = ""
 
@@ -130,11 +133,17 @@ class SummaryFragment :
         binding?.setupView()
         setupObservables()
         setupPageMode()
+        redirectionHelper.onViewCreated(view, savedInstanceState)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         redirectionHelper.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        redirectionHelper.onResume(context ?: return)
     }
 
     override fun onAddProductResult() {
@@ -147,6 +156,17 @@ class SummaryFragment :
 
     override fun onVoucherTypePageResult() {
         activity?.finish()
+    }
+
+    override fun onPageDataChanged(pageJavaName: String) {
+        val pageName = pageNameMapper.mapPageName(pageJavaName)
+        Toaster.build(
+            view ?: return,
+            context?.getString(R.string.smvc_summary_page_success_change_data_message, pageName).toString(),
+            Toaster.LENGTH_SHORT,
+            Toaster.TYPE_NORMAL,
+            context?.getString(R.string.smvc_ok).toString()
+        ).show()
     }
 
     private fun setupPageMode() {
