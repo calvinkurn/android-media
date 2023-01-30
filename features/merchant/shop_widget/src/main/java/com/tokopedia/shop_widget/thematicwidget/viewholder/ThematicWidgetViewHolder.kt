@@ -1,17 +1,18 @@
 package com.tokopedia.shop_widget.thematicwidget.viewholder
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.thematicwidget.adapter.ProductCardAdapter
@@ -33,6 +34,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
+//need to surpress this one, since there are no pii related data defined on this class
+@SuppressLint("PII Data Exposure")
 class ThematicWidgetViewHolder (
     itemView: View,
     private val listener: ThematicWidgetListener
@@ -46,8 +49,10 @@ class ThematicWidgetViewHolder (
         private const val IMG_PARALLAX_TRANSLATE_X_VALUE = 0f
         private const val IMG_PARALLAX_TRANSLATE_X_MULTIPLIER = 0.2f
         private const val IMG_PARALLAX_ALPHA_MULTIPLIER = 0.80f
-        private const val RV_DEFAULT_MARGIN_TOP = 12f
+        private const val RV_DEFAULT_MARGIN_TOP = 16f
         private const val RV_DEFAULT_MARGIN_BOTTOM = 12f
+        private const val CONTENT_CONTAINER_DEFAULT_MARGIN_BOTTOM = 8f
+        private const val CONTENT_CONTAINER_FESTIVITY_MARGIN_BOTTOM = 16f
         private const val BIG_CAMPAIGN_THEMATIC = "big_campaign_thematic"
     }
 
@@ -55,6 +60,7 @@ class ThematicWidgetViewHolder (
 
     private val masterJob = SupervisorJob()
 
+    private var contentContainer: ConstraintLayout? = null
     private var ivParallaxImage: AppCompatImageView? = null
     private var rvProduct: RecyclerView? = null
     private var viewParallaxBackground: View? = null
@@ -67,8 +73,10 @@ class ThematicWidgetViewHolder (
     private val adapter by lazy {
         ProductCardAdapter(
             baseListAdapterTypeFactory = ProductCardTypeFactoryImpl(
-                productCardListener = productCardListenerImpl(),
-                productCardSeeAllListener = productCardSeeAllListenerImpl()
+                productCardGridListener = productCardGridListenerImpl(),
+                productCardListListener = productCardListListenerImpl(),
+                productCardSeeAllListener = productCardSeeAllListenerImpl(),
+                totalProductSize = uiModel?.productList?.size.orZero()
             ),
             differ = ProductCardDiffer()
         )
@@ -76,6 +84,7 @@ class ThematicWidgetViewHolder (
 
     init {
         binding?.let {
+            contentContainer = it.contentContainer
             rvProduct = it.rvProduct
             dynamicHeaderCustomView = it.dynamicHeaderCustomView
             ivParallaxImage = it.parallaxImage
@@ -98,13 +107,12 @@ class ThematicWidgetViewHolder (
             model = element.header,
             listener = this
         )
-        setupRecyclerView(
-            element = element
-        )
+        setupRecyclerView()
         setupImage(
             imageBanner = element.imageBanner
         )
         checkFestivity(element)
+        checkTotalProduct(element)
     }
 
     private fun checkFestivity(uiModel: ThematicWidgetUiModel) {
@@ -150,6 +158,14 @@ class ThematicWidgetViewHolder (
             Int.ZERO
         )
         rvProduct?.layoutParams = rvLayoutParams
+        val contentContainerLayoutParams = contentContainer?.layoutParams as? StaggeredGridLayoutManager.LayoutParams
+        contentContainerLayoutParams?.setMargins(
+            contentContainerLayoutParams.leftMargin,
+            contentContainerLayoutParams.topMargin,
+            contentContainerLayoutParams.rightMargin,
+            CONTENT_CONTAINER_FESTIVITY_MARGIN_BOTTOM.dpToPx().toInt()
+        )
+        contentContainer?.layoutParams = contentContainerLayoutParams
     }
 
     private fun configMarginNonFestivity(){
@@ -161,6 +177,14 @@ class ThematicWidgetViewHolder (
             RV_DEFAULT_MARGIN_BOTTOM.dpToPx().toInt()
         )
         rvProduct?.layoutParams = rvLayoutParams
+        val contentContainerLayoutParams = contentContainer?.layoutParams as? StaggeredGridLayoutManager.LayoutParams
+        contentContainerLayoutParams?.setMargins(
+            contentContainerLayoutParams.leftMargin,
+            contentContainerLayoutParams.topMargin,
+            contentContainerLayoutParams.rightMargin,
+            CONTENT_CONTAINER_DEFAULT_MARGIN_BOTTOM.dpToPx().toInt()
+        )
+        contentContainer?.layoutParams = contentContainerLayoutParams
     }
 
     override fun onSeeAllClick(appLink: String) {
@@ -171,13 +195,46 @@ class ThematicWidgetViewHolder (
         listener.onThematicWidgetTimerFinishListener(uiModel)
     }
 
-    private fun setupRecyclerView(element: ThematicWidgetUiModel) {
-        layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-        rvProduct?.layoutManager = layoutManager
+    private fun setupRecyclerView() {
         restoreInstanceStateToLayoutManager()
         setHeightRecyclerView()
         rvProduct?.adapter = adapter
+    }
+
+    private fun checkTotalProduct(element: ThematicWidgetUiModel) {
+        if (isProductSizeOne(element.productList)) {
+            configWidgetForOnlyOneProduct(element)
+        } else {
+            configWidgetDefault(element)
+        }
+    }
+
+    private fun configWidgetDefault(element: ThematicWidgetUiModel) {
+        layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        rvProduct?.layoutManager = layoutManager
+        ivParallaxImage?.show()
         submitList(element)
+    }
+
+    private fun configWidgetForOnlyOneProduct(element: ThematicWidgetUiModel) {
+        layoutManager = GridLayoutManager(itemView.context, Int.ONE)
+        rvProduct?.layoutManager = layoutManager
+        ivParallaxImage?.hide()
+        submitListForOneProduct(element)
+    }
+
+    private fun submitListForOneProduct(element: ThematicWidgetUiModel) {
+        val products = element.productList
+        val newList = mutableListOf<Visitable<*>>()
+        newList.addAll(products)
+        adapter.submitList(newList)
+        trackForTheFirstTimeViewHolderAttached(element)
+    }
+
+    private fun isProductSizeOne(
+        productList: List<ProductCardUiModel>
+    ): Boolean {
+        return productList.size == Int.ONE
     }
 
     private fun submitList(element: ThematicWidgetUiModel) {
@@ -194,7 +251,7 @@ class ThematicWidgetViewHolder (
 
     private fun trackForTheFirstTimeViewHolderAttached(element: ThematicWidgetUiModel) {
         if (isFirstAttached) {
-            listener.onThematicWidgetImpressListener(element, adapterPosition)
+            listener.onThematicWidgetImpressListener(element, bindingAdapterPosition)
             isFirstAttached = false
         }
     }
@@ -263,19 +320,35 @@ class ThematicWidgetViewHolder (
         viewParallaxBackground?.background = gradientDrawable
     }
 
-    private fun productCardListenerImpl(): ProductCardViewHolder.ProductCardListener = object : ProductCardViewHolder.ProductCardListener {
+    private fun productCardGridListenerImpl(): ProductCardGridViewHolder.ProductCardListener = object : ProductCardGridViewHolder.ProductCardListener {
         override fun onProductCardClickListener(product: ProductCardUiModel) {
             listener.onProductCardThematicWidgetClickListener(
                 product = product,
                 campaignId = uiModel?.campaignId.orEmpty(),
                 campaignName = uiModel?.name.orEmpty(),
-                position = adapterPosition
+                position = bindingAdapterPosition
             )
         }
 
         override fun onProductCardImpressListener(product: ProductCardUiModel) {
             trackerProductsModel.add(product)
-            listener.onProductCardThematicWidgetImpressListener(trackerProductsModel, adapterPosition, uiModel?.campaignId.orEmpty(), uiModel?.name.orEmpty())
+            listener.onProductCardThematicWidgetImpressListener(trackerProductsModel, bindingAdapterPosition, uiModel?.campaignId.orEmpty(), uiModel?.name.orEmpty())
+        }
+    }
+
+    private fun productCardListListenerImpl(): ProductCardListViewHolder.ProductCardListener = object : ProductCardListViewHolder.ProductCardListener {
+        override fun onProductCardClickListener(product: ProductCardUiModel) {
+            listener.onProductCardThematicWidgetClickListener(
+                product = product,
+                campaignId = uiModel?.campaignId.orEmpty(),
+                campaignName = uiModel?.name.orEmpty(),
+                position = bindingAdapterPosition
+            )
+        }
+
+        override fun onProductCardImpressListener(product: ProductCardUiModel) {
+            trackerProductsModel.add(product)
+            listener.onProductCardThematicWidgetImpressListener(trackerProductsModel, bindingAdapterPosition, uiModel?.campaignId.orEmpty(), uiModel?.name.orEmpty())
         }
     }
 
