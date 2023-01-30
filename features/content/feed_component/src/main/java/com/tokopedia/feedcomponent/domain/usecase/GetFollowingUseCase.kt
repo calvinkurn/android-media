@@ -24,9 +24,10 @@ open class GetFollowingUseCase @Inject constructor(
     private fun generateParam(shopIds: List<Pair<String, Int>>): Map<String, Any> {
         val inputFields = listOf(DEFAULT_FAVORITE)
         return mapOf<String, Any>(
-            PARAM_SHOP_IDS to shopIds.filter { it.second == SHOP_TYPE }
+            PARAM_SHOP_IDS to shopIds.filter { it.second == SHOP_TYPE && it.first.isNotEmpty() }
                 .map { it.first.toIntSafely() }.toList(),
-            PARAM_USER_IDS to shopIds.filter { it.second != SHOP_TYPE }.map { it.first }.toList(),
+            PARAM_USER_IDS to shopIds.filter { it.second != SHOP_TYPE && it.first.isNotEmpty() }
+                .map { it.first }.toList(),
             PARAM_INPUT_FIELDS to inputFields
         )
     }
