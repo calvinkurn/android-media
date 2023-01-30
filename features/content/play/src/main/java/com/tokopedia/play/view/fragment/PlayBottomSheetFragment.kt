@@ -203,6 +203,13 @@ class PlayBottomSheetFragment @Inject constructor(
         newAnalytic.clickInfoVoucher()
     }
 
+    override fun onInfoVoucherImpressed(
+        view: ProductSheetViewComponent,
+        voucher: PlayVoucherUiModel.Merchant
+    ) {
+        newAnalytic.impressInfoVoucher(voucher)
+    }
+
     override fun onReminderImpressed(
         view: ProductSheetViewComponent,
         section: ProductSectionUiModel.Section

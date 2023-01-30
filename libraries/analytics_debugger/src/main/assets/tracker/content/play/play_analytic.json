@@ -751,6 +751,25 @@
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "userId": ".*"
+    },
+    {
+      "event": "view_item",
+      "eventAction": "view - entry point voucher bottomsheet",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live/vod)",
+      "trackerId": "40973",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": "1",
+          "item_id": "\\d+",
+          "item_name": "voucher bottomsheet"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }

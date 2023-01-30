@@ -1,5 +1,6 @@
 package com.tokopedia.play.analytic.voucher
 
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
 
 /**
@@ -18,4 +19,5 @@ interface PlayVoucherAnalytic {
     fun swipeWidget(voucherId: String)
     fun clickCopyVoucher(voucherId: String)
     fun clickInfoVoucher()
+    fun impressInfoVoucher(voucher: PlayVoucherUiModel.Merchant)
 }

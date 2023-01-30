@@ -1,6 +1,7 @@
 package com.tokopedia.play.analytic.voucher
 
 import com.tokopedia.play.analytic.*
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
@@ -170,6 +171,29 @@ class PlayVoucherAnalyticImpl @Inject constructor(
             .setEventLabel("$channelId - $channelType")
             .setCustomProperty(KEY_TRACK_TRACKER_ID, "40976")
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    override fun impressInfoVoucher(voucher: PlayVoucherUiModel.Merchant) {
+        val promotions = mutableMapOf<String, Any>().apply {
+            put("creative_name", voucher.title)
+            put("creative_slot", 1)
+            put("item_id", channelId)
+            put("item_name", "voucher bottomsheet")
+        }
+
+        Tracker.Builder()
+            .setEvent("view_item")
+            .setEventAction("view - entry point voucher bottomsheet")
+            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventLabel("$channelId - $channelType")
+            .setCustomProperty(KEY_TRACK_TRACKER_ID, "40973")
+            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCustomProperty("promotions", promotions)
             .setCurrentSite(KEY_TRACK_CURRENT_SITE)
             .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
             .setUserId(userId)
