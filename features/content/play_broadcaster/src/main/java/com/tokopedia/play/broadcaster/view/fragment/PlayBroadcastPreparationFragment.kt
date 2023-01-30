@@ -245,7 +245,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             is UGCOnboardingParentFragment -> {
                 childFragment.setListener(object : UGCOnboardingParentFragment.Listener {
                     override fun onSuccess() {
-                        parentViewModel.submitAction(PlayBroadcastAction.GetAccountList(TYPE_USER))
+                        parentViewModel.submitAction(PlayBroadcastAction.GetConfiguration(TYPE_USER, false))
                     }
 
                     override fun clickNextOnTncOnboarding() {

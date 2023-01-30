@@ -290,7 +290,7 @@ class PlayBroadcastActivity : BaseActivity(),
     private fun getConfiguration() {
         startNetworkMonitoring()
         val authorType = intent.getStringExtra(KEY_AUTHOR_TYPE) ?: TYPE_UNKNOWN
-        viewModel.submitAction(PlayBroadcastAction.GetAccountList(authorType))
+        viewModel.submitAction(PlayBroadcastAction.GetConfiguration(authorType))
     }
 
     private fun populateSavedState(savedInstanceState: Bundle) {
@@ -301,7 +301,6 @@ class PlayBroadcastActivity : BaseActivity(),
         channelType?.let {
             this.channelType = ChannelStatus.getByValue(it)
         }
-
     }
 
     private fun getFragmentByClassName(fragmentClass: Class<out Fragment>): Fragment {

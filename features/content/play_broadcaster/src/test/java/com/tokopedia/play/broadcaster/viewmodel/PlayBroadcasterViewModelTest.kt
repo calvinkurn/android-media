@@ -24,7 +24,6 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.assertEmpty
 import com.tokopedia.play.broadcaster.util.assertEqualTo
@@ -139,7 +138,7 @@ class PlayBroadcasterViewModelTest {
         val mock = spyk(robot.getViewModel(), recordPrivateCalls = true)
 
         robot.use {
-            mock.submitAction(PlayBroadcastAction.GetAccountList(TYPE_SHOP))
+            mock.submitAction(PlayBroadcastAction.GetConfiguration(TYPE_SHOP))
 
             verify { mock invokeNoArgs "createChannel" }
         }

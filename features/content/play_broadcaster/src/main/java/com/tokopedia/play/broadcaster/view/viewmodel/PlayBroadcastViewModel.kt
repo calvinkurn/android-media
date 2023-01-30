@@ -108,6 +108,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.getAndUpdate
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -369,6 +370,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _observableChatList.value = mutableListOf()
     }
 
+    fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {
+        return mDataStore.getSetupDataStore()
+    }
+
     fun saveState(outState: Bundle) {
         outState.putParcelable(KEY_CONFIG, _configInfo.value)
         outState.putBoolean(KEY_IS_LIVE_STREAM_ENDED, isLiveStreamEnded)
@@ -387,11 +392,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     fun isLiveStreamEnded() = isLiveStreamEnded
 
-    override fun onCleared() {
-        super.onCleared()
-        viewModelScope.cancel()
-    }
-
     fun submitAction(event: PlayBroadcastAction) {
         when (event) {
             PlayBroadcastAction.EditPinnedMessage -> handleEditPinnedMessage()
@@ -401,7 +401,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
-            is PlayBroadcastAction.GetAccountList -> handleGetAccountList(event.selectedType)
+            is PlayBroadcastAction.GetConfiguration -> handleGetConfiguration(event.selectedType, event.isRefreshConfig)
             is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount(event.needLoading)
 
             /** Game */
@@ -438,11 +438,43 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {
-        return mDataStore.getSetupDataStore()
+    private fun handleGetConfiguration(selectedType: String, isRefreshConfig: Boolean) {
+        viewModelScope.launchCatchError(block = {
+            _accountStateInfo.value = AccountStateInfo()
+            _observableConfigInfo.value = NetworkResult.Loading
+
+            val accountList = repo.getAccountList()
+
+            _accountListState.value = accountList
+
+            if (accountList.isNotEmpty()) {
+                updateSelectedAccount(
+                    getSelectedAccount(
+                        selectedType = selectedType,
+                        cacheSelectedType = sharedPref.getLastSelectedAccount(),
+                        accountList = accountList
+                    )
+                )
+
+                if (isRefreshConfig) getBroadcastingConfig()
+                getBroadcasterAuthorConfig(_selectedAccount.value)
+            } else throw Throwable()
+        }, onError = {
+            _observableConfigInfo.value = NetworkResult.Fail(it) { this.handleGetConfiguration(selectedType, true) }
+        })
     }
 
-    private fun getConfiguration(selectedAccount: ContentAccountUiModel) {
+    private fun getBroadcastingConfig() {
+        viewModelScope.launchCatchError(block = {
+            val request = repo.getBroadcastingConfig(authorId, authorType)
+            // TODO set the data here
+            Timber.d(request.toString())
+        }) {
+            _observableConfigInfo.value = NetworkResult.Fail(it) { getBroadcastingConfig() }
+        }
+    }
+
+    private fun getBroadcasterAuthorConfig(selectedAccount: ContentAccountUiModel) {
         viewModelScope.launchCatchError(block = {
 
             val currConfigInfo = _configInfo.value
@@ -504,7 +536,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             updateSelectedAccount(selectedAccount)
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
         }) {
-            _observableConfigInfo.value = NetworkResult.Fail(it) { getConfiguration(selectedAccount) }
+            _observableConfigInfo.value = NetworkResult.Fail(it) { getBroadcasterAuthorConfig(selectedAccount) }
         }
     }
 
@@ -1503,30 +1535,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         mIsBroadcastStopped = true
     }
 
-    private fun handleGetAccountList(selectedType: String) {
-        viewModelScope.launchCatchError(block = {
-            _accountStateInfo.value = AccountStateInfo()
-            _observableConfigInfo.value = NetworkResult.Loading
-
-            val accountList = repo.getAccountList()
-
-            _accountListState.value = accountList
-
-            if (accountList.isNotEmpty()) {
-                updateSelectedAccount(
-                    getSelectedAccount(
-                        selectedType = selectedType,
-                        cacheSelectedType = sharedPref.getLastSelectedAccount(),
-                        accountList = accountList
-                    )
-                )
-                getConfiguration(_selectedAccount.value)
-            } else throw Throwable()
-        }, onError = {
-            _observableConfigInfo.value = NetworkResult.Fail(it) { this.handleGetAccountList(selectedType) }
-        })
-    }
-
     private fun getSelectedAccount(
         selectedType: String,
         cacheSelectedType: String,
@@ -1563,7 +1571,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 else -> TYPE_SHOP
             }
         )
-        getConfiguration(currentSelected)
+        getBroadcasterAuthorConfig(currentSelected)
     }
 
     private fun switchAccount(selectedType: String): ContentAccountUiModel {
@@ -1722,6 +1730,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             channelId = channelId
         )
         logger.sendBroadcasterLog(mappedMetric)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelScope.cancel()
     }
 
     companion object {
