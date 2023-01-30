@@ -16,7 +16,6 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
 import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
-import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.viewmodel.AffiliateSSAShopViewModel
 import com.tokopedia.affiliate_toko.R
@@ -28,8 +27,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.searchbar.navigation_component.NavToolbar
-import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
-import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -86,13 +83,6 @@ class AffiliateSSAShopListFragment :
     private fun afterViewCreated() {
         view?.findViewById<NavToolbar>(R.id.ssa_shop_navToolbar)?.run {
             viewLifecycleOwner.lifecycle.addObserver(this)
-            setIcon(
-                IconBuilder().addIcon(IconList.ID_INFORMATION) {
-                    AffiliateHowToPromoteBottomSheet.newInstance(
-                        AffiliateHowToPromoteBottomSheet.STATE_HOW_TO_PROMOTE
-                    ).show(childFragmentManager, "")
-                }.addIcon(IconList.ID_NAV_GLOBAL) {}
-            )
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
                 getString(R.string.affiliate_ssa_shop_title)
             setOnBackButtonClickListener {
