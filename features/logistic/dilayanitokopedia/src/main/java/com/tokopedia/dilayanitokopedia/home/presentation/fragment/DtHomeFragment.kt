@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -29,9 +30,6 @@ import com.tokopedia.dilayanitokopedia.common.util.CustomLinearLayoutManager
 import com.tokopedia.dilayanitokopedia.common.util.DtUniversalShareUtil
 import com.tokopedia.dilayanitokopedia.databinding.FragmentDtHomeBinding
 import com.tokopedia.dilayanitokopedia.home.constant.AnchorTabStatus
-import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
-import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
-import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
 import com.tokopedia.dilayanitokopedia.home.di.component.DaggerHomeComponent
 import com.tokopedia.dilayanitokopedia.home.domain.model.Data
 import com.tokopedia.dilayanitokopedia.home.domain.model.SearchPlaceholder
@@ -63,9 +61,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
-import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.searchbar.data.HintData
@@ -84,7 +80,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -139,6 +134,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     private var mLastClickTime = System.currentTimeMillis()
 
+    private var coachMark: CoachMark2? = null
+
     private val adapter by lazy {
         DtHomeAdapter(
             typeFactory = DtHomeAdapterTypeFactory(
@@ -185,13 +182,23 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         initRecyclerScrollListener()
         initRefreshLayout()
         initScreenSootListener()
-        initChooseAddressWidget()
         initStatusBar()
 
         updateCurrentPageLocalCacheModelData()
 
         observeLiveData()
         loadLayout()
+    }
+
+    override fun onPause() {
+        coachMark?.dismissCoachMark()
+        coachMark = null
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkIfChooseAddressWidgetDataUpdated()
     }
 
     private fun initScreenSootListener() {
@@ -408,15 +415,12 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         }
     }
 
-    private fun showEmptyState(@HomeStaticLayoutId id: String) {
-        localCacheModel?.service_type?.let { serviceType ->
-            if (id != EMPTY_STATE_OUT_OF_COVERAGE) {
-                rvLayoutManager?.setScrollEnabled(false)
-                viewModelDtHome.getEmptyState(id, serviceType)
-            } else {
-                viewModelDtHome.getEmptyState(id, serviceType)
-            }
-        }
+    private fun showEmptyState() {
+        NetworkErrorHelper.showEmptyState(
+            activity,
+            binding?.root,
+            this::loadLayout
+        )
     }
 
     private fun updateCurrentPageLocalCacheModelData() {
@@ -436,6 +440,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     }
 
     private fun onShowHomeLayout(data: HomeLayoutListUiModel) {
+        initChooseAddressWidget()
         showHomeLayout(data)
         showHeaderBackground()
         visibilityChooseAddress()
@@ -450,36 +455,17 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         observe(viewModelDtHome.homeLayoutList) {
             when (it) {
                 is Success -> onSuccessGetHomeLayout(it.data)
-                is Fail -> onFailedGetHomeLayout()
-            }
-        }
-
-        observe(viewModelDtHome.chooseAddress) {
-            when (it) {
-                is Success -> {
-                    setupChooseAddress(it.data)
-                }
-                is Fail -> {
-                    showEmptyStateNoAddress()
-                }
+                is Fail -> showEmptyState()
             }
         }
 
         observeMenuList()
     }
 
-    private fun onFailedGetHomeLayout() {
-        showFailedToFetchData()
-    }
-
     private fun observeMenuList() {
         observe(viewModelDtHome.menuList) {
             updateAnchorTab(it)
         }
-    }
-
-    private fun showFailedToFetchData() {
-        showEmptyState(EMPTY_STATE_FAILED_TO_FETCH_DATA)
     }
 
     private fun getHomeLayout() {
@@ -518,7 +504,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     private fun onRefreshLayout() {
         rvLayoutManager?.setScrollEnabled(true)
         anchorTabAdapter?.resetToFirst()
-        switchService()
+        updateCurrentPageLocalCacheModelData()
+        refreshLayout()
     }
 
     private fun loadLayout() {
@@ -565,15 +552,16 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     private fun getAutoCompleteApplinkPattern() = ApplinkConstInternalDiscovery.AUTOCOMPLETE
 
-    private fun switchService() {
+    private fun refreshLayout() {
         localCacheModel?.apply {
-            viewModelDtHome.switchService()
+            viewModelDtHome.refreshLayout()
         }
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {
         if (isChooseAddressWidgetDataUpdated()) {
             updateCurrentPageLocalCacheModelData()
+            refreshLayout()
         }
     }
 
@@ -587,36 +575,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             }
         }
         return false
-    }
-
-    private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
-        data.let { chooseAddressData ->
-            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                context = requireContext(),
-                addressId = chooseAddressData.data.addressId.toString(),
-                cityId = chooseAddressData.data.cityId.toString(),
-                districtId = chooseAddressData.data.districtId.toString(),
-                lat = chooseAddressData.data.latitude,
-                long = chooseAddressData.data.longitude,
-                label = String.format(
-                    Locale.getDefault(),
-                    "%s %s",
-                    chooseAddressData.data.addressName,
-                    chooseAddressData.data.receiverName
-                ),
-                postalCode = chooseAddressData.data.postalCode,
-                warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
-                shopId = chooseAddressData.tokonow.shopId.toString(),
-                warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(chooseAddressData.tokonow.warehouses),
-                serviceType = chooseAddressData.tokonow.serviceType,
-                lastUpdate = chooseAddressData.tokonow.tokonowLastUpdate
-            )
-        }
-        checkIfChooseAddressWidgetDataUpdated()
-    }
-
-    private fun showEmptyStateNoAddress() {
-        showEmptyState(EMPTY_STATE_OUT_OF_COVERAGE)
     }
 
     private fun createTopComponentCallback(): HomeComponentListener? {
@@ -700,14 +658,14 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             }
 
             override fun onLocalizingAddressServerDown() {
-                // no-op
+                visibilityChooseAddress(false)
             }
 
             override fun onClickChooseAddressTokoNowTracker() {
                 // no-op
             }
 
-            override fun needToTrackTokoNow(): Boolean = true
+            override fun needToTrackTokoNow(): Boolean = false
 
             override fun getLocalizingAddressHostFragment(): Fragment = this@DtHomeFragment
 
@@ -720,7 +678,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             }
 
             override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
-                // no-op
+                visibilityChooseAddress(isRollOutUser)
             }
 
             override fun onLocalizingAddressLoginSuccess() {
@@ -729,9 +687,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         })
     }
 
-    private
-    var coachMark: CoachMark2? = null
-
     private fun showCoachMark() {
         val coachMarkList = arrayListOf<CoachMark2Item>().apply {
             getChooseAddressWidgetCoachMarkItem()?.let {
@@ -739,9 +694,12 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             }
         }
         if (coachMarkList.isNotEmpty()) {
-            coachMark = CoachMark2(requireContext())
-            coachMark?.isOutsideTouchable = true
-            coachMark?.showCoachMark(coachMarkList)
+            context?.let {
+                coachMark = CoachMark2(it)
+                coachMark?.isOutsideTouchable = true
+                coachMark?.showCoachMark(coachMarkList)
+                ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
+            }
         }
     }
 
@@ -749,10 +707,10 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         val isNeedToShowCoachMark = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(requireContext())
         return if (isNeedToShowCoachMark == true && chooseAddressWidget?.isShown == true) {
             chooseAddressWidget?.let { chooseAddressWidget ->
-                context?.getString(R.string.dt_home_choose_address_widget_coachmark_title)?.let { context ->
+                context?.getString(R.string.dt_home_choose_address_widget_coachmark_title)?.let { title ->
                     CoachMark2Item(
                         chooseAddressWidget,
-                        context,
+                        title,
                         getString(R.string.dt_home_choose_address_widget_coachmark_description)
                     )
                 }
