@@ -701,14 +701,14 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             }
 
             override fun onLocalizingAddressServerDown() {
-                // no-op
+                visibilityChooseAddress(false)
             }
 
             override fun onClickChooseAddressTokoNowTracker() {
                 // no-op
             }
 
-            override fun needToTrackTokoNow(): Boolean = true
+            override fun needToTrackTokoNow(): Boolean = false
 
             override fun getLocalizingAddressHostFragment(): Fragment = this@DtHomeFragment
 
@@ -721,7 +721,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             }
 
             override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
-                // no-op
+                visibilityChooseAddress(isRollOutUser)
             }
 
             override fun onLocalizingAddressLoginSuccess() {
