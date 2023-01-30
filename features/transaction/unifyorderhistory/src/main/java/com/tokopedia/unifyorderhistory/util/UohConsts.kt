@@ -74,6 +74,7 @@ object UohConsts {
     const val GQL_MP_CHAT = "gql-mp-chat"
     const val GQL_MP_FINISH = "gql-mp-finish"
     const val GQL_MP_EXTEND = "gql-mp-extend"
+    const val GQL_MP_POF = "gql-mp-pof"
     const val GQL_RECHARGE_BATALKAN = "gql-recharge-batalkan"
 
     const val FINISH_ORDER_BOTTOMSHEET_TITLE = "Selesaikan pesanan ini?"
