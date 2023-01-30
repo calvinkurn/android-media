@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="16dp">
+    android:paddingBottom="12dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pdp_selly_date"
@@ -39,15 +39,19 @@
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pdp_selly_additional_message" />
+        app:layout_constraintTop_toBottomOf="@id/pdp_selly_additional_message"
+        app:layout_goneMarginTop="0dp"
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pdp_selly_expandable_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp"
         android:text="@string/pdp_selly_button_expand"
         android:textColor="@color/Unify_GN500"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/pdp_selly_expandable_icon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pdp_selly_time_list"
