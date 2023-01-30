@@ -782,7 +782,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 analytic.viewDialogViolation(parentViewModel.channelId)
                 showWarningInfoBottomSheet()
             }
-            /** Banned is not used? */
             AccountStateInfoType.Banned -> showWarningInfoBottomSheet()
             AccountStateInfoType.NotAcceptTNC -> {
                 showUGCOnboardingBottomSheet(UGCOnboardingParentFragment.OnboardingType.Tnc)
