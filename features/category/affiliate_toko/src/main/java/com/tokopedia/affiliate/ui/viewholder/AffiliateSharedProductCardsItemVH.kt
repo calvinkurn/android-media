@@ -104,12 +104,15 @@ class AffiliateSharedProductCardsItemVH(
     private fun sendSelectContentEvent(
         product: AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData.Item
     ) {
-        val label =
+        var label =
             if (product.status == AffiliatePerformaSharedProductCardsItemVH.PRODUCT_ACTIVE) {
                 AffiliateAnalytics.LabelKeys.ACTIVE
             } else {
                 AffiliateAnalytics.LabelKeys.INACTIVE
             }
+        if (product.ssaStatus == true) {
+            label += " - komisi extra"
+        }
         AffiliateAnalytics.trackEventImpression(
             AffiliateAnalytics.EventKeys.SELECT_CONTENT,
             AffiliateAnalytics.ActionKeys.CLICK_PRODUCT_DAFTAR_LINK_PRODUK,
