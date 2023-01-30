@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.Router
@@ -78,6 +79,10 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     private val widgetLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         LinearLayoutManager(binding.rvWidgets.context, RecyclerView.VERTICAL, false)
+    }
+
+    private val gridWidgetLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
+        StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
     }
 
     private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
@@ -250,13 +255,15 @@ class PlayExploreWidgetFragment @Inject constructor(
         when (state) {
             ExploreWidgetState.Success -> {
                 showEmpty(false)
+                setLayoutManager(widget)
                 widgetAdapter.setItemsAndAnimateChanges(widget)
             }
             ExploreWidgetState.Empty -> {
                 showEmpty(true)
             }
             ExploreWidgetState.Loading -> {
-                widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering) // adjust Grid / Linear
+                setLayoutManager(getWidgetShimmering)
+                widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
             }
             is ExploreWidgetState.Fail -> {
                 analytic?.impressToasterGlobalError()
@@ -376,6 +383,11 @@ class PlayExploreWidgetFragment @Inject constructor(
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         dismiss()
+    }
+
+    private fun setLayoutManager(widget: List<WidgetUiModel>) {
+        binding.rvWidgets.layoutManager =
+            if (widget.filterIsInstance<ExploreWidgetPlaceholder>().isNotEmpty()) gridWidgetLayoutManager else widgetLayoutManager
     }
 
     private fun getVisibleChips(): Map<ChipWidgetUiModel, Int> {
