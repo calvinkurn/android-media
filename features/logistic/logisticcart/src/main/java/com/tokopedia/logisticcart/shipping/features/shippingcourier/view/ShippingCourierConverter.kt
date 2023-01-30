@@ -129,7 +129,7 @@ class ShippingCourierConverter @Inject constructor() {
         scheduleDeliveryData: ScheduleDeliveryData?,
         validationMetadata: String?
     ) {
-        scheduleDeliveryData?.takeIf { it.hidden.not() && it.deliveryServices.isNotEmpty() }
+        scheduleDeliveryData?.takeIf { it.hidden.not() }
             ?.apply {
                 scheduleDeliveryUiModel = convertToScheduleDeliveryUiModel(
                     validationMetadata ?: ""

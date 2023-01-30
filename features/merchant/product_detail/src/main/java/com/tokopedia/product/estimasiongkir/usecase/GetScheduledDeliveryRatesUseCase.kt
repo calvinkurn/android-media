@@ -28,6 +28,7 @@ class GetScheduledDeliveryRatesUseCase @Inject constructor(
         productMetadata: String,
         boMetadata: String,
         orderValue: Int,
+        categoryId: String,
         forceRefresh: Boolean
     ): ScheduledDeliveryRatesModel {
         setRequestParams(
@@ -40,7 +41,8 @@ class GetScheduledDeliveryRatesUseCase @Inject constructor(
                 uniqueId = uniqueId,
                 productMetadata = productMetadata,
                 boMetadata = boMetadata,
-                orderValue = orderValue
+                orderValue = orderValue,
+                categoryId = categoryId
             )
         )
         setCacheStrategy(getCacheStrategy(forceRefresh))
