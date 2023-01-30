@@ -730,8 +730,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         })
     }
 
-    private
-    var coachMark: CoachMark2? = null
+    private var coachMark: CoachMark2? = null
 
     private fun showCoachMark() {
         val coachMarkList = arrayListOf<CoachMark2Item>().apply {
@@ -740,9 +739,12 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             }
         }
         if (coachMarkList.isNotEmpty()) {
-            coachMark = CoachMark2(requireContext())
-            coachMark?.isOutsideTouchable = true
-            coachMark?.showCoachMark(coachMarkList)
+            context?.let {
+                coachMark = CoachMark2(it)
+                coachMark?.isOutsideTouchable = true
+                coachMark?.showCoachMark(coachMarkList)
+                ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
+            }
         }
     }
 
