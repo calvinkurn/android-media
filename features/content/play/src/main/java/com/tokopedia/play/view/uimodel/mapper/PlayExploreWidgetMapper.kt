@@ -83,7 +83,8 @@ class PlayExploreWidgetMapper @Inject constructor() {
                         poolType = "",
                         recommendationType = it.recommendationType,
                         hasAction = false,
-                        channelTypeTransition = PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Unknown, PlayWidgetChannelType.Unknown)
+                        channelTypeTransition = PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Unknown, PlayWidgetChannelType.Unknown),
+                        gridType = PlayGridType.Medium,
                     )
                 }
             )

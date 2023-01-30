@@ -2,7 +2,6 @@ package com.tokopedia.play.view.uimodel
 
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.analytic.TrackingField
-import com.tokopedia.play.widget.ui.model.PlayCardShimmering
 import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play_common.model.result.ResultState
@@ -80,6 +79,7 @@ data class WidgetItemUiModel(
 }
 
 object SubSlotUiModel : WidgetUiModel()
+object ExploreWidgetPlaceholder : WidgetUiModel()
 
 data class PageConfig(val cursor: String, val isAutoPlay: Boolean) :
     WidgetUiModel() {
@@ -127,10 +127,10 @@ val List<WidgetUiModel>.getConfig: PageConfig
         return this.filterIsInstance<PageConfig>().firstOrNull() ?: PageConfig.Empty
     }
 
-internal val getWidgetShimmering: List<PlayWidgetItemUiModel>
+internal val getWidgetShimmering: List<ExploreWidgetPlaceholder>
     get() {
-        return List(6) {
-            PlayCardShimmering
+        return List(1) {
+            ExploreWidgetPlaceholder
         }
     }
 

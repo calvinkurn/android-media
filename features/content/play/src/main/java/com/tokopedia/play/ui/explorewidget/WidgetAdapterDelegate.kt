@@ -1,31 +1,59 @@
 package com.tokopedia.play.ui.explorewidget
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
+import com.tokopedia.play.databinding.ViewPlayExploreWidgetShimmeringBinding
+import com.tokopedia.play.databinding.ViewPlayGridBinding
+import com.tokopedia.play.view.uimodel.ExploreWidgetPlaceholder
 import com.tokopedia.play.view.uimodel.WidgetItemUiModel
 import com.tokopedia.play.view.uimodel.WidgetUiModel
-import com.tokopedia.play.widget.PlayWidgetViewHolder
-import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.play.R as playR
 
 /**
  * @author by astidhiyaa on 02/12/22
  */
-class WidgetAdapterDelegate {
-    internal class Widget(private val widgetCoordinator: PlayWidgetCoordinator) :
-        TypedAdapterDelegate<WidgetItemUiModel, WidgetUiModel, PlayWidgetViewHolder>(PlayWidgetViewHolder.layout) {
+class WidgetAdapterDelegate private constructor(){
+    internal class Widget(
+        private val coordinator: PlayExploreWidgetCoordinator
+    ) : TypedAdapterDelegate<WidgetItemUiModel, WidgetUiModel, PlayExploreWidgetViewHolder.Widget>(playR.layout.view_play_grid) {
         override fun onBindViewHolder(
             item: WidgetItemUiModel,
-            holder: PlayWidgetViewHolder
+            holder: PlayExploreWidgetViewHolder.Widget
         ) {
-            holder.bind(item)
+            holder.bind(item.item)
         }
 
         override fun onCreateViewHolder(
             parent: ViewGroup,
             basicView: View
-        ): PlayWidgetViewHolder {
-            return PlayWidgetViewHolder(basicView, widgetCoordinator)
+        ): PlayExploreWidgetViewHolder.Widget {
+            val binding =
+                ViewPlayGridBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            return PlayExploreWidgetViewHolder.Widget.create(binding, coordinator)
+        }
+    }
+
+    internal class Shimmering :
+        TypedAdapterDelegate<ExploreWidgetPlaceholder, WidgetUiModel, PlayExploreWidgetViewHolder.Placeholder>(
+            playR.layout.view_play_explore_widget_shimmering
+        ) {
+        override fun onBindViewHolder(
+            item: ExploreWidgetPlaceholder,
+            holder: PlayExploreWidgetViewHolder.Placeholder
+        ) {
+            holder.bind()
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): PlayExploreWidgetViewHolder.Placeholder {
+            val binding =
+                ViewPlayExploreWidgetShimmeringBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            return PlayExploreWidgetViewHolder.Placeholder.create(binding)
         }
     }
 }
+

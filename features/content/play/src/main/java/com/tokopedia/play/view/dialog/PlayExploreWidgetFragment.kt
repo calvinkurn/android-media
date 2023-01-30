@@ -25,9 +25,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
-import com.tokopedia.play.ui.explorewidget.ChipItemDecoration
-import com.tokopedia.play.ui.explorewidget.ChipsViewHolder
-import com.tokopedia.play.ui.explorewidget.ChipsWidgetAdapter
+import com.tokopedia.play.ui.explorewidget.*
 import com.tokopedia.play.util.isAnyChanged
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.withCache
@@ -72,19 +70,22 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     private lateinit var viewModel: PlayViewModel
 
-    private val widgetAdapter = PlayWidgetChannelMediumAdapter(cardChannelListener = this)
+    private val coordinator: PlayExploreWidgetCoordinator = PlayExploreWidgetCoordinator(this)
+
+    private val widgetAdapter = WidgetAdapter(coordinator)
 
     private val chipsLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         LinearLayoutManager(binding.rvChips.context, RecyclerView.HORIZONTAL, false)
     }
 
     private val widgetLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        StaggeredGridLayoutManager(SPAN_CHANNEL, RecyclerView.VERTICAL)
+        LinearLayoutManager(binding.rvWidgets.context, RecyclerView.VERTICAL, false)
     }
 
     private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
         object : EndlessRecyclerViewScrollListener(widgetLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                //not detected
                 viewModel.submitAction(NextPageWidgets)
             }
 
@@ -213,7 +214,7 @@ class PlayExploreWidgetFragment @Inject constructor(
                 ) {
                     renderWidgets(
                         cachedState.value.exploreWidget.data.state,
-                        cachedState.value.exploreWidget.data.widgets.getChannelBlock
+                        cachedState.value.exploreWidget.data.widgets
                     )
                 }
 
@@ -247,17 +248,17 @@ class PlayExploreWidgetFragment @Inject constructor(
         }
     }
 
-    private fun renderWidgets(state: ExploreWidgetState, widget: WidgetItemUiModel) {
+    private fun renderWidgets(state: ExploreWidgetState, widget: List<WidgetUiModel>) {
         when (state) {
             ExploreWidgetState.Success -> {
                 showEmpty(false)
-                widgetAdapter.setItemsAndAnimateChanges(widget.item.items)
+                widgetAdapter.setItemsAndAnimateChanges(widget)
             }
             ExploreWidgetState.Empty -> {
                 showEmpty(true)
             }
             ExploreWidgetState.Loading -> {
-                widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
+                widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering) //adjust PlaceHolder
             }
             is ExploreWidgetState.Fail -> {
                 analytic?.impressToasterGlobalError()
