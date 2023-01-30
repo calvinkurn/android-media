@@ -81,6 +81,7 @@ import kotlin.Unit;
 import rx.Emitter;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -223,6 +224,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private CompositeSubscription scheduleDeliveryCompositeSubscription;
 
     private PublishSubject<Boolean> scheduleDeliveryDonePublisher;
+    private Subscription scheduleDeliverySubscription;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -869,6 +871,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (position != RecyclerView.NO_POSITION) {
             loadCourierStateData(shipmentCartItemModel, SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE, tmpShipmentDetailData, position);
             mActionListener.onClickRefreshErrorLoadCourier();
+            initScheduleDeliveryPublisher();
         }
     }
 
@@ -881,6 +884,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     public void onChangeScheduleDelivery(@NonNull ScheduleDeliveryUiModel scheduleDeliveryUiModel) {
         int position = getAdapterPosition();
         if (position != RecyclerView.NO_POSITION) {
+            mActionListener.onNeedUpdateViewItem(position);
             scheduleDeliveryDebouncedListener.onScheduleDeliveryChanged(new ShipmentScheduleDeliveryHolderData(
                     scheduleDeliveryUiModel,
                     position
@@ -1728,23 +1732,28 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void initScheduleDeliveryPublisher() {
-        scheduleDeliveryCompositeSubscription.add(
-            Observable.create((Action1<Emitter<ShipmentScheduleDeliveryHolderData>>) emitter ->
-                                    scheduleDeliveryDebouncedListener = emitter::onNext,
-                            Emitter.BackpressureMode.LATEST)
-                        .observeOn(AndroidSchedulers.mainThread(), 1)
-                        .subscribeOn(AndroidSchedulers.mainThread())
-                        .concatMap(shipmentScheduleDeliveryHolderData -> {
-                            scheduleDeliveryDonePublisher = PublishSubject.create();
-                            mActionListener.onChangeScheduleDelivery(
-                                    shipmentScheduleDeliveryHolderData.getScheduleDeliveryUiModel(),
-                                    shipmentScheduleDeliveryHolderData.getPosition(),
-                                    scheduleDeliveryDonePublisher
-                            );
-                            return scheduleDeliveryDonePublisher;
-                        })
-                        .subscribe()
-        );
+        if (scheduleDeliverySubscription != null && scheduleDeliverySubscription.isUnsubscribed()) {
+            scheduleDeliverySubscription.unsubscribe();
+        }
+        if (scheduleDeliveryDonePublisher != null && !scheduleDeliveryDonePublisher.hasCompleted()) {
+            scheduleDeliveryDonePublisher.onCompleted();
+        }
+        scheduleDeliverySubscription = Observable.create((Action1<Emitter<ShipmentScheduleDeliveryHolderData>>) emitter ->
+                                scheduleDeliveryDebouncedListener = emitter::onNext,
+                        Emitter.BackpressureMode.LATEST)
+                .observeOn(AndroidSchedulers.mainThread(), 1)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .concatMap(shipmentScheduleDeliveryHolderData -> {
+                    scheduleDeliveryDonePublisher = PublishSubject.create();
+                    mActionListener.onChangeScheduleDelivery(
+                            shipmentScheduleDeliveryHolderData.getScheduleDeliveryUiModel(),
+                            shipmentScheduleDeliveryHolderData.getPosition(),
+                            scheduleDeliveryDonePublisher
+                    );
+                    return scheduleDeliveryDonePublisher;
+                })
+                .subscribe();
+        scheduleDeliveryCompositeSubscription.add(scheduleDeliverySubscription);
     }
 
     private void showBottomSheet(Context context, String title, String message, int image) {
