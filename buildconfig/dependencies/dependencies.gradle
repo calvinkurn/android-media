@@ -398,7 +398,7 @@ ext {
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.2",
             showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.6.1",
             youtubePlayer   : "com.tokopedia.youtube:player:0.0.1",
-            ucrop           : "com.tokopedia.ucrop:ucrop:2.2.2.2@aar",
+            ucrop           : "com.tokopedia.ucrop:ucrop:2.2.2-fix-exif@aar",
     ]
 
     unifyDependencies = [
