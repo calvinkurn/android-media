@@ -22,4 +22,14 @@
         android:scrollbars="none"
         app:useDefaultItemDecorator="false" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCarouselSingleOrDoubleProduct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false" />
+
+    <com.tokopedia.productcard.ProductCardListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
 </LinearLayout>

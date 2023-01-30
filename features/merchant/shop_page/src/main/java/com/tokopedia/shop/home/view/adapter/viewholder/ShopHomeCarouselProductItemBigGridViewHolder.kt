@@ -4,17 +4,13 @@ import android.annotation.SuppressLint
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopCarouselProductCardBigGridBinding
-import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
-import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
-import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -22,9 +18,12 @@ import com.tokopedia.utils.view.binding.viewBinding
 @SuppressLint("PII Data Exposure")
 class ShopHomeCarouselProductItemBigGridViewHolder(
     itemView: View,
-    private val shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel,
-    private val shopHomeCarouselProductListener: ShopHomeCarouselProductListener,
-    private val parentPosition: Int
+    private val listProductCardModel: List<ProductCardModel>,
+    private val carouselProductCardOnItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener?,
+    private val carouselProductCardOnItemClickListener: CarouselProductCardListener.OnItemClickListener?,
+    private val carouselProductCardOnItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener?,
+    private val carouselProductCardOnItemATCNonVariantClickListener: CarouselProductCardListener.OnATCNonVariantClickListener?,
+    private val carouselProductCardOnItemAddVariantClickListener: CarouselProductCardListener.OnAddVariantClickListener?
 ) : AbstractViewHolder<ShopHomeProductUiModel>(itemView) {
 
     private val viewBinding: ItemShopCarouselProductCardBigGridBinding? by viewBinding()
@@ -39,136 +38,89 @@ class ShopHomeCarouselProductItemBigGridViewHolder(
     }
 
     override fun bind(shopHomeProductUiModel: ShopHomeProductUiModel) {
-        setProductData(shopHomeProductUiModel)
-        setProductListener(shopHomeProductUiModel)
+        setProductData()
+        setProductListener()
     }
 
-    private fun setProductListener(shopHomeProductUiModel: ShopHomeProductUiModel) {
-        setProductOnImpressionListener(shopHomeProductUiModel)
-        setProductOnClickListener(shopHomeProductUiModel)
-        setProductAddToCartOnClickListener(shopHomeProductUiModel)
-        setProductOnItemAtcNonVariantClickListener(shopHomeProductUiModel)
-        setProductOnItemAddVariantClickListener(shopHomeProductUiModel)
+    private fun setProductListener() {
+        setProductOnImpressionListener()
+        setProductOnClickListener()
+        setProductAddToCartOnClickListener()
+        setProductOnItemAtcNonVariantClickListener()
+        setProductOnItemAddVariantClickListener()
     }
 
-    private fun setProductOnImpressionListener(shopHomeProductUiModel: ShopHomeProductUiModel) {
-        productCardView?.setImageProductViewHintListener(
-            shopHomeProductUiModel,
-            object : ViewHintListener {
+    private fun setProductOnImpressionListener() {
+        carouselProductCardOnItemImpressedListener?.getImpressHolder(bindingAdapterPosition)?.let {
+            viewBinding?.productCard?.setImageProductViewHintListener(it, object : ViewHintListener {
                 override fun onViewHint() {
-                    if (!isEtalaseCarousel()) {
-                        shopHomeCarouselProductListener.onCarouselProductItemImpression(
-                            parentPosition,
-                            bindingAdapterPosition,
-                            shopHomeCarousellProductUiModel,
-                            shopHomeProductUiModel
-                        )
-                    } else {
-                        shopHomeCarouselProductListener.onCarouselProductShowcaseItemImpression(
-                            parentPosition,
-                            bindingAdapterPosition,
-                            shopHomeCarousellProductUiModel,
-                            shopHomeProductUiModel
-                        )
-                    }
-
-                    if (productCardModel?.isButtonAtcShown() == true) {
-                        shopHomeCarouselProductListener.onImpressionProductAtc(
-                            shopHomeProductUiModel,
-                            parentPosition,
-                            shopHomeCarousellProductUiModel.name
+                    productCardModel?.let { productCardModel ->
+                        carouselProductCardOnItemImpressedListener.onItemImpressed(
+                            productCardModel,
+                            bindingAdapterPosition
                         )
                     }
                 }
-
             })
-    }
-
-    private fun setProductOnItemAddVariantClickListener(shopHomeProductUiModel: ShopHomeProductUiModel) {
-        productCardView?.setAddVariantClickListener {
-            shopHomeCarouselProductListener.onProductAtcVariantClick(shopHomeProductUiModel)
         }
     }
 
-    private fun setProductOnItemAtcNonVariantClickListener(shopHomeProductUiModel: ShopHomeProductUiModel) {
+    private fun setProductOnItemAddVariantClickListener() {
+        productCardView?.setAddVariantClickListener {
+            productCardModel?.let { productCardModel ->
+                carouselProductCardOnItemAddVariantClickListener?.onAddVariantClick(
+                    productCardModel,
+                    bindingAdapterPosition
+                )
+            }
+        }
+    }
+
+    private fun setProductOnItemAtcNonVariantClickListener() {
         productCardView?.setAddToCartNonVariantClickListener(object : ATCNonVariantListener {
             override fun onQuantityChanged(quantity: Int) {
-                shopHomeCarouselProductListener.onProductAtcNonVariantQuantityEditorChanged(
-                    shopHomeProductUiModel,
-                    quantity,
-                    shopHomeCarousellProductUiModel.name
-                )
+                productCardModel?.let { productCardModel ->
+                    carouselProductCardOnItemATCNonVariantClickListener?.onATCNonVariantClick(
+                        productCardModel,
+                        bindingAdapterPosition,
+                        quantity
+                    )
+                }
             }
         })
     }
 
-    private fun setProductOnClickListener(shopHomeProductUiModel: ShopHomeProductUiModel) {
+    private fun setProductOnClickListener() {
         productCardView?.setOnClickListener {
-            if (!isEtalaseCarousel()) {
-                shopHomeCarouselProductListener.onCarouselProductItemClicked(
-                    parentPosition,
-                    bindingAdapterPosition,
-                    shopHomeCarousellProductUiModel,
-                    shopHomeProductUiModel
-                )
-            } else {
-                shopHomeCarouselProductListener.onCarouselProductShowcaseItemClicked(
-                    parentPosition,
-                    bindingAdapterPosition,
-                    shopHomeCarousellProductUiModel,
-                    shopHomeProductUiModel
+            productCardModel?.let { productCardModel ->
+                carouselProductCardOnItemClickListener?.onItemClick(
+                    productCardModel,
+                    bindingAdapterPosition
                 )
             }
         }
     }
 
-    private fun setProductAddToCartOnClickListener(shopHomeProductUiModel: ShopHomeProductUiModel) {
+    private fun setProductAddToCartOnClickListener() {
         productCardView?.setAddToCartOnClickListener {
-            if (shopHomeProductUiModel.isEnableDirectPurchase) {
-                shopHomeCarouselProductListener.onProductAtcDefaultClick(
-                    shopHomeProductUiModel,
-                    shopHomeProductUiModel.minimumOrder,
-                    shopHomeCarousellProductUiModel.name
+            productCardModel?.let { productCardModel ->
+                carouselProductCardOnItemAddToCartListener?.onItemAddToCart(
+                    productCardModel, bindingAdapterPosition
                 )
-            } else {
-                if (!isEtalaseCarousel()) {
-                    shopHomeCarouselProductListener.onCarouselProductItemClickAddToCart(
-                        parentPosition,
-                        bindingAdapterPosition,
-                        shopHomeCarousellProductUiModel,
-                        shopHomeProductUiModel
-                    )
-                } else {
-                    shopHomeCarouselProductListener.onCarouselProductShowcaseItemClickAddToCart(
-                        parentPosition,
-                        bindingAdapterPosition,
-                        shopHomeCarousellProductUiModel,
-                        shopHomeProductUiModel
-                    )
-                }
             }
         }
     }
 
-    private fun setProductData(shopHomeProductUiModel: ShopHomeProductUiModel) {
-        productCardModel = ShopPageHomeMapper.mapToProductCardModel(
-            isHasAtc(),
-            false,
-            shopHomeProductUiModel,
-            false
-        )
+    private fun setProductData() {
+        productCardModel = getProductCardModel()
         productCardModel?.let {
+            viewBinding?.productCard?.applyCarousel()
             viewBinding?.productCard?.setProductModel(it)
         }
     }
 
-    private fun isEtalaseCarousel(): Boolean {
-        val etalaseId = shopHomeCarousellProductUiModel.header.etalaseId
-        return etalaseId.isNotEmpty() && etalaseId != Int.ZERO.toString()
-    }
-
-    private fun isHasAtc(): Boolean {
-        return shopHomeCarousellProductUiModel.header.isATC == ShopHomeCarousellProductUiModel.IS_ATC
+    private fun getProductCardModel(): ProductCardModel?{
+        return listProductCardModel.getOrNull(bindingAdapterPosition)
     }
 
 }

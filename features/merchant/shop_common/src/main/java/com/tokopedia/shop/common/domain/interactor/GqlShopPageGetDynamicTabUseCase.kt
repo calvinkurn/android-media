@@ -85,6 +85,7 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                   type
                   bgColors
                   textColor
+                  bgImage
                   shopLayoutFeatures {
                     name
                     isActive
