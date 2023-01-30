@@ -456,7 +456,9 @@
     <string name="smvc_intro_voucher_view_pager_tab_1_title">Cashback</string>
     <string name="smvc_intro_voucher_view_pager_tab_2_title">Gratis Ongkir</string>
     <string name="smvc_intro_voucher_view_pager_tab_3_title">Diskon</string>
-    <string name="smvc_intro_voucher_view_pager_tab_description">Pembeli akan mendapatkan GoPay Coin setelah transaksi selesai</string>
+    <string name="smvc_intro_voucher_view_pager_tab_1_description">Pembeli akan mendapatkan GoPay Coin setelah transaksi selesai</string>
+    <string name="smvc_intro_voucher_view_pager_tab_2_description">Pembeli akan dapat potongan biaya pengiriman produk saat checkout.</string>
+    <string name="smvc_intro_voucher_view_pager_tab_3_description">Pembeli akan dapat potongan harga prodük secara langsung saat checkout.</string>
     <string name="smvc_intro_voucher_view_more">Lihat Selengkapnya</string>
     <string name="smvc_intro_voucher_toolbar_text">Keuntungan Kupon Toko Saya</string>
     <string name="smvc_intro_voucher_icon_semua_pembeli">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/semua_pembeli.png</string>
