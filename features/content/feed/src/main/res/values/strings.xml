@@ -61,6 +61,7 @@ dari Feed.</string>
     <string name="feed_fab_create_content">Buat Konten</string>
     <string name="feed_fab_create_post">Buat Post</string>
     <string name="feed_fab_create_live">Buat Live</string>
+    <string name="feed_fab_create_shorts_video">Buat Video</string>
     <string name="feed_detail_page_header">Dalam Post Ini</string>
     <string name="feed_play_header_text">Lagi Live, Nih!</string>
     <string name="feed_play_header_upcoming_text">Nantikan live seru lainnya!</string>
@@ -68,4 +69,10 @@ dari Feed.</string>
 
     <!-- User Profile Entry Point -->
     <string name="feed_user_profile_entry_point_coach_mark">Kayak apa si halaman\nprofilmu? Cek di sini, yuk!</string>
+
+    <!-- Upload -->
+    <string name="cp_common_progress_bar_text">Memproses...</string>
+    <string name="cp_common_progress_bar_failed_text">Gagal Diproses</string>
+    <string name="feed_upload_shorts_success">Yay, video kamu berhasil di-upload!</string>
+    <string name="feed_upload_shorts_see_video">Lihat</string>
 </resources>
