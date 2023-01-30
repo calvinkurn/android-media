@@ -86,7 +86,7 @@
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"></activity>
+            android:theme="@style/Theme.WhiteUnify"/>
         <activity
             android:name=".presentation.summary.SummaryActivity"
             android:configChanges="orientation"

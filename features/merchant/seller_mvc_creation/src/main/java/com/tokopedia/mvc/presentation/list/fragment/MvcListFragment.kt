@@ -829,7 +829,7 @@ class MvcListFragment :
     }
 
     private fun deleteVoucher(voucher: Voucher) {
-        if (voucher.isVps) {
+        if (voucher.isSubsidy) {
             showCallTokopediaCareDialog(voucher.status)
         } else {
             showConfirmationStopVoucherDialog(voucher)

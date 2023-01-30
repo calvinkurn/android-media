@@ -263,7 +263,7 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
     }
 
     private fun renderBulkDeleteIcon(selectedVariantIds: Set<Long>) {
-        binding?.iconBulkDelete?.isVisible = selectedVariantIds.count() > ONE_VARIANT
+        binding?.iconBulkDelete?.isVisible = selectedVariantIds.count() >= ONE_VARIANT
     }
 
     private fun renderButton(originalVariantCount: Int, variantCount: Int, selectedVariantCount: Int) {
