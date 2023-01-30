@@ -49,13 +49,11 @@ import com.tokopedia.mvc.databinding.SmvcFragmentMvcListFooterBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.ShareComponentMetaData
 import com.tokopedia.mvc.domain.entity.Voucher
-import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
-import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherStatusBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
@@ -81,7 +79,6 @@ import com.tokopedia.mvc.presentation.list.model.DeleteVoucherUiEffect
 import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
-import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.mvc.presentation.quota.QuotaInfoActivity
 import com.tokopedia.mvc.presentation.share.LinkerDataGenerator
 import com.tokopedia.mvc.presentation.share.ShareComponentInstanceBuilder
@@ -414,9 +411,15 @@ class MvcListFragment :
 
     private fun getTitleForShareComponent(shareComponentParam: ShareComponentInstanceBuilder.Param): String {
         return if (shareComponentParam.isVoucherProduct) {
-            getString(R.string.smvc_placeholder_share_component_outgoing_title_product_voucher)
+            getString(
+                R.string.smvc_placeholder_share_component_outgoing_title_product_voucher,
+                shareComponentParam.shopName
+            )
         } else {
-            getString(R.string.smvc_placeholder_share_component_outgoing_title_shop_voucher)
+            getString(
+                R.string.smvc_placeholder_share_component_outgoing_title_shop_voucher,
+                shareComponentParam.shopName
+            )
         }
     }
 
