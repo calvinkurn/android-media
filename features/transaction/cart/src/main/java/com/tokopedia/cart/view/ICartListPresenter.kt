@@ -38,14 +38,16 @@ interface ICartListPresenter {
 
     fun processInitialGetCartData(cartId: String, initialLoad: Boolean, isLoadingTypeRefresh: Boolean, getCartState: Int = GET_CART_STATE_DEFAULT)
 
-    fun processDeleteCartItem(allCartItemData: List<CartItemHolderData>,
-                              removedCartItems: List<CartItemHolderData>,
-                              addWishList: Boolean,
-                              forceExpandCollapsedUnavailableItems: Boolean = false,
-                              isFromGlobalCheckbox: Boolean = false,
-                              isFromEditBundle: Boolean = false)
+    fun processDeleteCartItem(
+        allCartItemData: List<CartItemHolderData>,
+        removedCartItems: List<CartItemHolderData>,
+        addWishList: Boolean,
+        forceExpandCollapsedUnavailableItems: Boolean = false,
+        isFromGlobalCheckbox: Boolean = false,
+        isFromEditBundle: Boolean = false
+    )
 
-    fun processUndoDeleteCartItem(cartIds: List<String>);
+    fun processUndoDeleteCartItem(cartIds: List<String>)
 
     fun processUpdateCartData(fireAndForget: Boolean, onlyTokoNowProducts: Boolean = false)
 
@@ -150,6 +152,8 @@ interface ICartListPresenter {
     fun clearAllBo(clearPromoOrderData: ClearPromoOrderData)
 
     fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel)
+
+    fun checkEnableBundleCrossSell(cartShopHolderData: CartShopHolderData): Boolean
 
     companion object {
         const val GET_CART_STATE_DEFAULT = 0

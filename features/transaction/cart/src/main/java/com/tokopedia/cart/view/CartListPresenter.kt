@@ -2149,7 +2149,7 @@ class CartListPresenter @Inject constructor(
         shop.boCode = ""
     }
 
-    private fun checkEnableBundleCrossSell(cartShopHolderData: CartShopHolderData): Boolean {
+    override fun checkEnableBundleCrossSell(cartShopHolderData: CartShopHolderData): Boolean {
         val hasCheckedProductWithBundle = cartShopHolderData.productUiModelList
             .any { it.isSelected && !it.isBundlingItem && it.bundleIds.isNotEmpty() }
         val hasCheckedBundleProduct = cartShopHolderData.productUiModelList

@@ -47,7 +47,7 @@ data class CartShopHolderData(
     var warehouseId: Long = 0,
     var isPo: Boolean = false,
     var poDuration: String = "",
-    var boCode: String = "",
+    var boCode: String = ""
 ) {
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
@@ -100,7 +100,7 @@ data class CartShopHolderData(
             warehouseId = this.warehouseId,
             isPo = this.isPo,
             poDuration = this.poDuration,
-            boCode = this.boCode,
+            boCode = this.boCode
         )
     }
 
@@ -109,7 +109,7 @@ data class CartShopHolderData(
     }
 }
 
-class CartShopGroupTickerData(
+data class CartShopGroupTickerData(
     var enableBoAffordability: Boolean = false,
     var enableBundleCrossSell: Boolean = false,
     var state: CartShopGroupTickerState = CartShopGroupTickerState.FIRST_LOAD,
@@ -125,7 +125,7 @@ class CartShopGroupTickerData(
 
     // list of cartIds for tracker
     var cartIds: String = "",
-    var hasSeenTicker: Boolean = false,
+    var hasSeenTicker: Boolean = false
 ) {
 
     val enableTicker: Boolean
