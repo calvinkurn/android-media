@@ -7,9 +7,9 @@ import androidx.annotation.IntDef
  */
 
 @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
-@IntDef(ShopPartnerFsTypeDef.DEFAULT, ShopPartnerFsTypeDef.TOKO_CABANG, ShopPartnerFsTypeDef.EPHARMACY, ShopPartnerFsTypeDef.NEW_RETAIL, ShopPartnerFsTypeDef.TOKONOW, ShopPartnerFsTypeDef.B2B2C)
+@IntDef(ShopPartnerFsFullfillmentServiceTypeDef.DEFAULT, ShopPartnerFsFullfillmentServiceTypeDef.TOKO_CABANG, ShopPartnerFsFullfillmentServiceTypeDef.EPHARMACY, ShopPartnerFsFullfillmentServiceTypeDef.NEW_RETAIL, ShopPartnerFsFullfillmentServiceTypeDef.TOKONOW, ShopPartnerFsFullfillmentServiceTypeDef.B2B2C)
 annotation class
-ShopPartnerFsTypeDef {
+ShopPartnerFsFullfillmentServiceTypeDef {
     companion object {
         const val DEFAULT = 0
         const val TOKO_CABANG = 1
