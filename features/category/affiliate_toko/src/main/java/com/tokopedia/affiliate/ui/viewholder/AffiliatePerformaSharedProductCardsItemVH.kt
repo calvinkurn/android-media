@@ -178,7 +178,9 @@ class AffiliatePerformaSharedProductCardsItemVH(
                 " - ${product.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue}" +
                 " - ${product.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue}" +
                 " - ${product.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue}" +
-                " - $label",
+                " - $label - ${
+                if (product.ssaStatus == true) "komisi extra" else ""
+                }",
             AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SELECT_CONTENT
         )
     }
@@ -202,7 +204,9 @@ class AffiliatePerformaSharedProductCardsItemVH(
                 " - ${shop.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue}" +
                 " - ${shop.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue}" +
                 " - ${shop.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue}" +
-                " - $label",
+                " - $label - ${
+                if (shop.ssaStatus == true) "komisi extra" else ""
+                }",
             AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SHOP_SELECT_CONTENT
         )
     }
