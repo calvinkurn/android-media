@@ -3798,6 +3798,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             false
                     );
                 }
+                else {
+                    donePublisher.onCompleted();
+                }
             }
         }
     }
