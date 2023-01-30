@@ -93,6 +93,7 @@ import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaLi
 import com.tokopedia.search.result.product.suggestion.SuggestionListenerDelegate
 import com.tokopedia.search.result.product.tdn.TopAdsImageViewListenerDelegate
 import com.tokopedia.search.result.product.ticker.TickerListenerDelegate
+import com.tokopedia.search.result.product.video.SearchVideoPreference
 import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.result.product.wishlist.WishlistHelper
@@ -210,6 +211,10 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject
     lateinit var bottomSheetFilterViewDelegate: BottomSheetFilterViewDelegate
 
+    @Suppress("LateinitUsage")
+    @Inject
+    lateinit var searchVideoPreference: SearchVideoPreference
+
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var searchNavigationListener: SearchNavigationListener? = null
@@ -224,7 +229,7 @@ class ProductListFragment: BaseDaggerFragment(),
         private set
 
     private val isSneakPeekEnabled: Boolean by lazy {
-        getABTestVideoSneakPeek()
+        searchVideoPreference.isSneakPeekEnabled && getABTestVideoSneakPeek()
     }
 
     private fun getABTestVideoSneakPeek(): Boolean {
@@ -234,6 +239,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 ""
             )
             RollenceKey.SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_VARIANT == abTestVideoSneakPeekAutoPlay
+                || RollenceKey.SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_OTHER_VARIANT == abTestVideoSneakPeekAutoPlay
         } catch (e: Exception) {
             false
         }
