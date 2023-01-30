@@ -35,6 +35,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingShopPageInfo
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.common.constant.ShopPartnerFsFullfillmentServiceTypeDef
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
@@ -425,7 +426,7 @@ class ShopInfoFragment :
             }
 
             // go apotik info
-            val isShouldShow: Boolean = shopInfo.isGoApotik || shopInfo.fsType == 2
+            val isShouldShow: Boolean = shopInfo.isGoApotik || shopInfo.fsType == ShopPartnerFsFullfillmentServiceTypeDef.EPHARMACY
             goApotikInfoContainer.shouldShowWithAction(shouldShow = isShouldShow) {
                 tvSiaDescription.text =
                     shopInfo.siaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
