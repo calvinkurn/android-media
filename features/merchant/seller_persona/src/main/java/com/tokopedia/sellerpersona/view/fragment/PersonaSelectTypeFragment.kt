@@ -6,7 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.sellerpersona.databinding.FragmentPersonaSelectTypeBinding
 import com.tokopedia.sellerpersona.view.adapter.PersonaTypeAdapter
@@ -14,6 +17,7 @@ import com.tokopedia.sellerpersona.view.model.PersonaUiModel
 import com.tokopedia.sellerpersona.view.viewmodel.SelectPersonaTypeViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -46,11 +50,9 @@ class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (savedInstanceState == null) {
-            fetchPersonaList()
-        }
+        fetchPersonaList()
 
-        setupView()
+        setupRecyclerView()
         observePersonaList()
     }
 
@@ -65,6 +67,7 @@ class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>
 
     private fun showPersonaList(data: List<PersonaUiModel>) {
         personaTypeAdapter.setItems(data)
+        personaTypeAdapter.notifyItemRangeChanged(Int.ZERO, data.size.minus(Int.ONE))
     }
 
     private fun showErrorState(throwable: Throwable) {
@@ -75,10 +78,16 @@ class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>
         viewModel.fetchPersonaList()
     }
 
-    private fun setupView() {
-        binding?.run {
-            rvSpSelectType.layoutManager = LinearLayoutManager(root.context)
-            rvSpSelectType.adapter = personaTypeAdapter
+    private fun setupRecyclerView() {
+        binding?.rvSpSelectType?.run {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = personaTypeAdapter
+
+            try {
+                PagerSnapHelper().attachToRecyclerView(this)
+            } catch (e: IllegalStateException) {
+                Timber.e(e)
+            }
         }
     }
 }

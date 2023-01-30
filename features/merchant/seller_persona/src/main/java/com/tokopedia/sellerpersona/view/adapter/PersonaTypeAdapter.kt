@@ -5,6 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.databinding.ItemPersonaTypeBinding
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
 import javax.inject.Inject
@@ -35,7 +39,8 @@ class PersonaTypeAdapter @Inject constructor() : Adapter<PersonaTypeAdapter.Type
         this.items.addAll(items)
     }
 
-    class TypeViewHolder(private val binding: ItemPersonaTypeBinding) : ViewHolder(binding.root) {
+    inner class TypeViewHolder(private val binding: ItemPersonaTypeBinding) :
+        ViewHolder(binding.root) {
 
         fun bind(item: PersonaUiModel) {
             with(binding) {
@@ -43,12 +48,36 @@ class PersonaTypeAdapter @Inject constructor() : Adapter<PersonaTypeAdapter.Type
                 tvSpSellerTypeStatus.text = item.headerSubTitle
 
                 showList(item.itemList)
+                showBackground(item)
+            }
+        }
+
+        private fun showBackground(item: PersonaUiModel) {
+            val drawableRes = if (item.isSelected) {
+                R.drawable.sp_bg_seller_type_active
+            } else {
+                R.drawable.sp_bg_seller_type_inactive
+            }
+            with(binding.containerSpItemPersonaType) {
+                setBackgroundResource(drawableRes)
+                val dp16 = context.resources.getDimensionPixelSize(
+                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl2
+                )
+                if (absoluteAdapterPosition == items.size.minus(Int.ONE)) {
+                    setMargin(dp16, top, dp16, bottom)
+                } else {
+                    setMargin(dp16, top, Int.ZERO, bottom)
+                }
             }
         }
 
         private fun showList(itemList: List<String>) {
             with(binding.rvSpSelectTypeInfo) {
-                layoutManager = LinearLayoutManager(context)
+                layoutManager = object : LinearLayoutManager(context) {
+                    override fun canScrollHorizontally(): Boolean = false
+
+                    override fun canScrollVertically(): Boolean = false
+                }
                 adapter = PersonaSimpleListAdapter(itemList)
             }
         }
