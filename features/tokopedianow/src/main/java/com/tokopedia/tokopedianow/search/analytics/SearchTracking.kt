@@ -41,11 +41,9 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_P
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_QUICK_FILTER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_REMOVE_QUANTITY
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_TAMBAH_KE_KERANJANG
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_VIEW_ALL_ON_TOKONOW_RECOMMENDATION
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_BANNER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_BROADMATCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_PRODUCT
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_EMPTY_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_NO_SEARCH_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_SEARCH_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_BROAD_MATCH
@@ -105,26 +103,17 @@ object SearchTracking {
         const val CLICK_DELETE_ITEM_FROM_CART = "click - delete all items from cart"
         const val CLICK_CATEGORY_JUMPER = "click - category jumper"
         const val CLICK_CARI_BARANG_DI_TOKONOW = "click - cari barang di tokonow"
-        const val IMPRESSION_SRP_PRODUCT_TOKONOW =
-            "impression product on tokonow product recommendation"
-        const val CLICK_SRP_PRODUCT_TOKONOW =
-            "click product on tokonow product recommendation"
-        const val CLICK_ATC_SRP_PRODUCT_TOKONOW =
-            "click add to cart on tokonow product recommendation"
         const val IMPRESSION_SRP_RECOM_OOC = "view product on recom widget on tokonow srp while the address is out of coverage (OOC)"
         const val CLICK_SRP_RECOM_OOC = "click product on recom widget on tokonow srp while the address is out of coverage (OOC)"
         const val IMPRESSION_BROADMATCH = "impression - broad match"
         const val CLICK_BROADMATCH = "click - broad match"
         const val CLICK_BROADMATCH_LIHAT_SEMUA = "click - broad match lihat semua"
-        const val CLICK_VIEW_ALL_ON_TOKONOW_RECOMMENDATION = "click view all on tokonow recommendation"
     }
 
     object Category {
         const val TOP_NAV = "top nav"
         const val TOKONOW_SEARCH_RESULT = "tokonow - search result"
         const val TOKONOW_NO_SEARCH_RESULT = "tokonow - no search result"
-        const val TOKONOW_EMPTY_RESULT =
-            "tokonow empty search result"
         const val TOKOOW_SEARCH_RESULT_PAGE = "tokonow search result page"
         const val TOKONOW_DASH_SEARCH_PAGE = "tokonow - search page"
     }
@@ -133,8 +122,6 @@ object SearchTracking {
         const val TOKONOW_SEARCH_PRODUCT_ORGANIC = "/tokonow - searchproduct - organic"
         const val TOKONOW_SEARCH_PRODUCT_ATC_VARIANT = "/tokonow - search page"
         const val RECOM_LIST_PAGE = "searchproduct"
-        const val RECOM_LIST_PAGE_EMPTY_SEARCH =
-            "/${RECOM_LIST_PAGE} - tokonow - rekomendasi untuk anda - empty_search - %s"
         const val TOKONOW_BROAD_MATCH = "/tokonow - broad match"
         const val TOKONOW_OOC_SCREEN_NAME = "search result tokonow"
     }
@@ -634,19 +621,6 @@ object SearchTracking {
                 "category_id", SearchCategoryTrackingConst.Misc.NONE_OTHER,
             ))
         }
-    }
-
-    fun sendRecommendationSeeAllClickEvent(keyword: String) {
-        sendGeneralEvent(
-            DataLayer.mapOf(
-                EVENT, EVENT_CLICK_TOKONOW,
-                EVENT_ACTION, CLICK_VIEW_ALL_ON_TOKONOW_RECOMMENDATION,
-                EVENT_CATEGORY, TOKONOW_EMPTY_RESULT,
-                EVENT_LABEL, keyword,
-                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
-                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
-            )
-        )
     }
 
     fun sendOOCOpenScreenTracking(isLoggedInStatus: Boolean) {
