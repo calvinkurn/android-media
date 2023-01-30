@@ -8,6 +8,7 @@ import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.PAGE_TYPE_PDP
 import com.tokopedia.affiliate.PAGE_TYPE_SHOP
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
+import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
 import com.tokopedia.affiliate.model.response.AffiliatePerformanceData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSharedProductCardsModel
 import com.tokopedia.affiliate_toko.R
@@ -95,7 +96,16 @@ class AffiliateSharedProductCardsItemVH(
                     product.defaultLinkURL ?: "",
                     product.itemID,
                     product.status ?: 0,
-                    type = type
+                    type = type,
+                    ssaInfo = AffiliatePromotionBottomSheetParams.SSAInfo(
+                        product.ssaStatus.orFalse(),
+                        product.ssaMessage.orEmpty(),
+                        product.message.orEmpty(),
+                        AffiliatePromotionBottomSheetParams.SSAInfo.Label(
+                            labelText = product.label?.labelText.orEmpty(),
+                            labelType = product.label?.labelType.orEmpty()
+                        )
+                    )
                 )
             }
         }
