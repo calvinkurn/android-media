@@ -7,13 +7,27 @@ import javax.inject.Inject
 
 class VoucherInfoTracker @Inject constructor(private val userSession: UserSessionInterface) {
 
-    fun sendClickTargetKuponEvent(eventLabel: String) {
+    fun sendClickTargetKuponEvent(isPublic: Boolean) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
             .setEventAction("click target kupon")
             .setEventCategory(TrackerConstant.CreationVoucherInfo.event)
-            .setEventLabel(eventLabel)
+            .setEventLabel(isPublic.asEventLabel())
             .setCustomProperty(TrackerConstant.TRACKER_ID, "39396")
+            .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
+            .setCurrentSite(TrackerConstant.CURRENT_SITE)
+            .setShopId(userSession.shopId)
+            .build()
+            .send()
+    }
+
+    fun sendClickFieldNamaKuponEvent() {
+        Tracker.Builder()
+            .setEvent(TrackerConstant.EVENT)
+            .setEventAction("click field nama kupon")
+            .setEventCategory(TrackerConstant.CreationVoucherInfo.event)
+            .setEventLabel("")
+            .setCustomProperty(TrackerConstant.TRACKER_ID, "39398")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
             .setCurrentSite(TrackerConstant.CURRENT_SITE)
             .setShopId(userSession.shopId)
@@ -131,5 +145,14 @@ class VoucherInfoTracker @Inject constructor(private val userSession: UserSessio
             .setShopId(userSession.shopId)
             .build()
             .send()
+    }
+
+    private fun Boolean.asEventLabel(): String {
+        val label = if (this) {
+            "Publik"
+        } else {
+            "Khusus"
+        }
+        return label
     }
 }

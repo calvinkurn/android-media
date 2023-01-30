@@ -55,6 +55,7 @@ import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
 import com.tokopedia.mvc.util.convertUnsafeDateTime
 import com.tokopedia.mvc.util.extension.setToAllCapsMode
+import com.tokopedia.mvc.util.tracker.VoucherInfoTracker
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
@@ -125,6 +126,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private var getSelectedRecurringPeriod: (Int) -> Unit = {
         viewModel.processEvent(VoucherCreationStepTwoEvent.OnVoucherRecurringPeriodSelected(it))
+        tracker.sendClickDropdownEvent(it.toString())
     }
 
     // bottom sheet
@@ -139,6 +141,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             CoachMark2(it)
         }
     }
+
+    // tracker
+    @Inject
+    lateinit var tracker: VoucherInfoTracker
 
     override fun getScreenName(): String =
         VoucherInformationFragment::class.java.canonicalName.orEmpty()
@@ -237,8 +243,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         )
         renderVoucherStartPeriodSelection(
             state.voucherConfiguration,
-        state.isStartDateError,
-        state.startDateErrorMsg
+            state.isStartDateError,
+            state.startDateErrorMsg
         )
         renderVoucherEndPeriodSelection(
             state.voucherConfiguration,
@@ -355,6 +361,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             }
             setNavigationOnClickListener {
                 viewModel.processEvent(VoucherCreationStepTwoEvent.TapBackButton)
+                tracker.sendClickKembaliArrowEvent()
             }
         }
     }
@@ -392,6 +399,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             showChangeTargetConfirmationDialog(isPublic)
         } else {
             viewModel.processEvent(VoucherCreationStepTwoEvent.ChooseVoucherTarget(isPublic))
+            tracker.sendClickTargetKuponEvent(isPublic)
         }
     }
 
@@ -415,6 +423,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                         true
                     )
                 )
+                tracker.sendClickTargetKuponEvent(isPublic)
                 dismiss()
             }
             setSecondaryCTAClickListener { dismiss() }
@@ -466,6 +475,9 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
 
         voucherNameSectionBinding?.run {
+            tfVoucherName.editText.setOnFocusChangeListener { _, isFocus ->
+                if (isFocus) tracker.sendClickFieldNamaKuponEvent()
+            }
             tfVoucherName.editText.textChangesAsFlow()
                 .debounce { DEBOUNCE }
                 .distinctUntilChanged()
@@ -505,6 +517,9 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
         voucherCodeSectionBinding?.run {
             tfVoucherCode.apply {
+                editText.setOnFocusChangeListener { _, isFocus ->
+                    if (isFocus) tracker.sendClickFieldKodeKuponEvent()
+                }
                 prependText(voucherConfiguration.voucherCodePrefix)
                 editText.setToAllCapsMode()
                 editText.textChangesAsFlow()
@@ -566,6 +581,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                         isChecked
                     )
                 )
+                tracker.sendClickCheckBoxEvent()
             }
 
             tfRepeat.run {
@@ -578,6 +594,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     }
 
     private fun onClickListenerForStartDate() {
+        tracker.sendClickFieldDatePickerMulaiEvent()
         context?.run {
             minCalendar?.let { minDate ->
                 maxCalendar?.let { maxDate ->
@@ -600,6 +617,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     }
 
     private fun onClickListenerForEndDate() {
+        tracker.sendClickFieldDatePickerBerakhirEvent()
         context?.run {
             minCalendar?.let { minDate ->
                 maxCalendar?.let { maxDate ->
@@ -865,7 +883,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
 
         buttonSectionBinding?.run {
-            btnBack.setOnClickListener { viewModel.processEvent(VoucherCreationStepTwoEvent.TapBackButton) }
+            btnBack.setOnClickListener {
+                viewModel.processEvent(VoucherCreationStepTwoEvent.TapBackButton)
+                tracker.sendClickKembaliButtonEvent()
+            }
             btnContinue.text = if (pageMode == PageMode.CREATE) {
                 getString(R.string.smvc_continue)
             } else {
@@ -996,6 +1017,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                                 voucherConfiguration
                             )
                         )
+                        tracker.sendClickLanjutEvent()
                     }
                 }
             }
