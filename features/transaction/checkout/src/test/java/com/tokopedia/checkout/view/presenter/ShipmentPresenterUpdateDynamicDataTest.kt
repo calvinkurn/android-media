@@ -237,6 +237,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
     @Test
     fun `WHEN update addOn product level data bottomsheet and is using ddp`() {
         // Given
+        val isDdp = true
         coEvery {
             getShipmentAddressFormV3UseCase.setParams(
                 any(),
@@ -253,7 +254,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
                 CartShipmentAddressFormData(
                     errorCode = 0,
                     groupAddress = emptyList(),
-                    isUsingDdp = true
+                    isUsingDdp = isDdp
                 )
             )
         }
@@ -292,8 +293,8 @@ class ShipmentPresenterUpdateDynamicDataTest {
         presenter.updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
 
         // Then
+        assertEquals(isDdp, presenter.isUsingDynamicDataPassing)
         verify {
-            presenter.isUsingDynamicDataPassing = true
             view.updateAddOnsData(AddOnsDataModel(), 0)
             view.updateAddOnsDynamicDataPassing(any(), any(), any(), any(), any())
         }
@@ -428,7 +429,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
         )
 
         // Then
-        assert(presenter.dynamicDataParam.data.isNotEmpty())
+        assert(presenter.getDynamicDataParam().data.isNotEmpty())
         assertEquals(isDdp, presenter.isUsingDynamicDataPassing)
     }
 
@@ -535,7 +536,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
         )
 
         // Then
-        assert(presenter.dynamicDataParam.data.isNotEmpty())
+        assert(presenter.getDynamicDataParam().data.isNotEmpty())
         assertEquals(isDdp, presenter.isUsingDynamicDataPassing)
     }
 
@@ -661,7 +662,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
         )
 
         // Then
-        assert(presenter.dynamicDataParam.data.isNotEmpty())
+        assert(presenter.getDynamicDataParam().data.isNotEmpty())
         assertEquals(isDdp, presenter.isUsingDynamicDataPassing)
     }
 
@@ -730,6 +731,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
 
         // Then
         assert(presenter.dynamicDataParam.data.isEmpty())
+        assert(presenter.getDynamicDataParam().data.isEmpty())
         assertEquals(isDdp, presenter.isUsingDynamicDataPassing)
     }
 }

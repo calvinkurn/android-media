@@ -1958,16 +1958,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentPresenter.processCheckout(isOneClickShipment(), isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCornerId(), getCheckoutLeasingId(), isPlusSelected());
     }
 
-    private void updateCheckboxDynamicData(DynamicDataPassingParamRequest.DynamicDataParam param, boolean isChecked) {
-        DynamicDataPassingParamRequest newParamRequest = shipmentPresenter.getDynamicDataParam();
-        if (newParamRequest.getData().contains(param)) {
+    private void updateCheckboxDynamicData(DynamicDataPassingParamRequest.DynamicDataParam newParam, boolean isChecked) {
+        DynamicDataPassingParamRequest existingDdpParam = shipmentPresenter.getDynamicDataParam();
+        if (existingDdpParam.getData().contains(newParam)) {
             if (!isChecked) {
-                newParamRequest.getData().remove(param);
+                existingDdpParam.getData().remove(newParam);
             }
         } else {
-            newParamRequest.getData().add(param);
+            existingDdpParam.getData().add(newParam);
         }
-        shipmentPresenter.setDynamicDataParam(newParamRequest);
+        shipmentPresenter.setDynamicDataParam(existingDdpParam);
     }
 
     @Override

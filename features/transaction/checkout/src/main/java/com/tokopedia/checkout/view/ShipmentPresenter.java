@@ -246,7 +246,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private PublishSubject<Boolean> logisticDonePublisher = null;
     private PublishSubject<Boolean> logisticPromoDonePublisher = null;
 
-    public boolean isUsingDynamicDataPassing = false;
+    public boolean isUsingDdp = false;
     public DynamicDataPassingParamRequest dynamicDataParam;
     private String dynamicData = "";
 
@@ -708,7 +708,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             }
 
         }
-        isUsingDynamicDataPassing = cartShipmentAddressFormData.isUsingDdp();
+        isUsingDdp = cartShipmentAddressFormData.isUsingDdp();
         dynamicData = cartShipmentAddressFormData.getDynamicData();
     }
 
@@ -2642,7 +2642,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         addOnsDataModel.setAddOnsDataItemModelList(listAddOnDataItem);
         getView().updateAddOnsData(addOnsDataModel, identifier);
-        if (isUsingDynamicDataPassing) {
+        if (isUsingDynamicDataPassing()) {
             getView().updateAddOnsDynamicDataPassing(addOnsDataModel, addOnResult, identifier, cartString, cartId);
         }
     }
@@ -3001,12 +3001,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void validateDynamicData() {
-        updateDynamicData(this.dynamicDataParam, false);
+        updateDynamicData(getDynamicDataParam(), false);
     }
 
     @Override
     public boolean isUsingDynamicDataPassing() {
-        return isUsingDynamicDataPassing;
+        return isUsingDdp;
     }
 
     @Override
