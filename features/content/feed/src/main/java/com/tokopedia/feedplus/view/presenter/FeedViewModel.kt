@@ -268,7 +268,7 @@ class FeedViewModel @Inject constructor(
                     newItems.forEachIndexed { itemIndex, recomItem ->
                         data[recomItem.id.toString()]?.let { followStatus ->
                             newItems[itemIndex] = recomItem.copy(
-                                state = if (followStatus) ShopRecomFollowState.FOLLOW else ShopRecomFollowState.UNFOLLOW
+                                state = if (followStatus) FOLLOW else UNFOLLOW
                             )
                         }
                     }
