@@ -1,6 +1,6 @@
 package com.tokopedia.tokopedianow.categorylist.presentation.viewmodel
 
-import com.tokopedia.tokopedianow.categorylist.domain.mapper.CategoryListMapper
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryListMapper
 import com.tokopedia.tokopedianow.data.createCategoryList
 import org.junit.Test
 

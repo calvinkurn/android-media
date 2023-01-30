@@ -1539,7 +1539,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             for (ShipmentCrossSellModel shipmentCrossSellModel : listShipmentCrossSellModel) {
                 if (shipmentCrossSellModel.isChecked()) {
                     crossSellItemRequestModel.setId(Utils.toIntOrZero(shipmentCrossSellModel.getCrossSellModel().getId()));
-                    crossSellItemRequestModel.setPrice((int) shipmentCrossSellModel.getCrossSellModel().getPrice());
+                    crossSellItemRequestModel.setPrice(shipmentCrossSellModel.getCrossSellModel().getPrice());
                     crossSellItemRequestModel.setAdditionalVerticalId(Utils.toIntOrZero(shipmentCrossSellModel.getCrossSellModel().getAdditionalVerticalId()));
                     crossSellItemRequestModel.setTransactionType(shipmentCrossSellModel.getCrossSellModel().getTransactionType());
                     listCrossSellItemRequest.add(crossSellItemRequestModel);
@@ -1549,7 +1549,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (shipmentNewUpsellModel.isSelected() && shipmentNewUpsellModel.isShow()) {
             CrossSellItemRequestModel crossSellItemRequestModel = new CrossSellItemRequestModel();
             crossSellItemRequestModel.setId(Utils.toIntOrZero(shipmentNewUpsellModel.getId()));
-            crossSellItemRequestModel.setPrice((int) shipmentNewUpsellModel.getPrice());
+            crossSellItemRequestModel.setPrice(shipmentNewUpsellModel.getPrice());
             crossSellItemRequestModel.setAdditionalVerticalId(Utils.toIntOrZero(shipmentNewUpsellModel.getAdditionalVerticalId()));
             crossSellItemRequestModel.setTransactionType(shipmentNewUpsellModel.getTransactionType());
             listCrossSellItemRequest.add(crossSellItemRequestModel);
@@ -1745,7 +1745,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         ShipmentStateRequestData shipmentStateRequestData = new ShipmentStateRequestData();
-        shipmentStateRequestData.setAddressId(Utils.toIntOrZero(recipientAddressModel.getId()));
+        shipmentStateRequestData.setAddressId(recipientAddressModel.getId());
         shipmentStateRequestData.setShopProductDataList(shipmentStateShopProductDataList);
         shipmentStateRequestDataList.add(shipmentStateRequestData);
 
