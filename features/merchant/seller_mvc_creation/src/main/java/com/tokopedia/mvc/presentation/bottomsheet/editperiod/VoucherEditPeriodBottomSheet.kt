@@ -80,8 +80,6 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
         initInjector()
         setUpDate()
 
-        initObservers()
-
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -96,7 +94,7 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
                 tracker.sendClickOkEvent(createLabelTracker(it))
             }
         }
-        showDateToaster()
+        initObservers()
     }
 
     private fun initInjector() {
@@ -178,9 +176,7 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
         viewModel.toShowDateToaster.observe(viewLifecycleOwner) { result ->
             Log.d("FATAL", "initObservers: $result")
             if (result) {
-                coachmarkHandler.postDelayed({
-                    showDateToaster()
-                }, 3000L)
+                showDateToaster()
             }
         }
     }
