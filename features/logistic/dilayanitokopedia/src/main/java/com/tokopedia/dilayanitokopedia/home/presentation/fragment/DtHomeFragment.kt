@@ -436,6 +436,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     }
 
     private fun onShowHomeLayout(data: HomeLayoutListUiModel) {
+        initChooseAddressWidget()
         showHomeLayout(data)
         showHeaderBackground()
         visibilityChooseAddress()
@@ -518,6 +519,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     private fun onRefreshLayout() {
         rvLayoutManager?.setScrollEnabled(true)
         anchorTabAdapter?.resetToFirst()
+        updateCurrentPageLocalCacheModelData()
         switchService()
     }
 
