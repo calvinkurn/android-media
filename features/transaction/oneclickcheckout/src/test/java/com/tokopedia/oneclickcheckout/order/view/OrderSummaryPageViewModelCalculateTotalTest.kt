@@ -15,6 +15,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import io.mockk.coEvery
+import io.mockk.coVerify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -3139,6 +3140,104 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
+        assertEquals(
+            OrderTotal(
+                OrderCost(),
+                OccButtonState.DISABLE,
+                OccButtonType.PAY,
+                showTickerError = true
+            ),
+            orderSummaryPageViewModel.orderTotal.value
+        )
+    }
+
+    @Test
+    fun `Calculate Total Afpb With Failed Dynamic Payment Fee Details`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(
+            products = mutableListOf(
+                OrderProduct(
+                    orderQuantity = 1,
+                    productPrice = 1000.0
+                )
+            )
+        )
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value =
+            OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        val additionalData = OrderPaymentCreditCardAdditionalData(
+            profileCode = "TKPD_DEFAULT",
+            totalProductPrice = "52000"
+        )
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(
+            isEnable = true,
+            maximumAmount = 100000,
+            walletAmount = 100000,
+            originalPaymentFees = helper.paymentFeeDetails,
+            creditCard = OrderPaymentCreditCard(
+                isAfpb = true,
+                additionalData = additionalData,
+                selectedTerm = OrderPaymentInstallmentTerm()
+            )
+        )
+        coEvery { dynamicPaymentFeeUseCase.invoke(any()) } throws IOException()
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        coVerify(inverse = true) { creditCardTenorListUseCase.executeSuspend(any()) }
+        assertEquals(
+            OrderTotal(
+                OrderCost(),
+                OccButtonState.DISABLE,
+                OccButtonType.PAY,
+                showTickerError = true
+            ),
+            orderSummaryPageViewModel.orderTotal.value
+        )
+    }
+
+    @Test
+    fun `Calculate Total Gocicil With Failed Dynamic Payment Fee Details`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(
+            products = mutableListOf(
+                OrderProduct(
+                    orderQuantity = 1,
+                    productPrice = 1000.0
+                )
+            )
+        )
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value =
+            OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(
+            isEnable = true,
+            maximumAmount = 100000,
+            walletAmount = 100000,
+            walletData = OrderPaymentWalletAdditionalData(
+                walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(
+                    availableTerms = listOf(
+                        OrderPaymentGoCicilTerms(isActive = false),
+                        OrderPaymentGoCicilTerms(isActive = true)
+                    ),
+                    selectedTerm = null,
+                    selectedTenure = 2
+                )
+            ),
+            originalPaymentFees = helper.paymentFeeDetails
+        )
+        coEvery { dynamicPaymentFeeUseCase.invoke(any()) } throws IOException()
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        coVerify(inverse = true) { goCicilInstallmentOptionUseCase.executeSuspend(any()) }
         assertEquals(
             OrderTotal(
                 OrderCost(),
