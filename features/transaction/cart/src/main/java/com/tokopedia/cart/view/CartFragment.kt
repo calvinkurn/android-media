@@ -62,6 +62,8 @@ import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_AFTER
 import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_DEFAULT
 import com.tokopedia.cart.view.adapter.cart.CartAdapter
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
+import com.tokopedia.cart.view.bottomsheet.CartBundlingBottomSheet
+import com.tokopedia.cart.view.bottomsheet.CartBundlingBottomSheetListener
 import com.tokopedia.cart.view.bottomsheet.showGlobalErrorBottomsheet
 import com.tokopedia.cart.view.bottomsheet.showSummaryTransactionBottomsheet
 import com.tokopedia.cart.view.compoundview.CartToolbar
@@ -74,6 +76,7 @@ import com.tokopedia.cart.view.mapper.CartUiModelMapper
 import com.tokopedia.cart.view.mapper.PromoRequestMapper
 import com.tokopedia.cart.view.mapper.RecentViewMapper
 import com.tokopedia.cart.view.mapper.WishlistMapper
+import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
@@ -186,7 +189,7 @@ import javax.inject.Inject
 @Keep
 class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
     CartItemAdapter.ActionListener, RefreshHandler.OnRefreshHandlerListener, CartToolbarListener,
-    TickerAnnouncementActionListener, SellerCashbackListener {
+    TickerAnnouncementActionListener, SellerCashbackListener, CartBundlingBottomSheetListener {
 
     private var binding by autoClearedNullable<FragmentCartBinding>()
 
@@ -1407,6 +1410,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
 
     override fun onViewFreeShippingPlusBadge() {
         cartPageAnalytics.eventViewGotoplusTicker()
+    }
+
+    override fun showCartBundlingBottomSheet(data: CartBundlingBottomSheetData) {
+        val bottomSheet = CartBundlingBottomSheet.newInstance(data)
+        bottomSheet.setListener(this)
+        bottomSheet.show(childFragmentManager)
+    }
+
+    override fun onNewBundleProductAddedToCart() {
+        refreshCartWithSwipeToRefresh()
     }
 
     private fun onErrorAddWishList(errorMessage: String, productId: String) {

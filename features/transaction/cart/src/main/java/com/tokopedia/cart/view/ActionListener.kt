@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view
 
 import androidx.fragment.app.Fragment
+import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
@@ -99,4 +100,6 @@ interface ActionListener {
     fun addOnImpression(productId: String)
 
     fun onViewFreeShippingPlusBadge()
+
+    fun showCartBundlingBottomSheet(data: CartBundlingBottomSheetData)
 }
