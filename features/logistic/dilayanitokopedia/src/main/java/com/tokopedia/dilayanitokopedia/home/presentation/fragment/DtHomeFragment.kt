@@ -134,6 +134,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     private var mLastClickTime = System.currentTimeMillis()
 
+    private var coachMark: CoachMark2? = null
+
     private val adapter by lazy {
         DtHomeAdapter(
             typeFactory = DtHomeAdapterTypeFactory(
@@ -186,6 +188,17 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
         observeLiveData()
         loadLayout()
+    }
+
+    override fun onPause() {
+        coachMark?.dismissCoachMark()
+        coachMark = null
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkIfChooseAddressWidgetDataUpdated()
     }
 
     private fun initScreenSootListener() {
@@ -701,10 +714,10 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         val isNeedToShowCoachMark = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(requireContext())
         return if (isNeedToShowCoachMark == true && chooseAddressWidget?.isShown == true) {
             chooseAddressWidget?.let { chooseAddressWidget ->
-                context?.getString(R.string.dt_home_choose_address_widget_coachmark_title)?.let { context ->
+                context?.getString(R.string.dt_home_choose_address_widget_coachmark_title)?.let { title ->
                     CoachMark2Item(
                         chooseAddressWidget,
-                        context,
+                        title,
                         getString(R.string.dt_home_choose_address_widget_coachmark_description)
                     )
                 }
