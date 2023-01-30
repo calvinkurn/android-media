@@ -1086,9 +1086,11 @@ class CartFragment :
                         }
 
                         override fun onCompleted() {
+                            // no-op
                         }
 
                         override fun onError(e: Throwable?) {
+                            // no-op
                         }
                     })
             )

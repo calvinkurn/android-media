@@ -63,7 +63,7 @@ data class CartItemHolderData(
     var butuhResepText: String = "",
     var butuhResepIconUrl: String = "",
 
-        // Analytics data
+    // Analytics data
     var shopId: String = "",
     var shopTypeInfoData: ShopTypeInfo = ShopTypeInfo(),
     var shopName: String = "",
@@ -86,7 +86,7 @@ data class CartItemHolderData(
     var shopCartShopGroupTickerData: CartShopGroupTickerData = CartShopGroupTickerData(),
     var bundleIds: List<String> = emptyList(),
 
-        // Will be set after calculation
+    // Will be set after calculation
     var wholesalePrice: Double = 0.0,
     var wholesalePriceFormatted: String? = null
 ) {
