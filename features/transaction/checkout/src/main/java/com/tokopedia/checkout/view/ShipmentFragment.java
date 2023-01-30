@@ -1755,11 +1755,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         if (stillHasPromo && !skipValidateUse) {
-            shipmentPresenter.checkPromoCheckoutFinalShipment(generateValidateUsePromoRequest(), lastSelectedCourierOrder, lastSelectedCourierOrderCartString);
+            shipmentPresenter.checkPromoCheckoutFinalShipment(generateValidateUsePromoRequest().copyJava(), lastSelectedCourierOrder, lastSelectedCourierOrderCartString);
         } else {
             clearPromoTrackingData();
             if (forceHitValidateUse) {
-                shipmentPresenter.checkPromoCheckoutFinalShipment(generateValidateUsePromoRequest(), lastSelectedCourierOrder, lastSelectedCourierOrderCartString);
+                shipmentPresenter.checkPromoCheckoutFinalShipment(generateValidateUsePromoRequest().copyJava(), lastSelectedCourierOrder, lastSelectedCourierOrderCartString);
             } else {
                 sendEEStep3();
             }

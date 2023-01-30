@@ -884,7 +884,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     public void onChangeScheduleDelivery(@NonNull ScheduleDeliveryUiModel scheduleDeliveryUiModel) {
         int position = getAdapterPosition();
         if (position != RecyclerView.NO_POSITION) {
-            mActionListener.onNeedUpdateViewItem(position);
             scheduleDeliveryDebouncedListener.onScheduleDeliveryChanged(new ShipmentScheduleDeliveryHolderData(
                     scheduleDeliveryUiModel,
                     position
@@ -1732,7 +1731,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void initScheduleDeliveryPublisher() {
-        if (scheduleDeliverySubscription != null && scheduleDeliverySubscription.isUnsubscribed()) {
+        if (scheduleDeliverySubscription != null && !scheduleDeliverySubscription.isUnsubscribed()) {
             scheduleDeliverySubscription.unsubscribe();
         }
         if (scheduleDeliveryDonePublisher != null && !scheduleDeliveryDonePublisher.hasCompleted()) {
@@ -1741,7 +1740,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         scheduleDeliverySubscription = Observable.create((Action1<Emitter<ShipmentScheduleDeliveryHolderData>>) emitter ->
                                 scheduleDeliveryDebouncedListener = emitter::onNext,
                         Emitter.BackpressureMode.LATEST)
-                .observeOn(AndroidSchedulers.mainThread(), 1)
+                .observeOn(AndroidSchedulers.mainThread(), false, 1)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .concatMap(shipmentScheduleDeliveryHolderData -> {
                     scheduleDeliveryDonePublisher = PublishSubject.create();
