@@ -118,10 +118,12 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private var getSelectedDateStarting: (Calendar) -> Unit = {
         viewModel.processEvent(VoucherCreationStepTwoEvent.OnVoucherStartDateChanged(it))
+        tracker.sendClickFieldDatePickerMulaiEvent()
     }
 
     private var getSelectedDateEnding: (Calendar) -> Unit = {
         viewModel.processEvent(VoucherCreationStepTwoEvent.OnVoucherEndDateChanged(it))
+        tracker.sendClickFieldDatePickerBerakhirEvent()
     }
 
     private var getSelectedRecurringPeriod: (Int) -> Unit = {
@@ -594,7 +596,6 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     }
 
     private fun onClickListenerForStartDate() {
-        tracker.sendClickFieldDatePickerMulaiEvent()
         context?.run {
             minCalendar?.let { minDate ->
                 maxCalendar?.let { maxDate ->
@@ -617,7 +618,6 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     }
 
     private fun onClickListenerForEndDate() {
-        tracker.sendClickFieldDatePickerBerakhirEvent()
         context?.run {
             minCalendar?.let { minDate ->
                 maxCalendar?.let { maxDate ->
