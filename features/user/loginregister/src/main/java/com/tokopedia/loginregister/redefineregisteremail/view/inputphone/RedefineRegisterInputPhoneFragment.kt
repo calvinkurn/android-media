@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
@@ -161,7 +162,6 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
 
     private fun submitRegisterV2() {
         if (viewModel.registerV2.value !is Success) {
-
             val regType = if (parameter.isRequiredInputPhone) {
                 REGISTRATION_TYPE_EMAIL_PHONE
             } else {
@@ -208,11 +208,13 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     private fun submitForm() {
         if (parameter.isRequiredInputPhone) {
             redefineRegisterEmailAnalytics.sendClickOnButtonLanjutAddPhoneNumberEvent(
-                RedefineRegisterEmailAnalytics.ACTION_CLICK, parameter.isRequiredInputPhone
+                RedefineRegisterEmailAnalytics.ACTION_CLICK,
+                parameter.isRequiredInputPhone
             )
         } else {
             redefineRegisterEmailAnalytics.sendClickOnButtonLanjutAddPnPageOptionalEvent(
-                RedefineRegisterEmailAnalytics.ACTION_CLICK, parameter.isRequiredInputPhone
+                RedefineRegisterEmailAnalytics.ACTION_CLICK,
+                parameter.isRequiredInputPhone
             )
         }
 
@@ -429,6 +431,15 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
             DataVisorWorker.scheduleWorker(it, true)
             AppAuthWorker.scheduleWorker(it, true)
             TwoFactorMluHelper.clear2FaInterval(it)
+            initTokoChatConnection()
+        }
+    }
+
+    private fun initTokoChatConnection() {
+        activity?.let {
+            if (it.application is AbstractionRouter) {
+                (it.application as AbstractionRouter).connectTokoChat(false)
+            }
         }
     }
 
@@ -562,7 +573,8 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
 
         confirmDialog.setPrimaryCTAClickListener {
             redefineRegisterEmailAnalytics.sendClickYaBenarPhoneNumberEvent(
-                RedefineRegisterEmailAnalytics.ACTION_CLICK, parameter.isRequiredInputPhone
+                RedefineRegisterEmailAnalytics.ACTION_CLICK,
+                parameter.isRequiredInputPhone
             )
             if (parameter.isRequiredInputPhone) {
                 goToVerificationPhoneRegister(phone)
@@ -643,7 +655,6 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun goToVerificationPhoneRegister(phone: String) {
-
         val otpType = RedefineRegisterEmailConstants.OTP_REDEFINE_REGISTER_EMAIL
 
         val param = GoToVerificationRegisterParam(
@@ -676,8 +687,10 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
 
     private fun goToTokopediaCare() {
         RouteManager.route(
-            activity, String.format(
-                TOKOPEDIA_CARE_STRING_FORMAT, ApplinkConst.WEBVIEW,
+            activity,
+            String.format(
+                TOKOPEDIA_CARE_STRING_FORMAT,
+                ApplinkConst.WEBVIEW,
                 TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CARE_PATH)
             )
         )

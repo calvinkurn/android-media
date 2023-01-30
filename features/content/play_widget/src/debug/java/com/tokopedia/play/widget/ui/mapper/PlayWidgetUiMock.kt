@@ -80,7 +80,7 @@ object PlayWidgetUiMock {
     private fun getVideoUiModel(channelType: PlayWidgetChannelType) = PlayWidgetVideoUiModel(
             id = "123",
             coverUrl = "https://images.tokopedia.net/img/jJtrdn/2022/1/21/2f1ba9eb-a8d4-4de1-b445-ed66b96f26a9.jpg?b=UaM%25G%23Rjn4WYVBx%5DjFWX%3D~t6bbWB0PkWkqoL",
-            videoUrl = "https://vod.tokopedia.net/liveRecord/f85e64cd584687e170c3fb851569d466/play_record/7153b020-7e86-11ec-8a14-ce6d35e87b55/2022-01-26-17-00-45_2022-01-26-19-01-09.m3u8",
+            videoUrl = "https://vod.tokopedia.com/view/adaptive.m3u8?id=4d30328d17e948b4b1c4c34c5bb9f372",
             isLive = channelType == PlayWidgetChannelType.Live
     )
 

@@ -6,9 +6,9 @@ import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
  * created by fachrizalmrsln on 14/10/22
  **/
 interface ShopRecomWidgetCallback {
-    fun onShopRecomCloseClicked(itemID: Long)
-    fun onShopRecomFollowClicked(itemID: Long)
-    fun onShopRecomItemClicked(itemID: Long, appLink: String, imageUrl: String, postPosition: Int)
+    fun onShopRecomCloseClicked(item: ShopRecomUiModelItem)
+    fun onShopRecomFollowClicked(item: ShopRecomUiModelItem)
+    fun onShopRecomItemClicked(item: ShopRecomUiModelItem, postPosition: Int)
 
     fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int)
 
