@@ -2736,6 +2736,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (selectedShipmentDetailData == null) {
             selectedShipmentDetailData = getView().getShipmentDetailData(shipmentCartItemModel, recipientAddressModel);
         }
+        if (selectedShipmentDetailData.getShopId() == null) {
+            selectedShipmentDetailData.setShopId(String.valueOf(shipmentCartItemModel.getShopId()));
+        }
         List<Product> products = getProductForRatesRequest(shipmentCartItemModel);
         String cartString = shipmentCartItemModel.getCartString() != null ? shipmentCartItemModel.getCartString() : "";
         boolean isTradeInDropOff = getView().isTradeInByDropOff();
