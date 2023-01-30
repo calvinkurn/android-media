@@ -426,8 +426,7 @@ class ShopInfoFragment :
             }
 
             // go apotik info
-            val isShouldShow: Boolean = shopInfo.isGoApotik || shopInfo.fsType == ShopPartnerFsFullfillmentServiceTypeDef.EPHARMACY
-            goApotikInfoContainer.shouldShowWithAction(shouldShow = isShouldShow) {
+            goApotikInfoContainer.shouldShowWithAction(shouldShow = isShouldShowLicenseForDrugSeller(shopInfo)) {
                 tvSiaDescription.text =
                     shopInfo.siaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
                 tvSipaDescription.text =
@@ -443,6 +442,8 @@ class ShopInfoFragment :
                 getString(R.string.shop_info_label_open_since_v3, shopInfo.openSince)
         }
     }
+
+    private fun isShouldShowLicenseForDrugSeller(shopInfo: ShopInfoData): Boolean = shopInfo.isGoApotik || shopInfo.fsType == ShopPartnerFsFullfillmentServiceTypeDef.EPHARMACY
 
     private fun renderListNote(notes: List<ShopNoteUiModel>) {
         getShopId()?.let {
