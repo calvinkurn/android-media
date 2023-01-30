@@ -35,7 +35,7 @@ fun clickWithMatcher(
 fun type(@IdRes id: Int, text: String) {
     select(id).apply {
         clickView()
-        perform(typeText(text))
+        perform(replaceText(text))
     }
 }
 
