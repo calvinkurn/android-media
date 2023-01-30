@@ -869,7 +869,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (position != RecyclerView.NO_POSITION) {
             loadCourierStateData(shipmentCartItemModel, SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE, tmpShipmentDetailData, position);
             mActionListener.onClickRefreshErrorLoadCourier();
-            initScheduleDeliveryPublisher();
         }
     }
 
@@ -882,7 +881,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     public void onChangeScheduleDelivery(@NonNull ScheduleDeliveryUiModel scheduleDeliveryUiModel) {
         int position = getAdapterPosition();
         if (position != RecyclerView.NO_POSITION) {
-            mActionListener.onNeedUpdateViewItem(position);
             scheduleDeliveryDebouncedListener.onScheduleDeliveryChanged(new ShipmentScheduleDeliveryHolderData(
                     scheduleDeliveryUiModel,
                     position
@@ -1730,17 +1728,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void initScheduleDeliveryPublisher() {
-        if (scheduleDeliveryCompositeSubscription.hasSubscriptions()) {
-            scheduleDeliveryCompositeSubscription.clear();
-        }
-        if (scheduleDeliveryDonePublisher != null && !scheduleDeliveryDonePublisher.hasCompleted()) {
-            scheduleDeliveryDonePublisher.onCompleted();
-        }
         scheduleDeliveryCompositeSubscription.add(
             Observable.create((Action1<Emitter<ShipmentScheduleDeliveryHolderData>>) emitter ->
                                     scheduleDeliveryDebouncedListener = emitter::onNext,
-                            Emitter.BackpressureMode.DROP)
-                        .observeOn(AndroidSchedulers.mainThread())
+                            Emitter.BackpressureMode.LATEST)
+                        .observeOn(AndroidSchedulers.mainThread(), 1)
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .concatMap(shipmentScheduleDeliveryHolderData -> {
                             scheduleDeliveryDonePublisher = PublishSubject.create();
