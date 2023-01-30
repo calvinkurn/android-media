@@ -113,7 +113,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         private const val BROADCAST_FEED = "BROADCAST_FEED"
         const val FEED_IS_VISIBLE = "FEED_IS_VISIBLE"
 
-        private const val USER_ICON_COACH_MARK_DURATION = 7000L
         const val PARAM_FEED_TAB_POSITION = "FEED_TAB_POSITION"
         const val UPDATE_TAB_POSITION = "1"
         const val EXPLORE_TAB_POSITION = "2"
@@ -898,16 +897,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             this,
             showShortVideoCoachmark,
             showUserProfileCoachmark
-        )
-    }
-
-    private fun showPlayShortsOnBoarding() {
-        coachMarkManager?.showCoachMark(
-            config = ContentCoachMarkConfig(feedFloatingButton).apply {
-                title = getString(feedComponentR.string.feed_play_shorts_entry_point_coachmark_title)
-                subtitle = getString(feedComponentR.string.feed_play_shorts_entry_point_coachmark_description)
-                setCoachmarkPrefKey(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
-            }
         )
     }
 

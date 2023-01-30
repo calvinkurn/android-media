@@ -47,7 +47,12 @@ class FeedOnboardingCoachmark @Inject constructor(
                 affiliatePreference?.isVideoTabEntryPointCoachMarkShown(userSession.userId) ?: false
 
             // If no coahmark is to be shown then screen should not be freezed
-            if (isVideoTabCoachmarkShown && (isShortVideoCoachmarkShown || !mShouldShowShortVideoCoachMark) && (isUserProfileEntryShown || mShouldShowUserProfileCoachMark)) {
+            if (shouldNotShowAnyCoachMark(
+                    isVideoTabCoachmarkShown,
+                    isShortVideoCoachmarkShown,
+                    isUserProfileEntryShown
+                )
+            ) {
                 mListener?.onCoachmarkFinish()
             }
 
@@ -78,6 +83,13 @@ class FeedOnboardingCoachmark @Inject constructor(
             coachMark.showCoachMark(coachMarkItem)
         }
     }
+    private fun shouldNotShowAnyCoachMark(
+        isVideoTabCoachmarkShown: Boolean,
+        isShortVideoCoachmarkShown: Boolean,
+        isUserProfileEntryShown: Boolean
+    ) =
+        isVideoTabCoachmarkShown && (isShortVideoCoachmarkShown || !mShouldShowShortVideoCoachMark) && (isUserProfileEntryShown || mShouldShowUserProfileCoachMark)
+
 
     private fun markAsShowed() {
         affiliatePreference?.setUserProfileEntryPointCoachMarkShown(userSession.userId)
