@@ -765,16 +765,30 @@ open class ChatListInboxFragment :
     override fun onChatListTickerClicked(appLink: String) {
         if (appLink.isNotBlank()) {
             context?.let {
-                if (appLink == ApplinkConst.TokoFood.TOKOFOOD_ORDER) {
-                    chatListAnalytics.clickChatDriverTicker(getRoleStr())
+                when (appLink) {
+                    ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION -> {
+                        TopChatAnalyticsKt.eventClickBubbleChatRecommendationTicker(userSession.shopId)
+                    }
+                    ApplinkConst.TokoFood.TOKOFOOD_ORDER -> {
+                        chatListAnalytics.clickChatDriverTicker(getRoleStr())
+                    }
                 }
                 RouteManager.route(it, appLink)
             }
         }
     }
 
-    override fun onChatListTickerImpressed() {
-        chatListAnalytics.impressOnChatDriverTicker(getRoleStr())
+    override fun onChatListTickerImpressed(appLink: String) {
+        if (appLink.isNotBlank()) {
+            when (appLink) {
+                ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION -> {
+                    TopChatAnalyticsKt.eventImpressionBubbleChatRecommendationTicker(userSession.shopId)
+                }
+                ApplinkConst.TokoFood.TOKOFOOD_ORDER -> {
+                    chatListAnalytics.impressOnChatDriverTicker(getRoleStr())
+                }
+            }
+        }
     }
 
     protected open fun generateChatListComponent() = DaggerChatListComponent.builder()
