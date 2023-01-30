@@ -166,7 +166,7 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
                 nominalList.addAll(createCreditList(credit, 7.0f))
             }
             PM_PRO -> {
-                when (data.goldOS.shopTier) {
+                when (data.goldOS.shopGrade) {
                     PM_PRO_ADVANCED -> {
                         nominalList.clear()
                         nominalList.addAll(createCreditList(credit, 5.5f))

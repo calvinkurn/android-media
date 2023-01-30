@@ -1,14 +1,14 @@
 package com.tokopedia.topads.credit.history.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.data.response.Error
 import com.tokopedia.topads.common.data.response.TopadsDashboardDeposits
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
-import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.model.ExpiryDateResponse
+import com.tokopedia.topads.dashboard.data.model.GetPersonalisedCopyResponse
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopadsGetFreeDepositUseCase
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
@@ -30,7 +30,6 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
-import java.util.*
 
 class TopAdsCreditHistoryViewModelTest {
     lateinit var viewModel: TopAdsCreditHistoryViewModel
@@ -161,4 +160,58 @@ class TopAdsCreditHistoryViewModelTest {
             topAdsGetShopDepositUseCase.execute(any(), any())
         }
     }
+
+    @Test
+    fun `test success in getSelectedTopUpType when credit performance is topUpFrequently`(){
+        val actual = GetPersonalisedCopyResponse(GetPersonalisedCopyResponse.GetPersonalisedCopy(
+            GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData(creditPerformance = TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_UP_FREQUENTLY)
+        ))
+        every { topAdsGetSelectedTopUpTypeUseCase.execute(captureLambda(), any()) } answers {
+            firstArg<(GetPersonalisedCopyResponse) -> Unit>().invoke(actual)
+        }
+        viewModel.getSelectedTopUpType()
+
+        Assert.assertEquals((viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected, true)
+    }
+
+    @Test
+    fun `test success in getSelectedTopUpType when credit performance is INSUFFICIENT_CREDIT`(){
+        val actual = GetPersonalisedCopyResponse(GetPersonalisedCopyResponse.GetPersonalisedCopy(
+            GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData(creditPerformance = TopAdsDashboardConstant.TopAdsCreditTopUpConstant.INSUFFICIENT_CREDIT)
+        ))
+        every { topAdsGetSelectedTopUpTypeUseCase.execute(captureLambda(), any()) } answers {
+            firstArg<(GetPersonalisedCopyResponse) -> Unit>().invoke(actual)
+        }
+        viewModel.getSelectedTopUpType()
+
+        Assert.assertEquals((viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected, true)
+    }
+
+    @Test
+    fun `test success in getSelectedTopUpType when credit performance is not INSUFFICIENT_CREDIT and not TOP_UP_FREQUENTLY`(){
+        val actual = GetPersonalisedCopyResponse(GetPersonalisedCopyResponse.GetPersonalisedCopy(
+            GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData()
+        ))
+        every { topAdsGetSelectedTopUpTypeUseCase.execute(captureLambda(), any()) } answers {
+            firstArg<(GetPersonalisedCopyResponse) -> Unit>().invoke(actual)
+        }
+        viewModel.getSelectedTopUpType()
+
+        Assert.assertEquals((viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected, false)
+    }
+
+    @Test
+    fun `getSelectedTopUpType on exception ,livedata value should be Fail`() {
+        val actual = Throwable("my exception")
+
+        every { topAdsGetSelectedTopUpTypeUseCase.execute(captureLambda(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(actual)
+        }
+        viewModel.getSelectedTopUpType()
+        Assert.assertEquals(
+            (viewModel.getAutoTopUpDefaultSate.value as Fail).throwable.message,
+            actual.message
+        )
+    }
+
 }
