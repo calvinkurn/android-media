@@ -4101,11 +4101,74 @@ class FeedPlusFragment :
                         items = newItems
                     )
                 )
+            } else if (item is TopadsShopUiModel) {
+                val newItems = item.dataList.toMutableList()
+                newItems.forEachIndexed { index, item ->
+                    val id = if (item.shop.id.isNotEmpty()) item.shop.id else item.shop.ownerId
+                    data[id]?.let { followStatus ->
+                        newItems[index] = item.copy(
+                            isFavorit = followStatus
+                        )
+                    }
+                }
+
+                item.copy(
+                    dataList = newItems
+                )
+            } else if (item is TopadsHeadlineUiModel) {
+                val newItems = (item.cpmModel?.data ?: listOf()).toMutableList()
+                newItems.forEachIndexed { index, item ->
+                    data[item.cpm.cpmShop.id]?.let { followStatus ->
+                        newItems[index] = item.copy(
+                            cpm = item.cpm.copy(
+                                cpmShop = item.cpm.cpmShop.copy(
+                                    isFollowed = followStatus
+                                )
+                            )
+                        )
+                    }
+                }
+
+                item.copy(
+                    cpmModel = item.cpmModel?.copy(
+                        data = newItems
+                    ) ?: item.cpmModel
+                )
+            } else if (item is TopadsHeadLineV2Model) {
+                val newItems = (item.cpmModel?.data ?: listOf()).toMutableList()
+                newItems.forEachIndexed { index, item ->
+                    data[item.cpm.cpmShop.id]?.let { followStatus ->
+                        newItems[index] = item.copy(
+                            cpm = item.cpm.copy(
+                                cpmShop = item.cpm.cpmShop.copy(
+                                    isFollowed = followStatus
+                                )
+                            )
+                        )
+                    }
+                }
+
+                val id = item.feedXCard.author.id
+                val newFeedXCard = item.feedXCard.copy()
+
+                if (id != "") {
+                    data[id]?.let { followStatus ->
+                        newFeedXCard.followers.copy(
+                            isFollowed = followStatus
+                        )
+                    }
+                }
+
+                item.copy(
+                    cpmModel = item.cpmModel?.copy(
+                        data = newItems
+                    ) ?: item.cpmModel,
+                    feedXCard = newFeedXCard
+                )
             } else {
                 val shopId = when (item) {
                     is DynamicPostModel -> item.header.followCta.authorID
                     is DynamicPostUiModel -> item.feedXCard.author.id
-                    is TopadsHeadLineV2Model -> item.feedXCard.author.id
                     else -> ""
                 }
                 if (shopId != "") {
@@ -4120,14 +4183,6 @@ class FeedPlusFragment :
                             )
 
                             is DynamicPostUiModel -> item.copy(
-                                feedXCard = item.feedXCard.copy(
-                                    followers = item.feedXCard.followers.copy(
-                                        isFollowed = followStatus
-                                    )
-                                )
-                            )
-
-                            is TopadsHeadLineV2Model -> item.copy(
                                 feedXCard = item.feedXCard.copy(
                                     followers = item.feedXCard.followers.copy(
                                         isFollowed = followStatus

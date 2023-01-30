@@ -68,6 +68,6 @@ open class GetFollowingUseCase @Inject constructor(
         private const val PARAM_INPUT_FIELDS = "inputFields"
         private const val DEFAULT_FAVORITE: String = "favorite"
 
-        private const val SHOP_TYPE = 2
+        const val SHOP_TYPE = 2
     }
 }

@@ -56,6 +56,8 @@ import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaign
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedWidgetData
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopModel
@@ -184,10 +186,34 @@ class FeedViewModel @Inject constructor(
                 is ShopRecomWidgetModel -> item.shopRecomUiModel.items.map {
                     currentFollowState[it.id.toString()] = Pair(it.type, it.state == FOLLOW)
                 }
-                is TopadsHeadLineV2Model -> currentFollowState[item.feedXCard.author.id] = Pair(
-                    item.feedXCard.author.type,
-                    item.feedXCard.followers.isFollowed
-                )
+                is TopadsHeadLineV2Model -> {
+                    item.cpmModel?.let {
+                        it.data.map { cpm ->
+                            currentFollowState[cpm.cpm.cpmShop.id] =
+                                Pair(GetFollowingUseCase.SHOP_TYPE, cpm.cpm.cpmShop.isFollowed)
+                        }
+                    }
+                    currentFollowState[item.feedXCard.author.id] = Pair(
+                        item.feedXCard.author.type,
+                        item.feedXCard.followers.isFollowed
+                    )
+                }
+                is TopadsShopUiModel -> item.dataList.map {
+                    if (it.shop.id.isNotEmpty()) {
+                        currentFollowState[it.shop.id] =
+                            Pair(GetFollowingUseCase.SHOP_TYPE, it.isFavorit)
+                    } else if (it.shop.ownerId.isNotEmpty()) {
+                        currentFollowState[it.shop.ownerId] =
+                            Pair(GetFollowingUseCase.SHOP_TYPE, it.isFavorit)
+                    }
+                }
+                is TopadsHeadlineUiModel -> item.cpmModel?.let {
+                    it.data.map { cpm ->
+                        currentFollowState[cpm.cpm.cpmShop.id] =
+                            Pair(GetFollowingUseCase.SHOP_TYPE, cpm.cpm.cpmShop.isFollowed)
+                    }
+                }
+
                 else -> {}
             }
         }
