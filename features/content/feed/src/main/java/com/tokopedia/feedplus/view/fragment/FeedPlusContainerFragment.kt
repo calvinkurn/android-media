@@ -226,15 +226,25 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             val args = Bundle()
             args.putString(
                 ARGS_FEED_TAB_POSITION,
-                it.data?.getQueryParameter(ARGS_FEED_TAB_POSITION)
+                it.extras?.getString(ARGS_FEED_TAB_POSITION)
             )
             args.putString(
                 ARGS_FEED_VIDEO_TAB_SELECT_CHIP,
-                it.data?.getQueryParameter(ARGS_FEED_VIDEO_TAB_SELECT_CHIP)
+                it.extras?.getString(ARGS_FEED_VIDEO_TAB_SELECT_CHIP)
             )
             arguments = args
         }
     }
+
+    private fun updateArgumentValueAsPerSelectedTab(position: Int) {
+        val positionValue = when (position) {
+            1 -> EXPLORE_TAB_POSITION
+            2 -> VIDEO_TAB_POSITION
+            else -> UPDATE_TAB_POSITION
+        }
+        activity?.intent?.putExtra(ARGS_FEED_TAB_POSITION, positionValue)
+    }
+
 
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
@@ -539,6 +549,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         viewModel.getWhitelist()
     }
 
+    override fun updateVideoTabSelectedChipValue(chipValue: String) {
+        activity?.intent?.putExtra(ARGS_FEED_VIDEO_TAB_SELECT_CHIP, chipValue)
+    }
+
     override fun onStop() {
         super.onStop()
         activity?.run {
@@ -558,6 +572,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             override fun onPageSelected(position: Int) {
                 toolBarAnalytics.clickOnVideoTabOnFeedPage(position, userSession.userId)
                 toolBarAnalytics.createAnalyticsForOpenScreen(position, userSession.isLoggedIn.toString(), userSession.userId)
+                updateArgumentValueAsPerSelectedTab(position)
 
                 updateFeedUpdateVisibility(position)
 
