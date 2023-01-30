@@ -321,7 +321,7 @@ class PlayBroadcasterViewModelTest {
                 it.getAccountConfiguration()
             }
             state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
-            state.accountStateInfo.type.assertEqualTo(AccountStateInfoType.NotAcceptTNC)
+            state.accountStateInfo.type.assertEqualTo(AccountStateInfoType.NotWhitelisted)
             state.accountStateInfo.selectedAccount.type.assertEqualTo(TYPE_SHOP)
             it.getViewModel().isAllowChangeAccount.assertFalse()
             it.getViewModel().tncList.assertEqualTo(mockTnc)
@@ -487,7 +487,7 @@ class PlayBroadcasterViewModelTest {
     @Test
     fun `when shop account not eligible and buyer account not eligible then selected account is shop with info`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
-        val accountMock = uiModelBuilder.buildAccountListModel(tncShop = false, usernameBuyer = false)
+        val accountMock = uiModelBuilder.buildAccountListModel(tncShop = false, usernameBuyer = false, tncBuyer = false)
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
