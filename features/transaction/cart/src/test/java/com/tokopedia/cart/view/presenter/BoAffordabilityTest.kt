@@ -1,13 +1,14 @@
 package com.tokopedia.cart.view.presenter
 
+import com.tokopedia.cart.data.model.request.CartShopGroupTickerAggregatorParam
+import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorData
+import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorResponse
+import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorTicker
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.logisticcart.boaffordability.model.BoAffordabilityDataResponse
-import com.tokopedia.logisticcart.boaffordability.model.BoAffordabilityTexts
-import com.tokopedia.logisticcart.shipping.model.RatesParam
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.slot
@@ -25,6 +26,7 @@ class BoAffordabilityTest : BaseCartTest() {
         // GIVEN
         val cartString = "123-123-123"
         val cartShopHolderData = CartShopHolderData(
+            cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
             cartString = cartString,
             maximumShippingWeight = 1.0,
             maximumWeightWording = "overweight",
@@ -51,7 +53,7 @@ class BoAffordabilityTest : BaseCartTest() {
         }
 
         coVerify(inverse = true) {
-            boAffordabilityUseCase.setParam(any()).executeOnBackground()
+            cartShopGroupTickerAggregatorUseCase(any())
         }
     }
 
@@ -60,6 +62,7 @@ class BoAffordabilityTest : BaseCartTest() {
         // GIVEN
         val cartString = "123-123-123"
         val cartShopHolderData = CartShopHolderData(
+            cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
             cartString = cartString,
             maximumShippingWeight = 1000.0,
             maximumWeightWording = "overweight",
@@ -77,10 +80,13 @@ class BoAffordabilityTest : BaseCartTest() {
         val ticker = "dapat bebas ongkir"
 
         coEvery {
-            boAffordabilityUseCase.setParam(any()).executeOnBackground()
-        } returns BoAffordabilityDataResponse(
-            0, BoAffordabilityTexts(
-                tickerCart = ticker
+            cartShopGroupTickerAggregatorUseCase(any())
+        } returns CartShopGroupTickerAggregatorResponse(
+            CartShopGroupTickerAggregatorData(
+                minTransaction = 0L,
+                ticker = CartShopGroupTickerAggregatorTicker(
+                    text = ticker
+                )
             )
         )
 
@@ -98,7 +104,7 @@ class BoAffordabilityTest : BaseCartTest() {
         }
 
         coVerify {
-            boAffordabilityUseCase.setParam(any()).executeOnBackground()
+            cartShopGroupTickerAggregatorUseCase(any())
         }
     }
 
@@ -107,16 +113,19 @@ class BoAffordabilityTest : BaseCartTest() {
         // GIVEN
         val cartString = "123-123-123"
         val cartShopHolderData = CartShopHolderData(
+            cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
             cartString = cartString
         )
         val ticker = "+ Rp10.000 lagi untuk dapat bebas ongkir"
 
-
         coEvery {
-            boAffordabilityUseCase.setParam(any()).executeOnBackground()
-        } returns BoAffordabilityDataResponse(
-            1_000, BoAffordabilityTexts(
-                tickerCart = ticker
+            cartShopGroupTickerAggregatorUseCase(any())
+        } returns CartShopGroupTickerAggregatorResponse(
+            CartShopGroupTickerAggregatorData(
+                minTransaction = 1_000L,
+                ticker = CartShopGroupTickerAggregatorTicker(
+                    text = ticker
+                )
             )
         )
 
@@ -139,15 +148,19 @@ class BoAffordabilityTest : BaseCartTest() {
         // GIVEN
         val cartString = "123-123-123"
         val cartShopHolderData = CartShopHolderData(
+            cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
             cartString = cartString
         )
         val ticker = "dapat bebas ongkir"
 
         coEvery {
-            boAffordabilityUseCase.setParam(any()).executeOnBackground()
-        } returns BoAffordabilityDataResponse(
-            0, BoAffordabilityTexts(
-                tickerCart = ticker
+            cartShopGroupTickerAggregatorUseCase(any())
+        } returns CartShopGroupTickerAggregatorResponse(
+            CartShopGroupTickerAggregatorData(
+                minTransaction = 0L,
+                ticker = CartShopGroupTickerAggregatorTicker(
+                    text = ticker
+                )
             )
         )
 
@@ -170,15 +183,19 @@ class BoAffordabilityTest : BaseCartTest() {
         // GIVEN
         val cartString = "123-123-123"
         val cartShopHolderData = CartShopHolderData(
+            cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
             cartString = cartString
         )
         val ticker = ""
 
         coEvery {
-            boAffordabilityUseCase.setParam(any()).executeOnBackground()
-        } returns BoAffordabilityDataResponse(
-            0, BoAffordabilityTexts(
-                tickerCart = ticker
+            cartShopGroupTickerAggregatorUseCase(any())
+        } returns CartShopGroupTickerAggregatorResponse(
+            CartShopGroupTickerAggregatorData(
+                minTransaction = 0L,
+                ticker = CartShopGroupTickerAggregatorTicker(
+                    text = ticker
+                )
             )
         )
 
@@ -201,11 +218,12 @@ class BoAffordabilityTest : BaseCartTest() {
         // GIVEN
         val cartString = "123-123-123"
         val cartShopHolderData = CartShopHolderData(
+            cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
             cartString = cartString
         )
 
         coEvery {
-            boAffordabilityUseCase.setParam(any()).executeOnBackground()
+            cartShopGroupTickerAggregatorUseCase(any())
         } throws IOException()
 
         // WHEN
@@ -226,15 +244,19 @@ class BoAffordabilityTest : BaseCartTest() {
         // GIVEN
         val cartString = "123-123-123"
         val cartShopHolderData = CartShopHolderData(
+            cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
             cartString = cartString
         )
         val ticker = "+ Rp10.000 lagi untuk dapat bebas ongkir"
 
         coEvery {
-            boAffordabilityUseCase.setParam(any()).executeOnBackground()
-        } returns BoAffordabilityDataResponse(
-            1_000, BoAffordabilityTexts(
-                tickerCart = ticker
+            cartShopGroupTickerAggregatorUseCase(any())
+        } returns CartShopGroupTickerAggregatorResponse(
+            CartShopGroupTickerAggregatorData(
+                minTransaction = 1_000L,
+                ticker = CartShopGroupTickerAggregatorTicker(
+                    text = ticker
+                )
             )
         )
 
@@ -246,7 +268,7 @@ class BoAffordabilityTest : BaseCartTest() {
 
         // THEN
         coVerify(exactly = 1) {
-            boAffordabilityUseCase.setParam(any()).executeOnBackground()
+            cartShopGroupTickerAggregatorUseCase(any())
         }
     }
 
@@ -255,15 +277,19 @@ class BoAffordabilityTest : BaseCartTest() {
         // GIVEN
         val cartString = "123-123-123"
         val cartShopHolderData = CartShopHolderData(
+            cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
             cartString = cartString
         )
         val ticker = "+ Rp10.000 lagi untuk dapat bebas ongkir"
 
         coEvery {
-            boAffordabilityUseCase.setParam(any()).executeOnBackground()
-        } returns BoAffordabilityDataResponse(
-            1_000, BoAffordabilityTexts(
-                tickerCart = ticker
+            cartShopGroupTickerAggregatorUseCase(any())
+        } returns CartShopGroupTickerAggregatorResponse(
+            CartShopGroupTickerAggregatorData(
+                minTransaction = 1_000L,
+                ticker = CartShopGroupTickerAggregatorTicker(
+                    text = ticker
+                )
             )
         )
 
@@ -275,7 +301,7 @@ class BoAffordabilityTest : BaseCartTest() {
 
         // THEN
         coVerify(inverse = true) {
-            boAffordabilityUseCase.setParam(any()).executeOnBackground()
+            cartShopGroupTickerAggregatorUseCase(any())
             view.updateCartShopGroupTicker(any())
         }
     }
@@ -285,16 +311,20 @@ class BoAffordabilityTest : BaseCartTest() {
         // GIVEN
         val cartString = "123-123-123"
         val cartShopHolderData = CartShopHolderData(
+            cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
             cartString = cartString
         )
         val ticker = "+ Rp10.000 lagi untuk dapat bebas ongkir"
 
-        val slotParam = slot<RatesParam>()
+        val slotParam = slot<CartShopGroupTickerAggregatorParam>()
         coEvery {
-            boAffordabilityUseCase.setParam(capture(slotParam)).executeOnBackground()
-        } returns BoAffordabilityDataResponse(
-            1_000, BoAffordabilityTexts(
-                tickerCart = ticker
+            cartShopGroupTickerAggregatorUseCase(capture(slotParam))
+        } returns CartShopGroupTickerAggregatorResponse(
+            CartShopGroupTickerAggregatorData(
+                minTransaction = 1_000L,
+                ticker = CartShopGroupTickerAggregatorTicker(
+                    text = ticker
+                )
             )
         )
 
@@ -309,7 +339,7 @@ class BoAffordabilityTest : BaseCartTest() {
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
-        assertEquals("123|123|,", slotParam.captured.destination)
+        assertEquals("123|123|,", slotParam.captured.ratesParam.destination)
     }
 
     @Test
@@ -317,16 +347,20 @@ class BoAffordabilityTest : BaseCartTest() {
         // GIVEN
         val cartString = "123-123-123"
         val cartShopHolderData = CartShopHolderData(
+            cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
             cartString = cartString
         )
         val ticker = "+ Rp10.000 lagi untuk dapat bebas ongkir"
 
-        val slotParam = slot<RatesParam>()
+        val slotParam = slot<CartShopGroupTickerAggregatorParam>()
         coEvery {
-            boAffordabilityUseCase.setParam(capture(slotParam)).executeOnBackground()
-        } returns BoAffordabilityDataResponse(
-            1_000, BoAffordabilityTexts(
-                tickerCart = ticker
+            cartShopGroupTickerAggregatorUseCase(capture(slotParam))
+        } returns CartShopGroupTickerAggregatorResponse(
+            CartShopGroupTickerAggregatorData(
+                minTransaction = 1_000L,
+                ticker = CartShopGroupTickerAggregatorTicker(
+                    text = ticker
+                )
             )
         )
 
@@ -344,6 +378,6 @@ class BoAffordabilityTest : BaseCartTest() {
         coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
-        assertEquals("123|123|123,123", slotParam.captured.destination)
+        assertEquals("123|123|123,123", slotParam.captured.ratesParam.destination)
     }
 }
