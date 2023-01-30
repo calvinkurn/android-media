@@ -10,6 +10,7 @@ data class UiEvent(
         const val EVENT_LOADING_DIALOG = 1
         const val EVENT_SUCCESS_VALIDATE_CHECKOUT = 3
         const val EVENT_SUCCESS_DELETE_PRODUCT = 4
+        const val EVENT_SUCCESS_DELETE_PRODUCT_NEW = 41
         const val EVENT_SUCCESS_DELETE_UNAVAILABLE_PRODUCTS = 5
         const val EVENT_SUCCESS_UPDATE_NOTES = 6
         const val EVENT_SUCCESS_UPDATE_QUANTITY = 7

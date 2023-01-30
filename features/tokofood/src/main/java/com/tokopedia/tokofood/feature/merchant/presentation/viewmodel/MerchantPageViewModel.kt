@@ -42,6 +42,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 class MerchantPageViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
@@ -63,6 +64,9 @@ class MerchantPageViewModel @Inject constructor(
 
     // map of productId to card positions info <dataset,adapter>
     val productMap: HashMap<String, Pair<Int, Int>> = hashMapOf()
+
+    // map of cartId to card positions info <dataset,adapter>
+    val productCartMap: HashMap<String, Pair<Int, Int>> = hashMapOf()
 
     var productListItems: MutableList<ProductListItem> = mutableListOf()
 

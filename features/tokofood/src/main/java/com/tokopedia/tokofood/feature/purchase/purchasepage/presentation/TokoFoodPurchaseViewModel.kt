@@ -26,6 +26,7 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.Check
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getAccordionUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getAllUnavailableProducts
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getPartiallyLoadedModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getProductByCartId
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getProductById
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getProductByUpdateParam
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getProductWithChangedQuantity
@@ -285,6 +286,29 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         refreshPartialCartInformation()
         val dataList = getVisitablesValue()
         val toBeDeletedProduct = dataList.getProductById(productId, previousCartId)
+        if (toBeDeletedProduct != null) {
+            val toBeDeleteItems = mutableListOf<Visitable<*>>()
+            toBeDeleteItems.add(toBeDeletedProduct.second)
+
+            if (dataList.isLastAvailableProduct()) {
+                var from = toBeDeletedProduct.first - INDEX_BEFORE_FROM_HEADER
+                val tickerShopErrorData = getVisitablesValue().getTickerErrorShopLevelUiModel()
+                if (tickerShopErrorData != null) {
+                    from = toBeDeletedProduct.first - INDEX_BEFORE_FROM_TICKER
+                }
+                val to = toBeDeletedProduct.first
+                val availableHeaderAndDivider = dataList.subList(from, to).toMutableList()
+                toBeDeleteItems.addAll(availableHeaderAndDivider)
+            }
+
+            deleteProducts(toBeDeleteItems, Int.ONE)
+        }
+    }
+
+    fun deleteProductNew(cartId: String) {
+        refreshPartialCartInformation()
+        val dataList = getVisitablesValue()
+        val toBeDeletedProduct = dataList.getProductByCartId(cartId)
         if (toBeDeletedProduct != null) {
             val toBeDeleteItems = mutableListOf<Visitable<*>>()
             toBeDeleteItems.add(toBeDeletedProduct.second)

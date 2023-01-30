@@ -57,6 +57,7 @@ import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
+import com.tokopedia.tokofood.common.util.TokofoodGtpSwitcher
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
@@ -490,6 +491,15 @@ class TokoFoodPurchaseFragment :
                                             viewModel.deleteProduct(product.productId, previousCartId)
                                         }
                                     }
+                                }
+                            }
+                        }
+                    }
+                    UiEvent.EVENT_SUCCESS_DELETE_PRODUCT_NEW -> {
+                        if (it.source == SOURCE) {
+                            (it.data as? String)?.let { cartId ->
+                                viewBinding?.recyclerViewPurchase?.post {
+                                    viewModel.deleteProductNew(cartId)
                                 }
                             }
                         }
@@ -990,6 +1000,10 @@ class TokoFoodPurchaseFragment :
         putExtra(ApplinkConstInternalPayment.CHECKOUT_TIMESTAMP, currentTimestamp)
     }
 
+    private fun getIsShouldUseGtpMigration(): Boolean {
+        return TokofoodGtpSwitcher.getShouldUseGtpQueries()
+    }
+
     override fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
         return viewModel.getNextItems(currentIndex, count)
     }
@@ -1024,12 +1038,20 @@ class TokoFoodPurchaseFragment :
     }
 
     override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
-        activityViewModel?.deleteProduct(
-            productId = element.id,
-            cartId = element.cartId,
-            source = SOURCE,
-            shouldRefreshCart = false
-        )
+        if (getIsShouldUseGtpMigration()) {
+            activityViewModel?.deleteProductNew(
+                cartId = element.cartId,
+                source = SOURCE,
+                shouldRefreshCart = false
+            )
+        } else {
+            activityViewModel?.deleteProduct(
+                productId = element.id,
+                cartId = element.cartId,
+                source = SOURCE,
+                shouldRefreshCart = false
+            )
+        }
     }
 
     override fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {

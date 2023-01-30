@@ -67,6 +67,7 @@ import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
 import com.tokopedia.tokofood.common.util.TokofoodExt.setBackIconUnify
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
+import com.tokopedia.tokofood.common.util.TokofoodGtpSwitcher
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentMerchantPageLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.analytics.MerchantPageAnalytics
@@ -830,6 +831,38 @@ class MerchantPageFragment : BaseMultiFragment(),
                         }
                     }
                 }
+                UiEvent.EVENT_SUCCESS_DELETE_PRODUCT_NEW -> {
+                    if (it.source == SOURCE) {
+                        (it.data as? String)?.let { cartId ->
+                            val cardPositions = viewModel.productCartMap[cartId]
+                            cardPositions?.run {
+                                val dataSetPosition = viewModel.getDataSetPosition(this)
+                                val productUiModel =
+                                    productListAdapter?.getProductUiModel(dataSetPosition)
+                                if (productUiModel?.isCustomizable == true) {
+                                    productListAdapter?.removeCustomOrder(
+                                        cartId = cartId,
+                                        dataSetPosition = dataSetPosition,
+                                        adapterPosition = viewModel.getAdapterPosition(this)
+                                    )
+                                } else {
+                                    productListAdapter?.resetProductUiModel(
+                                        dataSetPosition = dataSetPosition,
+                                        adapterPosition = viewModel.getAdapterPosition(this)
+                                    )
+                                }
+                                view?.let { view ->
+                                    Toaster.build(
+                                        view = view,
+                                        text = getString(com.tokopedia.tokofood.R.string.text_product_removed),
+                                        duration = Toaster.LENGTH_SHORT,
+                                        type = Toaster.TYPE_NORMAL
+                                    ).show()
+                                }
+                            }
+                        }
+                    }
+                }
                 UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
                     if (it.source == SOURCE) {
                         (it.data as? Pair<*, *>)?.let { pair ->
@@ -1154,6 +1187,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         val productUiModel = productListItem.productUiModel
         // update product id - card positions map
         viewModel.productMap[productUiModel.id] = cardPositions
+        viewModel.productCartMap[productUiModel.cartId] = cardPositions
         // track click product card event
         merchantPageAnalytics.clickProductCard(
             getProductItemList(),
@@ -1187,6 +1221,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         if (activityViewModel?.shopId.isNullOrBlank() || activityViewModel?.shopId == merchantId) {
             // update product id - card positions map
             viewModel.productMap[productUiModel.id] = cardPositions
+            viewModel.productCartMap[productUiModel.cartId] = cardPositions
             // customized product exists navigate to custom order detail bottom sheet
             if (productUiModel.isCustomizable && productUiModel.isAtc) {
                 showCustomOrderDetailBottomSheet(productUiModel, cardPositions)
@@ -1259,12 +1294,20 @@ class MerchantPageFragment : BaseMultiFragment(),
         cardPositions: Pair<Int, Int>
     ) {
         viewModel.productMap[productId] = cardPositions
-        activityViewModel?.deleteProduct(
-            productId = productId,
-            cartId = cartId,
-            source = SOURCE,
-            shopId = merchantId
-        )
+        viewModel.productCartMap[cartId] = cardPositions
+        if (getIsShouldUseGtpMigration()) {
+            activityViewModel?.deleteProductNew(
+                cartId = cartId,
+                source = SOURCE,
+            )
+        } else {
+            activityViewModel?.deleteProduct(
+                productId = productId,
+                cartId = cartId,
+                source = SOURCE,
+                shopId = merchantId
+            )
+        }
     }
 
     override fun onFinishCategoryFilter(categoryFilterList: List<CategoryFilterListUiModel>) {
@@ -1418,12 +1461,19 @@ class MerchantPageFragment : BaseMultiFragment(),
 
 
     override fun onDeleteCustomOrderButtonClicked(cartId: String, productId: String) {
-        activityViewModel?.deleteProduct(
-            productId = productId,
-            cartId = cartId,
-            source = SOURCE,
-            shopId = merchantId
-        )
+        if (getIsShouldUseGtpMigration()) {
+            activityViewModel?.deleteProductNew(
+                cartId = cartId,
+                source = SOURCE
+            )
+        } else {
+            activityViewModel?.deleteProduct(
+                productId = productId,
+                cartId = cartId,
+                source = SOURCE,
+                shopId = merchantId
+            )
+        }
     }
 
     override fun onUpdateCustomOrderQtyButtonClicked(
@@ -1691,6 +1741,10 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private fun getIsImplementDebounce(): Boolean {
         return true
+    }
+
+    private fun getIsShouldUseGtpMigration(): Boolean {
+        return TokofoodGtpSwitcher.getShouldUseGtpQueries()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

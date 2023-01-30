@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getProductById
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getUnavailableReasonUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.*
 
@@ -28,6 +29,20 @@ object VisitableDataHelper {
         loop@ for ((index, data) in this.withIndex()) {
             when {
                 data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.id == productId && data.cartId == cartId -> {
+                    return Pair(index, data)
+                }
+                data is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel || data is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
+                    break@loop
+                }
+            }
+        }
+        return null
+    }
+
+    fun MutableList<Visitable<*>>.getProductByCartId(cartId: String): Pair<Int, TokoFoodPurchaseProductTokoFoodPurchaseUiModel>? {
+        loop@ for ((index, data) in this.withIndex()) {
+            when {
+                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.cartId == cartId -> {
                     return Pair(index, data)
                 }
                 data is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel || data is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {

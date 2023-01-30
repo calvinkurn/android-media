@@ -7,6 +7,9 @@ import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.param.RemoveCartTokoFoodParam
+import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodBusinessData
+import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodCartGroup
+import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodParamNew
 import com.tokopedia.tokofood.common.domain.param.RemoveItemTokoFoodParam
 import com.tokopedia.tokofood.common.minicartwidget.view.MiniCartUiModel
 
@@ -119,6 +122,22 @@ data class CheckoutTokoFoodData(
             it.mapToRemoveItemParam(shopId)
         }
         return RemoveCartTokoFoodParam(carts = cartList)
+    }
+
+    fun getRemoveAllCartParamNew(): RemoveCartTokofoodParamNew {
+        // TODO: Add businessId
+        return RemoveCartTokofoodParamNew(
+            businessData = listOf(
+                RemoveCartTokofoodBusinessData(
+                    businessId = "",
+                    cartGroups = listOf(
+                        RemoveCartTokofoodCartGroup(
+                            cartIds = getProductListFromCart().map { it.cartId }
+                        )
+                    )
+                )
+            )
+        )
     }
 
     fun getProductListFromCart(): List<CheckoutTokoFoodProduct> {
