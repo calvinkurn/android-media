@@ -61,9 +61,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
-import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.searchbar.data.HintData
@@ -82,7 +80,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -548,9 +545,15 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        checkIfChooseAddressWidgetDataUpdated()
+    }
+
     private fun checkIfChooseAddressWidgetDataUpdated() {
         if (isChooseAddressWidgetDataUpdated()) {
             updateCurrentPageLocalCacheModelData()
+            refreshLayout()
         }
     }
 
@@ -564,32 +567,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             }
         }
         return false
-    }
-
-    private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
-        data.let { chooseAddressData ->
-            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                context = requireContext(),
-                addressId = chooseAddressData.data.addressId.toString(),
-                cityId = chooseAddressData.data.cityId.toString(),
-                districtId = chooseAddressData.data.districtId.toString(),
-                lat = chooseAddressData.data.latitude,
-                long = chooseAddressData.data.longitude,
-                label = String.format(
-                    Locale.getDefault(),
-                    "%s %s",
-                    chooseAddressData.data.addressName,
-                    chooseAddressData.data.receiverName
-                ),
-                postalCode = chooseAddressData.data.postalCode,
-                warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
-                shopId = chooseAddressData.tokonow.shopId.toString(),
-                warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(chooseAddressData.tokonow.warehouses),
-                serviceType = chooseAddressData.tokonow.serviceType,
-                lastUpdate = chooseAddressData.tokonow.tokonowLastUpdate
-            )
-        }
-        checkIfChooseAddressWidgetDataUpdated()
     }
 
     private fun createTopComponentCallback(): HomeComponentListener? {
