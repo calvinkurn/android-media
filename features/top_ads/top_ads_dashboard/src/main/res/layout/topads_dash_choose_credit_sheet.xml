@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constrainedHeight="true"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@id/dividerSaveButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,12 +24,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/sheetTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/top_ads_pilih_cara_tambah_kredit"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:typographyType="display_1"
+                app:typographyWeight="bold" />
+
             <RadioGroup
                 android:id="@+id/topUpSwitchRadioButtonGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/sheetTitle">
 
                 <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
                     android:id="@+id/manualRadioButton"
@@ -227,8 +240,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/jarangText"
                 app:layout_constraintStart_toEndOf="@id/jarangText"
                 app:layout_constraintTop_toTopOf="@id/jarangText"
-                app:typographyType="display_3"
-                app:typographyWeight="bold" />
+                app:typographyType="display_3"/>
 
 
             <com.tokopedia.unifyprinciples.Typography
@@ -253,8 +265,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/normalText"
                 app:layout_constraintStart_toEndOf="@+id/normalText"
                 app:layout_constraintTop_toTopOf="@id/normalText"
-                app:typographyType="display_3"
-                app:typographyWeight="bold" />
+                app:typographyType="display_3" />
 
 
             <com.tokopedia.unifyprinciples.Typography
@@ -279,8 +290,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/seringText"
                 app:layout_constraintStart_toEndOf="@+id/seringText"
                 app:layout_constraintTop_toTopOf="@id/seringText"
-                app:typographyType="display_3"
-                app:typographyWeight="bold" />
+                app:typographyType="display_3"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/creditHistoryShimmer"
