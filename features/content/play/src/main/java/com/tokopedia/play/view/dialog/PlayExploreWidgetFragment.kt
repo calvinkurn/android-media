@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.Router
@@ -36,7 +35,6 @@ import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
-import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetChannelMediumAdapter
 import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumViewHolder
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.util.extension.buildSpannedString
@@ -85,7 +83,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
         object : EndlessRecyclerViewScrollListener(widgetLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                //not detected
+                // not detected
                 viewModel.submitAction(NextPageWidgets)
             }
 
@@ -258,7 +256,7 @@ class PlayExploreWidgetFragment @Inject constructor(
                 showEmpty(true)
             }
             ExploreWidgetState.Loading -> {
-                widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering) //adjust PlaceHolder
+                widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering) // adjust Grid / Linear
             }
             is ExploreWidgetState.Fail -> {
                 analytic?.impressToasterGlobalError()

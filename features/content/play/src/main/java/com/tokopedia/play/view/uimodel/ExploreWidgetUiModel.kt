@@ -129,7 +129,7 @@ val List<WidgetUiModel>.getConfig: PageConfig
 
 internal val getWidgetShimmering: List<ExploreWidgetPlaceholder>
     get() {
-        return List(1) {
+        return List(6) {
             ExploreWidgetPlaceholder
         }
     }
