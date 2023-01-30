@@ -88,6 +88,7 @@ internal object QueryDynamicChannelV2 {
         "        productViewCountFormatted\n" +
         "      }\n" +
         "      layout\n" +
+        "      styleParam\n" +
         "      header {\n" +
         "        id\n" +
         "        url\n" +

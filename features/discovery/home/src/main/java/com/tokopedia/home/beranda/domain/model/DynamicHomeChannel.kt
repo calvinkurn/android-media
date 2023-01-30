@@ -106,7 +106,7 @@ data class DynamicHomeChannel(
         var isCache: Boolean = true,
         @SerializedName("styleParam")
         @Expose
-        var styleParam: String = "imageStyle=\"full\""
+        var styleParam: String = ""
     ) : ImpressHolder() {
 
         private var position: Int = 0
