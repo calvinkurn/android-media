@@ -425,7 +425,8 @@ class ShopInfoFragment :
             }
 
             // go apotik info
-            goApotikInfoContainer.shouldShowWithAction(shopInfo.isGoApotik) {
+            val isShouldShow: Boolean = shopInfo.isGoApotik || shopInfo.fsType == 2
+            goApotikInfoContainer.shouldShowWithAction(shouldShow = isShouldShow) {
                 tvSiaDescription.text =
                     shopInfo.siaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
                 tvSipaDescription.text =
