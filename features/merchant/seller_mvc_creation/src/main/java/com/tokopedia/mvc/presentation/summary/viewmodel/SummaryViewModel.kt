@@ -58,7 +58,7 @@ class SummaryViewModel @Inject constructor(
             it
         }
     }
-    val enableCouponTypeChange = Transformations.map(_configuration) {
+    val enableCouponTypeChange = Transformations.map(configuration) {
         it.voucherId == ADDING_VOUCHER_ID
     }
     val submitButtonText = Transformations.map(_configuration) {
