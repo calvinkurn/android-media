@@ -14,9 +14,9 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.Router
@@ -79,7 +79,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     private val widgetLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        GridLayoutManager(binding.rvWidgets.context, SPAN_CHANNEL)
+        StaggeredGridLayoutManager(SPAN_CHANNEL, RecyclerView.VERTICAL)
     }
 
     private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
