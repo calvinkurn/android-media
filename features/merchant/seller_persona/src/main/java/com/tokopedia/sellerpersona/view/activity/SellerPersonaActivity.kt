@@ -20,7 +20,11 @@ import com.tokopedia.sellerpersona.data.local.PersonaSharedPreference
 import com.tokopedia.sellerpersona.databinding.ActivitySellerPersonaBinding
 import com.tokopedia.sellerpersona.di.DaggerSellerPersonaComponent
 import com.tokopedia.sellerpersona.di.SellerPersonaComponent
+import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
+import com.tokopedia.sellerpersona.view.model.PersonaStatus
 import com.tokopedia.sellerpersona.view.viewmodel.PersonaSharedViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -51,7 +55,10 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
     private fun fetchPersonaData() {
         viewModel.fetchPersonaData()
         observe(viewModel.personaData) {
-            setNavigationStartDestination()
+            when (it) {
+                is Success -> setNavigationStartDestination(it.data)
+                is Fail -> showErrorState(it.throwable)
+            }
         }
     }
 
@@ -80,7 +87,7 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
         }
     }
 
-    private fun setNavigationStartDestination() {
+    private fun setNavigationStartDestination(persona: PersonaDataUiModel) {
         val navHostFragment: NavHostFragment? = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as? NavHostFragment
 
@@ -88,10 +95,10 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
             val inflater = navController.navInflater
             val graph = inflater.inflate(R.navigation.nav_graph)
 
-            val defaultDestination = if (sharedPref.isFirstVisit()) {
-                R.id.openingFragment
-            } else {
+            val defaultDestination = if (persona.personaStatus == PersonaStatus.ACTIVE) {
                 R.id.resultFragment
+            } else {
+                R.id.openingFragment
             }
             graph.startDestination = defaultDestination
 
@@ -116,5 +123,9 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
             setStatusBarColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
             setLightStatusBar(true)
         }
+    }
+
+    private fun showErrorState(throwable: Throwable) {
+
     }
 }

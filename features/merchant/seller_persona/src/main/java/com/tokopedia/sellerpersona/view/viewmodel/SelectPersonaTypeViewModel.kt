@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.sellerpersona.data.remote.usecase.FetchPersonaListUseCase
+import com.tokopedia.sellerpersona.data.remote.usecase.GetPersonaListUseCase
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -18,7 +18,7 @@ import javax.inject.Inject
  */
 
 class SelectPersonaTypeViewModel @Inject constructor(
-    private val fetchPersonaListUseCase: Lazy<FetchPersonaListUseCase>,
+    private val getPersonaListUseCase: Lazy<GetPersonaListUseCase>,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -29,7 +29,7 @@ class SelectPersonaTypeViewModel @Inject constructor(
 
     fun fetchPersonaList() {
         launchCatchError(block = {
-            val data = fetchPersonaListUseCase.get().execute()
+            val data = getPersonaListUseCase.get().execute()
             _personaList.value = Success(data)
         }, onError = {
             _personaList.value = Fail(it)

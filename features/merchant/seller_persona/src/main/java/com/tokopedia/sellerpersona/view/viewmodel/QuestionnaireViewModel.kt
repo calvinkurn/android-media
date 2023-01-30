@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.sellerpersona.data.remote.usecase.FetchPersonaQuestionnaireUseCase
+import com.tokopedia.sellerpersona.data.remote.usecase.GetPersonaQuestionnaireUseCase
 import com.tokopedia.sellerpersona.view.model.QuestionnairePagerUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -18,7 +18,7 @@ import javax.inject.Inject
  */
 
 class QuestionnaireViewModel @Inject constructor(
-    private val fetchQuestionnaireUseCase: Lazy<FetchPersonaQuestionnaireUseCase>,
+    private val getQuestionnaireUseCase: Lazy<GetPersonaQuestionnaireUseCase>,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
@@ -30,7 +30,7 @@ class QuestionnaireViewModel @Inject constructor(
 
     fun fetchQuestionnaire() {
         launchCatchError(block = {
-            val data = fetchQuestionnaireUseCase.get().execute()
+            val data = getQuestionnaireUseCase.get().execute()
             _questionnaire.postValue(Success(data))
         }, onError = {
             _questionnaire.postValue(Fail(it))
