@@ -362,7 +362,8 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
 
             if (autoRadioButton?.isChecked == true) {
                 setAutoStateFields()
-                applyButton?.isEnabled = true
+                tncAutoCreditCheckBox?.isChecked = false
+                applyButton?.isEnabled = tncAutoCreditCheckBox?.isChecked?: false
             }
         }
 
@@ -615,7 +616,8 @@ class TopAdsChooseCreditBottomSheet : BottomSheetUnify(),
         if (autoRadioButton?.isChecked == true) {
             setAutoStateFields()
             tncAutoCreditCheckBox?.isEnabled = true
-            applyButton?.isEnabled = true
+            tncAutoCreditCheckBox?.isChecked = false
+            applyButton?.isEnabled = tncAutoCreditCheckBox?.isChecked ?: false
         } else {
             saveButton?.isEnabled = true
         }

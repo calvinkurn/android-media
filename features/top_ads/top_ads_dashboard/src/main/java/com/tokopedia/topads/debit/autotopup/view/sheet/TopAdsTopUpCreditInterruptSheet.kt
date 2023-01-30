@@ -27,6 +27,7 @@ class TopAdsTopUpCreditInterruptSheet : BottomSheetUnify() {
     var isAutoTopUpActive: Boolean = false
     var topUpCount: Int = Int.ZERO
     var autoTopUpBonus: Double = 0.0
+    var onButtonClick: ((isNegativeButtonClicked: Boolean) -> Unit)? = null
 
     companion object {
         fun newInstance() = TopAdsTopUpCreditInterruptSheet()
@@ -107,6 +108,7 @@ class TopAdsTopUpCreditInterruptSheet : BottomSheetUnify() {
            TopAdsChooseCreditBottomSheet.newInstance().also {
                 it.isAutoTopUpActive = isAutoTopUpActive
                 it.show((context as FragmentActivity).supportFragmentManager)
+                onButtonClick?.invoke(true)
                 dismiss()
             }
         }
@@ -117,6 +119,7 @@ class TopAdsTopUpCreditInterruptSheet : BottomSheetUnify() {
                 it.isAutoTopUpActive = isAutoTopUpActive
                 it.isFullpage = true
                 it.show((context as FragmentActivity).supportFragmentManager)
+                onButtonClick?.invoke(false)
                 dismiss()
             }
         }

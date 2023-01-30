@@ -32,7 +32,13 @@ class TopAdsCreditTopUpActivity : BaseSimpleActivity() {
         setContentView(R.layout.topads_base_layout)
 
         if (Utils.isShowInterruptSheet(this)) {
-            topAdsTopUpCreditInterruptSheet.show(supportFragmentManager)
+            topAdsTopUpCreditInterruptSheet.also {
+                it.onButtonClick = { clicked ->
+                    if (clicked) {
+                        Utils.isShowInterruptSheet(this, true)
+                    }
+                }
+            }.show(supportFragmentManager)
         } else {
             topAdsChooseCreditBottomSheet.show(supportFragmentManager)
         }

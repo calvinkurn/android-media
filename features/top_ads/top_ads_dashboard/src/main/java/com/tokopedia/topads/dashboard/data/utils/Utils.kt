@@ -274,29 +274,31 @@ object Utils {
         return spn
     }
 
-    fun isShowInterruptSheet(context: Context): Boolean {
+    fun isShowInterruptSheet(context: Context, isStoreNewTime: Boolean = false): Boolean {
         val sharedPref =
             context.getSharedPreferences(TOP_ADS_TOP_UP_CREDIT_SP_NAME, BaseSimpleActivity.MODE_PRIVATE)
         val storedTime = sharedPref.getLong(TOP_ADS_TOP_UP_CREDIT_SP_KEY_NAME, Long.ZERO)
         if (storedTime == Long.ZERO) {
-            storeNewTime(Calendar.getInstance().timeInMillis, sharedPref)
+            storeNewTime(Calendar.getInstance().timeInMillis, sharedPref, isStoreNewTime)
             return true
         } else {
             val currentTime = Calendar.getInstance().timeInMillis
             val timeDiffMillis = currentTime - storedTime
             val days = timeDiffMillis/(1000*60*60*24)
             if (days > TIME_DURATION_FOR_INTERRUPT_SHEET) {
-                storeNewTime(currentTime, sharedPref)
+                storeNewTime(currentTime, sharedPref, isStoreNewTime)
                 return true
             }
         }
         return false
     }
 
-    private fun storeNewTime(time: Long, sharedPref: SharedPreferences){
-        val editor = sharedPref.edit()
-        editor.putLong(TOP_ADS_TOP_UP_CREDIT_SP_KEY_NAME, time)
-        editor.apply()
+    private fun storeNewTime(time: Long, sharedPref: SharedPreferences, isStoreNewTime: Boolean){
+        if (isStoreNewTime){
+            val editor = sharedPref.edit()
+            editor.putLong(TOP_ADS_TOP_UP_CREDIT_SP_KEY_NAME, time)
+            editor.apply()
+        }
     }
 
     fun getTextFromFrequency(context: Context?, autoTopUpFrequencySelected: Int?): String? {
