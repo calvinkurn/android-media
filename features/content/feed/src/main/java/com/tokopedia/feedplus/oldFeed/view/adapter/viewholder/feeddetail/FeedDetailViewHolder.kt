@@ -10,11 +10,18 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.util.util.productThousandFormatted
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.view.listener.FeedPlusDetailListener
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailProductModel
+import com.tokopedia.feedplus.oldFeed.view.listener.FeedPlusDetailListener
+import com.tokopedia.feedplus.oldFeed.view.viewmodel.feeddetail.FeedDetailProductModel
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.roundToInt
 import com.tokopedia.feedcomponent.R as feedComponentR
