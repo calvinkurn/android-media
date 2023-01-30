@@ -231,7 +231,9 @@ class SummaryFragment :
             }
         }
         viewModel.errorUpload.observe(viewLifecycleOwner) {
-            showErrorUploadDialog(ErrorHandler.getErrorMessage(context, it))
+            showErrorUploadDialog(ErrorHandler.getErrorMessagePair(
+                context, it, ErrorHandler.Builder()
+            ).first.orEmpty())
         }
         viewModel.isInputValid.observe(viewLifecycleOwner) {
             binding?.layoutSubmission?.btnSubmit?.isEnabled = it
