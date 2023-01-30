@@ -26,6 +26,7 @@ import com.tokopedia.product_bundle.common.data.constant.BundlingPageSource
 import com.tokopedia.productbundlewidget.model.GetBundleParamBuilder
 import com.tokopedia.productbundlewidget.model.WidgetType
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -87,7 +88,10 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
                     marginBottom
                 )
             }
-            binding?.bottomTickerLabel?.text = MethodChecker.fromHtml(data.bottomTicker)
+            context?.let {
+                binding?.bottomTickerLabel?.text =
+                    HtmlLinkHelper(it, data.bottomTicker).spannedString
+            }
             binding?.bottomTickerLabel?.movementMethod = object : LinkMovementMethod() {
                 override fun onTouchEvent(
                     widget: TextView,
