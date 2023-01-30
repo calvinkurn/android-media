@@ -104,6 +104,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         restoreDataState(savedInstanceState)
 
         initObservable()
+        setupParam()
     }
 
     override fun attachBaseContext(newBase: Context?) {
@@ -112,11 +113,6 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         if (isOppoManufacturer()) {
             SplitCompat.installActivity(this)
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        setupParam()
     }
 
     override fun onPause() {
