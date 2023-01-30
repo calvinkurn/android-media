@@ -29,9 +29,9 @@ class AdGroupViewHolder(itemView: View,private val listener:AdGroupListener) : A
     private var selected = false
 
     init {
-       binding?.adGroupItemHeader?.setOnClickListener {
-           listener.onAdGroupClicked(bindingAdapterPosition,!selected)
-       }
+        binding?.root?.setOnClickListener{
+            listener.onAdGroupClicked(bindingAdapterPosition,!selected)
+        }
     }
 
     override fun bind(data: AdGroupUiModel?) {

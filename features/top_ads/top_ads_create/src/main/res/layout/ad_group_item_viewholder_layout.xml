@@ -62,7 +62,7 @@
            >
            <com.tokopedia.topads.view.customviews.AdStatsView
                android:id="@+id/ad_stats_top_row"
-               android:layout_width="match_parent"
+               android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                />
 
@@ -75,7 +75,7 @@
 
            <com.tokopedia.topads.view.customviews.AdStatsView
                android:id="@+id/ad_stats_bottom_row"
-               android:layout_width="match_parent"
+               android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                />
 
