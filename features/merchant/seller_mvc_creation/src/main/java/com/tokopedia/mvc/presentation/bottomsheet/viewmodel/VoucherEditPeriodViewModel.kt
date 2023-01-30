@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.presentation.bottomsheet.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -33,6 +34,9 @@ class VoucherEditPeriodViewModel @Inject constructor(
     private val _hourEndLiveData = MutableLiveData<String>()
     val hourEndLiveData: LiveData<String>
         get() = _hourEndLiveData
+    private val _toShowDateToaster = MutableLiveData<Boolean>()
+    val toShowDateToaster: LiveData<Boolean>
+        get() = _toShowDateToaster
 
     private val _startDateCalendarLiveData = MutableLiveData<Calendar>()
     val startDateCalendarLiveData: LiveData<Calendar>
@@ -57,8 +61,10 @@ class VoucherEditPeriodViewModel @Inject constructor(
                 _endDateCalendarLiveData.value
             ).isLessThanZero()
         ) {
+            Log.d("FATAL", "setStartDateTime: TATAKAE HERE")
             val modifiedEndDate = getMaxDate(_startDateCalendarLiveData.value as? GregorianCalendar)
             setEndDateTime(modifiedEndDate)
+            _toShowDateToaster.value = true
         }
     }
 

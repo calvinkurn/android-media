@@ -97,10 +97,9 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
             val month2 = selectedDateGregorian.get(Calendar.MONTH)
 
             if (date1 == date2 && month1 == month2) {
-                pickerStartTime.apply {
-                    val (startHour, startMinute) = getStartTime(startDate)
-                    set(Calendar.HOUR_OF_DAY, startHour)
-                    set(Calendar.MINUTE, startMinute)
+                pickerStartTime.apply{
+                    add(Calendar.HOUR_OF_DAY, ADD_3_HOURS)
+                    add(Calendar.MINUTE, MINUTE_INTERVAL)
                 }
             } else {
                 pickerStartTime.apply {
@@ -134,19 +133,6 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
                     .toBlankOrString()
             )
         }
-    }
-
-    fun GregorianCalendar.getStartTime(startDate: GregorianCalendar?): Pair<Int, Int> {
-        var startHour = startDate?.get(Calendar.HOUR_OF_DAY) ?: MIN_TIME_OF_DAY
-        var startMinute = startDate?.get(Calendar.MINUTE) ?: MIN_TIME_OF_DAY
-        if (startMinute >= MINUTE_INTERVAL) {
-            startHour += HOUR_INTERVAL
-            startMinute = MIN_TIME_OF_DAY
-        } else if (startMinute < MINUTE_INTERVAL) {
-            startMinute = MINUTE_INTERVAL
-        }
-        startHour += ADD_3_HOURS
-        return Pair(startHour, startMinute)
     }
 
     private fun initTimePicker(

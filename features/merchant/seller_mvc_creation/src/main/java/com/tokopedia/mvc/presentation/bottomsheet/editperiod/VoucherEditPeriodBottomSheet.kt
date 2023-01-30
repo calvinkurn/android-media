@@ -1,6 +1,9 @@
 package com.tokopedia.mvc.presentation.bottomsheet.editperiod
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -20,9 +22,10 @@ import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.VoucherEditPeriodViewModel
 import com.tokopedia.mvc.util.DateTimeUtils
+import com.tokopedia.mvc.util.decideCalendarPeriodEndDate
+import com.tokopedia.mvc.util.decideCalendarPeriodStartDate
 import com.tokopedia.mvc.util.formatTo
 import com.tokopedia.mvc.util.getGregorianDate
-import com.tokopedia.mvc.util.getToday
 import com.tokopedia.mvc.util.tracker.ChangePeriodTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -104,14 +107,16 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
             .build()
             .inject(this)
     }
-
+    private val coachmarkHandler = Handler(Looper.getMainLooper())
     private fun showDateToaster() {
+        Log.d("FATAL", "showDateToaster: Outside ")
         context?.resources?.let {
-            binding?.root?.showToaster(
+            view?.rootView?.showToaster(
                 it.getString(R.string.edit_period_date_picker_end_date_warning)
                     .toBlankOrString(),
                 it.getString(R.string.smvc_ok).toBlankOrString()
             )
+            Log.d("FATAL", "showDateToaster: Inside ")
         }
     }
 
@@ -169,6 +174,15 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
             binding?.btnMvcSavePeriod?.isLoading = false
             dismiss()
         }
+
+        viewModel.toShowDateToaster.observe(viewLifecycleOwner) { result ->
+            Log.d("FATAL", "initObservers: $result")
+            if (result) {
+                coachmarkHandler.postDelayed({
+                    showDateToaster()
+                }, 3000L)
+            }
+        }
     }
 
     private fun setUpView() {
@@ -215,7 +229,7 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun setDismissListener(){
+    private fun setDismissListener() {
         this.setOnDismissListener {
             voucher?.let {
                 tracker.sendClickCloseEvent(createLabelTracker(it))
@@ -223,12 +237,12 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun clearDismissListener(){
-        this.setOnDismissListener {  }
+    private fun clearDismissListener() {
+        this.setOnDismissListener { }
     }
     private fun onClickListenerForStartDate() {
         context?.run {
-            decideCalendarPeriodStartDate()?.let { minDate ->
+            decideCalendarPeriodStartDate(this, startCalendar)?.let { minDate ->
                 DateTimeUtils.getMaxDate(minDate)?.let { maxDate ->
                     voucherEditCalendarBottomSheet =
                         VoucherEditCalendarBottomSheet.newInstance(
@@ -254,7 +268,7 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
                 DateTimeUtils.getMaxDate(startCalendar)?.let { maxDate ->
                     voucherEditCalendarBottomSheet =
                         VoucherEditCalendarBottomSheet.newInstance(
-                            decideCalendarPeriodEndDate(),
+                            decideCalendarPeriodEndDate(startCalendar, endCalendar),
                             minDate,
                             maxDate,
                             endHour,
@@ -264,27 +278,6 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
                     voucherEditCalendarBottomSheet?.show(childFragmentManager, "")
                 }
             }
-        }
-    }
-
-    private fun decideCalendarPeriodEndDate(): GregorianCalendar? {
-        startCalendar?.let { start ->
-            return if (endCalendar?.compareTo(start)?.isLessThanZero() == true) {
-                startCalendar
-            } else {
-                endCalendar
-            }
-        }
-        return null
-    }
-
-    private fun decideCalendarPeriodStartDate(): GregorianCalendar? {
-        val get30DaysBefore = DateTimeUtils.getMinDate(startCalendar)
-        val today = context?.getToday()
-        return if (get30DaysBefore?.compareTo(today)?.isLessThanZero() == true) {
-            today
-        } else {
-            get30DaysBefore
         }
     }
 
@@ -304,8 +297,12 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun createLabelTracker(voucher: Voucher) : String {
-        return getString(R.string.smvc_tracker_change_pariod_lable, voucher.id.toString(), voucher.status.name)
+    private fun createLabelTracker(voucher: Voucher): String {
+        return getString(
+            R.string.smvc_tracker_change_pariod_lable,
+            voucher.id.toString(),
+            voucher.status.name
+        )
     }
 
     companion object {

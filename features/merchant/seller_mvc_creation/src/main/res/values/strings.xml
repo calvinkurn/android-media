@@ -277,7 +277,7 @@
     <string name="voucher_bs_coupon_display_title">Tampilan Kupon</string>
     <string name="voucher_bs_coupon_display_horizontal">Horizontal</string>
     <string name="voucher_bs_coupon_display_square">Square</string>
-    <string name="voucher_bs_coupon_display_vertical">Vertikal</string>
+    <string name="voucher_bs_coupon_display_vertical">Vertical</string>
 
     <!-- Voucher Period  -->
     <string name="voucher_bs_period_title_1">Kupon akan aktif pada:</string>
