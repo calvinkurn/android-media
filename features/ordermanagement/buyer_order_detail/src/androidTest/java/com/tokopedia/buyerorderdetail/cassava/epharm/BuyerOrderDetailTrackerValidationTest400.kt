@@ -25,6 +25,7 @@ class BuyerOrderDetailTrackerValidationTest400 : BuyerOrderDetailTrackerValidati
             testClickProduct(activityRule.activity)
             testClickShipmentTnC(activityRule.activity)
             testClickPrimaryActionButton()
+            testScrollToBottom(activityRule.activity)
             testClickSecondaryActionButtonHelp(activityRule.activity)
             testClickSecondaryActionButtonRequestCancel(activityRule.activity)
             testClickSecondaryActionButtonCheckPrescription(activityRule.activity)
@@ -40,7 +41,7 @@ class BuyerOrderDetailTrackerValidationTest400 : BuyerOrderDetailTrackerValidati
                 BuyerOrderDetailTrackerValidationConstant.clickPrimaryActionButtonChatSellerQueryPath,
                 BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonHelpQueryPath,
                 BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonRequestCancelQueryPath,
-                BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonCheckPrescriptionQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonCheckPrescriptionQueryPath
             )
             hasPassedAnalytics(cassavaTestRule)
         }
