@@ -1,0 +1,274 @@
+package com.tokopedia.feedplus.oldFeed.view.adapter
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineV2ViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardModel
+import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
+import com.tokopedia.feedplus.oldFeed.view.adapter.typefactory.feed.FeedPlusTypeFactory
+import com.tokopedia.feedplus.oldFeed.view.util.FeedDiffUtilCallback
+
+/**
+ * @author by nisie on 5/15/17.
+ */
+
+class FeedPlusAdapter(
+    private val typeFactory: FeedPlusTypeFactory,
+    val loadListener: OnLoadListener
+) : RecyclerView.Adapter<AbstractViewHolder<Visitable<*>>>() {
+
+    private var list: MutableList<Visitable<*>> = mutableListOf()
+    private val emptyModel: EmptyModel = EmptyModel()
+    private val loadingMoreModel: LoadingMoreModel = LoadingMoreModel()
+
+    private var unsetListener: Boolean = false
+    private var recyclerView: RecyclerView? = null
+
+    @Suppress("MagicNumber")
+    var itemTreshold = 5
+
+    // used to determine dynamicPostViewHolder.setVideo
+    var broadcastValueForDynamicPost = ""
+
+    private val endlessScrollListener = object : com.tokopedia.feedplus.oldFeed.view.util.EndlessScrollRecycleListener() {
+        override fun onLoadMore(page: Int, totalItemsCount: Int) {
+            if (isLoading)
+                return
+            if (!unsetListener && list.size > itemTreshold) {
+                showLoading()
+                loadListener.onLoad(totalItemsCount)
+            }
+        }
+
+        override fun onScroll(lastVisiblePosition: Int) {
+            if (loadListener is OnScrollListener)
+                loadListener.onScroll(lastVisiblePosition)
+        }
+    }
+
+    override fun onViewAttachedToWindow(holder: AbstractViewHolder<Visitable<*>>) {
+        super.onViewAttachedToWindow(holder)
+        if (holder is DynamicPostNewViewHolder && holder.adapterPosition < list.size && holder.adapterPosition != RecyclerView.NO_POSITION) {
+            (holder as DynamicPostNewViewHolder).onItemAttach(holder.itemView.context, list[holder.adapterPosition])
+        }
+        else if (holder is TopAdsHeadlineV2ViewHolder && holder.adapterPosition < list.size && holder.adapterPosition != RecyclerView.NO_POSITION) {
+            (holder as TopAdsHeadlineV2ViewHolder).onItemAttach(
+                    holder.itemView.context, list[holder.adapterPosition]
+            )
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<Visitable<*>>) {
+        super.onViewDetachedFromWindow(holder)
+
+        if (holder is DynamicPostNewViewHolder && holder.adapterPosition < list.size && holder.adapterPosition != RecyclerView.NO_POSITION) {
+            (holder as DynamicPostNewViewHolder).onItemDetach(
+                holder.itemView.context, list[holder.adapterPosition]
+            )
+        }
+
+        else if (holder is TopAdsHeadlineV2ViewHolder && holder.adapterPosition < list.size && holder.adapterPosition != RecyclerView.NO_POSITION) {
+            (holder as TopAdsHeadlineV2ViewHolder).onItemDetach(
+                    holder.itemView.context, list[holder.adapterPosition]
+            )
+        }
+    }
+
+    val isLoading: Boolean
+        get() = this.list.contains(loadingMoreModel)
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AbstractViewHolder<Visitable<*>> {
+        val context = parent.context
+        val view = LayoutInflater.from(context).inflate(viewType, parent, false)
+
+        @Suppress("UNCHECKED_CAST")
+        return typeFactory.createViewHolder(view, viewType) as AbstractViewHolder<Visitable<*>>
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        @Suppress("UNCHECKED_CAST")
+        val data = list[position] as Visitable<FeedPlusTypeFactory>
+
+        return data.type(typeFactory)
+    }
+
+    override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int) {
+        if (holder is DynamicPostNewViewHolder) {
+            (holder as DynamicPostNewViewHolder).bind(
+                (list[position] as? DynamicPostUiModel), broadcastValueForDynamicPost)
+        } else {
+            holder.bind(list[position])
+        }
+    }
+
+    override fun onBindViewHolder(
+        holder: AbstractViewHolder<Visitable<*>>, position: Int,
+        payloads: List<Any>
+    ) {
+        if (payloads.isNotEmpty()) {
+            if (holder is DynamicPostNewViewHolder) {
+                (holder as DynamicPostNewViewHolder).bind(
+                    (list[position] as? DynamicPostUiModel), (payloads as MutableList),
+                    broadcastValueForDynamicPost)
+            } else {
+                holder.bind(list[position], payloads)
+            }
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
+        }
+    }
+
+    override fun getItemCount(): Int {
+        return list.size
+    }
+
+    private fun add(visitable: Visitable<*>) {
+        addList(mutableListOf(visitable))
+    }
+
+    fun addList(newLists: List<Visitable<*>>) {
+        val newList: MutableList<Visitable<*>> = mutableListOf()
+        newList.addAll(list)
+        newList.addAll(newLists)
+        updateList(newList)
+    }
+    fun addListItemAtTop(visitable: Visitable<*>) {
+        val newList: MutableList<Visitable<*>> = mutableListOf()
+        newList.addAll(list)
+        newList.add(1, visitable)
+        updateList(newList)
+    }
+
+    private fun remove(visitable: Visitable<*>) {
+        val newList: MutableList<Visitable<*>> = mutableListOf()
+        newList.addAll(list)
+        newList.remove(visitable)
+        updateList(newList)
+
+    }
+
+    fun clearData() {
+        updateList(mutableListOf())
+    }
+
+    fun showEmpty() {
+        add(emptyModel)
+    }
+
+    fun removeEmpty() {
+        remove(emptyModel)
+    }
+
+    fun showLoading() {
+        val removePosition = this.list.indexOf(loadingMoreModel)
+        if (removePosition != -1) remove(loadingMoreModel)
+        add(loadingMoreModel)
+    }
+
+    fun removeLoading() {
+        remove(loadingMoreModel)
+    }
+
+    fun getlist(): MutableList<Visitable<*>> {
+        return list
+    }
+
+    fun getList(): ArrayList<Visitable<*>> {
+        return ArrayList(list)
+    }
+
+    fun addItem(item: Visitable<*>) {
+        add(item)
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        this.recyclerView = recyclerView
+        this.recyclerView!!.itemAnimator = null
+        setEndlessScrollListener()
+    }
+
+    override fun onViewRecycled(holder: AbstractViewHolder<Visitable<*>>) {
+        super.onViewRecycled(holder)
+        holder.onViewRecycled()
+    }
+
+    fun setEndlessScrollListener() {
+        unsetListener = false
+        recyclerView!!.addOnScrollListener(endlessScrollListener)
+    }
+
+    fun unsetEndlessScrollListener() {
+        unsetListener = true
+        recyclerView!!.removeOnScrollListener(endlessScrollListener)
+    }
+
+    fun updateList(newList: List<Visitable<*>>) {
+        val diffResult = DiffUtil.calculateDiff(FeedDiffUtilCallback(list, newList))
+
+        list.clear()
+        list.addAll(newList)
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    private fun updateListAndNotify(newList: List<Visitable<*>>, position: Int) {
+        list.clear()
+        list.addAll(newList)
+        notifyItemChanged(position)
+    }
+
+    fun removePlayWidget() {
+        val playCarousel = list.firstOrNull { it is CarouselPlayCardModel }
+        if (playCarousel != null) remove(playCarousel)
+    }
+
+    fun updatePlayWidget(newModel: CarouselPlayCardModel) {
+        val newList = list.map {
+            if (it is CarouselPlayCardModel) newModel
+            else it
+        }
+        updateList(newList)
+    }
+
+    fun removeShopRecomWidget() {
+        val shopRecomWidget = list.firstOrNull { it is ShopRecomWidgetModel }
+        if (shopRecomWidget != null) remove(shopRecomWidget)
+    }
+
+    fun updateShopRecomWidget(newModel: ShopRecomWidgetModel) {
+        var position = 0
+        val newList = list.mapIndexed { index, visitable ->
+            if (visitable is ShopRecomWidgetModel) {
+                position = index
+                newModel
+            }
+            else visitable
+        }
+        updateListAndNotify(newList, position)
+    }
+
+    fun showShimmer() {
+        val shimmerItems: ArrayList<ShimmerUiModel> = ArrayList()
+        repeat(5) { shimmerItems.add(ShimmerUiModel()) }
+        updateList(shimmerItems)
+    }
+
+    interface OnLoadListener {
+        fun onLoad(totalCount: Int)
+    }
+
+    interface OnScrollListener : OnLoadListener {
+        fun onScroll(lastVisiblePosition: Int)
+    }
+}
