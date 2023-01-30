@@ -457,12 +457,12 @@ class SummaryFragment :
     }
 
     private fun onInformationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
-        val isAdding = viewModel.checkIsAdding(configuration)
+        val isAdding = viewModel.checkIsAdding(configuration) && !enableDuplicateVoucher
         redirectionHelper.redirectToCouponInfoPage(this, configuration, isAdding)
     }
 
     private fun onConfigurationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
-        val isAdding = viewModel.checkIsAdding(configuration)
+        val isAdding = viewModel.checkIsAdding(configuration) && !enableDuplicateVoucher
         redirectionHelper.redirectToCouponConfigurationPage(this, configuration, isAdding)
     }
 

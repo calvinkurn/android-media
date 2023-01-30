@@ -49,7 +49,11 @@ class SummaryViewModel @Inject constructor(
     val maxExpense = Transformations.map(_configuration) { getMaxExpenses(it) }
     val configuration = Transformations.map(_configuration) {
         if (isDuplicate) {
-            it.copy(voucherId = ADDING_VOUCHER_ID)
+            it.copy(
+                voucherId = ADDING_VOUCHER_ID,
+                startPeriod = Date(),
+                endPeriod = Date()
+            )
         } else {
             it
         }
