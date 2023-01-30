@@ -14,16 +14,18 @@ import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
 import com.tokopedia.report.view.fragment.models.ProductReportUiState
 import com.tokopedia.usecase.coroutines.Result
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ProductReportViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                 dispatcher: CoroutineDispatchers): BaseViewModel(dispatcher.io) {
+class ProductReportViewModel @Inject constructor(
+    private val graphqlRepository: GraphqlRepository,
+    private val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.io) {
 
     companion object {
         private const val query = """
@@ -73,7 +75,7 @@ class ProductReportViewModel @Inject constructor(private val graphqlRepository: 
         """
     }
 
-    val reasonResponse =  MutableLiveData<Result<List<ProductReportReason>>>()
+    val reasonResponse = MutableLiveData<Result<List<ProductReportReason>>>()
 
     private val _uiState = MutableStateFlow(ProductReportUiState())
     val uiState get() = _uiState.asStateFlow()
@@ -85,7 +87,7 @@ class ProductReportViewModel @Inject constructor(private val graphqlRepository: 
         getReportReason()
     }
 
-    private fun getReportReason() = viewModelScope.launch {
+    private fun getReportReason() = viewModelScope.launch(dispatcher.main) {
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(query, ProductReportReason.Response::class.java)
             val data = graphqlRepository.response(listOf(graphqlRequest))
@@ -95,12 +97,12 @@ class ProductReportViewModel @Inject constructor(private val graphqlRepository: 
             updateState(
                 state.copy(data = list, allData = list)
             )
-        }){ throwable ->
+        }) { throwable ->
             _uiState.update { it.copy(error = throwable.message) }
         }
     }
 
-    fun onEvent(event: ProductReportUiEvent) = viewModelScope.launch {
+    fun onEvent(event: ProductReportUiEvent) = viewModelScope.launch(dispatcher.main) {
         when (event) {
             is ProductReportUiEvent.OnItemClicked -> {
                 onItemClicked(reason = event.reason)
@@ -125,7 +127,9 @@ class ProductReportViewModel @Inject constructor(private val graphqlRepository: 
                 ).also {
                     it.parentLabel = baseParent.strLabel
                 }
-            } else reason
+            } else {
+                reason
+            }
 
             _uiEvent.emit(ProductReportUiEvent.OnGoToForm(fieldReason))
         }
@@ -170,7 +174,7 @@ class ProductReportViewModel @Inject constructor(private val graphqlRepository: 
         val id = filterId.lastOrNull() ?: -1
 
         if (id <= 0) {
-            val  title = UiText.ResourceText(com.tokopedia.report.R.string.product_report_header)
+            val title = UiText.ResourceText(com.tokopedia.report.R.string.product_report_header)
             _uiState.update {
                 state.copy(title = title, data = allData)
             }

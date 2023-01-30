@@ -4,31 +4,35 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.verifyErrorEquals
 import com.tokopedia.report.verifySuccessEquals
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import junit.framework.Assert
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyString
 import java.lang.reflect.Type
 
 class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
 
     @Test
-    fun `when getReportReason success should return expected result`() {
+    fun `when getReportReason success should return expected result`() = runBlockingTest {
         val expectedResponse = GraphqlResponse(
-                mapOf(ProductReportReason.Response::class.java to ProductReportReason.Response()) as MutableMap<Type, Any>,
-                HashMap<Type, List<GraphqlError>>(),
-                false
+            mapOf(ProductReportReason.Response::class.java to ProductReportReason.Response()) as MutableMap<Type, Any>,
+            HashMap<Type, List<GraphqlError>>(),
+            false
         )
+        val expected = expectedResponse.getSuccessData<ProductReportReason.Response>().data
         onGetReportReasonSuccess_thenReturn(expectedResponse)
         viewModel = ProductReportViewModel(graphqlRepository, CoroutineTestDispatchersProvider)
         verifyUseCaseCalled()
-        verifyGetReportReasonSuccess(Success(expectedResponse.getSuccessData<ProductReportReason.Response>().data))
+        val test = viewModel.uiState.first()
+        Assert.assertEquals(expected, test.data)
     }
 
     @Test
