@@ -293,10 +293,10 @@
     <string name="smvc_storage_permission_enabled_needed">Anda tidak memberikan izin akses untuk Media Penyimpanan.</string>
     <string name="smvc_square">Square</string>
     <string name="smvc_square_description">Untuk post Instagram, Facebook.</string>
-    <string name="smvc_vertical">Vertikal</string>
+    <string name="smvc_vertical">Vertical</string>
     <string name="smvc_vertical_description">Untuk post Instagram Story.</string>
     <string name="smvc_horizontal">Horizontal</string>
-    <string name="smvc_horizontal_description">Untuk banner toko</string>
+    <string name="smvc_horizontal_description">Untuk banner toko.</string>
 
     <!--Summary Page-->
     <string name="smvc_summary_page_title">Ringkasan Kupon</string>
