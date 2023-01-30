@@ -6,8 +6,6 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewTreeLifecycleOwner
-import androidx.lifecycle.ViewTreeViewModelStoreOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -42,16 +40,9 @@ class ProductReportActivity : AppCompatActivity() {
             .inject(this)
     }
 
-    private fun setViewTree() {
-        ViewTreeLifecycleOwner.set(this.window.decorView, this)
-        ViewTreeViewModelStoreOwner.set(this.window.decorView, this)
-        //ViewTreeSavedStateRegistryOwner.set(this.window.decorView, this)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         injectComponent()
         super.onCreate(savedInstanceState)
-        //setViewTree()
 
         setContent {
             NestTheme {
