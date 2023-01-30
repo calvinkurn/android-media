@@ -1644,16 +1644,14 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             !selectedAccount.enable -> {
                 if (isFirstOpen && isAllowChangeAccount) return false
 
-                if (selectedAccount.isShop) {
-                    tncList.clear()
-                    tncList.addAll(configUiModel.tnc)
-                }
+                /** Use the same logic as iOS */
+                tncList.clear()
+                tncList.addAll(configUiModel.tnc)
 
-                /** TODO: if selectedAccount == UGC && enable == false, what bottomsheet should we show? */
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
                     AccountStateInfo(
-                        type = AccountStateInfoType.NotAcceptTNC,
+                        type = AccountStateInfoType.NotWhitelisted,
                         selectedAccount = selectedAccount
                     )
                 }

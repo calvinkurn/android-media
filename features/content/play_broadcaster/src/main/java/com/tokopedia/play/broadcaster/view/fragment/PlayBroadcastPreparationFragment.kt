@@ -782,16 +782,16 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 analytic.viewDialogViolation(parentViewModel.channelId)
                 showWarningInfoBottomSheet()
             }
+            /** Banned is not used? */
             AccountStateInfoType.Banned -> showWarningInfoBottomSheet()
             AccountStateInfoType.NotAcceptTNC -> {
-                if (state.selectedAccount.isShop) {
-                    showTermsAndConditionBottomSheet()
-                } else {
-                    showUGCOnboardingBottomSheet(UGCOnboardingParentFragment.OnboardingType.Tnc)
-                }
+                showUGCOnboardingBottomSheet(UGCOnboardingParentFragment.OnboardingType.Tnc)
             }
             AccountStateInfoType.NoUsername -> {
                 showUGCOnboardingBottomSheet(UGCOnboardingParentFragment.OnboardingType.Complete)
+            }
+            AccountStateInfoType.NotWhitelisted -> {
+                showTermsAndConditionBottomSheet()
             }
             AccountStateInfoType.Unknown -> return
         }
