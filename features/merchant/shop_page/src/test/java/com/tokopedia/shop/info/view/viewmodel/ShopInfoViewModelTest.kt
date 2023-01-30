@@ -2,6 +2,7 @@ package com.tokopedia.shop.info.view.viewmodel
 
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.shop.common.data.model.ShopInfoData
+import com.tokopedia.shop.common.data.model.ShopShipmentData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ChatExistingChat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ChatMessageId
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
@@ -280,23 +281,25 @@ class ShopInfoViewModelTest : ShopInfoViewModelTestFixture() {
     // region private methods
     private fun ShopInfo.toShopInfoData(): ShopInfoData {
         return ShopInfoData(
-            shopCore.shopID,
-            shopCore.name,
-            shopCore.description,
-            shopCore.url,
-            location,
-            shopAssets.cover,
-            shopCore.tagLine,
-            goldOS.isOfficial,
-            goldOS.isGold,
-            createdInfo.openSince,
-            emptyList(),
-            shopSnippetUrl,
-            isGoApotik,
-            epharmacyInfo.siaNumber,
-            epharmacyInfo.sipaNumber,
-            epharmacyInfo.apj,
-            partnerLabel
+            shopId = shopCore.shopID,
+            name = shopCore.name,
+            description = shopCore.description,
+            url = shopCore.url,
+            location = location,
+            imageCover = shopAssets.cover,
+            tagLine = shopCore.tagLine,
+            isOfficial = goldOS.isOfficial,
+            isGold = goldOS.isGold,
+            openSince = createdInfo.openSince,
+            shipments = emptyList(),
+            shopSnippetUrl = shopSnippetUrl,
+            isGoApotik = isGoApotik,
+            siaNumber = epharmacyInfo.siaNumber,
+            sipaNumber = epharmacyInfo.sipaNumber,
+            apj = epharmacyInfo.apj,
+            partnerLabel = partnerLabel,
+            fsType = partnerInfo.fsType,
+            partnerName = partnerInfo.partnerName
         )
     }
 
