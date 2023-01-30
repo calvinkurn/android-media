@@ -81,8 +81,10 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
             binding?.cardBottomTicker?.apply {
                 // Margin adjustment for card view padding in bundle widget recycler view item
                 setMargin(
-                    marginLeft + BUNDLING_WIDGET_MARGIN_START_ADJUSTMENT.toPx(), marginTop,
-                    marginRight, marginBottom
+                    marginLeft + BUNDLING_WIDGET_MARGIN_START_ADJUSTMENT.toPx(),
+                    marginTop,
+                    marginRight,
+                    marginBottom
                 )
             }
             binding?.bottomTickerLabel?.text = MethodChecker.fromHtml(data.bottomTicker)
