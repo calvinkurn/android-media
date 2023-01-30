@@ -21,6 +21,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
@@ -38,6 +39,7 @@ class AffiliateSSAShopItemVH(
     private val shopImage = itemView.findViewById<ImageView>(R.id.imageMain)
     private val shopName = itemView.findViewById<Typography>(R.id.textViewTitle)
     private val imageBadge = itemView.findViewById<ImageView>(R.id.imageTitleEmblem)
+    private val ssaLabel = itemView.findViewById<Label>(R.id.ssa_label)
     private val ssaMessage = itemView.findViewById<Typography>(R.id.ssa_message)
     private val textRating = itemView.findViewById<Typography>(R.id.textViewRating)
     private val imageRating = itemView.findViewById<ImageView>(R.id.imageRating)
@@ -64,6 +66,10 @@ class AffiliateSSAShopItemVH(
                 } else {
                     Html.fromHtml(it.ssaShopDetail?.message)
                 }
+            }
+            ssaLabel.apply {
+                isVisible = it.ssaShopDetail?.ssaStatus == true
+                text = it.ssaShopDetail?.label?.labelText
             }
             setUpFooterData(it.ssaShopDetail)
             setUpPromotionClickListener(it)

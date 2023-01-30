@@ -81,7 +81,9 @@
                         android:layout_marginHorizontal="16dp"
                         android:layout_marginTop="12dp"
                         app:cardCornerRadius="8dp"
-                        app:layout_constraintTop_toBottomOf="@id/promotion_info_desc">
+                        app:layout_constraintBottom_toTopOf="@id/card_ssa_entry"
+                        app:layout_constraintTop_toBottomOf="@id/promotion_info_desc"
+                        app:layout_goneMarginBottom="16dp">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
