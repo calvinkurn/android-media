@@ -9,6 +9,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToaster
@@ -55,6 +57,7 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.moremenu.MoreMenuBottomSheet
 import com.tokopedia.mvc.presentation.download.DownloadVoucherImageBottomSheet
+import com.tokopedia.mvc.presentation.list.dialog.CallTokopediaCareDialog
 import com.tokopedia.mvc.presentation.list.dialog.StopVoucherConfirmationDialog
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.presentation.product.list.ProductListActivity
@@ -73,6 +76,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.constants.BroadcastChannelType
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -100,6 +104,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             "https://m.tokopedia.com/broadcast-chat/create/content?voucher_id="
         private const val tncUrl =
             "https://www.tokopedia.com/help/seller/article/syarat-ketentuan-kupon-toko-saya"
+        private const val TOKOPEDIA_CARE_STRING_FORMAT = "%s?url=%s"
+        private const val TOKOPEDIA_CARE_PATH = "help"
     }
 
     // binding
@@ -710,7 +716,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             is MoreMenuUiModel.TermsAndConditions -> {
                 openTncPage()
             }
-            else -> showConfirmationStopVoucherDialog(data)
+            else -> deleteOrStopVoucher(data)
         }
     }
 
@@ -947,6 +953,13 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         stopVoucherDialog = StopVoucherConfirmationDialog(context ?: return)
     }
 
+    private fun deleteOrStopVoucher(data: VoucherDetailData) {
+        if (data.isVps == TRUE) {
+            showCallTokopediaCareDialog(data.voucherStatus)
+        } else {
+            showConfirmationStopVoucherDialog(data)
+        }
+    }
     private fun showConfirmationStopVoucherDialog(data: VoucherDetailData) {
         val voucherStatus = data.voucherStatus
 
@@ -961,6 +974,21 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     getStringDescStopVoucherDialog(voucherStatus, data.voucherName),
                     getStringPositiveCtaStopVoucherDialog(voucherStatus)
                 )
+            }
+        }
+    }
+
+    private fun showCallTokopediaCareDialog(voucherStatus: VoucherStatus) {
+        context?.let {
+            val title = getTitleTokopediaCareDialog(voucherStatus)
+            val desc = getDescTokopediaCareDialog(voucherStatus)
+            CallTokopediaCareDialog(it).apply {
+                setTitle(title)
+                setDescription(desc)
+                setOnPositiveConfirmed {
+                    goToTokopediaCare()
+                }
+                show(getString(R.string.smvc_call_tokopedia_care), getString(R.string.smvc_back))
             }
         }
     }
@@ -989,6 +1017,22 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun getTitleTokopediaCareDialog(voucherStatus: VoucherStatus): String {
+        return if (voucherStatus == VoucherStatus.NOT_STARTED) {
+            getString(R.string.smvc_cannot_deleted_call_tokopedia_care_title_dialog)
+        } else {
+            getString(R.string.smvc_cannot_canceled_call_tokopedia_care_title_dialog)
+        }
+    }
+
+    private fun getDescTokopediaCareDialog(voucherStatus: VoucherStatus): String {
+        return if (voucherStatus == VoucherStatus.NOT_STARTED) {
+            getString(R.string.smvc_cannot_deleted_call_tokopedia_care_desc_dialog)
+        } else {
+            getString(R.string.smvc_cannot_canceled_call_tokopedia_care_desc_dialog)
+        }
+    }
+
     private fun redirectToProductListPage(voucherDetail: VoucherDetailData) {
         val intent = ProductListActivity.buildIntentForVoucherDetailPage(
             context = activity ?: return,
@@ -1001,6 +1045,17 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         startActivityForResult(
             intent,
             NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_EXISTING_SELECTION
+        )
+    }
+
+    private fun goToTokopediaCare() {
+        RouteManager.route(
+            activity,
+            String.format(
+                TOKOPEDIA_CARE_STRING_FORMAT,
+                ApplinkConst.WEBVIEW,
+                TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CARE_PATH)
+            )
         )
     }
 }

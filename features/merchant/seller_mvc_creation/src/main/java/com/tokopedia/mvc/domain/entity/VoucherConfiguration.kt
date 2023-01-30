@@ -27,7 +27,7 @@ data class VoucherConfiguration(
     val voucherName: String = "",
     val voucherCodePrefix: String = "",
     val voucherCode: String = "",
-    val startPeriod: Date = Date(),
+    val startPeriod: Date = Date().addTimeToSpesificDate(Calendar.HOUR, 3),
     val endPeriod: Date = startPeriod.addTimeToSpesificDate(Calendar.MONTH, 1).removeTime(),
     val isPeriod: Boolean = false,
     val periodType: Int = PeriodType.MONTH.type,
