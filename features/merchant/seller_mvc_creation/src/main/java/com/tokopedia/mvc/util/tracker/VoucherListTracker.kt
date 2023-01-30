@@ -1,20 +1,25 @@
 package com.tokopedia.mvc.util.tracker
 
+import com.tokopedia.mvc.util.constant.MvcTrackerConstant
 import com.tokopedia.mvc.util.constant.MvcTrackerConstant.MVC_BUSINESS_UNIT
 import com.tokopedia.mvc.util.constant.MvcTrackerConstant.MVC_CURRENT_SITE
+import com.tokopedia.mvc.util.constant.MvcTrackerConstant.MVC_EVENT
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class VoucherListTracker @Inject constructor(private val userSession: UserSessionInterface) {
+    companion object {
+        private const val EC_VOUCHER_LIST_PAGE = "kupon toko saya - daftar kupon"
+    }
 
     fun sendClickBuatKuponEvent() {
         Tracker.Builder()
-            .setEvent("clickPG")
+            .setEvent(MVC_EVENT)
             .setEventAction("click buat kupon")
-            .setEventCategory("kupon toko saya - daftar kupon")
+            .setEventCategory(EC_VOUCHER_LIST_PAGE)
             .setEventLabel("kupon aktif")
-            .setCustomProperty("trackerId", "39428")
+            .setCustomProperty(MvcTrackerConstant.TRACKER_ID, "39428")
             .setBusinessUnit(MVC_BUSINESS_UNIT)
             .setCurrentSite(MVC_CURRENT_SITE)
             .setShopId(userSession.shopId)
@@ -24,11 +29,11 @@ class VoucherListTracker @Inject constructor(private val userSession: UserSessio
 
     fun sendClickArrowOnJadwalLainEvent() {
         Tracker.Builder()
-            .setEvent("clickPG")
+            .setEvent(MVC_EVENT)
             .setEventAction("click arrow on jadwal lain")
-            .setEventCategory("kupon toko saya - daftar kupon")
+            .setEventCategory(EC_VOUCHER_LIST_PAGE)
             .setEventLabel("")
-            .setCustomProperty("trackerId", "39429")
+            .setCustomProperty(MvcTrackerConstant.TRACKER_ID, "39429")
             .setBusinessUnit(MVC_BUSINESS_UNIT)
             .setCurrentSite(MVC_CURRENT_SITE)
             .setShopId(userSession.shopId)
@@ -38,11 +43,11 @@ class VoucherListTracker @Inject constructor(private val userSession: UserSessio
 
     fun sendClickDotsOnUpperSideEvent() {
         Tracker.Builder()
-            .setEvent("clickPG")
+            .setEvent(MVC_EVENT)
             .setEventAction("click 3 dots on upper side")
-            .setEventCategory("kupon toko saya - daftar kupon")
+            .setEventCategory(EC_VOUCHER_LIST_PAGE)
             .setEventLabel("")
-            .setCustomProperty("trackerId", "39430")
+            .setCustomProperty(MvcTrackerConstant.TRACKER_ID, "39430")
             .setBusinessUnit(MVC_BUSINESS_UNIT)
             .setCurrentSite(MVC_CURRENT_SITE)
             .setShopId(userSession.shopId)
@@ -52,11 +57,11 @@ class VoucherListTracker @Inject constructor(private val userSession: UserSessio
 
     fun sendClickDotsOnEachVoucherEvent() {
         Tracker.Builder()
-            .setEvent("clickPG")
+            .setEvent(MVC_EVENT)
             .setEventAction("click 3 dots on each voucher")
-            .setEventCategory("kupon toko saya - daftar kupon")
+            .setEventCategory(EC_VOUCHER_LIST_PAGE)
             .setEventLabel("")
-            .setCustomProperty("trackerId", "39431")
+            .setCustomProperty(MvcTrackerConstant.TRACKER_ID, "39431")
             .setBusinessUnit(MVC_BUSINESS_UNIT)
             .setCurrentSite(MVC_CURRENT_SITE)
             .setShopId(userSession.shopId)
@@ -66,11 +71,11 @@ class VoucherListTracker @Inject constructor(private val userSession: UserSessio
 
     fun sendClickInfoOnSisaKuotaEvent() {
         Tracker.Builder()
-            .setEvent("clickPG")
+            .setEvent(MVC_EVENT)
             .setEventAction("click info on sisa kuota")
-            .setEventCategory("kupon toko saya - daftar kupon")
+            .setEventCategory(EC_VOUCHER_LIST_PAGE)
             .setEventLabel("")
-            .setCustomProperty("trackerId", "39432")
+            .setCustomProperty(MvcTrackerConstant.TRACKER_ID, "39432")
             .setBusinessUnit(MVC_BUSINESS_UNIT)
             .setCurrentSite(MVC_CURRENT_SITE)
             .setShopId(userSession.shopId)
