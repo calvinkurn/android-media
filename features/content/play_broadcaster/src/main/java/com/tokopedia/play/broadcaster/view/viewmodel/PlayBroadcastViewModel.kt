@@ -1630,12 +1630,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
                 false
             }
-            selectedAccount.isUser && !selectedAccount.hasUsername -> {
+            selectedAccount.isUser && !selectedAccount.hasAcceptTnc -> {
                 if (isFirstOpen && isAllowChangeAccount) return false
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
                     AccountStateInfo(
-                        type = AccountStateInfoType.NoUsername,
+                        type = if(selectedAccount.hasUsername) AccountStateInfoType.NotAcceptTNC else AccountStateInfoType.NoUsername,
                         selectedAccount = selectedAccount
                     )
                 }
@@ -1643,16 +1643,19 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
             !selectedAccount.enable -> {
                 if (isFirstOpen && isAllowChangeAccount) return false
+
+                if (selectedAccount.isShop) {
+                    tncList.clear()
+                    tncList.addAll(configUiModel.tnc)
+                }
+
+                /** TODO: if selectedAccount == UGC && enable == false, what bottomsheet should we show? */
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
                     AccountStateInfo(
                         type = AccountStateInfoType.NotAcceptTNC,
                         selectedAccount = selectedAccount
                     )
-                }
-                if (selectedAccount.isShop) {
-                    tncList.clear()
-                    tncList.addAll(configUiModel.tnc)
                 }
                 false
             }
