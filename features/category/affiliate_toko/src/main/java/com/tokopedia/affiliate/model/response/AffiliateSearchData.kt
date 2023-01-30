@@ -53,11 +53,23 @@ data class AffiliateSearchData(
                     var title: String?,
                     @SerializedName("titleEmblem")
                     var titleEmblem: String?,
-
-                    //custom Attribute
+                    @SerializedName("label")
+                    var label: Label?,
+                    @SerializedName("message")
+                    var message: String?,
+                    @SerializedName("ssaMessage")
+                    var ssaMessage: String?,
+                    // custom Attribute
                     var type: String?,
                     var itemId: String
                 ) {
+                    data class Label(
+                        @SerializedName("LabelType")
+                        var labelType: String,
+                        @SerializedName("LabelText")
+                        var labelText: String
+                    )
+
                     data class AdditionalInformation(
                         @SerializedName("color")
                         var color: String?,

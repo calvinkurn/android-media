@@ -37,6 +37,12 @@ val GQL_Affiliate_Search: String = """query searchAffiliate(${"$"}filter: [Strin
           productID
           title
           titleEmblem
+          label {
+            LabelType
+            LabelText
+          }
+          message
+          ssaMessage
           image {
             DesktopURL
             MobileURL
@@ -73,4 +79,5 @@ val GQL_Affiliate_Search: String = """query searchAffiliate(${"$"}filter: [Strin
       }
     }
   }
-}""".trimIndent()
+}
+""".trimIndent()
