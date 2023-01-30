@@ -386,7 +386,7 @@ class PlayShortsViewModel @Inject constructor(
             emitEventSellerNotEligible()
         } else if (account.isUser && !config.shortsAllowed) {
             emitEventAccountNotEligible()
-        } else if (account.isUser && !account.enable) {
+        } else if (account.isUser && !account.hasAcceptTnc) {
             emitEventUGCOnboarding(account.hasUsername)
         } else {
             val finalConfig = if (config.shortsId.isEmpty()) {
