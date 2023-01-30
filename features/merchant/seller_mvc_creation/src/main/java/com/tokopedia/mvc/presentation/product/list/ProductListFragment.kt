@@ -20,7 +20,6 @@ import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -45,6 +44,7 @@ import com.tokopedia.mvc.presentation.product.variant.review.ReviewVariantBottom
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.NumberConstant
+import com.tokopedia.mvc.util.tracker.ProductListPageTracker
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
@@ -53,7 +53,6 @@ import javax.inject.Inject
 class ProductListFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val ONE_PRODUCT = 1
 
         @JvmStatic
         fun newInstance(
@@ -108,6 +107,9 @@ class ProductListFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var tracker: ProductListPageTracker
+
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductListViewModel::class.java) }
 
@@ -133,7 +135,6 @@ class ProductListFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        applyUnifyBackgroundColor()
         setupView()
         observeUiEffect()
         observeUiState()
@@ -178,11 +179,10 @@ class ProductListFragment : BaseDaggerFragment() {
 
     private fun setupButton() {
         binding?.btnContinue?.setOnClickListener {
+            tracker.sendButtonContinueClickEvent(pageMode ?: return@setOnClickListener)
             viewModel.processEvent(ProductListEvent.TapContinueButton)
         }
-        binding?.btnBack?.setOnClickListener { 
-            activity?.finish()
-        }
+        binding?.btnBack?.setOnClickListener { backToPreviousPage() }
     }
 
     private fun setupCheckbox() {
@@ -233,7 +233,18 @@ class ProductListFragment : BaseDaggerFragment() {
             is ProductListEffect.ShowError -> binding?.cardUnify2?.showToasterError(effect.error)
             ProductListEffect.BackToPreviousPage -> backToPreviousPage()
             is ProductListEffect.RedirectToAddProductPage -> redirectToAddProductPage(effect.voucherConfiguration)
+            is ProductListEffect.RedirectToPreviousPage -> redirectToPreviousPage(effect.selectedProductCount, effect.pageMode)
         }
+    }
+
+    private fun redirectToPreviousPage(selectedProductCount: Int, pageMode: PageMode) {
+        if (selectedProductCount.isZero()) {
+            tracker.sendClickToolbarBackButtonEvent(pageMode)
+        } else {
+            tracker.sendClickToolbarBackButtonWithProductSelectedEvent(pageMode)
+        }
+
+        activity?.finish()
     }
 
 
@@ -465,6 +476,7 @@ class ProductListFragment : BaseDaggerFragment() {
     }
 
     private fun backToPreviousPage() {
+        viewModel.processEvent(ProductListEvent.TapToolbarBackIcon)
         activity?.finish()
     }
 

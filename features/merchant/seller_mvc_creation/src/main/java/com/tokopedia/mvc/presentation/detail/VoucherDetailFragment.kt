@@ -55,6 +55,7 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.moremenu.MoreMenuBottomSheet
 import com.tokopedia.mvc.presentation.download.DownloadVoucherImageBottomSheet
+import com.tokopedia.mvc.presentation.list.dialog.StopVoucherConfirmationDialog
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.presentation.product.list.ProductListActivity
 import com.tokopedia.mvc.presentation.share.LinkerDataGenerator
@@ -66,6 +67,7 @@ import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
 import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.mvc.util.constant.VoucherTargetConstant.VOUCHER_TARGET_PUBLIC
+import com.tokopedia.mvc.util.tracker.ShareBottomSheetTracker
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.constants.BroadcastChannelType
@@ -124,7 +126,14 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     @Inject
     lateinit var shareCopyWritingGenerator: ShareCopyWritingGenerator
 
+    // bottomsheet
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+
+    // dialog
+    private var stopVoucherDialog: StopVoucherConfirmationDialog? = null
+
+    @Inject
+    lateinit var tracker: ShareBottomSheetTracker
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(VoucherDetailViewModel::class.java) }
@@ -158,6 +167,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         observeGenerateVoucherImageResult()
         observeOpenVoucherImageBottomSheetEvent()
         observeRedirectionToProductListPage()
+        setupStopConfirmationDialog()
         getVoucherDetailData(voucherId)
     }
 
@@ -372,8 +382,11 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     }
                 }
             }
+            if (data.isVps == TRUE && data.isSubsidy == TRUE) {
+                btnUbahKupon.gone()
+            }
             btnUbahKupon.setOnClickListener {
-                SummaryActivity.start(requireContext(), data.toVoucherConfiguration())
+                SummaryActivity.start(context, data.toVoucherConfiguration())
             }
         }
     }
@@ -697,9 +710,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             is MoreMenuUiModel.TermsAndConditions -> {
                 openTncPage()
             }
-            else -> {
-                updateVoucherStatusData(data)
-            }
+            else -> showConfirmationStopVoucherDialog(data)
         }
     }
 
@@ -842,10 +853,11 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     description,
                     shareComponentParam.shopDomain
                 )
+
+                tracker.sendClickShareToSocialMediaEvent(shareModel.socialMediaName.orEmpty())
             },
             onBottomSheetClosed = {}
         )
-
 
         universalShareBottomSheet?.setBroadcastChannel(
             activity ?: return,
@@ -908,6 +920,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         if (!isVisible) return
 
         val bottomSheet = DownloadVoucherImageBottomSheet.newInstance(
+            voucherId,
             voucherDetail.voucherImage,
             voucherDetail.voucherImageSquare,
             voucherDetail.voucherImagePortrait
@@ -928,6 +941,52 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             )
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun setupStopConfirmationDialog() {
+        stopVoucherDialog = StopVoucherConfirmationDialog(context ?: return)
+    }
+
+    private fun showConfirmationStopVoucherDialog(data: VoucherDetailData) {
+        val voucherStatus = data.voucherStatus
+
+        stopVoucherDialog?.let { dialog ->
+            with(dialog) {
+                setOnPositiveConfirmed {
+                    updateVoucherStatusData(data)
+                    setDismissDialog()
+                }
+                show(
+                    getTitleStopVoucherDialog(voucherStatus),
+                    getStringDescStopVoucherDialog(voucherStatus, data.voucherName),
+                    getStringPositiveCtaStopVoucherDialog(voucherStatus)
+                )
+            }
+        }
+    }
+
+    private fun getTitleStopVoucherDialog(voucherStatus: VoucherStatus): String {
+        return if (voucherStatus == VoucherStatus.NOT_STARTED) {
+            getString(R.string.smvc_delete_voucher_confirmation_title_of_dialog)
+        } else {
+            getString(R.string.smvc_canceled_voucher_confirmation_title_of_dialog)
+        }
+    }
+
+    private fun getStringDescStopVoucherDialog(voucherStatus: VoucherStatus, voucherName: String): String {
+        return if (voucherStatus == VoucherStatus.NOT_STARTED) {
+            getString(R.string.smvc_delete_voucher_confirmation_body_dialog)
+        } else {
+            getString(R.string.smvc_canceled_voucher_confirmation_body_dialog, voucherName)
+        }
+    }
+
+    private fun getStringPositiveCtaStopVoucherDialog(voucherStatus: VoucherStatus): String {
+        return if (voucherStatus == VoucherStatus.NOT_STARTED) {
+            getString(R.string.smvc_yes_deleted_voucher)
+        } else {
+            getString(R.string.smvc_yes_canceled_voucher)
+        }
     }
 
     private fun redirectToProductListPage(voucherDetail: VoucherDetailData) {

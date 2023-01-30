@@ -53,6 +53,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.supportLibDependencies.supportV4
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'com.google.android.material:material:1.4.0'
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)

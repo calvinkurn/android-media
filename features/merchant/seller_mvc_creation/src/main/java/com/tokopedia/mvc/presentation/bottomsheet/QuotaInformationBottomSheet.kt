@@ -16,8 +16,8 @@ class QuotaInformationBottomSheet : BottomSheetUnify() {
 
     companion object {
         @JvmStatic
-        fun newInstance(): PromotionTypeBottomSheet {
-            return PromotionTypeBottomSheet()
+        fun newInstance(): QuotaInformationBottomSheet {
+            return QuotaInformationBottomSheet()
         }
     }
 

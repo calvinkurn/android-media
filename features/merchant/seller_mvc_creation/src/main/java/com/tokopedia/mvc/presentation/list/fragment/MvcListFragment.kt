@@ -16,20 +16,29 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MVC_CREATE
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
+import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.campaign.utils.extension.slideDown
 import com.tokopedia.campaign.utils.extension.slideUp
+import com.tokopedia.campaign.utils.extension.toDate
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.common.util.PaginationConstant.INITIAL_PAGE
 import com.tokopedia.mvc.common.util.PaginationConstant.PAGE_SIZE
@@ -38,6 +47,7 @@ import com.tokopedia.mvc.common.util.UrlConstant.URL_MAIN_ARTICLE
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListBinding
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListFooterBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
+import com.tokopedia.mvc.domain.entity.ShareComponentMetaData
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
@@ -73,18 +83,28 @@ import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.mvc.presentation.quota.QuotaInfoActivity
+import com.tokopedia.mvc.presentation.share.LinkerDataGenerator
+import com.tokopedia.mvc.presentation.share.ShareComponentInstanceBuilder
+import com.tokopedia.mvc.presentation.share.ShareCopyWritingGenerator
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.SharingUtil
-import com.tokopedia.mvc.util.tracker.VoucherListTracker
+import com.tokopedia.mvc.util.tracker.StopVoucherTracker
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.constants.BroadcastChannelType
 import com.tokopedia.universal_sharing.view.bottomsheet.ClipboardHandler
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
+import java.util.*
 import javax.inject.Inject
 
 class MvcListFragment :
@@ -102,7 +122,11 @@ class MvcListFragment :
     }
 
     private val filterList = ArrayList<SortFilterItem>()
-    private val filterItemStatus by lazy { SortFilterItem(getString(R.string.smvc_bottomsheet_filter_voucher_all)) }
+    private val filterItemStatus by lazy {
+        SortFilterItem(
+            getString(R.string.smvc_bottomsheet_filter_voucher_all)
+        )
+    }
     private var binding by autoClearedNullable<SmvcFragmentMvcListBinding>()
     private var moreMenuBottomSheet: MoreMenuBottomSheet? = null
     private var voucherEditPeriodBottomSheet: VoucherEditPeriodBottomSheet? = null
@@ -113,15 +137,32 @@ class MvcListFragment :
     private var stopVoucherDialog: StopVoucherConfirmationDialog? = null
 
     @Inject
+    lateinit var shareCopyWritingGenerator: ShareCopyWritingGenerator
+
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+
+    @Inject
+    lateinit var shareComponentInstanceBuilder: ShareComponentInstanceBuilder
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
     lateinit var viewModel: MvcListViewModel
+
     @Inject
     lateinit var tracker: VoucherListTracker
+
+    @Inject
+    lateinit var tracker: StopVoucherTracker
 
     override fun getScreenName() = ""
 
     override fun initInjector() {
         DaggerMerchantVoucherCreationComponent.builder()
-            .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+            .baseAppComponent(
+                (activity?.applicationContext as? BaseMainApplication)?.baseAppComponent
+            )
             .build()
             .inject(this)
     }
@@ -184,9 +225,10 @@ class MvcListFragment :
                 redirectToEditPage(voucher)
             }
             is MoreMenuUiModel.Clipboard -> {
+                VoucherDetailActivity.start(context ?: return, voucher.id)
             }
             is MoreMenuUiModel.Broadcast -> {
-                SharingUtil.shareToBroadCastChat(requireContext(), voucher.id)
+                SharingUtil.shareToBroadCastChat(context ?: return, voucher.id)
             }
             is MoreMenuUiModel.Download -> {
                 showDownloadVoucherBottomSheet(voucher)
@@ -195,6 +237,7 @@ class MvcListFragment :
                 deleteVoucher(voucher)
             }
             is MoreMenuUiModel.Share -> {
+                viewModel.generateShareComponentMetaData(voucher)
             }
             is MoreMenuUiModel.Stop -> {
                 deleteVoucher(voucher)
@@ -246,7 +289,10 @@ class MvcListFragment :
         loadInitialDataList()
         context?.resources?.let {
             binding?.footer?.root?.showToaster(
-                it.getString(R.string.edit_period_success_edit_period, voucher?.name.toBlankOrString()).toBlankOrString(),
+                it.getString(
+                    R.string.edit_period_success_edit_period,
+                    voucher?.name.toBlankOrString()
+                ).toBlankOrString(),
                 it.getString(R.string.edit_period_button_text).toBlankOrString()
             )
         }
@@ -276,6 +322,7 @@ class MvcListFragment :
             if (!isVisible) return
 
             val bottomSheet = DownloadVoucherImageBottomSheet.newInstance(
+                voucher.id,
                 voucher.image,
                 voucher.imageSquare,
                 voucher.imagePortrait
@@ -300,9 +347,186 @@ class MvcListFragment :
         }
     }
 
+    private fun displayShareBottomSheet(shareComponentMetaData: ShareComponentMetaData) {
+        val voucher = shareComponentMetaData.voucher
+        val voucherStartTime = voucher.startTime.toDate(
+            DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601
+        )
+        val voucherEndTime = voucher.finishTime.toDate(
+            DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601
+        )
+        val promoType = PromoType.values().firstOrNull { value -> value.text == voucher.typeFormatted }
+            ?: PromoType.FREE_SHIPPING
+
+        val shareComponentParam = getShareComponentData(
+            shareComponentMetaData,
+            voucherStartTime,
+            voucherEndTime,
+            promoType
+        )
+
+        val formattedShopName = MethodChecker.fromHtml(shareComponentParam.shopName).toString()
+
+        val titleTemplate = getTitleForShareComponent(shareComponentParam)
+
+        val title = String.format(
+            titleTemplate,
+            formattedShopName
+        )
+
+        val copyWritingParam = ShareCopyWritingGenerator.Param(
+            voucherStartDate = voucherStartTime,
+            voucherEndDate = voucherEndTime,
+            shopName = shareComponentMetaData.shopData.name,
+            discountAmount = voucher.discountAmt.toLong(),
+            discountAmountMax = voucher.discountAmtMax.toLong(),
+            discountPercentage = voucher.discountAmt
+        )
+
+        createAndShowUniversalShareBottomSheet(
+            voucher,
+            shareComponentParam,
+            copyWritingParam,
+            title,
+            promoType
+        )
+    }
+
+    private fun getShareComponentData(
+        shareComponentMetaData: ShareComponentMetaData,
+        voucherStartTime: Date,
+        voucherEndTime: Date,
+        promoType: PromoType
+    ): ShareComponentInstanceBuilder.Param {
+        val voucher = shareComponentMetaData.voucher
+        val productImageUrls = if (voucher.isLockToProduct) {
+            shareComponentMetaData.topSellingProductImageUrls
+        } else {
+            emptyList()
+        }
+        return voucher.let {
+            ShareComponentInstanceBuilder.Param(
+                isVoucherProduct = it.isLockToProduct,
+                voucherId = it.id,
+                isPublic = it.isPublic,
+                voucherCode = it.code,
+                voucherStartDate = voucherStartTime,
+                voucherEndDate = voucherEndTime,
+                promoType = promoType,
+                benefitType = if (it.discountUsingPercent) BenefitType.PERCENTAGE else BenefitType.NOMINAL,
+                shopLogo = shareComponentMetaData.shopData.logo,
+                shopName = shareComponentMetaData.shopData.name,
+                shopDomain = shareComponentMetaData.shopData.domain,
+                discountAmount = it.discountAmt.toLong(),
+                discountAmountMax = it.discountAmtMax.toLong(),
+                productImageUrls = productImageUrls,
+                discountPercentage = it.discountAmt,
+                targetBuyer = it.targetBuyer
+            )
+        }
+    }
+
+    private fun getTitleForShareComponent(shareComponentParam: ShareComponentInstanceBuilder.Param): String {
+        return if (shareComponentParam.isVoucherProduct) {
+            getString(R.string.smvc_placeholder_share_component_outgoing_title_product_voucher)
+        } else {
+            getString(R.string.smvc_placeholder_share_component_outgoing_title_shop_voucher)
+        }
+    }
+
+    private fun createAndShowUniversalShareBottomSheet(
+        voucher: Voucher,
+        shareComponentParam: ShareComponentInstanceBuilder.Param,
+        copyWritingParam: ShareCopyWritingGenerator.Param,
+        title: String,
+        promoType: PromoType
+    ) {
+        val description = shareCopyWritingGenerator.findOutgoingDescription(
+            isProductVoucher = voucher.isLockToProduct,
+            voucherTarget = voucher.targetBuyer,
+            promoType = promoType,
+            benefitType = if (voucher.discountUsingPercent) BenefitType.PERCENTAGE else BenefitType.NOMINAL,
+            param = copyWritingParam
+        )
+
+        universalShareBottomSheet = shareComponentInstanceBuilder.build(
+            shareComponentParam,
+            title,
+            onShareOptionsClicked = { shareModel ->
+                handleShareOptionSelection(
+                    voucher.isLockToProduct,
+                    shareComponentParam.voucherId,
+                    shareModel,
+                    title,
+                    description,
+                    shareComponentParam.shopDomain
+                )
+            },
+            onBottomSheetClosed = {}
+        )
+
+        universalShareBottomSheet?.setBroadcastChannel(
+            activity ?: return,
+            BroadcastChannelType.BLAST_PROMO,
+            voucher.code
+        )
+
+        universalShareBottomSheet?.show(childFragmentManager, universalShareBottomSheet?.tag)
+    }
+
+    private fun handleShareOptionSelection(
+        isProductVoucher: Boolean,
+        voucherId: Long,
+        shareModel: ShareModel,
+        title: String,
+        description: String,
+        shopDomain: String
+    ) {
+        val shareCallback = object : ShareCallback {
+            override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                val wording = "$description ${linkerShareData?.shareUri.orEmpty()}"
+                com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil.executeShareIntent(
+                    shareModel,
+                    linkerShareData,
+                    activity,
+                    view,
+                    wording
+                )
+                universalShareBottomSheet?.dismiss()
+            }
+
+            override fun onError(linkerError: LinkerError?) {}
+        }
+
+        val outgoingDescription = if (isProductVoucher) {
+            getString(R.string.smvc_share_component_outgoing_text_description_product_voucher)
+        } else {
+            getString(R.string.smvc_share_component_outgoing_text_description_shop_voucher)
+        }
+
+        val linkerDataGenerator = LinkerDataGenerator()
+        val linkerShareData = linkerDataGenerator.generate(
+            voucherId,
+            userSession.shopId,
+            shopDomain,
+            shareModel,
+            title,
+            outgoingDescription
+        )
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(
+                Int.ZERO,
+                linkerShareData,
+                shareCallback
+            )
+        )
+    }
+
     override fun onVoucherListCopyCodeClicked(voucher: Voucher) {
         activity?.let { ClipboardHandler().copyToClipboard(it, voucher.code) }
-        binding?.footer?.root.showToaster(getString(R.string.smvc_voucherlist_copy_to_clipboard_message))
+        binding?.footer?.root.showToaster(
+            getString(R.string.smvc_voucherlist_copy_to_clipboard_message)
+        )
     }
 
     override fun onVoucherListMultiPeriodClicked(voucher: Voucher) {
@@ -326,7 +550,7 @@ class MvcListFragment :
         binding?.sortFilter?.indicatorCounter = viewModel.getFilterCount()
     }
 
-    override fun onOtherPeriodMoreMenuClicked(dialog : OtherPeriodBottomSheet, voucher: Voucher) {
+    override fun onOtherPeriodMoreMenuClicked(dialog: OtherPeriodBottomSheet, voucher: Voucher) {
         dialog.dismiss()
         showMoreMenuBottomSheet(voucher)
     }
@@ -355,6 +579,16 @@ class MvcListFragment :
                 PageState.NO_DATA_PAGE -> displayNoData()
                 PageState.NO_DATA_SEARCH_PAGE -> displayNoDataSearch()
                 else -> displayList()
+            }
+        }
+
+        viewModel.generateShareComponentMetaData.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    displayShareBottomSheet(result.data)
+                }
+                is Fail -> {
+                }
             }
         }
     }
@@ -403,8 +637,11 @@ class MvcListFragment :
         voucherCreationQuota: VoucherCreationQuota
     ) {
         tfQuotaCounter.text = MethodChecker.fromHtml(
-            getString(R.string.smvc_voucherlist_quota_usage_format, voucherCreationQuota.remaining,
-                voucherCreationQuota.total)
+            getString(
+                R.string.smvc_voucherlist_quota_usage_format,
+                voucherCreationQuota.remaining,
+                voucherCreationQuota.total
+            )
         )
         iconInfo.setOnClickListener {
             redirectToQuotaVoucherPage(voucherCreationQuota)
@@ -420,7 +657,10 @@ class MvcListFragment :
     }
 
     private fun HeaderUnify.setupHeader() {
-        val colorIcon = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+        val colorIcon = MethodChecker.getColor(
+            context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950
+        )
         title = context.getString(R.string.smvc_voucherlist_page_title)
         addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_menu_kebab_horizontal).apply {
             setColorFilter(colorIcon, PorterDuff.Mode.MULTIPLY)
@@ -549,7 +789,10 @@ class MvcListFragment :
             errorPageSmall.gone()
             errorPageLarge.show()
             val statusName = MvcListPageStateHelper.getStatusName(context, viewModel.filter)
-            errorPageLarge.emptyStateTitleID.text = getString(R.string.smvc_voucherlist_empty_data_title_text, statusName)
+            errorPageLarge.emptyStateTitleID.text = getString(
+                R.string.smvc_voucherlist_empty_data_title_text,
+                statusName
+            )
             errorPageLarge.setPrimaryCTAClickListener {
                 binding?.footer?.btnAddCoupon?.performClick()
             }
@@ -566,26 +809,7 @@ class MvcListFragment :
     }
 
     private fun redirectToCreateVoucherPage() {
-        // For sample only. Will redirect to add product page.
-        val voucherConfiguration = VoucherConfiguration(
-            benefitIdr = 25_000,
-            benefitMax = 500_000,
-            benefitPercent = 0,
-            benefitType = BenefitType.NOMINAL,
-            promoType = PromoType.FREE_SHIPPING,
-            isVoucherProduct = true,
-            minPurchase = 50_000,
-            productIds = emptyList(),
-            targetBuyer = VoucherTargetBuyer.ALL_BUYER,
-            totalPeriod = 0
-        )
-
-        val intent = AddProductActivity.buildCreateModeIntent(
-            activity ?: return,
-            voucherConfiguration
-        )
-
-        startActivityForResult(intent, 100)
+        RouteManager.route(context, SELLER_MVC_CREATE)
         tracker.sendClickBuatKuponEvent()
     }
 
@@ -600,11 +824,11 @@ class MvcListFragment :
     }
 
     override fun onMenuClicked(menu: EduCenterMenuModel) {
-        when(menu.urlRoute){
-            URL_MAIN_ARTICLE ->{
+        when (menu.urlRoute) {
+            URL_MAIN_ARTICLE -> {
                 routeToUrl(menu.urlRoute.toString())
             }
-            else-> {
+            else -> {
                 val introPage = Intent(context, MvcIntroActivity::class.java)
                 startActivity(introPage)
             }
@@ -612,7 +836,7 @@ class MvcListFragment :
     }
 
     private fun deleteVoucher(voucher: Voucher) {
-        if (voucher.isVps) {
+        if (voucher.isSubsidy) {
             showCallTokopediaCareDialog(voucher.status)
         } else {
             showConfirmationStopVoucherDialog(voucher)
@@ -656,7 +880,12 @@ class MvcListFragment :
             with(dialog) {
                 setOnPositiveConfirmed {
                     viewModel.stopVoucher(voucher)
+                    sendTrackerOnPositiveButton(voucher)
                 }
+                setOnNegativeConfirmed {
+                    sendTrackerOnNegativeButton(voucher)
+                }
+
                 show(
                     getTitleStopVoucherDialog(voucherStatus),
                     getStringDescStopVoucherDialog(voucherStatus, voucher.name),
@@ -674,12 +903,32 @@ class MvcListFragment :
         }
     }
 
-    private fun getStringDescStopVoucherDialog(voucherStatus: VoucherStatus, voucherName : String): String {
+    private fun getStringDescStopVoucherDialog(voucherStatus: VoucherStatus, voucherName: String): String {
         return if (voucherStatus == VoucherStatus.NOT_STARTED) {
             getString(R.string.smvc_delete_voucher_confirmation_body_dialog)
         } else {
             getString(R.string.smvc_canceled_voucher_confirmation_body_dialog, voucherName)
         }
+    }
+
+    private fun sendTrackerOnPositiveButton(voucher: Voucher) {
+        if (voucher.status == VoucherStatus.NOT_STARTED) {
+            tracker.sendClickYesCancelEvent(createLabelOnTracker(voucher))
+        } else {
+            tracker.sendClickYesStopEvent(createLabelOnTracker(voucher))
+        }
+    }
+
+    private fun sendTrackerOnNegativeButton(voucher: Voucher) {
+        if (voucher.status == VoucherStatus.NOT_STARTED) {
+            tracker.sendClickNoCancelEvent(createLabelOnTracker(voucher))
+        } else {
+            tracker.sendClickNoStopEvent(createLabelOnTracker(voucher))
+        }
+    }
+
+    private fun createLabelOnTracker(voucher: Voucher) : String{
+        return getString(R.string.smvc_tracker_stop_voucher_lable, voucher.id.toString(), "0")
     }
 
     private fun getStringPositiveCtaStopVoucherDialog(voucherStatus: VoucherStatus): String {

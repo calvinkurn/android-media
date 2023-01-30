@@ -71,6 +71,7 @@ class ProductListViewModel @Inject constructor(
             ProductListEvent.TapCtaChangeProduct -> handleSwitchPageMode()
             is ProductListEvent.AddNewProductToSelection -> handleAddNewProductToSelection(event.newProducts)
             ProductListEvent.TapCtaAddProduct -> handleCtaAddNewProduct()
+            ProductListEvent.TapToolbarBackIcon -> handleTapToolbarBackIcon()
         }
     }
 
@@ -103,20 +104,27 @@ class ProductListViewModel @Inject constructor(
                     productIdInclude = selectedParentProductIds
                 )
 
-                val productsResponse = productListUseCase.execute(productListParam)
-
                 val isCreateMode = pageMode == PageMode.CREATE
 
-                val updatedProducts = productsResponse.products.map { parentProduct ->
-                    val variantIds = findVariantsIdsByParentId(parentProduct.id, selectedProducts)
+                //If previously selected products is empty, trigger empty state
+                val updatedProducts = if (selectedProducts.isEmpty()) {
+                    emptyList()
+                } else {
+                    val productsResponse = productListUseCase.execute(productListParam)
+                    val updatedProducts = productsResponse.products.map { parentProduct ->
+                        val variantIds = findVariantsIdsByParentId(parentProduct.id, selectedProducts)
 
-                    parentProduct.copy(
-                        originalVariants = toOriginalVariant(parentProduct.id, selectedProducts),
-                        selectedVariantsIds = variantIds,
-                        enableCheckbox = isCreateMode,
-                        isDeletable = isCreateMode
-                    )
+                        parentProduct.copy(
+                            originalVariants = toOriginalVariant(parentProduct.id, selectedProducts),
+                            selectedVariantsIds = variantIds,
+                            enableCheckbox = isCreateMode,
+                            isDeletable = isCreateMode
+                        )
+                    }
+
+                    updatedProducts
                 }
+
 
                 _uiState.update {
                     it.copy(
@@ -406,4 +414,11 @@ class ProductListViewModel @Inject constructor(
         val modifiedVoucherConfiguration = currentState.voucherConfiguration.copy(productIds = currentlySelectedParentProduct)
         _uiEffect.tryEmit(ProductListEffect.RedirectToAddProductPage(modifiedVoucherConfiguration))
     }
+
+
+    private fun handleTapToolbarBackIcon() {
+        val selectedProductCount = uiState.value.products.count()
+        _uiEffect.tryEmit(ProductListEffect.RedirectToPreviousPage(selectedProductCount, uiState.value.originalPageMode))
+    }
+
 }

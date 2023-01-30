@@ -1,10 +1,12 @@
 package com.tokopedia.mvc.util.extension
 
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.widget.EditText
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.unifycomponents.TextFieldUnify2
 import timber.log.Timber
 import java.util.*
 
@@ -34,4 +36,8 @@ fun EditText.setToAllCapsMode() {
             }
         }
     })
+}
+
+fun TextFieldUnify2.setMaxLength(maxLength : Int) {
+    this.editText.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(maxLength))
 }

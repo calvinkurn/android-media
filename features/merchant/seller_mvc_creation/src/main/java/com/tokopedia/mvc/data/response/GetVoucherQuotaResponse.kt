@@ -32,6 +32,8 @@ data class Sources (
     val name: String = "",
     @SerializedName("used")
     val used: Int = 0,
+    @SerializedName("remaining")
+    val remaining: Int = 0,
     @SerializedName("total")
     val total: Int = 0,
     @SerializedName("expired")

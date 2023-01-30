@@ -59,7 +59,7 @@
         tools:spending_estimation_placeholder_text="Rp3.200.000" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnMvcSaveP"
+        android:id="@+id/btnMvcSave"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
@@ -69,11 +69,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/labelSpendingEstimation"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btnMvcCancel"
+        app:layout_constraintStart_toEndOf="@+id/btnMvcReset"
         app:layout_constraintTop_toBottomOf="@+id/labelSpendingEstimation" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnMvcCancel"
+        android:id="@+id/btnMvcReset"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
@@ -83,7 +83,7 @@
         app:unifyButtonVariant="ghost"
         app:unifyButtonType="alternate"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnMvcSaveP"
+        app:layout_constraintEnd_toStartOf="@+id/btnMvcSave"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/labelSpendingEstimation"
         app:layout_constraintTop_toBottomOf="@+id/labelSpendingEstimation" />

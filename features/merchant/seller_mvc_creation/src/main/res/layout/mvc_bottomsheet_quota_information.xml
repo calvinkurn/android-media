@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingHorizontal="16dp"
-    android:paddingTop="24dp"
+    android:paddingTop="4dp"
     android:paddingBottom="8dp"
     tools:context="com.tokopedia.mvc.presentation.bottomsheet.QuotaInformationBottomSheet">
 
