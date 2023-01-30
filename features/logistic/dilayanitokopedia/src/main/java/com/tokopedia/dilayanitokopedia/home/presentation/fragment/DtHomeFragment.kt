@@ -558,11 +558,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        checkIfChooseAddressWidgetDataUpdated()
-    }
-
     private fun checkIfChooseAddressWidgetDataUpdated() {
         if (isChooseAddressWidgetDataUpdated()) {
             updateCurrentPageLocalCacheModelData()
@@ -691,8 +686,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             }
         })
     }
-
-    private var coachMark: CoachMark2? = null
 
     private fun showCoachMark() {
         val coachMarkList = arrayListOf<CoachMark2Item>().apply {
