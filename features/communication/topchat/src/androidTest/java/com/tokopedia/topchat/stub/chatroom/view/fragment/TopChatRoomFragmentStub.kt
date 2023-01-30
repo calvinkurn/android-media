@@ -56,7 +56,8 @@ open class TopChatRoomFragmentStub : TopChatRoomFragment() {
         UploadImageChatServiceStub.enqueueWork(
             context!!,
             image,
-            viewModel.roomMetaData.msgId
+            viewModel.roomMetaData.msgId,
+            isUploadImageSecure()
         )
     }
 

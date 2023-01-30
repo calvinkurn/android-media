@@ -42,6 +42,7 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -143,9 +144,11 @@ abstract class BuyerOrderDetailViewModelTestFixture {
     }
 
     fun createSuccessGetBuyerOrderDetailDataResult(
-        getBuyerOrderDetailResult: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail = mockk(relaxed = true),
+        getBuyerOrderDetailResult: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail = mockk(relaxed = true) {
+            every { getPodInfo() } returns null
+        },
         getOrderResolutionResult: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData = mockk(relaxed = true),
-        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true),
+        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true)
     ) {
         coEvery {
             getBuyerOrderDetailDataUseCase(any())
@@ -312,13 +315,13 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         }
     }
 
-    fun runCollectingUiState(block: (List<BuyerOrderDetailUiState>) -> Unit) {
+    fun runCollectingUiState(block: suspend TestCoroutineScope.(List<BuyerOrderDetailUiState>) -> Unit) {
         val uiStates = mutableListOf<BuyerOrderDetailUiState>()
         val scope = CoroutineScope(rule.dispatchers.coroutineDispatcher)
         val uiStateCollectorJob = scope.launch {
             viewModel.buyerOrderDetailUiState.toList(uiStates)
         }
-        block(uiStates)
+        rule.runBlockingTest { block(uiStates) }
         uiStateCollectorJob.cancel()
     }
 }
