@@ -131,6 +131,7 @@ includeIfEnabled("features:logistic:manageaddress")
 includeIfEnabled("features:logistic:editshipping")
 includeIfEnabled("features:logistic:localizationchooseaddress")
 includeIfEnabled("features:logistic:localizationchooseaddress_common")
+includeIfEnabled("features:logistic:dilayanitokopedia")
 
 includeIfEnabled("features:media:mediauploader")
 includeIfEnabled("features:media:media-common")

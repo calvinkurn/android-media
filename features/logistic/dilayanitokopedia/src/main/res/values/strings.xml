@@ -1,0 +1,13 @@
+<resources>
+
+    <string name="dt_home_title">Dilayani Tokopedia</string>
+    <string name="dt_home_choose_address_widget_coachmark_title">Bisa pilih alamat pengirimanmu dulu</string>
+    <string name="dt_home_choose_address_widget_coachmark_description">Biar pengalaman belanja lebih asyik &amp; dapatkan rekomendasi barang terdekat dari alamatmu.</string>
+
+
+    <string name="dt_search_bar_hint">Cari di Dilayani Tokopedia</string>
+
+    <string name="home_recommendation_empty_title">Tidak ada hasil</string>
+    <string name="home_recommendation_empty_description">Produk tidak ada untuk kategori ini</string>
+
+</resources>

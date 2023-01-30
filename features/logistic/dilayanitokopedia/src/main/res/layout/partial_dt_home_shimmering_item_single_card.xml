@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parentLayout"
+    android:layout_width="128dp"
+    android:layout_height="wrap_content"
+    android:paddingBottom="8dp">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/product_image"
+        android:layout_width="match_parent"
+        android:layout_height="128dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/line1"
+        android:layout_width="112dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/product_image"
+        app:loader_corner_radius="8dp"
+        android:layout_marginStart="8dp"
+        app:loader_type="line" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/line2"
+        android:layout_width="88dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line1"
+        app:loader_corner_radius="8dp"
+        android:layout_marginStart="8dp"
+        app:loader_type="line" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/line3"
+        android:layout_width="64dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line2"
+        app:loader_corner_radius="8dp"
+        android:layout_marginStart="8dp"
+        app:loader_type="line" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
