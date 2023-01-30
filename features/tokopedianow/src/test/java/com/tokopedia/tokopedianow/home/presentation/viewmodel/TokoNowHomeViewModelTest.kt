@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.home.presentation.viewmodel
 
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
@@ -28,12 +29,12 @@ import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryListUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
@@ -42,6 +43,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemSeeAllUiModel
 import com.tokopedia.tokopedianow.data.createCategoryGridDataModel
 import com.tokopedia.tokopedianow.data.createCategoryGridListFirstFetch
 import com.tokopedia.tokopedianow.data.createCategoryGridListSecondFetch
@@ -97,13 +99,11 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiM
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
-import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayoutUiModel
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -208,20 +208,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         verifyGetHomeLayoutDataUseCaseCalled(times = 2)
         verifyGetBannerResponseSuccess(expectedResponse)
-    }
-
-    @Test
-    fun `when scroll home error should do nothing`() {
-        onGetHomeLayoutData_thenReturn(createHomeLayoutListForBannerOnly())
-
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-
-        onGetHomeLayoutData_thenReturn(MessageErrorException())
-
-        viewModel.onScroll(1, LocalCacheModel(), listOf())
-
-        verifyGetHomeLayoutDataUseCaseCalled(times = 2)
     }
 
     @Test
@@ -397,8 +383,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when getting data category grid should run and give the success result`() {
+        val warehouseId = "1"
         val localCacheModel = LocalCacheModel(
-            warehouse_id = "1"
+            warehouse_id = warehouseId
         )
 
         //set mock data
@@ -412,38 +399,25 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         //set second mock data to replace first mock data category list
         onGetCategoryList_thenReturn(createCategoryGridListSecondFetch())
 
-        //prepare model that need to be changed
-        val model = TokoNowCategoryGridUiModel(
-                id="11111",
-                title="Category Tokonow",
-                categoryListUiModel = null,
-                state= TokoNowLayoutState.SHOW
-        )
-
-        viewModel.getCategoryGrid(model, "1")
+        viewModel.getCategoryMenu(warehouseId)
 
         //prepare model for expectedResult
-        val expectedResponse = TokoNowCategoryGridUiModel(
+        val expectedResponse = TokoNowCategoryMenuUiModel(
             id = "11111",
             title = "Category Tokonow",
-            categoryListUiModel = TokoNowCategoryListUiModel(
-                categoryList = listOf(
-                    TokoNowCategoryItemUiModel(
-                        id = "",
-                        title = "",
-                        imageUrl = null,
-                        appLink = "tokopedia-android-internal://now/category-list?warehouse_id={warehouse_id}",
-                        warehouseId = "1",
-                    ),
-                    TokoNowCategoryItemUiModel(
-                        id = "1",
-                        title = "Category 1",
-                        imageUrl = "tokopedia://",
-                        appLink = "tokoepdia://",
-                        headerName = "Category Tokonow"
-                    )
+            categoryListUiModel = listOf(
+                TokoNowCategoryMenuItemUiModel(
+                    id = "1",
+                    title = "Category 1",
+                    imageUrl = "tokopedia://",
+                    appLink = "tokoepdia://",
+                    headerName = "Category Tokonow"
+                ),
+                TokoNowCategoryMenuItemSeeAllUiModel(
+                    appLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID + warehouseId,
                 )
             ),
+            seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID + warehouseId,
             state = TokoNowLayoutState.SHOW
         )
 
@@ -455,9 +429,11 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when get category grid should not add adult category to category list`() {
+        val warehouseId = "1"
         val localCacheModel = LocalCacheModel(
-            warehouse_id = "1"
+            warehouse_id = warehouseId
         )
+        val appLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID + warehouseId
 
         //set mock data
         onGetHomeLayoutData_thenReturn(createHomeLayoutList(), localCacheModel)
@@ -467,45 +443,32 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = listOf())
         viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
 
-        //prepare model that need to be changed
-        val model = TokoNowCategoryGridUiModel(
-            id="11111",
-            title="Category Tokonow",
-            categoryListUiModel = null,
-            state= TokoNowLayoutState.SHOW
-        )
-
-        viewModel.getCategoryGrid(model, "1")
+        viewModel.getCategoryMenu(warehouseId)
 
         //prepare model for expectedResult
-        val expectedResponse = TokoNowCategoryGridUiModel(
+        val expectedResponse = TokoNowCategoryMenuUiModel(
             id = "11111",
             title = "Category Tokonow",
-            categoryListUiModel = TokoNowCategoryListUiModel(
-                categoryList = listOf(
-                    TokoNowCategoryItemUiModel(
-                        id = "",
-                        title = "",
-                        imageUrl = null,
-                        appLink = "tokopedia-android-internal://now/category-list?warehouse_id={warehouse_id}",
-                        warehouseId = "1"
-                    ),
-                    TokoNowCategoryItemUiModel(
-                        id = "1",
-                        title = "Category 1",
-                        imageUrl = "tokopedia://",
-                        appLink = "tokoepdia://",
-                        headerName = "Category Tokonow"
-                    ),
-                    TokoNowCategoryItemUiModel(
-                        id="3",
-                        title="Category 3",
-                        imageUrl="tokopedia://",
-                        appLink="tokoepdia://",
-                        headerName = "Category Tokonow"
-                    )
+            categoryListUiModel = listOf(
+                TokoNowCategoryMenuItemUiModel(
+                    id = "1",
+                    title = "Category 1",
+                    imageUrl = "tokopedia://",
+                    appLink = "tokoepdia://",
+                    headerName = "Category Tokonow"
+                ),
+                TokoNowCategoryMenuItemUiModel(
+                    id="3",
+                    title="Category 3",
+                    imageUrl="tokopedia://",
+                    appLink="tokoepdia://",
+                    headerName = "Category Tokonow"
+                ),
+                TokoNowCategoryMenuItemSeeAllUiModel(
+                    appLink = appLink
                 )
             ),
+            seeAllAppLink = appLink,
             state = TokoNowLayoutState.SHOW
         )
 
@@ -531,17 +494,17 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetCategoryList_thenReturn(Exception())
 
         //prepare model that need to be changed
-        val model = TokoNowCategoryGridUiModel(
+        val model = TokoNowCategoryMenuUiModel(
                 id="11111",
                 title="Category Tokonow",
                 categoryListUiModel = null,
                 state= TokoNowLayoutState.SHOW
         )
 
-        viewModel.getCategoryGrid(model, "1")
+        viewModel.getCategoryMenu("1")
 
         //prepare model for expectedResult
-        val expectedResponse = TokoNowCategoryGridUiModel(
+        val expectedResponse = TokoNowCategoryMenuUiModel(
             id = "11111",
             title = "Category Tokonow",
             categoryListUiModel = null,
@@ -753,7 +716,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     "",
                     "Lego Banner"
                 ),
-                TokoNowCategoryGridUiModel(
+                TokoNowCategoryMenuUiModel(
                     id = "11111",
                     title = "Category Tokonow",
                     categoryListUiModel = null,
@@ -909,18 +872,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.homeLayoutList
             .verifyValueEquals(null)
-    }
-
-
-    @Test
-    fun `given index is NOT between visible item index when getLayoutData should not call use case`() {
-        val index = 1
-
-        onGetHomeLayoutData_thenReturn(createHomeLayoutList())
-
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.onScroll(index, LocalCacheModel(), listOf())
     }
 
     @Test
@@ -1395,6 +1346,16 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val actual = viewModel.getRepurchaseProducts()
 
         verifyGetHomeLayoutDataUseCaseCalled()
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `given null homeLayoutItemList when getRepurchaseWidgetProducts should return empty list`() {
+        addHomeLayoutItem(null)
+
+        val expected = emptyList<TokoNowProductCardUiModel>()
+        val actual = viewModel.getRepurchaseProducts()
+
         assertEquals(expected, actual)
     }
 
@@ -2467,74 +2428,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `given user scroll tokomart home when load more should add all banner to home layout list`() {
-        val firstBanner = HomeLayoutResponse(
-            id = "2222",
-            layout = "banner_carousel_v2",
-            header = Header(
-                name = "Banner Tokonow",
-                serverTimeUnix = 0
-            ),
-            token = "==advdf299c" // dummy token
-        )
-
-        val secondBanner = HomeLayoutResponse(
-            id = "3333",
-            layout = "banner_carousel_v2",
-            header = Header(
-                name = "Banner Tokonow",
-                serverTimeUnix = 0
-            )
-        )
-
-        val homeLayoutResponse = listOf(firstBanner)
-        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
-
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-
-        onGetHomeLayoutData_thenReturn(listOf(secondBanner))
-
-        viewModel.onScroll(1, LocalCacheModel(), listOf())
-
-        val layoutList = listOf(
-            TokoNowChooseAddressWidgetUiModel(id = "0"),
-            BannerDataModel(
-                channelModel = ChannelModel(
-                    id = "2222",
-                    groupId = "",
-                    style = ChannelStyle.ChannelHome,
-                    channelHeader = ChannelHeader(name = "Banner Tokonow"),
-                    channelConfig = ChannelConfig(layout = "banner_carousel_v2"),
-                    layout = "banner_carousel_v2"
-                )
-            ),
-            BannerDataModel(
-                channelModel = ChannelModel(
-                    id = "3333",
-                    groupId = "",
-                    style = ChannelStyle.ChannelHome,
-                    channelHeader = ChannelHeader(name = "Banner Tokonow"),
-                    channelConfig = ChannelConfig(layout = "banner_carousel_v2"),
-                    layout = "banner_carousel_v2"
-                )
-            )
-        )
-
-        val expected = Success(
-            HomeLayoutListUiModel(
-                items = layoutList,
-                state = TokoNowLayoutState.LOAD_MORE
-            )
-        )
-
-        verifyGetHomeLayoutDataUseCaseCalled(times = 2)
-
-        viewModel.homeLayoutList
-            .verifySuccessEquals(expected)
-    }
-
-    @Test
     fun `when removeSharingEducationWidget should remove education widget from home layout list`() {
         val channelId = "34923"
         val homeLayoutResponse = listOf(
@@ -2698,91 +2591,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.homeLayoutList
             .verifySuccessEquals(Success(expectedResult))
-    }
-
-    @Test
-    fun `given load more token is empty when scroll tokomart home should call use case once`() {
-        val homeLayoutResponse = listOf(
-            HomeLayoutResponse(
-                id = "12345",
-                layout = "tokonow_share",
-                header = Header(
-                    name = "Education",
-                    serverTimeUnix = 0
-                ),
-                token = "==abcd" // dummy token
-            )
-        )
-
-        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
-
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-
-        val loadMoreLayoutResponse = listOf(
-            HomeLayoutResponse(
-                id = "12346",
-                layout = "tokonow_share",
-                header = Header(
-                    name = "Education",
-                    serverTimeUnix = 0
-                ),
-                token = "" // dummy token
-            )
-        )
-
-        onGetHomeLayoutData_thenReturn(loadMoreLayoutResponse)
-
-        viewModel.onScroll(0, LocalCacheModel(), listOf())
-        viewModel.onScroll(1, LocalCacheModel(), listOf())
-
-        verifyGetHomeLayoutDataUseCaseCalled(times = 2)
-    }
-
-    @Test
-    fun `given home contains progress bar when onScrollTokoMartHome should call use case once`() {
-        val homeLayoutResponse = listOf(
-            HomeLayoutResponse(
-                id = "34923",
-                layout = "lego_3_image",
-                header = Header(
-                    name = "Lego Banner",
-                    serverTimeUnix = 0
-                ),
-                token = "==sfvf" // dummy token
-            ),
-            HomeLayoutResponse(
-                id = "11111",
-                layout = "category_tokonow",
-                header = Header(
-                    name = "Category Tokonow",
-                    serverTimeUnix = 0
-                )
-            ),
-            HomeLayoutResponse(
-                id = "2222",
-                layout = "banner_carousel_v2",
-                header = Header(
-                    name = "Banner Tokonow",
-                    serverTimeUnix = 0
-                )
-            )
-        )
-
-        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
-
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-
-        val progressBar = HomeLayoutItemUiModel(
-            HomeProgressBarUiModel,
-            HomeLayoutItemState.LOADED
-        )
-        addHomeLayoutItem(progressBar)
-
-        viewModel.onScroll(4, LocalCacheModel(), listOf())
-
-        verifyGetHomeLayoutDataUseCaseCalled(times = 1)
     }
 
     @Test

@@ -18,7 +18,7 @@ class UserConsentPurposeViewHolder(
 
     fun onBind(userConsentPurposeUiModel: UserConsentPurposeUiModel) {
         itemViewBinding?.apply {
-            checkboxPurposes.text = userConsentPurposeUiModel.purposes.description
+            checkboxPurposes.text = userConsentPurposeUiModel.purposes.attribute.uiName
             checkboxPurposes.setOnCheckedChangeListener { _, isChecked ->
                 listener.onCheckedChange(isChecked, userConsentPurposeUiModel.purposes)
             }

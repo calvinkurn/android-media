@@ -26,9 +26,11 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.ShopStateUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetLayoutUiModel
 import javax.inject.Inject
 
 /**
@@ -37,7 +39,7 @@ import javax.inject.Inject
 
 class LayoutMapper @Inject constructor(
     private val tooltipMapper: TooltipMapper
-) : BaseResponseMapper<GetLayoutResponse, List<BaseWidgetUiModel<out BaseDataUiModel>>> {
+) : BaseResponseMapper<GetLayoutResponse, WidgetLayoutUiModel> {
 
     companion object {
         private const val EMPTY_WIDGET_MESSAGE =
@@ -48,8 +50,8 @@ class LayoutMapper @Inject constructor(
     override fun mapRemoteDataToUiData(
         response: GetLayoutResponse,
         isFromCache: Boolean
-    ): List<BaseWidgetUiModel<out BaseDataUiModel>> {
-        val widgets = response.layout?.widget.orEmpty()
+    ): WidgetLayoutUiModel {
+        val widgets = response.layout.widget.orEmpty()
         if (widgets.isNotEmpty()) {
             val mappedList = ArrayList<BaseWidgetUiModel<out BaseDataUiModel>>()
             widgets.forEach {
@@ -80,8 +82,24 @@ class LayoutMapper @Inject constructor(
                     )
                 }
             }
-            return mappedList
-        } else throw EmptyLayoutException(EMPTY_WIDGET_MESSAGE)
+
+            return WidgetLayoutUiModel(
+                widgetList = mappedList,
+                shopState = getShopState(response.layout.shopState)
+            )
+        } else {
+            throw EmptyLayoutException(EMPTY_WIDGET_MESSAGE)
+        }
+    }
+
+    private fun getShopState(shopState: Long): ShopStateUiModel {
+        return when (shopState) {
+            ShopStateUiModel.NEW_REGISTERED_SHOP -> ShopStateUiModel.NewRegisteredShop
+            ShopStateUiModel.ADDED_PRODUCT -> ShopStateUiModel.AddedProduct
+            ShopStateUiModel.VIEWED_PRODUCT -> ShopStateUiModel.ViewedProduct
+            ShopStateUiModel.HAS_ORDER -> ShopStateUiModel.HasOrder
+            else -> ShopStateUiModel.None
+        }
     }
 
     private fun mapToUnificationWidget(

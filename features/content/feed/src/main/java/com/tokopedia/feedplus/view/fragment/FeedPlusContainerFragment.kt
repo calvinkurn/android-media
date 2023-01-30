@@ -4,9 +4,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.os.Bundle
+import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,9 +19,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
@@ -32,12 +33,12 @@ import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.types.BundleData
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
-import com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
-import com.tokopedia.feedcomponent.util.coachmark.CoachMarkConfig
-import com.tokopedia.feedcomponent.util.coachmark.CoachMarkHelper
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 import com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
@@ -47,7 +48,8 @@ import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
 import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter
 import com.tokopedia.feedplus.view.analytics.FeedToolBarAnalytics
 import com.tokopedia.feedplus.view.analytics.entrypoint.FeedEntryPointAnalytic
-import com.tokopedia.feedplus.view.customview.FeedMainToolbar
+import com.tokopedia.feedplus.view.analytics.shorts.PlayShortsInFeedAnalytic
+import com.tokopedia.feedplus.view.customview.PostProgressUpdateView
 import com.tokopedia.feedplus.view.di.FeedInjector
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
 import com.tokopedia.iconunify.IconUnify
@@ -60,6 +62,11 @@ import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
+import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
+import com.tokopedia.play_common.shortsuploader.const.PlayShortsUploadConst
+import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
+import com.tokopedia.play_common.shortsuploader.worker.PlayShortsUploadWorker
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -82,12 +89,8 @@ import com.tokopedia.feedcomponent.R as feedComponentR
 /**
  * @author by milhamj on 25/07/18.
  */
-
-private const val FEED_PAGE = "feed"
-private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
-
 @Keep
-class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener, PostProgressUpdateView.PostUpdateSwipe, FeedPlusContainerListener {
+class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, PostProgressUpdateView.PostUpdateSwipe, FeedPlusContainerListener {
 
     private var showOldToolbar: Boolean = false
     private var shouldHitFeedTracker: Boolean = false
@@ -101,12 +104,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private var mInProgress = false
 
     companion object {
-        const val TOOLBAR_GRADIENT = 1
-        const val TOOLBAR_WHITE = 2
         const val PARAM_SHOW_PROGRESS_BAR = "show_posting_progress_bar"
         const val PARAM_IS_EDIT_STATE = "is_edit_state"
         const val PARAM_MEDIA_PREVIEW = "media_preview"
-        const val FEED_BACKGROUND_CROSSFADER_DURATION = 200
         const val FEED_FRAGMENT_INDEX = 0
 
         const val ARGS_FEED_TAB_POSITION = "FEED_TAB_POSITION"
@@ -120,6 +120,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         const val UPDATE_TAB_POSITION = "1"
         const val EXPLORE_TAB_POSITION = "2"
         const val VIDEO_TAB_POSITION = "3"
+
+        private const val FEED_PAGE = "feed"
+        private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?) = FeedPlusContainerFragment().apply { arguments = bundle }
@@ -140,8 +143,17 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     @Inject
     lateinit var entryPointAnalytic: FeedEntryPointAnalytic
 
+    @Inject
+    lateinit var playShortsUploader: PlayShortsUploader
+
+    @Inject
+    lateinit var playShortsInFeedAnalytic: PlayShortsInFeedAnalytic
+
+    @Inject
+    lateinit var playShortsUploadAnalytic: PlayShortsUploadAnalytic
+
     @JvmField @Inject
-    var dispatchers: CoroutineDispatchers? = null
+    var coachMarkManager: ContentCoachMarkManager? = null
 
     /** View */
     private lateinit var fabFeed: FloatingButtonUnify
@@ -174,19 +186,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             }
     }
 
-    private var coachMarkHelper: CoachMarkHelper? = null
-
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
     private var badgeNumberCart: Int = 0
-    private var toolbarType = TOOLBAR_GRADIENT
-    private var startToTransitionOffset = 0
-    private var searchBarTransitionRange = 0
     private var isLightThemeStatusBar = false
     private var isSeller = false
 
     private lateinit var coachMarkItem: CoachMarkItem
-    private lateinit var feedBackgroundCrossfader: TransitionDrawable
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -255,8 +261,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun setupView(view: View) {
-        coachMarkHelper = CoachMarkHelper(requireContext(), dispatchers ?: CoroutineDispatchersProvider)
-
         fabFeed = view.findViewById(R.id.fab_feed)
         feedFloatingButton = view.findViewById(R.id.feed_floating_button)
         ivFeedUser = view.findViewById(R.id.iv_feed_user)
@@ -285,7 +289,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun initNewToolBar() {
-        feed_background_frame.hide()
         feedToolbar = context?.let { NavToolbar(it) }
         (feedToolbar as? NavToolbar)?.let {
             it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
@@ -370,8 +373,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         viewModel.flush()
         postProgressUpdateView?.unregisterBroadcastReceiver()
         postProgressUpdateView?.unregisterBroadcastReceiverProgress()
-        coachMarkHelper?.dismissAllCoachMark()
-        coachMarkHelper = null
+        coachMarkManager?.dismissAllCoachMark()
+        coachMarkManager = null
         super.onDestroy()
     }
 
@@ -410,10 +413,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     override fun onNotificationChanged(notificationCount: Int, inboxCount: Int, cartCount: Int) {
-        (feedToolbar as? FeedMainToolbar)?.run {
-            setNotificationNumber(notificationCount)
-            setInboxNumber(inboxCount)
-        }
         (feedToolbar as? NavToolbar)?.run {
             setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
             setBadgeCounter(getInboxIcon(), inboxCount)
@@ -427,7 +426,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         super.setUserVisibleHint(isVisibleToUser)
         if (!isVisibleToUser) {
             hideAllFab()
-            coachMarkHelper?.dismissAllCoachMark()
+            coachMarkManager?.dismissAllCoachMark()
         }
     }
 
@@ -527,6 +526,42 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 }
             }
         )
+
+        playShortsUploader.observe(viewLifecycleOwner) { progress, uploadData ->
+            when(progress) {
+                PlayShortsUploadConst.PROGRESS_COMPLETED -> {
+                    postProgressUpdateView?.hide()
+                    Toaster.build(
+                        view = requireView(),
+                        text = getString(R.string.feed_upload_shorts_success),
+                        duration = Toaster.LENGTH_LONG,
+                        type = Toaster.TYPE_NORMAL,
+                        actionText = getString(R.string.feed_upload_shorts_see_video),
+                        clickListener = View.OnClickListener {
+                            playShortsUploadAnalytic.clickRedirectToChannelRoom(
+                                uploadData.authorId,
+                                uploadData.authorType,
+                                uploadData.shortsId
+                            )
+                            RouteManager.route(requireContext(), ApplinkConst.PLAY_DETAIL, uploadData.shortsId)
+                        }
+                    ).show()
+                }
+                PlayShortsUploadConst.PROGRESS_FAILED -> {
+                    postProgressUpdateView?.show()
+                    postProgressUpdateView?.handleShortsUploadFailed(
+                        uploadData,
+                        playShortsUploader,
+                        playShortsInFeedAnalytic
+                    )
+                }
+                else -> {
+                    postProgressUpdateView?.show()
+                    postProgressUpdateView?.setIcon(uploadData.coverUri.ifEmpty { uploadData.mediaUri })
+                    postProgressUpdateView?.setProgress(progress)
+                }
+            }
+        }
     }
 
     private fun initFab() {
@@ -535,8 +570,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         fabFeed.circleMainMenu.visibility = View.INVISIBLE
 
         feedFloatingButton.setOnClickListener {
+            coachMarkManager?.hasBeenShown(feedFloatingButton)
             fabFeed.menuOpen = !fabFeed.menuOpen
-            if (fabFeed.menuOpen) entryPointAnalytic.clickMainEntryPoint()
+            if (fabFeed.menuOpen) {
+                entryPointAnalytic.clickMainEntryPoint()
+
+                if(viewModel.isShowShortsButton)
+                    playShortsInFeedAnalytic.viewShortsEntryPoint()
+            }
         }
     }
 
@@ -660,11 +701,18 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
             if (viewModel.isShowLiveButton) items.add(createLiveFab())
             if (viewModel.isShowPostButton) items.add(createPostFab())
+            if (viewModel.isShowShortsButton) items.add(createShortsFab())
 
             if (items.isNotEmpty() && userSession.isLoggedIn) {
                 fabFeed.addItem(items)
                 feedFloatingButton.show()
-                showCreatePostOnBoarding()
+
+                if (viewModel.isShowShortsButton) {
+                    showPlayShortsOnBoarding()
+                }
+                else {
+                    showCreatePostOnBoarding()
+                }
             } else {
                 feedFloatingButton.hide()
             }
@@ -706,6 +754,19 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         )
     }
 
+    private fun createShortsFab(): FloatingButtonItem {
+        return FloatingButtonItem(
+            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.SHORT_VIDEO),
+            title = getString(R.string.feed_fab_create_shorts_video),
+            listener = {
+                fabFeed.menuOpen = false
+                playShortsInFeedAnalytic.clickCreateShortsEntryPoint()
+
+                RouteManager.route(requireContext(), ApplinkConst.PLAY_SHORTS)
+            }
+        )
+    }
+
     private fun renderUserProfileEntryPoint(userAccount: GetCheckWhitelistResponse.Author?) {
         ivFeedUser?.let { ivFeedUser ->
             if (userAccount == null) {
@@ -731,16 +792,17 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             ivFeedUser.show()
 
             if (!affiliatePreference.isUserProfileEntryPointCoachMarkShown(userSession.userId)) {
-                coachMarkHelper?.showCoachMark(
-                    CoachMarkConfig(ivFeedUser)
-                        .setSubtitle(getString(R.string.feed_user_profile_entry_point_coach_mark))
-                        .setDuration(USER_ICON_COACH_MARK_DURATION)
-                        .setOnClickCloseListener {
+                coachMarkManager?.showCoachMark(
+                    ContentCoachMarkConfig(ivFeedUser).apply {
+                        subtitle = getString(R.string.feed_user_profile_entry_point_coach_mark)
+                        duration = USER_ICON_COACH_MARK_DURATION
+                        onClickCloseListener = {
                             affiliatePreference.setUserProfileEntryPointCoachMarkShown(userSession.userId)
                         }
-                        .setOnClickListener {
+                        onClickListener = {
                             dismissUserProfileCoachMark()
                         }
+                    }
                 )
             }
         }
@@ -748,7 +810,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun dismissUserProfileCoachMark() {
         affiliatePreference.setUserProfileEntryPointCoachMarkShown(userSession.userId)
-        ivFeedUser?.let { coachMarkHelper?.dismissCoachmark(it) }
+        ivFeedUser?.let { coachMarkManager?.dismissCoachMark(it) }
     }
 
     private fun onErrorGetWhitelist(throwable: Throwable) {
@@ -823,6 +885,16 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
+    private fun showPlayShortsOnBoarding() {
+        coachMarkManager?.showCoachMark(
+            config = ContentCoachMarkConfig(feedFloatingButton).apply {
+                title = getString(feedComponentR.string.feed_play_shorts_entry_point_coachmark_title)
+                subtitle = getString(feedComponentR.string.feed_play_shorts_entry_point_coachmark_description)
+                setCoachmarkPrefKey(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+            }
+        )
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(keyIsLightThemeStatusBar, isLightThemeStatusBar)
@@ -839,15 +911,15 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         onImageSearchClick()
     }
 
-    override fun onImageSearchClick() {
+    private fun onImageSearchClick() {
         toolBarAnalytics.eventClickSearch()
     }
 
-    override fun onInboxButtonClick() {
+    private fun onInboxButtonClick() {
         toolBarAnalytics.eventClickInbox()
     }
 
-    override fun onNotificationClick() {
+    private fun onNotificationClick() {
         toolBarAnalytics.eventClickNotification()
     }
 

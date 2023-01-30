@@ -15,10 +15,11 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
+
 class FeedPlusContainerViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
     private val repo: FeedPlusRepository,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main){
 
     val tabResp = MutableLiveData<Result<FeedTabs>>()
@@ -33,6 +34,12 @@ class FeedPlusContainerViewModel @Inject constructor(
     val isShowLiveButton: Boolean
         get() = when(val whitelist = whitelistResp.value) {
             is Success -> whitelist.data.authors.isNotEmpty()
+            else -> false
+        }
+
+    val isShowShortsButton: Boolean
+        get() = when(val whitelist = whitelistResp.value) {
+            is Success -> whitelist.data.isShopAccountShortsEligible || whitelist.data.isBuyerAccountExists
             else -> false
         }
 
@@ -52,6 +59,7 @@ class FeedPlusContainerViewModel @Inject constructor(
             repo.clearDynamicTabCache()
         }
     }
+
 
     fun getWhitelist() {
         viewModelScope.launchCatchError(block = {

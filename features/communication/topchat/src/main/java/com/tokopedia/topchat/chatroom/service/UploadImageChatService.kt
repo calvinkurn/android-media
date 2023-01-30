@@ -31,17 +31,20 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-open class UploadImageChatService: JobIntentServiceX(), CoroutineScope {
+open class UploadImageChatService : JobIntentServiceX(), CoroutineScope {
 
     @Inject
     lateinit var uploadImageUseCase: TopchatUploadImageUseCase
+
     @Inject
     lateinit var replyChatGQLUseCase: ReplyChatGQLUseCase
+
     @Inject
     lateinit var dispatcher: CoroutineDispatchers
 
     private var image: ImageUploadUiModel? = null
     private var messageId = ""
+    private var isSecure = false
     private var notificationManager: UploadImageNotificationManager? = null
 
     override fun onCreate() {
@@ -51,15 +54,15 @@ open class UploadImageChatService: JobIntentServiceX(), CoroutineScope {
 
     open fun inject() {
         DaggerChatComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .chatRoomContextModule(ChatRoomContextModule(this))
-                .build()
-                .inject(this)
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .chatRoomContextModule(ChatRoomContextModule(this))
+            .build()
+            .inject(this)
     }
 
     private fun initNotificationManager() {
         if (notificationManager == null) {
-            notificationManager = object: UploadImageNotificationManager(this@UploadImageChatService) {
+            notificationManager = object : UploadImageNotificationManager(this@UploadImageChatService) {
                 override fun getFailedIntent(errorMessage: String): PendingIntent {
                     val intent = createLocalChatRoomIntent()
                     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -87,67 +90,76 @@ open class UploadImageChatService: JobIntentServiceX(), CoroutineScope {
     }
 
     private fun setupData(intent: Intent) {
-        messageId = intent.getStringExtra(MESSAGE_ID,)?: ""
+        messageId = intent.getStringExtra(MESSAGE_ID) ?: ""
+        isSecure = intent.getBooleanExtra(IS_SECURE, false)
         val imageUploadService = ImageUploadServiceModel(
             messageId = messageId,
-            fromUid = intent.getStringExtra(FROM_UI_ID)?: "",
-            from = intent.getStringExtra(FROM)?: "",
-            fromRole = intent.getStringExtra(FROM_ROLE)?: "",
-            attachmentId = intent.getStringExtra(ATTACHMENT_ID)?: "",
-            attachmentType = intent.getStringExtra(ATTACHMENT_TYPE)?: "",
-            replyTime = intent.getStringExtra(REPLY_TIME)?: "",
-            startTime = intent.getStringExtra(START_TIME)?: "",
-            message = intent.getStringExtra(MESSAGE)?: "",
-            source = intent.getStringExtra(SOURCE)?: "",
-            imageUrl = intent.getStringExtra(IMAGE_URL)?: "",
-            imageUrlThumbnail = intent.getStringExtra(IMAGE_URL_THUMBNAIL)?: "",
-            parentReply = intent.getStringExtra(PARENT_REPLY)?: "",
-            localId = intent.getStringExtra(LOCAL_ID)?: "",
+            fromUid = intent.getStringExtra(FROM_UI_ID) ?: "",
+            from = intent.getStringExtra(FROM) ?: "",
+            fromRole = intent.getStringExtra(FROM_ROLE) ?: "",
+            attachmentId = intent.getStringExtra(ATTACHMENT_ID) ?: "",
+            attachmentType = intent.getStringExtra(ATTACHMENT_TYPE) ?: "",
+            replyTime = intent.getStringExtra(REPLY_TIME) ?: "",
+            startTime = intent.getStringExtra(START_TIME) ?: "",
+            message = intent.getStringExtra(MESSAGE) ?: "",
+            source = intent.getStringExtra(SOURCE) ?: "",
+            imageUrl = intent.getStringExtra(IMAGE_URL) ?: "",
+            imageUrlThumbnail = intent.getStringExtra(IMAGE_URL_THUMBNAIL) ?: "",
+            parentReply = intent.getStringExtra(PARENT_REPLY) ?: "",
+            localId = intent.getStringExtra(LOCAL_ID) ?: "",
             isRead = intent.getBooleanExtra(IS_READ, false),
             isDummy = intent.getBooleanExtra(IS_DUMMY, false),
             isSender = intent.getBooleanExtra(IS_SENDER, false),
             isRetry = intent.getBooleanExtra(IS_RETRY, false)
         )
         imageUploadService?.let {
-            image =  ImageUploadMapper.mapToImageUploadUiModel(it)
+            image = ImageUploadMapper.mapToImageUploadUiModel(it)
         }
     }
 
     private fun uploadImage() {
         image?.let {
-            uploadImageUseCase.upload(it, ::onSuccessUploadImage, ::onErrorUploadImage)
+            uploadImageUseCase.upload(it, ::onSuccessUploadImage, ::onErrorUploadImage, isSecure)
         }
     }
 
-    private fun onSuccessUploadImage(uploadId: String, dummyMessage: ImageUploadUiModel) {
-        sendImageByGQL(messageId, "Uploaded Image", uploadId, dummyMessage)
+    private fun onSuccessUploadImage(
+        filePath: String,
+        dummyMessage: ImageUploadUiModel,
+        isSecure: Boolean
+    ) {
+        sendImageByGQL(messageId, "Uploaded Image", filePath, dummyMessage, isSecure)
     }
 
     private fun sendImageByGQL(
         msgId: String,
         msg: String,
         filePath: String,
-        dummyMessage: ImageUploadUiModel
+        dummyMessage: ImageUploadUiModel,
+        isSecure: Boolean
     ) {
-        launchCatchError(block = {
-            withContext(dispatcher.io) {
-                val param = ReplyChatGQLUseCase.Param(
-                    msgId = msgId,
-                    msg = msg,
-                    filePath = filePath,
-                    source = dummyMessage.source,
-                    parentReply = dummyMessage.parentReply
-                )
-                val response = replyChatGQLUseCase(param)
-                if(response.data.attachment.attributes.isNotEmpty()) {
-                    removeDummyOnList(dummyMessage)
-                    sendSuccessBroadcast()
+        launchCatchError(
+            block = {
+                withContext(dispatcher.io) {
+                    val param = ReplyChatGQLUseCase.Param(
+                        msgId = msgId,
+                        msg = msg,
+                        filePath = filePath,
+                        source = dummyMessage.source,
+                        parentReply = dummyMessage.parentReply
+                    )
+                    param.isSecure = isSecure
+                    val response = replyChatGQLUseCase(param)
+                    if (response.data.attachment.attributes.isNotEmpty()) {
+                        removeDummyOnList(dummyMessage)
+                        sendSuccessBroadcast()
+                    }
                 }
+            },
+            onError = {
+                onErrorUploadImage(it, dummyMessage)
             }
-        },
-        onError = {
-            onErrorUploadImage(it, dummyMessage)
-        })
+        )
     }
 
     private fun sendSuccessBroadcast() {
@@ -167,23 +179,26 @@ open class UploadImageChatService: JobIntentServiceX(), CoroutineScope {
     }
 
     private fun onErrorUploadImage(throwable: Throwable, image: ImageUploadUiModel) {
-        val position = findDummy(image)?: -1
+        val position = findDummy(image) ?: -1
         flagDummyInPosition(position)
 
         val result = Intent(BROADCAST_UPLOAD_IMAGE)
         result.putExtras(generateBundleError(position, throwable))
         LocalBroadcastManager.getInstance(this).sendBroadcast(result)
 
-        ErrorHandler.getErrorMessage(this, throwable, ErrorHandler.Builder().apply {
-            className = UploadImageChatService::class.java.name
-        }.build())
+        ErrorHandler.getErrorMessage(
+            this, throwable,
+            ErrorHandler.Builder().apply {
+                className = UploadImageChatService::class.java.name
+            }.build()
+        )
 
         val errorMessage = uploaderReadableError(throwable)
         notificationManager?.onFailedUpload(errorMessage)
     }
 
     private fun flagDummyInPosition(position: Int) {
-        if(position > -1) {
+        if (position > -1) {
             dummyMap[position].isFail = true
         }
     }
@@ -204,7 +219,7 @@ open class UploadImageChatService: JobIntentServiceX(), CoroutineScope {
 
     private fun uploaderReadableError(throwable: Throwable): String {
         // produced by uploader
-        val throwableMessage = throwable.message?: ""
+        val throwableMessage = throwable.message ?: ""
 
         // produced by ErrorHandler following with `Kode Error:` at the end of message
         val errorMessage = ErrorHandler.getErrorMessage(this, throwable)
@@ -215,7 +230,7 @@ open class UploadImageChatService: JobIntentServiceX(), CoroutineScope {
                 it.toString().matches("[(<]".toRegex())
             }.takeIf {
                 it > 0
-            }?: 0
+            } ?: 0
 
         return if (!hasErrorCode.isZero()) {
             throwableMessage
@@ -251,9 +266,15 @@ open class UploadImageChatService: JobIntentServiceX(), CoroutineScope {
         const val PARENT_REPLY = "parentReply"
         const val LOCAL_ID = "localId"
         const val BROADCAST_UPLOAD_IMAGE = "BROADCAST_UPLOAD_IMAGE"
+        const val IS_SECURE = "isSecure"
         var dummyMap = arrayListOf<UploadImageDummy>()
 
-        fun enqueueWork(context: Context, image: ImageUploadServiceModel, messageId: String) {
+        fun enqueueWork(
+            context: Context,
+            image: ImageUploadServiceModel,
+            messageId: String,
+            isSecure: Boolean
+        ) {
             val intent = Intent(context, UploadImageChatService::class.java)
             intent.putExtra(MESSAGE_ID, messageId)
             intent.putExtra(MESSAGE, image.message)
@@ -273,22 +294,24 @@ open class UploadImageChatService: JobIntentServiceX(), CoroutineScope {
             intent.putExtra(IS_RETRY, image.isRetry)
             intent.putExtra(IS_READ, image.isRead)
             intent.putExtra(IS_DUMMY, image.isDummy)
+            intent.putExtra(IS_SECURE, isSecure)
             enqueueWork(context, UploadImageChatService::class.java, JOB_ID_UPLOAD_IMAGE, intent)
         }
 
         @Synchronized
         fun removeDummyOnList(dummy: Visitable<*>) {
             val tmpDummy: Int? = findDummy(dummy)
-            tmpDummy?.let {tmp ->
+            tmpDummy?.let { tmp ->
                 dummyMap.removeAt(tmp)
             }
         }
 
         fun findDummy(dummy: Visitable<*>): Int? {
-            for(i in 0 until dummyMap.size) {
+            for (i in 0 until dummyMap.size) {
                 val temp = (dummyMap[i].visitable as SendableUiModel)
-                if (temp.startTime == (dummy as SendableUiModel).startTime
-                        && temp.messageId == (dummy as SendableUiModel).messageId) {
+                if (temp.startTime == (dummy as SendableUiModel).startTime &&
+                    temp.messageId == (dummy as SendableUiModel).messageId
+                ) {
                     return i
                 }
             }

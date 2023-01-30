@@ -59,7 +59,9 @@ object ProductRecommendationMapper {
                 shopId = item.shopId.toString(),
                 shopType = item.shopType,
                 shopName = item.shopName,
-                appLink = item.appUrl
+                appLink = item.appUrl,
+                headerName = recommendationWidget.title,
+                pageName = recommendationWidget.pageName
             )
         }
         val seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
@@ -102,7 +104,8 @@ object ProductRecommendationMapper {
             shopId = product.shopId.toIntSafely(),
             shopName = product.shopName,
             shopType = product.shopType,
-            recommendationType = product.recommendationType
+            recommendationType = product.recommendationType,
+            header = product.headerName
         )
     }
 }

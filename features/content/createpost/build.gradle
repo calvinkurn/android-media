@@ -20,7 +20,6 @@ buildscript {
 android {
     buildFeatures {
         viewBinding true
-        buildConfig true
     }
 }
 

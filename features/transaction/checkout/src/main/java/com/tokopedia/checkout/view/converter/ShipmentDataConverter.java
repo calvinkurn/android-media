@@ -353,7 +353,7 @@ public class ShipmentDataConverter {
         cartItemModel.setShopName(groupShop.getShop().getShopName());
         cartItemModel.setImageUrl(product.getProductImageSrc200Square());
         cartItemModel.setCurrency(product.getProductPriceCurrency());
-        if (product.getProductWholesalePrice() != 0) {
+        if (product.getProductWholesalePrice() != 0.0) {
             cartItemModel.setPrice(product.getProductWholesalePrice());
             cartItemModel.setWholesalePrice(true);
         } else {
