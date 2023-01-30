@@ -186,16 +186,16 @@ class FeedViewModel @Inject constructor(
                 is ShopRecomWidgetModel -> item.shopRecomUiModel.items.map {
                     currentFollowState[it.id.toString()] = Pair(it.type, it.state == FOLLOW)
                 }
-                is TopadsHeadLineV2Model -> {
-                    item.cpmModel?.let {
+                is TopadsHeadLineV2Model -> item.run {
+                    cpmModel?.let {
                         it.data.map { cpm ->
                             currentFollowState[cpm.cpm.cpmShop.id] =
                                 Pair(GetFollowingUseCase.SHOP_TYPE, cpm.cpm.cpmShop.isFollowed)
                         }
                     }
-                    currentFollowState[item.feedXCard.author.id] = Pair(
-                        item.feedXCard.author.type,
-                        item.feedXCard.followers.isFollowed
+                    currentFollowState[feedXCard.author.id] = Pair(
+                        feedXCard.author.type,
+                        feedXCard.followers.isFollowed
                     )
                 }
                 is TopadsShopUiModel -> item.dataList.map {
