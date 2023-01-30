@@ -65,7 +65,7 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
         return ProfileWhitelistUiModel(
             isWhitelist = authorUgc != null,
             hasUsername = authorUgc?.post?.hasUsername ?: false,
-            hasAcceptTnc = authorUgc?.post?.enable ?: false,
+            hasAcceptTnc = authorUgc?.hasAcceptTnc ?: false,
         )
     }
 
