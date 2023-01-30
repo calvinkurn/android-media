@@ -53,14 +53,13 @@ object RollenceKey {
     // SRP Video Sneak Peek Autoplay
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY = "srp_prodvideo_3"
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_VARIANT = "experiment_variant"
-
-    // Typo Correction
-    const val SEARCH_TYPO_CORRECTION_ADS = "typo_correction_ads2"
-    const val SEARCH_TYPO_CORRECTION_ADS_VARIANT = "typo2"
+    const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_OTHER_VARIANT = "exp_variant"
 
     // Global Menu (Me Page)
-    const val ME_PAGE_REVAMP = "Navigation_Mepage"
-    const val ME_PAGE_REVAMP_VARIANT = "Mepage_Variant"
+    const val ME_PAGE_EXP = "mepage_secondexp"
+    const val ME_PAGE_CONTROL = "control_variant"
+    const val ME_PAGE_VARIANT_1 = "Mepage_1"
+    const val ME_PAGE_VARIANT_2 = "Mepage_2"
 
     // TokoChat
     const val KEY_ROLLENCE_TOKOCHAT = "gofood_chat_2"
@@ -70,9 +69,6 @@ object RollenceKey {
     const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"
     const val PDP_HIDE_THUMBNAIL = "pdp_hide_thumbnail"
     const val PDP_SHOW_SHARE_AFFILIATE = "pdp_share_icon"
-
-    // Saldo
-    const val SALDO_MODAL_TOKO_WIDGET = "saldo_mclremoval"
 
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"

@@ -976,7 +976,7 @@ class ProductListPresenter @Inject constructor(
     private fun setSortFilterItemListener(item: SortFilterItem, filter: Filter, options: List<Option>) {
         if (options.size == 1) {
             item.listener = {
-                view.onQuickFilterSelected(filter, options.first())
+                view.onQuickFilterSelected(filter, options.first(), dimension90)
             }
         } else {
             item.listener = {
@@ -995,7 +995,7 @@ class ProductListPresenter @Inject constructor(
 
     override fun onApplyDropdownQuickFilter(optionList: List<Option>?) {
         view.applyDropdownQuickFilter(optionList)
-        view.trackEventApplyDropdownQuickFilter(optionList)
+        view.trackEventApplyDropdownQuickFilter(optionList, dimension90)
     }
 
     private fun getViewToSendTrackingSearchAttempt(productDataView: ProductDataView) {

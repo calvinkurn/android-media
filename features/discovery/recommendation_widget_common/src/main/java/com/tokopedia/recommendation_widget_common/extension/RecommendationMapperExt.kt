@@ -11,6 +11,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationSpecificationLabels
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
@@ -145,6 +146,23 @@ fun RecommendationItem.toProductCardModel(
             variant = if (isProductHasParentID()) variant else null,
             nonVariant = if (isProductHasParentID()) null else nonVariant,
             cardInteraction = cardInteraction,
+    )
+}
+
+fun List<RecommendationItem>.toViewToViewItemModels(): List<ViewToViewItemData>{
+    return map {
+        it.toViewToViewItem()
+    }
+}
+
+fun RecommendationItem.toViewToViewItem() : ViewToViewItemData {
+    return ViewToViewItemData(
+        name = name,
+        price = price,
+        imageUrl = imageUrl,
+        departmentId = departmentId.toString(),
+        url = url,
+        recommendationData = this,
     )
 }
 
