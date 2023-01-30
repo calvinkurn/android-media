@@ -401,8 +401,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
-            is PlayBroadcastAction.GetConfiguration -> handleGetConfiguration(event.selectedType, event.isRefreshConfig)
+            is PlayBroadcastAction.GetConfiguration -> handleGetConfiguration(event.selectedType)
             is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount(event.needLoading)
+            is PlayBroadcastAction.SuccessOnBoardingUGC -> handleSuccessOnBoardingUGC()
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
@@ -438,40 +439,41 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleGetConfiguration(selectedType: String, isRefreshConfig: Boolean) {
+    private fun handleGetConfiguration(selectedType: String) {
         viewModelScope.launchCatchError(block = {
-            _accountStateInfo.value = AccountStateInfo()
-            _observableConfigInfo.value = NetworkResult.Loading
-
-            val accountList = repo.getAccountList()
-
-            _accountListState.value = accountList
-
-            if (accountList.isNotEmpty()) {
-                updateSelectedAccount(
-                    getSelectedAccount(
-                        selectedType = selectedType,
-                        cacheSelectedType = sharedPref.getLastSelectedAccount(),
-                        accountList = accountList
-                    )
-                )
-
-                if (isRefreshConfig) getBroadcastingConfig()
-                getBroadcasterAuthorConfig(_selectedAccount.value)
-            } else throw Throwable()
+            getFeedCheckWhitelist(selectedType)
+            getBroadcastingConfig()
+            getBroadcasterAuthorConfig(_selectedAccount.value)
         }, onError = {
-            _observableConfigInfo.value = NetworkResult.Fail(it) { this.handleGetConfiguration(selectedType, true) }
+            _observableConfigInfo.value = NetworkResult.Fail(it) {
+                this.handleGetConfiguration(selectedType)
+            }
         })
     }
 
-    private fun getBroadcastingConfig() {
-        viewModelScope.launchCatchError(block = {
-            val request = repo.getBroadcastingConfig(authorId, authorType)
-            // TODO set the data here
-            Timber.d(request.toString())
-        }) {
-            _observableConfigInfo.value = NetworkResult.Fail(it) { getBroadcastingConfig() }
-        }
+    private suspend fun getFeedCheckWhitelist(selectedType: String) {
+        _accountStateInfo.value = AccountStateInfo()
+        _observableConfigInfo.value = NetworkResult.Loading
+
+        val accountList = repo.getAccountList()
+        _accountListState.value = accountList
+
+        if (accountList.isNotEmpty()) {
+            updateSelectedAccount(
+                getSelectedAccount(
+                    selectedType = selectedType,
+                    cacheSelectedType = sharedPref.getLastSelectedAccount(),
+                    accountList = accountList
+                )
+            )
+        } else throw Throwable()
+    }
+
+    private suspend fun getBroadcastingConfig() {
+        val request = repo.getBroadcastingConfig(authorId, authorType)
+        _uiEvent.emit(PlayBroadcastEvent.InitializeBroadcaster)
+        // TODO set the data here
+        Timber.d(request.toString())
     }
 
     private fun getBroadcasterAuthorConfig(selectedAccount: ContentAccountUiModel) {
@@ -1629,6 +1631,17 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _selectedAccount.update { selectedAccount }
         sharedPref.setLastSelectedAccount(selectedAccount.type)
         hydraConfigStore.setAuthor(selectedAccount)
+    }
+
+    private fun handleSuccessOnBoardingUGC() {
+        viewModelScope.launchCatchError(block = {
+            getFeedCheckWhitelist(TYPE_USER)
+            getBroadcasterAuthorConfig(_selectedAccount.value)
+        }, onError = {
+            _observableConfigInfo.value = NetworkResult.Fail(it) {
+                this.handleGetConfiguration(TYPE_USER)
+            }
+        })
     }
 
     /**

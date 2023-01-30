@@ -2,6 +2,8 @@ package com.tokopedia.play.broadcaster.ui.event
 
 sealed interface PlayBroadcastEvent {
 
+    object InitializeBroadcaster: PlayBroadcastEvent
+
     object ShowLoading : PlayBroadcastEvent
     object ShowResumeLiveDialog : PlayBroadcastEvent
     object ShowLiveEndedDialog : PlayBroadcastEvent

@@ -34,12 +34,17 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.analytic.*
+import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_PAGE
+import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_PREPARE_PAGE
+import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_RENDER_PAGE
+import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_REQUEST_NETWORK
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
 import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
@@ -65,6 +70,7 @@ import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
@@ -75,7 +81,8 @@ import javax.inject.Inject
 class PlayBroadcastActivity : BaseActivity(),
     PlayBaseCoordinator,
     PlayBroadcasterContract,
-    PlayBroadcaster.Callback {
+    PlayBroadcaster.Callback,
+    SurfaceHolder.Callback {
 
     private val retainedComponent by retainedComponent {
         DaggerActivityRetainedComponent.builder()
@@ -140,36 +147,19 @@ class PlayBroadcastActivity : BaseActivity(),
         startPageMonitoring()
         super.onCreate(savedInstanceState)
         initViewModel()
+        observeUiState()
+        observeConfiguration()
         setContentView(R.layout.activity_play_broadcast)
         isRecreated = (savedInstanceState != null)
 
-        initBroadcaster()
-
         initView()
-        setupView()
 
         if (savedInstanceState != null) {
             populateSavedState(savedInstanceState)
             requestPermission()
         }
 
-        if (!viewModel.isLiveStreamEnded()) {
-            PlayBroadcasterIdlingResource.increment()
-            getConfiguration()
-        }
-        observeConfiguration()
-
         if (GlobalConfig.DEBUG) setupDebugView()
-    }
-
-    private fun initBroadcaster() {
-        val handler = Handler(Looper.getMainLooper())
-        broadcaster = broadcasterFactory.create(
-            activityContext = this,
-            handler = handler,
-            callback = this,
-            remoteConfig = remoteConfig,
-        )
     }
 
     override fun onStart() {
@@ -181,7 +171,6 @@ class PlayBroadcastActivity : BaseActivity(),
         super.onResume()
         setLayoutFullScreen()
         lockOrientation()
-        createBroadcaster()
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
@@ -243,6 +232,23 @@ class PlayBroadcastActivity : BaseActivity(),
         super.onBackPressed()
     }
 
+    override fun surfaceCreated(holder: SurfaceHolder) {
+        if (surfaceHolder != null) {
+            return
+        }
+        surfaceHolder = holder
+        createBroadcaster()
+    }
+
+    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+        broadcaster.updateSurfaceSize(Broadcaster.Size(width, height))
+    }
+
+    override fun surfaceDestroyed(p0: SurfaceHolder) {
+        surfaceHolder = null
+        releaseBroadcaster()
+    }
+
     private fun inject() {
         retainedComponent.inject(this)
     }
@@ -251,11 +257,45 @@ class PlayBroadcastActivity : BaseActivity(),
         viewModel = ViewModelProvider(
             this,
             viewModelFactoryCreator.create(this)
-        ).get(PlayBroadcastViewModel::class.java)
+        )[PlayBroadcastViewModel::class.java]
+
+        if (!viewModel.isLiveStreamEnded()) {
+            PlayBroadcasterIdlingResource.increment()
+            getConfiguration()
+        }
     }
 
     private fun setFragmentFactory() {
         supportFragmentManager.fragmentFactory = fragmentFactory
+    }
+
+    private fun observeUiState() {
+        lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect { event ->
+                when (event) {
+                    is PlayBroadcastEvent.InitializeBroadcaster -> {
+                        initBroadcaster()
+
+                        /**
+                         * fix this issue
+                         * surface view need recreate to show
+                         * **/
+                        surfaceView.holder.addCallback(this@PlayBroadcastActivity)
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun initBroadcaster() {
+        val handler = Handler(Looper.getMainLooper())
+        broadcaster = broadcasterFactory.create(
+            activityContext = this,
+            handler = handler,
+            callback = this,
+            remoteConfig = remoteConfig,
+        )
     }
 
     private fun initView() {
@@ -263,28 +303,6 @@ class PlayBroadcastActivity : BaseActivity(),
         globalErrorView = findViewById(R.id.global_error)
         aspectFrameLayout = findViewById(R.id.aspect_ratio_view)
         surfaceView = findViewById(R.id.surface_view)
-    }
-
-    private fun setupView() {
-        surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
-            override fun surfaceCreated(holder: SurfaceHolder) {
-                if (surfaceHolder != null) {
-                    return
-                }
-                surfaceHolder = holder
-                // We got surface to draw on, start streamer creation
-                createBroadcaster()
-            }
-
-            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-                broadcaster.updateSurfaceSize(Broadcaster.Size(width, height))
-            }
-
-            override fun surfaceDestroyed(holder: SurfaceHolder) {
-                surfaceHolder = null
-                releaseBroadcaster()
-            }
-        })
     }
 
     private fun getConfiguration() {
@@ -594,11 +612,11 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     private fun releaseBroadcaster() {
-        broadcaster.release()
+        if (::broadcaster.isInitialized) broadcaster.release()
     }
 
     private fun destroyBroadcaster() {
-        broadcaster.destroy()
+        if (::broadcaster.isInitialized) broadcaster.destroy()
     }
 
     /*
@@ -656,4 +674,5 @@ class PlayBroadcastActivity : BaseActivity(),
         private const val TERMS_AND_CONDITION_TAG = "TNC_BOTTOM_SHEET"
         private const val INIT_BROADCASTER_DELAY = 500L
     }
+
 }
