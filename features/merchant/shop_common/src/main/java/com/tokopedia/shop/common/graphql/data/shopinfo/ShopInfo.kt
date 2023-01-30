@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.shop.common.data.model.ShopInfoData
+import com.tokopedia.shop.common.data.model.ShopShipmentData
 import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
 
 data class ShopInfo(
@@ -134,23 +135,25 @@ data class ShopInfo(
         }
 
         return ShopInfoData(
-                shopCore.shopID,
-                shopCore.name,
-                shopCore.description,
-                shopCore.url,
-                location,
-                shopAssets.cover,
-                shopCore.tagLine,
-                goldOS.isOfficial,
-                goldOS.isGold,
-                createdInfo.openSince,
-                shipmentsData,
-                shopSnippetUrl,
-                isGoApotik,
-                epharmacyInfo.siaNumber,
-                epharmacyInfo.sipaNumber,
-                epharmacyInfo.apj,
-                partnerLabel = partnerLabel
+            shopId = shopCore.shopID,
+            name = shopCore.name,
+            description = shopCore.description,
+            url = shopCore.url,
+            location = location,
+            imageCover = shopAssets.cover,
+            tagLine = shopCore.tagLine,
+            isOfficial = goldOS.isOfficial,
+            isGold = goldOS.isGold,
+            openSince = createdInfo.openSince,
+            shipments = shipmentsData,
+            shopSnippetUrl = shopSnippetUrl,
+            isGoApotik = isGoApotik,
+            siaNumber = epharmacyInfo.siaNumber,
+            sipaNumber = epharmacyInfo.sipaNumber,
+            apj = epharmacyInfo.apj,
+            partnerLabel = partnerLabel,
+            fsType = partnerInfo.fsType,
+            partnerName = partnerInfo.partnerName
         )
     }
 
@@ -187,7 +190,7 @@ data class ShopInfo(
     data class PartnerInfoData(
         @SerializedName("fsID")
         @Expose
-        val fsID: String = "0",
+        val fsID: String = "",
 
         @SerializedName("partnerName")
         @Expose
@@ -199,7 +202,7 @@ data class ShopInfo(
 
         @SerializedName("shopID")
         @Expose
-        val shopID: String
+        val shopID: String = ""
     )
 
     data class ShopAssets(
