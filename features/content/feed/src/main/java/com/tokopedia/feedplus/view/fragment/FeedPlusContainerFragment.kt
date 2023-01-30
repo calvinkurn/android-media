@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.Keep
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -30,9 +29,7 @@ import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.types.BundleData
-import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
-import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
@@ -376,6 +373,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         postProgressUpdateView?.unregisterBroadcastReceiverProgress()
         coachMarkManager?.dismissAllCoachMark()
         coachMarkManager = null
+        onboardingCoachmark.dismissCoachmark()
         super.onDestroy()
     }
 
@@ -682,8 +680,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         viewModel.getWhitelist()
         if(!userSession.isLoggedIn)
             showOnboardingStepsCoachmark(
-                showUserProfileCoachmark = false,
-                showShortVideoCoachmark = false
+                shouldShowUserProfileCoachmark = false,
+                shouldShowShortVideoCoachmark = false
             )
     }
     private fun openTabAsPerParamValue() {
@@ -776,8 +774,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 ivFeedUser.setOnClickListener(null)
                 ivFeedUser.hide()
                 showOnboardingStepsCoachmark(
-                    showShortVideoCoachmark = userSession.isLoggedIn && feedFloatingButton.isVisible && viewModel.isShowShortsButton,
-                    showUserProfileCoachmark = false
+                    shouldShowShortVideoCoachmark = userSession.isLoggedIn && feedFloatingButton.isVisible && viewModel.isShowShortsButton,
+                    shouldShowUserProfileCoachmark = false
                 )
                 return
             }
@@ -799,8 +797,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             ivFeedUser.show()
 
             showOnboardingStepsCoachmark(
-                showShortVideoCoachmark = userSession.isLoggedIn && feedFloatingButton.isVisible && viewModel.isShowShortsButton,
-                showUserProfileCoachmark = true
+                shouldShowShortVideoCoachmark = userSession.isLoggedIn && feedFloatingButton.isVisible && viewModel.isShowShortsButton,
+                shouldShowUserProfileCoachmark = true
             )
 
         }
@@ -869,7 +867,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 activity?.getString(R.string.feed_onboarding_create_post_detail) ?: ""
             ).withCustomTarget(intArrayOf(x1, y1, x2, y2))
 
-//            showFabCoachMark()
         }
     }
 
@@ -883,7 +880,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-    private fun showOnboardingStepsCoachmark(showShortVideoCoachmark: Boolean, showUserProfileCoachmark: Boolean){
+    private fun showOnboardingStepsCoachmark(shouldShowShortVideoCoachmark: Boolean, shouldShowUserProfileCoachmark: Boolean){
         val tab = tabLayout?.tabLayout?.getTabAt(2)
         val anchorMap = mapOf<String, View>(
             Pair(FeedOnboardingCoachmark.USER_PROFILE_COACH_MARK_ANCHOR, ivFeedUser!!),
@@ -892,11 +889,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         )
         onboardingCoachmark.showFeedOnboardingCoachmark(
             anchorMap,
-            context,
-            affiliatePreference,
             this,
-            showShortVideoCoachmark,
-            showUserProfileCoachmark
+            shouldShowShortVideoCoachmark,
+            shouldShowUserProfileCoachmark
         )
     }
 

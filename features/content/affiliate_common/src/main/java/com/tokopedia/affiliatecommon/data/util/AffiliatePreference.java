@@ -20,7 +20,6 @@ public class AffiliatePreference {
     private static final String FORMAT_CREATE_POST_ENTRY_ONBOARDING = "create_post_entry_onboarding_%s";
     public static final String LABEL_TAG_COACHMARK_CATEGORY = "explore-category-affiliate-%s";
     public static final String FORMAT_FEED_USER_PROFILE_ENTRY_POINT_COACH_MARK = "feed_user_profile_entry_point_coach_mark_%s";
-    public static final String FORMAT_FEED_SHORT_VIDEO_ENTRY_POINT_COACH_MARK = "feed_short_video_entry_point_coach_mark_%s";
     public static final String FORMAT_FEED_VIDEO_TAB_ENTRY_POINT_COACH_MARK = "feed_video_tab_entry_point_coach_mark_%s";
 
     private final SharedPreferences sharedPrefs;
@@ -88,13 +87,6 @@ public class AffiliatePreference {
         return sharedPrefs.getBoolean(String.format(FORMAT_FEED_USER_PROFILE_ENTRY_POINT_COACH_MARK, userId), false);
     }
 
-    public void setShortVideoEntryPointCoachMarkShown(String userId) {
-        sharedPrefs.edit().putBoolean(String.format(FORMAT_FEED_SHORT_VIDEO_ENTRY_POINT_COACH_MARK, userId), true).apply();
-    }
-
-    public boolean isShortVideoEntryPointCoachMarkShown(String userId) {
-        return sharedPrefs.getBoolean(String.format(FORMAT_FEED_SHORT_VIDEO_ENTRY_POINT_COACH_MARK, userId), false);
-    }
     public void setVideoTabEntryPointCoachMarkShown(String userId) {
         sharedPrefs.edit().putBoolean(String.format(FORMAT_FEED_VIDEO_TAB_ENTRY_POINT_COACH_MARK, userId), true).apply();
     }
