@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.sellerpersona.di.SellerPersonaScope
 import com.tokopedia.sellerpersona.view.viewmodel.PersonaSharedViewModel
+import com.tokopedia.sellerpersona.view.viewmodel.QuestionnaireViewModel
 import com.tokopedia.sellerpersona.view.viewmodel.SelectPersonaTypeViewModel
 import dagger.Binds
 import dagger.Module
@@ -31,4 +32,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SelectPersonaTypeViewModel::class)
     abstract fun provideSelectPersonaTypeViewModel(viewModel: SelectPersonaTypeViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(QuestionnaireViewModel::class)
+    abstract fun provideQuestionnaireViewModel(viewModel: QuestionnaireViewModel): ViewModel
 }

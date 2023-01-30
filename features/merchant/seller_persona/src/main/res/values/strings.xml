@@ -17,4 +17,6 @@
     <string name="sp_select">Pilih</string>
     <string name="sp_label_seller_type">Tipe Seller:</string>
     <string name="sp_select_this_type_if">Pilih tipe ini jika kamu:</string>
+    <string name="sp_next">Selanjutnya</string>
+    <string name="sp_previous">Sebelumnya</string>
 </resources>

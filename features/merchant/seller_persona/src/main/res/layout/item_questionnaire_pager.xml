@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSpQuestionTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="Ini adalah contoh pertanyaan pertama, apakah jawabannya??" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSpQuestionSubtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toEndOf="@+id/tvSpQuestionTitle"
+        app:layout_constraintStart_toStartOf="@+id/tvSpQuestionTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvSpQuestionTitle"
+        app:typographyType="display_3"
+        tools:text="Ini adalah contoh pertanyaan pertama, apakah jawabannya??" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSpQuestionOptions"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tvSpQuestionTitle"
+        app:layout_constraintStart_toStartOf="@+id/tvSpQuestionTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvSpQuestionSubtitle"
+        tools:itemCount="4"
+        tools:listitem="@layout/item_question_option" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,6 +23,7 @@
         app:layout_constraintGuide_end="16dp" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+        android:id="@+id/radioSpPersonaType"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_margin="24dp"

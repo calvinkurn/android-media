@@ -66,8 +66,9 @@ class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>
     }
 
     private fun showPersonaList(data: List<PersonaUiModel>) {
-        personaTypeAdapter.setItems(data)
-        personaTypeAdapter.notifyItemRangeChanged(Int.ZERO, data.size.minus(Int.ONE))
+        binding?.rvSpSelectType?.post {
+            personaTypeAdapter.setItems(data)
+        }
     }
 
     private fun showErrorState(throwable: Throwable) {

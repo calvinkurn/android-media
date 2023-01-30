@@ -37,6 +37,8 @@ class PersonaTypeAdapter @Inject constructor() : Adapter<PersonaTypeAdapter.Type
     fun setItems(items: List<PersonaUiModel>) {
         this.items.clear()
         this.items.addAll(items)
+
+        notifyItemRangeChanged(Int.ZERO, items.size.minus(Int.ONE))
     }
 
     inner class TypeViewHolder(private val binding: ItemPersonaTypeBinding) :
@@ -46,6 +48,7 @@ class PersonaTypeAdapter @Inject constructor() : Adapter<PersonaTypeAdapter.Type
             with(binding) {
                 tvSpPersonaType.text = item.headerTitle
                 tvSpSellerTypeStatus.text = item.headerSubTitle
+                radioSpPersonaType.isChecked = item.isSelected
 
                 showList(item.itemList)
                 showBackground(item)

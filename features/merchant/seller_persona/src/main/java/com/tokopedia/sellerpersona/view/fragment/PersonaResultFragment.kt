@@ -31,6 +31,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupView()
     }
 
