@@ -439,11 +439,15 @@ public interface ShipmentContract {
 
         void clearAllBoOnTemporaryUpsell();
 
-        void setDynamicData(DynamicDataPassingParamRequest.DynamicDataParam dynamicDataPassingParam, boolean isChecked);
+        void setDynamicDataParam(DynamicDataPassingParamRequest dynamicDataPassingParam);
+
+        DynamicDataPassingParamRequest getDynamicDataParam();
 
         void validateDynamicData();
 
         boolean isUsingDynamicDataPassing();
+
+        void updateDynamicData(DynamicDataPassingParamRequest dynamicDataPassingParamRequest, boolean isFireAndForget);
     }
 
 }

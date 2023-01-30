@@ -366,6 +366,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
     @Test
     fun `WHEN SAF returns donation already checked THEN verify set param with donation`() {
         // Given
+        val isDdp = true
         val listGroupAddress = arrayListOf<GroupAddress>()
         val groupAddress = GroupAddress(
             isError = false,
@@ -388,7 +389,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
                 CartShipmentAddressFormData(
                     errorCode = 0,
                     groupAddress = listGroupAddress,
-                    isUsingDdp = true,
+                    isUsingDdp = isDdp,
                     donation = Donation(isChecked = true)
                 )
             )
@@ -428,12 +429,13 @@ class ShipmentPresenterUpdateDynamicDataTest {
 
         // Then
         assert(presenter.dynamicDataParam.data.isNotEmpty())
-        assertEquals(true, presenter.isUsingDynamicDataPassing)
+        assertEquals(isDdp, presenter.isUsingDynamicDataPassing)
     }
 
     @Test
     fun `WHEN SAF returns addons order level already checked THEN verify set param with addons order level`() {
         // Given
+        val isDdp = true
         val listGroupAddress = arrayListOf<GroupAddress>()
         val listGroupShop = arrayListOf<GroupShop>()
         val listAddOnDataItemModel = arrayListOf<AddOnDataItemModel>()
@@ -491,7 +493,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
                 CartShipmentAddressFormData(
                     errorCode = 0,
                     groupAddress = listGroupAddress,
-                    isUsingDdp = true,
+                    isUsingDdp = isDdp,
                     addOnWording = AddOnWordingData(
                         packagingAndGreetingCard = "packaging and greeting",
                         onlyGreetingCard = "only greeting card",
@@ -534,12 +536,13 @@ class ShipmentPresenterUpdateDynamicDataTest {
 
         // Then
         assert(presenter.dynamicDataParam.data.isNotEmpty())
-        assertEquals(true, presenter.isUsingDynamicDataPassing)
+        assertEquals(isDdp, presenter.isUsingDynamicDataPassing)
     }
 
     @Test
     fun `WHEN SAF returns addons product level already checked THEN verify set param with addons product level`() {
         // Given
+        val isDdp = true
         val listGroupAddress = arrayListOf<GroupAddress>()
         val listGroupShop = arrayListOf<GroupShop>()
         val listAddOnDataItemModel = arrayListOf<AddOnDataItemModel>()
@@ -616,7 +619,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
                 CartShipmentAddressFormData(
                     errorCode = 0,
                     groupAddress = listGroupAddress,
-                    isUsingDdp = true,
+                    isUsingDdp = isDdp,
                     addOnWording = AddOnWordingData(
                         packagingAndGreetingCard = "packaging and greeting",
                         onlyGreetingCard = "only greeting card",
@@ -659,12 +662,13 @@ class ShipmentPresenterUpdateDynamicDataTest {
 
         // Then
         assert(presenter.dynamicDataParam.data.isNotEmpty())
-        assertEquals(true, presenter.isUsingDynamicDataPassing)
+        assertEquals(isDdp, presenter.isUsingDynamicDataPassing)
     }
 
     @Test
     fun `WHEN SAF returns isDdp is false THEN verify param is empty`() {
         // Given
+        val isDdp = false
         val listGroupAddress = arrayListOf<GroupAddress>()
         val groupAddress = GroupAddress(
             isError = false,
@@ -687,7 +691,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
                 CartShipmentAddressFormData(
                     errorCode = 0,
                     groupAddress = listGroupAddress,
-                    isUsingDdp = false
+                    isUsingDdp = isDdp
                 )
             )
         }
@@ -726,6 +730,6 @@ class ShipmentPresenterUpdateDynamicDataTest {
 
         // Then
         assert(presenter.dynamicDataParam.data.isEmpty())
-        assertEquals(false, presenter.isUsingDynamicDataPassing)
+        assertEquals(isDdp, presenter.isUsingDynamicDataPassing)
     }
 }

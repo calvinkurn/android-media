@@ -1959,7 +1959,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void updateCheckboxDynamicData(DynamicDataPassingParamRequest.DynamicDataParam param, boolean isChecked) {
-        shipmentPresenter.setDynamicData(param, isChecked);
+        DynamicDataPassingParamRequest newParamRequest = shipmentPresenter.getDynamicDataParam();
+        if (newParamRequest.getData().contains(param)) {
+            if (!isChecked) {
+                newParamRequest.getData().remove(param);
+            }
+        } else {
+            newParamRequest.getData().add(param);
+        }
+        shipmentPresenter.setDynamicDataParam(newParamRequest);
     }
 
     @Override

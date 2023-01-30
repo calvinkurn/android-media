@@ -2955,9 +2955,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         ddpParam.setData(listDataParam);
-        this.dynamicDataParam = ddpParam;
+        setDynamicDataParam(ddpParam);
     }
 
+    @Override
     public void updateDynamicData(DynamicDataPassingParamRequest dynamicDataPassingParamRequest, boolean isFireAndForget) {
         updateDynamicDataPassingUseCase.setParams(dynamicDataPassingParamRequest);
         updateDynamicDataPassingUseCase.execute(
@@ -2989,15 +2990,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void setDynamicData(DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam, boolean isChecked) {
-        if (this.dynamicDataParam.getData().contains(dynamicDataParam)) {
-            if (!isChecked) {
-                this.dynamicDataParam.getData().remove(dynamicDataParam);
-            }
-        } else {
-            this.dynamicDataParam.getData().add(dynamicDataParam);
-        }
-        updateDynamicData(this.dynamicDataParam, true);
+    public void setDynamicDataParam(DynamicDataPassingParamRequest dynamicDataPassingParam) {
+        this.dynamicDataParam = dynamicDataPassingParam;
+    }
+
+    @Override
+    public DynamicDataPassingParamRequest getDynamicDataParam() {
+        return this.dynamicDataParam;
     }
 
     @Override
