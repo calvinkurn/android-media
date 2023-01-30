@@ -19,7 +19,7 @@
         android:id="@+id/affiliate_metric_announcement_ticker_cv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible"
+        android:visibility="gone"
         app:cardBackgroundColor="@color/Unify_T100"
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="4dp"
