@@ -2,8 +2,8 @@ package com.tokopedia.shop.product.domain.repository
 
 import com.tokopedia.abstraction.common.data.model.response.PagingList
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
-import com.tokopedia.shop.product.domain.model.ShopProductRequestModel
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductCampaign
+import com.tokopedia.shop.product.domain.model.ShopProductRequestModel
 import rx.Observable
 
 /**

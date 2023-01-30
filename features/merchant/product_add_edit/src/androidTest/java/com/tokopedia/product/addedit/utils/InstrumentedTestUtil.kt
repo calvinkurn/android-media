@@ -10,7 +10,7 @@ import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProduct
 import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant.DB_TABLE
 import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant.DB_VERSION_10
 import com.tokopedia.test.application.espresso_component.CommonMatcher
-import org.hamcrest.Matchers
+import org.hamcrest.CoreMatchers
 
 object InstrumentedTestUtil {
 
@@ -47,7 +47,7 @@ object InstrumentedTestUtil {
                 .firstView(ViewMatchers.withId(id)))
                 .perform(ViewActions.scrollTo())
 
-        Espresso.onView(Matchers.allOf(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.text_field_input), ViewMatchers.isDescendantOfA(ViewMatchers.withId(id))))
+        Espresso.onView(CoreMatchers.allOf(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.text_field_input), ViewMatchers.isDescendantOfA(ViewMatchers.withId(id))))
                 .perform(ViewActions.typeText(text), ViewActions.closeSoftKeyboard())
     }
 

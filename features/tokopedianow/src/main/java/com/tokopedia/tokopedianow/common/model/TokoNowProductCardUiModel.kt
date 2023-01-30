@@ -7,6 +7,7 @@ import com.tokopedia.tokopedianow.common.adapter.TokoNowProductCardAdapter.*
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 
 data class TokoNowProductCardUiModel(
+    val channelId: String,
     val productId: String,
     val shopId: String,
     val quantity: Int,
@@ -14,7 +15,8 @@ data class TokoNowProductCardUiModel(
     var product: ProductCardModel = ProductCardModel(),
     @TokoNowLayoutType val type: String,
     val position: Int,
-    val headerName: String
+    val headerName: String,
+    val categoryBreadcrumbs: String = ""
 ): Visitable<TokoNowProductCardTypeFactory>, ImpressHolder() {
 
     override fun type(typeFactory: TokoNowProductCardTypeFactory): Int {

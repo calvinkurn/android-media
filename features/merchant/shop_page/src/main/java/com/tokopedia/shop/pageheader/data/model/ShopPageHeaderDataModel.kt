@@ -8,6 +8,7 @@ data class ShopPageHeaderDataModel(
         var shopName: String = "",
         var isOfficial: Boolean = false,
         var isGoldMerchant: Boolean = false,
+        var pmTier: Int = 0,
         var shopHomeType: String = "",
         var topContentUrl: String = "",
         var avatar: String = "",

@@ -58,7 +58,7 @@
             android:id="@+id/containerEventBottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_Background"
             android:paddingLeft="@dimen/spacing_lvl4"
             android:paddingTop="@dimen/spacing_lvl3"
             android:paddingRight="@dimen/spacing_lvl4"

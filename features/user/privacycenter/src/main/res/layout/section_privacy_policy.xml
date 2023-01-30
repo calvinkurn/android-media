@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.privacycenter.common.customview.PrivacyCenterItemView
+        android:id="@+id/menuCurrentPrivacyPolicy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Cek Kebijakan Privasi Tokopedia" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/menuCurrentPrivacyPolicy" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/menuListPrivacyPolicy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/menuCurrentPrivacyPolicy">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txtSubtitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Riwayat Kebijakan Privasi"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_3" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/informationIcon"
+            android:layout_marginLeft="4dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:padding="4dp"
+            app:icon_name="INFORMATION"
+            app:layout_constraintBottom_toBottomOf="@+id/txtSubtitle"
+            app:layout_constraintStart_toEndOf="@+id/txtSubtitle"
+            app:layout_constraintTop_toTopOf="@+id/txtSubtitle" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iconMenu"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:icon_name="CHEVRON_DOWN"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/privacyPolicyContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/menuListPrivacyPolicy">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listPrivacyPolicy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="2"
+            tools:listitem="@layout/privacy_policy_item_view" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loaderListPrivacyPolicy"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:visibility="gone"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LocalLoad
+            android:id="@+id/localLoadPrivacyPolicy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/loaderListPrivacyPolicy" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/buttonShowAllList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/privacy_policy_show_all_list_button"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -68,17 +68,17 @@ class ProductVideoViewHolder(val view: View,
 
     private fun removeThumbnail() = with(binding) {
         pdpVideoOverlay.animate().alpha(HIDE_VALUE).setListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(animation: Animator?) {
+            override fun onAnimationStart(animation: Animator) {
             }
 
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 pdpVideoOverlay.hide()
             }
 
-            override fun onAnimationCancel(animation: Animator?) {
+            override fun onAnimationCancel(animation: Animator) {
             }
 
-            override fun onAnimationRepeat(animation: Animator?) {
+            override fun onAnimationRepeat(animation: Animator) {
             }
 
         }).duration = FADE_IN_VIDEO_THUMBNAIL_DURATION

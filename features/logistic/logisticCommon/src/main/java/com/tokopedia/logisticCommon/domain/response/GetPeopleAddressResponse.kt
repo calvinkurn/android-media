@@ -76,7 +76,9 @@ data class ManageAddressData(
         @SerializedName("is_state_chosen_address")
         var isStateChosenAddress: Boolean = false,
         @SerializedName("radio_button_checked")
-        var radioButonChecked: Boolean = false
+        var radioButonChecked: Boolean = false,
+        @SerializedName("is_shared_address")
+        var isSharedAddress: Boolean = false
 )
 
 data class Token(

@@ -10,8 +10,6 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.groupitem.DataItem
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.R.color.Unify_N0
-import com.tokopedia.topads.dashboard.R.color.Unify_NN0
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTIVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.NOT_VALID
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_AKTIF
@@ -100,7 +98,7 @@ class GroupItemsItemViewHolder(
                 checkBox.visibility = View.VISIBLE
             } else {
                 cardView.setBackgroundColor(ContextCompat.getColor(view.context,
-                    Unify_N0
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0
                 ))
                 imgMenu.visibility = View.VISIBLE
                 checkBox.visibility = View.GONE
@@ -110,7 +108,7 @@ class GroupItemsItemViewHolder(
             checkBox.isChecked = it.isChecked
             if (!checkBox.isChecked) {
                 cardView.setBackgroundColor(ContextCompat.getColor(view.context,
-                    Unify_NN0
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 ))
             } else {
                 cardView.setBackgroundColor(ContextCompat.getColor(view.context,
@@ -152,7 +150,7 @@ class GroupItemsItemViewHolder(
                             com.tokopedia.unifyprinciples.R.color.Unify_B400_20))
                     else
                         cardView.setBackgroundColor(ContextCompat.getColor(view.context,
-                            Unify_NN0))
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN0))
                 }
             }
             itemCard.setOnLongClickListener {

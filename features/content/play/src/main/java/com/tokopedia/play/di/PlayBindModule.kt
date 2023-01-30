@@ -8,6 +8,8 @@ import com.tokopedia.play.analytic.like.PlayLikeAnalytic
 import com.tokopedia.play.analytic.like.PlayLikeAnalyticImpl
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalytic
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalyticImpl
+import com.tokopedia.play.analytic.popup.PlayFollowPopupAnalytic
+import com.tokopedia.play.analytic.popup.PlayFollowPopupAnalyticImpl
 import com.tokopedia.play.analytic.share.PlayShareExperienceAnalytic
 import com.tokopedia.play.analytic.share.PlayShareExperienceAnalyticImpl
 import com.tokopedia.play.analytic.socket.PlaySocketAnalytic
@@ -75,6 +77,10 @@ abstract class PlayBindModule {
     @Binds
     @PlayScope
     abstract fun bindVoucherAnalytic(analytic: PlayVoucherAnalyticImpl): PlayVoucherAnalytic
+
+    @Binds
+    @PlayScope
+    abstract fun bindFollowPopUpAnalytic(analytic: PlayFollowPopupAnalyticImpl): PlayFollowPopupAnalytic
 
     /**
      * Utils

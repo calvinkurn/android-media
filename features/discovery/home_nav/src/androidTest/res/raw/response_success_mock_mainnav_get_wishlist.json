@@ -1,526 +1,100 @@
 [
   {
     "data": {
-      "wishlist_v2": {
-        "has_next_page": true,
-        "items": [
-          {
-            "id": "1678400138",
-            "name": "Logitech G333 In-Ear Earphone Gaming Mobile Type C Adapter - Hitam",
-            "url": "https://www.tokopedia.com/logitech-g/logitech-g333-in-ear-earphone-gaming-mobile-type-c-adapter-hitam?extParam\u003dwhid%3D13594",
-            "image_url": "https://ecs7.tokopedia.net/img/cache/250-square/VqbcmM/2022/5/11/7500b7ba-00e1-42f9-a211-caf8be737569.jpg",
-            "price": "569000",
-            "price_fmt": "Rp569.000",
-            "available": true,
-            "label_status": "",
-            "preorder": false,
-            "rating": "4.9",
-            "sold_count": "Terjual 1.7 rb",
-            "min_order": "1",
-            "shop": {
-              "id": "2670965",
-              "name": "Logitech G Official",
-              "url": "https://www.tokopedia.com/logitech-g",
-              "location": "Jakarta Pusat",
-              "fulfillment": {
-                "is_fulfillment": false,
-                "text": ""
-              },
-              "is_tokonow": false
-            },
-            "badges": [
-              {
-                "title": "Official Store",
-                "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
-              }
-            ],
-            "labels": [],
-            "wholesale_price": [],
-            "default_child_id": "4013",
-            "original_price": "799000",
-            "original_price_fmt": "Rp799.000",
-            "discount_percentage": 29,
-            "discount_percentage_fmt": "29%",
-            "label_stock": "",
-            "bebas_ongkir": {
-              "type": 1,
-              "title": "Bebas Ongkir",
-              "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-            },
-            "label_group": [
-              {
-                "position": "integrity",
-                "title": "Terjual 1.7 rb",
-                "type": "textDarkGrey",
-                "url": ""
-              },
-              {
-                "position": "price",
-                "title": "Cashback",
-                "type": "lightGreen",
-                "url": ""
-              }
-            ],
-            "buttons": {
-              "primary_button": {
-                "text": "+ Keranjang",
-                "action": "ADD_TO_CART",
-                "url": ""
-              },
-              "additional_buttons": [
-                {
-                  "text": "Lihat Barang Serupa",
-                  "action": "CHECK_SIMILAR_PRODUCT",
-                  "url": "tokopedia://rekomendasi/1678400138/?ref\u003dwishlist"
-                },
-                {
-                  "text": "Bagikan Link Barang",
-                  "action": "SHARE_LINK_PRODUCT",
-                  "url": ""
-                },
-                {
-                  "text": "Lihat Toko",
-                  "action": "CHECK_SHOP",
-                  "url": "https://www.tokopedia.com/logitech-g"
-                },
-                {
-                  "text": "Hapus",
-                  "action": "DELETE_WISHLIST",
-                  "url": ""
-                }
+      "get_wishlist_collections": {
+        "data": {
+          "collections": [
+            {
+              "id": "0",
+              "name": "Semua Wishlist",
+              "total_item": 303,
+              "item_text": "barang",
+              "images": [
+                "https://images.tokopedia.net/img/cache/300/hDjmkQ/2022/12/5/0e18c2a1-4f8f-4373-8816-64ed2359b481.jpg",
+                "https://images.tokopedia.net/img/cache/300/hDjmkQ/2022/11/7/51e662fd-5805-4b33-9a47-fe56354b5f3a.jpg",
+                "https://images.tokopedia.net/img/cache/300/hDjmkQ/2022/12/2/cfc3cd56-eb9f-4b67-8003-bc343353cc19.jpg",
+                "https://images.tokopedia.net/img/cache/300/VqbcmM/2020/9/10/3c4bc667-e25a-4b3d-a10d-6c5de68de07f.jpg"
               ]
             },
-            "wishlist_id": "2378961393",
-            "variant_name": "Hitam",
-            "category": [
-              {
-                "category_id": 297,
-                "category_name": "Komputer \u0026 Laptop"
-              },
-              {
-                "category_id": 3848,
-                "category_name": "Aksesoris PC Gaming"
-              },
-              {
-                "category_id": 4013,
-                "category_name": "Headset Gaming"
-              }
-            ]
-          },
-          {
-            "id": "2510588901",
-            "name": "Mainan Edukasi Anak Kulkas Mini Mini Fridge Ada Musik dan Lampu",
-            "url": "https://www.tokopedia.com/toypop/mainan-edukasi-anak-kulkas-mini-mini-fridge-ada-musik-dan-lampu?extParam\u003dwhid%3D7578953",
-            "image_url": "https://ecs7.tokopedia.net/img/cache/250-square/hDjmkQ/2021/12/7/2c8c8c5a-49ad-4a67-abb1-acf4ac1e94a0.png",
-            "price": "279000",
-            "price_fmt": "Rp279.000",
-            "available": true,
-            "label_status": "",
-            "preorder": false,
-            "rating": "5.0",
-            "sold_count": "Terjual 9",
-            "min_order": "1",
-            "shop": {
-              "id": "7370632",
-              "name": "Toypop!",
-              "url": "https://www.tokopedia.com/toypop",
-              "location": "Kota Tangerang Selatan",
-              "fulfillment": {
-                "is_fulfillment": false,
-                "text": ""
-              },
-              "is_tokonow": false
+            {
+              "id": "2434188",
+              "name": "Kosongan",
+              "total_item": 0,
+              "item_text": "barang",
+              "images": []
             },
-            "badges": [
-              {
-                "title": "Official Store",
-                "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
-              }
-            ],
-            "labels": [],
-            "wholesale_price": [],
-            "default_child_id": "3268",
-            "original_price": "0",
-            "original_price_fmt": "",
-            "discount_percentage": 0,
-            "discount_percentage_fmt": "",
-            "label_stock": "Sisa 5 lagi!",
-            "bebas_ongkir": {
-              "type": 1,
-              "title": "Bebas Ongkir",
-              "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-            },
-            "label_group": [
-              {
-                "position": "integrity",
-                "title": "Terjual 9",
-                "type": "textDarkGrey",
-                "url": ""
-              },
-              {
-                "position": "gimmick",
-                "title": "Sisa 5 lagi!",
-                "type": "textDarkRed",
-                "url": ""
-              },
-              {
-                "position": "price",
-                "title": "Cashback",
-                "type": "lightGreen",
-                "url": ""
-              }
-            ],
-            "buttons": {
-              "primary_button": {
-                "text": "+ Keranjang",
-                "action": "ADD_TO_CART",
-                "url": ""
-              },
-              "additional_buttons": [
-                {
-                  "text": "Lihat Barang Serupa",
-                  "action": "CHECK_SIMILAR_PRODUCT",
-                  "url": "tokopedia://rekomendasi/2510588901/?ref\u003dwishlist"
-                },
-                {
-                  "text": "Bagikan Link Barang",
-                  "action": "SHARE_LINK_PRODUCT",
-                  "url": ""
-                },
-                {
-                  "text": "Lihat Toko",
-                  "action": "CHECK_SHOP",
-                  "url": "https://www.tokopedia.com/toypop"
-                },
-                {
-                  "text": "Hapus",
-                  "action": "DELETE_WISHLIST",
-                  "url": ""
-                }
+            {
+              "id": "2407725",
+              "name": "casing hp",
+              "total_item": 2,
+              "item_text": "barang",
+              "images": [
+                "https://images.tokopedia.net/img/cache/300/hDjmkQ/2022/12/5/0e18c2a1-4f8f-4373-8816-64ed2359b481.jpg",
+                "https://images.tokopedia.net/img/cache/300/hDjmkQ/2022/12/2/cfc3cd56-eb9f-4b67-8003-bc343353cc19.jpg"
               ]
             },
-            "wishlist_id": "2378943669",
-            "variant_name": "",
-            "category": [
-              {
-                "category_id": 55,
-                "category_name": "Mainan \u0026 Hobi"
-              },
-              {
-                "category_id": 3150,
-                "category_name": "Mainan Anak - Anak"
-              },
-              {
-                "category_id": 3268,
-                "category_name": "Mainan Montessori"
-              }
-            ]
-          },
-          {
-            "id": "2722303009",
-            "name": "Gigabyte B660M DS3H - Intel LGA1700 B660 DDR4 Motherboard Alder Lake",
-            "url": "https://www.tokopedia.com/youngscom/gigabyte-b660m-ds3h-intel-lga1700-b660-ddr4-motherboard-alder-lake?extParam\u003dwhid%3D391688",
-            "image_url": "https://ecs7.tokopedia.net/img/cache/250-square/VqbcmM/2022/1/27/f0c103b3-3644-45a5-9713-f6a93a537585.png",
-            "price": "2155000",
-            "price_fmt": "Rp2.155.000",
-            "available": true,
-            "label_status": "",
-            "preorder": false,
-            "rating": "5.0",
-            "sold_count": "Terjual 6",
-            "min_order": "1",
-            "shop": {
-              "id": "681612",
-              "name": "YOUNGS COMPUTER",
-              "url": "https://www.tokopedia.com/youngscom",
-              "location": "Kab. Sleman",
-              "fulfillment": {
-                "is_fulfillment": false,
-                "text": ""
-              },
-              "is_tokonow": false
-            },
-            "badges": [
-              {
-                "title": "Power Merchant PRO",
-                "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro.png"
-              }
-            ],
-            "labels": [],
-            "wholesale_price": [],
-            "default_child_id": "302",
-            "original_price": "0",
-            "original_price_fmt": "",
-            "discount_percentage": 0,
-            "discount_percentage_fmt": "",
-            "label_stock": "",
-            "bebas_ongkir": {
-              "type": 1,
-              "title": "Bebas Ongkir",
-              "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-            },
-            "label_group": [
-              {
-                "position": "integrity",
-                "title": "Terjual 6",
-                "type": "textDarkGrey",
-                "url": ""
-              },
-              {
-                "position": "price",
-                "title": "Cashback",
-                "type": "lightGreen",
-                "url": ""
-              }
-            ],
-            "buttons": {
-              "primary_button": {
-                "text": "+ Keranjang",
-                "action": "ADD_TO_CART",
-                "url": ""
-              },
-              "additional_buttons": [
-                {
-                  "text": "Lihat Barang Serupa",
-                  "action": "CHECK_SIMILAR_PRODUCT",
-                  "url": "tokopedia://rekomendasi/2722303009/?ref\u003dwishlist"
-                },
-                {
-                  "text": "Bagikan Link Barang",
-                  "action": "SHARE_LINK_PRODUCT",
-                  "url": ""
-                },
-                {
-                  "text": "Lihat Toko",
-                  "action": "CHECK_SHOP",
-                  "url": "https://www.tokopedia.com/youngscom"
-                },
-                {
-                  "text": "Hapus",
-                  "action": "DELETE_WISHLIST",
-                  "url": ""
-                }
+            {
+              "id": "2407729",
+              "name": "blouse",
+              "total_item": 1,
+              "item_text": "barang",
+              "images": [
+                "https://images.tokopedia.net/img/cache/300/hDjmkQ/2022/11/7/51e662fd-5805-4b33-9a47-fe56354b5f3a.jpg"
               ]
             },
-            "wishlist_id": "2372383238",
-            "variant_name": "",
-            "category": [
-              {
-                "category_id": 297,
-                "category_name": "Komputer \u0026 Laptop"
-              },
-              {
-                "category_id": 299,
-                "category_name": "Komponen Komputer"
-              },
-              {
-                "category_id": 302,
-                "category_name": " Motherboard"
-              }
-            ]
-          },
-          {
-            "id": "1363124728",
-            "name": "Zola Phone \u0026 Tablet Holder 360 Rotation Strong Hold With Suction Cups",
-            "url": "https://www.tokopedia.com/zola/zola-phone-tablet-holder-360-rotation-strong-hold-with-suction-cups?extParam\u003dwhid%3D16162",
-            "image_url": "https://ecs7.tokopedia.net/img/cache/250-square/VqbcmM/2021/4/7/18c74947-eee5-4c72-b207-46fbb098944d.jpg",
-            "price": "129900",
-            "price_fmt": "Rp129.900",
-            "available": true,
-            "label_status": "",
-            "preorder": false,
-            "rating": "4.7",
-            "sold_count": "Terjual 64",
-            "min_order": "1",
-            "shop": {
-              "id": "2450593",
-              "name": "Zola Indonesia",
-              "url": "https://www.tokopedia.com/zola",
-              "location": "Jakarta Pusat",
-              "fulfillment": {
-                "is_fulfillment": false,
-                "text": ""
-              },
-              "is_tokonow": false
-            },
-            "badges": [
-              {
-                "title": "Official Store",
-                "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
-              }
-            ],
-            "labels": [],
-            "wholesale_price": [],
-            "default_child_id": "3064",
-            "original_price": "799000",
-            "original_price_fmt": "Rp799.000",
-            "discount_percentage": 84,
-            "discount_percentage_fmt": "84%",
-            "label_stock": "",
-            "bebas_ongkir": {
-              "type": 1,
-              "title": "Bebas Ongkir",
-              "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-            },
-            "label_group": [
-              {
-                "position": "integrity",
-                "title": "Terjual 64",
-                "type": "textDarkGrey",
-                "url": ""
-              },
-              {
-                "position": "price",
-                "title": "Cashback",
-                "type": "lightGreen",
-                "url": ""
-              }
-            ],
-            "buttons": {
-              "primary_button": {
-                "text": "+ Keranjang",
-                "action": "ADD_TO_CART",
-                "url": ""
-              },
-              "additional_buttons": [
-                {
-                  "text": "Lihat Barang Serupa",
-                  "action": "CHECK_SIMILAR_PRODUCT",
-                  "url": "tokopedia://rekomendasi/1363124728/?ref\u003dwishlist"
-                },
-                {
-                  "text": "Bagikan Link Barang",
-                  "action": "SHARE_LINK_PRODUCT",
-                  "url": ""
-                },
-                {
-                  "text": "Lihat Toko",
-                  "action": "CHECK_SHOP",
-                  "url": "https://www.tokopedia.com/zola"
-                },
-                {
-                  "text": "Hapus",
-                  "action": "DELETE_WISHLIST",
-                  "url": ""
-                }
+            {
+              "id": "2308701",
+              "name": "Sapi sapi apa yang ",
+              "total_item": 2,
+              "item_text": "barang",
+              "images": [
+                "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/12/6/d75539b7-31c3-4d7b-8454-f2d325d7155e.jpg",
+                "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/9/27/cf9c0724-5d16-4c41-ab21-f0a6fcb3ad06.jpg"
               ]
             },
-            "wishlist_id": "2369867296",
-            "variant_name": "",
-            "category": [
-              {
-                "category_id": 65,
-                "category_name": "Handphone \u0026 Tablet"
-              },
-              {
-                "category_id": 66,
-                "category_name": "Aksesoris Handphone"
-              },
-              {
-                "category_id": 3064,
-                "category_name": "Stand Handphone"
-              }
-            ]
-          },
-          {
-            "id": "1310506542",
-            "name": "Lock\u0026Lock \u0026 Lock n LocknLock 1.4 L Handable Water Bottle Botol Minum",
-            "url": "https://www.tokopedia.com/fannyonlineshop/lock-lock-lock-n-locknlock-1-4-l-handable-water-bottle-botol-minum?extParam\u003dwhid%3D25911",
-            "image_url": "https://ecs7.tokopedia.net/img/cache/250-square/VqbcmM/2020/11/3/49110419-7247-4b5c-93b8-5aeca7e6e5c8.jpg",
-            "price": "44000",
-            "price_fmt": "Rp44.000",
-            "available": true,
-            "label_status": "",
-            "preorder": false,
-            "rating": "5.0",
-            "sold_count": "Terjual 44",
-            "min_order": "1",
-            "shop": {
-              "id": "272848",
-              "name": "Fanny OnlineShop",
-              "url": "https://www.tokopedia.com/fannyonlineshop",
-              "location": "Kab. Bekasi",
-              "fulfillment": {
-                "is_fulfillment": false,
-                "text": ""
-              },
-              "is_tokonow": false
-            },
-            "badges": [
-              {
-                "title": "Regular Merchant",
-                "image_url": ""
-              }
-            ],
-            "labels": [],
-            "wholesale_price": [],
-            "default_child_id": "3522",
-            "original_price": "0",
-            "original_price_fmt": "",
-            "discount_percentage": 0,
-            "discount_percentage_fmt": "",
-            "label_stock": "",
-            "bebas_ongkir": {
-              "type": 0,
-              "title": "",
-              "image_url": ""
-            },
-            "label_group": [
-              {
-                "position": "integrity",
-                "title": "Terjual 44",
-                "type": "textDarkGrey",
-                "url": ""
-              }
-            ],
-            "buttons": {
-              "primary_button": {
-                "text": "+ Keranjang",
-                "action": "ADD_TO_CART",
-                "url": ""
-              },
-              "additional_buttons": [
-                {
-                  "text": "Lihat Barang Serupa",
-                  "action": "CHECK_SIMILAR_PRODUCT",
-                  "url": "tokopedia://rekomendasi/1310506542/?ref\u003dwishlist"
-                },
-                {
-                  "text": "Bagikan Link Barang",
-                  "action": "SHARE_LINK_PRODUCT",
-                  "url": ""
-                },
-                {
-                  "text": "Lihat Toko",
-                  "action": "CHECK_SHOP",
-                  "url": "https://www.tokopedia.com/fannyonlineshop"
-                },
-                {
-                  "text": "Hapus",
-                  "action": "DELETE_WISHLIST",
-                  "url": ""
-                }
+            {
+              "id": "2308709",
+              "name": "Kalau 1 + 1 = 2, lah",
+              "total_item": 2,
+              "item_text": "barang",
+              "images": [
+                "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/9/13/7b280c97-fd37-4060-ad86-283e45f76fbb.jpg",
+                "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/5/29/6c2f8d17-7c64-4d7d-8727-3977abebe172.jpg"
               ]
             },
-            "wishlist_id": "2367294290",
-            "variant_name": "",
-            "category": [
-              {
-                "category_id": 983,
-                "category_name": "Dapur"
-              },
-              {
-                "category_id": 1215,
-                "category_name": "Bekal"
-              },
-              {
-                "category_id": 3522,
-                "category_name": "Botol Minum"
-              }
-            ]
-          }
-        ],
-        "error_message": ""
+            {
+              "id": "2308713",
+              "name": "Ano ano ano testing",
+              "total_item": 1,
+              "item_text": "barang",
+              "images": [
+                "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/7/14/713fc719-c025-497f-8e08-a236d8e19783.jpg"
+              ]
+            },
+            {
+              "id": "2308003",
+              "name": "Test Wishlist 2 Line",
+              "total_item": 3,
+              "item_text": "barang",
+              "images": [
+                "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/4/18/dc05c6c8-598a-4ecb-9ea9-286f922d4d12.jpg",
+                "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/6/12/44b2bb68-590a-4722-bc97-bc5b47421cdb.png",
+                "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/1/25/9a71382b-7a11-4d74-bb1c-6e93dbadc731.jpg"
+              ]
+            },
+            {
+              "id": "1179749",
+              "name": "Tes Wishlist 2",
+              "total_item": 1,
+              "item_text": "barang",
+              "images": [
+                "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/11/24/6814d50b-bfa5-442d-9124-8a896d9d09a1.jpg"
+              ]
+            }
+          ],
+          "total_collection": 8,
+          "is_empty_state": false
+        }
       }
     }
   }

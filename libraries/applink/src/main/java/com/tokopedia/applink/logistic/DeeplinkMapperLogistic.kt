@@ -26,4 +26,8 @@ object DeeplinkMapperLogistic {
     fun getRegisteredNavigationPod(deepLink: String): String {
         return deepLink.replace(HEADER_TEMPLATE, ApplinkConstInternalLogistic.INTERNAL_LOGISTIC)
     }
+
+    fun getRegisteredNavigationShareAddress(deepLink: String): String {
+        return deepLink.replace(ApplinkConst.SHARE_ADDRESS, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
+    }
 }

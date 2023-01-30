@@ -91,7 +91,7 @@
           {
             "name": "Official Store",
             "key": "official",
-            "icon": "https://ecs7.tokopedia.net/img/official_store/badge/OS-Badge-40.png",
+            "icon": "https://images.tokopedia.net/img/official_store/badge/OS-Badge-40.png",
             "value": "true",
             "is_new": false,
             "input_type": "checkbox",
@@ -145,7 +145,7 @@
           {
             "name": "Power Merchant",
             "key": "goldmerchant",
-            "icon": "https://ecs7.tokopedia.net/img/power-badge/power-badge-192.png",
+            "icon": "https://images.tokopedia.net/img/power-badge/power-badge-192.png",
             "value": "true",
             "is_new": false,
             "input_type": "checkbox",

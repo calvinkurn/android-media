@@ -17,7 +17,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:background="@color/Unify_N0"
         tools:listitem="@layout/layout_deals_voucher"
         tools:visibility="visible" />
 

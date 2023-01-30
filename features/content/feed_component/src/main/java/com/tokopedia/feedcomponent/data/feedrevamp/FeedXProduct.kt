@@ -25,6 +25,7 @@ data class FeedXProduct(
         var isCashback: Boolean = false,
         @SerializedName("cashbackFmt")
         var cashbackFmt: String = "",
+        @SerializedName("id")
         var id: String = "",
         @SerializedName("isBebasOngkir")
         var isBebasOngkir: Boolean = false,
@@ -70,6 +71,7 @@ data class FeedXProduct(
         var productName : String= "",
         val slashedPrice : String = "",
         val authorName : String = "",
+        @SerializedName("shopID")
         var shopID : String = "",
         val isTopads: Boolean = false,
         val adClickUrl: String = "",

@@ -15,9 +15,9 @@ class TalkReplyEmptyViewHolder(
     companion object {
         val LAYOUT = R.layout.item_talk_reply_empty_state
         const val TALK_REPLY_EMPTY_IMAGE_OWN_QUESTION_URL =
-            "https://ecs7.tokopedia.net/android/others/talk_reply_own_question_empty_state.png"
+            "https://images.tokopedia.net/android/others/talk_reply_own_question_empty_state.png"
         const val TALK_REPLY_EMPTY_IMAGE_DEFAULT_URL =
-            "https://ecs7.tokopedia.net/android/others/talk_reply_empty_state.png"
+            "https://images.tokopedia.net/android/others/talk_reply_empty_state.png"
     }
 
     private val binding: ItemTalkReplyEmptyStateBinding = ItemTalkReplyEmptyStateBinding.bind(view)

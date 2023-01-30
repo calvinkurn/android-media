@@ -13,7 +13,7 @@
     android:lineSpacingExtra="1sp"
     android:maxLines="2"
     android:text="@string/tokopedianow_recipe_list_header_text"
-    android:textColor="@color/Unify_NN950"
+    android:textColor="@color/tokopedianow_recipe_title_home_dms_color"
     android:translationY="0.63sp"
     app:typographyType="heading_2"
     app:typographyWeight="bold" />

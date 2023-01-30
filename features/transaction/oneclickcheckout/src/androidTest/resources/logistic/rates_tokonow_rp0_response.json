@@ -113,7 +113,8 @@
                       "text_label": "Jaminan Tepat Waktu",
                       "text_detail": "Ongkir kembali jika barang tiba lebih dari 3 Jam \u003cb\u003esejak diserahkan ke kurir\u003c/b\u003e \u003ca href\u003d\"https://gw.tokopedia.com/rates/otdg_info\"\u003eS\u0026K Berlaku\u003c/a\u003e",
                       "url_detail": "https://gw.tokopedia.com/rates/otdg_info",
-                      "icon_url": "https://ecs7.tokopedia.net/img/ongkirapp/otdg-icon-v2.png"
+                      "icon_url": "https://images.tokopedia.net/img/ongkirapp/otdg-icon-v2.png",
+                      "url_text": "Jaminan Tepat Waktu"
                     },
                     "mvc": {
                       "is_mvc": 0,
@@ -145,7 +146,7 @@
             "shipper_disable_text": "Tidak dapat \u003cb\u003eubah kurir\u003c/b\u003e karena promo hanya berlaku untuk kurir yang ditentukan",
             "service_id": 1000,
             "is_applied": 0,
-            "image_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png",
+            "image_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png",
             "discounted_rate": 0,
             "shipping_rate": 10000,
             "benefit_amount": 10000,
@@ -186,7 +187,7 @@
             "shipper_disable_text": "Tidak dapat \u003cb\u003eubah kurir\u003c/b\u003e karena promo hanya berlaku untuk kurir yang ditentukan",
             "service_id": 1000,
             "is_applied": 0,
-            "image_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png",
+            "image_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png",
             "discounted_rate": 0,
             "shipping_rate": 10000,
             "benefit_amount": 10000,

@@ -29,8 +29,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
-import com.tokopedia.kotlin.extensions.view.toIntSafely
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.utils.ErrorHandler
@@ -630,11 +628,11 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
 
     private fun getAtcBuyParam(product: ProductData): AddToCartRequestParams {
         return AddToCartRequestParams(
-            productId = product.productId.toLongOrZero(),
-            shopId = product.shop.id.toInt(),
+            productId = product.productId,
+            shopId = product.shop.id,
             quantity = product.minOrder,
             atcFromExternalSource = AtcFromExternalSource.ATC_FROM_NOTIFCENTER,
-            warehouseId = product.warehouseId.toIntSafely()
+            warehouseId = product.warehouseId
         )
     }
 

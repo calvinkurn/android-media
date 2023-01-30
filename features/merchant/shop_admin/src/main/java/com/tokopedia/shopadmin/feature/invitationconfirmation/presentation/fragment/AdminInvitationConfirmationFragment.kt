@@ -47,7 +47,6 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-
 class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     @Inject
@@ -366,10 +365,11 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
     private fun setupToolbar(isError: Boolean) {
         (activity as? AppCompatActivity)?.run {
             binding?.headerInvitationConfirmation?.apply {
-                val drawableIcon = if (isError)
+                val drawableIcon = if (isError) {
                     ContextCompat.getDrawable(this@run, R.drawable.ic_shop_admin_arrow_back)
-                else
+                } else {
                     ContextCompat.getDrawable(this@run, R.drawable.ic_shop_admin_close)
+                }
                 navigationIcon = drawableIcon
                 setSupportActionBar(this)
                 show()
@@ -466,7 +466,6 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
             if (userSession.email.isNullOrEmpty()) {
                 adminInvitationWithEmailSection.root.hide()
                 adminInvitationWithNoEmailSection.root.show()
-                setAccessAcceptedBtnDisabled()
                 emailTypingListener()
                 shopAdminTrackers.impressInvitationPageInputEmail()
             } else {

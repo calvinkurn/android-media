@@ -11,13 +11,20 @@ import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.P
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.EmptyStateViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.LoadingViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
+import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.TobaccoViewHolder
 
 class ProductManageAdapterFactoryImpl(
     private val listener: ProductViewHolder.ProductViewHolderView,
     private val campaignListener: ProductCampaignInfoListener
 ) : BaseAdapterTypeFactory(), ProductManageAdapterFactory {
 
-    override fun type(uiModel: ProductUiModel): Int = ProductViewHolder.LAYOUT
+    override fun type(uiModel: ProductUiModel): Int {
+        return if (uiModel.isTobacco) {
+            TobaccoViewHolder.LAYOUT
+        } else {
+            ProductViewHolder.LAYOUT
+        }
+    }
 
     override fun type(viewModel: EmptyModel?): Int = EmptyStateViewHolder.LAYOUT
 
@@ -25,7 +32,12 @@ class ProductManageAdapterFactoryImpl(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            ProductViewHolder.LAYOUT -> ProductViewHolder(view, listener, campaignListener)
+            ProductViewHolder.LAYOUT -> ProductViewHolder(
+                view,
+                listener,
+                campaignListener
+            )
+            TobaccoViewHolder.LAYOUT -> TobaccoViewHolder(view)
             EmptyStateViewHolder.LAYOUT -> EmptyStateViewHolder(view)
             LoadingViewHolder.LAYOUT -> LoadingViewHolder(view)
             else -> super.createViewHolder(view, type)

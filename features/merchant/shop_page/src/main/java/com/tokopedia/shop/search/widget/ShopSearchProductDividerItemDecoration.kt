@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.R
 import com.tokopedia.shop.search.view.adapter.viewholder.ShopSearchProductFixResultViewHolder
 
 class ShopSearchProductDividerItemDecoration(
-        private val dividerDrawable: Drawable
+    private val dividerDrawable: Drawable
 ) : RecyclerView.ItemDecoration() {
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
@@ -29,5 +29,4 @@ class ShopSearchProductDividerItemDecoration(
             }
         }
     }
-
 }

@@ -1,0 +1,548 @@
+[
+  {
+    "data": {
+      "ace_search_product_v4": {
+        "header": {
+          "totalData": 7,
+          "totalDataText": "7",
+          "defaultView": 1,
+          "responseCode": 0,
+          "errorMessage": "",
+          "additionalParams": "",
+          "keywordProcess": "0",
+          "componentId": "",
+          "meta": {
+            "productListType": "",
+            "isPostProcessing": true,
+            "showButtonAtc": false
+          }
+        },
+        "data": {
+          "isQuerySafe": true,
+          "autocompleteApplink": "tokopedia://search-autocomplete?navsource=tokocabang\u0026q=hairdryer\u0026srp_page_id=383958\u0026srp_page_title=",
+          "backendFilters": "",
+          "keywordIntention": 1,
+          "redirection": {
+            "redirectApplink": ""
+          },
+          "ticker": {
+            "text": "",
+            "query": "",
+            "typeId": 0,
+            "componentId": "",
+            "trackingOption": 0
+          },
+          "banner": {
+            "position": 0,
+            "text": "",
+            "applink": "",
+            "imageUrl": "",
+            "componentId": "",
+            "trackingOption": 0
+          },
+          "related": {
+            "relatedKeyword": "",
+            "position": 0,
+            "trackingOption": 0,
+            "otherRelated": []
+          },
+          "suggestion": {
+            "suggestion": "",
+            "query": "",
+            "text": "",
+            "componentId": "",
+            "trackingOption": 0
+          },
+          "products": [
+            {
+              "id": 3610605518,
+              "name": "GM Bear Pengering Rambut-1140 Hairdryer Black",
+              "ads": {
+                "id": "",
+                "productClickUrl": "",
+                "productWishlistUrl": "",
+                "productViewUrl": "",
+                "tag": 0
+              },
+              "shop": {
+                "id": 6084052,
+                "name": "GM Bear",
+                "city": "Jakarta Timur",
+                "url": "https://www.tokopedia.com/gm-bear",
+                "isOfficial": true,
+                "isPowerBadge": true
+              },
+              "freeOngkir": {
+                "isActive": true,
+                "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+              },
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/8/1/de4ee3c2-6931-4787-91fe-0f8ca80da162.jpg",
+              "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/8/1/de4ee3c2-6931-4787-91fe-0f8ca80da162.jpg",
+              "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/8/1/de4ee3c2-6931-4787-91fe-0f8ca80da162.jpg",
+              "price": "Rp42.900",
+              "priceInt": 42900,
+              "priceRange": "",
+              "categoryId": 61,
+              "categoryName": "Kecantikan",
+              "categoryBreadcrumb": "kecantikan/styling-rambut-wanita/hair-dryer",
+              "ratingAverage": "4.7",
+              "originalPrice": "Rp229.000",
+              "discountPercentage": 81,
+              "warehouseIdDefault": 7377294,
+              "boosterList": "-1",
+              "source_engine": "0",
+              "minOrder": 1,
+              "url": "https://www.tokopedia.com/gm-bear/gm-bear-pengering-rambut-1140-hairdryer-black",
+              "labelGroups": [
+                {
+                  "title": "Terlaris",
+                  "position": "best_seller",
+                  "type": "#e1aa1d",
+                  "url": ""
+                },
+                {
+                  "title": "Terjual 251",
+                  "position": "integrity",
+                  "type": "textDarkGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Dilayani Tokopedia",
+                  "position": "fulfillment",
+                  "type": "textDarkGrey",
+                  "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+                },
+                {
+                  "title": "Tiba besok",
+                  "position": "eta",
+                  "type": "textDarkGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Tokopedia Beauty",
+                  "position": "campaign",
+                  "type": "",
+                  "url": "https://images.tokopedia.net/img/phOWBv/2022/11/6/1ef54c51-2655-41bb-8aa5-8211a63681d8.png"
+                }
+              ],
+              "labelGroupVariant": [],
+              "badges": [],
+              "wishlist": false,
+              "applink": "tokopedia://product/3610605518?extParam=ivf%3Dfalse%26src%3Dsearch%26whid%3D7377294",
+              "customVideoURL": "",
+              "parentId": 0
+            },
+            {
+              "id": 1196789292,
+              "name": "HAIR DRYER MINI LIPAT TRAVEL HAIRDRYER RAMBUT KEMEI KM-358",
+              "ads": {
+                "id": "",
+                "productClickUrl": "",
+                "productWishlistUrl": "",
+                "productViewUrl": "",
+                "tag": 0
+              },
+              "shop": {
+                "id": 2899949,
+                "name": "Souvenia Center",
+                "city": "Jakarta Selatan",
+                "url": "https://www.tokopedia.com/souveniacenter",
+                "isOfficial": false,
+                "isPowerBadge": true
+              },
+              "freeOngkir": {
+                "isActive": true,
+                "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+              },
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/3/29/a46bfc51-2d7b-42f3-902a-0ade6cdb8f6a.jpg",
+              "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/3/29/a46bfc51-2d7b-42f3-902a-0ade6cdb8f6a.jpg",
+              "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/3/29/a46bfc51-2d7b-42f3-902a-0ade6cdb8f6a.jpg",
+              "price": "Rp79.900",
+              "priceInt": 79900,
+              "priceRange": "",
+              "categoryId": 61,
+              "categoryName": "Kecantikan",
+              "categoryBreadcrumb": "kecantikan/styling-rambut-wanita/hair-dryer",
+              "ratingAverage": "4.9",
+              "originalPrice": "Rp89.000",
+              "discountPercentage": 10,
+              "warehouseIdDefault": 5931369,
+              "boosterList": "-1",
+              "source_engine": "0",
+              "minOrder": 1,
+              "url": "https://www.tokopedia.com/souveniacenter/hair-dryer-mini-lipat-travel-hairdryer-rambut-kemei-km-358-putih",
+              "labelGroups": [
+                {
+                  "title": "Terjual 886",
+                  "position": "integrity",
+                  "type": "textDarkGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Dilayani Tokopedia",
+                  "position": "fulfillment",
+                  "type": "textDarkGrey",
+                  "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+                },
+                {
+                  "title": "Tiba besok",
+                  "position": "eta",
+                  "type": "textDarkGrey",
+                  "url": ""
+                }
+              ],
+              "labelGroupVariant": [],
+              "badges": [],
+              "wishlist": false,
+              "applink": "tokopedia://product/1196789292?extParam=ivf%3Dfalse%26src%3Dsearch%26whid%3D5931369",
+              "customVideoURL": "",
+              "parentId": 363218888
+            },
+            {
+              "id": 5085453259,
+              "name": "MINISO Hairdryer 1600W Alat Pengering Rambut Daya Tinggi Mini Portable",
+              "ads": {
+                "id": "",
+                "productClickUrl": "",
+                "productWishlistUrl": "",
+                "productViewUrl": "",
+                "tag": 0
+              },
+              "shop": {
+                "id": 2661965,
+                "name": "Miniso Indonesia",
+                "city": "Jakarta Timur",
+                "url": "https://www.tokopedia.com/miniso-official",
+                "isOfficial": true,
+                "isPowerBadge": true
+              },
+              "freeOngkir": {
+                "isActive": true,
+                "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+              },
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/8/9/ca9340cf-756b-4371-b73c-cd03966e9eb6.jpg",
+              "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/8/9/ca9340cf-756b-4371-b73c-cd03966e9eb6.jpg",
+              "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/8/9/ca9340cf-756b-4371-b73c-cd03966e9eb6.jpg",
+              "price": "Rp219.900",
+              "priceInt": 219900,
+              "priceRange": "",
+              "categoryId": 61,
+              "categoryName": "Kecantikan",
+              "categoryBreadcrumb": "kecantikan/styling-rambut-wanita/hair-dryer",
+              "ratingAverage": "4.9",
+              "originalPrice": "Rp499.000",
+              "discountPercentage": 56,
+              "warehouseIdDefault": 0,
+              "boosterList": "-1",
+              "source_engine": "0",
+              "minOrder": 1,
+              "url": "https://www.tokopedia.com/miniso-official/miniso-hairdryer-1600w-alat-pengering-rambut-daya-tinggi-mini-portable",
+              "labelGroups": [
+                {
+                  "title": "Terlaris",
+                  "position": "best_seller",
+                  "type": "#e1aa1d",
+                  "url": ""
+                },
+                {
+                  "title": "Terjual 54",
+                  "position": "integrity",
+                  "type": "textDarkGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Dilayani Tokopedia",
+                  "position": "fulfillment",
+                  "type": "textDarkGrey",
+                  "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+                },
+                {
+                  "title": "Tiba besok",
+                  "position": "eta",
+                  "type": "textDarkGrey",
+                  "url": ""
+                }
+              ],
+              "labelGroupVariant": [],
+              "badges": [],
+              "wishlist": false,
+              "applink": "tokopedia://product/5085453259?extParam=ivf%3Dfalse%26src%3Dsearch",
+              "customVideoURL": "",
+              "parentId": 0
+            },
+            {
+              "id": 1292336412,
+              "name": "Hairdryer Travel Hair Dryer Pengering Rambut Lipat Mini Merk Yazuho",
+              "ads": {
+                "id": "",
+                "productClickUrl": "",
+                "productWishlistUrl": "",
+                "productViewUrl": "",
+                "tag": 0
+              },
+              "shop": {
+                "id": 1603812,
+                "name": "Omas",
+                "city": "Jakarta Timur",
+                "url": "https://www.tokopedia.com/thomzas94",
+                "isOfficial": false,
+                "isPowerBadge": true
+              },
+              "freeOngkir": {
+                "isActive": true,
+                "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+              },
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/9/23/382098ea-b020-431b-8efb-0b2ce8c90562.jpg",
+              "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/9/23/382098ea-b020-431b-8efb-0b2ce8c90562.jpg",
+              "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/9/23/382098ea-b020-431b-8efb-0b2ce8c90562.jpg",
+              "price": "Rp27.999",
+              "priceInt": 27999,
+              "priceRange": "",
+              "categoryId": 61,
+              "categoryName": "Kecantikan",
+              "categoryBreadcrumb": "kecantikan/styling-rambut-wanita/hair-dryer",
+              "ratingAverage": "4.7",
+              "originalPrice": "",
+              "discountPercentage": 0,
+              "warehouseIdDefault": 7377294,
+              "boosterList": "-1",
+              "source_engine": "0",
+              "minOrder": 1,
+              "url": "https://www.tokopedia.com/thomzas94/hairdryer-travel-hair-dryer-pengering-rambut-lipat-mini-merk-yazuho",
+              "labelGroups": [
+                {
+                  "title": "Terlaris",
+                  "position": "best_seller",
+                  "type": "#e1aa1d",
+                  "url": ""
+                },
+                {
+                  "title": "Cashback",
+                  "position": "price",
+                  "type": "lightGreen",
+                  "url": ""
+                },
+                {
+                  "title": "Terjual 1,1 rb",
+                  "position": "integrity",
+                  "type": "textDarkGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Dilayani Tokopedia",
+                  "position": "fulfillment",
+                  "type": "textDarkGrey",
+                  "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+                },
+                {
+                  "title": "Tiba besok",
+                  "position": "eta",
+                  "type": "textDarkGrey",
+                  "url": ""
+                }
+              ],
+              "labelGroupVariant": [],
+              "badges": [],
+              "wishlist": false,
+              "applink": "tokopedia://product/1292336412?extParam=ivf%3Dfalse%26src%3Dsearch%26whid%3D7377294",
+              "customVideoURL": "",
+              "parentId": 0
+            },
+            {
+              "id": 1564006954,
+              "name": "GM Bear Travel Hair Dryer Mini Pink 1326 - Vlasy HairDryer Lipat",
+              "ads": {
+                "id": "",
+                "productClickUrl": "",
+                "productWishlistUrl": "",
+                "productViewUrl": "",
+                "tag": 0
+              },
+              "shop": {
+                "id": 6084052,
+                "name": "GM Bear",
+                "city": "Jakarta Timur",
+                "url": "https://www.tokopedia.com/gm-bear",
+                "isOfficial": true,
+                "isPowerBadge": true
+              },
+              "freeOngkir": {
+                "isActive": true,
+                "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+              },
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/4/29/0dcc89a6-3033-45f3-b321-fddcbf457ddd.jpg",
+              "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/4/29/0dcc89a6-3033-45f3-b321-fddcbf457ddd.jpg",
+              "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/4/29/0dcc89a6-3033-45f3-b321-fddcbf457ddd.jpg",
+              "price": "Rp52.900",
+              "priceInt": 52900,
+              "priceRange": "",
+              "categoryId": 61,
+              "categoryName": "Kecantikan",
+              "categoryBreadcrumb": "kecantikan/styling-rambut-wanita/hair-dryer",
+              "ratingAverage": "4.8",
+              "originalPrice": "Rp149.900",
+              "discountPercentage": 65,
+              "warehouseIdDefault": 0,
+              "boosterList": "-1",
+              "source_engine": "0",
+              "minOrder": 1,
+              "url": "https://www.tokopedia.com/gm-bear/gm-bear-travel-hair-dryer-mini-pink-1326-vlasy-hairdryer-lipat",
+              "labelGroups": [
+                {
+                  "title": "Terjual 211",
+                  "position": "integrity",
+                  "type": "textDarkGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Dilayani Tokopedia",
+                  "position": "fulfillment",
+                  "type": "textDarkGrey",
+                  "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+                },
+                {
+                  "title": "Tiba besok",
+                  "position": "eta",
+                  "type": "textDarkGrey",
+                  "url": ""
+                }
+              ],
+              "labelGroupVariant": [],
+              "badges": [],
+              "wishlist": false,
+              "applink": "tokopedia://product/1564006954?extParam=ivf%3Dfalse%26src%3Dsearch",
+              "customVideoURL": "",
+              "parentId": 0
+            }
+          ],
+          "violation": {
+            "headerText": "",
+            "descriptionText": "",
+            "imageURL": "",
+            "ctaURL": "",
+            "buttonText": "",
+            "buttonType": ""
+          }
+        }
+      }
+    }
+  },
+  {
+    "data": {
+      "quick_filter": {
+        "filter": [
+          {
+            "title": "Official Store",
+            "chip_name": "Official Store",
+            "options": [
+              {
+                "name": "Official Store",
+                "key": "shop_tier",
+                "icon": "https://images.tokopedia.net/img/autocomplete/ic_os.png",
+                "value": "2",
+                "is_new": false,
+                "input_type": "checkbox",
+                "total_data": "",
+                "val_max": "",
+                "val_min": "",
+                "hex_color": "",
+                "child": []
+              }
+            ]
+          },
+          {
+            "title": "Bebas Ongkir",
+            "chip_name": "Bebas Ongkir",
+            "options": [
+              {
+                "name": "Bebas Ongkir",
+                "key": "bebas_ongkir_extra",
+                "icon": "",
+                "value": "true",
+                "is_new": false,
+                "input_type": "checkbox",
+                "total_data": "",
+                "val_max": "",
+                "val_min": "",
+                "hex_color": "",
+                "child": []
+              }
+            ]
+          },
+          {
+            "title": "COD",
+            "chip_name": "COD",
+            "options": [
+              {
+                "name": "COD",
+                "key": "cod",
+                "icon": "",
+                "value": "true",
+                "is_new": false,
+                "input_type": "checkbox",
+                "total_data": "",
+                "val_max": "",
+                "val_min": "",
+                "hex_color": "",
+                "child": []
+              }
+            ]
+          },
+          {
+            "title": "Power Merchant",
+            "chip_name": "Power Merchant",
+            "options": [
+              {
+                "name": "Power Merchant",
+                "key": "shop_tier",
+                "icon": "https://images.tokopedia.net/img/autocomplete/ic_pm.png",
+                "value": "1",
+                "is_new": false,
+                "input_type": "checkbox",
+                "total_data": "",
+                "val_max": "",
+                "val_min": "",
+                "hex_color": "",
+                "child": []
+              }
+            ]
+          },
+          {
+            "title": "Power Merchant Pro",
+            "chip_name": "Power Merchant Pro",
+            "options": [
+              {
+                "name": "Power Merchant Pro",
+                "key": "shop_tier",
+                "icon": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro.png",
+                "value": "3",
+                "is_new": false,
+                "input_type": "checkbox",
+                "total_data": "",
+                "val_max": "",
+                "val_min": "",
+                "hex_color": "",
+                "child": []
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "data": {
+      "fetchLastFilter": {
+        "data": {
+          "title": "",
+          "description": "",
+          "category_id_l2": "2204",
+          "applink": "",
+          "filters": [],
+          "tracking_option": "0",
+          "component_id": ""
+        }
+      }
+    }
+  }
+]

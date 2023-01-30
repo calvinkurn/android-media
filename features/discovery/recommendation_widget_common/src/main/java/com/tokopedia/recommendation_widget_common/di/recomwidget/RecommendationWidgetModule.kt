@@ -9,6 +9,7 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetViewToViewRecommendationUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -27,12 +28,18 @@ class RecommendationWidgetModule {
     @Provides
     fun provideGetCoroutineSingleRecommendationUseCase(@ApplicationContext context: Context, coroutineGqlRepository: GraphqlRepository): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(context, coroutineGqlRepository)
 
+    @RecommendationWidgetScope
     @Provides
-    fun provideGetRecommendationFilterChips(graphqlRepository: GraphqlRepository): GetRecommendationFilterChips {
-        val graphql = GraphqlUseCase<RecommendationFilterChipsEntity>(graphqlRepository)
-        return GetRecommendationFilterChips(graphql)
-    }
+    fun provideGetViewToViewRecommendationUseCase(
+        @ApplicationContext context: Context,
+        coroutineGqlRepository: GraphqlRepository,
+    ): GetViewToViewRecommendationUseCase = GetViewToViewRecommendationUseCase(context, coroutineGqlRepository)
 
+    @Provides
+    fun provideGetRecommendationFilterChips(graphqlRepository: GraphqlRepository, @ApplicationContext context: Context): GetRecommendationFilterChips {
+        val graphql = GraphqlUseCase<RecommendationFilterChipsEntity>(graphqlRepository)
+        return GetRecommendationFilterChips(graphql, context)
+    }
 
     @RecommendationWidgetScope
     @Provides
@@ -42,5 +49,4 @@ class RecommendationWidgetModule {
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface =
         UserSession(context)
-
 }

@@ -2,9 +2,11 @@ package com.tokopedia.tkpd.flashsale.presentation.list.container
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionProgress
 import com.tokopedia.tkpd.flashsale.domain.entity.SellerEligibility
 import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerMetaUseCase
+import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductSubmissionProgressUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleSellerStatusUseCase
 import com.tokopedia.tkpd.flashsale.util.preference.PreferenceDataStore
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -20,6 +22,7 @@ class FlashSaleContainerViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getFlashSaleListForSellerMetaUseCase: GetFlashSaleListForSellerMetaUseCase,
     private val getFlashSaleSellerStatusUseCase: GetFlashSaleSellerStatusUseCase,
+    private val getFlashSaleProductSubmissionProgressUseCase: GetFlashSaleProductSubmissionProgressUseCase,
     private val preferenceDataStore: PreferenceDataStore
 ) : BaseViewModel(dispatchers.main) {
 
@@ -41,6 +44,7 @@ class FlashSaleContainerViewModel @Inject constructor(
     sealed class UiEffect {
         data class ErrorFetchTabsMetaData(val throwable: Throwable) : UiEffect()
         object ShowIneligibleAccessWarning : UiEffect()
+        data class FlashSaleSubmissionProgress(val uiModel: List<FlashSaleProductSubmissionProgress.Campaign>) : UiEffect()
     }
 
     private val _uiState = MutableStateFlow(UiState())
@@ -111,4 +115,17 @@ class FlashSaleContainerViewModel @Inject constructor(
         }
     }
 
+    fun getFlashSaleSubmissionProgress() {
+        launchCatchError(dispatchers.io,
+            block = {
+                val flashSaleSubmissionProgress = getFlashSaleProductSubmissionProgressResponse()
+                _uiEffect.emit(UiEffect.FlashSaleSubmissionProgress(flashSaleSubmissionProgress.listCampaign))
+            }) { }
+    }
+
+    private suspend fun getFlashSaleProductSubmissionProgressResponse(): FlashSaleProductSubmissionProgress {
+        return getFlashSaleProductSubmissionProgressUseCase.execute(
+            GetFlashSaleProductSubmissionProgressUseCase.Param(checkProgress = true)
+        )
+    }
 }

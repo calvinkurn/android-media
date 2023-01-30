@@ -16,11 +16,10 @@ import com.tokopedia.shop_widget.common.util.DateHelper
 import com.tokopedia.shop_widget.common.util.StatusCampaign
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
-import java.util.Date
 import java.util.Calendar
+import java.util.Date
 
-
-class ShopCampaignDynamicHeaderCustomView: FrameLayout {
+class ShopCampaignDynamicHeaderCustomView : FrameLayout {
 
     private var listener: HeaderCustomViewListener? = null
     private var itemView: View?
@@ -56,7 +55,7 @@ class ShopCampaignDynamicHeaderCustomView: FrameLayout {
         tusCountDown = itemView?.findViewById(R.id.tus_count_down)
         tpTitle = itemView?.findViewById(R.id.tp_title)
         tpSubtitle = itemView?.findViewById(R.id.tp_subtitle)
-        tpSeeAll =  itemView?.findViewById(R.id.tp_see_all)
+        tpSeeAll = itemView?.findViewById(R.id.tp_see_all)
     }
 
     private fun handleTitle(title: String, headerTextColor: Int) {

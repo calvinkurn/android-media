@@ -1,7 +1,6 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.posttag
 
 import androidx.annotation.LayoutRes
-import androidx.cardview.widget.CardView
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -9,8 +8,8 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.CtaPostTagViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.CtaPostTagModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.unifycomponents.CardUnify
 
 /**
@@ -18,12 +17,12 @@ import com.tokopedia.unifycomponents.CardUnify
  */
 
 class CtaPostTagViewHolder(val mainView: View, val listener: DynamicPostViewHolder.DynamicPostListener)
-    : AbstractViewHolder<CtaPostTagViewModel>(mainView) {
+    : AbstractViewHolder<CtaPostTagModel>(mainView) {
 
     private lateinit var itemCard: CardUnify
     private lateinit var titleCard: TextView
 
-    override fun bind(item: CtaPostTagViewModel) {
+    override fun bind(item: CtaPostTagModel) {
 
         itemCard = itemView.findViewById(R.id.container)
         titleCard = itemView.findViewById(R.id.titleCard)
@@ -41,10 +40,10 @@ class CtaPostTagViewHolder(val mainView: View, val listener: DynamicPostViewHold
         }
     }
 
-    private fun mappingTracking(trackListPojo : List<Tracking>): MutableList<TrackingViewModel> {
-        val trackList = ArrayList<TrackingViewModel>()
+    private fun mappingTracking(trackListPojo : List<Tracking>): MutableList<TrackingModel> {
+        val trackList = ArrayList<TrackingModel>()
         for (trackPojo: Tracking in trackListPojo) {
-            trackList.add(TrackingViewModel(
+            trackList.add(TrackingModel(
                     trackPojo.clickURL,
                     trackPojo.viewURL,
                     trackPojo.type,

@@ -4,8 +4,6 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderDetailResponse
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrderTrackingTypeFactory
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.AddonVariantItemUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverInformationUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.FoodItemUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailHeaderUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailToggleCtaUiModel
@@ -69,26 +67,13 @@ open class BaseOrderDetailSectionResult: OrderDetailSectionCommon() {
     ) = add(PaymentAmountUiModel(paymentAmount.label, paymentAmount.value))
 
     protected fun MutableList<BaseOrderTrackingTypeFactory>.addDriverSectionUiModel(
-        driverDetails: TokoFoodOrderDetailResponse.TokofoodOrderDetail.DriverDetails?
+        driverDetails: TokoFoodOrderDetailResponse.TokofoodOrderDetail.DriverDetails?,
+        orderStatus: TokoFoodOrderDetailResponse.TokofoodOrderDetail.OrderStatus,
+        invoice: TokoFoodOrderDetailResponse.TokofoodOrderDetail.Invoice
     ) {
-        if (driverDetails != null) {
-            add(
-                DriverSectionUiModel(
-                    driverInformationList = mapToDriverInformationList(driverDetails.karma.orEmpty()),
-                    name = driverDetails.name,
-                    photoUrl = driverDetails.photoUrl,
-                    licensePlateNumber = driverDetails.licensePlateNumber,
-                    isCallable = true
-                )
-            )
-        }
-    }
-
-    private fun mapToDriverInformationList(
-        karma: List<TokoFoodOrderDetailResponse.TokofoodOrderDetail.DriverDetails.Karma>
-    ): List<DriverInformationUiModel> {
-        return karma.map {
-            DriverInformationUiModel(iconInformationUrl = it.icon, informationName = it.message)
+        val driverSectionUiModel = mapToDriverSectionUiModel(driverDetails, orderStatus, invoice)
+        if (driverSectionUiModel != null) {
+            add(driverSectionUiModel)
         }
     }
 

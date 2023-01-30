@@ -10,10 +10,12 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.feedcomponent.R.string.btn_text_follow
 import com.tokopedia.feedcomponent.R.string.btn_text_following
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.databinding.ItemShopRecommendationBinding
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.unifycomponents.UnifyButton.Type.ALTERNATE
 import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN
 import com.tokopedia.unifycomponents.UnifyButton.Variant.FILLED
@@ -52,7 +54,15 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
         txtItemShopName.text = data.name
         txtItemShopUsername.text = data.nickname
         imgItemShopImage.setImageUrl(data.logoImageURL)
-        imgItemShopBadge.setImageUrl(data.badgeImageURL)
+        imgItemShopBadge.shouldShowWithAction(data.badgeImageURL.isNotEmpty()) {
+            imgItemShopBadge.setImageUrl(data.badgeImageURL)
+        }
+        addOnImpressionListener(data.impressHolder) {
+            mListener?.onShopRecomItemImpress(
+                data,
+                position + 1
+            )
+        }
 
         buttonFollowState(data.state)
         onClickListener(data, position)
@@ -98,19 +108,16 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
     private fun onClickListener(data: ShopRecomUiModelItem, position: Int) = with(binding) {
         clItemShopContainer.setOnClickListener {
             mListener?.onShopRecomItemClicked(
-                data.id,
-                data.applink,
-                data.logoImageURL,
+                data,
                 position + 1
             )
         }
-        imgItemShopClose.setOnClickListener { mListener?.onShopRecomCloseClicked(data.id) }
-        btnItemShop.setOnClickListener { mListener?.onShopRecomFollowClicked(data.id) }
+        imgItemShopClose.setOnClickListener { mListener?.onShopRecomCloseClicked(data) }
+        btnItemShop.setOnClickListener { mListener?.onShopRecomFollowClicked(data) }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         mListener = null
     }
-
 }
