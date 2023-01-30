@@ -1,16 +1,12 @@
 package com.tokopedia.mvc.presentation.bottomsheet.editperiod
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
@@ -28,6 +24,7 @@ import com.tokopedia.mvc.util.formatTo
 import com.tokopedia.mvc.util.getGregorianDate
 import com.tokopedia.mvc.util.tracker.ChangePeriodTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -105,18 +102,6 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
             .build()
             .inject(this)
     }
-    private val coachmarkHandler = Handler(Looper.getMainLooper())
-    private fun showDateToaster() {
-        Log.d("FATAL", "showDateToaster: Outside ")
-        context?.resources?.let {
-            view?.rootView?.showToaster(
-                it.getString(R.string.edit_period_date_picker_end_date_warning)
-                    .toBlankOrString(),
-                it.getString(R.string.smvc_ok).toBlankOrString()
-            )
-            Log.d("FATAL", "showDateToaster: Inside ")
-        }
-    }
 
     private fun setUpDate() {
         voucher?.let {
@@ -174,9 +159,16 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
         }
 
         viewModel.toShowDateToaster.observe(viewLifecycleOwner) { result ->
-            Log.d("FATAL", "initObservers: $result")
             if (result) {
-                showDateToaster()
+                binding?.root?.rootView?.let { view ->
+                    Toaster.build(
+                        view,
+                        getString(R.string.edit_period_date_picker_end_date_warning).toBlankOrString(),
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        getString(R.string.smvc_ok).toBlankOrString()
+                    ).show()
+                }
             }
         }
     }

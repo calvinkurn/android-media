@@ -97,9 +97,8 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
             val month2 = selectedDateGregorian.get(Calendar.MONTH)
 
             if (date1 == date2 && month1 == month2) {
-                pickerStartTime.apply{
+                pickerStartTime.apply {
                     add(Calendar.HOUR_OF_DAY, ADD_3_HOURS)
-                    add(Calendar.MINUTE, MINUTE_INTERVAL)
                 }
             } else {
                 pickerStartTime.apply {

@@ -115,10 +115,10 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
             }
             when (currentVoucherSize) {
                 ImageRatio.HORIZONTAL -> changeImageViewHeight(
-                    getDeviceHeight() * SCREEN_HEIGHT_FULL
+                    getDeviceHeight() * SCREEN_HEIGHT_HALF
                 )
                 ImageRatio.SQUARE -> changeImageViewHeight(
-                    getDeviceHeight() * SCREEN_HEIGHT_ONE_HALF
+                    getDeviceHeight() * SCREEN_HEIGHT_FULL
                 )
                 ImageRatio.VERTICAL -> changeImageViewHeight(
                     getDeviceHeight() * SCREEN_HEIGHT_MULTIPLIED
@@ -166,7 +166,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
             .inject(this)
     }
 
-    private fun changeImageViewHeight(height: Float = getDeviceHeight() * SCREEN_HEIGHT_FULL) {
+    private fun changeImageViewHeight(height: Float = getDeviceHeight() * SCREEN_HEIGHT_HALF) {
         binding?.voucherImage?.layoutParams?.height = height.toInt()
         binding?.voucherImage?.requestLayout()
     }
@@ -184,8 +184,8 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
             }
         }
 
-        private const val SCREEN_HEIGHT_FULL = 0.5f
-        private const val SCREEN_HEIGHT_ONE_HALF = 1f
+        private const val SCREEN_HEIGHT_HALF = 0.5f
+        private const val SCREEN_HEIGHT_FULL = 1.2f
         private const val SCREEN_HEIGHT_MULTIPLIED = 2f
     }
 }
