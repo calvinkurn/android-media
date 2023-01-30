@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -29,9 +30,6 @@ import com.tokopedia.dilayanitokopedia.common.util.CustomLinearLayoutManager
 import com.tokopedia.dilayanitokopedia.common.util.DtUniversalShareUtil
 import com.tokopedia.dilayanitokopedia.databinding.FragmentDtHomeBinding
 import com.tokopedia.dilayanitokopedia.home.constant.AnchorTabStatus
-import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
-import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
-import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
 import com.tokopedia.dilayanitokopedia.home.di.component.DaggerHomeComponent
 import com.tokopedia.dilayanitokopedia.home.domain.model.Data
 import com.tokopedia.dilayanitokopedia.home.domain.model.SearchPlaceholder
@@ -407,15 +405,12 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         }
     }
 
-    private fun showEmptyState(@HomeStaticLayoutId id: String) {
-        localCacheModel?.service_type?.let { serviceType ->
-            if (id != EMPTY_STATE_OUT_OF_COVERAGE) {
-                rvLayoutManager?.setScrollEnabled(false)
-                viewModelDtHome.getEmptyState(id, serviceType)
-            } else {
-                viewModelDtHome.getEmptyState(id, serviceType)
-            }
-        }
+    private fun showEmptyState() {
+        NetworkErrorHelper.showEmptyState(
+            activity,
+            binding?.root,
+            this::loadLayout
+        )
     }
 
     private fun updateCurrentPageLocalCacheModelData() {
@@ -450,36 +445,17 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         observe(viewModelDtHome.homeLayoutList) {
             when (it) {
                 is Success -> onSuccessGetHomeLayout(it.data)
-                is Fail -> onFailedGetHomeLayout()
-            }
-        }
-
-        observe(viewModelDtHome.chooseAddress) {
-            when (it) {
-                is Success -> {
-                    setupChooseAddress(it.data)
-                }
-                is Fail -> {
-                    showEmptyStateNoAddress()
-                }
+                is Fail -> showEmptyState()
             }
         }
 
         observeMenuList()
     }
 
-    private fun onFailedGetHomeLayout() {
-        showFailedToFetchData()
-    }
-
     private fun observeMenuList() {
         observe(viewModelDtHome.menuList) {
             updateAnchorTab(it)
         }
-    }
-
-    private fun showFailedToFetchData() {
-        showEmptyState(EMPTY_STATE_FAILED_TO_FETCH_DATA)
     }
 
     private fun getHomeLayout() {
@@ -519,7 +495,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         rvLayoutManager?.setScrollEnabled(true)
         anchorTabAdapter?.resetToFirst()
         updateCurrentPageLocalCacheModelData()
-        switchService()
+        refreshLayout()
     }
 
     private fun loadLayout() {
@@ -566,9 +542,9 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     private fun getAutoCompleteApplinkPattern() = ApplinkConstInternalDiscovery.AUTOCOMPLETE
 
-    private fun switchService() {
+    private fun refreshLayout() {
         localCacheModel?.apply {
-            viewModelDtHome.switchService()
+            viewModelDtHome.refreshLayout()
         }
     }
 
@@ -614,10 +590,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             )
         }
         checkIfChooseAddressWidgetDataUpdated()
-    }
-
-    private fun showEmptyStateNoAddress() {
-        showEmptyState(EMPTY_STATE_OUT_OF_COVERAGE)
     }
 
     private fun createTopComponentCallback(): HomeComponentListener? {
