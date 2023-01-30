@@ -19,19 +19,19 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.ANA_REVAMP_FEATURE_ID
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EDIT_ADDRESS_REVAMP_FEATURE_ID
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_EDIT_ADDRESS
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.manageaddress.ui.shareaddress.bottomsheets.ShareAddressBottomSheet
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.data.analytics.ManageAddressAnalytics
+import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.manageaddress.databinding.BottomsheetActionAddressBinding
 import com.tokopedia.manageaddress.databinding.FragmentMainAddressBinding
 import com.tokopedia.manageaddress.di.ManageAddressComponent
@@ -40,6 +40,7 @@ import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressFragment
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressItemAdapter
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressViewModel
+import com.tokopedia.manageaddress.ui.shareaddress.bottomsheets.ShareAddressBottomSheet
 import com.tokopedia.manageaddress.ui.shareaddress.bottomsheets.ShareAddressConfirmationBottomSheet
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
@@ -214,10 +215,12 @@ class MainAddressFragment :
         viewModel.setChosenAddress.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    if (binding?.btnChooseAddress?.text == getString((R.string.pilih_alamat))) ChooseAddressTracking.onClickButtonPilihAlamat(
-                        userSession.userId,
-                        IS_SUCCESS
-                    )
+                    if (binding?.btnChooseAddress?.text == getString((R.string.pilih_alamat))) {
+                        ChooseAddressTracking.onClickButtonPilihAlamat(
+                            userSession.userId,
+                            IS_SUCCESS
+                        )
+                    }
                     val data = it.data
                     context?.let { context ->
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(
@@ -250,10 +253,12 @@ class MainAddressFragment :
                 }
 
                 is Fail -> {
-                    if (binding?.btnChooseAddress?.text == getString(R.string.pilih_alamat)) ChooseAddressTracking.onClickButtonPilihAlamat(
-                        userSession.userId,
-                        IS_NOT_SUCCESS
-                    )
+                    if (binding?.btnChooseAddress?.text == getString(R.string.pilih_alamat)) {
+                        ChooseAddressTracking.onClickButtonPilihAlamat(
+                            userSession.userId,
+                            IS_NOT_SUCCESS
+                        )
+                    }
                     showToaster(
                         message = it.throwable.message ?: DEFAULT_ERROR_MESSAGE,
                         toastType = Toaster.TYPE_ERROR
@@ -381,7 +386,6 @@ class MainAddressFragment :
                 }
             }
         }
-
     }
 
     private fun observerRemovedAddress() {
@@ -429,8 +433,8 @@ class MainAddressFragment :
             val addressDataModel =
                 data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
             if (addressDataModel != null) {
-                setChosenAddressANA(addressDataModel)
                 showToaster(getString(R.string.add_address_success))
+                setChosenAddressANA(addressDataModel)
             } else {
                 performSearch(viewModel.savedQuery, null)
             }
@@ -508,25 +512,26 @@ class MainAddressFragment :
     }
 
     private fun initScrollListener() {
-        binding?.addressList?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val adapter = recyclerView.adapter
-                val totalItemCount = adapter?.itemCount
-                val lastVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager)
-                    .findLastVisibleItemPosition()
+        binding?.addressList?.addOnScrollListener(
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val adapter = recyclerView.adapter
+                    val totalItemCount = adapter?.itemCount
+                    val lastVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager)
+                        .findLastVisibleItemPosition()
 
-                if (maxItemPosition < lastVisibleItemPosition) {
-                    maxItemPosition = lastVisibleItemPosition
-                }
+                    if (maxItemPosition < lastVisibleItemPosition) {
+                        maxItemPosition = lastVisibleItemPosition
+                    }
 
-                if ((maxItemPosition + 1) == totalItemCount && viewModel.canLoadMore && !isLoading) {
-                    context?.let {
-                        viewModel.loadMore(prevState, getChosenAddrId(), true)
+                    if ((maxItemPosition + 1) == totalItemCount && viewModel.canLoadMore && !isLoading) {
+                        context?.let {
+                            viewModel.loadMore(prevState, getChosenAddrId(), true)
+                        }
                     }
                 }
             }
-        }
         )
     }
 
@@ -750,9 +755,11 @@ class MainAddressFragment :
         ShareAddressAnalytics.onChooseAddressList()
         setButtonEnabled(true)
         _selectedAddressItem = peopleAddress
-        if (isLocalization == true) ChooseAddressTracking.onClickAvailableAddressAddressList(
-            userSession.userId
-        )
+        if (isLocalization == true) {
+            ChooseAddressTracking.onClickAvailableAddressAddressList(
+                userSession.userId
+            )
+        }
     }
 
     private fun setChosenAddress(isClickBackButton: Boolean = false) {
@@ -806,6 +813,16 @@ class MainAddressFragment :
                 putExtra(ChooseAddressConstant.EXTRA_IS_FROM_ANA, true)
             }
             activity?.setResult(Activity.RESULT_OK, resultIntent)
+            activity?.finish()
+        } else if (isFromCheckoutChangeAddress == true) {
+            val resultIntent = Intent().apply {
+                putExtra(ChooseAddressConstant.EXTRA_IS_FROM_ANA, true)
+                putExtra(
+                    ChooseAddressConstant.EXTRA_SELECTED_ADDRESS_DATA,
+                    ChosenAddressModel(addressId = addressDataModel.id)
+                )
+            }
+            activity?.setResult(CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS, resultIntent)
             activity?.finish()
         } else {
             performSearch("", addressDataModel)
@@ -882,7 +899,7 @@ class MainAddressFragment :
         senderAddressId: String,
         receiverPhoneNumberOrEmail: String? = null,
         receiverUserId: String? = null,
-        receiverUserName: String? = null,
+        receiverUserName: String? = null
     ) {
         bottomSheetConfirmationShareAddress = ShareAddressConfirmationBottomSheet.newInstance(
             senderAddressId = senderAddressId,
