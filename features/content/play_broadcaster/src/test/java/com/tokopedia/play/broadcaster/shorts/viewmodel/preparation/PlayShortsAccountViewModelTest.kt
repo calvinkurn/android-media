@@ -64,7 +64,7 @@ class PlayShortsAccountViewModelTest {
             val state = it.setUp {
                 submitAction(PlayShortsAction.PreparePage(preferredAccountType = ""))
             }.recordState {
-                submitAction(PlayShortsAction.SwitchAccount)
+                submitAction(PlayShortsAction.SwitchAccount(isRefreshAccountList = false))
             }
 
             state.selectedAccount.assertEqualTo(mockAccountShop)
@@ -85,7 +85,7 @@ class PlayShortsAccountViewModelTest {
             val state = it.setUp {
                 submitAction(PlayShortsAction.PreparePage(preferredAccountType = ""))
             }.recordState {
-                submitAction(PlayShortsAction.SwitchAccount)
+                submitAction(PlayShortsAction.SwitchAccount(isRefreshAccountList = false))
             }
 
             state.selectedAccount.assertEqualTo(mockAccountUser)
@@ -109,7 +109,7 @@ class PlayShortsAccountViewModelTest {
                 coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountUser
                 coEvery { mockRepo.getShortsConfiguration(any(), any()) } throws mockException
 
-                submitAction(PlayShortsAction.SwitchAccount)
+                submitAction(PlayShortsAction.SwitchAccount(isRefreshAccountList = false))
             }
 
             state.selectedAccount.assertEqualTo(mockAccountShop)

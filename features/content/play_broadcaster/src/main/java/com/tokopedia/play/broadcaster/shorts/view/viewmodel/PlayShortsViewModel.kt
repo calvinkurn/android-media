@@ -168,7 +168,7 @@ class PlayShortsViewModel @Inject constructor(
 
             /** Account */
             is PlayShortsAction.ClickSwitchAccount -> handleClickSwitchAccount()
-            is PlayShortsAction.SwitchAccount -> handleSwitchAccount()
+            is PlayShortsAction.SwitchAccount -> handleSwitchAccount(action.isRefreshAccountList)
 
             /** Title Form */
             is PlayShortsAction.OpenTitleForm -> handleOpenTitleForm()
@@ -220,8 +220,13 @@ class PlayShortsViewModel @Inject constructor(
         }
     }
 
-    private fun handleSwitchAccount() {
+    private fun handleSwitchAccount(isRefreshAccountList: Boolean) {
         viewModelScope.launchCatchErrorWithLoader(block = {
+            if(isRefreshAccountList) {
+                val accountList = repo.getAccountList()
+                _accountList.update { accountList }
+            }
+
             val newSelectedAccount = accountManager.switchAccount(_accountList.value, _selectedAccount.value.type)
 
             setupConfigurationIfEligible(newSelectedAccount)

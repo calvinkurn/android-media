@@ -204,6 +204,7 @@ class UiModelBuilder {
                     iconUrl = "icon.url.shop",
                     badge = "icon.badge",
                     hasUsername = usernameShop,
+                    hasAcceptTnc = tncShop,
                     enable = tncShop
                 )
             )
@@ -215,6 +216,7 @@ class UiModelBuilder {
                     iconUrl = "icon.url.buyer",
                     badge = "icon.badge",
                     hasUsername = usernameBuyer,
+                    hasAcceptTnc = tncBuyer,
                     enable = tncBuyer
                 )
             )
@@ -226,6 +228,7 @@ class UiModelBuilder {
                     iconUrl = "icon.url.shop",
                     badge = "icon.badge",
                     hasUsername = usernameShop,
+                    hasAcceptTnc = tncShop,
                     enable = tncShop
                 ),
                 ContentAccountUiModel(
@@ -235,6 +238,7 @@ class UiModelBuilder {
                     iconUrl = "icon.url.buyer",
                     badge = "icon.badge",
                     hasUsername = usernameBuyer,
+                    hasAcceptTnc = tncBuyer,
                     enable = tncBuyer
                 ),
             )

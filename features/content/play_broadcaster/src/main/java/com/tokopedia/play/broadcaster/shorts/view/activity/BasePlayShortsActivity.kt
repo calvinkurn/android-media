@@ -82,7 +82,7 @@ abstract class BasePlayShortsActivity : BaseActivity() {
                             viewModel.submitAction(PlayShortsAction.PreparePage(getPreferredAccountType()))
                         }
                         else
-                            viewModel.submitAction(PlayShortsAction.SwitchAccount)
+                            viewModel.submitAction(PlayShortsAction.SwitchAccount(isRefreshAccountList = true))
                     }
 
                     override fun impressTncOnboarding() {
