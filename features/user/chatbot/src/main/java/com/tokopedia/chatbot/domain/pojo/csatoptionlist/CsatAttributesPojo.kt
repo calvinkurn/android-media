@@ -1,8 +1,6 @@
 package com.tokopedia.chatbot.domain.pojo.csatoptionlist
 
-
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 
 data class CsatAttributesPojo(
     @SerializedName("csat")
@@ -37,7 +35,7 @@ data class CsatAttributesPojo(
 
         data class Reason(
             @SerializedName("code")
-            val code: Int?,
+            val code: Long?,
             @SerializedName("text")
             val text: String?
         )

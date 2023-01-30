@@ -60,7 +60,7 @@ class ChatbotActivity : BaseChatToolbarActivity() {
         PushNotification.setIsChatBotWindowOpen(false)
     }
 
-    override fun getChatHeaderLayout(): Int = R.layout.chatbot_header_layout
+    override fun getChatHeaderLayout(): Int = R.layout.customview_chatbot_header_layout
 
     override fun setupToolbar() {
         super.setupToolbar()

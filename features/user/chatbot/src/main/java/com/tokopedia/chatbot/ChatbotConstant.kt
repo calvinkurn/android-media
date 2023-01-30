@@ -18,6 +18,7 @@ object ChatbotConstant {
     const val TANYA = "Tanya"
     const val RENDER_INVOICE_LIST_AND_BUTTON_ACTION = 1
     const val SOURCE_CHATBOT = "chatbot"
+    const val QUERY_SOURCE_TYPE = "Apps"
 
     object CsatRating {
         const val RATING_ONE = 1
@@ -47,10 +48,16 @@ object ChatbotConstant {
     }
 
     object AttachmentType {
+        const val OPEN_CSAT = "13"
+        const val UPDATE_TOOLBAR = "14"
+        const val CHAT_DIVIDER = "15"
+        const val TYPE_OPTION_LIST = "22"
+        const val TYPE_CSAT_OPTIONS = "23"
+        const val STICKY_BUTTON = "25"
         const val TYPE_SECURE_IMAGE_UPLOAD = "26"
+        const val TYPE_REPLY_BUBBLE = "28"
         const val TYPE_VIDEO_UPLOAD = "30"
         const val SESSION_CHANGE = "31"
-        const val TYPE_REPLY_BUBBLE = "28"
     }
 
     object ReplyBoxType {
