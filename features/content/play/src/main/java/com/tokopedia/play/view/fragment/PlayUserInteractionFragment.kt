@@ -1968,10 +1968,6 @@ class PlayUserInteractionFragment @Inject constructor(
         eventBus.emit(ExploreWidgetViewComponent.Event.OnImpressed)
     }
 
-    private fun closeExploreWidget() {
-        PlayExploreWidgetFragment.getOrCreate(childFragmentManager, requireActivity().classLoader).dismiss()
-    }
-
     companion object {
         private const val INTERACTION_TOUCH_CLICK_TOLERANCE = 25
 

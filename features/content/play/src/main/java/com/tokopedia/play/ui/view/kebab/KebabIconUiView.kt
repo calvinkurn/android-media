@@ -1,8 +1,6 @@
 package com.tokopedia.play.ui.view.kebab
 
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.databinding.ViewKebabIconBinding
 
 /**
@@ -10,22 +8,18 @@ import com.tokopedia.play.databinding.ViewKebabIconBinding
  */
 class KebabIconUiView(
     private val binding: ViewKebabIconBinding,
-    listener: Listener,
+    private val listener: Listener
 ) {
-
-    private val impressHolder = ImpressHolder()
 
     init {
         binding.root.setOnClickListener {
             listener.onClicked(this)
         }
-        binding.root.addOnImpressionListener(impressHolder){
-            listener.onImpressed(this)
-        }
     }
 
     fun show(shouldShow: Boolean) {
         binding.root.showWithCondition(shouldShow)
+        if (shouldShow) listener.onImpressed(this)
     }
 
     interface Listener {

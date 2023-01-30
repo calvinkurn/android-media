@@ -37,7 +37,7 @@
           "creative_name": ".*",
           "creative_slot": "\\d+",
           "item_id": ".*",
-          "item_name": "/play/\\d+"
+          "item_name": "/play/explorewidget"
         }
       ],
       "sessionIris": ".*",

@@ -19,13 +19,13 @@ import dagger.assisted.AssistedInject
  */
 class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
     @Assisted private val channelInfo: PlayChannelInfoUiModel,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : PlayExploreWidgetAnalytic {
 
     @AssistedFactory
     interface Factory : PlayExploreWidgetAnalytic.Factory {
         override fun create(
-            channelInfo: PlayChannelInfoUiModel,
+            channelInfo: PlayChannelInfoUiModel
         ): PlayExploreWidgetAnalyticImpl
     }
 
@@ -92,7 +92,8 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            "view_item", dataLayer
+            "view_item",
+            dataLayer
         )
     }
 
@@ -231,12 +232,12 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
 
     private fun itemToBundle(
         chip: ChipWidgetUiModel,
-        position: Int,
+        position: Int
     ): Bundle =
         Bundle().apply {
             putString("creative_name", chip.text)
             putInt("creative_slot", position)
             putString("item_id", chip.sourceId)
-            putString("item_name", chip.text)
+            putString("item_name", "/play/explorewidget")
         }
 }
