@@ -12,7 +12,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.view.ViewTreeObserver
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.annotation.RestrictTo
@@ -62,7 +62,6 @@ import com.tokopedia.feedcomponent.domain.mapper.*
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.cordinator.ShopRecomImpressCoordinator
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
@@ -4086,133 +4085,22 @@ class FeedPlusFragment :
 
     @SuppressLint("NotifyDataSetChanged")
     private fun onSuccessResyncFollowStatus(data: Map<String, Boolean>) {
-        val newList = adapter.getlist().map { item ->
-            if (item is ShopRecomWidgetModel) {
-                val newItems = item.shopRecomUiModel.items.toMutableList()
-                newItems.forEachIndexed { itemIndex, recomItem ->
-                    data[recomItem.id.toString()]?.let { followStatus ->
-                        newItems[itemIndex] = recomItem.copy(
-                            state = if (followStatus) ShopRecomFollowState.FOLLOW else ShopRecomFollowState.UNFOLLOW
-                        )
-                    }
-                }
-                item.copy(
-                    item.shopRecomUiModel.copy(
-                        items = newItems
-                    )
-                )
-            } else if (item is TopadsShopUiModel) {
-                val newItems = item.dataList.toMutableList()
-                newItems.forEachIndexed { index, item ->
-                    val id = if (item.shop.id.isNotEmpty()) item.shop.id else item.shop.ownerId
-                    data[id]?.let { followStatus ->
-                        newItems[index] = item.copy(
-                            isFavorit = followStatus
-                        )
-                    }
-                }
+        val newList = feedViewModel.processFollowStatusUpdate(adapter.getList(), data)
 
-                item.copy(
-                    dataList = newItems
-                )
-            } else if (item is TopadsHeadlineUiModel) {
-                val newItems = (item.cpmModel?.data ?: listOf()).toMutableList()
-                newItems.forEachIndexed { index, item ->
-                    data[item.cpm.cpmShop.id]?.let { followStatus ->
-                        newItems[index] = item.copy(
-                            cpm = item.cpm.copy(
-                                cpmShop = item.cpm.cpmShop.copy(
-                                    isFollowed = followStatus
-                                )
-                            )
-                        )
-                    }
-                }
-
-                item.copy(
-                    cpmModel = item.cpmModel?.copy(
-                        data = newItems
-                    ) ?: item.cpmModel
-                )
-            } else if (item is TopadsHeadLineV2Model) {
-                val newItems = (item.cpmModel?.data ?: listOf()).toMutableList()
-                newItems.forEachIndexed { index, item ->
-                    data[item.cpm.cpmShop.id]?.let { followStatus ->
-                        newItems[index] = item.copy(
-                            cpm = item.cpm.copy(
-                                cpmShop = item.cpm.cpmShop.copy(
-                                    isFollowed = followStatus
-                                )
-                            )
-                        )
-                    }
-                }
-
-                val id = item.feedXCard.author.id
-                val newFeedXCard = item.feedXCard.copy()
-
-                if (id != "") {
-                    data[id]?.let { followStatus ->
-                        newFeedXCard.followers.copy(
-                            isFollowed = followStatus
-                        )
-                    }
-                }
-
-                item.copy(
-                    cpmModel = item.cpmModel?.copy(
-                        data = newItems
-                    ) ?: item.cpmModel,
-                    feedXCard = newFeedXCard
-                )
-            } else {
-                val shopId = when (item) {
-                    is DynamicPostModel -> item.header.followCta.authorID
-                    is DynamicPostUiModel -> item.feedXCard.author.id
-                    else -> ""
-                }
-                if (shopId != "") {
-                    data[shopId]?.let { followStatus ->
-                        when (item) {
-                            is DynamicPostModel -> item.copy(
-                                header = item.header.copy(
-                                    followCta = item.header.followCta.copy(
-                                        isFollow = followStatus
-                                    )
-                                )
-                            )
-
-                            is DynamicPostUiModel -> item.copy(
-                                feedXCard = item.feedXCard.copy(
-                                    followers = item.feedXCard.followers.copy(
-                                        isFollowed = followStatus
-                                    )
-                                )
-                            )
-
-                            else -> item
-
-                        }
-                    } ?: item
-                } else {
-                    item
-                }
-            }
-        }.toList()
-
-        if (data.isNotEmpty()) {
+        if (newList.isNotEmpty()) {
             val scrollPosition = getCurrentPosition()
             clearData()
             adapter.addList(newList)
 
             recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
-                OnGlobalLayoutListener {
+                ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     recyclerView.scrollToPosition(scrollPosition)
                     recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
             })
         }
+
         feedViewModel.clearFollowIdToUpdate()
     }
 }

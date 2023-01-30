@@ -74,6 +74,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -252,6 +253,128 @@ class FeedViewModel @Inject constructor(
             }) {
                 _shopIdsFollowStatusToUpdateData.value = Fail(it)
             }
+    }
+
+    fun processFollowStatusUpdate(
+        currentList: MutableList<Visitable<*>>,
+        data: Map<String, Boolean>
+    ): MutableList<Visitable<*>> {
+        var newList = mutableListOf<Visitable<*>>();
+
+        if (data.isNotEmpty()) {
+            newList = currentList.map { item ->
+                if (item is ShopRecomWidgetModel) {
+                    val newItems = item.shopRecomUiModel.items.toMutableList()
+                    newItems.forEachIndexed { itemIndex, recomItem ->
+                        data[recomItem.id.toString()]?.let { followStatus ->
+                            newItems[itemIndex] = recomItem.copy(
+                                state = if (followStatus) ShopRecomFollowState.FOLLOW else ShopRecomFollowState.UNFOLLOW
+                            )
+                        }
+                    }
+                    item.copy(
+                        item.shopRecomUiModel.copy(
+                            items = newItems
+                        )
+                    )
+                } else if (item is TopadsShopUiModel) {
+                    val newItems = item.dataList.toMutableList()
+                    newItems.forEachIndexed { index, item ->
+                        val id = if (item.shop.id.isNotEmpty()) item.shop.id else item.shop.ownerId
+                        data[id]?.let { followStatus ->
+                            newItems[index] = item.copy(
+                                isFavorit = followStatus
+                            )
+                        }
+                    }
+
+                    item.copy(
+                        dataList = newItems
+                    )
+                } else if (item is TopadsHeadlineUiModel) {
+                    val newItems = (item.cpmModel?.data ?: listOf()).toMutableList()
+                    newItems.forEachIndexed { index, item ->
+                        data[item.cpm.cpmShop.id]?.let { followStatus ->
+                            newItems[index] = item.copy(
+                                cpm = item.cpm.copy(
+                                    cpmShop = item.cpm.cpmShop.copy(
+                                        isFollowed = followStatus
+                                    )
+                                )
+                            )
+                        }
+                    }
+
+                    item.copy(
+                        cpmModel = item.cpmModel?.copy(
+                            data = newItems
+                        ) ?: item.cpmModel
+                    )
+                } else if (item is TopadsHeadLineV2Model) {
+                    data[item.feedXCard.author.id]?.let { followStatus ->
+                        item.copy(
+                            cpmModel = item.cpmModel?.copy(
+                                data = (item.cpmModel as CpmModel).data.map { cpmItem ->
+                                    cpmItem.copy(
+                                        cpm = cpmItem.cpm.copy(
+                                            cpmShop = cpmItem.cpm.cpmShop.copy(
+                                                isFollowed = followStatus
+                                            )
+                                        )
+                                    )
+                                }.toMutableList()
+                            ) ?: item.cpmModel,
+                            feedXCard = item.feedXCard.copy(
+                                followers = item.feedXCard.followers.copy(
+                                    isFollowed = followStatus
+                                ),
+                                cpmData = item.feedXCard.cpmData.copy(
+                                    cpm = item.feedXCard.cpmData.cpm.copy(
+                                        cpmShop = item.feedXCard.cpmData.cpm.cpmShop.copy(
+                                            isFollowed = followStatus
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    } ?: item
+                } else {
+                    val shopId = when (item) {
+                        is DynamicPostModel -> item.header.followCta.authorID
+                        is DynamicPostUiModel -> item.feedXCard.author.id
+                        else -> ""
+                    }
+                    if (shopId != "") {
+                        data[shopId]?.let { followStatus ->
+                            when (item) {
+                                is DynamicPostModel -> item.copy(
+                                    header = item.header.copy(
+                                        followCta = item.header.followCta.copy(
+                                            isFollow = followStatus
+                                        )
+                                    )
+                                )
+
+                                is DynamicPostUiModel -> item.copy(
+                                    feedXCard = item.feedXCard.copy(
+                                        followers = item.feedXCard.followers.copy(
+                                            isFollowed = followStatus
+                                        )
+                                    )
+                                )
+
+                                else -> item
+
+                            }
+                        } ?: item
+                    } else {
+                        item
+                    }
+                }
+            }.toMutableList()
+        }
+
+        return newList
     }
 
     fun clearFollowIdToUpdate() {
