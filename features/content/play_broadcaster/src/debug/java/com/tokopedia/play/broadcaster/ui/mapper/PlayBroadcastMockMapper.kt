@@ -87,6 +87,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     override fun mapConfiguration(config: Config): ConfigurationUiModel {
         return ConfigurationUiModel(
             streamAllowed = true,
+            shortVideoAllowed = true,
             channelStatus = ChannelStatus.Draft,
             channelId = "10008", // 10008 prod, 10012 stag (status: draft)
             durationConfig = DurationConfigUiModel(

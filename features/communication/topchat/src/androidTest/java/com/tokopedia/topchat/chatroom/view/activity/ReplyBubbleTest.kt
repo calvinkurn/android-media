@@ -257,7 +257,7 @@ class ReplyBubbleTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        val incomingEventWs = websocket.generateUploadImageResposne(roomMetaData)
+        val incomingEventWs = websocket.generateUploadImageResponse(roomMetaData, false)
         websocket.simulateResponse(incomingEventWs)
 
         // Then
@@ -272,5 +272,4 @@ class ReplyBubbleTest : TopchatRoomTest() {
     // TODO: should_send_reply_bubble_when_user_send_srw
     // TODO: should show onboarding reply bubble
     // TODO: should send reply bubble preview when user click one of SRW preview question
-
 }

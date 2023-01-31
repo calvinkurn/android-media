@@ -30,8 +30,8 @@ data class WhitelistDomain(
     val isBuyerAccountExists: Boolean
         get() = authors.find{ it.type == TYPE_USER } != null
 
-    val isShopAccountLiveEligible: Boolean
-        get() = authors.find { it.type == TYPE_SHOP && it.livestream.enable } != null
+    val isShopAccountShortsEligible: Boolean
+        get() = authors.find { it.type == TYPE_SHOP && it.shortVideo.enable } != null
 
     val userAccount: GetCheckWhitelistResponse.Author?
         get() = authors.find { it.type == TYPE_USER }

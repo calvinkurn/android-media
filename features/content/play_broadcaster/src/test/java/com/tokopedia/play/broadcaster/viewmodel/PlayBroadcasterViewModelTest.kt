@@ -388,7 +388,7 @@ class PlayBroadcasterViewModelTest {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel()
 
-        coEvery { mockHydraSharedPreferences.getLastSelectedAccount() } returns TYPE_USER
+        coEvery { mockHydraSharedPreferences.getLastSelectedAccountType() } returns TYPE_USER
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
 
@@ -415,7 +415,7 @@ class PlayBroadcasterViewModelTest {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel(tncShop = false)
 
-        coEvery { mockHydraSharedPreferences.getLastSelectedAccount() } returns TYPE_SHOP
+        coEvery { mockHydraSharedPreferences.getLastSelectedAccountType() } returns TYPE_SHOP
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
 
