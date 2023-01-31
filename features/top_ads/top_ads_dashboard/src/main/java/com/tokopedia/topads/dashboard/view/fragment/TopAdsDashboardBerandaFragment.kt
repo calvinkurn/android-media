@@ -237,10 +237,12 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
 
     private fun initializeGraph() {
-        parentFragmentManager
-            .beginTransaction()
-            .replace(R.id.graph_layout_beranda, graphLayoutFragment, "")
-            .commit()
+        if (parentFragment?.isStateSaved != true) {
+            parentFragmentManager
+                .beginTransaction()
+                .replace(R.id.graph_layout_beranda, graphLayoutFragment, "")
+                .commit()
+        }
     }
 
     private fun showFirstTimeDialog() {

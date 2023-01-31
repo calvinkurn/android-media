@@ -29,7 +29,7 @@
 
     <!--Section | Consent Withdrawal -->
     <string name="consent_withdrawal_section_title">Persetujuan kamu</string>
-    <string name="consent_withdrawal_section_description">Nantikan fitur lain yang bisa diatur akses datanya di sini</string>
+    <string name="consent_withdrawal_section_description">Atur fitur apa aja yang boleh akses datamu</string>
 
     <!--Section | Privacy Policy -->
     <string name="privacy_policy_label">Privacy Policy</string>
@@ -37,6 +37,7 @@
     <string name="privacy_policy_section_description">Kebijakan Privasi menjelaskan data pribadimu yang disimpan, bagaimana Tokopedia menggunakannya, dan kenapa Tokopedia memprosesnya.</string>
     <string name="privacy_policy_bottom_sheet_title">Riwayat Kebijakan Privasi</string>
     <string name="privacy_policy_show_all_list_button">Lihat Semua</string>
+    <string name="privacy_policy_info_title">Info Riwayat Kebijakan Privasi</string>
 
     <!--Section | Recommendation and promotion-->
     <string name="privacy_center_recommendation_title">Rekomendasi &amp; promo</string>
@@ -121,7 +122,7 @@
     <string name="dsar_payment_info_description">Daftar rekening bank, daftar kartu kredit, daftar kartu debit</string>
     <string name="dsar_payment_info_title">Informasi Pembayaran</string>
     <string name="dsar_personal_info_title">Informasi Pribadi</string>
-    <string name="dsar_personal_info_description">User ID, nama lengkap, nomor HP, e-mail, tanggal lahir, jenis kelamin, daftar alamat pengiriman</string>
+    <string name="dsar_personal_info_description">User ID, nama lengkap, nomor HP, e-mail, tanggal lahir, jenis kelamin, alamat utama</string>
     <string name="dsar_transcion_info_title">Riwayat Transaksi</string>
     <string name="dsar_bottom_sheet_detail_subtitle">Download data dari akun ini:</string>
     <string name="dsar_date_picker_title">Pilih rentang riwayat transaksi</string>
@@ -156,6 +157,9 @@
     <string name="dsar_range_item_3">3 Bulan Terakhir</string>
     <string name="dsar_range_item_2">3 Tahun Terakhir</string>
     <string name="dsar_range_item_1">Selama Tahun Ini</string>
+    <string name="txt_privacy_info">Demi menjaga relevansi dengan keadaan dan perubaan saat ini, Tokopedia hanya akan menampilkan tiga perubahan terbaru untuk kebijakan privasi.</string>
+    <string name="privacy_policy_subtitle">Demi menjaga relevansi dengan keadaan dan perubaan saat ini, Tokopedia hanya akan menampilkan tiga perubahan terbaru untuk kebijakan privasi.</string>
+    <string name="privacy_history_section_title">Riwayat Kebijakan Privasi</string>
 
 
 </resources>

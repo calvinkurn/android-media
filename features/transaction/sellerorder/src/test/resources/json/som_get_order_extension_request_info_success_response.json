@@ -4,6 +4,10 @@
       "data": {
         "text": "Pengajuan yang diterima pembeli dapat tambahan waktu 2x24 jam hari kerja hingga",
         "new_deadline": "Senin, 13 Sep 2021 pukul 14:55 WIB",
+        "deadline_info": {
+          "max_time": "14:55",
+          "max_date": "2022/11/18"
+        },
         "reason": [
           {
             "reason_title": "Kendala Operasional",
@@ -19,6 +23,35 @@
             "reason_title": "Lainnya",
             "reason_code": 3,
             "must_comment": true
+          }
+        ],
+        "eligible_dates": [
+          {
+            "date": "2022-11-15",
+            "extension_time": 24,
+            "is_disabled": false
+          },
+          {
+            "date": "2022-11-16",
+            "extension_time": 48,
+            "is_disabled": false
+          },
+          {
+            "date": "2022-11-17",
+            "extension_time": 72,
+            "is_disabled": false
+          },
+          {
+            "date": "2022-11-18",
+            "extension_time": 96,
+            "is_disabled": false
+          }
+        ],
+        "special_dates": [
+          {
+            "date": "2022-11-24",
+            "event_name": "Hari Libur Nasional",
+            "is_disabled": true
           }
         ],
         "message": "",

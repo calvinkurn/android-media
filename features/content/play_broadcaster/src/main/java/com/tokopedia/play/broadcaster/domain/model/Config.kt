@@ -9,6 +9,8 @@ import com.google.gson.annotations.SerializedName
 data class Config(
         @SerializedName("streamAllowed")
         val streamAllowed: Boolean = false,
+        @SerializedName("shortVideoAllowed")
+        val shortVideoAllowed: Boolean = false,
         @SerializedName("active_live_channel")
         val activeLiveChannel: Int = 0,
         @SerializedName("draft_channel")

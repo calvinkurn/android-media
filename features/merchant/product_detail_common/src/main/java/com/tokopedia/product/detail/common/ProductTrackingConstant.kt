@@ -243,6 +243,9 @@ object ProductTrackingConstant {
         const val CLICK_PRODUCT_BUNDLING = "click - product bundling"
         const val CLICK_CHECK_PRODUCT_BUNDLING = "click - lihat paket on bundling component"
         const val IMPRESSION_PRODUCT_BUNDLING = "impression - bundling component"
+        const val VIEW_ITEM = "view_item"
+        const val PROMO_VIEW = "promoView"
+        const val PROMOTIONS = "promotions"
     }
 
 
@@ -350,5 +353,25 @@ object ProductTrackingConstant {
         const val TRACKER_ID_IMPRESS_THUMBNAIL = "31789"
         const val TRACKER_ID_CLICK_SPECIFICATION = "36325"
         const val TRACKER_ID_IMPRESS_SPECIFICATION = "36326"
+    }
+
+    object ViewToView {
+        const val TRACKER_ID_IMPRESS = "40439"
+        const val TRACKER_ID_CLICK = "40441"
+
+        const val ACTION_IMPRESSION = "impression on banner v2v widget"
+        const val ACTION_CLICK = "click on banner v2v widget"
+
+        const val BUSINESS_UNIT_HOME = "home & browse"
+        const val CATEGORY_PDP = "product detail page"
+
+        const val KEY_CREATIVE_NAME = "creative_name"
+        const val KEY_CREATIVE_SLOT = "creative_slot"
+        const val KEY_ITEM_ID = "item_id"
+        const val KEY_ITEM_NAME = "item_name"
+
+        const val ITEM_NAME_FORMAT = "/product - p%s - v2v widget - rekomendasi untuk anda - banner - %s"
+
+        const val NULL_LABEL = "null"
     }
 }

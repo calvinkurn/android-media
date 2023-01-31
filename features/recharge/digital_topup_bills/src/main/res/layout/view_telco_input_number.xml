@@ -43,14 +43,24 @@
             app:layout_constraintTop_toTopOf="@id/telco_field_input_number"
             tools:ignore="contentDescription" />
 
+        <com.tokopedia.unifycomponents.ChipsUnify
+            android:id="@+id/telco_chip_see_all"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@id/telco_filter_chip"
+            app:layout_constraintBottom_toBottomOf="@id/telco_filter_chip"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <com.tokopedia.sortfilter.SortFilter
             android:id="@+id/telco_filter_chip"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/telco_field_input_number"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/telco_chip_see_all"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
