@@ -112,7 +112,7 @@ class ShopInfoViewModel @Inject constructor(
         }
     }
 
-    fun isShouldShowLicenseForDrugSeller(shopInfo: ShopInfoData): Boolean = shopInfo.isGoApotik || shopInfo.fsType == ShopPartnerFsFullfillmentServiceTypeDef.EPHARMACY
+    fun isShouldShowLicenseForDrugSeller(isGoApotik: Boolean, fsType: Int): Boolean = isGoApotik || fsType == ShopPartnerFsFullfillmentServiceTypeDef.EPHARMACY
 
     private suspend fun getMessageId(shopId: String): ChatExistingChat {
         getMessageIdChatUseCase.params = GetMessageIdChatUseCase.createParams(shopId)

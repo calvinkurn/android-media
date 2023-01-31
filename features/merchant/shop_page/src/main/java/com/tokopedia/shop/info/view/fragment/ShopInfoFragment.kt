@@ -427,7 +427,9 @@ class ShopInfoFragment :
 
             // go apotik info
             shopViewModel?.let {
-                goApotikInfoContainer.shouldShowWithAction(shouldShow = it.isShouldShowLicenseForDrugSeller(shopInfo)) {
+                goApotikInfoContainer.shouldShowWithAction(
+                    shouldShow = it.isShouldShowLicenseForDrugSeller(isGoApotik = shopInfo.isGoApotik, fsType = shopInfo.fsType)
+                ) {
                     tvSiaDescription.text =
                         shopInfo.siaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
                     tvSipaDescription.text =
