@@ -21,12 +21,14 @@ import com.tokopedia.utils.date.addTimeToSpesificDate
 import java.util.*
 import javax.inject.Inject
 import com.tokopedia.mvc.R
+import com.tokopedia.mvc.util.tracker.SummaryPageTracker
 
 class SummaryViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val merchantPromotionGetMVDataByIDUseCase: MerchantPromotionGetMVDataByIDUseCase,
     private val getCouponImagePreviewUseCase: GetCouponImagePreviewFacadeUseCase,
-    private val addEditCouponFacadeUseCase: AddEditCouponFacadeUseCase
+    private val addEditCouponFacadeUseCase: AddEditCouponFacadeUseCase,
+    private val tracker: SummaryPageTracker
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -179,6 +181,7 @@ class SummaryViewModel @Inject constructor(
     fun saveCoupon() {
         val voucherConfiguration = configuration.value ?: return
         _isLoading.value = true
+        tracker.sendClickBuatKuponEvent(voucherConfiguration.voucherId.toString(), "")
         if (voucherConfiguration.voucherId > ADDING_VOUCHER_ID) {
             editCoupon(voucherConfiguration)
         } else {

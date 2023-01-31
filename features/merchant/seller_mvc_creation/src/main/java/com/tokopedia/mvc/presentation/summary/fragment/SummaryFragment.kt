@@ -140,6 +140,11 @@ class SummaryFragment :
         redirectionHelper.onActivityResult(requestCode, resultCode, data)
     }
 
+    override fun onFragmentBackPressed(): Boolean {
+        tracker.sendClickKembaliArrowFifthStepEvent()
+        return super.onFragmentBackPressed()
+    }
+
     override fun onAddProductResult() {
         activity?.finish()
     }
@@ -255,6 +260,7 @@ class SummaryFragment :
         title = context.getString(R.string.smvc_summary_page_title)
         setNavigationOnClickListener {
             activity?.finish()
+            onFragmentBackPressed()
         }
     }
 
@@ -331,6 +337,7 @@ class SummaryFragment :
         }
         cbTnc.setOnClickListener {
             viewModel.validateTnc(cbTnc.isChecked)
+            tracker.sendClickCheckboxSyaratKetentuanEvent()
         }
     }
 
