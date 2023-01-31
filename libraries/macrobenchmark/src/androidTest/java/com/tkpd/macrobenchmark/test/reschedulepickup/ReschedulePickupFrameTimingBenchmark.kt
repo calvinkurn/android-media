@@ -3,7 +3,6 @@ package com.tkpd.macrobenchmark.test.reschedulepickup
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SdkSuppress
-import androidx.test.uiautomator.Direction
 import com.tkpd.macrobenchmark.base.BaseFrameTimingBenchmark
 import com.tkpd.macrobenchmark.util.MacroIntent
 import com.tkpd.macrobenchmark.util.MacroInteration
@@ -28,19 +27,6 @@ class ReschedulePickupFrameTimingBenchmark : BaseFrameTimingBenchmark() {
     override fun pageInteractionTest(currentIteration: Int) {
         MacroInteration.basicComposableInteraction(
             MacroIntent.ReschedulePickup.CONTENT_DESCRIPTION
-        )
-        MacroInteration.basicComposableInteraction(
-            MacroIntent.ReschedulePickup.CONTENT_DESCRIPTION,
-            scrollDirection = Direction.UP
-
-        )
-        MacroInteration.basicComposableInteraction(
-            MacroIntent.ReschedulePickup.CONTENT_DESCRIPTION
-        )
-        MacroInteration.basicComposableInteraction(
-            MacroIntent.ReschedulePickup.CONTENT_DESCRIPTION,
-            scrollDirection = Direction.UP
-
         )
     }
 

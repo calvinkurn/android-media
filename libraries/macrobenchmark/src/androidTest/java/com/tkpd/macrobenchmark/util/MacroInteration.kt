@@ -81,7 +81,7 @@ object MacroInteration {
 
     fun basicComposableInteraction(
         contentDescription: String,
-        scrollDirection: Direction = Direction.DOWN,
+//        scrollDirection: Direction = Direction.DOWN,
         scrollPercent: Float = 2f
     ) {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
@@ -94,6 +94,7 @@ object MacroInteration {
         // with input events from automation.
         recycler.setGestureMargin(device.displayWidth / 5)
         for (i in 1..(MacroArgs.getRecyclerViewScrollIterations(InstrumentationRegistry.getArguments()))) {
+            val scrollDirection = if (i % 2 == 0) Direction.UP else Direction.DOWN
             recycler.scroll(scrollDirection, scrollPercent)
             device.waitForIdle()
         }
