@@ -26,6 +26,7 @@ import com.tokopedia.topads.view.model.MpAdsCreateGroupViewModel
 import com.tokopedia.topads.view.sheet.MpCreateGroupBudgetHelpSheet
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import com.tokopedia.utils.text.currency.NumberTextWatcher
 import javax.inject.Inject
 
 private const val GROUP_DETAIL_PAGE = "android.group_detail"
@@ -145,25 +146,17 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
             }
         })
 
-        binding.dailyBudget.editText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun afterTextChanged(p0: Editable?) {
-                if (p0 != null && !p0.toString().isEmpty() && CurrencyFormatHelper.convertRupiahToDouble(p0.toString()) < minDailyBudget) {
+        binding.dailyBudget.editText.addTextChangedListener(object : NumberTextWatcher(binding.dailyBudget.editText){
+            override fun onNumberChanged(number: Double) {
+                super.onNumberChanged(number)
+                if (number < minDailyBudget) {
                     binding.dailyBudget.isInputError = true
                     binding.dailyBudget.setMessage("${getString(R.string.min_budget_rp)} $minDailyBudget")
                     validBudget = false
                     checkAllFieldsValidations()
-                } else if (p0 != null && !p0.toString().isEmpty() && CurrencyFormatHelper.convertRupiahToDouble(p0.toString()) > maxDailyBudget) {
+                } else if (number > maxDailyBudget) {
                     binding.dailyBudget.isInputError = true
                     binding.dailyBudget.setMessage("${getString(R.string.max_budget_rp)} $maxDailyBudget")
-                    validBudget = false
-                    checkAllFieldsValidations()
-                } else if (p0 == null) {
-                    binding.dailyBudget.isInputError = true
-                    binding.dailyBudget.setMessage("")
                     validBudget = false
                     checkAllFieldsValidations()
                 } else {
