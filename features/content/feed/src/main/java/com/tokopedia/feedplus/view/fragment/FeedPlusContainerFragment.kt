@@ -151,6 +151,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     @Inject
     lateinit var onboardingCoachmark: FeedOnboardingCoachmark
+    private var isOnboardingCoachmarkAlreadyShown: Boolean = false
 
 
     /** View */
@@ -424,9 +425,16 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (!isVisibleToUser) {
+            isOnboardingCoachmarkAlreadyShown = false
             hideAllFab()
             coachMarkManager?.dismissAllCoachMark()
-            onboardingCoachmark.dismissCoachmark()
+            onboardingCoachmark.dismiss()
+        }
+        if (isVisibleToUser && !isOnboardingCoachmarkAlreadyShown) {
+            showOnboardingStepsCoachmark(
+                shouldShowShortVideoCoachmark = userSession.isLoggedIn && feedFloatingButton.isVisible && viewModel.isShowShortsButton,
+                shouldShowUserProfileCoachmark = ivFeedUser?.isVisible ?: false
+            )
         }
     }
 
@@ -788,7 +796,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             ivFeedUser.setImageUrl(userAccount.thumbnail)
             ivFeedUser.setOnClickListener {
                 toolBarAnalytics.clickUserProfileIcon(userSession.userId)
-                dismissUserProfileCoachMark()
 
                 RouteManager.route(requireContext(), ApplinkConst.PROFILE, userAccount.id)
             }
@@ -800,11 +807,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             )
 
         }
-    }
-
-    private fun dismissUserProfileCoachMark() {
-        affiliatePreference.setUserProfileEntryPointCoachMarkShown(userSession.userId)
-        ivFeedUser?.let { coachMarkManager?.dismissCoachMark(it) }
     }
 
     private fun onErrorGetWhitelist(throwable: Throwable) {
@@ -849,34 +851,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         fabFeed.menuOpen = false
     }
 
-    private fun showCreatePostOnBoarding() {
-        feedFloatingButton.addOneTimeGlobalLayoutListener {
-            val location = IntArray(2)
-            feedFloatingButton.getLocationOnScreen(location)
-
-            val x1 = location[0]
-            val y1 = location[1]
-            val x2 = x1 + feedFloatingButton.width
-            val y2 = y1 + feedFloatingButton.height
-
-            coachMarkItem = CoachMarkItem(
-                feedFloatingButton,
-                activity?.getString(R.string.feed_onboarding_create_post_title),
-                activity?.getString(R.string.feed_onboarding_create_post_detail) ?: ""
-            ).withCustomTarget(intArrayOf(x1, y1, x2, y2))
-
-        }
-    }
-
-    private fun showFabCoachMark() {
-        if (::coachMarkItem.isInitialized &&
-            !affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId) &&
-            feedFloatingButton.visibility == View.VISIBLE
-        ) {
-            coachMark.show(activity = activity, tag = null, tutorList = arrayListOf(coachMarkItem))
-            affiliatePreference.setCreatePostEntryOnBoardingShown(userSession.userId)
-        }
-    }
 
     private fun showOnboardingStepsCoachmark(shouldShowShortVideoCoachmark: Boolean, shouldShowUserProfileCoachmark: Boolean){
         val tab = tabLayout?.tabLayout?.getTabAt(2)
@@ -885,6 +859,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             Pair(FeedOnboardingCoachmark.VIDEO_TAB_COACH_MARK_ANCHOR, tab?.view!!),
             Pair(FeedOnboardingCoachmark.SHORT_VIDEO_COACH_MARK_ANCHOR, feedFloatingButton),
         )
+        isOnboardingCoachmarkAlreadyShown = true
         onboardingCoachmark.showFeedOnboardingCoachmark(
             anchorMap,
             this,
@@ -976,5 +951,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     override fun onCoachmarkFinish() {
         coachMarkOverlay?.isClickable = false
         coachMarkOverlay?.gone()
+    }
+
+    override fun onCoachmarkResume() {
+        coachMarkOverlay?.isClickable = true
+        coachMarkOverlay?.visible()
     }
 }

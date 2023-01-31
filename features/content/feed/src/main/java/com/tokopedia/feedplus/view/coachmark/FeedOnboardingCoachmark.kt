@@ -57,6 +57,8 @@ class FeedOnboardingCoachmark @Inject constructor(
         ) {
             mListener?.onCoachmarkFinish()
             return
+        } else {
+            mListener?.onCoachmarkResume()
         }
 
         val coachMarkItem = ArrayList<CoachMark2Item>()
@@ -67,6 +69,7 @@ class FeedOnboardingCoachmark @Inject constructor(
         }
         coachMark.onDismissListener = {
             mListener?.onCoachmarkFinish()
+            markAsShowed()
         }
 
         if (!isUserProfileEntryShown && mShouldShowUserProfileCoachMark) {
@@ -156,6 +159,10 @@ class FeedOnboardingCoachmark @Inject constructor(
         coachMark.dismissCoachMark()
     }
 
+    fun dismiss() {
+        coachMark.dismiss()
+    }
+
     private fun initializeFields(
         anchorMap: Map<String, View>
     ) {
@@ -170,5 +177,6 @@ class FeedOnboardingCoachmark @Inject constructor(
 
     interface Listener {
         fun onCoachmarkFinish()
+        fun onCoachmarkResume()
     }
 }
