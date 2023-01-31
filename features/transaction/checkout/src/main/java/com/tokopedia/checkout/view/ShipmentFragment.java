@@ -3715,13 +3715,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipmentCartItemModel.setValidationMetadata("");
                 }
 
+                SelectedShipperModel selectedShipperModel = newCourierItemData.getSelectedShipper();
+                boolean shouldValidateUse = selectedShipperModel.getLogPromoCode() != null && !selectedShipperModel.getLogPromoCode().isEmpty();
                 boolean hasCheckAllCourier = shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false);
                 boolean haveToClearCache = shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
                         !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode()) &&
                         TextUtils.isEmpty(newCourierItemData.getSelectedShipper().getLogPromoCode());
 
                 boolean shouldStopInClearCache = haveToClearCache && !hasCheckAllCourier;
-                boolean shouldStopInDoValidateUseLogistic = !haveToClearCache && !hasCheckAllCourier;
+                boolean shouldStopInDoValidateUseLogistic = shouldValidateUse && !hasCheckAllCourier;
 
                 shipmentPresenter.setScheduleDeliveryMapData(shipmentCartItemModel.getCartString(), new ShipmentScheduleDeliveryMapData(
                         donePublisher,
@@ -3746,9 +3748,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipmentAdapter.updateShipmentCostModel();
                     shipmentAdapter.updateCheckoutButtonData(null);
                 }
-
-                SelectedShipperModel selectedShipperModel = newCourierItemData.getSelectedShipper();
-                boolean shouldValidateUse = selectedShipperModel.getLogPromoCode() != null && !selectedShipperModel.getLogPromoCode().isEmpty();
 
                 shipmentAdapter.setSelectedCourier(position, newCourierItemData, true, shouldValidateUse);
                 shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
