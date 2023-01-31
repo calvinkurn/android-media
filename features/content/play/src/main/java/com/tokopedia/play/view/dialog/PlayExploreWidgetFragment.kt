@@ -85,10 +85,6 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     private val widgetLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        LinearLayoutManager(binding.rvWidgets.context, RecyclerView.VERTICAL, false)
-    }
-
-    private val gridWidgetLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         StaggeredGridLayoutManager(SPAN_CHANNEL, RecyclerView.VERTICAL)
     }
 
@@ -398,8 +394,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     private fun setLayoutManager(state: ExploreWidgetState) {
-        binding.rvWidgets.layoutManager =
-            if (state is ExploreWidgetState.Loading) gridWidgetLayoutManager else widgetLayoutManager
+        widgetLayoutManager.spanCount = if (state is ExploreWidgetState.Loading) SPAN_SHIMMER else SPAN_CHANNEL
     }
 
     private fun getVisibleChips(): Map<ChipWidgetUiModel, Int> {
@@ -419,7 +414,8 @@ class PlayExploreWidgetFragment @Inject constructor(
     companion object {
         private const val TAG = "PlayExploreWidgetFragment"
 
-        private const val SPAN_CHANNEL = 2
+        private const val SPAN_SHIMMER = 2
+        private const val SPAN_CHANNEL = 1
 
         fun get(fragmentManager: FragmentManager): PlayExploreWidgetFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? PlayExploreWidgetFragment
