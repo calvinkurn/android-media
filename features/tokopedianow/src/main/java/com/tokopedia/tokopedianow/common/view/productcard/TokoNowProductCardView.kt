@@ -506,7 +506,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         binding.quantityEditor.onClickVariantListener = onClickVariantListener
     }
 
-    fun setSimilarProductListener(
+    fun setSimilarProductTrackerListener(
         similarProductTrackerListener: TokoNowSimilarProductTrackerListener?
     ){
         this.similarProductTrackerListener = similarProductTrackerListener

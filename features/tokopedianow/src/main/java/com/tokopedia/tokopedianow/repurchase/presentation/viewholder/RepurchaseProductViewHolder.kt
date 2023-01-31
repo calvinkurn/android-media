@@ -47,7 +47,7 @@ class RepurchaseProductViewHolder(
             addOnImpressionListener(item) {
                 listener?.onProductImpressed(item)
             }
-            setSimilarProductListener(similarProductTrackerListener)
+            setSimilarProductTrackerListener(similarProductTrackerListener)
         }
     }
 

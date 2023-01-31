@@ -54,7 +54,7 @@ class ProductItemViewHolder(
                     productItemDataView = element
                 )
             }
-            setSimilarProductListener(similarProductTrackerListener)
+            setSimilarProductTrackerListener(similarProductTrackerListener)
         }
     }
 
