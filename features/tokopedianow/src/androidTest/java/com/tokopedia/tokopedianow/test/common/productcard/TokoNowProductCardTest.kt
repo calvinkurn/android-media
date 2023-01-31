@@ -15,7 +15,7 @@ import com.tokopedia.tokopedianow.test.common.productcard.model.TokoNowProductCa
 import com.tokopedia.tokopedianow.test.common.productcard.presentation.TokoNowProductCardGridActivityTest
 import com.tokopedia.tokopedianow.test.common.productcard.presentation.TokoNowProductCardLinearActivityTest
 import com.tokopedia.tokopedianow.test.common.productcard.utils.TokoNowProductCardModelMatcherData.getProductCardModelMatcherData
-import com.tokopedia.tokopedianow.test.utils.ViewMatchersUtil.isTokoNowProductCardInThePosition
+import com.tokopedia.tokopedianow.test.common.productcard.utils.ViewMatchersUtil.withComponentsInProductCardMatched
 import org.hamcrest.Matcher
 import org.junit.Test
 
@@ -23,14 +23,14 @@ import org.junit.Test
 internal class TokoNowProductCardTest {
 
     private lateinit var recyclerViewViewInteraction: ViewInteraction
-    private lateinit var tokoNowProductCardMatcherModelData: List<TokoNowProductCardMatcherModel>
+    private lateinit var matcherModels: List<TokoNowProductCardMatcherModel>
 
     @Test
     fun testProductCardLinear() {
         startTestActivity(TokoNowProductCardLinearActivityTest::class.java.name)
 
         recyclerViewViewInteraction = onView(withId(R.id.rv_product_card))
-        tokoNowProductCardMatcherModelData = getProductCardModelMatcherData(isCarousel = true)
+        matcherModels = getProductCardModelMatcherData(isCarousel = true)
 
         startTest()
     }
@@ -40,7 +40,7 @@ internal class TokoNowProductCardTest {
         startTestActivity(TokoNowProductCardGridActivityTest::class.java.name)
 
         recyclerViewViewInteraction = onView(withId(R.id.rv_product_card))
-        tokoNowProductCardMatcherModelData = getProductCardModelMatcherData(isCarousel = false)
+        matcherModels = getProductCardModelMatcherData(isCarousel = false)
 
         startTest()
     }
@@ -54,15 +54,26 @@ internal class TokoNowProductCardTest {
     }
 
     private fun startTest() {
-        tokoNowProductCardMatcherModelData.forEachIndexed { index, productCardModelMatcher ->
-            recyclerViewViewInteraction.checkProductCardAtPosition(index, productCardModelMatcher.matcher)
+        matcherModels.forEachIndexed { position, matcherModel ->
+            recyclerViewViewInteraction.checkProductCardAtPosition(
+                position = position,
+                matchers = matcherModel.matchers
+            )
         }
     }
 
     private fun ViewInteraction.checkProductCardAtPosition(
         position: Int,
-        elementMatchers: Map<Int, Matcher<View>>
+        matchers: Map<Int, Matcher<View?>>
     ): ViewInteraction {
-        return perform(scrollToPosition<TokoNowProductCardViewHolder>(position)).check(matches(isTokoNowProductCardInThePosition(position, elementMatchers)))
+        return perform(scrollToPosition<TokoNowProductCardViewHolder>(position))
+            .check(
+                matches(
+                    withComponentsInProductCardMatched(
+                        position = position,
+                        matchers = matchers
+                    )
+                )
+            )
     }
 }

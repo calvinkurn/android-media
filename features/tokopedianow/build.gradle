@@ -22,10 +22,6 @@ android {
             testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         }
     }
-
-    testOptions {
-        animationsDisabled = true
-    }
 }
 
 buildscript {

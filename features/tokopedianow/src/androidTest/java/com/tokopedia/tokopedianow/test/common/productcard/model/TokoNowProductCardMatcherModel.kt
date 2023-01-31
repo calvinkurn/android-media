@@ -6,5 +6,5 @@ import org.hamcrest.Matcher
 
 internal class TokoNowProductCardMatcherModel(
     val model: TokoNowProductCardViewUiModel,
-    val matcher: Map<Int, Matcher<View>>
+    val matchers: Map<Int, Matcher<View?>>
 )

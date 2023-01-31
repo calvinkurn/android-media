@@ -16,12 +16,12 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel.LabelGroup
 import com.tokopedia.tokopedianow.test.R
 import com.tokopedia.tokopedianow.test.common.productcard.model.TokoNowProductCardMatcherModel
-import com.tokopedia.tokopedianow.test.utils.ViewMatchersUtil.isDisplayedWithText
-import com.tokopedia.tokopedianow.test.utils.ViewMatchersUtil.isNotDisplayed
-import com.tokopedia.tokopedianow.test.utils.ViewMatchersUtil.isTokoNowProductCardNameTypographyDisplayed
-import com.tokopedia.tokopedianow.test.utils.ViewMatchersUtil.isTokoNowProductCardProgressBarDisplayed
-import com.tokopedia.tokopedianow.test.utils.ViewMatchersUtil.isTokoNowQuantityEditorViewDisplayed
-import com.tokopedia.tokopedianow.test.utils.ViewMatchersUtil.isTokoNowWishlistButtonDisplayedMatcher
+import com.tokopedia.tokopedianow.test.common.productcard.utils.ViewMatchersUtil.isDisplayedWithText
+import com.tokopedia.tokopedianow.test.common.productcard.utils.ViewMatchersUtil.isNotDisplayed
+import com.tokopedia.tokopedianow.test.common.productcard.utils.ViewMatchersUtil.isProductNameTypographyDisplayed
+import com.tokopedia.tokopedianow.test.common.productcard.utils.ViewMatchersUtil.isProgressBarDisplayed
+import com.tokopedia.tokopedianow.test.common.productcard.utils.ViewMatchersUtil.isQuantityEditorDisplayed
+import com.tokopedia.tokopedianow.test.common.productcard.utils.ViewMatchersUtil.isWishlistButtonDisplayed
 import org.hamcrest.Matcher
 
 internal object TokoNowProductCardModelMatcherData {
@@ -54,7 +54,7 @@ internal object TokoNowProductCardModelMatcherData {
         name: String = "Strawberry Impor",
         needToShowQuantityEditor: Boolean = false,
         rating: String = "4.5",
-        additionalMatchers: Map<Int, Matcher<View>> = emptyMap(),
+        additionalMatchers: Map<Int, Matcher<View?>> = emptyMap(),
         progressBarLabel: String = "",
         progressBarPercentage: Int = 0,
         hasBeenWishlist:Boolean = false,
@@ -85,11 +85,11 @@ internal object TokoNowProductCardModelMatcherData {
             needToChangeMaxLinesName = !isCarousel
         )
 
-        val productCardMatcher = mapOf(
+        val matchers = mapOf(
             Pair(
                 first = R.id.quantity_editor,
                 second = if (needToShowQuantityEditor) {
-                    isTokoNowQuantityEditorViewDisplayed(
+                    isQuantityEditorDisplayed(
                         minOrder = productCardModel.minOrder,
                         maxOrder = productCardModel.maxOrder,
                         orderQuantity = productCardModel.orderQuantity
@@ -124,7 +124,7 @@ internal object TokoNowProductCardModelMatcherData {
             ),
             Pair(
                 first = R.id.product_name_typography,
-                second = isTokoNowProductCardNameTypographyDisplayed(
+                second = isProductNameTypographyDisplayed(
                     productName = productCardModel.name,
                     needToChangeMaxLinesName = productCardModel.needToChangeMaxLinesName,
                     promoLabelAvailable = productCardModel.discount.isNotBlank() || productCardModel.discountInt.isMoreThanZero() || labelGroupList.getLabelGroupPriceTitle().isNotBlank()
@@ -140,7 +140,7 @@ internal object TokoNowProductCardModelMatcherData {
             ),
             Pair(
                 first = R.id.progress_bar,
-                second = if (progressBarLabel.isNotBlank()) isTokoNowProductCardProgressBarDisplayed(progressBarPercentage) else isNotDisplayed()
+                second = if (progressBarLabel.isNotBlank()) isProgressBarDisplayed(progressBarPercentage) else isNotDisplayed()
             ),
             Pair(
                 first = R.id.progress_typography,
@@ -148,7 +148,7 @@ internal object TokoNowProductCardModelMatcherData {
             ),
             Pair(
                 first = R.id.wishlist_button,
-                second = if (isWishlistShown) isTokoNowWishlistButtonDisplayedMatcher(hasBeenWishlist) else isNotDisplayed()
+                second = if (isWishlistShown) isWishlistButtonDisplayed(hasBeenWishlist) else isNotDisplayed()
             ),
             Pair(
                 first = R.id.similar_product_typography,
@@ -156,7 +156,10 @@ internal object TokoNowProductCardModelMatcherData {
             )
         )
 
-        return TokoNowProductCardMatcherModel(productCardModel, productCardMatcher + additionalMatchers)
+        return TokoNowProductCardMatcherModel(
+            model = productCardModel,
+            matchers = matchers + additionalMatchers
+        )
     }
 
     private fun getProductWithDiscountIntType(isCarousel: Boolean): TokoNowProductCardMatcherModel = getProduct(
