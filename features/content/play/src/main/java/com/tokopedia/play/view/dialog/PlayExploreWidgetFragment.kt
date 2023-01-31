@@ -259,17 +259,17 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     private fun renderWidgets(state: ExploreWidgetState, widget: List<WidgetUiModel>) {
+        setLayoutManager(state)
+
         when (state) {
             ExploreWidgetState.Success -> {
                 showEmpty(false)
-                setLayoutManager(widget)
                 widgetAdapter.setItemsAndAnimateChanges(widget)
             }
             ExploreWidgetState.Empty -> {
                 showEmpty(true)
             }
             ExploreWidgetState.Loading -> {
-                setLayoutManager(getWidgetShimmering)
                 widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
             }
             is ExploreWidgetState.Fail -> {
@@ -397,9 +397,9 @@ class PlayExploreWidgetFragment @Inject constructor(
         dismiss()
     }
 
-    private fun setLayoutManager(widget: List<WidgetUiModel>) {
+    private fun setLayoutManager(state: ExploreWidgetState) {
         binding.rvWidgets.layoutManager =
-            if (widget.filterIsInstance<ExploreWidgetPlaceholder>().isNotEmpty()) gridWidgetLayoutManager else widgetLayoutManager
+            if (state is ExploreWidgetState.Loading) gridWidgetLayoutManager else widgetLayoutManager
     }
 
     private fun getVisibleChips(): Map<ChipWidgetUiModel, Int> {
