@@ -1323,7 +1323,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     if (logisticPromoDonePublisher != null) {
                                         logisticPromoDonePublisher.onCompleted();
                                     }
-                                    ShipmentScheduleDeliveryMapData shipmentScheduleDeliveryMapData =getScheduleDeliveryMapData(cartString);
+                                    ShipmentScheduleDeliveryMapData shipmentScheduleDeliveryMapData = getScheduleDeliveryMapData(cartString);
                                     if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.getShouldStopInValidateUsePromo()) {
                                         shipmentScheduleDeliveryMapData.getDonePublisher().onCompleted();
                                     }
@@ -1351,7 +1351,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         if (logisticPromoDonePublisher != null) {
                                             logisticPromoDonePublisher.onCompleted();
                                         }
-                                        ShipmentScheduleDeliveryMapData shipmentScheduleDeliveryMapData =getScheduleDeliveryMapData(cartString);
+                                        ShipmentScheduleDeliveryMapData shipmentScheduleDeliveryMapData = getScheduleDeliveryMapData(cartString);
                                         if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.getShouldStopInValidateUsePromo()) {
                                             shipmentScheduleDeliveryMapData.getDonePublisher().onCompleted();
                                         }
