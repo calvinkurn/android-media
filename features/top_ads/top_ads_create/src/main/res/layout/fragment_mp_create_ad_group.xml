@@ -37,8 +37,7 @@
             app:layout_constraintTop_toBottomOf="@id/group_name"
             android:layout_marginTop="24dp"
             app:unify_text_field_append_drawable_icon_1="@drawable/ic_help"
-            app:unify_text_field_prepend_text="Rp"
-            app:unify_text_field_input_type="number"/>
+            app:unify_text_field_prepend_text="Rp"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/description"
@@ -47,7 +46,8 @@
             app:layout_constraintTop_toBottomOf="@id/daily_budget"
             android:layout_marginTop="24dp"
             android:text="@string/to_maximize_your_sales_advertising_costs_will_be_set_automatically_first_you_can_set_it_again_later"
-            app:typographyType="paragraph_2"/>
+            app:typographyType="paragraph_2"
+            android:textColor="@color/Unify_NN600"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_submit"

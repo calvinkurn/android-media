@@ -28,8 +28,8 @@ data class TopAdsProductError(
 )
 
 data class OptionV3(
-    @SerializedName("basic")
-    val basic: Boolean
+    @SerializedName("edit")
+    val edit: Boolean
 )
 
 data class Category(

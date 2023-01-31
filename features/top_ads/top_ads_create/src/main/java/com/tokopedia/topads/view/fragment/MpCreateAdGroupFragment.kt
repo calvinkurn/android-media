@@ -25,6 +25,7 @@ import com.tokopedia.topads.trackers.MpTracker
 import com.tokopedia.topads.view.model.MpAdsCreateGroupViewModel
 import com.tokopedia.topads.view.sheet.MpCreateGroupBudgetHelpSheet
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import javax.inject.Inject
 
 private const val GROUP_DETAIL_PAGE = "android.group_detail"
@@ -111,8 +112,6 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
         binding.dailyBudget.addOnFocusChangeListener = { _, hasFocus ->
             if (hasFocus) {
                 MpTracker.clickNewAdGroupEditBudget()
-            } else {
-                MpTracker.clickNewAdGroupEditBudget()
             }
         }
 
@@ -152,12 +151,12 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(p0: Editable?) {
-                if (p0 != null && !p0.toString().isEmpty() && p0.toString().toDouble() < minDailyBudget) {
+                if (p0 != null && !p0.toString().isEmpty() && CurrencyFormatHelper.convertRupiahToDouble(p0.toString()) < minDailyBudget) {
                     binding.dailyBudget.isInputError = true
                     binding.dailyBudget.setMessage("${getString(R.string.min_budget_rp)} $minDailyBudget")
                     validBudget = false
                     checkAllFieldsValidations()
-                } else if (p0 != null && !p0.toString().isEmpty() && p0.toString().toDouble() > maxDailyBudget) {
+                } else if (p0 != null && !p0.toString().isEmpty() && CurrencyFormatHelper.convertRupiahToDouble(p0.toString()) > maxDailyBudget) {
                     binding.dailyBudget.isInputError = true
                     binding.dailyBudget.setMessage("${getString(R.string.max_budget_rp)} $maxDailyBudget")
                     validBudget = false
@@ -183,7 +182,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
                 createGroupViewModel.topAdsCreate(
                     listOf(productId ?: ""),
                     binding.groupName.editText.text.toString(),
-                    binding.dailyBudget.editText.text.toString().toDouble(),
+                    CurrencyFormatHelper.convertRupiahToDouble(binding.dailyBudget.editText.text.toString()),
                     this::onSuccessGroupCreate,
                     this::onErrorGroupCreate
                 )
@@ -195,7 +194,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
         data.firstOrNull()?.let {
             minDailyBudget = it.minDailyBudget
             maxDailyBudget = if (it.maxDailyBudget == 0) 10000000 else it.maxDailyBudget
-            binding.dailyBudget.editText.text = Editable.Factory().newEditable(it.minDailyBudget.toString())
+            binding.dailyBudget.editText.text = Editable.Factory().newEditable(CurrencyFormatHelper.convertToRupiah(it.minDailyBudget.toString()))
         }
     }
 

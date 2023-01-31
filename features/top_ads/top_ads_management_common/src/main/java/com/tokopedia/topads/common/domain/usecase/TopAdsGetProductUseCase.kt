@@ -19,7 +19,7 @@ class TopAdsGetProductUseCase @Inject constructor() : GraphqlUseCase<TopAdsProdu
         productId: String?,
         success: (TopAdsProductResponse) -> Unit
     ) {
-        setRequestParams(mapOf(PRODUCT_ID_KEY to productId, OPTIONS_KEY to OptionV3(true)))
+        setRequestParams(mapOf(PRODUCT_ID_KEY to productId, OPTIONS_KEY to OptionV3(false)))
         setTypeClass(TopAdsProductResponse::class.java)
         setGraphqlQuery(TopAdsProductGql.GQL_QUERY)
         execute({
