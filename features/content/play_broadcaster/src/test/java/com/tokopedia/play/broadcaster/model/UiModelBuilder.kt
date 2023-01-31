@@ -286,6 +286,7 @@ class UiModelBuilder {
     fun buildShortsConfig(
         shortsId: String = "123",
         shortsAllowed: Boolean = true,
+        isBanned: Boolean = false,
         tncList: List<TermsAndConditionUiModel> = buildTncList(),
         maxTitleCharacter: Int = 24,
         maxTaggedProduct: Int = 30,
@@ -293,6 +294,7 @@ class UiModelBuilder {
     ) = PlayShortsConfigUiModel(
         shortsId = shortsId,
         shortsAllowed = shortsAllowed,
+        isBanned = isBanned,
         tncList = tncList,
         maxTitleCharacter = maxTitleCharacter,
         maxTaggedProduct = maxTaggedProduct,

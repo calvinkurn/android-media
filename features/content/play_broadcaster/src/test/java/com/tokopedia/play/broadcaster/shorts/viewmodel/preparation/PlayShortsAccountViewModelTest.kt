@@ -35,7 +35,12 @@ class PlayShortsAccountViewModelTest {
     private val mockAccountList = uiModelBuilder.buildAccountListModel()
     private val mockAccountShop = mockAccountList.first()
     private val mockAccountUser = mockAccountList.last()
+    private val mockAccountListBeforeAcceptTnc = uiModelBuilder.buildAccountListModel(tncBuyer = false, usernameBuyer = false)
+    private val mockAccountListAfterAcceptTnc = uiModelBuilder.buildAccountListModel(tncBuyer = true, usernameBuyer = true)
+
     private val mockConfig = uiModelBuilder.buildShortsConfig()
+    private val mockConfigBanned = uiModelBuilder.buildShortsConfig(isBanned = true)
+
     private val mockException = Exception("Network Error")
 
     @Test
@@ -113,6 +118,56 @@ class PlayShortsAccountViewModelTest {
             }
 
             state.selectedAccount.assertEqualTo(mockAccountShop)
+        }
+    }
+
+    @Test
+    fun playShorts_preparation_account_switchAccount_refreshAccountList() {
+
+        coEvery { mockRepo.getAccountList() } returns mockAccountListBeforeAcceptTnc
+        coEvery { mockRepo.getShortsConfiguration(any(), any()) } returns mockConfig
+        coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountListBeforeAcceptTnc.first()
+
+        PlayShortsViewModelRobot(
+            repo = mockRepo,
+            accountManager = mockAccountManager
+        ).use {
+            val (state, events) = it.setUp {
+                submitAction(PlayShortsAction.PreparePage(preferredAccountType = ""))
+            }.recordStateAndEvent {
+                coEvery { mockRepo.getAccountList() } returns mockAccountListAfterAcceptTnc
+                coEvery { mockAccountManager.switchAccount(mockAccountListAfterAcceptTnc, mockAccountListAfterAcceptTnc.first().type) } returns mockAccountListAfterAcceptTnc.last()
+
+                submitAction(PlayShortsAction.SwitchAccount(isRefreshAccountList = true))
+            }
+
+            state.accountList.assertEqualTo(mockAccountListAfterAcceptTnc)
+            state.selectedAccount.assertEqualTo(mockAccountListAfterAcceptTnc.last())
+        }
+    }
+
+    @Test
+    fun playShorts_preparation_account_switchAccount_switchToBannedAccount() {
+
+        coEvery { mockRepo.getAccountList() } returns mockAccountList
+        coEvery { mockRepo.getShortsConfiguration(any(), any()) } returns mockConfig
+        coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountShop
+
+        PlayShortsViewModelRobot(
+            repo = mockRepo,
+            accountManager = mockAccountManager
+        ).use {
+            val (state, events) = it.setUp {
+                submitAction(PlayShortsAction.PreparePage(preferredAccountType = ""))
+            }.recordStateAndEvent {
+                coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountUser
+                coEvery { mockRepo.getShortsConfiguration(any(), any()) } returns mockConfigBanned
+
+                submitAction(PlayShortsAction.SwitchAccount(isRefreshAccountList = false))
+            }
+
+            state.selectedAccount.assertEqualTo(mockAccountShop)
+            events.last().assertType<PlayShortsUiEvent.AccountBanned>()
         }
     }
 }
