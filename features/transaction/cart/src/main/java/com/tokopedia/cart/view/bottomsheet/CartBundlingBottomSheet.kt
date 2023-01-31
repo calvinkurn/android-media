@@ -3,12 +3,8 @@ package com.tokopedia.cart.view.bottomsheet
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Spannable
 import android.text.method.LinkMovementMethod
-import android.text.style.URLSpan
 import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.widget.TextView
 import androidx.core.view.marginBottom
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
@@ -90,37 +86,13 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
                 )
             }
             context?.let {
-                binding?.bottomTickerLabel?.text =
-                    HtmlLinkHelper(it, data.bottomTicker).spannedString
-            }
-            binding?.bottomTickerLabel?.movementMethod = object : LinkMovementMethod() {
-                override fun onTouchEvent(
-                    widget: TextView,
-                    buffer: Spannable,
-                    event: MotionEvent
-                ): Boolean {
-                    val action = event.action
-
-                    if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
-                        var x = event.x
-                        var y = event.y.toInt()
-
-                        x -= widget.totalPaddingLeft
-                        y -= widget.totalPaddingTop
-
-                        x += widget.scrollX
-                        y += widget.scrollY
-
-                        val layout = widget.layout
-                        val line = layout.getLineForVertical(y)
-                        val off = layout.getOffsetForHorizontal(line, x)
-
-                        val link = buffer.getSpans(off, off, URLSpan::class.java)
-                        if (link.isNotEmpty() && action == MotionEvent.ACTION_UP) {
-                            return RouteManager.route(context, link.first().url)
-                        }
+                val linkHelper = HtmlLinkHelper(it, data.bottomTicker)
+                binding?.bottomTickerLabel?.text = linkHelper.spannedString
+                binding?.bottomTickerLabel?.movementMethod = LinkMovementMethod.getInstance()
+                linkHelper.urlList.forEach { urlLinkManager ->
+                    urlLinkManager.setOnClickListener {
+                        RouteManager.route(it, urlLinkManager.linkUrl)
                     }
-                    return super.onTouchEvent(widget, buffer, event)
                 }
             }
             binding?.cardBottomTicker?.visible()
