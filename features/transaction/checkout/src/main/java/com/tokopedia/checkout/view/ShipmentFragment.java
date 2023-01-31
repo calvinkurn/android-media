@@ -3806,7 +3806,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             selectedShipperModel.getLogPromoCode(),
                             false
                     );
-                } else if (!shouldStopInDoValidateUseLogistic && !shouldStopInClearCache && !hasCheckAllCourier) {
+                } else if (!shouldStopInClearCache && !shouldStopInDoValidateUseLogistic && !hasCheckAllCourier) {
                     donePublisher.onCompleted();
                 }
             }
