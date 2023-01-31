@@ -112,6 +112,7 @@ data class CartShopHolderData(
 data class CartShopGroupTickerData(
     var enableBoAffordability: Boolean = false,
     var enableCartAggregator: Boolean = false,
+    var enableBundleCrossSell: Boolean = false,
     var state: CartShopGroupTickerState = CartShopGroupTickerState.FIRST_LOAD,
     var tickerText: String = "",
     var errorText: String = "",

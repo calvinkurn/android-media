@@ -1963,8 +1963,10 @@ class CartListPresenter @Inject constructor(
         cartShopGroupTickerJob = launch(dispatchers.io) {
             try {
                 delay(CART_SHOP_GROUP_TICKER_DELAY)
-                val enableBundleCrossSell = checkEnableBundleCrossSell(cartShopHolderData)
-                if (!cartShopHolderData.cartShopGroupTicker.enableBoAffordability && !enableBundleCrossSell) {
+                cartShopHolderData.cartShopGroupTicker.enableBundleCrossSell = checkEnableBundleCrossSell(cartShopHolderData)
+                if (!cartShopHolderData.cartShopGroupTicker.enableBoAffordability &&
+                    !cartShopHolderData.cartShopGroupTicker.enableBundleCrossSell
+                ) {
                     cartShopHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.EMPTY
                     withContext(dispatchers.main) {
                         view?.updateCartShopGroupTicker(cartShopHolderData)
@@ -2018,7 +2020,7 @@ class CartListPresenter @Inject constructor(
                 val cartAggregatorParam = CartShopGroupTickerAggregatorParam(
                     ratesParam = RatesParam.Builder(shopShipments, shipping).build(),
                     enableBoAffordability = cartShopHolderData.cartShopGroupTicker.enableBoAffordability,
-                    enableBundleCrossSell = enableBundleCrossSell,
+                    enableBundleCrossSell = cartShopHolderData.cartShopGroupTicker.enableBundleCrossSell,
                     isTokoNow = cartShopHolderData.isTokoNow
                 )
                 val response = cartShopGroupTickerAggregatorUseCase(cartAggregatorParam)
