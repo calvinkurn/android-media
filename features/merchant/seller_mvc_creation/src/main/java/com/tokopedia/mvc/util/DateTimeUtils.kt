@@ -1,9 +1,11 @@
 package com.tokopedia.mvc.util
 
+import android.content.Context
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.kotlin.extensions.convertToDate
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.util.DateTimeUtils.FULL_DAY_FORMAT
 import timber.log.Timber
@@ -76,9 +78,44 @@ fun Date.formatTo(
 }
 
 fun Date.formatTo(locale: Locale = LocaleUtils.getIDLocale()): String {
-    return this.toFormattedString(DATE_WITH_SECOND_PRECISION_ISO_8601).convertDate(FULL_DAY_FORMAT, locale)
+    return this.toFormattedString(DATE_WITH_SECOND_PRECISION_ISO_8601).convertDate(
+        FULL_DAY_FORMAT,
+        locale
+    )
 }
 
 fun String.convertDate(format: String, locale: Locale = LocaleUtils.getIDLocale()): String {
     return this.convertUnsafeDateTime().formatTo(format, locale).toBlankOrString()
+}
+
+fun getGregorianDate(date: String): GregorianCalendar {
+    return GregorianCalendar().apply {
+        time = date.convertUnsafeDateTime()
+    }
+}
+
+fun Context.getToday() = GregorianCalendar(LocaleUtils.getCurrentLocale(this))
+
+fun decideCalendarPeriodStartDate(context: Context, startCalendar: GregorianCalendar?): GregorianCalendar? {
+    val get30DaysBefore = DateTimeUtils.getMinDate(startCalendar)
+    val today = context?.getToday()
+    return if (get30DaysBefore?.compareTo(today)?.isLessThanZero() == true) {
+        today
+    } else {
+        get30DaysBefore
+    }
+}
+
+fun decideCalendarPeriodEndDate(
+    startCalendar: GregorianCalendar?,
+    endCalendar: GregorianCalendar?
+): GregorianCalendar? {
+    startCalendar?.let { start ->
+        return if (endCalendar?.compareTo(start)?.isLessThanZero() == true) {
+            startCalendar
+        } else {
+            endCalendar
+        }
+    }
+    return null
 }

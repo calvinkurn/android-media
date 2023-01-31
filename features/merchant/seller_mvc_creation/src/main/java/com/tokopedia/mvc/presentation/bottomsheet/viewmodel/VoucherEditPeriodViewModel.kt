@@ -6,11 +6,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.mvc.data.mapper.UpdateVoucherMapper
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.usecase.UpdateCouponFacadeUseCase
 import com.tokopedia.mvc.util.DateTimeUtils.DASH_DATE_FORMAT
 import com.tokopedia.mvc.util.DateTimeUtils.HOUR_FORMAT
+import com.tokopedia.mvc.util.DateTimeUtils.getMaxDate
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
@@ -31,6 +33,9 @@ class VoucherEditPeriodViewModel @Inject constructor(
     private val _hourEndLiveData = MutableLiveData<String>()
     val hourEndLiveData: LiveData<String>
         get() = _hourEndLiveData
+    private val _toShowDateToaster = MutableLiveData<Boolean>()
+    val toShowDateToaster: LiveData<Boolean>
+        get() = _toShowDateToaster
 
     private val _startDateCalendarLiveData = MutableLiveData<Calendar>()
     val startDateCalendarLiveData: LiveData<Calendar>
@@ -45,15 +50,29 @@ class VoucherEditPeriodViewModel @Inject constructor(
         get() = _updateVoucherPeriodStateLiveData
 
     fun setStartDateTime(startDate: Calendar?) {
+        if (startDate == null) {
+            return
+        }
         _startDateCalendarLiveData.value = startDate
-        _dateStartLiveData.value = startDate?.time?.toFormattedString(DASH_DATE_FORMAT)
-        _hourStartLiveData.value = startDate?.time?.toFormattedString(HOUR_FORMAT)
+        _dateStartLiveData.value = startDate.time.toFormattedString(DASH_DATE_FORMAT)
+        _hourStartLiveData.value = startDate.time.toFormattedString(HOUR_FORMAT)
+        if (getMaxDate(_startDateCalendarLiveData.value as? GregorianCalendar?)?.compareTo(
+                _endDateCalendarLiveData.value
+            ).isLessThanZero()
+        ) {
+            val modifiedEndDate = getMaxDate(_startDateCalendarLiveData.value as? GregorianCalendar)
+            setEndDateTime(modifiedEndDate)
+            _toShowDateToaster.value = true
+        }
     }
 
     fun setEndDateTime(endDate: Calendar?) {
+        if (endDate == null) {
+            return
+        }
         _endDateCalendarLiveData.value = endDate
-        _dateEndLiveData.value = endDate?.time?.toFormattedString(DASH_DATE_FORMAT)
-        _hourEndLiveData.value = endDate?.time?.toFormattedString(HOUR_FORMAT)
+        _dateEndLiveData.value = endDate.time.toFormattedString(DASH_DATE_FORMAT)
+        _hourEndLiveData.value = endDate.time.toFormattedString(HOUR_FORMAT)
     }
 
     fun validateAndUpdateDateTime(voucher: Voucher) {

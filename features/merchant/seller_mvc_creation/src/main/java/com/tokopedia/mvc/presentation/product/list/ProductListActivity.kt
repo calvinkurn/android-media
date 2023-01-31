@@ -3,7 +3,8 @@ package com.tokopedia.mvc.presentation.product.list
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mvc.R
@@ -12,7 +13,7 @@ import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.util.constant.BundleConstant
 
-class ProductListActivity : AppCompatActivity() {
+class ProductListActivity : BaseSimpleActivity() {
 
     companion object {
         fun start(
@@ -87,39 +88,28 @@ class ProductListActivity : AppCompatActivity() {
         }
     }
 
-    private val pageMode by lazy { intent?.extras?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode }
+    private val pageMode by lazy { intent?.extras?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode ?: PageMode.CREATE }
     private val selectedProducts by lazy {
         intent?.extras?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCT_IDS)
     }
-    private val voucherConfiguration by lazy { intent?.extras?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration }
-    private val showCtaChangeProductOnToolbar by lazy { intent?.extras?.getBoolean(BundleConstant.BUNDLE_KEY_SHOW_CTA_CHANGE_PRODUCT_ON_TOOLBAR) }
-    private val isEntryPointFromVoucherSummaryPage by lazy { intent?.extras?.getBoolean(BundleConstant.BUNDLE_KEY_IS_ENTRY_POINT_FROM_VOUCHER_SUMMARY_PAGE) }
+    private val voucherConfiguration by lazy { intent?.extras?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration ?: VoucherConfiguration() }
+    private val showCtaChangeProductOnToolbar by lazy { intent?.extras?.getBoolean(BundleConstant.BUNDLE_KEY_SHOW_CTA_CHANGE_PRODUCT_ON_TOOLBAR).orFalse() }
+    private val isEntryPointFromVoucherSummaryPage by lazy { intent?.extras?.getBoolean(BundleConstant.BUNDLE_KEY_IS_ENTRY_POINT_FROM_VOUCHER_SUMMARY_PAGE).orFalse() }
     private val selectedWarehouseId by lazy { intent?.extras?.getLong(BundleConstant.BUNDLE_KEY_SELECTED_WAREHOUSE_ID).orZero() }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.smvc_activity_product_list)
-
-        val pageMode = pageMode ?: return
-        val voucherConfiguration = voucherConfiguration ?: return
+    override fun getLayoutRes() = R.layout.smvc_activity_product_list
+    override fun getParentViewResourceID() = R.id.container
+    override fun getNewFragment(): Fragment {
         val products = (selectedProducts as? List<SelectedProduct>).orEmpty()
-        val showCtaChangeProductOnToolbar = showCtaChangeProductOnToolbar.orFalse()
-        val isEntryPointFromVoucherSummaryPage = isEntryPointFromVoucherSummaryPage.orFalse()
-        val selectedWarehouseId = this.selectedWarehouseId.orZero()
 
-        supportFragmentManager.beginTransaction()
-            .replace(
-                R.id.container,
-                ProductListFragment.newInstance(
-                    pageMode,
-                    voucherConfiguration,
-                    products,
-                    showCtaChangeProductOnToolbar,
-                    isEntryPointFromVoucherSummaryPage,
-                    selectedWarehouseId
-                )
-            )
-            .commit()
+        return ProductListFragment.newInstance(
+            pageMode ,
+            voucherConfiguration,
+            products,
+            showCtaChangeProductOnToolbar,
+            isEntryPointFromVoucherSummaryPage,
+            selectedWarehouseId
+        )
     }
 
 }
