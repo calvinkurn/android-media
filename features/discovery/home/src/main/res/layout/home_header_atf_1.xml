@@ -54,7 +54,7 @@
         android:id="@+id/view_pull_refresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:color_type="white"
+        app:color_type="green"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view_empty" />

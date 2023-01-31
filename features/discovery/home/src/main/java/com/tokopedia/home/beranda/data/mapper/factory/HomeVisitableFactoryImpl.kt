@@ -26,6 +26,8 @@ import com.tokopedia.home_component.model.TrackingAttributionModel
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ERROR
@@ -87,11 +89,21 @@ class HomeVisitableFactoryImpl(
     override fun addHomeHeaderOvo(): HomeVisitableFactory {
         val needToShowUserWallet = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
 
-        val homeHeader = HomeHeaderDataModel(needToShowUserWallet = needToShowUserWallet)
-        val headerViewModel = HeaderDataModel()
-        headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn?:false
-        homeHeader.headerDataModel = headerViewModel
-        visitableList.add(homeHeader)
+        val atfStyle = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.HOME_COMPONENT_ATF, "")
+        if (atfStyle == RollenceKey.HOME_COMPONENT_ATF_1) {
+            val homeHeaderAtf1 = HomeHeaderAtf1DataModel(needToShowUserWallet = needToShowUserWallet)
+            val headerViewModel = HeaderDataModel()
+            headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn ?: false
+            homeHeaderAtf1.headerDataModel = headerViewModel
+            visitableList.add(homeHeaderAtf1)
+        }  else {
+            val homeHeader = HomeHeaderDataModel(needToShowUserWallet = needToShowUserWallet)
+            val headerViewModel = HeaderDataModel()
+            headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn ?: false
+            homeHeader.headerDataModel = headerViewModel
+            visitableList.add(homeHeader)
+        }
         return this
     }
 
