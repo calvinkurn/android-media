@@ -47,8 +47,10 @@ class MixLeftPaddingComponentViewHolder(
     val mixLeftComponentListener: MixLeftComponentListener?,
     val homeComponentListener: HomeComponentListener?,
     private val cardInteraction: Boolean = false
-) : AbstractViewHolder<MixLeftPaddingDataModel>(itemView), CoroutineScope,
-    CommonProductCardCarouselListener, BannerMixLeftPaddingListener {
+) : AbstractViewHolder<MixLeftPaddingDataModel>(itemView),
+    CoroutineScope,
+    CommonProductCardCarouselListener,
+    BannerMixLeftPaddingListener {
 
     private var adapter: MixTopComponentAdapter? = null
     private val masterJob = SupervisorJob()
@@ -71,11 +73,12 @@ class MixLeftPaddingComponentViewHolder(
         setChannelDivider(element)
 
         itemView.addOnImpressionListener(element.channelModel) {
-            if (!isCacheData)
+            if (!isCacheData) {
                 mixLeftComponentListener?.onMixLeftImpressed(
                     element.channelModel,
                     element.channelModel.verticalPosition
                 )
+            }
         }
     }
 
@@ -88,13 +91,14 @@ class MixLeftPaddingComponentViewHolder(
         channelGrid: ChannelGrid,
         position: Int
     ) {
-        if (!isCacheData)
+        if (!isCacheData) {
             mixLeftComponentListener?.onProductCardImpressed(
                 channelModel,
                 channelGrid,
                 channelModel.verticalPosition,
                 position
             )
+        }
     }
 
     override fun onProductCardClicked(
@@ -132,14 +136,17 @@ class MixLeftPaddingComponentViewHolder(
         binding?.rvProductMixLeftPadding?.resetLayout()
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         binding?.rvProductMixLeftPadding?.layoutManager = layoutManager
-        if (binding?.rvProductMixLeftPadding?.itemDecorationCount == 0) binding?.rvProductMixLeftPadding?.addItemDecoration(
-            SimpleHorizontalLinearLayoutDecoration()
-        )
+        if (binding?.rvProductMixLeftPadding?.itemDecorationCount == 0) {
+            binding?.rvProductMixLeftPadding?.addItemDecoration(
+                SimpleHorizontalLinearLayoutDecoration()
+            )
+        }
         val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel, cardInteraction)
         val listData = mutableListOf<Visitable<*>>()
         listData.add(
             CarouselBannerCardDataModel(
-                channel, this
+                channel,
+                this
             )
         )
         val productDataList = convertDataToProductData(channel)
@@ -148,7 +155,8 @@ class MixLeftPaddingComponentViewHolder(
         launch {
             try {
                 binding?.rvProductMixLeftPadding?.setHeightBasedOnProductCardMaxHeight(
-                    productDataList.map { it.productModel })
+                    productDataList.map { it.productModel }
+                )
             } catch (throwable: Throwable) {
                 throwable.printStackTrace()
             }
@@ -161,9 +169,9 @@ class MixLeftPaddingComponentViewHolder(
                         channel.channelHeader.applink,
                         channel.channelViewAllCard,
                         this,
-                        channel.channelBanner.imageUrl,
-                        channel.channelBanner.gradientColor,
-                        channel.layout
+                        "",
+                        arrayListOf(),
+                        ""
                     )
                 )
             } else {
@@ -229,22 +237,25 @@ class MixLeftPaddingComponentViewHolder(
     }
 
     private fun setHeaderComponent(element: MixLeftPaddingDataModel) {
-        binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
-            override fun onSeeAllClick(link: String) {
-                mixLeftComponentListener?.onSeeAllBannerClicked(
-                    element.channelModel,
-                    element.channelModel.channelHeader.applink
-                )
-            }
+        binding?.homeComponentHeaderView?.setChannel(
+            element.channelModel,
+            object : HeaderListener {
+                override fun onSeeAllClick(link: String) {
+                    mixLeftComponentListener?.onSeeAllBannerClicked(
+                        element.channelModel,
+                        element.channelModel.channelHeader.applink
+                    )
+                }
 
-            override fun onChannelExpired(channelModel: ChannelModel) {
-                homeComponentListener?.onChannelExpired(
-                    channelModel,
-                    element.channelModel.verticalPosition,
-                    element
-                )
+                override fun onChannelExpired(channelModel: ChannelModel) {
+                    homeComponentListener?.onChannelExpired(
+                        channelModel,
+                        element.channelModel.verticalPosition,
+                        element
+                    )
+                }
             }
-        })
+        )
     }
 
     override fun onBannerClicked(channel: ChannelModel, applink: String, parentPos: Int) {
