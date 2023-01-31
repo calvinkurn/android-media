@@ -19,6 +19,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 
 import java.util.List;
 
+import rx.subjects.PublishSubject;
+
 /**
  * @author Irfan Khoirul on 23/04/18.
  */
@@ -156,5 +158,5 @@ public interface ShipmentAdapterActionListener {
 
     void onInsuranceInfoTooltipClickedTrackingAnalytics();
 
-    void onChangeScheduleDelivery(ScheduleDeliveryUiModel scheduleDeliveryUiModel, int position);
+    void onChangeScheduleDelivery(ScheduleDeliveryUiModel scheduleDeliveryUiModel, int position, PublishSubject<Boolean> donePublisher);
 }

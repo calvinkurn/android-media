@@ -81,9 +81,11 @@ import kotlin.Unit;
 import rx.Emitter;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -96,7 +98,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     public static final int ITEM_VIEW_SHIPMENT_ITEM = R.layout.item_shipment_checkout;
 
     private static final int FIRST_ELEMENT = 0;
-    private static final int DEBOUNCE_TIME = 1500;
     private static final int DROPSHIPPER_MIN_NAME_LENGTH = 3;
     private static final int DROPSHIPPER_MAX_NAME_LENGTH = 100;
     private static final int DROPSHIPPER_MIN_PHONE_LENGTH = 6;
@@ -222,6 +223,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ScheduleDeliveryDebouncedListener scheduleDeliveryDebouncedListener;
     private CompositeSubscription scheduleDeliveryCompositeSubscription;
 
+    private PublishSubject<Boolean> scheduleDeliveryDonePublisher;
+    private Subscription scheduleDeliverySubscription;
+
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
     }
@@ -340,7 +344,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
-        initScheduleDeliveryDebouncer();
+        initScheduleDeliveryPublisher();
     }
 
     @Override
@@ -867,6 +871,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (position != RecyclerView.NO_POSITION) {
             loadCourierStateData(shipmentCartItemModel, SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE, tmpShipmentDetailData, position);
             mActionListener.onClickRefreshErrorLoadCourier();
+            initScheduleDeliveryPublisher();
         }
     }
 
@@ -879,7 +884,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     public void onChangeScheduleDelivery(@NonNull ScheduleDeliveryUiModel scheduleDeliveryUiModel) {
         int position = getAdapterPosition();
         if (position != RecyclerView.NO_POSITION) {
-            mActionListener.onNeedUpdateViewItem(position);
             scheduleDeliveryDebouncedListener.onScheduleDeliveryChanged(new ShipmentScheduleDeliveryHolderData(
                     scheduleDeliveryUiModel,
                     position
@@ -1726,31 +1730,29 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 }));
     }
 
-    private void initScheduleDeliveryDebouncer() {
-        scheduleDeliveryCompositeSubscription.add(
-                Observable.create((Action1<Emitter<ShipmentScheduleDeliveryHolderData>>) emitter ->
-                                        scheduleDeliveryDebouncedListener = emitter::onNext,
-                                Emitter.BackpressureMode.LATEST)
-                        .debounce(DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<>() {
-                            @Override
-                            public void onCompleted() {
-                                // no-op
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                // no-op
-                            }
-
-                            @Override
-                            public void onNext(ShipmentScheduleDeliveryHolderData shipmentScheduleDeliveryHolderData) {
-                                mActionListener.onChangeScheduleDelivery(shipmentScheduleDeliveryHolderData.getScheduleDeliveryUiModel(), shipmentScheduleDeliveryHolderData.getPosition());
-                            }
-                        })
-        );
+    private void initScheduleDeliveryPublisher() {
+        if (scheduleDeliverySubscription != null && !scheduleDeliverySubscription.isUnsubscribed()) {
+            scheduleDeliverySubscription.unsubscribe();
+        }
+        if (scheduleDeliveryDonePublisher != null && !scheduleDeliveryDonePublisher.hasCompleted()) {
+            scheduleDeliveryDonePublisher.onCompleted();
+        }
+        scheduleDeliverySubscription = Observable.create((Action1<Emitter<ShipmentScheduleDeliveryHolderData>>) emitter ->
+                                scheduleDeliveryDebouncedListener = emitter::onNext,
+                        Emitter.BackpressureMode.LATEST)
+                .observeOn(AndroidSchedulers.mainThread(), false, 1)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .concatMap(shipmentScheduleDeliveryHolderData -> {
+                    scheduleDeliveryDonePublisher = PublishSubject.create();
+                    mActionListener.onChangeScheduleDelivery(
+                            shipmentScheduleDeliveryHolderData.getScheduleDeliveryUiModel(),
+                            shipmentScheduleDeliveryHolderData.getPosition(),
+                            scheduleDeliveryDonePublisher
+                    );
+                    return scheduleDeliveryDonePublisher;
+                })
+                .subscribe();
+        scheduleDeliveryCompositeSubscription.add(scheduleDeliverySubscription);
     }
 
     private void showBottomSheet(Context context, String title, String message, int image) {

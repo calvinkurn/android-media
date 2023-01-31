@@ -74,6 +74,7 @@ import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
+import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
 import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource;
@@ -208,6 +209,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -1754,11 +1756,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         if (stillHasPromo && !skipValidateUse) {
-            shipmentPresenter.checkPromoCheckoutFinalShipment(generateValidateUsePromoRequest(), lastSelectedCourierOrder, lastSelectedCourierOrderCartString);
+            shipmentPresenter.checkPromoCheckoutFinalShipment(generateValidateUsePromoRequest().copyJava(), lastSelectedCourierOrder, lastSelectedCourierOrderCartString);
         } else {
             clearPromoTrackingData();
             if (forceHitValidateUse) {
-                shipmentPresenter.checkPromoCheckoutFinalShipment(generateValidateUsePromoRequest(), lastSelectedCourierOrder, lastSelectedCourierOrderCartString);
+                shipmentPresenter.checkPromoCheckoutFinalShipment(generateValidateUsePromoRequest().copyJava(), lastSelectedCourierOrder, lastSelectedCourierOrderCartString);
             } else {
                 sendEEStep3();
             }
@@ -3694,7 +3696,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onChangeScheduleDelivery(ScheduleDeliveryUiModel scheduleDeliveryUiModel, int position) {
+    public void onChangeScheduleDelivery(ScheduleDeliveryUiModel scheduleDeliveryUiModel, int position, PublishSubject<Boolean> donePublisher) {
         if (getView() != null) {
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
             if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
@@ -3713,10 +3715,23 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipmentCartItemModel.setValidationMetadata("");
                 }
 
-                if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
+                SelectedShipperModel selectedShipperModel = newCourierItemData.getSelectedShipper();
+                boolean shouldValidateUse = selectedShipperModel.getLogPromoCode() != null && !selectedShipperModel.getLogPromoCode().isEmpty();
+                boolean hasCheckAllCourier = shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false);
+                boolean haveToClearCache = shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
                         !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode()) &&
-                        TextUtils.isEmpty(newCourierItemData.getSelectedShipper().getLogPromoCode())
-                ) {
+                        TextUtils.isEmpty(newCourierItemData.getSelectedShipper().getLogPromoCode());
+
+                boolean shouldStopInClearCache = haveToClearCache && !hasCheckAllCourier;
+                boolean shouldStopInDoValidateUseLogistic = shouldValidateUse && !hasCheckAllCourier;
+
+                shipmentPresenter.setScheduleDeliveryMapData(shipmentCartItemModel.getCartString(), new ShipmentScheduleDeliveryMapData(
+                        donePublisher,
+                        shouldStopInClearCache,
+                        shouldStopInDoValidateUseLogistic
+                ));
+
+                if (haveToClearCache) {
                     String promoLogisticCode = shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode();
                     shipmentPresenter.cancelAutoApplyPromoStackLogistic(0, promoLogisticCode, shipmentCartItemModel);
                     ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();
@@ -3734,12 +3749,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipmentAdapter.updateCheckoutButtonData(null);
                 }
 
-                shipmentAdapter.setSelectedCourier(position, newCourierItemData, true, false);
+                shipmentAdapter.setSelectedCourier(position, newCourierItemData, true, shouldValidateUse);
                 shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
 
-                SelectedShipperModel selectedShipperModel = newCourierItemData.getSelectedShipper();
-
-                if (selectedShipperModel.getLogPromoCode() != null && !selectedShipperModel.getLogPromoCode().isEmpty()) {
+                if (shouldValidateUse) {
                     ValidateUsePromoRequest validateUsePromoRequest = generateValidateUsePromoRequest();
                     if (selectedShipperModel.getLogPromoCode() != null && selectedShipperModel.getLogPromoCode().length() > 0) {
                         for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
@@ -3793,6 +3806,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             selectedShipperModel.getLogPromoCode(),
                             false
                     );
+                } else if (!shouldStopInClearCache && !shouldStopInDoValidateUseLogistic && !hasCheckAllCourier) {
+                    donePublisher.onCompleted();
                 }
             }
         }

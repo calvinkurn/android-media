@@ -10,6 +10,7 @@ import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
@@ -49,6 +50,8 @@ import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
+import rx.observers.TestSubscriber
+import rx.subjects.PublishSubject
 import rx.subscriptions.CompositeSubscription
 
 class ShipmentPresenterClearPromoTest {
@@ -797,5 +800,45 @@ class ShipmentPresenterClearPromoTest {
 
         // Then
         assert(result == null)
+    }
+
+    @Test
+    fun `WHEN clear BBO promo success from schedule delivery THEN should complete publisher`() {
+        // Given
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+            ClearPromoUiModel(
+                successDataModel = SuccessDataUiModel(
+                    success = true
+                )
+            )
+        )
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
+        val testSubscriber = TestSubscriber.create<Boolean>()
+        val donePublisher = PublishSubject.create<Boolean>()
+        donePublisher.subscribe(testSubscriber)
+        val shipmentScheduleDeliveryMapData = ShipmentScheduleDeliveryMapData(
+            donePublisher,
+            shouldStopInClearCache = true,
+            shouldStopInValidateUsePromo = false
+        )
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartString = "123",
+            shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
+            cartItemModels = listOf(CartItemModel())
+        )
+        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartString, shipmentScheduleDeliveryMapData)
+
+        // When
+        presenter.cancelAutoApplyPromoStackLogistic(
+            0,
+            "code",
+            shipmentCartItemModel
+        )
+
+        // Then
+        verify {
+            view.onSuccessClearPromoLogistic(0, any())
+        }
+        testSubscriber.assertCompleted()
     }
 }

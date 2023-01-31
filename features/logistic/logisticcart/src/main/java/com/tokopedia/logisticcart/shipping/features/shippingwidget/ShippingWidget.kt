@@ -711,7 +711,7 @@ class ShippingWidget : ConstraintLayout {
             ),
             descriptionNow2H = getSingleShippingLabelEta(selectedCourierItemData),
             labelNow2H = labelNow2H,
-            scheduleDeliveryUiModel = selectedCourierItemData.scheduleDeliveryUiModel,
+            scheduleDeliveryUiModel = selectedCourierItemData.scheduleDeliveryUiModel?.copy(),
             listener = object : ShippingScheduleWidget.ShippingScheduleWidgetListener {
                 override fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel) {
                     mListener?.onChangeScheduleDelivery(scheduleDeliveryUiModel)
