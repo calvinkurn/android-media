@@ -86,6 +86,7 @@ import com.tokopedia.mvc.presentation.share.ShareCopyWritingGenerator
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.mvc.util.tracker.StopVoucherTracker
+import com.tokopedia.mvc.util.tracker.VoucherListActionTracker
 import com.tokopedia.mvc.util.tracker.VoucherListTracker
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -154,6 +155,9 @@ class MvcListFragment :
     @Inject
     lateinit var stopVoucherTracker: StopVoucherTracker
 
+    @Inject
+    lateinit var voucherListActionTracker: VoucherListActionTracker
+
     override fun getScreenName() = ""
 
     override fun initInjector() {
@@ -215,37 +219,49 @@ class MvcListFragment :
         when (menuUiModel) {
             is MoreMenuUiModel.Coupon -> {
                 showUpdateQuotaBottomSheet(voucher)
+                voucherListActionTracker.sendClickUbahQuotaEvent(voucher)
             }
             is MoreMenuUiModel.EditPeriod -> {
                 showEditPeriodBottomSheet(voucher)
+                voucherListActionTracker.sendClickUbahPeriodEvent(voucher)
             }
             is MoreMenuUiModel.Edit -> {
                 redirectToEditPage(voucher)
+                voucherListActionTracker.sendClickUbahEvent(voucher)
             }
             is MoreMenuUiModel.Clipboard -> {
                 VoucherDetailActivity.start(context ?: return, voucher.id)
+                voucherListActionTracker.sendClickLihatDetailEvent(voucher)
             }
             is MoreMenuUiModel.Broadcast -> {
                 SharingUtil.shareToBroadCastChat(context ?: return, voucher.id)
+                voucherListActionTracker.sendClickBroadcastChatEvent(voucher)
             }
             is MoreMenuUiModel.Download -> {
                 showDownloadVoucherBottomSheet(voucher)
+                voucherListActionTracker.sendClickDownloadEvent(voucher)
             }
             is MoreMenuUiModel.Clear -> {
                 deleteVoucher(voucher)
+                voucherListActionTracker.sendClickBatalkanEvent(voucher)
             }
             is MoreMenuUiModel.Share -> {
                 viewModel.generateShareComponentMetaData(voucher)
+                voucherListActionTracker.sendClickBagikanEvent(voucher)
             }
             is MoreMenuUiModel.Stop -> {
                 deleteVoucher(voucher)
+                voucherListActionTracker.sendClickHentikanEvent(voucher)
             }
             is MoreMenuUiModel.Copy -> {
                 redirectToDuplicatePage(voucher.id)
+                voucherListActionTracker.sendClickDuplikatEvent(voucher)
             }
             is MoreMenuUiModel.TermsAndConditions -> {
+                /*no-op*/
             }
             else -> {
+                /*no-op*/
             }
         }
     }
