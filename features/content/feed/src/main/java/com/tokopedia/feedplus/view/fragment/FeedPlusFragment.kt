@@ -4090,7 +4090,7 @@ class FeedPlusFragment :
 //                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
 //                }
 //            })
-            adapter.notifyDataSetChanged()
+            adapter.updateList(newList)
         }
 
         feedViewModel.clearFollowIdToUpdate()
