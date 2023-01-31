@@ -395,7 +395,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     private fun setLayoutManager(state: ExploreWidgetState) {
-        widgetLayoutManager.spanCount = if (state is ExploreWidgetState.Loading) SPAN_SHIMMER else SPAN_CHANNEL
+        widgetLayoutManager.spanCount = if (state !is ExploreWidgetState.Success) SPAN_SHIMMER else SPAN_CHANNEL
     }
 
     private fun getVisibleChips(): Map<ChipWidgetUiModel, Int> {
