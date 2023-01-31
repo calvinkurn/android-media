@@ -1101,7 +1101,7 @@ class ChatbotFragment :
     override fun onSuccessSubmitChatCsat(msg: String) {
         view?.let {
             csatOptionsUiModel?.let { it -> getViewState()?.hideCsatOptionList(it) }
-            Toaster.build(it, msg, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, SNACK_BAR_TEXT_OK)
+            Toaster.build(it, msg, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, SNACK_BAR_TEXT_OK).show()
         }
     }
 

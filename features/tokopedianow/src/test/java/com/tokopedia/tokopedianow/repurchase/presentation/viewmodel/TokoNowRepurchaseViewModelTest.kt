@@ -35,6 +35,7 @@ import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.C
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_OOC
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.ERROR_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.PRODUCT_REPURCHASE
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseProductMapper.mapToProductListUiModel
 import com.tokopedia.tokopedianow.repurchase.domain.model.TokoNowRepurchasePageResponse.GetRepurchaseProductListResponse
 import com.tokopedia.tokopedianow.repurchase.domain.model.TokoNowRepurchasePageResponse.GetRepurchaseProductMetaResponse
 import com.tokopedia.tokopedianow.repurchase.domain.param.GetRepurchaseProductListParam
@@ -578,9 +579,30 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
     }
 
     @Test
-    fun `when setProductAddToCartQuantity throw exception should do nothing`() {
+    fun `when setProductAddToCartQuantity _getLayout has value should do nothing`() {
+        onGetRepurchaseProductList_thenReturn(
+            GetRepurchaseProductListResponse(
+                meta = GetRepurchaseProductMetaResponse(
+                    page = 1,
+                    hasNext = false,
+                    totalScan = 1,
+                ),
+                products = listOf(RepurchaseProduct())
+            )
+        )
+
+        viewModel.getLayoutData()
+
         onGetLayoutList_thenReturnNull()
 
+        viewModel.setProductAddToCartQuantity(MiniCartSimplifiedData())
+
+        viewModel.atcQuantity
+            .verifyValueEquals(null)
+    }
+
+    @Test
+    fun `when setProductAddToCartQuantity throw exception should do nothing`() {
         viewModel.setProductAddToCartQuantity(MiniCartSimplifiedData())
 
         viewModel.atcQuantity
@@ -1199,15 +1221,31 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             shop_id = "1001"
         )
 
+        val productListResponse = GetRepurchaseProductListResponse(
+            meta = GetRepurchaseProductMetaResponse(
+                page = 1,
+                hasNext = false,
+                totalScan = 1,
+            ),
+            products = listOf(RepurchaseProduct(
+                id = "111",
+                stock = 0,
+                shop = RepurchaseProduct.Shop(id = "222")
+            ))
+        )
+
+
         onGetMiniCart_thenReturn(miniCartResponse)
         onGetUserLoggedIn_thenReturn(isLoggedIn = true)
+        onGetRepurchaseProductList_thenReturn(productListResponse)
 
+        viewModel.getLayoutData()
         viewModel.setLocalCacheModel(localCacheModel)
         viewModel.getAddToCartQuantity()
 
         val expectedResult = Success(
             RepurchaseLayoutUiModel(
-                layoutList = emptyList(),
+                layoutList = productListResponse.products.mapToProductListUiModel(),
                 state = TokoNowLayoutState.UPDATE
             )
         )
