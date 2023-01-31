@@ -510,7 +510,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         voucherNameSectionBinding?.run {
             tfVoucherName.isInputError = isVoucherNameError
             tfVoucherName.setMessage(voucherNameErrorMsg)
-            tpgCheckHere.apply {
+            tpgPelajari.apply {
                 isVisible = voucherNameErrorMsg.contains(
                     getString(R.string.smvc_larang_label),
                     ignoreCase = true
