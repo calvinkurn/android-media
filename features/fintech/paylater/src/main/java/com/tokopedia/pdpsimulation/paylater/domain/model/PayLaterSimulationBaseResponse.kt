@@ -21,7 +21,8 @@ data class PayLaterAllData(
     @SerializedName("tenure") val tenure: Int?,
     @SerializedName("text") val text: String?,
     @SerializedName("small_text") val smallText: String?,
-    @SerializedName("sections") val detail: List<GatewaySection>
+    @SerializedName("sections") val detail: List<GatewaySection>,
+    @SerializedName("label") val label: Label?,
 ) : Parcelable
 
 @Parcelize
@@ -31,6 +32,13 @@ data class GatewaySection(
     @SerializedName("is_collapsible") val isCollapsible: Boolean?,
     @SerializedName("detail") val detail: List<Detail>
 ) : Parcelable
+
+@Parcelize
+data class Label(
+    @SerializedName("text") val text: String = "",
+    @SerializedName("text_color") val textColor: String = "",
+    @SerializedName("bg_color") val bgColor: String = "",
+)
 
 @Parcelize
 data class Cta(

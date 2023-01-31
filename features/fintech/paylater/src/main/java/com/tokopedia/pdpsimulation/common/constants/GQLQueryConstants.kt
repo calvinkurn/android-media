@@ -7,6 +7,11 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
         tenure
         text
         small_text
+        label {
+          text
+          text_color
+          bg_color
+        }
         sections {
           title
           is_collapsible

@@ -322,12 +322,14 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         if ((data.campaingnDetail?.discountedPrice ?: 0.0) != 0.0) {
             payLaterViewModel.getPayLaterAvailableDetail(
                 data.campaingnDetail?.discountedPrice
-                    ?: 0.0, payLaterArgsDescriptor.productId
+                    ?: 0.0, payLaterArgsDescriptor.productId,
+                data.shopDetail?.shopId,
             )
         } else {
             payLaterViewModel.getPayLaterAvailableDetail(
                 data.price
-                    ?: 0.0, payLaterArgsDescriptor.productId
+                    ?: 0.0, payLaterArgsDescriptor.productId,
+                data.shopDetail?.shopId,
             )
         }
     }
