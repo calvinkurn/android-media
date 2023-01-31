@@ -93,7 +93,7 @@ internal class SearchProductAdsInLowOrganicTest: ProductListPresenterTestFixture
     }
 
     private fun List<Visitable<*>>.findEmptyStateDataView() =
-        find { it is EmptyStateKeywordDataView } as EmptyStateKeywordDataView?
+        find { it is EmptyStateKeywordDataView } as? EmptyStateKeywordDataView
             ?: throw AssertionError("Empty State Keyword Data View not found")
 
     private fun `Then verify ads in low organic supply title`(keyword: String) {
@@ -103,7 +103,7 @@ internal class SearchProductAdsInLowOrganicTest: ProductListPresenterTestFixture
     }
 
     private fun List<Visitable<*>>.findAdsLowOrganicSupplyTitleDataView() =
-        find { it is AdsLowOrganicTitleDataView } as AdsLowOrganicTitleDataView?
+        find { it is AdsLowOrganicTitleDataView } as? AdsLowOrganicTitleDataView
             ?: throw AssertionError("Ads Low Organic Title Data View not found")
 
     private fun `Then verify product item data view ads`(
