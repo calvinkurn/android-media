@@ -197,7 +197,10 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)) return
+        if (permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
+            if (isRequiredPermissionGranted()) createBroadcaster()
+            return
+        }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
@@ -238,10 +241,17 @@ class PlayBroadcastActivity : BaseActivity(),
             return
         }
         surfaceHolder = holder
+        if (!::broadcaster.isInitialized) return
         createBroadcaster()
     }
 
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+    override fun surfaceChanged(
+        holder: SurfaceHolder,
+        format: Int,
+        width: Int,
+        height: Int
+    ) {
+        if (!::broadcaster.isInitialized) return
         broadcaster.updateSurfaceSize(Broadcaster.Size(width, height))
     }
 
@@ -276,12 +286,7 @@ class PlayBroadcastActivity : BaseActivity(),
                 when (event) {
                     is PlayBroadcastEvent.InitializeBroadcaster -> {
                         initBroadcaster(event.data)
-
-                        /**
-                         * fix this issue
-                         * surface view need recreate to show
-                         * **/
-                        surfaceView.holder.addCallback(this@PlayBroadcastActivity)
+                        createBroadcaster()
                     }
                     else -> {}
                 }
@@ -305,6 +310,7 @@ class PlayBroadcastActivity : BaseActivity(),
         globalErrorView = findViewById(R.id.global_error)
         aspectFrameLayout = findViewById(R.id.aspect_ratio_view)
         surfaceView = findViewById(R.id.surface_view)
+        surfaceView.holder.addCallback(this)
     }
 
     private fun getConfiguration() {
@@ -599,8 +605,7 @@ class PlayBroadcastActivity : BaseActivity(),
             val holder = surfaceHolder ?: return
             val surfaceSize = Broadcaster.Size(surfaceView.width, surfaceView.height)
             initBroadcasterWithDelay(holder, surfaceSize)
-        }
-        else showPermissionPage()
+        } else showPermissionPage()
     }
 
     private fun initBroadcasterWithDelay(
@@ -614,11 +619,13 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     private fun releaseBroadcaster() {
-        if (::broadcaster.isInitialized) broadcaster.release()
+        if (!::broadcaster.isInitialized) return
+        broadcaster.release()
     }
 
     private fun destroyBroadcaster() {
-        if (::broadcaster.isInitialized) broadcaster.destroy()
+        if (!::broadcaster.isInitialized) return
+        broadcaster.destroy()
     }
 
     /*
@@ -673,7 +680,6 @@ class PlayBroadcastActivity : BaseActivity(),
         private const val REQUEST_PERMISSION_CODE = 3298
         const val RESULT_PERMISSION_CODE = 3297
 
-        private const val TERMS_AND_CONDITION_TAG = "TNC_BOTTOM_SHEET"
         private const val INIT_BROADCASTER_DELAY = 500L
     }
 

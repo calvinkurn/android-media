@@ -69,6 +69,10 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
     private var mBroadcastOn = false
 
+    private var mAudioRate: String? = null
+    private var mVideoRate: String? = null
+    private var mFps: String? = null
+
     private val mAudioCallback =
         Streamer.AudioCallback { audioFormat, data, audioInputLength, channelCount, sampleRate, samplesPerFrame ->
 
@@ -85,6 +89,18 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
             // raw pcm data before it goes to aac encoder.
             // Arrays.fill(data, (byte) 0); // "Mute" audio
         }
+
+    override fun setAudioRate(audioRate: String) {
+        mAudioRate = audioRate
+    }
+
+    override fun setVideoRate(videoRate: String) {
+        mVideoRate = videoRate
+    }
+
+    override fun setFps(fps: String) {
+        mFps = fps
+    }
 
     override fun addListener(listener: Broadcaster.Listener) {
         mListeners.add(listener)
@@ -132,13 +148,13 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         builder.setUserAgent("Larix/$VERSION_NAME")
 
         // audio
-        val audioConfig = BroadcasterUtil.getAudioConfig()
+        val audioConfig = BroadcasterUtil.getAudioConfig(mAudioRate)
         builder.setAudioConfig(audioConfig)
 
         // video
         builder.setCamera2(BroadcasterCameraManager.allowCamera2Support(context))
 
-        val videoConfig = BroadcasterUtil.getVideoConfig()
+        val videoConfig = BroadcasterUtil.getVideoConfig(mVideoRate, mFps)
 
         // get camera id
         val activeCamera = mSelectedCamera ?: findPreferredCamera(cameraList).also {

@@ -11,7 +11,6 @@ import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUIModel
 import com.tokopedia.remoteconfig.RemoteConfig
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -24,7 +23,7 @@ class PlayBroadcaster(
     private val broadcaster: Broadcaster,
     private val callback: Callback,
     private val remoteConfig: RemoteConfig,
-    private val broadcastingConfigUIModel: BroadcastingConfigUIModel,
+    configData: BroadcastingConfigUIModel,
 ) : Broadcaster by broadcaster {
 
     @ActivityRetainedScope
@@ -68,6 +67,9 @@ class PlayBroadcaster(
     init {
         broadcaster.init(activityContext, handler)
         broadcaster.addListener(broadcastListener)
+        broadcaster.setAudioRate(configData.config.audioRate)
+        broadcaster.setVideoRate(configData.config.videoBitrate)
+        broadcaster.setFps(configData.config.fps)
         enableDebugMonitoring()
     }
 
@@ -88,7 +90,6 @@ class PlayBroadcaster(
     override fun create(holder: SurfaceHolder, surfaceSize: Broadcaster.Size) {
         broadcaster.create(holder, surfaceSize)
         updateAspectFrameSize()
-        Timber.d("datanyaa $broadcastingConfigUIModel")
     }
 
     override fun flip() {

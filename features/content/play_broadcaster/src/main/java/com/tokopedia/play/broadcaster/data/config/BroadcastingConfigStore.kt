@@ -6,6 +6,6 @@ interface BroadcastingConfigStore {
 
     fun saveBroadcastingConfig(config: BroadcastingConfigUIModel)
 
-    fun getBroadcastingConfig():BroadcastingConfigUIModel
+    fun getBroadcastingConfig(): BroadcastingConfigUIModel
 
 }

@@ -29,16 +29,18 @@ object BroadcasterUtil {
         DEFAULT_RESOLUTION_VIDEO_HEIGHT
     )
 
-    fun getAudioConfig(): AudioConfig {
+    fun getAudioConfig(audioRate: String?): AudioConfig {
         return AudioConfig().apply {
             audioSource = MediaRecorder.AudioSource.CAMCORDER
-            bitRate = AudioConfig.calcBitRate(sampleRate, channelCount, AudioConfig.AAC_PROFILE)
+            bitRate = AudioConfig.calcBitRate(audioRate?.toInt() ?: sampleRate, channelCount, AudioConfig.AAC_PROFILE)
         }
     }
 
-    fun getVideoConfig(): VideoConfig {
+    fun getVideoConfig(videoRate: String?, videoFps: String?): VideoConfig {
         return VideoConfig().apply {
             type = MediaFormat.MIMETYPE_VIDEO_AVC
+            bitRate = videoRate?.toInt() ?: bitRate
+            fps = videoFps?.toFloat() ?: fps
         }
     }
 
