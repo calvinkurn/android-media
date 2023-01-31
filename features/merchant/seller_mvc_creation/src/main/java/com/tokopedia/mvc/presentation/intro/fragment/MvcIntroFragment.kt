@@ -171,12 +171,10 @@ class MvcIntroFragment :
     private fun Resources.getIntroCarouselData(): VoucherIntroCarouselUiModel {
         return VoucherIntroCarouselUiModel(
             headerTitle = getString(R.string.smvc_intro_voucher_view_pager_header),
-            description = getString(
-                R.string.smvc_intro_voucher_view_pager_tab_description
-            ),
             tabsList = listOf(
                 VoucherIntroCarouselUiModel.VoucherIntroTabsData(
                     getString(R.string.smvc_intro_voucher_view_pager_tab_1_title),
+                    getString(R.string.smvc_intro_voucher_view_pager_tab_1_description),
                     listOf(
                         getString(R.string.smvc_intro_voucher_carousel_cashback_1),
                         getString(R.string.smvc_intro_voucher_carousel_cashback_2)
@@ -184,6 +182,7 @@ class MvcIntroFragment :
                 ),
                 VoucherIntroCarouselUiModel.VoucherIntroTabsData(
                     getString(R.string.smvc_intro_voucher_view_pager_tab_2_title),
+                    getString(R.string.smvc_intro_voucher_view_pager_tab_2_description),
                     listOf(
                         getString(R.string.smvc_intro_voucher_carousel_gratis_ongkir_1),
                         getString(R.string.smvc_intro_voucher_carousel_gratis_ongkir_2)
@@ -191,6 +190,7 @@ class MvcIntroFragment :
                 ),
                 VoucherIntroCarouselUiModel.VoucherIntroTabsData(
                     getString(R.string.smvc_intro_voucher_view_pager_tab_3_title),
+                    getString(R.string.smvc_intro_voucher_view_pager_tab_3_description),
                     listOf(
                         getString(R.string.smvc_intro_voucher_carousel_diskon_1),
                         getString(R.string.smvc_intro_voucher_carousel_diskon_2)

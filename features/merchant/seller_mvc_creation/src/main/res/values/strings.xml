@@ -271,12 +271,13 @@
     <string name="edit_period_success_edit_period">Periode kupon %1$s dan semua jadwal berikutnya berhasil diubah.</string>
     <string name="edit_period_calendar_show_tag">TimePicker Show</string>
     <string name="edit_period_see_remaining_quota">Lihat Sisa Kuota</string>
+    <string name="edit_period_date_picker_end_date_warning">Tanggal berakhir otomatis berubah karena periode berlangsung kupon maks. 31 hari</string>
 
     <!-- Voucher Display -->
     <string name="voucher_bs_coupon_display_title">Tampilan Kupon</string>
     <string name="voucher_bs_coupon_display_horizontal">Horizontal</string>
     <string name="voucher_bs_coupon_display_square">Square</string>
-    <string name="voucher_bs_coupon_display_vertical">Vertikal</string>
+    <string name="voucher_bs_coupon_display_vertical">Vertical</string>
 
     <!-- Voucher Period  -->
     <string name="voucher_bs_period_title_1">Kupon akan aktif pada:</string>
@@ -456,7 +457,9 @@
     <string name="smvc_intro_voucher_view_pager_tab_1_title">Cashback</string>
     <string name="smvc_intro_voucher_view_pager_tab_2_title">Gratis Ongkir</string>
     <string name="smvc_intro_voucher_view_pager_tab_3_title">Diskon</string>
-    <string name="smvc_intro_voucher_view_pager_tab_description">Pembeli akan mendapatkan GoPay Coin setelah transaksi selesai</string>
+    <string name="smvc_intro_voucher_view_pager_tab_1_description">Pembeli akan mendapatkan GoPay Coin setelah transaksi selesai</string>
+    <string name="smvc_intro_voucher_view_pager_tab_2_description">Pembeli akan dapat potongan biaya pengiriman produk saat checkout.</string>
+    <string name="smvc_intro_voucher_view_pager_tab_3_description">Pembeli akan dapat potongan harga prodük secara langsung saat checkout.</string>
     <string name="smvc_intro_voucher_view_more">Lihat Selengkapnya</string>
     <string name="smvc_intro_voucher_toolbar_text">Keuntungan Kupon Toko Saya</string>
     <string name="smvc_intro_voucher_icon_semua_pembeli">https://images.tokopedia.net/img/android/campaign/merchant-voucher-creation/semua_pembeli.png</string>
