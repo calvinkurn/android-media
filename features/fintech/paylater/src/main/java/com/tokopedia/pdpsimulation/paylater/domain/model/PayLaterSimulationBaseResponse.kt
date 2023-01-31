@@ -38,7 +38,7 @@ data class Label(
     @SerializedName("text") val text: String = "",
     @SerializedName("text_color") val textColor: String = "",
     @SerializedName("bg_color") val bgColor: String = "",
-)
+): Parcelable
 
 @Parcelize
 data class Cta(

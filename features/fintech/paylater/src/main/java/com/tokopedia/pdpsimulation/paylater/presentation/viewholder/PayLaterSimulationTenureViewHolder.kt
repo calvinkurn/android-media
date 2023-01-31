@@ -52,7 +52,7 @@ class PayLaterSimulationTenureViewHolder(val view: View, val onTenureSelected: (
     private fun setLabel(simulationUiModel: SimulationUiModel) {
         val label = simulationUiModel.label
 
-        view.labelInstallment.shouldShowWithAction(label != null) {
+        view.labelInstallment.shouldShowWithAction(label?.text?.isNotEmpty() ?: false) {
             label?.let {
                 view.labelInstallment.setLabel(label.text)
                 setLabelTextColor(label)
