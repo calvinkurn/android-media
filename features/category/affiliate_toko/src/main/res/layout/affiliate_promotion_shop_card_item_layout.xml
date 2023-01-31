@@ -77,7 +77,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewAdditionalInfo1"
             android:layout_width="wrap_content"
-            android:layout_height="14dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/imageTitleEmblem"
@@ -90,19 +90,32 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewAdditionalInfo2"
-            android:layout_width="0dp"
-            android:layout_height="14dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/textViewAdditionalInfo1"
             app:layout_constraintTop_toBottomOf="@id/textViewTitle"
             app:layout_goneMarginStart="8dp"
             app:typographyType="small"
             tools:text="/barang terjual"
             tools:textColor="@color/Unify_N700_68"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/ssa_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="2dp"
+            android:visibility="gone"
+            app:labelType="highlight_light_green"
+            app:layout_constraintStart_toEndOf="@id/textViewAdditionalInfo2"
+            app:layout_constraintTop_toBottomOf="@id/textViewTitle"
+            app:layout_goneMarginStart="8dp"
+            tools:text="Komisi Extra"
             tools:visibility="visible" />
 
         <androidx.constraintlayout.widget.Barrier

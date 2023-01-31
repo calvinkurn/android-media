@@ -54,20 +54,22 @@ data class AffiliateSearchData(
                     @SerializedName("titleEmblem")
                     var titleEmblem: String?,
                     @SerializedName("label")
-                    var label: Label?,
+                    val label: Label?,
                     @SerializedName("message")
-                    var message: String?,
+                    val message: String?,
                     @SerializedName("ssaMessage")
-                    var ssaMessage: String?,
+                    val ssaMessage: String?,
+                    @SerializedName("ssaStatus")
+                    val ssaStatus: Boolean?,
                     // custom Attribute
                     var type: String?,
                     var itemId: String
                 ) {
                     data class Label(
                         @SerializedName("LabelType")
-                        var labelType: String,
+                        val labelType: String,
                         @SerializedName("LabelText")
-                        var labelText: String
+                        val labelText: String
                     )
 
                     data class AdditionalInformation(

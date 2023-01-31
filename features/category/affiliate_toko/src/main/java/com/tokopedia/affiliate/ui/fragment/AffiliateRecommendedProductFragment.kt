@@ -22,6 +22,7 @@ import com.tokopedia.affiliate.adapter.AffiliateItemOffSetDecoration
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
+import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateStaggeredPromotionCardModel
@@ -315,7 +316,8 @@ class AffiliateRecommendedProductFragment :
         position: Int,
         commison: String,
         status: String,
-        type: String?
+        type: String?,
+        ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?
     ) {
         pushPromosikanEvent(itemID, itemName, position, commison)
         val origin =
@@ -358,5 +360,4 @@ class AffiliateRecommendedProductFragment :
     }
 
     override fun onButtonClick(errorCta: AffiliateSearchData.SearchAffiliate.Data.Error.ErrorCta?) = Unit
-
 }

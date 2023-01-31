@@ -37,6 +37,7 @@ val GQL_Affiliate_Search: String = """query searchAffiliate(${"$"}filter: [Strin
           productID
           title
           titleEmblem
+          ssaStatus
           label {
             LabelType
             LabelText
