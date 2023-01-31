@@ -38,6 +38,7 @@ class UserProfileAnalytics {
         const val KEY_TRACKER_ID = "trackerId"
         const val CURRENT_SITE = "currentSite"
         const val SESSION_IRIS = "sessionIris"
+        const val TRACKER_ID = "trackerId"
         const val CREATIVE = "creative"
         const val POSITION = "position"
         const val ID = "id"
@@ -61,6 +62,7 @@ class UserProfileAnalytics {
         const val NOT_LIVE = "not live"
         const val VOD = "vod"
         const val LAIN_KALI = "Lain Kali"
+        const val PLAY = "play"
     }
 
     object Event {
@@ -73,6 +75,7 @@ class UserProfileAnalytics {
         const val EVENT_CLICK_CONTENT = "clickContent"
         const val EVENT_CLICK_COMMUNICATION = "clickCommunication"
         const val EVENT_VIEW_COMMUNICATION = "viewCommunicationIris"
+        const val EVENT_VIEW_CONTENT_IRIS = "viewContentIris"
     }
 
     object ScreenName {
