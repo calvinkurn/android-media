@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.remoteconfig.RollenceKey
 
 /**
  * @author by devarafikry on 09/02/21
@@ -46,7 +47,10 @@ class ChooseAddressWidgetCallback(
     }
 
     override fun onChangeTextColor(): Int {
-        return com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+        return if (homeCategoryListener.styleAtf() == RollenceKey.HOME_COMPONENT_ATF_2)
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+        else
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
     }
 
     override fun onTokonowDataRefreshed() {

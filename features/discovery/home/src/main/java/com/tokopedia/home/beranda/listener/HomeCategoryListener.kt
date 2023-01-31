@@ -142,4 +142,6 @@ interface HomeCategoryListener {
     fun refreshBalanceWidget()
 
     fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView?)
+
+    fun styleAtf(): String
 }

@@ -189,10 +189,7 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.*
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -417,6 +414,7 @@ open class HomeRevampFragment :
     private var fragmentCurrentCacheState: Boolean = true
     private var fragmentCurrentVisitableCount: Int = -1
     private var fragmentCurrentScrollPosition: Int = -1
+    private var styleAtf = ""
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -551,9 +549,14 @@ open class HomeRevampFragment :
         }
     }
 
+    private fun getStyleAtf() : String {
+        return getAbTestPlatform().getString(RollenceKey.HOME_COMPONENT_ATF, RollenceKey.EXPERIMENT_VARIANT)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
         isUsingNewPullRefresh = isUseNewPullRefresh()
+        styleAtf = getStyleAtf()
         val view = inflater.inflate(
             if (isUsingNewPullRefresh) R.layout.fragment_home_revamp else R.layout.fragment_home_revamp_old_refresh,
             container,
@@ -2759,5 +2762,9 @@ open class HomeRevampFragment :
         view?.let {
             refreshLayout?.setContentChildViewPullRefresh(it)
         }
+    }
+
+    override fun styleAtf(): String {
+        return styleAtf
     }
 }
