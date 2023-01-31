@@ -85,6 +85,7 @@ import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.CartSectionHeaderHolderData
 import com.tokopedia.cart.view.uimodel.CartSelectAllHolderData
+import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
@@ -290,6 +291,7 @@ class CartFragment :
         const val NAVIGATION_TOKONOW_HOME_PAGE = 678
         const val NAVIGATION_EDIT_BUNDLE = 789
         const val NAVIGATION_VERIFICATION = 890
+        const val NAVIGATION_APPLINK = 809
         const val ADVERTISINGID = "ADVERTISINGID"
         const val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
         const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
@@ -491,6 +493,7 @@ class CartFragment :
             NAVIGATION_TOKONOW_HOME_PAGE -> refreshCartWithSwipeToRefresh()
             NAVIGATION_EDIT_BUNDLE -> onResultFromEditBundle(resultCode, data)
             NAVIGATION_VERIFICATION -> refreshCartWithSwipeToRefresh()
+            NAVIGATION_APPLINK -> refreshCartWithSwipeToRefresh()
         }
     }
 
@@ -718,6 +721,13 @@ class CartFragment :
     private fun routeToApplink(appLink: String) {
         activity?.let {
             RouteManager.route(it, appLink)
+        }
+    }
+
+    private fun routeToApplinkWithResult(appLink: String) {
+        activity?.let {
+            val intent = RouteManager.getIntent(it, appLink)
+            startActivityForResult(intent, NAVIGATION_APPLINK)
         }
     }
 
@@ -2080,12 +2090,12 @@ class CartFragment :
 
     override fun onCartShopGroupTickerClicked(cartShopHolderData: CartShopHolderData) {
         when (cartShopHolderData.cartShopGroupTicker.action) {
-            CartConstant.TICKER_ACTION_REDIRECT_PAGE -> {
+            CartShopGroupTickerData.ACTION_REDIRECT_PAGE -> {
                 if (cartShopHolderData.cartShopGroupTicker.applink.isNotBlank()) {
-                    RouteManager.route(context, cartShopHolderData.cartShopGroupTicker.applink)
+                    routeToApplinkWithResult(cartShopHolderData.cartShopGroupTicker.applink)
                 }
             }
-            CartConstant.TICKER_ACTION_OPEN_BOTTOM_SHEET_BUNDLING -> {
+            CartShopGroupTickerData.ACTION_OPEN_BOTTOM_SHEET_BUNDLING -> {
                 showCartBundlingBottomSheet(cartShopHolderData.cartShopGroupTicker.cartBundlingBottomSheetData)
             }
             else -> {

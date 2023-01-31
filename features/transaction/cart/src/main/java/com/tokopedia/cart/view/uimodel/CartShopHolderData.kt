@@ -128,6 +128,11 @@ data class CartShopGroupTickerData(
     var hasSeenTicker: Boolean = false
 ) {
 
+    companion object {
+        const val ACTION_REDIRECT_PAGE = "redirect_page"
+        const val ACTION_OPEN_BOTTOM_SHEET_BUNDLING = "open_bottomsheet_bundling"
+    }
+
     val enableTicker: Boolean
         get() = enableBoAffordability || enableBundleCrossSell
 }
