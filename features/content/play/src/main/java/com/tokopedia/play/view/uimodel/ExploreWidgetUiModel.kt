@@ -101,17 +101,6 @@ val WidgetParamUiModel.hasNextPage: Boolean
         return this.cursor.isNotEmpty()
     }
 
-val List<WidgetUiModel>.getChannelBlock: WidgetItemUiModel
-    get() {
-        val newList = mutableListOf<List<PlayWidgetItemUiModel>>()
-        val filteredList = this.filterIsInstance<WidgetItemUiModel>()
-        filteredList.forEach {
-            newList.add(it.item.items)
-        }
-        val config = filteredList.firstOrNull() ?: WidgetItemUiModel.Empty
-        return WidgetItemUiModel(item = PlayWidgetUiModel(items = newList.flatten(), title = config.item.title, config = config.item.config, actionTitle = config.item.actionTitle, actionAppLink = config.item.actionAppLink, isActionVisible = config.item.isActionVisible, background = config.item.background))
-    }
-
 val List<WidgetUiModel>.getChannelBlocks: List<WidgetItemUiModel>
     get() {
         return this.filterIsInstance<WidgetItemUiModel>()
@@ -122,7 +111,7 @@ val List<WidgetUiModel>.getChips: TabMenuUiModel
         return this.filterIsInstance<TabMenuUiModel>().firstOrNull() ?: TabMenuUiModel.Empty
     }
 
-val List<WidgetUiModel>.getConfig: PageConfig
+internal val List<WidgetUiModel>.getConfig: PageConfig
     get() {
         return this.filterIsInstance<PageConfig>().firstOrNull() ?: PageConfig.Empty
     }

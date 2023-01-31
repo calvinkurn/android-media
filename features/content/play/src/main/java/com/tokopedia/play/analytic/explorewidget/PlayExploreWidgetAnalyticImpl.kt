@@ -91,7 +91,7 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
         }
 
         val map = BaseTrackerBuilder().constructBasicPromotionView(
-            event = "promoView",
+            event = KEY_TRACK_PROMO_VIEW,
             eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
             eventAction = "impression - category tab",
             eventLabel = "$categoryName - $channelId - $channelType",
@@ -245,14 +245,14 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
         categoryName: String
     ) {
         val map = BaseTrackerBuilder().constructBasicPromotionView(
-            event = "promoView",
+            event = KEY_TRACK_PROMO_VIEW,
             eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
             eventAction = "impression - channel card",
             eventLabel = "$channelId - $channelType - ${item.channelType.value.lowercase()} - ${position + 1} - ${config.autoPlay} - $categoryName - ${item.hasPromo.promoToString} - ${item.recommendationType}",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
                     id = item.channelId,
-                    name = "/play/explorewidget",
+                    name = PLAY_EXPLORE_WIDGET_PATH,
                     creative = "${item.channelId} - ${item.channelType.value.lowercase()} - ${position + 1} - ${config.autoPlay} - $categoryName - ${item.hasPromo.promoToString} - ${item.recommendationType}",
                     position = (position + 1).toString()
                 )
@@ -265,5 +265,9 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             .build()
 
         trackingQueue.putEETracking(map as? HashMap<String, Any>)
+    }
+
+    companion object {
+        private const val PLAY_EXPLORE_WIDGET_PATH = "/play/explorewidget"
     }
 }

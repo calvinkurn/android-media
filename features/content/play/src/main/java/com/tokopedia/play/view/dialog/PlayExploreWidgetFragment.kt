@@ -190,7 +190,7 @@ class PlayExploreWidgetFragment @Inject constructor(
             buildSpannedString {
                 append(getString(playR.string.play_empty_desc_explore_widget))
                 append(
-                    "Cek Sekarang",
+                    getString(playR.string.play_explore_widget_empty),
                     clickableSpan,
                     Spanned.SPAN_EXCLUSIVE_INCLUSIVE
                 )
@@ -244,7 +244,7 @@ class PlayExploreWidgetFragment @Inject constructor(
             is ResultState.Fail -> {
                 Toaster.build(
                     view = requireView(),
-                    text = chips.state.error.message.orEmpty(), // if empty use from figma
+                    text = chips.state.error.message.orEmpty(),
                     actionText = getString(playR.string.play_try_again),
                     duration = Toaster.LENGTH_LONG,
                     type = Toaster.TYPE_ERROR,

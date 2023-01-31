@@ -134,4 +134,5 @@
     <string name="play_empty_desc_explore_widget">Yuk, cek tontonan lainnya. </string>
     <string name="play_explore_widget_default_errmessage">Oops, gagal menampilkan video.</string>
     <string name="play_explore_widget_noconn_errmessage">Wah, internet putus. Cek Wi-Fi atau paket datamu, ya.</string>
+    <string name="play_explore_widget_empty">Cek Sekarang</string>
 </resources>
