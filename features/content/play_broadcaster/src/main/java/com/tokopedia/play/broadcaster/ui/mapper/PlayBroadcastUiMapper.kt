@@ -128,6 +128,7 @@ class PlayBroadcastUiMapper @Inject constructor(
 
         return ConfigurationUiModel(
             streamAllowed = config.streamAllowed,
+            shortVideoAllowed = config.shortVideoAllowed,
             channelId = channelStatus.first,
             channelStatus = channelStatus.second,
             durationConfig = DurationConfigUiModel(
@@ -536,7 +537,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                 badge = it.badge,
                 type = it.type,
                 hasUsername = it.livestream.hasUsername,
-                hasAcceptTnc = it.livestream.enable,
+                enable = it.livestream.enable,
             )
         }
     }

@@ -40,6 +40,7 @@ import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_RENDER_PAG
 import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_REQUEST_NETWORK
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
+import com.tokopedia.play.broadcaster.di.PlayBroadcastModule
 import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
@@ -88,6 +89,7 @@ class PlayBroadcastActivity : BaseActivity(),
     private val retainedComponent by retainedComponent {
         DaggerActivityRetainedComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .playBroadcastModule(PlayBroadcastModule(this))
             .build()
     }
 

@@ -76,6 +76,9 @@ class UserProfileViewModel @AssistedInject constructor(
     val isSelfProfile: Boolean
         get() = _profileType.value == ProfileType.Self
 
+    val isWhitelist: Boolean
+        get() = isSelfProfile && _profileWhitelist.value.isWhitelist
+
     val profileWebLink: String
         get() = _profileInfo.value.shareLink.webLink
 
@@ -505,6 +508,7 @@ class UserProfileViewModel @AssistedInject constructor(
     companion object {
         const val UGC_ONBOARDING_OPEN_FROM_LIVE = 1
         const val UGC_ONBOARDING_OPEN_FROM_POST = 2
+        const val UGC_ONBOARDING_OPEN_FROM_SHORTS = 3
         private const val FOLLOW_TYPE_SHOP = 2
         private const val FOLLOW_TYPE_BUYER = 3
         private const val DEFAULT_LIMIT = 10

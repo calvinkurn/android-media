@@ -19,6 +19,7 @@ import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUIModel
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
+import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.remoteconfig.RemoteConfig
 import kotlinx.coroutines.withContext
@@ -60,12 +61,12 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
     ): ConfigurationUiModel = withContext(dispatchers.io) {
         val response = getConfigurationUseCase.execute(authorId = authorId, authorType = authorType)
 
-        return@withContext mapper.mapConfiguration(
-            mapConfiguration(response.authorConfig.config)
-                .copy(
-                    streamAllowed = response.authorConfig.streamAllowed,
-                    tnc = response.authorConfig.tnc
-                )
+        return@withContext mapper.mapConfiguration(mapConfiguration(response.authorConfig.config)
+            .copy(
+                streamAllowed = response.authorConfig.streamAllowed,
+                shortVideoAllowed = response.authorConfig.shortVideoAllowed,
+                tnc = response.authorConfig.tnc
+            )
         )
     }
 
@@ -77,16 +78,16 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun createChannel(authorId: String, authorType: String): String =
-        withContext(dispatchers.io) {
-            val response = createChannelUseCase.apply {
-                params = CreateChannelUseCase.createParams(
-                    authorId = authorId,
-                    authorType = authorType
-                )
-            }.executeOnBackground()
-            return@withContext response.id
-        }
+    override suspend fun createChannel(authorId: String, authorType: String): String = withContext(dispatchers.io) {
+        val response = createChannelUseCase.apply {
+            params = CreateChannelUseCase.createParams(
+                authorId = authorId,
+                authorType = authorType,
+                type = CreateChannelUseCase.Type.Livestream,
+            )
+        }.executeOnBackground()
+        return@withContext response.id
+    }
 
     override suspend fun updateChannelStatus(
         authorId: String,
