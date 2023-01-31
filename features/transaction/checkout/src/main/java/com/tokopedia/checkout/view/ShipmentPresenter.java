@@ -2923,7 +2923,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return logisticDonePublisher;
     }
 
-    public ShipmentScheduleDeliveryMapData getScheduleDeliveryMapData(String cartString) {
+    private ShipmentScheduleDeliveryMapData getScheduleDeliveryMapData(String cartString) {
         if (scheduleDeliveryMapData != null) {
             return scheduleDeliveryMapData.get(cartString);
         }
@@ -2938,7 +2938,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.scheduleDeliveryMapData.put(cartString, shipmentScheduleDeliveryMapData);
     }
 
-    public void checkUnCompletedPublisher() {
+    private void checkUnCompletedPublisher() {
         if (shipmentCartItemModelList != null) {
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 ShipmentScheduleDeliveryMapData mapData = getScheduleDeliveryMapData(shipmentCartItemModel.getCartString());
