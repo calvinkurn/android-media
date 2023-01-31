@@ -48,6 +48,9 @@ class VoucherTypeViewModel @Inject constructor(
             is VoucherCreationStepOneEvent.NavigateToNextStep -> {
                 navigateToNextStep()
             }
+            VoucherCreationStepOneEvent.resetFillState -> {
+                resetVoucherCreationStepOneData()
+            }
         }
     }
 
@@ -114,14 +117,13 @@ class VoucherTypeViewModel @Inject constructor(
                 currentState.voucherConfiguration
             )
         )
-        setVoucherCreationStepOneIsFilled()
     }
 
-    private fun setVoucherCreationStepOneIsFilled() {
+    private fun resetVoucherCreationStepOneData() {
         _uiState.update {
             it.copy(
                 isLoading = false,
-                voucherConfiguration = it.voucherConfiguration.copy(isFinishFilledStepOne = true)
+                voucherConfiguration = it.voucherConfiguration.copy(isFinishFilledStepOne = false)
             )
         }
     }

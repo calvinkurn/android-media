@@ -454,7 +454,8 @@ class SummaryFragment :
     }
 
     private fun onTypeCouponBtnChangeClicked(configuration: VoucherConfiguration) {
-        redirectionHelper.redirectToVoucherTypePage(this, configuration)
+        val isAdding = viewModel.checkIsAdding(configuration)
+        redirectionHelper.redirectToVoucherTypePage(this, configuration, isAdding)
     }
 
     private fun onInformationCouponBtnChangeClicked(configuration: VoucherConfiguration) {

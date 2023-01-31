@@ -259,6 +259,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
                         isVoucherProduct
                     )
                 )
+                viewModel.processEvent(VoucherCreationStepOneEvent.resetFillState)
                 tracker.sendClickKuponTypeEvent(isVoucherProduct)
                 dismiss()
             }
@@ -290,8 +291,8 @@ class VoucherTypeFragment : BaseDaggerFragment() {
         currentVoucherConfiguration: VoucherConfiguration
     ) {
         if (pageMode == PageMode.CREATE) {
-            if (voucherConfiguration.isFinishedFillAllStep()) {
-                navigateToVoucherSummaryPage(voucherConfiguration)
+            if (currentVoucherConfiguration.isFinishedFillAllStep()) {
+                navigateToVoucherSummaryPage(currentVoucherConfiguration)
             } else {
                 navigateToVoucherInformationPage(pageMode, currentVoucherConfiguration)
             }

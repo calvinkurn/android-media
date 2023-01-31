@@ -321,8 +321,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun presetValue() {
         setVoucherTarget(voucherConfiguration.isVoucherPublic)
-        val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
-        if (currentVoucherConfiguration.isFinishFilledStepTwo || pageMode == PageMode.EDIT) {
+        if (voucherConfiguration.isFinishFilledStepTwo || pageMode == PageMode.EDIT) {
             voucherNameSectionBinding?.tfVoucherName?.run {
                 editText.setText(voucherConfiguration.voucherName)
             }
