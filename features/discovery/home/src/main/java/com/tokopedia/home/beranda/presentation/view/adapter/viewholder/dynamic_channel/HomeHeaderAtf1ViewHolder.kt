@@ -11,6 +11,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderAtf1DataModel
 import com.tokopedia.home.databinding.HomeHeaderAtf1Binding
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -30,6 +31,7 @@ class HomeHeaderAtf1ViewHolder (itemView: View,
 
     override fun bind(element: HomeHeaderAtf1DataModel) {
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_HEADER_OVO)
+        renderEmptySpace()
         renderHeader()
         renderChooseAddress(element.needToShowChooseAddress)
         BenchmarkHelper.endSystraceSection()
@@ -49,6 +51,13 @@ class HomeHeaderAtf1ViewHolder (itemView: View,
         binding?.viewPullRefresh?.let {
             listener.pullRefreshIconCaptured(it)
         }
+    }
+
+    private fun renderEmptySpace() {
+        val layoutParams = binding?.viewEmpty?.layoutParams
+        layoutParams?.height = NavToolbarExt.getFullToolbarHeight(itemView.context)
+        binding?.viewEmpty?.layoutParams = layoutParams
+        binding?.viewEmpty?.invalidate()
     }
 
     override fun bind(element: HomeHeaderAtf1DataModel, payloads: MutableList<Any>) {

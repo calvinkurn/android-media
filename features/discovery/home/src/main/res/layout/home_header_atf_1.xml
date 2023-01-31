@@ -20,8 +20,7 @@
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:unify_image_corner_radius="0" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_banner_header"
@@ -29,8 +28,7 @@
             android:layout_height="0dp"
             android:background="#FF0000"
             app:layout_constraintBottom_toBottomOf="@+id/header_background_home"
-            app:layout_constraintTop_toTopOf="@+id/header_background_home"
-            app:unify_image_corner_radius="0" />
+            app:layout_constraintTop_toTopOf="@+id/header_background_home" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
