@@ -10,7 +10,6 @@ import com.tokopedia.dilayanitokopedia.home.constant.HomeLayoutItemState
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.AnchorTabMapper.mapMenuList
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.HomeLayoutMapper.mapHomeLayoutList
-import com.tokopedia.dilayanitokopedia.home.domain.model.HomeLayoutResponse
 import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetAnchorTabUseCase
 import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetLayoutDataUseCase
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.HomeRecommendationFeedDataModel
@@ -51,8 +50,8 @@ class DtHomeViewModel @Inject constructor(
     }
 
     fun getAnchorTabByVisitablePosition(indexVisitable: Int): AnchorTabUiModel? {
-        val getGroupId = homeLayoutItemList.get(indexVisitable).groupId
-        return _menuList.value?.find { getGroupId == it.groupId }
+        val getGroupId = homeLayoutItemList.getOrNull(indexVisitable)?.groupId
+        return menuList.value?.find { getGroupId == it.groupId }
     }
 
     fun getHomeLayout(localCacheModel: LocalCacheModel) {
@@ -70,7 +69,7 @@ class DtHomeViewModel @Inject constructor(
 
             _homeLayoutList.postValue(Success(data))
 
-            getAnchorTabMenu(homeLayoutResponse, localCacheModel)
+            getAnchorTabMenu(localCacheModel)
             getRecommendationForYouNew()
         }) {
             _homeLayoutList.postValue(Fail(it))
@@ -80,7 +79,7 @@ class DtHomeViewModel @Inject constructor(
     /**
      * anchor tab contain info and visitable of click to scroll
      */
-    private fun getAnchorTabMenu(homeLayoutResponse: List<HomeLayoutResponse>, localCacheModel: LocalCacheModel) {
+    private fun getAnchorTabMenu(localCacheModel: LocalCacheModel) {
         launchCatchError(block = {
             val anchorTabResponse = getHomeAnchorTabUseCase.execute(localCacheModel)
             val menuList = anchorTabResponse.mapMenuList()

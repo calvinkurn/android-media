@@ -75,8 +75,4 @@ class DtHomeRecommendationForYouViewModel @Inject constructor(
             list.add(loadMoreModel)
         }
     }
-
-    private fun MutableList<HomeRecommendationVisitable>.removeLoadMore() {
-        this.remove(loadMoreModel)
-    }
 }
