@@ -21,17 +21,17 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_CLICK_ATC_SRP_PRODUCT
+import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_CLICK_SRP_PRODUCT
+import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_IMPRESSION_SRP_PRODUCT
+import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Category.CATEGORY_EMPTY_SEARCH_RESULT
+import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Value.SRP_PRODUCT_ITEM_LABEL
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_ATC_SRP_PRODUCT_TOKONOW
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_SRP_PRODUCT_TOKONOW
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_SRP_RECOM_OOC
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_SRP_PRODUCT_TOKONOW
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_SRP_RECOM_OOC
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_DASH_SEARCH_PAGE
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_EMPTY_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKOOW_SEARCH_RESULT_PAGE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.RECOM_LIST_PAGE
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.RECOM_LIST_PAGE_EMPTY_SEARCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ATC_VARIANT
 import com.tokopedia.tokopedianow.search.di.SearchComponent
 import com.tokopedia.tokopedianow.search.presentation.listener.BroadMatchListener
@@ -378,7 +378,7 @@ class TokoNowSearchFragment :
         return if (isOOC) {
             IMPRESSION_SRP_RECOM_OOC
         } else {
-            IMPRESSION_SRP_PRODUCT_TOKONOW
+            ACTION_IMPRESSION_SRP_PRODUCT
         }
     }
 
@@ -386,16 +386,16 @@ class TokoNowSearchFragment :
         return if (isOOC) {
             CLICK_SRP_RECOM_OOC
         } else {
-            CLICK_SRP_PRODUCT_TOKONOW
+            ACTION_CLICK_SRP_PRODUCT
         }
     }
 
     override fun getAtcEventAction(): String {
-        return CLICK_ATC_SRP_PRODUCT_TOKONOW
+        return ACTION_CLICK_ATC_SRP_PRODUCT
     }
 
     override fun getEventCategory(isOOC: Boolean): String {
-        return if (isOOC) TOKOOW_SEARCH_RESULT_PAGE else TOKONOW_EMPTY_RESULT
+        return if (isOOC) TOKOOW_SEARCH_RESULT_PAGE else CATEGORY_EMPTY_SEARCH_RESULT
     }
 
     override fun getListValue(isOOC: Boolean, recommendationItem: RecommendationItem): String {
@@ -408,8 +408,9 @@ class TokoNowSearchFragment :
             )
         } else {
             String.format(
-                RECOM_LIST_PAGE_EMPTY_SEARCH,
-                recommendationItem.recommendationType
+                SRP_PRODUCT_ITEM_LABEL,
+                "${recommendationItem.recommendationType} - " +
+                    "${recommendationItem.pageName} - ${recommendationItem.header}"
             )
         }
     }

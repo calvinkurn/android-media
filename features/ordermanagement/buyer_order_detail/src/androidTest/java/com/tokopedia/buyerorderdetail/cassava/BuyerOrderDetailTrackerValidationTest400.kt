@@ -23,6 +23,7 @@ class BuyerOrderDetailTrackerValidationTest400 : BuyerOrderDetailTrackerValidati
             testClickProduct(activityRule.activity)
             testClickShipmentTnC(activityRule.activity)
             testClickPrimaryActionButton()
+            testScrollToBottom(activityRule.activity)
             testClickSecondaryActionButtonHelp(activityRule.activity)
             testClickSecondaryActionButtonRequestCancel(activityRule.activity)
         } validate {
