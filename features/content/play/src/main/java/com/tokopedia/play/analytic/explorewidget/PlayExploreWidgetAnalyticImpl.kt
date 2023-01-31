@@ -1,13 +1,11 @@
 package com.tokopedia.play.analytic.explorewidget
 
-import android.os.Bundle
 import com.tokopedia.play.analytic.*
 import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.track.TrackApp
-import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.track.builder.util.BaseTrackerConst
@@ -16,7 +14,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import java.util.HashMap
 
 /**
  * @author by astidhiyaa on 03/01/23
@@ -84,29 +81,29 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
     }
 
     override fun impressExploreTab(categoryName: String, chips: Map<ChipWidgetUiModel, Int>) {
-        val items = arrayListOf<Bundle>().apply {
-            chips.forEach {
-                add(itemToBundle(it.key, it.value))
-            }
+        val promotions = chips.map {
+            BaseTrackerConst.Promotion(
+                id = channelId,
+                name = "/play/explorewidget",
+                creative = it.key.text,
+                position = (it.value + 1).toString()
+            )
         }
 
-        val dataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT, "view_item")
-            putString(KEY_EVENT_CATEGORY, KEY_TRACK_GROUP_CHAT_ROOM)
-            putString(KEY_EVENT_ACTION, "impression - category tab")
-            putString(KEY_EVENT_LABEL, "$categoryName - $channelId - $channelType")
-            putString(KEY_CURRENT_SITE, KEY_TRACK_CURRENT_SITE)
-            putString(KEY_SESSION_IRIS, sessionIris)
-            putString(KEY_USER_ID, userId)
-            putString(KEY_TRACK_TRACKER_ID, "39858")
-            putString(KEY_BUSINESS_UNIT, KEY_TRACK_BUSINESS_UNIT)
-            putParcelableArrayList("promotions", items)
-        }
-
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            "view_item",
-            dataLayer
+        val map = BaseTrackerBuilder().constructBasicPromotionView(
+            event = "promoView",
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "impression - category tab",
+            eventLabel = "$categoryName - $channelId - $channelType",
+            promotions = promotions
         )
+            .appendUserId(userId)
+            .appendBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .appendCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .appendCustomKeyValue(KEY_TRACK_TRACKER_ID, "39858")
+            .build()
+
+        trackingQueue.putEETracking(map as? HashMap<String, Any>)
     }
 
     override fun clickExploreTab(categoryName: String) {
@@ -269,15 +266,4 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
 
         trackingQueue.putEETracking(map as? HashMap<String, Any>)
     }
-
-    private fun itemToBundle(
-        chip: ChipWidgetUiModel,
-        position: Int
-    ): Bundle =
-        Bundle().apply {
-            putString("creative_name", chip.text)
-            putInt("creative_slot", position)
-            putString("item_id", chip.sourceId)
-            putString("item_name", "/play/explorewidget")
-        }
 }
