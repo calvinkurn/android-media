@@ -85,13 +85,12 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     private val widgetLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        StaggeredGridLayoutManager(SPAN_CHANNEL, RecyclerView.VERTICAL)
+        StaggeredGridLayoutManager(SPAN_CHANNEL, StaggeredGridLayoutManager.VERTICAL)
     }
 
     private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
         object : EndlessRecyclerViewScrollListener(widgetLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                // not detected
                 viewModel.submitAction(NextPageWidgets)
             }
 
@@ -222,6 +221,7 @@ class PlayExploreWidgetFragment @Inject constructor(
                         cachedState.value.exploreWidget.data.state,
                         cachedState.value.exploreWidget.data.widgets
                     )
+                    scrollListener.setHasNextPage(it.value.exploreWidget.data.param.hasNextPage)
                 }
 
                 if (analytic != null || cachedState.value.channel.channelInfo.id.isBlank()) return@collectLatest
@@ -261,6 +261,7 @@ class PlayExploreWidgetFragment @Inject constructor(
             ExploreWidgetState.Success -> {
                 showEmpty(false)
                 widgetAdapter.setItemsAndAnimateChanges(widget)
+                scrollListener.updateStateAfterGetData()
             }
             ExploreWidgetState.Empty -> {
                 showEmpty(true)
