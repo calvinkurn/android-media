@@ -7,8 +7,8 @@ import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
-import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.tokopedianow.test.R
 import com.tokopedia.tokopedianow.test.common.productcard.adapter.TokoNowProductCardViewHolder
 import com.tokopedia.tokopedianow.test.common.productcard.model.TokoNowProductCardMatcherModel
@@ -19,7 +19,7 @@ import com.tokopedia.tokopedianow.test.common.productcard.utils.ViewMatchersUtil
 import org.hamcrest.Matcher
 import org.junit.Test
 
-@UiTest
+@MediumTest
 internal class TokoNowProductCardTest {
 
     private lateinit var recyclerViewViewInteraction: ViewInteraction

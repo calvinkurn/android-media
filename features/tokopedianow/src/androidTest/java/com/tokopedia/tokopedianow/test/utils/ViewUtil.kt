@@ -3,7 +3,7 @@ package com.tokopedia.tokopedianow.test.utils
 import android.content.Context
 import android.util.TypedValue
 
-object ViewUtil {
+internal object ViewUtil {
     fun getDpFromDimen(context: Context, id: Int): Float {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_PX,
