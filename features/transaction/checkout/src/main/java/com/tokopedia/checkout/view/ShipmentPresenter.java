@@ -53,6 +53,7 @@ import com.tokopedia.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.helper.ShipmentCartItemModelHelper;
 import com.tokopedia.checkout.view.helper.ShipmentGetCourierHolderData;
+import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData;
 import com.tokopedia.checkout.view.subscriber.ClearNotEligiblePromoSubscriber;
 import com.tokopedia.checkout.view.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber;
 import com.tokopedia.checkout.view.subscriber.GetBoPromoCourierRecommendationSubscriber;
@@ -240,7 +241,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private PublishSubject<Boolean> logisticDonePublisher = null;
     private PublishSubject<Boolean> logisticPromoDonePublisher = null;
 
-    private Map<String, PublishSubject<Boolean>> scheduleDeliveryDonePublisherMap = null;
+    private Map<String, ShipmentScheduleDeliveryMapData> scheduleDeliveryMapData = null;
 
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
@@ -998,7 +999,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         .subscribe(new Subscriber<ValidateUsePromoRevampUiModel>() {
                                        @Override
                                        public void onCompleted() {
-
+                                            checkUnCompletedPublisher();
                                        }
 
                                        @Override
@@ -1321,8 +1322,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     if (logisticPromoDonePublisher != null) {
                                         logisticPromoDonePublisher.onCompleted();
                                     }
-                                    if (getScheduleDeliveryDonePublisher(cartString) != null) {
-                                        getScheduleDeliveryDonePublisher(cartString).onCompleted();
+                                    if (getScheduleDeliveryMapData(cartString) != null && getScheduleDeliveryMapData(cartString).getShouldStopInValidateUsePromo()) {
+                                        getScheduleDeliveryMapData(cartString).getDonePublisher().onCompleted();
                                     }
                                 }
 
@@ -1963,7 +1964,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(new Subscriber<ClearPromoUiModel>() {
                     @Override
                     public void onCompleted() {
-
+                        if (getScheduleDeliveryMapData(shipmentCartItemModel.getCartString()) != null && getScheduleDeliveryMapData(shipmentCartItemModel.getCartString()).getShouldStopInClearCache()) {
+                            getScheduleDeliveryMapData(shipmentCartItemModel.getCartString()).getDonePublisher().onCompleted();
+                        }
                     }
 
                     @Override
@@ -2920,18 +2923,29 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return logisticDonePublisher;
     }
 
-    public PublishSubject<Boolean> getScheduleDeliveryDonePublisher(String cartString) {
-        if (scheduleDeliveryDonePublisherMap != null) {
-            return scheduleDeliveryDonePublisherMap.get(cartString);
+    public ShipmentScheduleDeliveryMapData getScheduleDeliveryMapData(String cartString) {
+        if (scheduleDeliveryMapData != null) {
+            return scheduleDeliveryMapData.get(cartString);
         }
         return null;
     }
 
     @Override
-    public void setScheduleDeliveryDonePublisherMap(String cartString, PublishSubject<Boolean> donePublisher) {
-        if (this.scheduleDeliveryDonePublisherMap == null) {
-            this.scheduleDeliveryDonePublisherMap = new HashMap<>();
+    public void setScheduleDeliveryMapData(String cartString, ShipmentScheduleDeliveryMapData shipmentScheduleDeliveryMapData) {
+        if (this.scheduleDeliveryMapData == null) {
+            this.scheduleDeliveryMapData = new HashMap<>();
         }
-        this.scheduleDeliveryDonePublisherMap.put(cartString, donePublisher);
+        this.scheduleDeliveryMapData.put(cartString, shipmentScheduleDeliveryMapData);
+    }
+
+    public void checkUnCompletedPublisher() {
+        if (shipmentCartItemModelList != null) {
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                ShipmentScheduleDeliveryMapData mapData = getScheduleDeliveryMapData(shipmentCartItemModel.getCartString());
+                if (mapData != null && !mapData.getDonePublisher().hasCompleted()) {
+                    mapData.getDonePublisher().onCompleted();
+                }
+            }
+        }
     }
 }

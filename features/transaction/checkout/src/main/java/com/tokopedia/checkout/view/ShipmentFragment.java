@@ -74,6 +74,7 @@ import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
+import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
 import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource;
@@ -3714,12 +3715,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipmentCartItemModel.setValidationMetadata("");
                 }
 
-                shipmentPresenter.setScheduleDeliveryDonePublisherMap(shipmentCartItemModel.getCartString(), donePublisher);
-
-                if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
+                boolean hasCheckAllCourier = shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false);
+                boolean haveToClearCache = shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
                         !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode()) &&
-                        TextUtils.isEmpty(newCourierItemData.getSelectedShipper().getLogPromoCode())
-                ) {
+                        TextUtils.isEmpty(newCourierItemData.getSelectedShipper().getLogPromoCode());
+
+                boolean shouldStopInClearCache = haveToClearCache && !hasCheckAllCourier;
+                boolean shouldStopInDoValidateUseLogistic = !haveToClearCache && !hasCheckAllCourier;
+
+                shipmentPresenter.setScheduleDeliveryMapData(shipmentCartItemModel.getCartString(), new ShipmentScheduleDeliveryMapData(
+                        donePublisher,
+                        shouldStopInClearCache,
+                        shouldStopInDoValidateUseLogistic
+                ));
+
+                if (haveToClearCache) {
                     String promoLogisticCode = shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode();
                     shipmentPresenter.cancelAutoApplyPromoStackLogistic(0, promoLogisticCode, shipmentCartItemModel);
                     ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();
@@ -3797,9 +3807,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             selectedShipperModel.getLogPromoCode(),
                             false
                     );
-                }
-                else {
-                    donePublisher.onCompleted();
                 }
             }
         }
