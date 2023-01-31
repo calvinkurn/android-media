@@ -20,6 +20,7 @@ import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -460,7 +461,6 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                         cartShopTickerRightIcon.gone()
                         cartShopTickerLargeLoader.show()
                         cartShopTickerSmallLoader.show()
-                        cartShopTickerReloadIcon.gone()
                         layoutCartShopTicker.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
                         layoutCartShopTicker.setOnClickListener(null)
                         layoutCartShopTicker.show()
@@ -490,7 +490,6 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                         } else {
                             cartShopTickerRightIcon.gone()
                         }
-                        cartShopTickerReloadIcon.gone()
                         layoutCartShopTicker.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
                         layoutCartShopTicker.setOnClickListener {
                             actionListener.onCartShopGroupTickerClicked(cartShopHolderData)
@@ -507,9 +506,10 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                         cartShopTickerText.text = MethodChecker.fromHtml(cartShopGroupTicker.errorText)
                         cartShopTickerText.show()
                         cartShopTickerLeftIcon.gone()
-                        cartShopTickerRightIcon.gone()
-                        cartShopTickerReloadIcon.setImage(IconUnify.RELOAD)
-                        cartShopTickerReloadIcon.show()
+                        val iconColor = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+                        val reloadIcon = getIconUnifyDrawable(root.context, IconUnify.RELOAD, iconColor)
+                        cartShopTickerRightIcon.setImageDrawable(reloadIcon)
+                        cartShopTickerRightIcon.show()
                         layoutCartShopTicker.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN50))
                         layoutCartShopTicker.setOnClickListener {
                             actionListener.onCartShopGroupTickerRefreshClicked(adapterPosition, cartShopHolderData)

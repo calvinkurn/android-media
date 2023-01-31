@@ -238,7 +238,7 @@
 
     </LinearLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:id="@+id/layout_cart_shop_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -252,39 +252,24 @@
             android:id="@+id/cart_shop_ticker_left_icon"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:background="@color/transparent"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="4dp"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/cart_shop_ticker_text"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
+            android:background="@color/transparent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/cart_shop_ticker_text"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:gravity="center_vertical"
+            android:layout_toStartOf="@+id/cart_shop_ticker_right_icon"
+            android:layout_toEndOf="@+id/cart_shop_ticker_left_icon"
             android:textColor="@color/Unify_N700_96"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/barrier"
-            app:layout_constraintStart_toEndOf="@+id/cart_shop_ticker_left_icon"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_goneMarginEnd="0dp"
-            app:layout_goneMarginStart="0dp"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
+            android:visibility="gone"
             tools:text="Ongkirmu Rp10.000 Rp30.000 karena Bebas Ongkir!" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="start"
-            app:constraint_referenced_ids="cart_shop_ticker_right_icon,cart_shop_ticker_reload_icon"/>
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/cart_shop_ticker_right_icon"
@@ -292,43 +277,21 @@
             android:layout_height="20dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:background="@color/transparent"
+            android:layout_marginStart="4dp"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
-
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/cart_shop_ticker_reload_icon"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="@color/transparent"
-            android:visibility="gone"
-            app:icon_color_light_enable="@color/Unify_NN900"
-            app:icon_color_night_enable="@color/Unify_NN900"
-            app:icon_name="RELOAD"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:background="@color/transparent" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/cart_shop_ticker_large_loader"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="8dp"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="60dp"
             android:layout_marginBottom="8dp"
             android:layout_toStartOf="@+id/cart_shop_ticker_small_loader"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/cart_shop_ticker_small_loader"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:loader_type="line"
-            tools:visibility="gone" />
+            app:loader_type="line" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/cart_shop_ticker_small_loader"
@@ -338,12 +301,8 @@
             android:layout_centerVertical="true"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:loader_type="line"
-            tools:visibility="gone" />
+            app:loader_type="line" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 
 </LinearLayout>
