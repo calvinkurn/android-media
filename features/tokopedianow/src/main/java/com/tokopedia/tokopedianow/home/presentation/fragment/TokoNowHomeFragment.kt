@@ -1946,6 +1946,6 @@ class TokoNowHomeFragment : Fragment(),
     }
 
     private fun openWebView(linkUrl: String) {
-        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?titlebar=false&url=${linkUrl}")
     }
 }

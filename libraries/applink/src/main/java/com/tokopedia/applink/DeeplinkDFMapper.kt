@@ -421,6 +421,10 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_MERCHANT_NONLOGIN, R.string.title_create_review))
 
             add(DFP({
+                it.startsWithPattern(ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW)
+            }, DF_MERCHANT_NONLOGIN, R.string.title_bulk_create_review))
+
+            add(DFP({
                 it.startsWithPattern(ApplinkConstInternalMarketplace.REVIEW_DETAIL)
             }, DF_MERCHANT_NONLOGIN, R.string.title_review_detail))
 
