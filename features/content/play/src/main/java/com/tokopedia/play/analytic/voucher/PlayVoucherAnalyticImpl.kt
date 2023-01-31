@@ -4,7 +4,10 @@ import com.tokopedia.play.analytic.*
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.Tracker
+import com.tokopedia.track.builder.util.BaseTrackerConst
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -12,7 +15,8 @@ import javax.inject.Inject
  * @author by astidhiyaa on 06/09/22
  */
 class PlayVoucherAnalyticImpl @Inject constructor(
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val trackingQueue: TrackingQueue
 ) : PlayVoucherAnalytic {
 
     private var channelInfo = PlayChannelInfoUiModel()
@@ -179,25 +183,26 @@ class PlayVoucherAnalyticImpl @Inject constructor(
     }
 
     override fun impressInfoVoucher(voucher: PlayVoucherUiModel.Merchant) {
-        val promotions = mutableMapOf<String, Any>().apply {
-            put("creative_name", voucher.title)
-            put("creative_slot", 1)
-            put("item_id", channelId)
-            put("item_name", "voucher bottomsheet")
-        }
-
-        Tracker.Builder()
-            .setEvent("view_item")
-            .setEventAction("view - entry point voucher bottomsheet")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
-            .setEventLabel("$channelId - $channelType")
-            .setCustomProperty(KEY_TRACK_TRACKER_ID, "40973")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCustomProperty("promotions", promotions)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
-            .setUserId(userId)
+        val map = BaseTrackerBuilder().constructBasicPromotionView(
+            event = KEY_TRACK_PROMO_VIEW,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "view - entry point voucher bottomsheet",
+            eventLabel = "$channelId - $channelType",
+            promotions = listOf(
+                BaseTrackerConst.Promotion(
+                    id = channelId,
+                    name = "/play/explorewidget",
+                    creative = voucher.title,
+                    position = "1"
+                )
+            )
+        )
+            .appendUserId(userId)
+            .appendBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .appendCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .appendCustomKeyValue(KEY_TRACK_TRACKER_ID, "40973")
             .build()
-            .send()
+
+        trackingQueue.putEETracking(map as? HashMap<String, Any>)
     }
 }
