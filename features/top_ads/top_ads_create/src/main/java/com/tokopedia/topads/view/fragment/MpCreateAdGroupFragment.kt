@@ -92,7 +92,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
         val suggestions = java.util.ArrayList<DataSuggestions>()
         suggestions.add(DataSuggestions("", listOf()))
         createGroupViewModel.getBidInfo(suggestions, GROUP_DETAIL_PAGE, this::onSuccessBidSuggestion)
-        createGroupViewModel.getProduct("2150857075", this::onSuccessNameSuggestion)
+        createGroupViewModel.getProduct(productId, this::onSuccessNameSuggestion)
     }
 
     private fun attachClickListeners() {
