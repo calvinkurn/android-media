@@ -108,7 +108,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.getAndUpdate
-import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -471,9 +470,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private suspend fun getBroadcastingConfig() {
         val request = repo.getBroadcastingConfig(authorId, authorType)
-        _uiEvent.emit(PlayBroadcastEvent.InitializeBroadcaster)
-        // TODO set the data here
-        Timber.d(request.toString())
+        hydraConfigStore.saveBroadcastingConfig(request)
+        _uiEvent.emit(PlayBroadcastEvent.InitializeBroadcaster(hydraConfigStore.getBroadcastingConfig()))
     }
 
     private fun getBroadcasterAuthorConfig(selectedAccount: ContentAccountUiModel) {

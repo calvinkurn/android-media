@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.config.GetBroadcastingConfi
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUIModel
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.types.PlayChannelStatusType
@@ -41,8 +42,9 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
     override suspend fun getBroadcastingConfig(
         authorID: String,
         authorType: String
-    ): GetBroadcastingConfigurationResponse = withContext(dispatchers.io) {
-        return@withContext getBroadcastingConfig.execute(authorID, authorType)
+    ): BroadcastingConfigUIModel = withContext(dispatchers.io) {
+        val request = getBroadcastingConfig.execute(authorID, authorType)
+        return@withContext mapper.mapBroadcastingConfig(request)
     }
 
     override suspend fun getAccountList(): List<ContentAccountUiModel> =

@@ -1,9 +1,9 @@
 package com.tokopedia.play.broadcaster.domain.repository
 
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.play.broadcaster.domain.model.config.GetBroadcastingConfigurationResponse
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUIModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import java.util.*
 
@@ -12,7 +12,7 @@ import java.util.*
  */
 interface PlayBroadcastChannelRepository {
 
-    suspend fun getBroadcastingConfig(authorID: String, authorType: String): GetBroadcastingConfigurationResponse
+    suspend fun getBroadcastingConfig(authorID: String, authorType: String): BroadcastingConfigUIModel
 
     suspend fun getAccountList(): List<ContentAccountUiModel>
 

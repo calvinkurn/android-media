@@ -47,6 +47,7 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUIModel
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.extension.channelNotFound
 import com.tokopedia.play.broadcaster.util.extension.getDialog
@@ -274,7 +275,7 @@ class PlayBroadcastActivity : BaseActivity(),
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     is PlayBroadcastEvent.InitializeBroadcaster -> {
-                        initBroadcaster()
+                        initBroadcaster(event.data)
 
                         /**
                          * fix this issue
@@ -288,13 +289,14 @@ class PlayBroadcastActivity : BaseActivity(),
         }
     }
 
-    private fun initBroadcaster() {
+    private fun initBroadcaster(config: BroadcastingConfigUIModel) {
         val handler = Handler(Looper.getMainLooper())
         broadcaster = broadcasterFactory.create(
             activityContext = this,
             handler = handler,
             callback = this,
             remoteConfig = remoteConfig,
+            broadcastingConfigUIModel = config,
         )
     }
 

@@ -1,8 +1,10 @@
 package com.tokopedia.play.broadcaster.ui.event
 
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUIModel
+
 sealed interface PlayBroadcastEvent {
 
-    object InitializeBroadcaster: PlayBroadcastEvent
+    data class InitializeBroadcaster(val data: BroadcastingConfigUIModel): PlayBroadcastEvent
 
     object ShowLoading : PlayBroadcastEvent
     object ShowResumeLiveDialog : PlayBroadcastEvent
