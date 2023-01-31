@@ -426,6 +426,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         if (!isVisibleToUser) {
             hideAllFab()
             coachMarkManager?.dismissAllCoachMark()
+            onboardingCoachmark.dismissCoachmark()
         }
     }
 

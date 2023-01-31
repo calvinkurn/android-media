@@ -67,7 +67,6 @@ class FeedOnboardingCoachmark @Inject constructor(
         }
         coachMark.onDismissListener = {
             mListener?.onCoachmarkFinish()
-            markAsShowed()
         }
 
         if (!isUserProfileEntryShown && mShouldShowUserProfileCoachMark) {
@@ -93,7 +92,7 @@ class FeedOnboardingCoachmark @Inject constructor(
 
     private fun markAsShowed() {
         affiliatePreference.setUserProfileEntryPointCoachMarkShown(userSession.userId)
-        coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)
+        coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
         affiliatePreference.setVideoTabEntryPointCoachMarkShown(userSession.userId)
     }
 
