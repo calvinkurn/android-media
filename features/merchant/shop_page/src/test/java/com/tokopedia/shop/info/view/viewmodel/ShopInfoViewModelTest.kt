@@ -3,7 +3,6 @@ package com.tokopedia.shop.info.view.viewmodel
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.shop.common.constant.ShopPartnerFsFullfillmentServiceTypeDef
 import com.tokopedia.shop.common.data.model.ShopInfoData
-import com.tokopedia.shop.common.data.model.ShopShipmentData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ChatExistingChat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ChatMessageId
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge

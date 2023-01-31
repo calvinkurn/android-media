@@ -2,10 +2,8 @@ package com.tokopedia.shop.common.graphql.data.shopinfo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.shop.common.data.model.ShopInfoData
-import com.tokopedia.shop.common.data.model.ShopShipmentData
 import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
 
 data class ShopInfo(
