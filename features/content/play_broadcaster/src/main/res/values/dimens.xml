@@ -99,4 +99,9 @@
     <dimen name="play_interactive_preview_width">200dp</dimen>
     <dimen name="play_interactive_preview_height">280dp</dimen>
     <dimen name="play_bro_pinned_img_size">104dp</dimen>
+
+    <!-- Shorts -->
+    <dimen name="play_shorts_no_eligible_account_width">281dp</dimen>
+    <dimen name="play_shorts_no_eligible_account_height">210dp</dimen>
+    <dimen name="play_shorts_summary_divider_height">1dp</dimen>
 </resources>

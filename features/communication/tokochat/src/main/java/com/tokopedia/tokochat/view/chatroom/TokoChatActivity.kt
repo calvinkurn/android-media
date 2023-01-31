@@ -2,6 +2,7 @@ package com.tokopedia.tokochat.view.chatroom
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tokochat.tokochat_config_common.util.TokoChatConnection
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -41,9 +42,7 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
     private fun initializeTokoChatComponent(): TokoChatComponent {
         return DaggerTokoChatComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .tokoChatConfigComponent(
-                (application as? BaseMainApplication)?.tokoChatConnection?.tokoChatConfigComponent
-            )
+            .tokoChatConfigComponent(TokoChatConnection.tokoChatConfigComponent)
             .build().also {
                 tokoChatComponent = it
             }

@@ -124,7 +124,7 @@ class RecommendationFriendBottomSheet : BottomSheetUnify() {
             String.format(
                 STRING_FORMAT,
                 ApplinkConst.WEBVIEW,
-                "${TokopediaUrl.getInstance().MOBILEWEB}$TERM_AND_CONDITION_PATH"
+                "${TokopediaUrl.getInstance().WEB}$TERM_AND_CONDITION_PATH"
             )
         )
     }
@@ -135,7 +135,7 @@ class RecommendationFriendBottomSheet : BottomSheetUnify() {
             String.format(
                 STRING_FORMAT,
                 ApplinkConst.WEBVIEW,
-                "${TokopediaUrl.getInstance().MOBILEWEB}$PRIVACY_POLICY_PATH"
+                "${TokopediaUrl.getInstance().WEB}$PRIVACY_POLICY_PATH"
             )
         )
     }

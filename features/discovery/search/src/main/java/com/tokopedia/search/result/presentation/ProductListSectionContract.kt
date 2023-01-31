@@ -12,7 +12,6 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenter
 import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
@@ -60,7 +59,7 @@ interface ProductListSectionContract {
         fun openAddToCartToaster(message: String, isSuccess: Boolean)
         fun openVariantBottomSheet(data: ProductItemDataView)
         fun sendGTMTrackingProductATC(productItemDataView: ProductItemDataView?, cartId: String?)
-        fun onQuickFilterSelected(filter: Filter, option: Option)
+        fun onQuickFilterSelected(filter: Filter, option: Option, pageSource: String)
         fun initFilterController(quickFilterList: List<Filter>)
         fun hideQuickFilterShimmering()
         fun setQuickFilter(items: List<SortFilterItem>)
@@ -75,7 +74,7 @@ interface ProductListSectionContract {
         fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter)
         fun applyDropdownQuickFilter(optionList: List<Option>?)
         fun trackEventClickDropdownQuickFilter(filterTitle: String)
-        fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?)
+        fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?, pageSource: String)
         fun updateSearchBarNotification()
     }
 
