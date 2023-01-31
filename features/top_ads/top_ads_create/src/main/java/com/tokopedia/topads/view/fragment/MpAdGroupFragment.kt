@@ -409,7 +409,7 @@ class MpAdGroupFragment :
 
     private fun openInsufficientCreditsDialog(dataAmount: Int) {
         val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setDescription(getString(R.string.success_group_creation_insufficient_credits_text).replace("Rpx.xxx", "Rp $dataAmount"))
+        dialog.setDescription(getString(R.string.success_group_creation_insufficient_credits_text).replace("Rpx.xxx", "Rp$dataAmount"))
         dialog.setTitle(getString(R.string.ads_created_successfully_but_cant_appear_yet))
         dialog.setPrimaryCTAText(getString(R.string.add_credit))
         dialog.setSecondaryCTAText(getString(R.string.later))

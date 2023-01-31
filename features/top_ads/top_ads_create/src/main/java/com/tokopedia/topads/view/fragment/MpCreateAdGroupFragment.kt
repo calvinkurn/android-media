@@ -286,7 +286,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
 
     private fun openInsufficientCreditsDialog(data: DepositAmount) {
         var dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setDescription(getString(R.string.success_group_creation_insufficient_credits_text).replace("Rpx.xxx", "Rp ${data.amount}"))
+        dialog.setDescription(getString(R.string.success_group_creation_insufficient_credits_text).replace("Rpx.xxx", "Rp${data.amount}"))
         dialog.setTitle(getString(R.string.ads_created_successfully_but_cant_appear_yet))
         dialog.setPrimaryCTAText(getString(R.string.add_credit))
         dialog.setSecondaryCTAText(getString(R.string.later))
