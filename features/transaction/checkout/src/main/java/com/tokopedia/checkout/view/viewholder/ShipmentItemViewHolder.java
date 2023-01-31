@@ -1742,7 +1742,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         Emitter.BackpressureMode.LATEST)
                 .observeOn(AndroidSchedulers.mainThread(), false, 1)
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged(shipmentScheduleDeliveryHolderData -> shipmentScheduleDeliveryHolderData.getScheduleDeliveryUiModel().isSelected())
                 .concatMap(shipmentScheduleDeliveryHolderData -> {
                     scheduleDeliveryDonePublisher = PublishSubject.create();
                     mActionListener.onChangeScheduleDelivery(

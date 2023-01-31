@@ -193,6 +193,7 @@ class ShippingScheduleWidget : ConstraintLayout {
                     shippingNowTimeOption.onSelectedWidgetListener
                 )
                 setOnViewShipmentTextClickListener(
+                    shippingNowTimeOption.isSelected,
                     shippingNowTimeOption.isEnable,
                     shippingNowTimeOption.onSelectedWidgetListener
                 )
@@ -209,11 +210,12 @@ class ShippingScheduleWidget : ConstraintLayout {
     }
 
     private fun ItemShipmentNowTimeOptionBinding.setOnViewShipmentTextClickListener(
+        isSelected: Boolean,
         isEnable: Boolean,
         onSelectedWidgetListener: (() -> Unit)?
     ) {
         viewShipmentText.setOnClickListener {
-            if (isEnable) {
+            if (isEnable && !isSelected) {
                 onSelectedWidgetListener?.invoke()
             }
         }
