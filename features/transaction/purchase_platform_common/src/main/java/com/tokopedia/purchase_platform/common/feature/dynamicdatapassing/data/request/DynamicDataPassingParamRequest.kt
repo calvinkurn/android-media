@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.domain.model.cartshipmentform
+package com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request
 
 import com.google.gson.annotations.SerializedName
 

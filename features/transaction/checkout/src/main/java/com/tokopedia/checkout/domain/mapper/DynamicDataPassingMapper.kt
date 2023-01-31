@@ -1,10 +1,10 @@
 package com.tokopedia.checkout.domain.mapper
 
-import com.tokopedia.checkout.data.model.response.dynamicdata.UpdateDynamicDataPassingUiModel
-import com.tokopedia.checkout.domain.model.cartshipmentform.DynamicDataPassingParamRequest
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.model.UpdateDynamicDataPassingUiModel
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
 

@@ -1,15 +1,15 @@
-package com.tokopedia.checkout.domain.usecase
+package com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.checkout.data.model.response.dynamicdata.UpdateDynamicDataPassingResponse
-import com.tokopedia.checkout.data.model.response.dynamicdata.UpdateDynamicDataPassingUiModel
-import com.tokopedia.checkout.domain.model.cartshipmentform.DynamicDataPassingParamRequest
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.model.UpdateDynamicDataPassingUiModel
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.response.UpdateDynamicDataPassingResponse
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
