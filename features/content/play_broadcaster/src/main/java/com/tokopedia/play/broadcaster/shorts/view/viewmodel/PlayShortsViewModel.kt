@@ -387,7 +387,9 @@ class PlayShortsViewModel @Inject constructor(
         val config = repo.getShortsConfiguration(account.id, account.type)
         _config.update { it.copy(tncList = config.tncList) }
 
-        if (account.isShop && (!account.enable || !config.shortsAllowed)) {
+        if(config.isBanned) {
+            emitEventAccountBanned()
+        } else if (account.isShop && (!account.enable || !config.shortsAllowed)) {
             emitEventSellerNotEligible()
         } else if (account.isUser && !config.shortsAllowed) {
             emitEventAccountNotEligible()
@@ -411,6 +413,12 @@ class PlayShortsViewModel @Inject constructor(
         _titleForm.update { PlayShortsTitleFormUiState.Empty }
         _productSectionList.update { emptyList() }
         _coverForm.update { PlayShortsCoverFormUiState.Empty }
+    }
+
+    private fun emitEventAccountBanned() {
+        viewModelScope.launch {
+            _uiEvent.emit(PlayShortsUiEvent.AccountBanned)
+        }
     }
 
     private fun emitEventSellerNotEligible() {

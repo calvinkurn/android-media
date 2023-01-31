@@ -35,10 +35,14 @@ class PlayShortsUiMapper @Inject constructor(
     }
 
     override fun mapShortsConfig(response: GetBroadcasterAuthorConfigResponse): PlayShortsConfigUiModel {
-        val config = gson.fromJson<PlayShortsConfig>(
-            response.authorConfig.config,
-            object : TypeToken<PlayShortsConfig>() {}.type
-        )
+        val config = if(response.authorConfig.config.isEmpty()) {
+            PlayShortsConfig()
+        } else {
+            gson.fromJson<PlayShortsConfig>(
+                response.authorConfig.config,
+                object : TypeToken<PlayShortsConfig>() {}.type
+            )
+        }
 
         return PlayShortsConfigUiModel(
             shortsId = if (config.draftShortsId == 0) "" else config.draftShortsId.toString(),
