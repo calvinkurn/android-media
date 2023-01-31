@@ -43,6 +43,7 @@ import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.extension.setMaxLength
+import com.tokopedia.mvc.util.tracker.VoucherSettingTracker
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
@@ -71,6 +72,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
 
         private const val DEBOUNCE = 300L
         private const val NOMINAL_INPUT_MAX_LENGTH = 9
+        private const val FREE_SHIPPING_EVENT_LABEL = "gratis ongkir"
+        private const val CASHBACK_EVENT_LABEL = "cashback"
+        private const val DISCOUNT_EVENT_LABEL = "diskon"
     }
 
     // binding
@@ -101,6 +105,10 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             CoachMark2(it)
         }
     }
+
+    // tracker
+    @Inject
+    lateinit var tracker: VoucherSettingTracker
 
     override fun getScreenName(): String =
         VoucherSettingFragment::class.java.canonicalName.orEmpty()
@@ -412,6 +420,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             }
             setNavigationOnClickListener {
                 viewModel.processEvent(VoucherCreationStepThreeEvent.TapBackButton)
+                tracker.sendClickKembaliArrowEvent()
             }
         }
     }
@@ -476,6 +485,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
 
     private fun setPromoType(promoType: PromoType) {
         viewModel.processEvent(VoucherCreationStepThreeEvent.ChoosePromoType(promoType))
+        tracker.sendClickPromoTypeEvent(promoType)
     }
 
     // Free shipping input region
@@ -503,6 +513,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setFreeShippingNominalInput() {
         freeShippingInputSectionBinding?.run {
             tfFreeShippingNominal.apply {
+                editText.setOnFocusChangeListener { _, isFocus ->
+                    if (isFocus) tracker.sendClickFieldNominalCashbackEvent(FREE_SHIPPING_EVENT_LABEL)
+                }
                 setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
@@ -526,6 +539,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setFreeShippingMinimumBuyInput() {
         freeShippingInputSectionBinding?.run {
             tfFreeShippingMinimumBuy.apply {
+                editText.setOnFocusChangeListener { _, isFocus ->
+                    if (isFocus) tracker.sendClickFieldMinimumCashbackEvent(FREE_SHIPPING_EVENT_LABEL)
+                }
                 setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
@@ -549,6 +565,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setFreeShippingQuotaInput() {
         freeShippingInputSectionBinding?.run {
             tfFreeShippingQuota.apply {
+                editText.setOnFocusChangeListener { _, isFocus ->
+                    if (isFocus) tracker.sendClickFieldQuotaCashbackEvent(FREE_SHIPPING_EVENT_LABEL)
+                }
                 setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
@@ -638,6 +657,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                             BenefitType.PERCENTAGE
                         )
                     )
+                    tracker.sendClickTipePotonganEvent(BenefitType.PERCENTAGE)
                 } else {
                     setCashbackNominalInput()
                     viewModel.processEvent(
@@ -645,6 +665,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                             BenefitType.NOMINAL
                         )
                     )
+                    tracker.sendClickTipePotonganEvent(BenefitType.NOMINAL)
                 }
             }
         }
@@ -653,6 +674,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setCashbackNominalInput() {
         cashbackInputSectionBinding?.run {
             tfCashbackNominal.apply {
+                editText.setOnFocusChangeListener { _, isFocus ->
+                    if (isFocus) tracker.sendClickFieldNominalCashbackEvent(CASHBACK_EVENT_LABEL)
+                }
                 setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
@@ -683,6 +707,12 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setCashbackPercentageInput() {
         cashbackInputSectionBinding?.run {
             tfCashbackPercentage.apply {
+                editText.setOnFocusChangeListener { _, isFocus ->
+                    if (isFocus) tracker.sendClickFieldPersentaseCashbackEvent(CASHBACK_EVENT_LABEL)
+                }
+                editText.setOnFocusChangeListener { _, isFocus ->
+                    if (isFocus) tracker.sendClickFieldPersentaseCashbackEvent(CASHBACK_EVENT_LABEL)
+                }
                 setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
@@ -713,6 +743,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setCashbackMaxDeductionInput() {
         cashbackInputSectionBinding?.run {
             tfCahsbackMaxDeduction.apply {
+                editText.setOnFocusChangeListener { _, isFocus ->
+                    if (isFocus) tracker.sendClickFieldMaximumCashbackEvent(CASHBACK_EVENT_LABEL)
+                }
                 setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
@@ -736,6 +769,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setCashbackMinimumBuyInput() {
         cashbackInputSectionBinding?.run {
             tfCashbackMinimumBuy.apply {
+                editText.setOnFocusChangeListener { _, isFocus ->
+                    if (isFocus) tracker.sendClickFieldMinimumCashbackEvent(CASHBACK_EVENT_LABEL)
+                }
                 setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
@@ -759,6 +795,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setCashbackQuotaInput() {
         cashbackInputSectionBinding?.run {
             tfCashbackQuota.apply {
+                editText.setOnFocusChangeListener { _, isFocus ->
+                    if (isFocus) tracker.sendClickFieldQuotaCashbackEvent(CASHBACK_EVENT_LABEL)
+                }
                 setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
@@ -868,6 +907,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                             BenefitType.PERCENTAGE
                         )
                     )
+                    tracker.sendClickTipePotonganEvent(BenefitType.PERCENTAGE)
                 } else {
                     setDiscountNominalInput()
                     viewModel.processEvent(
@@ -875,6 +915,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                             BenefitType.NOMINAL
                         )
                     )
+                    tracker.sendClickTipePotonganEvent(BenefitType.NOMINAL)
                 }
             }
         }
@@ -883,6 +924,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountNominalInput() {
         discountInputSectionBinding?.run {
             tfDiscountNominal.apply {
+                editText.setOnFocusChangeListener { _, isFocus ->
+                    if (isFocus) tracker.sendClickFieldNominalCashbackEvent(DISCOUNT_EVENT_LABEL)
+                }
                 setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
@@ -913,6 +957,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountPercentageInput() {
         discountInputSectionBinding?.run {
             tfDiscountPercentage.apply {
+                editText.setOnFocusChangeListener { _, isFocus ->
+                    if (isFocus) tracker.sendClickFieldPersentaseCashbackEvent(DISCOUNT_EVENT_LABEL)
+                }
                 setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
@@ -943,6 +990,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountMaxDeductionInput() {
         discountInputSectionBinding?.run {
             tfDiscountMaxDeduction.apply {
+                editText.setOnFocusChangeListener { _, isFocus ->
+                    if (isFocus) tracker.sendClickFieldMaximumCashbackEvent(DISCOUNT_EVENT_LABEL)
+                }
                 setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
@@ -966,6 +1016,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountMinimumBuyInput() {
         discountInputSectionBinding?.run {
             tfDiscountMinimumBuy.apply {
+                editText.setOnFocusChangeListener { _, isFocus ->
+                    if (isFocus) tracker.sendClickFieldMinimumCashbackEvent(DISCOUNT_EVENT_LABEL)
+                }
                 setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
@@ -989,6 +1042,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountQuotaInput() {
         discountInputSectionBinding?.run {
             tfDiscountQuota.apply {
+                editText.setOnFocusChangeListener { _, isFocus ->
+                    if (isFocus) tracker.sendClickFieldQuotaCashbackEvent(DISCOUNT_EVENT_LABEL)
+                }
                 setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
                     viewModel.processEvent(
@@ -1083,6 +1139,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                         VoucherTargetBuyer.NEW_FOLLOWER
                     }
                     viewModel.processEvent(VoucherCreationStepThreeEvent.ChooseTargetBuyer(target))
+                    tracker.sendClickTargetPembeliEvent(target, currentVoucherConfiguration.promoType)
                 }
             }
             setTargetBuyerRadioButton(currentVoucherConfiguration)
@@ -1144,7 +1201,10 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         }
 
         buttonSectionBinding?.run {
-            btnBack.setOnClickListener { viewModel.processEvent(VoucherCreationStepThreeEvent.TapBackButton) }
+            btnBack.setOnClickListener {
+                viewModel.processEvent(VoucherCreationStepThreeEvent.TapBackButton)
+                tracker.sendClickKembaliButtonEvent()
+            }
             btnContinue.text = if (pageMode == PageMode.CREATE) {
                 getString(R.string.smvc_continue)
             } else {
@@ -1222,6 +1282,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                             voucherConfiguration
                         )
                     )
+                    tracker.sendClickLanjutEvent()
                 }
             }
         }

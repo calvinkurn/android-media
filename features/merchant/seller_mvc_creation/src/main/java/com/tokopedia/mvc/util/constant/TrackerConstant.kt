@@ -30,4 +30,8 @@ object TrackerConstant {
     object RecurringVoucher {
         const val event = "kupon toko saya - creation periode kupon aktif"
     }
+
+    object CreationVoucherSetting {
+        const val event = "kupon toko saya - creation pengaturan kupon"
+    }
 }
