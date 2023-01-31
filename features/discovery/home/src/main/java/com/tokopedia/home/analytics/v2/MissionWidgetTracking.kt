@@ -8,6 +8,8 @@ import com.tokopedia.home.analytics.v2.MissionWidgetTracking.CustomAction.Compan
 import com.tokopedia.home.analytics.v2.MissionWidgetTracking.CustomAction.Companion.DIMENSION_84
 import com.tokopedia.home.analytics.v2.MissionWidgetTracking.CustomAction.Companion.DIMENSION_96
 import com.tokopedia.home.analytics.v2.MissionWidgetTracking.CustomAction.Companion.ITEM_CATEGORY_FORMAT
+import com.tokopedia.home.analytics.v2.MissionWidgetTracking.CustomAction.Companion.TARGETING_TYPE_BY_NUMBER
+import com.tokopedia.home.analytics.v2.MissionWidgetTracking.CustomAction.Companion.TARGETING_TYPE_BY_VALUE
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
@@ -33,10 +35,10 @@ object MissionWidgetTracking : BaseTrackerConst() {
             const val DEFAULT_VALUE = ""
             const val DEFAULT_PRICE = 0f
             const val DEFAULT_BANNER_ID = "0"
-            const val ITEM_ID_FORMAT = "%s_%s_%s_%s_%s_%s"
+            const val ITEM_ID_FORMAT = "%s_%s_%s_%s"
             const val DYNAMIC_CHANNEL_MISSION_WIDGET = "dynamic channel mission widget"
             const val BANNER = "banner"
-            const val ITEM_NAME_FORMAT = "/ - p%s - %s - %s - %s"
+            const val ITEM_NAME_FORMAT = "/ - p%s - %s - %s - %s - %s - %s"
             const val ITEM_LIST_FORMAT = "/ - p%s - $DYNAMIC_CHANNEL_MISSION_WIDGET - product - %s - %s - %s - %s - %s - %s"
             const val TOPADS = "topads"
             const val NON_TOPADS = "non topads"
@@ -46,6 +48,8 @@ object MissionWidgetTracking : BaseTrackerConst() {
             const val DIMENSION_84 = "dimension84"
             const val DIMENSION_96 = "dimension96"
             const val ITEM_CATEGORY_FORMAT = "%s / %s / %s"
+            const val TARGETING_TYPE_BY_NUMBER = "1"
+            const val TARGETING_TYPE_BY_VALUE = "1"
         }
     }
 
@@ -76,10 +80,8 @@ object MissionWidgetTracking : BaseTrackerConst() {
             CustomAction.ITEM_ID_FORMAT.format(
                 element.id,
                 DEFAULT_BANNER_ID,
-                element.pageName,
-                DEFAULT_VALUE,
-                element.categoryID,
-                element.recommendationType
+                TARGETING_TYPE_BY_NUMBER,
+                TARGETING_TYPE_BY_VALUE
             )
         )
         promotion.putString(
@@ -88,6 +90,8 @@ object MissionWidgetTracking : BaseTrackerConst() {
                 element.verticalPosition,
                 CustomAction.DYNAMIC_CHANNEL_MISSION_WIDGET,
                 CustomAction.BANNER,
+                element.categoryID,
+                element.recommendationType,
                 element.title
             )
         )
@@ -102,15 +106,15 @@ object MissionWidgetTracking : BaseTrackerConst() {
         val itemId = CustomAction.ITEM_ID_FORMAT.format(
             element.id,
             DEFAULT_BANNER_ID,
-            element.pageName,
-            DEFAULT_VALUE,
-            element.categoryID,
-            element.recommendationType
+            TARGETING_TYPE_BY_NUMBER,
+            TARGETING_TYPE_BY_VALUE
         )
         val itemName = CustomAction.ITEM_NAME_FORMAT.format(
             element.verticalPosition,
             CustomAction.DYNAMIC_CHANNEL_MISSION_WIDGET,
             CustomAction.BANNER,
+            element.categoryID,
+            element.recommendationType,
             element.title
         )
         val listPromotions = arrayListOf(

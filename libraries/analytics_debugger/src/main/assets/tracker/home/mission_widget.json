@@ -15,8 +15,8 @@
         {
           "creative_name": ".*",
           "creative_slot": ".*",
-          "item_id": ".*_.*_.*_.*_.*_.*",
-          "item_name": "/ - p.* - dynamic channel mission widget - banner - .*",
+          "item_id": ".*_.*_.*_.*",
+          "item_name": "/ - p.* - dynamic channel mission widget - banner - .* - .* - .*",
           "creative_url": ""
         }
       ],
@@ -37,8 +37,8 @@
         {
           "creative_name": ".*",
           "creative_slot": ".*",
-          "item_id": ".*_.*_.*_.*_.*_.*",
-          "item_name": "/ - p.* - dynamic channel mission widget - banner - .*"
+          "item_id": ".*_.*_.*_.*",
+          "item_name": "/ - p.* - dynamic channel mission widget - banner - .* - .* - .*"
         }
       ],
       "userId": ".*",
