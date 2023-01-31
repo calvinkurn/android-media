@@ -20,6 +20,4 @@ object CartConstant {
     const val PARAM_DEFAULT = "default"
     const val PARAM_CART = "cart"
     const val IS_TESTING_FLOW = "isTesting"
-    const val TICKER_ACTION_REDIRECT_PAGE = "redirect_page"
-    const val TICKER_ACTION_OPEN_BOTTOM_SHEET_BUNDLING = "open_bottomsheet_bundling"
 }
