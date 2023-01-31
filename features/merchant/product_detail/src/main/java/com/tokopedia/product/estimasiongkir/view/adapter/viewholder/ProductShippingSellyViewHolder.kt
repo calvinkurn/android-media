@@ -135,9 +135,11 @@ class ProductShippingSellyViewHolder(
         binding: ItemSellyDateBinding,
         products: List<Product>
     ) = with(binding) {
-        products.forEach { product ->
-            val childView = renderChildView(product)
-            pdpSellyTimeList.addView(childView)
+        pdpSellyTimeList.showIfWithBlock(products.isNotEmpty()) {
+            products.forEach { product ->
+                val childView = renderChildView(product)
+                addView(childView)
+            }
         }
     }
 
