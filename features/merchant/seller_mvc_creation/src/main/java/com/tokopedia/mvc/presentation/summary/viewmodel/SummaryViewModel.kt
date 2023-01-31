@@ -181,11 +181,12 @@ class SummaryViewModel @Inject constructor(
     fun saveCoupon() {
         val voucherConfiguration = configuration.value ?: return
         _isLoading.value = true
-        tracker.sendClickBuatKuponEvent(voucherConfiguration.voucherId.toString(), "")
         if (voucherConfiguration.voucherId > ADDING_VOUCHER_ID) {
             editCoupon(voucherConfiguration)
+            tracker.sendClickSimpanEvent(voucherConfiguration.voucherId.toString(), "")
         } else {
             addCoupon(voucherConfiguration)
+            tracker.sendClickBuatKuponEvent(voucherConfiguration.voucherId.toString(), "")
         }
     }
 

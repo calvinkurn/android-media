@@ -141,7 +141,13 @@ class SummaryFragment :
     }
 
     override fun onFragmentBackPressed(): Boolean {
-        tracker.sendClickKembaliArrowFifthStepEvent()
+        viewModel.configuration.value?.let {
+            if (viewModel.checkIsAdding(it)) {
+                tracker.sendClickKembaliArrowFifthStepEvent()
+            } else {
+                tracker.sendClickArrowBackEvent(it.voucherId.toString(), "")
+            }
+        }
         return super.onFragmentBackPressed()
     }
 
@@ -337,7 +343,13 @@ class SummaryFragment :
         }
         cbTnc.setOnClickListener {
             viewModel.validateTnc(cbTnc.isChecked)
-            tracker.sendClickCheckboxSyaratKetentuanEvent()
+            viewModel.configuration.value?.let {
+                if (viewModel.checkIsAdding(it)) {
+                    tracker.sendClickCheckboxSyaratKetentuanEvent()
+                } else {
+                    tracker.sendClickCheckboxOnTncEvent(it.voucherId.toString(), "")
+                }
+            }
         }
     }
 
@@ -466,19 +478,27 @@ class SummaryFragment :
 
     private fun onTypeCouponBtnChangeClicked(configuration: VoucherConfiguration) {
         redirectionHelper.redirectToVoucherTypePage(this, configuration)
+        val sectionName = binding?.layoutType?.tpgProductListTitle?.text.toString()
+        tracker.sendClickUbahEvent(configuration.voucherId.toString(), "", sectionName)
     }
 
     private fun onInformationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
         val isAdding = viewModel.checkIsAdding(configuration)
+        val sectionName = binding?.layoutInfo?.tpgVoucherInfoTitle?.text.toString()
         redirectionHelper.redirectToCouponInfoPage(this, configuration, isAdding)
+        tracker.sendClickUbahEvent(configuration.voucherId.toString(), "", sectionName)
     }
 
     private fun onConfigurationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
         val isAdding = viewModel.checkIsAdding(configuration)
+        val sectionName = binding?.layoutSetting?.tpgVoucherSettingTitle?.text.toString()
         redirectionHelper.redirectToCouponConfigurationPage(this, configuration, isAdding)
+        tracker.sendClickUbahEvent(configuration.voucherId.toString(), "", sectionName)
     }
 
     private fun onChangeProductBtnChangeClicked(configuration: VoucherConfiguration) {
+        val sectionName = binding?.layoutProducts?.tpgProductListTitle?.text.toString()
+        tracker.sendClickUbahEvent(configuration.voucherId.toString(), "", sectionName)
         redirectionHelper.redirectToAddProductPage(
             this,
             configuration = configuration,
@@ -488,6 +508,8 @@ class SummaryFragment :
     }
 
     private fun onProductListBtnChangeClicked(configuration: VoucherConfiguration) {
+        val sectionName = binding?.layoutProducts?.tpgProductListTitle?.text.toString()
+        tracker.sendClickUbahEvent(configuration.voucherId.toString(), "", sectionName)
         redirectionHelper.redirectToViewProductPage(
             this,
             configuration = configuration,
