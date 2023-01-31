@@ -12,7 +12,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.annotation.RestrictTo
@@ -4028,7 +4027,9 @@ class FeedPlusFragment :
 
     override fun onShopRecomFollowClicked(item: ShopRecomUiModelItem) {
         if (userSession.isLoggedIn) {
-            feedShopRecomWidgetAnalytics.sendClickFollowShopRecommendationEvent(getShopRecomEventLabel(item))
+            feedShopRecomWidgetAnalytics.sendClickFollowShopRecommendationEvent(
+                getShopRecomEventLabel(item)
+            )
             feedViewModel.handleClickFollowButtonShopRecom(item.id)
         } else {
             onGoToLogin()
@@ -4078,17 +4079,18 @@ class FeedPlusFragment :
         val newList = feedViewModel.processFollowStatusUpdate(adapter.getList(), data)
 
         if (newList.isNotEmpty()) {
-            val scrollPosition = getCurrentPosition()
-            clearData()
-            adapter.addList(newList)
-
-            recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    recyclerView.scrollToPosition(scrollPosition)
-                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                }
-            })
+//            val scrollPosition = getCurrentPosition()
+//            clearData()
+//            adapter.addList(newList)
+//
+//            recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
+//                ViewTreeObserver.OnGlobalLayoutListener {
+//                override fun onGlobalLayout() {
+//                    recyclerView.scrollToPosition(scrollPosition)
+//                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+//                }
+//            })
+            adapter.notifyDataSetChanged()
         }
 
         feedViewModel.clearFollowIdToUpdate()
