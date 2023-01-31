@@ -1015,6 +1015,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                } else {
                                                    getView().renderErrorCheckPromoShipmentData(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
                                                }
+                                               checkUnCompletedPublisher();
                                            }
                                        }
 
@@ -1322,8 +1323,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     if (logisticPromoDonePublisher != null) {
                                         logisticPromoDonePublisher.onCompleted();
                                     }
-                                    if (getScheduleDeliveryMapData(cartString) != null && getScheduleDeliveryMapData(cartString).getShouldStopInValidateUsePromo()) {
-                                        getScheduleDeliveryMapData(cartString).getDonePublisher().onCompleted();
+                                    ShipmentScheduleDeliveryMapData shipmentScheduleDeliveryMapData =getScheduleDeliveryMapData(cartString);
+                                    if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.getShouldStopInValidateUsePromo()) {
+                                        shipmentScheduleDeliveryMapData.getDonePublisher().onCompleted();
                                     }
                                 }
 
@@ -1342,6 +1344,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         } else {
                                             getView().showToastError(e.getMessage());
                                             getView().resetCourier(cartPosition);
+                                        }
+                                        if (logisticDonePublisher != null) {
+                                            logisticDonePublisher.onCompleted();
+                                        }
+                                        if (logisticPromoDonePublisher != null) {
+                                            logisticPromoDonePublisher.onCompleted();
+                                        }
+                                        ShipmentScheduleDeliveryMapData shipmentScheduleDeliveryMapData =getScheduleDeliveryMapData(cartString);
+                                        if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.getShouldStopInValidateUsePromo()) {
+                                            shipmentScheduleDeliveryMapData.getDonePublisher().onCompleted();
                                         }
                                     }
                                 }
@@ -1964,14 +1976,18 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(new Subscriber<ClearPromoUiModel>() {
                     @Override
                     public void onCompleted() {
-                        if (getScheduleDeliveryMapData(shipmentCartItemModel.getCartString()) != null && getScheduleDeliveryMapData(shipmentCartItemModel.getCartString()).getShouldStopInClearCache()) {
-                            getScheduleDeliveryMapData(shipmentCartItemModel.getCartString()).getDonePublisher().onCompleted();
+                        ShipmentScheduleDeliveryMapData shipmentScheduleDeliveryMapData = getScheduleDeliveryMapData(shipmentCartItemModel.getCartString());
+                        if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.getShouldStopInClearCache()) {
+                            shipmentScheduleDeliveryMapData.getDonePublisher().onCompleted();
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        // Do nothing
+                        ShipmentScheduleDeliveryMapData shipmentScheduleDeliveryMapData = getScheduleDeliveryMapData(shipmentCartItemModel.getCartString());
+                        if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.getShouldStopInClearCache()) {
+                            shipmentScheduleDeliveryMapData.getDonePublisher().onCompleted();
+                        }
                     }
 
                     @Override
