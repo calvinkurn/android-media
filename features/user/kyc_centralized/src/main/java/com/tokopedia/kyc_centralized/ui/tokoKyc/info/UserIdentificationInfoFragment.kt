@@ -34,9 +34,10 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN
 import com.tokopedia.unifycomponents.UnifyButton.Variant.FILLED
 import com.tokopedia.unifycomponents.UnifyButton.Variant.GHOST
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.usercomponents.userconsent.common.UserConsentPayload
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
@@ -137,8 +138,11 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
 
     private fun loadUserConsent() {
         val consentParam = ConsentCollectionParam(
-            collectionId = KYCConstant.consentCollectionId,
-            version = KYCConstant.consentVersion
+            collectionId = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+                KYCConstant.consentCollectionIdStaging
+            } else {
+                KYCConstant.consentCollectionIdProduction
+            }
         )
         viewBinding?.layoutKycBenefit?.userConsentKyc?.load(
             viewLifecycleOwner, this, consentParam

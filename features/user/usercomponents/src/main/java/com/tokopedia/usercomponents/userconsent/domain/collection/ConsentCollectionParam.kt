@@ -7,7 +7,7 @@ data class ConsentCollectionParam(
     @SerializedName("collectionID")
     var collectionId: String,
     @SerializedName("version")
-    var version: String,
+    var version: String = "",
     @SerializedName("dataElements")
     val dataElements: Map<String, String>? = null,
     @SerializedName("identifier")

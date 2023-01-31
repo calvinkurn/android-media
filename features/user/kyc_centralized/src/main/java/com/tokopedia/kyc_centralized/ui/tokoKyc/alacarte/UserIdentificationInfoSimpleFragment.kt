@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -22,7 +21,8 @@ import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationInfoSimpleBinding
 import com.tokopedia.kyc_centralized.ui.customview.KycOnBoardingViewInflater
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.usercomponents.userconsent.common.UserConsentPayload
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -78,8 +78,11 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
 
     private fun loadUserConsent() {
         val consentParam = ConsentCollectionParam(
-            collectionId = KYCConstant.consentCollectionId,
-            version = KYCConstant.consentVersion
+            collectionId = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+                KYCConstant.consentCollectionIdStaging
+            } else {
+                KYCConstant.consentCollectionIdProduction
+           }
         )
         viewBinding?.layoutBenefit?.userConsentKyc?.load(
             viewLifecycleOwner, this, consentParam
