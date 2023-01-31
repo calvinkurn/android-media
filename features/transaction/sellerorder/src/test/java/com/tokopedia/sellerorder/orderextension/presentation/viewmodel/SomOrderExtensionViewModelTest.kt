@@ -76,6 +76,7 @@ class SomOrderExtensionViewModelTest {
     lateinit var resourceProvider: ResourceProvider
 
     private val orderId = "1234567890"
+    private val extensionTime = 24
     private val sampleInvalidComment = "@$%`~"
     private val sampleValidComment = "Ini adalah contoh valid comment"
     private val sampleErrorMessage = "Error!"
@@ -133,7 +134,7 @@ class SomOrderExtensionViewModelTest {
             resourceProvider.getOrderExtensionRequestBottomSheetFooterComposer()
         } returns StringComposer { ORDER_REQUEST_EXTENSION_INFO_FOOTER }
         every {
-            resourceProvider.getOrderExtensionDescriptionComposer(any(), any())
+            resourceProvider.getOrderExtensionDescriptionComposer(any())
         } answers {
             StringComposer { "${firstArg<String?>().orEmpty()} ${secondArg<String?>().orEmpty()}." }
         }
@@ -338,13 +339,13 @@ class SomOrderExtensionViewModelTest {
             givenValidComment_updateOrderExtensionRequestInfoOnCommentChanged_shouldUpdateOrderExtensionRequestInfoToValid()
 
             coEvery {
-                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any())
+                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any(), any())
             } returns successOrderExtensionRequestResult
 
-            viewModel.sendOrderExtensionRequest(orderId)
+            viewModel.sendOrderExtensionRequest(orderId, extensionTime)
 
             coVerify {
-                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any())
+                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any(), any())
             }
 
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.items.isNotEmpty())
@@ -363,13 +364,13 @@ class SomOrderExtensionViewModelTest {
             givenValidComment_updateOrderExtensionRequestInfoOnCommentChanged_shouldUpdateOrderExtensionRequestInfoToValid()
 
             coEvery {
-                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any())
+                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any(), any())
             } returns failedOrderExtensionRequestResult
 
-            viewModel.sendOrderExtensionRequest(orderId)
+            viewModel.sendOrderExtensionRequest(orderId, extensionTime)
 
             coVerify {
-                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any())
+                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any(), any())
             }
 
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.items.isNotEmpty())
@@ -387,10 +388,10 @@ class SomOrderExtensionViewModelTest {
         coroutineTestRule.runBlockingTest {
             updateOrderExtensionRequestInfoOnCommentChanged_ifChangedCommentIsNull_shouldNotUpdateOrderExtensionRequestInfo()
 
-            viewModel.sendOrderExtensionRequest(orderId)
+            viewModel.sendOrderExtensionRequest(orderId, extensionTime)
 
             coVerify(inverse = true) {
-                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any())
+                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any(), any())
             }
 
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.items.isNotEmpty())
@@ -409,13 +410,13 @@ class SomOrderExtensionViewModelTest {
             givenValidComment_updateOrderExtensionRequestInfoOnCommentChanged_shouldUpdateOrderExtensionRequestInfoToValid()
 
             coEvery {
-                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any())
+                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any(), any())
             } throws Throwable()
 
-            viewModel.sendOrderExtensionRequest(orderId)
+            viewModel.sendOrderExtensionRequest(orderId, extensionTime)
 
             coVerify {
-                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any())
+                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any(), any())
             }
 
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.items.isNotEmpty())

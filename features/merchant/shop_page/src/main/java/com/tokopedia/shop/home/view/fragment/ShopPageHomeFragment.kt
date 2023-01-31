@@ -2622,20 +2622,22 @@ open class ShopPageHomeFragment :
         shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
         shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
-        shopPageHomeTracking.impressionProductPersonalizationReminder(
-            isOwner,
-            isLogin,
-            shopHomeProductViewModel?.name ?: "",
-            shopHomeProductViewModel?.id ?: "",
-            shopHomeProductViewModel?.displayedPrice ?: "",
-            shopHomeProductViewModel?.recommendationType ?: "",
-            viewModel?.userId.orEmpty(),
-            shopName,
-            ShopUtil.getActualPositionFromIndex(itemPosition),
-            shopHomeCarousellProductUiModel?.header?.title ?: "",
-            customDimensionShopPage,
-            shopHomeProductViewModel?.categoryBreadcrumbs ?: ""
-        )
+        if (!isOwner) { // Not sending impression tracker if seller is seeing the widget from his own shop
+            shopPageHomeTracking.impressionProductPersonalizationReminder(
+                isOwner,
+                isLogin,
+                shopHomeProductViewModel?.name ?: "",
+                shopHomeProductViewModel?.id ?: "",
+                shopHomeProductViewModel?.displayedPrice ?: "",
+                shopHomeProductViewModel?.recommendationType ?: "",
+                viewModel?.userId.orEmpty(),
+                shopName,
+                ShopUtil.getActualPositionFromIndex(itemPosition),
+                shopHomeCarousellProductUiModel?.header?.title ?: "",
+                customDimensionShopPage,
+                shopHomeProductViewModel?.categoryBreadcrumbs ?: ""
+            )
+        }
     }
 
     override fun onCarouselProductItemClicked(
