@@ -56,7 +56,6 @@ class DynamicIconMacroItemViewHolder(
         duration: Long,
         pathInterpolator: Interpolator
     ) {
-        scaleAnimator = ValueAnimator.ofFloat()
         scaleAnimator.setFloatValues(start, end)
         scaleAnimator.removeAllListeners()
         scaleAnimator.removeAllUpdateListeners()
@@ -76,7 +75,6 @@ class DynamicIconMacroItemViewHolder(
         duration: Long,
         pathInterpolator: Interpolator
     ) {
-        rippleAnimator = ValueAnimator.ofFloat()
         rippleAnimator.setFloatValues(start, end)
         rippleAnimator.removeAllListeners()
         rippleAnimator.removeAllUpdateListeners()
@@ -125,6 +123,30 @@ class DynamicIconMacroItemViewHolder(
                                     pathOutputClick
                                 )
                             }
+
+                            scaleAnimator.addListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(p0: Animator) {
+                                    // no-op
+                                }
+
+                                override fun onAnimationCancel(p0: Animator) {
+                                    // no-op
+                                }
+
+                                override fun onAnimationStart(p0: Animator) {
+                                    // no-op
+                                }
+
+                                override fun onAnimationEnd(p0: Animator) {
+                                    animateScaling(
+                                        SCALE_MIN_IMAGE,
+                                        SCALE_MAX_IMAGE,
+                                        durationOutputClick,
+                                        pathOutputClick
+                                    )
+                                }
+                            })
+
                             if (currentScaleRipple == SCALE_MAX_IMAGE) {
                                 scalingRipple(
                                     SCALE_MAX_IMAGE,
@@ -133,54 +155,32 @@ class DynamicIconMacroItemViewHolder(
                                     pathOutputClick
                                 )
                             }
+                            rippleAnimator.addListener(object : Animator.AnimatorListener {
+                                override fun onAnimationStart(p0: Animator) {
+                                    // no-op
+                                }
+
+                                override fun onAnimationEnd(p0: Animator) {
+                                    if (currentScaleRipple == SCALE_MAX_IMAGE) {
+                                        scalingRipple(
+                                            end = SCALE_MIN_IMAGE,
+                                            duration = durationOutputClick,
+                                            pathInterpolator = pathOutputClick
+                                        )
+                                    }
+                                }
+
+                                override fun onAnimationCancel(p0: Animator) {
+                                    // no-op
+                                }
+
+                                override fun onAnimationRepeat(p0: Animator) {
+                                    // no-op
+                                }
+                            })
                         },
-                        Int.ZERO.toLong()
+                        if (event.eventTime - event.downTime <= durationOutputClick) durationOutputClick - (event.eventTime - event.downTime) else 0.toLong()
                     )
-                    rippleAnimator.addListener(object : Animator.AnimatorListener {
-                        override fun onAnimationStart(p0: Animator) {
-                            // no-op
-                        }
-
-                        override fun onAnimationEnd(p0: Animator) {
-                            if (currentScaleRipple == SCALE_MAX_IMAGE) {
-                                scalingRipple(
-                                    end = SCALE_MIN_IMAGE,
-                                    duration = durationOutputClick,
-                                    pathInterpolator = pathOutputClick
-                                )
-                            }
-                        }
-
-                        override fun onAnimationCancel(p0: Animator) {
-                            // no-op
-                        }
-
-                        override fun onAnimationRepeat(p0: Animator) {
-                            // no-op
-                        }
-                    })
-                    scaleAnimator.addListener(object : Animator.AnimatorListener {
-                        override fun onAnimationRepeat(p0: Animator) {
-                            // no-op
-                        }
-
-                        override fun onAnimationCancel(p0: Animator) {
-                            // no-op
-                        }
-
-                        override fun onAnimationStart(p0: Animator) {
-                            // no-op
-                        }
-
-                        override fun onAnimationEnd(p0: Animator) {
-                            animateScaling(
-                                SCALE_MIN_IMAGE,
-                                SCALE_MAX_IMAGE,
-                                durationOutputClick,
-                                pathOutputClick
-                            )
-                        }
-                    })
                 }
                 MotionEvent.ACTION_DOWN -> {
                     longPressHandler.postDelayed(
