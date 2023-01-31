@@ -218,6 +218,25 @@
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "userId": ".*"
+    },
+    {
+      "event": "view_item",
+      "eventAction": "impression - channel card",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod) - .* - \\d+ - (true|false) - .* - (promo|no promo) - .*",
+      "trackerId": "40969",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "\\d+ - .* - \\d+ - (true|false) - .* - (promo|no promo) - .*",
+          "creative_slot": "\\d+",
+          "item_id": "\\d+",
+          "item_name": "/play/explorewidget"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }

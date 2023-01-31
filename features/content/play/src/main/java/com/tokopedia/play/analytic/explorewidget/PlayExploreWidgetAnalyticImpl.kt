@@ -5,13 +5,18 @@ import com.tokopedia.play.analytic.*
 import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.Tracker
+import com.tokopedia.track.builder.util.BaseTrackerConst
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import java.util.HashMap
 
 /**
  * @author by astidhiyaa on 03/01/23
@@ -19,13 +24,15 @@ import dagger.assisted.AssistedInject
  */
 class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
     @Assisted private val channelInfo: PlayChannelInfoUiModel,
+    @Assisted private val trackingQueue: TrackingQueue,
     private val userSession: UserSessionInterface
 ) : PlayExploreWidgetAnalytic {
 
     @AssistedFactory
     interface Factory : PlayExploreWidgetAnalytic.Factory {
         override fun create(
-            channelInfo: PlayChannelInfoUiModel
+            channelInfo: PlayChannelInfoUiModel,
+            trackingQueue: TrackingQueue
         ): PlayExploreWidgetAnalyticImpl
     }
 
@@ -33,13 +40,18 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
         get() = channelInfo.id
 
     private val channelType: String
-        get() = channelInfo.channelType.value
+        get() = channelInfo.channelType.value.lowercase()
 
     private val userId: String
         get() = if (userSession.isLoggedIn) userSession.userId else "0"
 
     private val sessionIris: String
         get() = TrackApp.getInstance().gtm.irisSessionId
+
+    private val Boolean.promoToString: String
+        get() {
+            return if (this) "promo" else "no promo"
+        }
 
     override fun impressExploreIcon() {
         Tracker.Builder()
@@ -122,12 +134,11 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
          * {channel_id live room} - {live/vod live room} - {channel_id clicked} - {card_type} - {position} -
          * {is_autoplay} - {category name} - {promo/no promo} - {recommendation_type}
          */
-        val promoValue = if (selectedChannel.hasPromo) "promo" else "no promo"
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_CONTENT)
             .setEventAction("click - channel card")
             .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
-            .setEventLabel("$channelId - $channelType - ${selectedChannel.channelId} - ${selectedChannel.channelType.value} - ${position + 1} - $isAutoplay - $categoryName - $promoValue - ${selectedChannel.recommendationType}")
+            .setEventLabel("$channelId - $channelType - ${selectedChannel.channelId} - ${selectedChannel.channelType.value} - ${position + 1} - $isAutoplay - $categoryName - ${selectedChannel.hasPromo.promoToString} - ${selectedChannel.recommendationType}")
             .setCustomProperty(KEY_TRACK_TRACKER_ID, "39860")
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(KEY_TRACK_CURRENT_SITE)
@@ -228,6 +239,35 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             .setUserId(userId)
             .build()
             .send()
+    }
+
+    override fun impressChannelCard(
+        item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
+        position: Int,
+        categoryName: String
+    ) {
+        val map = BaseTrackerBuilder().constructBasicPromotionView(
+            event = "promoView",
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "impression - channel card",
+            eventLabel = "$channelId - $channelType - ${item.channelType.value.lowercase()} - ${position + 1} - ${config.autoPlay} - $categoryName - ${item.hasPromo.promoToString} - ${item.recommendationType}",
+            promotions = listOf(
+                BaseTrackerConst.Promotion(
+                    id = item.channelId,
+                    name = "/play/explorewidget",
+                    creative = "${item.channelId} - ${item.channelType.value.lowercase()} - ${position + 1} - ${config.autoPlay} - $categoryName - ${item.hasPromo.promoToString} - ${item.recommendationType}",
+                    position = (position + 1).toString()
+                )
+            )
+        )
+            .appendUserId(userId)
+            .appendBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .appendCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .appendCustomKeyValue(KEY_TRACK_TRACKER_ID, "40969")
+            .build()
+
+        trackingQueue.putEETracking(map as? HashMap<String, Any>)
     }
 
     private fun itemToBundle(

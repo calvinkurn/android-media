@@ -27,7 +27,7 @@ class PlayAnalytic2 @AssistedInject constructor(
     shareExperienceAnalytic: PlayShareExperienceAnalytic,
     tagItemsAnalytic: PlayTagItemsAnalytic.Factory,
     kebabAnalytic: PlayKebabAnalytic.Factory,
-    exploreWidgetAnalytic: PlayExploreWidgetAnalytic.Factory,
+    exploreWidgetAnalytic: PlayExploreWidgetAnalytic.Factory
 ) : PlayPartnerAnalytic by partnerAnalytic,
     PlayLikeAnalytic by likeAnalytic,
     PlaySocketAnalytic by socketAnalytic,
@@ -35,13 +35,13 @@ class PlayAnalytic2 @AssistedInject constructor(
     PlayShareExperienceAnalytic by shareExperienceAnalytic,
     PlayTagItemsAnalytic by tagItemsAnalytic.create(trackingQueue, channelInfo),
     PlayKebabAnalytic by kebabAnalytic.create(channelInfo),
-    PlayExploreWidgetAnalytic by exploreWidgetAnalytic.create(channelInfo){
+    PlayExploreWidgetAnalytic by exploreWidgetAnalytic.create(channelInfo, trackingQueue) {
 
     @AssistedFactory
     interface Factory {
         fun create(
             trackingQueue: TrackingQueue,
-            channelInfo: PlayChannelInfoUiModel,
+            channelInfo: PlayChannelInfoUiModel
         ): PlayAnalytic2
     }
 }

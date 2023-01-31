@@ -34,9 +34,12 @@ import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
+import com.tokopedia.play.widget.ui.PlayWidgetLargeView
+import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
-import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumViewHolder
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -58,7 +61,8 @@ class PlayExploreWidgetFragment @Inject constructor(
     private val analyticFactory: PlayAnalytic2.Factory
 ) : DialogFragment(),
     ChipsViewHolder.Chips.Listener,
-    PlayWidgetMediumViewHolder.Channel.Listener {
+    PlayWidgetListener,
+    PlayWidgetAnalyticListener {
 
     private var _binding: FragmentPlayExploreWidgetBinding? = null
     private val binding: FragmentPlayExploreWidgetBinding get() = _binding!!
@@ -69,7 +73,10 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     private lateinit var viewModel: PlayViewModel
 
-    private val coordinator: PlayExploreWidgetCoordinator = PlayExploreWidgetCoordinator(this)
+    private val coordinator: PlayExploreWidgetCoordinator = PlayExploreWidgetCoordinator(this).apply {
+        setListener(this@PlayExploreWidgetFragment)
+        setAnalyticListener(this@PlayExploreWidgetFragment)
+    }
 
     private val widgetAdapter = WidgetAdapter(coordinator)
 
@@ -82,7 +89,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     private val gridWidgetLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+        StaggeredGridLayoutManager(SPAN_CHANNEL, RecyclerView.VERTICAL)
     }
 
     private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
@@ -335,28 +342,33 @@ class PlayExploreWidgetFragment @Inject constructor(
     /**
      * Card Widget
      */
-    override fun onChannelClicked(view: View, item: PlayWidgetChannelUiModel, position: Int) {
-        analytic?.clickContentCard(item, position, viewModel.selectedChips, viewModel.exploreWidgetConfig.autoPlay)
-        router.route(requireContext(), item.appLink)
-    }
-
-    override fun onChannelImpressed(view: View, item: PlayWidgetChannelUiModel, position: Int) {}
-
-    override fun onMenuActionButtonClicked(
-        view: View,
-        item: PlayWidgetChannelUiModel,
-        position: Int
-    ) {
-        // No op
-    }
-
-    override fun onToggleReminderChannelClicked(
-        item: PlayWidgetChannelUiModel,
+    override fun onToggleReminderClicked(
+        view: PlayWidgetLargeView,
+        channelId: String,
         reminderType: PlayWidgetReminderType,
         position: Int
     ) {
-        viewModel.submitAction(UpdateReminder(item.channelId, reminderType))
-        analytic?.clickRemind(item.channelId)
+        viewModel.submitAction(UpdateReminder(channelId, reminderType))
+        analytic?.clickRemind(channelId)
+    }
+
+    override fun onClickChannelCard(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
+        channelPositionInList: Int
+    ) {
+        analytic?.clickContentCard(item, channelPositionInList, viewModel.selectedChips, viewModel.exploreWidgetConfig.autoPlay)
+        router.route(requireContext(), item.appLink)
+    }
+
+    override fun onImpressChannelCard(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
+        channelPositionInList: Int
+    ) {
+        analytic?.impressChannelCard(item, config, channelPositionInList, viewModel.selectedChips)
     }
 
     override fun dismiss() {
