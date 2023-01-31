@@ -78,6 +78,10 @@ class AffiliatePromotionCardItemVH(
     }
 
     private fun sendClickEvent(item: AffiliateSearchData.SearchAffiliate.Data.Card.Item?) {
+        var label = getStatus(item)
+        if (item?.ssaStatus == true) {
+            label += " - komisi  extra"
+        }
         AffiliateAnalytics.trackEventImpression(
             AffiliateAnalytics.EventKeys.SELECT_CONTENT,
             AffiliateAnalytics.ActionKeys.CLICK_PROMOSIKAN_SEARCH_RESULT_PAGE,
@@ -86,7 +90,7 @@ class AffiliatePromotionCardItemVH(
             item?.productID,
             bindingAdapterPosition + 1,
             item?.title,
-            "${item?.productID} - ${item?.commission?.amount} - ${getStatus(item)}",
+            "${item?.productID} - ${item?.commission?.amount} - $label",
             AffiliateAnalytics.ItemKeys.AFFILIATE_SEARCH_PROMOSIKAN_CLICK
         )
     }
