@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -219,7 +218,7 @@ class ChatbotFragment :
     ChatbotSendButtonListener,
     ChatbotFloatingInvoice.InvoiceListener,
     ReplyBoxClickListener,
-    ChatbotReplyBottomSheetAdapter.ReplyBubbleBottomSheetListener{
+    ChatbotReplyBottomSheetAdapter.ReplyBubbleBottomSheetListener {
 
     val SNACK_BAR_TEXT_OK = "OK"
     val BOT_OTHER_REASON_TEXT = "bot_other_reason"
@@ -1686,16 +1685,16 @@ class ChatbotFragment :
     }
 
     override fun showReplyOption(messageUiModel: MessageUiModel, messageBubble: TextView?) {
-            activity?.let {
-                replyBubbleBottomSheet = ChatbotReplyBottomSheet(messageUiModel, this , replyBubbleEnabled)
-                replyBubbleBottomSheet?.setOnMenuClickListener { menu ->
-                    onClickReplyMenuListener(menu, messageUiModel, messageBubble)
-                }
-                replyBubbleBottomSheet?.show(
-                    childFragmentManager,
-                    context?.resources?.getString(R.string.chatbot_reply_bubble_bottomsheet_retry)
-                )
+        activity?.let {
+            replyBubbleBottomSheet = ChatbotReplyBottomSheet(messageUiModel, this, replyBubbleEnabled)
+            replyBubbleBottomSheet?.setOnMenuClickListener { menu ->
+                onClickReplyMenuListener(menu, messageUiModel, messageBubble)
             }
+            replyBubbleBottomSheet?.show(
+                childFragmentManager,
+                context?.resources?.getString(R.string.chatbot_reply_bubble_bottomsheet_retry)
+            )
+        }
     }
 
     private fun onClickReplyMenuListener(
@@ -1704,34 +1703,41 @@ class ChatbotFragment :
         messageBubble: TextView?
     ) {
         replyBubbleBottomSheet?.dismiss()
-        when(menu) {
+        when (menu) {
             is ChatbotReplyOptionsUiModel.Reply -> {
-                senderNameForReply = messageUiModel.from
-                setGuidelineForReplyBubble(true)
-                replyBubbleContainer?.composeReplyData(
-                    messageUiModel,
-                    "",
-                    true,
-                    getUserNameForReplyBubble.getUserName(messageUiModel)
-                )
+                sendReplyToSpecificChat(messageUiModel)
             }
             is ChatbotReplyOptionsUiModel.CopyToClipboard -> {
-                copyToClipBoard(messageUiModel.message, messageBubble)
+                copyToClipBoard(messageBubble)
             }
         }
     }
 
-    private fun copyToClipBoard(journey: String?, messageBubble: TextView?) {
+    private fun sendReplyToSpecificChat(messageUiModel: MessageUiModel) {
+        senderNameForReply = messageUiModel.from
+        setGuidelineForReplyBubble(true)
+        replyBubbleContainer?.composeReplyData(
+            messageUiModel,
+            "",
+            true,
+            getUserNameForReplyBubble.getUserName(messageUiModel)
+        )
+    }
+
+    private fun copyToClipBoard(messageBubble: TextView?) {
         activity?.let {
             val clipboard = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
             val clip = ClipData.newPlainText(
-                COPY_TO_CLIPBOARD_LABEL, messageBubble?.text.toString()
+                COPY_TO_CLIPBOARD_LABEL,
+                messageBubble?.text.toString()
             )
             clipboard.setPrimaryClip(clip)
-            _viewBinding?.smallReplyBox?.showToaster(context?.resources?.getString(
-                R.string.chatbot_bottomsheet_copy_success_toaster
-            ).toBlankOrString())
+            _viewBinding?.smallReplyBox?.showToaster(
+                context?.resources?.getString(
+                    R.string.chatbot_bottomsheet_copy_success_toaster
+                ).toBlankOrString()
+            )
         }
     }
 
