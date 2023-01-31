@@ -416,7 +416,8 @@ interface DynamicProductDetailListener {
     fun onClickProductInBundling(
         bundleId: String,
         bundleProductId: String,
-        componentTrackDataModel: ComponentTrackDataModel
+        componentTrackDataModel: ComponentTrackDataModel,
+        isOldBundlingWidget: Boolean = true
     )
 
     /**
