@@ -20,11 +20,11 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toPx
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation.R
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
@@ -49,12 +49,12 @@ class LottieBottomNavbar : LinearLayout {
     private var buttonColor: Int = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300)
     private var activeButtonColor: Int = Color.TRANSPARENT
     private val isDarkMode = context?.isDarkMode() ?: false
-    private var rippleAnimator = ValueAnimator.ofFloat()
-    private var currentScaleRipple = 0f
-    private val pathInputClick = UnifyMotion.EASE_OVERSHOOT
-    private val pathOutputClick = UnifyMotion.EASE_IN_OUT
-    private val durationInputClick = UnifyMotion.T3
-    private val durationOutputClick = UnifyMotion.T2
+
+    private var currentRippleScale = 0f
+    private val interpolatorEnter = UnifyMotion.EASE_OVERSHOOT
+    private val interpolatorExit = UnifyMotion.EASE_IN_OUT
+    private val durationEnter = UnifyMotion.T3
+    private val durationExit = UnifyMotion.T2
 
     constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs) {
         getLayoutAtr(attrs)
@@ -384,48 +384,43 @@ class LottieBottomNavbar : LinearLayout {
             val onLongPress = Runnable {
                 rootButtonContainer.performLongClick()
             }
+            val rippleAnimator = ValueAnimator.ofFloat()
             rootButtonContainer.setOnTouchListener { _, event ->
                 when (event?.action) {
                     MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                         longPressHandler.removeCallbacks(onLongPress)
                         Handler(Looper.getMainLooper()).postDelayed(
                             {
-                                if (currentScaleRipple == SCALE_MAX_IMAGE) {
+                                rippleAnimator.addListener(
+                                    onEnd = {
+                                        // if user up before enter animation finished,
+                                        // do exit animation after enter animation finished
+                                        if (currentRippleScale == SCALE_MAX_IMAGE) {
+                                            scalingRipple(
+                                                end = SCALE_MIN_IMAGE,
+                                                duration = durationExit,
+                                                pathInterpolator = interpolatorExit,
+                                                rippleView = rippleView,
+                                                rippleAnimator = rippleAnimator
+                                            )
+                                        }
+                                    }
+                                )
+                                // if user up/cancel after enter animation finished (ex: long press)
+                                if (currentRippleScale == SCALE_MAX_IMAGE) {
+                                    // do exit animation
                                     scalingRipple(
                                         SCALE_MAX_IMAGE,
                                         SCALE_MIN_IMAGE,
-                                        durationOutputClick,
-                                        pathOutputClick,
-                                        rippleView
+                                        durationExit,
+                                        interpolatorExit,
+                                        rippleView,
+                                        rippleAnimator
                                     )
                                 }
                             },
                             Int.ZERO.toLong()
                         )
-                        rippleAnimator.addListener(object : Animator.AnimatorListener {
-                            override fun onAnimationStart(p0: Animator) {
-                                // no-op
-                            }
-
-                            override fun onAnimationEnd(p0: Animator) {
-                                if (currentScaleRipple == SCALE_MAX_IMAGE) {
-                                    scalingRipple(
-                                        end = SCALE_MIN_IMAGE,
-                                        duration = durationOutputClick,
-                                        pathInterpolator = pathOutputClick,
-                                        rippleView = rippleView
-                                    )
-                                }
-                            }
-
-                            override fun onAnimationCancel(p0: Animator) {
-                                // no-op
-                            }
-
-                            override fun onAnimationRepeat(p0: Animator) {
-                                // no-op
-                            }
-                        })
                     }
                     MotionEvent.ACTION_DOWN -> {
                         longPressHandler.postDelayed(
@@ -434,12 +429,14 @@ class LottieBottomNavbar : LinearLayout {
                         )
                         Handler(Looper.getMainLooper()).postDelayed(
                             {
+                                // start enter animation ripple
                                 scalingRipple(
                                     SCALE_MIN_IMAGE,
                                     SCALE_MAX_IMAGE,
-                                    durationInputClick,
-                                    pathInputClick,
-                                    rippleView
+                                    durationEnter,
+                                    interpolatorEnter,
+                                    rippleView,
+                                    rippleAnimator
                                 )
                             },
                             Int.ZERO.toLong()
@@ -582,18 +579,17 @@ class LottieBottomNavbar : LinearLayout {
     }
 
     private fun scalingRipple(
-        start: Float = currentScaleRipple,
+        start: Float = currentRippleScale,
         end: Float,
         duration: Long,
         pathInterpolator: Interpolator,
-        rippleView: View
+        rippleView: View,
+        rippleAnimator: ValueAnimator
     ) {
-        rippleAnimator = ValueAnimator.ofFloat()
         rippleAnimator.setFloatValues(start, end)
         rippleAnimator.removeAllListeners()
         rippleAnimator.removeAllUpdateListeners()
         rippleAnimator.addUpdateListener {
-            rippleView.visible()
             val value = it.animatedValue as Float
             if (start < end) {
                 rippleView.scaleX = value
@@ -602,7 +598,7 @@ class LottieBottomNavbar : LinearLayout {
             val alpha =
                 ((value - SCALE_MIN_IMAGE) / (SCALE_MAX_IMAGE - SCALE_MIN_IMAGE)) * MAX_ALPHA_RIPPLE
             rippleView.alpha = alpha
-            currentScaleRipple = value
+            currentRippleScale = value
         }
         rippleAnimator.duration = duration
         rippleAnimator.interpolator = pathInterpolator
