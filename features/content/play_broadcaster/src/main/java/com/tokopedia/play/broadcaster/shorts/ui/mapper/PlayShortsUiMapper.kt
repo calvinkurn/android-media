@@ -43,6 +43,7 @@ class PlayShortsUiMapper @Inject constructor(
         return PlayShortsConfigUiModel(
             shortsId = if (config.draftShortsId == 0) "" else config.draftShortsId.toString(),
             shortsAllowed = response.authorConfig.shortVideoAllowed,
+            isBanned = response.authorConfig.isBanned,
             tncList = response.authorConfig.tnc.map {
                 TermsAndConditionUiModel(desc = it.description)
             },
