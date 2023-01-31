@@ -8,9 +8,14 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
  */
 
 data class FetchPersonaListResponse(
+    @SerializedName("fetchPersonaListData")
+    val data: PersonaListDataModel = PersonaListDataModel()
+)
+
+data class PersonaListDataModel(
     @SerializedName("error") val error: Boolean = true,
     @SerializedName("errorMsg") val errorMsg: String = String.EMPTY,
-    @SerializedName("data") val data: List<PersonaListModel> = listOf()
+    @SerializedName("data") val personaList: List<PersonaListModel> = listOf()
 )
 
 data class PersonaListModel(

@@ -29,10 +29,10 @@ class GetPersonaListUseCase @Inject constructor(
         try {
             val response = Gson().fromJson(dummy, FetchPersonaListResponse::class.java)
             //val response = executeOnBackground()
-            if (response.error) {
-                throw MessageErrorException(response.errorMsg)
+            if (response.data.error) {
+                throw MessageErrorException(response.data.errorMsg)
             }
-            return mapper.mapToUiModel(response.data)
+            return mapper.mapToUiModel(response.data.personaList)
         } catch (e: Exception) {
             throw RuntimeException(e.message)
         }
@@ -44,64 +44,66 @@ class GetPersonaListUseCase @Inject constructor(
         """
         const val dummy = """
             {
-                "error": false,
-                "errorMsg": "",
-                "data": [
-                    {
-                        "name": "mom-and-pop",
-                        "header": {
-                            "title": "Rumahan",
-                            "subtitle": "Pemilik Toko",
-                            "image": "",
-                            "backgroundImage": ""
+                "fetchPersonaListData" : {
+                    "error": false,
+                    "errorMsg": "",
+                    "data": [
+                        {
+                            "name": "mom-and-pop",
+                            "header": {
+                                "title": "Rumahan",
+                                "subtitle": "Pemilik Toko",
+                                "image": "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_avatar_rumahan-min.png",
+                                "backgroundImage": "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_background_rumahan-min.png"
+                            },
+                            "body": {
+                                "title": "Pilih tipe ini jika kamu:",
+                                "itemList": [
+                                    "Menerima min. 2 pesanan per minggu",
+                                    "Belum punya toko fisik (offline)",
+                                    "Mengurus sendiri operasional toko",
+                                    "Mengakses Tokopedia Seller di desktop"
+                                ]
+                            }
                         },
-                        "body": {
-                            "title": "Pilih tipe ini jika kamu:",
-                            "itemList": [
-                                "Menerima min. 2 pesanan per minggu",
-                                "Belum punya toko fisik (offline)",
-                                "Mengurus sendiri operasional toko",
-                                "Mengakses Tokopedia Seller di desktop"
-                            ]
-                        }
-                    },
-                    {
-                        "name": "corporate-supervisor-owner",
-                        "header": {
-                            "title": "Gedongan",
-                            "subtitle": "Pemilik Toko",
-                            "image": "",
-                            "backgroundImage": ""
+                        {
+                            "name": "corporate-supervisor-owner",
+                            "header": {
+                                "title": "Gedongan",
+                                "subtitle": "Pemilik Toko",
+                                "image": "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_avatar_gedongan-min.png",
+                                "backgroundImage": "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_background_gedongan-min.png"
+                            },
+                            "body": {
+                                "title": "Pilih tipe ini jika kamu:",
+                                "itemList": [
+                                    "Menerima 1-10 pesanan per hari",
+                                    "Punya toko fisik (offline)",
+                                    "Punya pegawai yang mengurus operasional toko",
+                                    "Sering mencari peluang untuk strategi baru bisnismu"
+                                ]
+                            }
                         },
-                        "body": {
-                            "title": "Pilih tipe ini jika kamu:",
-                            "itemList": [
-                                "Menerima 1-10 pesanan per hari",
-                                "Punya toko fisik (offline)",
-                                "Punya pegawai yang mengurus operasional toko",
-                                "Sering mencari peluang untuk strategi baru bisnismu"
-                            ]
+                        {
+                            "name": "corporate-employee",
+                            "header": {
+                                "title": "Gedongan",
+                                "subtitle": "Admin Toko",
+                                "image": "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_avatar_gedongan-min.png",
+                                "backgroundImage": "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_background_gedongan-min.png"
+                            },
+                            "body": {
+                                "title": "Pilih tipe ini jika kamu:",
+                                "itemList": [
+                                    "Menerima 1-10 pesanan per hari",
+                                    "Punya toko fisik (offline)",
+                                    "Mengurus operasional toko",
+                                    "Mengakses Tokopedia Seller di desktop dan aplikasi HP"
+                                ]
+                            }
                         }
-                    },
-                    {
-                        "name": "corporate-employee",
-                        "header": {
-                            "title": "Gedongan",
-                            "subtitle": "Admin Toko",
-                            "image": "",
-                            "backgroundImage": ""
-                        },
-                        "body": {
-                            "title": "Pilih tipe ini jika kamu:",
-                            "itemList": [
-                                "Menerima 1-10 pesanan per hari",
-                                "Punya toko fisik (offline)",
-                                "Mengurus operasional toko",
-                                "Mengakses Tokopedia Seller di desktop dan aplikasi HP"
-                            ]
-                        }
-                    }
-                ]
+                    ]
+                }
             }
         """
     }

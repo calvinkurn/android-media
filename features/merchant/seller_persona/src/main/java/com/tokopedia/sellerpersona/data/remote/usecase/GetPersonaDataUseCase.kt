@@ -3,7 +3,7 @@ package com.tokopedia.sellerpersona.data.remote.usecase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.sellerpersona.data.remote.model.GetPersonaStatusResponse
+import com.tokopedia.sellerpersona.data.remote.model.PersonaStatusModel
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
@@ -21,11 +21,12 @@ class GetPersonaDataUseCase @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) {
 
-    suspend fun execute(): PersonaDataUiModel {
+    suspend fun execute(shopId: String, page: String): PersonaDataUiModel {
         return withContext(dispatchers.io) {
             try {
-                val personaStatusAsync = async { getPersonaStatusUseCase.executeOnBackground() }
+                val personaStatusAsync = async { getPersonaStatusUseCase.execute(shopId, page) }
                 val personaListAsync = async { getPersonaListUseCase.execute() }
+
                 return@withContext getPersonaData(
                     personaStatusAsync.await(),
                     personaListAsync.await()
@@ -37,16 +38,16 @@ class GetPersonaDataUseCase @Inject constructor(
     }
 
     private fun getPersonaData(
-        personaStatus: GetPersonaStatusResponse,
+        data: PersonaStatusModel,
         personaList: List<PersonaUiModel>
     ): PersonaDataUiModel {
         val persona = personaList.firstOrNull {
-            it.name.equals(personaStatus.data.personaStatus, true)
+            it.name.equals(data.persona, true)
         }
         return PersonaDataUiModel(
-            persona = personaStatus.data.persona,
-            personaStatus = getPersonaStatusType(personaStatus.data.personaStatus),
-            personaData = persona ?: PersonaUiModel(name = personaStatus.data.persona)
+            persona = data.persona,
+            personaStatus = getPersonaStatusType(data.status),
+            personaData = persona ?: PersonaUiModel(name = data.persona)
         )
     }
 

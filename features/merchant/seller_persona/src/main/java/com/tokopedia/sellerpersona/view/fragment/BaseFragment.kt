@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.tokopedia.sellerpersona.di.SellerPersonaComponent
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * Created by @ilhamsuaib on 17/01/23.
@@ -15,7 +16,7 @@ import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
 
 abstract class BaseFragment<T : ViewBinding> : Fragment() {
 
-    protected var binding: T? = null
+    protected var binding: T? by autoClearedNullable()
     protected val daggerComponent: SellerPersonaComponent? by lazy {
         return@lazy (activity as? SellerPersonaActivity)?.component
     }
@@ -35,7 +36,7 @@ abstract class BaseFragment<T : ViewBinding> : Fragment() {
         return viewBinding.root
     }
 
-    open fun inject() {}
-
     abstract fun bind(layoutInflater: LayoutInflater, container: ViewGroup?): T
+
+    open fun inject() {}
 }

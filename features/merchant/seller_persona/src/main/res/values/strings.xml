@@ -19,4 +19,6 @@
     <string name="sp_select_this_type_if">Pilih tipe ini jika kamu:</string>
     <string name="sp_next">Selanjutnya</string>
     <string name="sp_previous">Sebelumnya</string>
+    <string name="sp_result_list_section">Kamu pemilik toko %1$s karena:</string>
+    <string name="sp_result_persona_seller_type_status">Personalisasi berdasarkan tipe Seller</string>
 </resources>

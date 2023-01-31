@@ -25,7 +25,7 @@ class SelectPersonaTypeViewModel @Inject constructor(
     val personaList: LiveData<Result<List<PersonaUiModel>>>
         get() = _personaList
 
-    private val _personaList: MutableLiveData<Result<List<PersonaUiModel>>> = MutableLiveData()
+    private val _personaList = MutableLiveData<Result<List<PersonaUiModel>>>()
 
     fun fetchPersonaList() {
         launchCatchError(block = {

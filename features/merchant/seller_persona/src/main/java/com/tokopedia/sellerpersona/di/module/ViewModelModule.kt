@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.sellerpersona.di.SellerPersonaScope
+import com.tokopedia.sellerpersona.view.viewmodel.PersonaResultViewModel
 import com.tokopedia.sellerpersona.view.viewmodel.PersonaSharedViewModel
 import com.tokopedia.sellerpersona.view.viewmodel.QuestionnaireViewModel
 import com.tokopedia.sellerpersona.view.viewmodel.SelectPersonaTypeViewModel
@@ -37,4 +38,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(QuestionnaireViewModel::class)
     abstract fun provideQuestionnaireViewModel(viewModel: QuestionnaireViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PersonaResultViewModel::class)
+    abstract fun providePersonaResultViewModel(viewModel: PersonaResultViewModel): ViewModel
 }

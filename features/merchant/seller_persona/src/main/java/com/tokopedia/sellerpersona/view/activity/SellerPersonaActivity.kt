@@ -11,20 +11,28 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.data.local.PersonaSharedPreference
+import com.tokopedia.sellerpersona.data.remote.model.PersonaStatusModel
 import com.tokopedia.sellerpersona.databinding.ActivitySellerPersonaBinding
 import com.tokopedia.sellerpersona.di.DaggerSellerPersonaComponent
 import com.tokopedia.sellerpersona.di.SellerPersonaComponent
-import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
 import com.tokopedia.sellerpersona.view.viewmodel.PersonaSharedViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -48,18 +56,9 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
         super.onCreate(savedInstanceState)
         initInjector()
         setContentView()
-        setWhiteStatusBar()
         fetchPersonaData()
-    }
-
-    private fun fetchPersonaData() {
-        viewModel.fetchPersonaData()
-        observe(viewModel.personaData) {
-            when (it) {
-                is Success -> setNavigationStartDestination(it.data)
-                is Fail -> showErrorState(it.throwable)
-            }
-        }
+        setWhiteStatusBar()
+        observePersonaData()
     }
 
     override fun getComponent(): SellerPersonaComponent {
@@ -77,6 +76,29 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
         }
     }
 
+    private fun observePersonaData() {
+        observe(viewModel.personaStatus) {
+            dismissLoadingState()
+            when (it) {
+                is Success -> setNavigationStartDestination(it.data)
+                is Fail -> handleError(it.throwable)
+            }
+        }
+    }
+
+    private fun fetchPersonaData() {
+        showLoadingState()
+        viewModel.fetchPersonaData()
+    }
+
+    private fun showLoadingState() {
+        binding?.loaderSellerPersona?.show()
+    }
+
+    private fun dismissLoadingState() {
+        binding?.loaderSellerPersona?.gone()
+    }
+
     private fun initInjector() {
         component.inject(this)
     }
@@ -87,7 +109,8 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
         }
     }
 
-    private fun setNavigationStartDestination(persona: PersonaDataUiModel) {
+    private fun setNavigationStartDestination(data: PersonaStatusModel) {
+        binding?.globalErrorSellerPersona?.gone()
         val navHostFragment: NavHostFragment? = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as? NavHostFragment
 
@@ -95,7 +118,7 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
             val inflater = navController.navInflater
             val graph = inflater.inflate(R.navigation.nav_graph)
 
-            val defaultDestination = if (persona.personaStatus == PersonaStatus.ACTIVE) {
+            val defaultDestination = if (data.status == PersonaStatus.ACTIVE_CONST) {
                 R.id.resultFragment
             } else {
                 R.id.openingFragment
@@ -125,7 +148,36 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
         }
     }
 
-    private fun showErrorState(throwable: Throwable) {
+    private fun handleError(throwable: Throwable) {
+        when (throwable) {
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> showGlobalError(
+                GlobalError.NO_CONNECTION
+            )
+            is RuntimeException -> {
+                when (throwable.localizedMessage?.toIntOrNull()) {
+                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(
+                        GlobalError.NO_CONNECTION
+                    )
+                    ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
+                    ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
+                    else -> {
+                        showGlobalError(GlobalError.SERVER_ERROR)
+                    }
+                }
+            }
+            else -> {
+                showGlobalError(GlobalError.SERVER_ERROR)
+            }
+        }
+    }
 
+    private fun showGlobalError(type: Int) {
+        binding?.run {
+            globalErrorSellerPersona.setType(type)
+            globalErrorSellerPersona.setActionClickListener {
+                viewModel.fetchPersonaData()
+            }
+            globalErrorSellerPersona.visible()
+        }
     }
 }

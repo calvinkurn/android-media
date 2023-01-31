@@ -5,5 +5,10 @@ package com.tokopedia.sellerpersona.view.model
  */
 
 enum class PersonaStatus {
-    INACTIVE, ACTIVE, UNDEFINED
+    INACTIVE, ACTIVE, UNDEFINED;
+
+    companion object {
+        const val INACTIVE_CONST = "0"
+        const val ACTIVE_CONST = "1"
+    }
 }

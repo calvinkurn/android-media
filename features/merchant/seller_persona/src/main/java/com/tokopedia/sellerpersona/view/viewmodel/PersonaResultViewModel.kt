@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerpersona.common.Constants
-import com.tokopedia.sellerpersona.data.remote.model.PersonaStatusModel
-import com.tokopedia.sellerpersona.data.remote.usecase.GetPersonaStatusUseCase
+import com.tokopedia.sellerpersona.data.remote.usecase.GetPersonaDataUseCase
+import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -17,27 +17,30 @@ import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 /**
- * Created by @ilhamsuaib on 27/01/23.
+ * Created by @ilhamsuaib on 31/01/23.
  */
 
-class PersonaSharedViewModel @Inject constructor(
-    private val getPersonaStatus: Lazy<GetPersonaStatusUseCase>,
+class PersonaResultViewModel @Inject constructor(
+    private val getPersonaDataUseCase: Lazy<GetPersonaDataUseCase>,
     private val userSession: Lazy<UserSessionInterface>,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
-    val personaStatus: LiveData<Result<PersonaStatusModel>>
-        get() = _personaStatus
-    private val _personaStatus = MutableLiveData<Result<PersonaStatusModel>>()
+    val personaList: LiveData<Result<PersonaDataUiModel>>
+        get() = _personaList
 
-    fun fetchPersonaData() {
+    private val _personaList = MutableLiveData<Result<PersonaDataUiModel>>()
+
+    fun fetchPersonaList() {
         launchCatchError(block = {
-            val data = getPersonaStatus.get()
-                .execute(userSession.get().shopId, Constants.PERSONA_PAGE_PARAM)
-            delay(1500)
-            _personaStatus.postValue(Success(data))
+            val result = getPersonaDataUseCase.get().execute(
+                userSession.get().shopId,
+                Constants.PERSONA_PAGE_PARAM
+            )
+            delay(1000)
+            _personaList.postValue(Success(result))
         }, onError = {
-            _personaStatus.postValue(Fail(it))
+            _personaList.postValue(Fail(it))
         })
     }
 }

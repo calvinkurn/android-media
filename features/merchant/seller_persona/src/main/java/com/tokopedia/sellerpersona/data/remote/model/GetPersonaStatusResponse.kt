@@ -13,8 +13,6 @@ data class GetPersonaStatusResponse(
 )
 
 data class PersonaStatusModel(
-    @SerializedName("persona")
-    val persona: String = String.EMPTY,
-    @SerializedName("persona")
-    val personaStatus: String = String.EMPTY,
+    @SerializedName("persona") val persona: String = String.EMPTY,
+    @SerializedName("personaStatus") val status: String = String.EMPTY,
 )

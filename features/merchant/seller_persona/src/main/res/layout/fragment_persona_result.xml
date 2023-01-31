@@ -15,27 +15,20 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/loaderSpResult"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.Group
+        <!--<androidx.constraintlayout.widget.Group
             android:id="@+id/groupSpResultComponents"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="visible"
-            app:constraint_referenced_ids="imgSpResultBackdrop, imgSpResultAvatar, tvSpSelectManualType, btnSpRetryQuestionnaire, btnSpApplyPersona, tvSpPersonaContentDescription, switchSpActivatePersona, tvSpLblActivatePersona, dividerSpResultBottom, rvSpResultInfoList, dividerSpResultTop, tvSpResultInfoTitle, tvSpSellerTypeNote, tvSpSellerType, tvSpLblSellerType, tvSpOwnerInfo, tvSpLblOwnerInfo, dividerSpResultMiddle" />
-
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/groupSpResultOwnerInfoComponents"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="visible"
-            app:constraint_referenced_ids="tvSpOwnerInfo, tvSpLblOwnerInfo, dividerSpResultMiddle" />
+            app:constraint_referenced_ids="imgSpResultBackdrop, imgSpResultAvatar, tvSpSelectManualType, btnSpRetryQuestionnaire, btnSpApplyPersona, tvSpPersonaContentDescription, switchSpActivatePersona, tvSpLblActivatePersona, dividerSpResultBottom, rvSpResultInfoList, dividerSpResultTop, tvSpResultInfoTitle, tvSpSellerTypeNote, tvSpSellerType, tvSpLblSellerType, tvSpOwnerInfo, tvSpLblOwnerInfo, dividerSpResultMiddle" />-->
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imgSpResultBackdrop"
@@ -93,14 +86,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="(Pemilik Toko)"
             android:textColor="@color/Unify_N0"
             app:layout_constraintBottom_toBottomOf="@+id/imgSpResultBackdrop"
             app:layout_constraintEnd_toEndOf="@+id/tvSpSellerType"
             app:layout_constraintStart_toStartOf="@+id/tvSpSellerType"
             app:layout_constraintTop_toBottomOf="@+id/tvSpSellerType"
             app:typographyType="small"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:text="(Pemilik Toko)" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guidelineSpBegin"
@@ -121,11 +114,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Kamu pemilik toko Gedongan karena:"
             app:layout_constraintEnd_toStartOf="@+id/guidelineSpEnd"
             app:layout_constraintStart_toStartOf="@+id/guidelineSpBegin"
             app:layout_constraintTop_toBottomOf="@+id/imgSpResultBackdrop"
-            app:typographyType="heading_2" />
+            app:typographyType="heading_2"
+            tools:text="@string/sp_result_list_section" />
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/dividerSpResultTop"
@@ -196,17 +189,28 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
+            android:text="@string/sp_result_persona_seller_type_status"
             app:layout_constraintEnd_toStartOf="@+id/switchSpActivatePersona"
             app:layout_constraintStart_toStartOf="@+id/guidelineSpBegin"
             app:layout_constraintTop_toBottomOf="@+id/dividerSpResultMiddle"
+            app:typographyType="display_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvSpLblActivatePersonaStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintStart_toStartOf="@+id/guidelineSpBegin"
+            app:layout_constraintTop_toBottomOf="@+id/tvSpLblActivatePersona"
             app:typographyType="display_3"
-            tools:text="Personalisasi berdasarkan tipe Seller (Aktif)" />
+            tools:text="(Tidak Aktif)" />
 
         <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
             android:id="@+id/switchSpActivatePersona"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/tvSpLblActivatePersona"
+            app:layout_constraintBottom_toBottomOf="@+id/tvSpLblActivatePersonaStatus"
             app:layout_constraintEnd_toStartOf="@+id/guidelineSpEnd"
             app:layout_constraintTop_toBottomOf="@+id/tvSpLblActivatePersona"
             app:layout_constraintTop_toTopOf="@+id/tvSpLblActivatePersona" />
@@ -220,7 +224,7 @@
             android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toEndOf="@+id/guidelineSpEnd"
             app:layout_constraintStart_toStartOf="@+id/guidelineSpBegin"
-            app:layout_constraintTop_toBottomOf="@+id/switchSpActivatePersona"
+            app:layout_constraintTop_toBottomOf="@+id/tvSpLblActivatePersonaStatus"
             app:typographyType="display_3" />
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -231,7 +235,8 @@
             android:text="@string/sp_apply"
             app:layout_constraintEnd_toStartOf="@+id/guidelineSpEnd"
             app:layout_constraintStart_toStartOf="@+id/guidelineSpBegin"
-            app:layout_constraintTop_toBottomOf="@+id/tvSpPersonaContentDescription" />
+            app:layout_constraintTop_toBottomOf="@+id/tvSpPersonaContentDescription"
+            app:unifyButtonSize="medium" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnSpRetryQuestionnaire"
@@ -244,6 +249,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnSpApplyPersona"
+            app:unifyButtonSize="medium"
             app:unifyButtonType="alternate"
             app:unifyButtonVariant="ghost" />
 

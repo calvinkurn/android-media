@@ -12,12 +12,12 @@ import javax.inject.Inject
 
 class QuestionnaireMapper @Inject constructor() {
 
-    fun mapToUiModel(items: List<QuestionnaireModel>): List<QuestionnairePagerUiModel> {
-        return items.map {
+    fun mapToUiModel(items: List<QuestionnaireModel>?): List<QuestionnairePagerUiModel> {
+        return items?.map {
             QuestionnairePagerUiModel(
                 id = it.id,
-                questionTitle = it.question.title,
-                questionSubtitle = it.question.subtitle,
+                questionTitle = it.question?.title.orEmpty(),
+                questionSubtitle = it.question?.subtitle.orEmpty(),
                 type = if (it.type == Int.ONE) {
                     QuestionnairePagerUiModel.QuestionnaireType.SINGLE_ANSWER
                 } else {
@@ -25,11 +25,11 @@ class QuestionnaireMapper @Inject constructor() {
                 },
                 options = getOptions(it.options)
             )
-        }
+        }.orEmpty()
     }
 
-    private fun getOptions(options: List<QuestionnaireModel.OptionModel>): List<OptionUiModel> {
-        return options.map {
+    private fun getOptions(options: List<QuestionnaireModel.OptionModel>?): List<OptionUiModel>? {
+        return options?.map {
             OptionUiModel(
                 value = it.value,
                 title = it.title

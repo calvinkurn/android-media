@@ -25,8 +25,7 @@ class QuestionnaireViewModel @Inject constructor(
     val questionnaire: LiveData<Result<List<QuestionnairePagerUiModel>>>
         get() = _questionnaire
 
-    private val _questionnaire: MutableLiveData<Result<List<QuestionnairePagerUiModel>>> =
-        MutableLiveData()
+    private val _questionnaire = MutableLiveData<Result<List<QuestionnairePagerUiModel>>>()
 
     fun fetchQuestionnaire() {
         launchCatchError(block = {

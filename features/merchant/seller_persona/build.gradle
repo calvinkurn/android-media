@@ -45,6 +45,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
 
@@ -54,6 +55,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.navigationUiKtx
 
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.header
