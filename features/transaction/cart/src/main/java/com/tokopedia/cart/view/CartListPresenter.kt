@@ -2024,7 +2024,6 @@ class CartListPresenter @Inject constructor(
                 val response = cartShopGroupTickerAggregatorUseCase(cartAggregatorParam)
                 cartShopHolderData.cartShopGroupTicker.cartIds =
                     shopProductList.joinToString(",") { it.cartId }
-                cartShopHolderData.cartShopGroupTicker.enableBundleCrossSell = enableBundleCrossSell
                 cartShopHolderData.cartShopGroupTicker.tickerText = response.data.ticker.text
                 cartShopHolderData.cartShopGroupTicker.leftIcon = response.data.ticker.icon.leftIcon
                 cartShopHolderData.cartShopGroupTicker.leftIconDark =
@@ -2154,7 +2153,7 @@ class CartListPresenter @Inject constructor(
             .any { it.isSelected && !it.isBundlingItem && it.bundleIds.isNotEmpty() }
         val hasCheckedBundleProduct = cartShopHolderData.productUiModelList
             .any { it.isSelected && it.isBundlingItem && it.bundleIds.isNotEmpty() }
-        return cartShopHolderData.cartShopGroupTicker.enableBundleCrossSell &&
+        return cartShopHolderData.cartShopGroupTicker.enableCartAggregator &&
             hasCheckedProductWithBundle && !hasCheckedBundleProduct
     }
 }

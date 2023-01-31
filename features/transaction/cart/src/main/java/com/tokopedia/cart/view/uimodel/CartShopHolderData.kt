@@ -111,7 +111,7 @@ data class CartShopHolderData(
 
 data class CartShopGroupTickerData(
     var enableBoAffordability: Boolean = false,
-    var enableBundleCrossSell: Boolean = false,
+    var enableCartAggregator: Boolean = false,
     var state: CartShopGroupTickerState = CartShopGroupTickerState.FIRST_LOAD,
     var tickerText: String = "",
     var errorText: String = "",
@@ -134,7 +134,7 @@ data class CartShopGroupTickerData(
     }
 
     val enableTicker: Boolean
-        get() = enableBoAffordability || enableBundleCrossSell
+        get() = enableBoAffordability || enableCartAggregator
 }
 
 enum class CartShopGroupTickerState {
