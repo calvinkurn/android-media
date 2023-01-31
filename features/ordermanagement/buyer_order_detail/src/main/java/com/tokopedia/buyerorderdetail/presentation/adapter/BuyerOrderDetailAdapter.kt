@@ -351,9 +351,9 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPaymentRefundSection(
         context: Context?,
-        paymentRefund: PofRefundInfoUiModel
+        paymentRefund: PofRefundInfoUiModel?
     ) {
-        if (paymentRefund.shouldShow(context)) add(paymentRefund)
+        if (paymentRefund != null && paymentRefund.shouldShow(context)) add(paymentRefund)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPlatformFeeInfoSection() {

@@ -218,7 +218,7 @@ data class GetBuyerOrderDetailResponse(
                 @SerializedName("payment_method")
                 val paymentMethod: PaymentMethod = PaymentMethod(),
                 @SerializedName("payment_refund")
-                val paymentRefund: PaymentRefund = PaymentRefund()
+                val paymentRefund: PaymentRefund? = PaymentRefund()
             ) {
                 data class PaymentAmount(
                     @Expose
@@ -452,7 +452,7 @@ data class GetBuyerOrderDetailResponse(
                 @Expose
                 val nonBundles: List<NonBundle>? = listOf(),
                 @SerializedName("partial_fulfillment")
-                val partialFulfillment: PartialFulfillment = PartialFulfillment(),
+                val partialFulfillment: PartialFulfillment? = PartialFulfillment(),
                 @SerializedName("ticker_info")
                 val tickerInfo: TickerInfo = TickerInfo(),
                 @SerializedName("total_products")

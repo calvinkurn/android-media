@@ -356,16 +356,16 @@ object ProductListUiStateMapper {
             collapseProductList = collapseProductList,
             remainingSlot = MAX_PRODUCT_WHEN_COLLAPSED - productBundlingList.size - nonProductBundlingList.size
         )
-        val (numOfRemovedUnfulfilled, unFulfilledProductList) = details?.let {
+        val (numOfRemovedUnfulfilled, unFulfilledProductList) = details?.partialFulfillment?.unfulfilled?.details?.let {
             getUnFulfilledProducts(
-                details = it,
+                details = details,
                 orderId = orderId,
                 orderStatusId = orderStatusId,
                 insuranceDetailData = insuranceDetailData,
                 singleAtcResultFlow = singleAtcResultFlow,
                 collapseProductList = collapseProductList,
                 remainingSlot = MAX_UNFULFILLED_PRODUCT_WHEN_COLLAPSED,
-                isPof = isPof
+                isPof = true
             )
         } ?: (Int.ZERO to emptyList())
         val tickerDetails = mapTickerDetails(details?.tickerInfo)
@@ -587,14 +587,14 @@ object ProductListUiStateMapper {
         collapseProductList: Boolean,
         remainingSlot: Int
     ): Pair<Int, List<ProductListUiModel.ProductUiModel>> {
-        val (numOfRemovedNonBundles, reducedNonBundles) = details.nonBundles?.run {
+        val (numOfRemovedUnfulfilled, reducedUnfulfilled) = details.partialFulfillment?.unfulfilled?.details?.run {
             if (collapseProductList) {
                 (size - remainingSlot).coerceAtLeast(Int.ZERO) to take(remainingSlot)
             } else {
                 Int.ZERO to this
             }
         } ?: (Int.ZERO to null)
-        val mappedNonBundles = reducedNonBundles?.map {
+        val mappedUnfulfilled = reducedUnfulfilled?.map {
             mapProduct(
                 details,
                 it,
@@ -606,7 +606,7 @@ object ProductListUiStateMapper {
                 singleAtcResultFlow
             )
         }.orEmpty()
-        return numOfRemovedNonBundles to mappedNonBundles
+        return numOfRemovedUnfulfilled to mappedUnfulfilled
     }
 
     private fun mapProduct(
