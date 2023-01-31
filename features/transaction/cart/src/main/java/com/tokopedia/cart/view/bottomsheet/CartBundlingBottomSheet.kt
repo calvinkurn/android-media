@@ -14,7 +14,6 @@ import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
 import androidx.core.view.marginTop
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cart.databinding.LayoutBottomsheetCartBundlingBinding
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
@@ -72,7 +71,9 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
 
     private fun renderContent(data: CartBundlingBottomSheetData) {
         setTitle(data.title)
-        binding?.descriptionLabel?.text = MethodChecker.fromHtml(data.description)
+        context?.let {
+            binding?.descriptionLabel?.text = HtmlLinkHelper(it, data.description).spannedString
+        }
         val bundleParam = GetBundleParamBuilder()
             .setBundleId(data.bundleIds)
             .setWidgetType(WidgetType.TYPE_3)
