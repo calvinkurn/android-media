@@ -12,13 +12,11 @@ import javax.inject.Inject
 class FeedOnboardingCoachmark @Inject constructor(
     private val context: Context,
     private val userSession: UserSessionInterface,
-    private val coachMarkSharedPref: ContentCoachMarkSharedPref
+    private val coachMarkSharedPref: ContentCoachMarkSharedPref,
+    private val affiliatePreference: AffiliatePreference
 
 ) {
     private var anchorMap: Map<String, View>? = null
-
-    @Inject
-    internal lateinit var affiliatePreference: AffiliatePreference
 
     private var mListener: Listener? = null
     private var mShouldShowShortVideoCoachMark: Boolean = false
@@ -58,6 +56,7 @@ class FeedOnboardingCoachmark @Inject constructor(
             ) || !userSession.isLoggedIn
         ) {
             mListener?.onCoachmarkFinish()
+            return
         }
 
         val coachMarkItem = ArrayList<CoachMark2Item>()

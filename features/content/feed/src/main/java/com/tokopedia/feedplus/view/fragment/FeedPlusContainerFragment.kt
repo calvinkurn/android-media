@@ -678,11 +678,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
 
         viewModel.getWhitelist()
-        if(!userSession.isLoggedIn)
-            showOnboardingStepsCoachmark(
-                shouldShowUserProfileCoachmark = false,
-                shouldShowShortVideoCoachmark = false
-            )
+        if (!userSession.isLoggedIn)
+            onCoachmarkFinish()
     }
     private fun openTabAsPerParamValue() {
         when (arguments?.getString(PARAM_FEED_TAB_POSITION) ?: UPDATE_TAB_POSITION) {
