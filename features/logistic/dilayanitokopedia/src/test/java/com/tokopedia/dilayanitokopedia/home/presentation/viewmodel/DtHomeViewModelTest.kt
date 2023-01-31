@@ -204,7 +204,7 @@ class DtHomeViewModelTest {
         )
 
         // When
-        viewModel.switchService()
+        viewModel.refreshLayout()
 
         // Then
         verify {

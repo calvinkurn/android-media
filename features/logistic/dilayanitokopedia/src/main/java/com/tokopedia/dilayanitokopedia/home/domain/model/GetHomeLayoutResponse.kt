@@ -12,13 +12,13 @@ import com.tokopedia.dilayanitokopedia.home.domain.model.common.Shop
 data class GetHomeLayoutResponse(
     @Expose
     @SerializedName("getHomeChannelV2")
-    val response: DynamicHomeChannelResponse
+    val response: DynamicHomeChannelResponse = DynamicHomeChannelResponse()
 )
 
 data class DynamicHomeChannelResponse(
     @Expose
     @SerializedName("channels")
-    val data: List<HomeLayoutResponse>
+    val data: List<HomeLayoutResponse> = listOf()
 )
 
 data class HomeLayoutResponse(

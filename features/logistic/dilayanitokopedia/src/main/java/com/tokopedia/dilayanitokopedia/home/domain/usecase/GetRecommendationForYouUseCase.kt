@@ -33,7 +33,6 @@ class GetRecommendationForYouUseCase @Inject constructor(
 
     /**
      * https://tokopedia.slack.com/archives/C03VBG627FG/p1672885579202169?thread_ts=1669610989.489449&cid=C03VBG627FG
-     *
      */
     suspend fun execute(
         locationParamString: String,

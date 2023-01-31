@@ -24,7 +24,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/product_image"
         app:loader_corner_radius="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         app:loader_type="line" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -35,7 +35,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/line1"
         app:loader_corner_radius="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         app:loader_type="line" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -46,7 +46,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/line2"
         app:loader_corner_radius="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         app:loader_type="line" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

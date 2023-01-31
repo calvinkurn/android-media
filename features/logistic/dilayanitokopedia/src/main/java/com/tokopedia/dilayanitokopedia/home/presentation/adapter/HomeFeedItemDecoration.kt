@@ -33,10 +33,10 @@ class HomeFeedItemDecoration(private val spacing: Int) : RecyclerView.ItemDecora
 
     private fun isProductItem(parent: RecyclerView, viewPosition: Int): Boolean {
         val adapter = parent.adapter
-        return if (viewPosition < 0 || viewPosition > adapter!!.itemCount - 1) {
+        return if (viewPosition < 0 || viewPosition > (adapter?.itemCount ?: (0 - 1))) {
             false
         } else {
-            adapter.getItemViewType(viewPosition) == HomeRecommendationItemViewHolder.LAYOUT
+            adapter?.getItemViewType(viewPosition) == HomeRecommendationItemViewHolder.LAYOUT
         }
     }
 
