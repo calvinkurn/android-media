@@ -4,13 +4,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseAdapterDelegate
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.widget.ui.adapter.viewholder.placeholder.PlayWidgetCardPlaceholderViewHolder
-import com.tokopedia.play.widget.ui.model.PlayCardShimmering
-import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.widget.medium.model.PlayWidgetOverlayUiModel
+import com.tokopedia.play_common.R as commonR
 
 /**
  * Created by kenny.hadisaputra on 24/01/22
@@ -37,9 +35,9 @@ internal class PlayWidgetMediumAdapterDelegate private constructor() {
     }
 
     internal class Banner(
-        private val cardBannerListener: PlayWidgetMediumViewHolder.Banner.Listener,
+        private val cardBannerListener: PlayWidgetMediumViewHolder.Banner.Listener
     ) : TypedAdapterDelegate<
-            PlayWidgetBannerUiModel, Any, PlayWidgetMediumViewHolder.Banner>(commonR.layout.view_play_empty) {
+        PlayWidgetBannerUiModel, Any, PlayWidgetMediumViewHolder.Banner>(commonR.layout.view_play_empty) {
 
         override fun onBindViewHolder(
             item: PlayWidgetBannerUiModel,
@@ -57,7 +55,7 @@ internal class PlayWidgetMediumAdapterDelegate private constructor() {
     }
 
     internal class Channel(
-        private val cardChannelListener: PlayWidgetMediumViewHolder.Channel.Listener,
+        private val cardChannelListener: PlayWidgetMediumViewHolder.Channel.Listener
     ) : BaseAdapterDelegate<PlayWidgetChannelUiModel, Any, PlayWidgetMediumViewHolder.Channel>(commonR.layout.view_play_empty) {
 
         private val allowedTypes = listOf(
@@ -88,13 +86,16 @@ internal class PlayWidgetMediumAdapterDelegate private constructor() {
             isFlexibleType: Boolean
         ): Boolean {
             val item = itemList[position]
-            return if (item is PlayWidgetChannelUiModel) item.channelType in allowedTypes
-            else false
+            return if (item is PlayWidgetChannelUiModel) {
+                item.channelType in allowedTypes
+            } else {
+                false
+            }
         }
     }
 
     internal class Transcode(
-        private val cardTranscodeListener: PlayWidgetMediumViewHolder.Transcode.Listener,
+        private val cardTranscodeListener: PlayWidgetMediumViewHolder.Transcode.Listener
     ) : BaseAdapterDelegate<PlayWidgetChannelUiModel, Any, PlayWidgetMediumViewHolder.Transcode>(commonR.layout.view_play_empty) {
 
         private val allowedTypes = listOf(PlayWidgetChannelType.Transcoding, PlayWidgetChannelType.FailedTranscoding)
@@ -105,8 +106,11 @@ internal class PlayWidgetMediumAdapterDelegate private constructor() {
             isFlexibleType: Boolean
         ): Boolean {
             val item = itemList[position]
-            return if (item is PlayWidgetChannelUiModel) item.channelType in allowedTypes
-            else false
+            return if (item is PlayWidgetChannelUiModel) {
+                item.channelType in allowedTypes
+            } else {
+                false
+            }
         }
 
         override fun onBindViewHolder(
@@ -123,25 +127,6 @@ internal class PlayWidgetMediumAdapterDelegate private constructor() {
             return PlayWidgetMediumViewHolder.Transcode.create(
                 parent,
                 cardTranscodeListener
-            )
-        }
-    }
-
-    internal class Shimmering : TypedAdapterDelegate<PlayCardShimmering, Any, PlayWidgetCardPlaceholderViewHolder>(PlayWidgetCardPlaceholderViewHolder.layout) {
-        override fun onBindViewHolder(
-            item: PlayCardShimmering,
-            holder: PlayWidgetCardPlaceholderViewHolder
-        ) {
-            holder.bind()
-            holder.setType(PlayWidgetCardPlaceholderViewHolder.Type.MEDIUM)
-        }
-
-        override fun onCreateViewHolder(
-            parent: ViewGroup,
-            basicView: View
-        ): PlayWidgetCardPlaceholderViewHolder {
-            return PlayWidgetCardPlaceholderViewHolder(
-                basicView
             )
         }
     }
