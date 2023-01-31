@@ -485,28 +485,6 @@ class HomeAccountUserViewModelTest {
         }
     }
 
-//    @Test
-//    fun `Set safe mode inactive Failed`() {
-//        val isActive = false
-//        /* When */
-//        every {
-//            homeAccountSafeSettingProfileUseCase.executeQuerySetSafeMode(
-//                any(),
-//                any(),
-//                any()
-//            )
-//        } answers {
-//            secondArg<(Throwable) -> Unit>().invoke(throwableMock)
-//        }
-//
-//        viewModel.setSafeMode(isActive)
-//
-//        justRun { throwableMock.printStackTrace() }
-//        verify(atLeast = 1) {
-//            throwableMock.printStackTrace()
-//        }
-//    }
-
     @Test
     fun `get shortcut data success`() {
         /* When */
