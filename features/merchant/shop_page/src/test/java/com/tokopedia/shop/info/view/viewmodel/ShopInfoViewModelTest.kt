@@ -1,6 +1,7 @@
 package com.tokopedia.shop.info.view.viewmodel
 
 import com.tokopedia.network.exception.UserNotLoginException
+import com.tokopedia.shop.common.constant.ShopPartnerFsFullfillmentServiceTypeDef
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.data.model.ShopShipmentData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ChatExistingChat
@@ -179,6 +180,42 @@ class ShopInfoViewModelTest : ShopInfoViewModelTestFixture() {
             val failData = actualResultOfMessageId as Fail
             assert(failData.throwable is UserNotLoginException)
         }
+    }
+
+    @Test
+    fun `when shop is GoApotik should return true`() {
+        // given
+        val isGoApotik = true
+
+        // when
+        val result = viewModel.isShouldShowLicenseForDrugSeller(isGoApotik = isGoApotik, fsType = ShopPartnerFsFullfillmentServiceTypeDef.DEFAULT)
+
+        // then
+        assert(result)
+    }
+
+    @Test
+    fun `when shop is EPharmacy should return true`() {
+        // given
+        val isGoApotik = false
+
+        // when
+        val result = viewModel.isShouldShowLicenseForDrugSeller(isGoApotik = isGoApotik, fsType = ShopPartnerFsFullfillmentServiceTypeDef.EPHARMACY)
+
+        // then
+        assert(result)
+    }
+
+    @Test
+    fun `when shop is not EPharmacy or not GoApotik should return false`() {
+        // given
+        val isGoApotik = false
+
+        // when
+        val result = viewModel.isShouldShowLicenseForDrugSeller(isGoApotik = isGoApotik, fsType = ShopPartnerFsFullfillmentServiceTypeDef.DEFAULT)
+
+        // then
+        assert(!result)
     }
 
     @Test
