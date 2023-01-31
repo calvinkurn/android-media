@@ -426,12 +426,14 @@ class ShopInfoFragment :
             }
 
             // go apotik info
-            goApotikInfoContainer.shouldShowWithAction(shouldShow = isShouldShowLicenseForDrugSeller(shopInfo)) {
-                tvSiaDescription.text =
-                    shopInfo.siaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
-                tvSipaDescription.text =
-                    shopInfo.sipaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
-                tvApjDescription.text = shopInfo.apj.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+            shopViewModel?.let {
+                goApotikInfoContainer.shouldShowWithAction(shouldShow = it.isShouldShowLicenseForDrugSeller(shopInfo)) {
+                    tvSiaDescription.text =
+                        shopInfo.siaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+                    tvSipaDescription.text =
+                        shopInfo.sipaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+                    tvApjDescription.text = shopInfo.apj.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+                }
             }
 
             // shop location info
@@ -442,8 +444,6 @@ class ShopInfoFragment :
                 getString(R.string.shop_info_label_open_since_v3, shopInfo.openSince)
         }
     }
-
-    private fun isShouldShowLicenseForDrugSeller(shopInfo: ShopInfoData): Boolean = shopInfo.isGoApotik || shopInfo.fsType == ShopPartnerFsFullfillmentServiceTypeDef.EPHARMACY
 
     private fun renderListNote(notes: List<ShopNoteUiModel>) {
         getShopId()?.let {
