@@ -138,12 +138,14 @@ class DynamicIconMacroItemViewHolder(
                                 }
 
                                 override fun onAnimationEnd(p0: Animator) {
-                                    animateScaling(
-                                        SCALE_MIN_IMAGE,
-                                        SCALE_MAX_IMAGE,
-                                        durationOutputClick,
-                                        pathOutputClick
-                                    )
+                                    if (binding?.dynamicIconImageView?.scaleX == SCALE_MIN_IMAGE) {
+                                        animateScaling(
+                                            SCALE_MIN_IMAGE,
+                                            SCALE_MAX_IMAGE,
+                                            durationOutputClick,
+                                            pathOutputClick
+                                        )
+                                    }
                                 }
                             })
 
