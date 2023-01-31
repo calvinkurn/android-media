@@ -62,7 +62,7 @@ import javax.inject.Inject
 class PlayMoreActionBottomSheet @Inject constructor(
     private val analytic: PlayAnalytic,
     private val trackingQueue: TrackingQueue,
-    private val analytic2Factory: PlayAnalytic2.Factory,
+    private val analytic2Factory: PlayAnalytic2.Factory
 ) : BottomSheetUnify(),
     KebabMenuSheetViewComponent.Listener,
     PlayUserReportSheetViewComponent.Listener,
@@ -94,7 +94,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 shouldOpenUserReport()
             },
             priority = 4,
-            onImpress = { analytic2?.impressUserReport() },
+            onImpress = { analytic2?.impressUserReport() }
         )
     }
 
@@ -108,7 +108,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 mListener?.onPipClicked(this)
             },
             priority = 1,
-            onImpress = { analytic2?.impressPiP() },
+            onImpress = { analytic2?.impressPiP() }
         )
     }
 
@@ -121,7 +121,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 onChromeCastClicked()
             },
             priority = 2,
-            onImpress = { analytic2?.impressChromecast() },
+            onImpress = { analytic2?.impressChromecast() }
         )
     }
 
@@ -135,7 +135,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 mListener?.onWatchModeClicked(this)
             },
             priority = 3,
-            onImpress = { analytic2?.impressWatchMode() },
+            onImpress = { analytic2?.impressWatchMode() }
         )
     }
 
@@ -198,7 +198,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
         observeCast()
         observeVideoMeta()
         observeState()
-        buildListAction(action = PlayMoreActionUiModel.Empty)
+        buildListAction(action = reportAction)
     }
 
     private fun observeBottomInsets() {
@@ -234,7 +234,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 if (analytic2 != null || cachedState.value.channel.channelInfo.id.isBlank()) return@collectLatest
                 analytic2 = analytic2Factory.create(
                     trackingQueue = trackingQueue,
-                    channelInfo = it.value.channel.channelInfo,
+                    channelInfo = it.value.channel.channelInfo
                 )
             }
         }
@@ -349,9 +349,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     private val listOfAction = mutableListOf<PlayMoreActionUiModel>()
 
     private fun buildListAction(action: PlayMoreActionUiModel) {
-        if (!listOfAction.contains(reportAction)) listOfAction.add(reportAction) // Report
         if (!listOfAction.contains(watchAction) && !playViewModel.videoOrientation.isHorizontal && !playViewModel.hasNoMedia) listOfAction.add(watchAction) // Watch Mode
-        if (action == PlayMoreActionUiModel.Empty) return
         if (!listOfAction.contains(action)) listOfAction.add(action)
     }
 
@@ -459,7 +457,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
     private fun onChromeCastClicked() {
         analytic.clickCast()
-        //new tracker
+        // new tracker
         analytic2?.clickChromecast()
         dismiss()
     }
