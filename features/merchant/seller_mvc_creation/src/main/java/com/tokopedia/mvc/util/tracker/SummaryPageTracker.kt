@@ -17,6 +17,8 @@ class SummaryPageTracker @Inject constructor(private val userSession: UserSessio
         private const val EL_VOUCHER_ID_PREFIX = "voucher id: "
         private const val EL_CAMPAIGN_ID_PREFIX = "campaign id: "
         private const val EL_DELIMITER = " - "
+        private const val EL_TOPADS = "iklan toko"
+        private const val EL_BROADCAST = "broadcast"
     }
 
     fun sendClickBagikanKuponPopUpEvent(shareMethodName: String) {
@@ -33,6 +35,13 @@ class SummaryPageTracker @Inject constructor(private val userSession: UserSessio
             .send()
     }
 
+    fun sendClickBroadcastPopUpEvent() {
+        sendClickBagikanKuponPopUpEvent(EL_BROADCAST)
+    }
+
+    fun sendClickTopadsPopUpEvent() {
+        sendClickBagikanKuponPopUpEvent(EL_TOPADS)
+    }
 
     fun sendClickCloseEvent(voucherId: String) {
         Tracker.Builder()

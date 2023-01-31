@@ -51,6 +51,7 @@ import com.tokopedia.mvc.presentation.summary.helper.SummaryPageRedirectionHelpe
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.mvc.util.constant.BundleConstant
+import com.tokopedia.mvc.util.tracker.SummaryPageTracker
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
@@ -105,6 +106,8 @@ class SummaryFragment :
 
     @Inject
     lateinit var viewModel: SummaryViewModel
+    @Inject
+    lateinit var tracker: SummaryPageTracker
 
     override fun getScreenName() = ""
 
@@ -441,6 +444,7 @@ class SummaryFragment :
             .setOnBroadCastClickListener(::onSuccessBottomsheetBroadCastClick)
         bottomSheet.setOnDismissListener {
             RouteManager.route(context, SELLER_MVC_LIST)
+            tracker.sendClickCloseEvent(configuration.voucherId.toString())
         }
         bottomSheet.show(childFragmentManager)
     }
@@ -487,9 +491,11 @@ class SummaryFragment :
 
     private fun onSuccessBottomsheetBroadCastClick(voucherConfiguration: VoucherConfiguration) {
         context?.let { SharingUtil.shareToBroadCastChat(it, voucherConfiguration.voucherId) }
+        tracker.sendClickBroadcastPopUpEvent()
     }
 
     private fun onSuccessBottomsheetAdsClick(voucherConfiguration: VoucherConfiguration) {
         RouteManager.route(context, TOPADS_HEADLINE_CREATE)
+        tracker.sendClickTopadsPopUpEvent()
     }
 }
