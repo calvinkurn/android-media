@@ -11,8 +11,7 @@ class PlayShortsEntryPointRemoteConfig @Inject constructor(
 ) {
 
     fun isShowEntryPoint(): Boolean {
-        return false
-//        return remoteConfig.getBoolean(PLAY_SHORTS_ENTRY_POINT_REMOTE_CONFIG, true)
+        return remoteConfig.getBoolean(PLAY_SHORTS_ENTRY_POINT_REMOTE_CONFIG, true)
     }
 
     companion object {

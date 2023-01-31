@@ -41,5 +41,5 @@ class UserProfileModule(
 
     @Provides
     @UserProfileScope
-    fun provideRemoteConfig(): RemoteConfig = FirebaseRemoteConfigImpl(activityContext)
+    fun provideRemoteConfig(@ApplicationContext appContext: Context): RemoteConfig = FirebaseRemoteConfigImpl(appContext)
 }

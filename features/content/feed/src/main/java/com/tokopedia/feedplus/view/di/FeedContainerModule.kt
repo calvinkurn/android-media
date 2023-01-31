@@ -53,5 +53,5 @@ class FeedContainerModule(
 
     @Provides
     @FeedContainerScope
-    fun provideRemoteConfig(): RemoteConfig = FirebaseRemoteConfigImpl(activityContext)
+    fun provideRemoteConfig(@ApplicationContext appContext: Context): RemoteConfig = FirebaseRemoteConfigImpl(appContext)
 }
