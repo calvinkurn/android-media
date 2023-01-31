@@ -9,10 +9,12 @@ import com.tokopedia.calendar.Legend
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.OnDateChangedListener
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetEditPeriodCalendarBinding
 import com.tokopedia.mvc.presentation.quota.QuotaInfoBottomSheet
+import com.tokopedia.mvc.util.getToday
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.text.SimpleDateFormat
@@ -45,8 +47,10 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
     ): View? {
         binding = SmvcBottomsheetEditPeriodCalendarBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)
-        setTitle(context?.resources?.getString(R.string.edit_period_calender_title).toBlankOrString())
-        setAction(context?.getString(R.string.edit_period_see_remaining_quota).toBlankOrString()){
+        setTitle(
+            context?.resources?.getString(R.string.edit_period_calender_title).toBlankOrString()
+        )
+        setAction(context?.getString(R.string.edit_period_see_remaining_quota).toBlankOrString()) {
             showQuotaInfoBottomSheet()
         }
         dateFormat.timeZone = TimeZone.getDefault()
@@ -76,40 +80,68 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
     var listener = object : OnDateChangedListener {
         override fun onDateChanged(date: Long) {}
     }
-
     private fun setUpTimePickerBottomSheet(selectedDate: Date) {
-        startDate = startDate?.apply {
-            set(Calendar.HOUR_OF_DAY, MIN_TIME_OF_DAY)
-            set(Calendar.MINUTE, MIN_TIME_OF_DAY)
-        }
-        endDate = endDate?.apply {
-            set(Calendar.HOUR_OF_DAY, MAX_HOUR_OF_DAY)
-            set(Calendar.MINUTE, MAX_MINUTE_OF_DAY)
-        }
-        val currentDate = GregorianCalendar(
+        val pickerStartTime = GregorianCalendar()
+        val pickerEndTime = GregorianCalendar()
+
+        val selectedDateGregorian = GregorianCalendar(
             context?.let {
                 LocaleUtils.getIDLocale()
             }
         )
-        currentDate.time = selectedDate
-        val defaultDate = currentDate.apply {
-            set(Calendar.HOUR_OF_DAY, hour)
-            set(Calendar.MINUTE, minute)
+        selectedDateGregorian.time = selectedDate
+        selectedDateGregorian.apply {
+            val date1 = context?.getToday()?.get(Calendar.DATE)
+            val date2 = selectedDateGregorian.get(Calendar.DATE)
+            val month1 = context?.getToday()?.get(Calendar.MONTH)
+            val month2 = selectedDateGregorian.get(Calendar.MONTH)
+
+            if (date1 == date2 && month1 == month2) {
+                pickerStartTime.apply {
+                    add(Calendar.HOUR_OF_DAY, ADD_3_HOURS)
+                }
+            } else {
+                pickerStartTime.apply {
+                    set(Calendar.HOUR_OF_DAY, MIN_TIME_OF_DAY)
+                    set(Calendar.MINUTE, MIN_TIME_OF_DAY)
+                }
+            }
+
+            val currentDate = GregorianCalendar(
+                context?.let {
+                    LocaleUtils.getIDLocale()
+                }
+            )
+            currentDate.time = selectedDate
+            val defaultDate = currentDate.apply {
+                set(Calendar.HOUR_OF_DAY, hour)
+                set(Calendar.MINUTE, minute)
+            }
+
+            pickerEndTime.time = selectedDate
+            pickerEndTime.apply {
+                set(Calendar.HOUR_OF_DAY, MAX_HOUR_OF_DAY)
+                set(Calendar.MINUTE, MAX_MINUTE_OF_DAY)
+            }
+            initTimePicker(defaultDate, pickerStartTime, pickerEndTime)
+            initTitleForTimePicker(selectedDate)
+
+            timePicker?.show(
+                childFragmentManager,
+                context?.resources?.getString(R.string.edit_period_calendar_show_tag)
+                    .toBlankOrString()
+            )
         }
-
-        initTimePicker(defaultDate)
-        initTitleForTimePicker(selectedDate)
-
-        timePicker?.show(
-            childFragmentManager,
-            context?.resources?.getString(R.string.edit_period_calendar_show_tag).toBlankOrString()
-        )
     }
 
-    private fun initTimePicker(defaultDate: GregorianCalendar) {
+    private fun initTimePicker(
+        defaultDate: GregorianCalendar,
+        start: GregorianCalendar?,
+        end: GregorianCalendar?
+    ) {
         timePicker = context?.let { timePickerContext ->
-            startDate?.let { start ->
-                endDate?.let { end ->
+            start?.let { start ->
+                end?.let { end ->
                     DateTimePickerUnify(
                         timePickerContext,
                         start,
@@ -129,7 +161,9 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
             minuteInterval = MINUTE_INTERVAL
 
             setTitle(
-                this@VoucherEditCalendarBottomSheet.getString(R.string.edit_period_time_picker_title)
+                this@VoucherEditCalendarBottomSheet.getString(
+                    R.string.edit_period_time_picker_title
+                )
                     .toBlankOrString()
             )
             setInfo(
@@ -151,6 +185,12 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
     private fun renderCalendar(holidayArrayList: ArrayList<Legend>) {
         var selectedDates = startCalendar?.let {
             arrayListOf(it.time)
+        }
+
+        if (!startCalendar?.compareTo(endDate).isLessThanZero()) {
+            selectedDates = endDate?.let {
+                arrayListOf(it.time)
+            }
         }
 
         startDate?.time?.let {
@@ -187,5 +227,6 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
         private const val MIN_TIME_OF_DAY = 0
         private const val HOUR_INTERVAL = 1
         private const val MINUTE_INTERVAL = 30
+        private const val ADD_3_HOURS = 3
     }
 }

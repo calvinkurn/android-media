@@ -51,9 +51,12 @@ import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStep
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
 import com.tokopedia.mvc.presentation.creation.step3.VoucherSettingActivity
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
+import com.tokopedia.mvc.util.DateTimeUtils
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
 import com.tokopedia.mvc.util.convertUnsafeDateTime
+import com.tokopedia.mvc.util.decideCalendarPeriodEndDate
+import com.tokopedia.mvc.util.decideCalendarPeriodStartDate
 import com.tokopedia.mvc.util.extension.setToAllCapsMode
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -145,7 +148,9 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     override fun initInjector() {
         DaggerMerchantVoucherCreationComponent.builder()
-            .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+            .baseAppComponent(
+                (activity?.applicationContext as? BaseMainApplication)?.baseAppComponent
+            )
             .build()
             .inject(this)
     }
@@ -237,8 +242,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         )
         renderVoucherStartPeriodSelection(
             state.voucherConfiguration,
-        state.isStartDateError,
-        state.startDateErrorMsg
+            state.isStartDateError,
+            state.startDateErrorMsg
         )
         renderVoucherEndPeriodSelection(
             state.voucherConfiguration,
@@ -249,7 +254,9 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun handleAction(action: VoucherCreationStepTwoAction) {
         when (action) {
-            is VoucherCreationStepTwoAction.BackToPreviousStep -> backToPreviousStep(action.voucherConfiguration)
+            is VoucherCreationStepTwoAction.BackToPreviousStep -> backToPreviousStep(
+                action.voucherConfiguration
+            )
             is VoucherCreationStepTwoAction.NavigateToNextStep -> navigateToNextStep(
                 action.pageMode,
                 action.voucherConfiguration
@@ -405,9 +412,17 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
         dialog?.apply {
             setTitle(getString(R.string.smvc_change_voucher_target_confirmation_label))
-            setDescription(MethodChecker.fromHtml(getString(R.string.smvc_change_target_voucher_confirmation_description)))
-            setPrimaryCTAText(getString(R.string.smvc_voucher_target_confirmation_primary_cta_label))
-            setSecondaryCTAText(getString(R.string.smvc_voucher_target_confirmation_secondary_cta_label))
+            setDescription(
+                MethodChecker.fromHtml(
+                    getString(R.string.smvc_change_target_voucher_confirmation_description)
+                )
+            )
+            setPrimaryCTAText(
+                getString(R.string.smvc_voucher_target_confirmation_primary_cta_label)
+            )
+            setSecondaryCTAText(
+                getString(R.string.smvc_voucher_target_confirmation_secondary_cta_label)
+            )
             setPrimaryCTAClickListener {
                 viewModel.processEvent(
                     VoucherCreationStepTwoEvent.ChooseVoucherTarget(
@@ -579,8 +594,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun onClickListenerForStartDate() {
         context?.run {
-            minCalendar?.let { minDate ->
-                maxCalendar?.let { maxDate ->
+            decideCalendarPeriodStartDate(this, startCalendar)?.let { minDate ->
+                DateTimeUtils.getMaxDate(minDate)?.let { maxDate ->
                     voucherEditCalendarBottomSheet =
                         VoucherEditCalendarBottomSheet.newInstance(
                             startCalendar,
@@ -602,10 +617,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     private fun onClickListenerForEndDate() {
         context?.run {
             minCalendar?.let { minDate ->
-                maxCalendar?.let { maxDate ->
+                DateTimeUtils.getMaxDate(minCalendar)?.let { maxDate ->
                     voucherEditCalendarBottomSheet =
                         VoucherEditCalendarBottomSheet.newInstance(
-                            endCalendar,
+                            decideCalendarPeriodEndDate(minCalendar, maxCalendar),
                             minDate,
                             maxDate,
                             startHour,
@@ -667,7 +682,9 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                         )
                     )
                     val startDate =
-                        voucherConfiguration.startPeriod.formatTo(DATE_WITH_SECOND_PRECISION_ISO_8601)
+                        voucherConfiguration.startPeriod.formatTo(
+                            DATE_WITH_SECOND_PRECISION_ISO_8601
+                        )
                     startCalendar = getGregorianDate(startDate)
                 } catch (_: Throwable) {}
             }
@@ -684,9 +701,13 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 try {
                     isInputError = isEndDateError
                     setMessage(endDateErrorMsg)
-                    editText.setText(voucherConfiguration.endPeriod.formatTo(DATE_TIME_MINUTE_PRECISION))
+                    editText.setText(
+                        voucherConfiguration.endPeriod.formatTo(DATE_TIME_MINUTE_PRECISION)
+                    )
 
-                    val endDate = voucherConfiguration.endPeriod.formatTo(DATE_WITH_SECOND_PRECISION_ISO_8601)
+                    val endDate = voucherConfiguration.endPeriod.formatTo(
+                        DATE_WITH_SECOND_PRECISION_ISO_8601
+                    )
                     endCalendar = getGregorianDate(endDate)
                 } catch (_: Throwable) {}
             }
@@ -706,7 +727,9 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderAvailableRecurringPeriod(validationDate: List<VoucherValidationResult.ValidationDate>) {
+    private fun renderAvailableRecurringPeriod(
+        validationDate: List<VoucherValidationResult.ValidationDate>
+    ) {
         voucherPeriodSectionBinding?.run {
             val availableDate = validationDate.filter { it.available }
             val unAvailableDate = validationDate.filter { !it.available }
@@ -772,8 +795,12 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                 unavailableRecurringPeriodView.run {
                     type = RecurringDateScheduleCustomView.TYPE_ERROR
                     title = when (unAvailableDate.first().type) {
-                        SAME_DATE_VOUCHER_ALREADY_EXIST.type -> getString(R.string.smvc_recurring_date_error_type_1_title)
-                        NEW_FOLLOWER_VOUCHER_ALREADY_EXIST.type -> getString(R.string.smvc_recurring_date_error_type_2_title)
+                        SAME_DATE_VOUCHER_ALREADY_EXIST.type -> getString(
+                            R.string.smvc_recurring_date_error_type_1_title
+                        )
+                        NEW_FOLLOWER_VOUCHER_ALREADY_EXIST.type -> getString(
+                            R.string.smvc_recurring_date_error_type_2_title
+                        )
                         else -> getString(R.string.smvc_recurring_date_error_type_3_title)
                     }
                     isVisible = tfRepeat.isVisible
@@ -865,7 +892,9 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
 
         buttonSectionBinding?.run {
-            btnBack.setOnClickListener { viewModel.processEvent(VoucherCreationStepTwoEvent.TapBackButton) }
+            btnBack.setOnClickListener { viewModel.processEvent(
+                VoucherCreationStepTwoEvent.TapBackButton
+            ) }
             btnContinue.text = if (pageMode == PageMode.CREATE) {
                 getString(R.string.smvc_continue)
             } else {
@@ -964,8 +993,12 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         dialog?.apply {
             setTitle(getString(R.string.smvc_create_voucher_confirmation_title))
             setDescription(getString(R.string.smvc_create_voucher_confirmation_description))
-            setPrimaryCTAText(getString(R.string.smvc_create_voucher_confirmation_primary_cta_label))
-            setSecondaryCTAText(getString(R.string.smvc_create_voucher_confirmation_secondary_cta_label))
+            setPrimaryCTAText(
+                getString(R.string.smvc_create_voucher_confirmation_primary_cta_label)
+            )
+            setSecondaryCTAText(
+                getString(R.string.smvc_create_voucher_confirmation_secondary_cta_label)
+            )
             setPrimaryCTAClickListener {
                 viewModel.processEvent(
                     VoucherCreationStepTwoEvent.NavigateToNextStep(

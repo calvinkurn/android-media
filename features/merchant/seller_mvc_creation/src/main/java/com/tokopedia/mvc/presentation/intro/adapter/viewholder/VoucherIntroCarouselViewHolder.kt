@@ -25,7 +25,7 @@ class VoucherIntroCarouselViewHolder(itemView: View?) :
         binding?.apply {
             headerText.text = element?.headerTitle
             viewPagerTitle.text = element?.tabsList?.get(ZEROTH_INDEX)?.tabHeader
-            viewPagerDescription.text = element?.description
+            viewPagerDescription.text = element?.tabsList?.get(ZEROTH_INDEX)?.tabDescription
 
             setUpCarousel(this, ZEROTH_INDEX, element)
 
@@ -33,6 +33,7 @@ class VoucherIntroCarouselViewHolder(itemView: View?) :
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     val selectedTab = tabLayout.selectedTabPosition
                     viewPagerTitle.text = element?.tabsList?.get(selectedTab)?.tabHeader
+                    viewPagerDescription.text = element?.tabsList?.get(selectedTab)?.tabDescription
                     setUpCarousel(this@apply, selectedTab, element)
                 }
 
