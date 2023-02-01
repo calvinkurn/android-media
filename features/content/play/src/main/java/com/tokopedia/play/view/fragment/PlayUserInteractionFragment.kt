@@ -767,10 +767,6 @@ class PlayUserInteractionFragment @Inject constructor(
                 } else if (it.state == PlayViewerVideoState.End) showInteractionIfWatchMode()
 
                 playButtonViewOnStateChanged(state = it.state)
-
-                if (isAllowAutoSwipe(it.state)) {
-                    doAutoSwipe()
-                }
             }
         )
     }
@@ -1348,8 +1344,8 @@ class PlayUserInteractionFragment @Inject constructor(
         ).show()
     }
 
-    private fun isAllowAutoSwipe(state: PlayViewerVideoState) =
-        state == PlayViewerVideoState.End && !playViewModel.bottomInsets.isAnyShown && playNavigation.canNavigateNextPage() && !playViewModel.isAnyBottomSheetsShown
+    private fun isAllowAutoSwipe(status: Boolean) =
+        status && !playViewModel.bottomInsets.isAnyShown && playNavigation.canNavigateNextPage() && !playViewModel.isAnyBottomSheetsShown
 
     private fun doAutoSwipe() {
         viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
@@ -1719,6 +1715,7 @@ class PlayUserInteractionFragment @Inject constructor(
         }
 
         endLiveInfoViewOnStateChanged(event = status)
+        if (isAllowAutoSwipe(!status.channelStatus.statusType.isActive)) doAutoSwipe()
     }
 
     private fun getTextFromUiString(uiString: UiString): String {
