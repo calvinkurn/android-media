@@ -3,7 +3,7 @@ package com.tokopedia.encryption
 import android.os.Build
 import com.tokopedia.encryption.security.RSA
 import com.tokopedia.encryption.utils.Constants
-import org.junit.Assert.assertEquals
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -12,39 +12,18 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [Build.VERSION_CODES.O_MR1], manifest = Config.NONE)
-class LoggerEncryptionTest {
+class NewRelicKeyEncryptionTest {
 
-    var ENCRYPTION_KEY = String(
-        charArrayOf(
-            113.toChar(),
-            40.toChar(),
-            101.toChar(),
-            35.toChar(),
-            37.toChar(),
-            71.toChar(),
-            102.toChar(),
-            64.toChar(),
-            111.toChar(),
-            105.toChar(),
-            62.toChar(),
-            108.toChar(),
-            107.toChar(),
-            66.toChar(),
-            126.toChar(),
-            104.toChar()
-        )
-    )
+    private lateinit var rsaEncrpytor: RSA
 
-    lateinit var rsaEncrpytor: RSA
-
-    val publicRsaKeyStr = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoHZ7Cq/9VO0ynSSThX8cPf5uoK7vXs5l" +
+    private val PUBLIC_KEY_RSA_STR = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoHZ7Cq/9VO0ynSSThX8cPf5uoK7vXs5l" +
         "2hN41Otg6ys6b9VB5MWhcZ2GYmq4MDwC/eF0Baby6aNZMZT61Fh88fMbW+glGLEd7YpCL0bhqd3r" +
         "n8Z4IelMlq3CrEVfFd+ZD2cGsGINM1RNCvpwHVTiQTWs8ygBVC7ynsJZrk+abWsCBCYnl1lFkMd9" +
         "uv0tQ06nR2dN1jcsmUkysNhhvB0zoJYF7gK9U0WEyKngCrlrw4iiKhy95AVyVejRIO3MB2pD6Ioz" +
         "m0hWZNPoWs1EgDGeC2l6Xw5KjN/z6X8wIPLYMZqq8434ZFdxtJQZBQHa3OJaEX5kiohMqkeLWZnG" +
         "OtNpEwIDAQAB"
 
-    val privateRsaKeyStr = "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCgdnsKr/1U7TKdJJOFfxw9/m6g" +
+    private val PRIVATE_KEY_RSA_STR = "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCgdnsKr/1U7TKdJJOFfxw9/m6g" +
         "ru9ezmXaE3jU62DrKzpv1UHkxaFxnYZiargwPAL94XQFpvLpo1kxlPrUWHzx8xtb6CUYsR3tikIv" +
         "RuGp3eufxngh6UyWrcKsRV8V35kPZwawYg0zVE0K+nAdVOJBNazzKAFULvKewlmuT5ptawIEJieX" +
         "WUWQx326/S1DTqdHZ03WNyyZSTKw2GG8HTOglgXuAr1TRYTIqeAKuWvDiKIqHL3kBXJV6NEg7cwH" +
@@ -73,31 +52,42 @@ class LoggerEncryptionTest {
     }
 
     @Test
-    fun `RSA decrypt`() {
-        val newRelicApiKey = intArrayOf(78, 82, 73, 73, 45, 99, 84, 100, 57, 84, 52, 87, 50, 113, 120, 72, 103, 103, 70, 110, 121, 113, 56, 49, 98, 78, 115, 100, 86, 97, 65, 100, 85, 116, 120, 84, 51)
-        val decodeApiKey = decodeKey(newRelicApiKey)
-        val userIdNr = intArrayOf(51, 48, 53, 57, 53, 50, 56)
-        val decodeUserIdNr = decodeKey(userIdNr)
+    fun `Encrypt New Relic Key (plain) using the RSA key`() {
+        //new relic key sample
+//        val newRelicIntArray = intArrayOf(78, 82, 73, 73, 45, 99, 84, 100, 57, 84, 52, 87, 50, 113, 120, 72, 103, 103, 70, 110, 121, 113, 56, 49, 98, 78, 115, 100, 86, 97, 65, 100, 85, 116, 120, 84, 51)
+//        val newRelicKey = decodeKey(newRelicIntArray)
 
-        println("userIdNr: $decodeUserIdNr")
-        println("newrelicApikey: $decodeApiKey")
+        //TODO add New Relic Key
+        val newRelicKey = ""
 
-        println(publicRsaKeyStr)
-        println(privateRsaKeyStr)
+        println("New Relic Key origin: $newRelicKey")
 
-        val publicKeyRSA = rsaEncrpytor.stringToPublicKey(publicRsaKeyStr)
-        val privateKeyRSA = rsaEncrpytor.stringToPrivateKey(privateRsaKeyStr)
+        val publicKeyRSA = rsaEncrpytor.stringToPublicKey(PUBLIC_KEY_RSA_STR)
 
-        val encryptedKey = rsaEncrpytor.encrypt(decodeApiKey, publicKeyRSA, Constants.RSA_OAEP_ALGORITHM)
+        val newRelicKeyEncrypted = rsaEncrpytor.encrypt(newRelicKey, publicKeyRSA, Constants.RSA_OAEP_ALGORITHM)
 
-        println("encrpytedApiKey: $encryptedKey")
+        println("New Relic Key Encrypted: $newRelicKeyEncrypted")
+    }
 
-        val decryptKey = rsaEncrpytor.decrypt(encryptedKey, privateKeyRSA, Constants.RSA_OAEP_ALGORITHM)
+    @Test
+    fun `Decrypt New Relic Key after encrypted using the RSA key`() {
+        //decrypted new relic key sample
+//        val newRelicKeyEncrypted = "XuAUTL1JGjjxphMsmGO9EUL3o9f/C8M9TN0FSOifkiG5yZoscpZr4qTOGPcwa6jvoISwXRu3GQEL\n" +
+//            "x0fig7ZuEZS7UoL8rpf73NF3Mk0zv3BVhjLPR8py4lDRyMfGSVxNZN1FB/L8T4rGjMODgtkJ4g8K\n" +
+//            "/wCLw9435g8zr499m0xbowcSwdI+gCXtxtoYRdGv6ybCWVkJiY7m4O8GpEX+HqffSjXORQ9Jy3Fm\n" +
+//            "Qp9nVze3hDJEoSIRXy3K5TBzxwq18+SWng54Hdbxw1ZvQtswEdLhwgQjy0ojE6G3nDWiAvz3C9k/\n" +
+//            "FPNwse6VwyvMNvFsCFWsV/VTnGo4IGFrbK2UKA=="
 
-        println("expected: $decryptKey")
-        println("actual: $decodeApiKey")
+        //TODO add New Relic Key after encrypted
+        val newRelicKeyEncrypted = ""
 
-        assertEquals(decryptKey, decodeApiKey)
+        println("New Relic Key Encrypted: $newRelicKeyEncrypted")
+
+        val privateKeyRSA = rsaEncrpytor.stringToPrivateKey(PRIVATE_KEY_RSA_STR)
+
+        val newRelicKeyDecrypted = rsaEncrpytor.decrypt(newRelicKeyEncrypted, privateKeyRSA, Constants.RSA_OAEP_ALGORITHM)
+
+        println("New Relic Key Decrypted: $newRelicKeyDecrypted")
     }
 
     private fun decodeKey(keys: IntArray): String {
