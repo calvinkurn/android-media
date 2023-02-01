@@ -345,7 +345,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeShopShareTracker()
         observeWidgetDismissalStatus()
         observeShopStateInfo()
-        showSellerHomeTaster()
+        showSellerHomeToaster()
 
         context?.let { UpdateShopActiveWorker.execute(it) }
     }
@@ -2778,7 +2778,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     @SuppressLint("DeprecatedMethod")
-    private fun showSellerHomeTaster() {
+    private fun showSellerHomeToaster() {
         binding?.run {
             root.post {
                 val data = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -2788,13 +2788,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 } else {
                     arguments?.getParcelable(KEY_SELLER_HOME_DATA)
                 }
-                data?.let {
+                val message = data?.toasterMessage
+                if (!message.isNullOrBlank()) {
                     Toaster.build(
                         this.root,
-                        it.toasterMessage,
+                        message,
                         Toaster.LENGTH_LONG,
                         Toaster.TYPE_NORMAL,
-                        it.toasterCta
+                        data.toasterCta
                     ).show()
                 }
             }
