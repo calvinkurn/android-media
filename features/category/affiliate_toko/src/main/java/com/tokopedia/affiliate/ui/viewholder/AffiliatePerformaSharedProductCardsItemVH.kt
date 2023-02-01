@@ -177,6 +177,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
             UserSession(itemView.context).userId,
             product.itemID,
             bindingAdapterPosition - 1,
+            product.itemTitle,
             "${product.itemID}" +
                 " - ${product.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue}" +
                 " - ${product.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue}" +

@@ -162,7 +162,8 @@ class AffiliateAdapter(
             item.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue
             } - ${
             item.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue
-            } - $label"
+            } - $label",
+            AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SELECT_CONTENT
         )
     }
 
