@@ -381,7 +381,7 @@ class PlayViewModel @AssistedInject constructor(
         _featuredProducts.distinctUntilChanged(),
         _engagementUiState,
         _followPopUpUiState,
-        _explore
+        _explore.distinctUntilChanged()
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
         status, quickReply, selectedVariant, isLoadingBuy, address,
@@ -1461,7 +1461,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleOnboarding(videoMetaInfo: PlayVideoMetaInfoUiModel) {
-        if(videoMetaInfo.videoPlayer.isYouTube) return
+        if (videoMetaInfo.videoPlayer.isYouTube) return
         cancelJob(ONBOARDING_COACHMARK_ID)
 
         jobMap[ONBOARDING_COACHMARK_ID] = viewModelScope.launch(dispatchers.computation) {
@@ -2716,16 +2716,24 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    fun submitUserReport(mediaUrl: String,
-                         reasonId: Int,
-                         timestamp: Long,
-                         reportDesc: String){
+    fun submitUserReport(
+        mediaUrl: String,
+        reasonId: Int,
+        timestamp: Long,
+        reportDesc: String
+    ) {
         viewModelScope.launchCatchError(block = {
             _userReportSubmission.value = ResultState.Loading
-            val isSuccess = repo.submitReport(channelId = channelId.toLongOrZero(), partnerId = partnerId.orZero(),
-                    partnerType = PartnerType.getTypeByValue(partnerType),
-                    reasonId = reasonId, timestamp = timestamp, reportDesc = reportDesc, mediaUrl = mediaUrl)
-            if(isSuccess){
+            val isSuccess = repo.submitReport(
+                channelId = channelId.toLongOrZero(),
+                partnerId = partnerId.orZero(),
+                partnerType = PartnerType.getTypeByValue(partnerType),
+                reasonId = reasonId,
+                timestamp = timestamp,
+                reportDesc = reportDesc,
+                mediaUrl = mediaUrl
+            )
+            if (isSuccess) {
                 _userReportSubmission.value = ResultState.Success
             } else {
                 throw Exception()
@@ -3019,8 +3027,7 @@ class PlayViewModel @AssistedInject constructor(
         private const val SUBSCRIBE_AWAY_THRESHOLD = 5000L
         private val defaultSharingStarted = SharingStarted.WhileSubscribed(SUBSCRIBE_AWAY_THRESHOLD)
 
-
-        private const val FOLLOW_POP_UP_ID  = "FOLLOW_POP_UP"
-        private const val ONBOARDING_COACHMARK_ID  = "ONBOARDING_COACHMARK"
+        private const val FOLLOW_POP_UP_ID = "FOLLOW_POP_UP"
+        private const val ONBOARDING_COACHMARK_ID = "ONBOARDING_COACHMARK"
     }
 }

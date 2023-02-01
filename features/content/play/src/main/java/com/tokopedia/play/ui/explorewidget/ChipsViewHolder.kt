@@ -9,14 +9,14 @@ import com.tokopedia.unifycomponents.ChipsUnify
 /**
  * @author by astidhiyaa on 04/12/22
  */
-class ChipsViewHolder  {
-    internal class Chips(private val binding: ViewWidgetChipsBinding, private val listener: Listener) : BaseViewHolder(binding.root){
+class ChipsViewHolder {
+    internal class Chips(private val binding: ViewWidgetChipsBinding, private val listener: Listener) : BaseViewHolder(binding.root) {
         fun bind(item: ChipWidgetUiModel) {
             binding.root.chipText = item.text
             binding.root.chipType = if (item.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
 
             binding.root.setOnClickListener {
-                listener.onChipsClicked(item)
+                if (item.isSelected.not()) listener.onChipsClicked(item)
             }
         }
 
@@ -25,5 +25,5 @@ class ChipsViewHolder  {
         }
     }
 
-    internal class Shimmering(binding: ViewChipShimmeringBinding) : BaseViewHolder(binding.root) {}
+    internal class Shimmering(binding: ViewChipShimmeringBinding) : BaseViewHolder(binding.root)
 }
