@@ -71,6 +71,7 @@ import com.tokopedia.mvc.util.constant.ImageUrlConstant
 import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.mvc.util.constant.VoucherTargetConstant.VOUCHER_TARGET_PUBLIC
 import com.tokopedia.mvc.util.tracker.ShareBottomSheetTracker
+import com.tokopedia.mvc.util.tracker.VoucherDetailTracker
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.constants.BroadcastChannelType
@@ -137,6 +138,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     // dialog
     private var stopVoucherDialog: StopVoucherConfirmationDialog? = null
+
+    // tracker
+    @Inject
+    lateinit var voucherDetailTracker: VoucherDetailTracker
 
     @Inject
     lateinit var tracker: ShareBottomSheetTracker
@@ -260,7 +265,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun setupHeaderSection(data: VoucherDetailData) {
         binding?.run {
             header.headerTitle = data.voucherName
-            header.setNavigationOnClickListener { activity?.finish() }
+            header.setNavigationOnClickListener {
+                voucherDetailTracker.sendClickArrowBackEvent(data)
+                activity?.finish()
+            }
             if (layoutHeader.parent != null) {
                 layoutHeader.inflate()
             }
@@ -283,7 +291,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             btnDownloadImageVoucher.apply {
                 isVisible =
                     data.voucherStatus == VoucherStatus.NOT_STARTED || data.voucherStatus == VoucherStatus.ONGOING
-                setOnClickListener { viewModel.onTapDownloadVoucherImage() }
+                setOnClickListener {
+                    viewModel.onTapDownloadVoucherImage()
+                    voucherDetailTracker.sendClickDownloadEvent(data)
+                }
             }
         }
     }
@@ -393,6 +404,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             }
             btnUbahKupon.setOnClickListener {
                 SummaryActivity.start(context, data.toVoucherConfiguration())
+                voucherDetailTracker.sendClickEditEvent(data)
             }
         }
     }
@@ -666,6 +678,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 openThreeDotsBottomSheet(data)
             }
             btnBroadcastChat.setOnClickListener {
+                voucherDetailTracker.sendClickBroadCastChatEvent(data)
                 shareToBroadcastChat(data.voucherId)
             }
         }
@@ -674,11 +687,13 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 openThreeDotsBottomSheet(data)
             }
             btnBroadcastChat.setOnClickListener {
+                voucherDetailTracker.sendClickBroadCastChatEvent(data)
                 shareToBroadcastChat(data.voucherId)
             }
             btnShare.setOnClickListener {
                 stateButtonShareBinding?.btnShare.startLoading()
                 viewModel.generateVoucherImage()
+                voucherDetailTracker.sendClickShareEvent(data)
             }
         }
         stateButtonDuplicateBinding?.apply {
@@ -686,6 +701,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 openThreeDotsBottomSheet(data)
             }
             btnDuplicate.setOnClickListener {
+                voucherDetailTracker.sendClickDuplicateEvent(data)
                 val intent = SummaryActivity.buildDuplicateModeIntent(context, data.voucherId)
                 startActivity(intent)
             }
@@ -693,6 +709,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     }
 
     private fun openThreeDotsBottomSheet(data: VoucherDetailData) {
+        voucherDetailTracker.sendClick3DotsButtonEvent(data)
         val voucherStatus = viewModel.getThreeDotsBottomSheetType(data)
         activity?.let {
             moreMenuBottomSheet =
@@ -714,6 +731,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         moreMenuBottomSheet?.dismiss()
         when (menuUiModel) {
             is MoreMenuUiModel.TermsAndConditions -> {
+                voucherDetailTracker.sendClickTNCEvent(data)
                 openTncPage()
             }
             else -> deleteOrStopVoucher(data)
@@ -960,13 +978,14 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             showConfirmationStopVoucherDialog(data)
         }
     }
+
     private fun showConfirmationStopVoucherDialog(data: VoucherDetailData) {
         val voucherStatus = data.voucherStatus
-
         stopVoucherDialog?.let { dialog ->
             with(dialog) {
                 setOnPositiveConfirmed {
                     updateVoucherStatusData(data)
+                    sendDeleteOrStopVoucherTracker(data)
                     setDismissDialog()
                 }
                 show(
@@ -993,6 +1012,14 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun sendDeleteOrStopVoucherTracker(data: VoucherDetailData) {
+        if (data.voucherStatus == VoucherStatus.NOT_STARTED) {
+            voucherDetailTracker.sendClickBatalkanEvent(data)
+        } else {
+            voucherDetailTracker.sendClickHentikanEvent(data)
+        }
+    }
+
     private fun getTitleStopVoucherDialog(voucherStatus: VoucherStatus): String {
         return if (voucherStatus == VoucherStatus.NOT_STARTED) {
             getString(R.string.smvc_delete_voucher_confirmation_title_of_dialog)
@@ -1001,7 +1028,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun getStringDescStopVoucherDialog(voucherStatus: VoucherStatus, voucherName: String): String {
+    private fun getStringDescStopVoucherDialog(
+        voucherStatus: VoucherStatus,
+        voucherName: String
+    ): String {
         return if (voucherStatus == VoucherStatus.NOT_STARTED) {
             getString(R.string.smvc_delete_voucher_confirmation_body_dialog)
         } else {

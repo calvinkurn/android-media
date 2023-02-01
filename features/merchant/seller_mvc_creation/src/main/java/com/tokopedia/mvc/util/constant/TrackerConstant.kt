@@ -34,4 +34,12 @@ object TrackerConstant {
     object CreationVoucherSetting {
         const val event = "kupon toko saya - creation pengaturan kupon"
     }
+
+    object VoucherDetail {
+        const val event = "kupon toko saya - detail kupon"
+    }
+
+    object ThreeDotsMenu {
+        const val event = "kupon toko saya - detail kupon - three dots pop up"
+    }
 }
