@@ -6,8 +6,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.contactus.R
-import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketActivity
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity
 import com.tokopedia.contactus.switcheractivity.RemoteConfigSetting
 import com.tokopedia.kotlin.extensions.orFalse
 
@@ -19,7 +18,7 @@ class TicketSwitcherActivity : BaseSimpleActivity() {
 
         @JvmStatic
         fun start(context: Context, idTicket: String, isOfficialStore: Boolean): Intent {
-            val intent = Intent(context, TicketActivity::class.java)
+            val intent = Intent(context, InboxDetailActivity::class.java)
             val bundle = Bundle()
             bundle.putString(BUNDLE_ID_TICKET, idTicket)
             bundle.putBoolean(IS_OFFICIAL_STORE, isOfficialStore)
@@ -37,14 +36,14 @@ class TicketSwitcherActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? = null
-    override fun getLayoutRes() = R.layout.contact_us_activity_ticket
+    override fun getLayoutRes() = R.layout.contact_us_activity_inbox_detail
     override fun getParentViewResourceID() = R.id.container
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (RemoteConfigSetting.isRemoteConfigGoesToMVVM(this)) {
             startActivity(
-                TicketActivity.getIntent(
+                InboxDetailActivity.getIntent(
                     this,
                     ticketId,
                     isOfficialStore

@@ -1,4 +1,4 @@
-package com.tokopedia.contactus.inboxtickets.view.ticket
+package com.tokopedia.contactus.inboxtickets.view.inboxdetail
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -29,7 +29,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
-import com.tokopedia.contactus.databinding.ContactUsFragmentTicketBinding
+import com.tokopedia.contactus.databinding.ContactUsFragmentInboxDetailBinding
 import com.tokopedia.contactus.inboxtickets.data.ImageUpload
 import com.tokopedia.contactus.inboxtickets.data.model.Tickets
 import com.tokopedia.contactus.inboxtickets.di.DaggerInboxComponent
@@ -44,20 +44,20 @@ import com.tokopedia.contactus.inboxtickets.view.fragment.CloseComplainBottomShe
 import com.tokopedia.contactus.inboxtickets.view.fragment.HelpFullBottomSheet
 import com.tokopedia.contactus.inboxtickets.view.fragment.ServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxtickets.view.listeners.InboxDetailListener
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketActivity.Companion.BUNDLE_ID_TICKET
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketActivity.Companion.IS_OFFICIAL_STORE
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketConstanta.KEY_DISLIKED
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketConstanta.KEY_LIKED
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketConstanta.RESULT_FINISH
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketConstanta.TICKET_STATUS_CLOSED
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketConstanta.TICKET_STATUS_IN_PROCESS
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketConstanta.TICKET_STATUS_NEED_RATING
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketViewModel.Companion.FIND_KEYWORD
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketViewModel.Companion.NOT_FIND_ANY_TEXT
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketViewModel.Companion.OUT_OF_BOND
-import com.tokopedia.contactus.inboxtickets.view.ticket.uimodel.OnFindKeywordAtTicket
-import com.tokopedia.contactus.inboxtickets.view.ticket.uimodel.TicketUiEffect
-import com.tokopedia.contactus.inboxtickets.view.ticket.uimodel.TicketUiState
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity.Companion.BUNDLE_ID_TICKET
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity.Companion.IS_OFFICIAL_STORE
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.KEY_DISLIKED
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.KEY_LIKED
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.RESULT_FINISH
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.TICKET_STATUS_CLOSED
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.TICKET_STATUS_IN_PROCESS
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.TICKET_STATUS_NEED_RATING
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailViewModel.Companion.FIND_KEYWORD
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailViewModel.Companion.NOT_FIND_ANY_TEXT
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailViewModel.Companion.OUT_OF_BOND
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.OnFindKeywordAtTicket
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.InboxDetailUiEffect
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.InboxDetailUiState
 import com.tokopedia.contactus.inboxtickets.view.utils.CLOSED
 import com.tokopedia.contactus.inboxtickets.view.utils.Utils
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
@@ -147,12 +147,12 @@ class TicketFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(TicketViewModel::class.java) }
+    private val viewModel by lazy { viewModelProvider.get(InboxDetailViewModel::class.java) }
 
     @JvmField
     var mMenu: Menu? = null
 
-    private var binding by autoClearedNullable<ContactUsFragmentTicketBinding>()
+    private var binding by autoClearedNullable<ContactUsFragmentInboxDetailBinding>()
 
     private val imageList: List<ImageUpload>
         get() = imageUploadAdapter?.getUploadedImageList() ?: emptyList()
@@ -186,7 +186,7 @@ class TicketFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = ContactUsFragmentTicketBinding.inflate(inflater, container, false)
+        binding = ContactUsFragmentInboxDetailBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         binding?.run {
             toolbar.setTitle(R.string.detail_kendala)
@@ -443,9 +443,9 @@ class TicketFragment :
         imageUploadAdapter?.addImage(image)
     }
 
-    private fun handleEffect(uiEffect: TicketUiEffect) {
+    private fun handleEffect(uiEffect: InboxDetailUiEffect) {
         when (uiEffect) {
-            is TicketUiEffect.SendCSATRatingSuccess -> {
+            is InboxDetailUiEffect.SendCSATRatingSuccess -> {
                 hideProgressBar()
                 binding?.root?.showToasterWithCta(
                     activity?.getString(R.string.cu_terima_kasih_atas_masukannya).orEmpty()
@@ -459,7 +459,7 @@ class TicketFragment :
                 )
             }
 
-            is TicketUiEffect.SendCSATRatingFailed -> {
+            is InboxDetailUiEffect.SendCSATRatingFailed -> {
                 hideProgressBar()
                 if (uiEffect.throwable != null) {
                     binding?.root?.showErrorToasterWithCta(
@@ -470,7 +470,7 @@ class TicketFragment :
                 }
             }
 
-            is TicketUiEffect.GetDetailTicketFailed -> {
+            is InboxDetailUiEffect.GetDetailInboxDetailFailed -> {
                 if (uiEffect.throwable != null) {
                     binding?.root?.showErrorToasterWithCta(
                         activity?.getString(R.string.contact_us_something_went_wrong).orEmpty()
@@ -480,7 +480,7 @@ class TicketFragment :
                 }
             }
 
-            is TicketUiEffect.OnSearchTicketKeyword -> {
+            is InboxDetailUiEffect.OnSearchInboxDetailKeyword -> {
                 hideProgressBar()
                 enterSearchMode(uiEffect.searchKeyword, uiEffect.sizeSearch)
                 if (uiEffect.sizeSearch > 0) {
@@ -493,14 +493,14 @@ class TicketFragment :
                 }
             }
 
-            is TicketUiEffect.OnSearchTicketKeywordFailed -> {
+            is InboxDetailUiEffect.OnSearchInboxDetailKeywordFailed -> {
                 hideProgressBar()
                 binding?.root?.showToasterWithCta(
                     activity?.getString(R.string.contact_us_something_went_wrong).orEmpty()
                 )
             }
 
-            is TicketUiEffect.OnCloseTicketSuccess -> {
+            is InboxDetailUiEffect.OnCloseInboxDetailSuccess -> {
                 Observable.timer(DELAY_FOUR_MILLIS.toLong(), TimeUnit.MILLISECONDS)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -515,7 +515,7 @@ class TicketFragment :
                 onClickEmoji(0, uiEffect.ticketNumber)
             }
 
-            is TicketUiEffect.OnCloseTicketFailed -> {
+            is InboxDetailUiEffect.OnCloseInboxDetailFailed -> {
                 if (uiEffect.throwable != null) {
                     binding?.root?.showErrorToasterWithCta(
                         activity?.getString(R.string.contact_us_failed).orEmpty()
@@ -525,12 +525,12 @@ class TicketFragment :
                 }
             }
 
-            is TicketUiEffect.SendTextMessageSuccess -> {
+            is InboxDetailUiEffect.SendTextMessageSuccess -> {
                 hideSendProgress()
                 updateAddComment(uiEffect.commentItems)
             }
 
-            is TicketUiEffect.SendTextMessageFailed -> {
+            is InboxDetailUiEffect.SendTextMessageFailed -> {
                 hideSendProgress()
                 when {
                     (uiEffect.messageError.isEmpty() && uiEffect.throwable == null) || uiEffect.throwable != null -> {
@@ -545,7 +545,7 @@ class TicketFragment :
                 }
             }
 
-            is TicketUiEffect.OnSendRatingSuccess -> {
+            is InboxDetailUiEffect.OnSendRatingSuccess -> {
                 hideProgressBar()
                 onSuccessSubmitOfRating(
                     uiEffect.rating,
@@ -554,7 +554,7 @@ class TicketFragment :
                 )
             }
 
-            is TicketUiEffect.OnSendRatingFailed -> {
+            is InboxDetailUiEffect.OnSendRatingFailed -> {
                 hideProgressBar()
                 if (uiEffect.throwable != null) {
                     binding?.root?.showErrorToasterWithCta(
@@ -728,7 +728,7 @@ class TicketFragment :
         }
     }
 
-    private fun uiStateHandle(state: TicketUiState) {
+    private fun uiStateHandle(state: InboxDetailUiState) {
         renderMessageList(state.ticketDetail)
     }
 

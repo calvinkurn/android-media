@@ -5,8 +5,8 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.contactus.inboxtickets.view.activity.ContactUsProvideRatingActivity
 import com.tokopedia.contactus.inboxtickets.view.inbox.InboxContactUsActivity
 import com.tokopedia.contactus.inboxtickets.view.inbox.InboxContactUsFragment
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketActivity
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketFragment
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.TicketFragment
 import dagger.Component
 
 @InboxScope
@@ -22,6 +22,6 @@ interface InboxComponent {
     fun inject(activity: ContactUsProvideRatingActivity)
     fun inject(activity: InboxContactUsActivity)
     fun inject(fragment: InboxContactUsFragment)
-    fun inject(activity: TicketActivity)
+    fun inject(activity: InboxDetailActivity)
     fun inject(fragment: TicketFragment)
 }

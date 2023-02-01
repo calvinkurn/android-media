@@ -1,4 +1,4 @@
-package com.tokopedia.contactus.inboxtickets.view.ticket
+package com.tokopedia.contactus.inboxtickets.view.inboxdetail
 
 import android.content.Context
 import android.content.Intent
@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.contactus.R
 import com.tokopedia.kotlin.extensions.orFalse
 
-class TicketActivity : BaseSimpleActivity() {
+class InboxDetailActivity : BaseSimpleActivity() {
 
     companion object {
         const val BUNDLE_ID_TICKET = "id_ticket"
@@ -17,7 +17,7 @@ class TicketActivity : BaseSimpleActivity() {
 
         @JvmStatic
         fun getIntent(context: Context, idTicket: String, isOfficialStore: Boolean) : Intent {
-            val intent = Intent(context, TicketActivity::class.java)
+            val intent = Intent(context, InboxDetailActivity::class.java)
             val bundle = Bundle()
             bundle.putString(BUNDLE_ID_TICKET, idTicket)
             bundle.putBoolean(IS_OFFICIAL_STORE, isOfficialStore)
@@ -34,7 +34,7 @@ class TicketActivity : BaseSimpleActivity() {
         intent?.extras?.getBoolean(IS_OFFICIAL_STORE, false)
     }
 
-    override fun getLayoutRes() = R.layout.contact_us_activity_ticket
+    override fun getLayoutRes() = R.layout.contact_us_activity_inbox_detail
     override fun getParentViewResourceID() = R.id.container
 
     override fun getNewFragment() : Fragment {
@@ -48,7 +48,7 @@ class TicketActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.contact_us_activity_ticket)
+        setContentView(R.layout.contact_us_activity_inbox_detail)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

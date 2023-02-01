@@ -1,9 +1,9 @@
-package com.tokopedia.contactus.inboxtickets.view.ticket.uimodel
+package com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel
 
 import com.tokopedia.contactus.inboxtickets.data.model.Tickets
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 
-data class TicketUiState(
+data class InboxDetailUiState(
     val isLoading: Boolean = true,
     val ticketDetail: Tickets = Tickets(),
     val csatReasonListBadReview: List<BadCsatReasonListItem> = arrayListOf(),

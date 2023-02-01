@@ -1,4 +1,4 @@
-package com.tokopedia.contactus.inboxtickets.view.ticket
+package com.tokopedia.contactus.inboxtickets.view.inboxdetail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,16 +12,16 @@ import com.tokopedia.contactus.inboxtickets.data.model.Tickets
 import com.tokopedia.contactus.inboxtickets.domain.AttachmentItem
 import com.tokopedia.contactus.inboxtickets.domain.CommentsItem
 import com.tokopedia.contactus.inboxtickets.domain.CreatedBy
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketConstanta.KEY_DISLIKED
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketConstanta.KEY_LIKED
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketConstanta.SUCCESS_HIT_API
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketConstanta.SUCCESS_KEY_SECURE_IMAGE_PARAMETER
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketConstanta.TICKET_STATUS_CLOSED
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketConstanta.TICKET_STATUS_IN_PROCESS
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketConstanta.TICKET_STATUS_NEED_RATING
-import com.tokopedia.contactus.inboxtickets.view.ticket.uimodel.OnFindKeywordAtTicket
-import com.tokopedia.contactus.inboxtickets.view.ticket.uimodel.TicketUiEffect
-import com.tokopedia.contactus.inboxtickets.view.ticket.uimodel.TicketUiState
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.KEY_DISLIKED
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.KEY_LIKED
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.SUCCESS_HIT_API
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.SUCCESS_KEY_SECURE_IMAGE_PARAMETER
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.TICKET_STATUS_CLOSED
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.TICKET_STATUS_IN_PROCESS
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.TICKET_STATUS_NEED_RATING
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.OnFindKeywordAtTicket
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.InboxDetailUiEffect
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.InboxDetailUiState
 import com.tokopedia.contactus.inboxtickets.view.utils.*
 import com.tokopedia.contactus.inboxtickets.view.utils.CLOSED
 import com.tokopedia.contactus.inboxtickets.domain.usecase.ChipUploadHostConfigUseCase
@@ -46,7 +46,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import javax.inject.Inject
 
-class TicketViewModel @Inject constructor(
+class InboxDetailViewModel @Inject constructor(
     private val postMessageUseCase: PostMessageUseCase,
     private val postMessageUseCase2: PostMessageUseCase2,
     private val inboxOptionUseCase: InboxOptionUseCase,
@@ -75,10 +75,10 @@ class TicketViewModel @Inject constructor(
         private const val FAILURE_KEY_UPLOAD_HOST_CONFIG = "0"
     }
 
-    private val _uiState = MutableStateFlow(TicketUiState())
+    private val _uiState = MutableStateFlow(InboxDetailUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEffect = MutableSharedFlow<TicketUiEffect>(replay = 1)
+    private val _uiEffect = MutableSharedFlow<InboxDetailUiEffect>(replay = 1)
     val uiEffect = _uiEffect.asSharedFlow()
 
     private var _onFindKeywordAtTicket: MutableLiveData<OnFindKeywordAtTicket> = MutableLiveData()
@@ -89,7 +89,7 @@ class TicketViewModel @Inject constructor(
     val isImageInvalid: LiveData<Boolean>
         get() = _isImageInvalid
 
-    private val currentState: TicketUiState
+    private val currentState: InboxDetailUiState
         get() = _uiState.value
 
     private val utils by lazy {
@@ -149,10 +149,10 @@ class TicketViewModel @Inject constructor(
                 )
                 val chipGetInboxDetail = submitRatingUseCase.getChipInboxDetail(requestParams)
                 if (chipGetInboxDetail.getErrorListMessage().isNotEmpty()) {
-                    _uiEffect.emit(TicketUiEffect.SendCSATRatingFailed(messageError = chipGetInboxDetail.getErrorMessage()))
+                    _uiEffect.emit(InboxDetailUiEffect.SendCSATRatingFailed(messageError = chipGetInboxDetail.getErrorMessage()))
                 } else {
                     _uiEffect.emit(
-                        TicketUiEffect.SendCSATRatingSuccess(
+                        InboxDetailUiEffect.SendCSATRatingSuccess(
                             currentState.ticketDetail.getTicketNumber(),
                             reason,
                             rating
@@ -164,7 +164,7 @@ class TicketViewModel @Inject constructor(
                 }
             },
             onError = {
-                _uiEffect.emit(TicketUiEffect.SendCSATRatingFailed(messageError = "", it))
+                _uiEffect.emit(InboxDetailUiEffect.SendCSATRatingFailed(messageError = "", it))
             }
         )
     }
@@ -234,14 +234,14 @@ class TicketViewModel @Inject constructor(
                     }
                 } else {
                     _uiEffect.emit(
-                        TicketUiEffect.GetDetailTicketFailed(
+                        InboxDetailUiEffect.GetDetailInboxDetailFailed(
                             messageError = chipGetInboxDetail.getErrorMessage()
                         )
                     )
                 }
             },
             onError = {
-                _uiEffect.emit(TicketUiEffect.GetDetailTicketFailed(messageError = "", it))
+                _uiEffect.emit(InboxDetailUiEffect.GetDetailInboxDetailFailed(messageError = "", it))
             }
         )
     }
@@ -329,7 +329,7 @@ class TicketViewModel @Inject constructor(
                 initializeIndicesList(searchText)
                 next = 0
                 _uiEffect.emit(
-                    TicketUiEffect.OnSearchTicketKeyword(
+                    InboxDetailUiEffect.OnSearchInboxDetailKeyword(
                         isOnProgress = false,
                         searchText,
                         searchIndices.size
@@ -385,16 +385,16 @@ class TicketViewModel @Inject constructor(
                 val chipGetInboxDetail = closeTicketByUserUseCase.getChipInboxDetail(requestParams)
                 if (chipGetInboxDetail.getErrorListMessage().isNotEmpty()) {
                     _uiEffect.emit(
-                        TicketUiEffect.OnCloseTicketFailed(
+                        InboxDetailUiEffect.OnCloseInboxDetailFailed(
                             chipGetInboxDetail.getErrorMessage()
                         )
                     )
                 } else {
-                    _uiEffect.emit(TicketUiEffect.OnCloseTicketSuccess(ticketNumber = getTicketNumber()))
+                    _uiEffect.emit(InboxDetailUiEffect.OnCloseInboxDetailSuccess(ticketNumber = getTicketNumber()))
                 }
             },
             onError = {
-                _uiEffect.emit(TicketUiEffect.OnCloseTicketFailed("", it))
+                _uiEffect.emit(InboxDetailUiEffect.OnCloseInboxDetailFailed("", it))
             }
         )
     }
@@ -427,18 +427,18 @@ class TicketViewModel @Inject constructor(
                 if (successResponse.getTicketReplay().getTicketReplayData().status == REPLY_TICKET_RESPONSE_STATUS
                 ) {
                     val newItemMessage = addNewLocalComment(imageList, message)
-                    _uiEffect.emit(TicketUiEffect.SendTextMessageSuccess(newItemMessage))
+                    _uiEffect.emit(InboxDetailUiEffect.SendTextMessageSuccess(newItemMessage))
 
                 } else if (!errorResponse.isNullOrEmpty()) {
                     val errorMessage = errorResponse[0].message
-                    _uiEffect.emit(TicketUiEffect.SendTextMessageFailed(messageError = errorMessage))
+                    _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed(messageError = errorMessage))
                 } else {
-                    _uiEffect.emit(TicketUiEffect.SendTextMessageFailed())
+                    _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed())
                 }
             },
             onError = {
                 it.printStackTrace()
-                _uiEffect.emit(TicketUiEffect.SendTextMessageFailed(throwable = it))
+                _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed(throwable = it))
             }
         )
     }
@@ -462,7 +462,7 @@ class TicketViewModel @Inject constructor(
                     val errorMessage =
                         chipUploadHostConfig.getUploadHostConfig().getErrorMessage()
 
-                    _uiEffect.emit(TicketUiEffect.SendTextMessageFailed(errorMessage))
+                    _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed(errorMessage))
                     return@launchCatchError
                 }
 
@@ -494,21 +494,21 @@ class TicketViewModel @Inject constructor(
                             )
                             sendImages(requestParams, imageList, message)
                         } else {
-                            _uiEffect.emit(TicketUiEffect.SendTextMessageFailed())
+                            _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed())
                         }
 
                     } else {
-                        _uiEffect.emit(TicketUiEffect.SendTextMessageFailed())
+                        _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed())
                     }
 
 
                 } else {
-                    _uiEffect.emit(TicketUiEffect.SendTextMessageFailed())
+                    _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed())
                 }
 
             },
             onError = {
-                _uiEffect.emit(TicketUiEffect.SendTextMessageFailed(throwable = it))
+                _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed(throwable = it))
             }
         )
     }
@@ -595,13 +595,13 @@ class TicketViewModel @Inject constructor(
                 val stepTwoResponse = postMessageUseCase2.getInboxDataResponse(requestParams)
                 if (stepTwoResponse.getTicketAttach().getAttachment().isSuccess > 0) {
                     val newItemMessage = addNewLocalComment(imageList, message)
-                    _uiEffect.emit(TicketUiEffect.SendTextMessageSuccess(newItemMessage))
+                    _uiEffect.emit(InboxDetailUiEffect.SendTextMessageSuccess(newItemMessage))
                 } else {
-                    _uiEffect.emit(TicketUiEffect.SendTextMessageFailed())
+                    _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed())
                 }
             },
             onError = {
-                _uiEffect.emit(TicketUiEffect.SendTextMessageFailed(throwable = it))
+                _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed(throwable = it))
                 it.printStackTrace()
             })
     }
@@ -655,10 +655,10 @@ class TicketViewModel @Inject constructor(
                 val chipGetInboxDetail = submitRatingUseCase.getChipInboxDetail(requestParams)
                 if (chipGetInboxDetail.getErrorListMessage().isNotEmpty()) {
                     val errorMessage = chipGetInboxDetail.getErrorMessage()
-                    _uiEffect.emit(TicketUiEffect.OnSendRatingFailed(errorMessage))
+                    _uiEffect.emit(InboxDetailUiEffect.OnSendRatingFailed(errorMessage))
                 } else {
                     _uiEffect.emit(
-                        TicketUiEffect.OnSendRatingSuccess(
+                        InboxDetailUiEffect.OnSendRatingSuccess(
                             rating,
                             getCommentOnPosition(commentPosition),
                             commentPosition
@@ -667,7 +667,7 @@ class TicketViewModel @Inject constructor(
                 }
             },
             onError = {
-                _uiEffect.emit(TicketUiEffect.OnSendRatingFailed(throwable = it))
+                _uiEffect.emit(InboxDetailUiEffect.OnSendRatingFailed(throwable = it))
             }
         )
     }

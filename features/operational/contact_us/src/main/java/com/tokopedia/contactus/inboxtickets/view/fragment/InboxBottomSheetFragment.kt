@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketActivity
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity
 
 abstract class InboxBottomSheetFragment : BottomSheetDialogFragment() {
     private var title: TextView? = null
@@ -52,7 +52,7 @@ abstract class InboxBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     private fun closeBottomSheet() {
-        if (activity is TicketActivity) {
+        if (activity is InboxDetailActivity) {
             ContactUsTracking.sendGTMInboxTicket(
                 context,
                 "",

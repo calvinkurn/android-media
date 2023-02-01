@@ -3,6 +3,8 @@ package com.tokopedia.contactus.inboxtickets.view.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -80,10 +82,10 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
     }
 
     private fun getValuesFromIntent() {
-        val caption = intent.getStringArrayListExtra(BaseFragmentProvideRating.CAPTION_LIST).orEmpty()
-        viewModel.setCaption(caption as ArrayList<String>)
-        val question = intent.getStringArrayListExtra(BaseFragmentProvideRating.QUESTION_LIST).orEmpty()
-        viewModel.setQuestion(question as ArrayList<String>)
+        val caption = intent.getStringArrayExtra(BaseFragmentProvideRating.CAPTION_LIST).orEmpty().toList()
+        viewModel.setCaption(caption)
+        val question = intent.getStringArrayExtra(BaseFragmentProvideRating.QUESTION_LIST).orEmpty().toList()
+        viewModel.setQuestion(question)
         val reasonItemList: ArrayList<BadCsatReasonListItem> = intent?.getParcelableArrayListExtra(
             BaseFragmentProvideRating.PARAM_OPTIONS_CSAT
         ) ?: ArrayList()
@@ -310,14 +312,12 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
             return intent
         }
 
-        private fun getQuestion(context: Context): ArrayList<String> {
-            val array = context.resources.getStringArray(R.array.contactus_csat_question).toString()
-            return arrayListOf(array)
+        private fun getQuestion(context: Context): Array<String> {
+            return context.resources.getStringArray(R.array.contactus_csat_question)
         }
 
-        private fun getCaption(context: Context): ArrayList<String> {
-            val array = context.resources.getStringArray(R.array.contactus_csat_caption).toString()
-            return arrayListOf(array)
+        private fun getCaption(context: Context): Array<String> {
+            return context.resources.getStringArray(R.array.contactus_csat_caption)
         }
     }
 

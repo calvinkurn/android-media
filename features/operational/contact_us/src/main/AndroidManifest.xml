@@ -97,7 +97,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
         <activity
-            android:name=".inboxtickets.view.ticket.TicketActivity"
+            android:name=".inboxtickets.view.inboxdetail.InboxDetailActivity"
             android:exported="false"
             android:label="@string/detail_kendala"
             android:screenOrientation="portrait"

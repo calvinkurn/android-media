@@ -7,9 +7,9 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.inboxtickets.domain.CommentsItem
 import com.tokopedia.contactus.inboxtickets.view.listeners.InboxDetailListener
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketConstanta.TICKET_STATUS_CLOSED
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketConstanta.TICKET_STATUS_IN_PROCESS
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketConstanta.TICKET_STATUS_NEED_RATING
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.TICKET_STATUS_CLOSED
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.TICKET_STATUS_IN_PROCESS
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.TICKET_STATUS_NEED_RATING
 import com.tokopedia.contactus.inboxtickets.view.utils.Utils
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show

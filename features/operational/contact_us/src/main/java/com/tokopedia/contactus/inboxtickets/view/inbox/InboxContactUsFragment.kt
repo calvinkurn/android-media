@@ -38,8 +38,8 @@ import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxFilterSelect
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxState
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiEffect
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.UiObjectMapper.mapToSelectionFilterObject
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketActivity.Companion.getIntent
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketConstanta.RESULT_FINISH
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity.Companion.getIntent
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.RESULT_FINISH
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition

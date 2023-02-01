@@ -9,8 +9,8 @@ import com.tokopedia.contactus.inboxtickets.domain.CommentsItem
 import com.tokopedia.contactus.inboxtickets.domain.CreatedBy
 import com.tokopedia.contactus.inboxtickets.domain.StepTwoResponse
 import com.tokopedia.contactus.inboxtickets.domain.usecase.*
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketViewModel
-import com.tokopedia.contactus.inboxtickets.view.ticket.uimodel.TicketUiEffect
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailViewModel
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.InboxDetailUiEffect
 import com.tokopedia.contactus.inboxtickets.view.utils.Utils
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.graphql.data.model.GraphqlError
@@ -32,7 +32,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class TicketViewModelTest {
+class InboxDetailViewModelTest {
 
     companion object {
         const val SUCCESS = 1
@@ -69,14 +69,14 @@ class TicketViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private lateinit var viewModel: TicketViewModel
+    private lateinit var viewModel: InboxDetailViewModel
 
     private lateinit var utlis: Utils
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        viewModel = TicketViewModel(
+        viewModel = InboxDetailViewModel(
             postMessageUseCase,
             postMessageUseCase2,
             inboxOptionUseCase,
@@ -114,13 +114,13 @@ class TicketViewModelTest {
             coEvery { response.isSuccess() } returns 0
             coEvery { response.getErrorListMessage() } returns arrayListOf("error")
 
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.ticketId("1234")
             val actualEvent = emittedValues.last()
-            val isGetDetailTicketFailed = actualEvent is TicketUiEffect.GetDetailTicketFailed
+            val isGetDetailTicketFailed = actualEvent is InboxDetailUiEffect.GetDetailInboxDetailFailed
             assertEquals(true, isGetDetailTicketFailed)
             job.cancel()
         }
@@ -287,13 +287,13 @@ class TicketViewModelTest {
             coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
                 FAILED
             )
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.ticketId("1234")
             val actualEvent = emittedValues.last()
-            val isGetDetailTicketFailed = actualEvent is TicketUiEffect.GetDetailTicketFailed
+            val isGetDetailTicketFailed = actualEvent is InboxDetailUiEffect.GetDetailInboxDetailFailed
             assertEquals(true, isGetDetailTicketFailed)
             job.cancel()
         }
@@ -303,15 +303,15 @@ class TicketViewModelTest {
     fun `get Ticket Detail Failed coroutine`() {
         runBlockingTest {
             coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } throws Error()
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.ticketId("1234")
             val actualEvent = emittedValues.last()
-            val isGetDetailTicketFailed = actualEvent is TicketUiEffect.GetDetailTicketFailed
+            val isGetDetailTicketFailed = actualEvent is InboxDetailUiEffect.GetDetailInboxDetailFailed
             assertEquals(true, isGetDetailTicketFailed)
-            val actualEventAsEffect = actualEvent as TicketUiEffect.GetDetailTicketFailed
+            val actualEventAsEffect = actualEvent as InboxDetailUiEffect.GetDetailInboxDetailFailed
             assertNotNull(actualEventAsEffect.throwable)
             job.cancel()
         }
@@ -322,13 +322,13 @@ class TicketViewModelTest {
         runBlockingTest {
             coEvery { contactUsUploadImageUseCase.getFile(any()) } returns mockk(relaxed = true)
             coEvery { chipUploadHostConfigUseCase.getChipUploadHostConfig() } returns createConfigServerUploadResponse()
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
             val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is TicketUiEffect.SendTextMessageFailed
+            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
             assertEquals(true, isErrorSendMessageType)
             job.cancel()
         }
@@ -338,7 +338,7 @@ class TicketViewModelTest {
     fun `send text message with Image but failed because coroutine`() {
         runBlockingTest {
             coEvery { contactUsUploadImageUseCase.getFile(any()) } throws Exception()
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
@@ -348,7 +348,7 @@ class TicketViewModelTest {
             viewModel.ticketId("1234")
             viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
             val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is TicketUiEffect.SendTextMessageFailed
+            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
             assertEquals(true, isErrorSendMessageType)
             job.cancel()
         }
@@ -363,13 +363,13 @@ class TicketViewModelTest {
                 "1"
             )
 
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
             val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is TicketUiEffect.SendTextMessageFailed
+            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
             assertEquals(true, isErrorSendMessageType)
             job.cancel()
         }
@@ -398,13 +398,13 @@ class TicketViewModelTest {
                 )
             } returns arrayListOf()
 
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
             val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is TicketUiEffect.SendTextMessageFailed
+            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
             assertEquals(true, isErrorSendMessageType)
             job.cancel()
         }
@@ -455,13 +455,13 @@ class TicketViewModelTest {
             coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns null
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "FAILED"
 
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
             val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is TicketUiEffect.SendTextMessageFailed
+            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
             assertEquals(true, isErrorSendMessageType)
             job.cancel()
         }
@@ -513,13 +513,13 @@ class TicketViewModelTest {
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "OK"
             coEvery { successData.getTicketReplay().getTicketReplayData().postKey } returns ""
 
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
             val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is TicketUiEffect.SendTextMessageFailed
+            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
             assertEquals(true, isErrorSendMessageType)
             job.cancel()
         }
@@ -571,13 +571,13 @@ class TicketViewModelTest {
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "OK"
             coEvery { successData.getTicketReplay().getTicketReplayData().postKey } returns ""
 
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
             val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is TicketUiEffect.SendTextMessageFailed
+            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
             assertEquals(true, isErrorSendMessageType)
             job.cancel()
         }
@@ -641,13 +641,13 @@ class TicketViewModelTest {
             coEvery { postMessageUseCase2.getInboxDataResponse(any()) } returns successSend
             coEvery { successSend.getTicketAttach().getAttachment().isSuccess } returns 0
 
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
             val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is TicketUiEffect.SendTextMessageFailed
+            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
             assertEquals(true, isErrorSendMessageType)
             job.cancel()
         }
@@ -711,13 +711,13 @@ class TicketViewModelTest {
             coEvery { postMessageUseCase2.getInboxDataResponse(any()) } returns successSend
             coEvery { successSend.getTicketAttach().getAttachment().isSuccess } returns 1
 
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
             val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is TicketUiEffect.SendTextMessageSuccess
+            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageSuccess
             assertEquals(true, isErrorSendMessageType)
             job.cancel()
         }
@@ -782,14 +782,14 @@ class TicketViewModelTest {
             } returns mockk(relaxed = true)
             coEvery { postMessageUseCase2.getInboxDataResponse(any()) } throws Exception()
 
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.ticketId("1213")
             viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
             val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is TicketUiEffect.SendTextMessageFailed
+            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
             assertEquals(true, isErrorSendMessageType)
             job.cancel()
         }
@@ -823,15 +823,15 @@ class TicketViewModelTest {
                 isNeedAttachmentTicket = true,
                 rating = "good"
             )
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.ticketId("1234")
             viewModel.sendMessage(0, arrayListOf(), "asdad")
             val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is TicketUiEffect.SendTextMessageFailed
-            val errorObject = actualEvent as TicketUiEffect.SendTextMessageFailed
+            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
+            val errorObject = actualEvent as InboxDetailUiEffect.SendTextMessageFailed
             assertEquals(true, isErrorSendMessageType)
             assertEquals("asdasdas", errorObject.messageError)
             job.cancel()
@@ -859,14 +859,14 @@ class TicketViewModelTest {
                 isNeedAttachmentTicket = true,
                 rating = "good"
             )
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.ticketId("1234")
             viewModel.sendMessage(0, arrayListOf(), "asdad")
             val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is TicketUiEffect.SendTextMessageFailed
+            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
             assertEquals(true, isErrorSendMessageType)
             job.cancel()
         }
@@ -892,14 +892,14 @@ class TicketViewModelTest {
                 isNeedAttachmentTicket = true,
                 rating = "good"
             )
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.ticketId("1234")
             viewModel.sendMessage(0, arrayListOf(), "asdad")
             val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is TicketUiEffect.SendTextMessageFailed
+            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
             assertEquals(true, isErrorSendMessageType)
             job.cancel()
         }
@@ -926,14 +926,14 @@ class TicketViewModelTest {
                 rating = "good",
                 isAllCustomer = true
             )
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.ticketId("1234")
             viewModel.sendMessage(0, arrayListOf(), "asdad")
             val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is TicketUiEffect.SendTextMessageFailed
+            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
             assertEquals(true, isErrorSendMessageType)
             job.cancel()
         }
@@ -944,14 +944,14 @@ class TicketViewModelTest {
         runBlockingTest {
             coEvery { postMessageUseCase.getCreateTicketResult(any()) } throws Exception()
 
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.ticketId("1234")
             viewModel.sendMessage(0, arrayListOf(), "asdad")
             val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is TicketUiEffect.SendTextMessageFailed
+            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
             assertEquals(true, isErrorSendMessageType)
             job.cancel()
         }
@@ -977,14 +977,14 @@ class TicketViewModelTest {
                 isNeedAttachmentTicket = true,
                 rating = "good"
             )
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.ticketId("1234")
             viewModel.sendMessage(0, arrayListOf(), "asdad")
             val actualEvent = emittedValues.last()
-            val isSendMessageTypeSuccess = actualEvent is TicketUiEffect.SendTextMessageSuccess
+            val isSendMessageTypeSuccess = actualEvent is InboxDetailUiEffect.SendTextMessageSuccess
             assertEquals(true, isSendMessageTypeSuccess)
             job.cancel()
         }
@@ -1007,14 +1007,14 @@ class TicketViewModelTest {
             coEvery { closeTicketByUserUseCase.getChipInboxDetail(any()) } returns response
             coEvery { response.getErrorListMessage() } returns arrayListOf("Error")
             coEvery { response.getErrorMessage() } returns "Error"
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.ticketId("1234")
             viewModel.closeTicket()
             val actualEvent = emittedValues.last()
-            val isOnCloseTicketFailed = actualEvent is TicketUiEffect.OnCloseTicketFailed
+            val isOnCloseTicketFailed = actualEvent is InboxDetailUiEffect.OnCloseInboxDetailFailed
             assertEquals(true, isOnCloseTicketFailed)
             job.cancel()
         }
@@ -1027,14 +1027,14 @@ class TicketViewModelTest {
                 statusTickets = "open"
             )
             coEvery { closeTicketByUserUseCase.getChipInboxDetail(any()) } throws Exception()
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.ticketId("1234")
             viewModel.closeTicket()
             val actualEvent = emittedValues.last()
-            val isOnCloseTicketFailed = actualEvent is TicketUiEffect.OnCloseTicketFailed
+            val isOnCloseTicketFailed = actualEvent is InboxDetailUiEffect.OnCloseInboxDetailFailed
             assertEquals(true, isOnCloseTicketFailed)
             job.cancel()
         }
@@ -1049,14 +1049,14 @@ class TicketViewModelTest {
             )
             coEvery { closeTicketByUserUseCase.getChipInboxDetail(any()) } returns response
             coEvery { response.getErrorListMessage() } returns arrayListOf()
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.ticketId("1234")
             viewModel.closeTicket()
             val actualEvent = emittedValues.last()
-            val isOnCloseTicketSuccess = actualEvent is TicketUiEffect.OnCloseTicketSuccess
+            val isOnCloseTicketSuccess = actualEvent is InboxDetailUiEffect.OnCloseInboxDetailSuccess
             assertEquals(true, isOnCloseTicketSuccess)
             job.cancel()
         }
@@ -1071,14 +1071,14 @@ class TicketViewModelTest {
             )
             coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns response
             coEvery { response.getErrorListMessage() } returns arrayListOf()
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.ticketId("1234")
             viewModel.sendRating(true, 2, "1")
             val actualEvent = emittedValues.last()
-            val isSendRatingSuccess = actualEvent is TicketUiEffect.OnSendRatingSuccess
+            val isSendRatingSuccess = actualEvent is InboxDetailUiEffect.OnSendRatingSuccess
             assertEquals(true, isSendRatingSuccess)
             job.cancel()
         }
@@ -1093,14 +1093,14 @@ class TicketViewModelTest {
             )
             coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns response
             coEvery { response.getErrorListMessage() } returns arrayListOf()
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.ticketId("1234")
             viewModel.sendRating(false, 2, "1")
             val actualEvent = emittedValues.last()
-            val isSendRatingSuccess = actualEvent is TicketUiEffect.OnSendRatingSuccess
+            val isSendRatingSuccess = actualEvent is InboxDetailUiEffect.OnSendRatingSuccess
             assertEquals(true, isSendRatingSuccess)
             job.cancel()
         }
@@ -1115,14 +1115,14 @@ class TicketViewModelTest {
             )
             coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns response
             coEvery { response.getErrorListMessage() } returns arrayListOf("Error")
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.ticketId("1234")
             viewModel.sendRating(false, 2, "1")
             val actualEvent = emittedValues.last()
-            val isSendRatingFailed = actualEvent is TicketUiEffect.OnSendRatingFailed
+            val isSendRatingFailed = actualEvent is InboxDetailUiEffect.OnSendRatingFailed
             assertEquals(true, isSendRatingFailed)
             job.cancel()
         }
@@ -1135,14 +1135,14 @@ class TicketViewModelTest {
                 statusTickets = "open"
             )
             coEvery { submitRatingUseCase.getChipInboxDetail(any()) } throws Exception()
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
             viewModel.ticketId("1234")
             viewModel.sendRating(false, 2, "1")
             val actualEvent = emittedValues.last()
-            val isSendRatingFailed = actualEvent is TicketUiEffect.OnSendRatingFailed
+            val isSendRatingFailed = actualEvent is InboxDetailUiEffect.OnSendRatingFailed
             assertEquals(true, isSendRatingFailed)
             job.cancel()
         }
@@ -1158,7 +1158,7 @@ class TicketViewModelTest {
             )
             coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns response
             coEvery { response.getErrorListMessage() } returns arrayListOf()
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
@@ -1166,7 +1166,7 @@ class TicketViewModelTest {
             viewModel.submitCsatRating("adsas", 4)
 
             val actualEvent = emittedValues.last()
-            val isSendRatingSuccess = actualEvent is TicketUiEffect.SendCSATRatingSuccess
+            val isSendRatingSuccess = actualEvent is InboxDetailUiEffect.SendCSATRatingSuccess
             assertEquals(true, isSendRatingSuccess)
 
             job.cancel()
@@ -1183,7 +1183,7 @@ class TicketViewModelTest {
             )
             coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns response
             coEvery { response.getErrorListMessage() } returns arrayListOf("Error")
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
@@ -1191,7 +1191,7 @@ class TicketViewModelTest {
             viewModel.submitCsatRating("adsas", 4)
 
             val actualEvent = emittedValues.last()
-            val isSendRatingError = actualEvent is TicketUiEffect.SendCSATRatingFailed
+            val isSendRatingError = actualEvent is InboxDetailUiEffect.SendCSATRatingFailed
             assertEquals(true, isSendRatingError)
 
             job.cancel()
@@ -1205,7 +1205,7 @@ class TicketViewModelTest {
                 statusTickets = "open"
             )
             coEvery { submitRatingUseCase.getChipInboxDetail(any()) } throws Exception()
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
@@ -1213,7 +1213,7 @@ class TicketViewModelTest {
             viewModel.submitCsatRating("adsas", 4)
 
             val actualEvent = emittedValues.last()
-            val isSendRatingError = actualEvent is TicketUiEffect.SendCSATRatingFailed
+            val isSendRatingError = actualEvent is InboxDetailUiEffect.SendCSATRatingFailed
             assertEquals(true, isSendRatingError)
 
             job.cancel()
@@ -1226,7 +1226,7 @@ class TicketViewModelTest {
             coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
                 statusTickets = "open"
             )
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
@@ -1246,7 +1246,7 @@ class TicketViewModelTest {
             coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
                 statusTickets = "open"
             )
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
@@ -1255,7 +1255,7 @@ class TicketViewModelTest {
             viewModel.onSearchSubmitted("message")
 
             val actualEvent = emittedValues.last()
-            val isOnSearchTicketKeyword = actualEvent is TicketUiEffect.OnSearchTicketKeyword
+            val isOnSearchTicketKeyword = actualEvent is InboxDetailUiEffect.OnSearchInboxDetailKeyword
             assertEquals(true, isOnSearchTicketKeyword)
 
             val indexSize = viewModel.searchIndices
@@ -1408,7 +1408,7 @@ class TicketViewModelTest {
             )
             coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns response
             coEvery { response.getErrorListMessage() } returns arrayListOf()
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
@@ -1416,7 +1416,7 @@ class TicketViewModelTest {
             viewModel.submitCsatRating("adsas", 4)
             viewModel.refreshLayout()
             val actualEvent = emittedValues.last()
-            val isSendRatingSuccess = actualEvent is TicketUiEffect.SendCSATRatingSuccess
+            val isSendRatingSuccess = actualEvent is InboxDetailUiEffect.SendCSATRatingSuccess
             assertEquals(true, isSendRatingSuccess)
             val state = viewModel.uiState.value
             assertEquals(false, state.isIssueClose)
@@ -1462,7 +1462,7 @@ class TicketViewModelTest {
             coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
                 statusTickets = "open"
             )
-            val emittedValues = arrayListOf<TicketUiEffect>()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
@@ -1470,7 +1470,7 @@ class TicketViewModelTest {
             viewModel.ticketId("1234")
             viewModel.sendMessage(1, arrayListOf(ImageUpload(), ImageUpload()), "aa")
             val actualResult = emittedValues.last()
-            val isFailed = actualResult is TicketUiEffect.SendTextMessageFailed
+            val isFailed = actualResult is InboxDetailUiEffect.SendTextMessageFailed
             assertEquals(true, isFailed)
             job.cancel()
         }

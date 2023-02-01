@@ -26,8 +26,8 @@ class ContactUsRatingViewModel @Inject constructor(
         const val FIFTH_EMOJI = 5
     }
 
-    private var captionsList = ArrayList<String>()
-    private var questionList = ArrayList<String>()
+    private var captionsList = emptyList<String>()
+    private var questionList = emptyList<String>()
     var emojiState: Int = 0
         private set
     var csatTitle: String = ""
@@ -37,11 +37,11 @@ class ContactUsRatingViewModel @Inject constructor(
     var reasonList: ArrayList<BadCsatReasonListItem> = arrayListOf()
         private set
 
-    fun setCaption(caption: ArrayList<String>) {
+    fun setCaption(caption: List<String>) {
         captionsList = caption
     }
 
-    fun setQuestion(question: ArrayList<String>) {
+    fun setQuestion(question: List<String>) {
         questionList = question
     }
 

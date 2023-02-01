@@ -1,7 +1,7 @@
 package com.tokopedia.contactus.inboxtickets.data.model
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketConstanta.FAILED_KEY_SECURE_IMAGE_PARAMETER
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.FAILED_KEY_SECURE_IMAGE_PARAMETER
 
 data class SecureImageParameter(
     @SerializedName("data")

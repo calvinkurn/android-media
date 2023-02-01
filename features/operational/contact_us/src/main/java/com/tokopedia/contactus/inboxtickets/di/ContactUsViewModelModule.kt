@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.contactus.inboxtickets.view.inbox.InboxContactUsViewModel
-import com.tokopedia.contactus.inboxtickets.view.ticket.TicketViewModel
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailViewModel
 import com.tokopedia.contactus.inboxtickets.view.viewModel.ContactUsRatingViewModel
 import dagger.Binds
 import dagger.Module
@@ -31,6 +31,6 @@ abstract class ContactUsViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(TicketViewModel::class)
-    internal abstract fun provideTicketViewModel(viewModel: TicketViewModel): ViewModel
+    @ViewModelKey(InboxDetailViewModel::class)
+    internal abstract fun provideTicketViewModel(viewModel: InboxDetailViewModel): ViewModel
 }

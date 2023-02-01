@@ -314,4 +314,7 @@ public class RemoteConfigKey {
     public static final String PAYMENT_OVERLONG_THRESHOLD = "android_payment_overlong_threshold";
 
     public static final String ENABLE_WEBVIEW_PRINT_JS_INTERFACE = "android_enable_webview_print_jsinterface";
+
+    public static final String IS_CONTACT_US_MVVM = "android_contactus_is_mvvm";
+
 }

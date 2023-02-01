@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/contact_us_dms_detail_background_dark"
-    tools:context=".inboxtickets.view.ticket.TicketFragment">
+    tools:context=".inboxtickets.view.inboxdetail.TicketFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

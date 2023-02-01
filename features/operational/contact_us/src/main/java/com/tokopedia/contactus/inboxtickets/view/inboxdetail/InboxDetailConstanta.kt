@@ -1,6 +1,6 @@
-package com.tokopedia.contactus.inboxtickets.view.ticket
+package com.tokopedia.contactus.inboxtickets.view.inboxdetail
 
-object TicketConstanta {
+object InboxDetailConstanta {
     const val TICKET_STATUS_IN_PROCESS = "in_process"
     const val TICKET_STATUS_NEED_RATING = "need_rating"
     const val TICKET_STATUS_CLOSED = "closed"
