@@ -1,6 +1,5 @@
 package com.tokopedia.report.view.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -13,7 +12,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
 import com.tokopedia.report.view.fragment.models.ProductReportUiState
-import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -74,8 +72,6 @@ class ProductReportViewModel @Inject constructor(
             }
         """
     }
-
-    val reasonResponse = MutableLiveData<Result<List<ProductReportReason>>>()
 
     private val _uiState = MutableStateFlow(ProductReportUiState())
     val uiState get() = _uiState.asStateFlow()
