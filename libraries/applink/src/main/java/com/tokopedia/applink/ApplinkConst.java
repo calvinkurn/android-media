@@ -589,7 +589,6 @@ public interface ApplinkConst {
 
     interface DilayaniTokopedia {
         String HOME = "tokopedia://dilayani-tokopedia";
-        String HOME_DISCOVERY = "tokopedia://discovery/dilayani-tokopedia";
     }
 
     interface Query {
