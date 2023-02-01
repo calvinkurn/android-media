@@ -17,7 +17,7 @@ import com.tokopedia.play.broadcaster.type.ProductPrice
 import com.tokopedia.play.broadcaster.type.ProductStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
-import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUIModel
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
@@ -84,11 +84,11 @@ class UiModelBuilder {
             state = state
     )
 
-    fun buildBroadcastingConfigUiModel(): BroadcastingConfigUIModel {
-        return BroadcastingConfigUIModel(
+    fun buildBroadcastingConfigUiModel(): BroadcastingConfigUiModel {
+        return BroadcastingConfigUiModel(
             authorType = 2,
             authorID = "1234",
-            config = BroadcastingConfigUIModel.Config(
+            config = BroadcastingConfigUiModel.Config(
                 audioRate = "123",
                 bitrateMode = "123",
                 fps = "123",

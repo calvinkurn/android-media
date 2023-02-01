@@ -9,7 +9,7 @@ import com.tokopedia.broadcaster.revamp.state.BroadcastState
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
-import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUIModel
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -23,7 +23,7 @@ class PlayBroadcaster(
     private val broadcaster: Broadcaster,
     private val callback: Callback,
     private val remoteConfig: RemoteConfig,
-    configData: BroadcastingConfigUIModel,
+    configData: BroadcastingConfigUiModel,
 ) : Broadcaster by broadcaster {
 
     @ActivityRetainedScope
@@ -35,9 +35,9 @@ class PlayBroadcaster(
             handler: Handler?,
             callback: Callback,
             remoteConfig: RemoteConfig,
-            broadcastingConfigUIModel: BroadcastingConfigUIModel,
+            broadcastingConfigUiModel: BroadcastingConfigUiModel,
         ): PlayBroadcaster {
-            return PlayBroadcaster(activityContext, handler, broadcaster, callback, remoteConfig, broadcastingConfigUIModel)
+            return PlayBroadcaster(activityContext, handler, broadcaster, callback, remoteConfig, broadcastingConfigUiModel)
         }
     }
 

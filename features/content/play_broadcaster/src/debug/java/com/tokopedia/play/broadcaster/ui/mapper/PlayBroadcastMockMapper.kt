@@ -18,7 +18,7 @@ import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketRes
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
 import com.tokopedia.play.broadcaster.ui.model.*
-import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUIModel
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameParticipantUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
@@ -36,11 +36,11 @@ import kotlin.random.Random
  */
 class PlayBroadcastMockMapper : PlayBroadcastMapper {
 
-    override fun mapBroadcastingConfig(response: GetBroadcastingConfigurationResponse): BroadcastingConfigUIModel {
-        return BroadcastingConfigUIModel(
+    override fun mapBroadcastingConfig(response: GetBroadcastingConfigurationResponse): BroadcastingConfigUiModel {
+        return BroadcastingConfigUiModel(
             authorID = response.broadcasterGetBroadcastingConfig.authorID,
             authorType = response.broadcasterGetBroadcastingConfig.authorType,
-            config = BroadcastingConfigUIModel.Config(
+            config = BroadcastingConfigUiModel.Config(
                 audioRate = response.broadcasterGetBroadcastingConfig.config.audioRate,
                 bitrateMode = response.broadcasterGetBroadcastingConfig.config.bitrateMode,
                 fps = response.broadcasterGetBroadcastingConfig.config.fps,

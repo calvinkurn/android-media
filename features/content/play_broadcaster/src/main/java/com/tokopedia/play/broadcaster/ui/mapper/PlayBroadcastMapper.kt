@@ -15,7 +15,7 @@ import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketRes
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
 import com.tokopedia.play.broadcaster.ui.model.*
-import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUIModel
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
@@ -31,7 +31,7 @@ import java.util.*
  */
 interface PlayBroadcastMapper {
 
-    fun mapBroadcastingConfig(response: GetBroadcastingConfigurationResponse): BroadcastingConfigUIModel
+    fun mapBroadcastingConfig(response: GetBroadcastingConfigurationResponse): BroadcastingConfigUiModel
 
     fun mapLiveStream(
         channelId: String,

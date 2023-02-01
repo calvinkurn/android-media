@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.ui.model.config
 
-data class BroadcastingConfigUIModel(
+data class BroadcastingConfigUiModel(
     val authorID: String = "",
     val authorType: Int = 0,
     val config: Config = Config(),

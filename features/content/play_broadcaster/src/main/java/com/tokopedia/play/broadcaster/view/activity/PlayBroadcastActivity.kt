@@ -48,7 +48,7 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
-import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUIModel
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.extension.channelNotFound
 import com.tokopedia.play.broadcaster.util.extension.getDialog
@@ -296,14 +296,14 @@ class PlayBroadcastActivity : BaseActivity(),
         }
     }
 
-    private fun initBroadcaster(config: BroadcastingConfigUIModel) {
+    private fun initBroadcaster(config: BroadcastingConfigUiModel) {
         val handler = Handler(Looper.getMainLooper())
         broadcaster = broadcasterFactory.create(
             activityContext = this,
             handler = handler,
             callback = this,
             remoteConfig = remoteConfig,
-            broadcastingConfigUIModel = config,
+            broadcastingConfigUiModel = config,
         )
     }
 
