@@ -78,6 +78,7 @@ import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.product.cpm.BannerAdsListenerDelegate
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
+import com.tokopedia.search.result.product.filter.analytics.SearchSortFilterTracking
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterViewDelegate
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
 import com.tokopedia.search.result.product.inspirationbundle.InspirationBundleListenerDelegate
@@ -92,6 +93,7 @@ import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaLi
 import com.tokopedia.search.result.product.suggestion.SuggestionListenerDelegate
 import com.tokopedia.search.result.product.tdn.TopAdsImageViewListenerDelegate
 import com.tokopedia.search.result.product.ticker.TickerListenerDelegate
+import com.tokopedia.search.result.product.video.SearchVideoPreference
 import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.result.product.wishlist.WishlistHelper
@@ -104,6 +106,7 @@ import com.tokopedia.search.utils.applinkmodifier.ApplinkModifier
 import com.tokopedia.search.utils.applyQuickFilterElevation
 import com.tokopedia.search.utils.decodeQueryParameter
 import com.tokopedia.search.utils.removeQuickFilterElevation
+import com.tokopedia.search.utils.updateComponentId
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
@@ -208,6 +211,10 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject
     lateinit var bottomSheetFilterViewDelegate: BottomSheetFilterViewDelegate
 
+    @Suppress("LateinitUsage")
+    @Inject
+    lateinit var searchVideoPreference: SearchVideoPreference
+
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var searchNavigationListener: SearchNavigationListener? = null
@@ -222,7 +229,7 @@ class ProductListFragment: BaseDaggerFragment(),
         private set
 
     private val isSneakPeekEnabled: Boolean by lazy {
-        getABTestVideoSneakPeek()
+        searchVideoPreference.isSneakPeekEnabled && getABTestVideoSneakPeek()
     }
 
     private fun getABTestVideoSneakPeek(): Boolean {
@@ -232,6 +239,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 ""
             )
             RollenceKey.SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_VARIANT == abTestVideoSneakPeekAutoPlay
+                || RollenceKey.SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_OTHER_VARIANT == abTestVideoSneakPeekAutoPlay
         } catch (e: Exception) {
             false
         }
@@ -966,18 +974,25 @@ class ProductListFragment: BaseDaggerFragment(),
         return filterController.getFilterViewState(option.uniqueId)
     }
 
-    override fun onQuickFilterSelected(filter: Filter, option: Option) {
+    override fun onQuickFilterSelected(filter: Filter, option: Option, pageSource: String) {
         val isQuickFilterSelectedReversed = !isFilterSelected(option)
         setFilterToQuickFilterController(option, isQuickFilterSelectedReversed)
 
-        val queryParams = filterController.getParameter().addFilterOrigin()
+        val queryParams = filterController.getParameter()
+            .addFilterOrigin()
+            .updateComponentId(SearchSortFilterTracking.QUICK_FILTER_COMPONENT_ID)
         refreshSearchParameter(queryParams)
 
         lastFilterListenerDelegate.updateLastFilter()
 
         reloadData()
 
-        trackEventSearchResultQuickFilter(option.key, option.value, isQuickFilterSelectedReversed)
+        trackEventSearchResultQuickFilter(
+            option.key,
+            option.value,
+            isQuickFilterSelectedReversed,
+            pageSource,
+        )
     }
 
     private fun setFilterToQuickFilterController(option: Option, isQuickFilterSelected: Boolean) {
@@ -987,8 +1002,19 @@ class ProductListFragment: BaseDaggerFragment(),
             filterController.setFilter(option, isQuickFilterSelected)
     }
 
-    private fun trackEventSearchResultQuickFilter(filterName: String, filterValue: String, isSelected: Boolean) {
-        SearchTracking.trackEventClickQuickFilter(filterName, filterValue, isSelected, getUserId())
+    private fun trackEventSearchResultQuickFilter(
+        filterName: String,
+        filterValue: String,
+        isSelected: Boolean,
+        pageSource: String,
+    ) {
+        SearchSortFilterTracking.trackEventClickQuickFilter(
+            filterName,
+            filterValue,
+            isSelected,
+            keyword = queryKey,
+            pageSource = pageSource,
+        )
     }
 
     override fun initFilterController(quickFilterList: List<Filter>) {
@@ -1239,7 +1265,9 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun applyDropdownQuickFilter(optionList: List<Option>?) {
         filterController.setFilter(optionList)
 
-        val queryParams = filterController.getParameter().addFilterOrigin()
+        val queryParams = filterController.getParameter()
+            .addFilterOrigin()
+            .updateComponentId(SearchSortFilterTracking.DROPDOWN_QUICK_FILTER_COMPONENT_ID)
         refreshSearchParameter(queryParams)
 
         lastFilterListenerDelegate.updateLastFilter()
@@ -1251,8 +1279,15 @@ class ProductListFragment: BaseDaggerFragment(),
         SearchTracking.trackEventClickDropdownQuickFilter(filterTitle)
     }
 
-    override fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?) {
-        SearchTracking.trackEventApplyDropdownQuickFilter(optionList)
+    override fun trackEventApplyDropdownQuickFilter(
+        optionList: List<Option>?,
+        pageSource: String,
+    ) {
+        SearchSortFilterTracking.trackEventApplyDropdownQuickFilter(
+            optionList,
+            keyword = queryKey,
+            pageSource = pageSource,
+        )
     }
 
     //endregion

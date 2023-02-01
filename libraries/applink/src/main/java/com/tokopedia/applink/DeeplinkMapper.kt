@@ -338,6 +338,7 @@ object DeeplinkMapper {
         DLP.host(ApplinkConst.CATEGORY_HOST) { _, uri, deeplink, _ -> getRegisteredCategoryNavigation(deeplink, uri) },
         DLP.matchPattern(ApplinkConst.PLAY_DETAIL) { _, _, deeplink, _ -> DeeplinkMapperContent.getRegisteredNavigation(deeplink) },
         DLP.startWith(ApplinkConst.PLAY_BROADCASTER) { _, _, deeplink, _ -> DeeplinkMapperContent.getRegisteredNavigation(deeplink) },
+        DLP.startWith(ApplinkConst.PLAY_SHORTS) { _, _, deeplink, _ -> DeeplinkMapperContent.getRegisteredNavigation(deeplink) },
         DLP.host(ApplinkConst.HOME_HOT_HOST) { _, _, deeplink, _ -> getRegisteredHotlist(deeplink) },
         DLP.matchPattern(ApplinkConst.PRODUCT_EDIT) { _, _, _, idList ->
             DeepLinkMapperProductManage.getEditProductInternalAppLink(
@@ -350,6 +351,7 @@ object DeeplinkMapper {
         },
         DLP.startWith(ApplinkConst.PRODUCT_MANAGE) { _, _, deeplink, _ -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink) },
         DLP.startWith(ApplinkConst.PRODUCT_CREATE_REVIEW) { _, uri, _, _ -> getRegisteredNavigationProductReview(uri) },
+        DLP.startWith(ApplinkConst.PRODUCT_BULK_CREATE_REVIEW) { _, _, _, _ -> ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW },
         DLP.host(ApplinkConst.REVIEW_HOST) { _, _, deeplink, _ -> getRegisteredNavigationReputation(deeplink) },
         DLP.startWith(ApplinkConst.SELLER_REVIEW) { _, _, deeplink, _ -> ApplinkConstInternalMarketplace.SELLER_REVIEW_DETAIL },
         DLP.startWith(ApplinkConst.TOKOPOINTS) { ctx, _, deeplink, _ -> getRegisteredNavigationTokopoints(deeplink) },

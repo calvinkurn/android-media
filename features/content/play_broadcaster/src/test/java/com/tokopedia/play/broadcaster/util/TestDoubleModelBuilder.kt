@@ -3,13 +3,12 @@ package com.tokopedia.play.broadcaster.util
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.data.config.*
 import com.tokopedia.play.broadcaster.data.datastore.*
-import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
 import com.tokopedia.play.broadcaster.testdouble.MockChannelConfigStore
 import com.tokopedia.play.broadcaster.testdouble.MockCoverDataStore
 import com.tokopedia.play.broadcaster.testdouble.MockSetupDataStore
+import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 
 /**
