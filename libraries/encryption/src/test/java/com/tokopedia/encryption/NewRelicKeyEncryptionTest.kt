@@ -3,7 +3,6 @@ package com.tokopedia.encryption
 import android.os.Build
 import com.tokopedia.encryption.security.RSA
 import com.tokopedia.encryption.utils.Constants
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -53,11 +52,11 @@ class NewRelicKeyEncryptionTest {
 
     @Test
     fun `Encrypt New Relic Key (plain) using the RSA key`() {
-        //new relic key sample
+        // new relic key sample
 //        val newRelicIntArray = intArrayOf(78, 82, 73, 73, 45, 99, 84, 100, 57, 84, 52, 87, 50, 113, 120, 72, 103, 103, 70, 110, 121, 113, 56, 49, 98, 78, 115, 100, 86, 97, 65, 100, 85, 116, 120, 84, 51)
 //        val newRelicKey = decodeKey(newRelicIntArray)
 
-        //TODO add New Relic Key
+        // TODO add New Relic Key
         val newRelicKey = ""
 
         println("New Relic Key origin: $newRelicKey")
@@ -71,14 +70,14 @@ class NewRelicKeyEncryptionTest {
 
     @Test
     fun `Decrypt New Relic Key after encrypted using the RSA key`() {
-        //decrypted new relic key sample
+        // new relic key after encrypted (sample)
 //        val newRelicKeyEncrypted = "XuAUTL1JGjjxphMsmGO9EUL3o9f/C8M9TN0FSOifkiG5yZoscpZr4qTOGPcwa6jvoISwXRu3GQEL\n" +
 //            "x0fig7ZuEZS7UoL8rpf73NF3Mk0zv3BVhjLPR8py4lDRyMfGSVxNZN1FB/L8T4rGjMODgtkJ4g8K\n" +
 //            "/wCLw9435g8zr499m0xbowcSwdI+gCXtxtoYRdGv6ybCWVkJiY7m4O8GpEX+HqffSjXORQ9Jy3Fm\n" +
 //            "Qp9nVze3hDJEoSIRXy3K5TBzxwq18+SWng54Hdbxw1ZvQtswEdLhwgQjy0ojE6G3nDWiAvz3C9k/\n" +
 //            "FPNwse6VwyvMNvFsCFWsV/VTnGo4IGFrbK2UKA=="
 
-        //TODO add New Relic Key after encrypted
+        // TODO add New Relic Key after encrypted
         val newRelicKeyEncrypted = ""
 
         println("New Relic Key Encrypted: $newRelicKeyEncrypted")
