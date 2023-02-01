@@ -1099,6 +1099,7 @@ class PlayViewModel @AssistedInject constructor(
 
         resetChannelReportLoadedStatus()
         cancelJob(FOLLOW_POP_UP_ID)
+        cancelJob(ONBOARDING_COACHMARK_ID)
     }
 
     private fun focusVideoPlayer(channelData: PlayChannelData) {
@@ -1364,22 +1365,15 @@ class PlayViewModel @AssistedInject constructor(
         this._partnerInfo.value = partnerInfo
     }
 
-    private var coachmarkJob: Job? = null
-
     private fun handleOnboarding(videoMetaInfo: PlayVideoMetaInfoUiModel) {
-        val isShown = playPreference.isCoachMark(userId = userId)
+        if(videoMetaInfo.videoPlayer.isYouTube) return
+        cancelJob(ONBOARDING_COACHMARK_ID)
 
-        playAnalytic.screenWithSwipeCoachMark(isShown = isShown, channelId = channelId, channelType = channelType, isLoggedIn = userSession.isLoggedIn, userId = userId)
+        jobMap[ONBOARDING_COACHMARK_ID] = viewModelScope.launch(dispatchers.computation) {
+            delay(ONBOARDING_DELAY)
 
-        coachmarkJob?.cancel()
-
-        if (isShown && !videoMetaInfo.videoPlayer.isYouTube) {
-            coachmarkJob = viewModelScope.launch(dispatchers.computation) {
-                delay(ONBOARDING_DELAY)
-
-                withContext(dispatchers.main) {
-                    _observableOnboarding.value = Event(Unit)
-                }
+            withContext(dispatchers.main) {
+                _observableOnboarding.value = Event(Unit)
             }
         }
     }
@@ -2774,5 +2768,6 @@ class PlayViewModel @AssistedInject constructor(
         private val defaultSharingStarted = SharingStarted.WhileSubscribed(SUBSCRIBE_AWAY_THRESHOLD)
 
         private const val FOLLOW_POP_UP_ID  = "FOLLOW_POP_UP"
+        private const val ONBOARDING_COACHMARK_ID  = "ONBOARDING_COACHMARK"
     }
 }
