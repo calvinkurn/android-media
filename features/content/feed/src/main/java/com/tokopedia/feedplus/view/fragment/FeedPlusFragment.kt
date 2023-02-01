@@ -767,7 +767,7 @@ class FeedPlusFragment :
                         }
                         is Success -> {
                             reportBottomSheet.setFinalView()
-                            onSuccessDeletePost(it.data.rowNumber)
+                            onSuccessDeletePost(it.data.rowNumber, isPostReported = true)
                         }
                     }
                 }
@@ -1414,7 +1414,7 @@ class FeedPlusFragment :
         val intent = RouteManager.getIntent(
             requireContext(),
             UriUtil.buildUriAppendParam(
-                ApplinkConstInternalContent.COMMENT_NEW,
+                ApplinkConstInternalContent.COMMENT,
                 mapOf(
                     COMMENT_ARGS_POSITION to rowNumber.toString()
                 )
@@ -2317,23 +2317,9 @@ class FeedPlusFragment :
         redirectLink: String,
         isSingleItem: Boolean
     ) {
-        if (adapter.getlist()[positionInFeed] is DynamicPostModel) {
-            val (id, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostModel
-            trackCardPostClick(positionInFeed, trackingPostModel)
-
-            if (!isSingleItem && activity != null) {
-                RouteManager.route(
-                    requireContext(),
-                    UriUtil.buildUriAppendParam(
-                        ApplinkConstInternalContent.MEDIA_PREVIEW,
-                        mapOf(
-                            MEDIA_PREVIEW_INDEX to contentPosition.toString()
-                        )
-                    ),
-                    id.toString()
-                )
-            }
-        }
+        /**
+         * will be revamped in the future
+         */
     }
 
     override fun onAffiliateTrackClicked(trackList: List<TrackingModel>, isClick: Boolean) {
@@ -2435,16 +2421,9 @@ class FeedPlusFragment :
         contentPosition: Int,
         youtubeId: String
     ) {
-        val redirectUrl = ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId)
-
-        if (context != null) {
-            RouteManager.route(context, redirectUrl)
-        }
-
-        if (adapter.getlist()[positionInFeed] is DynamicPostModel) {
-            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostModel
-            trackCardPostClick(positionInFeed, trackingPostModel)
-        }
+        /**
+         * will be revamped in the future
+         */
     }
 
     override fun onPollOptionClick(
@@ -3129,17 +3108,19 @@ class FeedPlusFragment :
         showToast(errorMessage, Toaster.TYPE_ERROR)
     }
 
-    private fun onSuccessDeletePost(rowNumber: Int) {
+    private fun onSuccessDeletePost(rowNumber: Int, isPostReported: Boolean = false) {
         if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostUiModel) {
             adapter.getlist().removeAt(rowNumber)
             adapter.notifyItemRemoved(rowNumber)
-            Toaster.build(
-                requireView(),
-                getString(R.string.feed_post_deleted),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                getString(com.tokopedia.kolcommon.R.string.content_action_ok)
-            ).show()
+            if (!isPostReported) {
+                Toaster.build(
+                    requireView(),
+                    getString(R.string.feed_post_deleted),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(com.tokopedia.kolcommon.R.string.content_action_ok)
+                ).show()
+            }
         }
         if (adapter.getlist().isEmpty()) {
             showRefresh()
