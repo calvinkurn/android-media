@@ -491,11 +491,17 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DIABEL
                 eventCategory =
                     AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
+                if (params?.ssaInfo?.ssaStatus == true) {
+                    eventLabel += " - komisi extra"
+                }
             }
             ORIGIN_TERAKHIR_DILIHAT -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DILIHAT
                 eventCategory =
                     AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
+                if (params?.ssaInfo?.ssaStatus == true) {
+                    eventLabel += " - komisi extra"
+                }
             }
             ORIGIN_PROMOSIKAN -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_RESULT_PAGE

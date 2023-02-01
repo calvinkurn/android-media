@@ -192,9 +192,12 @@ class AffiliateRecommendedProductFragment :
             item.product.title?.let {
                 itemName = it
             }
-            var label = ""
+            var label = itemID
             lastItem?.product?.commission?.amount?.let {
-                label = "$itemID - {$it}"
+                label += " - $it"
+            }
+            if (lastItem?.product?.ssaStatus == true) {
+                label += " - komisi extra"
             }
             val action =
                 if (identifier == BOUGHT_IDENTIFIER) {
@@ -324,7 +327,7 @@ class AffiliateRecommendedProductFragment :
         type: String?,
         ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?
     ) {
-        pushPromosikanEvent(itemID, itemName, position, commison)
+        pushPromosikanEvent(itemID, itemName, position, commison, ssaInfo?.ssaStatus)
         val origin =
             if (identifier == BOUGHT_IDENTIFIER) {
                 AffiliatePromotionBottomSheet.ORIGIN_PERNAH_DIBELI_PROMOSIKA
@@ -352,7 +355,8 @@ class AffiliateRecommendedProductFragment :
         productId: String,
         productName: String,
         position: Int,
-        commison: String
+        commission: String,
+        ssaStatus: Boolean?
     ) {
         val item: String
         val eventAction: String
@@ -363,6 +367,10 @@ class AffiliateRecommendedProductFragment :
             item = AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_PERNAH_DILIHAT
             eventAction = AffiliateAnalytics.ActionKeys.PROMOSIKAN_PERNAH_DILIHAT
         }
+        var label = "$productId - $commission"
+        if (ssaStatus == true) {
+            label += " - komisi extra"
+        }
         AffiliateAnalytics.trackEventImpression(
             AffiliateAnalytics.EventKeys.SELECT_CONTENT,
             eventAction,
@@ -371,7 +379,7 @@ class AffiliateRecommendedProductFragment :
             productId,
             position + 1,
             productName,
-            "$productId - $commison",
+            label,
             item
         )
     }
