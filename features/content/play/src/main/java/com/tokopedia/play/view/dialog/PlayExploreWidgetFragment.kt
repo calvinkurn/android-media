@@ -84,10 +84,6 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     private val widgetAdapter = WidgetAdapter(coordinator)
 
-    private val chipsLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        LinearLayoutManager(binding.rvChips.context, RecyclerView.HORIZONTAL, false)
-    }
-
     private val widgetLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         LinearLayoutManager(binding.rvWidgets.context, RecyclerView.VERTICAL, false)
     }
@@ -210,7 +206,6 @@ class PlayExploreWidgetFragment @Inject constructor(
     private fun setupView() {
         binding.rvChips.adapter = chipsAdapter
         binding.rvChips.addItemDecoration(chipDecoration)
-        binding.rvChips.layoutManager = chipsLayoutManager
         binding.rvChips.addOnScrollListener(chipsScrollListener)
 
         binding.rvWidgets.adapter = widgetAdapter
@@ -467,9 +462,10 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     private fun getVisibleChips(): Map<ChipWidgetUiModel, Int> {
         val chips = chipsAdapter.getItems()
-        if (chips.isNotEmpty()) {
-            val firstPos = chipsLayoutManager.findFirstVisibleItemPosition()
-            val endPos = chipsLayoutManager.findLastVisibleItemPosition()
+        val layoutManager = binding.rvChips.layoutManager
+        if (chips.isNotEmpty() && layoutManager is LinearLayoutManager) {
+            val firstPos = layoutManager.findFirstVisibleItemPosition()
+            val endPos = layoutManager.findLastVisibleItemPosition()
             if (firstPos > -1 && endPos < chips.size) {
                 return (firstPos..endPos)
                     .filter { chips[it] is ChipWidgetUiModel }
