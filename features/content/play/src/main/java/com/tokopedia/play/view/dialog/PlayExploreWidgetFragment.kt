@@ -20,9 +20,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.Router
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
 import com.tokopedia.play.ui.explorewidget.*
@@ -41,6 +39,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.util.extension.awaitMeasured
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -71,12 +70,15 @@ class PlayExploreWidgetFragment @Inject constructor(
         (getScreenWidth() * 0.75).roundToInt()
     }
 
+    private val screenLocation = IntArray(2)
+
     private lateinit var viewModel: PlayViewModel
 
-    private val coordinator: PlayExploreWidgetCoordinator = PlayExploreWidgetCoordinator(this).apply {
-        setListener(this@PlayExploreWidgetFragment)
-        setAnalyticListener(this@PlayExploreWidgetFragment)
-    }
+    private val coordinator: PlayExploreWidgetCoordinator =
+        PlayExploreWidgetCoordinator(this).apply {
+            setListener(this@PlayExploreWidgetFragment)
+            setAnalyticListener(this@PlayExploreWidgetFragment)
+        }
 
     private val widgetAdapter = WidgetAdapter(coordinator)
 
@@ -105,7 +107,10 @@ class PlayExploreWidgetFragment @Inject constructor(
         object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    analytic?.impressExploreTab(categoryName = viewModel.selectedChips, chips = getVisibleChips())
+                    analytic?.impressExploreTab(
+                        categoryName = viewModel.selectedChips,
+                        chips = getVisibleChips()
+                    )
                 }
             }
         }
@@ -127,6 +132,30 @@ class PlayExploreWidgetFragment @Inject constructor(
                 viewModel.submitAction(EmptyPageWidget)
             }
         }
+    }
+
+    private val gestureDetector by lazy {
+        GestureDetector(
+            requireContext(),
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onFling(
+                    e1: MotionEvent,
+                    e2: MotionEvent,
+                    velocityX: Float,
+                    velocityY: Float
+                ): Boolean {
+                    var newX = view?.x.orZero()
+                    val diffX = e2.x - e1.x
+                    if (diffX > 0) {
+                        newX += 100
+                    } else {
+                        newX = screenLocation.firstOrNull().orZero().toFloat()
+                    }
+                    view?.animate()?.translationX(newX)?.start()
+                    return true
+                }
+            }
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -195,7 +224,8 @@ class PlayExploreWidgetFragment @Inject constructor(
                     Spanned.SPAN_EXCLUSIVE_INCLUSIVE
                 )
             }
-        binding.viewExploreWidgetEmpty.tvDescEmptyExploreWidget.movementMethod = LinkMovementMethod.getInstance()
+        binding.viewExploreWidgetEmpty.tvDescEmptyExploreWidget.movementMethod =
+            LinkMovementMethod.getInstance()
     }
 
     private fun observeState() {
@@ -254,7 +284,11 @@ class PlayExploreWidgetFragment @Inject constructor(
         }
     }
 
-    private fun renderWidgets(state: ExploreWidgetState, widget: List<WidgetUiModel>, param: WidgetParamUiModel) {
+    private fun renderWidgets(
+        state: ExploreWidgetState,
+        widget: List<WidgetUiModel>,
+        param: WidgetParamUiModel
+    ) {
         setLayoutManager(state)
 
         when (state) {
@@ -272,7 +306,14 @@ class PlayExploreWidgetFragment @Inject constructor(
             }
             is ExploreWidgetState.Fail -> {
                 analytic?.impressToasterGlobalError()
-                val errMessage = if (state.error is UnknownHostException) getString(playR.string.play_explore_widget_noconn_errmessage) else getString(playR.string.play_explore_widget_default_errmessage)
+                val errMessage =
+                    if (state.error is UnknownHostException) {
+                        getString(playR.string.play_explore_widget_noconn_errmessage)
+                    } else {
+                        getString(
+                            playR.string.play_explore_widget_default_errmessage
+                        )
+                    }
                 Toaster.build(
                     view = requireView(),
                     text = errMessage,
@@ -300,25 +341,29 @@ class PlayExploreWidgetFragment @Inject constructor(
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         window.setWindowAnimations(playR.style.ExploreWidgetWindowAnim)
 
-        setupDraggable()
+        getScreenLocation()
     }
 
-    private fun setupDraggable() {
-        view?.setOnTouchListener { vw, motionEvent ->
-            var newX = vw.x
-            if (vw.x >= 700) {
-                dismiss()
-                return@setOnTouchListener false
-            }
-            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                newX = if (motionEvent.x < 10) newX - 100 else newX + 100
-                vw.animate().xBy(newX)
+    private fun getScreenLocation() {
+        fun setupDraggable() {
+            view?.setOnTouchListener { vw, motionEvent ->
+                if (vw.x >= 700) {
+                    dismiss()
+                    return@setOnTouchListener false
+                }
+                gestureDetector.onTouchEvent(motionEvent)
                 true
             }
-            false
+        }
+
+        lifecycleScope.launchWhenStarted {
+            view?.awaitMeasured()
+            if (screenLocation.any { it.isZero() }) {
+                view?.getLocationOnScreen(screenLocation)
+            }
+            setupDraggable()
         }
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -356,7 +401,12 @@ class PlayExploreWidgetFragment @Inject constructor(
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int
     ) {
-        analytic?.clickContentCard(item, channelPositionInList, viewModel.selectedChips, viewModel.exploreWidgetConfig.autoPlay)
+        analytic?.clickContentCard(
+            item,
+            channelPositionInList,
+            viewModel.selectedChips,
+            viewModel.exploreWidgetConfig.autoPlay
+        )
         router.route(requireContext(), item.appLink)
     }
 
@@ -366,7 +416,12 @@ class PlayExploreWidgetFragment @Inject constructor(
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int
     ) {
-        analytic?.impressChannelCard(item, config, channelPositionInList, viewModel.selectedChips)
+        analytic?.impressChannelCard(
+            item,
+            config,
+            channelPositionInList,
+            viewModel.selectedChips
+        )
     }
 
     override fun dismiss() {
@@ -396,7 +451,8 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     private fun setLayoutManager(state: ExploreWidgetState) {
-        widgetLayoutManager.spanCount = if (state !is ExploreWidgetState.Success) SPAN_SHIMMER else SPAN_CHANNEL
+        widgetLayoutManager.spanCount =
+            if (state !is ExploreWidgetState.Success) SPAN_SHIMMER else SPAN_CHANNEL
     }
 
     private fun getVisibleChips(): Map<ChipWidgetUiModel, Int> {
