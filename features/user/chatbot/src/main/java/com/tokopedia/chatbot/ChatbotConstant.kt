@@ -105,7 +105,6 @@ object ChatbotConstant {
         const val KEY_CHATBOT_NEW_SESSION = "CHATBOT_NEW_SESSION"
         const val KEY_CHATBOT_SEND_RATING = "CHATBOT_SEND_RATING"
         const val KEY_CHATBOT_CSAT_RATING = "CHATBOT_CSAT_RATING"
-        const val KEY_CHATBOT_SOCKET_EXCEPTION = "CHATBOT_SOCKET_EXCEPTION"
     }
 
     const val CONTACT_US_APPLINK = "tokopedia-android-internal://customercare-inbox-list"

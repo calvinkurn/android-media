@@ -1,7 +1,7 @@
 package com.tokopedia.chatbot.data
 
 import com.google.gson.GsonBuilder
-import com.tokopedia.chatbot.chatbot2.websocket.ChatWebSocketResponse
+import com.tokopedia.chatbot.websocket.ChatWebSocketResponse
 
 object SocketResponse {
 
