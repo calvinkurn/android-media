@@ -199,11 +199,17 @@ class AffiliateRecommendedProductFragment :
             if (lastItem?.product?.ssaStatus == true) {
                 label += " - komisi extra"
             }
-            val action =
+            val (action, itemList) =
                 if (identifier == BOUGHT_IDENTIFIER) {
-                    AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_PERNAH_DIBELI
+                    arrayOf(
+                        AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_PERNAH_DIBEL,
+                        AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_PERNAH_DIBELI
+                    )
                 } else {
-                    AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_PERNAH_DILIHAT
+                    arrayOf(
+                        AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_PERNAH_DILIHAT,
+                        AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_PERNAH_DILIHAT
+                    )
                 }
             AffiliateAnalytics.trackEventImpression(
                 AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
@@ -213,7 +219,8 @@ class AffiliateRecommendedProductFragment :
                 itemID,
                 listSize,
                 itemName,
-                label
+                label,
+                itemList
             )
         }
     }
