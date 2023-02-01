@@ -23,9 +23,7 @@ class PostMessageUseCaseTest {
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
-    private val contactUsRepository: ContactUsRepository = mockk(relaxed = true)
-
-    private var postMessageUseCase = spyk(PostMessageUseCase(anyString(), contactUsRepository))
+    private var postMessageUseCase = spyk(PostMessageUseCase(anyString()))
 
     @Before
     @Throws(Exception::class)

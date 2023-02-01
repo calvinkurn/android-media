@@ -125,10 +125,12 @@ class Utils {
             return dateFormat.format(Date(System.currentTimeMillis()))
         }
 
-    private val dateFormat: SimpleDateFormat by lazy { SimpleDateFormat(
-        "d MMM 'pukul' HH:mm",
-        locale
-    ) }
+    private val dateFormat: SimpleDateFormat by lazy {
+        SimpleDateFormat(
+            "d MMM 'pukul' HH:mm",
+            locale
+        )
+    }
 
     fun getDateTimeYear(isoTime: String?): String {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale)
@@ -140,7 +142,8 @@ class Utils {
             val date = inputFormat.parse(isoTime)
             if (DateUtils.isToday(date.time)) timeFormat.format(date) else if (isYesterday(
                     date.time
-                )) {
+                )
+            ) {
                 "Kemarin"
             } else {
                 dateFormat.format(date)

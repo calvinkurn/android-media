@@ -16,7 +16,7 @@ class InboxDetailActivity : BaseSimpleActivity() {
         const val IS_OFFICIAL_STORE = "is_official_store"
 
         @JvmStatic
-        fun getIntent(context: Context, idTicket: String, isOfficialStore: Boolean) : Intent {
+        fun getIntent(context: Context, idTicket: String, isOfficialStore: Boolean): Intent {
             val intent = Intent(context, InboxDetailActivity::class.java)
             val bundle = Bundle()
             bundle.putString(BUNDLE_ID_TICKET, idTicket)
@@ -37,7 +37,7 @@ class InboxDetailActivity : BaseSimpleActivity() {
     override fun getLayoutRes() = R.layout.contact_us_activity_inbox_detail
     override fun getParentViewResourceID() = R.id.container
 
-    override fun getNewFragment() : Fragment {
+    override fun getNewFragment(): Fragment {
         return TicketFragment.newInstance(ticketId, isOfficialStore.orFalse())
     }
 

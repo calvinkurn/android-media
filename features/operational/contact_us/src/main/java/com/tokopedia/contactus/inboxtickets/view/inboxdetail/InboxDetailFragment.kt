@@ -1228,7 +1228,7 @@ class TicketFragment :
             if (viewModel.isShowRating()) {
                 toggleTextToolbar(View.GONE)
             } else if (viewModel.getTicketStatus()
-                .equals(CLOSED, ignoreCase = true) && !viewModel.isShowRating()
+                    .equals(CLOSED, ignoreCase = true) && !viewModel.isShowRating()
             ) {
                 showIssueClosed()
             } else {
@@ -1248,9 +1248,9 @@ class TicketFragment :
 
     private fun onBackPressed() {
         if ((
-            imageUploadAdapter?.itemCount
-                ?: 0
-            ) > 1 || binding?.layoutReplayMessage?.root?.visibility == View.VISIBLE &&
+                imageUploadAdapter?.itemCount
+                    ?: 0
+                ) > 1 || binding?.layoutReplayMessage?.root?.visibility == View.VISIBLE &&
             edMessage?.isFocused == true && edMessage?.text?.isNotEmpty() == true && parentFragmentManager.backStackEntryCount <= 0
         ) {
             val builder = AlertDialog.Builder(context)

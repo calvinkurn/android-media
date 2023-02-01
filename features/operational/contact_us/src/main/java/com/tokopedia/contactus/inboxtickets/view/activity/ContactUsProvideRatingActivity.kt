@@ -82,15 +82,18 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
     }
 
     private fun getValuesFromIntent() {
-        val caption = intent.getStringArrayExtra(BaseFragmentProvideRating.CAPTION_LIST).orEmpty().toList()
+        val caption =
+            intent.getStringArrayExtra(BaseFragmentProvideRating.CAPTION_LIST).orEmpty().toList()
         viewModel.setCaption(caption)
-        val question = intent.getStringArrayExtra(BaseFragmentProvideRating.QUESTION_LIST).orEmpty().toList()
+        val question =
+            intent.getStringArrayExtra(BaseFragmentProvideRating.QUESTION_LIST).orEmpty().toList()
         viewModel.setQuestion(question)
         val reasonItemList: ArrayList<BadCsatReasonListItem> = intent?.getParcelableArrayListExtra(
             BaseFragmentProvideRating.PARAM_OPTIONS_CSAT
         ) ?: ArrayList()
         viewModel.setReasonList(reasonItemList)
-        val emojiState = intent?.getIntExtra(BaseFragmentProvideRating.CLICKED_EMOJI, 0) ?: BaseFragmentProvideRating.NO_EMOJI
+        val emojiState = intent?.getIntExtra(BaseFragmentProvideRating.CLICKED_EMOJI, 0)
+            ?: BaseFragmentProvideRating.NO_EMOJI
         viewModel.setSelectedEmoji(emojiState)
         viewModel.setCsatTitle(intent?.getStringExtra(BaseFragmentProvideRating.CSAT_TITLE) ?: "")
     }
@@ -168,8 +171,14 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
             )
         }
     }
+
     private fun disableSubmitButton() {
-        buttonFinished?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+        buttonFinished?.setTextColor(
+            MethodChecker.getColor(
+                this,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN400
+            )
+        )
         buttonFinished?.isEnabled = false
     }
 
@@ -301,7 +310,12 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
         val QUESTION_LIST = "questionList"
         val CSAT_TITLE = "csatTitle"
 
-        fun getInstance(context: Context, clickEmoji: Int, commentId: String, badCsatReasonListItems: ArrayList<BadCsatReasonListItem>): Intent {
+        fun getInstance(
+            context: Context,
+            clickEmoji: Int,
+            commentId: String,
+            badCsatReasonListItems: ArrayList<BadCsatReasonListItem>
+        ): Intent {
             val intent = Intent(context, ContactUsProvideRatingActivity::class.java)
             intent.putExtra(CLICKED_EMOJI, clickEmoji)
             intent.putExtra(PARAM_COMMENT_ID, commentId)

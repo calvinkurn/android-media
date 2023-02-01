@@ -21,6 +21,7 @@ private const val HEADER_REFERER_KEY = "Referer"
 private const val HEADER_REFERER_VALUE = "tokopedia.com/help/inbox"
 private const val CONTACT_US = "contact-us"
 private const val HTTP_LENGTH = 4
+
 class AttachmentAdapter constructor(
     data: List<AttachmentItem>,
     listenerAttachment: AttachmentListener,

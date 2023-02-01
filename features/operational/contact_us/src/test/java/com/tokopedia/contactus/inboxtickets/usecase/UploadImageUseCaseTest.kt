@@ -71,7 +71,10 @@ class UploadImageUseCaseTest {
             val listfile = listOf<String>("file1")
             val response = mockk<UploadImageResponse>(relaxed = true)
 
-            every { uploadImageUseCase.createObservable(any()).toBlocking().first().dataResultImageUpload } returns response
+            every {
+                uploadImageUseCase.createObservable(any()).toBlocking()
+                    .first().dataResultImageUpload
+            } returns response
             every { response.data.picObj } returns "picObj"
 
             every { contactUsUploadImageUseCase.getModifiedPicObj(any(), any()) } returns "picObj"

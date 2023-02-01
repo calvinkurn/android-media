@@ -8,10 +8,11 @@ import com.tokopedia.csat_rating.adapter.OptionItemViewHolder
 import com.tokopedia.csat_rating.quickfilter.QuickFilterItem
 import com.tokopedia.csat_rating.quickfilter.QuickSingleFilterListener
 
-class ContactUsOptionItemViewHolder(itemView: View, listener: QuickSingleFilterListener?) : OptionItemViewHolder(
-    itemView,
-    listener
-) {
+class ContactUsOptionItemViewHolder(itemView: View, listener: QuickSingleFilterListener?) :
+    OptionItemViewHolder(
+        itemView,
+        listener
+    ) {
 
     private var layoutInside1: ImageView = itemView.findViewById(R.id.layout_inside1)
 

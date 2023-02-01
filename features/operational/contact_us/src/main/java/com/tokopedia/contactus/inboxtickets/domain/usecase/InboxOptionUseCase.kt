@@ -7,7 +7,8 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 import javax.inject.Named
 
-const val CASEID = "caseID"
+const val CASE_ID = "caseID"
+
 class InboxOptionUseCase @Inject constructor(
     @Named("inbox_question_query") val inboxQuestionQuery: String,
     private val repository: ContactUsRepository
@@ -15,7 +16,7 @@ class InboxOptionUseCase @Inject constructor(
 
     fun createRequestParams(id: String?): RequestParams {
         val requestParams = RequestParams.create()
-        requestParams.putString(CASEID, id)
+        requestParams.putString(CASE_ID, id)
         return requestParams
     }
 

@@ -156,7 +156,7 @@ class TicketListAdapter(
             setTicketDate(item.lastUpdate)
             setTicketReadStatus(item.readStatus, mContext)
             setTicketStatus(item.status, item.needRating, mContext)
-            setTicketPriority(item.isOfficialStore, mContext)
+            setTicketPriority(item.isOfficialStore)
             layoutItemTicket?.setOnClickListener { clickItem() }
         }
 
@@ -173,7 +173,7 @@ class TicketListAdapter(
             tvTicketDate?.text = utils.getDateTimeYear(lastUpdate ?: "")
         }
 
-        private fun setTicketPriority(officialStore: Boolean, mContext: Context) {
+        private fun setTicketPriority(officialStore: Boolean) {
             if (officialStore) {
                 isOfficialStore = true
                 group?.show()

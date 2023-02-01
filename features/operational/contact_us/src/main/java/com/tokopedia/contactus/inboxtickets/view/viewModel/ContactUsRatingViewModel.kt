@@ -15,7 +15,7 @@ import com.tokopedia.csat_rating.presenter.screenState.ZeroScreenState
 import javax.inject.Inject
 
 class ContactUsRatingViewModel @Inject constructor(
-    private val coroutineDispatcherProvider: CoroutineDispatchers
+    coroutineDispatcherProvider: CoroutineDispatchers
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
     companion object {

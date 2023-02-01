@@ -104,7 +104,7 @@ class InboxDetailViewModel @Inject constructor(
 
     fun getTicketStatus() = currentState.ticketDetail.getStatusTicket()
 
-    fun isCommentEmpty() : Boolean {
+    fun isCommentEmpty(): Boolean {
         return currentState.ticketDetail.getTicketComment().isEmpty()
     }
 
@@ -208,16 +208,18 @@ class InboxDetailViewModel @Inject constructor(
                     )
                     for (item in commentsItems) {
                         val isTimeAreNotEmpty = item.getCreateCommentTime().isNotEmpty()
-                        val createTime = if(isTimeAreNotEmpty)utils.getDateTime(item.getCreateCommentTime()) else ""
+                        val createTime =
+                            if (isTimeAreNotEmpty) utils.getDateTime(item.getCreateCommentTime()) else ""
                         item.createTime = createTime
-                        item.shortTime = if(isTimeAreNotEmpty) getShortTime(createTime) else ""
+                        item.shortTime = if (isTimeAreNotEmpty) getShortTime(createTime) else ""
                     }
                     if (currentState.isIssueClose) {
                         currentState.ticketDetail.isShowRating = false
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                csatReasonListBadReview = chipGetInboxDetail.getDataTicket().getBadCsatReasons(),
+                                csatReasonListBadReview = chipGetInboxDetail.getDataTicket()
+                                    .getBadCsatReasons(),
                                 ticketDetail = chipGetInboxDetail.getDataTicket().apply {
                                     isShowRating = false
                                 }, isIssueClose = false
@@ -227,7 +229,8 @@ class InboxDetailViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                csatReasonListBadReview = chipGetInboxDetail.getDataTicket().getBadCsatReasons(),
+                                csatReasonListBadReview = chipGetInboxDetail.getDataTicket()
+                                    .getBadCsatReasons(),
                                 ticketDetail = chipGetInboxDetail.getDataTicket()
                             )
                         }
@@ -241,7 +244,12 @@ class InboxDetailViewModel @Inject constructor(
                 }
             },
             onError = {
-                _uiEffect.emit(InboxDetailUiEffect.GetDetailInboxDetailFailed(messageError = "", it))
+                _uiEffect.emit(
+                    InboxDetailUiEffect.GetDetailInboxDetailFailed(
+                        messageError = "",
+                        it
+                    )
+                )
             }
         )
     }
@@ -424,7 +432,8 @@ class InboxDetailViewModel @Inject constructor(
                     replyTicketResponse.getError(TicketReplyResponse::class.java)
 
 
-                if (successResponse.getTicketReplay().getTicketReplayData().status == REPLY_TICKET_RESPONSE_STATUS
+                if (successResponse.getTicketReplay()
+                        .getTicketReplayData().status == REPLY_TICKET_RESPONSE_STATUS
                 ) {
                     val newItemMessage = addNewLocalComment(imageList, message)
                     _uiEffect.emit(InboxDetailUiEffect.SendTextMessageSuccess(newItemMessage))
@@ -451,7 +460,9 @@ class InboxDetailViewModel @Inject constructor(
 
                 val chipUploadHostConfig = chipUploadHostConfigUseCase.getChipUploadHostConfig()
 
-                if (chipUploadHostConfig.getUploadHostConfig().getUploadHostConfigData().getHost().getServerID() != FAILURE_KEY_UPLOAD_HOST_CONFIG) {
+                if (chipUploadHostConfig.getUploadHostConfig().getUploadHostConfigData().getHost()
+                        .getServerID() != FAILURE_KEY_UPLOAD_HOST_CONFIG
+                ) {
 
                     val securelyUploadedImages =
                         getSecurelyUploadedImages(imageList, files, chipUploadHostConfig)
@@ -482,8 +493,11 @@ class InboxDetailViewModel @Inject constructor(
                     val successResponse =
                         createTicketResponse.getData<TicketReplyResponse>(TicketReplyResponse::class.java)
 
-                    if (successResponse.getTicketReplay().getTicketReplayData().status == REPLY_TICKET_RESPONSE_STATUS) {
-                        val ticketReplyData = successResponse.getTicketReplay().getTicketReplayData()
+                    if (successResponse.getTicketReplay()
+                            .getTicketReplayData().status == REPLY_TICKET_RESPONSE_STATUS
+                    ) {
+                        val ticketReplyData =
+                            successResponse.getTicketReplay().getTicketReplayData()
                         val das = utils.getFileUploaded(list)
                         if (ticketReplyData.postKey.isNotEmpty()) {
                             val requestParams = postMessageUseCase2.createRequestParams(

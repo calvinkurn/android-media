@@ -120,7 +120,8 @@ class InboxDetailViewModelTest {
             }
             viewModel.ticketId("1234")
             val actualEvent = emittedValues.last()
-            val isGetDetailTicketFailed = actualEvent is InboxDetailUiEffect.GetDetailInboxDetailFailed
+            val isGetDetailTicketFailed =
+                actualEvent is InboxDetailUiEffect.GetDetailInboxDetailFailed
             assertEquals(true, isGetDetailTicketFailed)
             job.cancel()
         }
@@ -293,7 +294,8 @@ class InboxDetailViewModelTest {
             }
             viewModel.ticketId("1234")
             val actualEvent = emittedValues.last()
-            val isGetDetailTicketFailed = actualEvent is InboxDetailUiEffect.GetDetailInboxDetailFailed
+            val isGetDetailTicketFailed =
+                actualEvent is InboxDetailUiEffect.GetDetailInboxDetailFailed
             assertEquals(true, isGetDetailTicketFailed)
             job.cancel()
         }
@@ -309,7 +311,8 @@ class InboxDetailViewModelTest {
             }
             viewModel.ticketId("1234")
             val actualEvent = emittedValues.last()
-            val isGetDetailTicketFailed = actualEvent is InboxDetailUiEffect.GetDetailInboxDetailFailed
+            val isGetDetailTicketFailed =
+                actualEvent is InboxDetailUiEffect.GetDetailInboxDetailFailed
             assertEquals(true, isGetDetailTicketFailed)
             val actualEventAsEffect = actualEvent as InboxDetailUiEffect.GetDetailInboxDetailFailed
             assertNotNull(actualEventAsEffect.throwable)
@@ -355,7 +358,7 @@ class InboxDetailViewModelTest {
     }
 
     @Test
-    fun `send text message with Image but serverId is 1 but failed to send it because get file process`() {
+    fun `send text with Image but serverId is 1, then failed send it because get file process`() {
         runBlockingTest {
             coEvery { contactUsUploadImageUseCase.getFile(any()) } returns mockk(relaxed = true)
             coEvery { chipUploadHostConfigUseCase.getChipUploadHostConfig() } returns createConfigServerUploadResponse(
@@ -376,7 +379,7 @@ class InboxDetailViewModelTest {
     }
 
     @Test
-    fun `send text message with Image but serverId is 1 but failed to send because upload process`() {
+    fun `send text with Image but serverId is 1, then failed send because upload process`() {
         runBlockingTest {
             coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf("/sasdasd")
             coEvery { chipUploadHostConfigUseCase.getChipUploadHostConfig() } returns createConfigServerUploadResponse(
@@ -411,7 +414,7 @@ class InboxDetailViewModelTest {
     }
 
     @Test
-    fun `send text message with Image but serverId is 1 but failed to send it because getCreateTicketResult say FAILED`() {
+    fun `send text with Image but serverId is 1 then failed send because getCreateTicketResult say FAILED`() {
         runBlockingTest {
             val graphResponseSend: GraphqlResponse = mockk(relaxed = true)
             val successData: TicketReplyResponse = mockk(relaxed = true)
@@ -1056,7 +1059,8 @@ class InboxDetailViewModelTest {
             viewModel.ticketId("1234")
             viewModel.closeTicket()
             val actualEvent = emittedValues.last()
-            val isOnCloseTicketSuccess = actualEvent is InboxDetailUiEffect.OnCloseInboxDetailSuccess
+            val isOnCloseTicketSuccess =
+                actualEvent is InboxDetailUiEffect.OnCloseInboxDetailSuccess
             assertEquals(true, isOnCloseTicketSuccess)
             job.cancel()
         }
@@ -1255,7 +1259,8 @@ class InboxDetailViewModelTest {
             viewModel.onSearchSubmitted("message")
 
             val actualEvent = emittedValues.last()
-            val isOnSearchTicketKeyword = actualEvent is InboxDetailUiEffect.OnSearchInboxDetailKeyword
+            val isOnSearchTicketKeyword =
+                actualEvent is InboxDetailUiEffect.OnSearchInboxDetailKeyword
             assertEquals(true, isOnSearchTicketKeyword)
 
             val indexSize = viewModel.searchIndices

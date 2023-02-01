@@ -35,7 +35,10 @@ class ServicePrioritiesBottomSheet(
             object : ClickableSpan() {
                 override fun onClick(view: View) {
                     mContext.startActivity(
-                        RouteManager.getIntent(mContext, mContext.getString(R.string.learn_more_link))
+                        RouteManager.getIntent(
+                            mContext,
+                            mContext.getString(R.string.learn_more_link)
+                        )
                     )
                 }
 

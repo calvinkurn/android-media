@@ -26,7 +26,7 @@ class InboxSwitcherActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(RemoteConfigSetting.isRemoteConfigGoesToMVVM(this)){
+        if (RemoteConfigSetting.isRemoteConfigGoesToMVVM(this)) {
             InboxContactUsActivity.start(this)
             finish()
         } else {

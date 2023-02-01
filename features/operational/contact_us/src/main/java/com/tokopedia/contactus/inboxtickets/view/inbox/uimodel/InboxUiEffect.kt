@@ -10,5 +10,6 @@ sealed class InboxUiEffect {
         val allItems: List<InboxTicketListResponse.Ticket.Data.TicketItem>,
         val currentPageItems: List<InboxTicketListResponse.Ticket.Data.TicketItem>
     ) : InboxUiEffect()
+
     data class EmptyTicket(val name: String, val isFilteredData: Boolean = false) : InboxUiEffect()
 }

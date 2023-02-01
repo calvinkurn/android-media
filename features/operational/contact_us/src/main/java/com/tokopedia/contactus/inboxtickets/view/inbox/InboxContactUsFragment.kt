@@ -35,7 +35,7 @@ import com.tokopedia.contactus.inboxtickets.view.fragment.ServicePrioritiesBotto
 import com.tokopedia.contactus.inboxtickets.view.inbox.delegates.HasPaginatedList
 import com.tokopedia.contactus.inboxtickets.view.inbox.delegates.HasPaginatedListImpl
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxFilterSelection
-import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxState
+import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiState
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiEffect
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.UiObjectMapper.mapToSelectionFilterObject
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity.Companion.getIntent
@@ -88,7 +88,8 @@ class InboxContactUsFragment :
         }
     }
 
-    override fun getScreenName(): String = InboxContactUsFragment::class.java.canonicalName.orEmpty()
+    override fun getScreenName(): String =
+        InboxContactUsFragment::class.java.canonicalName.orEmpty()
 
     override fun initInjector() {
         DaggerInboxComponent.builder()
@@ -153,7 +154,7 @@ class InboxContactUsFragment :
         }
     }
 
-    private fun handleUIState(uiState: InboxState) {
+    private fun handleUIState(uiState: InboxUiState) {
         if (uiState.showChatBotWidget) {
             val applinkPrefix =
                 context?.resources?.getString(R.string.contactus_chat_bot_applink).orEmpty()

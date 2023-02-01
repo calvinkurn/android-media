@@ -11,6 +11,7 @@ const val STATUS = "status"
 const val RATING = "rating"
 private const val USERID = "userID"
 private const val PAGE = "page"
+
 class GetTicketListUseCase @Inject constructor(
     private val userSession: UserSessionInterface,
     private val repository: ContactUsRepository

@@ -47,7 +47,11 @@ class InboxHeaderViewHolder(val view: View) : InboxDetailViewHolder(view) {
         }
     }
 
-    private fun setTitle(ticketTitle: String, ticketStatus: String, utils: Utils): SpannableString? {
+    private fun setTitle(
+        ticketTitle: String,
+        ticketStatus: String,
+        utils: Utils
+    ): SpannableString? {
         val context = view.context
         return when (ticketStatus) {
             TICKET_STATUS_IN_PROCESS -> utils.getStatusTitle(

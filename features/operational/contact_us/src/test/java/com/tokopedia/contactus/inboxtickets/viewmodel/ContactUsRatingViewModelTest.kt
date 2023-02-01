@@ -26,10 +26,10 @@ class ContactUsRatingViewModelTest {
     }
 
     @Test
-    fun `check when we set Caption and Question also set reason list, title and then selected emoji on position 1`() {
+    fun `set Caption and Question, and Reason list, title and then selected emoji on position 1`() {
         val inputTitle = "Hai Csat"
         val inputCaptions = listOf("as", "ad", "ac", "av", "ad")
-        val inputQuestions =  listOf("asa", "ada", "aca", "ava", "ada")
+        val inputQuestions = listOf("asa", "ada", "aca", "ava", "ada")
         val inputCsatOptions = createBadCsatReasonListItem()
         val selectedPosition = 1
         viewModel.setCaption(inputCaptions)
@@ -46,10 +46,10 @@ class ContactUsRatingViewModelTest {
     }
 
     @Test
-    fun `check when we set Caption and Question also set reason list, title and then selected emoji on position 2`() {
+    fun `set Caption and Question, and Reason list, title and then selected emoji on position 2`() {
         val inputTitle = "Hai Csat"
-        val inputCaptions =  listOf("as", "ad", "ac", "av", "ad")
-        val inputQuestions =  listOf("asa", "ada", "aca", "ava", "ada")
+        val inputCaptions = listOf("as", "ad", "ac", "av", "ad")
+        val inputQuestions = listOf("asa", "ada", "aca", "ava", "ada")
         val inputCsatOptions = createBadCsatReasonListItem()
         val selectedPosition = 2
         viewModel.setCaption(inputCaptions)
@@ -66,10 +66,10 @@ class ContactUsRatingViewModelTest {
     }
 
     @Test
-    fun `check when we set Caption and Question also set reason list, title and then selected emoji on position 3`() {
+    fun `set Caption and Question, and Reason list,, title and then selected emoji on position 3`() {
         val inputTitle = "Hai Csat"
-        val inputCaptions =  listOf("as", "ad", "ac", "av", "ad")
-        val inputQuestions =  listOf("asa", "ada", "aca", "ava", "ada")
+        val inputCaptions = listOf("as", "ad", "ac", "av", "ad")
+        val inputQuestions = listOf("asa", "ada", "aca", "ava", "ada")
         val inputCsatOptions = createBadCsatReasonListItem()
         val selectedPosition = 3
         viewModel.setCaption(inputCaptions)
@@ -86,10 +86,10 @@ class ContactUsRatingViewModelTest {
     }
 
     @Test
-    fun `check when we set Caption and Question also set reason list, title and then selected emoji on position 4`() {
+    fun `set Caption and Question, and Reason list, title and then selected emoji on position 4`() {
         val inputTitle = "Hai Csat"
-        val inputCaptions =  listOf("as", "ad", "ac", "av", "ad")
-        val inputQuestions =  listOf("asa", "ada", "aca", "ava", "ada")
+        val inputCaptions = listOf("as", "ad", "ac", "av", "ad")
+        val inputQuestions = listOf("asa", "ada", "aca", "ava", "ada")
         val inputCsatOptions = createBadCsatReasonListItem()
         val selectedPosition = 4
         viewModel.setCaption(inputCaptions)
@@ -106,10 +106,10 @@ class ContactUsRatingViewModelTest {
     }
 
     @Test
-    fun `check when we set Caption and Question also set reason list, title and then selected emoji on position 5`() {
+    fun `set Caption and Question, and Reason list, title and then selected emoji on position 5`() {
         val inputTitle = "Hai Csat"
-        val inputCaptions =  listOf("as", "ad", "ac", "av", "ad")
-        val inputQuestions =  listOf("asa", "ada", "aca", "ava", "ada")
+        val inputCaptions = listOf("as", "ad", "ac", "av", "ad")
+        val inputQuestions = listOf("asa", "ada", "aca", "ava", "ada")
         val inputCsatOptions = createBadCsatReasonListItem()
         val selectedPosition = 5
         viewModel.setCaption(inputCaptions)
@@ -126,10 +126,10 @@ class ContactUsRatingViewModelTest {
     }
 
     @Test
-    fun `check when we set Caption and Question also set reason list, title and then selected emoji on position 0`() {
+    fun `set Caption and Question, and Reason list, title and then selected emoji on position 0`() {
         val inputTitle = "Hai Csat"
-        val inputCaptions =  listOf("as", "ad", "ac", "av", "ad")
-        val inputQuestions =  listOf("asa", "ada", "aca", "ava", "ada")
+        val inputCaptions = listOf("as", "ad", "ac", "av", "ad")
+        val inputQuestions = listOf("asa", "ada", "aca", "ava", "ada")
         val inputCsatOptions = createBadCsatReasonListItem()
         val selectedPosition = 0
         viewModel.setCaption(inputCaptions)
@@ -146,10 +146,10 @@ class ContactUsRatingViewModelTest {
     }
 
     @Test
-    fun `check when we set Caption and Question also set reason list, title and then selected emoji on position 6`() {
+    fun `set Caption and Question, and Reason list, title and then selected emoji on position 6`() {
         val inputTitle = "Hai Csat"
-        val inputCaptions =  listOf("as", "ad", "ac", "av", "ad")
-        val inputQuestions =  listOf("asa", "ada", "aca", "ava", "ada")
+        val inputCaptions = listOf("as", "ad", "ac", "av", "ad")
+        val inputQuestions = listOf("asa", "ada", "aca", "ava", "ada")
         val inputCsatOptions = createBadCsatReasonListItem()
         val selectedPosition = 6
         viewModel.setCaption(inputCaptions)

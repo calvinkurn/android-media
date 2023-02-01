@@ -1,6 +1,5 @@
 package com.tokopedia.contactus.inboxtickets.domain.usecase
 
-import com.tokopedia.contactus.inboxtickets.data.ContactUsRepository
 import com.tokopedia.contactus.inboxtickets.data.model.TicketReplyResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -17,8 +16,7 @@ const val USER_ID = "userID"
 const val AGENT_REPLY = "agentReply"
 
 class PostMessageUseCase @Inject constructor(
-    @Named("reply_ticket") val replyTicketQuery: String,
-    private val repository: ContactUsRepository
+    @Named("reply_ticket") val replyTicketQuery: String
 ) {
 
     suspend fun getCreateTicketResult(requestParams: RequestParams): GraphqlResponse {

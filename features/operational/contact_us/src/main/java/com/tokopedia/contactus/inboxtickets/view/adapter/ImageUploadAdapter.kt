@@ -1,5 +1,6 @@
 package com.tokopedia.contactus.inboxtickets.view.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -41,7 +42,7 @@ class ImageUploadAdapter(
         if (imageUpload.size < maxPicUpload) {
             image.imgSrc = DUMMY_IMAGE_RESOURCE_FOR_LOCAL_FILE
             imageUpload.add(image)
-            notifyItemChanged(imageUpload.size-1)
+            notifyItemChanged(imageUpload.size - 1)
             if (imageUpload.size == maxPicUpload) {
                 Toast.makeText(context, R.string.max_image_warning, Toast.LENGTH_SHORT).show()
             }
@@ -64,6 +65,7 @@ class ImageUploadAdapter(
         private var image: ImageUpload? = null
         private var selectedImage: ImageView = itemView.findViewById(R.id.selected_image)
         private var deleteImage: ImageView = itemView.findViewById(R.id.delete_image)
+        @SuppressLint("DeprecatedMethod")
         fun setImage(image: ImageUpload) {
             this.image = image
             if (image.imgSrc != -1) {
@@ -71,7 +73,7 @@ class ImageUploadAdapter(
                 deleteImage.hide()
                 selectedImage.setOnClickListener { onSelectImageClick.onClick() }
             } else {
-                ImageHandler.loadImageFromFile(context, selectedImage, File(image.fileLoc))
+                ImageHandler.loadImageFromFile(context, selectedImage, File(image.fileLoc.orEmpty()))
                 selectedImage.setOnClickListener(null)
                 deleteImage.show()
             }

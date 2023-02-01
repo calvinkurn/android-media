@@ -7,16 +7,20 @@ import com.tokopedia.contactus.inboxtickets.domain.usecase.ChipTopBotStatusUseCa
 import com.tokopedia.contactus.inboxtickets.domain.usecase.GetTicketListUseCase
 import com.tokopedia.contactus.inboxtickets.view.inbox.InboxConstanta.SUCCESS_HIT_API
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxFilterSelection
-import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxState
+import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiState
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiEffect
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 class InboxContactUsViewModel @Inject constructor(
-    private val coroutineDispatcherProvider: CoroutineDispatchers,
+    coroutineDispatcherProvider: CoroutineDispatchers,
     private val topBotStatusUseCase: ChipTopBotStatusUseCase,
     private val getTickets: GetTicketListUseCase,
     private val userSession: UserSessionInterface
@@ -34,13 +38,13 @@ class InboxContactUsViewModel @Inject constructor(
 
     private var optionsFilter: List<InboxFilterSelection> = arrayListOf()
 
-    private val _uiState = MutableStateFlow(InboxState())
+    private val _uiState = MutableStateFlow(InboxUiState())
     val uiState = _uiState.asStateFlow()
 
     private val _uiEffect = MutableSharedFlow<InboxUiEffect>(replay = 1)
     val uiEffect = _uiEffect.asSharedFlow()
 
-    private val currentState: InboxState
+    private val currentState: InboxUiState
         get() = _uiState.value
 
     fun setOptionsFilter(options: List<InboxFilterSelection>) {
@@ -74,13 +78,19 @@ class InboxContactUsViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val topBotStatusResponse = topBotStatusUseCase.getChipTopBotStatus()
-                if (topBotStatusResponse.getTopBotStatusInbox().getTopBotStatusData().isSuccess == SUCCESS_HIT_API && topBotStatusResponse.getTopBotStatusInbox().getTopBotStatusData().isActive) {
+                if (topBotStatusResponse.getTopBotStatusInbox()
+                        .getTopBotStatusData().isSuccess == SUCCESS_HIT_API && topBotStatusResponse.getTopBotStatusInbox()
+                        .getTopBotStatusData().isActive
+                ) {
                     val messageId =
-                        topBotStatusResponse.getTopBotStatusInbox().getTopBotStatusData().getMessageID()
+                        topBotStatusResponse.getTopBotStatusInbox().getTopBotStatusData()
+                            .getMessageID()
                     val welcomeMessage =
-                        topBotStatusResponse.getTopBotStatusInbox().getTopBotStatusData().getMessageWelcome()
+                        topBotStatusResponse.getTopBotStatusInbox().getTopBotStatusData()
+                            .getMessageWelcome()
                     val isHasUnreadNotif =
-                        topBotStatusResponse.getTopBotStatusInbox().getTopBotStatusData().unreadNotif
+                        topBotStatusResponse.getTopBotStatusInbox()
+                            .getTopBotStatusData().unreadNotif
                     _uiState.update {
                         it.copy(
                             idMessage = messageId,
@@ -90,13 +100,13 @@ class InboxContactUsViewModel @Inject constructor(
                         )
                     }
                 } else {
-                    InboxState(
+                    InboxUiState(
                         showChatBotWidget = false
                     )
                 }
             },
             onError = {
-                InboxState(
+                InboxUiState(
                     showChatBotWidget = false
                 )
                 it.printStackTrace()

@@ -15,14 +15,15 @@ class SecureUploadUseCase @Inject constructor(private val repository: ContactUsR
         body: MultipartBody.Part,
         chipUploadHostConfig: ChipUploadHostConfig
     ): SecureImageParameter {
-        val secureImageParameter = repository.postMultiRestData<SecureImageParameter>(
-            chipUploadHostConfig.getUploadHostConfig().getUploadHostConfigData().getHost().getSecureHost(),
+        return repository.postMultiRestData(
+            chipUploadHostConfig.getUploadHostConfig().getUploadHostConfigData().getHost()
+                .getSecureHost(),
             object : TypeToken<SecureImageParameter>() {}.type,
             queryMap = mapOf(
-                SERVER_ID to chipUploadHostConfig.getUploadHostConfig().getUploadHostConfigData().getHost().getSecureHost()
+                SERVER_ID to chipUploadHostConfig.getUploadHostConfig().getUploadHostConfigData()
+                    .getHost().getSecureHost()
             ),
             body = body
         )
-        return secureImageParameter
     }
 }

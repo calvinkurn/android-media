@@ -12,9 +12,7 @@ import dagger.Component
 @InboxScope
 @Component(
     modules = [InboxModule::class, ContactUsViewModelModule::class],
-    dependencies = arrayOf(
-        BaseAppComponent::class
-    )
+    dependencies = [BaseAppComponent::class]
 )
 interface InboxComponent {
     fun getContext(): Context

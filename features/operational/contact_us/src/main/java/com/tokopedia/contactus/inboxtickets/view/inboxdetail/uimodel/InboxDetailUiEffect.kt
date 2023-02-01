@@ -10,7 +10,10 @@ sealed class InboxDetailUiEffect {
         val rating: Int = 0
     ) : InboxDetailUiEffect()
 
-    data class SendCSATRatingFailed(val messageError: String = "", val throwable: Throwable? = null) : InboxDetailUiEffect()
+    data class SendCSATRatingFailed(
+        val messageError: String = "",
+        val throwable: Throwable? = null
+    ) : InboxDetailUiEffect()
 
     data class GetDetailInboxDetailFailed(
         val messageError: String = "",
@@ -23,11 +26,15 @@ sealed class InboxDetailUiEffect {
         val sizeSearch: Int = 0
     ) : InboxDetailUiEffect()
 
-    data class OnSearchInboxDetailKeywordFailed(val throwable: Throwable? = null) : InboxDetailUiEffect()
+    data class OnSearchInboxDetailKeywordFailed(val throwable: Throwable? = null) :
+        InboxDetailUiEffect()
 
     data class OnCloseInboxDetailSuccess(val ticketNumber: String = "") : InboxDetailUiEffect()
 
-    data class OnCloseInboxDetailFailed(val messageError: String = "", val throwable: Throwable? = null) : InboxDetailUiEffect()
+    data class OnCloseInboxDetailFailed(
+        val messageError: String = "",
+        val throwable: Throwable? = null
+    ) : InboxDetailUiEffect()
 
     data class SendTextMessageSuccess(val commentItems: CommentsItem) : InboxDetailUiEffect()
 
@@ -42,7 +49,8 @@ sealed class InboxDetailUiEffect {
         val commentPosition: Int = 0
     ) : InboxDetailUiEffect()
 
-    data class OnSendRatingFailed(val messageError: String = "", val throwable: Throwable? = null) : InboxDetailUiEffect()
+    data class OnSendRatingFailed(val messageError: String = "", val throwable: Throwable? = null) :
+        InboxDetailUiEffect()
 }
 
 data class OnFindKeywordAtTicket(

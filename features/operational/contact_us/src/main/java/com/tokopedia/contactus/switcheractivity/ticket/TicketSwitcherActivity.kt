@@ -6,7 +6,8 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.contactus.R
-import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity as InboxTicketDetail
+import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity as InboxDetail
 import com.tokopedia.contactus.switcheractivity.RemoteConfigSetting
 import com.tokopedia.kotlin.extensions.orFalse
 
@@ -18,7 +19,7 @@ class TicketSwitcherActivity : BaseSimpleActivity() {
 
         @JvmStatic
         fun start(context: Context, idTicket: String, isOfficialStore: Boolean): Intent {
-            val intent = Intent(context, InboxDetailActivity::class.java)
+            val intent = Intent(context, InboxDetail::class.java)
             val bundle = Bundle()
             bundle.putString(BUNDLE_ID_TICKET, idTicket)
             bundle.putBoolean(IS_OFFICIAL_STORE, isOfficialStore)
@@ -43,7 +44,7 @@ class TicketSwitcherActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
         if (RemoteConfigSetting.isRemoteConfigGoesToMVVM(this)) {
             startActivity(
-                InboxDetailActivity.getIntent(
+                InboxTicketDetail.getIntent(
                     this,
                     ticketId,
                     isOfficialStore
@@ -51,7 +52,7 @@ class TicketSwitcherActivity : BaseSimpleActivity() {
             )
             finish()
         } else {
-            startActivity(InboxDetailActivity.getIntent(this, ticketId, isOfficialStore))
+            startActivity(InboxDetail.getIntent(this, ticketId, isOfficialStore))
             finish()
         }
     }

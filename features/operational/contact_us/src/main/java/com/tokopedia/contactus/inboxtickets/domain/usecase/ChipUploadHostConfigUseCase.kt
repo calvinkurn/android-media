@@ -8,12 +8,11 @@ import javax.inject.Inject
 class ChipUploadHostConfigUseCase @Inject constructor(private val repository: ContactUsRepository) {
 
     suspend fun getChipUploadHostConfig(): ChipUploadHostConfig {
-        val chipUploadHostConfig = repository
+        return repository
             .getGQLData(
                 CHIP_UPLOAD_HOST_GQL,
                 ChipUploadHostConfig::class.java,
                 mapOf()
             )
-        return chipUploadHostConfig
     }
 }

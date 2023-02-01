@@ -2,7 +2,7 @@ package com.tokopedia.contactus.inboxtickets.view.inbox.uimodel
 
 import com.tokopedia.contactus.inboxtickets.data.model.InboxTicketListResponse
 
-data class InboxState(
+data class InboxUiState(
     val idMessage: String = "",
     val welcomeMessage: String = "",
     val showChatBotWidget: Boolean = false,
