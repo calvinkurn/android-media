@@ -1,7 +1,5 @@
 package com.tokopedia.media.loader.tracker
 
-import android.app.Activity
-import android.app.Service
 import android.content.Context
 import android.graphics.Bitmap
 import com.bumptech.glide.load.engine.GlideException
@@ -139,17 +137,7 @@ object MediaLoaderTracker : CoroutineScope {
     }
 
     private fun getCdnPageSource(context: Context): String {
-        return when (context) {
-            is Activity -> {
-                (context as? Activity)?.javaClass?.canonicalName.orEmpty()
-            }
-            is Service -> {
-                (context as? Service)?.javaClass?.canonicalName.orEmpty()
-            }
-            else -> {
-                ""
-            }
-        }
+        return context.javaClass.canonicalName.orEmpty()
     }
 
     private fun MediaLoaderTrackerParam.toMap(context: Context): Map<String, String> {
