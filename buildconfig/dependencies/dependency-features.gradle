@@ -25,7 +25,6 @@ ext {
             affiliateToko                  : ":features:category:affiliate_toko",
             ePharmacy                       : ":features:category:epharmacy",
             commonEPharmacy                 : ":features:category:common_epharmacy",
-            findNative                      : ":features:category:find_native",
             tradeIn                         : ":features:category:tradein",
             moneyIn                         : ":features:category:moneyin",
             basemvvm                        : ":features:category:basemvvm",
