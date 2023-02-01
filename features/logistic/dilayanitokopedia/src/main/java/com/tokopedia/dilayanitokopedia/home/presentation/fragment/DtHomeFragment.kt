@@ -95,10 +95,15 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         // scroll listener
         private const val RV_DIRECTION_TOP = 1
         private const val VERTICAL_SCROLL_FULL_BOTTOM_OFFSET = 0
-        private const val PAGE_SHARE_NAME = "DilayaniTokopedia"
         private const val SHARE = "share"
 
         private const val CLICK_TIME_INTERVAL: Long = 500
+
+        private const val SHARE_LINK_TITLE = "Dilayani Tokopedia | Tokopedia"
+        private const val SHARE_LINK_URL = "https://www.tokopedia.com/dilayani-tokopedia"
+        private const val SHARE_LINK_THUMBNAIL_IMAGE = "https://images.tokopedia.net/img/QBrNqa/2023/1/12/b0a09eb3-7876-4a21-a9ba-4c532f500559.png"
+        private const val SHARE_LINK_OG_IMAGE = "https://images.tokopedia.net/img/QBrNqa/2023/1/12/b0a09eb3-7876-4a21-a9ba-4c532f500559.png"
+        private const val SHARE_LINK_PAGE_NAME = "DilayaniTokopedia"
     }
 
     @Inject
@@ -347,16 +352,13 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         linkerType: String,
         id: String = ""
     ) {
-        val thumbNailTitle = "Dilayani Tokopedia | Tokopedia"
-        val url = "https://www.tokopedia.com/discovery/dilayani-tokopedia"
-        var deeplink = "tokopedia://dilayani-tokopedia"
         shareHome.pageIdConstituents = pageIdConstituents
         shareHome.isScreenShot = isScreenShot
-        shareHome.thumbNailTitle = thumbNailTitle
+        shareHome.thumbNailTitle = SHARE_LINK_TITLE
         shareHome.linkerType = linkerType
         shareHome.id = id
-        shareHome.sharingUrl = url
-        shareHome.deeplink = deeplink
+        shareHome.sharingUrl = SHARE_LINK_URL
+        shareHome.thumbNailImage = SHARE_LINK_THUMBNAIL_IMAGE
     }
 
     private fun shareClicked(shareHomeTokonow: DtShareUniversalModel?) {
@@ -369,28 +371,25 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         }
     }
 
-    private fun showUniversalShareBottomSheet(shareHomeTokonow: DtShareUniversalModel?) {
+    private fun showUniversalShareBottomSheet(shareHomeDt: DtShareUniversalModel?) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@DtHomeFragment)
             setUtmCampaignData(
-                pageName = PAGE_SHARE_NAME,
+                pageName = SHARE_LINK_PAGE_NAME,
                 userId = userSession.userId,
-                pageIdConstituents = shareHomeTokonow?.pageIdConstituents.orEmpty(),
+                pageIdConstituents = shareHomeDt?.pageIdConstituents.orEmpty(),
                 feature = SHARE
             )
+
             setMetaData(
-                tnTitle = shareHomeTokonow?.thumbNailTitle.orEmpty(),
-                tnImage = shareHomeTokonow?.thumbNailImage.orEmpty()
+                tnTitle = shareHomeDt?.thumbNailTitle.orEmpty(),
+                tnImage = shareHomeDt?.thumbNailImage.orEmpty()
             )
             // set the Image Url of the Image that represents page
-            setOgImageUrl(imgUrl = shareHomeTokonow?.ogImageUrl.orEmpty())
+            setOgImageUrl(SHARE_LINK_OG_IMAGE)
         }
 
-        universalShareBottomSheet?.show(
-            childFragmentManager,
-            this,
-            screenshotDetector
-        )
+        universalShareBottomSheet?.show(childFragmentManager, this, screenshotDetector)
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {

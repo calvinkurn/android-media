@@ -18,12 +18,14 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import java.util.*
 
 object DtUniversalShareUtil {
+
+    private const val SHARE_LINK_DESCRIPTION = "Cek Dilayani Tokopedia! Belanja bebas ongkir dengan harga terbaik hanya di Tokopedia"
+
     private fun linkerDataMapper(shareData: DtShareUniversalModel?): LinkerShareData {
         val linkerData = LinkerData()
         linkerData.id = shareData?.id.orEmpty()
         linkerData.name = shareData?.specificPageName.orEmpty()
         linkerData.uri = shareData?.sharingUrl.orEmpty()
-        linkerData.deepLink = shareData?.deeplink.orEmpty()
         linkerData.description = shareData?.specificPageDescription.orEmpty()
         linkerData.isThrowOnError = true
         linkerData.type = shareData?.linkerType.orEmpty()
@@ -80,6 +82,7 @@ object DtUniversalShareUtil {
         onError: () -> Unit = {}
     ) {
         val linkerShareData = linkerDataMapper(shareData)
+
         linkerShareData.linkerData.apply {
             feature = shareModel.feature
             channel = shareModel.channel
@@ -88,7 +91,6 @@ object DtUniversalShareUtil {
             if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
                 ogImageUrl = shareModel.ogImgUrl
             }
-            deepLink = shareData?.deeplink
         }
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(
@@ -97,7 +99,7 @@ object DtUniversalShareUtil {
                 object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
                         val shareString =
-                            String.format(Locale.getDefault(), "%s %s", shareData?.sharingText, linkerShareData?.shareUri)
+                            String.format(Locale.getDefault(), "%s %s", SHARE_LINK_DESCRIPTION, linkerShareData?.shareUri.orEmpty())
                         SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
                         onSuccess.invoke()
                     }
