@@ -61,12 +61,23 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
                             }
                         }
                         ComponentNames.ProductCardCarousel.componentName -> {
-                            DiscoveryDataMapper().mapListToComponentList(
-                                comp.data,
-                                ComponentNames.ProductCardCarouselItem.componentName,
-                                comp.properties,
-                                creativeName
-                            )
+                            if (comp.properties?.template == Constant.ProductTemplate.LIST) {
+                                DiscoveryDataMapper().mapListToComponentList(
+                                    comp.data,
+                                    ComponentNames.ProductCardCarouselItemList.componentName,
+                                    comp.properties,
+                                    creativeName,
+                                    parentSectionId = comp.parentSectionId
+                                )
+                            } else {
+                                DiscoveryDataMapper().mapListToComponentList(
+                                    comp.data,
+                                    ComponentNames.ProductCardCarouselItem.componentName,
+                                    comp.properties,
+                                    creativeName,
+                                    parentSectionId = comp.parentSectionId
+                                )
+                            }
                         }
                         ComponentNames.ProductCardSprintSale.componentName -> {
                             DiscoveryDataMapper().mapListToComponentList(
