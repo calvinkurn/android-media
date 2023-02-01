@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/webSocketLoggingFragment"
         android:name="com.tokopedia.analyticsdebugger.websocket.ui.fragment.WebSocketLoggingFragment"
-        android:label="WebSocketLoggingFragment" >
+        android:label="WebSocket Chucker">
         <action
             android:id="@+id/action_webSocketLoggingFragment_to_webSocketDetailLoggingFragment"
             app:destination="@id/webSocketDetailLoggingFragment" />
@@ -19,32 +19,9 @@
     <fragment
         android:id="@+id/webSocketDetailLoggingFragment"
         android:name="com.tokopedia.analyticsdebugger.websocket.ui.fragment.WebSocketDetailLoggingFragment"
-        android:label="WebSocketDetailLoggingFragment">
-
+        android:label="WebSocket Chucker">
         <argument
-            android:name="title"
-            app:argType="string"
-            />
-
-        <argument
-            android:name="dateTime"
-            app:argType="string"
-            />
-
-        <argument
-            android:name="channelId"
-            app:argType="string"
-            />
-
-        <argument
-            android:name="gcToken"
-            app:argType="string"
-            />
-
-        <argument
-            android:name="message"
-            app:argType="string"
-            />
-
+            android:name="model"
+            app:argType="com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel"/>
     </fragment>
 </navigation>

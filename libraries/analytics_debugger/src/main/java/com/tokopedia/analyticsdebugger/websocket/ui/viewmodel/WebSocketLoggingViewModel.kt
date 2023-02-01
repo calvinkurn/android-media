@@ -27,7 +27,7 @@ class WebSocketLoggingViewModel @Inject constructor(
     private val deleteAllWebSocketLogUseCase: DeleteAllWebSocketLogUseCase,
     private val getSourcesLogUseCase: GetSourcesLogUseCase,
     dispatchers: CoroutineDispatchers,
-): ViewModel() {
+) : ViewModel() {
 
     private var pageSource = WebSocketLogPageSource.NONE
 
@@ -56,7 +56,7 @@ class WebSocketLoggingViewModel @Inject constructor(
     }
 
     fun submitAction(action: WebSocketLoggingAction) {
-        when(action) {
+        when (action) {
             WebSocketLoggingAction.InitPage -> handleSearch("")
             is WebSocketLoggingAction.SearchLogAction -> handleSearch(action.query)
             WebSocketLoggingAction.LoadNextPageAction -> handleLoadNextPage()
@@ -80,7 +80,7 @@ class WebSocketLoggingViewModel @Inject constructor(
 
     private fun handleLoadNextPage() {
         viewModelScope.launchCatchError(block = {
-            if(!isLoading() && !isReachMax()) {
+            if (!isLoading() && !isReachMax()) {
                 setLoading(true)
 
                 val pagination = _websocketLogPagination.value
@@ -88,11 +88,14 @@ class WebSocketLoggingViewModel @Inject constructor(
 
                 val webSocketLogNextList = getWebSocketLog(pagination.query, newPage)
 
-                val oldList: List<WebSocketLog> = pagination.webSocketLoggingList.filterIsInstance(WebSocketLogUiModel::class.java)
+                val oldList: List<WebSocketLog> = pagination
+                    .webSocketLoggingList
+                    .filterIsInstance(WebSocketLogUiModel::class.java)
+
                 val newList = (oldList + webSocketLogNextList).toMutableList()
 
                 val isReachMax = webSocketLogNextList.size != PAGINATION_LIMIT
-                if(!isReachMax) {
+                if (!isReachMax) {
                     newList += WebSocketLogPlaceHolder
                 }
 
@@ -156,7 +159,7 @@ class WebSocketLoggingViewModel @Inject constructor(
     }
 
     private suspend fun getSourceList() {
-        if(!isLoading()) {
+        if (!isLoading()) {
             setLoading(true)
 
             val newChips = getSourcesLogUseCase(pageSource)
@@ -170,13 +173,14 @@ class WebSocketLoggingViewModel @Inject constructor(
     }
 
     private suspend fun searchData(query: String) {
-        if(!isLoading()) {
+        if (!isLoading()) {
             setLoading(true)
 
             val newPage = 0
-            val webSocketLogList: MutableList<WebSocketLog> = getWebSocketLog(query, newPage).toMutableList()
+            val webSocketLogList: MutableList<WebSocketLog> =
+                getWebSocketLog(query, newPage).toMutableList()
 
-            if(webSocketLogList.size == PAGINATION_LIMIT) {
+            if (webSocketLogList.size == PAGINATION_LIMIT) {
                 webSocketLogList += WebSocketLogPlaceHolder
             }
 

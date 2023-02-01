@@ -4,8 +4,8 @@ import com.tokopedia.analyticsdebugger.util.DateTimeUtil
 import com.tokopedia.analyticsdebugger.websocket.data.local.entity.PlayWebSocketLogEntity
 import com.tokopedia.analyticsdebugger.websocket.data.local.entity.TopchatWebSocketLogEntity
 import com.tokopedia.analyticsdebugger.websocket.domain.usecase.GetSourcesLogUseCase
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.PlayWebSocketLogGeneralInfoUiModel
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.TopchatWebSocketLogDetailInfoUiModel
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.PlayWebSocketLogGeneralInfoUiModel
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.TopchatWebSocketLogDetailInfoUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.view.ChipModel
 import javax.inject.Inject

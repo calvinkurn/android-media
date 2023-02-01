@@ -3,7 +3,7 @@ package com.tokopedia.analyticsdebugger.debugger.ws
 import android.content.Context
 import com.tokopedia.analyticsdebugger.debugger.BaseWebSocketLogger
 import com.tokopedia.analyticsdebugger.websocket.domain.param.InsertWebSocketLogParam
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.PlayWebSocketLogGeneralInfoUiModel
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.PlayWebSocketLogGeneralInfoUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPageSource
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
 import kotlinx.coroutines.launch

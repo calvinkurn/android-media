@@ -36,7 +36,7 @@ class WebSocketLoggingActivity: AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         findViewById<Toolbar>(R.id.websocket_logging_toolbar).apply {
             setSupportActionBar(this)
-            subtitle = "Tokopedia"
+            subtitle = pageSource
         }
         setupActionBarWithNavController(navController, appBarConfiguration)
     }

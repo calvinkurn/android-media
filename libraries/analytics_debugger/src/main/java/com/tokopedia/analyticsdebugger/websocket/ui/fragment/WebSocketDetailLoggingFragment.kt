@@ -6,19 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.analyticsdebugger.databinding.FragmentWebsocketDetailLoggingBinding
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.PlayWebSocketLogGeneralInfoUiModel
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.TopchatWebSocketLogDetailInfoUiModel
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created By : Jonathan Darwin on December 20, 2021
  */
 class WebSocketDetailLoggingFragment: Fragment() {
 
-    private lateinit var tvTitle: Typography
-    private lateinit var tvDateTime: Typography
-    private lateinit var tvChannelID: Typography
-    private lateinit var tvGcToken: Typography
-    private lateinit var tvMessage: Typography
-    private lateinit var tvWarehouseId: Typography
+    private val binding: FragmentWebsocketDetailLoggingBinding? by viewBinding()
+
+    private val model: WebSocketLogUiModel? by lazy {
+        WebSocketDetailLoggingFragmentArgs
+            .fromBundle(arguments!!).model
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,36 +35,50 @@ class WebSocketDetailLoggingFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
         setData()
     }
 
-    private fun initView(view: View) {
-        tvTitle = view.findViewById(R.id.tv_websocket_detail_log_title)
-        tvDateTime = view.findViewById(R.id.tv_websocket_detail_log_date_time)
-        tvChannelID = view.findViewById(R.id.tv_websocket_detail_log_channel_id)
-        tvGcToken = view.findViewById(R.id.tv_websocket_detail_log_gc_token)
-        tvMessage = view.findViewById(R.id.tv_websocket_detail_log_message)
-        tvWarehouseId = view.findViewById(R.id.tv_websocket_detail_warehouse_id)
-    }
-
     private fun setData() {
-        requireArguments().let {
-            tvTitle.text = it.getString(EXTRA_TITLE)
-            tvDateTime.text = it.getString(EXTRA_DATE_TIME)
-            tvChannelID.text = it.getString(EXTRA_CHANNEL_ID)
-            tvGcToken.text = it.getString(EXTRA_GC_TOKEN)
-            tvMessage.text = it.getString(EXTRA_MESSAGE)
-            tvWarehouseId.text = it.getString(EXTRA_WAREHOUSE_ID)
+        binding?.tvWebsocketDetailLogMessage?.text = model?.message
+        binding?.tvWebsocketDetailLogDateTime?.text = model?.dateTime
+        binding?.tvWebsocketDetailLogTitle?.text = model?.event
+
+        when {
+            model?.play != null -> onPlayDetailInfoLoaded(model?.play)
+            model?.topchat != null -> onTopchatDetailInfoLoaded(model?.topchat)
         }
     }
 
-    companion object {
-        const val EXTRA_TITLE = "EXTRA_TITLE"
-        const val EXTRA_DATE_TIME = "EXTRA_DATE_TIME"
-        const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
-        const val EXTRA_GC_TOKEN = "EXTRA_GC_TOKEN"
-        const val EXTRA_MESSAGE = "EXTRA_MESSAGE"
-        const val EXTRA_WAREHOUSE_ID = "EXTRA_WAREHOUSE_ID"
+    private fun onPlayDetailInfoLoaded(data: PlayWebSocketLogGeneralInfoUiModel?) {
+        setLogDetailFirst(R.string.websocket_log_channel_id_label, data?.channelId.toString())
+        setLogDetailSecond(R.string.warehouse_id, data?.warehouseId.toString())
+        setLogDetailThird(R.string.websocket_log_gc_token_label, data?.gcToken.toString())
     }
+
+    private fun onTopchatDetailInfoLoaded(data: TopchatWebSocketLogDetailInfoUiModel?) {
+        setLogDetailFirst(R.string.websocket_log_code_id_label, data?.code.toString())
+        setLogDetailSecond(R.string.websocket_log_message_id_label, data?.messageId.toString())
+    }
+
+    private fun setLogDetailFirst(label: Int, data: String) {
+        binding?.tvWebsocketDetailLog1Label?.text = getString(label)
+        binding?.tvWebsocketDetailLog1?.text = data
+        binding?.tvWebsocketDetailLog1Label?.show()
+        binding?.tvWebsocketDetailLog1?.show()
+    }
+
+    private fun setLogDetailSecond(label: Int, data: String) {
+        binding?.tvWebsocketDetailLog2Label?.text = getString(label)
+        binding?.tvWebsocketDetailLog2?.text = data
+        binding?.tvWebsocketDetailLog2Label?.show()
+        binding?.tvWebsocketDetailLog2?.show()
+    }
+
+    private fun setLogDetailThird(label: Int, data: String) {
+        binding?.tvWebsocketDetailLog3Label?.text = getString(label)
+        binding?.tvWebsocketDetailLog3?.text = data
+        binding?.tvWebsocketDetailLog3Label?.show()
+        binding?.tvWebsocketDetailLog3?.show()
+    }
+
 }
