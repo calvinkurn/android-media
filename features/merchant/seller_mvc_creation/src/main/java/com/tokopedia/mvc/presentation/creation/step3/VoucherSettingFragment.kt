@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -93,6 +94,24 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private val voucherConfiguration by lazy {
         arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration
             ?: VoucherConfiguration()
+    }
+
+    // color
+    private val colorTintBlack by lazy {
+        context?.let {
+            ContextCompat.getColor(
+                it,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+            )
+        }
+    }
+    private val colorTintGreen by lazy {
+        context?.let {
+            ContextCompat.getColor(
+                it,
+                com.tokopedia.unifyprinciples.R.color.Green_G500
+            )
+        }
     }
 
     // coachmark
@@ -511,9 +530,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     // Free shipping input region
     private fun setFreeShippingSelected() {
         promoTypeSectionBinding?.run {
-            chipFreeShipping.chipType = ChipsUnify.TYPE_SELECTED
-            chipCashback.chipType = ChipsUnify.TYPE_NORMAL
-            chipDiscount.chipType = ChipsUnify.TYPE_NORMAL
+            chipFreeShipping.setSelected()
+            chipCashback.setNormal()
+            chipDiscount.setNormal()
         }
 
         freeShippingInputSectionBinding?.parentFreeShipping?.visible()
@@ -653,9 +672,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setCashbackSelected() {
         val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
         promoTypeSectionBinding?.run {
-            chipFreeShipping.chipType = ChipsUnify.TYPE_NORMAL
-            chipCashback.chipType = ChipsUnify.TYPE_SELECTED
-            chipDiscount.chipType = ChipsUnify.TYPE_NORMAL
+            chipFreeShipping.setNormal()
+            chipCashback.setSelected()
+            chipDiscount.setNormal()
         }
 
         freeShippingInputSectionBinding?.parentFreeShipping?.gone()
@@ -903,9 +922,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountSelected() {
         val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
         promoTypeSectionBinding?.run {
-            chipFreeShipping.chipType = ChipsUnify.TYPE_NORMAL
-            chipCashback.chipType = ChipsUnify.TYPE_NORMAL
-            chipDiscount.chipType = ChipsUnify.TYPE_SELECTED
+            chipFreeShipping.setNormal()
+            chipCashback.setNormal()
+            chipDiscount.setSelected()
         }
 
         freeShippingInputSectionBinding?.parentFreeShipping?.gone()
@@ -1316,6 +1335,20 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     tracker.sendClickLanjutEvent()
                 }
             }
+        }
+    }
+
+    private fun ChipsUnify.setNormal() {
+        this.apply {
+            chipType = ChipsUnify.TYPE_NORMAL
+            colorTintBlack?.let { color -> chip_image_icon.setColorFilter(color) }
+        }
+    }
+
+    private fun ChipsUnify.setSelected() {
+        this.apply {
+            chipType = ChipsUnify.TYPE_SELECTED
+            colorTintGreen?.let { color -> chip_image_icon.setColorFilter(color) }
         }
     }
 }
