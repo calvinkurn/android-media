@@ -23,7 +23,7 @@ class TopchatWebSocketLogger constructor(mContext: Context) : BaseWebSocketLogge
                 info = WebSocketLogUiModel(
                     event = event,
                     message = message.jsonHumanized(),
-                    topchat = detail
+                    topchat = detail ?: TopchatWebSocketLogDetailInfoUiModel()
                 )
             )
 
