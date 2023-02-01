@@ -111,6 +111,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         const val UPDATE_TAB_POSITION = "1"
         const val EXPLORE_TAB_POSITION = "2"
         const val VIDEO_TAB_POSITION = "3"
+        const val EXPLORE_TAB_INDEX = 1
+        const val VIDEO_TAB_INDEX = 2
 
         private const val FEED_PAGE = "feed"
         private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
@@ -238,13 +240,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun updateArgumentValueAsPerSelectedTab(position: Int) {
         val positionValue = when (position) {
-            1 -> EXPLORE_TAB_POSITION
-            2 -> VIDEO_TAB_POSITION
+            EXPLORE_TAB_INDEX -> EXPLORE_TAB_POSITION
+            VIDEO_TAB_INDEX -> VIDEO_TAB_POSITION
             else -> UPDATE_TAB_POSITION
         }
         activity?.intent?.putExtra(ARGS_FEED_TAB_POSITION, positionValue)
     }
-
 
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
