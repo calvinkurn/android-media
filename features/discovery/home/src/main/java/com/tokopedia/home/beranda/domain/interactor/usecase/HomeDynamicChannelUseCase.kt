@@ -79,7 +79,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
     private val homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
     private val homeChooseAddressRepository: HomeChooseAddressRepository,
     private val userSessionInterface: UserSessionInterface,
-    private val homeMissionWidgetRepository: HomeMissionWidgetRepository
+    private val homeMissionWidgetRepository: HomeMissionWidgetRepository,
+    private val homeBalanceWidgetAtf1UseCase: HomeBalanceWidgetAtf1UseCase
 ) {
 
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
@@ -109,7 +110,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     @FlowPreview
     @ExperimentalCoroutinesApi
-    fun getHomeDataFlow(): Flow<HomeDynamicChannelModel?> {
+    fun getHomeDataFlow(atfStyle: String): Flow<HomeDynamicChannelModel?> {
+//        val styleAtf = remoteConfi
+        Log.d("dhabalog", "getHomeDataFlow $atfStyle")
         var isCache = true
         var isCacheDc = true
         val homeAtfCacheFlow = getHomeRoomDataSource.getCachedAtfData().flatMapConcat {

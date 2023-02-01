@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.viewModel
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -155,15 +156,21 @@ open class HomeRevampViewModel @Inject constructor(
     var homeDataModel = HomeDynamicChannelModel()
     var currentTopAdsBannerPage: String = "1"
     var isFirstLoad = true
+    var atfStyle = ""
 
-    @FlowPreview
-    private val homeFlowDynamicChannel: Flow<HomeDynamicChannelModel?> = homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io)
+//    @FlowPreview
+    private fun homeFlowDynamicChannel(): Flow<HomeDynamicChannelModel?> {
+        return homeUseCase.get().getHomeDataFlow(atfStyle).flowOn(homeDispatcher.get().io)
+    }
+//        flow {
+//    }
+//
 
     var getHomeDataJob: Job? = null
 
     init {
         _isRequestNetworkLiveData.value = Event(true)
-        initFlow()
+//        initFlow()
         injectCouponTimeBased()
         homeRateLimit.reset(HOME_LIMITER_KEY)
     }
@@ -278,10 +285,12 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     @FlowPreview
-    private fun initFlow() {
+    fun initFlow() {
         homeFlowStarted = true
+        Log.d("dhabalog", "initFlow $atfStyle")
         launchCatchError(coroutineContext, block = {
-            homeFlowDynamicChannel.collect { homeNewDataModel ->
+            Log.d("dhabalog", "initFlowlaunchcatcherror")
+            homeFlowDynamicChannel().collect { homeNewDataModel ->
                 if (homeNewDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
                     currentTopAdsBannerPage = homeNewDataModel.topadsPage

@@ -549,7 +549,7 @@ open class HomeRevampFragment :
         }
     }
 
-    private fun getStyleAtf() : String {
+    private fun getStyleAtf(): String {
         return getAbTestPlatform().getString(RollenceKey.HOME_COMPONENT_ATF, RollenceKey.EXPERIMENT_VARIANT)
     }
 
@@ -557,6 +557,8 @@ open class HomeRevampFragment :
         BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
         isUsingNewPullRefresh = isUseNewPullRefresh()
         styleAtf = getStyleAtf()
+        getHomeViewModel().atfStyle = styleAtf
+        getHomeViewModel().initFlow()
         val view = inflater.inflate(
             if (isUsingNewPullRefresh) R.layout.fragment_home_revamp else R.layout.fragment_home_revamp_old_refresh,
             container,
