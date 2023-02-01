@@ -26,11 +26,13 @@ object DtUniversalShareUtil {
         linkerData.id = shareData?.id.orEmpty()
         linkerData.name = shareData?.specificPageName.orEmpty()
         linkerData.uri = shareData?.sharingUrl.orEmpty()
+        linkerData.deepLink = shareData?.deeplink.orEmpty()
         linkerData.description = shareData?.specificPageDescription.orEmpty()
         linkerData.isThrowOnError = true
         linkerData.type = shareData?.linkerType.orEmpty()
         val linkerShareData = LinkerShareData()
         linkerShareData.linkerData = linkerData
+
         return linkerShareData
     }
 

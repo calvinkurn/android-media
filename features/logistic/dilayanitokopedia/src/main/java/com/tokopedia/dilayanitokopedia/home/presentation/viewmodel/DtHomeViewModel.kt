@@ -7,11 +7,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutState
 import com.tokopedia.dilayanitokopedia.home.constant.HomeLayoutItemState
-import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.AnchorTabMapper.mapMenuList
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.HomeLayoutMapper.mapHomeLayoutList
-import com.tokopedia.dilayanitokopedia.home.domain.model.HomeLayoutResponse
 import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetAnchorTabUseCase
 import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetLayoutDataUseCase
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.HomeRecommendationFeedDataModel
@@ -20,7 +18,6 @@ import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -42,15 +39,7 @@ class DtHomeViewModel @Inject constructor(
         get() = _menuList
     private val _menuList = MutableLiveData<List<AnchorTabUiModel>>()
 
-    private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
-    val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
-        get() = _chooseAddress
-
     private val homeRecommendationDataModel = HomeRecommendationFeedDataModel()
-
-    fun getEmptyState(@HomeStaticLayoutId id: String, serviceType: String) {
-        // no op yet
-    }
 
     fun getHomeVisitableList(): List<Visitable<*>> {
         return homeLayoutItemList.mapNotNull { it.layout }
@@ -61,8 +50,8 @@ class DtHomeViewModel @Inject constructor(
     }
 
     fun getAnchorTabByVisitablePosition(indexVisitable: Int): AnchorTabUiModel? {
-        val getGroupId = homeLayoutItemList.get(indexVisitable).groupId
-        return _menuList.value?.find { getGroupId == it.groupId }
+        val getGroupId = homeLayoutItemList.getOrNull(indexVisitable)?.groupId
+        return menuList.value?.find { getGroupId == it.groupId }
     }
 
     fun getHomeLayout(localCacheModel: LocalCacheModel) {
@@ -80,7 +69,7 @@ class DtHomeViewModel @Inject constructor(
 
             _homeLayoutList.postValue(Success(data))
 
-            getAnchorTabMenu(homeLayoutResponse, localCacheModel)
+            getAnchorTabMenu(localCacheModel)
             getRecommendationForYouNew()
         }) {
             _homeLayoutList.postValue(Fail(it))
@@ -90,7 +79,7 @@ class DtHomeViewModel @Inject constructor(
     /**
      * anchor tab contain info and visitable of click to scroll
      */
-    private fun getAnchorTabMenu(homeLayoutResponse: List<HomeLayoutResponse>, localCacheModel: LocalCacheModel) {
+    private fun getAnchorTabMenu(localCacheModel: LocalCacheModel) {
         launchCatchError(block = {
             val anchorTabResponse = getHomeAnchorTabUseCase.execute(localCacheModel)
             val menuList = anchorTabResponse.mapMenuList()
@@ -114,7 +103,7 @@ class DtHomeViewModel @Inject constructor(
         _homeLayoutList.postValue(Success(data))
     }
 
-    fun switchService() {
+    fun refreshLayout() {
         getLoadingState()
     }
 
