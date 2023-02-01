@@ -18,6 +18,7 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
+import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
@@ -249,7 +250,8 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
         position: Int,
         commison: String,
         status: String,
-        type: String?
+        type: String?,
+        ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?
     ) {
         AffiliatePromotionBottomSheet.newInstance(
             AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
