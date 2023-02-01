@@ -48,7 +48,7 @@ class ProductShippingFactoryImpl(val listener: ProductDetailShippingListener,
             ProductShippingServiceViewHolder.LAYOUT -> ProductShippingServiceViewHolder(view)
             ProductShippingShimmerViewHolder.LAYOUT -> ProductShippingShimmerViewHolder(view)
             ProductShippingErrorViewHolder.LAYOUT -> ProductShippingErrorViewHolder(view, listener)
-            ProductShippingSellyViewHolder.LAYOUT -> ProductShippingSellyViewHolder(view)
+            ProductShippingSellyViewHolder.LAYOUT -> ProductShippingSellyViewHolder(view, listener)
             else -> return super.createViewHolder(view, type)
         }
     }

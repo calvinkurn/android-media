@@ -3574,7 +3574,10 @@ open class DynamicProductDetailFragment :
                 fragmentManager = getProductFragmentManager(),
                 tag = ProductDetailShippingBottomSheet::class.java.simpleName
             ) {
-                ProductDetailShippingBottomSheet()
+                ProductDetailShippingBottomSheet.instance(
+                    buyerDistrictId = viewModel.getUserLocationCache().district_id,
+                    sellerDistrictId = viewModel.getMultiOriginByProductId().districtId
+                )
             }
         }
     }

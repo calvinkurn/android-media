@@ -378,6 +378,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 }
                 chipsLabel
                 hasUsedBenefit
+                tickers {
+                  title
+                  message
+                }
               }
               boMetadata
               productMetadata {

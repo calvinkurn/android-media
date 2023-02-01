@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
@@ -16,10 +17,12 @@ import com.tokopedia.product.detail.databinding.ItemSellyTimeBinding
 import com.tokopedia.product.estimasiongkir.data.model.shipping.Product
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingSellyDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.Service
+import com.tokopedia.product.estimasiongkir.view.bottomsheet.ProductDetailShippingListener
 import kotlin.reflect.KMutableProperty0
 
 class ProductShippingSellyViewHolder(
-    view: View
+    view: View,
+    private val listener: ProductDetailShippingListener
 ) : AbstractViewHolder<ProductShippingSellyDataModel>(view) {
 
     companion object {
@@ -44,6 +47,9 @@ class ProductShippingSellyViewHolder(
             pdpSellyDateList.addView(serviceView)
         }
         pdpSellyTitle.showWithCondition(services.isNotEmpty())
+        root.addOnImpressionListener(element.impressHolder){
+
+        }
     }
 
     private fun renderService(

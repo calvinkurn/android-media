@@ -33,6 +33,7 @@ import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingS
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingShimmerDataModel
 import com.tokopedia.product.estimasiongkir.di.DaggerRatesEstimationComponent
 import com.tokopedia.product.estimasiongkir.di.RatesEstimationModule
+import com.tokopedia.product.estimasiongkir.tracking.SellyTracking
 import com.tokopedia.product.estimasiongkir.util.ProductDetailShippingTracking
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingAdapter
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingDIffutil
@@ -52,6 +53,21 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     companion object {
         const val TAG_SHIPPING_BOTTOM_SHEET = "TAG_SHIPPING_BOTTOM_SHEET"
         const val SOURCE = "product detail page"
+
+        private const val ARG_BUYER_DISTRICT_ID = "buyer_district_id"
+        private const val ARG_SELLER_DISTRICT_ID = "seller_district_id"
+
+        fun instance(
+            buyerDistrictId: String,
+            sellerDistrictId: String
+        ): ProductDetailShippingBottomSheet{
+            return ProductDetailShippingBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_BUYER_DISTRICT_ID, buyerDistrictId)
+                    putString(ARG_SELLER_DISTRICT_ID, sellerDistrictId)
+                }
+            }
+        }
     }
 
     @Inject
@@ -65,6 +81,8 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
         ViewModelProvider(requireActivity()).get(ProductDetailSharedViewModel::class.java)
     }
     private var shouldRefresh: Boolean = false
+
+
 
     @SuppressLint("RestrictedApi")
     override fun setupDialog(dialog: Dialog, style: Int) {
@@ -223,5 +241,15 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE
 
     override fun onLocalizingAddressLoginSuccess() {
+    }
+
+    override fun impressScheduledDelivery() {
+
+        val buyerDistrictId = arguments?.getString(ARG_BUYER_DISTRICT_ID) ?: ""
+        val sellerDistrictId = arguments?.getString(ARG_SELLER_DISTRICT_ID) ?: ""
+
+//        SellyTracking.impressScheduledDelivery(
+//
+//        )
     }
 }
