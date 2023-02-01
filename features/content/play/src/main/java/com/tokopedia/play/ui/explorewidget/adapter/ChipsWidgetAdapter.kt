@@ -1,6 +1,8 @@
-package com.tokopedia.play.ui.explorewidget
+package com.tokopedia.play.ui.explorewidget.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
+import com.tokopedia.play.ui.explorewidget.adapter.delegate.ChipsWidgetAdapterDelegate
+import com.tokopedia.play.ui.explorewidget.viewholder.ChipsViewHolder
 import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
 import com.tokopedia.play.view.uimodel.ChipWidgetsUiModel
 

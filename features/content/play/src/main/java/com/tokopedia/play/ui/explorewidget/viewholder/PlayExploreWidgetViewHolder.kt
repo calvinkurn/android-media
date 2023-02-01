@@ -1,7 +1,8 @@
-package com.tokopedia.play.ui.explorewidget
+package com.tokopedia.play.ui.explorewidget.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.databinding.ViewPlayGridBinding
+import com.tokopedia.play.ui.explorewidget.PlayExploreWidgetCoordinator
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**

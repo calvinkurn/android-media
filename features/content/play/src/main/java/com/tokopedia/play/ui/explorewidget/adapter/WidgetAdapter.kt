@@ -1,6 +1,8 @@
-package com.tokopedia.play.ui.explorewidget
+package com.tokopedia.play.ui.explorewidget.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
+import com.tokopedia.play.ui.explorewidget.PlayExploreWidgetCoordinator
+import com.tokopedia.play.ui.explorewidget.adapter.delegate.WidgetAdapterDelegate
 import com.tokopedia.play.view.uimodel.WidgetUiModel
 
 /**

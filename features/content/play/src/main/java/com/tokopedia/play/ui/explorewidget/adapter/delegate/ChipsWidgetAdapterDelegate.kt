@@ -1,4 +1,4 @@
-package com.tokopedia.play.ui.explorewidget
+package com.tokopedia.play.ui.explorewidget.adapter.delegate
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.databinding.ViewChipShimmeringBinding
 import com.tokopedia.play.databinding.ViewWidgetChipsBinding
+import com.tokopedia.play.ui.explorewidget.viewholder.ChipsViewHolder
 import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
 import com.tokopedia.play.view.uimodel.ChipWidgetsUiModel
 import com.tokopedia.play.view.uimodel.ChipsShimmering

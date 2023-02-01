@@ -1,4 +1,4 @@
-package com.tokopedia.play.ui.explorewidget
+package com.tokopedia.play.ui.explorewidget.viewholder
 
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.databinding.ViewChipShimmeringBinding

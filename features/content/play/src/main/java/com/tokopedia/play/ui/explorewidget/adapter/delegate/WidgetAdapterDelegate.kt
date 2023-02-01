@@ -1,10 +1,12 @@
-package com.tokopedia.play.ui.explorewidget
+package com.tokopedia.play.ui.explorewidget.adapter.delegate
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.databinding.ViewPlayGridBinding
+import com.tokopedia.play.ui.explorewidget.PlayExploreWidgetCoordinator
+import com.tokopedia.play.ui.explorewidget.viewholder.PlayExploreWidgetViewHolder
 import com.tokopedia.play.view.uimodel.ExploreWidgetPlaceholder
 import com.tokopedia.play.view.uimodel.WidgetItemUiModel
 import com.tokopedia.play.view.uimodel.WidgetUiModel

@@ -1,4 +1,4 @@
-package com.tokopedia.play.ui.explorewidget
+package com.tokopedia.play.ui.explorewidget.itemdecoration
 
 import android.content.Context
 import android.graphics.Rect

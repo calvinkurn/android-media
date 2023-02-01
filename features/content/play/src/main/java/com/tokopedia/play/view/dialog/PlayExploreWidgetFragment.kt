@@ -24,6 +24,10 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
 import com.tokopedia.play.ui.explorewidget.*
+import com.tokopedia.play.ui.explorewidget.adapter.ChipsWidgetAdapter
+import com.tokopedia.play.ui.explorewidget.adapter.WidgetAdapter
+import com.tokopedia.play.ui.explorewidget.itemdecoration.ChipItemDecoration
+import com.tokopedia.play.ui.explorewidget.viewholder.ChipsViewHolder
 import com.tokopedia.play.util.isAnyChanged
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.withCache
