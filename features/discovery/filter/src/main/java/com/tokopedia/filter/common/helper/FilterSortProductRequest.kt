@@ -4,7 +4,7 @@ import com.tokopedia.filter.common.helper.FilterSortProductRequest.FILTER_SORT_P
 import com.tokopedia.gql_query_annotation.GqlQuery
 
 @GqlQuery("FilterSortProduct", FILTER_SORT_PRODUCT_GQL)
-internal object FilterSortProductRequest {
+object FilterSortProductRequest {
 
     const val FILTER_SORT_PRODUCT_GQL = """
         query FilterSortProductQuery(${'$'}params: String!) {
