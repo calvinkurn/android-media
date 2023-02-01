@@ -1261,6 +1261,10 @@ class UserProfileFragment @Inject constructor(
         /** Not yet implemented */
     }
 
+    override fun updateVideoTabSelectedChipValue(chipValue: String) {
+        /** Not yet implemented */
+    }
+
     /**
      * Temporary report feature
      */
