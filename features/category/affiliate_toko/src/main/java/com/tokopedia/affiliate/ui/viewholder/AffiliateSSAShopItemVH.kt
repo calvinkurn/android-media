@@ -142,7 +142,8 @@ class AffiliateSSAShopItemVH(
                 " - ${item?.ssaCommissionDetail?.cumulativePercentageFormatted}" +
                 " - active" +
                 " - komisi extra",
-            AffiliateAnalytics.ItemKeys.AFFILIATE_SSA_SHOP_CLICK
+            AffiliateAnalytics.ItemKeys.AFFILIATE_SSA_SHOP_CLICK,
+            AffiliateAnalytics.EventKeys.KEY_PROMOTIONS
         )
     }
 }

@@ -55,7 +55,8 @@ object AffiliateAnalytics {
         position: Int,
         itemName: String?,
         label: String?,
-        itemList: String = ""
+        itemList: String = "",
+        itemsKey: String = ITEMS
     ) {
         val listBundle = Bundle().apply {
             putString(EventKeys.KEY_ITEM_ID, productId)
@@ -69,7 +70,7 @@ object AffiliateAnalytics {
             putString(EventKeys.KEY_EVENT_LABEL, label)
             putString(EventKeys.KEY_BUSINESS_UNIT, EventKeys.BUSINESS_UNIT_VALUE)
             putString(EventKeys.KEY_CURRENT_SITE, EventKeys.CURRENT_SITE_VALUE)
-            putParcelableArrayList(ITEMS, arrayListOf(listBundle))
+            putParcelableArrayList(itemsKey, arrayListOf(listBundle))
             putString(EventKeys.KEY_USER_ID, userId)
             if (itemList.isNotEmpty()) {
                 putString(ITEM_LIST, itemList)
