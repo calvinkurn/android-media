@@ -21,6 +21,8 @@ class SummaryPageTracker @Inject constructor(private val userSession: UserSessio
         private const val EL_BROADCAST = "broadcast"
     }
 
+    // section - pup up success
+
     fun sendClickBagikanKuponPopUpEvent(shareMethodName: String) {
         Tracker.Builder()
             .setEvent(EVENT)
@@ -57,7 +59,9 @@ class SummaryPageTracker @Inject constructor(private val userSession: UserSessio
             .send()
     }
 
-    ///
+    // section - pup up success
+
+    // section - add coupon
 
     fun sendClickCheckboxSyaratKetentuanEvent() {
         Tracker.Builder()
@@ -73,12 +77,12 @@ class SummaryPageTracker @Inject constructor(private val userSession: UserSessio
             .send()
     }
 
-    fun sendClickBuatKuponEvent(voucherId: String, campaignId: String) {
+    fun sendClickBuatKuponEvent(voucherId: String) {
         Tracker.Builder()
             .setEvent(EVENT)
             .setEventAction("click buat kupon")
             .setEventCategory(EC_CREATION_PROCESS)
-            .setEventLabel(getEventLavel(voucherId, campaignId))
+            .setEventLabel(getEventLavel(voucherId, ""))
             .setCustomProperty(TRACKER_ID, "39423")
             .setBusinessUnit(MVC_BUSINESS_UNIT)
             .setCurrentSite(MVC_CURRENT_SITE)
@@ -100,14 +104,16 @@ class SummaryPageTracker @Inject constructor(private val userSession: UserSessio
             .send()
     }
 
-    ///
+    // section - add coupon
 
-    fun sendClickUbahEvent(voucherId: String, campaignId: String, sectionName: String) {
+    // section - edit coupon
+
+    fun sendClickUbahEvent(voucherId: String, sectionName: String) {
         Tracker.Builder()
             .setEvent(EVENT)
             .setEventAction("click ubah")
             .setEventCategory(EC_CREATION_SUMMARY)
-            .setEventLabel(getEventLavel(voucherId, campaignId) + EL_DELIMITER + sectionName)
+            .setEventLabel(getEventLavel(voucherId, "") + EL_DELIMITER + sectionName)
             .setCustomProperty(TRACKER_ID, "40622")
             .setBusinessUnit(MVC_BUSINESS_UNIT)
             .setCurrentSite(MVC_CURRENT_SITE)
@@ -116,12 +122,12 @@ class SummaryPageTracker @Inject constructor(private val userSession: UserSessio
             .send()
     }
 
-    fun sendClickCheckboxOnTncEvent(voucherId: String, campaignId: String) {
+    fun sendClickCheckboxOnTncEvent(voucherId: String) {
         Tracker.Builder()
             .setEvent(EVENT)
             .setEventAction("click checkbox on tnc")
             .setEventCategory(EC_CREATION_SUMMARY)
-            .setEventLabel(getEventLavel(voucherId, campaignId))
+            .setEventLabel(getEventLavel(voucherId, ""))
             .setCustomProperty(TRACKER_ID, "40623")
             .setBusinessUnit(MVC_BUSINESS_UNIT)
             .setCurrentSite(MVC_CURRENT_SITE)
@@ -130,12 +136,12 @@ class SummaryPageTracker @Inject constructor(private val userSession: UserSessio
             .send()
     }
 
-    fun sendClickSimpanEvent(voucherId: String, campaignId: String) {
+    fun sendClickSimpanEvent(voucherId: String) {
         Tracker.Builder()
             .setEvent(EVENT)
             .setEventAction("click simpan")
             .setEventCategory(EC_CREATION_SUMMARY)
-            .setEventLabel(getEventLavel(voucherId, campaignId))
+            .setEventLabel(getEventLavel(voucherId, ""))
             .setCustomProperty(TRACKER_ID, "40624")
             .setBusinessUnit(MVC_BUSINESS_UNIT)
             .setCurrentSite(MVC_CURRENT_SITE)
@@ -144,12 +150,12 @@ class SummaryPageTracker @Inject constructor(private val userSession: UserSessio
             .send()
     }
     
-    fun sendClickArrowBackEvent(voucherId: String, campaignId: String) {
+    fun sendClickArrowBackEvent(voucherId: String) {
         Tracker.Builder()
             .setEvent(EVENT)
             .setEventAction("click arrow back")
             .setEventCategory(EC_CREATION_SUMMARY)
-            .setEventLabel(getEventLavel(voucherId, campaignId))
+            .setEventLabel(getEventLavel(voucherId, ""))
             .setCustomProperty(TRACKER_ID, "40625")
             .setBusinessUnit(MVC_BUSINESS_UNIT)
             .setCurrentSite(MVC_CURRENT_SITE)
@@ -157,6 +163,8 @@ class SummaryPageTracker @Inject constructor(private val userSession: UserSessio
             .build()
             .send()
     }
+
+    // section - edit coupon
 
     private fun getEventLavel(voucherId: String, campaignId: String): String {
         return EL_VOUCHER_ID_PREFIX + voucherId + EL_DELIMITER +

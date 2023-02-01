@@ -183,10 +183,10 @@ class SummaryViewModel @Inject constructor(
         _isLoading.value = true
         if (voucherConfiguration.voucherId > ADDING_VOUCHER_ID) {
             editCoupon(voucherConfiguration)
-            tracker.sendClickSimpanEvent(voucherConfiguration.voucherId.toString(), "")
+            tracker.sendClickSimpanEvent(voucherConfiguration.voucherId.toString())
         } else {
             addCoupon(voucherConfiguration)
-            tracker.sendClickBuatKuponEvent(voucherConfiguration.voucherId.toString(), "")
+            tracker.sendClickBuatKuponEvent(voucherConfiguration.voucherId.toString())
         }
     }
 
