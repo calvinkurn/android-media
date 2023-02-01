@@ -219,9 +219,9 @@ class PlayExploreWidgetFragment @Inject constructor(
                 ) {
                     renderWidgets(
                         cachedState.value.exploreWidget.data.state,
-                        cachedState.value.exploreWidget.data.widgets
+                        cachedState.value.exploreWidget.data.widgets,
+                        cachedState.value.exploreWidget.data.param
                     )
-                    scrollListener.setHasNextPage(it.value.exploreWidget.data.param.hasNextPage)
                 }
 
                 if (analytic != null || cachedState.value.channel.channelInfo.id.isBlank()) return@collectLatest
@@ -254,7 +254,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         }
     }
 
-    private fun renderWidgets(state: ExploreWidgetState, widget: List<WidgetUiModel>) {
+    private fun renderWidgets(state: ExploreWidgetState, widget: List<WidgetUiModel>, param: WidgetParamUiModel) {
         setLayoutManager(state)
 
         when (state) {
@@ -262,6 +262,7 @@ class PlayExploreWidgetFragment @Inject constructor(
                 showEmpty(false)
                 widgetAdapter.setItemsAndAnimateChanges(widget)
                 scrollListener.updateStateAfterGetData()
+                scrollListener.setHasNextPage(param.hasNextPage)
             }
             ExploreWidgetState.Empty -> {
                 showEmpty(true)
