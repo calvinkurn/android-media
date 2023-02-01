@@ -148,6 +148,9 @@ class MvcListFragment :
     lateinit var viewModel: MvcListViewModel
 
     @Inject
+    lateinit var sharedPreferencesUtil: SharedPreferencesUtil
+
+    @Inject
     lateinit var tracker: StopVoucherTracker
 
     override fun getScreenName() = ""
@@ -984,9 +987,9 @@ class MvcListFragment :
 
     private fun displayUploadResult() {
         context?.let {
-            val message = SharedPreferencesUtil.getUploadResult(it)
+            val message = sharedPreferencesUtil.getUploadResult(it)
             if (message.isNotEmpty()) {
-                SharedPreferencesUtil.clearUploadResult(it)
+                sharedPreferencesUtil.clearUploadResult(it)
                 binding?.footer?.root.showToaster(message, getString(R.string.smvc_ok))
             }
         }

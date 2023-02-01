@@ -15,7 +15,10 @@ import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
 import com.tokopedia.mvc.presentation.creation.step3.VoucherSettingActivity
 import com.tokopedia.mvc.presentation.product.list.ProductListActivity
 
-class SummaryPageRedirectionHelper(private val listener: SummaryPageResultListener) {
+class SummaryPageRedirectionHelper(
+    private val listener: SummaryPageResultListener,
+    private val sharedPreferencesUtil: SharedPreferencesUtil
+) {
     companion object {
         private const val REQUEST_CODE_ADD_PRODUCT = 100
         private const val REQUEST_CODE_VIEW_PRODUCT = 101
@@ -39,12 +42,12 @@ class SummaryPageRedirectionHelper(private val listener: SummaryPageResultListen
     }
 
     fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val pageName = SharedPreferencesUtil.getStepPageName(view.context)
+        val pageName = sharedPreferencesUtil.getStepPageName(view.context)
         if (pageName.isNotEmpty()) listener.onPageDataChanged(pageName)
     }
 
     fun onResume(context: Context) {
-        SharedPreferencesUtil.setStepPageName(context, "")
+        sharedPreferencesUtil.setStepPageName(context, "")
     }
 
     fun redirectToAddProductPage(
@@ -63,7 +66,7 @@ class SummaryPageRedirectionHelper(private val listener: SummaryPageResultListen
             selectedWarehouseId = selectedWarehouseId
         )
         fragment.startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
-        SharedPreferencesUtil.setStepPageName(context, ProductListActivity::class.java.name)
+        sharedPreferencesUtil.setStepPageName(context, ProductListActivity::class.java.name)
     }
 
     fun redirectToViewProductPage(
@@ -82,7 +85,7 @@ class SummaryPageRedirectionHelper(private val listener: SummaryPageResultListen
             selectedWarehouseId = selectedWarehouseId
         )
         fragment.startActivityForResult(intent, REQUEST_CODE_VIEW_PRODUCT)
-        SharedPreferencesUtil.setStepPageName(context, ProductListActivity::class.java.name)
+        sharedPreferencesUtil.setStepPageName(context, ProductListActivity::class.java.name)
     }
 
     fun redirectToVoucherTypePage(
@@ -92,7 +95,7 @@ class SummaryPageRedirectionHelper(private val listener: SummaryPageResultListen
         val context = fragment.context ?: return
         val intent = VoucherTypeActivity.buildEditModeIntent(context, configuration)
         fragment.startActivityForResult(intent, REQUEST_CODE_CHANGE_COUPON_TYPE)
-        SharedPreferencesUtil.setStepPageName(context, VoucherTypeActivity::class.java.name)
+        sharedPreferencesUtil.setStepPageName(context, VoucherTypeActivity::class.java.name)
     }
 
     fun redirectToCouponInfoPage(
@@ -107,7 +110,7 @@ class SummaryPageRedirectionHelper(private val listener: SummaryPageResultListen
             val intent = VoucherInformationActivity.buildEditModeIntent(context, configuration)
             fragment.startActivity(intent)
         }
-        SharedPreferencesUtil.setStepPageName(context, VoucherInformationActivity::class.java.name)
+        sharedPreferencesUtil.setStepPageName(context, VoucherInformationActivity::class.java.name)
     }
 
     fun redirectToCouponConfigurationPage(
@@ -122,6 +125,6 @@ class SummaryPageRedirectionHelper(private val listener: SummaryPageResultListen
             val intent = VoucherSettingActivity.buildEditModeIntent(context, configuration)
             fragment.startActivity(intent)
         }
-        SharedPreferencesUtil.setStepPageName(context, VoucherSettingActivity::class.java.name)
+        sharedPreferencesUtil.setStepPageName(context, VoucherSettingActivity::class.java.name)
     }
 }

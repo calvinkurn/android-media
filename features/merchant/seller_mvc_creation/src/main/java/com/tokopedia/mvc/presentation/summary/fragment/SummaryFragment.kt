@@ -102,12 +102,14 @@ class SummaryFragment :
             LoaderDialog(it)
         }
     }
-    private val redirectionHelper = SummaryPageRedirectionHelper(this)
+    private val redirectionHelper by lazy { SummaryPageRedirectionHelper(this, sharedPreferencesUtil) }
 
     @Inject
     lateinit var viewModel: SummaryViewModel
     @Inject
     lateinit var pageNameMapper: SummaryPagePageNameMapper
+    @Inject
+    lateinit var sharedPreferencesUtil: SharedPreferencesUtil
 
     override fun getScreenName() = ""
 
@@ -225,7 +227,7 @@ class SummaryFragment :
             } else {
                 context?.run {
                     val message = getString(R.string.smvc_summary_page_success_upload_message, it.voucherName)
-                    SharedPreferencesUtil.setUploadResult(this, message)
+                    sharedPreferencesUtil.setUploadResult(this, message)
                     RouteManager.route(this, SELLER_MVC_LIST)
                 }
             }
