@@ -2,7 +2,6 @@ package com.tokopedia.play.view.dialog
 
 import android.animation.ObjectAnimator
 import android.content.DialogInterface
-import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -447,8 +446,8 @@ class PlayExploreWidgetFragment @Inject constructor(
         }
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
+    override fun onPause() {
+        super.onPause()
         dismiss()
     }
 
