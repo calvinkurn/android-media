@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.dialog
 
+import android.animation.ObjectAnimator
 import android.content.DialogInterface
 import android.content.res.Configuration
 import android.graphics.Color
@@ -39,11 +40,12 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play_common.model.result.ResultState
-import com.tokopedia.play_common.util.extension.awaitMeasured
+import com.tokopedia.play_common.util.extension.awaitLayout
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -151,11 +153,13 @@ class PlayExploreWidgetFragment @Inject constructor(
                     var newX = view?.x.orZero()
                     val diffX = e2.x - e1.x
                     if (diffX > 0) {
-                        newX += 100
+                        newX += VIEW_TRANSLATION_THRESHOLD
                     } else {
-                        newX = screenLocation.firstOrNull().orZero().toFloat()
+                        newX -= VIEW_TRANSLATION_THRESHOLD
                     }
-                    view?.animate()?.translationX(newX)?.start()
+                    view?.let {
+                        ObjectAnimator.ofFloat(it, View.TRANSLATION_X, it.x, newX).start()
+                    }
                     return true
                 }
             }
@@ -351,7 +355,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     private fun getScreenLocation() {
         fun setupDraggable() {
             view?.setOnTouchListener { vw, motionEvent ->
-                if (vw.x >= 700) {
+                if (vw.x >= DIALOG_VISIBILITY_THRESHOLD) {
                     dismiss()
                     return@setOnTouchListener false
                 }
@@ -359,9 +363,8 @@ class PlayExploreWidgetFragment @Inject constructor(
                 true
             }
         }
-
-        lifecycleScope.launchWhenStarted {
-            view?.awaitMeasured()
+        viewLifecycleOwner.lifecycleScope.launch {
+            view?.awaitLayout()
             if (screenLocation.any { it.isZero() }) {
                 view?.getLocationOnScreen(screenLocation)
             }
@@ -480,6 +483,9 @@ class PlayExploreWidgetFragment @Inject constructor(
         private const val TAG = "PlayExploreWidgetFragment"
 
         private const val SPAN_SHIMMER = 2
+
+        private const val DIALOG_VISIBILITY_THRESHOLD = 600f
+        private const val VIEW_TRANSLATION_THRESHOLD = 100f
 
         fun get(fragmentManager: FragmentManager): PlayExploreWidgetFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? PlayExploreWidgetFragment
