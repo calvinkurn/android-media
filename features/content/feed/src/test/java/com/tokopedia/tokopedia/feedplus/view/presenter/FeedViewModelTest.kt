@@ -1,6 +1,8 @@
 package com.tokopedia.tokopedia.feedplus.view.presenter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
@@ -43,7 +45,11 @@ import com.tokopedia.feedcomponent.people.model.ProfileDoUnFollowModelBase
 import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
 import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.feedcomponent.shoprecom.model.FeedXRecomWidget
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomItem
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
 import com.tokopedia.feedcomponent.shoprecom.model.UserShopRecomModel
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
@@ -52,6 +58,9 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedWidgetData
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopModel
 import com.tokopedia.kolcommon.data.SubmitActionContentResponse
@@ -73,7 +82,12 @@ import com.tokopedia.tokopedia.feedplus.helper.assertFalse
 import com.tokopedia.tokopedia.feedplus.helper.assertTrue
 import com.tokopedia.tokopedia.feedplus.helper.assertType
 import com.tokopedia.tokopedia.feedplus.robot.create
+import com.tokopedia.topads.sdk.domain.model.Cpm
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.domain.model.CpmShop
 import com.tokopedia.topads.sdk.domain.model.Data
+import com.tokopedia.topads.sdk.domain.model.Shop
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
@@ -1036,6 +1050,88 @@ class FeedViewModelTest {
                         isFollowed = true
                     )
                 )
+            ),
+            ShopRecomWidgetModel(
+                ShopRecomUiModel(
+                    items = listOf(
+                        ShopRecomUiModelItem(
+                            id = 13579,
+                            state = ShopRecomFollowState.UNFOLLOW
+                        ),
+                        ShopRecomUiModelItem(
+                            id = 24680,
+                            state = ShopRecomFollowState.FOLLOW
+                        )
+                    )
+                )
+            ),
+            TopadsHeadLineV2Model(
+                cpmModel = null,
+                feedXCard = FeedXCard(
+                    author = FeedXAuthor(
+                        id = "08642",
+                        type = 2
+                    ),
+                    followers = FeedXFollowers(
+                        isFollowed = true
+                    )
+                )
+            ),
+            TopadsHeadLineV2Model(
+                cpmModel = CpmModel(
+                    data = mutableListOf(
+                        CpmData(
+                            cpm = Cpm(
+                                cpmShop = CpmShop(
+                                    id = "97531",
+                                    isFollowed = false
+                                )
+                            )
+                        )
+                    )
+                ),
+                feedXCard = FeedXCard(
+                    author = FeedXAuthor(
+                        id = "97531",
+                        type = 2
+                    ),
+                    followers = FeedXFollowers(
+                        isFollowed = false
+                    )
+                )
+            ),
+            TopadsShopUiModel(
+                dataList = mutableListOf(
+                    Data(
+                        shop = Shop(
+                            id = "12",
+                        ),
+                        isFavorit = true
+                    ),
+                    Data(
+                        shop = Shop(
+                            ownerId = "34"
+                        ),
+                        isFavorit = false
+                    )
+                )
+            ),
+            TopadsHeadlineUiModel(
+                cpmModel = null
+            ),
+            TopadsHeadlineUiModel(
+                cpmModel = CpmModel(
+                    data = mutableListOf(
+                        CpmData(
+                            cpm = Cpm(
+                                cpmShop = CpmShop(
+                                    id = "78",
+                                    isFollowed = false
+                                )
+                            )
+                        )
+                    )
+                ),
             )
         )
 
@@ -1074,6 +1170,145 @@ class FeedViewModelTest {
             )
         )
 
+        val currentDataList = mutableListOf<Visitable<*>>(
+            LoadingModel(),
+            DynamicPostModel(
+                header = Header(
+                    followCta = FollowCta(
+                        authorID = "0987654321",
+                        isFollow = false
+                    )
+                )
+            ),
+            DynamicPostModel(
+                header = Header(
+                    followCta = FollowCta(
+                        authorID = "123123123",
+                        isFollow = false
+                    )
+                )
+            ),
+            DynamicPostUiModel(
+                feedXCard = FeedXCard(
+                    author = FeedXAuthor(
+                        id = "0987654321"
+                    ),
+                    followers = FeedXFollowers(
+                        isFollowed = false
+                    )
+                )
+            ),
+            DynamicPostUiModel(
+                feedXCard = FeedXCard(
+                    author = FeedXAuthor(
+                        id = "67891230"
+                    ),
+                    followers = FeedXFollowers(
+                        isFollowed = true
+                    )
+                )
+            ),
+            ShopRecomWidgetModel(
+                ShopRecomUiModel(
+                    items = listOf(
+                        ShopRecomUiModelItem(
+                            id = 13579,
+                            state = ShopRecomFollowState.UNFOLLOW
+                        ),
+                        ShopRecomUiModelItem(
+                            id = 67890,
+                            state = ShopRecomFollowState.FOLLOW
+                        )
+                    )
+                )
+            ),
+            TopadsHeadLineV2Model(
+                cpmModel = null,
+                feedXCard = FeedXCard(
+                    author = FeedXAuthor(
+                        id = "08642",
+                        type = 2
+                    ),
+                    followers = FeedXFollowers(
+                        isFollowed = true
+                    )
+                )
+            ),
+            TopadsHeadLineV2Model(
+                cpmModel = CpmModel(
+                    data = mutableListOf(
+                        CpmData(
+                            cpm = Cpm(
+                                cpmShop = CpmShop(
+                                    id = "0987654321",
+                                    isFollowed = false
+                                )
+                            )
+                        )
+                    )
+                ),
+                feedXCard = FeedXCard(
+                    author = FeedXAuthor(
+                        id = "0987654321",
+                        type = 2
+                    ),
+                    followers = FeedXFollowers(
+                        isFollowed = false
+                    )
+                )
+            ),
+            TopadsHeadLineV2Model(
+                cpmModel = null,
+                feedXCard = FeedXCard(
+                    author = FeedXAuthor(
+                        id = "0987654321",
+                        type = 2
+                    ),
+                    followers = FeedXFollowers(
+                        isFollowed = false
+                    )
+                )
+            ),
+            TopadsShopUiModel(
+                dataList = mutableListOf(
+                    Data(
+                        shop = Shop(
+                            id = "67890",
+                        ),
+                        isFavorit = true
+                    ),
+                    Data(
+                        shop = Shop(
+                            ownerId = "34"
+                        ),
+                        isFavorit = false
+                    )
+                )
+            ),
+            TopadsHeadlineUiModel(
+                cpmModel = CpmModel(
+                    data = mutableListOf(
+                        CpmData(
+                            cpm = Cpm(
+                                cpmShop = CpmShop(
+                                    id = "78",
+                                    isFollowed = false
+                                )
+                            )
+                        ),
+                        CpmData(
+                            cpm = Cpm(
+                                cpmShop = CpmShop(
+                                    id = "0987654321",
+                                    isFollowed = false
+                                )
+                            )
+                        )
+                    )
+                ),
+            )
+        )
+
         val expectedResult = mapOf(
             "0987654321" to true,
             "67890" to false
@@ -1090,9 +1325,30 @@ class FeedViewModelTest {
 
                 val shopIds = it.vm.shopIdsFollowStatusToUpdateData.value as Success
                 assert(shopIds.data.size == expectedResult.size)
-                shopIds.data.map { item ->
+                shopIds.data.forEach { item ->
                     assert(item.value == expectedResult[item.key])
                 }
+
+                val newListResult = it.vm.processFollowStatusUpdate(currentDataList, expectedResult)
+
+                assert(newListResult[0] is LoadingModel)
+                assert(newListResult[1] != currentDataList[1])
+                assert((newListResult[1] as DynamicPostModel).header.followCta.isFollow)
+                assert(newListResult[2] == currentDataList[2])
+                assert(newListResult[3] != currentDataList[3])
+                assert((newListResult[3] as DynamicPostUiModel).feedXCard.followers.isFollowed)
+                assert(newListResult[4] == currentDataList[4])
+                assert((newListResult[5] as ShopRecomWidgetModel).shopRecomUiModel.items[0] == (currentDataList[5] as ShopRecomWidgetModel).shopRecomUiModel.items[0])
+                assert((newListResult[5] as ShopRecomWidgetModel).shopRecomUiModel.items[1].state == ShopRecomFollowState.UNFOLLOW )
+                assert(newListResult[6] == currentDataList[6])
+                assert((newListResult[7] as TopadsHeadLineV2Model).feedXCard.followers.isFollowed)
+                assert(
+                    (newListResult[7] as TopadsHeadLineV2Model).cpmModel!!.data[0].cpm.cpmShop.isFollowed)
+                assert((newListResult[8] as TopadsHeadLineV2Model).feedXCard.followers.isFollowed)
+                assert(!(newListResult[9] as TopadsShopUiModel).dataList[0].isFavorit)
+                assert((newListResult[9] as TopadsShopUiModel).dataList[1] == (currentDataList[9] as TopadsShopUiModel).dataList[1])
+                assert((newListResult[10] as TopadsHeadlineUiModel).cpmModel!!.data[0] == (currentDataList[10] as TopadsHeadlineUiModel).cpmModel!!.data[0])
+                assert((newListResult[10] as TopadsHeadlineUiModel).cpmModel!!.data[1].cpm.cpmShop.isFollowed)
             }
     }
 
