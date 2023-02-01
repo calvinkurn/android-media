@@ -81,6 +81,7 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
         coEvery { mockGetAddedTagUseCase.executeOnBackground() } returns mockAddedTag
         coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSectionList
+        coEvery { mockRepo.getBroadcastingConfig(any(), any()) } returns uiModelBuilder.buildBroadcastingConfigUiModel()
     }
 
     @Test
@@ -119,8 +120,6 @@ class PlayBroadcasterViewModelTest {
 
     @Test
     fun `given seller allowed to stream, and channelStatus Unknown, then it should trigger createChannel()`() {
-        val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
-
         val mockConfig = uiModelBuilder.buildConfigurationUiModel(
             streamAllowed = true,
             channelStatus = ChannelStatus.Unknown
