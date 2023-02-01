@@ -38,7 +38,9 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.awaitLayout
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -161,6 +163,10 @@ class PlayExploreWidgetFragment @Inject constructor(
         )
     }
 
+    private val toaster by viewLifecycleBound(
+        creator = { PlayToaster(requireView(), viewLifecycleOwner) }
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -274,14 +280,15 @@ class PlayExploreWidgetFragment @Inject constructor(
                 chipsAdapter.setItemsAndAnimateChanges(getChipsShimmering)
             }
             is ResultState.Fail -> {
-                Toaster.build(
-                    view = requireView(),
-                    text = chips.state.error.message.orEmpty(),
-                    actionText = getString(playR.string.play_try_again),
+                toaster.showError(
+                    err = chips.state.error,
+                    actionLabel = getString(playR.string.play_try_again),
                     duration = Toaster.LENGTH_LONG,
-                    type = Toaster.TYPE_ERROR,
-                    clickListener = { viewModel.submitAction(RefreshWidget) }
-                ).show()
+                    actionListener = {
+                        analytic?.clickRetryToaster()
+                        viewModel.submitAction(RefreshWidget)
+                    }
+                )
             }
         }
     }
@@ -316,17 +323,17 @@ class PlayExploreWidgetFragment @Inject constructor(
                             playR.string.play_explore_widget_default_errmessage
                         )
                     }
-                Toaster.build(
-                    view = requireView(),
-                    text = errMessage,
-                    actionText = getString(playR.string.play_try_again),
+
+                toaster.showToaster(
+                    message = errMessage,
+                    actionLabel = getString(playR.string.play_try_again),
                     duration = Toaster.LENGTH_LONG,
                     type = Toaster.TYPE_ERROR,
-                    clickListener = {
-                        viewModel.submitAction(RefreshWidget)
+                    actionListener = {
                         analytic?.clickRetryToaster()
+                        viewModel.submitAction(RefreshWidget)
                     }
-                ).show()
+                )
             }
         }
     }
