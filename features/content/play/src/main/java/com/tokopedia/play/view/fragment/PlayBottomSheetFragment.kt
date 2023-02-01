@@ -499,9 +499,8 @@ class PlayBottomSheetFragment @Inject constructor(
                 } else if (couponSheetState != null && !couponSheetState.isPreviousStateSame) {
                     when (couponSheetState) {
                         is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
-                        is BottomInsetsState.Shown -> {
-                            if (productSheetState !is BottomInsetsState.Shown) pushParentPlayBySheetHeight(couponSheetState.estimatedInsetsHeight)
-                        }
+                        is BottomInsetsState.Shown ->
+                            if (!it.isProductSheetsShown) pushParentPlayBySheetHeight(couponSheetState.estimatedInsetsHeight)
                     }
                 }
 
