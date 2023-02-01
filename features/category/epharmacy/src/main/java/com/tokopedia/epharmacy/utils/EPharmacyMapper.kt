@@ -16,7 +16,7 @@ object EPharmacyMapper {
             getUniqueModelName(group.epharmacyGroupId, shopIndex), GROUP_COMPONENT,
             group.epharmacyGroupId,
             group.consultationSource?.enablerName,
-            group.consultationSource?.enablerLogoUrl,
+            group.shopInfo?.firstOrNull()?.partnerLogoUrl,
             info,
             group.consultationData?.consultationStatus,
             group.consultationData?.consultationString,
