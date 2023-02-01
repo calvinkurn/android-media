@@ -19,7 +19,7 @@ class TicketSwitcherActivity : BaseSimpleActivity() {
 
         @JvmStatic
         fun start(context: Context, idTicket: String, isOfficialStore: Boolean): Intent {
-            val intent = Intent(context, InboxDetail::class.java)
+            val intent = Intent(context, TicketSwitcherActivity::class.java)
             val bundle = Bundle()
             bundle.putString(BUNDLE_ID_TICKET, idTicket)
             bundle.putBoolean(IS_OFFICIAL_STORE, isOfficialStore)
