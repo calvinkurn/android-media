@@ -87,11 +87,15 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     private val widgetLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        StaggeredGridLayoutManager(SPAN_CHANNEL, StaggeredGridLayoutManager.VERTICAL)
+        LinearLayoutManager(binding.rvWidgets.context, RecyclerView.VERTICAL, false)
+    }
+
+    private val shimmerLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
+        StaggeredGridLayoutManager(SPAN_SHIMMER, StaggeredGridLayoutManager.VERTICAL)
     }
 
     private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
-        object : EndlessRecyclerViewScrollListener(widgetLayoutManager) {
+        object : EndlessRecyclerViewScrollListener(binding.rvWidgets.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 viewModel.submitAction(NextPageWidgets)
             }
@@ -451,8 +455,11 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     private fun setLayoutManager(state: ExploreWidgetState) {
-        widgetLayoutManager.spanCount =
-            if (state !is ExploreWidgetState.Success) SPAN_SHIMMER else SPAN_CHANNEL
+        val current = binding.rvWidgets.layoutManager
+        val newLayoutManager = if (state !is ExploreWidgetState.Success) shimmerLayoutManager else widgetLayoutManager
+        if (current == newLayoutManager) return
+        binding.rvWidgets.layoutManager = newLayoutManager
+        scrollListener.updateLayoutManager(newLayoutManager)
     }
 
     private fun getVisibleChips(): Map<ChipWidgetUiModel, Int> {
@@ -473,7 +480,6 @@ class PlayExploreWidgetFragment @Inject constructor(
         private const val TAG = "PlayExploreWidgetFragment"
 
         private const val SPAN_SHIMMER = 2
-        private const val SPAN_CHANNEL = 1
 
         fun get(fragmentManager: FragmentManager): PlayExploreWidgetFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? PlayExploreWidgetFragment
