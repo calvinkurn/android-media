@@ -173,6 +173,7 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
                 }: ${dateFormat.format(selectedDate)}"
             )
             setInfoVisible(true)
+            datePickerButton.text = this@VoucherEditCalendarBottomSheet.getString(R.string.smvc_select).toBlankOrString()
             datePickerButton.setOnClickListener {
                 getDate()
                 callback.invoke(getDate())
