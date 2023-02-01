@@ -11,68 +11,69 @@ import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
-import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
+import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceLinkPojo
+import com.tokopedia.chatbot.chatbot2.data.csatoptionlist.CsatAttributesPojo
+import com.tokopedia.chatbot.chatbot2.data.helpfullquestion.HelpFullQuestionPojo
+import com.tokopedia.chatbot.chatbot2.data.inboxTicketList.InboxTicketListResponse
+import com.tokopedia.chatbot.chatbot2.data.newsession.TopBotNewSessionResponse
+import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyAttachmentAttributes
+import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyPojo
+import com.tokopedia.chatbot.chatbot2.data.ratinglist.ChipGetChatRatingListInput
+import com.tokopedia.chatbot.chatbot2.data.ratinglist.ChipGetChatRatingListResponse
+import com.tokopedia.chatbot.chatbot2.data.resolink.ResoLinkResponse
+import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatInput
+import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatResponse
+import com.tokopedia.chatbot.chatbot2.data.uploadEligibility.ChatbotUploadVideoEligibilityResponse
+import com.tokopedia.chatbot.chatbot2.data.uploadsecure.CheckUploadSecureResponse
+import com.tokopedia.chatbot.chatbot2.data.uploadsecure.UploadSecureResponse
+import com.tokopedia.chatbot.chatbot2.domain.mapper.ChatbotGetExistingChatMapper
+import com.tokopedia.chatbot.chatbot2.domain.pojo.replyBox.DynamicAttachment
+import com.tokopedia.chatbot.chatbot2.domain.socket.ChatbotSendableWebSocketParam
+import com.tokopedia.chatbot.chatbot2.domain.usecase.ChatBotSecureImageUploadUseCase
+import com.tokopedia.chatbot.chatbot2.domain.usecase.ChatbotCheckUploadSecureUseCase
+import com.tokopedia.chatbot.chatbot2.domain.usecase.ChatbotUploadVideoEligibilityUseCase
+import com.tokopedia.chatbot.chatbot2.domain.usecase.ChipGetChatRatingListUseCase
+import com.tokopedia.chatbot.chatbot2.domain.usecase.ChipSubmitChatCsatUseCase
+import com.tokopedia.chatbot.chatbot2.domain.usecase.ChipSubmitHelpfulQuestionsUseCase
+import com.tokopedia.chatbot.chatbot2.domain.usecase.GetExistingChatUseCase
+import com.tokopedia.chatbot.chatbot2.domain.usecase.GetResoLinkUseCase
+import com.tokopedia.chatbot.chatbot2.domain.usecase.GetTickerDataUseCase
+import com.tokopedia.chatbot.chatbot2.domain.usecase.GetTopBotNewSessionUseCase
+import com.tokopedia.chatbot.chatbot2.domain.usecase.SendChatRatingUseCase
+import com.tokopedia.chatbot.chatbot2.domain.usecase.SubmitCsatRatingUseCase
+import com.tokopedia.chatbot.chatbot2.domain.usecase.TicketListContactUsUsecase
+import com.tokopedia.chatbot.chatbot2.domain.video.ChatbotVideoUploadResult
+import com.tokopedia.chatbot.chatbot2.domain.video.VideoUploadData
 import com.tokopedia.chatbot.chatbot2.util.ChatbotNewRelicLogger
+import com.tokopedia.chatbot.chatbot2.view.uimodel.chatactionbubble.ChatActionBubbleUiModel
+import com.tokopedia.chatbot.chatbot2.view.uimodel.csatoptionlist.CsatOptionsUiModel
+import com.tokopedia.chatbot.chatbot2.view.uimodel.helpfullquestion.HelpFullQuestionsUiModel
+import com.tokopedia.chatbot.chatbot2.view.uimodel.quickreply.QuickReplyUiModel
+import com.tokopedia.chatbot.chatbot2.view.uimodel.rating.ChatRatingUiModel
+import com.tokopedia.chatbot.chatbot2.view.util.helper.getEnvResoLink
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.MediaUploadJobMap
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.BigReplyBoxState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatDataState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatRatingListState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotArticleEntryState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotChatSeparatorState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotImageUploadFailureState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotOpenCsatState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSendChatRatingState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSocketErrorState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSocketReceiveEvent
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSubmitChatCsatState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSubmitCsatRatingState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotUpdateToolbarState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotVideoUploadEligibilityState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.CheckUploadSecureState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.GetTickerDataState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.TopBotNewSessionState
 import com.tokopedia.chatbot.chatbot2.websocket.ChatbotWebSocket
 import com.tokopedia.chatbot.chatbot2.websocket.ChatbotWebSocketAction
 import com.tokopedia.chatbot.chatbot2.websocket.ChatbotWebSocketException
 import com.tokopedia.chatbot.chatbot2.websocket.ChatbotWebSocketStateHandler
 import com.tokopedia.chatbot.data.SocketResponse
-import com.tokopedia.chatbot.data.csatoptionlist.CsatAttributesPojo
-import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionPojo
-import com.tokopedia.chatbot.data.inboxTicketList.InboxTicketListResponse
-import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
-import com.tokopedia.chatbot.data.quickreply.QuickReplyAttachmentAttributes
-import com.tokopedia.chatbot.data.quickreply.QuickReplyPojo
-import com.tokopedia.chatbot.data.ratinglist.ChipGetChatRatingListInput
-import com.tokopedia.chatbot.data.ratinglist.ChipGetChatRatingListResponse
-import com.tokopedia.chatbot.data.resolink.ResoLinkResponse
-import com.tokopedia.chatbot.data.submitchatcsat.ChipSubmitChatCsatInput
-import com.tokopedia.chatbot.data.submitchatcsat.ChipSubmitChatCsatResponse
-import com.tokopedia.chatbot.data.uploadEligibility.ChatbotUploadVideoEligibilityResponse
-import com.tokopedia.chatbot.data.uploadsecure.CheckUploadSecureResponse
-import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
-import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
-import com.tokopedia.chatbot.domain.pojo.replyBox.DynamicAttachment
-import com.tokopedia.chatbot.domain.socket.ChatbotSendableWebSocketParam
-import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
-import com.tokopedia.chatbot.domain.usecase.ChatbotCheckUploadSecureUseCase
-import com.tokopedia.chatbot.domain.usecase.ChatbotUploadVideoEligibilityUseCase
-import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
-import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
-import com.tokopedia.chatbot.domain.usecase.ChipSubmitHelpfulQuestionsUseCase
-import com.tokopedia.chatbot.domain.usecase.GetExistingChatUseCase
-import com.tokopedia.chatbot.domain.usecase.GetResoLinkUseCase
-import com.tokopedia.chatbot.domain.usecase.GetTickerDataUseCase
-import com.tokopedia.chatbot.domain.usecase.GetTopBotNewSessionUseCase
-import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
-import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
-import com.tokopedia.chatbot.domain.usecase.TicketListContactUsUsecase
-import com.tokopedia.chatbot.domain.video.ChatbotVideoUploadResult
-import com.tokopedia.chatbot.domain.video.VideoUploadData
-import com.tokopedia.chatbot.view.uimodel.chatactionbubble.ChatActionBubbleUiModel
-import com.tokopedia.chatbot.view.uimodel.csatoptionlist.CsatOptionsUiModel
-import com.tokopedia.chatbot.view.uimodel.helpfullquestion.HelpFullQuestionsUiModel
-import com.tokopedia.chatbot.view.uimodel.quickreply.QuickReplyUiModel
-import com.tokopedia.chatbot.view.uimodel.rating.ChatRatingUiModel
-import com.tokopedia.chatbot.view.util.helper.getEnvResoLink
-import com.tokopedia.chatbot.view.viewmodel.state.BigReplyBoxState
-import com.tokopedia.chatbot.view.viewmodel.state.ChatDataState
-import com.tokopedia.chatbot.view.viewmodel.state.ChatRatingListState
-import com.tokopedia.chatbot.view.viewmodel.state.ChatbotArticleEntryState
-import com.tokopedia.chatbot.view.viewmodel.state.ChatbotChatSeparatorState
-import com.tokopedia.chatbot.view.viewmodel.state.ChatbotImageUploadFailureState
-import com.tokopedia.chatbot.view.viewmodel.state.ChatbotOpenCsatState
-import com.tokopedia.chatbot.view.viewmodel.state.ChatbotSendChatRatingState
-import com.tokopedia.chatbot.view.viewmodel.state.ChatbotSocketErrorState
-import com.tokopedia.chatbot.view.viewmodel.state.ChatbotSocketReceiveEvent
-import com.tokopedia.chatbot.view.viewmodel.state.ChatbotSubmitChatCsatState
-import com.tokopedia.chatbot.view.viewmodel.state.ChatbotSubmitCsatRatingState
-import com.tokopedia.chatbot.view.viewmodel.state.ChatbotUpdateToolbarState
-import com.tokopedia.chatbot.view.viewmodel.state.ChatbotVideoUploadEligibilityState
-import com.tokopedia.chatbot.view.viewmodel.state.CheckUploadSecureState
-import com.tokopedia.chatbot.view.viewmodel.state.GetTickerDataState
-import com.tokopedia.chatbot.view.viewmodel.state.TopBotNewSessionState
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -138,7 +139,7 @@ class ChatbotViewModelTest {
     private lateinit var chatResponse: ChatSocketPojo
     private lateinit var chatBotSecureImageUploadUseCase: ChatBotSecureImageUploadUseCase
 
-    private lateinit var viewModel: ChatbotViewModel
+    private lateinit var viewModel: com.tokopedia.chatbot.chatbot2.view.viewmodel.ChatbotViewModel
 
     private val fetchFailedErrorMessage = "Fetch Failed"
     private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
@@ -174,7 +175,7 @@ class ChatbotViewModelTest {
         chatBotSecureImageUploadUseCase = mockk(relaxed = true)
 
         viewModel =
-            ChatbotViewModel(
+            com.tokopedia.chatbot.chatbot2.view.viewmodel.ChatbotViewModel(
                 ticketListContactUsUsecase,
                 getTopBotNewSessionUseCase,
                 checkUploadSecureUseCase,
@@ -507,7 +508,7 @@ class ChatbotViewModelTest {
         viewModel.getTicketList()
 
         assertEquals(
-            (viewModel.ticketList.value as TicketListState.BottomSheetData).noticeData,
+            (viewModel.ticketList.value as com.tokopedia.chatbot.chatbot2.view.viewmodel.state.TicketListState.BottomSheetData).noticeData,
             actual
         )
     }
@@ -534,7 +535,7 @@ class ChatbotViewModelTest {
         viewModel.getTicketList()
 
         assertTrue(
-            (viewModel.ticketList.value is TicketListState.ShowContactUs)
+            (viewModel.ticketList.value is com.tokopedia.chatbot.chatbot2.view.viewmodel.state.TicketListState.ShowContactUs)
         )
     }
 
@@ -560,7 +561,7 @@ class ChatbotViewModelTest {
         viewModel.getTicketList()
 
         assertTrue(
-            (viewModel.ticketList.value is TicketListState.ShowContactUs)
+            (viewModel.ticketList.value is com.tokopedia.chatbot.chatbot2.view.viewmodel.state.TicketListState.ShowContactUs)
         )
     }
 
@@ -581,7 +582,7 @@ class ChatbotViewModelTest {
         viewModel.getTicketList()
 
         assertTrue(
-            (viewModel.ticketList.value is TicketListState.ShowContactUs)
+            (viewModel.ticketList.value is com.tokopedia.chatbot.chatbot2.view.viewmodel.state.TicketListState.ShowContactUs)
         )
     }
 
@@ -602,7 +603,7 @@ class ChatbotViewModelTest {
         viewModel.getTicketList()
 
         assertTrue(
-            (viewModel.ticketList.value is TicketListState.ShowContactUs)
+            (viewModel.ticketList.value is com.tokopedia.chatbot.chatbot2.view.viewmodel.state.TicketListState.ShowContactUs)
         )
     }
 
@@ -617,7 +618,7 @@ class ChatbotViewModelTest {
         viewModel.getTicketList()
 
         assertTrue(
-            (viewModel.ticketList.value is TicketListState.ShowContactUs)
+            (viewModel.ticketList.value is com.tokopedia.chatbot.chatbot2.view.viewmodel.state.TicketListState.ShowContactUs)
         )
     }
 
@@ -2103,17 +2104,17 @@ class ChatbotViewModelTest {
         mockkObject(ChatbotSendableWebSocketParam)
 
         every {
-            ChatbotSendableWebSocketParam.getReadMessage(any())
+            ChatbotSendableWebSocketParam.getReadMessageWebSocket(any())
         } returns mockk(relaxed = true)
 
         every {
-            chatbotWebSocket.send(ChatbotSendableWebSocketParam.getReadMessage(any()), any())
+            chatbotWebSocket.send(ChatbotSendableWebSocketParam.getReadMessageWebSocket(any()), any())
         } just runs
 
-        viewModel.sendReadEvent("123")
+        viewModel.sendReadEventWebSocket("123")
 
         verify {
-            chatbotWebSocket.send(ChatbotSendableWebSocketParam.getReadMessage(any()), any())
+            chatbotWebSocket.send(ChatbotSendableWebSocketParam.getReadMessageWebSocket(any()), any())
         }
     }
 

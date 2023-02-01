@@ -1,7 +1,7 @@
 package com.tokopedia.chatbot.data
 
 import com.google.gson.GsonBuilder
-import com.tokopedia.chatbot.websocket.ChatWebSocketResponse
+import com.tokopedia.chatbot.chatbot2.websocket.ChatWebSocketResponse
 
 object SocketResponse {
 
@@ -1237,9 +1237,17 @@ object SocketResponse {
 
     fun getResponse(response: String): ChatWebSocketResponse {
         return GsonBuilder().create()
-            .fromJson<ChatWebSocketResponse>(
+            .fromJson(
                 response,
                 ChatWebSocketResponse::class.java
+            )
+    }
+
+    fun getOldResponse(response: String): com.tokopedia.chatbot.websocket.ChatWebSocketResponse {
+        return GsonBuilder().create()
+            .fromJson(
+                response,
+                com.tokopedia.chatbot.websocket.ChatWebSocketResponse::class.java
             )
     }
 }

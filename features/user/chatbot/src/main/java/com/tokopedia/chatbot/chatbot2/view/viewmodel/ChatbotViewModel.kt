@@ -1004,7 +1004,8 @@ class ChatbotViewModel @Inject constructor(
         }
     }
 
-    private fun sendReadEventWebSocket(messageId: String) {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun sendReadEventWebSocket(messageId: String) {
         chatbotWebSocket.send(
             ChatbotSendableWebSocketParam.getReadMessageWebSocket(messageId),
             listInterceptor

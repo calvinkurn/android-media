@@ -119,7 +119,7 @@ class ChatbotPresenterTest {
     private lateinit var chatbotWebSocketStateHandler: ChatbotWebSocketStateHandler
     private lateinit var dispatcher: CoroutineDispatchers
     private var socketJob: Job? = null
-    private lateinit var chatResponse : ChatSocketPojo
+    private lateinit var chatResponse: ChatSocketPojo
 
     private lateinit var presenter: ChatbotPresenter
     private lateinit var view: ChatbotContract.View
@@ -193,7 +193,7 @@ class ChatbotPresenterTest {
     @Test
     fun `handleReplyBoxWSToggle if render=android, content_code=100,is_active=true`() {
         val fullResponse =
-            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_100_IS_ACTIVE_TRUE_RENDER_ANDROID)
+            SocketResponse.getOldResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_100_IS_ACTIVE_TRUE_RENDER_ANDROID)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -210,7 +210,7 @@ class ChatbotPresenterTest {
     @Test
     fun `handleReplyBoxWSToggle if render=android, content_code=100, is_active=false`() {
         val fullResponse =
-            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_100_IS_ACTIVE_FALSE_RENDER_ANDROID)
+            SocketResponse.getOldResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_100_IS_ACTIVE_FALSE_RENDER_ANDROID)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -227,7 +227,7 @@ class ChatbotPresenterTest {
     @Test
     fun `handleReplyBoxWSToggle if render=ios, content_code=100, is_active=false`() {
         val fullResponse =
-            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_100_IS_ACTIVE_FALSE_RENDER_IOS)
+            SocketResponse.getOldResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_100_IS_ACTIVE_FALSE_RENDER_IOS)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -244,7 +244,7 @@ class ChatbotPresenterTest {
     @Test
     fun `handleReplyBoxWSToggle if attachment is null`() {
         val fullResponse =
-            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_ATTACHMENT_NULL)
+            SocketResponse.getOldResponse(SocketResponse.DYNAMIC_ATTACHMENT_ATTACHMENT_NULL)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -258,7 +258,7 @@ class ChatbotPresenterTest {
     @Test
     fun `handleReplyBoxWSToggle if dynamic attachment is null`() {
         val fullResponse =
-            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_DYNAMIC_ATTACHMENT_IS_NULL)
+            SocketResponse.getOldResponse(SocketResponse.DYNAMIC_ATTACHMENT_DYNAMIC_ATTACHMENT_IS_NULL)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -275,7 +275,7 @@ class ChatbotPresenterTest {
     @Test
     fun `handleReplyBoxWSToggle if dynamic attachment-attribute is null`() {
         val fullResponse =
-            SocketResponse.getResponse(
+            SocketResponse.getOldResponse(
                 SocketResponse.DYNAMIC_ATTACHMENT_DYNAMIC_ATTACHMENT_ATTRIBUTE_DYNAMIC_CONTENT_IS_NULL
             )
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
@@ -294,7 +294,7 @@ class ChatbotPresenterTest {
     @Test
     fun `handleReplyBoxWSToggle if replyBoxAttribute is null`() {
         val fullResponse =
-            SocketResponse.getResponse(
+            SocketResponse.getOldResponse(
                 SocketResponse.DYNAMIC_ATTACHMENT_DYNAMIC_ATTACHMENT_ATTRIBUTE_DYNAMIC_CONTENT_IS_NULL
             )
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
@@ -313,7 +313,7 @@ class ChatbotPresenterTest {
     @Test
     fun `handleReplyBoxWSToggle if content_code=101, render= android, hidden=true`() {
         val fullResponse =
-            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_RENDER_ANDROID_HIDDEN_TRUE)
+            SocketResponse.getOldResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_RENDER_ANDROID_HIDDEN_TRUE)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -330,7 +330,7 @@ class ChatbotPresenterTest {
     @Test
     fun `handleReplyBoxWSToggle if content_code=101, render= android, hidden=false`() {
         val fullResponse =
-            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_RENDER_ANDROID_HIDDEN_FALSE)
+            SocketResponse.getOldResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_RENDER_ANDROID_HIDDEN_FALSE)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -347,7 +347,7 @@ class ChatbotPresenterTest {
     @Test
     fun `handleReplyBoxWSToggle if content_code=101, render= ios`() {
         val fullResponse =
-            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_RENDER_IOS)
+            SocketResponse.getOldResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_RENDER_IOS)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -364,7 +364,7 @@ class ChatbotPresenterTest {
     @Test
     fun `handleReplyBoxWSToggle if content_code=101, dynamic content is null `() {
         val fullResponse =
-            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_DYNAMIC_CONTENT_NULL)
+            SocketResponse.getOldResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_DYNAMIC_CONTENT_NULL)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -381,7 +381,7 @@ class ChatbotPresenterTest {
     @Test
     fun `validateHistoryForAttachment34 if content_code=101, render=android, hidden=false`() {
         val fullResponse =
-            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_RENDER_ANDROID_HIDDEN_FALSE)
+            SocketResponse.getOldResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_RENDER_ANDROID_HIDDEN_FALSE)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -400,7 +400,7 @@ class ChatbotPresenterTest {
     @Test
     fun `validateHistoryForAttachment34 if render=android, content_code=100, is_active=false`() {
         val fullResponse =
-            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_100_IS_ACTIVE_FALSE_RENDER_ANDROID)
+            SocketResponse.getOldResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_100_IS_ACTIVE_FALSE_RENDER_ANDROID)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -417,7 +417,7 @@ class ChatbotPresenterTest {
     @Test
     fun `validateHistoryForAttachment34 attachment is null`() {
         val fullResponse =
-            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_DYNAMIC_ATTACHMENT_ATTRIBUTE_IS_NULL)
+            SocketResponse.getOldResponse(SocketResponse.DYNAMIC_ATTACHMENT_DYNAMIC_ATTACHMENT_ATTRIBUTE_IS_NULL)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -433,7 +433,7 @@ class ChatbotPresenterTest {
 
     @Test
     fun `validateHistoryForAttachment34 if content_code=102, does not process`() {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_102)
+        val fullResponse = SocketResponse.getOldResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_102)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -447,10 +447,9 @@ class ChatbotPresenterTest {
         assertEquals(replyBoxAttribute?.contentCode, 102)
     }
 
-
     @Test
     fun `handleReplyBoxWSToggle if content_code=102 , goes to mapToVisitable`() {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_102)
+        val fullResponse = SocketResponse.getOldResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_102)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -463,7 +462,6 @@ class ChatbotPresenterTest {
 
         assertEquals(dynamicContentCode, 102)
     }
-
 
     @Test
     fun `submitChatCsat success`() {
@@ -771,7 +769,8 @@ class ChatbotPresenterTest {
     fun `showTickerData success with null tickerdata`() {
         val response = TickerDataResponse(
             ChipGetActiveTickerV4(
-                "", null
+                "",
+                null
             )
         )
 
@@ -853,6 +852,7 @@ class ChatbotPresenterTest {
             view.onError(any())
         }
     }
+
     @Test
     fun `connectWebSocket success when Socket is Opened`() {
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
@@ -913,7 +913,7 @@ class ChatbotPresenterTest {
     fun `connectWebSocket - when Socket receives new Message with code 103 `() {
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.NewMessage(
-                SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_103_REPLY_MESSAGE)
+                SocketResponse.getOldResponse(SocketResponse.RESPONSE_WITH_103_REPLY_MESSAGE)
             )
         )
         coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
@@ -927,7 +927,7 @@ class ChatbotPresenterTest {
 
     @Test
     fun `connectWebSocket - when Socket receives new Message with code 204 `() {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_204_END_TYPING)
+        val fullResponse = SocketResponse.getOldResponse(SocketResponse.RESPONSE_WITH_204_END_TYPING)
 
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.NewMessage(
@@ -945,11 +945,11 @@ class ChatbotPresenterTest {
 
     @Test
     fun `handleAttachment When receiving Code 103 for Reply Message`() {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_103_REPLY_MESSAGE)
+        val fullResponse = SocketResponse.getOldResponse(SocketResponse.RESPONSE_WITH_103_REPLY_MESSAGE)
 
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.NewMessage(
-                SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_103_REPLY_MESSAGE)
+                SocketResponse.getOldResponse(SocketResponse.RESPONSE_WITH_103_REPLY_MESSAGE)
             )
         )
         coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
@@ -961,11 +961,11 @@ class ChatbotPresenterTest {
 
     @Test
     fun `handleAttachment When receiving Code 203 for Start Typing`() {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_203_START_TYPING)
+        val fullResponse = SocketResponse.getOldResponse(SocketResponse.RESPONSE_WITH_203_START_TYPING)
 
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.NewMessage(
-                SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_203_START_TYPING)
+                SocketResponse.getOldResponse(SocketResponse.RESPONSE_WITH_203_START_TYPING)
             )
         )
         coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
@@ -977,11 +977,11 @@ class ChatbotPresenterTest {
 
     @Test
     fun `handleAttachment When receiving Code 301 for Read Message`() {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_301_READ_MESSAGE)
+        val fullResponse = SocketResponse.getOldResponse(SocketResponse.RESPONSE_WITH_301_READ_MESSAGE)
 
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.NewMessage(
-                SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_301_READ_MESSAGE)
+                SocketResponse.getOldResponse(SocketResponse.RESPONSE_WITH_301_READ_MESSAGE)
             )
         )
         coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
@@ -993,11 +993,11 @@ class ChatbotPresenterTest {
 
     @Test
     fun `handleAttachment When receiving Code 204 for End Typing`() {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_204_END_TYPING)
+        val fullResponse = SocketResponse.getOldResponse(SocketResponse.RESPONSE_WITH_204_END_TYPING)
 
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.NewMessage(
-                SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_204_END_TYPING)
+                SocketResponse.getOldResponse(SocketResponse.RESPONSE_WITH_204_END_TYPING)
             )
         )
         coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
@@ -1009,11 +1009,11 @@ class ChatbotPresenterTest {
 
     @Test
     fun `handleAttachment When receiving attachment type 13 to open csat`() {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_13_OPEN_CSAT)
+        val fullResponse = SocketResponse.getOldResponse(SocketResponse.ATTACHMENT_13_OPEN_CSAT)
 
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.NewMessage(
-                SocketResponse.getResponse(SocketResponse.ATTACHMENT_13_OPEN_CSAT)
+                SocketResponse.getOldResponse(SocketResponse.ATTACHMENT_13_OPEN_CSAT)
             )
         )
         coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
@@ -1025,11 +1025,11 @@ class ChatbotPresenterTest {
 
     @Test
     fun `handleAttachment When receiving attachment type 14 to update the toolbar`() {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_14_UPDATE_TOOLBAR)
+        val fullResponse = SocketResponse.getOldResponse(SocketResponse.ATTACHMENT_14_UPDATE_TOOLBAR)
 
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.NewMessage(
-                SocketResponse.getResponse(SocketResponse.ATTACHMENT_14_UPDATE_TOOLBAR)
+                SocketResponse.getOldResponse(SocketResponse.ATTACHMENT_14_UPDATE_TOOLBAR)
             )
         )
         coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
@@ -1041,11 +1041,11 @@ class ChatbotPresenterTest {
 
     @Test
     fun `handleAttachment When receiving attachment type 15 with chat divider`() {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_15_CHAT_DIVIDER)
+        val fullResponse = SocketResponse.getOldResponse(SocketResponse.ATTACHMENT_15_CHAT_DIVIDER)
 
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.NewMessage(
-                SocketResponse.getResponse(SocketResponse.ATTACHMENT_15_CHAT_DIVIDER)
+                SocketResponse.getOldResponse(SocketResponse.ATTACHMENT_15_CHAT_DIVIDER)
             )
         )
         coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
@@ -1057,11 +1057,11 @@ class ChatbotPresenterTest {
 
     @Test
     fun `handleAttachment When receiving attachment type 31 for session Change with Mode Agent`() {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_31_SESSION_CHANGE_WITH_MODE_AGENT)
+        val fullResponse = SocketResponse.getOldResponse(SocketResponse.ATTACHMENT_31_SESSION_CHANGE_WITH_MODE_AGENT)
 
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.NewMessage(
-                SocketResponse.getResponse(SocketResponse.ATTACHMENT_31_SESSION_CHANGE_WITH_MODE_AGENT)
+                SocketResponse.getOldResponse(SocketResponse.ATTACHMENT_31_SESSION_CHANGE_WITH_MODE_AGENT)
             )
         )
         coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
@@ -1073,11 +1073,11 @@ class ChatbotPresenterTest {
 
     @Test
     fun `handleAttachment When receiving attachment type 31 for session Change with Mode Bot`() {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_31_SESSION_CHANGE_WITH_MODE_BOT)
+        val fullResponse = SocketResponse.getOldResponse(SocketResponse.ATTACHMENT_31_SESSION_CHANGE_WITH_MODE_BOT)
 
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.NewMessage(
-                SocketResponse.getResponse(SocketResponse.ATTACHMENT_31_SESSION_CHANGE_WITH_MODE_BOT)
+                SocketResponse.getOldResponse(SocketResponse.ATTACHMENT_31_SESSION_CHANGE_WITH_MODE_BOT)
             )
         )
         coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
@@ -1447,7 +1447,6 @@ class ChatbotPresenterTest {
             expectedChatRatingList = chipGetChatRatingList!!
         }
 
-
         assertEquals(
             expectedChatRatingList,
             ratingListResponse.chipGetChatRatingList
@@ -1643,7 +1642,6 @@ class ChatbotPresenterTest {
             view.onError(any())
         }
     }
-
 
     /******************************* Socket Related Unit Tests************************************/
 
@@ -2183,7 +2181,6 @@ class ChatbotPresenterTest {
 
     @Test
     fun `sendUploadedImageToWebsocket success`() {
-
         every {
             chatbotWebSocket.send(any<JsonObject>(), any())
         } returns mockk(relaxed = true)
@@ -2284,15 +2281,20 @@ class ChatbotPresenterTest {
 
         every {
             ChatbotSendableWebSocketParam.generateParamSendVideoAttachment(
-                any(), any(), any()
+                any(),
+                any(),
+                any()
             )
         } returns mockk(relaxed = true)
 
         every {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendVideoAttachment(
-                    any(), any(), any()
-                ), any()
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
             )
         } just runs
 
@@ -2301,8 +2303,11 @@ class ChatbotPresenterTest {
         verify {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendVideoAttachment(
-                    any(), any(), any()
-                ), any()
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
             )
         }
     }
@@ -2327,7 +2332,6 @@ class ChatbotPresenterTest {
         )
 
         assertNotNull(result)
-
     }
 
     @Test
@@ -2354,7 +2358,6 @@ class ChatbotPresenterTest {
 
     @Test
     fun `startNewUploadMediaJob failure`() {
-
         coEvery {
             uploaderUseCase.invoke(any())
         } answers {
@@ -2392,7 +2395,6 @@ class ChatbotPresenterTest {
 
     @Test
     fun `checkUploadVideoEligibility success`() {
-
         val response = mockk<ChatbotUploadVideoEligibilityResponse>(relaxed = true)
 
         coEvery {
@@ -2410,7 +2412,6 @@ class ChatbotPresenterTest {
         verify {
             view.videoUploadEligibilityHandler(any())
         }
-
     }
 
     private fun getAttachSingleInvoiceUiModelWithNull(): AttachInvoiceSingleUiModel {
