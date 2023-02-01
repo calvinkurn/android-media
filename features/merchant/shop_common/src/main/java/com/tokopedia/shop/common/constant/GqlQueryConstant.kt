@@ -87,10 +87,8 @@ object GqlQueryConstant {
             "                apj\n" +
             "            }\n" +
             "            partnerInfo {\n" +
-            "               fsID\n" +
             "               partnerName\n" +
             "               fsType\n" +
-            "               shopID\n" +
             "            }\n" +
             "        }"
 

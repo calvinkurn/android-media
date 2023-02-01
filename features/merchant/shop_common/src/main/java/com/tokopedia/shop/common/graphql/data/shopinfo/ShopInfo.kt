@@ -113,7 +113,7 @@ data class ShopInfo(
 
         @SerializedName("partnerInfo")
         @Expose
-        val partnerInfo: PartnerInfoData = PartnerInfoData(),
+        val partnerInfo: List<PartnerInfoData> = emptyList(),
 
         @SerializedName("shopMultilocation")
         @Expose
@@ -150,8 +150,8 @@ data class ShopInfo(
             sipaNumber = epharmacyInfo.sipaNumber,
             apj = epharmacyInfo.apj,
             partnerLabel = partnerLabel,
-            fsType = partnerInfo.fsType,
-            partnerName = partnerInfo.partnerName
+            fsType = partnerInfo[0].fsType,
+            partnerName = partnerInfo[0].partnerName
         )
     }
 
@@ -186,10 +186,6 @@ data class ShopInfo(
     )
 
     data class PartnerInfoData(
-        @SerializedName("fsID")
-        @Expose
-        val fsID: String = "",
-
         @SerializedName("partnerName")
         @Expose
         val partnerName: String = "",
@@ -197,10 +193,6 @@ data class ShopInfo(
         @SerializedName("fsType")
         @Expose
         val fsType: Int = 0,
-
-        @SerializedName("shopID")
-        @Expose
-        val shopID: String = ""
     )
 
     data class ShopAssets(
