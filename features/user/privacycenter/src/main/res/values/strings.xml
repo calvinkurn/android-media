@@ -122,7 +122,7 @@
     <string name="dsar_payment_info_description">Daftar rekening bank, daftar kartu kredit, daftar kartu debit</string>
     <string name="dsar_payment_info_title">Informasi Pembayaran</string>
     <string name="dsar_personal_info_title">Informasi Pribadi</string>
-    <string name="dsar_personal_info_description">User ID, nama lengkap, nomor HP, e-mail, tanggal lahir, jenis kelamin, daftar alamat pengiriman</string>
+    <string name="dsar_personal_info_description">User ID, nama lengkap, nomor HP, e-mail, tanggal lahir, jenis kelamin, alamat utama</string>
     <string name="dsar_transcion_info_title">Riwayat Transaksi</string>
     <string name="dsar_bottom_sheet_detail_subtitle">Download data dari akun ini:</string>
     <string name="dsar_date_picker_title">Pilih rentang riwayat transaksi</string>
@@ -158,6 +158,8 @@
     <string name="dsar_range_item_2">3 Tahun Terakhir</string>
     <string name="dsar_range_item_1">Selama Tahun Ini</string>
     <string name="txt_privacy_info">Demi menjaga relevansi dengan keadaan dan perubaan saat ini, Tokopedia hanya akan menampilkan tiga perubahan terbaru untuk kebijakan privasi.</string>
+    <string name="privacy_policy_subtitle">Demi menjaga relevansi dengan keadaan dan perubaan saat ini, Tokopedia hanya akan menampilkan tiga perubahan terbaru untuk kebijakan privasi.</string>
+    <string name="privacy_history_section_title">Riwayat Kebijakan Privasi</string>
 
 
 </resources>
