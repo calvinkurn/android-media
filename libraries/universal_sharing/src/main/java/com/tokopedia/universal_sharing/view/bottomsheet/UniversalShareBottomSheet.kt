@@ -45,7 +45,6 @@ import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -155,6 +154,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
+        /**
+         * if you're using [enableDefaultShareIntent] please create the instance using this function,
+         * otherwise toaster after clicking `salin link` will not appear
+         */
         fun createInstance(fragmentView: View?) = UniversalShareBottomSheet().apply {
             this.fragmentView = fragmentView
         }
@@ -357,6 +360,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private var onViewReadyAction: (() -> Unit)? = null
 
+    private var affiliateListener: ((userType: String) -> Unit)? = null
+
     private var imageGeneratorParam: ImageGeneratorParamModel? = null
 
     private var imageThumbnailListener: ((imageUrl: String) -> Unit)? = null
@@ -389,7 +394,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
         inject()
     }
-    private var affiliateListener: ((userType: String) -> Unit)? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupBottomSheetChildView(inflater, container)
@@ -475,27 +479,30 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     private fun shareChannelClicked(shareModel: ShareModel) {
         if (linkProperties == null) throw Exception("Please set link properties")
         LinkerManager.getInstance().executeShareRequest(
-            LinkerUtils.createShareRequest(0, createLinkerData(shareModel), object : ShareCallback {
-                override fun urlCreated(linkerShareResult: LinkerShareResult) {
-                    shareModel.subjectName = subjectShare
-                    SharingUtil.executeShareIntent(
-                        shareModel,
-                        linkerShareResult,
-                        activity,
-                        fragmentView,
-                        String.format(
-                            shareText,
-                            linkerShareResult.url
+            LinkerUtils.createShareRequest(
+                0, createLinkerData(shareModel),
+                object : ShareCallback {
+                    override fun urlCreated(linkerShareResult: LinkerShareResult) {
+                        shareModel.subjectName = subjectShare
+                        SharingUtil.executeShareIntent(
+                            shareModel,
+                            linkerShareResult,
+                            activity,
+                            fragmentView,
+                            String.format(
+                                shareText,
+                                linkerShareResult.url
+                            )
                         )
-                    )
 
-                    dismiss()
-                }
+                        dismiss()
+                    }
 
-                override fun onError(linkerError: LinkerError) {
-                    dismiss()
+                    override fun onError(linkerError: LinkerError) {
+                        dismiss()
+                    }
                 }
-            })
+            )
         )
     }
 
@@ -675,6 +682,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     fun setOnGetAffiliateData(callback: (userType: String) -> Unit) {
         affiliateListener = callback
+    }
+
+    /**
+     * this is used to listen when share link url has finished created
+     * if you're using [enableDefaultShareIntent] this listener will works,
+     * otherwise this listener won't work.
+     */
+    fun setOnUrlCreated(callback: (url: String) -> Unit) {
+        onUrlCreated = callback
     }
 
     private fun setFragmentLifecycleObserverUniversalSharing(fragment: Fragment) {
@@ -1132,7 +1148,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
      *  @param text please put string as String.format and insert `%s` to insert link into the text
      *  @param text e.g: Hai kamu! Belanja produk dari Oreo,Kraft & Cadbury Official Store jadi makin mudah di Tokopedia! Cek barang-barang yang kamu suka, yuk. %s
      *  the [text] will be transformed to `Hai kamu! Belanja produk dari Oreo,Kraft & Cadbury Official Store jadi makin mudah di Tokopedia! Cek barang-barang yang kamu suka, yuk. https://tokopedia.link/owQLAVeA3wb`
-    */
+     */
     fun setShareText(text: String) {
         shareText = text
     }
@@ -1273,7 +1289,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             shareChannelClicked(shareModel)
         }
         bottomSheetListener?.onShareOptionClicked(shareModel)
-
     }
 
     private fun executeSharingFlow(shareModel: ShareModel) {
@@ -1331,7 +1346,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                 shareChannelClicked(shareModel)
             }
             bottomSheetListener?.onShareOptionClicked(shareModel)
-
         }
     }
 
