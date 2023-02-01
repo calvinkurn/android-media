@@ -1142,6 +1142,8 @@ class PlayViewModel @AssistedInject constructor(
         _status.value = channelData.status
         _tagItems.value = channelData.tagItems
         _quickReply.value = channelData.quickReplyInfo
+
+        with(channelData.channelDetail.exploreWidgetConfig) { updateWidgetParam(group, sourceType, sourceId) }
     }
 
     fun focusPage(channelData: PlayChannelData) {
@@ -1275,9 +1277,6 @@ class PlayViewModel @AssistedInject constructor(
         updatePartnerInfo(channelData)
         if (!channelData.status.channelStatus.statusType.isFreeze) {
             updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
-        }
-        with(channelData.channelDetail.exploreWidgetConfig) {
-            updateWidgetParam(group, sourceType, sourceId)
         }
     }
 
