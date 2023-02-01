@@ -26,7 +26,7 @@ class RemoteCDNServiceTest {
     }
 
     @Test
-    fun `given the local storage url when isValidUrl should return true`() {
+    fun `given the local storage url when isValidUrl should return false`() {
         val wrongImageUrl = "/storage/emulated/0/Android/data/com.tokopedia.tkpd/cache/Tokopedia/373287.jpg"
         val result = RemoteCdnService.isValidUrl(wrongImageUrl)
         assertEquals(false, result)
