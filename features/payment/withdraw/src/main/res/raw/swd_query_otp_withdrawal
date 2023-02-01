@@ -54,6 +54,10 @@ mutation richieSubmitWithdrawal(
    withdrawalNote
    title
    description
+   header
+   ctaLink
+   ctaWording
+   image
    joinPromptMessageResponse{
        title
        desc

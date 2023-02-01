@@ -88,18 +88,11 @@ class WithdrawActivity : BaseSimpleActivity(), WithdrawalFragmentCallback,
     override fun openThankYouFragment(withdrawalRequest: WithdrawalRequest,
                                      submitWithdrawalResponse: SubmitWithdrawalResponse) {
         swd_header.setNavigationIcon(RUnifyComp.drawable.unify_bottomsheet_close)
-        updateHeaderTitle(getHeaderTitle(submitWithdrawalResponse))
+        updateHeaderTitle(submitWithdrawalResponse.header ?: "")
         val thankYouFragment = ThankYouFragmentWithdrawal.getInstance(withdrawalRequest, submitWithdrawalResponse)
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.parent_view, thankYouFragment, TAG_THANK_YOU_FRAGMENT)
         fragmentTransaction.commitAllowingStateLoss()
-    }
-
-    private fun getHeaderTitle(submitWithdrawalResponse: SubmitWithdrawalResponse): String {
-        return if (submitWithdrawalResponse.isSuccess())
-            getString(R.string.swd_success_page_title)
-        else
-            getString(R.string.swd_rejected_page_title)
     }
 
     override fun getTagFragment(): String {

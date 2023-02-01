@@ -90,22 +90,14 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
             showRekeningWidgets(activity)
         }
         btnCta.setOnClickListener { onCtaClick() }
-        btnCta.text = getCtaText()
+        btnCta.text = withdrawalResponse.ctaWording
         tvWithdrawalTitle.text = withdrawalResponse.title
         setContentImage()
     }
 
-    private fun getCtaText(): String {
-        return if (withdrawalResponse.isSuccess()) {
-            getString(R.string.swd_back_to_saldo_detail)
-        } else {
-            getString(R.string.swd_contact_tokopedia_care)
-        }
-    }
-
     private fun setContentImage() {
-        if (!withdrawalResponse.isSuccess()) {
-            ivWithdrawalSuccess.loadRemoteImageDrawable("swd_img_rejected.png")
+        withdrawalResponse.image?.let {
+            ivWithdrawalSuccess.setImageUrl(it)
         }
     }
 

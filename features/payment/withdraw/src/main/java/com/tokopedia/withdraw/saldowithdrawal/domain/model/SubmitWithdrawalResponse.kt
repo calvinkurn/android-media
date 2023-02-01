@@ -27,6 +27,14 @@ data class SubmitWithdrawalResponse(
         val title: String? = null,
         @SerializedName("description")
         val description: String? = null,
+        @SerializedName("header")
+        val header: String? = null,
+        @SerializedName("ctaLink")
+        val ctaLink: String? = null,
+        @SerializedName("ctaWording")
+        val ctaWording: String? = null,
+        @SerializedName("image")
+        val image: String? = null,
 ) : Parcelable {
     fun isSuccess(): Boolean {
         return status == SubmitWithdrawalViewModel.WITHDRAWAL_SUCCESS
