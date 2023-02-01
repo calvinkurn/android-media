@@ -2,12 +2,12 @@ package com.tokopedia.tokopedianow.searchcategory.presentation.listener
 
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
-import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
+import com.tokopedia.tokopedianow.similarproduct.listener.TokoNowSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 
-class SimilarProductCallback(
+class TokoNowSimilarProductTrackerCallback(
     private val isCategoryPage: Boolean
-): SimilarProductListener {
+): TokoNowSimilarProductTrackerListener {
     override fun trackImpressionBottomSheet(
         userId: String,
         warehouseId: String,

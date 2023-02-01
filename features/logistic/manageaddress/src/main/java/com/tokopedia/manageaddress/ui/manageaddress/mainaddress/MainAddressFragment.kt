@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -147,6 +148,7 @@ class MainAddressFragment :
         initView()
         initAdapter()
         initSearch()
+        setOnBackPressed()
         observerListAddress()
         observerSetDefault()
         observerGetChosenAddress()
@@ -853,8 +855,19 @@ class MainAddressFragment :
         }
     }
 
-    fun setAddressDataOnBackButton() {
-        setChosenAddress(true)
+    private fun setOnBackPressed() {
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (isFromEditChosenAddress == true) {
+                        setChosenAddress(true)
+                    } else {
+                        activity?.finish()
+                    }
+                }
+            }
+        )
     }
 
     private fun getManageAddressFragment(): ManageAddressFragment? {
