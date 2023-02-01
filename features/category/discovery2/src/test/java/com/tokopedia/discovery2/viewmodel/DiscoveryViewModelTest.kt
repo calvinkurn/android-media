@@ -24,6 +24,7 @@ import com.tokopedia.discovery2.datamapper.DiscoveryPageData
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
 import com.tokopedia.discovery2.usecase.discoveryPageUseCase.DiscoveryDataUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
+import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -372,12 +373,13 @@ class DiscoveryViewModelTest {
     fun `test for scrollToPinnedComponent when componentList is non empty`() {
         val componentsItem: ComponentsItem = mockk(relaxed = true)
         every { componentsItem.id } returns "2"
+        every { componentsItem.name } returns ComponentsList.Tabs.componentName
         val list = ArrayList<ComponentsItem>()
         list.add(componentsItem)
 
         viewModel.scrollToPinnedComponent(list, "2")
 
-        TestCase.assertEquals(viewModel.scrollToPinnedComponent(list, "2"), 0)
+        TestCase.assertEquals(viewModel.scrollToPinnedComponent(list, "2").first, 0)
     }
 
     @Test
@@ -386,7 +388,7 @@ class DiscoveryViewModelTest {
 
         viewModel.scrollToPinnedComponent(list, "2")
 
-        TestCase.assertEquals(viewModel.scrollToPinnedComponent(list, "2"), -1)
+        TestCase.assertEquals(viewModel.scrollToPinnedComponent(list, "2").first, -1)
     }
 
     /**************************** test for getShareUTM() *******************************************/
