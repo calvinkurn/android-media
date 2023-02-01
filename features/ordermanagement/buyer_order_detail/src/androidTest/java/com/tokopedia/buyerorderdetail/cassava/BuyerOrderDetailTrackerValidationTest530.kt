@@ -24,11 +24,12 @@ class BuyerOrderDetailTrackerValidationTest530 : BuyerOrderDetailTrackerValidati
             testClickProduct(activityRule.activity)
             testClickCopyAWB(activityRule.activity)
             testClickPrimaryActionButton()
-            testClickSecondaryActionButtonRequestComplaint(activityRule.activity)
             testClickPrimaryActionButtonOnFinishOrderConfirmationBottomSheet(
                 activityRule.activity,
                 false
             )
+            testScrollToBottom(activityRule.activity)
+            testClickSecondaryActionButtonRequestComplaint(activityRule.activity)
         } validate {
             clearQueries()
             addQueriesToValidate(

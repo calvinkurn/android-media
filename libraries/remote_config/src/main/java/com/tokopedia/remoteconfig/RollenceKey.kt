@@ -53,10 +53,7 @@ object RollenceKey {
     // SRP Video Sneak Peek Autoplay
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY = "srp_prodvideo_3"
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_VARIANT = "experiment_variant"
-
-    // Typo Correction
-    const val SEARCH_TYPO_CORRECTION_ADS = "typo_correction_ads2"
-    const val SEARCH_TYPO_CORRECTION_ADS_VARIANT = "typo2"
+    const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_OTHER_VARIANT = "exp_variant"
 
     // Global Menu (Me Page)
     const val ME_PAGE_EXP = "mepage_secondexp"
@@ -73,14 +70,8 @@ object RollenceKey {
     const val PDP_HIDE_THUMBNAIL = "pdp_hide_thumbnail"
     const val PDP_SHOW_SHARE_AFFILIATE = "pdp_share_icon"
 
-    // Saldo
-    const val SALDO_MODAL_TOKO_WIDGET = "saldo_mclremoval"
-
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
-
-    // Play
-    const val SWIPE_LIVE_ROOM = "play_sc"
 
     // Bubbles
     const val KEY_ROLLENCE_BUBBLE_CHAT = "seller_bubble_chat_2"

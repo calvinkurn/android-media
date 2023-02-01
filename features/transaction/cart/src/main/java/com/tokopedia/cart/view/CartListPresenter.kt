@@ -34,7 +34,6 @@ import com.tokopedia.cart.view.subscriber.GetRecommendationSubscriber
 import com.tokopedia.cart.view.subscriber.UpdateAndReloadCartSubscriber
 import com.tokopedia.cart.view.subscriber.UpdateCartAndValidateUseSubscriber
 import com.tokopedia.cart.view.subscriber.UpdateCartCounterSubscriber
-import com.tokopedia.cart.view.subscriber.UpdateCartSubscriber
 import com.tokopedia.cart.view.subscriber.ValidateUseSubscriber
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
@@ -185,6 +184,8 @@ class CartListPresenter @Inject constructor(
         private const val QUERY_APP_CLIENT_ID = "{app_client_id}"
         private val REGEX_NUMBER = "[^0-9]".toRegex()
         private val SOURCE_CART = "cart"
+
+        private const val MAX_TOTAL_AMOUNT_ELIGIBLE_FOR_COD = 1000000.0
     }
 
     override fun attachView(view: ICartListView) {
@@ -531,7 +532,7 @@ class CartListPresenter @Inject constructor(
             totalAmount += itemPriceAmount
             if (!cartItemHolderData.isCod) return false
         }
-        return totalAmount <= UpdateCartSubscriber.MAX_TOTAL_AMOUNT_ELIGIBLE_FOR_COD
+        return totalAmount <= MAX_TOTAL_AMOUNT_ELIGIBLE_FOR_COD
     }
 
     override fun processToUpdateAndReloadCartData(cartId: String, getCartState: Int) {

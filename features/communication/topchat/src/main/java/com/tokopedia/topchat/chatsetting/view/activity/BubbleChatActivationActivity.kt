@@ -10,8 +10,10 @@ import com.tokopedia.topchat.chatsetting.di.ChatSettingModule
 import com.tokopedia.topchat.chatsetting.di.DaggerChatSettingComponent
 import com.tokopedia.topchat.chatsetting.view.fragment.BubbleChatActivationGuideFragment
 import com.tokopedia.topchat.chatsetting.view.fragment.BubbleChatActivationIntroFragment
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.util.BubbleChat
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class BubbleChatActivationActivity : BaseSimpleActivity(),
@@ -19,6 +21,9 @@ class BubbleChatActivationActivity : BaseSimpleActivity(),
 
     @Inject
     lateinit var topChatCacheManager: TopchatCacheManager
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var introFragment: Fragment? = null
     private var guideFragment: Fragment? = null
@@ -59,6 +64,11 @@ class BubbleChatActivationActivity : BaseSimpleActivity(),
     override fun onIntroButtonClicked() {
         navigateToGuideFragment()
         setIntroButtonFinishClicked()
+        trackIntroButtonFinishClicked()
+    }
+
+    override fun onPageLoaded() {
+        TopChatAnalyticsKt.eventImpressionBubbleChatIntroduction(userSession.shopId)
     }
 
     private fun getToolbarTitle(): String? {
@@ -86,6 +96,10 @@ class BubbleChatActivationActivity : BaseSimpleActivity(),
 
     private fun setIntroButtonFinishClicked() {
         topChatCacheManager.saveCache(BubbleChat.Key.FINISH_INTRO, true.toString())
+    }
+
+    private fun trackIntroButtonFinishClicked() {
+        TopChatAnalyticsKt.eventClickBubbleHelpPage(userSession.shopId)
     }
 
     companion object {

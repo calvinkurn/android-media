@@ -148,6 +148,14 @@ internal abstract class SortFilterBottomSheetViewModelTestFixtures {
         }
     }
 
+    protected fun `Then assert selected apply filter map is as expected`(expectedApplyFilterMap: Map<String, String>) {
+        val applyFilterMap = sortFilterBottomSheetViewModel.getSortAutoFilterMap()
+
+        assert(applyFilterMap == expectedApplyFilterMap) {
+            "Selected Sort Map is $applyFilterMap. Expected is $expectedApplyFilterMap."
+        }
+    }
+
     protected fun `Then assert selected sort name`(expectedSelectedSortName: String) {
         val actualSelectedSortName = sortFilterBottomSheetViewModel.selectedSortName
 
