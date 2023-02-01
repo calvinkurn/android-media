@@ -139,7 +139,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
     @FlowPreview
     @ExperimentalCoroutinesApi
     fun getHomeDataFlow(atfStyle: String): Flow<HomeDynamicChannelModel?> {
-//        val styleAtf = remoteConfi
         Log.d("dhabalog", "getHomeDataFlow $atfStyle")
         this.atfStyle = atfStyle
         var isCache = true
@@ -941,7 +940,11 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                         if (it.banner.slides?.size ?: 0 >= MINIMUM_BANNER_TO_SHOW) {
                                             val channelFromResponse = it.banner
                                             atfData.content = gson.toJson(channelFromResponse)
-                                            atfData.status = AtfKey.STATUS_SUCCESS
+                                            if (atfStyle == RollenceKey.HOME_COMPONENT_ATF_1) {
+                                                atfData.status = AtfKey.STATUS_EMPTY
+                                            } else {
+                                                atfData.status = AtfKey.STATUS_SUCCESS
+                                            }
                                         } else {
                                             atfData.status = AtfKey.STATUS_EMPTY
                                         }
