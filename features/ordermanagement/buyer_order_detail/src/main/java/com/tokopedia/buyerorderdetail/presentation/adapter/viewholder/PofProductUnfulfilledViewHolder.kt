@@ -23,7 +23,7 @@ class PofProductUnfulfilledViewHolder(
         with(binding) {
             setBackgroundContainer(element.hasQtyGreenColor())
             setProductImageUrl(element.productPictureUrl)
-            setProductName(element.productPrice)
+            setProductName(element.productName)
             setProductQtyPrice(element.getProductPriceQty())
             setProductRequestStock(element)
         }
@@ -39,7 +39,7 @@ class PofProductUnfulfilledViewHolder(
                     binding.setProductImageUrl(newItem.productPictureUrl)
                 }
                 if (oldItem.productName != newItem.productName) {
-                    binding.setProductName(newItem.productPrice)
+                    binding.setProductName(newItem.productName)
                 }
                 if (oldItem.getProductPriceQty() != newItem.getProductPriceQty()) {
                     binding.setProductQtyPrice(newItem.getProductPriceQty())
@@ -83,6 +83,4 @@ class PofProductUnfulfilledViewHolder(
             if (hasGreenColor) ContainerUnify.GREEN else ContainerUnify.RED
         )
     }
-
-
 }

@@ -26,22 +26,22 @@ class PartialOrderFulfillmentMapper @Inject constructor() {
     fun mapToPartialOrderFulfillmentUiModelList(
         infoRespondPartialOrderFulfillment: InfoRespondPartialOrderFulfillment
     ): PartialOrderFulfillmentWrapperUiModel {
-
         val partialOrderFulfillmentUiModelList = mutableListOf<BasePofVisitableUiModel>().apply {
-
             add(PofHeaderInfoUiModel(headerInfoHtmlStr = infoRespondPartialOrderFulfillment.headerInfo))
             add(PofAvailableLabelUiModel())
             add(PofThinDividerUiModel())
 
-            addAll(infoRespondPartialOrderFulfillment.detailsUnfulfill.map {
-                PofProductUnfulfilledUiModel(
-                    productPictureUrl = it.productPicture,
-                    productName = it.productName,
-                    productPrice = it.productPrice,
-                    productQtyCheckout = it.productQuantityCheckout,
-                    productQtyRequest = it.productQuantityRequest
-                )
-            })
+            addAll(
+                infoRespondPartialOrderFulfillment.detailsUnfulfill.map {
+                    PofProductUnfulfilledUiModel(
+                        productPictureUrl = it.productPicture,
+                        productName = it.productName,
+                        productPrice = it.productPrice,
+                        productQtyCheckout = it.productQuantityCheckout,
+                        productQtyRequest = it.productQuantityRequest
+                    )
+                }
+            )
 
             add(PofThinDividerUiModel())
 
@@ -60,12 +60,10 @@ class PartialOrderFulfillmentMapper @Inject constructor() {
             add(
                 PofFulfilledToggleUiModel(
                     totalFulfilled = infoRespondPartialOrderFulfillment.totalFulfilled,
-                    isExpanded = true,
+                    isExpanded = false,
                     pofProductFulfilledList = productFulfilledList
                 )
             )
-
-            addAll(productFulfilledList)
 
             add(PofThickDividerUiModel())
 

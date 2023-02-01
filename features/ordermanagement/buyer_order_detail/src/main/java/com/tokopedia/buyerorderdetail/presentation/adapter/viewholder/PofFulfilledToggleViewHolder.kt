@@ -1,7 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.databinding.ItemPofStillAvailableToggleBinding
 import com.tokopedia.buyerorderdetail.presentation.model.PofFulfilledToggleUiModel
@@ -49,7 +48,7 @@ class PofFulfilledToggleViewHolder(
     }
 
     private fun ItemPofStillAvailableToggleBinding.setChevronToggle(item: PofFulfilledToggleUiModel) {
-        icDropdown.rotation = if (item.isExpanded) REVERSE_ROTATION else NO_ROTATION
+        icDropdown.rotation = if (item.isExpanded) NO_ROTATION else REVERSE_ROTATION
         icDropdown.setOnClickListener {
             listener.onPofFulfilledToggleClicked(!item.isExpanded, item.pofProductFulfilledList)
         }
