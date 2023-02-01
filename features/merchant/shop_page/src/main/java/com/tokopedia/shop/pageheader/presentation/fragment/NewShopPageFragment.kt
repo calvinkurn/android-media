@@ -210,6 +210,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListe
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.PageDetail
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -3011,91 +3012,113 @@ class NewShopPageFragment :
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
-        val linkerShareData = DataMapper.getLinkerShareData(
-            LinkerData().apply {
-                type = LinkerData.SHOP_TYPE
-                uri = shopPageHeaderDataModel?.shopCoreUrl
-                id = shopPageHeaderDataModel?.shopId
-                // set and share in the Linker Data
-                feature = shareModel.feature
-                channel = shareModel.channel
-                campaign = shareModel.campaign
-                ogTitle = getShareBottomSheetOgTitle()
-                ogDescription = getShareBottomSheetOgDescription()
-                if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
-                    ogImageUrl = shareModel.ogImgUrl
-                }
-                isAffiliate = shareModel.isAffiliate
-                linkAffiliateType = AffiliateLinkType.SHOP.value
-            }
-        )
-        LinkerManager.getInstance().executeShareRequest(
-            LinkerUtils.createShareRequest(
-                0, linkerShareData,
-                object : ShareCallback {
-                    override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                        context?.let {
-                            if (!shareModel.isAffiliate) {
-                                checkUsingCustomBranchLinkDomain(linkerShareData)
-                            }
-                            var shareString = getString(
-                                R.string.shop_page_share_text_with_link,
-                                shopPageHeaderDataModel?.shopName,
-                                linkerShareData?.url
-                        )
-                        shareModel.subjectName = shopPageHeaderDataModel?.shopName.toString()
-                        SharingUtil.executeShopPageShareIntent(shareModel, linkerShareData, activity, view, shareString)
-                        // send gql tracker
-                        shareModel.socialMediaName?.let { name ->
-                            shopViewModel?.sendShopShareTracker(
-                                    shopId,
-                                    channel = when (shareModel) {
-                                        is ShareModel.CopyLink -> {
-                                            ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
-                                        }
-                                        is ShareModel.Others -> {
-                                            ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
-                                        }
-                                        else -> name
-                                    }
-                                )
-                            }
-
-                            // send gtm tracker
-                            if (isGeneralShareBottomSheet) {
-                                shopPageTracking?.clickShareBottomSheetOption(
-                                    shareModel.channel.orEmpty(),
-                                    customDimensionShopPage,
-                                    userId,
-                                    shareModel.campaign?.split("-")?.lastOrNull().orEmpty(),
-                                    UniversalShareBottomSheet.getUserType()
-                                )
-                                if (!isMyShop) {
-                                    shopPageTracking?.clickGlobalHeaderShareBottomSheetOption(
-                                        shareModel.channel.orEmpty(),
-                                        customDimensionShopPage,
-                                        userId
-                                    )
-                                }
-                            } else {
-                                shopPageTracking?.clickScreenshotShareBottomSheetOption(
-                                    shareModel.channel.orEmpty(),
-                                    customDimensionShopPage,
-                                    userId,
-                                    UniversalShareBottomSheet.getUserType(),
-                                    shareModel.campaign?.split("-")?.lastOrNull().orEmpty(),
-                                )
-                            }
-
-                            // we have to check if we can move it inside the common function
-                            universalShareBottomSheet?.dismiss()
-                        }
+        shareModel.socialMediaName?.let { name ->
+            shopViewModel?.sendShopShareTracker(
+                shopId,
+                channel = when (shareModel) {
+                    is ShareModel.CopyLink -> {
+                        ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
                     }
-
-                    override fun onError(linkerError: LinkerError?) {}
+                    is ShareModel.Others -> {
+                        ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
+                    }
+                    else -> name
                 }
             )
-        )
+        }
+
+        if (isGeneralShareBottomSheet) {
+            shopPageTracking?.clickShareBottomSheetOption(
+                shareModel.channel.orEmpty(),
+                customDimensionShopPage,
+                userId,
+                shareModel.campaign?.split("-")?.lastOrNull().orEmpty(),
+                UniversalShareBottomSheet.getUserType()
+            )
+            if (!isMyShop) {
+                shopPageTracking?.clickGlobalHeaderShareBottomSheetOption(
+                    shareModel.channel.orEmpty(),
+                    customDimensionShopPage,
+                    userId
+                )
+            }
+        } else {
+            shopPageTracking?.clickScreenshotShareBottomSheetOption(
+                shareModel.channel.orEmpty(),
+                customDimensionShopPage,
+                userId,
+                UniversalShareBottomSheet.getUserType(),
+                shareModel.campaign?.split("-")?.lastOrNull().orEmpty(),
+            )
+        }
+
+//        LinkerManager.getInstance().executeShareRequest(
+//            LinkerUtils.createShareRequest(
+//                0, linkerShareData,
+//                object : ShareCallback {
+//                    override fun urlCreated(linkerShareData: LinkerShareResult?) {
+//                        context?.let {
+//                            if (!shareModel.isAffiliate) {
+//                                checkUsingCustomBranchLinkDomain(linkerShareData)
+//                            }
+//                            var shareString = getString(
+//                                R.string.shop_page_share_text_with_link,
+//                                shopPageHeaderDataModel?.shopName,
+//                                linkerShareData?.url
+//                        )
+//                        shareModel.subjectName = shopPageHeaderDataModel?.shopName.toString()
+//                        SharingUtil.executeShopPageShareIntent(shareModel, linkerShareData, activity, view, shareString)
+//                        // send gql tracker
+//                        shareModel.socialMediaName?.let { name ->
+//                            shopViewModel?.sendShopShareTracker(
+//                                    shopId,
+//                                    channel = when (shareModel) {
+//                                        is ShareModel.CopyLink -> {
+//                                            ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
+//                                        }
+//                                        is ShareModel.Others -> {
+//                                            ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
+//                                        }
+//                                        else -> name
+//                                    }
+//                                )
+//                            }
+//
+//                            // send gtm tracker
+//                            if (isGeneralShareBottomSheet) {
+//                                shopPageTracking?.clickShareBottomSheetOption(
+//                                    shareModel.channel.orEmpty(),
+//                                    customDimensionShopPage,
+//                                    userId,
+//                                    shareModel.campaign?.split("-")?.lastOrNull().orEmpty(),
+//                                    UniversalShareBottomSheet.getUserType()
+//                                )
+//                                if (!isMyShop) {
+//                                    shopPageTracking?.clickGlobalHeaderShareBottomSheetOption(
+//                                        shareModel.channel.orEmpty(),
+//                                        customDimensionShopPage,
+//                                        userId
+//                                    )
+//                                }
+//                            } else {
+//                                shopPageTracking?.clickScreenshotShareBottomSheetOption(
+//                                    shareModel.channel.orEmpty(),
+//                                    customDimensionShopPage,
+//                                    userId,
+//                                    UniversalShareBottomSheet.getUserType(),
+//                                    shareModel.campaign?.split("-")?.lastOrNull().orEmpty(),
+//                                )
+//                            }
+//
+//                            // we have to check if we can move it inside the common function
+//                            universalShareBottomSheet?.dismiss()
+//                        }
+//                    }
+//
+//                    override fun onError(linkerError: LinkerError?) {}
+//                }
+//            )
+//        )
     }
 
     private fun getShareBottomSheetOgTitle(): String {
@@ -3152,16 +3175,28 @@ class NewShopPageFragment :
     }
 
     private fun showUniversalShareBottomSheet() {
-        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance(view).apply {
             init(this@NewShopPageFragment)
+            enableDefaultShareIntent()
             setMetaData(
                 shopPageHeaderDataModel?.shopName.orEmpty(),
                 shopPageHeaderDataModel?.avatar.orEmpty(),
                 ""
             )
-            setOgImageUrl(shopPageHeaderDataModel?.shopSnippetUrl ?: "")
             imageSaved(shopImageFilePath)
+            setSubject(shopPageHeaderDataModel?.shopName.toString())
+            setLinkProperties(
+                LinkProperties(
+                    linkerType = LinkerData.SHOP_TYPE,
+                    ogTitle = getShareBottomSheetOgTitle(),
+                    ogDescription =  getShareBottomSheetOgDescription(),
+                    desktopUrl = shopPageHeaderDataModel?.shopCoreUrl ?: "",
+                    id = shopPageHeaderDataModel?.shopId ?: "")
+            )
+            val shareString = this@NewShopPageFragment.getString(R.string.shop_page_share_text, shopPageHeaderDataModel?.shopName)
+            setShareText("$shareString%s")
         }
+
         configShopShareBottomSheetImpressionTracker()
         // activate contextual image
         val initialProductListData = shopViewModel?.productListData?.data ?: listOf()
@@ -3322,17 +3357,15 @@ class NewShopPageFragment :
         universalShareBottomSheet?.setImageGeneratorParam(shopPageParamModel)
         universalShareBottomSheet?.getImageFromMedia(shopPageParamModel.shopProfileImgUrl.isNotEmpty())
         universalShareBottomSheet?.setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.SHOP_PAGE)
-
-        universalShareBottomSheet?.show(activity?.supportFragmentManager, this, screenShotDetector, safeViewAction = {
-            val inputShare = AffiliatePDPInput().apply {
-                pageDetail = PageDetail(pageId = shopId, pageType = "shop", siteId = "1", verticalId = "1")
-                pageType = PageType.SHOP.value
-                product = Product()
-                shop = Shop(shopID = shopId, shopStatus = shopPageHeaderDataModel?.shopStatus, isOS = shopPageHeaderDataModel?.isOfficial == true, isPM = shopPageHeaderDataModel?.isGoldMerchant == true)
-            }
-            universalShareBottomSheet?.setAffiliateRequestHolder(inputShare)
-            universalShareBottomSheet?.affiliateRequestDataReceived(true)
-        })
+        val inputShare = AffiliatePDPInput().apply {
+            pageDetail = PageDetail(pageId = shopId, pageType = "shop", siteId = "1", verticalId = "1")
+            pageType = PageType.SHOP.value
+            product = Product()
+            shop = Shop(shopID = shopId, shopStatus = shopPageHeaderDataModel?.shopStatus, isOS = shopPageHeaderDataModel?.isOfficial == true, isPM = shopPageHeaderDataModel?.isGoldMerchant == true)
+            affiliateLinkType = AffiliateLinkType.SHOP
+        }
+        universalShareBottomSheet?.enableAffiliateCommission(inputShare)
+        universalShareBottomSheet?.show(activity?.supportFragmentManager, this, screenShotDetector)
         universalShareBottomSheet?.setUtmCampaignData(
             SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME,
             userId.ifEmpty { "0" },

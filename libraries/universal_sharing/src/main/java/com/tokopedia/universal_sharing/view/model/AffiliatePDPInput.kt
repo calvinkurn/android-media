@@ -1,6 +1,9 @@
 package com.tokopedia.universal_sharing.view.model
 
+import androidx.room.Ignore
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.universal_sharing.tracker.PageType
 
 data class Product (
@@ -65,7 +68,10 @@ data class AffiliatePDPInput (
     var shop: Shop? = null,
 
     @SerializedName("PageDetail")
-    var pageDetail: PageDetail? = null
+    var pageDetail: PageDetail? = null,
+
+    @Expose(serialize = false, deserialize = false)
+    var affiliateLinkType: AffiliateLinkType? = null
 ) {
     /** get id based on page type
      * [PageType.PDP] return [Product.productID]

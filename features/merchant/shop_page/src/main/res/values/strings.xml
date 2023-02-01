@@ -159,6 +159,7 @@
     <string name="shop_page_share_action_more">Lainnya</string>
     <string name="shop_page_share_action_copy_success">Teks berhasil disalin</string>
     <string name="shop_page_share_text_with_link">Hai kamu! Belanja produk dari %1$s jadi makin mudah di Tokopedia! Cek barang-barang yang kamu suka, yuk. \n%2$s</string>
+    <string name="shop_page_share_text">Hai kamu! Belanja produk dari %1$s jadi makin mudah di Tokopedia! Cek barang-barang yang kamu suka, yuk. \n</string>
     <string name="label_close">Tutup</string>
     <string name="shop_page_share_chat_bubble_operational_hour_format">Buka %1s WIB</string>
 

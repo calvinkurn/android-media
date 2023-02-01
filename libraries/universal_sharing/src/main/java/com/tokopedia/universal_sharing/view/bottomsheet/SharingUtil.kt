@@ -102,6 +102,7 @@ class SharingUtil {
             })
         }
 
+
         fun triggerSS(view: View?, imageSaved: (savedImgPath: String) -> Unit){
             val bitmap = takeScreenshot(view)
             if(bitmap != null){
