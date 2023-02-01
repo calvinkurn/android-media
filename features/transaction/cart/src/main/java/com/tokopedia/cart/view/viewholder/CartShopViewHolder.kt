@@ -29,6 +29,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
 import com.tokopedia.utils.resources.isDarkMode
@@ -38,10 +39,12 @@ import java.text.NumberFormat
 import java.util.*
 import kotlin.math.min
 
-class CartShopViewHolder(private val binding: ItemShopBinding,
-                         private val actionListener: ActionListener,
-                         private val cartItemAdapterListener: CartItemAdapter.ActionListener,
-                         private val compositeSubscription: CompositeSubscription) : RecyclerView.ViewHolder(binding.root) {
+class CartShopViewHolder(
+    private val binding: ItemShopBinding,
+    private val actionListener: ActionListener,
+    private val cartItemAdapterListener: CartItemAdapter.ActionListener,
+    private val compositeSubscription: CompositeSubscription
+) : RecyclerView.ViewHolder(binding.root) {
 
     // variable to hold identifier
     private var cartString: String = ""
@@ -128,9 +131,10 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         binding.tvShopName.text = Utils.getHtmlFormat(shopName)
         binding.tvShopName.setOnClickListener {
             actionListener.onCartShopNameClicked(
-                    cartShopHolderData.shopId,
-                    cartShopHolderData.shopName,
-                    cartShopHolderData.isTokoNow)
+                cartShopHolderData.shopId,
+                cartShopHolderData.shopName,
+                cartShopHolderData.isTokoNow
+            )
         }
     }
 
@@ -254,17 +258,17 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     private fun initCheckboxWatcherDebouncer(cartShopHolderData: CartShopHolderData, compositeSubscription: CompositeSubscription) {
         binding.cbSelectShop.let {
             compositeSubscription.add(
-                    rxViewClickDebounce(it, CHECKBOX_WATCHER_DEBOUNCE_TIME).subscribe(object : Subscriber<Boolean>() {
-                        override fun onNext(isChecked: Boolean) {
-                            cbSelectShopClickListener(cartShopHolderData)
-                        }
+                rxViewClickDebounce(it, CHECKBOX_WATCHER_DEBOUNCE_TIME).subscribe(object : Subscriber<Boolean>() {
+                    override fun onNext(isChecked: Boolean) {
+                        cbSelectShopClickListener(cartShopHolderData)
+                    }
 
-                        override fun onCompleted() {
-                        }
+                    override fun onCompleted() {
+                    }
 
-                        override fun onError(e: Throwable?) {
-                        }
-                    })
+                    override fun onError(e: Throwable?) {
+                    }
+                })
             )
         }
     }
@@ -353,7 +357,8 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         with(binding) {
             if (cartShopHolderData.freeShippingBadgeUrl.isNotBlank()) {
                 ImageHandler.loadImageWithoutPlaceholderAndError(
-                        imgFreeShipping, cartShopHolderData.freeShippingBadgeUrl
+                    imgFreeShipping,
+                    cartShopHolderData.freeShippingBadgeUrl
                 )
                 val contentDescriptionStringResource = if (cartShopHolderData.isFreeShippingPlus) {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_plus
@@ -389,8 +394,10 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                     tickerWarning.closeButtonVisibility = View.GONE
                     tickerWarning.show()
                     tickerWarning.post {
-                        binding.tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                        binding.tickerWarning.measure(
+                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                        )
                         binding.tickerWarning.requestLayout()
                     }
                 }
@@ -427,7 +434,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                 if (binding.tickerWarning.isVisible) {
                     binding.tickerWarning.post {
                         val paddingOffset = itemView.context?.resources?.getDimensionPixelSize(R.dimen.dp_16)
-                                ?: 0
+                            ?: 0
                         val tickerHeight = binding.tickerWarning.height
                         val totalOffset = calculateScrollOffset(productIndex, tickerHeight + paddingOffset)
                         actionListener.scrollToClickedExpandedProduct(position, totalOffset * -1)
@@ -449,9 +456,10 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     private fun renderCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.hasSelectedProduct && !cartShopHolderData.isError
-            && cartShopHolderData.cartShopGroupTicker.enableTicker
-            && !cartShopHolderData.isOverweight) {
+        if (cartShopHolderData.hasSelectedProduct && !cartShopHolderData.isError &&
+            cartShopHolderData.cartShopGroupTicker.enableTicker &&
+            !cartShopHolderData.isOverweight
+        ) {
             binding.apply {
                 val cartShopGroupTicker = cartShopHolderData.cartShopGroupTicker
                 when (cartShopGroupTicker.state) {
@@ -459,7 +467,9 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                         cartShopTickerText.gone()
                         cartShopTickerLeftIcon.gone()
                         cartShopTickerRightIcon.gone()
+                        cartShopTickerLargeLoader.type = LoaderUnify.TYPE_LINE
                         cartShopTickerLargeLoader.show()
+                        cartShopTickerSmallLoader.type = LoaderUnify.TYPE_LINE
                         cartShopTickerSmallLoader.show()
                         layoutCartShopTicker.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
                         layoutCartShopTicker.setOnClickListener(null)
@@ -545,5 +555,4 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         private const val CHEVRON_ROTATION_0 = 0f
         private const val CHEVRON_ROTATION_180 = 180f
     }
-
 }
