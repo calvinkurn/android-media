@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.linker.model.LinkerShareResult
@@ -2587,24 +2588,15 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    fun submitUserReport(channelId: Long,
-                         mediaUrl: String,
-                         shopId: Long,
+    fun submitUserReport(mediaUrl: String,
                          reasonId: Int,
                          timestamp: Long,
                          reportDesc: String){
         viewModelScope.launchCatchError(block = {
             _userReportSubmission.value = ResultState.Loading
-            val isSuccess =
-                repo.submitReport(
-                    channelId = channelId,
-                    mediaUrl = mediaUrl,
-                    shopId = shopId,
-                    reasonId = reasonId,
-                    timestamp = timestamp,
-                    reportDesc = reportDesc
-                )
-
+            val isSuccess = repo.submitReport(channelId = channelId.toLongOrZero(), partnerId = partnerId.orZero(),
+                    partnerType = PartnerType.getTypeByValue(partnerType),
+                    reasonId = reasonId, timestamp = timestamp, reportDesc = reportDesc, mediaUrl = mediaUrl)
             if(isSuccess){
                 _userReportSubmission.value = ResultState.Success
             }else{
