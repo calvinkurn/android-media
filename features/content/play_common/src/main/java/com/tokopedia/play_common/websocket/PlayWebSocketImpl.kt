@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
+import com.tokopedia.analyticsdebugger.debugger.ws.PlayWebSocketLogger
 import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.authentication.AuthHelper
@@ -25,10 +26,21 @@ class PlayWebSocketImpl(
         private val dispatchers: CoroutineDispatchers,
         @ApplicationContext private val context: Context,
         private val localCacheHandler: LocalCacheHandler,
-        private val webSocketLogger: WebSocketLogger
 ) : PlayWebSocket {
 
     private val client: OkHttpClient
+
+    private val webSocketLogger: WebSocketLogger by lazy {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            PlayWebSocketLogger(context)
+        } else {
+            object : WebSocketLogger {
+                override fun init(data: String) {}
+                override fun send(event: String) {}
+                override fun send(event: String, message: String) {}
+            }
+        }
+    }
 
     init {
         clientBuilder.pingInterval(DEFAULT_PING, TimeUnit.MILLISECONDS)

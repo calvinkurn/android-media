@@ -8,12 +8,9 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
-import com.tokopedia.analyticsdebugger.debugger.ws.PlayWebSocketLogger
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -161,33 +158,15 @@ class PlayModule(val mContext: Context) {
         @ApplicationContext context: Context,
         userSession: UserSessionInterface,
         dispatchers: CoroutineDispatchers,
-        localCacheHandler: LocalCacheHandler,
-        webSocketLogger: WebSocketLogger
+        localCacheHandler: LocalCacheHandler
     ): PlayWebSocket {
         return PlayWebSocketImpl(
             OkHttpClient.Builder(),
             userSession,
             dispatchers,
             context,
-            localCacheHandler,
-            webSocketLogger
+            localCacheHandler
         )
-    }
-
-    @Provides
-    @PlayScope
-    fun provideWebSocketLogger(
-        @ApplicationContext context: Context
-    ): WebSocketLogger {
-        return if (GlobalConfig.isAllowDebuggingTools()) {
-            PlayWebSocketLogger(context)
-        } else {
-            object : WebSocketLogger {
-                override fun init(data: String) = Unit
-                override fun send(event: String, message: String) = Unit
-                override fun send(event: String) = Unit
-            }
-        }
     }
 
     @Provides
