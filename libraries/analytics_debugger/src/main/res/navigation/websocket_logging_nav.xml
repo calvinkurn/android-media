@@ -6,8 +6,7 @@
 
     <fragment
         android:id="@+id/webSocketLoggingFragment"
-        android:name="com.tokopedia.analyticsdebugger.websocket.ui.fragment.WebSocketLoggingFragment"
-        android:label="WebSocket Chucker">
+        android:name="com.tokopedia.analyticsdebugger.websocket.ui.fragment.WebSocketLoggingFragment">
         <action
             android:id="@+id/action_webSocketLoggingFragment_to_webSocketDetailLoggingFragment"
             app:destination="@id/webSocketDetailLoggingFragment" />
@@ -18,8 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/webSocketDetailLoggingFragment"
-        android:name="com.tokopedia.analyticsdebugger.websocket.ui.fragment.WebSocketDetailLoggingFragment"
-        android:label="WebSocket Chucker">
+        android:name="com.tokopedia.analyticsdebugger.websocket.ui.fragment.WebSocketDetailLoggingFragment">
         <argument
             android:name="model"
             app:argType="com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel"/>
