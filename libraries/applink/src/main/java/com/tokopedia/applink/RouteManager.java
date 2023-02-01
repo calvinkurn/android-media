@@ -161,7 +161,7 @@ public class RouteManager {
     private static Intent getIntentRedirectSellerApp(Context context, Uri uri) {
         Intent intent = context.getPackageManager().getLaunchIntentForPackage(SELLER_APP_PACKAGE_NAME);
         if (null != intent) {
-            intent.setData(uri);
+//            intent.setData(uri);
             return intent;
         } else {
             return getIntentSellerappToPlayStore(context);
