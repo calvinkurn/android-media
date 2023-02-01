@@ -13,11 +13,7 @@ import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.textChangesAsFlow
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentCreationVoucherSettingBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreeButtonSectionBinding
@@ -366,24 +362,48 @@ class VoucherSettingFragment : BaseDaggerFragment() {
 
     private fun presetValue() {
         val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
-        if (currentVoucherConfiguration.isFinishedFillAllStep() || pageMode == PageMode.EDIT) {
-            freeShippingInputSectionBinding?.run {
+        freeShippingInputSectionBinding?.run {
+            if (currentVoucherConfiguration.benefitIdr.isMoreThanZero()) {
                 tfFreeShippingNominal.editText.setText(currentVoucherConfiguration.benefitIdr.toString())
+            }
+            if (currentVoucherConfiguration.minPurchase.isMoreThanZero()) {
                 tfFreeShippingMinimumBuy.editText.setText(currentVoucherConfiguration.minPurchase.toString())
+            }
+            if (currentVoucherConfiguration.quota.isMoreThanZero()) {
                 tfFreeShippingQuota.editText.setText(currentVoucherConfiguration.quota.toString())
             }
-            cashbackInputSectionBinding?.run {
+        }
+        cashbackInputSectionBinding?.run {
+            if (currentVoucherConfiguration.benefitIdr.isMoreThanZero()) {
                 tfCashbackNominal.editText.setText(currentVoucherConfiguration.benefitIdr.toString())
+            }
+            if (currentVoucherConfiguration.benefitPercent.isMoreThanZero()) {
                 tfCashbackPercentage.editText.setText(currentVoucherConfiguration.benefitPercent.toString())
+            }
+            if (currentVoucherConfiguration.benefitMax.isMoreThanZero()) {
                 tfCahsbackMaxDeduction.editText.setText(currentVoucherConfiguration.benefitMax.toString())
+            }
+            if (currentVoucherConfiguration.minPurchase.isMoreThanZero()) {
                 tfCashbackMinimumBuy.editText.setText(currentVoucherConfiguration.minPurchase.toString())
+            }
+            if (currentVoucherConfiguration.quota.isMoreThanZero()) {
                 tfCashbackQuota.editText.setText(currentVoucherConfiguration.quota.toString())
             }
-            discountInputSectionBinding?.run {
+        }
+        discountInputSectionBinding?.run {
+            if (currentVoucherConfiguration.benefitIdr.isMoreThanZero()) {
                 tfDiscountNominal.editText.setText(currentVoucherConfiguration.benefitIdr.toString())
+            }
+            if (currentVoucherConfiguration.benefitPercent.isMoreThanZero()) {
                 tfDiscountPercentage.editText.setText(currentVoucherConfiguration.benefitPercent.toString())
+            }
+            if (currentVoucherConfiguration.benefitMax.isMoreThanZero()) {
                 tfDiscountMaxDeduction.editText.setText(currentVoucherConfiguration.benefitMax.toString())
+            }
+            if (currentVoucherConfiguration.minPurchase.isMoreThanZero()) {
                 tfDiscountMinimumBuy.editText.setText(currentVoucherConfiguration.minPurchase.toString())
+            }
+            if (currentVoucherConfiguration.quota.isMoreThanZero()) {
                 tfDiscountQuota.editText.setText(currentVoucherConfiguration.quota.toString())
             }
         }
@@ -514,7 +534,11 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         freeShippingInputSectionBinding?.run {
             tfFreeShippingNominal.apply {
                 editText.setOnFocusChangeListener { _, isFocus ->
-                    if (isFocus) tracker.sendClickFieldNominalCashbackEvent(FREE_SHIPPING_EVENT_LABEL)
+                    if (isFocus) {
+                        tracker.sendClickFieldNominalCashbackEvent(
+                            FREE_SHIPPING_EVENT_LABEL
+                        )
+                    }
                 }
                 setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
@@ -540,7 +564,11 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         freeShippingInputSectionBinding?.run {
             tfFreeShippingMinimumBuy.apply {
                 editText.setOnFocusChangeListener { _, isFocus ->
-                    if (isFocus) tracker.sendClickFieldMinimumCashbackEvent(FREE_SHIPPING_EVENT_LABEL)
+                    if (isFocus) {
+                        tracker.sendClickFieldMinimumCashbackEvent(
+                            FREE_SHIPPING_EVENT_LABEL
+                        )
+                    }
                 }
                 setMaxLength(NOMINAL_INPUT_MAX_LENGTH)
                 if (editText.text.isNotEmpty()) {
@@ -1139,7 +1167,10 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                         VoucherTargetBuyer.NEW_FOLLOWER
                     }
                     viewModel.processEvent(VoucherCreationStepThreeEvent.ChooseTargetBuyer(target))
-                    tracker.sendClickTargetPembeliEvent(target, currentVoucherConfiguration.promoType)
+                    tracker.sendClickTargetPembeliEvent(
+                        target,
+                        currentVoucherConfiguration.promoType
+                    )
                 }
             }
             setTargetBuyerRadioButton(currentVoucherConfiguration)

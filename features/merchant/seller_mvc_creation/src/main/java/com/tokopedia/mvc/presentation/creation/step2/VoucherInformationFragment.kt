@@ -321,13 +321,11 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun presetValue() {
         setVoucherTarget(voucherConfiguration.isVoucherPublic)
-        if (voucherConfiguration.isFinishFilledStepTwo || pageMode == PageMode.EDIT) {
-            voucherNameSectionBinding?.tfVoucherName?.run {
-                editText.setText(voucherConfiguration.voucherName)
-            }
-            voucherCodeSectionBinding?.tfVoucherCode?.run {
-                editText.setText(voucherConfiguration.voucherCode)
-            }
+        voucherNameSectionBinding?.tfVoucherName?.run {
+            if (voucherConfiguration.voucherName.isNotEmpty()) editText.setText(voucherConfiguration.voucherName)
+        }
+        voucherCodeSectionBinding?.tfVoucherCode?.run {
+            if (voucherConfiguration.voucherCode.isNotEmpty()) editText.setText(voucherConfiguration.voucherCode)
         }
         if (pageMode == PageMode.EDIT) {
             voucherCodeSectionBinding?.run {
@@ -699,7 +697,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                             DATE_WITH_SECOND_PRECISION_ISO_8601
                         )
                     startCalendar = getGregorianDate(startDate)
-                } catch (_: Throwable) {}
+                } catch (_: Throwable) {
+                }
             }
         }
     }
@@ -722,7 +721,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                         DATE_WITH_SECOND_PRECISION_ISO_8601
                     )
                     endCalendar = getGregorianDate(endDate)
-                } catch (_: Throwable) {}
+                } catch (_: Throwable) {
+                }
             }
         }
     }
