@@ -818,6 +818,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             showMainComponent(false)
 
             binding.formTitle.setTitle(parentViewModel.channelTitle)
+            binding.formTitle.setPlaceholder(getString(R.string.play_bro_title_form_hint))
             binding.formTitle.setLoading(false)
             binding.formTitle.visibility = View.VISIBLE
         } else {
