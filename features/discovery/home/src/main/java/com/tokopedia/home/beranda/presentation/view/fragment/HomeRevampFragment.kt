@@ -2749,7 +2749,11 @@ open class HomeRevampFragment :
     }
 
     override fun refreshBalanceWidget() {
-        getHomeViewModel().getBalanceWidgetData()
+        if (styleAtf == RollenceKey.HOME_COMPONENT_ATF_1) {
+            getHomeViewModel().getBalanceWidgetAtf1Data()
+        } else {
+            getHomeViewModel().getBalanceWidgetData()
+        }
     }
 
     override fun showBalanceWidgetCoachMark(homeBalanceModel: HomeBalanceModel) {

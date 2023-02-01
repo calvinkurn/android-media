@@ -12,19 +12,7 @@ import com.tokopedia.gopayhomewidget.domain.usecase.ClosePayLaterWidgetUseCase
 import com.tokopedia.gopayhomewidget.domain.usecase.GetPayLaterWidgetUseCase
 import com.tokopedia.home.beranda.common.BaseCoRoutineScope
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeListCarouselUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeMissionWidgetUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomePlayUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomePopularKeywordUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRechargeBuWidgetUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRechargeRecommendationUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRecommendationUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSalamRecommendationUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSearchUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSuggestedReviewUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.*
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.RateLimiter
@@ -32,17 +20,7 @@ import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CMHomeWidgetDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelLoadingModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelRetryModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomePayLaterWidgetDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -57,6 +35,7 @@ import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -91,7 +70,8 @@ open class HomeRevampViewModel @Inject constructor(
     private val deleteCMHomeWidgetUseCase: Lazy<DeleteCMHomeWidgetUseCase>,
     private val deletePayLaterWidgetUseCase: Lazy<ClosePayLaterWidgetUseCase>,
     private val getPayLaterWidgetUseCase: Lazy<GetPayLaterWidgetUseCase>,
-    private val homeMissionWidgetUseCase: Lazy<HomeMissionWidgetUseCase>
+    private val homeMissionWidgetUseCase: Lazy<HomeMissionWidgetUseCase>,
+    private val homeBalanceWidgetAtf1UseCase: Lazy<HomeBalanceWidgetAtf1UseCase>
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -104,7 +84,8 @@ open class HomeRevampViewModel @Inject constructor(
 
     val homeLiveDynamicChannel: LiveData<HomeDynamicChannelModel>
         get() = _homeLiveDynamicChannel
-    private val _homeLiveDynamicChannel: MutableLiveData<HomeDynamicChannelModel> = MutableLiveData()
+    private val _homeLiveDynamicChannel: MutableLiveData<HomeDynamicChannelModel> =
+        MutableLiveData()
 
     val searchHint: LiveData<SearchPlaceholder>
         get() = _searchHint
@@ -158,13 +139,10 @@ open class HomeRevampViewModel @Inject constructor(
     var isFirstLoad = true
     var atfStyle = ""
 
-//    @FlowPreview
+    //    @FlowPreview
     private fun homeFlowDynamicChannel(): Flow<HomeDynamicChannelModel?> {
         return homeUseCase.get().getHomeDataFlow(atfStyle).flowOn(homeDispatcher.get().io)
     }
-//        flow {
-//    }
-//
 
     var getHomeDataJob: Job? = null
 
@@ -175,26 +153,46 @@ open class HomeRevampViewModel @Inject constructor(
         homeRateLimit.reset(HOME_LIMITER_KEY)
     }
 
-    private inline fun <reified T> findWidget(predicate: (T) -> Boolean = { true }, actionOnFound: (T, Int) -> Unit) {
-        homeDataModel.list.withIndex().find { it.value is T && predicate.invoke(it.value as T) }.let {
-            it?.let {
-                if (it.value is T) {
-                    actionOnFound.invoke(it.value as T, it.index)
+    private inline fun <reified T> findWidget(
+        predicate: (T) -> Boolean = { true },
+        actionOnFound: (T, Int) -> Unit
+    ) {
+        homeDataModel.list.withIndex().find { it.value is T && predicate.invoke(it.value as T) }
+            .let {
+                it?.let {
+                    if (it.value is T) {
+                        actionOnFound.invoke(it.value as T, it.index)
+                    }
                 }
             }
-        }
     }
 
     private fun addWidget(visitable: Visitable<*>, position: Int? = null) {
-        homeDataModel.addWidgetModel(visitable, position) { _homeLiveDynamicChannel.postValue(homeDataModel) }
+        homeDataModel.addWidgetModel(visitable, position) {
+            _homeLiveDynamicChannel.postValue(
+                homeDataModel
+            )
+        }
     }
 
-    private fun updateWidget(visitable: Visitable<*>, position: Int, visitableToChange: Visitable<*>? = null) {
-        homeDataModel.updateWidgetModel(visitable, visitableToChange, position) { _homeLiveDynamicChannel.postValue(homeDataModel) }
+    private fun updateWidget(
+        visitable: Visitable<*>,
+        position: Int,
+        visitableToChange: Visitable<*>? = null
+    ) {
+        homeDataModel.updateWidgetModel(
+            visitable,
+            visitableToChange,
+            position
+        ) { _homeLiveDynamicChannel.postValue(homeDataModel) }
     }
 
     private fun deleteWidget(visitable: Visitable<*>?, position: Int) {
-        homeDataModel.deleteWidgetModel(visitable, position) { _homeLiveDynamicChannel.postValue(homeDataModel) }
+        homeDataModel.deleteWidgetModel(visitable, position) {
+            _homeLiveDynamicChannel.postValue(
+                homeDataModel
+            )
+        }
     }
 
     private fun updateHomeData(homeNewDynamicChannelModel: HomeDynamicChannelModel) {
@@ -205,7 +203,10 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun injectCouponTimeBased() {
         launch {
-            if (userSession.get().isLoggedIn) homeBalanceWidgetUseCase.get().onGetInjectCouponTimeBased()
+            if (userSession.get().isLoggedIn) {
+                homeBalanceWidgetUseCase.get()
+                    .onGetInjectCouponTimeBased()
+            }
         }
     }
 
@@ -228,7 +229,21 @@ open class HomeRevampViewModel @Inject constructor(
         if (!userSession.get().isLoggedIn) return
         findWidget<HomeHeaderDataModel> { headerModel, index ->
             launch {
-                val visitable = updateHeaderData(homeBalanceWidgetUseCase.get().onGetBalanceWidgetLoadingState(headerModel))
+                val visitable = updateHeaderData(
+                    homeBalanceWidgetUseCase.get().onGetBalanceWidgetLoadingState(headerModel)
+                )
+                visitable?.let { updateWidget(visitable, index) }
+            }
+        }
+    }
+
+    private fun getBalanceWidgetAtf1LoadingState() {
+        if (!userSession.get().isLoggedIn) return
+        findWidget<HomeHeaderAtf1DataModel> { headerModel, index ->
+            launch {
+                val visitable = updateHeaderData(
+                    homeBalanceWidgetAtf1UseCase.get().onGetBalanceWidgetLoadingState(headerModel)
+                )
                 visitable?.let { updateWidget(visitable, index) }
             }
         }
@@ -279,8 +294,60 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    fun getBalanceWidgetAtf1Data() {
+        if (!userSession.get().isLoggedIn) return
+        findWidget<HomeHeaderAtf1DataModel> { headerModel, index ->
+            launch {
+                if (headerModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isEmpty() == true) {
+                    val homeBalanceModel = headerModel.headerDataModel?.homeBalanceModel.apply {
+                        this?.status = HomeBalanceModel.STATUS_LOADING
+                    } ?: HomeBalanceModel()
+                    val headerDataModel = headerModel.headerDataModel?.copy(
+                        homeBalanceModel = homeBalanceModel
+                    )
+                    val initialHeaderModel = headerModel.copy(
+                        headerDataModel = headerDataModel
+                    )
+                    updateHeaderData(initialHeaderModel, index)
+                    val currentHeaderDataModel =
+                        homeBalanceWidgetUseCase.get().onGetBalanceWidgetData()
+                    val visitable = updateHeaderData(currentHeaderDataModel, index)
+                    visitable?.let {
+                        homeDataModel.updateWidgetModel(
+                            visitableToChange = visitable,
+                            visitable = currentHeaderDataModel,
+                            position = index
+                        ) {
+                            updateHomeData(homeDataModel)
+                        }
+                    }
+                } else {
+                    val currentHeaderDataModel =
+                        homeBalanceWidgetAtf1UseCase.get().onGetBalanceWidgetData(headerModel)
+                    val visitable = updateHeaderData(currentHeaderDataModel, index)
+                    visitable?.let {
+                        homeDataModel.updateWidgetModel(
+                            visitableToChange = visitable,
+                            visitable = currentHeaderDataModel,
+                            position = index
+                        ) {
+                            updateHomeData(homeDataModel)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun updateHeaderData(visitable: Visitable<*>?, index: Int = 0): Visitable<*>? {
-        visitable?.let { findWidget<HomeHeaderDataModel> { model, index -> updateWidget(it, index) } }
+        visitable?.let {
+            findWidget<HomeHeaderDataModel> { model, index ->
+                updateWidget(
+                    it,
+                    index
+                )
+            }
+        }
         return visitable
     }
 
@@ -328,7 +395,11 @@ open class HomeRevampViewModel @Inject constructor(
         }
         homeRateLimit.shouldFetch(HOME_LIMITER_KEY)
         onRefreshState = true
-        getBalanceWidgetLoadingState()
+        if (atfStyle == RollenceKey.HOME_COMPONENT_ATF_1) {
+            getBalanceWidgetAtf1LoadingState()
+        } else {
+            getBalanceWidgetLoadingState()
+        }
 
         if (homeFlowDataCancelled || !homeFlowStarted) {
             initFlow()
@@ -357,11 +428,20 @@ open class HomeRevampViewModel @Inject constructor(
     fun getUserName() = userSession.get().name ?: ""
 
     fun refreshWithThreeMinsRules(forceRefresh: Boolean = false, isFirstInstall: Boolean = false) {
-        if ((forceRefresh && getHomeDataJob?.isActive == false) || (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY))) {
+        if ((forceRefresh && getHomeDataJob?.isActive == false) || (
+            !fetchFirstData && homeRateLimit.shouldFetch(
+                    HOME_LIMITER_KEY
+                )
+            )
+        ) {
             refreshHomeData()
             _isNeedRefresh.value = Event(true)
         } else {
-            getBalanceWidgetData()
+            if (atfStyle == RollenceKey.HOME_COMPONENT_ATF_1) {
+                getBalanceWidgetAtf1Data()
+            } else {
+                getBalanceWidgetData()
+            }
         }
         getSearchHint(isFirstInstall)
     }
@@ -375,7 +455,11 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun getRecommendationWidget(filterChip: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, selectedChipsPosition: Int) {
+    fun getRecommendationWidget(
+        filterChip: RecommendationFilterChipsEntity.RecommendationFilterChip,
+        bestSellerDataModel: BestSellerDataModel,
+        selectedChipsPosition: Int
+    ) {
         findWidget<BestSellerDataModel> { currentDataModel, index ->
             launch {
                 updateWidget(
@@ -394,7 +478,8 @@ open class HomeRevampViewModel @Inject constructor(
         launchCatchError(coroutineContext, block = {
             _oneClickCheckoutHomeComponent.postValue(
                 Event(
-                    homeListCarouselUseCase.get().onOneClickCheckOut(channel, grid, position, getUserId())
+                    homeListCarouselUseCase.get()
+                        .onOneClickCheckOut(channel, grid, position, getUserId())
                 )
             )
         }) {
@@ -404,8 +489,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun onCloseBuyAgain(channelId: String, position: Int) {
-        findWidget<RecommendationListCarouselDataModel> {
-                listCarouselModel, index ->
+        findWidget<RecommendationListCarouselDataModel> { listCarouselModel, index ->
             launch {
                 if (homeListCarouselUseCase.get().onClickCloseListCarousel(channelId)) {
                     deleteWidget(listCarouselModel, position)
@@ -419,7 +503,8 @@ open class HomeRevampViewModel @Inject constructor(
     fun updateBannerTotalView(channelId: String?, totalView: String?) {
         if (channelId == null || totalView == null) return
         findWidget<PlayCardDataModel>(predicate = { it.playCardHome?.channelId == channelId }) { playCard, index ->
-            val newPlayCard = playCard.copy(playCardHome = playCard.playCardHome?.copy(totalView = totalView))
+            val newPlayCard =
+                playCard.copy(playCardHome = playCard.playCardHome?.copy(totalView = totalView))
             updateWidget(newPlayCard, index)
         }
     }
@@ -430,24 +515,46 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun onRefreshMembership(position: Int, headerTitle: String) {
         if (!userSession.get().isLoggedIn) return
-        findWidget<HomeHeaderDataModel> { headerModel, index ->
-            launch {
-                val currentHeaderDataModel = homeBalanceWidgetUseCase.get()
-                    .onGetTokopointData(headerModel, position, headerTitle)
-                val visitable = updateHeaderData(currentHeaderDataModel, index)
-                visitable?.let { updateWidget(visitable, index) }
+        if (atfStyle == RollenceKey.HOME_COMPONENT_ATF_1) {
+            findWidget<HomeHeaderAtf1DataModel> { headerModel, index ->
+                launch {
+                    val currentHeaderDataModel = homeBalanceWidgetAtf1UseCase.get()
+                        .onGetTokopointData(headerModel, position, headerTitle)
+                    val visitable = updateHeaderData(currentHeaderDataModel, index)
+                    visitable?.let { updateWidget(visitable, index) }
+                }
+            }
+        } else {
+            findWidget<HomeHeaderDataModel> { headerModel, index ->
+                launch {
+                    val currentHeaderDataModel = homeBalanceWidgetUseCase.get()
+                        .onGetTokopointData(headerModel, position, headerTitle)
+                    val visitable = updateHeaderData(currentHeaderDataModel, index)
+                    visitable?.let { updateWidget(visitable, index) }
+                }
             }
         }
     }
 
     fun onRefreshWalletApp(position: Int, headerTitle: String) {
         if (!userSession.get().isLoggedIn) return
-        findWidget<HomeHeaderDataModel> { headerModel, index ->
-            launch {
-                val currentHeaderDataModel = homeBalanceWidgetUseCase.get()
-                    .onGetWalletAppData(headerModel, position, headerTitle)
-                val visitable = updateHeaderData(currentHeaderDataModel, index)
-                visitable?.let { updateWidget(visitable, index) }
+        if (atfStyle == RollenceKey.HOME_COMPONENT_ATF_1) {
+            findWidget<HomeHeaderAtf1DataModel> { headerModel, index ->
+                launch {
+                    val currentHeaderDataModel = homeBalanceWidgetAtf1UseCase.get()
+                        .onGetWalletAppData(headerModel, position, headerTitle)
+                    val visitable = updateHeaderData(currentHeaderDataModel, index)
+                    visitable?.let { updateWidget(visitable, index) }
+                }
+            }
+        } else {
+            findWidget<HomeHeaderDataModel> { headerModel, index ->
+                launch {
+                    val currentHeaderDataModel = homeBalanceWidgetUseCase.get()
+                        .onGetWalletAppData(headerModel, position, headerTitle)
+                    val visitable = updateHeaderData(currentHeaderDataModel, index)
+                    visitable?.let { updateWidget(visitable, index) }
+                }
             }
         }
     }
@@ -482,7 +589,11 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun getDynamicChannelDataOnExpired(visitable: Visitable<*>, channelModel: ChannelModel, position: Int) {
+    fun getDynamicChannelDataOnExpired(
+        visitable: Visitable<*>,
+        channelModel: ChannelModel,
+        position: Int
+    ) {
         launchCatchError(coroutineContext, block = {
             val visitableList = homeUseCase.get().onDynamicChannelExpired(channelModel.groupId)
 
@@ -585,7 +696,12 @@ open class HomeRevampViewModel @Inject constructor(
     fun getPlayWidgetWhenShouldRefresh() {
         findWidget<CarouselPlayWidgetDataModel> { playWidget, index ->
             launchCatchError(block = {
-                updateWidget(playWidget.copy(widgetState = homePlayUseCase.get().onGetPlayWidgetWhenShouldRefresh()), index)
+                updateWidget(
+                    playWidget.copy(
+                        widgetState = homePlayUseCase.get().onGetPlayWidgetWhenShouldRefresh()
+                    ),
+                    index
+                )
             }) {
                 deleteWidget(playWidget, index)
             }
@@ -604,7 +720,10 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun shouldUpdatePlayWidgetToggleReminder(channelId: String, reminderType: PlayWidgetReminderType) {
+    fun shouldUpdatePlayWidgetToggleReminder(
+        channelId: String,
+        reminderType: PlayWidgetReminderType
+    ) {
         if (!userSession.get().isLoggedIn) {
             _playWidgetReminderEvent.value = Pair(channelId, reminderType)
         } else {
@@ -618,7 +737,10 @@ open class HomeRevampViewModel @Inject constructor(
                 )
             }
             launch {
-                when (homePlayUseCase.get().onUpdatePlayWidgetToggleReminder(channelId, reminderType)) {
+                when (
+                    homePlayUseCase.get()
+                        .onUpdatePlayWidgetToggleReminder(channelId, reminderType)
+                ) {
                     true -> {
                         _playWidgetReminderObservable.postValue(Result.success(reminderType))
                     }
