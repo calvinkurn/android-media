@@ -3,7 +3,7 @@ package com.tokopedia.tokopedianow.similarproduct.listener
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import java.io.Serializable
 
-interface SimilarProductListener: Serializable {
+interface TokoNowSimilarProductTrackerListener: Serializable {
     fun trackImpressionBottomSheet(
         userId: String,
         warehouseId: String,

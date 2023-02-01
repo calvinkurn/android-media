@@ -380,8 +380,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
         analytic.clickUserReportSubmissionDialogSubmit()
         val channelData = playViewModel.latestCompleteChannelData
         playViewModel.submitUserReport(
-            channelId = channelData.id.toLongOrZero(),
-            shopId = channelData.partnerInfo.id,
             mediaUrl = getMediaUrl(channelData.videoMetaInfo),
             timestamp = getTimestampVideo(channelData.channelDetail.channelInfo.startTime),
             reportDesc = description,

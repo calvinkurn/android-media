@@ -13,6 +13,7 @@ import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.databinding.PlayFollowBottomSheetBinding
+import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
@@ -22,6 +23,7 @@ import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.FailedFollow
 import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
+import com.tokopedia.play.view.uimodel.recom.PlayPopUpConfigUiModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collect
@@ -46,7 +48,7 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
         setupSheet()
     }
 
-    private fun setupSheet () {
+    private fun setupSheet() {
         _binding = PlayFollowBottomSheetBinding.inflate(LayoutInflater.from(requireContext()))
         setChild(binding.root)
 
@@ -56,14 +58,14 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
 
         val grandParentFragment = ((requireParentFragment() as? PlayUserInteractionFragment)?.parentFragment) as PlayFragment
         playViewModel = ViewModelProvider(
-            grandParentFragment, grandParentFragment.viewModelProviderFactory
+            grandParentFragment,
+            grandParentFragment.viewModelProviderFactory
         ).get(PlayViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupView()
         observeEvent()
         observeState()
     }
@@ -87,13 +89,14 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
 
     private fun observeState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            playViewModel.uiState.withCache().collectLatest  { state ->
+            playViewModel.uiState.withCache().collectLatest { state ->
                 renderFollowButton(state.value.partner)
+                if (state.isChanged { it.followPopUp }) setupView(partnerInfo = state.value.partner, config = state.value.channel.popupConfig)
             }
         }
     }
 
-    private fun setupView() {
+    private fun setupView(partnerInfo: PlayPartnerInfo, config: PlayPopUpConfigUiModel) {
         analytic.impressFollowPopUp(playViewModel.channelId, playViewModel.channelType.value, playViewModel.partnerType, playViewModel.partnerId.toString())
 
         binding.followHeader.closeListener = View.OnClickListener {
@@ -108,15 +111,13 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
 
         binding.followHeader.title = getString(R.string.play_follow_popup_header_title)
 
-        val partnerInfo = playViewModel.latestCompleteChannelData.partnerInfo
-
         binding.ivBadge.showWithCondition(partnerInfo.badgeUrl.isNotBlank())
         binding.ivIcon.showWithCondition(partnerInfo.iconUrl.isNotBlank())
         binding.ivBadge.loadIcon(partnerInfo.badgeUrl)
         binding.ivIcon.loadIcon(partnerInfo.iconUrl)
         binding.tvPartnerName.text = partnerInfo.name
 
-        binding.tvFollowDesc.text = playViewModel.latestCompleteChannelData.channelDetail.popupConfig.text
+        binding.tvFollowDesc.text = config.text
 
         binding.clFollowContainer.setOnClickListener {
             analytic.clickCreatorPopUp(playViewModel.channelId, playViewModel.channelType.value, playViewModel.partnerType, playViewModel.partnerId.toString())
@@ -133,8 +134,8 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
         binding.btnFollow.isLoading = state.isLoadingFollow
     }
 
-    fun show(fragmentManager: FragmentManager){
-        if(isAdded || isVisible) return
+    fun show(fragmentManager: FragmentManager) {
+        if (isAdded || isVisible) return
         show(fragmentManager, TAG)
     }
 
@@ -166,7 +167,7 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
         private const val TAG = "PlayFollowBottomSheet"
         fun getOrCreate(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
+            classLoader: ClassLoader
         ): PlayFollowBottomSheet {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? PlayFollowBottomSheet
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(classLoader, PlayFollowBottomSheet::class.java.name) as PlayFollowBottomSheet

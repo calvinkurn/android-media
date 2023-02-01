@@ -1,12 +1,12 @@
 package com.tokopedia.tokopedianow.repurchase.presentation.listener
 
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics
-import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
+import com.tokopedia.tokopedianow.similarproduct.listener.TokoNowSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 
-class SimilarProductCallback(
+class TokoNowSimilarProductTrackerCallback(
     private val analytics: RepurchaseAnalytics
-): SimilarProductListener {
+): TokoNowSimilarProductTrackerListener {
     override fun trackImpressionBottomSheet(
         userId: String,
         warehouseId: String,
