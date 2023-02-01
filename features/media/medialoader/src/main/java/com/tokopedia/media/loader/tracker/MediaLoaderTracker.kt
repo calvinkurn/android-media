@@ -35,7 +35,7 @@ object MediaLoaderTracker : CoroutineScope {
     private const val CDN_HOST_NAME_MAP_KEY = "remote_host_name"
     private const val CDN_NAME_KEY = "remote_cdn_name"
     private const val CDN_ERROR_DETAIL = "error_detail"
-    private const val CDN_PAGE_SOURCE_KEY = "source"
+    private const val CDN_PAGE_SOURCE_KEY = "page_source"
     private const val CDN_JOURNEY_KEY = "journey"
 
     private const val CDN_IMG_SIZE_NOT_AVAILBLE = "n/a"
