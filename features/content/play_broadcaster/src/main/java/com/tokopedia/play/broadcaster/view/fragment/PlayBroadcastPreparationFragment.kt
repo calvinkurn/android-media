@@ -28,6 +28,7 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
+import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
@@ -95,6 +96,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val analyticManager: PreparationAnalyticManager,
     private val userSession: UserSessionInterface,
     private val coachMarkSharedPref: ContentCoachMarkSharedPref,
+    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
 ) : PlayBaseBroadcastFragment(),
     FragmentWithDetachableView,
     PreparationMenuView.Listener,
@@ -803,7 +805,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     ) {
         if(prev?.shortVideoAllowed == curr.shortVideoAllowed) return
 
-        if(curr.shortVideoAllowed) {
+        if(curr.shortVideoAllowed && playShortsEntryPointRemoteConfig.isShowEntryPoint()) {
             binding.bannerShorts.show()
             analytic.viewShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
         }

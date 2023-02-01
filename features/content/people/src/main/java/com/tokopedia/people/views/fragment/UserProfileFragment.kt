@@ -32,6 +32,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
+import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.cordinator.ShopRecomImpressCoordinator
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
@@ -104,7 +105,8 @@ class UserProfileFragment @Inject constructor(
     private val userSession: UserSessionInterface,
     private val feedFloatingButtonManager: FeedFloatingButtonManager,
     private val impressionCoordinator: ShopRecomImpressCoordinator,
-    private val coachMarkManager: ContentCoachMarkManager
+    private val coachMarkManager: ContentCoachMarkManager,
+    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
 ) : TkpdBaseV4Fragment(),
     ShareBottomsheetListener,
     ScreenShotListener,
@@ -676,7 +678,9 @@ class UserProfileFragment @Inject constructor(
                     val items = arrayListOf<FloatingButtonItem>()
                     items.add(createLiveFab())
                     items.add(createPostFab())
-                    items.add(createShortsFab())
+                    if(playShortsEntryPointRemoteConfig.isShowEntryPoint()) {
+                        items.add(createShortsFab())
+                    }
 
                     mainBinding.fabUp.addItem(items)
                     mainBinding.fabUserProfile.show()
