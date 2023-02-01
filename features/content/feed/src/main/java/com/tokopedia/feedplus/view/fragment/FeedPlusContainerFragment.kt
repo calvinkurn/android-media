@@ -374,7 +374,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         postProgressUpdateView?.unregisterBroadcastReceiverProgress()
         coachMarkManager?.dismissAllCoachMark()
         coachMarkManager = null
-        onboardingCoachmark.dismissCoachmark()
+        onboardingCoachmark.dismiss()
         super.onDestroy()
     }
 

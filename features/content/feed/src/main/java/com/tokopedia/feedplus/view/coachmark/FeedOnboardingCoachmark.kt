@@ -155,10 +155,6 @@ class FeedOnboardingCoachmark @Inject constructor(
         }
     }
 
-    fun dismissCoachmark() {
-        coachMark.dismissCoachMark()
-    }
-
     fun dismiss() {
         coachMark.dismiss()
     }
