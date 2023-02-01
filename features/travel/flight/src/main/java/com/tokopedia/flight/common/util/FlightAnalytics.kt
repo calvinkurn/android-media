@@ -137,6 +137,7 @@ class FlightAnalytics @Inject constructor() {
                 eventAction = FlightAnalyticsAction.CLICK_SEARCH,
                 // flight - departure-arrival - oneway|roundtrip - adult-child-infant - class - departure date (optional : " - return date" if round trip)
                 eventLabel = String.format(
+                    Locale.getDefault(),
                     "%s - %s-%s - %s - %s-%s-%s - %s - %s%s",
                     FlightAnalyticsDefaults.FLIGHT_SMALL,
                     if (homepageModel.departureAirport != null &&
