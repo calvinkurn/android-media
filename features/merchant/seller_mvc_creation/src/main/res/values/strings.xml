@@ -441,7 +441,7 @@
     <string name="smvc_intro_voucher_card_2_subtitle">Kelola tipe promo, potongan harga, dan minimum pembelian sesuai kebutuhan penjualanmu. </string>
     <string name="smvc_intro_voucher_card_3_title">Bebas tentukan target pembeli</string>
     <string name="smvc_intro_voucher_card_3_subtitle">Strategi penjualan lebih efektif dengan penggunaan kupon sesuai target pembeli.</string>
-    <string name="smvc_intro_voucher_type_card_title">Jenis Kupon apa sajayang bisa dibuat?</string>
+    <string name="smvc_intro_voucher_type_card_title">Jenis Kupon apa saja yang bisa dibuat?</string>
     <string name="smvc_intro_voucher_type_card_1_title">Kupon Toko</string>
     <string name="smvc_intro_voucher_type_card_1_subtitle">Kupon dapat dipasang ke semua produk yang ada di tokomu.</string>
     <string name="smvc_intro_voucher_type_card_2_title">Kupon Produk</string>
