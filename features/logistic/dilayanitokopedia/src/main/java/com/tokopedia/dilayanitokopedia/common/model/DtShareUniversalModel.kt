@@ -11,6 +11,5 @@ data class DtShareUniversalModel(
     var specificPageName: String = "",
     var specificPageDescription: String = "",
     var isScreenShot: Boolean = false,
-    var linkerType: String = "",
-    var deeplink: String = ""
+    var linkerType: String = ""
 )
