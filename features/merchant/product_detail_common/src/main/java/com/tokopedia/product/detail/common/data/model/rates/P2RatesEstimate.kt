@@ -88,7 +88,11 @@ data class P2RatesEstimateData(
 
         @SerializedName("hasUsedBenefit")
         @Expose
-        val hasUsedBenefit: Boolean = false
+        val hasUsedBenefit: Boolean = false,
+
+        @SerializedName("tickers")
+        @Expose
+        val tickers: List<Ticker> = emptyList()
 )
 
 data class P2RatesError(
@@ -145,4 +149,14 @@ data class ProductMetadata(
     @SerializedName("value")
     @Expose
     val value: String = ""
+)
+
+data class Ticker(
+    @SerializedName("title")
+    @Expose
+    val title: String = "",
+
+    @SerializedName("message")
+    @Expose
+    val message: String = ""
 )

@@ -1,10 +1,12 @@
 package com.tokopedia.product.estimasiongkir.data.model.shipping
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactory
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingVisitable
 
 data class ProductShippingSellyDataModel(
-    val services: List<Service> = emptyList()
+    val services: List<Service> = emptyList(),
+    val impressHolder: ImpressHolder = ImpressHolder()
 ) : ProductShippingVisitable {
     override fun uniqueId(): Long = 0L
 

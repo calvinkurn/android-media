@@ -22,6 +22,9 @@ import com.tokopedia.product.detail.databinding.ViewShipmentErrorBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.renderHtmlBold
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 
 class ShipmentViewHolder(
     view: View,
@@ -117,6 +120,7 @@ class ShipmentViewHolder(
         renderBo(element, rates)
         renderShipment(element, rates)
         renderCourier(element, rates)
+        renderTicker(element)
 
         itemView.addOnImpressionListener(element.impressHolder) {
             listener.onImpressComponent(getComponentTrackData(element))
@@ -216,6 +220,22 @@ class ShipmentViewHolder(
                 rates.title, usedLabels, element.isCod, componentTrackDataModel
             )
         }
+    }
+
+    private fun renderTicker(element: ProductShipmentDataModel) = with(viewMain) {
+        val tickers = element.rates.tickers.map {
+            TickerData(
+                description = it.message,
+                type = Ticker.TYPE_ANNOUNCEMENT,
+                title = it.title,
+                isFromHtml = true
+            )
+        }
+
+        pdpShipmentTicker.addPagerView(
+            TickerPagerAdapter(context, tickers),
+            tickers
+        )
     }
 
     private fun loadErrorState() = with(viewError) {
