@@ -173,6 +173,7 @@ class FlightAnalytics @Inject constructor() {
                         ""
                     } else {
                         String.format(
+                            Locale.getDefault(),
                             " - %s",
                             DateUtil.formatDate(
                                 DateUtil.YYYY_MM_DD,
@@ -224,6 +225,7 @@ class FlightAnalytics @Inject constructor() {
                 eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
                 eventAction = FlightAnalyticsAction.VIEW_SEARCH,
                 eventLabel = String.format(
+                    Locale.getDefault(),
                     "%s - %s-%s - %s - %s-%s-%s - %s - %s%s",
                     FlightAnalyticsDefaults.FLIGHT_SMALL,
                     if (searchPassModel.departureAirport.airportCode.isEmpty()) {
@@ -250,6 +252,7 @@ class FlightAnalytics @Inject constructor() {
                         ""
                     } else {
                         String.format(
+                            Locale.getDefault(),
                             " - %s",
                             DateUtil.formatDate(
                                 DateUtil.YYYY_MM_DD,
@@ -340,6 +343,7 @@ class FlightAnalytics @Inject constructor() {
                 eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
                 eventAction = FlightAnalyticsAction.CLICK_SEARCH_PRODUCT_NOT_FOUND,
                 eventLabel = String.format(
+                    Locale.getDefault(),
                     "%s - %s-%s - %s - %s-%s-%s - %s - %s%s",
                     FlightAnalyticsDefaults.FLIGHT_SMALL,
                     if (searchPassData.departureAirport.airportCode.isEmpty()) searchPassData.departureAirport.cityCode else searchPassData.departureAirport.airportCode,
@@ -354,6 +358,7 @@ class FlightAnalytics @Inject constructor() {
                         ""
                     } else {
                         String.format(
+                            Locale.getDefault(),
                             " - %s",
                             DateUtil.formatDate(
                                 DateUtil.YYYY_MM_DD,
