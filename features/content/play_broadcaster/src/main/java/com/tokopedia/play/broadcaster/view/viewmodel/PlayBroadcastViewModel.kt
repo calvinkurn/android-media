@@ -480,7 +480,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             updateSelectedAccount(
                 getSelectedAccount(
                     selectedType = selectedType,
-                    cacheSelectedType = sharedPref.getLastSelectedAccount(),
+                    cacheSelectedType = sharedPref.getLastSelectedAccountType(),
                     accountList = accountList
                 )
             )
