@@ -34,5 +34,4 @@ data class PersonaItemHeaderModel(
 data class PersonaItemBodyModel(
     @SerializedName("title") val title: String = String.EMPTY,
     @SerializedName("itemList") val itemList: List<String> = emptyList()
-
 )

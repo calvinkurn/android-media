@@ -13,7 +13,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 /**
@@ -34,7 +33,6 @@ class PersonaSharedViewModel @Inject constructor(
         launchCatchError(block = {
             val data = getPersonaStatus.get()
                 .execute(userSession.get().shopId, Constants.PERSONA_PAGE_PARAM)
-            delay(1500)
             _personaStatus.postValue(Success(data))
         }, onError = {
             _personaStatus.postValue(Fail(it))

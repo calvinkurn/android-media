@@ -14,7 +14,7 @@ data class FetchPersonaQuestionnaireResponse(
 )
 
 data class FetchPersonaQuestionnaireModel(
-    @SerializedName("error") val error: Boolean = true,
+    @SerializedName("error") val error: Boolean = false,
     @SerializedName("errorMsg") val errorMsg: String = String.EMPTY,
     @SerializedName("questionnaire") val questionnaire: List<QuestionnaireModel>? = null,
 )

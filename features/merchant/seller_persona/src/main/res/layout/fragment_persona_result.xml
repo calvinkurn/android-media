@@ -23,12 +23,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!--<androidx.constraintlayout.widget.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/groupSpResultComponents"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="visible"
-            app:constraint_referenced_ids="imgSpResultBackdrop, imgSpResultAvatar, tvSpSelectManualType, btnSpRetryQuestionnaire, btnSpApplyPersona, tvSpPersonaContentDescription, switchSpActivatePersona, tvSpLblActivatePersona, dividerSpResultBottom, rvSpResultInfoList, dividerSpResultTop, tvSpResultInfoTitle, tvSpSellerTypeNote, tvSpSellerType, tvSpLblSellerType, tvSpOwnerInfo, tvSpLblOwnerInfo, dividerSpResultMiddle" />-->
+            app:constraint_referenced_ids="imgSpResultBackdrop, imgSpResultAvatar, tvSpSelectManualType, btnSpRetryQuestionnaire, tvSpPersonaContentDescription, switchSpActivatePersona, tvSpLblActivatePersona, dividerSpResultBottom, rvSpResultInfoList, dividerSpResultTop, tvSpResultInfoTitle, tvSpSellerTypeNote, tvSpSellerType, tvSpLblSellerType, tvSpOwnerInfo, tvSpLblOwnerInfo, dividerSpResultMiddle" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imgSpResultBackdrop"
@@ -118,7 +118,7 @@
             app:layout_constraintStart_toStartOf="@+id/guidelineSpBegin"
             app:layout_constraintTop_toBottomOf="@+id/imgSpResultBackdrop"
             app:typographyType="heading_2"
-            tools:text="@string/sp_result_list_section" />
+            tools:text="@string/sp_result_list_section_gedongan" />
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/dividerSpResultTop"
@@ -204,12 +204,13 @@
             app:layout_constraintStart_toStartOf="@+id/guidelineSpBegin"
             app:layout_constraintTop_toBottomOf="@+id/tvSpLblActivatePersona"
             app:typographyType="display_3"
-            tools:text="(Tidak Aktif)" />
+            tools:text="@string/sp_inactive" />
 
         <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
             android:id="@+id/switchSpActivatePersona"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:checked="true"
             app:layout_constraintBottom_toBottomOf="@+id/tvSpLblActivatePersonaStatus"
             app:layout_constraintEnd_toStartOf="@+id/guidelineSpEnd"
             app:layout_constraintTop_toBottomOf="@+id/tvSpLblActivatePersona"
@@ -233,6 +234,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="@string/sp_apply"
+            android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@+id/guidelineSpEnd"
             app:layout_constraintStart_toStartOf="@+id/guidelineSpBegin"
             app:layout_constraintTop_toBottomOf="@+id/tvSpPersonaContentDescription"
@@ -257,8 +259,8 @@
             android:id="@+id/tvSpSelectManualType"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="27dp"
-            android:layout_marginBottom="19dp"
+            android:layout_marginTop="26dp"
+            android:layout_marginBottom="18dp"
             android:gravity="center"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintBottom_toBottomOf="parent"

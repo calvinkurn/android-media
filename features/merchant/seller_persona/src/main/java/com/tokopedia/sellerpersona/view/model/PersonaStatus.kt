@@ -4,11 +4,12 @@ package com.tokopedia.sellerpersona.view.model
  * Created by @ilhamsuaib on 30/01/23.
  */
 
-enum class PersonaStatus {
-    INACTIVE, ACTIVE, UNDEFINED;
+const val PERSONA_STATUS_UNDEFINED: Int = -1
+const val PERSONA_STATUS_INACTIVE: Int = 0
+const val PERSONA_STATUS_ACTIVE = 1
 
-    companion object {
-        const val INACTIVE_CONST = "0"
-        const val ACTIVE_CONST = "1"
-    }
+enum class PersonaStatus(val value: Int) {
+    INACTIVE(PERSONA_STATUS_INACTIVE),
+    ACTIVE(PERSONA_STATUS_ACTIVE),
+    UNDEFINED(PERSONA_STATUS_UNDEFINED)
 }

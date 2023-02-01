@@ -89,6 +89,7 @@ import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.customview.NotificationDotBadge
 import com.tokopedia.sellerhome.view.dialog.NewSellerDialog
 import com.tokopedia.sellerhome.view.helper.NewSellerJourneyHelper
+import com.tokopedia.sellerhome.view.model.SellerHomeDataUiModel
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhome.view.model.ShopStateInfoUiModel
 import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
@@ -181,16 +182,24 @@ import kotlin.coroutines.CoroutineContext
  * Created By @ilhamsuaib on 2020-01-14
  */
 
+@Suppress("DEPRECATION")
 class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(),
     WidgetListener, CoroutineScope, SellerHomeFragmentListener {
 
     companion object {
         @JvmStatic
-        fun newInstance() = SellerHomeFragment()
+        fun newInstance(data: SellerHomeDataUiModel? = null) = SellerHomeFragment().apply {
+            data?.let {
+                arguments = Bundle().apply {
+                    putParcelable(KEY_SELLER_HOME_DATA, it)
+                }
+            }
+        }
 
         val NOTIFICATION_MENU_ID = R.id.menu_sah_notification
         val SEARCH_MENU_ID = R.id.menu_sah_search
 
+        private const val KEY_SELLER_HOME_DATA = "seller_home_data"
         private const val REQ_CODE_MILESTONE_WIDGET = 8043
         private const val NOTIFICATION_BADGE_DELAY = 2000L
         private const val TAG_TOOLTIP = "seller_home_tooltip"
@@ -336,6 +345,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeShopShareTracker()
         observeWidgetDismissalStatus()
         observeShopStateInfo()
+        showSellerHomeTaster()
 
         context?.let { UpdateShopActiveWorker.execute(it) }
     }
@@ -1304,7 +1314,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun setupShopSharing() {
-        ImageHandler.loadImageWithTarget(context,
+        ImageHandler.loadImageWithTarget(
+            context,
             shopShareData?.shopSnippetURL.orEmpty(),
             object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(
@@ -1342,7 +1353,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     shopCoreUrl = shopShareData?.shopUrl.orEmpty()
                 )
                 activity?.let {
-                    shopShareHelper.onShareOptionClicked(it,
+                    shopShareHelper.onShareOptionClicked(
+                        it,
                         view,
                         shareDataModel,
                         callback = { shareModel, _ ->
@@ -2763,6 +2775,30 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun getNotificationView(): View? {
         return menu?.findItem(NOTIFICATION_MENU_ID)?.actionView
+    }
+
+    @SuppressLint("DeprecatedMethod")
+    private fun showSellerHomeTaster() {
+        binding?.run {
+            root.post {
+                val data = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    arguments?.getParcelable(
+                        KEY_SELLER_HOME_DATA, SellerHomeDataUiModel::class.java
+                    )
+                } else {
+                    arguments?.getParcelable(KEY_SELLER_HOME_DATA)
+                }
+                data?.let {
+                    Toaster.build(
+                        this.root,
+                        it.toasterMessage,
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        it.toasterCta
+                    ).show()
+                }
+            }
+        }
     }
 
     interface Listener {

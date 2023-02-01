@@ -26,6 +26,7 @@ import com.tokopedia.sellerpersona.data.remote.model.PersonaStatusModel
 import com.tokopedia.sellerpersona.databinding.ActivitySellerPersonaBinding
 import com.tokopedia.sellerpersona.di.DaggerSellerPersonaComponent
 import com.tokopedia.sellerpersona.di.SellerPersonaComponent
+import com.tokopedia.sellerpersona.view.model.PERSONA_STATUS_ACTIVE
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
 import com.tokopedia.sellerpersona.view.viewmodel.PersonaSharedViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -118,7 +119,7 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
             val inflater = navController.navInflater
             val graph = inflater.inflate(R.navigation.nav_graph)
 
-            val defaultDestination = if (data.status == PersonaStatus.ACTIVE_CONST) {
+            val defaultDestination = if (data.status == PERSONA_STATUS_ACTIVE.toString()) {
                 R.id.resultFragment
             } else {
                 R.id.openingFragment

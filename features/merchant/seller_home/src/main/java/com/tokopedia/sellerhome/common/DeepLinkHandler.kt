@@ -5,6 +5,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
+import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
+import com.tokopedia.sellerhome.view.model.SellerHomeDataUiModel
 
 /**
  * Created By @ilhamsuaib on 2020-03-05
@@ -23,9 +25,20 @@ object DeepLinkHandler {
         when {
             //Seller Order Management (som)
             data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_ALL) -> {
-                val searchKeyword = intent.data?.getQueryParameter(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH).orEmpty()
-                val orderId = intent.data?.getQueryParameter(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).orEmpty()
-                callback(PageFragment(FragmentType.ORDER, SomTabConst.STATUS_ALL_ORDER, searchKeyword, orderId = orderId))
+                val searchKeyword =
+                    intent.data?.getQueryParameter(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH)
+                        .orEmpty()
+                val orderId =
+                    intent.data?.getQueryParameter(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID)
+                        .orEmpty()
+                callback(
+                    PageFragment(
+                        FragmentType.ORDER,
+                        SomTabConst.STATUS_ALL_ORDER,
+                        searchKeyword,
+                        orderId = orderId
+                    )
+                )
             }
             data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER) -> {
                 val searchKeyword =
@@ -60,24 +73,51 @@ object DeepLinkHandler {
                 )
             }
             data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_SHIPPED) -> {
-                val searchKeyword = intent.data?.getQueryParameter(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH).orEmpty()
-                callback(PageFragment(FragmentType.ORDER, SomTabConst.STATUS_IN_SHIPPING, searchKeyword))
+                val searchKeyword =
+                    intent.data?.getQueryParameter(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH)
+                        .orEmpty()
+                callback(
+                    PageFragment(
+                        FragmentType.ORDER,
+                        SomTabConst.STATUS_IN_SHIPPING,
+                        searchKeyword
+                    )
+                )
             }
             data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_DONE) -> {
-                val searchKeyword = intent.data?.getQueryParameter(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH).orEmpty()
+                val searchKeyword =
+                    intent.data?.getQueryParameter(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH)
+                        .orEmpty()
                 callback(PageFragment(FragmentType.ORDER, SomTabConst.STATUS_DONE, searchKeyword))
             }
             data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_CANCELLED) -> {
-                val searchKeyword = intent.data?.getQueryParameter(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH).orEmpty()
-                callback(PageFragment(FragmentType.ORDER, SomTabConst.STATUS_ORDER_CANCELLED, searchKeyword))
+                val searchKeyword =
+                    intent.data?.getQueryParameter(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH)
+                        .orEmpty()
+                callback(
+                    PageFragment(
+                        FragmentType.ORDER,
+                        SomTabConst.STATUS_ORDER_CANCELLED,
+                        searchKeyword
+                    )
+                )
             }
             data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_CANCELLATION_REQUEST) -> {
                 val uri = intent.data
-                val searchKeyword = intent.data?.getQueryParameter(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH).orEmpty()
+                val searchKeyword =
+                    intent.data?.getQueryParameter(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH)
+                        .orEmpty()
                 val filterOrderType = uri?.getQueryParameter(
                     AppLinkMapperSellerHome.FILTER_ORDER_TYPE
                 ) ?: SomTabConst.DEFAULT_ORDER_TYPE_FILTER
-                callback(PageFragment(FragmentType.ORDER, SomTabConst.STATUS_ALL_ORDER, searchKeyword, filterOrderType))
+                callback(
+                    PageFragment(
+                        FragmentType.ORDER,
+                        SomTabConst.STATUS_ALL_ORDER,
+                        searchKeyword,
+                        filterOrderType
+                    )
+                )
             }
 
             //Product Manage
@@ -109,7 +149,26 @@ object DeepLinkHandler {
 
             //Seller Home
             data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME) -> {
-                callback(PageFragment(FragmentType.HOME))
+                val uri = intent.data
+                if (uri != null) {
+                    val toasterMessage = uri.getQueryParameter(
+                        SellerHomeApplinkConst.TOASTER_MESSAGE
+                    ).orEmpty()
+                    val toasterCta = uri.getQueryParameter(SellerHomeApplinkConst.TOASTER_CTA)
+                        .orEmpty()
+                    val sellerHomeData = SellerHomeDataUiModel(
+                        toasterMessage = toasterMessage,
+                        toasterCta = toasterCta,
+                    )
+                    callback(
+                        PageFragment(
+                            type = FragmentType.HOME,
+                            sellerHomeData = sellerHomeData
+                        )
+                    )
+                } else {
+                    callback(PageFragment(FragmentType.HOME))
+                }
             }
 
             else -> callback(PageFragment(FragmentType.HOME))

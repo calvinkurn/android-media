@@ -8,6 +8,7 @@
     <string name="sp_result_seller_type">Kamu termasuk tipe Seller:</string>
     <string name="sp_persona_activation_content_description">Konten rekomendasi dan tampilan Home akan disesuaikan dengan kebutuhanmu.</string>
     <string name="sp_apply">Terapkan</string>
+    <string name="sp_apply_changes">Simpan Perubahan</string>
     <string name="sp_retry_questionnaire">Ulangi Kuis</string>
     <string name="sp_persona_result_select_manual"><![CDATA[Hasil kurang sesuai? <font color=\"%1$s\"><b>Pilih Sendiri Tipemu</b></font>]]></string>
     <string name="sp_opening_page_type">Tipe Seller Apakah Kamu?</string>
@@ -19,6 +20,12 @@
     <string name="sp_select_this_type_if">Pilih tipe ini jika kamu:</string>
     <string name="sp_next">Selanjutnya</string>
     <string name="sp_previous">Sebelumnya</string>
-    <string name="sp_result_list_section">Kamu pemilik toko %1$s karena:</string>
+    <string name="sp_result_list_section_gedongan">Kamu pemilik toko %1$s karena:</string>
+    <string name="sp_result_account_type">(%1$s)</string>
     <string name="sp_result_persona_seller_type_status">Personalisasi berdasarkan tipe Seller</string>
+    <string name="sp_active">(Aktif)</string>
+    <string name="sp_inactive">(Tidak Aktif)</string>
+    <string name="sp_persona_toggle_to_inactive_toaster_message">Personalisasi tidak aktif. Tampilan Home kembali seperti sebelum menjawab kuis, ya.</string>
+    <string name="sp_persona_toggle_to_active_toaster_message">Kamu sudah tahu tipe Seller-mu dan tampilan Home akan disesuaikan, ya.</string>
+    <string name="sp_oke">Oke</string>
 </resources>
