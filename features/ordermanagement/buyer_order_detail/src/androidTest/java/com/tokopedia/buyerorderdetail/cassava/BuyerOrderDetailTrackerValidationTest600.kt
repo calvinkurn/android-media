@@ -27,6 +27,7 @@ class BuyerOrderDetailTrackerValidationTest600 : BuyerOrderDetailTrackerValidati
                 activityRule.activity,
                 true
             )
+            testScrollToBottom(activityRule.activity)
             testClickSecondaryActionButtonOnFinishOrderConfirmationBottomSheet(
                 activityRule.activity,
                 true

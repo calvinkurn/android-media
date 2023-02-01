@@ -61,6 +61,8 @@ public interface UserSessionInterface {
 
     String getShopAvatar();
 
+    String getShopAvatarOriginal();
+
     boolean isPowerMerchantIdle();
 
     String getAutofillUserData();
@@ -141,6 +143,8 @@ public interface UserSessionInterface {
     void setGCToken(String gcToken);
 
     void setShopAvatar(String shopAvatar);
+
+    void setShopAvatarOriginal(String shopAvatarOriginal);
 
     void setIsPowerMerchantIdle(boolean powerMerchantIdle);
 
