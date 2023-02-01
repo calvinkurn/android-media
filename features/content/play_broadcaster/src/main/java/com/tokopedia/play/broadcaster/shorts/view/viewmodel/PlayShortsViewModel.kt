@@ -387,14 +387,14 @@ class PlayShortsViewModel @Inject constructor(
         val config = repo.getShortsConfiguration(account.id, account.type)
         _config.update { it.copy(tncList = config.tncList) }
 
-        if(config.isBanned) {
+        if (account.isUser && !account.hasAcceptTnc) {
+            emitEventUGCOnboarding(account.hasUsername)
+        } else if(config.isBanned) {
             emitEventAccountBanned()
         } else if (account.isShop && (!account.enable || !config.shortsAllowed)) {
             emitEventSellerNotEligible()
         } else if (account.isUser && !config.shortsAllowed) {
             emitEventAccountNotEligible()
-        } else if (account.isUser && !account.hasAcceptTnc) {
-            emitEventUGCOnboarding(account.hasUsername)
         } else {
             val finalConfig = if (config.shortsId.isEmpty()) {
                 val shortsId = repo.createShorts(account.id, account.type)
