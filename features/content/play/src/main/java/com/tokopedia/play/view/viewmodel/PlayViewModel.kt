@@ -461,7 +461,7 @@ class PlayViewModel @AssistedInject constructor(
         get() = _videoProperty.value.state.hasNoData
 
     val isAnyBottomSheetsShown: Boolean
-        get() = bottomInsets.isAnyShown && _isBottomSheetsShown.value && _isFollowPopUpShown.value.shouldShow
+        get() = bottomInsets.isAnyShown || _isBottomSheetsShown.value || _isFollowPopUpShown.value.shouldShow
 
     /**
      * Temporary
