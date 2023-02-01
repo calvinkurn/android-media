@@ -972,7 +972,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     }
 
     private fun deleteOrStopVoucher(data: VoucherDetailData) {
-        if (data.isVps == TRUE) {
+        if (data.isVps == TRUE || data.isSubsidy == TRUE) {
             showCallTokopediaCareDialog(data.voucherStatus)
         } else {
             showConfirmationStopVoucherDialog(data)
