@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetAutoPlayCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
@@ -23,7 +24,7 @@ class PlayExploreWidgetCoordinator(
     private var mListener: PlayWidgetListener? = null
     private var mAnalyticListener: PlayWidgetAnalyticListener? = null
 
-    private val autoplayCoordinator = PlayExploreWidgetAutoPlay(scope, mainCoroutineDispatcher)
+    private val autoplayCoordinator = PlayWidgetAutoPlayCoordinator(scope, mainCoroutineDispatcher)
 
     init {
         lifecycleOwner?.let { configureLifecycle(it) }
@@ -36,7 +37,7 @@ class PlayExploreWidgetCoordinator(
 
     fun connect(widget: PlayWidgetLargeView, model: PlayWidgetUiModel) {
         widget.setData(model)
-        autoplayCoordinator.configureAutoPlay(widget, model.config, PlayWidgetType.Medium)
+        autoplayCoordinator.configureAutoPlayLarge(widget, model.config, PlayWidgetType.Medium)
     }
 
     fun setListener(listener: PlayWidgetListener?) {
