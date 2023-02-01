@@ -254,6 +254,7 @@ class ChatModule {
     }
 
     @Provides
+    @ChatScope
     fun provideWebSocketLogger(
         @ApplicationContext context: Context
     ) : WebSocketLogger {

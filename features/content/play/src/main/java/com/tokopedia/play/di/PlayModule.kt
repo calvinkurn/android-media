@@ -174,6 +174,7 @@ class PlayModule(val mContext: Context) {
     }
 
     @Provides
+    @PlayScope
     fun provideWebSocketLogger(
         @ApplicationContext context: Context
     ): WebSocketLogger {
