@@ -2843,7 +2843,7 @@ class PlayViewModel @AssistedInject constructor(
             updateWidgetParam(group = chips.items.first().group, sourceType = chips.items.first().sourceType, sourceId = chips.items.first().sourceId)
             val widgets = getWidgets()
             _exploreWidget.update {
-                val newList = it.widgets.union(widgets).toList()
+                val newList = it.widgets + widgets
                 it.copy(
                     param = it.param.copy(cursor = widgets.getConfig.cursor),
                     widgets = newList.getChannelBlocks,
@@ -2866,7 +2866,7 @@ class PlayViewModel @AssistedInject constructor(
             val widgets = getWidgets()
 
             _exploreWidget.update {
-                val newList = if (isNextPage) it.widgets.union(widgets).toList() else widgets
+                val newList = if (isNextPage) it.widgets + widgets else widgets
 
                 it.copy(
                     widgets = newList.getChannelBlocks,
@@ -2874,10 +2874,7 @@ class PlayViewModel @AssistedInject constructor(
                     state = if (newList.isEmpty()) ExploreWidgetState.Empty else ExploreWidgetState.Success
                 )
             }
-        }) {
-                exception ->
-            _exploreWidget.update { it.copy(state = ExploreWidgetState.Fail(exception)) }
-        }
+        }) { exception -> _exploreWidget.update { it.copy(state = ExploreWidgetState.Fail(exception)) } }
     }
 
     private fun handleClickChip(item: ChipWidgetUiModel) {
