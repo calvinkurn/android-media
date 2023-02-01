@@ -31,6 +31,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +59,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -185,6 +187,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public void onCreate(@NonNull Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userSession = new UserSession(getContext());
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         Bundle args = getArguments();
         if (args == null || !args.containsKey(KEY_URL)) {
             return;
@@ -204,7 +207,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         isTokopediaUrl = host != null && host.endsWith(TOKOPEDIA_COM) && !host.contains(ZOOM_US_STRING);
-        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     private String getUrlFromArguments(Bundle args) {
@@ -228,10 +230,20 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         } else {
             try {
                 return onCreateWebView(inflater, container, savedInstanceState);
-            } catch (Exception e) {
+            } catch (InflateException e) {
                 redirectToWebViewPlaystore();
                 return null;
+            } catch (Exception e) {
+                logCrashToFirebase(e);
+                return null;
             }
+        }
+    }
+
+    private void logCrashToFirebase(Exception e) {
+        try {
+            FirebaseCrashlytics.getInstance().recordException(e);
+        } catch (IllegalStateException ignored) {
         }
     }
 
