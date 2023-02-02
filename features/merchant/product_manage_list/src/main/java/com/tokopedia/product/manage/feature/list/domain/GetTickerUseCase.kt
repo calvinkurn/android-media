@@ -7,10 +7,9 @@ import com.tokopedia.product.manage.feature.list.data.model.GetTargetedTickerRes
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-
 @GqlQuery("GetTickerProductManageQuery", GetTickerUseCase.QUERY)
-class GetTickerUseCase @Inject constructor(repository: GraphqlRepository)
-    : GraphqlUseCase<GetTargetedTickerResponse>(repository) {
+class GetTickerUseCase @Inject constructor(repository: GraphqlRepository) :
+    GraphqlUseCase<GetTargetedTickerResponse>(repository) {
 
     companion object {
 

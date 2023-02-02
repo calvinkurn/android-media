@@ -2925,8 +2925,10 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         tickerResponse: GetTargetedTickerResponse
     ) {
         every {
-            tickerStaticDataProvider.createTicker(true,
-                tickerResponse.getTargetedTicker?.tickers.orEmpty())
+            tickerStaticDataProvider.createTicker(
+                true,
+                tickerResponse.getTargetedTicker?.tickers.orEmpty()
+            )
         } returns tickerData
     }
 
