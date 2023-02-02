@@ -223,9 +223,6 @@ open class ProductManageFragment :
     @Inject
     lateinit var productManageSession: ProductManageSession
 
-    @Inject
-    lateinit var firebaseRemoteConfigImpl: FirebaseRemoteConfigImpl
-
     protected var binding by autoClearedNullable<FragmentProductManageSellerBinding>()
 
     private var shopDomain: String = ""
@@ -2614,9 +2611,7 @@ open class ProductManageFragment :
     }
 
     private fun getTickerData() {
-        viewModel.getTickerData(
-            firebaseRemoteConfigImpl.getBoolean(ENABLE_STOCK_AVAILABLE).orFalse()
-        )
+        viewModel.getTickerData()
     }
 
     private fun getFiltersTab(withDelay: Boolean = false) {
