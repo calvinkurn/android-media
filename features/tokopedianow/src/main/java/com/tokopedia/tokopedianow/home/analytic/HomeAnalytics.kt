@@ -309,12 +309,11 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     }
 
     fun onImpressBannerPromo(channelModel: ChannelModel, channelGrid: ChannelGrid, warehouseId: String, position: Int) {
-        val trackerPosition = position + ADDITIONAL_POSITION
         val ecommerceDataLayerBanner = ecommerceDataLayerBanner(
             channelModel = channelModel,
             channelGrid = channelGrid,
-            position = trackerPosition,
-            itemName = "/ - p$trackerPosition - slider banner - banner - ${channelModel.channelHeader.name}"
+            position = position,
+            itemName = "/ - p${position.getTrackerPosition()} - slider banner - banner - ${channelModel.channelHeader.name}"
         )
 
         val promotions = arrayListOf(
@@ -846,12 +845,11 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     fun trackImpressionLego3Banner(channelModel: ChannelModel) {
         val promotions = ArrayList(
             channelModel.channelGrids.mapIndexed { position, channelGrid ->
-                val trackerPosition = position + ADDITIONAL_POSITION
                 ecommerceDataLayerBanner(
                     channelModel = channelModel,
                     channelGrid = channelGrid,
-                    position = trackerPosition,
-                    itemName = "/ - p$trackerPosition - lego 3 banner - ${channelModel.channelHeader.name}"
+                    position = position,
+                    itemName = "/ - p${position.getTrackerPosition()} - lego 3 banner - ${channelModel.channelHeader.name}"
                 )
             }
         )
@@ -869,12 +867,11 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     }
 
     fun trackClickLego3Banner(position: Int, channelModel: ChannelModel, channelGrid: ChannelGrid) {
-        val trackerPosition = position + ADDITIONAL_POSITION
         val dataLayerBanner = ecommerceDataLayerBanner(
             channelModel = channelModel,
             channelGrid = channelGrid,
             position = position,
-            itemName = "/ - p$trackerPosition - lego 3 banner - ${channelModel.channelHeader.name}"
+            itemName = "/ - p${position.getTrackerPosition()} - lego 3 banner - ${channelModel.channelHeader.name}"
         )
 
         val promotions = arrayListOf(dataLayerBanner)
@@ -897,10 +894,10 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         val eventLabel = "${channelModel.id} - $headerName - $warehouseId - ${position + 1}"
 
         val promotions = ArrayList(
-            channelModel.channelGrids.mapIndexed { index, channelGrid ->
+            channelModel.channelGrids.mapIndexed { position, channelGrid ->
                 Bundle().apply {
-                    val gridPosition = (index + 1).toString()
-                    putString(KEY_CREATIVE_NAME, channelModel.trackingAttributionModel.galaxyAttribution)
+                    val gridPosition = position.getTrackerPosition().toString()
+                    putString(KEY_CREATIVE_NAME, channelModel.channelGrids[position].attribution)
                     putString(KEY_CREATIVE_SLOT, gridPosition)
                     putString(KEY_ITEM_ID, "${channelModel.id}_${channelGrid.id}_${nullString}_$nullString")
                     putString(KEY_ITEM_NAME, "/ - $gridPosition - $LEGO_6_BANNER - $headerName")
@@ -932,12 +929,12 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     ) {
         val nullString = "null"
         val headerName = channelModel.channelHeader.name
-        val eventLabel = "${channelModel.id} - $headerName - $warehouseId - ${parentPosition + 1}"
+        val eventLabel = "${channelModel.id} - $headerName - $warehouseId - ${parentPosition.getTrackerPosition()}"
 
         val promotions = arrayListOf(
             Bundle().apply {
-                val gridPosition = (position + 1).toString()
-                putString(KEY_CREATIVE_NAME, channelModel.trackingAttributionModel.galaxyAttribution)
+                val gridPosition = position.getTrackerPosition().toString()
+                putString(KEY_CREATIVE_NAME, channelModel.channelGrids[position].attribution)
                 putString(KEY_CREATIVE_SLOT, gridPosition)
                 putString(KEY_ITEM_ID, "${channelModel.id}_${channelGrid.id}_${nullString}_$nullString")
                 putString(KEY_ITEM_NAME, "/ - $gridPosition - $LEGO_6_BANNER - $headerName")
@@ -1481,11 +1478,11 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         position: Int
     ): Bundle {
         return Bundle().apply {
-            val trackerPosition = position + ADDITIONAL_POSITION
-            putString(KEY_CREATIVE_NAME, channelModel.trackingAttributionModel.galaxyAttribution)
+            val trackerPosition = position.getTrackerPosition()
+            putString(KEY_CREATIVE_NAME, channelModel.channelGrids[position].attribution)
             putString(KEY_CREATIVE_SLOT, trackerPosition.toString())
             putString(KEY_DIMENSION_104, channelModel.trackingAttributionModel.campaignCode)
-            putString(KEY_DIMENSION_38, channelModel.trackingAttributionModel.galaxyAttribution)
+            putString(KEY_DIMENSION_38, channelModel.channelGrids[position].attribution)
             putString(KEY_DIMENSION_79, channelModel.trackingAttributionModel.brandId)
             putString(KEY_DIMENSION_82, channelModel.trackingAttributionModel.categoryId)
             putString(
@@ -1503,8 +1500,8 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         itemName: String
     ): Bundle {
         return Bundle().apply {
-            putString(KEY_CREATIVE_NAME, channelModel.trackingAttributionModel.galaxyAttribution)
-            putString(KEY_CREATIVE_SLOT, position.toString())
+            putString(KEY_CREATIVE_NAME, channelModel.channelGrids[position].attribution)
+            putString(KEY_CREATIVE_SLOT, position.getTrackerPosition().toString())
             putString(
                 KEY_ITEM_ID,
                 "0_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType + "_" + channelModel.trackingAttributionModel.categoryId
