@@ -91,9 +91,9 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         }
 
     override fun setConfig(audioRate: String, videoRate: String, videoFps: String) {
-        mAudioRate = audioRate
-        mVideoRate = videoRate
-        mFps = videoFps
+        mAudioRate = if (audioRate.isEmpty()) null else audioRate
+        mVideoRate = if (videoRate.isEmpty()) null else videoRate
+        mFps = if (videoFps.isEmpty()) null else videoFps
     }
 
     override fun addListener(listener: Broadcaster.Listener) {

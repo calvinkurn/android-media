@@ -4,6 +4,7 @@ import android.media.MediaCodecInfo
 import android.media.MediaCodecList
 import android.media.MediaFormat
 import android.media.MediaRecorder
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.wmspanel.libstream.AudioConfig
 import com.wmspanel.libstream.ConnectionConfig
 import com.wmspanel.libstream.Streamer
@@ -32,14 +33,14 @@ object BroadcasterUtil {
     fun getAudioConfig(audioRate: String?): AudioConfig {
         return AudioConfig().apply {
             audioSource = MediaRecorder.AudioSource.CAMCORDER
-            bitRate = AudioConfig.calcBitRate(audioRate?.toInt() ?: sampleRate, channelCount, AudioConfig.AAC_PROFILE)
+            bitRate = AudioConfig.calcBitRate(audioRate?.toIntOrZero() ?: sampleRate, channelCount, AudioConfig.AAC_PROFILE)
         }
     }
 
     fun getVideoConfig(videoRate: String?, videoFps: String?): VideoConfig {
         return VideoConfig().apply {
             type = MediaFormat.MIMETYPE_VIDEO_AVC
-            bitRate = videoRate?.toInt() ?: bitRate
+            bitRate = videoRate?.toIntOrZero() ?: bitRate
             fps = videoFps?.toFloat() ?: fps
         }
     }
