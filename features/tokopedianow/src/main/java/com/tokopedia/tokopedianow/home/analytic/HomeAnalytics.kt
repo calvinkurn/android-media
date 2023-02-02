@@ -897,7 +897,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             channelModel.channelGrids.mapIndexed { position, channelGrid ->
                 Bundle().apply {
                     val gridPosition = position.getTrackerPosition().toString()
-                    putString(KEY_CREATIVE_NAME, channelModel.channelGrids[position].attribution)
+                    putString(KEY_CREATIVE_NAME, channelGrid.attribution)
                     putString(KEY_CREATIVE_SLOT, gridPosition)
                     putString(KEY_ITEM_ID, "${channelModel.id}_${channelGrid.id}_${nullString}_$nullString")
                     putString(KEY_ITEM_NAME, "/ - $gridPosition - $LEGO_6_BANNER - $headerName")
