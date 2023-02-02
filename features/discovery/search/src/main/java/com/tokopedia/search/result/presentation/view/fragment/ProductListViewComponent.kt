@@ -25,6 +25,7 @@ import com.tokopedia.search.result.product.banned.BannedProductsViewModule
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterModule
 import com.tokopedia.search.result.product.broadmatch.BroadMatchModule
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressViewModule
+import com.tokopedia.search.result.product.cpm.TopAdsHeadlineModule
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselModule
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcModule
 import com.tokopedia.search.result.product.lastfilter.LastFilterModule
@@ -79,6 +80,7 @@ import dagger.Component
     WishlistModule::class,
     LastFilterModule::class,
     BottomSheetFilterModule::class,
+    TopAdsHeadlineModule::class,
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {
 
