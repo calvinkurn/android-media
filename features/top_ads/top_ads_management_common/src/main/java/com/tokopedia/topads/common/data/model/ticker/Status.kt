@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.data.model.ticker
+package com.tokopedia.topads.common.data.model.ticker
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

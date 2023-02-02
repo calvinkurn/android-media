@@ -31,11 +31,21 @@
                 android:paddingHorizontal="@dimen/spacing_lvl3"
                 android:paddingBottom="@dimen/spacing_lvl4">
 
+
+                <com.tokopedia.unifycomponents.ticker.Ticker
+                    android:id="@+id/tickerTopAds"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:tickerType="announcement"
+                    app:closeButtonVisibility="gone"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
                 <include
                     android:id="@+id/tambahKreditLayout"
                     layout="@layout/layout_tambah_kredit_topads_dashboard"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/tickerTopAds"/>
 
                 <include
                     android:id="@+id/layoutRingkasan"
