@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +29,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
@@ -56,6 +58,7 @@ class AffiliateSSAShopListFragment :
 
     private var isNoMoreData: Boolean = false
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
+    private var page: Int = PAGE_ZERO
 
     companion object {
         fun newInstance() = AffiliateSSAShopListFragment()
@@ -77,7 +80,7 @@ class AffiliateSSAShopListFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         afterViewCreated()
-        affiliateSSAShopViewModel?.fetchSSAShopList(PAGE_ZERO)
+        affiliateSSAShopViewModel?.fetchSSAShopList(page)
     }
 
     private fun afterViewCreated() {
@@ -102,12 +105,22 @@ class AffiliateSSAShopListFragment :
             ssaAdapter.resetList()
             affiliateSSAShopViewModel?.fetchSSAShopList(PAGE_ZERO)
         }
+        view?.findViewById<UnifyButton>(R.id.empty_ssa_state_cta)?.setOnClickListener {
+            requireActivity().finish()
+        }
     }
 
     private fun setObservers() {
         affiliateSSAShopViewModel?.getSSAShopList()?.observe(this) {
-            ssaAdapter.setVisitables(it)
-            loadMoreTriggerListener?.updateStateAfterGetData()
+            if (it.isNullOrEmpty() && page == PAGE_ZERO) {
+                view?.findViewById<SwipeToRefresh>(R.id.ssa_shop_swipe_refresh)?.hide()
+                view?.findViewById<Group>(R.id.empty_ssa_state_group)?.show()
+            } else {
+                view?.findViewById<SwipeToRefresh>(R.id.ssa_shop_swipe_refresh)?.show()
+                view?.findViewById<Group>(R.id.empty_ssa_state_group)?.hide()
+                ssaAdapter.setVisitables(it)
+                loadMoreTriggerListener?.updateStateAfterGetData()
+            }
         }
         affiliateSSAShopViewModel?.getErrorMessage()?.observe(this) {
             onGetError(it)
@@ -126,7 +139,8 @@ class AffiliateSSAShopListFragment :
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (!isNoMoreData) {
-                    affiliateSSAShopViewModel?.fetchSSAShopList(page - 1)
+                    this@AffiliateSSAShopListFragment.page = page - 1
+                    affiliateSSAShopViewModel?.fetchSSAShopList(this@AffiliateSSAShopListFragment.page)
                 }
             }
         }
@@ -147,8 +161,9 @@ class AffiliateSSAShopListFragment :
             }
             view?.findViewById<SwipeToRefresh>(R.id.ssa_shop_swipe_refresh)?.hide()
             show()
+            errorAction.text = getString(R.string.affiliate_empty_ssa_list_cta)
             setActionClickListener {
-                hide()
+                requireActivity().finish()
             }
         }
     }

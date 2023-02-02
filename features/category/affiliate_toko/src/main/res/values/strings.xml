@@ -188,4 +188,7 @@
     <string name="ssa_entry_promo_title">Pilihan Komisi Ekstra dari Toko Favoritmu!</string>
     <string name="affiliate_ssa_shop_title">Toko Komisi Ekstra</string>
     <string name="affiliate_ssa_terjual">Terjual %s</string>
+    <string name="affiliate_empty_ssa_list_title">Yaah, belum ada toko dengan Komisi Ekstra</string>
+    <string name="affiliate_empty_ssa_list_desc">Kamu bisa cari produk dengan Komisi Ekstra juga, lho.</string>
+    <string name="affiliate_empty_ssa_list_cta">Balik ke Promosikan</string>
 </resources>

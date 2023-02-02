@@ -165,9 +165,6 @@ class AffiliatePromoSearchFragment :
         affiliatePromoViewModel?.getAffiliateSearchData()?.observe(this) { affiliateSearchData ->
             onGetAffiliateSearchData(affiliateSearchData)
         }
-        affiliatePromoViewModel?.getAffiliateSearchData()?.observe(this) { affiliateSearchData ->
-            onGetAffiliateSearchData(affiliateSearchData)
-        }
     }
 
     private fun onGetAffiliateSearchData(affiliateSearchData: AffiliateSearchData) {
