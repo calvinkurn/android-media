@@ -19,7 +19,8 @@
         android:src="@drawable/bottomsheet_knob_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <com.tokopedia.play_common.view.PlayHeaderView
         android:id="@+id/widget_header"
@@ -35,22 +36,24 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/content_common_space_16"
         android:layout_marginTop="@dimen/content_common_space_16"
+        android:clipToPadding="false"
         android:orientation="horizontal"
+        android:paddingEnd="@dimen/content_common_space_16"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/widget_header"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/view_widget_chips" />
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/sr_explore_widget"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/content_common_space_16"
         android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/content_common_space_16"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/rv_chips"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/iv_knob"
         app:layout_constraintTop_toBottomOf="@+id/rv_chips"
