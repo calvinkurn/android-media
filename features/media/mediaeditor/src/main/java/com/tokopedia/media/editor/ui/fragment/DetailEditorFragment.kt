@@ -51,6 +51,7 @@ import com.tokopedia.media.editor.utils.removeBackgroundToText
 import com.tokopedia.media.editor.utils.watermarkToText
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
 import com.tokopedia.picker.common.ImageRatioType
@@ -988,9 +989,7 @@ class DetailEditorFragment @Inject constructor(
 
                 post {
                     if (data.isToolAddLogo()) return@post
-                    this.loadImage(data.addLogoValue.overlayLogoUrl) {
-                        setPlaceHolder(-1)
-                    }
+                    this.loadImageWithoutPlaceholder(data.addLogoValue.overlayLogoUrl)
                 }
             }
         }
