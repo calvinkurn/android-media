@@ -1660,10 +1660,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             product.updatePinProduct(isLoading = true)
             val result = repo.setPinProduct(channelId, product)
-            if(result) {
+            if(result)
                 product.updatePinProduct(isLoading = false, needToUpdate = true)
-                _uiEvent.emit(PlayBroadcastEvent.SuccessPinnedProduct)
-            }
         }){
             product.updatePinProduct(isLoading = false)
             _uiEvent.emit(PlayBroadcastEvent.FailPinUnPinProduct(it, product.pinStatus.isPinned))

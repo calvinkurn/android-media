@@ -764,7 +764,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
                     is PlayBroadcastEvent.ShowBroadcastError -> handleBroadcastError(event.error)
                     is PlayBroadcastEvent.BroadcastRecovered -> handleBroadcastRecovered()
-                    PlayBroadcastEvent.SuccessPinnedProduct -> productTagView.autoScroll()
                     else -> {}
                 }
             }
