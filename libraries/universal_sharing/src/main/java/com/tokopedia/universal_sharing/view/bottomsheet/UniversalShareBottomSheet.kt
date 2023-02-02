@@ -88,6 +88,9 @@ import com.tokopedia.iconunify.R as unifyIconR
 
 /**
  * Created by Rafli Syam 20/07/2020
+ * please read the docs to implement [UniversalShareBottomSheet]
+ * link: https://tokopedia.atlassian.net/l/cp/HNSff10B
+ * @see com.tokopedia.shop.pageheader.presentation.fragment.NewShopFragment.kt
  */
 open class UniversalShareBottomSheet : BottomSheetUnify() {
 
@@ -480,7 +483,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         if (linkProperties == null) throw Exception("Please set link properties")
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(
-                0, createLinkerData(shareModel),
+                0,
+                createLinkerData(shareModel),
                 object : ShareCallback {
                     override fun urlCreated(linkerShareResult: LinkerShareResult) {
                         shareModel.subjectName = subjectShare
