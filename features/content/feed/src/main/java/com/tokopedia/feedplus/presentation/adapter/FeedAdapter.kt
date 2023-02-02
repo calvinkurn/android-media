@@ -4,9 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.feedplus.databinding.ItemFeedRootBinding
-import com.tokopedia.feedplus.presentation.activity.FeedActivity
+import com.tokopedia.feedplus.databinding.ItemFeedContainerBinding
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedViewHolder
+import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.model.FeedTabType
 
 /**
@@ -17,7 +17,7 @@ class FeedAdapter : RecyclerView.Adapter<FeedViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedViewHolder {
         context = parent.context
-        val view = ItemFeedRootBinding.inflate(LayoutInflater.from(context), parent, false)
+        val view = ItemFeedContainerBinding.inflate(LayoutInflater.from(context), parent, false)
         return FeedViewHolder(view)
     }
 
@@ -25,7 +25,7 @@ class FeedAdapter : RecyclerView.Adapter<FeedViewHolder>() {
         context?.let {
             holder.bind(
                 it,
-                if (position == FeedActivity.TAB_FOR_YOU_INDEX) FeedTabType.FOR_YOU
+                if (position == FeedBaseFragment.TAB_FOR_YOU_INDEX) FeedTabType.FOR_YOU
                 else FeedTabType.FOLLOWING
             )
         }
