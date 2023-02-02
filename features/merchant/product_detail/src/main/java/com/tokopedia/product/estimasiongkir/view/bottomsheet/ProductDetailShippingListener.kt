@@ -8,5 +8,5 @@ interface ProductDetailShippingListener {
     fun openUspBottomSheet(uspImageUrl: String)
     fun refreshPage(height: Int)
 
-    fun impressScheduledDelivery()
+    fun impressScheduledDelivery(prices: List<Pair<String, String>>, date: String)
 }

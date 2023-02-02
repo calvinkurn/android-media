@@ -47,9 +47,21 @@ class ProductShippingSellyViewHolder(
             pdpSellyDateList.addView(serviceView)
         }
         pdpSellyTitle.showWithCondition(services.isNotEmpty())
-        root.addOnImpressionListener(element.impressHolder){
-
+        root.addOnImpressionListener(element.impressHolder) {
+            impressComponent(services)
         }
+    }
+
+    private fun impressComponent(services: List<Service>) {
+        val service = services.firstOrNull() ?: return
+        val prices = service.products.map {
+            val price = if (it.isAvailable) it.finalPrice else it.text
+            Pair(it.scheduledTime, price)
+        }
+        listener.impressScheduledDelivery(
+            prices,
+            service.scheduledDate
+        )
     }
 
     private fun renderService(
@@ -61,8 +73,11 @@ class ProductShippingSellyViewHolder(
         }
 
         val products = service.products
-        if (service.isAvailable) renderAvailableDate(this, products, service::isExpanded)
-        else renderNotAvailableDate(this, products)
+        if (service.isAvailable) {
+            renderAvailableDate(this, products, service::isExpanded)
+        } else {
+            renderNotAvailableDate(this, products)
+        }
     }.root
 
     /**
@@ -73,10 +88,16 @@ class ProductShippingSellyViewHolder(
         products: List<Product>,
         isExpandedProperty: KMutableProperty0<Boolean>
     ) {
-        renderScheduledTimes(binding, products.filter {
-            if (isExpandedProperty.get()) true
-            else it.isRecommend
-        })
+        renderScheduledTimes(
+            binding,
+            products.filter {
+                if (isExpandedProperty.get()) {
+                    true
+                } else {
+                    it.isRecommend
+                }
+            }
+        )
 
         binding.pdpSellyExpandableButton.setOnClickListener {
             toggle(binding, products, isExpandedProperty)
@@ -91,10 +112,16 @@ class ProductShippingSellyViewHolder(
         val isExpanded = isExpandedProperty.get()
         pdpSellyTimeList.removeAllViews()
 
-        renderScheduledTimes(binding, products.filter {
-            if (isExpanded) it.isRecommend
-            else true
-        })
+        renderScheduledTimes(
+            binding,
+            products.filter {
+                if (isExpanded) {
+                    it.isRecommend
+                } else {
+                    true
+                }
+            }
+        )
         isExpandedProperty.set(!isExpanded)
 
         if (isExpanded) {
@@ -110,13 +137,11 @@ class ProductShippingSellyViewHolder(
         binding: ItemSellyDateBinding,
         products: List<Product>
     ) = with(binding) {
-
         pdpSellyExpandableButton.hide()
         pdpSellyExpandableIcon.hide()
         pdpSellyDate.setTextColor(grayColor)
 
         val product = products.firstOrNull() ?: return@with
-
 
         pdpSellyAdditionalMessage.apply {
             root.show()
@@ -152,15 +177,17 @@ class ProductShippingSellyViewHolder(
     private fun renderChildView(
         product: Product
     ) = ItemSellyTimeBinding.inflate(layoutInflater).apply {
-        if (product.isAvailable) renderAvailableTime(this, product)
-        else renderNotAvailableTime(this, product)
+        if (product.isAvailable) {
+            renderAvailableTime(this, product)
+        } else {
+            renderNotAvailableTime(this, product)
+        }
     }.root
 
     private fun renderAvailableTime(
         binding: ItemSellyTimeBinding,
         product: Product
     ) = with(binding) {
-
         val scheduledTime = product.scheduledTime
         pdpSellyTime.showIfWithBlock(scheduledTime.isNotEmpty()) {
             text = context.getString(R.string.pdp_selly_time_format, scheduledTime)
@@ -182,7 +209,6 @@ class ProductShippingSellyViewHolder(
         binding: ItemSellyTimeBinding,
         product: Product
     ) = with(binding) {
-
         val scheduledTime = product.scheduledTime
         pdpSellyTime.showIfWithBlock(scheduledTime.isNotEmpty()) {
             text = context.getString(R.string.pdp_selly_time_format, scheduledTime)

@@ -29,21 +29,21 @@ import com.tokopedia.product.detail.view.util.ProductSeparatorItemDecoration
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingErrorDataModel
-import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingSellyDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingShimmerDataModel
 import com.tokopedia.product.estimasiongkir.di.DaggerRatesEstimationComponent
 import com.tokopedia.product.estimasiongkir.di.RatesEstimationModule
+import com.tokopedia.product.estimasiongkir.tracking.SellyTracker
 import com.tokopedia.product.estimasiongkir.tracking.SellyTracking
 import com.tokopedia.product.estimasiongkir.util.ProductDetailShippingTracking
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingAdapter
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingDIffutil
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactoryImpl
 import com.tokopedia.product.estimasiongkir.view.viewmodel.RatesEstimationBoeViewModel
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-
 
 /**
  * Created by Yehezkiel on 25/01/21
@@ -56,15 +56,18 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
 
         private const val ARG_BUYER_DISTRICT_ID = "buyer_district_id"
         private const val ARG_SELLER_DISTRICT_ID = "seller_district_id"
+        private const val ARG_LAYOUT_ID = "layout_id"
 
         fun instance(
             buyerDistrictId: String,
-            sellerDistrictId: String
-        ): ProductDetailShippingBottomSheet{
+            sellerDistrictId: String,
+            layoutId: String
+        ): ProductDetailShippingBottomSheet {
             return ProductDetailShippingBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(ARG_BUYER_DISTRICT_ID, buyerDistrictId)
                     putString(ARG_SELLER_DISTRICT_ID, sellerDistrictId)
+                    putString(ARG_LAYOUT_ID, layoutId)
                 }
             }
         }
@@ -72,6 +75,9 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
 
     private var viewModel: RatesEstimationBoeViewModel? = null
     private var shippingAdapter: ProductDetailShippingAdapter? = null
@@ -81,8 +87,6 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
         ViewModelProvider(requireActivity()).get(ProductDetailSharedViewModel::class.java)
     }
     private var shouldRefresh: Boolean = false
-
-
 
     @SuppressLint("RestrictedApi")
     override fun setupDialog(dialog: Dialog, style: Int) {
@@ -125,9 +129,9 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     private fun initInjector() {
         activity?.let {
             DaggerRatesEstimationComponent.builder()
-                    .baseAppComponent((activity?.application as com.tokopedia.abstraction.base.app.BaseMainApplication).baseAppComponent)
-                    .ratesEstimationModule(RatesEstimationModule()).build()
-                    .inject(this)
+                .baseAppComponent((activity?.application as com.tokopedia.abstraction.base.app.BaseMainApplication).baseAppComponent)
+                .ratesEstimationModule(RatesEstimationModule()).build()
+                .inject(this)
         }
     }
 
@@ -202,8 +206,10 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     override fun openUspBottomSheet(uspImageUrl: String) {
         context?.let {
             val ratesEstimateRequest = sharedViewModel.rateEstimateRequest.value
-            ProductDetailShippingTracking.onPelajariTokoCabangClicked(ratesEstimateRequest?.userId
-                    ?: "")
+            ProductDetailShippingTracking.onPelajariTokoCabangClicked(
+                ratesEstimateRequest?.userId
+                    ?: ""
+            )
             if (ratesEstimateRequest?.isTokoNow == true) {
                 RouteManager.route(context, EDUCATIONAL_INFO)
             } else {
@@ -243,13 +249,34 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     override fun onLocalizingAddressLoginSuccess() {
     }
 
-    override fun impressScheduledDelivery() {
+    override fun onPause() {
+        super.onPause()
+        trackingQueue.sendAll()
+    }
 
+    override fun impressScheduledDelivery(prices: List<Pair<String, String>>, date: String) {
         val buyerDistrictId = arguments?.getString(ARG_BUYER_DISTRICT_ID) ?: ""
         val sellerDistrictId = arguments?.getString(ARG_SELLER_DISTRICT_ID) ?: ""
+        val layoutId = arguments?.getString(ARG_LAYOUT_ID) ?: ""
+        val beratSatuan = sharedViewModel.rateEstimateRequest.value?.productWeight?.toString() ?: ""
+        val productId = sharedViewModel.rateEstimateRequest.value?.productId ?: ""
+        val shopId = sharedViewModel.rateEstimateRequest.value?.shopId ?: ""
+        val userId = sharedViewModel.rateEstimateRequest.value?.userId ?: ""
 
-//        SellyTracking.impressScheduledDelivery(
-//
-//        )
+        val data = SellyTracker.ImpressionComponent(
+            buyerDistrictId = buyerDistrictId,
+            sellerDistrictId = sellerDistrictId,
+            prices = prices,
+            layoutId = layoutId,
+            beratSatuan = beratSatuan,
+            productId = productId,
+            shopId = shopId,
+            userId = userId
+        )
+
+        SellyTracking.impressScheduledDelivery(
+            trackingQueue,
+            data
+        )
     }
 }
