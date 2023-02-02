@@ -15,12 +15,12 @@
         android:id="@+id/iv_knob"
         android:layout_width="4dp"
         android:layout_height="64dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="@dimen/unify_space_8"
         android:src="@drawable/bottomsheet_knob_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.5" />
 
     <com.tokopedia.play_common.view.PlayHeaderView
         android:id="@+id/widget_header"
@@ -63,6 +63,8 @@
             android:id="@+id/rv_widgets"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/unify_space_8"
             tools:listitem="@layout/view_play_widget_card_medium_channel" />
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
