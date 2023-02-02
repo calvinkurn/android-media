@@ -934,7 +934,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         val promotions = arrayListOf(
             Bundle().apply {
                 val gridPosition = position.getTrackerPosition().toString()
-                putString(KEY_CREATIVE_NAME, channelModel.channelGrids[position].attribution)
+                putString(KEY_CREATIVE_NAME, channelGrid.attribution)
                 putString(KEY_CREATIVE_SLOT, gridPosition)
                 putString(KEY_ITEM_ID, "${channelModel.id}_${channelGrid.id}_${nullString}_$nullString")
                 putString(KEY_ITEM_NAME, "/ - $gridPosition - $LEGO_6_BANNER - $headerName")
@@ -1479,10 +1479,10 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     ): Bundle {
         return Bundle().apply {
             val trackerPosition = position.getTrackerPosition()
-            putString(KEY_CREATIVE_NAME, channelModel.channelGrids[position].attribution)
+            putString(KEY_CREATIVE_NAME, channelGrid.attribution)
             putString(KEY_CREATIVE_SLOT, trackerPosition.toString())
             putString(KEY_DIMENSION_104, channelModel.trackingAttributionModel.campaignCode)
-            putString(KEY_DIMENSION_38, channelModel.channelGrids[position].attribution)
+            putString(KEY_DIMENSION_38, channelGrid.attribution)
             putString(KEY_DIMENSION_79, channelModel.trackingAttributionModel.brandId)
             putString(KEY_DIMENSION_82, channelModel.trackingAttributionModel.categoryId)
             putString(
@@ -1500,7 +1500,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         itemName: String
     ): Bundle {
         return Bundle().apply {
-            putString(KEY_CREATIVE_NAME, channelModel.channelGrids[position].attribution)
+            putString(KEY_CREATIVE_NAME, channelGrid.attribution)
             putString(KEY_CREATIVE_SLOT, position.getTrackerPosition().toString())
             putString(
                 KEY_ITEM_ID,
