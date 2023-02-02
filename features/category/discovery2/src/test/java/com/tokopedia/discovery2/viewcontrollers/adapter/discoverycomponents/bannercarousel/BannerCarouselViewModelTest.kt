@@ -301,7 +301,7 @@ class BannerCarouselViewModelTest {
 
         viewModel.checkForDarkMode(context)
 
-        verify { viewModel.checkForDarkMode(context) }
+        verify { context.isDarkMode() }
     }
 
     @After

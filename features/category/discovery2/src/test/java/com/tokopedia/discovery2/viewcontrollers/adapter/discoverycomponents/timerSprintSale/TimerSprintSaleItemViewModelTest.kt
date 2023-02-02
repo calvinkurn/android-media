@@ -183,5 +183,6 @@ class TimerSprintSaleItemViewModelTest {
         Dispatchers.resetMain()
         unmockkStatic(::getComponent)
         unmockkConstructor(URLParser::class)
+        unmockkObject(Utils)
     }
 }

@@ -117,7 +117,7 @@ class ShopBannerInfiniteModelTest {
 
         viewModel.checkForDarkMode(context)
 
-        verify { viewModel.checkForDarkMode(context) }
+        verify { context.isDarkMode() }
     }
 
 }

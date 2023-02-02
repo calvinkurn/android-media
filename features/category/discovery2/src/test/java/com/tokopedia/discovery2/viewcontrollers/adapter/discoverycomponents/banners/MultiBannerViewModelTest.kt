@@ -515,7 +515,7 @@ class MultiBannerViewModelTest {
 
         viewModel.checkForDarkMode(context)
 
-        verify { viewModel.checkForDarkMode(context) }
+        verify { context.isDarkMode() }
     }
 
     @Test
