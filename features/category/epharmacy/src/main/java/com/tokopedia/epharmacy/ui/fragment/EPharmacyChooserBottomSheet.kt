@@ -100,6 +100,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                 chooserMiniConsultation.lblPAPDescriptionOptionBottomsheet.text = res.getString(com.tokopedia.epharmacy.R.string.eepharmacy_mini_consult_chooser_subtitle)
                 chooserUpload.stepIcon.loadImage(UPLOAD_CHOOSER_IMAGE_URL)
                 chooserMiniConsultation.stepIcon.loadImage(MINI_CONS_CHOOSER_IMAGE_URL)
+                chooserMiniConsultation.baruLabel.show()
                 if (enableImageURL.isNotBlank()) {
                     bottomImageLogo.show()
                     bottomImageLogo.loadImage(enableImageURL)

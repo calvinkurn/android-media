@@ -27,8 +27,19 @@
         tools:text="Tambah barang ke Keranjang"
         android:layout_marginTop="4dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/step_icon"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintStart_toEndOf="@id/step_icon" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/baru_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/lbl_PAP_tittleOption_bottomsheet"
+        app:layout_constraintTop_toTopOf="@id/lbl_PAP_tittleOption_bottomsheet"
+        app:layout_constraintBottom_toBottomOf="@id/lbl_PAP_tittleOption_bottomsheet"
+        app:labelType="general_dark_red"
+        app:labelTitle="@string/epharmacy_baru"
+        android:visibility="gone"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/lbl_PAP_descriptionOption_bottomsheet"
