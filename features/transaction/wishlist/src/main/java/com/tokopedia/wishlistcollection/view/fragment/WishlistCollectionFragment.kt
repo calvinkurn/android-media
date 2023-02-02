@@ -30,7 +30,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
@@ -127,6 +126,15 @@ class WishlistCollectionFragment :
     }
     private val wishlistCollectionPref: WishlistCollectionPrefs? by lazy {
         activity?.let { WishlistCollectionPrefs(it) }
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (!isVisibleToUser) {
+            coachMark?.dismissCoachMark()
+            coachMarkSharing1?.dismissCoachMark()
+            coachMarkSharing2?.dismissCoachMark()
+        }
     }
 
     @Inject
@@ -816,7 +824,7 @@ class WishlistCollectionFragment :
     }
 
     override fun onShareItemShown(anchorView: View) {
-        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING)) {
+        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING) && userVisibleHint) {
             showCoachmarkKebabItem2(anchorView)
         }
     }
@@ -833,7 +841,7 @@ class WishlistCollectionFragment :
         _firstCollectionName = collectionName
         _firstActionsCollection = actions
         _firstCollectionIndicatorTitle = collectionIndicatorTitle
-        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING)) {
+        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING) && userVisibleHint) {
             showWishlistCollectionSharingCoachMark(anchorKebabMenuView, collectionId, collectionName, actions, collectionIndicatorTitle)
         }
     }
@@ -900,6 +908,7 @@ class WishlistCollectionFragment :
     }
 
     private fun showCoachmarkKebabItem2(view: View) {
+        if (!userVisibleHint) return
         if (coachMarkItemSharing2.isEmpty()) {
             coachMarkItemSharing2.add(
                 CoachMark2Item(
@@ -953,6 +962,7 @@ class WishlistCollectionFragment :
     }
 
     private fun showWishlistCollectionCoachMark(view1: View, view2: View) {
+        if (!userVisibleHint) return
         if (coachMarkItem.isEmpty()) {
             coachMarkItem.add(
                 CoachMark2Item(
