@@ -46,7 +46,7 @@ class FeedBaseFragment : BaseDaggerFragment() {
         binding?.let {
             LinearSnapHelper().attachToRecyclerView(it.rvFeedTabItemsContainer)
             adapter = FeedAdapter()
-            linearLayoutManager = LinearLayoutManager(context)
+            linearLayoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 
             it.rvFeedTabItemsContainer.layoutManager = linearLayoutManager
             it.rvFeedTabItemsContainer.adapter = adapter
