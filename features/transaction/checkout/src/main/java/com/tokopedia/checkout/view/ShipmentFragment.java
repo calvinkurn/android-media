@@ -3703,6 +3703,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
                 CourierItemData courierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
                 CourierItemData newCourierItemData = CourierItemData.clone(courierItemData, scheduleDeliveryUiModel);
+                boolean hasNoPromo = TextUtils.isEmpty(courierItemData.getSelectedShipper().getLogPromoCode()) && TextUtils.isEmpty(newCourierItemData.getSelectedShipper().getLogPromoCode());
 
                 if (scheduleDeliveryUiModel.isSelected()) {
                     shipmentCartItemModel.setScheduleDate(scheduleDeliveryUiModel.getScheduleDate());
@@ -3807,7 +3808,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             false
                     );
                 }
-                else if ((!shouldStopInClearCache && !shouldStopInDoValidateUseLogistic && !hasCheckAllCourier) || (TextUtils.isEmpty(courierItemData.getLogPromoCode()) && TextUtils.isEmpty(courierItemData.getLogPromoCode()))) {
+                else if ((!shouldStopInClearCache && !shouldStopInDoValidateUseLogistic && !hasCheckAllCourier) || hasNoPromo) {
                     donePublisher.onCompleted();
                 }
             }
