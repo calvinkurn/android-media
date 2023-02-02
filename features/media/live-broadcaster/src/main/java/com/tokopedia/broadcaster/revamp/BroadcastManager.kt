@@ -71,7 +71,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
     private var mAudioRate: String? = null
     private var mVideoRate: String? = null
-    private var mFps: String? = null
+    private var mVideoFps: String? = null
 
     private val mAudioCallback =
         Streamer.AudioCallback { audioFormat, data, audioInputLength, channelCount, sampleRate, samplesPerFrame ->
@@ -91,9 +91,9 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         }
 
     override fun setConfig(audioRate: String, videoRate: String, videoFps: String) {
-        mAudioRate = if (audioRate.isEmpty()) null else audioRate
-        mVideoRate = if (videoRate.isEmpty()) null else videoRate
-        mFps = if (videoFps.isEmpty()) null else videoFps
+        mAudioRate = audioRate
+        mVideoRate = videoRate
+        mVideoFps = videoFps
     }
 
     override fun addListener(listener: Broadcaster.Listener) {
@@ -148,7 +148,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         // video
         builder.setCamera2(BroadcasterCameraManager.allowCamera2Support(context))
 
-        val videoConfig = BroadcasterUtil.getVideoConfig(mVideoRate, mFps)
+        val videoConfig = BroadcasterUtil.getVideoConfig(mVideoRate, mVideoFps)
 
         // get camera id
         val activeCamera = mSelectedCamera ?: findPreferredCamera(cameraList).also {

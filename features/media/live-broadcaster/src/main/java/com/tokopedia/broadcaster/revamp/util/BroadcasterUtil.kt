@@ -31,16 +31,20 @@ object BroadcasterUtil {
     )
 
     fun getAudioConfig(audioRate: String?): AudioConfig {
+        val value = audioRate.toIntOrZero()
+        val mAudioRate = if (value == 0) null else value
         return AudioConfig().apply {
             audioSource = MediaRecorder.AudioSource.CAMCORDER
-            bitRate = AudioConfig.calcBitRate(audioRate?.toIntOrZero() ?: sampleRate, channelCount, AudioConfig.AAC_PROFILE)
+            bitRate = AudioConfig.calcBitRate(mAudioRate ?: sampleRate, channelCount, AudioConfig.AAC_PROFILE)
         }
     }
 
     fun getVideoConfig(videoRate: String?, videoFps: String?): VideoConfig {
+        val value = videoRate?.toIntOrZero()
+        val mVideoRate = if (value == 0) null else value
         return VideoConfig().apply {
             type = MediaFormat.MIMETYPE_VIDEO_AVC
-            bitRate = videoRate?.toIntOrZero() ?: bitRate
+            bitRate = mVideoRate ?: bitRate
             fps = videoFps?.toFloat() ?: fps
         }
     }
