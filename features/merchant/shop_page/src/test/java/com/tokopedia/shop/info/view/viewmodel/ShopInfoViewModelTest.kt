@@ -334,8 +334,8 @@ class ShopInfoViewModelTest : ShopInfoViewModelTestFixture() {
             sipaNumber = epharmacyInfo.sipaNumber,
             apj = epharmacyInfo.apj,
             partnerLabel = partnerLabel,
-            fsType = partnerInfo.fsType,
-            partnerName = partnerInfo.partnerName
+            fsType = partnerInfo[0].fsType,
+            partnerName = partnerInfo[0].partnerName
         )
     }
 

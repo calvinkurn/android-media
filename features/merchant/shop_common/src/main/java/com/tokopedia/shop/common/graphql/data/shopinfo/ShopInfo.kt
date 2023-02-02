@@ -113,7 +113,7 @@ data class ShopInfo(
 
         @SerializedName("partnerInfo")
         @Expose
-        val partnerInfo: List<PartnerInfoData> = emptyList(),
+        val partnerInfo: List<PartnerInfoData> = listOf(PartnerInfoData()) ,
 
         @SerializedName("shopMultilocation")
         @Expose
