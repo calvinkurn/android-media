@@ -28,8 +28,10 @@ class MpAdCreationActivity : BaseActivity(),HasComponent<CreateAdsComponent> ,Ro
         private const val PRODUCT_TYPE = "product"
     }
 
-    @Inject
-    lateinit var userSession: UserSessionInterface
+
+    var userSession: UserSessionInterface?=null
+    @Inject set
+
     @Inject
     lateinit var factory:ViewModelProvider.Factory
 
@@ -48,7 +50,7 @@ class MpAdCreationActivity : BaseActivity(),HasComponent<CreateAdsComponent> ,Ro
         getProductIdFromIntent()
         initInjector()
         observeViewModel()
-        adCreationViewModel.getShopInfo(userSession.shopId)
+        adCreationViewModel.getShopInfo(userSession?.shopId.orEmpty())
     }
 
     private fun getProductIdFromIntent(){

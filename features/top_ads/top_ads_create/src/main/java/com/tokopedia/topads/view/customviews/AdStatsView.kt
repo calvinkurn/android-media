@@ -38,7 +38,6 @@ class AdStatsView @JvmOverloads constructor(
             adapter = statAdapter
         }
         addView(rv)
-//        submitStatList(getDummyList())
     }
 
     private fun getDummyList() = listOf(

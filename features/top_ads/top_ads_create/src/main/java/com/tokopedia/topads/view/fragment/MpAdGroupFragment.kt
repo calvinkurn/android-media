@@ -40,7 +40,6 @@ import com.tokopedia.topads.view.adapter.adgrouplist.viewholder.AdGroupViewHolde
 import com.tokopedia.topads.view.adapter.adgrouplist.viewholder.CreateAdGroupViewHolder
 import com.tokopedia.topads.view.adapter.adgrouplist.viewholder.ErrorViewHolder
 import com.tokopedia.topads.view.adapter.adgrouplist.viewholder.ReloadInfiniteViewHolder
-import com.tokopedia.topads.view.customviews.AdGroupFilterBottomSheet
 import com.tokopedia.topads.view.model.MpAdsGroupsViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -261,27 +260,14 @@ class MpAdGroupFragment :
 
     // Filter Logic
     private fun showFilterBottomSheet() {
-        getFilterBottomSheet().also {
+        FilterGeneralDetailBottomSheet().also {
+            it.enableResetButton = false
             it.show(
                 fragmentManager = childFragmentManager,
                 filter = getFilerData(),
                 callback = this,
                 buttonApplyFilterDetailText = context?.getString(R.string.ad_group_filter_bottomsheet_cta)
             )
-        }
-    }
-
-    private fun getFilterBottomSheet(): FilterGeneralDetailBottomSheet {
-        return AdGroupFilterBottomSheet { option, isChecked ->
-            if (isChecked) {
-                MpTracker.apply {
-                    when (option.value) {
-                        IMPRESSION_VALUE -> clickAdGroupSortByImpression()
-                        CLICK_VALUE -> clickAdGroupSortByClick()
-                        CONVERSION_VALUE -> clickAdGroupSortByOrder()
-                    }
-                }
-            }
         }
     }
 
@@ -330,6 +316,18 @@ class MpAdGroupFragment :
                 }
             }
             resetAdGroupList()
+        }
+    }
+
+    override fun onOptionClick(option: Option, isChecked: Boolean, position: Int) {
+        if (isChecked) {
+            MpTracker.apply {
+                when (option.value) {
+                    IMPRESSION_VALUE -> clickAdGroupSortByImpression()
+                    CLICK_VALUE -> clickAdGroupSortByClick()
+                    CONVERSION_VALUE -> clickAdGroupSortByOrder()
+                }
+            }
         }
     }
     // Filter Logic End

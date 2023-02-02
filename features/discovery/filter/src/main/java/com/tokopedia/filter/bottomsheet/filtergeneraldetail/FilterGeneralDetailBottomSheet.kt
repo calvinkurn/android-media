@@ -45,6 +45,8 @@ open class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDeta
         filterGeneralDetailAdapter.setOptionList(it)
     }
 
+    var enableResetButton = true
+
     private var binding: FilterGeneralDetailBottomSheetBinding? = null
 
     fun show(
@@ -89,7 +91,7 @@ open class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDeta
     }
 
     private fun initButtonReset() {
-        if (filter.hasActiveOptions()) {
+        if (filter.hasActiveOptions() && enableResetButton) {
             setAction(getString(R.string.filter_button_reset_text), this::onResetFilter)
         }
         else {
@@ -145,7 +147,7 @@ open class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDeta
     }
 
     private fun setActionResetVisibility(isVisible: Boolean) {
-        bottomSheetAction.shouldShowWithAction(isVisible) {
+        bottomSheetAction.shouldShowWithAction(isVisible && enableResetButton) {
             bottomSheetAction.text = getString(R.string.filter_button_reset_text)
             bottomSheetAction.setOnClickListener(this::onResetFilter)
         }
@@ -255,6 +257,8 @@ open class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDeta
         notifyAdapterChanges(option, position)
 
         applyFilterViewInteractions(getButtonResetVisibility(isChecked))
+
+        callback?.onOptionClick(option,isChecked,position)
     }
 
     private fun processOptionClick(option: Option, isChecked: Boolean) {
@@ -283,5 +287,6 @@ open class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDeta
 
     interface Callback {
         fun onApplyButtonClicked(optionList: List<Option>?)
+        fun onOptionClick(option: Option, isChecked: Boolean, position: Int){}
     }
 }
