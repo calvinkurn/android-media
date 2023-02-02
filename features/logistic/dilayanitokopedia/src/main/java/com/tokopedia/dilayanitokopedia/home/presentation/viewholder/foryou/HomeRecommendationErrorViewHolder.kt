@@ -19,6 +19,6 @@ class HomeRecommendationErrorViewHolder(view: View) : SmartAbstractViewHolder<Ho
 
     companion object {
         @LayoutRes
-        val LAYOUT = com.tokopedia.dilayanitokopedia.R.layout.item_home_recommendation_error_layout
+        val LAYOUT = R.layout.item_home_recommendation_error_layout
     }
 }
