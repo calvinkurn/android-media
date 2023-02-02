@@ -210,10 +210,10 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
     ) {
         if (tickerUiModel != null && tickerUiModel.shouldShow(context)) {
             tickerUiModel.marginBottom = context?.resources?.getDimensionPixelSize(
-                com.tokopedia.buyerorderdetail.R.dimen.unify_space_8
+                com.tokopedia.unifyprinciples.R.dimen.unify_space_8
             )
             tickerUiModel.marginTop = context?.resources?.getDimensionPixelSize(
-                com.tokopedia.buyerorderdetail.R.dimen.unify_space_8
+                com.tokopedia.unifyprinciples.R.dimen.unify_space_8
             )
 
             add(tickerUiModel)
