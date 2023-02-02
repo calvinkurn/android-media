@@ -23,7 +23,7 @@ class ItemDetailPerformanceTabletViewHolder(
 
     override fun bind(element: ItemDetailPerformanceTabletUiModel?) {
         binding?.run {
-            detailPerformanceWidgetTablet?.setData(element, shopPerformanceListener) {
+            detailPerformanceWidget.setData(element, shopPerformanceListener) {
                 setCardItemDetailPerformanceBackground(element)
             }
         }
@@ -32,7 +32,7 @@ class ItemDetailPerformanceTabletViewHolder(
     private fun ItemDetailPerformanceBinding.setCardItemDetailPerformanceBackground(
         element: ItemDetailPerformanceTabletUiModel?
     ) {
-        detailPerformanceWidgetTablet?.binding?.run {
+        detailPerformanceWidget.binding?.run {
             if (element?.isDividerHide == true) {
                 cardItemDetailShopPerformance.setPadding(
                     DetailPerformanceWidget.ZERO_PADDING.toPx(),
@@ -41,7 +41,7 @@ class ItemDetailPerformanceTabletViewHolder(
                     DetailPerformanceWidget.SIXTEEN_PADDING.toPx()
                 )
                 root.context?.let {
-                    detailPerformanceWidgetTablet.binding?.cardItemDetailShopPerformance?.setBackgroundResource(
+                    detailPerformanceWidget.binding?.cardItemDetailShopPerformance?.setBackgroundResource(
                         R.drawable.corner_rounded_performance_list_tablet
                     )
                 }

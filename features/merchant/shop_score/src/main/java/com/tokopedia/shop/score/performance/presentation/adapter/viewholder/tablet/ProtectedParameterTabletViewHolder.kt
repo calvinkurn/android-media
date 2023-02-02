@@ -21,7 +21,7 @@ class ProtectedParameterTabletViewHolder(
 
     override fun bind(element: ProtectedParameterTabletUiModel?) {
         binding?.run {
-            parameterProtectedWidgetTablet?.setData(element, protectedParameterListener) {
+            parameterProtectedWidget.setData(element, protectedParameterListener) {
                 setCardItemProtectedBackground()
             }
         }
@@ -29,7 +29,7 @@ class ProtectedParameterTabletViewHolder(
 
     private fun ItemParameterProtectedSectionBinding.setCardItemProtectedBackground() {
         root.context?.let {
-            parameterProtectedWidgetTablet?.binding?.root?.setBackgroundResource(
+            parameterProtectedWidget.binding?.root?.setBackgroundResource(
                 R.drawable.corner_rounded_performance_list
             )
         }

@@ -20,7 +20,7 @@ class PeriodDetailPerformanceTabletViewHolder(view: View) :
     private val binding: PeriodDetailPerformanceBinding? by viewBinding()
 
     override fun bind(element: PeriodDetailTabletUiModel?) {
-        binding?.periodDetailTablet?.run {
+        binding?.periodDetailPerformance?.run {
             setData(element)
             setContainerBackground()
         }
