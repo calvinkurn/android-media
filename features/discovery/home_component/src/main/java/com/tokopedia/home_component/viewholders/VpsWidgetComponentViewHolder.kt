@@ -5,6 +5,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import android.view.View
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.databinding.LayoutVpsWidgetItemBinding
@@ -36,8 +37,10 @@ class VpsWidgetComponentViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val layoutParams = (binding?.image?.layoutParams as ConstraintLayout.LayoutParams)
         if (channelModel.channelConfig.imageStyle == ChannelStyleUtil.IMAGE_STYLE_FULL) {
             layoutParams.dimensionRatio = RATIO_FULL
+            binding?.image?.scaleType = ImageView.ScaleType.CENTER
         } else {
             layoutParams.dimensionRatio = RATIO_DEFAULT
+            binding?.image?.scaleType = ImageView.ScaleType.CENTER_INSIDE
         }
         binding?.image?.layoutParams = layoutParams
         binding?.image?.apply {
