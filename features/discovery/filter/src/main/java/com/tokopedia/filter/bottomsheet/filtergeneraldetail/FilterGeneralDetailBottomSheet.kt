@@ -28,7 +28,7 @@ import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 
-open class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAdapter.Callback {
+class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAdapter.Callback {
 
     companion object {
         private const val FILTER_GENERAL_DETAIL_BOTTOM_SHEET_TAG = "FILTER_GENERAL_DETAIL_BOTTOM_SHEET_TAG"
