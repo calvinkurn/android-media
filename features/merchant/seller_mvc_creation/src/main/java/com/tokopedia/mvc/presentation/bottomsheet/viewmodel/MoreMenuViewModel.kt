@@ -129,12 +129,14 @@ class MoreMenuViewModel @Inject constructor(
             MoreMenuUiModel.Clipboard(
                 StringHandler.ResourceString(R.string.voucher_bs_ubah_lihat_detail)
             ),
+            MoreMenuUiModel.ItemDivider,
             MoreMenuUiModel.Broadcast(
                 StringHandler.ResourceString(R.string.voucher_bs_ubah_broadcast_chat)
             ),
             MoreMenuUiModel.Download(
                 StringHandler.ResourceString(R.string.voucher_bs_ubah_download)
             ),
+            MoreMenuUiModel.ItemDivider,
             MoreMenuUiModel.Clear(
                 StringHandler.ResourceString(R.string.voucher_bs_ubah_batalkan)
             )

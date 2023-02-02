@@ -18,6 +18,8 @@ interface ImageGeneratorService {
         @Query("voucher_cashback_percentage") voucherCashbackPercentage: Int,
         @Query("voucher_nominal_amount") voucherNominalAmount: Int,
         @Query("voucher_nominal_symbol") voucherNominalSymbol: String,
+        @Query("voucher_discount_type") voucherDiscountType: String,
+        @Query("voucher_discount_percentage") voucherDiscountPercentage: Int,
         @Query("shop_logo") shopLogo: String,
         @Query("shop_name") shopName: String,
         @Query("voucher_code") voucherCode: String,

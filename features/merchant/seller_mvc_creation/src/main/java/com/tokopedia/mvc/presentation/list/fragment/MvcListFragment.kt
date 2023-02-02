@@ -86,6 +86,8 @@ import com.tokopedia.mvc.presentation.share.ShareCopyWritingGenerator
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.mvc.util.tracker.StopVoucherTracker
+import com.tokopedia.mvc.util.tracker.VoucherListActionTracker
+import com.tokopedia.mvc.util.tracker.VoucherListTracker
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -148,7 +150,18 @@ class MvcListFragment :
     lateinit var viewModel: MvcListViewModel
 
     @Inject
+    lateinit var sharedPreferencesUtil: SharedPreferencesUtil
+
+    @Inject
     lateinit var tracker: StopVoucherTracker
+
+    lateinit var voucherListTracker: VoucherListTracker
+
+    @Inject
+    lateinit var stopVoucherTracker: StopVoucherTracker
+
+    @Inject
+    lateinit var voucherListActionTracker: VoucherListActionTracker
 
     override fun getScreenName() = ""
 
@@ -203,6 +216,7 @@ class MvcListFragment :
             }
             moreMenuBottomSheet?.show(childFragmentManager, "")
         }
+        voucherListTracker.sendClickDotsOnEachVoucherEvent()
     }
 
     private fun onClickListenerForMoreMenu(menuUiModel: MoreMenuUiModel, voucher: Voucher) {
@@ -210,37 +224,49 @@ class MvcListFragment :
         when (menuUiModel) {
             is MoreMenuUiModel.Coupon -> {
                 showUpdateQuotaBottomSheet(voucher)
+                voucherListActionTracker.sendClickUbahQuotaEvent(voucher)
             }
             is MoreMenuUiModel.EditPeriod -> {
                 showEditPeriodBottomSheet(voucher)
+                voucherListActionTracker.sendClickUbahPeriodEvent(voucher)
             }
             is MoreMenuUiModel.Edit -> {
                 redirectToEditPage(voucher)
+                voucherListActionTracker.sendClickUbahEvent(voucher)
             }
             is MoreMenuUiModel.Clipboard -> {
                 VoucherDetailActivity.start(context ?: return, voucher.id)
+                voucherListActionTracker.sendClickLihatDetailEvent(voucher)
             }
             is MoreMenuUiModel.Broadcast -> {
                 SharingUtil.shareToBroadCastChat(context ?: return, voucher.id)
+                voucherListActionTracker.sendClickBroadcastChatEvent(voucher)
             }
             is MoreMenuUiModel.Download -> {
                 showDownloadVoucherBottomSheet(voucher)
+                voucherListActionTracker.sendClickDownloadEvent(voucher)
             }
             is MoreMenuUiModel.Clear -> {
                 deleteVoucher(voucher)
+                voucherListActionTracker.sendClickBatalkanEvent(voucher)
             }
             is MoreMenuUiModel.Share -> {
                 viewModel.generateShareComponentMetaData(voucher)
+                voucherListActionTracker.sendClickBagikanEvent(voucher)
             }
             is MoreMenuUiModel.Stop -> {
                 deleteVoucher(voucher)
+                voucherListActionTracker.sendClickHentikanEvent(voucher)
             }
             is MoreMenuUiModel.Copy -> {
                 redirectToDuplicatePage(voucher.id)
+                voucherListActionTracker.sendClickDuplikatEvent(voucher)
             }
             is MoreMenuUiModel.TermsAndConditions -> {
+                /*no-op*/
             }
             else -> {
+                /*no-op*/
             }
         }
     }
@@ -561,6 +587,7 @@ class MvcListFragment :
             otherPeriodBottomSheet = OtherPeriodBottomSheet.newInstance(it)
             otherPeriodBottomSheet?.setListener(this)
             otherPeriodBottomSheet?.show(this, it.size)
+            voucherListTracker.sendClickArrowOnJadwalLainEvent()
         }
         viewModel.pageState.observe(viewLifecycleOwner) {
             when (it) {
@@ -654,6 +681,7 @@ class MvcListFragment :
             setColorFilter(colorIcon, PorterDuff.Mode.MULTIPLY)
             setOnClickListener {
                 eduCenterBottomSheet?.show(childFragmentManager)
+                voucherListTracker.sendClickDotsOnUpperSideEvent()
             }
         }
         setNavigationOnClickListener {
@@ -797,6 +825,7 @@ class MvcListFragment :
 
     private fun redirectToCreateVoucherPage() {
         RouteManager.route(context, SELLER_MVC_CREATE)
+        voucherListTracker.sendClickBuatKuponEvent()
     }
 
     private fun setEduCenterBottomSheet() {
@@ -899,17 +928,17 @@ class MvcListFragment :
 
     private fun sendTrackerOnPositiveButton(voucher: Voucher) {
         if (voucher.status == VoucherStatus.NOT_STARTED) {
-            tracker.sendClickYesCancelEvent(createLabelOnTracker(voucher))
+            stopVoucherTracker.sendClickYesCancelEvent(createLabelOnTracker(voucher))
         } else {
-            tracker.sendClickYesStopEvent(createLabelOnTracker(voucher))
+            stopVoucherTracker.sendClickYesStopEvent(createLabelOnTracker(voucher))
         }
     }
 
     private fun sendTrackerOnNegativeButton(voucher: Voucher) {
         if (voucher.status == VoucherStatus.NOT_STARTED) {
-            tracker.sendClickNoCancelEvent(createLabelOnTracker(voucher))
+            stopVoucherTracker.sendClickNoCancelEvent(createLabelOnTracker(voucher))
         } else {
-            tracker.sendClickNoStopEvent(createLabelOnTracker(voucher))
+            stopVoucherTracker.sendClickNoStopEvent(createLabelOnTracker(voucher))
         }
     }
 
@@ -984,9 +1013,9 @@ class MvcListFragment :
 
     private fun displayUploadResult() {
         context?.let {
-            val message = SharedPreferencesUtil.getUploadResult(it)
+            val message = sharedPreferencesUtil.getUploadResult(it)
             if (message.isNotEmpty()) {
-                SharedPreferencesUtil.clearUploadResult(it)
+                sharedPreferencesUtil.clearUploadResult(it)
                 binding?.footer?.root.showToaster(message, getString(R.string.smvc_ok))
             }
         }
@@ -994,6 +1023,7 @@ class MvcListFragment :
 
     private fun redirectToQuotaVoucherPage(voucherCreationQuota: VoucherCreationQuota) {
         QuotaInfoActivity.start(context, voucherCreationQuota)
+        voucherListTracker.sendClickInfoOnSisaKuotaEvent()
     }
 
     private fun redirectToEditPage(voucher: Voucher) {
