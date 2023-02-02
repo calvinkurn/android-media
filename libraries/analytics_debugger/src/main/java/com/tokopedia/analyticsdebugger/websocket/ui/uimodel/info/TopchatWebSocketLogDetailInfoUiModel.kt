@@ -6,10 +6,12 @@ import android.os.Parcelable
 data class TopchatWebSocketLogDetailInfoUiModel(
     val source: String = "",
     val code: String = "",
-    val messageId: String = ""
+    val messageId: String = "",
+    val header: String = ""
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: ""
@@ -19,6 +21,7 @@ data class TopchatWebSocketLogDetailInfoUiModel(
         parcel.writeString(source)
         parcel.writeString(code)
         parcel.writeString(messageId)
+        parcel.writeString(header)
     }
 
     override fun describeContents(): Int {

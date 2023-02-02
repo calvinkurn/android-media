@@ -58,6 +58,7 @@ class WebSocketDetailLoggingFragment: Fragment() {
     private fun onTopchatDetailInfoLoaded(data: TopchatWebSocketLogDetailInfoUiModel?) {
         setLogDetailFirst(R.string.websocket_log_code_id_label, data?.code.toString())
         setLogDetailSecond(R.string.websocket_log_message_id_label, data?.messageId.toString())
+        setHeaderRequest(data?.header.toString())
     }
 
     private fun setLogDetailFirst(label: Int, data: String) {
@@ -81,4 +82,8 @@ class WebSocketDetailLoggingFragment: Fragment() {
         binding?.tvWebsocketDetailLog3?.show()
     }
 
+    private fun setHeaderRequest(header: String) {
+        binding?.tvWebsocketDetailLogHeader?.text = header
+        binding?.tvWebsocketDetailLogHeader?.show()
+    }
 }

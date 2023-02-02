@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.common.websocket
 
 import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
+import com.tokopedia.chat_common.data.WebsocketEvent
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.util.Session
 import com.tokopedia.network.authentication.AuthHelper.Companion.getUserAgent
@@ -46,6 +47,12 @@ class DefaultTopChatWebSocket @Inject constructor(
 
     override fun sendPayload(wsPayload: String) {
         webSocket?.send(wsPayload)
+
+        webSocketListener.onSendLogMessage(
+            payload = wsPayload,
+            header = webSocket?.request()?.headers.toString(),
+            code = WebsocketEvent.Event.DEBUG_EVENT_SEND_WS_PAYLOAD
+        )
     }
 
     override fun reset() {

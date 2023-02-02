@@ -15,6 +15,8 @@ class WebsocketEvent{
         const val EVENT_TOPCHAT_READ_MESSAGE = 301
         const val EVENT_DELETE_MSG = 104
 
+        const val DEBUG_EVENT_SEND_WS_PAYLOAD = 999
+
         const val MONITORING = 900
         const val CLOSE_CONNECTION = 999
 
@@ -33,6 +35,7 @@ class WebsocketEvent{
                 EVENT_TOPCHAT_END_TYPING -> "TOPCHAT_END_TYPING"
                 EVENT_TOPCHAT_READ_MESSAGE -> "TOPCHAT_READ_MESSAGE"
                 EVENT_DELETE_MSG -> "DELETE_MSG"
+                DEBUG_EVENT_SEND_WS_PAYLOAD -> "SEND_WS_PAYLOAD"
                 else -> ""
             }
         }

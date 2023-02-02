@@ -51,6 +51,7 @@ class InsertWebSocketLogUseCase @Inject constructor(
                 source = param.info.topchat.source,
                 code = param.info.topchat.code,
                 messageId = param.info.topchat.messageId,
+                header = param.info.topchat.header,
                 event = param.info.event,
                 message = param.info.message,
                 timestamp = System.currentTimeMillis()

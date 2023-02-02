@@ -30,6 +30,9 @@ data class TopchatWebSocketLogEntity (
     @ColumnInfo(name = "message")
     val message: String,
 
+    @ColumnInfo(name = "header")
+    val header: String,
+
     @ColumnInfo(name = "timestamp")
     val timestamp: Long,
 )
