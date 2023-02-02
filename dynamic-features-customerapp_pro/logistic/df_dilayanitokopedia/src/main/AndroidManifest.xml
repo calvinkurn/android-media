@@ -1,0 +1,18 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
+    package="com.tokopedia.df.dilayanitokopedia">
+
+    <dist:module dist:title="@string/dt_home_title">
+        <dist:delivery>
+            <dist:on-demand />
+            <dist:install-time>
+                <dist:conditions>
+                    <dist:min-sdk dist:value="21" />
+                    <dist:max-sdk dist:value="23" />
+                </dist:conditions>
+            </dist:install-time>
+        </dist:delivery>
+        <dist:fusing dist:include="true" />
+    </dist:module>
+    <application android:hasCode="false" />
+</manifest>
