@@ -62,7 +62,7 @@ class GetPersonaQuestionnaireUseCase @Inject constructor(
                   }
                 }
               }
-            }
+           }
         """
 
         private const val DUMMY = """
@@ -156,6 +156,9 @@ class GetPersonaQuestionnaireUseCase @Inject constructor(
                       ],
                       "answersToSkipQuestions": [
                         {
+                          "answers": [
+                            "e"
+                          ],
                           "nextQuestionId": 5
                         }
                       ]
@@ -220,7 +223,7 @@ class GetPersonaQuestionnaireUseCase @Inject constructor(
                     }
                   ]
                 }
-              }
+            }
         """
     }
 }

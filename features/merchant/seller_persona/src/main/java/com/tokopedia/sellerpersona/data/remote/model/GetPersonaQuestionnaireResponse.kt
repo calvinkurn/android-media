@@ -24,7 +24,7 @@ data class QuestionnaireModel(
     @SerializedName("question") val question: QuestionModel? = null,
     @SerializedName("type") val type: Int = Int.ONE,
     @SerializedName("options") val options: List<OptionModel>? = null,
-    @SerializedName("answersToSkipQuestions") val answersToSkipQuestions: AnswersToSkipQuestionModel? = null
+    @SerializedName("answersToSkipQuestions") val answersToSkipQuestions: List<AnswersToSkipQuestionModel>? = null
 ) {
     data class QuestionModel(
         @SerializedName("title") val title: String = String.EMPTY,
