@@ -118,12 +118,7 @@ open class FlightSearchActivity :
                         }
                         FlightFlowConstant.CHANGE_SEARCH_PARAM.value -> {
                             if (fragment is FlightSearchFragment) {
-                                (fragment as FlightSearchFragment).setSearchPassData(
-                                    (
-                                        data.getParcelableExtra(EXTRA_PASS_DATA) as? FlightSearchPassDataModel
-                                            ?: FlightSearchPassDataModel()
-                                        )
-                                )
+                                (fragment as FlightSearchFragment).setSearchPassData((data.getParcelableExtra(EXTRA_PASS_DATA) as? FlightSearchPassDataModel ?: FlightSearchPassDataModel()))
                                 (fragment as FlightSearchFragment).resetDateAndReload(true)
                             }
                         }
