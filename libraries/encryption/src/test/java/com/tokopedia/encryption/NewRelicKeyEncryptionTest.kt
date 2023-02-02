@@ -9,6 +9,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
+// please don't commit in here, because this class is only generated to encrypt or decrypt new relic key
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [Build.VERSION_CODES.O_MR1], manifest = Config.NONE)
 class NewRelicKeyEncryptionTest {
@@ -56,7 +57,7 @@ class NewRelicKeyEncryptionTest {
 //        val newRelicIntArray = intArrayOf(78, 82, 73, 73, 45, 99, 84, 100, 57, 84, 52, 87, 50, 113, 120, 72, 103, 103, 70, 110, 121, 113, 56, 49, 98, 78, 115, 100, 86, 97, 65, 100, 85, 116, 120, 84, 51)
 //        val newRelicKey = decodeKey(newRelicIntArray)
 
-        // TODO add New Relic Key
+        // TODO add New Relic Key, no need decode key or form of int array
         val newRelicKey = ""
 
         println("New Relic Key origin: $newRelicKey")
@@ -84,9 +85,10 @@ class NewRelicKeyEncryptionTest {
 
         val privateKeyRSA = rsaEncrpytor.stringToPrivateKey(PRIVATE_KEY_RSA_STR)
 
-        val newRelicKeyDecrypted = rsaEncrpytor.decrypt(newRelicKeyEncrypted, privateKeyRSA, Constants.RSA_OAEP_ALGORITHM)
+        // uncomment if there are new relic encrypted
+//        val newRelicKeyDecrypted = rsaEncrpytor.decrypt(newRelicKeyEncrypted, privateKeyRSA, Constants.RSA_OAEP_ALGORITHM)
 
-        println("New Relic Key Decrypted: $newRelicKeyDecrypted")
+//        println("New Relic Key Decrypted: $newRelicKeyDecrypted")
     }
 
     private fun decodeKey(keys: IntArray): String {

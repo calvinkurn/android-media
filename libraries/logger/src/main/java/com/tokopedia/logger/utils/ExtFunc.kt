@@ -7,7 +7,8 @@ fun MutableMap<String, NewRelicBodyApi>.addValue(
     nrUid: String,
     msg: String,
     encryptNrApiKey: String,
-    decryptNrKey: ((String) -> (String))
+    decryptNrKey: ((String) -> (String)),
+    deleteLog: () -> Unit
 ) {
     if (containsKey(nrUid)) {
         val existVal = this.getValue(nrUid)
@@ -15,7 +16,11 @@ fun MutableMap<String, NewRelicBodyApi>.addValue(
         msgList.add(msg)
         this[nrUid] = existVal.copy(messageList = msgList.toList())
     } else {
-        val nrApiKey = decryptNrKey.invoke(encryptNrApiKey)
-        this[nrUid] = NewRelicBodyApi(NewRelicConfig(nrUid, nrApiKey), listOf(msg))
+        try {
+            val nrApiKey = decryptNrKey.invoke(encryptNrApiKey)
+            this[nrUid] = NewRelicBodyApi(NewRelicConfig(nrUid, nrApiKey), listOf(msg))
+        } catch (t: Throwable) {
+            deleteLog()
+        }
     }
 }

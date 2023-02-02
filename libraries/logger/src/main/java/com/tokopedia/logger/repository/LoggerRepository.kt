@@ -56,6 +56,10 @@ class LoggerRepository(
         logDao.deleteEntries(loggers)
     }
 
+    override suspend fun deleteLog(logger: Logger) {
+        logDao.deleteLog(logger)
+    }
+
     override suspend fun deleteExpiredData() {
         val currentTimestamp = System.currentTimeMillis()
         logDao.deleteExpiredHighPrio(currentTimestamp - Constants.OFFLINE_TAG_THRESHOLD)
@@ -191,7 +195,7 @@ class LoggerRepository(
                 scalyrEventList.add(ScalyrEvent(ts, ScalyrEventAttrs(truncate(message))))
             }
 
-            setMessageNewRelicList(tagMapsValue, message, messageNewRelicSdkList, messageNewRelicApiMap)
+            setMessageNewRelicList(tagMapsValue, message, messageNewRelicSdkList, messageNewRelicApiMap, log)
 
             LoggerReporting.getInstance().tagMapsEmbrace[tagMapsValue]?.let {
                 messageEmbraceList.add(EmbraceBody(tagValue, jsonToMap(message)))
@@ -205,7 +209,8 @@ class LoggerRepository(
         tagMapsValue: String,
         message: String,
         messageNewRelicSdkList: MutableList<NewRelicBodySdk>,
-        messageNewRelicApiMaps: MutableMap<String, NewRelicBodyApi>
+        messageNewRelicApiMaps: MutableMap<String, NewRelicBodyApi>,
+        log: Logger
     ) {
         LoggerReporting.getInstance().tagMapsNewRelic[tagMapsValue]?.let {
             val eventType = LoggerReporting.getInstance().tagMapsNrTable[it.newRelicTable] ?: Constants.EVENT_ANDROID_NEW_RELIC
@@ -216,7 +221,16 @@ class LoggerRepository(
             } else {
                 decryptNrKey?.let { decrypt ->
                     val msgEventNr = addEventNewRelic(message, eventType)
-                    messageNewRelicApiMaps.addValue(nrConfig.userId, msgEventNr, nrConfig.token, decrypt)
+                    messageNewRelicApiMaps.addValue(
+                        nrConfig.userId,
+                        msgEventNr,
+                        nrConfig.token,
+                        decrypt
+                    ) {
+                        launch {
+                            deleteLog(log)
+                        }
+                    }
                 }
             }
         }
