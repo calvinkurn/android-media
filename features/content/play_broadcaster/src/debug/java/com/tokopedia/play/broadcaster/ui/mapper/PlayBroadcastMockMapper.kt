@@ -38,18 +38,14 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
 
     override fun mapBroadcastingConfig(response: GetBroadcastingConfigurationResponse): BroadcastingConfigUiModel {
         return BroadcastingConfigUiModel(
-            authorID = response.broadcasterGetBroadcastingConfig.authorID,
-            authorType = response.broadcasterGetBroadcastingConfig.authorType,
-            config = BroadcastingConfigUiModel.Config(
-                audioRate = response.broadcasterGetBroadcastingConfig.config.audioRate,
-                bitrateMode = response.broadcasterGetBroadcastingConfig.config.bitrateMode,
-                fps = response.broadcasterGetBroadcastingConfig.config.fps,
-                maxRetry = response.broadcasterGetBroadcastingConfig.config.maxRetry,
-                reconnectDelay = response.broadcasterGetBroadcastingConfig.config.reconnectDelay,
-                videoBitrate = response.broadcasterGetBroadcastingConfig.config.videoBitrate,
-                videoHeight = response.broadcasterGetBroadcastingConfig.config.videoHeight,
-                videoWidth = response.broadcasterGetBroadcastingConfig.config.videoWidth,
-            )
+            audioRate = response.broadcasterGetBroadcastingConfig.config.audioRate,
+            bitrateMode = response.broadcasterGetBroadcastingConfig.config.bitrateMode,
+            fps = response.broadcasterGetBroadcastingConfig.config.fps,
+            maxRetry = response.broadcasterGetBroadcastingConfig.config.maxRetry,
+            reconnectDelay = response.broadcasterGetBroadcastingConfig.config.reconnectDelay,
+            videoBitrate = response.broadcasterGetBroadcastingConfig.config.videoBitrate,
+            videoHeight = response.broadcasterGetBroadcastingConfig.config.videoHeight,
+            videoWidth = response.broadcasterGetBroadcastingConfig.config.videoWidth,
         )
     }
 

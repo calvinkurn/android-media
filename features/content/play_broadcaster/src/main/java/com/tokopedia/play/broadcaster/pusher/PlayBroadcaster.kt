@@ -67,9 +67,11 @@ class PlayBroadcaster(
     init {
         broadcaster.init(activityContext, handler)
         broadcaster.addListener(broadcastListener)
-        broadcaster.setAudioRate(configData.config.audioRate)
-        broadcaster.setVideoRate(configData.config.videoBitrate)
-        broadcaster.setFps(configData.config.fps)
+        broadcaster.setConfig(
+            audioRate = configData.audioRate,
+            videoRate = configData.videoBitrate,
+            videoFps = configData.fps
+        )
         enableDebugMonitoring()
     }
 

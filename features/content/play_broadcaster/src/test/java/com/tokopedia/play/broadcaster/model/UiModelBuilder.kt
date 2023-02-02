@@ -86,18 +86,14 @@ class UiModelBuilder {
 
     fun buildBroadcastingConfigUiModel(): BroadcastingConfigUiModel {
         return BroadcastingConfigUiModel(
-            authorType = 2,
-            authorID = "1234",
-            config = BroadcastingConfigUiModel.Config(
-                audioRate = "123",
-                bitrateMode = "123",
-                fps = "123",
-                maxRetry = 1,
-                reconnectDelay = 1,
-                videoBitrate = "123",
-                videoWidth = "123",
-                videoHeight = "123",
-            )
+            audioRate = "123",
+            bitrateMode = "123",
+            fps = "123",
+            maxRetry = 1,
+            reconnectDelay = 1,
+            videoBitrate = "123",
+            videoWidth = "123",
+            videoHeight = "123",
         )
     }
 

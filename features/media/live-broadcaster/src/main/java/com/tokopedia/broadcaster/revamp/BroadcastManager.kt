@@ -90,16 +90,10 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
             // Arrays.fill(data, (byte) 0); // "Mute" audio
         }
 
-    override fun setAudioRate(audioRate: String) {
+    override fun setConfig(audioRate: String, videoRate: String, videoFps: String) {
         mAudioRate = audioRate
-    }
-
-    override fun setVideoRate(videoRate: String) {
         mVideoRate = videoRate
-    }
-
-    override fun setFps(fps: String) {
-        mFps = fps
+        mFps = videoFps
     }
 
     override fun addListener(listener: Broadcaster.Listener) {
