@@ -4,34 +4,45 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.feedplus.databinding.ItemFeedContainerBinding
-import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedViewHolder
+import com.tokopedia.feedplus.databinding.ItemFeedFollowingBinding
+import com.tokopedia.feedplus.databinding.ItemFeedForYouBinding
+import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedFollowingViewHolder
+import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedForYouViewHolder
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
-import com.tokopedia.feedplus.presentation.model.FeedTabType
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
  */
-class FeedAdapter : RecyclerView.Adapter<FeedViewHolder>() {
+class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var context: Context? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         context = parent.context
-        val view = ItemFeedContainerBinding.inflate(LayoutInflater.from(context), parent, false)
-        return FeedViewHolder(view)
+        return when (viewType) {
+            FeedBaseFragment.TAB_FOR_YOU_INDEX -> {
+                val view =
+                    ItemFeedForYouBinding.inflate(LayoutInflater.from(context), parent, false)
+                return FeedForYouViewHolder(view)
+            }
+            else -> {
+                val view =
+                    ItemFeedFollowingBinding.inflate(LayoutInflater.from(context), parent, false)
+                return FeedFollowingViewHolder(view)
+            }
+        }
     }
 
-    override fun onBindViewHolder(holder: FeedViewHolder, position: Int) {
-        context?.let {
-            holder.bind(
-                it,
-                if (position == FeedBaseFragment.TAB_FOR_YOU_INDEX) FeedTabType.FOR_YOU
-                else FeedTabType.FOLLOWING
-            )
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (position == FeedBaseFragment.TAB_FOR_YOU_INDEX) {
+            (holder as FeedForYouViewHolder).bind()
+        } else if (position == FeedBaseFragment.TAB_FOLLOWING_INDEX) {
+            (holder as FeedFollowingViewHolder).bind()
         }
     }
 
     override fun getItemCount(): Int = ITEM_COUNT
+
+    override fun getItemViewType(position: Int): Int = position
 
     companion object {
         private const val ITEM_COUNT = 2
