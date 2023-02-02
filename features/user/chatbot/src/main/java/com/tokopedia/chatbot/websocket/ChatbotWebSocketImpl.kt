@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.websocket
 
+import android.util.Log
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.teleporter.Teleporter.gson
@@ -80,6 +81,7 @@ class ChatbotWebSocketImpl(
         }
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+            Log.d("FATAL", "onFailure: $t $response")
             mWebSocket = null
             webSocketFlow.tryEmit(ChatbotWebSocketAction.Failure(ChatbotWebSocketException(t)))
             if (!isSocketErrorSent) {
@@ -89,10 +91,12 @@ class ChatbotWebSocketImpl(
         }
 
         override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+            Log.d("FATAL", "onFailure: $code $reason")
             webSocket.close(CODE_NORMAL_CLOSURE, SOCKET_NORMAL_CLOSURE_TEXT)
         }
 
         override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+            Log.d("FATAL", "onFailure: $code $reason")
             webSocketFlow.tryEmit(ChatbotWebSocketAction.Closed(code))
             mWebSocket = null
         }

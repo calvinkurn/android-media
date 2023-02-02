@@ -12,6 +12,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.chatbot2.view.fragment.ChatbotFragment2
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.view.fragment.ChatbotFragment
 import com.tokopedia.chatbot.view.util.isInDarkMode
@@ -38,9 +39,17 @@ class ChatbotActivity : BaseChatToolbarActivity() {
         if (!list.isNullOrEmpty()) {
             bundle.putString(MESSAGE_ID, list[0])
         }
-        val fragment = ChatbotFragment()
-        fragment.arguments = bundle
-        return fragment
+
+        val state = true
+        if(state) {
+            val fragment = ChatbotFragment2()
+            fragment.arguments = bundle
+            return fragment
+        } else {
+            val fragment = ChatbotFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 
     companion object {

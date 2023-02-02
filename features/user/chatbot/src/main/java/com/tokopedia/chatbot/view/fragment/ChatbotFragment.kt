@@ -578,6 +578,7 @@ class ChatbotFragment :
 
         smallReplyBox?.bindCommentTextBackground()
         replyBubbleContainer = smallReplyBox?.getReplyBubbleContainer()
+        smallReplyBox?.listener = this
 
         setUpBigReplyBoxListeners()
         replyBubbleOnBoardingHasBeenShow = replyBubbleOnBoarding.hasBeenShown()
