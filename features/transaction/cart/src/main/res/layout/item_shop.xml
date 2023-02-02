@@ -239,7 +239,7 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/layout_bo_affordability"
+        android:id="@+id/layout_cart_shop_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/Unify_BN50"
@@ -248,44 +248,53 @@
         android:paddingEnd="16dp"
         android:paddingBottom="8dp">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_bo_affordability"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/cart_shop_ticker_left_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="4dp"
-            android:layout_toStartOf="@+id/arrow_bo_affordability"
+            android:visibility="gone"
+            android:background="@color/transparent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/cart_shop_ticker_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/cart_shop_ticker_right_icon"
+            android:layout_toEndOf="@+id/cart_shop_ticker_left_icon"
             android:textColor="@color/Unify_N700_96"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
+            android:visibility="gone"
             tools:text="Ongkirmu Rp10.000 Rp30.000 karena Bebas Ongkir!" />
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/arrow_bo_affordability"
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/cart_shop_ticker_right_icon"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:background="@color/transparent"
+            android:layout_marginStart="4dp"
             android:visibility="gone"
-            app:icon_color_light_enable="@color/Unify_NN900"
-            app:icon_color_night_enable="@color/Unify_NN900"
-            app:icon_name="CHEVRON_RIGHT" />
+            android:background="@color/transparent" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/large_loader_bo_affordability"
+            android:id="@+id/cart_shop_ticker_large_loader"
             android:layout_width="match_parent"
             android:layout_height="8dp"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="60dp"
             android:layout_marginBottom="8dp"
-            android:layout_toStartOf="@+id/small_loader_bo_affordability"
+            android:layout_toStartOf="@+id/cart_shop_ticker_small_loader"
             app:loader_type="line" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/small_loader_bo_affordability"
+            android:id="@+id/cart_shop_ticker_small_loader"
             android:layout_width="14dp"
             android:layout_height="8dp"
             android:layout_alignParentEnd="true"

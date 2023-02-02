@@ -10,7 +10,7 @@ import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
 import androidx.core.view.marginTop
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.cart.databinding.LayoutBottomsheetCartBundlingBinding
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.common.ProductServiceWidgetConstant
@@ -21,6 +21,7 @@ import com.tokopedia.product_bundle.common.data.constant.BundlingPageSource
 import com.tokopedia.productbundlewidget.model.GetBundleParamBuilder
 import com.tokopedia.productbundlewidget.model.WidgetType
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -66,7 +67,9 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
 
     private fun renderContent(data: CartBundlingBottomSheetData) {
         setTitle(data.title)
-        binding?.descriptionLabel?.text = MethodChecker.fromHtml(data.description)
+        context?.let {
+            binding?.descriptionLabel?.text = HtmlLinkHelper(it, data.description).spannedString
+        }
         val bundleParam = GetBundleParamBuilder()
             .setBundleId(data.bundleIds)
             .setWidgetType(WidgetType.TYPE_3)
@@ -76,12 +79,22 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
             binding?.cardBottomTicker?.apply {
                 // Margin adjustment for card view padding in bundle widget recycler view item
                 setMargin(
-                    marginLeft + BUNDLING_WIDGET_MARGIN_START_ADJUSTMENT.toPx(), marginTop,
-                    marginRight, marginBottom
+                    marginLeft + BUNDLING_WIDGET_MARGIN_START_ADJUSTMENT.toPx(),
+                    marginTop,
+                    marginRight,
+                    marginBottom
                 )
             }
-            binding?.bottomTickerLabel?.text = MethodChecker.fromHtml(data.bottomTicker)
-            binding?.bottomTickerLabel?.movementMethod = LinkMovementMethod.getInstance()
+            context?.let {
+                val linkHelper = HtmlLinkHelper(it, data.bottomTicker)
+                binding?.bottomTickerLabel?.text = linkHelper.spannedString
+                binding?.bottomTickerLabel?.movementMethod = LinkMovementMethod.getInstance()
+                linkHelper.urlList.forEach { urlLinkManager ->
+                    urlLinkManager.setOnClickListener {
+                        RouteManager.route(it, urlLinkManager.linkUrl)
+                    }
+                }
+            }
             binding?.cardBottomTicker?.visible()
         } else {
             binding?.cardBottomTicker?.gone()

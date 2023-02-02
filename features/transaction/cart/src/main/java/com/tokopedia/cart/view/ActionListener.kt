@@ -25,13 +25,13 @@ interface ActionListener {
 
     fun onShopItemCheckChanged(index: Int, checked: Boolean)
 
-    fun onCartBoAffordabilityClicked(cartShopHolderData: CartShopHolderData)
+    fun onCartShopGroupTickerClicked(cartShopHolderData: CartShopHolderData)
 
-    fun onCartBoAffordabilityRefreshClicked(index: Int, cartShopHolderData: CartShopHolderData)
+    fun onCartShopGroupTickerRefreshClicked(index: Int, cartShopHolderData: CartShopHolderData)
 
-    fun onViewCartBoAffordabilityTicker(cartShopHolderData: CartShopHolderData)
+    fun onViewCartShopGroupTicker(cartShopHolderData: CartShopHolderData)
 
-    fun checkBoAffordability(cartShopHolderData: CartShopHolderData)
+    fun checkCartShopGroupTicker(cartShopHolderData: CartShopHolderData)
 
     fun onCartDataEnableToCheckout()
 

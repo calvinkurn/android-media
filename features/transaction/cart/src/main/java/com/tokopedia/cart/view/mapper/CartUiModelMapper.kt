@@ -24,7 +24,7 @@ import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
-import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityData
+import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
@@ -65,11 +65,11 @@ object CartUiModelMapper {
 
     fun mapCartEmptyUiModel(context: Context?): CartEmptyHolderData {
         return CartEmptyHolderData(
-                title = context?.getString(R.string.checkout_module_keranjang_belanja_kosong_new)
-                        ?: "",
-                desc = context?.getString(R.string.checkout_empty_cart_sub_message_new) ?: "",
-                imgUrl = CartConstant.CART_EMPTY_DEFAULT_IMG_URL,
-                btnText = context?.getString(R.string.checkout_module_mulai_belanja) ?: ""
+            title = context?.getString(R.string.checkout_module_keranjang_belanja_kosong_new)
+                ?: "",
+            desc = context?.getString(R.string.checkout_empty_cart_sub_message_new) ?: "",
+            imgUrl = CartConstant.CART_EMPTY_DEFAULT_IMG_URL,
+            btnText = context?.getString(R.string.checkout_module_mulai_belanja) ?: ""
         )
     }
 
@@ -84,10 +84,10 @@ object CartUiModelMapper {
         if (lastApplyPromoData.additionalInfo.emptyCartInfo.imageUrl.isNotEmpty()) imgUrl = lastApplyPromoData.additionalInfo.emptyCartInfo.imageUrl
 
         return CartEmptyHolderData(
-                title = title,
-                desc = desc,
-                imgUrl = imgUrl,
-                btnText = btnText
+            title = title,
+            desc = desc,
+            imgUrl = imgUrl,
+            btnText = btnText
         )
     }
 
@@ -102,7 +102,7 @@ object CartUiModelMapper {
         }
 
         return CartItemTickerErrorHolderData(
-                errorProductCount = errorItemCount
+            errorProductCount = errorItemCount
         )
     }
 
@@ -113,11 +113,11 @@ object CartUiModelMapper {
             availableGroup.cartDetails.forEach { cartDetail ->
                 cartDetail.products.forEach { product ->
                     val productUiModel = mapProductUiModel(
-                            cartData = cartData,
-                            cartDetail = cartDetail,
-                            product = product,
-                            group = availableGroup,
-                            unavailableSection = null
+                        cartData = cartData,
+                        cartDetail = cartDetail,
+                        product = product,
+                        group = availableGroup,
+                        unavailableSection = null
                     )
                     productUiModelList.add(productUiModel)
                 }
@@ -159,9 +159,10 @@ object CartUiModelMapper {
                 longitude = availableGroup.shop.longitude
                 latitude = availableGroup.shop.latitude
                 boMetadata = availableGroup.boMetadata
-                boAffordability = CartShopBoAffordabilityData(
-                        enable = availableGroup.shipmentInformation.enableBoAffordability,
-                        errorText = cartData.messages.errorBoAffordability
+                cartShopGroupTicker = CartShopGroupTickerData(
+                    enableBoAffordability = availableGroup.shipmentInformation.enableBoAffordability,
+                    enableCartAggregator = availableGroup.shipmentInformation.enableShopGroupTickerCartAggregator,
+                    errorText = cartData.messages.errorBoAffordability
                 )
                 addOnText = availableGroup.giftingAddOn.tickerText
                 addOnImgUrl = availableGroup.giftingAddOn.iconUrl
@@ -173,7 +174,7 @@ object CartUiModelMapper {
                 poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.toString() ?: "0"
                 boCode = cartData.promo.lastApplyPromo.lastApplyPromoData.listVoucherOrders.firstOrNull {
                     it.uniqueId == cartString && it.shippingId > 0 &&
-                    it.spId > 0 && it.type == "logistic"
+                        it.spId > 0 && it.type == "logistic"
                 }?.code ?: ""
             }
             cartShopHolderDataList.add(shopUiModel)
@@ -185,21 +186,21 @@ object CartUiModelMapper {
     private fun mapShopShipment(shopShipments: List<ShopShipment>): List<com.tokopedia.logisticcart.shipping.model.ShopShipment> {
         return shopShipments.map { shipment ->
             com.tokopedia.logisticcart.shipping.model.ShopShipment(
-                    shipId = shipment.shipId,
-                    shipName = shipment.shipName,
-                    shipCode = shipment.shipCode,
-                    shipLogo = shipment.shipLogo,
-                    shipProds = shipment.shipProds.map {
-                        com.tokopedia.logisticcart.shipping.model.ShipProd(
-                                shipProdId = it.shipProdId,
-                                shipProdName = it.shipProdName,
-                                shipGroupName = it.shipGroupName,
-                                shipGroupId = it.shipGroupId,
-                                additionalFee = it.additionalFee,
-                                minimumWeight = it.minimumWeight
-                        )
-                    },
-                    isDropshipEnabled = shipment.isDropshipEnabled == 1
+                shipId = shipment.shipId,
+                shipName = shipment.shipName,
+                shipCode = shipment.shipCode,
+                shipLogo = shipment.shipLogo,
+                shipProds = shipment.shipProds.map {
+                    com.tokopedia.logisticcart.shipping.model.ShipProd(
+                        shipProdId = it.shipProdId,
+                        shipProdName = it.shipProdName,
+                        shipGroupName = it.shipGroupName,
+                        shipGroupId = it.shipGroupId,
+                        additionalFee = it.additionalFee,
+                        minimumWeight = it.minimumWeight
+                    )
+                },
+                isDropshipEnabled = shipment.isDropshipEnabled == 1
             )
         }
     }
@@ -254,11 +255,11 @@ object CartUiModelMapper {
                 unavailableGroup.cartDetails.forEach { cartDetail ->
                     cartDetail.products.forEach { product ->
                         val productUiModel = mapProductUiModel(
-                                cartData = cartData,
-                                cartDetail = cartDetail,
-                                product = product,
-                                group = unavailableGroup,
-                                unavailableSection = unavailableSection
+                            cartData = cartData,
+                            cartDetail = cartDetail,
+                            product = product,
+                            group = unavailableGroup,
+                            unavailableSection = unavailableSection
                         )
                         productUiModelList.add(productUiModel)
                     }
@@ -317,7 +318,7 @@ object CartUiModelMapper {
         }
 
         return DisabledItemHeaderHolderData(
-                disabledItemCount = errorItemCount
+            disabledItemCount = errorItemCount
         )
     }
 
@@ -330,21 +331,23 @@ object CartUiModelMapper {
 
     private fun mapDisabledAccordionUiModel(context: Context?, cartData: CartData): DisabledAccordionHolderData {
         return DisabledAccordionHolderData(
-                isCollapsed = true,
-                showLessWording = cartData.unavailableSectionAction.find {
-                    return@find it.id == Action.ACTION_SHOWLESS
-                }?.message ?: context?.getString(R.string.cart_default_wording_show_less) ?: "",
-                showMoreWording = cartData.unavailableSectionAction.find {
-                    return@find it.id == Action.ACTION_SHOWMORE
-                }?.message ?: context?.getString(R.string.cart_default_wording_show_more) ?: ""
+            isCollapsed = true,
+            showLessWording = cartData.unavailableSectionAction.find {
+                return@find it.id == Action.ACTION_SHOWLESS
+            }?.message ?: context?.getString(R.string.cart_default_wording_show_less) ?: "",
+            showMoreWording = cartData.unavailableSectionAction.find {
+                return@find it.id == Action.ACTION_SHOWMORE
+            }?.message ?: context?.getString(R.string.cart_default_wording_show_more) ?: ""
         )
     }
 
-    private fun mapProductUiModel(cartData: CartData,
-                                  cartDetail: CartDetail,
-                                  product: Product,
-                                  group: Any,
-                                  unavailableSection: UnavailableSection?): CartItemHolderData {
+    private fun mapProductUiModel(
+        cartData: CartData,
+        cartDetail: CartDetail,
+        product: Product,
+        group: Any,
+        unavailableSection: UnavailableSection?
+    ): CartItemHolderData {
         return CartItemHolderData().apply {
             when (group) {
                 is AvailableGroup -> {
@@ -466,6 +469,7 @@ object CartUiModelMapper {
             freeShippingName = product.freeShippingGeneral.boName
             campaignId = product.campaignId
             warehouseId = product.warehouseId
+            bundleIds = product.bundleIds
         }
     }
 
@@ -499,11 +503,11 @@ object CartUiModelMapper {
 
     fun mapLastApplySimplified(lastApplyPromoData: LastApplyPromoData): LastApplyUiModel {
         return LastApplyUiModel(
-                codes = lastApplyPromoData.codes,
-                voucherOrders = mapListVoucherOrders(lastApplyPromoData.listVoucherOrders),
-                additionalInfo = mapAdditionalInfo(lastApplyPromoData.additionalInfo),
-                message = mapMessageGlobalPromo(lastApplyPromoData.message),
-                benefitSummaryInfo = mapBenefitSummaryInfo(lastApplyPromoData.benefitSummaryInfo)
+            codes = lastApplyPromoData.codes,
+            voucherOrders = mapListVoucherOrders(lastApplyPromoData.listVoucherOrders),
+            additionalInfo = mapAdditionalInfo(lastApplyPromoData.additionalInfo),
+            message = mapMessageGlobalPromo(lastApplyPromoData.message),
+            benefitSummaryInfo = mapBenefitSummaryInfo(lastApplyPromoData.benefitSummaryInfo)
         )
     }
 
@@ -543,62 +547,66 @@ object CartUiModelMapper {
 
     private fun mapVoucherOrders(voucherOrders: VoucherOrders): LastApplyVoucherOrdersItemUiModel {
         return LastApplyVoucherOrdersItemUiModel(
-                code = voucherOrders.code,
-                uniqueId = voucherOrders.uniqueId,
-                message = mapMessage(voucherOrders.message)
+            code = voucherOrders.code,
+            uniqueId = voucherOrders.uniqueId,
+            message = mapMessage(voucherOrders.message)
         )
     }
 
     private fun mapMessage(message: MessageVoucherOrders): LastApplyMessageUiModel {
         return LastApplyMessageUiModel(
-                color = message.color,
-                state = message.state,
-                text = message.text)
+            color = message.color,
+            state = message.state,
+            text = message.text
+        )
     }
 
     private fun mapMessageGlobalPromo(message: MessageGlobalPromo): LastApplyMessageUiModel {
         return LastApplyMessageUiModel(
-                color = message.color,
-                state = message.state,
-                text = message.text)
+            color = message.color,
+            state = message.state,
+            text = message.text
+        )
     }
 
     private fun mapAdditionalInfo(promoAdditionalInfo: PromoAdditionalInfo): LastApplyAdditionalInfoUiModel {
         return LastApplyAdditionalInfoUiModel(
-                messageInfo = mapMessageInfo(promoAdditionalInfo.messageInfo),
-                errorDetail = mapErrorDetail(promoAdditionalInfo.errorDetail),
-                emptyCartInfo = mapEmptyCartInfo(promoAdditionalInfo.emptyCartInfo),
-                usageSummaries = mapUsageSummaries(promoAdditionalInfo.usageSummaries),
+            messageInfo = mapMessageInfo(promoAdditionalInfo.messageInfo),
+            errorDetail = mapErrorDetail(promoAdditionalInfo.errorDetail),
+            emptyCartInfo = mapEmptyCartInfo(promoAdditionalInfo.emptyCartInfo),
+            usageSummaries = mapUsageSummaries(promoAdditionalInfo.usageSummaries)
         )
     }
 
     private fun mapMessageInfo(promoMessageInfo: PromoMessageInfo): LastApplyMessageInfoUiModel {
         return LastApplyMessageInfoUiModel(
-                detail = promoMessageInfo.detail,
-                message = promoMessageInfo.message)
+            detail = promoMessageInfo.detail,
+            message = promoMessageInfo.message
+        )
     }
 
     private fun mapErrorDetail(promoErrorDetail: PromoErrorDetail): LastApplyErrorDetailUiModel {
         return LastApplyErrorDetailUiModel(
-                message = promoErrorDetail.message)
+            message = promoErrorDetail.message
+        )
     }
 
     private fun mapEmptyCartInfo(promoEmptyCartInfo: PromoEmptyCartInfo): LastApplyEmptyCartInfoUiModel {
         return LastApplyEmptyCartInfoUiModel(
-                imgUrl = promoEmptyCartInfo.imageUrl,
-                message = promoEmptyCartInfo.message,
-                detail = promoEmptyCartInfo.detail
+            imgUrl = promoEmptyCartInfo.imageUrl,
+            message = promoEmptyCartInfo.message,
+            detail = promoEmptyCartInfo.detail
         )
     }
 
     private fun mapUsageSummaries(promoUsageSummaries: List<UsageSummaries>): List<LastApplyUsageSummariesUiModel> {
         return promoUsageSummaries.map {
             LastApplyUsageSummariesUiModel(
-                    description = it.desc,
-                    type = it.type,
-                    amountStr = it.amountStr,
-                    amount = it.amount,
-                    currencyDetailsStr = it.currencyDetailsStr
+                description = it.desc,
+                type = it.type,
+                amountStr = it.amountStr,
+                amount = it.amount,
+                currencyDetailsStr = it.currencyDetailsStr
             )
         }
     }
@@ -615,16 +623,16 @@ object CartUiModelMapper {
 
     fun mapPromoSummaryUiModel(promoSummary: PromoSummary): PromoSummaryData {
         return PromoSummaryData(
-                title = promoSummary.title,
-                details = promoSummary.details.map {
-                    PromoSummaryDetailData(
-                            description = it.description,
-                            type = it.type,
-                            amountStr = it.amountStr,
-                            amount = it.amount,
-                            currencyDetailStr = it.currencyDetailStr
-                    )
-                }.toMutableList()
+            title = promoSummary.title,
+            details = promoSummary.details.map {
+                PromoSummaryDetailData(
+                    description = it.description,
+                    type = it.type,
+                    amountStr = it.amountStr,
+                    amount = it.amount,
+                    currencyDetailStr = it.currencyDetailStr
+                )
+            }.toMutableList()
         )
     }
 }

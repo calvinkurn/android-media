@@ -5,6 +5,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.domain.usecase.AddCartToWishlistUseCase
+import com.tokopedia.cart.domain.usecase.CartShopGroupTickerAggregatorUseCase
 import com.tokopedia.cart.domain.usecase.FollowShopUseCase
 import com.tokopedia.cart.domain.usecase.GetCartRevampV3UseCase
 import com.tokopedia.cart.domain.usecase.SetCartlistCheckboxStateUseCase
@@ -16,7 +17,6 @@ import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.logisticcart.boaffordability.usecase.BoAffordabilityUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
@@ -60,7 +60,7 @@ abstract class BaseCartTest {
     var updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     var setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
     var followShopUseCase: FollowShopUseCase = mockk()
-    val boAffordabilityUseCase: BoAffordabilityUseCase = mockk()
+    val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase = mockk()
     val coroutineTestDispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers
     var view: ICartListView = mockk(relaxed = true)
     lateinit var cartListPresenter: ICartListPresenter
@@ -70,14 +70,15 @@ abstract class BaseCartTest {
 
     @Before
     fun setUp() {
-        cartListPresenter = CartListPresenter(getCartRevampV3UseCase, deleteCartUseCase,
-                undoDeleteCartUseCase, updateCartUseCase, compositeSubscription,
-                addToWishListV2UseCase, addCartToWishlistUseCase, deleteWishlistV2UseCase,
-                updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
-                getWishlistV2UseCase, getRecommendationUseCase, addToCartUseCase, addToCartExternalUseCase,
-                seamlessLoginUsecase, updateCartCounterUseCase, updateCartAndValidateUseUseCase,
-                validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase, followShopUseCase,
-                boAffordabilityUseCase, TestSchedulers, coroutineTestDispatchers
+        cartListPresenter = CartListPresenter(
+            getCartRevampV3UseCase, deleteCartUseCase,
+            undoDeleteCartUseCase, updateCartUseCase, compositeSubscription,
+            addToWishListV2UseCase, addCartToWishlistUseCase, deleteWishlistV2UseCase,
+            updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+            getWishlistV2UseCase, getRecommendationUseCase, addToCartUseCase, addToCartExternalUseCase,
+            seamlessLoginUsecase, updateCartCounterUseCase, updateCartAndValidateUseUseCase,
+            validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase, followShopUseCase,
+            cartShopGroupTickerAggregatorUseCase, TestSchedulers, coroutineTestDispatchers
         )
         every { addToWishListV2UseCase.cancelJobs() } just Runs
         every { deleteWishlistV2UseCase.cancelJobs() } just Runs
@@ -88,5 +89,4 @@ abstract class BaseCartTest {
     fun tearDown() {
         cartListPresenter.detachView()
     }
-
 }
