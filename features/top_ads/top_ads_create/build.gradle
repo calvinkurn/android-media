@@ -12,6 +12,13 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+android {
+
+    buildFeatures {
+        viewBinding true
+        buildConfig true
+    }
+}
 
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -35,6 +42,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation rootProject.ext.unifyDependencies.calendar
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     //test

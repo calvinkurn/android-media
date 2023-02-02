@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.topads.create">
@@ -8,12 +9,15 @@
         android:supportsRtl="true"
         tools:replace="android:label">
         <activity
+            android:name="com.tokopedia.topads.view.activity.SeePerformanceTopadsActivity"
+            android:exported="false" />
+        <activity
             android:name="com.tokopedia.topads.view.activity.StepperActivity"
+            android:exported="false"
             android:label="@string/create_group"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="false">
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -28,11 +32,11 @@
         </activity>
         <activity
             android:name="com.tokopedia.topads.view.activity.CreationOnboardingActivity"
+            android:exported="false"
             android:label="@string/topads_create_onboarding_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="false">
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -47,11 +51,11 @@
         </activity>
         <activity
             android:name="com.tokopedia.topads.view.activity.AdCreationChooserActivity"
+            android:exported="false"
             android:label="@string/creat_ad"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="false">
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -75,4 +79,5 @@
             android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan" />
     </application>
+
 </manifest>

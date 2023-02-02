@@ -144,7 +144,7 @@
     <string name="topads_create_tip_sheet_desc2">Pilih kata kunci dengan jumlah pencarian tertinggi agar iklanmu dapat <![CDATA["<font color='#F531353B'><b>menjangkau lebih banyak calon pembeli.</b></font> Data jumlah pencarian merupakan data dari <font color='#F531353B'><b> 30 hari terakhir. </b></font>.]]></string>
     <string name="topads_create_tip_sheet_desc4"><p><p>Sistem iklan di TopAds bersifat lelang, maka <![CDATA["<font color='#F531353B'><b> kompetisi tinggi </b></font> butuh <font color='#F531353B'><b> biaya iklan lebih tinggi</b></font> untuk tampil dan <font color='#F531353B'><b> kompetisi rendah </b></font> butuh <font color='#F531353B'><b> biaya iklan  </b></font>yang relatif <font color='#F531353B'><b> lebih rendah. </b></font>]]></p></p></string>
 
-<!-- Search activity-->
+    <!-- Search activity-->
     <string name="topads_create_empty_view_title">Tidak ada kata kunci ditemukan</string>
     <string name="topads_create_empty_view_desc">Coba cari kata kunci, ya.</string>
     <string name="topads_create_search_loading">Mencari kata kunci...</string>
