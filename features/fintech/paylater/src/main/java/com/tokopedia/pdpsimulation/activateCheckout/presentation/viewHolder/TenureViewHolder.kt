@@ -34,6 +34,7 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
                     individualTenureItemContainer.isClickable = false
                     radioSelector.isClickable = false
                 }
+                radioSelector.skipAnimation()
             }
         }?:run{
             itemView.gone()
@@ -47,11 +48,9 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
         currentPosition: Int
     ) {
         if (tenureDetail.isSelectedTenure && !tenureDetail.tenureDisable) {
-            containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_GN100)
             individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
             radioSelector.isChecked = true
         } else {
-            containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
             individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER
             radioSelector.isChecked = false
         }

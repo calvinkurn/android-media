@@ -183,7 +183,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         payLaterActivationViewModel.getOptimizedCheckoutDetail(
             payLaterActivationViewModel.selectedProductId,
             payLaterActivationViewModel.price * quantity,
-            payLaterActivationViewModel.selectedGatewayCode
+            payLaterActivationViewModel.selectedGatewayCode,
+            payLaterActivationViewModel.shopId ?: "",
         )
     }
 
@@ -728,7 +729,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         payLaterActivationViewModel.getOptimizedCheckoutDetail(
             payLaterActivationViewModel.selectedProductId,
             payLaterActivationViewModel.price * quantity,
-            payLaterActivationViewModel.selectedGatewayCode
+            payLaterActivationViewModel.selectedGatewayCode,
+            payLaterActivationViewModel.shopId ?: "",
         )
     }
 
