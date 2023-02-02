@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -376,7 +375,14 @@ class TokoFoodPurchaseFragment :
                 )
                 PurchaseUiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT -> navigateToSetPinpoint(it.data as LocationPass)
                 PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> {
-                    loadData()
+                    (it.data as? Pair<*, *>)?.let { latLng ->
+                        val latitude = latLng.first
+                        val longitude = latLng.second
+                        if (latitude is String && longitude is String) {
+                            setupChooseAddress(latitude, longitude)
+                            loadData()
+                        }
+                    }
                 }
                 PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT -> {
                     (it.data as? Throwable)?.message?.let { error ->
@@ -468,6 +474,29 @@ class TokoFoodPurchaseFragment :
                         navigateToNewFragment(orderCustomizationFragment)
                     }
                 }
+            }
+        }
+    }
+
+    private fun setupChooseAddress(latitude: String, longitude: String) {
+        context?.let { ctx ->
+            val currentAddressData = ChooseAddressUtils.getLocalizingAddressData(ctx)
+            currentAddressData.let { chooseAddressData ->
+                ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                    context = ctx,
+                    addressId = chooseAddressData.address_id,
+                    cityId = chooseAddressData.city_id,
+                    districtId = chooseAddressData.district_id,
+                    lat = latitude,
+                    long = longitude,
+                    label = chooseAddressData.label,
+                    postalCode = chooseAddressData.postal_code,
+                    warehouseId = chooseAddressData.warehouse_id,
+                    shopId = chooseAddressData.shop_id,
+                    warehouses = chooseAddressData.warehouses,
+                    serviceType = chooseAddressData.service_type,
+                    lastUpdate = chooseAddressData.tokonow_last_update
+                )
             }
         }
     }

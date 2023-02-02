@@ -1688,8 +1688,8 @@ class AddressFormFragment :
         if (!isEdit) {
             currentLat = 0.0
             currentLong = 0.0
-            saveDataModel?.latitude = "0.0"
-            saveDataModel?.longitude = "0.0"
+            saveDataModel?.latitude = ""
+            saveDataModel?.longitude = ""
             this.isPinpoint = false
             binding?.run {
                 cardAddressNegative.icLocation.setImage(IconUnify.LOCATION_OFF)
