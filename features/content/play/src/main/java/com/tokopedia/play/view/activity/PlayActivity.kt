@@ -51,13 +51,14 @@ import javax.inject.Inject
  * Example: tokopedia://play/12345?source_type=SHOP&source_id=123
  */
 @Suppress("LateinitUsage")
-class PlayActivity : BaseActivity(),
-        PlayNavigation,
-        PlayPiPCoordinator,
-        SwipeContainerViewComponent.DataSource,
-        SwipeContainerViewComponent.Listener,
-        PlayOrientationListener,
-        PlayFullscreenManager {
+class PlayActivity :
+    BaseActivity(),
+    PlayNavigation,
+    PlayPiPCoordinator,
+    SwipeContainerViewComponent.DataSource,
+    SwipeContainerViewComponent.Listener,
+    PlayOrientationListener,
+    PlayFullscreenManager {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
@@ -79,7 +80,7 @@ class PlayActivity : BaseActivity(),
     private lateinit var viewModel: PlayParentViewModel
 
     private val pipAdapter: FloatingWindowAdapter by lifecycleBound(
-            creator = { FloatingWindowAdapter(this) }
+        creator = { FloatingWindowAdapter(this) }
     )
 
     private var systemUiVisibility: Int
@@ -93,12 +94,12 @@ class PlayActivity : BaseActivity(),
 
     private val swipeContainerView by viewComponent(isEagerInit = true) {
         SwipeContainerViewComponent(
-                container = it,
-                rootId = R.id.vp_fragment,
-                fragmentManager = supportFragmentManager,
-                lifecycle = lifecycle,
-                dataSource = this,
-                listener = this
+            container = it,
+            rootId = R.id.vp_fragment,
+            fragmentManager = supportFragmentManager,
+            lifecycle = lifecycle,
+            dataSource = this,
+            listener = this
         )
     }
     private val ivLoading by viewComponent { LoadingViewComponent(it, R.id.iv_loading) }
@@ -125,7 +126,7 @@ class PlayActivity : BaseActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         supportFragmentManager.fragmentFactory = fragmentFactory
-        
+
         startPageMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
@@ -216,10 +217,6 @@ class PlayActivity : BaseActivity(),
         viewModel.loadNextPage()
     }
 
-    override fun onSwipeNextPage() {
-        playPreference.setCoachMark(userId = viewModel.userId)
-    }
-
     private fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
         if (swipeContainerView.scrollState != ViewPager2.SCROLL_STATE_IDLE) return true
 
@@ -283,7 +280,7 @@ class PlayActivity : BaseActivity(),
                 }
             }
 
-            if(it.state is PageResultState.Success) {
+            if (it.state is PageResultState.Success) {
                 fragmentUpcomingView.safeRelease()
                 swipeContainerView.setChannelIds(it.currentValue)
             }
@@ -291,18 +288,21 @@ class PlayActivity : BaseActivity(),
     }
 
     private fun observeFirstChannelEvent() {
-        viewModel.observableFirstChannelEvent.observe(this, EventObserver {
-            swipeContainerView.reset()
-            playPreference.setCoachMark(userId = viewModel.userId, isFirstChannel = true)
-        })
+        viewModel.observableFirstChannelEvent.observe(
+            this,
+            EventObserver {
+                swipeContainerView.reset()
+            }
+        )
     }
 
     override fun onBackPressed(isSystemBack: Boolean) {
         val fragment = activeFragment
         if (fragment is PlayFragment) {
             if (!fragment.onBackPressed()) {
-                if (isSystemBack && orientation.isLandscape) onOrientationChanged(ScreenOrientation.Portrait, false)
-                else {
+                if (isSystemBack && orientation.isLandscape) {
+                    onOrientationChanged(ScreenOrientation.Portrait, false)
+                } else {
                     if (isTaskRoot) {
                         gotoHome()
                     } else {

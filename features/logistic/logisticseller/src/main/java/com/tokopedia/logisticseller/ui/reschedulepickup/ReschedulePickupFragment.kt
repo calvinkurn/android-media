@@ -27,6 +27,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.common.LogisticSellerConst
 import com.tokopedia.logisticseller.data.model.RescheduleDayOptionModel
@@ -410,16 +412,13 @@ class ReschedulePickupFragment :
 
     override fun onReasonChosen(reasonChosen: RescheduleReasonOptionModel) {
         binding?.etReason?.editText?.setText(reasonChosen.reason)
-        if (reasonChosen.reason == OTHER_REASON_RESCHEDULE) {
-            binding?.etReasonDetail?.run {
-                visibility = View.VISIBLE
+        binding?.etReasonDetail?.apply {
+            if (reasonChosen.reason == OTHER_REASON_RESCHEDULE) {
+                visible()
                 editText.addTextChangedListener(setWrapperWatcherOtherReason(textInputLayout))
                 requestFocus()
-            }
-        } else {
-            binding?.etReasonDetail?.run {
-                visibility = View.GONE
-                editText.addTextChangedListener(null)
+            } else {
+                gone()
             }
         }
         validateInput()
