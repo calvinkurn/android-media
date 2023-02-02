@@ -59,6 +59,7 @@ import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.basecomponent.uiComponent
+import com.tokopedia.picker.common.cache.EditorAddLogoCacheManager
 import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.picker.common.types.ModeType
@@ -74,7 +75,8 @@ import kotlin.math.max
 class DetailEditorFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val editorDetailAnalytics: EditorDetailAnalytics,
-    private val pickerParam: PickerCacheManager
+    private val pickerParam: PickerCacheManager,
+    private val addLogoCacheManager: EditorAddLogoCacheManager
 ) : BaseEditorFragment(),
     BrightnessToolUiComponent.Listener,
     ContrastToolsUiComponent.Listener,
@@ -382,7 +384,7 @@ class DetailEditorFragment @Inject constructor(
         if (requestCode == ADD_LOGO_PICKER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val elements = data?.getParcelableExtra(EXTRA_RESULT_PICKER) ?: PickerResult()
             addLogoComponent.initUploadAvatar(elements.originalPaths.first())
-            viewModel.setLocalLogo(elements.originalPaths.first())
+            addLogoCacheManager.set(elements.originalPaths.first())
         }
     }
 
@@ -578,7 +580,7 @@ class DetailEditorFragment @Inject constructor(
                         originalImageWidth,
                         originalImageHeight,
                         avatarUrl = viewModel.getAvatarShop(),
-                        localAvatarUrl = viewModel.getLocalLogo(),
+                        localAvatarUrl = addLogoCacheManager.get(),
                         data.addLogoValue
                     )
                 }

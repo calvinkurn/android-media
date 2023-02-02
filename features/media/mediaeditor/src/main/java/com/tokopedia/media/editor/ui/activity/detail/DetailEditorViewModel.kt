@@ -198,14 +198,6 @@ class DetailEditorViewModel @Inject constructor(
         return userSession.shopAvatar
     }
 
-    fun setLocalLogo(path: String) {
-        addLogoFilterRepository.setLocalLogo(path)
-    }
-
-    fun getLocalLogo(): String {
-        return addLogoFilterRepository.getLocalLogo()
-    }
-
     private fun initializeWatermarkAsset() {
         if (!watermarkFilterRepository.isAssetInitialize()) {
             resourceProvider.getWatermarkLogoDrawable()?.let {
