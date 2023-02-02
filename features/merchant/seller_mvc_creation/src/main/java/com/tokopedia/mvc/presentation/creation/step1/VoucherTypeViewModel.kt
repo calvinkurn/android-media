@@ -123,7 +123,11 @@ class VoucherTypeViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 isLoading = false,
-                voucherConfiguration = it.voucherConfiguration.copy(isFinishFilledStepOne = false)
+                voucherConfiguration = it.voucherConfiguration.copy(
+                    isFinishFilledStepOne = false,
+                    isFinishFilledStepTwo = false,
+                    isFinishFilledStepThree = false
+                )
             )
         }
     }
