@@ -38,7 +38,6 @@ class PostMessageUseCaseTest {
         Dispatchers.resetMain()
     }
 
-    /****************************************** createRequestParam() ***************************************/
     @Test
     fun `check value of createRequestParam`() {
         val id = "ticket_id"
@@ -64,27 +63,4 @@ class PostMessageUseCaseTest {
         assertEquals(requestParam.parameters[AGENT_REPLY], agentReply)
         assertEquals(requestParam.parameters[USER_ID], userId)
     }
-    /****************************************** createRequestParam() ***************************************/
-
-    /************************************* getCreateTicketResult() **********************************/
-//    @Test
-//    fun `check function invocation getCreateTicketResult`() {
-//        runBlockingTest {
-//            coEvery {
-//                contactUsRepository.getGQLData("",
-//                        TicketReplyResponse::class.java,
-//                        any())
-//            } returns mockk()
-//
-//            postMessageUseCase.getCreateTicketResult(mockk(relaxed = true))
-//
-//            coVerify(exactly = 1) {
-//                contactUsRepository.getGQLData("",
-//                        TicketReplyResponse::class.java,
-//                        any())
-//            }
-//        }
-//    }
-
-    /************************************* getCreateTicketResult() **********************************/
 }
