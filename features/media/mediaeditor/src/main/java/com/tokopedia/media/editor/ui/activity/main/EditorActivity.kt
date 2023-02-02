@@ -1,8 +1,11 @@
 package com.tokopedia.media.editor.ui.activity.main
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
@@ -14,6 +17,7 @@ import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.fragment.EditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.utils.ParamCacheManager
+import com.tokopedia.media.editor.utils.isGranted
 import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.RESULT_INTENT_EDITOR
 import javax.inject.Inject
@@ -109,8 +113,33 @@ class EditorActivity : BaseEditorActivity() {
     }
 
     override fun onHeaderActionClick() {
-        val listImageEditState = viewModel.editStateList.values.toList()
+        if (!isGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE
+            )
+        } else {
+            saveImageToGallery()
+        }
+    }
 
+    override fun onBackClicked() {
+        editorHomeAnalytics.clickBackButton()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_CODE && permissions.first() == Manifest.permission.WRITE_EXTERNAL_STORAGE) {
+            saveImageToGallery()
+        }
+    }
+
+    private fun saveImageToGallery() {
+        val listImageEditState = viewModel.editStateList.values.toList()
         viewModel.saveToGallery(
             listImageEditState
         ) { imageResultList ->
@@ -126,10 +155,6 @@ class EditorActivity : BaseEditorActivity() {
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
-    }
-
-    override fun onBackClicked() {
-        editorHomeAnalytics.clickBackButton()
     }
 
     private fun showBackDialogConfirmation() {
@@ -157,6 +182,7 @@ class EditorActivity : BaseEditorActivity() {
 
     companion object {
         private const val CACHE_PARAM_INTENT_DATA = "intent_data.param_editor"
+        private const val PERMISSION_REQUEST_CODE = 197
     }
 
 }
