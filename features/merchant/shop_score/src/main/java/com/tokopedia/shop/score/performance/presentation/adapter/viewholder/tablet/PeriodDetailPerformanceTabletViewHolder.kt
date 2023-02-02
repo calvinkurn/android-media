@@ -4,7 +4,7 @@ import android.content.res.Resources
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.databinding.PeriodDetailPerformanceTabletBinding
+import com.tokopedia.shop.score.databinding.PeriodDetailPerformanceBinding
 import com.tokopedia.shop.score.performance.presentation.model.tablet.PeriodDetailTabletUiModel
 import com.tokopedia.shop.score.performance.presentation.widget.PeriodDetailPerformanceWidget
 import com.tokopedia.utils.view.binding.viewBinding
@@ -14,10 +14,10 @@ class PeriodDetailPerformanceTabletViewHolder(view: View) :
     AbstractViewHolder<PeriodDetailTabletUiModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.period_detail_performance_tablet
+        val LAYOUT = R.layout.period_detail_performance
     }
 
-    private val binding: PeriodDetailPerformanceTabletBinding? by viewBinding()
+    private val binding: PeriodDetailPerformanceBinding? by viewBinding()
 
     override fun bind(element: PeriodDetailTabletUiModel?) {
         binding?.periodDetailTablet?.run {

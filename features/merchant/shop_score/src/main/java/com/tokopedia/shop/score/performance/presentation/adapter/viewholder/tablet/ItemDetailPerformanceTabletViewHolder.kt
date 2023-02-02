@@ -1,10 +1,9 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder.tablet
 
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.databinding.ItemDetailPerformanceTabletBinding
+import com.tokopedia.shop.score.databinding.ItemDetailPerformanceBinding
 import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformanceListener
 import com.tokopedia.shop.score.performance.presentation.model.tablet.ItemDetailPerformanceTabletUiModel
 import com.tokopedia.shop.score.performance.presentation.widget.DetailPerformanceWidget
@@ -17,23 +16,23 @@ class ItemDetailPerformanceTabletViewHolder(
 ) : AbstractViewHolder<ItemDetailPerformanceTabletUiModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_detail_performance_tablet
+        val LAYOUT = R.layout.item_detail_performance
     }
 
-    private val binding: ItemDetailPerformanceTabletBinding? by viewBinding()
+    private val binding: ItemDetailPerformanceBinding? by viewBinding()
 
     override fun bind(element: ItemDetailPerformanceTabletUiModel?) {
         binding?.run {
-            detailPerformanceWidgetTablet.setData(element, shopPerformanceListener) {
+            detailPerformanceWidgetTablet?.setData(element, shopPerformanceListener) {
                 setCardItemDetailPerformanceBackground(element)
             }
         }
     }
 
-    private fun ItemDetailPerformanceTabletBinding.setCardItemDetailPerformanceBackground(
+    private fun ItemDetailPerformanceBinding.setCardItemDetailPerformanceBackground(
         element: ItemDetailPerformanceTabletUiModel?
     ) {
-        detailPerformanceWidgetTablet.binding?.run {
+        detailPerformanceWidgetTablet?.binding?.run {
             if (element?.isDividerHide == true) {
                 cardItemDetailShopPerformance.setPadding(
                     DetailPerformanceWidget.ZERO_PADDING.toPx(),
