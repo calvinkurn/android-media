@@ -126,7 +126,7 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.24.1'
     unifyPrinciplesVersion = '1.4.3'
-    unifyComponentsVersion = '1.2.23.1'
+    unifyComponentsVersion = '1.2.24'
     unifyCoachMarkVersion = '1.2.19'
     unifyCalendarVersion = '1.2.2'
     unifyBannerVersion = '1.0.6.2'
@@ -264,7 +264,6 @@ ext {
             protobuf              : "com.google.protobuf:protobuf-gradle-plugin:0.8.12",
             autopatchbase         : "com.tokopedia.patch:core:1.0.0",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
-            ucrop                 : "com.github.yalantis:ucrop:2.2.2",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",
             cameraView            : "com.otaliastudios:cameraview:2.7.2-fix-pixel",
             coroutineCore         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion",
@@ -399,7 +398,8 @@ ext {
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.2",
             showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.6.1",
-            youtubePlayer   : "com.tokopedia.youtube:player:0.0.1"
+            youtubePlayer   : "com.tokopedia.youtube:player:0.0.1",
+            ucrop           : "com.tokopedia.ucrop:ucrop:2.2.2-fix-exif@aar",
     ]
 
     unifyDependencies = [

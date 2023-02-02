@@ -5573,7 +5573,8 @@ open class DynamicProductDetailFragment :
     override fun onClickProductInBundling(
         bundleId: String,
         bundleProductId: String,
-        componentTrackDataModel: ComponentTrackDataModel
+        componentTrackDataModel: ComponentTrackDataModel,
+        isOldBundlingWidget: Boolean
     ) {
         DynamicProductDetailTracking.ProductBundling.eventClickMultiBundleProduct(
             bundleId,
@@ -5581,8 +5582,10 @@ open class DynamicProductDetailFragment :
             viewModel.getDynamicProductInfoP1,
             componentTrackDataModel
         )
-        val intent = ProductDetailActivity.createIntent(requireContext(), bundleProductId)
-        startActivity(intent)
+        if (isOldBundlingWidget) {
+            val intent = ProductDetailActivity.createIntent(requireContext(), bundleProductId)
+            startActivity(intent)
+        }
     }
 
     override fun screenShotTaken() {
