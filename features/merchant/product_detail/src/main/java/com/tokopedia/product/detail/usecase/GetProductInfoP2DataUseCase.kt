@@ -382,6 +382,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   title
                   message
                 }
+                isScheduled
               }
               boMetadata
               productMetadata {
@@ -558,7 +559,8 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                componentName
             }
           }
-        }""".trimIndent()
+        }
+""".trimIndent()
     }
 
     private var mCacheManager: GraphqlCacheManager? = null

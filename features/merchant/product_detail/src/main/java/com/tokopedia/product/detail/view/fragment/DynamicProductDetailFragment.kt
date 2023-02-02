@@ -213,6 +213,7 @@ import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_ADS_TRACKER
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_IS_NOT_ADS
+import com.tokopedia.product.detail.tracking.ShipmentTracking
 import com.tokopedia.product.detail.tracking.ShopAdditionalTracking
 import com.tokopedia.product.detail.tracking.ShopCredibilityTracker
 import com.tokopedia.product.detail.tracking.ShopCredibilityTracking
@@ -3576,7 +3577,8 @@ open class DynamicProductDetailFragment :
             ) {
                 ProductDetailShippingBottomSheet.instance(
                     buyerDistrictId = viewModel.getUserLocationCache().district_id,
-                    sellerDistrictId = viewModel.getMultiOriginByProductId().districtId
+                    sellerDistrictId = viewModel.getMultiOriginByProductId().districtId,
+                    layoutId = layoutId
                 )
             }
         }
@@ -5834,5 +5836,35 @@ open class DynamicProductDetailFragment :
 
     override fun onViewToViewReload(pageName: String) {
         loadViewToView(pageName)
+    }
+
+    override fun onImpressScheduledDelivery(
+        labels: List<String>,
+        componentTrackDataModel: ComponentTrackDataModel
+    ) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+        val common = CommonTracker(productInfo, viewModel.userId)
+
+        ShipmentTracking.sendImpressionScheduledDeliveryComponent(
+            trackingQueue,
+            labels,
+            common,
+            componentTrackDataModel
+        )
+    }
+
+    override fun onClickShipmentScheduledDelivery(
+        labels: List<String>,
+        componentTrackDataModel: ComponentTrackDataModel
+    ) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+        val common = CommonTracker(productInfo, viewModel.userId)
+
+        ShipmentTracking.sendClickLihatJadwalLainnyaOnScheduleDelivery(
+            trackingQueue,
+            labels,
+            common,
+            componentTrackDataModel
+        )
     }
 }

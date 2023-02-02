@@ -370,10 +370,20 @@ interface DynamicProductDetailListener {
         componentTrackDataModel: ComponentTrackDataModel?
     )
 
+    fun onImpressScheduledDelivery(
+        labels: List<String>,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
+
+    fun onClickShipmentScheduledDelivery(
+        labels: List<String>,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
+
     /**
      * ProductArViewHolder
      */
-    fun showArCoachMark(view:ConstraintLayout?)
+    fun showArCoachMark(view: ConstraintLayout?)
     fun hideArCoachMark()
     fun goToArPage(componentTrackDataModel: ComponentTrackDataModel)
 

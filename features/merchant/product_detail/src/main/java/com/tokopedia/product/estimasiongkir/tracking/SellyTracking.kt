@@ -1,60 +1,42 @@
 package com.tokopedia.product.estimasiongkir.tracking
 
+import com.tokopedia.trackingoptimizer.TrackingQueue
+
 object SellyTracking {
 
-    /**
-     * You may update the value with data.
-     * Suggestions:
-     *  eventLabel - "product_id:{{product_id}};shop_district_id:{{shop_district_id}};buyer_district_id:{{buyer_district_id}};berat_satuan:{{berat_satuan}};"
-     *	component - "comp:{component name};temp:{template name};elem:{element name};cpos:{component position}; //component level attribute"
-     *	layout - "layout:{layout name};catName:{category name};catId:{category id}; //layout level attribute"
-     *	productId - "{Product ID} //Product ID of product displayed on PDP"
-     *	creativeName - "{price //ex:Rp0, kuota habis}"
-     *	creativeSlot - "{this is integer}"
-     *	itemId - "{type //ex:pengiriman instant, pengiriman terjadwal}"
-     *	itemName - "{date //ex:hari ini, besok 10 Agu, Sabtu 11 Agu} - {time //ex:tiba dalam 2 jam, Tiba 12.00 - 14.00}"
-     *	shopId - "{shop_id} //shop_id level hit"
-     *	userId - "{user_id} //user_id level hit, pass null if non login"
-     */
     fun impressScheduledDelivery(
-        eventLabel: String,
-        component: String,
-        layout: String,
-        productId: String,
-        creativeName: String,
-        creativeSlot: String,
-        itemId: String,
-        itemName: String,
-        shopId: String,
-        userId: String,
-        buyerDistrictId: String,
-        sellerDistrictId: String
+        trackingQueue: TrackingQueue,
+        data: SellyTracker.ImpressionComponent
     ) {
+        val items = data.prices.mapIndexed { index, price ->
+            hashMapOf(
+                "creative_name" to price.first,
+                "creative_slot" to index,
+                "item_id" to "pengiriman terjadwal",
+                "item_name" to price.second
+            )
+        }
+
         val mapEvent = hashMapOf<String, Any>(
             "event" to "promoView",
             "eventAction" to "impression - scheduled delivery detail bottomsheet",
             "eventCategory" to "product detail page",
-            "eventLabel" to "product_id:$productId;shop_district_id:$sellerDistrictId;buyer_district_id:$buyerDistrictId;berat_satuan:{{berat_satuan}};",
+            "eventLabel" to "product_id:${data.productId};shop_district_id:${data.sellerDistrictId};buyer_district_id:${data.buyerDistrictId};berat_satuan:${data.beratSatuan};",
             "trackerId" to "40899",
             "businessUnit" to "product detail page",
-            "component" to "",
+            "component" to "bottomsheet scheduled delivery",
             "currentSite" to "tokopediamarketplace",
-            "layout" to "",
-            "productId" to productId,
+            "layout" to data.layoutId,
+            "productId" to data.productId,
             "ecommerce" to hashMapOf(
                 "promoView" to hashMapOf(
-                    "promotions" to arrayListOf(
-                        hashMapOf(
-                            "creative_name" to creativeName,
-                            "creative_slot" to creativeSlot,
-                            "item_id" to itemId,
-                            "item_name" to itemName
-                        )
-                    )
+                    "promotions" to arrayListOf(items)
                 )
             ),
-            "shopId" to shopId,
-            "userId" to userId
+            "shopId" to data.shopId,
+            "userId" to data.userId
         )
+
+        trackingQueue.putEETracking(mapEvent)
     }
 }

@@ -123,7 +123,14 @@ class ShipmentViewHolder(
         renderTicker(element)
 
         itemView.addOnImpressionListener(element.impressHolder) {
-            listener.onImpressComponent(getComponentTrackData(element))
+            val componentTrackData = getComponentTrackData(element)
+            listener.onImpressComponent(componentTrackData)
+            if (rates.isScheduled) {
+                listener.onImpressScheduledDelivery(
+                    rates.chipsLabel,
+                    componentTrackData
+                )
+            }
         }
     }
 
@@ -184,19 +191,20 @@ class ShipmentViewHolder(
         rates: P2RatesEstimateData
     ) = with(viewMain) {
         val labels = rates.chipsLabel
-        var usedLabels = emptyList<String>()
 
         if (labels.isEmpty()) {
             pdpShipmentCourierLabel2.show()
-            val labelStringId = if (element.isTokoNow)
+            val labelStringId = if (element.isTokoNow) {
                 R.string.merchant_product_detail_label_selengkapnya
-            else R.string.pdp_shipping_choose_courier_label
+            } else {
+                R.string.pdp_shipping_choose_courier_label
+            }
             pdpShipmentCourierLabel2.text = context.getString(labelStringId)
         } else {
             pdpShipmentCourierOptions.show()
             pdpShipmentCourierOptions.removeAllViews()
             labels.forEach { label ->
-                if(label.isNotEmpty()){
+                if (label.isNotEmpty()) {
                     val itemBinding = ItemShipmentOptionBinding.inflate(LayoutInflater.from(context))
                     itemBinding.pdpShipmentCourierOption.setLabel(label)
                     pdpShipmentCourierOptions.addView(itemBinding.root)
@@ -217,7 +225,10 @@ class ShipmentViewHolder(
             )
         ) {
             listener.openShipmentClickedBottomSheet(
-                rates.title, usedLabels, element.isCod, componentTrackDataModel
+                rates.title,
+                labels,
+                element.isCod,
+                componentTrackDataModel
             )
         }
     }
@@ -287,5 +298,4 @@ class ShipmentViewHolder(
         element?.name ?: "",
         adapterPosition + 1
     )
-
 }
