@@ -3,14 +3,14 @@ package com.tokopedia.feedplus.presentation.adapter.viewholder
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.feedplus.databinding.ItemFeedRootBinding
+import com.tokopedia.feedplus.databinding.ItemFeedContainerBinding
 import com.tokopedia.feedplus.presentation.fragment.FeedFragment
 import com.tokopedia.feedplus.presentation.model.FeedTabType
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
  */
-class FeedViewHolder(private val binding: ItemFeedRootBinding) :
+class FeedViewHolder(private val binding: ItemFeedContainerBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(context: Context, type: FeedTabType) {
