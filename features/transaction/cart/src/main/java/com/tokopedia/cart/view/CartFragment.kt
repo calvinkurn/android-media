@@ -1113,134 +1113,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
 
     private fun checkGoToShipment(message: String?) {
         if (message.isNullOrEmpty()) {
-            var hasRedStatePromo = false
-            val redStateGlobalPromo = ArrayList<String>()
-            val clearOrders = ArrayList<ClearPromoOrder>()
-            val cartListData = dPresenter.getCartListData()
-            if (dPresenter.isLastApplyValid()) {
-                val lastApplyPromoData = cartListData?.promo?.lastApplyPromo?.lastApplyPromoData
-                lastApplyPromoData?.let {
-                    if (it.message.state == "red") {
-                        it.codes.forEach { code ->
-                            if (!redStateGlobalPromo.contains(code)) {
-                                redStateGlobalPromo.add(code)
-                                hasRedStatePromo = true
-                            }
-                        }
-                    }
-
-                    it.listVoucherOrders.forEach { voucher ->
-                        if (voucher.message.state == "red") {
-                            val clearOrder =
-                                clearOrders.find { order -> order.uniqueId == voucher.uniqueId }
-                            if (clearOrder == null) {
-                                val availableGroup =
-                                    cartListData.availableSection.availableGroupGroups.find { group -> group.cartString == voucher.uniqueId }
-                                availableGroup?.let { availableGroup ->
-                                    clearOrders.add(
-                                        ClearPromoOrder(
-                                            uniqueId = voucher.uniqueId,
-                                            boType = availableGroup.boMetadata.boType,
-                                            codes = arrayListOf(voucher.code),
-                                            shopId = availableGroup.shop.shopId.toLongOrZero(),
-                                            warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
-                                            isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                            poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() } ?: "0",
-                                        )
-                                    )
-                                    hasRedStatePromo = true
-                                }
-                            } else if (!clearOrder.codes.contains(voucher.code)) {
-                                clearOrder.codes.add(voucher.code)
-                                hasRedStatePromo = true
-                            }
-                        }
-                    }
-                }
-            } else if (cartListData != null) {
-                val lastValidateUseData = dPresenter.getValidateUseLastResponse()
-                lastValidateUseData?.promoUiModel?.let {
-                    if (it.messageUiModel.state == "red") {
-                        it.codes.forEach { code ->
-                            if (!redStateGlobalPromo.contains(code)) {
-                                redStateGlobalPromo.add(code)
-                                hasRedStatePromo = true
-                            }
-                        }
-                    }
-
-                    it.voucherOrderUiModels.forEach { voucher ->
-                        if (voucher.messageUiModel.state == "red" && voucher.code.isNotBlank()) {
-                            val clearOrder =
-                                clearOrders.find { order -> order.uniqueId == voucher.uniqueId }
-                            if (clearOrder == null) {
-                                val availableGroup =
-                                    cartListData.availableSection.availableGroupGroups.find { group -> group.cartString == voucher.uniqueId }
-                                availableGroup?.let { availableGroup ->
-                                    clearOrders.add(
-                                        ClearPromoOrder(
-                                            uniqueId = voucher.uniqueId,
-                                            boType = availableGroup.boMetadata.boType,
-                                            codes = arrayListOf(voucher.code),
-                                            shopId = availableGroup.shop.shopId.toLongOrZero(),
-                                            warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
-                                            isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                            poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() } ?: "0",
-                                        )
-                                    )
-                                    hasRedStatePromo = true
-                                }
-                            } else if (!clearOrder.codes.contains(voucher.code)) {
-                                clearOrder.codes.add(voucher.code)
-                                hasRedStatePromo = true
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (cartListData != null) {
-                val lastUpdateCartAndValidateUseResponse =
-                    dPresenter.getUpdateCartAndValidateUseLastResponse()
-                lastUpdateCartAndValidateUseResponse?.promoUiModel?.let {
-                    if (it.messageUiModel.state == "red") {
-                        it.codes.forEach { code ->
-                            if (!redStateGlobalPromo.contains(code)) {
-                                redStateGlobalPromo.add(code)
-                                hasRedStatePromo = true
-                            }
-                        }
-                    }
-
-                    it.voucherOrderUiModels.forEach { voucher ->
-                        if (voucher.messageUiModel.state == "red" && voucher.code.isNotBlank()) {
-                            val clearOrder =
-                                clearOrders.find { order -> order.uniqueId == voucher.uniqueId }
-                            if (clearOrder == null) {
-                                val availableGroup =
-                                    cartListData.availableSection.availableGroupGroups.find { group -> group.cartString == voucher.uniqueId }
-                                availableGroup?.let { availableGroup ->
-                                    clearOrders.add(
-                                        ClearPromoOrder(
-                                            uniqueId = voucher.uniqueId,
-                                            boType = availableGroup.boMetadata.boType,
-                                            codes = arrayListOf(voucher.code),
-                                            shopId = availableGroup.shop.shopId.toLongOrZero(),
-                                            warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
-                                            isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                            poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() } ?: "0",
-                                        )
-                                    )
-                                    hasRedStatePromo = true
-                                }
-                            } else if (!clearOrder.codes.contains(voucher.code)) {
-                                clearOrder.codes.add(voucher.code)
-                                hasRedStatePromo = true
-                            }
-                        }
-                    }
-                }
-            }
+            val redStatePromoTripleData = getRedStatePromo()
+            val hasRedStatePromo = redStatePromoTripleData.first
+            val redStateGlobalPromo = redStatePromoTripleData.second
+            val clearOrders = redStatePromoTripleData.third
 
             val clearPromo = ClearPromoRequest(
                 ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
@@ -1259,12 +1135,170 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
         }
     }
 
+    private fun checkGoToPromo() {
+        val redStatePromoTripleData = getRedStatePromo()
+        val hasRedStatePromo = redStatePromoTripleData.first
+        val redStateGlobalPromo = redStatePromoTripleData.second
+        val clearOrders = redStatePromoTripleData.third
+
+        val clearPromo = ClearPromoRequest(
+            ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+            orderData = ClearPromoOrderData(redStateGlobalPromo, clearOrders)
+        )
+        if (hasRedStatePromo) {
+            dPresenter.doClearRedPromosBeforeGoToPromo(clearPromo)
+        } else {
+            goToPromoPage()
+        }
+    }
+
+    private fun getRedStatePromo(): Triple<Boolean, ArrayList<String>, ArrayList<ClearPromoOrder>> {
+        var hasRedStatePromo = false
+        val redStateGlobalPromo = ArrayList<String>()
+        val clearOrders = ArrayList<ClearPromoOrder>()
+        val cartListData = dPresenter.getCartListData()
+        if (dPresenter.isLastApplyValid()) {
+            val lastApplyPromoData = cartListData?.promo?.lastApplyPromo?.lastApplyPromoData
+            lastApplyPromoData?.let {
+                if (it.message.state == "red") {
+                    it.codes.forEach { code ->
+                        if (!redStateGlobalPromo.contains(code)) {
+                            redStateGlobalPromo.add(code)
+                            hasRedStatePromo = true
+                        }
+                    }
+                }
+
+                it.listVoucherOrders.forEach { voucher ->
+                    if (voucher.message.state == "red") {
+                        val clearOrder =
+                            clearOrders.find { order -> order.uniqueId == voucher.uniqueId }
+                        if (clearOrder == null) {
+                            val availableGroup =
+                                cartListData.availableSection.availableGroupGroups.find { group -> group.cartString == voucher.uniqueId }
+                            availableGroup?.let { availableGroup ->
+                                clearOrders.add(
+                                    ClearPromoOrder(
+                                        uniqueId = voucher.uniqueId,
+                                        boType = availableGroup.boMetadata.boType,
+                                        codes = arrayListOf(voucher.code),
+                                        shopId = availableGroup.shop.shopId.toLongOrZero(),
+                                        warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
+                                        isPo = availableGroup.shipmentInformation.preorder.isPreorder,
+                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() } ?: "0",
+                                    )
+                                )
+                                hasRedStatePromo = true
+                            }
+                        } else if (!clearOrder.codes.contains(voucher.code)) {
+                            clearOrder.codes.add(voucher.code)
+                            hasRedStatePromo = true
+                        }
+                    }
+                }
+            }
+        } else if (cartListData != null) {
+            val lastValidateUseData = dPresenter.getValidateUseLastResponse()
+            lastValidateUseData?.promoUiModel?.let {
+                if (it.messageUiModel.state == "red") {
+                    it.codes.forEach { code ->
+                        if (!redStateGlobalPromo.contains(code)) {
+                            redStateGlobalPromo.add(code)
+                            hasRedStatePromo = true
+                        }
+                    }
+                }
+
+                it.voucherOrderUiModels.forEach { voucher ->
+                    if (voucher.messageUiModel.state == "red" && voucher.code.isNotBlank()) {
+                        val clearOrder =
+                            clearOrders.find { order -> order.uniqueId == voucher.uniqueId }
+                        if (clearOrder == null) {
+                            val availableGroup =
+                                cartListData.availableSection.availableGroupGroups.find { group -> group.cartString == voucher.uniqueId }
+                            availableGroup?.let { availableGroup ->
+                                clearOrders.add(
+                                    ClearPromoOrder(
+                                        uniqueId = voucher.uniqueId,
+                                        boType = availableGroup.boMetadata.boType,
+                                        codes = arrayListOf(voucher.code),
+                                        shopId = availableGroup.shop.shopId.toLongOrZero(),
+                                        warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
+                                        isPo = availableGroup.shipmentInformation.preorder.isPreorder,
+                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() } ?: "0",
+                                    )
+                                )
+                                hasRedStatePromo = true
+                            }
+                        } else if (!clearOrder.codes.contains(voucher.code)) {
+                            clearOrder.codes.add(voucher.code)
+                            hasRedStatePromo = true
+                        }
+                    }
+                }
+            }
+        }
+
+        if (cartListData != null) {
+            val lastUpdateCartAndValidateUseResponse =
+                dPresenter.getUpdateCartAndValidateUseLastResponse()
+            lastUpdateCartAndValidateUseResponse?.promoUiModel?.let {
+                if (it.messageUiModel.state == "red") {
+                    it.codes.forEach { code ->
+                        if (!redStateGlobalPromo.contains(code)) {
+                            redStateGlobalPromo.add(code)
+                            hasRedStatePromo = true
+                        }
+                    }
+                }
+
+                it.voucherOrderUiModels.forEach { voucher ->
+                    if (voucher.messageUiModel.state == "red" && voucher.code.isNotBlank()) {
+                        val clearOrder =
+                            clearOrders.find { order -> order.uniqueId == voucher.uniqueId }
+                        if (clearOrder == null) {
+                            val availableGroup =
+                                cartListData.availableSection.availableGroupGroups.find { group -> group.cartString == voucher.uniqueId }
+                            availableGroup?.let { availableGroup ->
+                                clearOrders.add(
+                                    ClearPromoOrder(
+                                        uniqueId = voucher.uniqueId,
+                                        boType = availableGroup.boMetadata.boType,
+                                        codes = arrayListOf(voucher.code),
+                                        shopId = availableGroup.shop.shopId.toLongOrZero(),
+                                        warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
+                                        isPo = availableGroup.shipmentInformation.preorder.isPreorder,
+                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() } ?: "0",
+                                    )
+                                )
+                                hasRedStatePromo = true
+                            }
+                        } else if (!clearOrder.codes.contains(voucher.code)) {
+                            clearOrder.codes.add(voucher.code)
+                            hasRedStatePromo = true
+                        }
+                    }
+                }
+            }
+        }
+        return Triple(hasRedStatePromo, redStateGlobalPromo, clearOrders)
+    }
+
+
     override fun onSuccessClearRedPromosThenGoToCheckout() {
         goToCheckoutPage()
     }
 
+    override fun onSuccessClearRedPromosThenGoToPromo() {
+        goToPromoPage()
+    }
+
     private fun goToCheckoutPage() {
         dPresenter.processUpdateCartData(false)
+    }
+
+    private fun goToPromoPage() {
+        dPresenter.doUpdateCartForPromo()
     }
 
     private fun isTestingFlow(): Boolean {
@@ -2540,7 +2574,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
                 getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
             promoCheckoutBtnCart.desc = ""
             promoCheckoutBtnCart.setOnClickListener {
-                dPresenter.doUpdateCartForPromo()
+                checkGoToPromo()
                 // analytics
                 PromoRevampAnalytics.eventCartClickPromoSection(
                     listPromoApplied, false, userSession.userId
@@ -2607,7 +2641,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
                     showToastMessageGreen(getString(R.string.promo_choose_item_cart))
                     PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
                 } else {
-                    dPresenter.doUpdateCartForPromo()
+                    checkGoToPromo()
                     // analytics
                     PromoRevampAnalytics.eventCartClickPromoSection(
                         getAllPromosApplied(
