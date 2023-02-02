@@ -11,7 +11,7 @@ data class QuestionnairePagerUiModel(
     val questionTitle: String = String.EMPTY,
     val questionSubtitle: String = String.EMPTY,
     val type: QuestionnaireType = QuestionnaireType.SINGLE_ANSWER,
-    val options: List<OptionUiModel>? = null
+    val options: List<QuestionOptionSingleUiModel>? = null
 ) {
 
     enum class QuestionnaireType {

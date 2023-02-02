@@ -2,7 +2,7 @@ package com.tokopedia.sellerpersona.data.remote.mapper
 
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.sellerpersona.data.remote.model.QuestionnaireModel
-import com.tokopedia.sellerpersona.view.model.OptionUiModel
+import com.tokopedia.sellerpersona.view.model.QuestionOptionSingleUiModel
 import com.tokopedia.sellerpersona.view.model.QuestionnairePagerUiModel
 import javax.inject.Inject
 
@@ -28,9 +28,9 @@ class QuestionnaireMapper @Inject constructor() {
         }.orEmpty()
     }
 
-    private fun getOptions(options: List<QuestionnaireModel.OptionModel>?): List<OptionUiModel>? {
+    private fun getOptions(options: List<QuestionnaireModel.OptionModel>?): List<QuestionOptionSingleUiModel>? {
         return options?.map {
-            OptionUiModel(
+            QuestionOptionSingleUiModel(
                 value = it.value,
                 title = it.title
             )

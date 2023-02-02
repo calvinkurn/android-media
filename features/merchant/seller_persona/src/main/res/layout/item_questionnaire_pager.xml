@@ -38,5 +38,5 @@
         app:layout_constraintStart_toStartOf="@+id/tvSpQuestionTitle"
         app:layout_constraintTop_toBottomOf="@+id/tvSpQuestionSubtitle"
         tools:itemCount="4"
-        tools:listitem="@layout/item_question_option" />
+        tools:listitem="@layout/item_question_option_single" />
 </androidx.constraintlayout.widget.ConstraintLayout>

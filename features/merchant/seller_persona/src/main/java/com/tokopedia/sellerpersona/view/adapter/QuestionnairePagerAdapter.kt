@@ -67,8 +67,11 @@ class QuestionnairePagerAdapter : Adapter<QuestionnairePagerAdapter.PagerViewHol
 
                 post {
                     val options = page.options.orEmpty()
-                    optionAdapter.setItems(options)
-                    optionAdapter.notifyItemRangeChanged(Int.ZERO,options.size.minus(Int.ONE))
+                    val isItemEqual = options == optionAdapter.data
+                    if (!isItemEqual) {
+                        optionAdapter.clearAllElements()
+                        optionAdapter.addElement(options)
+                    }
                 }
             }
         }
