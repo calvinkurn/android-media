@@ -4,27 +4,34 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.report.data.model.ProductReportReason
+import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.coEvery
 import io.mockk.coVerify
 import junit.framework.Assert
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 import java.lang.reflect.Type
 
 class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
+    private val dataReasonEmpty = listOf(ProductReportReason())
+    private val dataReasonHaveChildren = listOf(ProductReportReason(
+        children = listOf(ProductReportReason())
+    ))
 
     @Test
     fun `when getReportReason success should return expected result`() = runBlockingTest {
-        val expectedResponse = `get response success`()
+        val expectedResponse = `get response success`(dataReasonEmpty)
         val expected = `get success`(expectedResponse)
         val test = viewModel.uiState.first()
         Assert.assertEquals(expected, test.data)
     }
 
-    private fun `get response success`() = GraphqlResponse(
-        mapOf(ProductReportReason.Response::class.java to ProductReportReason.Response()) as MutableMap<Type, Any>,
+    private fun `get response success`(data: List<ProductReportReason>) = GraphqlResponse(
+        mapOf(ProductReportReason.Response::class.java to ProductReportReason.Response(data)) as MutableMap<Type, Any>,
         HashMap<Type, List<GraphqlError>>(),
         false
     )
@@ -50,8 +57,26 @@ class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
     }
 
     @Test
-    fun `event on item clicked`() {
+    fun `event on item clicked with children is not empty`() = runBlockingTest {
+        val response = `get response success`(dataReasonHaveChildren)
+        `get success`(response)
+        viewModel.onEvent(ProductReportUiEvent.OnItemClicked(
+            reason = dataReasonHaveChildren.first()
+        ))
 
+        val result = viewModel.uiEvent.last()
+        Assert.assertTrue(result is ProductReportUiEvent.OnScrollTop)
+    }
+
+    @Test
+    fun `event on item clicked with children is empty`() = runBlockingTest {
+        val response = `get response success`(dataReasonEmpty)
+        `get success`(response)
+        viewModel.onEvent(ProductReportUiEvent.OnItemClicked(
+            reason = dataReasonEmpty.first()
+        ))
+        val result = viewModel.uiEvent.last()
+        Assert.assertTrue(result is ProductReportUiEvent.OnGoToForm)
     }
 
     @Test

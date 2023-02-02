@@ -83,7 +83,7 @@ class ProductReportViewModel @Inject constructor(
         getReportReason()
     }
 
-    private fun getReportReason() = viewModelScope.launch(dispatcher.main) {
+    private fun getReportReason() = viewModelScope.launch {
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(query, ProductReportReason.Response::class.java)
             val data = graphqlRepository.response(listOf(graphqlRequest))
@@ -98,7 +98,7 @@ class ProductReportViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: ProductReportUiEvent) = viewModelScope.launch(dispatcher.main) {
+    fun onEvent(event: ProductReportUiEvent) = viewModelScope.launch {
         when (event) {
             is ProductReportUiEvent.OnItemClicked -> {
                 onItemClicked(reason = event.reason)
