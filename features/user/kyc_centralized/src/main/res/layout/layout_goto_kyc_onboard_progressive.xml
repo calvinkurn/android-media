@@ -27,7 +27,7 @@
         android:id="@+id/layout_data_ktp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/item_goto_kyc_onboard_progressive"
+        layout="@layout/item_goto_kyc_ktp_gopay"
         android:layout_marginTop="8dp"/>
 
     <com.tokopedia.unifyprinciples.Typography
