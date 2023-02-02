@@ -230,8 +230,8 @@
     <string name="smvc_spending_estimation_title_2">Pengeluaran hingga saat ini</string>
     <string name="smvc_spending_estimation_title_3">Total pengeluaran</string>
     <string name="smvc_spending_estimation_description_1">Dipotong dari transaksi selesai.</string>
-    <string name="smvc_spending_estimation_description_2">Tidak ada potongan biaya karena kupon berasal dari Paket Promosi.</string>
-    <string name="smvc_spending_estimation_description_3">Tidak ada potongan biaya karena kupon berasal dari Tokopedia.</string>
+    <string name="smvc_spending_estimation_description_2"><![CDATA[Tidak ada pemotongan karena <br>kupon berasal dari Paket Promosi.]]></string>
+    <string name="smvc_spending_estimation_description_3"><![CDATA[Tidak ada pemotongan karena <br>kupon berasal dari Tokopedia.]]></string>
     <string name="coupon_code_copied_to_clipboard">Kode kupon berhasil disalin</string>
     <string name="smvc_oke_label">oke</string>
     <string name="smvc_dash_label">-</string>
