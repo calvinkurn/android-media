@@ -37,7 +37,6 @@
     <string name="product_manage_closable_stock_ticker_description">Untuk melihat harga, jumlah, dan alokasi stok produk di tiap lokasi, akses Tokopedia Seller melalui Desktop, ya.</string>
     <string name="product_manage_closable_stock_ticker_title">Hanya menampilkan harga dan stok lokasi utama</string>
     <string name="product_manage_single_location_stock_no_access_description">Kamu tidak punya akses untuk atur stok produk.</string>
-    <string name="product_manage_tobacco_ticker_description"><![CDATA[Informasi produk yang tidak ditampilkan di aplikasi ini disebabkan karena adanya larangan dari Google Policy.<a href="https://seller.tokopedia.com/manage-product" target="_blank">Cek di Web</a>]]></string>
     <string name="product_manage_ticker_description_format"><![CDATA[%s <a href="\"%s\"" target="_blank">%s</a>]]></string>
 
     <string name="product_manage_campaign_stock_open_campaign">Lihat detail informasi dan ubah stok campaign lewat Tokopedia versi desktop, ya.</string>
