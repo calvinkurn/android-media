@@ -43,20 +43,20 @@
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/cb_repeat_period"
-        android:layout_width="wrap_content"
+        android:layout_width="46dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tf_voucher_start_period"
         app:layout_constraintTop_toBottomOf="@+id/tf_voucher_start_period" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpg_repeat_period"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:text="@string/smvc_repeat_period_label"
         app:layout_constraintBottom_toBottomOf="@+id/cb_repeat_period"
-        app:layout_constraintStart_toEndOf="@id/cb_repeat_period"
+        app:layout_constraintStart_toStartOf="@id/tf_voucher_start_period"
         app:layout_constraintTop_toTopOf="@+id/cb_repeat_period"
         app:typographyType="paragraph_2"
         app:typographyWeight="reguler" />
