@@ -73,8 +73,8 @@ class PlayExploreWidgetFragment @Inject constructor(
     private var _binding: FragmentPlayExploreWidgetBinding? = null
     private val binding: FragmentPlayExploreWidgetBinding get() = _binding!!
 
-    private val EXPLORE_WIDTH: Int by lazy {
-        (getScreenWidth() * 0.75).roundToInt()
+    private val EXPLORE_WIDGET_WIDTH: Int by lazy {
+        (getScreenWidth() * WIDTH_PERCENTAGE).roundToInt()
     }
 
     private val screenLocation = IntArray(2)
@@ -348,7 +348,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         val window = dialog?.window ?: return
         window.setGravity(Gravity.END)
         window.setLayout(
-            EXPLORE_WIDTH,
+            EXPLORE_WIDGET_WIDTH,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -492,6 +492,7 @@ class PlayExploreWidgetFragment @Inject constructor(
 
         private const val DIALOG_VISIBILITY_THRESHOLD = 600f
         private const val VIEW_TRANSLATION_THRESHOLD = 100f
+        private const val WIDTH_PERCENTAGE = 0.75
 
         fun get(fragmentManager: FragmentManager): PlayExploreWidgetFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? PlayExploreWidgetFragment
