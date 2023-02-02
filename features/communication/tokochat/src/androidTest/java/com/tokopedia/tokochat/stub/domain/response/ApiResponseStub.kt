@@ -49,4 +49,14 @@ object ApiResponseStub {
             "image_attachment/success_get_image_attachment.json"
         )
     }
+
+    // API List
+    const val CONNECTION_API = "/v2/chat/connection"
+    const val PROFILE_API = "/v1/chat/profile"
+    const val CHANNEL_ID_API = "/v2/order"
+    const val CHANNEL_API = "/v2/chat/channels"
+    const val IMAGE_URL_API = "/v1/image"
+
+    // Values
+    const val MESSAGES = "messages"
 }
