@@ -31,7 +31,7 @@
             app:typographyType="body_2"
             tools:text="30 hari" />
 
-        <com.tokopedia.unifycomponents.Label
+        <com.tokopedia.unifycomponents.NotificationUnify
             android:id="@+id/labelInstallment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,8 +39,7 @@
             android:layout_marginStart="4dp"
             app:layout_constraintStart_toEndOf="@id/tvInstallmentHeader"
             app:layout_constraintTop_toTopOf="@id/tvInstallmentHeader"
-            app:layout_constraintBottom_toBottomOf="@id/tvInstallmentHeader"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintBottom_toBottomOf="@id/tvInstallmentHeader" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvMonthlyTenure"

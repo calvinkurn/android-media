@@ -6,10 +6,12 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.paylater_simulation_tenure_item.view.*
 
 class PayLaterSimulationTenureViewHolder(val view: View, val onTenureSelected: (Int) -> Unit) :
@@ -54,9 +56,13 @@ class PayLaterSimulationTenureViewHolder(val view: View, val onTenureSelected: (
 
         view.labelInstallment.shouldShowWithAction(label?.text?.isNotEmpty() ?: false) {
             label?.let {
-                view.labelInstallment.setLabel(label.text)
+                view.labelInstallment.setNotification(
+                    it.text,
+                    NotificationUnify.TEXT_TYPE,
+                    getLabelColor(label),
+                )
+
                 setLabelTextColor(label)
-                setLabelType(label)
             }
         }
     }
@@ -82,10 +88,10 @@ class PayLaterSimulationTenureViewHolder(val view: View, val onTenureSelected: (
         }
     }
 
-    private fun setLabelType(label: SimulationUiModel.LabelUiModel) {
-        when (label.bgColor) {
-            "red" -> view.labelInstallment.setLabelType(Label.GENERAL_RED)
-            else -> view.labelInstallment.setLabelType(Label.GENERAL_RED)
+    private fun getLabelColor(label: SimulationUiModel.LabelUiModel): Int {
+        return when (label.bgColor) {
+            "red" -> com.tokopedia.unifycomponents.R.color.GeneralLightRedText
+            else -> com.tokopedia.unifycomponents.R.color.GeneralLightRedText
         }
     }
 
