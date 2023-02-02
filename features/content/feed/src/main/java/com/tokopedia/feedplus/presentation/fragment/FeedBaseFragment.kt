@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
@@ -70,6 +71,18 @@ class FeedBaseFragment : BaseDaggerFragment() {
             it.tyFeedFollowingTab.setOnClickListener { _ ->
                 it.rvFeedTabItemsContainer.smoothScrollToPosition(TAB_FOLLOWING_INDEX)
             }
+
+            it.btnFeedCreatePost.setOnClickListener {
+                onCreatePostClicked()
+            }
+
+            it.btnFeedLive.setOnClickListener {
+                onNavigateToLive()
+            }
+
+            it.feedUserProfileImage.setOnClickListener {
+                onNavigateToProfile()
+            }
         }
     }
 
@@ -100,6 +113,18 @@ class FeedBaseFragment : BaseDaggerFragment() {
 
             newConstraintSet.applyTo(it.root)
         }
+    }
+
+    private fun onCreatePostClicked() {
+        Toast.makeText(context, "Create Post Clicked", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun onNavigateToLive() {
+        Toast.makeText(context, "Navigate to Live", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun onNavigateToProfile() {
+        Toast.makeText(context, "Navigate to Profile", Toast.LENGTH_SHORT).show()
     }
 
     companion object {

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
@@ -60,6 +61,7 @@ class FeedFragment : BaseDaggerFragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = FeedPostAdapter(FeedAdapterTypeFactory())
 
+            LinearSnapHelper().attachToRecyclerView(it.rvFeedPost)
             it.rvFeedPost.layoutManager = layoutManager
             it.rvFeedPost.adapter = adapter
 
