@@ -9,7 +9,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.dilayanitokopedia.R
-import com.tokopedia.dilayanitokopedia.databinding.ItemHomeBannerTopadsLayoutBinding
+import com.tokopedia.dilayanitokopedia.databinding.ItemDtHomeBannerTopadsLayoutBinding
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.HomeRecommendationListener
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -24,13 +24,13 @@ import com.tokopedia.utils.view.binding.viewBinding
 class HomeRecommendationBannerTopAdsViewHolder(view: View) :
     SmartAbstractViewHolder<HomeRecommendationBannerTopAdsDataModel>(view) {
     companion object {
-        val LAYOUT = R.layout.item_home_banner_topads_layout
+        val LAYOUT = R.layout.item_dt_home_banner_topads_layout
         private const val HOME_RECOM_TAB_BANNER = "home_recom_tab_banner"
 
         private const val roundedCorners = 8
     }
 
-    private var binding: ItemHomeBannerTopadsLayoutBinding? by viewBinding()
+    private var binding: ItemDtHomeBannerTopadsLayoutBinding? by viewBinding()
 
     override fun bind(element: HomeRecommendationBannerTopAdsDataModel, listener: SmartListener) {
         loadImageTopAds(element, listener as HomeRecommendationListener)
