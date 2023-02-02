@@ -1792,11 +1792,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         logger.sendBroadcasterLog(mappedMetric)
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        viewModelScope.cancel()
-    }
-
     companion object {
 
         private const val UI_STATE_STOP_TIMEOUT = 5000L
