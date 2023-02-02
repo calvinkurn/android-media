@@ -232,10 +232,12 @@ class ShipmentViewHolder(
             )
         }
 
-        pdpShipmentTicker.addPagerView(
-            TickerPagerAdapter(context, tickers),
-            tickers
-        )
+        pdpShipmentTicker.showIfWithBlock(tickers.isNotEmpty()) {
+            addPagerView(
+                TickerPagerAdapter(context, tickers),
+                tickers
+            )
+        }
     }
 
     private fun loadErrorState() = with(viewError) {
@@ -274,6 +276,7 @@ class ShipmentViewHolder(
             pdpShipmentCourierArrow.hide()
             pdpShipmentCourierLabel2.hide()
             pdpShipmentRatesError.hide()
+            pdpShipmentTicker.hide()
         }
     }
 
