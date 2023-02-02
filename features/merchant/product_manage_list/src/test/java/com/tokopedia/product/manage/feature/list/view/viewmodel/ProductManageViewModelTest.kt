@@ -1012,9 +1012,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 ShopLocationResponse("2", OTHER_LOCATION)
             )
             val tickerResponse = GetTargetedTickerResponse(
-                GetTargetedTickerResponse.GetTargetedTicker(
-                    listOf(mockk())
-                )
+                null
             )
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenReturn(productListData)
