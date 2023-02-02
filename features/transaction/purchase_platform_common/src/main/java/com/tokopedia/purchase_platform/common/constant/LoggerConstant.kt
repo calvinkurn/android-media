@@ -16,6 +16,7 @@ object LoggerConstant {
         const val IS_TRADE_IN_INDOPAKET = "is_trade_in_indopaket"
         const val PRODUCT_ID = "product_id"
         const val REQUEST = "request"
+        const val PROMO_CODE = "promo_code"
     }
 
     object Type {

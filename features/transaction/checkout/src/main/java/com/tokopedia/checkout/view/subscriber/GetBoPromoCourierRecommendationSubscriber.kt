@@ -34,7 +34,7 @@ class GetBoPromoCourierRecommendationSubscriber(
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
         view.resetCourier(shipmentCartItemModel)
         view.renderCourierStateFailed(itemPosition, isTradeInDropOff, true)
-        view.logOnErrorLoadCourier(e, itemPosition)
+        view.logOnErrorLoadCourier(e, itemPosition, promoCode)
         logisticPromoDonePublisher?.onCompleted()
     }
 
@@ -70,7 +70,8 @@ class GetBoPromoCourierRecommendationSubscriber(
                                         MessageErrorException(
                                             shippingCourierUiModel.productData.error?.errorMessage
                                         ),
-                                        itemPosition
+                                        itemPosition,
+                                        promoCode
                                     )
                                     logisticPromoDonePublisher?.onCompleted()
                                     return
@@ -102,7 +103,7 @@ class GetBoPromoCourierRecommendationSubscriber(
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
         view.resetCourier(shipmentCartItemModel)
         view.renderCourierStateFailed(itemPosition, isTradeInDropOff, true)
-        view.logOnErrorLoadCourier(MessageErrorException("rates empty data"), itemPosition)
+        view.logOnErrorLoadCourier(MessageErrorException("rates empty data"), itemPosition, promoCode)
         logisticPromoDonePublisher?.onCompleted()
     }
 

@@ -173,7 +173,7 @@ public interface ShipmentContract {
 
         void logOnErrorLoadCheckoutPage(Throwable throwable);
 
-        void logOnErrorLoadCourier(Throwable throwable, int itemPosition);
+        void logOnErrorLoadCourier(Throwable throwable, int itemPosition, String boPromoCode);
 
         void logOnErrorCheckout(Throwable throwable, String request);
 
