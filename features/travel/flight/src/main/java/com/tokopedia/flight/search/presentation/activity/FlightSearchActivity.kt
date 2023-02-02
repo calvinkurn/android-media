@@ -401,10 +401,45 @@ open class FlightSearchActivity :
             this.ogImageUrl = shareModel.ogImgUrl
             this.description = ""
             this.type = LinkerData.FLIGHT_TYPE
-            this.deepLink = flightSearchPassDataModel.linkUrl
+            this.deepLink = getDeeplinkFlight()
         }
         return LinkerShareData().apply {
             this.linkerData = linkerData
+        }
+    }
+
+    private fun getDeeplinkFlight(): String {
+        return if (flightSearchPassDataModel.isOneWay) {
+            String.format(
+                DEEPLINK_FLIGHT_SEARCH_ONEWAY,
+                flightSearchPassDataModel.getDepartureAirport(false),
+                flightSearchPassDataModel.departureAirport.cityName,
+                flightSearchPassDataModel.getArrivalAirport(false),
+                flightSearchPassDataModel.arrivalAirport.cityName,
+                flightSearchPassDataModel.departureDate,
+                flightSearchPassDataModel.flightPassengerModel.adult,
+                flightSearchPassDataModel.flightPassengerModel.children,
+                flightSearchPassDataModel.flightPassengerModel.infant,
+                flightSearchPassDataModel.flightClass.id
+            )
+        } else {
+            String.format(
+                DEEPLINK_FLIGHT_TWOWAY,
+                flightSearchPassDataModel.getDepartureAirport(false),
+                flightSearchPassDataModel.departureAirport.cityName,
+                flightSearchPassDataModel.getArrivalAirport(false),
+                flightSearchPassDataModel.arrivalAirport.cityName,
+                flightSearchPassDataModel.departureDate,
+                flightSearchPassDataModel.getDepartureAirport(true),
+                flightSearchPassDataModel.arrivalAirport.cityName,
+                flightSearchPassDataModel.getArrivalAirport(true),
+                flightSearchPassDataModel.departureAirport.cityName,
+                flightSearchPassDataModel.returnDate,
+                flightSearchPassDataModel.flightPassengerModel.adult,
+                flightSearchPassDataModel.flightPassengerModel.children,
+                flightSearchPassDataModel.flightPassengerModel.infant,
+                flightSearchPassDataModel.flightClass.id
+            )
         }
     }
 
@@ -587,6 +622,8 @@ open class FlightSearchActivity :
         private const val EEE_DD_MMM_YYYY = "EEE, dd MMM yyyy"
         private const val EEEE_DD_MMM_YY = "EEEE, dd MMM yyyy"
         private const val DESKTOP_URL_FLIGHT_SEARCH = "https://www.tokopedia.com/flight/search?r=%s&d=%s&a=%s&c=%s&i=%s&k=%s"
+        private const val DEEPLINK_FLIGHT_SEARCH_ONEWAY = "tokopedia://pesawat/search?dest=%s_%s_%s_%s_%s&a=%s&c=%s&i=%s&s=%s&auto_search=1"
+        private const val DEEPLINK_FLIGHT_TWOWAY = "tokopedia://pesawat/search?dest=%s_%s_%s_%s_%s,%s_%s_%s_%s_%s&a=%s&c=%s&i=%s&s=%s&auto_search=1"
 
         fun getCallingIntent(
             context: Context,
