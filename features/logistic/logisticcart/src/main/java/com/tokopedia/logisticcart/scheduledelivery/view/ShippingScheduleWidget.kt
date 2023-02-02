@@ -39,6 +39,7 @@ class ShippingScheduleWidget : ConstraintLayout {
     private var scheduleDeliveryPreferences: ScheduleDeliveryPreferences? = null
     private var coachMarkHandler: Handler? = null
     private var coachMarkRunnable: Runnable? = null
+    private var scheduleSlotBottomSheet: ScheduleSlotBottomSheet? = null
 
     interface ShippingScheduleWidgetListener {
         fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel)
@@ -118,8 +119,10 @@ class ShippingScheduleWidget : ConstraintLayout {
     private fun ScheduleDeliveryUiModel.createOtherOptionWidget(): ShippingScheduleWidgetModel {
         val onClickIconListener: (() -> Unit)? = if (available) {
             {
-                openScheduleDeliveryBottomSheet(this)
-                ScheduleDeliveryAnalytics.sendClickArrowInScheduledDeliveryOptionsOnTokopediaNowEvent()
+                if (scheduleSlotBottomSheet == null) {
+                    openScheduleDeliveryBottomSheet(this)
+                    ScheduleDeliveryAnalytics.sendClickArrowInScheduledDeliveryOptionsOnTokopediaNowEvent()
+                }
             }
         } else null
 
@@ -160,19 +163,23 @@ class ShippingScheduleWidget : ConstraintLayout {
             )
             mListener?.getFragmentManager()?.let { fragmentManager ->
 
-                val bottomsheet =
+                scheduleSlotBottomSheet =
                     ScheduleSlotBottomSheet.show(fragmentManager, bottomsheetUiModel)
-                bottomsheet.setListener(object :
-                    ScheduleSlotBottomSheet.ScheduleSlotBottomSheetListener {
-                    override fun onChooseTimeListener(timeId: Long, dateId: String) {
-                        scheduleDeliveryUiModel.setScheduleDateAndTimeslotId(
-                            scheduleDate = dateId,
-                            timeslotId = timeId
-                        )
-                        mListener?.onChangeScheduleDelivery(it)
+                scheduleSlotBottomSheet?.apply {
+                    setListener(object :
+                        ScheduleSlotBottomSheet.ScheduleSlotBottomSheetListener {
+                        override fun onChooseTimeListener(timeId: Long, dateId: String) {
+                            scheduleDeliveryUiModel.setScheduleDateAndTimeslotId(
+                                scheduleDate = dateId,
+                                timeslotId = timeId
+                            )
+                            mListener?.onChangeScheduleDelivery(it)
+                        }
+                    })
+                    setOnDismissListener {
+                        scheduleSlotBottomSheet = null
                     }
-                })
-
+                }
             }
 
         }
