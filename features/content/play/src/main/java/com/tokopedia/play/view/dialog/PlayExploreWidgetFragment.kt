@@ -10,6 +10,7 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.*
+import android.view.animation.LinearInterpolator
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -53,7 +54,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 import javax.inject.Inject
-import kotlin.math.roundToInt
 import com.tokopedia.play.R as playR
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -72,12 +72,6 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     private var _binding: FragmentPlayExploreWidgetBinding? = null
     private val binding: FragmentPlayExploreWidgetBinding get() = _binding!!
-
-    private val EXPLORE_WIDTH: Int by lazy {
-        (getScreenWidth() * 0.75).roundToInt()
-    }
-
-    private val screenLocation = IntArray(2)
 
     private lateinit var viewModel: PlayViewModel
 
@@ -158,8 +152,13 @@ class PlayExploreWidgetFragment @Inject constructor(
                     } else {
                         newX -= VIEW_TRANSLATION_THRESHOLD
                     }
+
+                    if(newX <= 0) return false
+
                     view?.let {
-                        ObjectAnimator.ofFloat(it, View.TRANSLATION_X, it.x, newX).start()
+                        ObjectAnimator.ofFloat(it, View.TRANSLATION_X, it.x, newX).apply {
+                            interpolator = LinearInterpolator()
+                        }.start()
                     }
                     return true
                 }
@@ -348,7 +347,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         val window = dialog?.window ?: return
         window.setGravity(Gravity.END)
         window.setLayout(
-            EXPLORE_WIDTH,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -370,9 +369,6 @@ class PlayExploreWidgetFragment @Inject constructor(
         }
         viewLifecycleOwner.lifecycleScope.launch {
             view?.awaitLayout()
-            if (screenLocation.any { it.isZero() }) {
-                view?.getLocationOnScreen(screenLocation)
-            }
             setupDraggable()
         }
     }
