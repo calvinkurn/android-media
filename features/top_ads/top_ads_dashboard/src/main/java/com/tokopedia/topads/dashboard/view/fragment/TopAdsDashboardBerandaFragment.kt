@@ -75,6 +75,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     private var isAutoTopUpActive: Boolean = false
     private var isAutoTopUpSelected: Boolean = false
+    private var creditPerformance: String = ""
     private var topUpUCount: Int = 0
     private var autoTopUpBonus: Double = 0.0
     private var showAutoTopUpOldFlow = true
@@ -221,6 +222,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         val intent = Intent(activity, TopAdsCreditTopUpActivity::class.java)
         intent.putExtra(TopAdsCreditTopUpActivity.IS_AUTO_TOP_UP_ACTIVE, isAutoTopUpActive)
         intent.putExtra(TopAdsCreditTopUpActivity.IS_AUTO_TOP_UP_SELECTED, isAutoTopUpSelected)
+        intent.putExtra(TopAdsCreditTopUpActivity.CREDIT_PERFORMANCE, creditPerformance)
         intent.putExtra(TopAdsCreditTopUpActivity.TOP_UP_COUNT, topUpUCount)
         intent.putExtra(TopAdsCreditTopUpActivity.AUTO_TOP_UP_BONUS, autoTopUpBonus)
         startActivityForResult(intent, REQUEST_CODE_TOP_UP_CREDIT)
@@ -359,6 +361,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 isAutoTopUpActive = it.data.isAutoTopUp
                 setButtonRefreshCreditState(it.data.isAutoTopUp)
                 isAutoTopUpSelected = it.data.isAutoTopUpSelected
+                creditPerformance = it.data.creditPerformance
                 topUpUCount = it.data.countTopUp
             }
         }

@@ -76,6 +76,7 @@ class TopAdsCreditHistoryFragment :
     private var datePickerIndex = DATE_PICKER_DEFAULT_INDEX
     private var isAutoTopUpActive: Boolean = false
     private var isAutoTopUpSelected: Boolean = false
+    private var creditPerformance: String = ""
     private var topUpUCount: Int = 0
     private var autoTopUpBonus: Double = 0.0
 
@@ -148,6 +149,7 @@ class TopAdsCreditHistoryFragment :
             if (it is Success) {
                 isAutoTopUpActive = it.data.isAutoTopUp
                 isAutoTopUpSelected = it.data.isAutoTopUpSelected
+                creditPerformance = it.data.creditPerformance
                 topUpUCount = it.data.countTopUp
             }
         }
@@ -261,6 +263,7 @@ class TopAdsCreditHistoryFragment :
                         TopAdsCreditTopUpActivity.IS_AUTO_TOP_UP_SELECTED,
                         isAutoTopUpSelected
                     )
+                    it.putExtra(TopAdsCreditTopUpActivity.CREDIT_PERFORMANCE, creditPerformance)
                     it.putExtra(TopAdsCreditTopUpActivity.TOP_UP_COUNT, topUpUCount)
                     it.putExtra(TopAdsCreditTopUpActivity.AUTO_TOP_UP_BONUS, autoTopUpBonus)
                 },

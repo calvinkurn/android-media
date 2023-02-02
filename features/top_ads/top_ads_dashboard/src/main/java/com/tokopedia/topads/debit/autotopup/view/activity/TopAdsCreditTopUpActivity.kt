@@ -24,6 +24,7 @@ class TopAdsCreditTopUpActivity : BaseSimpleActivity() {
             if (isAutoTopUpActive()) it.isAutoTopUpActive = true
             it.topUpCount = getTopUpCount()
             it.autoTopUpBonus = getAutoTopUpBonus()
+            it.creditPerformance = getCreditPerformance()
         }
     }
 
@@ -65,9 +66,14 @@ class TopAdsCreditTopUpActivity : BaseSimpleActivity() {
         return intent?.extras?.getDouble(AUTO_TOP_UP_BONUS, 0.0) ?: 0.0
     }
 
+    private fun getCreditPerformance(): String {
+        return intent?.extras?.getString(CREDIT_PERFORMANCE, "") ?: ""
+    }
+
     companion object {
         const val IS_AUTO_TOP_UP_ACTIVE = "isAutoTopUpActive"
         const val IS_AUTO_TOP_UP_SELECTED = "isAutoTopUpSelected"
+        const val CREDIT_PERFORMANCE = "creditPerformance"
         const val TOP_UP_COUNT = "TopUpCount"
         const val AUTO_TOP_UP_BONUS = "AutoTopUpBonus"
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.topads.debit.autotopup.view.sheet
 
+import android.content.Context
 import android.content.DialogInterface
 import android.content.res.Resources
 import android.os.Bundle
@@ -11,6 +12,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.INSUFFICIENT_CREDIT
 import com.tokopedia.topads.dashboard.data.utils.Utils.openWebView
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -23,10 +25,12 @@ class TopAdsTopUpCreditInterruptSheet : BottomSheetUnify() {
     private var interruptSheetApplyButton: UnifyButton? = null
     private var interruptSheetLearnMoreLinkTypography: Typography? = null
     private var interruptSheetDescription: Typography? = null
+    private var interruptSheetTitle: Typography? = null
     private var interruptSheetEducationPointThreeDescription: Typography? = null
     var isAutoTopUpActive: Boolean = false
     var topUpCount: Int = Int.ZERO
     var autoTopUpBonus: Double = 0.0
+    var creditPerformance: String = ""
     var onButtonClick: ((isNegativeButtonClicked: Boolean) -> Unit)? = null
 
     companion object {
@@ -65,6 +69,7 @@ class TopAdsTopUpCreditInterruptSheet : BottomSheetUnify() {
 
     private fun initView(contentView: View?) {
         interruptSheetCancelButton = contentView?.findViewById(R.id.interruptSheetCancelButton)
+        interruptSheetTitle = contentView?.findViewById(R.id.interruptSheetTitle)
         interruptSheetApplyButton = contentView?.findViewById(R.id.interruptSheetApplyButton)
         interruptSheetLearnMoreLinkTypography =
             contentView?.findViewById(R.id.interruptSheetLearnMoreLinkTypography)
@@ -81,19 +86,40 @@ class TopAdsTopUpCreditInterruptSheet : BottomSheetUnify() {
 
     private fun renderViews() {
         context?.let {
+            val isInsufficientCredit = creditPerformance.equals(INSUFFICIENT_CREDIT, true)
+            renderTitle(it, isInsufficientCredit)
+            renderDescription(it, isInsufficientCredit)
+            renderBulletPoint(it)
+        }
+    }
+
+    private fun renderTitle(context: Context, isInsufficientCredit: Boolean) {
+       if (isInsufficientCredit){
+           interruptSheetTitle?.text = context.getString(R.string.top_ads_interrupt_bottom_sheet_title_two)
+       }else{
+           interruptSheetTitle?.text = context.getString(R.string.top_ads_interrupt_bottom_sheet_title_one)
+       }
+    }
+
+    private fun renderBulletPoint(context: Context) {
+        interruptSheetEducationPointThreeDescription?.text = HtmlCompat.fromHtml(
+            String.format(
+                context.getString(R.string.topads_dash_top_credit_interrupt_sheet_edu_point_three),
+                autoTopUpBonus.toString()
+            ), HtmlCompat.FROM_HTML_MODE_LEGACY
+        )
+    }
+
+    private fun renderDescription(context: Context, isInsufficientCredit: Boolean) {
+        if (isInsufficientCredit){
+            interruptSheetDescription?.text = context.getString(R.string.topads_dash_top_credit_interrupt_sheet_description_two)
+        }else{
             interruptSheetDescription?.text = HtmlCompat.fromHtml(
                 String.format(
-                    it.getString(R.string.topads_dash_top_credit_interrupt_sheet_description),
+                    context.getString(R.string.topads_dash_top_credit_interrupt_sheet_description_one),
                     topUpCount
                 ), HtmlCompat.FROM_HTML_MODE_LEGACY
             )
-            interruptSheetEducationPointThreeDescription?.text = HtmlCompat.fromHtml(
-                String.format(
-                    it.getString(R.string.topads_dash_top_credit_interrupt_sheet_edu_point_three),
-                    autoTopUpBonus.toString()
-                ), HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
-
         }
     }
 
