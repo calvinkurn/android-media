@@ -58,9 +58,10 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
                         type = tickerType,
                         isFromHtml = true
                     )
+                }.toMutableList().apply {
+                    addMultiLocationTicker(multiLocationSeller)
                 }
             )
-            addMultiLocationTicker(multiLocationSeller)
         }
     }
 }

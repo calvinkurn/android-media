@@ -439,7 +439,6 @@ open class ProductManageFragment :
     private var progressDialog: ProgressDialog? = null
     private var optionsMenu: Menu? = null
 
-    private var tickerPagerAdapter: TickerPagerAdapter? = null
 
     private val ticker: Ticker?
         get() = binding?.layoutFragmentProductManage?.ticker?.root
@@ -2966,24 +2965,22 @@ open class ProductManageFragment :
             }
         }
         viewLifecycleOwner.observe(viewModel.tickerData) { tickerData ->
-            var tickerPagerAdapter = tickerPagerAdapter
-            if (tickerPagerAdapter == null) {
-                tickerPagerAdapter = TickerPagerAdapter(context, tickerData)
-                this.tickerPagerAdapter = tickerPagerAdapter.apply {
-                    setPagerDescriptionClickEvent(object : TickerPagerCallback {
-                        override fun onPageDescriptionViewClick(
-                            linkUrl: CharSequence,
-                            itemData: Any?
-                        ) {
-                            context?.let { RouteManager.route(it, linkUrl.toString()) }
-                        }
-                    })
-                    onDismissListener = {
-                        viewModel.hideTicker()
-                        hasTickerClosed = true
+            var tickerPagerAdapter = TickerPagerAdapter(context, tickerData)
+            tickerPagerAdapter = tickerPagerAdapter.apply {
+                setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                    override fun onPageDescriptionViewClick(
+                        linkUrl: CharSequence,
+                        itemData: Any?
+                    ) {
+                        context?.let { RouteManager.route(it, linkUrl.toString()) }
                     }
+                })
+                onDismissListener = {
+                    viewModel.hideTicker()
+                    hasTickerClosed = true
                 }
             }
+
             ticker?.let { tickerView ->
                 val visibility = tickerView.visibility
                 tickerView.addPagerView(tickerPagerAdapter, tickerData)
