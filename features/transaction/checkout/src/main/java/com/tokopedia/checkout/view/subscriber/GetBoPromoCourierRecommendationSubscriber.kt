@@ -39,6 +39,7 @@ class GetBoPromoCourierRecommendationSubscriber(
     }
 
     override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
+        var errorReason = "rates invalid data"
         if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.isNotEmpty() && shippingRecommendationData.listLogisticPromo.isNotEmpty()) {
             val logisticPromo =
                 shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == promoCode && !it.disabled }
@@ -97,13 +98,17 @@ class GetBoPromoCourierRecommendationSubscriber(
                         }
                     }
                 }
+            } else {
+                errorReason = "promo not found"
             }
+        } else {
+            errorReason = "rates empty data"
         }
         presenter.cancelAutoApplyPromoStackLogistic(itemPosition, promoCode, shipmentCartItemModel)
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
         view.resetCourier(shipmentCartItemModel)
         view.renderCourierStateFailed(itemPosition, isTradeInDropOff, true)
-        view.logOnErrorLoadCourier(MessageErrorException("rates empty data"), itemPosition, promoCode)
+        view.logOnErrorLoadCourier(MessageErrorException(errorReason), itemPosition, promoCode)
         logisticPromoDonePublisher?.onCompleted()
     }
 
