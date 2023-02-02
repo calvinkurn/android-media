@@ -7,177 +7,180 @@ import com.google.gson.annotations.SerializedName
  */
 data class WidgetSlot(
     @SerializedName("playGetContentSlot")
-    val playGetContentSlot: ContentSlot
+    val playGetContentSlot: ContentSlot = ContentSlot(),
 )
 
 data class ContentSlot(
     @SerializedName("data")
-    val data: List<Content>,
+    val data: List<Content> = emptyList(),
 
     @SerializedName("meta")
-    val playGetContentSlot: ContentSlotMeta
+    val playGetContentSlot: ContentSlotMeta = ContentSlotMeta(),
 )
 
 data class ContentSlotMeta(
     @SerializedName("is_autoplay")
-    val isAutoplay: Boolean,
+    val isAutoplay: Boolean = false,
 
     @SerializedName("max_autoplay_in_cell")
-    val maxAutoplayInCell: Int,
+    val maxAutoplayInCell: Int = 0,
 
     @SerializedName("next_cursor")
-    val nextCursor: String
+    val nextCursor: String = ""
 )
 
 data class Content(
     @SerializedName("hash")
-    val hash: String,
+    val hash: String = "",
 
     @SerializedName("type")
-    val type: String,
+    val type: String = "",
 
     @SerializedName("title")
-    val title: String,
+    val title: String = "",
 
     @SerializedName("id")
-    val id: String,
+    val id: String = "",
 
     @SerializedName("items")
-    val items: List<ContentItem>
+    val items: List<ContentItem> = emptyList(),
 )
 
 data class ContentItem(
     @SerializedName("app_link")
-    val appLink: String,
+    val appLink: String = "",
 
     @SerializedName("cover_url")
-    val coverUrl: String,
+    val coverUrl: String = "",
 
     @SerializedName("description")
-    val description: String,
+    val description: String = "",
 
     @SerializedName("is_live")
-    val isLive: Boolean,
+    val isLive: Boolean = false,
 
     @SerializedName("id")
-    val id: String,
+    val id: String = "",
 
     @SerializedName("title")
-    val title: String,
+    val title: String = "",
 
     @SerializedName("start_time")
-    val startTime: String,
+    val startTime: String = "",
 
     @SerializedName("air_time")
-    val airTime: String,
+    val airTime: String = "",
 
     @SerializedName("web_link")
-    val webLink: String,
+    val webLink: String = "",
 
     @SerializedName("stats")
-    val stats: ContentStats,
+    val stats: ContentStats = ContentStats(),
 
     @SerializedName("configurations")
-    val configurations: ContentItemConfiguration,
+    val configurations: ContentItemConfiguration = ContentItemConfiguration(),
 
     @SerializedName("partner")
-    val partner: Partner,
+    val partner: Partner = Partner(),
 
     @SerializedName("video")
-    val video: Video,
+    val video: Video = Video(),
 
     // Banner
     @SerializedName("created_time")
-    val createdTime: String,
+    val createdTime: String = "",
 
     @SerializedName("updated_time")
-    val updatedTime: String,
+    val updatedTime: String = "",
 
     @SerializedName("slug")
-    val slug: String,
+    val slug: String = "",
 
     @SerializedName("broadcaster_name")
-    val broadcaster_name: String,
+    val broadcaster_name: String = "",
 
     @SerializedName("image_url")
-    val imageUrl: String,
+    val imageUrl: String = "",
 
     // Tab
     @SerializedName("label")
-    val label: String,
+    val label: String = "",
+
     @SerializedName("icon_url")
-    val iconUrl: String,
+    val iconUrl: String = "",
+
     @SerializedName("group")
-    val group: String,
+    val group: String = "",
 
     @SerializedName("source_type")
-    val sourceType: String,
+    val sourceType: String = "",
 
     @SerializedName("source_id")
-    val sourceId: String,
+    val sourceId: String = "",
 
     @SerializedName("slug_id")
-    val slugId: String,
+    val slugId: String = "",
 
     @SerializedName("recommendationType")
-    val recommendationType: String
+    val recommendationType: String = "",
 ) {
 
     data class Partner(
         @SerializedName("id")
-        val id: String,
+        val id: String = "",
 
         @SerializedName("name")
-        val name: String
+        val name: String = "",
     )
 
     data class Video(
         @SerializedName("id")
-        val id: String,
+        val id: String = "",
 
         @SerializedName("stream_source")
-        val streamUrl: String,
+        val streamUrl: String = "",
 
         @SerializedName("orientation")
-        val orientation: String,
+        val orientation: String = "",
 
         @SerializedName("type")
-        val type: String
+        val type: String = "",
     )
 }
 
 data class ContentStats(
     @SerializedName("view")
-    val view: StatsView
+    val view: StatsView = StatsView(),
 )
 
 data class StatsView(
     @SerializedName("value")
-    val value: String,
+    val value: String = "",
 
     @SerializedName("formatted")
-    val formatted: String
+    val formatted: String = "",
 )
 
 data class ContentItemConfiguration(
     @SerializedName("has_promo")
-    val hasPromo: Boolean,
+    val hasPromo: Boolean = false,
 
     @SerializedName("reminder")
-    val reminder: Reminder,
+    val reminder: Reminder = Reminder(),
 
     @SerializedName("promo_labels")
-    val promoLabels: List<PromoLabel>
+    val promoLabels: List<PromoLabel> = emptyList(),
 ) {
     data class Reminder(
         @SerializedName("is_set")
-        val isSet: Boolean
+        val isSet: Boolean = false,
     )
 
     data class PromoLabel(
         @SerializedName("text")
-        val text: String,
+        val text: String = "",
+
         @SerializedName("type")
-        val type: String
+        val type: String = "",
     )
 }
