@@ -17,6 +17,7 @@ object EPharmacyMapper {
             group.epharmacyGroupId,
             group.consultationSource?.enablerName,
             group.shopInfo?.firstOrNull()?.partnerLogoUrl,
+            group.consultationSource?.enablerLogoUrl,
             info,
             group.consultationData?.consultationStatus,
             group.consultationData?.consultationString,

@@ -11,6 +11,7 @@ data class EPharmacyAttachmentDataModel(
     val epharmacyGroupId: String?,
     val enablerName: String?,
     val enablerLogo: String?,
+    val chooserLogo: String?,
     val shopInfo: EG.ProductsInfo?,
     val consultationStatus: Int?,
     val consultationString: String?,

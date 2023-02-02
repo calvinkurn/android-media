@@ -440,7 +440,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         val model = (ePharmacyAttachmentUiUpdater.mapOfData[modelKey] as EPharmacyAttachmentDataModel)
         redirectAttachmentCTA(
             model.enablerName,
-            model.enablerLogo,
+            model.chooserLogo,
             model.epharmacyGroupId,
             model.prescriptionCTA,
             model.tokoConsultationId,
@@ -479,7 +479,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun redirectAttachmentCTA(
         enablerName: String?,
-        enablerImage: String?,
+        chooserLogo: String?,
         groupId: String?,
         prescriptionCTA: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionCTA?,
         tokoConsultationId: Long?,
@@ -493,7 +493,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 startPhotoUpload(groupId)
             }
             PrescriptionActionType.REDIRECT_OPTION.type -> {
-                startAttachmentChooser(enablerImage, groupId, enablerName, consultationId)
+                startAttachmentChooser(chooserLogo, groupId, enablerName, consultationId)
             }
             PrescriptionActionType.REDIRECT_PRESCRIPTION.type -> {
                 tokoConsultationId?.let {
