@@ -2,12 +2,15 @@ package com.tokopedia.search.result.product.cpm
 
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.topads.sdk.utils.TopAdsHeadlineHelper
-import dagger.Binds
 import dagger.Module
+import dagger.Provides
 
 @Module
-abstract class TopAdsHeadlineModule {
+object TopAdsHeadlineModule {
     @SearchScope
-    @Binds
-    abstract fun provideTopAdsHeadlineHelper(helper: TopAdsHeadlineHelper) : TopAdsHeadlineHelper
+    @Provides
+    @JvmStatic
+    fun provideTopAdsHeadlineHelper(): TopAdsHeadlineHelper {
+        return TopAdsHeadlineHelper()
+    }
 }
