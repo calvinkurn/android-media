@@ -153,7 +153,7 @@ class PlayExploreWidgetFragment @Inject constructor(
                         newX -= VIEW_TRANSLATION_THRESHOLD
                     }
 
-                    if(newX <= 0) return false
+                    if(newX < 0) return false
 
                     view?.let {
                         ObjectAnimator.ofFloat(it, View.TRANSLATION_X, it.x, newX).apply {
