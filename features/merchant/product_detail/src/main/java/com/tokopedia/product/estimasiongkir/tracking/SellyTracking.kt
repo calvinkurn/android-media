@@ -8,14 +8,16 @@ object SellyTracking {
         trackingQueue: TrackingQueue,
         data: SellyTracker.ImpressionComponent
     ) {
-        val items = data.prices.mapIndexed { index, price ->
-            hashMapOf(
-                "creative_name" to price.first,
-                "creative_slot" to index,
-                "item_id" to "pengiriman terjadwal",
-                "item_name" to price.second
-            )
-        }
+        val items = ArrayList(
+            data.prices.mapIndexed { index, price ->
+                hashMapOf(
+                    "creative_name" to price.first,
+                    "creative_slot" to index.toString(),
+                    "item_id" to "pengiriman terjadwal",
+                    "item_name" to price.second
+                )
+            }
+        )
 
         val mapEvent = hashMapOf<String, Any>(
             "event" to "promoView",
@@ -30,7 +32,7 @@ object SellyTracking {
             "productId" to data.productId,
             "ecommerce" to hashMapOf(
                 "promoView" to hashMapOf(
-                    "promotions" to arrayListOf(items)
+                    "promotions" to items
                 )
             ),
             "shopId" to data.shopId,
