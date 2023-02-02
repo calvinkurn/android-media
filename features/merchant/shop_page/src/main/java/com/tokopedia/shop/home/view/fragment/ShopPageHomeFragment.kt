@@ -3774,7 +3774,8 @@ open class ShopPageHomeFragment :
     }
 
     fun setHomeTabBackgroundPatternImage(backgroundPatternImage: String) {
-        this.homeTabBackgroundPatternImage = backgroundPatternImage
+//        this.homeTabBackgroundPatternImage = backgroundPatternImage
+        this.homeTabBackgroundPatternImage = "https://lh5.googleusercontent.com/asDRxKClmQFn3HdBLxkZ2Q6LW8bn8biZulsgv-AIRsoJe85gb7Xi90sLr4qkX_CsU3s=w2400"
     }
 
 
