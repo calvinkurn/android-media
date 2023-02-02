@@ -128,15 +128,6 @@ class WishlistCollectionFragment :
         activity?.let { WishlistCollectionPrefs(it) }
     }
 
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        if (!isVisibleToUser) {
-            coachMark?.dismissCoachMark()
-            coachMarkSharing1?.dismissCoachMark()
-            coachMarkSharing2?.dismissCoachMark()
-        }
-    }
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val collectionViewModel by lazy {
@@ -144,14 +135,18 @@ class WishlistCollectionFragment :
     }
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
 
-    private val coachMarkItem = ArrayList<CoachMark2Item>()
+    private val coachMarkItem = arrayListOf<CoachMark2Item>()
     private var coachMark: CoachMark2? = null
 
-    private val coachMarkItemSharing1 = ArrayList<CoachMark2Item>()
+    private val coachMarkItemSharing1 = arrayListOf<CoachMark2Item>()
     private var coachMarkSharing1: CoachMark2? = null
 
-    private val coachMarkItemSharing2 = ArrayList<CoachMark2Item>()
+    private val coachMarkItemSharing2 = arrayListOf<CoachMark2Item>()
     private var coachMarkSharing2: CoachMark2? = null
+
+    private var isCoachMarkShowing = false
+    private var isCoachMarkSharing1Showing = false
+    private var isCoachMarkSharing2Showing = false
 
     override fun getScreenName(): String = ""
 
@@ -230,6 +225,28 @@ class WishlistCollectionFragment :
         super.onViewCreated(view, savedInstanceState)
         prepareLayout()
         observingData()
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        manageCoachmark(isVisibleToUser)
+    }
+
+    private fun manageCoachmark(isVisibleToUser: Boolean) {
+        when (isVisibleToUser) {
+            false -> {
+                if (isCoachMarkShowing) {
+                    isCoachMarkShowing = false
+                    coachMark?.dismissCoachMark()
+                } else if (isCoachMarkSharing1Showing) {
+                    isCoachMarkSharing1Showing = false
+                    coachMarkSharing1?.dismissCoachMark()
+                } else if (isCoachMarkSharing2Showing) {
+                    isCoachMarkSharing2Showing = false
+                    coachMarkSharing2?.dismissCoachMark()
+                }
+            }
+        }
     }
 
     private fun observingData() {
@@ -899,12 +916,19 @@ class WishlistCollectionFragment :
             it.stepButtonTextLastChild =
                 getString(R.string.collection_coachmark_lanjut)
 
-            if (!it.isShowing) {
+            if (!it.isShowing && isValidToShowCoachMark() && coachMarkItemSharing1.isNotEmpty()) {
                 it.showCoachMark(coachMarkItemSharing1, null, 1)
                 it.stepPrev?.visibility = View.GONE
                 it.stepPagination?.visibility = View.GONE
             }
         }
+    }
+
+    private fun isValidToShowCoachMark(): Boolean {
+        activity?.let {
+            return !it.isFinishing
+        }
+        return false
     }
 
     private fun showCoachmarkKebabItem2(view: View) {
@@ -952,10 +976,11 @@ class WishlistCollectionFragment :
             it.stepButtonTextLastChild =
                 getString(R.string.collection_coachmark_finish)
 
-            if (!it.isShowing) {
+            if (!it.isShowing && isValidToShowCoachMark() && coachMarkItemSharing2.isNotEmpty()) {
                 it.showCoachMark(coachMarkItemSharing2, null, 1)
                 it.stepPrev?.visibility = View.GONE
                 it.stepPagination?.visibility = View.GONE
+                isCoachMarkSharing2Showing = true
             }
             CoachMarkPreference.setShown(requireContext(), COACHMARK_WISHLIST_SHARING, true)
         }
@@ -993,8 +1018,9 @@ class WishlistCollectionFragment :
                 getString(R.string.collection_coachmark_try_create_wishlist)
             it.stepPrev?.text = getString(R.string.collection_coachmark_back)
 
-            if (!it.isShowing) {
+            if (!it.isShowing && isValidToShowCoachMark() && coachMarkItem.isNotEmpty()) {
                 it.showCoachMark(coachMarkItem, null)
+                isCoachMarkShowing = true
             }
             CoachMarkPreference.setShown(requireContext(), COACHMARK_WISHLIST, true)
         }
