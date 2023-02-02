@@ -131,6 +131,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
     }
 
     private suspend fun getMostSoldProducts(productIds: List<Long>): List<Product> {
+        if (productIds.isEmpty()) return emptyList()
         val param = ProductListUseCase.Param(
             searchKeyword = "",
             warehouseId = 0,
