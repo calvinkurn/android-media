@@ -130,7 +130,7 @@ class HotelDestinationViewModel @Inject constructor(
     }
 
     fun validateLocation(latitude: Double, longitude: Double) {
-        if (latitude == 0.0 && longitude == 0.0) {
+        if (latitude == DEFAULT_LATITUDE && longitude == DEFAULT_LONGITUDE) {
             longLat.postValue(Fail(Throwable()))
         } else {
             longLat.postValue(Success(Pair(longitude, latitude)))
@@ -139,7 +139,7 @@ class HotelDestinationViewModel @Inject constructor(
 
     fun onGetLocation(): Function1<DeviceLocation, Unit> {
         return { (latitude, longitude) ->
-            if (latitude == 0.0 && longitude == 0.0) {
+            if (latitude == DEFAULT_LATITUDE && longitude == DEFAULT_LONGITUDE) {
                 longLat.postValue(Fail(Throwable()))
             } else {
                 longLat.postValue(Success(Pair(longitude, latitude)))
@@ -155,5 +155,7 @@ class HotelDestinationViewModel @Inject constructor(
         const val PARAM_DATA = "data"
         const val PARAM_USER_ID = "id"
         const val PARAM_DELETE_RECENT_UUID = "uuid"
+        const val DEFAULT_LATITUDE = 0.0
+        const val DEFAULT_LONGITUDE = 0.0
     }
 }
