@@ -19,7 +19,6 @@ import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.tokochat.stub.common.BabbleCourierClientStub
 import com.tokopedia.tokochat.stub.common.ConversationsPreferencesStub
 import com.tokopedia.tokochat.stub.common.MockWebServerDispatcher
@@ -45,7 +44,6 @@ import org.junit.Before
 import org.junit.Rule
 import javax.inject.Inject
 
-@UiTest
 abstract class BaseTokoChatTest {
 
     @get:Rule

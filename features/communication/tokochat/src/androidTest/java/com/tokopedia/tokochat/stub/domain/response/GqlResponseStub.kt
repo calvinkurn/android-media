@@ -3,8 +3,6 @@ package com.tokopedia.tokochat.stub.domain.response
 import com.tokopedia.tokochat.domain.response.background.TokoChatBackgroundResponse
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
-import com.tokopedia.tokochat.stub.common.util.AndroidFileUtil
-import java.lang.reflect.Type
 
 object GqlResponseStub {
 

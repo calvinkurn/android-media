@@ -1,7 +1,6 @@
 package com.tokopedia.tokochat.di
 
 import com.tokochat.tokochat_config_common.di.component.TokoChatConfigComponent
-import com.tokochat.tokochat_config_common.di.module.TokoChatConfigContextModule
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.tokochat.view.chatroom.TokoChatFragment
