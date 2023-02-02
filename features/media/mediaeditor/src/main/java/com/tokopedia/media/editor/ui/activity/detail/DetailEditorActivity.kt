@@ -41,7 +41,10 @@ class DetailEditorActivity : BaseEditorActivity() {
 
     override fun onHeaderActionClick() {
         if (editorIntent.isToolAddLogo()) {
-            (fragment as DetailEditorFragment).showAddLogoUploadTips(false)
+            fragment?.let {
+                if (!it.isAdded) return@let
+                (fragment as DetailEditorFragment).showAddLogoUploadTips(false)
+            }
         }
     }
 
