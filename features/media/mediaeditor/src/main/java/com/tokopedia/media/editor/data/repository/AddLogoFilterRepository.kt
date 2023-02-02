@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.net.Uri
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -23,7 +24,8 @@ interface AddLogoFilterRepository {
 
 class AddLogoFilterRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val saveImage: SaveImageRepository
+    private val saveImage: SaveImageRepository,
+    private val bitmapConverter: BitmapConverterRepository
 ) : AddLogoFilterRepository {
     private val localCacheHandler = LocalCacheHandler(context, PREF_NAME_CACHE_ADD_LOGO)
 
@@ -36,33 +38,27 @@ class AddLogoFilterRepositoryImpl @Inject constructor(
 
         var baseBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
         Thread {
-            baseBitmap = Glide
-                .with(context)
-                .asBitmap()
-                .load(imageBaseUrl)
-                .submit()
-                .get()
+            baseBitmap = bitmapConverter.uriToBitmap(Uri.parse(imageBaseUrl))
 
-            var addedBitmap = Glide
-                .with(context)
-                .asBitmap()
-                .load(imageAddedUrl)
-                .submit()
-                .get()
+            bitmapConverter.uriToBitmap(Uri.parse(imageAddedUrl))?.let {
+                val widthValidation = baseBitmap.width != it.width
+                val heightValidation = baseBitmap.height != it.height
 
-            val widthValidation = baseBitmap.width != addedBitmap.width
-            val heightValidation = baseBitmap.height != addedBitmap.height
-            if (widthValidation || heightValidation) {
-                addedBitmap = Bitmap.createScaledBitmap(
-                    addedBitmap,
-                    baseBitmap.width,
-                    baseBitmap.height,
-                    true
-                )
+                val finalBitmap = if (widthValidation || heightValidation) {
+                    Bitmap.createScaledBitmap(
+                        it,
+                        baseBitmap.width,
+                        baseBitmap.height,
+                        true
+                    )
+                } else {
+                    it
+                }
+
+                val canvas = Canvas(baseBitmap)
+                canvas.drawBitmap(finalBitmap, XY_FLATTEN_COORDINATE, XY_FLATTEN_COORDINATE, Paint())
             }
 
-            val canvas = Canvas(baseBitmap)
-            canvas.drawBitmap(addedBitmap, XY_FLATTEN_COORDINATE, XY_FLATTEN_COORDINATE, Paint())
             latch.countDown()
         }.start()
 
