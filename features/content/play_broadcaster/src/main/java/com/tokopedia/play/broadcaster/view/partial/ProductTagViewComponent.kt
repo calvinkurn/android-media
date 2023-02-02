@@ -76,6 +76,8 @@ class ProductTagViewComponent(
     init {
         adapter.registerAdapterDataObserver(adapterObserver)
 
+        adapter.setHasStableIds(true)
+
         rvProductTag.layoutManager = layoutManager
         rvProductTag.adapter = adapter
         rvProductTag.addItemDecoration(ProductTagItemDecoration(rvProductTag.context))
