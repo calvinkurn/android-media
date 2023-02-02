@@ -264,7 +264,8 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             )
             activity?.let { safeContext ->
                 startActivityForResult(
-                    RouteManager.getIntent(safeContext, "${WEB_LINK_PREFIX}${consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.pwaLink}"),
+//                    RouteManager.getIntent(safeContext, "${WEB_LINK_PREFIX}${consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.pwaLink}"),
+                    RouteManager.getIntent(safeContext, "${WEB_LINK_PREFIX}https://www.tokopedia.com/e-pharmacy?flow=checkout&id=211468c4ff07934e13e74ab6012b5186"),
                     EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
                 )
             }

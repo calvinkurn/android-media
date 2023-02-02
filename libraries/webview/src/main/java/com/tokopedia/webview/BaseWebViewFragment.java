@@ -29,8 +29,11 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,7 +84,11 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -153,6 +160,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private UserSession userSession;
     private PermissionCheckerHelper permissionCheckerHelper;
     private RemoteConfig remoteConfig;
+    private String mCameraPhotoPath;
 
     /**
      * return the url to load in the webview
@@ -399,10 +407,16 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         return;
                     }
 
-                    String dataString = intent.getDataString();
-                    if (dataString != null) {
-                        results = new Uri[]{Uri.parse(dataString)};
-
+                    if (intent == null) {
+                        // If there is not intent, then we may have taken a photo
+                        if (mCameraPhotoPath != null) {
+                            results = new Uri[]{Uri.parse(mCameraPhotoPath)};
+                        }
+                    }else {
+                        String dataString = intent.getDataString();
+                        if(dataString != null) {
+                            results = new Uri[]{Uri.parse(dataString)};
+                        }
                     }
                 }
             }
@@ -528,11 +542,31 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 uploadMessageAfterLolipop.onReceiveValue(null);
             }
             uploadMessageAfterLolipop = filePathCallback;
-
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                // Create the File where the photo should go
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                    takePictureIntent.putExtra("PhotoPath", mCameraPhotoPath);
+                } catch (IOException ex) {
+                    // Error occurred while creating the File
+                    Log.e("Test",ex.getMessage());
+                }
+                // Continue only if the File was successfully created
+                if (photoFile != null) {
+                    mCameraPhotoPath = "file:" + photoFile.getAbsolutePath();
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                            Uri.fromFile(photoFile));
+                } else {
+                    takePictureIntent = null;
+                }
+            }
             Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
             contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
             contentSelectionIntent.setType("*/*");
-            Intent[] intentArray = new Intent[0];
+            Intent[] intentArray = new Intent[1];
+            intentArray[0] = takePictureIntent;
 
             Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
             chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
@@ -1127,6 +1161,21 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             globalError.setVisibility(View.GONE);
         }
         webView.reload();
+    }
+
+    private File createImageFile() throws IOException {
+        // Wont work on or after Q = 11 = 30
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File imageFile = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        return imageFile;
     }
 
     @Override
