@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.dialog
 
-import android.animation.ObjectAnimator
 import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -10,7 +9,8 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.*
-import android.view.animation.AccelerateDecelerateInterpolator
+import androidx.dynamicanimation.animation.SpringAnimation
+import androidx.dynamicanimation.animation.SpringForce
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
 import com.tokopedia.play.ui.explorewidget.*
@@ -45,6 +46,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.util.AnimationUtils
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.awaitLayout
 import com.tokopedia.play_common.util.extension.buildSpannedString
@@ -135,7 +137,9 @@ class PlayExploreWidgetFragment @Inject constructor(
         }
     }
 
-    private val gestureDetector by lazy {
+    private lateinit var sliderAnimation : SpringAnimation
+
+    private val gestureDetector by lazyThreadSafetyNone {
         GestureDetector(
             requireContext(),
             object : GestureDetector.SimpleOnGestureListener() {
@@ -155,11 +159,11 @@ class PlayExploreWidgetFragment @Inject constructor(
 
                     if(newX < 0) return false
 
-                    view?.let {
-                        ObjectAnimator.ofFloat(it, View.TRANSLATION_X, it.x, newX).apply {
-                            interpolator = AccelerateDecelerateInterpolator()
-                        }.start()
-                    }
+                    sliderAnimation = AnimationUtils.addSpringAnim(
+                        view = binding.root, property = SpringAnimation.TRANSLATION_X, startPosition = binding.root.x,
+                        finalPosition = newX, stiffness = SpringForce.STIFFNESS_LOW, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 0f
+                    )
+                    sliderAnimation.start()
                     return true
                 }
             }
@@ -456,6 +460,11 @@ class PlayExploreWidgetFragment @Inject constructor(
     override fun onPause() {
         super.onPause()
         dismiss()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        if (::sliderAnimation.isInitialized) sliderAnimation.cancel()
     }
 
     private fun setLayoutManager(state: ExploreWidgetState) {
