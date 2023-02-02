@@ -165,7 +165,6 @@ class CategoryBestSellerViewModelTest {
         every { componentsItem.properties } returns null
         coEvery { application.applicationContext } returns context
         val productArray : ArrayList<ProductCardModel> = mockk(relaxed = true)
-        val productCardModel = ProductCardModel()
         coEvery {
             viewModel.productCardsUseCase.loadFirstPageComponents(
                 any(),
@@ -184,8 +183,6 @@ class CategoryBestSellerViewModelTest {
 
         viewModel.onAttachToViewHolder()
         assert(viewModel.getComponentData().value === componentsItem)
-//        assert(viewModel.syncData.value == true)
-//        assert(viewModel.getProductCardMaxHeight().value != null)
     }
 
     @Test
