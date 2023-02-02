@@ -254,7 +254,7 @@ class AddOnDescriptionWidget @JvmOverloads constructor(
                 this@createHeightAnimator.layoutParams = layoutParams
             }
             addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     onAnimationEnd()
                 }
             })

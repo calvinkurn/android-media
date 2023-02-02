@@ -3,8 +3,9 @@ package com.tokopedia.people.viewmodel.userprofile
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
-import com.tokopedia.people.domains.repository.UserProfileRepository
+import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
+import com.tokopedia.people.model.content.ContentModelBuilder
 import com.tokopedia.people.model.shoprecom.ShopRecomModelBuilder
 import com.tokopedia.people.model.userprofile.FollowInfoUiModelBuilder
 import com.tokopedia.people.model.userprofile.MutationUiModelBuilder
@@ -21,7 +22,6 @@ import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyString
 
 class UserProfileShopRecomViewModelTest {
 
@@ -42,13 +42,14 @@ class UserProfileShopRecomViewModelTest {
     private val shopRecomBuilder = ShopRecomModelBuilder()
     private val mutationBuilder = MutationUiModelBuilder()
     private val profileBuilder = ProfileUiModelBuilder()
+    private val contentBuilder = ContentModelBuilder()
 
     private val mockMutationSuccess = mutationBuilder.buildSuccess()
     private val mockMutationError = mutationBuilder.buildError()
     private val mockException = commonBuilder.buildException()
     private val mockHasAcceptTnc = profileWhitelistBuilder.buildHasAcceptTnc()
     private val mockShopRecomIsShown = shopRecomBuilder.buildModelIsShown(nextCursor = "")
-    private val mockShopRecomIsNotShown = shopRecomBuilder.buildModelIsShown(isShown = false)
+    private val mockShopRecomIsNotShown = shopRecomBuilder.buildModelIsShown(nextCursor = "", isShown = false)
     private val mockShopRecomIsShownNoLoadMore = shopRecomBuilder.buildModelIsShown(nextCursor = "")
     private val mockShopRecomIsShownTypeShop = shopRecomBuilder.buildModelIsShown(shopRecomBuilder.typeShop)
     private val mockShopRecomIsShownTypeBuyer = shopRecomBuilder.buildModelIsShown(shopRecomBuilder.typeBuyer)
@@ -72,6 +73,7 @@ class UserProfileShopRecomViewModelTest {
         encryptedUserID = mockOtherUserId,
         status = true,
     )
+    private val mockTabsModel = contentBuilder.buildTabsModel(false)
 
     private val robot = UserProfileViewModelRobot(
         username = mockOwnUserId,
@@ -87,6 +89,7 @@ class UserProfileShopRecomViewModelTest {
     fun setUp() {
         coEvery { mockUserSession.userId } returns mockOwnUserId
         coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
+        coEvery { mockRepo.getUserProfileTab(any()) } returns mockTabsModel
     }
 
     @Test
@@ -207,12 +210,11 @@ class UserProfileShopRecomViewModelTest {
                 coEvery { mockRepo.getShopRecom("") } returns mockShopRecomIsShown
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             }
-            it.recordState {
+            it.recordEvent {
                 coEvery { mockRepo.getShopRecom("123") } throws mockException
                 submitAction(UserProfileAction.LoadNextPageShopRecom("123"))
             } andThen {
-                robot.viewModel.isShopRecomShow.assertTrue()
-                shopRecom.items.size equalTo mockShopRecomIsShown.items.size
+                robot.viewModel.isShopRecomShow.assertFalse()
             }
         }
     }
@@ -265,7 +267,6 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             } andThen { state, events ->
                 state.shopRecom equalTo mockEmptyShopRecom
-                events.last().assertEvent(UserProfileUiEvent.ErrorLoadProfile(Throwable("any throwable")))
             }
         }
     }
@@ -467,7 +468,7 @@ class UserProfileShopRecomViewModelTest {
                 state.shopRecom.items.forEach { item ->
                     item.state equalTo ShopRecomFollowState.UNFOLLOW
                 }
-                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow(Throwable(mockMutationError.message)))
             }
         }
     }
@@ -502,7 +503,7 @@ class UserProfileShopRecomViewModelTest {
                         item.state equalTo ShopRecomFollowState.UNFOLLOW
                     }
                 }
-                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow(Throwable(mockMutationError.message)))
             }
         }
     }
@@ -524,7 +525,7 @@ class UserProfileShopRecomViewModelTest {
                 state.shopRecom.items.forEach { item ->
                     item.state equalTo ShopRecomFollowState.UNFOLLOW
                 }
-                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow(mockException))
             }
         }
     }
@@ -559,7 +560,7 @@ class UserProfileShopRecomViewModelTest {
                         item.state equalTo ShopRecomFollowState.UNFOLLOW
                     }
                 }
-                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow(mockException))
             }
         }
     }
@@ -695,7 +696,7 @@ class UserProfileShopRecomViewModelTest {
                 state.shopRecom.items.forEach { item ->
                     item.state equalTo ShopRecomFollowState.UNFOLLOW
                 }
-                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow(Throwable(mockMutationError.message)))
             }
         }
     }
@@ -730,7 +731,7 @@ class UserProfileShopRecomViewModelTest {
                         item.state equalTo ShopRecomFollowState.UNFOLLOW
                     }
                 }
-                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow(Throwable(mockMutationError.message)))
             }
         }
     }
@@ -752,7 +753,7 @@ class UserProfileShopRecomViewModelTest {
                 state.shopRecom.items.forEach { item ->
                     item.state equalTo ShopRecomFollowState.UNFOLLOW
                 }
-                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow(mockException))
             }
         }
     }
@@ -787,7 +788,7 @@ class UserProfileShopRecomViewModelTest {
                         item.state equalTo ShopRecomFollowState.UNFOLLOW
                     }
                 }
-                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow(mockException))
             }
         }
     }

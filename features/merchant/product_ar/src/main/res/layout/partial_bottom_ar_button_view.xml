@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/partial_bottom_ar_button_container"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_static_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingStart="16dp"
+        app:typographyType="body_3"
+        android:text="@string/txt_comparison_desc"
+        app:layout_constraintBottom_toTopOf="@+id/rv_ar_comparison_variant"
+        tools:ignore="RtlSymmetry" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_ar_comparison_variant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btn_atc_ar_comparison"
+        tools:ignore="RtlSymmetry"
+        tools:listitem="@layout/item_image_variant_ar_view" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_atc_ar_comparison"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:minWidth="120dp"
+        app:unifyButtonSize="medium"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/txt_btn_save_photo" />
+</merge>

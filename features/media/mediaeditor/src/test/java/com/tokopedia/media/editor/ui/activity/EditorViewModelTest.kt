@@ -11,6 +11,7 @@ import org.junit.Test
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getTokopediaCacheDir
+import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
 import com.tokopedia.utils.file.FileUtil
 import org.junit.Rule
 import io.mockk.Runs
@@ -189,6 +190,8 @@ class EditorViewModelTest {
     fun `save image to gallery`() {
         // Given
         val dataList = createUiModelState(0, -1)
+        dataList[2].editList.clear()
+        dataList[3].editList.clear()
 
         // When
         every { saveImageRepo.saveToGallery(any(), any()) }.answers {
@@ -270,6 +273,8 @@ class EditorViewModelTest {
         private val pathSampleList = listOf(
             "/storage/sdcard/Pictures/Image1.jpg",
             "/storage/sdcard/Pictures/Image2.jpeg",
+            "/storage/sdcard/Pictures/$PICKER_URL_FILE_CODE.jpeg",
+            "$tokopediaCacheDir/$PICKER_URL_FILE_CODE.png",
             "/storage/sdcard/Pictures/Image3.png"
         )
 

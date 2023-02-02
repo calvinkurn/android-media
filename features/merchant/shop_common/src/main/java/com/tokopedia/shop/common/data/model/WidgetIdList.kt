@@ -13,5 +13,8 @@ data class WidgetIdList(
     val widgetType: String = "",
 
     @SerializedName("widgetName")
-    val widgetName: String = ""
+    val widgetName: String = "",
+
+    @SerializedName("header")
+    val header: Header = Header()
 )

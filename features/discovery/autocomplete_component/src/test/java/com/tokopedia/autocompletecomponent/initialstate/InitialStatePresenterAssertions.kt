@@ -13,7 +13,6 @@ import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSea
 import com.tokopedia.autocompletecomponent.initialstate.productline.InitialStateProductLineTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.productline.InitialStateProductListDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchDataView
-import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationDataView
@@ -102,7 +101,7 @@ internal fun `Then verify RecentSearchDataView`(
     expectedKeyword: String,
 ) {
     val actualRecentSearchDataViewPosition =
-        actualData.indexOfFirst { it is RecentSearchTitleDataView } + 1
+        actualData.indexOfFirst { it is RecentSearchDataView }
     val expectedRecentSearchDataPosition =
         expectedData.indexOfFirst { it.id == InitialStateData.INITIAL_STATE_RECENT_SEARCH }
 

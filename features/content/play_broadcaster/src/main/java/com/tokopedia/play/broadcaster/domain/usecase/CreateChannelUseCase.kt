@@ -26,13 +26,17 @@ class CreateChannelUseCase @Inject constructor(
     private val query = """
            mutation createChannel(
                ${"$$PARAMS_AUTHOR_ID"}: String!, 
-               ${"$$PARAMS_AUTHOR_TYPE"}: Int!, 
-               ${"$$PARAMS_STATUS"}: Int!
+               ${"$$PARAMS_AUTHOR_TYPE"}: Int!,
+               ${"$$PARAMS_STATUS"}: Int!,
+               ${"$$PARAMS_GROUP_ID"}: String,
+               ${"$$PARAMS_TYPE"}: Int!
            ){
             broadcasterCreateChannel(req: {
                $PARAMS_AUTHOR_ID: ${"$$PARAMS_AUTHOR_ID"},
                $PARAMS_AUTHOR_TYPE: ${"$$PARAMS_AUTHOR_TYPE"}, 
-               $PARAMS_STATUS: ${"$$PARAMS_STATUS"}
+               $PARAMS_STATUS: ${"$$PARAMS_STATUS"},
+               $PARAMS_GROUP_ID: ${"$$PARAMS_GROUP_ID"},
+               $PARAMS_TYPE: ${"$$PARAMS_TYPE"}
               }){
                 channelID
               }
@@ -58,11 +62,19 @@ class CreateChannelUseCase @Inject constructor(
         private const val PARAMS_AUTHOR_ID = "authorID"
         private const val PARAMS_AUTHOR_TYPE = "authorType"
         private const val PARAMS_STATUS = "status"
+        private const val PARAMS_GROUP_ID = "groupID"
+        private const val PARAMS_TYPE = "type"
+
+        private const val VALUE_LIVE_STREAM_GROUP_ID_SHOP = "1"
+        private const val VALUE_LIVE_STREAM_GROUP_ID_USER = "69"
+        private const val VALUE_SHORTS_GROUP_ID_SHOP = "75"
+        private const val VALUE_SHORTS_GROUP_ID_USER = "76"
 
         fun createParams(
             authorId: String,
             authorType: String,
-            status: PlayChannelStatusType = PlayChannelStatusType.Draft
+            type: Type,
+            status: PlayChannelStatusType = PlayChannelStatusType.Draft,
         ): Map<String, Any> = mapOf(
             PARAMS_AUTHOR_ID to authorId,
             PARAMS_AUTHOR_TYPE to when (authorType) {
@@ -70,8 +82,41 @@ class CreateChannelUseCase @Inject constructor(
                 TYPE_SHOP -> VALUE_TYPE_ID_SHOP
                 else -> 0
             },
-            PARAMS_STATUS to status.value.toIntOrZero()
+            PARAMS_STATUS to status.value.toIntOrZero(),
+            PARAMS_GROUP_ID to getGroupId(type, authorType).value,
+            PARAMS_TYPE to type.value,
         )
+
+        private fun getGroupId(type: Type, authorType: String): GroupId {
+            return when(type) {
+                Type.Livestream -> {
+                    when(authorType) {
+                        TYPE_SHOP -> GroupId.LivestreamShop
+                        TYPE_USER -> GroupId.LivestreamUGC
+                        else -> GroupId.Unknown
+                    }
+                }
+                Type.Shorts -> {
+                    when(authorType) {
+                        TYPE_SHOP -> GroupId.ShortsShop
+                        TYPE_USER -> GroupId.ShortsUGC
+                        else -> GroupId.Unknown
+                    }
+                }
+                else -> GroupId.Unknown
+            }
+        }
     }
 
+    enum class Type(val value: Int) {
+        Livestream(1), Shorts(3)
+    }
+
+    enum class GroupId(val value: String) {
+        LivestreamUGC(VALUE_LIVE_STREAM_GROUP_ID_USER),
+        LivestreamShop(VALUE_LIVE_STREAM_GROUP_ID_SHOP),
+        ShortsUGC(VALUE_SHORTS_GROUP_ID_USER),
+        ShortsShop(VALUE_SHORTS_GROUP_ID_SHOP),
+        Unknown(""),
+    }
 }

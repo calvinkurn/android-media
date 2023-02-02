@@ -28,22 +28,36 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
 
     override suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): Pair<ArrayList<ComponentsItem>,String?> {
         val page = queryParamterMap[RPC_PAGE_NUMBER] as String
-        val list =  if(productComponentName  == ComponentNames.CategoryBestSeller.componentName){
-            val recommendationData =
-                    recommendationUseCase.getData(getRecommendationRequestParam(page, getPageInfo(pageEndPoint).id.toString(), true))
-            mapRecommendationToDiscoveryResponse(componentId, recommendationData, productComponentName)
-        } else {
-            val recommendationData =
+        val list = when (productComponentName) {
+            ComponentNames.CategoryBestSeller.componentName -> {
+                val recommendationData =
+                    recommendationUseCase.getData(getRecommendationRequestParam(page, getPageInfo(pageEndPoint).id.toString(), pageName = "category_best_seller"))
+                mapRecommendationToDiscoveryResponse(componentId, recommendationData, productComponentName)
+            }
+            ComponentNames.CLPFeaturedProducts.componentName -> {
+                val recommendationData =
+                    recommendationUseCase.getData(getRecommendationRequestParam(page, getPageInfo(pageEndPoint).id.toString(), pageName = "promo_clp"))
+                mapRecommendationToDiscoveryResponse(componentId, recommendationData, productComponentName)
+            }
+            else -> {
+                val recommendationData =
                     recommendationUseCase.getData(createRequestParams(page, getPageInfo(pageEndPoint).id.toString(), getComponent(componentId, pageEndPoint)))
-            mapRecommendationToDiscoveryResponse(componentId, recommendationData, productComponentName)
+                mapRecommendationToDiscoveryResponse(componentId, recommendationData, productComponentName)
+            }
         }
         return Pair(list,null)
     }
 
-    private fun getRecommendationRequestParam(page: String, componentId: String, isBestSeller : Boolean, queryParam : String = ""): GetRecommendationRequestParam {
+    private fun getRecommendationRequestParam(
+        page: String,
+        componentId: String,
+        pageName: String,
+        queryParam: String = ""
+    ): GetRecommendationRequestParam {
         return GetRecommendationRequestParam(
                 pageNumber = page.toIntOrZero(),
-                pageName = if(isBestSeller) "category_best_seller" else "category_page",
+//                pageName = if(isBestSeller) "category_best_seller" else "category_page",
+                pageName = pageName,
                 queryParam = queryParam,
                 categoryIds = arrayListOf(componentId),
                 xDevice = "android",
@@ -59,7 +73,7 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
         component?.selectedSort?.forEach {
             queryParam = queryParam.plus("&${it.key}=${it.value}")
         }
-        return getRecommendationRequestParam(page, componentId, false, queryParam)
+        return getRecommendationRequestParam(page, componentId, pageName = "category_page", queryParam)
     }
 
     private fun mapRecommendationToDiscoveryResponse(componentId: String, recommendationData: List<RecommendationWidget>, productComponentName: String?): ArrayList<ComponentsItem> {
@@ -69,14 +83,29 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
             val dataItem = DataItem()
             componentsItem.position = index
             componentsItem.parentComponentId = componentId
-            if(productComponentName == ComponentNames.CategoryBestSeller.componentName) {
-                componentsItem.name = ComponentNames.ProductCardCarouselItem.componentName
-                componentsItem.lihatSemua = LihatSemua(applink = recommendationData.firstOrNull()?.seeMoreAppLink ?: "", header = recommendationData.firstOrNull()?.title ?: "")
-                dataItem.typeProductCard = ComponentNames.ProductCardCarouselItem.componentName
-            }
-            else {
-                dataItem.typeProductCard = ComponentNames.ProductCardRevampItem.componentName
-                componentsItem.name = ComponentNames.ProductCardRevampItem.componentName
+            componentsItem.parentComponentName = productComponentName
+            when (productComponentName) {
+                ComponentNames.CategoryBestSeller.componentName -> {
+                    componentsItem.name = ComponentNames.ProductCardCarouselItem.componentName
+                    componentsItem.lihatSemua = LihatSemua(
+                        applink = recommendationData.firstOrNull()?.seeMoreAppLink ?: "",
+                        header = recommendationData.firstOrNull()?.title ?: ""
+                    )
+                    dataItem.typeProductCard = ComponentNames.ProductCardCarouselItem.componentName
+                }
+                ComponentNames.CLPFeaturedProducts.componentName -> {
+                    componentsItem.name = ComponentNames.ProductCardCarouselItem.componentName
+                    componentsItem.lihatSemua = LihatSemua(
+                        applink = recommendationData.firstOrNull()?.seeMoreAppLink ?: "",
+                        header = recommendationData.firstOrNull()?.title ?: "",
+                        subheader = recommendationData.firstOrNull()?.subtitle ?: ""
+                    )
+                    dataItem.typeProductCard = ComponentNames.ProductCardCarouselItem.componentName
+                }
+                else -> {
+                    dataItem.typeProductCard = ComponentNames.ProductCardRevampItem.componentName
+                    componentsItem.name = ComponentNames.ProductCardRevampItem.componentName
+                }
             }
             val dataItems = mutableListOf<DataItem>()
             val labelsGroupList = arrayListOf<LabelsGroup>()

@@ -97,7 +97,7 @@
               {
                 "data": {
                   "__typename": "ImageOnly",
-                  "image": "https://ecs7.tokopedia.net/img/autocomplete/bebas%20ongkir%20icon.png",
+                  "image": "https://images.tokopedia.net/img/autocomplete/bebas%20ongkir%20icon.png",
                   "imageLink": "",
                   "isBottomSheet": false
                 },

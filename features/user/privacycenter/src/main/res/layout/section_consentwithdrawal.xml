@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/consentGroupList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="false"
+        android:overScrollMode="never"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:itemCount="5"
+        tools:listitem="@layout/base_item_privacy_center" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:layout_marginTop="8dp"
+        android:id="@+id/consentGroupListTicker"
+        android:visibility="gone"
+        app:closeButtonVisibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tickerShapeType="loose"
+        app:tickerType="announcement" />
+
+</LinearLayout>

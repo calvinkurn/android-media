@@ -92,7 +92,6 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.slot
 import io.mockk.verify
-import java.util.concurrent.TimeoutException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
@@ -100,6 +99,8 @@ import org.junit.Test
 import org.mockito.Matchers.anyInt
 import org.mockito.Matchers.anyString
 import rx.Observable
+import java.util.concurrent.TimeoutException
+
 
 @ExperimentalCoroutinesApi
 open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
@@ -583,7 +584,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `on success normal atc tokonow`() = runBlockingTest {
         `on success get product info login`()
         val addToCartOcsRequestParams = AddToCartRequestParams()
-        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 1234L, cartId = "111", quantity = 4), status = "OK")
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = "1234", cartId = "111", quantity = 4), status = "OK")
 
         coEvery {
             addToCartUseCase.createObservable(any()).toBlocking().single()
@@ -1052,6 +1053,67 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             getProductRecommendationUseCase.executeOnBackground(any())
         }
     }
+
+    @Test
+    fun `success load view to view recommendation`() {
+        val recomWidget = RecommendationWidget(recommendationItemList = listOf(RecommendationItem()))
+        val response = listOf(recomWidget)
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns response
+
+        viewModel.loadViewToView("view_to_view", "", false)
+
+        coVerify { getRecommendationUseCase.getData(any()) }
+        Assert.assertTrue(viewModel.loadViewToView.value is Success)
+    }
+
+    @Test
+    fun `fail load view to view recommendation when recommendation widget is empty`() {
+        val response = listOf<RecommendationWidget>()
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns response
+
+        viewModel.loadViewToView("view_to_view", "", false)
+
+        coVerify { getRecommendationUseCase.getData(any()) }
+        Assert.assertTrue(viewModel.loadViewToView.value is Fail)
+    }
+
+    @Test
+    fun `fail load view to view recommendation on exception`() {
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } throws Exception()
+
+        viewModel.loadViewToView("view_to_view", "", false)
+
+        coVerify { getRecommendationUseCase.getData(any()) }
+        Assert.assertTrue(viewModel.loadViewToView.value is Fail)
+    }
+
+    @Test
+    fun `load view to view recommendation already hitted`() {
+        val recomWidget = listOf(RecommendationWidget(tid = "1", recommendationItemList = listOf(RecommendationItem())))
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns recomWidget
+
+        viewModel.loadViewToView("view_to_view", "", false)
+        Thread.sleep(500)
+        //hit again with same page name
+        viewModel.loadViewToView("view_to_view", "", false)
+
+        //make sure it will only called once
+        coVerify(exactly = 1) {
+            getRecommendationUseCase.getData(any())
+        }
+    }
+
     //endregion
 
     //region ticker p2
@@ -1217,6 +1279,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.REPORT } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 1)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.AR_BUTTON } == 1)
     }
 
     private fun `co verify p1 success`() {
@@ -1414,6 +1477,44 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(p1Result.none { it.type() == ProductDetailConstant.PRODUCT_LIST })
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PLAY_CAROUSEL })
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.REPORT })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.AR_BUTTON })
+    }
+
+    @Test
+    fun `remove button_ar when customerapp and os under lollipop`() {
+        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val productParams = ProductParams("", "", "", "", "", "")
+
+        every {
+            GlobalConfig.isSellerApp()
+        } returns false
+
+        /**
+         * make sure button ar removed because of os under 22
+         */
+        setOS(20)
+
+        every {
+            viewModel.userId
+        } returns "123"
+
+        every {
+            viewModel.isShopOwner()
+        } returns true
+
+        every {
+            userSessionInterface.isLoggedIn
+        } returns true
+
+        every {
+            viewModel.isUserSessionActive
+        } returns false
+
+        `co every p1 success`(dataP1)
+
+        viewModel.getProductP1(productParams, refreshPage = true, userLocationLocal = getUserLocationCache())
+        val p1Result = (viewModel.productLayout.value as Success).data
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.AR_BUTTON })
     }
 
     /**
@@ -2451,6 +2552,22 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         Assert.assertTrue(viewModel.verticalRecommendation.value is Success)
     }
+
+    //region product ar
+    @Test
+    fun `verify product ar data`() {
+        `on success get product info login`()
+
+        val p2Ar = viewModel.p2Data.value?.arInfo
+        Assert.assertNotNull(p2Ar)
+        p2Ar?.let {
+            Assert.assertEquals(it.isProductIdContainsAr("518076293"), true)
+            Assert.assertEquals(it.isProductIdContainsAr("518076286"), false)
+            Assert.assertEquals(it.isProductIdContainsAr("948021897"), false)
+            Assert.assertEquals(it.isProductIdContainsAr("518076287"), false)
+        }
+    }
+    //endregion
 
     //======================================END OF PDP SECTION=======================================//
     //==============================================================================================//

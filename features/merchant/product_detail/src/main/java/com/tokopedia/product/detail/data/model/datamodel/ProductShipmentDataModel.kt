@@ -19,7 +19,6 @@ data class ProductShipmentDataModel(
         var tokoCabangIconUrl: String = "",
         var isCod: Boolean = false,
         var shouldShowShipmentError: Boolean = false,
-        var localDestination: String = "",
         var isTokoNow: Boolean = false
 ) : DynamicPdpDataModel {
 
@@ -44,7 +43,6 @@ data class ProductShipmentDataModel(
                     && shouldShowShipmentError == newData.shouldShowShipmentError
                     && freeOngkirType == newData.freeOngkirType
                     && tokoCabangIconUrl == newData.tokoCabangIconUrl
-                    && localDestination == newData.localDestination
         } else {
             false
         }

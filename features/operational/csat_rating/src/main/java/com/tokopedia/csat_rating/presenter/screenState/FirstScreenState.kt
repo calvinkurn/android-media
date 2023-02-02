@@ -6,7 +6,7 @@ class FirstScreenState(private val mCaption: String, private val mQuestion: Stri
 
 
     override fun getFirstEmoji(): Int {
-        return R.drawable.rating_active_1
+        return R.drawable.emoji_active_1
     }
 
     override fun getMessage(): String {

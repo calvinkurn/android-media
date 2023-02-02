@@ -19,6 +19,12 @@ data class FeedXProfileHeader(
 
     @SerializedName("shouldSeoIndex")
     val shouldSeoIndex: Boolean,
+
+    @SerializedName("isBlocking")
+    val isBlocking: Boolean = false,
+
+    @SerializedName("isBlockedBy")
+    val isBlockedBy: Boolean = false,
 )
 
 data class Profile(
@@ -44,7 +50,7 @@ data class Profile(
     val sharelink: Link,
 
     @SerializedName("badges")
-    val badges: List<Any?>,
+    val badges: List<String>,
 
     @SerializedName("liveplaychannel")
     val liveplaychannel: Liveplaychannel,

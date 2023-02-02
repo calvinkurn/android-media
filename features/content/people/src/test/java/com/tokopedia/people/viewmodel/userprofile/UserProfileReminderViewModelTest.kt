@@ -1,7 +1,7 @@
 package com.tokopedia.people.viewmodel.userprofile
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.people.domains.repository.UserProfileRepository
+import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.*
 import com.tokopedia.people.model.userprofile.FollowInfoUiModelBuilder
 import com.tokopedia.people.model.userprofile.MutationUiModelBuilder

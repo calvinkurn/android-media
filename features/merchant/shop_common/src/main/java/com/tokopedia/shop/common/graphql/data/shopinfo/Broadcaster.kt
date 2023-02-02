@@ -10,7 +10,10 @@ data class Broadcaster (
 ){
     data class Config(
         @SerializedName("streamAllowed")
-        val streamAllowed: Boolean = false
+        val streamAllowed: Boolean = false,
+
+        @SerializedName("shortVideoAllowed")
+        val shortVideoAllowed: Boolean = false,
     )
 }
 
