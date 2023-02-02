@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.ResolveInfo
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -88,6 +87,7 @@ import com.tokopedia.iconunify.R as unifyIconR
 
 /**
  * Created by Rafli Syam 20/07/2020
+ *
  * please read the docs to implement [UniversalShareBottomSheet]
  * link: https://tokopedia.atlassian.net/l/cp/HNSff10B
  * @see com.tokopedia.shop.pageheader.presentation.fragment.NewShopFragment.kt
@@ -159,7 +159,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
         /**
          * if you're using [enableDefaultShareIntent] please create the instance using this function,
-         * otherwise toaster after clicking `salin link` will not appear
+         * otherwise the toaster after clicking `salin link` won't show
          */
         fun createInstance(fragmentView: View?) = UniversalShareBottomSheet().apply {
             this.fragmentView = fragmentView
@@ -688,15 +688,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         affiliateListener = callback
     }
 
-    /**
-     * this is used to listen when share link url has finished created
-     * if you're using [enableDefaultShareIntent] this listener will works,
-     * otherwise this listener won't work.
-     */
-    fun setOnUrlCreated(callback: (url: String) -> Unit) {
-        onUrlCreated = callback
-    }
-
     private fun setFragmentLifecycleObserverUniversalSharing(fragment: Fragment) {
         parentFragmentContainer = fragment
         parentFragmentContainer?.lifecycle?.addObserver(parentFragmentLifecycleObserver)
@@ -768,7 +759,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             revImageOptionsContainer?.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                adapter = context?.let { ImageListAdapter(imageOptionsList!!, it, takeViewSS!!, ::imageSaved, ::updateThumbnailImage) }
+                adapter = context?.let { ImageListAdapter(imageOptionsList!!, it, ::imageSaved, ::updateThumbnailImage) }
             }
             revImageOptionsContainer?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
@@ -791,12 +782,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     private fun getResolvedActivity(context: Context?, intent: Intent?): ResolveInfo? = context?.let { ctx ->
         intent?.let {
             return ctx.packageManager.resolveActivity(it, 0)
-        }
-    }
-
-    private fun getActivityIcon(context: Context?, intent: Intent?): Drawable? {
-        getResolvedActivity(context, intent).let {
-            return it?.loadIcon(context?.packageManager)
         }
     }
 
