@@ -9,7 +9,6 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,7 +33,6 @@ fun ProductReportReasonItem(
     subtitleVisible: Boolean,
     onClick: (ProductReportReason) -> Unit
 ) {
-
     ConstraintLayout(
         modifier = modifier
             .clickable {
@@ -101,7 +99,7 @@ fun ProductReportReasonItem(
                     bottom.linkTo(contentGuideLineBottom)
                 },
             painter = painterResource(id = R.drawable.ic_arrow_right_grey),
-            tint = Color(0xffededed),
+            tint = NestTheme.colors.NN._600,
             contentDescription = "ic_button_${reason.strLabel}"
         )
 
@@ -135,6 +133,5 @@ fun ProductReportReasonItem() {
         ),
         subtitleVisible = true
     ) {
-
     }
 }
