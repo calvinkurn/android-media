@@ -4,8 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
+import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
+import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
+import com.tokopedia.feedplus.presentation.model.DummyModel
 import com.tokopedia.feedplus.presentation.model.FeedTabType
 
 /**
@@ -16,6 +20,8 @@ class FeedFragment : BaseDaggerFragment() {
     private var binding: FragmentFeedImmersiveBinding? = null
 
     private var feedType: FeedTabType = FeedTabType.FOR_YOU
+    private var adapter: FeedPostAdapter? = null
+    private var layoutManager: LinearLayoutManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +46,7 @@ class FeedFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding?.tvFeed?.text = feedType.value
+        initView()
     }
 
     override fun initInjector() {
@@ -48,6 +54,26 @@ class FeedFragment : BaseDaggerFragment() {
     }
 
     override fun getScreenName(): String = "Feed Fragment"
+
+    private fun initView() {
+        binding?.let {
+            layoutManager = LinearLayoutManager(context)
+            adapter = FeedPostAdapter(FeedAdapterTypeFactory())
+
+            it.rvFeedPost.layoutManager = layoutManager
+            it.rvFeedPost.adapter = adapter
+
+            adapter?.addElement(
+                listOf(
+                    DummyModel("Post 1 - ${feedType.value}"),
+                    DummyModel("Post 2 - ${feedType.value}"),
+                    DummyModel("Post 3 - ${feedType.value}"),
+                    DummyModel("Post 4 - ${feedType.value}"),
+                    DummyModel("Post 5 - ${feedType.value}"),
+                )
+            )
+        }
+    }
 
     companion object {
         private const val ARGUMENT_TYPE = "ARGUMENT_TYPE"
