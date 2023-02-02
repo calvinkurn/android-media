@@ -399,8 +399,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     }
                 }
             }
-            if (data.isVps == TRUE && data.isSubsidy == TRUE) {
-                btnUbahKupon.gone()
+            if (data.isVps == TRUE || data.isSubsidy == TRUE) {
+                btnUbahKupon.invisible()
             }
             btnUbahKupon.setOnClickListener {
                 SummaryActivity.start(context, data.toVoucherConfiguration())

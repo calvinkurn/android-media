@@ -566,7 +566,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     )
                 }
                 editText.textChangesAsFlow()
-                    .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
@@ -596,7 +595,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     )
                 }
                 editText.textChangesAsFlow()
-                    .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
@@ -622,7 +620,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     )
                 }
                 editText.textChangesAsFlow()
-                    .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
@@ -737,7 +734,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 prependText(getString(R.string.smvc_rupiah_label))
                 labelText.text = getString(R.string.smvc_nominal_cashback_label)
                 editText.textChangesAsFlow()
-                    .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
@@ -773,7 +769,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 prependText("")
                 labelText.text = getString(R.string.smvc_percentage_label)
                 editText.textChangesAsFlow()
-                    .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
@@ -800,7 +795,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     )
                 }
                 editText.textChangesAsFlow()
-                    .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
@@ -826,7 +820,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     )
                 }
                 editText.textChangesAsFlow()
-                    .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
@@ -852,7 +845,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     )
                 }
                 editText.textChangesAsFlow()
-                    .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
@@ -987,7 +979,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 prependText(getString(R.string.smvc_rupiah_label))
                 labelText.text = getString(R.string.smvc_nominal_discount_label)
                 editText.textChangesAsFlow()
-                    .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
@@ -1020,7 +1011,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 prependText("")
                 labelText.text = getString(R.string.smvc_percentage_label)
                 editText.textChangesAsFlow()
-                    .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
@@ -1047,7 +1037,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     )
                 }
                 editText.textChangesAsFlow()
-                    .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
@@ -1073,7 +1062,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     )
                 }
                 editText.textChangesAsFlow()
-                    .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
@@ -1099,7 +1087,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     )
                 }
                 editText.textChangesAsFlow()
-                    .filterNot { it.isEmpty() }
                     .debounce(DEBOUNCE)
                     .distinctUntilChanged()
                     .onEach {
