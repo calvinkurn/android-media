@@ -37,7 +37,7 @@ class VpsWidgetComponentViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val layoutParams = (binding?.image?.layoutParams as ConstraintLayout.LayoutParams)
         if (channelModel.channelConfig.imageStyle == ChannelStyleUtil.IMAGE_STYLE_FULL) {
             layoutParams.dimensionRatio = RATIO_FULL
-            binding?.image?.scaleType = ImageView.ScaleType.CENTER
+            binding?.image?.scaleType = ImageView.ScaleType.CENTER_CROP
         } else {
             layoutParams.dimensionRatio = RATIO_DEFAULT
             binding?.image?.scaleType = ImageView.ScaleType.CENTER_INSIDE
