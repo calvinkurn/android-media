@@ -10,7 +10,7 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.*
-import android.view.animation.LinearInterpolator
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -157,7 +157,7 @@ class PlayExploreWidgetFragment @Inject constructor(
 
                     view?.let {
                         ObjectAnimator.ofFloat(it, View.TRANSLATION_X, it.x, newX).apply {
-                            interpolator = LinearInterpolator()
+                            interpolator = AccelerateDecelerateInterpolator()
                         }.start()
                     }
                     return true
