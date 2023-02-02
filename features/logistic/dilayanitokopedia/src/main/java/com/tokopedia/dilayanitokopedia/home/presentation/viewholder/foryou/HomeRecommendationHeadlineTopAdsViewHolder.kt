@@ -16,7 +16,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class HomeRecommendationHeadlineTopAdsViewHolder(view: View, private val topAdsBannerClickListener: TopAdsBannerClickListener) :
     SmartAbstractViewHolder<HomeRecommendationHeadlineTopAdsDataModel>(view) {
     companion object {
-        val LAYOUT = R.layout.home_recommedation_headline_ads_layout
+        val LAYOUT = com.tokopedia.dilayanitokopedia.R.layout.home_recommedation_headline_ads_layout
     }
 
     private var binding: HomeRecommedationHeadlineAdsLayoutBinding? by viewBinding()
