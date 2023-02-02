@@ -159,25 +159,25 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
             }
             PM -> {
                 nominalList.clear()
-                nominalList.addAll(createCreditList(credit, 5.0f))
+                nominalList.addAll(createCreditList(credit, 1.5f))
             }
             OS -> {
                 nominalList.clear()
-                nominalList.addAll(createCreditList(credit, 7.0f))
+                nominalList.addAll(createCreditList(credit, 3.5f))
             }
             PM_PRO -> {
                 when (data.goldOS.shopGrade) {
                     PM_PRO_ADVANCED -> {
                         nominalList.clear()
-                        nominalList.addAll(createCreditList(credit, 5.5f))
+                        nominalList.addAll(createCreditList(credit, 2.0f))
                     }
                     PM_PRO_EXPERT -> {
                         nominalList.clear()
-                        nominalList.addAll(createCreditList(credit, 6.0f))
+                        nominalList.addAll(createCreditList(credit, 2.5f))
                     }
                     PM_PRO_ULTIMATE -> {
                         nominalList.clear()
-                        nominalList.addAll(createCreditList(credit, 6.5f))
+                        nominalList.addAll(createCreditList(credit, 3.0f))
                     }
                 }
 

@@ -314,7 +314,7 @@ class TopAdsAutoTopUpViewModelTest {
         val list = mutableListOf(DataCredit(productPrice = "25.000"))
         mockkObject(Utils)
         every { Utils.convertMoneyToValue(list.first().productPrice) } returns 25000
-        every { Utils.convertToCurrencyString((25000 * 7.0 / 100).toLong()) } returns "1.250"
+        every { Utils.convertToCurrencyString((25000 * 1.5 / 100).toLong()) } returns "1.250"
         val listResponse = viewModel.getCreditItemDataList(list, data)
 
         Assert.assertEquals("Bonus Rp1.250", listResponse.first().bonus)
@@ -328,7 +328,7 @@ class TopAdsAutoTopUpViewModelTest {
         val list = mutableListOf(DataCredit(productPrice = "25.000"))
         mockkObject(Utils)
         every { Utils.convertMoneyToValue(list.first().productPrice) } returns 25000
-        every { Utils.convertToCurrencyString((25000 * 7.0 / 100).toLong()) } returns "1.250"
+        every { Utils.convertToCurrencyString((25000 * 3.5 / 100).toLong()) } returns "1.250"
         val listResponse = viewModel.getCreditItemDataList(list, data)
 
         Assert.assertEquals("Bonus Rp1.250", listResponse.first().bonus)
@@ -345,7 +345,7 @@ class TopAdsAutoTopUpViewModelTest {
         val list = mutableListOf(DataCredit(productPrice = "25.000"))
         mockkObject(Utils)
         every { Utils.convertMoneyToValue(list.first().productPrice) } returns 25000
-        every { Utils.convertToCurrencyString((25000 * 5.5 / 100).toLong()) } returns "1.250"
+        every { Utils.convertToCurrencyString((25000 * 2.0 / 100).toLong()) } returns "1.250"
         val listResponse = viewModel.getCreditItemDataList(list, data)
 
         Assert.assertEquals("Bonus Rp1.250", listResponse.first().bonus)
@@ -362,7 +362,7 @@ class TopAdsAutoTopUpViewModelTest {
         val list = mutableListOf(DataCredit(productPrice = "25.000"))
         mockkObject(Utils)
         every { Utils.convertMoneyToValue(list.first().productPrice) } returns 25000
-        every { Utils.convertToCurrencyString((25000 * 6.0 / 100).toLong()) } returns "1.250"
+        every { Utils.convertToCurrencyString((25000 * 2.5 / 100).toLong()) } returns "1.250"
         val listResponse = viewModel.getCreditItemDataList(list, data)
 
         Assert.assertEquals("Bonus Rp1.250", listResponse.first().bonus)
@@ -379,7 +379,7 @@ class TopAdsAutoTopUpViewModelTest {
         val list = mutableListOf(DataCredit(productPrice = "25.000"))
         mockkObject(Utils)
         every { Utils.convertMoneyToValue(list.first().productPrice) } returns 25000
-        every { Utils.convertToCurrencyString((25000 * 6.5 / 100).toLong()) } returns "1.250"
+        every { Utils.convertToCurrencyString((25000 * 3.0 / 100).toLong()) } returns "1.250"
         val listResponse = viewModel.getCreditItemDataList(list, data)
 
         Assert.assertEquals("Bonus Rp1.250", listResponse.first().bonus)
