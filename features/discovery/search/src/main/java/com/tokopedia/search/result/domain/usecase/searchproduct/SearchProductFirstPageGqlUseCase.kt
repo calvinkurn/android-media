@@ -402,6 +402,9 @@ class SearchProductFirstPageGqlUseCase(
                 searchInspirationWidget(params:${'$'}params){
                     data {
                         title
+                        header_title
+                        header_subtitle
+                        layout
                         type
                         position
                         options {

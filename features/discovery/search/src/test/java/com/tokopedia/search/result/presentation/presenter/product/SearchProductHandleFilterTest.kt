@@ -15,12 +15,13 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
 import io.mockk.*
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.core.Is.`is`
 import org.junit.Test
 import rx.Subscriber
 import java.util.*
 
 private const val searchProductModelWithQuickFilter = "searchproduct/quickfilter/with-quick-filter.json"
-private const val searchProductModelWithQuickFilterAndNoResult = "searchproduct/quickfilter/with-quick-filter-no-result.json"
 private const val searchProductModelNoQuickFilter = "searchproduct/quickfilter/no-quick-filter.json"
 private const val searchProductModelWithMultipleOptionQuickFilter = "searchproduct/quickfilter/with-multiple-option-quick-filter.json"
 
@@ -28,15 +29,19 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     private val requestParamsSlot = slot<RequestParams>()
     private val actualQuickFilterList = slot<List<Filter>>()
     private val listItemSlot = slot<ArrayList<SortFilterItem>>()
+    private val backendFiltersToggle = slot<String>()
 
     @Test
-    fun `Search Product has Quick Filter`() {
+    fun `Search Product initialize filter`() {
         val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
         `Given Search Product API will return SearchProductModel`(searchProductModel)
 
         `When Load Data`()
 
-        `Then verify new quick filter interactions`(searchProductModel.quickFilterModel)
+        `Then verify initialize filter interactions`(
+            searchProductModel.quickFilterModel,
+            searchProductModel.backendFiltersToggle
+        )
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
@@ -63,18 +68,26 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
         productListPresenter.loadData(searchParameter)
     }
 
-    private fun `Then verify new quick filter interactions`(quickFilterModel: DataValue) {
-        `Then verify set quick filter is called`()
+    private fun `Then verify initialize filter interactions`(
+        quickFilterModel: DataValue,
+        backendFiltersToggle: String,
+    ) {
+        `Then verify initialize filter is interactions`()
+
         `Then verify filter list for init filter controller`(quickFilterModel.filter)
         `Then verify SortFilterItem list`(quickFilterModel)
         `Then verify option list from response`(quickFilterModel.getOptionList())
+
+        `Then verify auto filter toggle from response`(backendFiltersToggle)
     }
 
-    private fun `Then verify set quick filter is called`() {
+    private fun `Then verify initialize filter is interactions`() {
         verifyOrder {
             productListView.hideQuickFilterShimmering()
             productListView.initFilterController(capture(actualQuickFilterList))
             productListView.setQuickFilter(capture(listItemSlot))
+            productListView.setAutoFilterToggle(capture(backendFiltersToggle))
+            productListView.setSortFilterIndicatorCounter()
         }
     }
 
@@ -113,6 +126,10 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     private fun DataValue.getOptionList() = filter.map { it.options }.flatten()
 
+    private fun `Then verify auto filter toggle from response`(expectedBackendFiltersToggle: String) {
+        assertThat(backendFiltersToggle.captured, `is`(expectedBackendFiltersToggle))
+    }
+
     @Test
     fun `Search Product has No Quick Filter`() {
         val searchProductModel = searchProductModelNoQuickFilter.jsonToObject<SearchProductModel>()
@@ -120,7 +137,10 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
         `When Load Data`()
 
-        `Then verify new quick filter interactions`(createSearchProductDefaultQuickFilter())
+        `Then verify initialize filter interactions`(
+            createSearchProductDefaultQuickFilter(),
+            searchProductModel.backendFiltersToggle
+        )
     }
 
     @Test
@@ -168,7 +188,10 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
         `When Load Data`()
 
-        `Then verify new quick filter interactions`(searchProductModel.quickFilterModel)
+        `Then verify initialize filter interactions`(
+            searchProductModel.quickFilterModel,
+            searchProductModel.backendFiltersToggle
+        )
     }
 
     @Test

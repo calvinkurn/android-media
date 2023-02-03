@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductSizeLayoutBinding
 import com.tokopedia.search.utils.ChipSpacingItemDecoration
@@ -12,8 +13,8 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class InspirationSizeViewHolder(
-        itemView: View,
-        private val inspirationSizeListener: InspirationSizeListener
+    itemView: View,
+    private val inspirationSizeListener: InspirationSizeListener
 ): AbstractViewHolder<InspirationSizeDataView>(itemView) {
     companion object {
         @JvmField
@@ -25,8 +26,21 @@ internal class InspirationSizeViewHolder(
     private var inspirationSizeOptionAdapter: InspirationSizeOptionAdapter? = null
 
     override fun bind(element: InspirationSizeDataView) {
+        bindHeader(element)
         bindTitle(element)
         bindOptions(element)
+    }
+
+    private fun bindHeader(element: InspirationSizeDataView) {
+        binding?.inspirationWidgetHeaderTitle?.run {
+            showWithCondition(element.data.headerTitle.isNotEmpty())
+            text = element.data.headerTitle
+        }
+
+        binding?.inspirationWidgetHeaderSubtitle?.run {
+            showWithCondition(element.data.headerSubtitle.isNotEmpty())
+            text = element.data.headerSubtitle
+        }
     }
 
     private fun bindTitle(element: InspirationSizeDataView) {
@@ -62,7 +76,7 @@ internal class InspirationSizeViewHolder(
         val sortedSelectedSizeData = optionSizeData
             .filter { inspirationSizeListener.isFilterSelected(it.option) }
             .sortedByOptionValue()
-        val nonSelectedSizeData = optionSizeData - sortedSelectedSizeData
+        val nonSelectedSizeData = optionSizeData - sortedSelectedSizeData.toSet()
         val sortedNonSelectedSizeData = nonSelectedSizeData.sortedByOptionValue()
         return sortedSelectedSizeData + sortedNonSelectedSizeData
     }

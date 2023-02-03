@@ -8,6 +8,7 @@ import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
 import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeDataView
@@ -140,9 +141,8 @@ internal class SearchProductInspirationCardTest: ProductListPresenterTestFixture
             }
 
     private fun InspirationCardDataView.assertInspirationSizeViewModel(inspirationWidget: SearchProductModel.InspirationWidgetData) {
-        data.title shouldBe inspirationWidget.title
-        data.type shouldBe inspirationWidget.type
-        data.position shouldBe inspirationWidget.position
+        data.assertInspirationWidgetDataView(inspirationWidget)
+
         optionCardData.size shouldBe inspirationWidget.inspirationWidgetOptions.size
 
         inspirationWidget.inspirationWidgetOptions.forEachIndexed { index, inspirationWidgetOption ->
@@ -150,6 +150,17 @@ internal class SearchProductInspirationCardTest: ProductListPresenterTestFixture
                     inspirationWidgetOption, data.type
             )
         }
+    }
+
+    private fun InspirationWidgetDataView.assertInspirationWidgetDataView(
+        inspirationWidget: SearchProductModel.InspirationWidgetData
+    ) {
+        title shouldBe inspirationWidget.title
+        headerTitle shouldBe inspirationWidget.headerTitle
+        headerSubtitle shouldBe inspirationWidget.headerSubtitle
+        layout shouldBe inspirationWidget.layout
+        type shouldBe inspirationWidget.type
+        position shouldBe inspirationWidget.position
     }
 
     private fun InspirationCardOptionDataView.assertInspirationSizeOptionViewModel(
@@ -549,9 +560,8 @@ internal class SearchProductInspirationCardTest: ProductListPresenterTestFixture
     private fun InspirationSizeDataView.assertInspirationSizeViewModel(
         inspirationWidget: SearchProductModel.InspirationWidgetData,
     ) {
-        data.title shouldBe inspirationWidget.title
-        data.type shouldBe inspirationWidget.type
-        data.position shouldBe inspirationWidget.position
+        data.assertInspirationWidgetDataView(inspirationWidget)
+
         optionSizeData.size shouldBe inspirationWidget.inspirationWidgetOptions.size
 
         inspirationWidget.inspirationWidgetOptions.forEachIndexed { index, inspirationWidgetOption ->

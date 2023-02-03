@@ -30,11 +30,7 @@ class InspirationSizeDataView(
             dimension90: String,
         ): InspirationSizeDataView {
             return InspirationSizeDataView(
-                data = InspirationWidgetDataView(
-                    title = data.title,
-                    type = data.type,
-                    position = data.position,
-                ),
+                data = InspirationWidgetDataView.create(data),
                 optionSizeData = data.inspirationWidgetOptions.mapToInspirationSizeOptionDataView(
                     data.type,
                     keyword,

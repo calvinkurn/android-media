@@ -9,11 +9,13 @@ import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCar
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
 import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeListener
 import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeOptionDataView
-import com.tokopedia.search.utils.addFilterOrigin
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
+import com.tokopedia.search.utils.componentIdMap
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
+import com.tokopedia.search.utils.manualFilterToggleMap
+import com.tokopedia.search.utils.originFilterMap
 import com.tokopedia.track.TrackApp
 
 class InspirationWidgetListenerDelegate(
@@ -45,7 +47,11 @@ class InspirationWidgetListenerDelegate(
 
         trackInspirationSizeOptionClick(isFilterSelectedReversed, sizeOptionDataView)
 
-        applyInspirationSizeFilter(option, isFilterSelectedReversed)
+        applyInspirationSizeFilter(
+            option,
+            isFilterSelectedReversed,
+            sizeOptionDataView.componentId
+        )
     }
 
     override fun isFilterSelected(option: Option?): Boolean {
@@ -62,10 +68,18 @@ class InspirationWidgetListenerDelegate(
             sizeOptionDataView.click(TrackApp.getInstance().gtm)
     }
 
-    private fun applyInspirationSizeFilter(option: Option, isFilterSelected: Boolean) {
+    private fun applyInspirationSizeFilter(
+        option: Option,
+        isFilterSelected: Boolean,
+        componentId: String,
+    ) {
         filterController.setFilter(option, isFilterSelected)
 
-        val queryParams = filterController.getParameter().addFilterOrigin()
+        val queryParams = filterController.getParameter() +
+            originFilterMap() +
+            componentIdMap(componentId) +
+            manualFilterToggleMap()
+
         parameterListener.refreshSearchParameter(queryParams)
         parameterListener.reloadData()
     }
