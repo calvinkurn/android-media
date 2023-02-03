@@ -42,4 +42,10 @@
     <dimen name="home_mission_widget_margin_horizontal_subtitle">8dp</dimen>
 
     <dimen name="home_mix_left_image_width">148dp</dimen>
+
+    <dimen name="home_dynamic_icon_title_width">56dp</dimen>
+    <dimen name="home_dynamic_icon_padding_top">6dp</dimen>
+    <dimen name="home_dynamic_icon_padding_bottom">8dp</dimen>
+    <dimen name="home_dynamic_icon_image_size">32dp</dimen>
+    <dimen name="home_dynamic_icon_margin_top_title">12dp</dimen>
 </resources>
