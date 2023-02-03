@@ -779,7 +779,8 @@ class ShopPageProductListFragment :
                     )
                     ShopTrackProductTypeDef.PRODUCT -> {
                         ProductCardOptionsModel(
-                            isWishlisted = !shopProductViewModel.isWishList
+                            isWishlisted = !shopProductViewModel.isWishList,
+                            productId = shopProductViewModel.id ?: ""
                         )
                         shopPageTracking?.clickWishlist(
                             !shopProductViewModel.isWishList,
@@ -830,7 +831,7 @@ class ShopPageProductListFragment :
         if (productCardOptionsModel.wishlistResult.isAddWishlist) {
             handleWishlistActionAddToWishlistV2(productCardOptionsModel)
         } else {
-            handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel)
+            handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel.wishlistResult)
         }
     }
 
@@ -850,6 +851,12 @@ class ShopPageProductListFragment :
             view?.let { v ->
                 AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(productCardOptionsModel.wishlistResult, context, v)
             }
+        }
+        if (productCardOptionsModel.wishlistResult.isSuccess) {
+            shopProductAdapter.updateWishListStatus(
+                productId = productCardOptionsModel.productId,
+                wishList = false
+            )
         }
     }
 
