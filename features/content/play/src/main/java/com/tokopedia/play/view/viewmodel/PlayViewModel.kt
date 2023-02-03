@@ -1081,7 +1081,8 @@ class PlayViewModel @AssistedInject constructor(
             }
             is ClickChipWidget -> handleClickChip(action.item)
             NextPageWidgets -> onActionWidget(isNextPage = true)
-            RefreshWidget -> onActionWidget(isNextPage = false)
+            RefreshWidget -> { onActionWidget(isNextPage = false)
+            }
             is UpdateReminder -> updateReminderWidget(action.channelId, action.reminderType)
             DismissExploreWidget -> {
                 // Resetting
@@ -2830,6 +2831,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun fetchWidgets() {
         viewModelScope.launchCatchError(block = {
+            _uiEvent.emit(ExploreWidgetInitialState)
             _exploreWidget.update { it.copy(state = ExploreWidgetState.Loading, chips = it.chips.copy(state = ResultState.Loading)) }
             val data = getWidgets()
             val chips = data.getChips
@@ -2860,6 +2862,7 @@ class PlayViewModel @AssistedInject constructor(
     private fun onActionWidget(isNextPage: Boolean = false) {
         if (!_exploreWidget.value.param.hasNextPage && isNextPage) return
         viewModelScope.launchCatchError(block = {
+            _uiEvent.emit(ExploreWidgetInitialState)
             _exploreWidget.update { it.copy(state = if (isNextPage) it.state else ExploreWidgetState.Loading, param = it.param.copy(cursor = if (isNextPage) it.param.cursor else "")) }
 
             val widgets = getWidgets()

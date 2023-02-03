@@ -37,6 +37,7 @@ import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.*
+import com.tokopedia.play.view.uimodel.event.ExploreWidgetInitialState
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
@@ -52,6 +53,7 @@ import com.tokopedia.play_common.util.extension.awaitLayout
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.net.UnknownHostException
@@ -210,6 +212,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         setupHeader()
         setupView()
         observeState()
+        observeEvent()
     }
 
     private fun setupHeader() {
@@ -248,6 +251,7 @@ class PlayExploreWidgetFragment @Inject constructor(
             LinkMovementMethod.getInstance()
 
         adjustWidth()
+        setupDialog()
     }
 
     private fun adjustWidth() {
@@ -293,6 +297,17 @@ class PlayExploreWidgetFragment @Inject constructor(
                     trackingQueue = trackingQueue,
                     channelInfo = it.value.channel.channelInfo
                 )
+            }
+        }
+    }
+
+    private fun observeEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.uiEvent.collect { event ->
+                when(event){
+                    ExploreWidgetInitialState -> scrollListener.resetState()
+                    else -> {}
+                }
             }
         }
     }
@@ -366,9 +381,10 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
+        getScreenLocation()
+    }
 
-        adjustWidth()
-
+    private fun setupDialog () {
         val window = dialog?.window ?: return
         window.setGravity(Gravity.END)
         window.setLayout(
@@ -377,8 +393,6 @@ class PlayExploreWidgetFragment @Inject constructor(
         )
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         window.setWindowAnimations(playR.style.ExploreWidgetWindowAnim)
-
-        getScreenLocation()
     }
 
     private fun getScreenLocation() {
