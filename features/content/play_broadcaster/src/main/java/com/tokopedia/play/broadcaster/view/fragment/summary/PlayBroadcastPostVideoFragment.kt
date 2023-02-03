@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.transition.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPostVideoBinding
@@ -20,6 +21,7 @@ import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryPr
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
@@ -107,12 +109,16 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                         return viewModel.productList
                     }
 
-                    override fun getAuthorId(): String {
-                        return viewModel.authorId
+                    override fun getSelectedAccount(): ContentAccountUiModel {
+                        return viewModel.account
                     }
 
                     override fun getChannelId(): String {
                         return viewModel.channelId
+                    }
+
+                    override fun getPageSource(): PlayBroPageSource {
+                        return PlayBroPageSource.Live
                     }
                 })
             }

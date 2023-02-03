@@ -9,7 +9,6 @@ import javax.inject.Inject
 /**
  * Created by jegul on 09/07/20
  */
-@ActivityRetainedScope
 class HydraSharedPreferences @Inject constructor(
         @ApplicationContext context: Context,
         private val userSession: UserSessionInterface
@@ -80,15 +79,15 @@ class HydraSharedPreferences @Inject constructor(
             ).apply()
     }
 
-    fun setLastSelectedAccount(selectedAccount: String) {
+    fun setLastSelectedAccountType(selectedAccountType: String) {
         mSharedPrefs.edit()
             .putString(
                 String.format(KEY_LAST_SELECTED_ACCOUNT, userSession.userId),
-                selectedAccount
+                selectedAccountType
             ).apply()
     }
 
-    fun getLastSelectedAccount(): String {
+    fun getLastSelectedAccountType(): String {
         return mSharedPrefs.getString(
             String.format(KEY_LAST_SELECTED_ACCOUNT, userSession.userId),
             ""

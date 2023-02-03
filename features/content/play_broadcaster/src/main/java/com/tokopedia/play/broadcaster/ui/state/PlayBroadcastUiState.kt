@@ -42,7 +42,8 @@ data class PlayBroadcastUiState(
         val Empty: PlayBroadcastUiState
             get() = PlayBroadcastUiState(
                 channel = PlayChannelUiState(
-                    canStream = true,
+                    streamAllowed = true,
+                    shortVideoAllowed = false,
                     tnc = emptyList(),
                 ),
                 pinnedMessage = PinnedMessageUiState(
@@ -67,7 +68,8 @@ data class PlayBroadcastUiState(
 }
 
 data class PlayChannelUiState(
-    val canStream: Boolean,
+    val streamAllowed: Boolean,
+    val shortVideoAllowed: Boolean,
     val tnc: List<TermsAndConditionUiModel>,
 )
 
