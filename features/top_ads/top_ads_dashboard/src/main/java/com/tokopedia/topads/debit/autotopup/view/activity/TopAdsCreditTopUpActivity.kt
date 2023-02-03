@@ -32,7 +32,7 @@ class TopAdsCreditTopUpActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.topads_base_layout)
 
-        if (Utils.isShowInterruptSheet(this)) {
+        if (isAutoTopUpSelected() && Utils.isShowInterruptSheet(this)) {
             topAdsTopUpCreditInterruptSheet.also {
                 it.onButtonClick = { clicked ->
                     if (clicked) {
