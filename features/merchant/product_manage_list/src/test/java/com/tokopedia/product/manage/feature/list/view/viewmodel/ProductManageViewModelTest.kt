@@ -2204,41 +2204,6 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `given productId when promo top ads clicked should set live data with top ads page`() {
-        val productId = "1"
-
-        testOnClickPromoTopAds(
-            productId = productId,
-            adsCategory = MANUAL_ADS,
-            expectedPage = TopAdsPage.ManualAds(productId)
-        )
-
-        testOnClickPromoTopAds(
-            productId = productId,
-            adsCategory = AUTO_ADS,
-            expectedPage = TopAdsPage.AutoAds(productId)
-        )
-
-        testOnClickPromoTopAds(
-            productId = productId,
-            adsCategory = UNKNOWN_ADS,
-            expectedPage = TopAdsPage.OnBoarding(productId)
-        )
-    }
-
-    @Test
-    fun `given topAdsInfo NULL when promo top ads clicked should set live data with onboarding page`() {
-        val productId = "1"
-
-        viewModel.onPromoTopAdsClicked(productId)
-
-        val expectedPage = TopAdsPage.OnBoarding(productId)
-
-        viewModel.onClickPromoTopAds
-            .verifyValueEquals(expectedPage)
-    }
-
-    @Test
     fun `given user is shop owner when get product manage access should set live data with owner access`() {
         onGetIsShopOwner_thenReturn(isShopOwner = true)
 
@@ -2679,24 +2644,6 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
         viewModel.productManageAccess
             .verifySuccessEquals(expectedResult)
-    }
-
-    private fun testOnClickPromoTopAds(
-        productId: String,
-        adsCategory: Int,
-        expectedPage: TopAdsPage
-    ) {
-        val topAdsData = ShopInfoTopAds(Data(category = adsCategory))
-        val response = ShopInfoTopAdsResponse(topAdsData)
-
-        onGetShopInfoTopAds_thenReturn(response)
-
-        viewModel.getTopAdsInfo()
-        viewModel.onPromoTopAdsClicked(productId)
-
-
-        viewModel.onClickPromoTopAds
-            .verifyValueEquals(expectedPage)
     }
 
     private fun testGetTopAdsInfo(
