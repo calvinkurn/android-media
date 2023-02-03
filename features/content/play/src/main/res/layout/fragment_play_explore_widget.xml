@@ -9,6 +9,7 @@
     android:paddingTop="@dimen/content_common_space_16"
     app:rcl_bottomRightRadius="@dimen/content_common_space_16"
     app:rcl_topLeftRadius="@dimen/content_common_space_16"
+    android:animateLayoutChanges="true"
     tools:context=".view.dialog.PlayExploreWidgetFragment">
 
     <androidx.appcompat.widget.AppCompatImageView
