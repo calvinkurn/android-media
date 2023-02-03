@@ -41,7 +41,6 @@ android {
 
 dependencies {
     implementation rootProject.ext.miscDependencies.modifaceMakeUpKit
-    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
