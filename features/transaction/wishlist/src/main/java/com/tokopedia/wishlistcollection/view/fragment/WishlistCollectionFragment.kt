@@ -903,19 +903,12 @@ class WishlistCollectionFragment :
             it.stepButtonTextLastChild =
                 getString(R.string.collection_coachmark_lanjut)
 
-            if (!it.isShowing && isValidToShowCoachMark() && coachMarkItemSharing1.isNotEmpty()) {
+            if (!it.isShowing && coachMarkItemSharing1.isNotEmpty()) {
                 it.showCoachMark(coachMarkItemSharing1, null, 1)
                 it.stepPrev?.visibility = View.GONE
                 it.stepPagination?.visibility = View.GONE
             }
         }
-    }
-
-    private fun isValidToShowCoachMark(): Boolean {
-        activity?.let {
-            return !it.isFinishing
-        }
-        return false
     }
 
     private fun showCoachmarkKebabItem2(view: View) {
@@ -963,7 +956,7 @@ class WishlistCollectionFragment :
             it.stepButtonTextLastChild =
                 getString(R.string.collection_coachmark_finish)
 
-            if (!it.isShowing && isValidToShowCoachMark() && coachMarkItemSharing2.isNotEmpty()) {
+            if (!it.isShowing && coachMarkItemSharing2.isNotEmpty()) {
                 it.showCoachMark(coachMarkItemSharing2, null, 1)
                 it.stepPrev?.visibility = View.GONE
                 it.stepPagination?.visibility = View.GONE
@@ -1004,7 +997,7 @@ class WishlistCollectionFragment :
                 getString(R.string.collection_coachmark_try_create_wishlist)
             it.stepPrev?.text = getString(R.string.collection_coachmark_back)
 
-            if (!it.isShowing && isValidToShowCoachMark() && coachMarkItem.isNotEmpty()) {
+            if (!it.isShowing && coachMarkItem.isNotEmpty()) {
                 it.showCoachMark(coachMarkItem, null)
             }
             CoachMarkPreference.setShown(requireContext(), COACHMARK_WISHLIST, true)
