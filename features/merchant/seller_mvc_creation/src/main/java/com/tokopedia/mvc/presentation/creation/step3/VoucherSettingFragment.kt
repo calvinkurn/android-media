@@ -24,6 +24,7 @@ import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreeDiscountInputSe
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreeFreeShippingInputSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreePromoTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
+import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PageMode
@@ -54,7 +55,8 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     companion object {
         fun newInstance(
             pageMode: PageMode,
-            voucherConfiguration: VoucherConfiguration
+            voucherConfiguration: VoucherConfiguration,
+            selectedProducts: List<SelectedProduct>
         ): VoucherSettingFragment {
             return VoucherSettingFragment().apply {
                 arguments = Bundle().apply {
@@ -62,6 +64,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     putParcelable(
                         BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION,
                         voucherConfiguration
+                    )
+                    putParcelableArrayList(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS,
+                        ArrayList(selectedProducts)
                     )
                 }
             }
@@ -95,6 +100,8 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration
             ?: VoucherConfiguration()
     }
+    private val selectedProducts by lazy {
+        arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty() }
 
     // color
     private val colorTintBlack by lazy {
@@ -1300,7 +1307,8 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         context?.let { ctx ->
             SummaryActivity.start(
                 ctx,
-                currentVoucherConfiguration.copy(isFinishFilledStepThree = true)
+                currentVoucherConfiguration.copy(isFinishFilledStepThree = true),
+                selectedProducts
             )
         }
         activity?.finish()

@@ -155,6 +155,7 @@ class MvcListFragment :
     @Inject
     lateinit var tracker: StopVoucherTracker
 
+    @Inject
     lateinit var voucherListTracker: VoucherListTracker
 
     @Inject

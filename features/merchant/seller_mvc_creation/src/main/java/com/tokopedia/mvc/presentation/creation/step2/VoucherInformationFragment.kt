@@ -34,6 +34,7 @@ import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoVoucherNameSectio
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoVoucherPeriodSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoVoucherTargetSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
+import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import com.tokopedia.mvc.domain.entity.enums.PageMode
@@ -75,7 +76,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     companion object {
         fun newInstance(
             pageMode: PageMode,
-            voucherConfiguration: VoucherConfiguration
+            voucherConfiguration: VoucherConfiguration,
+            selectedProducts: List<SelectedProduct>
         ): VoucherInformationFragment {
             return VoucherInformationFragment().apply {
                 arguments = Bundle().apply {
@@ -84,6 +86,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                         BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION,
                         voucherConfiguration
                     )
+                    putParcelableArrayList(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS,
+                        ArrayList(selectedProducts))
                 }
             }
         }
@@ -112,6 +116,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration
             ?: VoucherConfiguration()
     }
+    private val selectedProducts by lazy {
+        arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty() }
     private var startCalendar: GregorianCalendar? = null
     private var endCalendar: GregorianCalendar? = null
     private var minCalendar: GregorianCalendar? = null
@@ -991,7 +997,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         context?.let { ctx ->
             SummaryActivity.start(
                 ctx,
-                currentVoucherConfiguration
+                currentVoucherConfiguration,
+                selectedProducts
             )
         }
     }
