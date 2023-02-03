@@ -17,6 +17,7 @@ import com.tokopedia.shop.open.common.ImageAssets.IMG_SHOP_OPEN_SPLASH_SCREEN
 import com.tokopedia.shop.open.common.PageNameConstant
 import com.tokopedia.shop.open.common.ScreenNameTracker
 import com.tokopedia.shop.open.listener.FragmentNavigationInterface
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -25,7 +26,7 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 class ShopOpenRevampSplashScreenFragment : Fragment() {
 
     private val handler = Handler()
-    private lateinit var imageViewShopCreated: ImageView
+    private lateinit var imageViewShopCreated: ImageUnify
     private var shopOpenRevampTracking: ShopOpenRevampTracking? = null
     private var fragmentNavigationInterface: FragmentNavigationInterface? = null
     private var txtGreeting: Typography? = null
@@ -60,7 +61,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupIconImage(view)
+        setupIconImage(imageViewShopCreated)
 
         setupToolbarActions(view)
         val fullName = userSession.name
@@ -77,13 +78,8 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
         }, DELAY_TIMER_IN_MILISECOND)
     }
 
-    private fun setupIconImage(view: View) {
-        ImageHandler.loadImage(
-                view.context,
-                imageViewShopCreated,
-                IMG_SHOP_OPEN_SPLASH_SCREEN,
-                null
-        )
+    private fun setupIconImage(imageViewShopCreated: ImageUnify) {
+        imageViewShopCreated.setImageUrl(IMG_SHOP_OPEN_SPLASH_SCREEN)
     }
 
     private fun setupToolbarActions(view: View?) {
