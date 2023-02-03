@@ -282,8 +282,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webSettings.setDomStorageEnabled(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
-        webSettings.setAllowFileAccess(true);
-        webSettings.setAllowContentAccess(true);
         webView.setWebChromeClient(new MyWebChromeClient());
         webView.setWebViewClient(new MyWebViewClient());
         webSettings.setMediaPlaybackRequiresUserGesture(false);
@@ -427,7 +425,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         }else {
                             List<String> images = MediaPicker.INSTANCE.result(intent).getOriginalPaths();
                             if(!images.isEmpty()){
-                                results = new Uri[]{Uri.parse(images.get(0))};
+                                results = new Uri[]{Uri.parse("file:"+images.get(0))};
                             }
                         }
                     }
