@@ -80,9 +80,4 @@ object RollenceKey {
 
     // Logistic
     const val KEY_SHARE_ADDRESS_LOGI = "share_address_logi"
-
-    object PdpToolbar {
-        const val key = "pdp_dyn_container"
-        const val transparent = "var_container"
-    }
 }
