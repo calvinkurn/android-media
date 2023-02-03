@@ -15,7 +15,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-import com.tokopedia.affiliate.*
+import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
@@ -136,7 +137,9 @@ class AffiliatePromotionHistoryFragment :
         }
     }
 
-    private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
+    private fun getEndlessRecyclerViewListener(
+        recyclerViewLayoutManager: RecyclerView.LayoutManager
+    ): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (totalItemsCount < totalDataItemsCount) {
@@ -149,8 +152,7 @@ class AffiliatePromotionHistoryFragment :
 
     private fun sendImpressionEvent() {
         lastItem?.let { item ->
-            var itemID = ""
-            itemID = item.product.itemID
+            val itemID = item.product.itemID
             var itemName = ""
             item.product.itemTitle?.let {
                 itemName = it

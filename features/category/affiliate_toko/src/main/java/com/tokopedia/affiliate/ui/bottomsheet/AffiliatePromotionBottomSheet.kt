@@ -110,6 +110,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
 
         const val ORIGIN_PROMOSIKAN = 1
         const val ORIGIN_HOME = 2
+        const val ORIGIN_SSA_SHOP = 3
         const val ORIGIN_PERNAH_DIBELI_PROMOSIKA = 4
         const val ORIGIN_TERAKHIR_DILIHAT = 5
         const val ORIGIN_HOME_GENERATED = 6
@@ -528,6 +529,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
         var eventAction = ""
         var eventCategory = ""
         var eventLabel = ""
+        var event = AffiliateAnalytics.EventKeys.CLICK_PG
         when (originScreen) {
             ORIGIN_HOME -> {
                 eventAction =
@@ -543,9 +545,15 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
                 eventLabel = "$linkID - $entryFlag - $status"
             }
+            ORIGIN_SSA_SHOP -> {
+                event = AffiliateAnalytics.EventKeys.CLICK_CONTENT
+                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_SSA_SHOP
+                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
+                eventLabel = "$linkID - active - $status - komisi extra"
+            }
         }
         AffiliateAnalytics.sendEvent(
-            AffiliateAnalytics.EventKeys.CLICK_PG,
+            event,
             eventAction,
             eventCategory,
             eventLabel,
