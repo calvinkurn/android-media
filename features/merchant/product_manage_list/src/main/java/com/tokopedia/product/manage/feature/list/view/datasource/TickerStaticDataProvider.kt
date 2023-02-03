@@ -53,7 +53,7 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
                         it.action?.label.orEmpty()
                     )
                     TickerData(
-                        title = it.title,
+                        title = it.title.trim(),
                         description = description,
                         type = tickerType,
                         isFromHtml = true
