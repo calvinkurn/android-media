@@ -16,7 +16,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class OrderResolutionViewHolder(
     itemView: View?,
-    private val navigator: BuyerOrderDetailNavigator
+    private val navigator: BuyerOrderDetailNavigator,
+    private val listener: OrderResolutionViewHolder.OrderResolutionListener
 ) : AbstractViewHolder<OrderResolutionUiModel>(itemView) {
 
     companion object {
@@ -110,7 +111,9 @@ class OrderResolutionViewHolder(
     }
 
     private fun ItemBuyerOrderDetailResolutionBinding.bindResolutionDeadline(
-        deadlineDateTime: String, backgroundColor: String, showDeadline: Boolean
+        deadlineDateTime: String,
+        backgroundColor: String,
+        showDeadline: Boolean
     ) {
         if (showDeadline) {
             tvDueResponseTitle.show()
@@ -129,10 +132,13 @@ class OrderResolutionViewHolder(
     }
 
     private fun ItemBuyerOrderDetailResolutionBinding.bindListener(redirectPath: String) {
-        root.setOnClickListener { navigator.openAppLink(redirectPath, true) }
+        root.setOnClickListener {
+            navigator.openAppLink(redirectPath, true)
+            listener.onResolutionWidgetClicked()
+        }
     }
 
     interface OrderResolutionListener {
-        fun onResolutionWidgetClicked(redirectPath: String)
+        fun onResolutionWidgetClicked()
     }
 }

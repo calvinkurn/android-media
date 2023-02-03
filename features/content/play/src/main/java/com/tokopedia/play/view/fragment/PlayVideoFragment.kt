@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.floatingwindow.exception.FloatingWindowException
@@ -50,6 +49,7 @@ import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.uimodel.PlayCastState
@@ -76,7 +76,8 @@ class PlayVideoFragment @Inject constructor(
     private val pipAnalytic: PlayPiPAnalytic,
     private val analytic: PlayAnalytic,
     private val pipSessionStorage: PiPSessionStorage,
-    private val playLog: PlayLog
+    private val playLog: PlayLog,
+    private val router: Router,
 ) : TkpdBaseV4Fragment(), PlayFragmentContract, VideoViewComponent.DataSource {
 
     private val job = SupervisorJob()
@@ -399,8 +400,14 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun observeOnboarding() {
+        val startingChannel = activity?.intent?.data?.lastPathSegment.orEmpty()
+        val isShown = startingChannel == channelId || channelId == "0" // 0 for handling channel recom
+
         playViewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
-            if (!orientation.isLandscape) onboardingView?.showAnimated()
+            analytic.screenWithSwipeCoachMark(isShown = isShown)
+            if (!orientation.isLandscape && isShown) {
+                onboardingView?.showAnimated()
+            }
         })
     }
 
@@ -432,9 +439,9 @@ class PlayVideoFragment @Inject constructor(
 
     private fun openApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false) {
         if (requestCode == null) {
-            RouteManager.route(context, applink, *params)
+            router.route(context, applink, *params)
         } else {
-            val intent = RouteManager.getIntent(context, applink, *params)
+            val intent = router.getIntent(context, applink, *params)
             startActivityForResult(intent, requestCode)
         }
 

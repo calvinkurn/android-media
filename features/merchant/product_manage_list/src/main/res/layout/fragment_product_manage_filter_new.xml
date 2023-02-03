@@ -17,17 +17,17 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/filterRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_lvl0"
+            android:layout_height="0dp"
             android:background="@color/Unify_N0"
-            android:paddingLeft="@dimen/layout_lvl2"
-            android:paddingRight="@dimen/layout_lvl2"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             android:layout_below="@id/bottomsheet_title_divider"
             android:layout_above="@id/filter_bottom_sheet_button_layout" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/filterLoadingSpinner"
-            android:layout_width="@dimen/layout_lvl4"
-            android:layout_height="@dimen/layout_lvl4"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             app:srcCompat="@drawable/ic_loading_indeterminate" />
@@ -37,8 +37,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/Unify_Background"
-            android:paddingTop="@dimen/layout_lvl2"
-            android:paddingBottom="@dimen/layout_lvl2"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
             android:layout_alignParentBottom="true">
 
                 <com.tokopedia.unifycomponents.DividerUnify
@@ -55,10 +55,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/filter_button"
-                    android:layout_marginLeft="@dimen/layout_lvl2"
-                    android:layout_marginRight="@dimen/layout_lvl2"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
                     android:enabled="false"
-                    android:layout_marginTop="@dimen/layout_lvl2"
+                    android:layout_marginTop="16dp"
                     app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

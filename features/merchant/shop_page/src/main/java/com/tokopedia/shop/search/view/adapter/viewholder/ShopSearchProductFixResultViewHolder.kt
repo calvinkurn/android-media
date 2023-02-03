@@ -9,14 +9,14 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopSearchProductFixResultViewHolder(
-        view: View
+    view: View
 ) : AbstractViewHolder<ShopSearchProductFixedResultDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.shop_search_product_fixed_result_layout
     }
 
-    private val viewBinding : ShopSearchProductFixedResultLayoutBinding? by viewBinding()
+    private val viewBinding: ShopSearchProductFixedResultLayoutBinding? by viewBinding()
     private val tvSearchQuery: Typography? = viewBinding?.tvSearchQuery
     private val tvSearchTypeLabel: Typography? = viewBinding?.tvSearchTypeLabel
 

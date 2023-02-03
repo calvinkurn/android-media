@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhomecommon.domain.model
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -8,40 +7,30 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class GetCardDataResponse(
-        @Expose
-        @SerializedName("fetchCardWidgetData")
-        val getCardData: GetCardDataModel?
+    @SerializedName("fetchCardWidgetData")
+    val getCardData: GetCardDataModel?
 )
 
 data class GetCardDataModel(
-        @Expose
-        @SerializedName("data")
-        val cardData: List<CardDataModel>?
+    @SerializedName("data")
+    val cardData: List<CardDataModel>?
 )
 
 data class CardDataModel(
-        @Expose
-        @SerializedName("dataKey")
-        val dataKey: String?,
-        @Expose
-        @SerializedName("description")
-        val description: String?,
-        @Expose
-        @SerializedName("descriptionSecondary")
-        val secondaryDescription: String?,
-        @Expose
-        @SerializedName("errorMsg")
-        val errorMsg: String?,
-        @Expose
-        @SerializedName("showWidget")
-        val showWidget: Boolean?,
-        @Expose
-        @SerializedName("state")
-        val state: String?,
-        @Expose
-        @SerializedName("value")
-        val value: String?,
-        @Expose
-        @SerializedName("badgeImageUrl")
-        val badgeImageUrl: String?
+    @SerializedName("dataKey", alternate = ["data_key"])
+    val dataKey: String?,
+    @SerializedName("description")
+    val description: String?,
+    @SerializedName("descriptionSecondary")
+    val secondaryDescription: String?,
+    @SerializedName("errorMsg", alternate = ["error_msg"])
+    val errorMsg: String?,
+    @SerializedName("showWidget", alternate = ["show_widget"])
+    val showWidget: Boolean?,
+    @SerializedName("state")
+    val state: String?,
+    @SerializedName("value")
+    val value: String?,
+    @SerializedName("badgeImageUrl")
+    val badgeImageUrl: String?,
 )

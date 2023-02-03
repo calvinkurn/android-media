@@ -42,14 +42,14 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginTop="16dp"
                 android:background="@color/Unify_N75" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPmQuestionnaireList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginTop="16dp"
                 android:nestedScrollingEnabled="true"
                 tools:itemCount="2"
                 tools:listitem="@layout/item_pm_questionnaire_multiple_option" />

@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 
 interface ViewUpdater {
     val itemCount: Int
+    val itemList: List<Visitable<*>>?
     fun getItemAtIndex(index: Int): Visitable<*>?
     fun setItems(list: List<Visitable<*>>)
     fun appendItems(list: List<Visitable<*>>)
@@ -14,4 +15,5 @@ interface ViewUpdater {
     fun insertItemAfter(item: Visitable<*>, previousItem: Visitable<*>)
     fun requestRelayout()
     fun backToTop()
+    fun scrollToPosition(position: Int)
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="circle_text_selector_size">10sp</dimen>
+    <dimen name="image_comparison_size">8dp</dimen>
+
+</resources>

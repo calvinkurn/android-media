@@ -190,8 +190,8 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
         showFullProgressBar()
 
-        viewBinding?.sellerSeamlessNegativeBtn?.setOnClickListener { onPositiveBtnClick() }
-        viewBinding?.sellerSeamlessPositiveBtn?.setOnClickListener { onNegativeBtnClick() }
+        viewBinding?.sellerSeamlessNegativeBtn?.setOnClickListener { onNegativeBtnClick() }
+        viewBinding?.sellerSeamlessPositiveBtn?.setOnClickListener { onPositiveBtnClick() }
 
         initObserver()
     }

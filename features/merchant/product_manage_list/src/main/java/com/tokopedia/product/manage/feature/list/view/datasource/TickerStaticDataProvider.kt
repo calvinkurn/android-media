@@ -5,21 +5,33 @@ import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.Stat
 import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.StatusInfo.Companion.ON_MODERATED_STAGE
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
+import java.util.*
 import javax.inject.Inject
 
 class TickerStaticDataProvider @Inject constructor(private val resourceProvider: ResourceProvider) {
 
-    private fun MutableList<TickerData>.addNotifyMeTicker(isShowTickerNotifyMe: Boolean) {
-        if (isShowTickerNotifyMe) {
+
+    private fun MutableList<TickerData>.addStockAvailableTicker(enableStockAvailable: Boolean) {
+        val EXPIRED_DATE_TICKER_STOCK_AVAILABLE:Long = 1674406800000 //23/01/2023
+        if (!isExpiredTicker(EXPIRED_DATE_TICKER_STOCK_AVAILABLE) && enableStockAvailable) {
             add(
                 TickerData(
-                    title = resourceProvider.getTickerNotifyMeTitle(),
-                    description = resourceProvider.getTickerNotifyMeDescription(),
+                    title = resourceProvider.getTickerStockAvailableTitle(),
+                    description = resourceProvider.getTickerStockAvailableDescription(),
                     type = Ticker.TYPE_ANNOUNCEMENT,
                     isFromHtml = true
                 )
             )
         }
+    }
+
+    private fun MutableList<TickerData>.addTobaccoTicker() {
+        add(
+            TickerData(
+                description = resourceProvider.getTickerTobaccoDescription(),
+                type = Ticker.TYPE_ANNOUNCEMENT,
+            )
+        )
     }
 
     private fun MutableList<TickerData>.addMaxStockTicker() {
@@ -45,7 +57,7 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
         }
     }
 
-    fun getTickers(multiLocationSeller: Boolean, statusShop: String, isShowTickerNotifyMe: Boolean): List<TickerData> {
+    fun getTickers(multiLocationSeller: Boolean, statusShop: String, enableStockAvailable:Boolean): List<TickerData> {
         return when (statusShop.toIntSafely()) {
             ON_MODERATED_STAGE -> {
                 getTickerShopModerate()
@@ -55,7 +67,8 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
             }
             else -> {
                 mutableListOf<TickerData>().apply {
-                    addNotifyMeTicker(isShowTickerNotifyMe)
+                    addTobaccoTicker()
+                    addStockAvailableTicker(enableStockAvailable)
                     addMaxStockTicker()
                     addMultiLocationTicker(multiLocationSeller)
                 }.filter { it.description.isNotBlank() }
@@ -88,4 +101,9 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
             isFromHtml = true
         )
     )
+
+    private fun isExpiredTicker(expiredDate:Long) : Boolean{
+        val currentDate = Calendar.getInstance().timeInMillis
+        return currentDate > expiredDate
+    }
 }

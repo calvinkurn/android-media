@@ -18,7 +18,6 @@
         app:toolbarBackButton="back"
         app:toolbarContentType="typeCustom"
         app:toolbarCustomContent="@layout/affiliate_navbar_custom_content"
-        app:toolbarInitialFillColor="@color/Unify_N0"
         app:toolbarInitialTheme="light" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -195,7 +194,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="@dimen/dp_4"
-                app:tabBackground="@color/Unify_N0"
                 app:tabIndicatorColor="@color/Unify_G500"
                 app:tabIndicatorFullWidth="true"
                 app:tabMode="fixed"

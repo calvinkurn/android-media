@@ -1,8 +1,9 @@
 package com.tokopedia.feedplus.domain.model.feed
 
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Author.Companion.TYPE_SHOP
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Author.Companion.TYPE_USER
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
+
 
 /**
  * Created By : Jonathan Darwin on June 09, 2022
@@ -16,7 +17,7 @@ data class WhitelistDomain(
     val postSuccessMessage: String,
     val desc: String,
     val image: String,
-    val authors: List<Author>
+    val authors: List<GetCheckWhitelistResponse.Author>
 ) {
 
     val isShopAccountExists: Boolean
@@ -29,10 +30,10 @@ data class WhitelistDomain(
     val isBuyerAccountExists: Boolean
         get() = authors.find{ it.type == TYPE_USER } != null
 
-    val isShopAccountLiveEligible: Boolean
-        get() = authors.find { it.type == TYPE_SHOP && it.livestream.enable } != null
+    val isShopAccountShortsEligible: Boolean
+        get() = authors.find { it.type == TYPE_SHOP && it.shortVideo.enable } != null
 
-    val userAccount: Author?
+    val userAccount: GetCheckWhitelistResponse.Author?
         get() = authors.find { it.type == TYPE_USER }
 
     companion object {

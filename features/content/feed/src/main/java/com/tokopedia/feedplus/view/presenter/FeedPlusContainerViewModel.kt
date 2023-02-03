@@ -4,29 +4,22 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentForm
-import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentResponse
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
-import com.tokopedia.feedplus.domain.usecase.GetContentFormForFeedUseCase
 import com.tokopedia.feedplus.domain.repository.FeedPlusRepository
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import rx.Subscriber
 import javax.inject.Inject
+
 
 class FeedPlusContainerViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
     private val repo: FeedPlusRepository,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main){
 
     val tabResp = MutableLiveData<Result<FeedTabs>>()
@@ -44,6 +37,14 @@ class FeedPlusContainerViewModel @Inject constructor(
             else -> false
         }
 
+    val isShowShortsButton: Boolean
+        get() = when(val whitelist = whitelistResp.value) {
+            is Success -> whitelist.data.isShopAccountShortsEligible || whitelist.data.isBuyerAccountExists
+            else -> false
+        }
+
+    private var isLoading = MutableLiveData<Boolean>()
+
     fun getDynamicTabs() {
         launchCatchError(block = {
             val feedTabs: FeedTabs = repo.getDynamicTabs()
@@ -59,18 +60,22 @@ class FeedPlusContainerViewModel @Inject constructor(
         }
     }
 
+
     fun getWhitelist() {
         viewModelScope.launchCatchError(block = {
-            if(!userSession.isLoggedIn) return@launchCatchError
+            if(!userSession.isLoggedIn || isLoading.value == true) return@launchCatchError
+            isLoading.value = true
 
             val response = repo.getWhitelist()
             whitelistResp.value = Success(getWhitelistDomain(response))
+            isLoading.value = false
         }) {
             whitelistResp.value = Fail(it)
+            isLoading.value = false
         }
     }
 
-    private fun getWhitelistDomain(query: WhitelistQuery?): WhitelistDomain {
+    private fun getWhitelistDomain(query: GetCheckWhitelistResponse?): WhitelistDomain {
         return if (query == null) {
             WhitelistDomain.Empty
         } else {

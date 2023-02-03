@@ -90,8 +90,16 @@ data class GetWishlistCollectionsBottomSheetResponse(
 					val label: String = "",
 
 					@SerializedName("is_contain_product")
-					val isContainProduct: Boolean = false
-				)
+					val isContainProduct: Boolean = false,
+
+                    @SerializedName("indicator")
+                    val indicator: Indicator = Indicator()
+				) {
+                    data class Indicator(
+                        @SerializedName("title")
+                        val title: String = ""
+                    )
+                }
 			}
 
 			data class AdditionalSection(

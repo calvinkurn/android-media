@@ -15,7 +15,9 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
@@ -132,9 +134,11 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         }
 
         createSuccessGetBuyerOrderDetailDataResult()
+        createSuccessFinishOrderResult()
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
             viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, false)
             viewModel.finishOrder()
+            advanceTimeBy(2000L)
 
             assertTrue(viewModel.finishOrderResult.value is Success)
         }
@@ -152,6 +156,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
             viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, false)
             viewModel.finishOrder()
+            advanceTimeBy(2000L)
 
             assertTrue(viewModel.finishOrderResult.value is Success)
         }
@@ -211,11 +216,11 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             createSuccessATCResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 viewModel.getBuyerOrderDetailData(
-                orderId = orderId,
-                paymentId = paymentId,
-                cart = cart,
-                shouldCheckCache = false
-            )
+                    orderId = orderId,
+                    paymentId = paymentId,
+                    cart = cart,
+                    shouldCheckCache = false
+                )
                 viewModel.addSingleToCart(product)
 
                 val result = viewModel.singleAtcResult.value
@@ -236,11 +241,11 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             createFailedATCResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 viewModel.getBuyerOrderDetailData(
-                orderId = orderId,
-                paymentId = paymentId,
-                cart = cart,
-                shouldCheckCache = false
-            )
+                    orderId = orderId,
+                    paymentId = paymentId,
+                    cart = cart,
+                    shouldCheckCache = false
+                )
                 viewModel.addSingleToCart(product)
 
                 val result = viewModel.singleAtcResult.value
@@ -262,11 +267,11 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             createSuccessATCResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 viewModel.getBuyerOrderDetailData(
-                orderId = orderId,
-                paymentId = paymentId,
-                cart = cart,
-                shouldCheckCache = false
-            )
+                    orderId = orderId,
+                    paymentId = paymentId,
+                    cart = cart,
+                    shouldCheckCache = false
+                )
                 viewModel.addMultipleToCart()
 
                 coVerify(exactly = 1) { atcUseCase.execute(userId, "", atcExpectedParams) }
@@ -531,7 +536,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 productId = "2147819914",
                 productName = "Hengpong jadul",
                 productNote = "Test product note",
-                productThumbnailUrl = "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/5/28/ab64b25e-a59f-4938-a08b-c49ec140eb43.jpg",
+                productThumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/5/28/ab64b25e-a59f-4938-a08b-c49ec140eb43.jpg",
                 quantity = 1,
                 totalPrice = "500000",
                 totalPriceText = "Rp500.000",

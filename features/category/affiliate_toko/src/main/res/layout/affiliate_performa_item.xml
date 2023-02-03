@@ -1,61 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_user_performance"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_margin="4dp"
+    app:cardCornerRadius="10dp"
+    app:card_type="shadow">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/affiliate_adp_oval_background" />
+        android:layout_height="match_parent"
+        android:paddingVertical="12dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/performa_type"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/unify_space_12"
-            tools:text="Pendapatan"
-            android:textSize="@dimen/unify_font_12"
+            android:layout_marginStart="12dp"
+            android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3" />
+            app:typographyType="display_3"
+            tools:text="Pendapatan" />
 
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/value"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            tools:text="Rp1.500.000"
             app:layout_constraintStart_toStartOf="@+id/performa_type"
             app:layout_constraintTop_toBottomOf="@+id/performa_type"
             app:typographyType="display_1"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:text="Rp1.500.000" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/value_shimmer"
+            android:layout_width="120dp"
+            android:layout_height="8dp"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@+id/performa_type"
+            app:layout_constraintTop_toBottomOf="@+id/performa_type"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/value_change_value"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_2"
+            android:layout_marginTop="2dp"
             android:layout_marginBottom="8dp"
-            tools:text="+Rp550.000"
             android:textColor="@color/Unify_GN500"
             app:layout_constraintStart_toStartOf="@id/value"
             app:layout_constraintTop_toBottomOf="@+id/value"
-            app:typographyType="display_3"
-            app:typographyWeight="bold" />
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="+Rp550.000" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/value_change_shimmer"
+            android:layout_width="64dp"
+            android:layout_height="8dp"
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/value_shimmer"
+            app:layout_constraintTop_toBottomOf="@+id/value_shimmer"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/increase_value_icon"
             android:layout_width="8dp"
-            android:layout_height="@dimen/unify_space_12"
-            android:layout_marginStart="@dimen/unify_space_2"
+            android:layout_height="12dp"
+            android:layout_marginStart="2dp"
             android:rotation="90"
             app:icon_color_light_enable="@color/Unify_GN500"
             app:icon_name="ARROW_BACK"
@@ -63,42 +83,6 @@
             app:layout_constraintStart_toEndOf="@+id/value_change_value"
             app:layout_constraintTop_toTopOf="@+id/value_change_value" />
 
-        <com.tokopedia.unifycomponents.DividerUnify
-            android:id="@+id/cta_divider"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/unify_space_2"
-            app:layout_constraintBottom_toTopOf="@id/cta_container" />
-
-        <RelativeLayout
-            android:id="@+id/cta_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_8"
-            android:paddingHorizontal="@dimen/unify_space_12"
-            android:paddingVertical="@dimen/unify_space_8"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/value_change_value"
-            app:layout_constraintVertical_bias="1">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/lihat_detail_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_toStartOf="@id/icon_lihat_detail"
-                android:text="@string/affiliate_lihat_detail"
-                android:textColor="@color/Unify_NN950"
-                app:typographyType="small" />
-
-
-            <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/icon_lihat_detail"
-                android:layout_width="@dimen/unify_space_16"
-                android:layout_height="@dimen/unify_space_16"
-                android:layout_alignParentEnd="true"
-                app:icon_name="CHEVRON_RIGHT"
-                app:tint="@color/Unify_NN900" />
-        </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</com.tokopedia.unifycomponents.CardUnify>
+</com.tokopedia.unifycomponents.CardUnify2>

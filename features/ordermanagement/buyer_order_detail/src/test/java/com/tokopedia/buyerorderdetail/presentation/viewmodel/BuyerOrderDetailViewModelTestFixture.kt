@@ -42,6 +42,7 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -103,7 +104,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         productId = "2147819914",
         productName = "Hengpong jadul",
         productNote = "Test product note",
-        productThumbnailUrl = "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/5/28/ab64b25e-a59f-4938-a08b-c49ec140eb43.jpg",
+        productThumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/5/28/ab64b25e-a59f-4938-a08b-c49ec140eb43.jpg",
         quantity = 1,
         totalPrice = "500000",
         totalPriceText = "Rp500.000",
@@ -112,13 +113,13 @@ abstract class BuyerOrderDetailViewModelTestFixture {
 
     val atcExpectedParams = arrayListOf(
         AddToCartMultiParam(
-            productId = product.productId.toLong(),
+            productId = product.productId,
             productName = product.productName,
-            productPrice = product.price.toLong(),
+            productPrice = product.price,
             qty = product.quantity,
             notes = product.productNote,
-            shopId = shopId.toInt(),
-            custId = userId.toInt()
+            shopId = shopId,
+            custId = userId
         )
     )
 
@@ -143,9 +144,11 @@ abstract class BuyerOrderDetailViewModelTestFixture {
     }
 
     fun createSuccessGetBuyerOrderDetailDataResult(
-        getBuyerOrderDetailResult: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail = mockk(relaxed = true),
+        getBuyerOrderDetailResult: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail = mockk(relaxed = true) {
+            every { getPodInfo() } returns null
+        },
         getOrderResolutionResult: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData = mockk(relaxed = true),
-        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true),
+        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true)
     ) {
         coEvery {
             getBuyerOrderDetailDataUseCase(any())
@@ -312,13 +315,13 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         }
     }
 
-    fun runCollectingUiState(block: (List<BuyerOrderDetailUiState>) -> Unit) {
+    fun runCollectingUiState(block: suspend TestCoroutineScope.(List<BuyerOrderDetailUiState>) -> Unit) {
         val uiStates = mutableListOf<BuyerOrderDetailUiState>()
         val scope = CoroutineScope(rule.dispatchers.coroutineDispatcher)
         val uiStateCollectorJob = scope.launch {
             viewModel.buyerOrderDetailUiState.toList(uiStates)
         }
-        block(uiStates)
+        rule.runBlockingTest { block(uiStates) }
         uiStateCollectorJob.cancel()
     }
 }

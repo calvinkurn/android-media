@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/layout_lvl2">
+    android:paddingBottom="16dp">
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/review_separator"
@@ -24,8 +24,8 @@
         android:id="@+id/txt_review_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:text="@string/title_buyer_review"
         android:textColor="@color/Unify_NN950"
         android:visibility="gone"
@@ -39,7 +39,7 @@
         android:id="@+id/txt_see_all_partial"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
         android:text="@string/label_see_all"
         android:textColor="@color/Unify_GN500"
@@ -120,8 +120,8 @@
         android:id="@+id/txt_desc_review_pdp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
         android:textColor="@color/Unify_N700_96"
         android:visibility="gone"

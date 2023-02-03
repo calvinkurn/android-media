@@ -39,6 +39,7 @@ import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.mapper.model.EmbraceConfig;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
+import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
@@ -72,6 +73,7 @@ import com.tokopedia.media.common.Loader;
 import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.notifications.inApp.CMInAppManager;
+import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
@@ -140,7 +142,9 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private static final String ENABLE_ASYNC_AB_TEST = "android_enable_async_abtest";
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
     private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
+    private final String STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY = "key_strict_mode_leak_publisher_toggle";
     private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
+    private final boolean STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE = false;
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -153,7 +157,22 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         initCacheManager();
 
         if (GlobalConfig.isAllowDebuggingTools()) {
-            new Cassava.Builder(this).initialize();
+            new Cassava.Builder(this)
+                    .setRemoteValidator(new RemoteSpec() {
+                        @NonNull
+                        @Override
+                        public String getUrl() {
+                            return TokopediaUrl.getInstance().getAPI();
+                        }
+
+                        @NonNull
+                        @Override
+                        public String getToken() {
+                            return  getString(com.tokopedia.keys.R.string.thanos_token_key);
+                        }
+                    })
+                    .setLocalRootPath("tracker")
+                    .initialize();
         }
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
@@ -163,7 +182,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         createAndCallPreSeq();
         super.onCreate();
-        TokoPatch.init(this);
+        initRobust();
         createAndCallPostSeq();
         initializeAbTestVariant();
         createAndCallFetchAbTest();
@@ -182,6 +201,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         Typography.Companion.setFontTypeOpenSauceOne(true);
 
         showDevOptNotification();
+    }
+
+    private void initRobust() {
+        if(remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_ENABLE_ROBUST, false)) {
+            TokoPatch.init(this);
+        }
     }
 
     private void initializationNewRelic() {
@@ -273,6 +298,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return null;
             }
         }));
+        registerActivityLifecycleCallbacks(new NotificationGeneralPromptLifecycleCallbacks());
     }
 
     private void onCheckAppUpdateRemoteConfig(Activity activity, Function1<? super Boolean, Unit> onSuccessCheckAppListener) {
@@ -415,7 +441,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         devMonitoring.initCrashMonitoring();
         devMonitoring.initANRWatcher();
         devMonitoring.initTooLargeTool(ConsumerMainApplication.this);
-        devMonitoring.initLeakCanary(getLeakCanaryToggleValue());
+        devMonitoring.initLeakCanary(getLeakCanaryToggleValue(), getStrictModeLeakPublisherToggleValue(), this);
 
         DeviceInfo.getAdsIdSuspend(ConsumerMainApplication.this, new Function1<String, Unit>() {
             @Override
@@ -432,6 +458,10 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     private boolean getLeakCanaryToggleValue() {
         return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(LEAK_CANARY_TOGGLE_KEY, LEAK_CANARY_DEFAULT_TOGGLE);
+    }
+
+    private boolean getStrictModeLeakPublisherToggleValue() {
+        return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY, STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE);
     }
 
     private void initLogManager() {

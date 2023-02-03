@@ -9,7 +9,7 @@ import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
 import com.tokopedia.play_common.domain.usecase.interactive.GetViewerLeaderboardUseCase
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -27,7 +27,7 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
     private val interactiveStorage: PlayInteractiveStorage,
 ) : PlayViewerInteractiveRepository, PlayInteractiveStorage by interactiveStorage {
 
-    override suspend fun getCurrentInteractive(channelId: String): InteractiveUiModel = withContext(dispatchers.io) {
+    override suspend fun getCurrentInteractive(channelId: String): GameUiModel = withContext(dispatchers.io) {
         val response = getCurrentInteractiveUseCase.apply {
             setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
         }.executeOnBackground()

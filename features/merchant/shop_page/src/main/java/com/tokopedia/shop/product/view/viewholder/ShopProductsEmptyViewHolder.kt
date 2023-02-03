@@ -13,8 +13,8 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopProductsEmptyViewHolder(
-        val view: View,
-        private val shopProductsEmptyViewHolderListener: ShopProductsEmptyViewHolderListener?
+    val view: View,
+    private val shopProductsEmptyViewHolderListener: ShopProductsEmptyViewHolderListener?
 ) : AbstractViewHolder<ShopEmptyProductUiModel>(view) {
 
     companion object {
@@ -26,7 +26,7 @@ class ShopProductsEmptyViewHolder(
         fun chooseProductClicked()
     }
 
-    private val viewBinding : NewShopProductsEmptyStateBinding? by viewBinding()
+    private val viewBinding: NewShopProductsEmptyStateBinding? by viewBinding()
     private var imageViewEmptyImage: ImageView? = viewBinding?.imageViewEmptyImage
     private var textTitle: Typography? = viewBinding?.textTitle
     private var textDescription: Typography? = viewBinding?.textDescription
@@ -39,5 +39,4 @@ class ShopProductsEmptyViewHolder(
         textTitle?.text = element.title
         textDescription?.text = element.description
     }
-
 }

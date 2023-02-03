@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
@@ -56,7 +56,8 @@ class PlayUpcomingFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val dispatchers: CoroutineDispatchers,
     private val analytic: PlayNewAnalytic,
-    ): TkpdBaseV4Fragment(),
+    private val router: Router,
+): TkpdBaseV4Fragment(),
     ToolbarRoomViewComponent.Listener,
     PartnerInfoViewComponent.Listener,
     UpcomingActionButtonViewComponent.Listener,
@@ -242,9 +243,9 @@ class PlayUpcomingFragment @Inject constructor(
 
     private fun openApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false) {
         if (requestCode == null) {
-            RouteManager.route(context, applink, *params)
+            router.route(context, applink, *params)
         } else {
-            val intent = RouteManager.getIntent(context, applink, *params)
+            val intent = router.getIntent(context, applink, *params)
             startActivityForResult(intent, requestCode)
         }
         activity?.overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)

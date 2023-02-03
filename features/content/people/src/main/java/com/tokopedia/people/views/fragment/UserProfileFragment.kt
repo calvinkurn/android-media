@@ -1,28 +1,37 @@
 package com.tokopedia.people.views.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.content.ContextCompat
+import androidx.core.view.updateMarginsRelative
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.navigation.shorts.PlayShorts
+import com.tokopedia.content.common.navigation.shorts.PlayShortsParam
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETE
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
+import com.tokopedia.content.common.types.BundleData.KEY_IS_OPEN_FROM
 import com.tokopedia.content.common.types.ContentCommonUserType.KEY_AUTHOR_TYPE
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.cordinator.ShopRecomImpressCoordinator
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
@@ -37,7 +46,6 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -45,10 +53,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
-import com.tokopedia.people.ErrorMessage
-import com.tokopedia.people.Loading
 import com.tokopedia.people.R
-import com.tokopedia.people.Success
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
 import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
@@ -56,15 +61,19 @@ import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.viewmodels.UserProfileViewModel
+import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_LIVE
+import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_POST
+import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_SHORTS
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
-import com.tokopedia.people.views.adapter.UserPostBaseAdapter
-import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
-import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_LIVE
-import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_POST
+import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
+import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_FEEDS
+import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_VIDEO
+import com.tokopedia.people.views.fragment.bottomsheet.UserProfileOptionBottomSheet
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
+import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
@@ -79,14 +88,15 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListe
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.SocketTimeoutException
+import java.net.URLEncoder
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.R as feedComponentR
-import com.tokopedia.unifyprinciples.R as unifyR
 
 class UserProfileFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
@@ -94,18 +104,13 @@ class UserProfileFragment @Inject constructor(
     private val userSession: UserSessionInterface,
     private val feedFloatingButtonManager: FeedFloatingButtonManager,
     private val impressionCoordinator: ShopRecomImpressCoordinator,
+    private val coachMarkManager: ContentCoachMarkManager
 ) : TkpdBaseV4Fragment(),
-    AdapterCallback,
     ShareBottomsheetListener,
     ScreenShotListener,
     PermissionListener,
-    UserPostBaseAdapter.PlayWidgetCallback,
     ShopRecomWidgetCallback,
     FeedPlusContainerListener {
-
-    private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        GridLayoutManager(activity, 2)
-    }
 
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenShotDetector: ScreenshotDetector? = null
@@ -122,24 +127,35 @@ class UserProfileFragment @Inject constructor(
     private val mainBinding: UpLayoutUserProfileHeaderBinding
         get() = _binding!!.mainLayout
 
-    private lateinit var viewModel: UserProfileViewModel
+    private var mBlockDialog: DialogUnify? = null
 
-    private val mAdapter: UserPostBaseAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        UserPostBaseAdapter(this, this) { cursor ->
-            submitAction(UserProfileAction.LoadPlayVideo(cursor))
+    private val dp8 by lazy(LazyThreadSafetyMode.NONE) {
+        8.dpToPx(mainBinding.root.resources.displayMetrics)
+    }
+
+    private val viewModel: UserProfileViewModel by activityViewModels {
+        viewModelFactoryCreator.create(
+            this,
+            requireArguments().getString(EXTRA_USERNAME).orEmpty()
+        )
+    }
+
+    private val pagerAdapter: UserProfilePagerAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        UserProfilePagerAdapter(
+            childFragmentManager,
+            requireActivity(),
+            lifecycle,
+            mainBinding.profileTabs.tabLayout,
+            mainBinding.profileTabs.viewPager
+        ) {
+            if (it == FRAGMENT_KEY_FEEDS) {
+                userProfileTracker.clickFeedTab(viewModel.profileUserID, viewModel.isSelfProfile)
+            } else if (it == FRAGMENT_KEY_VIDEO) userProfileTracker.clickVideoTab(viewModel.profileUserID, viewModel.isSelfProfile)
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(
-            this,
-            viewModelFactoryCreator.create(
-                this,
-                requireArguments().getString(EXTRA_USERNAME) ?: ""
-            )
-        )[UserProfileViewModel::class.java]
-    }
+    private var ugcOnboardingOpenFrom: Int = 0
+    private var viewPagerSelectedPage: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -157,31 +173,31 @@ class UserProfileFragment @Inject constructor(
         initObserver()
         initListener()
         setHeader()
-        setupPlayVideo()
+        setupCoachMark()
 
         if (arguments == null || requireArguments().getString(EXTRA_USERNAME).isNullOrBlank()) {
-            //TODO show error page
+            // TODO show error page
             activity?.finish()
         }
 
+        mainBinding.appBarUserProfile.addOnOffsetChangedListener(
+            AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+                binding.swipeRefreshLayout.isEnabled = verticalOffset == 0
+            }
+        )
+
         binding.swipeRefreshLayout.setOnRefreshListener {
-            mainBinding.userPostContainer.displayedChild = PAGE_LOADING
-            if (viewModel.isShopRecomShow) mainBinding.shopRecommendation.showLoadingShopRecom()
             refreshLandingPageData(true)
         }
 
         refreshLandingPageData(true)
-        binding.viewFlipper.displayedChild = PAGE_LOADING
         mainBinding.userPostContainer.displayedChild = PAGE_LOADING
 
-        mainBinding.appBarUserProfile.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-            shouldRefreshRecyclerView = verticalOffset == 0
-        })
-
-        binding.swipeRefreshLayout.setOnChildScrollUpCallback { _, _ ->
-            mainBinding.rvPost.canScrollVertically(-1) || !shouldRefreshRecyclerView
-        }
-
+        mainBinding.appBarUserProfile.addOnOffsetChangedListener(
+            AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+                shouldRefreshRecyclerView = verticalOffset == 0
+            }
+        )
         mainBinding.cardUserReminder.clContainer.setBackgroundResource(
             R.drawable.bg_card_profile_reminder
         )
@@ -197,7 +213,22 @@ class UserProfileFragment @Inject constructor(
             )
         }
 
+        mainBinding.btnKebabOption.setDrawable(
+            getIconUnifyDrawable(
+                requireContext(),
+                IconUnify.MENU_KEBAB_HORIZONTAL
+            )
+        )
+
+        mainBinding.btnKebabOption.setOnClickListener {
+            UserProfileOptionBottomSheet.getOrCreate(
+                childFragmentManager,
+                requireContext().classLoader
+            ).show(childFragmentManager)
+        }
+
         initFabUserProfile()
+        initTab()
     }
 
     override fun onResume() {
@@ -217,57 +248,99 @@ class UserProfileFragment @Inject constructor(
         super.onDestroyView()
         mainBinding.appBarUserProfile.removeOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
         feedFloatingButtonManager.cancel()
+        coachMarkManager.dismissAllCoachMark()
+
+        dismissBlockUserDialog()
+        mBlockDialog = null
 
         _binding = null
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
-        when(childFragment) {
+        when (childFragment) {
             is UGCOnboardingParentFragment -> {
-                childFragment.setListener(object : UGCOnboardingParentFragment.Listener {
-                    override fun onSuccess() {
-                        submitAction(UserProfileAction.LoadProfile())
-                        when (viewModel.ugcOnboardingOpenFrom) {
-                            UGC_ONBOARDING_OPEN_FROM_POST -> goToCreatePostPage()
-                            UGC_ONBOARDING_OPEN_FROM_LIVE -> goToCreateLiveStream()
-                            else -> {}
+                childFragment.setListener(
+                    object : UGCOnboardingParentFragment.Listener {
+                        override fun onSuccess() {
+                            viewModel.submitAction(UserProfileAction.LoadProfile())
+                            when (ugcOnboardingOpenFrom) {
+                                UGC_ONBOARDING_OPEN_FROM_POST -> goToCreatePostPage()
+                                UGC_ONBOARDING_OPEN_FROM_LIVE -> goToCreateLiveStream()
+                                UGC_ONBOARDING_OPEN_FROM_SHORTS -> goToCreateShortsPage()
+                                else -> {}
+                            }
+                        }
+
+                        override fun impressTncOnboarding() {
+                            userProfileTracker.impressionOnBoardingBottomSheetWithUsername(
+                                viewModel.profileUserID
+                            )
+                        }
+
+                        override fun impressCompleteOnboarding() {
+                            userProfileTracker.impressionOnBoardingBottomSheetWithoutUsername(
+                                viewModel.profileUserID
+                            )
+                        }
+
+                        override fun clickNextOnTncOnboarding() {
+                            userProfileTracker.clickLanjutOnBoardingBottomSheetWithUsername(
+                                viewModel.profileUserID
+                            )
+                        }
+
+                        override fun clickNextOnCompleteOnboarding() {
+                            userProfileTracker.clickLanjutOnBoardingBottomSheetWithoutUsername(
+                                viewModel.profileUserID
+                            )
+                        }
+                    }
+                )
+            }
+            is UserProfileOptionBottomSheet -> {
+                childFragment.setListener(object : UserProfileOptionBottomSheet.Listener {
+                    override fun onBlockingUser(
+                        bottomSheet: UserProfileOptionBottomSheet,
+                        shouldBlock: Boolean
+                    ) {
+                        bottomSheet.dismiss()
+
+                        if (!userSession.isLoggedIn) {
+                            startActivityForResult(
+                                RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+                                REQUEST_CODE_LOGIN
+                            )
+                            return
+                        }
+
+                        if (shouldBlock) {
+                            getBlockUserDialog().show()
+                        } else {
+                            viewModel.submitAction(UserProfileAction.UnblockUser)
                         }
                     }
 
-                    override fun impressTncOnboarding() {
-                        userProfileTracker.impressionOnBoardingBottomSheetWithUsername(
-                            viewModel.profileUserID
-                        )
+                    override fun onReportUser(bottomSheet: UserProfileOptionBottomSheet) {
+                        bottomSheet.dismiss()
+
+                        if (!userSession.isLoggedIn) {
+                            startActivityForResult(
+                                RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+                                REQUEST_CODE_LOGIN
+                            )
+                            return
+                        }
+                        goToTopChatReport()
                     }
-
-                    override fun impressCompleteOnboarding() {
-                        userProfileTracker.impressionOnBoardingBottomSheetWithoutUsername(
-                            viewModel.profileUserID
-                        )
+                })
+                childFragment.setDataSource(object : UserProfileOptionBottomSheet.DataSource {
+                    override fun isBlocking(): Boolean {
+                        return viewModel.isBlocking
                     }
-
-                    override fun clickNextOnTncOnboarding() {
-                        userProfileTracker.clickLanjutOnBoardingBottomSheetWithUsername(
-                            viewModel.profileUserID
-                        )
-                    }
-
-                    override fun clickNextOnCompleteOnboarding() {
-                        userProfileTracker.clickLanjutOnBoardingBottomSheetWithoutUsername(
-                            viewModel.profileUserID
-                        )
-                    }
-
-                    override fun clickCloseIcon() {}
-
                 })
             }
         }
-    }
-
-    private fun refreshLandingPageData(isRefreshPost: Boolean = false) {
-        submitAction(UserProfileAction.LoadProfile(isRefreshPost))
     }
 
     private fun initListener() {
@@ -297,7 +370,11 @@ class UserProfileFragment @Inject constructor(
                         RouteManager.getIntent(activity, ApplinkConst.LOGIN),
                         REQUEST_CODE_LOGIN_TO_FOLLOW
                     )
-                } else doFollowUnfollow()
+                } else if (viewModel.isBlocking) {
+                    viewModel.submitAction(UserProfileAction.UnblockUser)
+                } else {
+                    doFollowUnfollow()
+                }
             }
 
             mainBinding.cardUserReminder.btnCompleteProfile.setOnClickListener {
@@ -313,43 +390,45 @@ class UserProfileFragment @Inject constructor(
         fabUp.circleMainMenu.invisible()
 
         fabUserProfile.setOnClickListener {
+            coachMarkManager.hasBeenShown(fabUserProfile)
+
             fabUp.menuOpen = !fabUp.menuOpen
-        }
-    }
 
-    private fun initUserPost(userId: String) {
-        mAdapter.resetAdapter()
-        mAdapter.cursor = ""
-        mAdapter.startDataLoading(userId)
-    }
-
-    private fun getSpanSizeLookUp(): GridLayoutManager.SpanSizeLookup {
-        return object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                return when (mAdapter.getItemViewType(position)) {
-                    LOADING -> 2
-                    else -> 1
-                }
+            if(fabUp.menuOpen && viewModel.isWhitelist) {
+                userProfileTracker.viewCreateShorts(viewModel.profileUserID)
             }
         }
+    }
+
+    private fun initTab() = with(mainBinding.profileTabs) {
+        viewPager.adapter = pagerAdapter
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                viewPagerSelectedPage = position
+            }
+        })
     }
 
     private fun initObserver() {
         observeUiState()
         observeUiEvent()
-
-        addListObserver()
-        adduserPostErrorObserver()
     }
 
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
+                renderContent(it.prevValue, it.value)
+
                 renderProfileInfo(it.prevValue?.profileInfo, it.value.profileInfo)
                 renderButtonAction(it.prevValue, it.value)
+                renderButtonOption(it.prevValue, it.value)
                 renderCreateContentButton(it.prevValue, it.value)
                 renderProfileReminder(it.prevValue, it.value)
                 renderShopRecom(it.prevValue, it.value)
+                renderProfileTab(it.prevValue?.profileTab, it.value.profileTab)
+
+                renderGlobalError(it.prevValue, it.value)
             }
         }
     }
@@ -357,17 +436,27 @@ class UserProfileFragment @Inject constructor(
     private fun observeUiEvent() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
-                when(event) {
-                    is UserProfileUiEvent.LoadPlayVideo -> {
-                        initUserPost(viewModel.profileUserID)
+                when (event) {
+                    is UserProfileUiEvent.SuccessLoadTabs -> {
+                        if (event.isEmptyContent) {
+                            if (viewModel.isSelfProfile) emptyPostSelf() else emptyPostVisitor()
+                            mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
+                        } else {
+                            mainBinding.profileTabs.viewPager.currentItem = viewPagerSelectedPage
+                            mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
+                        }
+                    }
+                    is UserProfileUiEvent.ErrorGetProfileTab -> {
+                        if (binding.swipeRefreshLayout.isRefreshing) {
+                            binding.swipeRefreshLayout.isRefreshing = false
+                        }
+                        showErrorContent {
+                            refreshLandingPageData(true)
+                        }
                     }
                     is UserProfileUiEvent.ErrorFollowUnfollow -> {
-                        val message = if(event.message.isNotEmpty()) event.message else getDefaultErrorMessage()
-                        view?.showErrorToast(message)
-                    }
-                    is UserProfileUiEvent.SuccessUpdateReminder -> {
-                        mAdapter.notifyItemChanged(event.position)
-                        view?.showToast(event.message)
+                        val message = if (event.throwable.message.isNullOrEmpty()) getDefaultErrorMessage() else event.throwable.message
+                        message?.let { view?.showErrorToast(it) }
                     }
                     is UserProfileUiEvent.ErrorUpdateReminder -> {
                         val message = when (event.throwable) {
@@ -382,78 +471,99 @@ class UserProfileFragment @Inject constructor(
                         view?.showErrorToast(message)
                     }
                     is UserProfileUiEvent.ErrorLoadProfile -> {
-                        if(binding.swipeRefreshLayout.isRefreshing) {
+                        if (binding.swipeRefreshLayout.isRefreshing) {
                             binding.swipeRefreshLayout.isRefreshing = false
                         }
-
-                        showGlobalError(
-                            when (event.throwable) {
-                                is UnknownHostException, is SocketTimeoutException -> NO_CONNECTION
-                                is IllegalStateException -> PAGE_FULL
-                                is RuntimeException -> {
-                                    when (event.throwable.localizedMessage?.toIntOrNull()) {
-                                        ReponseStatus.NOT_FOUND -> PAGE_NOT_FOUND
-                                        else -> SERVER_ERROR
-                                    }
-                                }
-                                else -> SERVER_ERROR
+                    }
+                    is UserProfileUiEvent.SuccessBlockUser -> {
+                        dismissBlockUserDialog()
+                        mainBinding.profileTabs.tabLayout.showWithCondition(
+                            !event.isBlocking && pagerAdapter.getTabs().size > 1
+                        )
+                        val message = getString(
+                            if (event.isBlocking) {
+                                R.string.up_block_user_success_toaster
+                            } else {
+                                R.string.up_unblock_user_success_toaster
                             }
                         )
+                        view?.showToast(message)
+                        refreshLandingPageData(true)
+                    }
+                    is UserProfileUiEvent.ErrorBlockUser -> {
+                        dismissBlockUserDialog()
+                        val message = getString(
+                            if (event.isBlocking) {
+                                R.string.up_block_user_error_toaster
+                            } else {
+                                R.string.up_unblock_user_error_toaster
+                            }
+                        )
+                        view?.showErrorToast(message)
+                    }
+                    is UserProfileUiEvent.BlockingUserState -> {
+                        emptyPostVisitor()
+                        mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
                     }
                 }
             }
         }
     }
 
-    private fun addListObserver() {
-        viewModel.playPostContentLiveData.observe(viewLifecycleOwner) {
-            it?.let {
-                when (it) {
-                    is Loading -> {
-                        mAdapter.resetAdapter()
-                        mAdapter.notifyDataSetChanged()
-                    }
-                    is Success -> {
-                        mAdapter.onSuccess(it.data)
-                    }
-                    is ErrorMessage -> {
-                        mAdapter.onError()
-                    }
-                }
-            }
-        }
-    }
+    fun refreshLandingPageData(isRefreshPost: Boolean = false) {
+        viewModel.submitAction(UserProfileAction.LoadProfile(isRefreshPost))
+        if (!isRefreshPost) return
 
-    private fun adduserPostErrorObserver() {
-        viewModel.userPostErrorLiveData.observe(viewLifecycleOwner) {
-            with(mainBinding) {
-                userPostContainer.displayedChild = PAGE_ERROR
-
-                globalErrorPost.refreshBtn?.setOnClickListener {
-                    userPostContainer.displayedChild = PAGE_LOADING
-                    initUserPost(viewModel.profileUserID)
-                }
-            }
-        }
+        if (pagerAdapter.getTabs().isEmpty()) return
+        if (pagerAdapter.getFeedsTabs().isNotEmpty())
+            viewModel.submitAction(UserProfileAction.LoadFeedPosts())
+        if (pagerAdapter.getVideoTabs().isNotEmpty())
+            viewModel.submitAction(UserProfileAction.LoadPlayVideo())
     }
 
     private fun addLiveClickListener(appLink: String) {
         RouteManager.route(context, appLink)
     }
 
+    private fun showErrorContent(action: () -> Unit) = with(mainBinding.globalErrorContent) {
+        mainBinding.userPostContainer.displayedChild = PAGE_ERROR
+        apply {
+            progressState = false
+            refreshBtn?.setOnClickListener {
+                progressState = true
+                action.invoke()
+            }
+        }
+    }
+
     /** Render UI */
+    private fun renderContent(
+        prev: UserProfileUiState?,
+        curr: UserProfileUiState
+    ) {
+        if (prev == curr) return
+
+        binding.viewFlipper.displayedChild = when {
+            curr.profileInfo.isBlockedBy || curr.error != null -> PAGE_ERROR
+            curr.isLoading -> PAGE_LOADING
+            else -> PAGE_CONTENT
+        }
+    }
+
     private fun renderProfileInfo(
         prev: ProfileUiModel?,
-        curr: ProfileUiModel,
+        curr: ProfileUiModel
     ) {
-        if(prev == curr || curr == ProfileUiModel.Empty) return
+        if (prev == curr || curr == ProfileUiModel.Empty) return
+
+        binding.viewFlipper.displayedChild = PAGE_CONTENT
 
         userProfileTracker.openUserProfile(
             viewModel.profileUserID,
             live = curr.liveInfo.isLive
         )
 
-        if(binding.swipeRefreshLayout.isRefreshing) {
+        if (binding.swipeRefreshLayout.isRefreshing) {
             binding.swipeRefreshLayout.isRefreshing = false
         }
 
@@ -482,12 +592,12 @@ class UserProfileFragment @Inject constructor(
                     textBio.maxLines = SEE_ALL_LINE
                     textSeeMore.show()
                 }
-            } else textSeeMore.hide()
+            } else {
+                textSeeMore.hide()
+            }
         }
         binding.headerProfile.title = curr.name
         binding.headerProfile.alpha = 1F
-
-        binding.viewFlipper.displayedChild = PAGE_CONTENT
     }
 
     private fun renderButtonAction(
@@ -495,40 +605,135 @@ class UserProfileFragment @Inject constructor(
         value: UserProfileUiState
     ) {
         if (prev?.followInfo == value.followInfo &&
-            prev.profileType == value.profileType
-        ) return
+            prev.profileType == value.profileType &&
+            prev.profileInfo.isBlocking == value.profileInfo.isBlocking
+        ) {
+            return
+        }
 
-        when(value.profileType) {
-            ProfileType.NotLoggedIn, ProfileType.OtherUser -> {
-                if (userSession.isLoggedIn && value.followInfo.status) buttonActionUIFollow()
-                else buttonActionUIUnFollow()
+        when (value.profileType) {
+            ProfileType.NotLoggedIn -> {
+                buttonActionUIUnFollow()
+                mainBinding.btnAction.show()
+            }
+            ProfileType.OtherUser -> {
+                if (value.profileInfo.isBlocking) {
+                    buttonActionUIUnblock()
+                } else if (value.followInfo.status) {
+                    buttonActionUIFollow()
+                } else {
+                    buttonActionUIUnFollow()
+                }
                 mainBinding.btnAction.show()
             }
             ProfileType.Self -> {
                 buttonActionUIEditProfile()
                 mainBinding.btnAction.show()
             }
-            ProfileType.Unknown -> mainBinding.btnAction.hide()
+            ProfileType.Unknown -> {
+                mainBinding.btnAction.hide()
+            }
         }
+
+        (mainBinding.btnAction.layoutParams as MarginLayoutParams)
+            .updateMarginsRelative(
+                end = if (value.profileType == ProfileType.OtherUser ||
+                    value.profileType == ProfileType.NotLoggedIn
+                ) {
+                    dp8
+                } else {
+                    0
+                }
+            )
+    }
+
+    private fun renderButtonOption(
+        prev: UserProfileUiState?,
+        value: UserProfileUiState
+    ) {
+        if (prev?.profileType == value.profileType) return
+
+        mainBinding.btnKebabOption.showWithCondition(
+            shouldShow = value.profileType == ProfileType.OtherUser ||
+                value.profileType == ProfileType.NotLoggedIn
+        )
     }
 
     private fun renderCreateContentButton(
         prev: UserProfileUiState?,
         value: UserProfileUiState
     ) {
-        if(prev?.followInfo == value.followInfo &&
+        if (prev?.followInfo == value.followInfo &&
             prev.profileType == value.profileType &&
             prev.profileWhitelist == value.profileWhitelist
-        ) return
+        ) {
+            return
+        }
 
-        if (value.profileType == ProfileType.Self && value.profileWhitelist.isWhitelist && !fabCreated) {
-            val items = arrayListOf<FloatingButtonItem>()
-            items.add(createLiveFab())
-            items.add(createPostFab())
-            mainBinding.fabUp.addItem(items)
-            mainBinding.fabUserProfile.show()
-            fabCreated = true
-        } else mainBinding.fabUserProfile.hide()
+        try {
+            if (value.profileType == ProfileType.Self && value.profileWhitelist.isWhitelist) {
+                if (!fabCreated) {
+                    val items = arrayListOf<FloatingButtonItem>()
+                    items.add(createLiveFab())
+                    items.add(createPostFab())
+                    items.add(createShortsFab())
+
+                    mainBinding.fabUp.addItem(items)
+                    mainBinding.fabUserProfile.show()
+                    fabCreated = true
+                }
+            } else {
+                mainBinding.fabUserProfile.hide()
+            }
+        } catch (e: Exception) { }
+    }
+
+    private fun renderProfileReminder(
+        prev: UserProfileUiState?,
+        value: UserProfileUiState
+    ) {
+        if (prev?.followInfo == value.followInfo &&
+            prev.profileType == value.profileType
+        ) {
+            return
+        }
+
+        val usernameEmpty = value.profileInfo.username.isBlank()
+        val biographyEmpty = value.profileInfo.biography.isBlank()
+
+        val isShowProfileReminder = viewModel.isSelfProfile && usernameEmpty && biographyEmpty
+
+        mainBinding.cardUserReminder.root.shouldShowWithAction(isShowProfileReminder) {
+            userProfileTracker.impressionProfileCompletionPrompt(viewModel.profileUserID)
+            mainBinding.btnAction.hide()
+        }
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun renderShopRecom(
+        prev: UserProfileUiState?,
+        value: UserProfileUiState
+    ) {
+        if (prev?.shopRecom == value.shopRecom) return
+
+        val shopRecom = value.shopRecom
+
+        mainBinding.shopRecommendation.setData(shopRecom)
+
+        if (value.shopRecom.items.isEmpty()) mainBinding.shopRecommendation.hide()
+        else {
+            mainBinding.shopRecommendation.show()
+            mainBinding.shopRecommendation.showContentShopRecom()
+        }
+    }
+
+    private fun renderProfileTab(prev: ProfileTabUiModel?, value: ProfileTabUiModel) {
+        if ((prev == null || prev == value) && value == ProfileTabUiModel()) return
+
+        if (value.tabs == pagerAdapter.getTabs()) return
+
+        pagerAdapter.insertFragment(value.tabs)
+        mainBinding.profileTabs.tabLayout.showWithCondition(value.showTabs)
     }
 
     private fun createLiveFab(): FloatingButtonItem {
@@ -540,7 +745,7 @@ class UserProfileFragment @Inject constructor(
 
                 // TODO onboarding for `Buat Live` will be in the next phase
 //                if (viewModel.needOnboarding) {
-//                    viewModel.ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_LIVE
+//                    ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_LIVE
 //                    openUGCOnboardingBottomSheet()
 //                } else goToCreateLiveStream()
 
@@ -557,45 +762,65 @@ class UserProfileFragment @Inject constructor(
                 mainBinding.fabUp.menuOpen = false
                 userProfileTracker.clickCreatePost(viewModel.profileUserID)
                 if (viewModel.needOnboarding) {
-                    viewModel.ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_POST
+                    ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_POST
                     openUGCOnboardingBottomSheet()
+                } else {
+                    goToCreatePostPage()
                 }
-                else goToCreatePostPage()
             }
         )
     }
 
-    private fun renderProfileReminder(
+    private fun renderGlobalError(
         prev: UserProfileUiState?,
         value: UserProfileUiState
     ) {
-        if (prev?.followInfo == value.followInfo &&
-            prev.profileType == value.profileType
-        ) return
+        if (prev == value) return
 
-        val usernameEmpty = value.profileInfo.username.isBlank()
-        val biographyEmpty = value.profileInfo.biography.isBlank()
-
-        val isShowProfileReminder = viewModel.isSelfProfile && usernameEmpty && biographyEmpty
-
-        mainBinding.cardUserReminder.root.shouldShowWithAction(isShowProfileReminder) {
-            userProfileTracker.impressionProfileCompletionPrompt(viewModel.profileUserID)
-            mainBinding.btnAction.hide()
+        if (value.profileInfo.isBlockedBy) {
+            binding.globalError.setType(PAGE_NOT_FOUND)
+            binding.globalError.setActionClickListener {
+                activity?.onBackPressed()
+            }
+        } else if (value.error != null) {
+            val type = when (value.error) {
+                is UnknownHostException, is SocketTimeoutException -> NO_CONNECTION
+                is IllegalStateException -> PAGE_FULL
+                is RuntimeException -> {
+                    when (value.error.localizedMessage?.toIntOrNull()) {
+                        ReponseStatus.NOT_FOUND -> PAGE_NOT_FOUND
+                        else -> SERVER_ERROR
+                    }
+                }
+                else -> SERVER_ERROR
+            }
+            binding.globalError.setType(type)
+            binding.globalError.setActionClickListener {
+                binding.viewFlipper.displayedChild = PAGE_LOADING
+                refreshLandingPageData(true)
+            }
         }
     }
 
-    private fun renderShopRecom(
-        prev: UserProfileUiState?,
-        value: UserProfileUiState
-    ) {
-        if (prev?.shopRecom == value.shopRecom) return
+    private fun createShortsFab(): FloatingButtonItem {
+        return FloatingButtonItem(
+            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.SHORT_VIDEO),
+            title = getString(feedComponentR.string.feed_fab_create_shorts),
+            listener = {
+                mainBinding.fabUp.menuOpen = false
 
-        val shopRecom = value.shopRecom
+                userProfileTracker.clickCreateShorts(viewModel.profileUserID)
 
-        mainBinding.shopRecommendation.setData(shopRecom.title, shopRecom.items)
+                /** TODO: uncomment this if you need onboarding */
+//                if (viewModel.needOnboarding) {
+//                    viewModel.ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_SHORTS
+//                    openUGCOnboardingBottomSheet()
+//                }
+//                else goToCreateShortsPage()
 
-        if (value.shopRecom.items.isEmpty()) mainBinding.shopRecommendation.showEmptyShopRecom()
-        else mainBinding.shopRecommendation.showContentShopRecom()
+                goToCreateShortsPage()
+            }
+        )
     }
 
     private fun buttonActionUIFollow() = with(mainBinding.btnAction) {
@@ -620,6 +845,12 @@ class UserProfileFragment @Inject constructor(
         buttonType = UnifyButton.Type.ALTERNATE
     }
 
+    private fun buttonActionUIUnblock() = with(mainBinding.btnAction) {
+        text = getString(R.string.up_unblock_action)
+        buttonVariant = UnifyButton.Variant.FILLED
+        buttonType = UnifyButton.Type.MAIN
+    }
+
     private fun setProfileImg(profile: ProfileUiModel) {
         with(mainBinding) {
             imgProfileImage.urlSrc = profile.imageCover
@@ -636,7 +867,7 @@ class UserProfileFragment @Inject constructor(
                 textLive.hide()
 
                 textLive.setOnClickListener(null)
-                imgProfileImage.setOnClickListener{
+                imgProfileImage.setOnClickListener {
                     userProfileTracker.clickProfilePicture(userSession.userId, self = viewModel.isSelfProfile, profile.liveInfo.channelId)
                 }
             }
@@ -693,15 +924,14 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    private fun setupPlayVideo() {
-        gridLayoutManager.spanSizeLookup = getSpanSizeLookUp()
-
-        mainBinding.rvPost.layoutManager = gridLayoutManager
-        if (mainBinding.rvPost.itemDecorationCount == 0) {
-            val spacing = requireContext().resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl1)
-            mainBinding.rvPost.addItemDecoration(GridSpacingItemDecoration(2, spacing, false))
-        }
-        mainBinding.rvPost.adapter = mAdapter
+    private fun setupCoachMark() {
+        coachMarkManager.setupCoachMark(
+            ContentCoachMarkConfig(mainBinding.fabUserProfile).apply {
+                title = getString(feedComponentR.string.feed_play_shorts_entry_point_coachmark_title)
+                subtitle = getString(feedComponentR.string.feed_play_shorts_entry_point_coachmark_description)
+                setCoachmarkPrefKey(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+            }
+        )
     }
 
     private fun navigateToEditProfile() {
@@ -710,48 +940,36 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun doFollowUnfollow(isFromLogin: Boolean = false) {
-        if(viewModel.isFollowed.not() || isFromLogin)
+        if (viewModel.isFollowed.not() || isFromLogin) {
             userProfileTracker.clickFollow(userSession.userId, viewModel.isSelfProfile)
-        else userProfileTracker.clickUnfollow(userSession.userId, viewModel.isSelfProfile)
-
-        submitAction(UserProfileAction.ClickFollowButton(isFromLogin))
-    }
-
-    private fun showGlobalError(type: Int) {
-        with(binding) {
-            viewFlipper.displayedChild = PAGE_ERROR
-            globalError.setType(type)
-            globalError.show()
-
-            globalError.setActionClickListener {
-                binding.viewFlipper.displayedChild = PAGE_LOADING
-                refreshLandingPageData(true)
-            }
+        } else {
+            userProfileTracker.clickUnfollow(userSession.userId, viewModel.isSelfProfile)
         }
+
+        viewModel.submitAction(UserProfileAction.ClickFollowButton(isFromLogin))
     }
 
     private fun getDefaultErrorMessage() = getString(R.string.up_error_unknown)
 
     private fun getUsernameWithAdd() = getString(R.string.up_username_template, viewModel.profileUsername)
 
-    override fun getScreenName(): String {
-        return ""
-    }
-
-    private fun submitAction(action: UserProfileAction) {
-        viewModel.submitAction(action)
-    }
+    override fun getScreenName(): String = TAG
 
     private fun goToFollowingFollowerPage(isFollowers: Boolean) {
-        if(isFollowers) userProfileTracker.clickFollowers(userSession.userId, self = viewModel.isSelfProfile)
-        else userProfileTracker.clickFollowing(userSession.userId, self = viewModel.isSelfProfile)
+        if (isFollowers) {
+            userProfileTracker.clickFollowers(userSession.userId, self = viewModel.isSelfProfile)
+        } else {
+            userProfileTracker.clickFollowing(userSession.userId, self = viewModel.isSelfProfile)
+        }
 
-        startActivity(activity?.let {
-            FollowerFollowingListingActivity.getCallingIntent(
-                it,
-                getFollowersBundle(isFollowers)
-            )
-        })
+        startActivity(
+            activity?.let {
+                FollowerFollowingListingActivity.getCallingIntent(
+                    it,
+                    getFollowersBundle(isFollowers)
+                )
+            }
+        )
     }
 
     private fun goToCreateLiveStream() {
@@ -771,17 +989,23 @@ class UserProfileFragment @Inject constructor(
         startActivity(intent)
     }
 
+    private fun goToCreateShortsPage() {
+        val appLink = PlayShorts.generateApplink {
+            setAuthorType(PlayShortsParam.AuthorType.User)
+        }
+
+        RouteManager.route(requireContext(), appLink)
+    }
+
     private fun openUGCOnboardingBottomSheet() {
         childFragmentManager.executePendingTransactions()
         val existingFragment = childFragmentManager.findFragmentByTag(UGCOnboardingParentFragment.TAG)
         if (existingFragment is UGCOnboardingParentFragment && existingFragment.isVisible) return
-        val bundle = Bundle().apply {
-            putInt(
-                UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE,
-                if (viewModel.profileUsername.isEmpty()) VALUE_ONBOARDING_TYPE_COMPLETE
-                else VALUE_ONBOARDING_TYPE_TNC
-            )
-        }
+
+        val bundle = UGCOnboardingParentFragment.createBundle(
+            if (viewModel.profileUsername.isEmpty()) UGCOnboardingParentFragment.OnboardingType.Complete
+            else UGCOnboardingParentFragment.OnboardingType.Tnc
+        )
         childFragmentManager.beginTransaction()
             .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)
             .commit()
@@ -812,31 +1036,68 @@ class UserProfileFragment @Inject constructor(
         mainBinding.emptyPost.textErrorEmptyDesc.hide()
     }
 
-    override fun onShopRecomCloseClicked(itemID: Long) {
-        submitAction(UserProfileAction.RemoveShopRecomItem(itemID))
+    @SuppressLint("PII Data Exposure")
+    private fun getBlockUserDialog(): DialogUnify {
+        if (mBlockDialog == null) {
+            mBlockDialog = DialogUnify(
+                context = requireContext(),
+                actionType = DialogUnify.HORIZONTAL_ACTION,
+                imageType = DialogUnify.NO_IMAGE
+            ).apply {
+                setOverlayClose(false)
+
+                setTitle(
+                    getString(R.string.up_block_user_dialog_title, viewModel.displayName)
+                )
+                setDescription(
+                    getString(R.string.up_block_user_dialog_desc)
+                )
+
+                setPrimaryCTAText(getString(R.string.up_block_user_dialog_confirm))
+                setPrimaryCTAClickListener {
+                    dialogPrimaryCTA.isLoading = true
+                    dialogPrimaryCTA.isEnabled = false
+
+                    viewModel.submitAction(UserProfileAction.BlockUser)
+                }
+                setSecondaryCTAText(getString(R.string.up_block_user_dialog_cancel))
+                setSecondaryCTAClickListener { dismiss() }
+
+                setOnDismissListener {
+                    dialogPrimaryCTA.isLoading = false
+                    dialogPrimaryCTA.isEnabled = true
+                }
+            }
+        }
+        return mBlockDialog!!
     }
 
-    override fun onShopRecomFollowClicked(itemID: Long) {
+    private fun dismissBlockUserDialog() {
+        if (mBlockDialog == null) return
+        val dialog = getBlockUserDialog()
+        if (dialog.isShowing) dialog.dismiss()
+    }
+
+    override fun onShopRecomCloseClicked(item: ShopRecomUiModelItem) {
+        viewModel.submitAction(UserProfileAction.RemoveShopRecomItem(item.id))
+    }
+
+    override fun onShopRecomFollowClicked(item: ShopRecomUiModelItem) {
         userProfileTracker.clickFollowProfileRecommendation(
             viewModel.profileUserID,
-            itemID.toString()
+            item
         )
-        submitAction(UserProfileAction.ClickFollowButtonShopRecom(itemID))
+        viewModel.submitAction(UserProfileAction.ClickFollowButtonShopRecom(item.id))
     }
 
-    override fun onShopRecomItemClicked(
-        itemID: Long,
-        appLink: String,
-        imageUrl: String,
-        postPosition: Int
-    ) {
+    override fun onShopRecomItemClicked(item: ShopRecomUiModelItem, postPosition: Int) {
         userProfileTracker.clickProfileRecommendation(
             viewModel.profileUserID,
-            itemID.toString(),
-            imageUrl,
+            item,
+            item.logoImageURL,
             postPosition
         )
-        RouteManager.route(requireContext(), appLink)
+        RouteManager.route(requireContext(), item.applink)
     }
 
     override fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int) {
@@ -849,57 +1110,22 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    override fun onRetryPageLoad(pageNumber: Int) {
-
+    override fun onShopRecomLoadingNextPage(nextCursor: String) {
+        viewModel.submitAction(UserProfileAction.LoadNextPageShopRecom(nextCursor))
     }
-
-    override fun onEmptyList(rawObject: Any?) {
-        if (viewModel.isSelfProfile) emptyPostSelf()
-        else emptyPostVisitor()
-        mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
-    }
-
-    override fun onStartFirstPageLoad() {
-        mainBinding.userPostContainer.displayedChild = PAGE_LOADING
-    }
-
-    override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-        mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
-    }
-
-    override fun onStartPageLoad(pageNumber: Int) {
-
-    }
-
-    override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
-    }
-
-    override fun onError(pageNumber: Int) {
-    }
-
-    /**
-     * OFFSET_USERINFO = 64dp(Profile) + 10dp(PaddingTop) + 16dp (margin top username) + 2dp (margin top userid) +
-     *  24dp(user name line height) + 20dp(userid line height)
-     */
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         /** No need to check resultCode since edit profile page doesn't give specific result code */
-        if(requestCode == REQUEST_CODE_EDIT_PROFILE) refreshLandingPageData(isRefreshPost = false)
+        if (requestCode == REQUEST_CODE_EDIT_PROFILE) refreshLandingPageData(isRefreshPost = false)
 
-        if(resultCode != Activity.RESULT_OK) return
+        if (resultCode != Activity.RESULT_OK) return
 
-        when(requestCode) {
+        when (requestCode) {
             REQUEST_CODE_LOGIN_TO_FOLLOW -> doFollowUnfollow(isFromLogin = true)
-            REQUEST_CODE_LOGIN_TO_SET_REMINDER -> submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = true))
-            REQUEST_CODE_PLAY_ROOM -> {
-                val channelId = data?.extras?.getString(EXTRA_CHANNEL_ID) ?: return
-                val totalView = data.extras?.getString(EXTRA_TOTAL_VIEW)
-                val isReminderSet = data.extras?.getBoolean(EXTRA_IS_REMINDER, false)
-
-                mAdapter.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
-            }
+            REQUEST_CODE_LOGIN_TO_SET_REMINDER -> viewModel.submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = true))
+            REQUEST_CODE_LOGIN -> refreshLandingPageData(isRefreshPost = true)
         }
     }
 
@@ -916,7 +1142,7 @@ class UserProfileFragment @Inject constructor(
             }
             setMetaData(
                 tnTitle = viewModel.displayName,
-                tnImage = viewModel.profileCover,
+                tnImage = viewModel.profileCover
             )
             setOgImageUrl(viewModel.profileCover)
         }
@@ -926,72 +1152,77 @@ class UserProfileFragment @Inject constructor(
     override fun onShareOptionClicked(shareModel: ShareModel) {
         val desc = buildString {
             append("Lihat foto & video menarik dari ${viewModel.displayName}")
-            if(viewModel.profileUsername.isNotBlank()) append(" (${getUsernameWithAdd()})")
+            if (viewModel.profileUsername.isNotBlank()) append(" (${getUsernameWithAdd()})")
             append(", yuk! \uD83D\uDE0D")
         }
 
-        val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
-            type = LinkerData.USER_PROFILE_SOCIAL
-            uri = viewModel.profileWebLink
-            id = viewModel.profileUsername
-            //set and share in the Linker Data
-            feature = shareModel.feature
-            channel = shareModel.channel
-            campaign = shareModel.campaign
-            ogTitle = if (viewModel.profileUsername.isBlank()) {
-                viewModel.displayName
-            } else {
-                "${viewModel.displayName} (${getUsernameWithAdd()})"
+        val linkerShareData = DataMapper.getLinkerShareData(
+            LinkerData().apply {
+                type = LinkerData.USER_PROFILE_SOCIAL
+                uri = viewModel.profileWebLink
+                id = viewModel.profileUsername
+                // set and share in the Linker Data
+                feature = shareModel.feature
+                channel = shareModel.channel
+                campaign = shareModel.campaign
+                ogTitle = if (viewModel.profileUsername.isBlank()) {
+                    viewModel.displayName
+                } else {
+                    "${viewModel.displayName} (${getUsernameWithAdd()})"
+                }
+                ogDescription = "${viewModel.totalFollower} Follower ${viewModel.totalFollowing} Following ${viewModel.totalPost} Post"
+                if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
+                    ogImageUrl = shareModel.ogImgUrl
+                }
             }
-            ogDescription = "${viewModel.totalFollower} Follower ${viewModel.totalFollowing} Following ${viewModel.totalPost} Post"
-            if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
-                ogImageUrl = shareModel.ogImgUrl
-            }
-        })
+        )
         LinkerManager.getInstance().executeShareRequest(
-            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
-                override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    context?.let {
+            LinkerUtils.createShareRequest(
+                0,
+                linkerShareData,
+                object : ShareCallback {
+                    override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                        context?.let {
+                            val shareString = desc + "\n" + linkerShareData?.shareUri
+                            SharingUtil.executeShareIntent(
+                                shareModel,
+                                linkerShareData,
+                                activity,
+                                view,
+                                shareString
+                            )
+                            // send gtm trackers if you want to
 
-                        val shareString = desc + "\n" + linkerShareData?.shareUri
-                        SharingUtil.executeShareIntent(
-                            shareModel,
-                            linkerShareData,
-                            activity,
-                            view,
-                            shareString
-                        )
-                        // send gtm trackers if you want to
-
-                        when(UniversalShareBottomSheet.getShareBottomSheetType()){
-                            UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET ->{
-                                userProfileTracker.clickChannelScreenshotShareBottomsheet(userSession.userId, self = viewModel.isSelfProfile)
-                            }
-                            UniversalShareBottomSheet.CUSTOM_SHARE_SHEET ->{
-                                shareModel.channel?.let { it1 ->
-                                    userProfileTracker.clickShareChannel(userSession.userId, self = viewModel.isSelfProfile, it1)
+                            when (UniversalShareBottomSheet.getShareBottomSheetType()) {
+                                UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET -> {
+                                    userProfileTracker.clickChannelScreenshotShareBottomsheet(userSession.userId, self = viewModel.isSelfProfile)
+                                }
+                                UniversalShareBottomSheet.CUSTOM_SHARE_SHEET -> {
+                                    shareModel.channel?.let { it1 ->
+                                        userProfileTracker.clickShareChannel(userSession.userId, self = viewModel.isSelfProfile, it1)
+                                    }
                                 }
                             }
+                            universalShareBottomSheet?.dismiss()
                         }
-                        universalShareBottomSheet?.dismiss()
+                    }
+
+                    override fun onError(linkerError: LinkerError?) {
+                        // Most of the error cases are already handled for you. Let me know if you want to add your own error handling.
                     }
                 }
-
-                override fun onError(linkerError: LinkerError?) {
-                    //Most of the error cases are already handled for you. Let me know if you want to add your own error handling.
-                }
-            })
+            )
         )
     }
 
     override fun screenShotTaken() {
         showUniversalShareBottomSheet()
         userProfileTracker.viewScreenshotShareBottomsheet(userSession.userId, self = viewModel.isSelfProfile)
-        //add tracking for the screenshot bottom sheet
+        // add tracking for the screenshot bottom sheet
     }
 
     override fun permissionAction(action: String, label: String) {
-        //add tracking for the permission dialog for screenshot sharing
+        // add tracking for the permission dialog for screenshot sharing
         userProfileTracker.clickAccessMedia(userSession.userId, self = viewModel.isSelfProfile, label)
     }
 
@@ -1006,39 +1237,20 @@ class UserProfileFragment @Inject constructor(
 
     override fun onCloseOptionClicked() {
 //        TODO gtm tracking
-        //This method will be mostly used for GTM Tracking stuff. So add the tracking accordingly
-        //this will give you the bottomsheet type : if it's screenshot or general
-        when(UniversalShareBottomSheet.getShareBottomSheetType()){
-            UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET ->{
+        // This method will be mostly used for GTM Tracking stuff. So add the tracking accordingly
+        // this will give you the bottomsheet type : if it's screenshot or general
+        when (UniversalShareBottomSheet.getShareBottomSheetType()) {
+            UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET -> {
                 userSession.userId.let { userProfileTracker.clickCloseScreenshotShareBottomsheet(it, self = viewModel.isSelfProfile) }
             }
-            UniversalShareBottomSheet.CUSTOM_SHARE_SHEET ->{
+            UniversalShareBottomSheet.CUSTOM_SHARE_SHEET -> {
                 userSession.userId.let { userProfileTracker.clickCloseShareButton(it, self = viewModel.isSelfProfile) }
             }
         }
     }
 
-    override fun updatePostReminderStatus(channelId: String, isActive: Boolean, pos: Int) {
-        submitAction(UserProfileAction.SaveReminderActivityResult(channelId, pos, isActive))
-
-        if(userSession.isLoggedIn.not()){
-            startActivityForResult(
-                RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-                REQUEST_CODE_LOGIN_TO_SET_REMINDER,
-            )
-        }
-        else{
-            submitAction(UserProfileAction.ClickUpdateReminder(false))
-        }
-    }
-
-    override fun onPlayWidgetLargeClick(appLink: String) {
-        val intent = RouteManager.getIntent(context, appLink)
-        startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
-    }
-
     override fun expandFab() {
-        if(!mainBinding.fabUp.menuOpen) mainBinding.fabUserProfile.expand()
+        if (!mainBinding.fabUp.menuOpen) mainBinding.fabUserProfile.expand()
     }
 
     override fun shrinkFab() {
@@ -1049,11 +1261,26 @@ class UserProfileFragment @Inject constructor(
         /** Not yet implemented */
     }
 
+    /**
+     * Temporary report feature
+     */
+    private fun goToTopChatReport() {
+        val reportUrl = URLEncoder.encode("${TokopediaUrl.getInstance().WEB}chat/report/47012163?isSeller=1", "UTF-8")
+        context?.let {
+            val reportIntent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.TOPCHAT_REPORT).apply {
+                putExtra(KEY_URL, reportUrl)
+                putExtra(KEY_TITLEBAR, true)
+                putExtra(KEY_ALLOW_OVERRIDE, true)
+                putExtra(KEY_NEED_LOGIN, false)
+                putExtra(KEY_TITLE, "")
+            }
+            startActivity(reportIntent)
+        }
+    }
+
     companion object {
         const val PAGE_NAME_PROFILE = "UserProfile"
         const val FEATURE_SHARE = "share"
-        const val VAL_FEEDS_PROFILE = "feeds-profile"
-        const val VAL_SOURCE_BUYER = "buyer"
         const val EXTRA_DISPLAY_NAME = "display_name"
         const val EXTRA_TOTAL_FOLLOWERS = "total_followers"
         const val EXTRA_TOTAL_FOLLOWINGS = "total_following"
@@ -1062,8 +1289,7 @@ class UserProfileFragment @Inject constructor(
         const val EXTRA_PROFILE_USER_ID = "profileUserid"
         const val EXTRA_IS_FOLLOWERS = "is_followers"
         const val APPLINK_MENU = "tokopedia://navigation/main"
-        const val APPLINK_PROFILE = "tokopedia://setting/profile"
-        const val OFFSET_USERINFO = 136F
+        const val REQUEST_CODE_PLAY_ROOM = 123
         const val REQUEST_CODE_LOGIN_TO_FOLLOW = 1
         const val REQUEST_CODE_LOGIN_TO_SET_REMINDER = 2
         const val REQUEST_CODE_EDIT_PROFILE = 2423
@@ -1072,20 +1298,14 @@ class UserProfileFragment @Inject constructor(
         const val EXTRA_FOLLOW_UNFOLLOW_STATUS = "follow_unfollow_status"
         const val EXTRA_VALUE_IS_FOLLOWED = "is_followed"
         const val EXTRA_VALUE_IS_NOT_FOLLOWED = "is_not_followed"
-        private const val LOADING = -94567
 
+        const val LOADING = -94567
         const val PAGE_CONTENT = 0
         const val PAGE_ERROR = 2
         const val PAGE_LOADING = 1
         const val PAGE_EMPTY = 3
         const val SEE_ALL_LINE = 3
         const val MAX_LINE = 20
-        const val SUCCESS_STATUS = 200
-
-        private const val REQUEST_CODE_PLAY_ROOM = 123
-        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
-        private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
-        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
 
         private const val KEY_APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
         private const val KEY_MAX_MULTI_SELECT_ALLOWED = "max_multi_select"
@@ -1093,15 +1313,21 @@ class UserProfileFragment @Inject constructor(
         private const val KEY_TITLE = "title"
         private const val KEY_APPLINK_FOR_GALLERY_PROCEED = "link_gall"
         private const val KEY_IS_CREATE_POST_AS_BUYER = "is_create_post_as_buyer"
-        private const val KEY_IS_OPEN_FROM = "key_is_open_from"
         private const val VALUE_IS_OPEN_FROM_USER_PROFILE = "is_open_from_user_profile"
 
         private const val TAG = "UserProfileFragment"
 
+        private const val KEY_URL = "url"
+        private const val KEY_TITLEBAR = "titlebar"
+        private const val KEY_ALLOW_OVERRIDE = "allow_override"
+        private const val KEY_NEED_LOGIN = "need_login"
+
+        private const val REQUEST_CODE_LOGIN = 551
+
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            bundle: Bundle,
+            bundle: Bundle
         ): UserProfileFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? UserProfileFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
@@ -1112,5 +1338,4 @@ class UserProfileFragment @Inject constructor(
             } as UserProfileFragment
         }
     }
-
 }

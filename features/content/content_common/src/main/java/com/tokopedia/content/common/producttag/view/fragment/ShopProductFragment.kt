@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.FragmentShopProductBinding
 import com.tokopedia.content.common.producttag.analytic.coordinator.ProductImpressionCoordinator
-import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.util.extension.getVisibleItems
 import com.tokopedia.content.common.producttag.util.extension.isProductFound
 import com.tokopedia.content.common.producttag.util.extension.withCache
@@ -37,7 +36,7 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on April 25, 2022
  */
 class ShopProductFragment @Inject constructor(
-    private val impressionCoordinator: ProductImpressionCoordinator,
+    private val impressionCoordinator: ProductImpressionCoordinator
 ) : BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "ShopProductFragment"
@@ -57,7 +56,7 @@ class ShopProductFragment @Inject constructor(
         )
     }
     private lateinit var layoutManager: StaggeredGridLayoutManager
-    private val scrollListener = object: RecyclerView.OnScrollListener(){
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) impressProduct()
         }
@@ -105,7 +104,7 @@ class ShopProductFragment @Inject constructor(
         impressionCoordinator.setInitialData(
             mAnalytic,
             viewModel.selectedTagSource,
-            isEntryPoint = false,
+            isEntryPoint = false
         )
     }
 
@@ -130,24 +129,26 @@ class ShopProductFragment @Inject constructor(
         }
 
         binding.sbShopProduct.searchBarPlaceholder = requireContext().getString(
-            R.string.cc_product_tag_search_hint_template, viewModel.selectedShop.shopName
+            R.string.cc_product_tag_search_hint_template,
+            viewModel.selectedShop.shopName
         )
-
+        binding.sbShopProduct.searchBarContainer.fitsSystemWindows = false
         binding.sbShopProduct.searchBarTextField.setOnTouchListener { _, motionEvent ->
-            if(motionEvent.action == MotionEvent.ACTION_UP) {
+            if (motionEvent.action == MotionEvent.ACTION_UP) {
                 mAnalytic?.clickSearchBarOnShop()
             }
             false
         }
 
         binding.sbShopProduct.searchBarTextField.setOnEditorActionListener { textView, actionId, keyEvent ->
-            if(actionId == EditorInfo.IME_ACTION_SEARCH) {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 val query = binding.sbShopProduct.searchBarTextField.text.toString()
                 submitQuery(query)
 
                 true
+            } else {
+                false
             }
-            else false
         }
 
         binding.sbShopProduct.clearListener = {
@@ -164,19 +165,21 @@ class ShopProductFragment @Inject constructor(
     }
 
     private fun renderShopProducts(prev: ProductTagUiState?, curr: ProductTagUiState) {
-
         fun updateAdapterData(products: List<ProductUiModel>, hasNextPage: Boolean) {
             val finalProducts = products.map { product ->
-                if(viewModel.isMultipleSelectionProduct) {
+                if (viewModel.isMultipleSelectionProduct) {
                     ProductTagCardAdapter.Model.ProductWithCheckbox(
                         product = product,
-                        isSelected = curr.selectedProduct.isProductFound(product),
+                        isSelected = curr.selectedProduct.isProductFound(product)
                     )
-                } else ProductTagCardAdapter.Model.Product(product = product)
-            } + if(hasNextPage) listOf(ProductTagCardAdapter.Model.Loading) else emptyList()
+                } else {
+                    ProductTagCardAdapter.Model.Product(product = product)
+                }
+            } + if (hasNextPage) listOf(ProductTagCardAdapter.Model.Loading) else emptyList()
 
-            if(binding.rvShopProduct.isComputingLayout.not())
+            if (binding.rvShopProduct.isComputingLayout.not()) {
                 adapter.setItemsAndAnimateChanges(finalProducts)
+            }
 
             binding.rvShopProduct.show()
             binding.globalError.hide()
@@ -184,24 +187,27 @@ class ShopProductFragment @Inject constructor(
             impressProduct()
         }
 
-        if(prev?.shopProduct?.products == curr.shopProduct.products &&
+        if (prev?.shopProduct?.products == curr.shopProduct.products &&
             prev.shopProduct.state == curr.shopProduct.state &&
             prev.selectedProduct == curr.selectedProduct
-        ) return
+        ) {
+            return
+        }
 
         val currProducts = curr.shopProduct.products
         val currState = curr.shopProduct.state
 
-        when(currState) {
+        when (currState) {
             is PagedState.Loading -> {
                 updateAdapterData(currProducts, true)
             }
             is PagedState.Success -> {
-                if(currProducts.isEmpty()) {
+                if (currProducts.isEmpty()) {
                     binding.rvShopProduct.hide()
                     showEmptyState(curr.shopProduct.hasFilter())
+                } else {
+                    updateAdapterData(currProducts, currState.hasNextPage)
                 }
-                else updateAdapterData(currProducts, currState.hasNextPage)
             }
             is PagedState.Error -> {
                 updateAdapterData(currProducts, false)
@@ -231,22 +237,29 @@ class ShopProductFragment @Inject constructor(
     private fun showEmptyState(hasFilter: Boolean) {
         binding.globalError.apply {
             errorTitle.text = getString(
-                if(hasFilter) R.string.cc_no_shop_product_filter_title
-                else R.string.cc_no_shop_product_title
+                if (hasFilter) {
+                    R.string.cc_no_shop_product_filter_title
+                } else {
+                    R.string.cc_no_shop_product_title
+                }
             )
             errorDescription.text = getString(
-                if(hasFilter) R.string.cc_no_shop_product_filter_desc
-                else R.string.cc_no_shop_product_desc
+                if (hasFilter) {
+                    R.string.cc_no_shop_product_filter_desc
+                } else {
+                    R.string.cc_no_shop_product_desc
+                }
             )
             show()
         }
     }
 
     private fun impressProduct() {
-        if(this::layoutManager.isInitialized) {
+        if (this::layoutManager.isInitialized) {
             val visibleProducts = layoutManager.getVisibleItems(adapter, viewModel.isMultipleSelectionProduct)
-            if(visibleProducts.isNotEmpty())
+            if (visibleProducts.isNotEmpty()) {
                 impressionCoordinator.saveProductImpress(visibleProducts)
+            }
         }
     }
 
@@ -255,14 +268,14 @@ class ShopProductFragment @Inject constructor(
 
         fun getFragmentPair(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
-        ) : Pair<BaseProductTagChildFragment, String> {
+            classLoader: ClassLoader
+        ): Pair<BaseProductTagChildFragment, String> {
             return Pair(getFragment(fragmentManager, classLoader), TAG)
         }
 
         private fun getFragment(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
+            classLoader: ClassLoader
         ): ShopProductFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ShopProductFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(

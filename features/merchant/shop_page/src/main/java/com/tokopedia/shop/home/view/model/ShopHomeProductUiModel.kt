@@ -4,12 +4,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
-import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
+import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 
 /**
  * Created by nathan on 2/6/18.
@@ -58,14 +57,14 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var parentId: String = ""
 
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
-        return when(typeFactory){
+        return when (typeFactory) {
             is ShopHomeAdapterTypeFactory -> {
                 typeFactory.type(this)
             }
             is ShopCampaignCarouselProductAdapterTypeFactory -> {
                 typeFactory.type(this)
             }
-            else ->  {
+            else -> {
                 -1
             }
         }
@@ -85,7 +84,7 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
         isPo = TextApiUtils.isValueTrue(shopProduct.productPreorder)
         totalReview = shopProduct.productReviewCount
         isWholesale = TextApiUtils.isValueTrue(shopProduct.productWholesale)
-        isFreeReturn = ((shopProduct.badges?.filter { BADGE_FREE_RETURN.equals(it.title, ignoreCase = true) }?.size ?: 0)  > 0)
+        isFreeReturn = ((shopProduct.badges?.filter { BADGE_FREE_RETURN.equals(it.title, ignoreCase = true) }?.size ?: 0) > 0)
         val shopProductLabelList = shopProduct.labels
         if (shopProductLabelList != null) {
             for (shopProductLabel in shopProductLabelList) {
@@ -125,5 +124,4 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
         private val LABEL_CASHBACK = "Cashback"
         private val LABEL_PERCENTAGE = "%"
     }
-
 }

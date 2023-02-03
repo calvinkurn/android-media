@@ -13,10 +13,10 @@ class GetEPharmacyCheckoutDetailUseCase @Inject constructor(graphqlRepository: G
 
     fun getEPharmacyCheckoutDetail(onSuccess: (EPharmacyDataResponse) -> Unit,
                            onError: (Throwable) -> Unit,
-                                   checkoutId: String) {
+                                   checkoutId: String, source: String) {
         try {
             this.setTypeClass(EPharmacyDataResponse::class.java)
-            this.setRequestParams(getRequestParams(checkoutId))
+            this.setRequestParams(getRequestParams(checkoutId,source))
             this.setGraphqlQuery(GQL_FETCH_CHECKOUT_DETAILS_QUERY)
             this.execute(
                 { result ->
@@ -30,14 +30,16 @@ class GetEPharmacyCheckoutDetailUseCase @Inject constructor(graphqlRepository: G
         }
     }
 
-    private fun getRequestParams(checkoutId: String): MutableMap<String, Any?> {
+    private fun getRequestParams(checkoutId: String,source: String): MutableMap<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
         requestMap[PARAM_CHECKOUT_ID] = checkoutId
+        requestMap[PARAM_SOURCE] = source
         return requestMap
     }
 
     companion object {
         const val PARAM_CHECKOUT_ID = "checkout_id"
+        const val PARAM_SOURCE = "source"
     }
 
 }

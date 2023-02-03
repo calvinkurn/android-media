@@ -6,7 +6,7 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayLikeBubbleConfig
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.universal_sharing.view.model.ShareModel
 
 /**
@@ -14,7 +14,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
  */
 sealed class PlayViewerNewUiEvent
 
-data class ShowWinningDialogEvent(val userImageUrl: String, val dialogTitle: String, val dialogSubtitle: String, val interactiveType: InteractiveUiModel) : PlayViewerNewUiEvent()
+data class ShowWinningDialogEvent(val userImageUrl: String, val dialogTitle: String, val dialogSubtitle: String, val gameType: GameUiModel) : PlayViewerNewUiEvent()
 
 data class ShowCoachMarkWinnerEvent(val title: String, val subtitle: UiString) : PlayViewerNewUiEvent()
 object HideCoachMarkWinnerEvent : PlayViewerNewUiEvent()
@@ -85,6 +85,13 @@ data class AtcSuccessEvent(
     val sectionInfo: ProductSectionUiModel.Section?,
     val isProductFeatured: Boolean,
 ) : PlayViewerNewUiEvent()
+data class OCCSuccessEvent(
+    val product: PlayProductUiModel.Product,
+    val isVariant: Boolean,
+    val cartId: String,
+    val sectionInfo: ProductSectionUiModel.Section?,
+    val isProductFeatured: Boolean,
+) : PlayViewerNewUiEvent()
 
 //---------------------
 
@@ -117,3 +124,10 @@ object OpenUserReportEvent : PlayViewerNewUiEvent()
  */
 data class ChangeCampaignReminderSuccess(val isReminded: Boolean, val message: String) : PlayViewerNewUiEvent()
 data class ChangeCampaignReminderFailed(val error: Throwable) : PlayViewerNewUiEvent()
+
+/**
+ * Follow
+ */
+
+object FailedFollow: PlayViewerNewUiEvent()
+

@@ -4,45 +4,67 @@
     android:id="@+id/affiliate_parent_linear"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/spacing_lvl3"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="8dp">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:layout_marginHorizontal="@dimen/spacing_lvl4"
         android:id="@+id/traffic_attribution_text"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        app:typographyType="body_2"
-        android:layout_marginBottom="@dimen/unify_space_12"
-        />
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="12dp"
+        app:typographyType="body_2" />
+    
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/affiliate_metric_announcement_ticker_cv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/Unify_T100"
+        app:cardCornerRadius="@dimen/dp_8"
+        app:cardElevation="0dp">
 
-        <com.tokopedia.unifycomponents.ticker.Ticker
-            android:visibility="gone"
-            android:id="@+id/affiliate_metric_announcement_ticker"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="@dimen/unify_space_48"
-            app:closeButtonVisibility="gone"
-            app:descriptionText="@string/affiliate_traffic_hari_ini_ticker"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:tickerShapeType="loose"
-            app:tickerType="announcement"
-            android:layout_marginBottom="@dimen/unify_space_16"
-            android:layout_marginHorizontal="@dimen/spacing_lvl4"
-            />
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/affiliate_ic_bg_date_picker" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/affiliate_metric_announcement_ticker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
+                android:text="@string/affiliate_traffic_hari_ini_ticker"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_3" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.CardUnify2>
+    
 
     <com.tokopedia.unifycomponents.DividerUnify
-        android:visibility="gone"
         android:id="@+id/divider_2"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl3"
-        android:layout_marginBottom="@dimen/spacing_lvl4"/>
+        android:layout_height="8dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginHorizontal="@dimen/spacing_lvl4"
         android:id="@+id/traffic_rv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp" />
 
 </LinearLayout>
 

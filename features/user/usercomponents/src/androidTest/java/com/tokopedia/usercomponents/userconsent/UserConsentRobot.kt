@@ -3,7 +3,9 @@ package com.tokopedia.usercomponents.userconsent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.usercomponents.R
@@ -12,7 +14,8 @@ import com.tokopedia.usercomponents.common.utils.clickClickableSpanOnTypographyU
 import com.tokopedia.usercomponents.common.utils.waitOnView
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeViewHolder
-import org.hamcrest.Matchers.allOf
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
 
 fun userConsentRobot(action: UserConsentRobot.() -> Unit): UserConsentRobot {
     return UserConsentRobot().apply(action)
@@ -127,5 +130,13 @@ class UserConsentResult {
 
     fun shouldButtonActionEnable() {
         onView(allOf(withId(R.id.buttonAction), isDisplayed()))
+    }
+
+    fun shouldConsentHide() {
+        onView(allOf(withId(R.id.sampleUserConsent), not(isDisplayed())))
+    }
+
+    fun shouldButtonHide() {
+        onView(allOf(withId(R.id.buttonAction), not(isDisplayed())))
     }
 }

@@ -9,8 +9,8 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.util.HumanReadables
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 
 /**
  * @author by jessica on 09/02/21
@@ -20,7 +20,7 @@ object CustomActionUtils {
     fun nestedScrollTo(): ViewAction? {
         return object : ViewAction {
             override fun getConstraints(): Matcher<View> {
-                return Matchers.allOf(
+                return CoreMatchers.allOf(
                         ViewMatchers.isDescendantOfA(ViewMatchers.isAssignableFrom(NestedScrollView::class.java)),
                         ViewMatchers.withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))
             }

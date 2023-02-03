@@ -70,6 +70,7 @@ internal object GetHomeLayoutData: GqlQueryInterface {
                 discount
                 imageUrl
                 label
+                labelTextColor
                 soldPercentage
                 attribution
                 productClickUrl
@@ -77,6 +78,7 @@ internal object GetHomeLayoutData: GqlQueryInterface {
                 cashback
                 isTopads
                 ratingAverage
+                categoryBreadcrumbs
                 recommendationType
                 productViewCountFormatted
                 isOutOfStock
@@ -84,6 +86,7 @@ internal object GetHomeLayoutData: GqlQueryInterface {
                 parentProductID
                 minOrder
                 maxOrder
+                stock
                 shop {
                   shopID
                 }

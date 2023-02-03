@@ -15,8 +15,8 @@ infix fun List<UserProfileUiEvent>.andThen(fn: List<UserProfileUiEvent>.() -> Un
 }
 
 infix fun Pair<UserProfileUiState, List<UserProfileUiEvent>>.andThen(
-    fn: Pair<UserProfileUiState, List<UserProfileUiEvent>>.
-        (UserProfileUiState,  List<UserProfileUiEvent>) -> Unit
+    fn: Pair<UserProfileUiState, List<UserProfileUiEvent>>
+    .(UserProfileUiState, List<UserProfileUiEvent>) -> Unit,
 ) {
     fn(first, second)
 }

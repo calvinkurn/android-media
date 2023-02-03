@@ -20,6 +20,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
@@ -153,7 +154,7 @@ class ShipmentPresenterSaveShipmentStateTest {
         assertEquals(1, saveShipmentDataArray.size)
 
         val data = saveShipmentDataArray.first()
-        assertEquals(addressId.toInt(), data.addressId)
+        assertEquals(addressId, data.addressId)
 
         val shopProductDataList = data.shopProductDataList
         assertEquals(1, shopProductDataList?.size ?: 0)
@@ -198,7 +199,7 @@ class ShipmentPresenterSaveShipmentStateTest {
         assertEquals(1, saveShipmentDataArray.size)
 
         val data = saveShipmentDataArray.first()
-        assertEquals(addressId.toInt(), data.addressId)
+        assertEquals(addressId, data.addressId)
 
         val shopProductDataList = data.shopProductDataList
         assertEquals(1, shopProductDataList?.size ?: 0)
@@ -243,7 +244,7 @@ class ShipmentPresenterSaveShipmentStateTest {
         assertEquals(1, saveShipmentDataArray.size)
 
         val data = saveShipmentDataArray.first()
-        assertEquals(addressId.toInt(), data.addressId)
+        assertEquals(addressId, data.addressId)
 
         val shopProductDataList = data.shopProductDataList
         assertEquals(1, shopProductDataList?.size ?: 0)
@@ -286,7 +287,7 @@ class ShipmentPresenterSaveShipmentStateTest {
         assertEquals(1, saveShipmentDataArray.size)
 
         val data = saveShipmentDataArray.first()
-        assertEquals(addressId.toInt(), data.addressId)
+        assertEquals(addressId, data.addressId)
 
         val shopProductDataList = data.shopProductDataList
         assertEquals(1, shopProductDataList?.size ?: 0)

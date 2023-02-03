@@ -12,7 +12,7 @@
             "tracking": [
               {
                 "action": "impression",
-                "data": "{\"event\":\"view_item\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"impression product card row\",\"eventLabel\":\"\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"7005\",\"item_name\":\"Skill Academy\",\"creative_name\":\"https://ecs7.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_29cc4df1-af48-4dbe-a39e-3225d52f1c34.png\",\"creative_slot\":\"0\"},{\"item_id\":\"5738\",\"item_name\":\"Arkademi\",\"creative_name\":\"https://ecs7.tokopedia.net/img/attachment/2020/4/17/41127956/41127956_bff45ef4-61fa-489a-bb33-5c081f1014e8.png\",\"creative_slot\":\"1\"},{\"item_id\":\"7016\",\"item_name\":\"Skill Academy\",\"creative_name\":\"https://ecs7.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_a0daf89f-e10a-46b5-9866-b7300141bbd3.png\",\"creative_slot\":\"2\"},{\"item_id\":\"7020\",\"item_name\":\"Skill Academy\",\"creative_name\":\"https://ecs7.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_19879ca4-fb5e-46c5-8570-e4877de4bdd9.png\",\"creative_slot\":\"3\"},{\"item_id\":\"5762\",\"item_name\":\"Cakap\",\"creative_name\":\"https://ecs7.tokopedia.net/img/attachment/2020/5/5/66309566/66309566_c9d68b69-808d-4723-8b7f-e83785ae2a0a.png\",\"creative_slot\":\"4\"},{\"item_id\":\"5837\",\"item_name\":\"EF\",\"creative_name\":\"https://ecs7.tokopedia.net/img/attachment/2020/4/18/41127956/41127956_dc3e33f1-3039-414d-bcd1-d062c48973ed.png\",\"creative_slot\":\"5\"},{\"item_id\":\"5894\",\"item_name\":\"Skill Academy\",\"creative_name\":\"https://ecs7.tokopedia.net/img/attachment/2020/4/19/41127956/41127956_912c5744-cd8a-4069-b831-f47f0310a8e3.png\",\"creative_slot\":\"6\"},{\"item_id\":\"7006\",\"item_name\":\"Skill Academy\",\"creative_name\":\"https://ecs7.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_d647dfa7-fdc1-4ae7-90a6-0a7e4b7b2383.png\",\"creative_slot\":\"7\"}]}"
+                "data": "{\"event\":\"view_item\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"impression product card row\",\"eventLabel\":\"\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"7005\",\"item_name\":\"Skill Academy\",\"creative_name\":\"https://images.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_29cc4df1-af48-4dbe-a39e-3225d52f1c34.png\",\"creative_slot\":\"0\"},{\"item_id\":\"5738\",\"item_name\":\"Arkademi\",\"creative_name\":\"https://images.tokopedia.net/img/attachment/2020/4/17/41127956/41127956_bff45ef4-61fa-489a-bb33-5c081f1014e8.png\",\"creative_slot\":\"1\"},{\"item_id\":\"7016\",\"item_name\":\"Skill Academy\",\"creative_name\":\"https://images.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_a0daf89f-e10a-46b5-9866-b7300141bbd3.png\",\"creative_slot\":\"2\"},{\"item_id\":\"7020\",\"item_name\":\"Skill Academy\",\"creative_name\":\"https://images.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_19879ca4-fb5e-46c5-8570-e4877de4bdd9.png\",\"creative_slot\":\"3\"},{\"item_id\":\"5762\",\"item_name\":\"Cakap\",\"creative_name\":\"https://images.tokopedia.net/img/attachment/2020/5/5/66309566/66309566_c9d68b69-808d-4723-8b7f-e83785ae2a0a.png\",\"creative_slot\":\"4\"},{\"item_id\":\"5837\",\"item_name\":\"EF\",\"creative_name\":\"https://images.tokopedia.net/img/attachment/2020/4/18/41127956/41127956_dc3e33f1-3039-414d-bcd1-d062c48973ed.png\",\"creative_slot\":\"5\"},{\"item_id\":\"5894\",\"item_name\":\"Skill Academy\",\"creative_name\":\"https://images.tokopedia.net/img/attachment/2020/4/19/41127956/41127956_912c5744-cd8a-4069-b831-f47f0310a8e3.png\",\"creative_slot\":\"6\"},{\"item_id\":\"7006\",\"item_name\":\"Skill Academy\",\"creative_name\":\"https://images.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_d647dfa7-fdc1-4ae7-90a6-0a7e4b7b2383.png\",\"creative_slot\":\"7\"}]}"
               }
             ],
             "items": [
@@ -23,14 +23,14 @@
                 "tracking": [
                   {
                     "action": "click",
-                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click product card row\",\"eventLabel\":\"0 - Bahasa - Kartu Prakerja - Skill Academy\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"7005\",\"item_name\":\"Skill Academy\",\"creative_name\":\"https://ecs7.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_29cc4df1-af48-4dbe-a39e-3225d52f1c34.png\",\"creative_slot\":\"0\"}]}"
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click product card row\",\"eventLabel\":\"0 - Bahasa - Kartu Prakerja - Skill Academy\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"7005\",\"item_name\":\"Skill Academy\",\"creative_name\":\"https://images.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_29cc4df1-af48-4dbe-a39e-3225d52f1c34.png\",\"creative_slot\":\"0\"}]}"
                   }
                 ],
                 "content": "Pelajari Dasar Bahasa Inggris Untuk Pemula Bagian 1 (TOEFL Part 1)",
                 "app_link": "tokopedia://digital/form?category_id=126?operator_id=2030&product_id=7005",
                 "web_link": "https://pulsa.tokopedia.com?category_id=126&operator_id=2030&product_id=7005",
                 "text_link": "",
-                "media_url": "https://ecs7.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_29cc4df1-af48-4dbe-a39e-3225d52f1c34.png",
+                "media_url": "https://images.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_29cc4df1-af48-4dbe-a39e-3225d52f1c34.png",
                 "template": "",
                 "button_type": "",
                 "label_1": "Mulai dari",
@@ -46,14 +46,14 @@
                 "tracking": [
                   {
                     "action": "click",
-                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click product card row\",\"eventLabel\":\"1 - Bahasa - Kartu Prakerja - Arkademi\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"5738\",\"item_name\":\"Arkademi\",\"creative_name\":\"https://ecs7.tokopedia.net/img/attachment/2020/4/17/41127956/41127956_bff45ef4-61fa-489a-bb33-5c081f1014e8.png\",\"creative_slot\":\"1\"}]}"
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click product card row\",\"eventLabel\":\"1 - Bahasa - Kartu Prakerja - Arkademi\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"5738\",\"item_name\":\"Arkademi\",\"creative_name\":\"https://images.tokopedia.net/img/attachment/2020/4/17/41127956/41127956_bff45ef4-61fa-489a-bb33-5c081f1014e8.png\",\"creative_slot\":\"1\"}]}"
                   }
                 ],
                 "content": "Kursus Menguasai Bahasa Inggris Semudah Bahasa Indonesia",
                 "app_link": "tokopedia://digital/form?category_id=126?operator_id=2018&product_id=5738",
                 "web_link": "https://pulsa.tokopedia.com?category_id=126&operator_id=2018&product_id=5738",
                 "text_link": "",
-                "media_url": "https://ecs7.tokopedia.net/img/attachment/2020/4/17/41127956/41127956_bff45ef4-61fa-489a-bb33-5c081f1014e8.png",
+                "media_url": "https://images.tokopedia.net/img/attachment/2020/4/17/41127956/41127956_bff45ef4-61fa-489a-bb33-5c081f1014e8.png",
                 "template": "",
                 "button_type": "",
                 "label_1": "Mulai dari",
@@ -69,14 +69,14 @@
                 "tracking": [
                   {
                     "action": "click",
-                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click product card row\",\"eventLabel\":\"2 - Bahasa - Kartu Prakerja - Skill Academy\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"7016\",\"item_name\":\"Skill Academy\",\"creative_name\":\"https://ecs7.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_a0daf89f-e10a-46b5-9866-b7300141bbd3.png\",\"creative_slot\":\"2\"}]}"
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click product card row\",\"eventLabel\":\"2 - Bahasa - Kartu Prakerja - Skill Academy\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"7016\",\"item_name\":\"Skill Academy\",\"creative_name\":\"https://images.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_a0daf89f-e10a-46b5-9866-b7300141bbd3.png\",\"creative_slot\":\"2\"}]}"
                   }
                 ],
                 "content": "Percakapan Bahasa Inggris Dasar Dengan Konsumen",
                 "app_link": "tokopedia://digital/form?category_id=126?operator_id=2030&product_id=7016",
                 "web_link": "https://pulsa.tokopedia.com?category_id=126&operator_id=2030&product_id=7016",
                 "text_link": "",
-                "media_url": "https://ecs7.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_a0daf89f-e10a-46b5-9866-b7300141bbd3.png",
+                "media_url": "https://images.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_a0daf89f-e10a-46b5-9866-b7300141bbd3.png",
                 "template": "",
                 "button_type": "",
                 "label_1": "Mulai dari",
@@ -92,14 +92,14 @@
                 "tracking": [
                   {
                     "action": "click",
-                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click product card row\",\"eventLabel\":\"3 - Bahasa - Kartu Prakerja - Skill Academy\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"7020\",\"item_name\":\"Skill Academy\",\"creative_name\":\"https://ecs7.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_19879ca4-fb5e-46c5-8570-e4877de4bdd9.png\",\"creative_slot\":\"3\"}]}"
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click product card row\",\"eventLabel\":\"3 - Bahasa - Kartu Prakerja - Skill Academy\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"7020\",\"item_name\":\"Skill Academy\",\"creative_name\":\"https://images.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_19879ca4-fb5e-46c5-8570-e4877de4bdd9.png\",\"creative_slot\":\"3\"}]}"
                   }
                 ],
                 "content": "Bahasa Inggris Praktis untuk Pelaku Pariwisata dan Jasa",
                 "app_link": "tokopedia://digital/form?category_id=126?operator_id=2030&product_id=7020",
                 "web_link": "https://pulsa.tokopedia.com?category_id=126&operator_id=2030&product_id=7020",
                 "text_link": "",
-                "media_url": "https://ecs7.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_19879ca4-fb5e-46c5-8570-e4877de4bdd9.png",
+                "media_url": "https://images.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_19879ca4-fb5e-46c5-8570-e4877de4bdd9.png",
                 "template": "",
                 "button_type": "",
                 "label_1": "Mulai dari",
@@ -115,14 +115,14 @@
                 "tracking": [
                   {
                     "action": "click",
-                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click product card row\",\"eventLabel\":\"4 - Bahasa - Kartu Prakerja - Cakap\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"5762\",\"item_name\":\"Cakap\",\"creative_name\":\"https://ecs7.tokopedia.net/img/attachment/2020/5/5/66309566/66309566_c9d68b69-808d-4723-8b7f-e83785ae2a0a.png\",\"creative_slot\":\"4\"}]}"
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click product card row\",\"eventLabel\":\"4 - Bahasa - Kartu Prakerja - Cakap\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"5762\",\"item_name\":\"Cakap\",\"creative_name\":\"https://images.tokopedia.net/img/attachment/2020/5/5/66309566/66309566_c9d68b69-808d-4723-8b7f-e83785ae2a0a.png\",\"creative_slot\":\"4\"}]}"
                   }
                 ],
                 "content": "Cepat Cakap Inggris Khusus Pelaku Pariwisata dan Jasa",
                 "app_link": "tokopedia://digital/form?category_id=126?operator_id=1956&product_id=5762",
                 "web_link": "https://pulsa.tokopedia.com?category_id=126&operator_id=1956&product_id=5762",
                 "text_link": "",
-                "media_url": "https://ecs7.tokopedia.net/img/attachment/2020/5/5/66309566/66309566_c9d68b69-808d-4723-8b7f-e83785ae2a0a.png",
+                "media_url": "https://images.tokopedia.net/img/attachment/2020/5/5/66309566/66309566_c9d68b69-808d-4723-8b7f-e83785ae2a0a.png",
                 "template": "",
                 "button_type": "",
                 "label_1": "Mulai dari",
@@ -138,14 +138,14 @@
                 "tracking": [
                   {
                     "action": "click",
-                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click product card row\",\"eventLabel\":\"5 - Bahasa - Kartu Prakerja - EF\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"5837\",\"item_name\":\"EF\",\"creative_name\":\"https://ecs7.tokopedia.net/img/attachment/2020/4/18/41127956/41127956_dc3e33f1-3039-414d-bcd1-d062c48973ed.png\",\"creative_slot\":\"5\"}]}"
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click product card row\",\"eventLabel\":\"5 - Bahasa - Kartu Prakerja - EF\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"5837\",\"item_name\":\"EF\",\"creative_name\":\"https://images.tokopedia.net/img/attachment/2020/4/18/41127956/41127956_dc3e33f1-3039-414d-bcd1-d062c48973ed.png\",\"creative_slot\":\"5\"}]}"
                   }
                 ],
                 "content": "Kelas Online Bahasa Inggris Tingkat Dasar (Online School Basic)",
                 "app_link": "tokopedia://digital/form?category_id=126?operator_id=1958&product_id=5837",
                 "web_link": "https://pulsa.tokopedia.com?category_id=126&operator_id=1958&product_id=5837",
                 "text_link": "",
-                "media_url": "https://ecs7.tokopedia.net/img/attachment/2020/4/18/41127956/41127956_dc3e33f1-3039-414d-bcd1-d062c48973ed.png",
+                "media_url": "https://images.tokopedia.net/img/attachment/2020/4/18/41127956/41127956_dc3e33f1-3039-414d-bcd1-d062c48973ed.png",
                 "template": "",
                 "button_type": "",
                 "label_1": "Mulai dari",
@@ -161,14 +161,14 @@
                 "tracking": [
                   {
                     "action": "click",
-                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click product card row\",\"eventLabel\":\"6 - Bahasa - Kartu Prakerja - Skill Academy\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"5894\",\"item_name\":\"Skill Academy\",\"creative_name\":\"https://ecs7.tokopedia.net/img/attachment/2020/4/19/41127956/41127956_912c5744-cd8a-4069-b831-f47f0310a8e3.png\",\"creative_slot\":\"6\"}]}"
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click product card row\",\"eventLabel\":\"6 - Bahasa - Kartu Prakerja - Skill Academy\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"5894\",\"item_name\":\"Skill Academy\",\"creative_name\":\"https://images.tokopedia.net/img/attachment/2020/4/19/41127956/41127956_912c5744-cd8a-4069-b831-f47f0310a8e3.png\",\"creative_slot\":\"6\"}]}"
                   }
                 ],
                 "content": "Bahasa Mandarin Bisnis Untuk Pemula",
                 "app_link": "tokopedia://digital/form?category_id=126?operator_id=2030&product_id=5894",
                 "web_link": "https://pulsa.tokopedia.com?category_id=126&operator_id=2030&product_id=5894",
                 "text_link": "",
-                "media_url": "https://ecs7.tokopedia.net/img/attachment/2020/4/19/41127956/41127956_912c5744-cd8a-4069-b831-f47f0310a8e3.png",
+                "media_url": "https://images.tokopedia.net/img/attachment/2020/4/19/41127956/41127956_912c5744-cd8a-4069-b831-f47f0310a8e3.png",
                 "template": "",
                 "button_type": "",
                 "label_1": "Mulai dari",
@@ -184,14 +184,14 @@
                 "tracking": [
                   {
                     "action": "click",
-                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click product card row\",\"eventLabel\":\"7 - Bahasa - Kartu Prakerja - Skill Academy\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"7006\",\"item_name\":\"Skill Academy\",\"creative_name\":\"https://ecs7.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_d647dfa7-fdc1-4ae7-90a6-0a7e4b7b2383.png\",\"creative_slot\":\"7\"}]}"
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click product card row\",\"eventLabel\":\"7 - Bahasa - Kartu Prakerja - Skill Academy\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"7006\",\"item_name\":\"Skill Academy\",\"creative_name\":\"https://images.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_d647dfa7-fdc1-4ae7-90a6-0a7e4b7b2383.png\",\"creative_slot\":\"7\"}]}"
                   }
                 ],
                 "content": "Pelajari Dasar Bahasa Inggris Untuk Pemula Bagian 2 (TOEFL Part 2)",
                 "app_link": "tokopedia://digital/form?category_id=126?operator_id=2030&product_id=7006",
                 "web_link": "https://pulsa.tokopedia.com?category_id=126&operator_id=2030&product_id=7006",
                 "text_link": "",
-                "media_url": "https://ecs7.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_d647dfa7-fdc1-4ae7-90a6-0a7e4b7b2383.png",
+                "media_url": "https://images.tokopedia.net/img/attachment/2020/8/24/41127956/41127956_d647dfa7-fdc1-4ae7-90a6-0a7e4b7b2383.png",
                 "template": "",
                 "button_type": "",
                 "label_1": "Mulai dari",

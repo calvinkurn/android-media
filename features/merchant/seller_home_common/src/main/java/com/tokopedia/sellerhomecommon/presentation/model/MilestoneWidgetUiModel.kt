@@ -23,7 +23,8 @@ data class MilestoneWidgetUiModel(
     override var isNeedToBeRemoved: Boolean = false,
     override var showLoadingState: Boolean = false,
     override var emptyState: WidgetEmptyStateUiModel,
-    var isAlreadyMinimized: Boolean = false
+    override var useRealtime: Boolean = false,
+    var isAlreadyMinimized: Boolean = false,
 ) : BaseWidgetUiModel<MilestoneDataUiModel> {
 
     override fun copyWidget(): BaseWidgetUiModel<MilestoneDataUiModel> {

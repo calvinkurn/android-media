@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post
 
+import android.annotation.SuppressLint
 import android.os.Handler
 import android.text.SpannableString
 import android.text.TextUtils
@@ -21,7 +22,12 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXComments
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Action
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.CtaLink
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Title
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateTitle
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
@@ -37,16 +43,26 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.BasePostTagViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.BasePostTagModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.clearImage
+import com.tokopedia.kotlin.extensions.view.getDimens
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_dynamic_post.view.*
@@ -56,22 +72,24 @@ import java.net.URLEncoder
 /**
  * @author by milhamj on 28/11/18.
  */
-open class DynamicPostUIViewHolder(v: View,
-                                   private val listener: DynamicPostViewHolder.DynamicPostListener,
-                                   private val cardTitleListener: CardTitleView.CardTitleListener,
-                                   private val imagePostListener: ImagePostViewHolder.ImagePostListener,
-                                   private val youtubePostListener: YoutubeViewHolder.YoutubePostListener,
-                                   private val pollOptionListener: PollAdapter.PollOptionListener,
-                                   private val gridItemListener: GridPostAdapter.GridItemListener,
-                                   private val videoViewListener: VideoViewHolder.VideoViewListener,
-                                   private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
-                                   private val userSession: UserSessionInterface)
-    : AbstractViewHolder<DynamicPostUiModel>(v) {
+open class DynamicPostUIViewHolder(
+    v: View,
+    private val listener: DynamicPostViewHolder.DynamicPostListener,
+    private val cardTitleListener: CardTitleView.CardTitleListener,
+    private val imagePostListener: ImagePostViewHolder.ImagePostListener,
+    private val youtubePostListener: YoutubeViewHolder.YoutubePostListener,
+    private val pollOptionListener: PollAdapter.PollOptionListener,
+    private val gridItemListener: GridPostAdapter.GridItemListener,
+    private val videoViewListener: VideoViewHolder.VideoViewListener,
+    private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
+    private val userSession: UserSessionInterface
+) : AbstractViewHolder<DynamicPostUiModel>(v) {
 
     lateinit var adapter: PostPagerAdapter
 
     companion object {
-        const val FEED_X_CARD_TYPE_ASGC ="FeedXCardProductsHighlight"
+        const val FEED_X_CARD_TYPE_ASGC = "FeedXCardProductsHighlight"
+
         @LayoutRes
         val LAYOUT = R.layout.item_dynamic_ui_post
 
@@ -132,9 +150,10 @@ open class DynamicPostUIViewHolder(v: View,
     }
 
     private fun bindTitle(feedXCard: FeedXCard) {
-        val action = Action("",action = "", appLink = feedXCard.appLink, feedXCard.webLink)
-        val title = Title(feedXCard.text,"",isIsClicked = false, ctaLink = CtaLink(),action = action )
-        val template = TemplateTitle(text = true,textBadge = false, false )
+        val action = Action("", action = "", appLink = feedXCard.appLink, feedXCard.webLink)
+        val title =
+            Title(feedXCard.text, "", isIsClicked = false, ctaLink = CtaLink(), action = action)
+        val template = TemplateTitle(text = true, textBadge = false, false)
         itemView.cardTitle.shouldShowWithAction(shouldShowTitle(template)) {
             itemView.cardTitle.bind(title, template, adapterPosition)
         }
@@ -149,88 +168,117 @@ open class DynamicPostUIViewHolder(v: View,
         var author = feedXCard.author
         val authorType = if (author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
         val followCta =
-                FollowCta(authorID = author.id, authorType = authorType, isFollow = feedXCard.followers.isFollowed)
-                if (!TextUtils.isEmpty(author.logoURL)) {
-                    itemView.authorImage.loadImageCircle(author.logoURL)
-                } else {
-                    itemView.authorImage.setImageDrawable(
-                            MethodChecker.getDrawable(itemView.context, com.tokopedia.topads.sdk.R.drawable.error_drawable)
-                    )
-                }
+            FollowCta(
+                authorID = author.id,
+                authorType = authorType,
+                isFollow = feedXCard.followers.isFollowed
+            )
+        if (!TextUtils.isEmpty(author.logoURL)) {
+            itemView.authorImage.loadImageCircle(author.logoURL)
+        } else {
+            itemView.authorImage.setImageDrawable(
+                MethodChecker.getDrawable(
+                    itemView.context,
+                    com.tokopedia.topads.sdk.R.drawable.error_drawable
+                )
+            )
+        }
 
 
-                itemView.authorImage.setOnClickListener {
-                    onAvatarClick(author.appLink,
-                        feedXCard.id,
-                        "",
-                        followCta,
-                        author.id)
-                }
+        itemView.authorImage.setOnClickListener {
+            onAvatarClick(
+                author.appLink,
+                feedXCard.id,
+                "",
+                followCta,
+                author.id
+            )
+        }
 
-            if (author.badgeURL.isNotBlank()) {
-                itemView.authorBadge.show()
-                itemView.authorBadge.loadImage(author.badgeURL)
-                itemView.authorTitle.setMargin(itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_4), 0, itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_8), 0)
-            } else {
-                itemView.authorBadge.hide()
-                itemView.authorTitle.setMargin(itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_8), 0, itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_8), 0)
+        if (author.badgeURL.isNotBlank()) {
+            itemView.authorBadge.show()
+            itemView.authorBadge.loadImage(author.badgeURL)
+            itemView.authorTitle.setMargin(
+                itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_4),
+                0,
+                itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_8),
+                0
+            )
+        } else {
+            itemView.authorBadge.hide()
+            itemView.authorTitle.setMargin(
+                itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_8),
+                0,
+                itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_8),
+                0
+            )
+        }
+
+        itemView.authorTitle.shouldShowWithAction(author.name.isNotEmpty()) {
+            itemView.authorTitle.text = MethodChecker.fromHtml(author.name)
+            itemView.authorTitle.setOnClickListener {
+                onAvatarClick(
+                    author.appLink,
+                    feedXCard.id,
+                    "",
+                    followCta,
+                    author.id
+                )
             }
+        }
 
-            itemView.authorTitle.shouldShowWithAction(author.name.isNotEmpty()) {
-                itemView.authorTitle.text = MethodChecker.fromHtml(author.name)
-                itemView.authorTitle.setOnClickListener {
-                    onAvatarClick(author.appLink,
-                        feedXCard.id,
-                        "",
-                        followCta,
-                        author.id) }
-            }
-
-            itemView.authorSubtitile.shouldShowWithAction(feedXCard.publishedAt.isNotEmpty()) {
-               val avatarDate = TimeConverter.generateTime(itemView.context, feedXCard.publishedAt)
-                val spannableString: SpannableString =
-                        if (feedXCard.subTitle.isNotEmpty()) {
-                            SpannableString(String.format(
-                                    getString(R.string.feed_header_time_format),
-                                    avatarDate,
-                                    feedXCard.subTitle))
-                        } else {
-                            SpannableString(avatarDate)
-                        }
-                itemView.authorSubtitile.text = spannableString
-                itemView.authorSubtitile.setOnClickListener {
-                    onAvatarClick(author.appLink,
-                            feedXCard.id,
-                            "",
-                            followCta,
-                            author.id)
-                }
-            }
-
-            itemView.headerAction.shouldShowWithAction(feedXCard.followers.isFollowed
-                    && feedXCard.author.id != userSession.userId) {
-                bindFollow(feedXCard)
-            }
-
-                if (canShowMenu(feedXCard.reportable, feedXCard.deletable, feedXCard.editable)) {
-                    itemView.menu.setOnClickListener {
-                        listener.onMenuClick(
-                            adapterPosition,
-                            feedXCard.id,
-                            feedXCard.reportable,
-                            feedXCard.deletable,
-                            feedXCard.editable,
-                            true,
-                            feedXCard.author.id,
-                            "",
-                            "",
-                            "",
-                            feedXCard.text,
+        itemView.authorSubtitile.shouldShowWithAction(feedXCard.publishedAt.isNotEmpty()) {
+            val avatarDate = TimeConverter.generateTime(itemView.context, feedXCard.publishedAt)
+            val spannableString: SpannableString =
+                if (feedXCard.subTitle.isNotEmpty()) {
+                    SpannableString(
+                        String.format(
+                            getString(R.string.feed_header_time_format),
+                            avatarDate,
+                            feedXCard.subTitle
                         )
-                    }
-                } else{
-                    itemView.menu.hide()
+                    )
+                } else {
+                    SpannableString(avatarDate)
                 }
+            itemView.authorSubtitile.text = spannableString
+            itemView.authorSubtitile.setOnClickListener {
+                onAvatarClick(
+                    author.appLink,
+                    feedXCard.id,
+                    "",
+                    followCta,
+                    author.id
+                )
+            }
+        }
+
+        itemView.headerAction.shouldShowWithAction(
+            feedXCard.followers.isFollowed
+                && feedXCard.author.id != userSession.userId
+        ) {
+            bindFollow(feedXCard)
+        }
+
+        if (canShowMenu(feedXCard.reportable, feedXCard.deletable, feedXCard.editable)) {
+            itemView.menu.setOnClickListener {
+                listener.onMenuClick(
+                    adapterPosition,
+                    feedXCard.id,
+                    feedXCard.reportable,
+                    feedXCard.deletable,
+                    feedXCard.editable,
+                    true,
+                    feedXCard.author.id,
+                    feedXCard.author.type.toString(),
+                    "",
+                    "",
+                    feedXCard.text,
+                )
+            }
+        } else {
+            itemView.menu.hide()
+        }
     }
 
     private fun canShowMenu(reportable: Boolean, deletable: Boolean, editable: Boolean): Boolean {
@@ -262,10 +310,12 @@ open class DynamicPostUIViewHolder(v: View,
             itemView.headerAction.text = "Following"
             itemView.headerAction.buttonCompatType = ButtonCompat.SECONDARY
         } else {
-            itemView.headerAction.text = getString(com.tokopedia.feedcomponent.R.string.feed_component_follow)
+            itemView.headerAction.text =
+                getString(com.tokopedia.feedcomponent.R.string.feed_component_follow)
             itemView.headerAction.buttonCompatType = ButtonCompat.PRIMARY
         }
-        val authorType = if (feedXCard.author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
+        val authorType =
+            if (feedXCard.author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
 
 
         itemView.headerAction.setOnClickListener {
@@ -281,11 +331,11 @@ open class DynamicPostUIViewHolder(v: View,
 
     private fun animateFooter() {
         Handler().postDelayed({
-            itemView.footerBackground.animation = AnimationUtils.loadAnimation(itemView.context, R.anim.anim_fade_in)
+            itemView.footerBackground.animation =
+                AnimationUtils.loadAnimation(itemView.context, R.anim.anim_fade_in)
             itemView.footerBackground.visibility = View.VISIBLE
         }, ANIMATION_DURATION)
     }
-
 
 
     open fun bindCaption(feedXCard: FeedXCard, trackingPostModel: TrackingPostModel) {
@@ -294,45 +344,67 @@ open class DynamicPostUIViewHolder(v: View,
             if (feedXCard.text.isEmpty()) {
                 itemView.caption.visibility = View.GONE
             } else if (feedXCard.text.length > MAX_CHAR ||
-                   hasSecondLine(feedXCard.text)) {
+                hasSecondLine(feedXCard.text)
+            ) {
                 itemView.caption.visibility = View.VISIBLE
                 val captionEnd = if (findSubstringSecondLine(feedXCard.text) < CAPTION_END)
                     findSubstringSecondLine(feedXCard.text)
                 else
                     CAPTION_END
                 val captionText = feedXCard.text.substring(0, captionEnd)
-                        .replace("\n","<br/>")
-                        .replace(NEWLINE, "<br/>")
-                        .plus("... ")
-                        .plus("<font color='${ColorUtil.getColorFromResToString(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400)}'>" + "<b>")
-                        .plus(getString(R.string.feed_component_read_more_button))
-                        .plus("</b></font>")
+                    .replace("\n", "<br/>")
+                    .replace(NEWLINE, "<br/>")
+                    .plus("... ")
+                    .plus(
+                        "<font color='${
+                            ColorUtil.getColorFromResToString(
+                                itemView.context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_G400
+                            )
+                        }'>" + "<b>"
+                    )
+                    .plus(getString(R.string.feed_component_read_more_button))
+                    .plus("</b></font>")
 
                 itemView.caption.text = tagConverter.convertToLinkifyHashtag(
-                        SpannableString(MethodChecker.fromHtml(captionText)), colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag, trackingPostModel) }
+                    SpannableString(MethodChecker.fromHtml(captionText)), colorLinkHashtag
+                ) { hashtag -> onHashtagClicked(hashtag, trackingPostModel) }
                 itemView.caption.setOnClickListener {
-                        if (itemView.caption.text.endsWith(getString(R.string.feed_component_read_more_button))) listener.onReadMoreClicked(trackingPostModel)
+                    if (itemView.caption.text.endsWith(getString(R.string.feed_component_read_more_button))) listener.onReadMoreClicked(
+                        trackingPostModel
+                    )
 
-                        itemView.caption.text = tagConverter.convertToLinkifyHashtag(SpannableString(feedXCard.text),
-                                colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag, trackingPostModel) }
+                    itemView.caption.text = tagConverter.convertToLinkifyHashtag(
+                        SpannableString(feedXCard.text),
+                        colorLinkHashtag
+                    ) { hashtag -> onHashtagClicked(hashtag, trackingPostModel) }
 
                 }
                 itemView.caption.movementMethod = LinkMovementMethod.getInstance()
             } else {
                 itemView.caption.text = tagConverter
-                        .convertToLinkifyHashtag(SpannableString(feedXCard.text.replace(NEWLINE, " ")),
-                                colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag, trackingPostModel) }
+                    .convertToLinkifyHashtag(
+                        SpannableString(feedXCard.text.replace(NEWLINE, " ")),
+                        colorLinkHashtag
+                    ) { hashtag -> onHashtagClicked(hashtag, trackingPostModel) }
                 itemView.caption.movementMethod = LinkMovementMethod.getInstance()
             }
         }
     }
 
     private val colorLinkHashtag: Int
-        get() = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
+        get() = ContextCompat.getColor(
+            itemView.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_G400
+        )
 
-    private fun onHashtagClicked(hashtag: String, trackingPostModel: TrackingPostModel){
+    private fun onHashtagClicked(hashtag: String, trackingPostModel: TrackingPostModel) {
         val encodeHashtag = URLEncoder.encode(hashtag)
-        RouteManager.route(itemView.context, ApplinkConstInternalContent.HASHTAG_PAGE, encodeHashtag)
+        RouteManager.route(
+            itemView.context,
+            ApplinkConstInternalContent.HASHTAG_PAGE,
+            encodeHashtag
+        )
         listener.onHashtagClicked(hashtag, trackingPostModel)
     }
 
@@ -343,44 +415,54 @@ open class DynamicPostUIViewHolder(v: View,
 
     private fun findSubstringSecondLine(caption: String): Int {
         val firstIndex = caption.indexOf("\n", 0)
-        return if (hasSecondLine(caption)) caption.indexOf("\n",
-                firstIndex + 1) else caption.length
+        return if (hasSecondLine(caption)) caption.indexOf(
+            "\n",
+            firstIndex + 1
+        ) else caption.length
     }
 
     private fun bindContentList(feedXCard: FeedXCard) {
-        var contentList = if (feedXCard.typename == FEED_X_CARD_TYPE_ASGC) mapASGCPostContent(feedXCard) else mapPostContent(feedXCard)
+        var contentList =
+            if (feedXCard.typename == FEED_X_CARD_TYPE_ASGC) mapASGCPostContent(feedXCard) else mapPostContent(
+                feedXCard
+            )
         val shouldShow = contentList.isNotEmpty()
         itemView.contentLayout.shouldShowWithAction(shouldShow) {
             contentList.forEach { it.postId = feedXCard.id }
             contentList.forEach { it.positionInFeed = adapterPosition }
 
-            adapter = PostPagerAdapter(imagePostListener,
-                    youtubePostListener,
-                    pollOptionListener,
-                    gridItemListener,
-                    videoViewListener,
-                    feedMultipleImageViewListener,
-                    "")
+            adapter = PostPagerAdapter(
+                imagePostListener,
+                youtubePostListener,
+                pollOptionListener,
+                gridItemListener,
+                videoViewListener,
+                feedMultipleImageViewListener,
+                ""
+            )
             adapter.setList(contentList)
             itemView.contentViewPager.adapter = adapter
             itemView.contentViewPager.offscreenPageLimit = adapter.count
             itemView.tabLayout.setupWithViewPager(itemView.contentViewPager)
             //Visibility gone
-            itemView.tabLayout.visibility =  View.GONE
+            itemView.tabLayout.visibility = View.GONE
         }
     }
-    private fun mapPostContent(feedXCard: FeedXCard): MutableList<BasePostViewModel> {
-        val list: MutableList<BasePostViewModel> = ArrayList()
+
+    private fun mapPostContent(feedXCard: FeedXCard): MutableList<BasePostModel> {
+        val list: MutableList<BasePostModel> = ArrayList()
         for (media in feedXCard.media) {
             when (media.type) {
                 CONTENT_IMAGE -> list.add(mapPostImage(media))
-                CONTENT_LONG_VIDEO  ->if (media.coverUrl.isNotBlank()
-                        && media.mediaUrl.isNotBlank()) {
+                CONTENT_LONG_VIDEO -> if (media.coverUrl.isNotBlank()
+                    && media.mediaUrl.isNotBlank()
+                ) {
                     list.add(mapPostVideo(media))
                 }
                 CONTENT_VIDEO -> {
                     if (media.coverUrl.isNotBlank()
-                            && media.mediaUrl.isNotBlank()) {
+                        && media.mediaUrl.isNotBlank()
+                    ) {
                         list.add(mapPostVideo(media))
                     }
                 }
@@ -389,124 +471,141 @@ open class DynamicPostUIViewHolder(v: View,
 
         return list
     }
-    private fun mapASGCPostContent(feedXCard: FeedXCard): MutableList<BasePostViewModel> {
-        val list: MutableList<BasePostViewModel> = ArrayList()
+
+    private fun mapASGCPostContent(feedXCard: FeedXCard): MutableList<BasePostModel> {
+        val list: MutableList<BasePostModel> = ArrayList()
         for (product in feedXCard.products) {
-            val mediaFromProduct = FeedXMedia(id = product.id,type = TYPE_IMAGE,appLink = product.appLink, mediaUrl = product.coverURL, webLink = product.webLink)
+            val mediaFromProduct = FeedXMedia(
+                id = product.id,
+                type = TYPE_IMAGE,
+                appLink = product.appLink,
+                mediaUrl = product.coverURL,
+                webLink = product.webLink
+            )
             list.add(mapPostImage(mediaFromProduct))
         }
 
         return list
     }
-    private fun mapPostImage(media: FeedXMedia): ImagePostViewModel {
-        return ImagePostViewModel(
-               image= media.mediaUrl,
-                redirectLink = media.webLink
+
+    private fun mapPostImage(media: FeedXMedia): ImagePostModel {
+        return ImagePostModel(
+            image = media.mediaUrl,
+            redirectLink = media.webLink
         )
     }
 
-    private fun mapPostVideo(media: FeedXMedia): VideoViewModel {
-        return VideoViewModel(
-                media.id,
-                media.coverUrl,
-                media.mediaUrl,
-                redirectLink = media.appLink
+    private fun mapPostVideo(media: FeedXMedia): VideoModel {
+        return VideoModel(
+            media.id,
+            media.coverUrl,
+            media.mediaUrl,
+            redirectLink = media.appLink
         )
     }
 
 
     private fun bindFooter(feedXCard: FeedXCard) {
-            itemView.footerBackground.visibility = View.GONE
+        itemView.footerBackground.visibility = View.GONE
 
-            if (feedXCard.like.count > 0) {
-                itemView.likeGroup.show()
-                itemView.likeIcon.setOnClickListener {
-                    listener.onLikeClick(
-                        adapterPosition,
-                        feedXCard.id.toLongOrZero(),
-                        feedXCard.like.isLiked,
-                        "",
-                        false,
-                        false, "", ""
-                    )
-                }
-                itemView.likeText.setOnClickListener {
-                    listener.onLikeClick(
-                        adapterPosition,
-                        feedXCard.id.toLongOrZero(),
-                        feedXCard.like.isLiked,
-                        "",
-                        isFollowed = false, type = false, "", ""
-                    )
-                }
-                bindLike(feedXCard)
-            } else {
-                itemView.likeGroup.hide()
+        if (feedXCard.like.count > 0) {
+            itemView.likeGroup.show()
+            itemView.likeIcon.setOnClickListener {
+                listener.onLikeClick(
+                    adapterPosition,
+                    feedXCard.id.toLongOrZero(),
+                    feedXCard.like.isLiked,
+                    "",
+                    false,
+                    false,
+                    "",
+                    "",
+                    authorType = feedXCard.author.type.toString()
+                )
             }
+            itemView.likeText.setOnClickListener {
+                listener.onLikeClick(
+                    adapterPosition,
+                    feedXCard.id.toLongOrZero(),
+                    feedXCard.like.isLiked,
+                    "",
+                    isFollowed = false,
+                    type = false,
+                    "",
+                    "",
+                    authorType = feedXCard.author.type.toString()
+                )
+            }
+            bindLike(feedXCard)
+        } else {
+            itemView.likeGroup.hide()
+        }
 
-                itemView.commentGroup.show()
-                itemView.commentIcon.setOnClickListener {
-                    listener.onCommentClick(
-                        adapterPosition,
-                        feedXCard.id,
-                        "",
-                        "",
-                        isFollowed = false,
-                        ""
-                    )
-                }
-                itemView.commentText.setOnClickListener {
-                    listener.onCommentClick(
-                        adapterPosition,
-                        feedXCard.id, "",
-                        "",
-                        isFollowed = false,
-                        ""
-                    )
-                }
-                bindComment(feedXCard.comments)
+        itemView.commentGroup.show()
+        itemView.commentIcon.setOnClickListener {
+            listener.onCommentClick(
+                adapterPosition,
+                feedXCard.id,
+                "",
+                "",
+                isFollowed = false,
+                ""
+            )
+        }
+        itemView.commentText.setOnClickListener {
+            listener.onCommentClick(
+                adapterPosition,
+                feedXCard.id, "",
+                "",
+                isFollowed = false,
+                ""
+            )
+        }
+        bindComment(feedXCard.comments)
 
 
-                itemView.shareGroup.show()
-                val desc = getString(R.string.feed_share_detail_format_text)
+        itemView.shareGroup.show()
+        val desc = getString(R.string.feed_share_detail_format_text)
 
-                itemView.shareIcon.setOnClickListener {
-                    listener.onShareClick(
-                        adapterPosition,
-                            feedXCard.id,
-                            feedXCard.author.name + " `post",
-                            desc.replace("%s", feedXCard.webLink),
-                            feedXCard.webLink,
-                            feedXCard.media.firstOrNull()?.mediaUrl ?: "",
-                            false,
-                            feedXCard.typename,
-                            feedXCard.followers.isFollowed,
-                            feedXCard.author.id,
-                            feedXCard.media.firstOrNull()?.type?:""
-                    )
-                }
-                itemView.shareText.setOnClickListener {
-                    listener.onShareClick(
-                            adapterPosition,
-                            feedXCard.id,
-                            feedXCard.author.name + " `post",
-                            desc.replace("%s", feedXCard.webLink),
-                            feedXCard.webLink,
-                            feedXCard.author.logoURL,
-                            false,
-                            feedXCard.typename,
-                            feedXCard.followers.isFollowed,
-                            feedXCard.author.id,
-                           feedXCard.media.firstOrNull()?.type?:""
-                    )
-                }
+        itemView.shareIcon.setOnClickListener {
+            listener.onShareClick(
+                adapterPosition,
+                feedXCard.id,
+                feedXCard.author.name + " post",
+                desc.replace("%s", feedXCard.webLink),
+                feedXCard.webLink,
+                feedXCard.media.firstOrNull()?.mediaUrl ?: "",
+                false,
+                feedXCard.typename,
+                feedXCard.followers.isFollowed,
+                feedXCard.author.id,
+                feedXCard.media.firstOrNull()?.type ?: ""
+            )
+        }
+        itemView.shareText.setOnClickListener {
+            listener.onShareClick(
+                adapterPosition,
+                feedXCard.id,
+                feedXCard.author.name + " post",
+                desc.replace("%s", feedXCard.webLink),
+                feedXCard.webLink,
+                feedXCard.author.logoURL,
+                false,
+                feedXCard.typename,
+                feedXCard.followers.isFollowed,
+                feedXCard.author.id,
+                feedXCard.media.firstOrNull()?.type ?: ""
+            )
+        }
 
-                itemView.statsIcon.hide()
+        itemView.statsIcon.hide()
 
     }
+
     private fun isVideo(media: FeedXMedia?): Boolean {
         return media?.type != TYPE_IMAGE
     }
+
     private fun shouldShowFooter(template: TemplateFooter): Boolean {
         return template.comment || template.ctaLink || template.like || template.share || template.stats
     }
@@ -516,53 +615,70 @@ open class DynamicPostUIViewHolder(v: View,
         when {
             like.isLiked -> {
                 itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_green)
-                val likeCount = if (like.countFmt.isEmpty()) like.count.toString() else like.countFmt
+                val likeCount =
+                    if (like.countFmt.isEmpty()) like.count.toString() else like.countFmt
                 itemView.likeText.text = likeCount
                 itemView.likeText.setTextColor(
-                        MethodChecker.getColor(itemView.likeText.context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
+                    MethodChecker.getColor(
+                        itemView.likeText.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    )
                 )
             }
             like.count > 0 -> {
                 itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
                 itemView.likeText.text = like.countFmt
                 itemView.likeText.setTextColor(
-                        MethodChecker.getColor(itemView.likeText.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
+                    MethodChecker.getColor(
+                        itemView.likeText.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                    )
                 )
             }
             else -> {
                 itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
-                val text : String  = if (like.countFmt.isNotEmpty() && !like.countFmt.equals("0")) like.countFmt else getString(R.string.kol_action_like)
+                val text: String =
+                    if (like.countFmt.isNotEmpty() && !like.countFmt.equals("0")) like.countFmt else getString(
+                        R.string.kol_action_like
+                    )
                 itemView.likeText.text = text
                 itemView.likeText.setTextColor(
-                        MethodChecker.getColor(itemView.likeIcon.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
+                    MethodChecker.getColor(
+                        itemView.likeIcon.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                    )
                 )
             }
         }
     }
 
     private fun bindComment(comments: FeedXComments) {
-        itemView.commentText.text  =
-                if (comments.count == 0) getString(com.tokopedia.feedcomponent.R.string.kol_action_comment)
-                else comments.countFmt
+        itemView.commentText.text =
+            if (comments.count == 0) getString(com.tokopedia.feedcomponent.R.string.kol_action_comment)
+            else comments.countFmt
     }
 
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun bindPostTag(feedXCard: FeedXCard) {
-            if (feedXCard.tags.isNotEmpty()) {
-                itemView.rvPosttag.show()
-                itemView.rvPosttag.setHasFixedSize(true)
-                val layoutManager: RecyclerView.LayoutManager =
+        if (feedXCard.tags.isNotEmpty()) {
+            itemView.rvPosttag.show()
+            itemView.rvPosttag.setHasFixedSize(true)
+            val layoutManager: RecyclerView.LayoutManager =
                 LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-                val authorType = if (feedXCard.author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
+            val authorType =
+                if (feedXCard.author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
 
-                itemView.rvPosttag.isNestedScrollingEnabled = false
-                itemView.rvPosttag.layoutManager = layoutManager
-                itemView.rvPosttag.adapter = PostTagAdapter(mapPostTag(feedXCard.tags, "", feedXCard.id, adapterPosition, authorType),
-                        PostTagTypeFactoryImpl(listener,  DeviceScreenInfo.getScreenWidth(itemView.context)))
-                (itemView.rvPosttag.adapter as PostTagAdapter).notifyDataSetChanged()
-            } else {
-                itemView.rvPosttag.hide()
-            }
+            itemView.rvPosttag.isNestedScrollingEnabled = false
+            itemView.rvPosttag.layoutManager = layoutManager
+            itemView.rvPosttag.adapter = PostTagAdapter(
+                mapPostTag(feedXCard.tags, "", feedXCard.id, adapterPosition, authorType),
+                PostTagTypeFactoryImpl(listener, DeviceScreenInfo.getScreenWidth(itemView.context))
+            )
+            (itemView.rvPosttag.adapter as PostTagAdapter).notifyDataSetChanged()
+        } else {
+            itemView.rvPosttag.hide()
+        }
     }
 
 
@@ -570,52 +686,60 @@ open class DynamicPostUIViewHolder(v: View,
         return postTag.totalItems != 0 || postTag.items.isNotEmpty()
     }
 
-    private fun mapPostTag(postTagItemList: List<FeedXProduct>, feedType: String, postId: String, positionInFeed: Int, authorType: String): MutableList<BasePostTagViewModel> {
+    private fun mapPostTag(
+        postTagItemList: List<FeedXProduct>,
+        feedType: String,
+        postId: String,
+        positionInFeed: Int,
+        authorType: String
+    ): MutableList<BasePostTagModel> {
         val needToRezise = postTagItemList.size > 1
-        val itemList: MutableList<BasePostTagViewModel> = ArrayList()
+        val itemList: MutableList<BasePostTagModel> = ArrayList()
         for (postTagItem in postTagItemList) {
-                    val item = ProductPostTagViewModel(
-                            postTagItem.id,
-                            postTagItem.name,
-                            postTagItem.priceFmt,
-                            "",
-                            postTagItem.appLink,
-                            postTagItem.webLink,
-                            postTagItem.coverURL,
-                            postTagItem.discount.toString(),
-                            false,
-                            mutableListOf(),
-                            isWishlisted = postTagItem.isWishlisted,
-                            mutableListOf(),
-                            mapPostTagItem(postTagItem, positionInFeed),
-                            rating = postTagItem.star,
-                            needToRezise,
-                            authorType
-                    )
-                    item.feedType = feedType
-                    item.postId = postId
-                    item.positionInFeed = positionInFeed
-                    itemList.add(item)
+            val item = ProductPostTagModel(
+                postTagItem.id,
+                postTagItem.name,
+                postTagItem.priceFmt,
+                "",
+                postTagItem.appLink,
+                postTagItem.webLink,
+                postTagItem.coverURL,
+                postTagItem.discount.toString(),
+                false,
+                mutableListOf(),
+                isWishlisted = postTagItem.isWishlisted,
+                mutableListOf(),
+                mapPostTagItem(postTagItem, positionInFeed),
+                rating = postTagItem.star,
+                needToRezise,
+                authorType
+            )
+            item.feedType = feedType
+            item.postId = postId
+            item.positionInFeed = positionInFeed
+            itemList.add(item)
         }
         return itemList
     }
+
     private fun mapPostTagItem(feedXProduct: FeedXProduct, positionInFeed: Int): PostTagItem {
         return PostTagItem(
-                id = feedXProduct.id,
-                text = feedXProduct.name,
-                price = feedXProduct.priceFmt,
-                priceOriginal = feedXProduct.priceOriginalFmt,
-                type = "",
-                applink = feedXProduct.appLink,
-                weblink = feedXProduct.webLink,
-                thumbnail = feedXProduct.coverURL,
-                percentage = feedXProduct.discountFmt,
-                false,
-                rating = feedXProduct.star)
+            id = feedXProduct.id,
+            text = feedXProduct.name,
+            price = feedXProduct.priceFmt,
+            priceOriginal = feedXProduct.priceOriginalFmt,
+            type = "",
+            applink = feedXProduct.appLink,
+            weblink = feedXProduct.webLink,
+            thumbnail = feedXProduct.coverURL,
+            percentage = feedXProduct.discountFmt,
+            false,
+            rating = feedXProduct.star
+        )
 
     }
 
-    private fun bindTracking(impressHolder: ImpressHolder, trackList: MutableList<TrackingViewModel>) {
+    private fun bindTracking(impressHolder: ImpressHolder, trackList: MutableList<TrackingModel>) {
         itemView.addOnImpressionListener(impressHolder) {
             listener.onAffiliateTrackClicked(trackList, false)
         }

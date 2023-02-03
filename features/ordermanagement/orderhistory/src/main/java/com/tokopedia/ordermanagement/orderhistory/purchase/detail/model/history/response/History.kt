@@ -1,12 +1,8 @@
 package com.tokopedia.ordermanagement.orderhistory.purchase.detail.model.history.response
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class History(
-        @SerializedName("orderStatus")
-        var orderStatusCode: Int = 0,
-
         @SerializedName("orderStatusColor")
         var orderStatusColor: String = "",
 

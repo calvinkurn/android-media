@@ -585,7 +585,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             RechargeBUWidgetMixTopViewHolder.LAYOUT -> viewHolder =
                 RechargeBUWidgetMixTopViewHolder(view, rechargeBUWidgetListener)
             BannerComponentViewHolder.LAYOUT -> viewHolder =
-                BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener, cardInteraction = true)
+                BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener)
             DynamicIconViewHolder.LAYOUT -> viewHolder =
                 DynamicIconViewHolder(view, dynamicIconComponentListener)
             ErrorStateIconViewHolder.LAYOUT -> viewHolder = ErrorStateIconViewHolder(view, listener)

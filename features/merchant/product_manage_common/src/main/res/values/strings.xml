@@ -44,6 +44,7 @@
     <string name="product_manage_shop_moderated_ticker_title" tools:ignore="UnusedResources">Pengaturan produk belum bisa dilakukan</string>
     <string name="product_manage_shop_moderated_ticker_description" tools:ignore="UnusedResources"><![CDATA[Status tokomu ditangguhkan sementara. Aktifkan toko untuk bisa mengatur produk lagi. <a href="https://seller.tokopedia.com/edu/toko-dimoderasi/" target="_blank"><span style=color:#00AA5B;>Baca Artikel</span></a>]]></string>
     <string name="product_manage_shop_moderated_permanent_ticker_description" tools:ignore="UnusedResources"><![CDATA[Status tokomu ditangguhkan permanen. Aktifkan toko untuk bisa mengatur produk lagi. <a href="https://seller.tokopedia.com/edu/toko-dimoderasi/" target="_blank"><span style=color:#00AA5B;>Baca Artikel</span></a>]]></string>
+    <string name="product_manage_tobacco_ticker_description"><![CDATA[Informasi produk yang tidak ditampilkan di aplikasi ini disebabkan karena adanya larangan dari Google Policy.<a href="https://seller.tokopedia.com/manage-product" target="_blank">Cek di Web</a>]]></string>
 
     <string name="product_manage_campaign_stock_open_campaign">Lihat detail informasi dan ubah stok campaign lewat Tokopedia versi desktop, ya.</string>
     <string name="product_manage_campaign_label">Campaign</string>
@@ -54,5 +55,10 @@
     <string name="product_manage_zero_stock_info_in_edit_stock_variant"><![CDATA[Produk dengan stok <b>0</b> belum bisa muncul ke pembeli.]]></string>
     <string name="product_manage_has_stock_alert_info_in_edit_stock_variant">Fitur Pengingat Stok untuk produk ini aktif.</string>
     <string name="product_manage_stock_alert_active_info_in_edit_stock_variant">Stok produk di bawah batas min. pengingat stok.</string>
+    <string name="product_manage_stock_description_information_stock_available">"Produk ini dapat tanda “Stok Tersedia” yang bisa dilihat pembeli di halaman produk. "</string>
+    <string name="product_manage_stock_available">"Tanda “Stok Tersedia” "</string>
+
+    <string name="product_manage_stock_available_title" tools:ignore="UnusedResources">Produkmu bisa dapat tanda “Stok Tersedia”!</string>
+    <string name="product_manage_stock_available_description" tools:ignore="UnusedResources"><![CDATA[Tanda ini akan ada di halaman detail produkmu yang artinya produk siap dibeli. <a href="https://seller.tokopedia.com/edu/reward-tanda-stok-tersedia/" target="_blank">Baca Artikel</a>]]></string>
 
 </resources>

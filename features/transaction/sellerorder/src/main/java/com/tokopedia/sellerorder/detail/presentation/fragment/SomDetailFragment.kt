@@ -190,7 +190,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         ViewModelProvider(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
     protected val bottomSheetManager by lazy {
-        view?.let { if (it is ViewGroup) BottomSheetManager(it) else null }
+        view?.let { if (it is ViewGroup) BottomSheetManager(it, childFragmentManager) else null }
     }
 
     private fun createChatIcon(context: Context): IconUnify {
@@ -975,6 +975,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     override fun onResoClicked(redirectPath: String) {
         SomNavigator.openAppLink(context, redirectPath)
+        SomAnalytics.sendClickOnResolutionWidgetEvent(userSession.userId)
     }
 
     private fun doRejectOrder(orderRejectRequestParam: SomRejectRequestParam) {
@@ -985,7 +986,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observingRejectOrder() {
-        somDetailViewModel.rejectOrderResult.observe(viewLifecycleOwner, {
+        somDetailViewModel.rejectOrderResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessRejectOrder(it.data.rejectOrder)
                 is Fail -> {
@@ -1000,7 +1001,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     it.throwable.showErrorToaster()
                 }
             }
-        })
+        }
     }
 
     override fun onDialPhone(strPhoneNo: String) {
