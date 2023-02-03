@@ -22,5 +22,6 @@ enum class PageSource(val value: String) {
     ProofPayment("Upload Proof Payment"),
     FlightCancellationReason("Flight Cancellation Reason"),
     Epharmacy("Epharmacy"),
+    WebView("WebView"),
     Unknown("")
 }

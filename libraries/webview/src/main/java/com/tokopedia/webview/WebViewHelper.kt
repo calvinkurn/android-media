@@ -299,7 +299,7 @@ object WebViewHelper {
 
     fun getMediaPickerIntent(context: Context): Intent {
         return MediaPicker.intent(context) {
-            pageSource(PageSource.Epharmacy)
+            pageSource(PageSource.WebView)
             modeType(ModeType.IMAGE_ONLY)
             singleSelectionMode()
         }
