@@ -3,6 +3,7 @@ package com.tokopedia.mvc.common.customview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.mvc.R
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -75,7 +76,7 @@ class SpendingEstimationLabelView : BaseCustomView {
 
     private fun refreshViews() {
         tpgTitle?.text = titleText
-        tpgDescription?.text = descriptionText
+        tpgDescription?.text = MethodChecker.fromHtml(descriptionText)
         tpgSpendingValue?.text = spendingEstimationText
     }
 }

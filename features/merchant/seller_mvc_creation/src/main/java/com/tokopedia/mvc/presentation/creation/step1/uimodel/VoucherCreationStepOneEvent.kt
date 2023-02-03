@@ -14,6 +14,7 @@ sealed class VoucherCreationStepOneEvent {
         val isVoucherProduct: Boolean
     ) : VoucherCreationStepOneEvent()
 
+    object resetFillState : VoucherCreationStepOneEvent()
     object HandleCoachmark : VoucherCreationStepOneEvent()
     object NavigateToNextStep : VoucherCreationStepOneEvent()
 }

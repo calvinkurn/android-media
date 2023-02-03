@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.*
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
@@ -122,7 +123,7 @@ class VoucherSettingViewModel @Inject constructor(
             it.copy(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
-                    benefitIdr = nominal.toLong()
+                    benefitIdr = nominal.toLongOrZero()
                 ),
                 fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.NOMINAL)
             )
@@ -150,7 +151,7 @@ class VoucherSettingViewModel @Inject constructor(
             it.copy(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
-                    benefitMax = maxDeduction.toLong()
+                    benefitMax = maxDeduction.toLongOrZero()
                 ),
                 fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.MAX_DEDUCTION)
             )
@@ -164,7 +165,7 @@ class VoucherSettingViewModel @Inject constructor(
             it.copy(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
-                    minPurchase = minimumBuy.toLong()
+                    minPurchase = minimumBuy.toLongOrZero()
                 ),
                 fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.MINIMUM_BUY)
             )
@@ -177,7 +178,7 @@ class VoucherSettingViewModel @Inject constructor(
             it.copy(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
-                    quota = quota.toLong()
+                    quota = quota.toLongOrZero()
                 ),
                 fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.QUOTA)
             )
@@ -365,4 +366,3 @@ class VoucherSettingViewModel @Inject constructor(
         }
     }
 }
-

@@ -27,6 +27,7 @@ import com.tokopedia.mvc.presentation.creation.step2.VoucherInformationActivity
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
+import com.tokopedia.mvc.util.tracker.VoucherTypeTracker
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -70,6 +71,10 @@ class VoucherTypeFragment : BaseDaggerFragment() {
         arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration
             ?: VoucherConfiguration()
     }
+
+    // tracker
+    @Inject
+    lateinit var tracker: VoucherTypeTracker
 
     override fun getScreenName(): String =
         VoucherTypeFragment::class.java.canonicalName.orEmpty()
@@ -171,7 +176,10 @@ class VoucherTypeFragment : BaseDaggerFragment() {
             } else {
                 getString(R.string.smvc_creation_step_one_out_of_three_sub_title_label)
             }
-            setNavigationOnClickListener { activity?.finish() }
+            setNavigationOnClickListener {
+                activity?.finish()
+                tracker.sendClickKembaliArrowEvent()
+            }
         }
     }
 
@@ -183,7 +191,10 @@ class VoucherTypeFragment : BaseDaggerFragment() {
         if (isVoucherProduct) setVoucherProductSelected() else setVoucherShopSelected()
         binding?.btnContinue?.apply {
             enable()
-            setOnClickListener { viewModel.processEvent(VoucherCreationStepOneEvent.NavigateToNextStep) }
+            setOnClickListener {
+                viewModel.processEvent(VoucherCreationStepOneEvent.NavigateToNextStep)
+                tracker.sendClickLanjutEvent()
+            }
         }
     }
 
@@ -210,6 +221,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
                     isVoucherProduct
                 )
             )
+            tracker.sendClickKuponTypeEvent(isVoucherProduct)
         }
     }
 
@@ -247,6 +259,8 @@ class VoucherTypeFragment : BaseDaggerFragment() {
                         isVoucherProduct
                     )
                 )
+                viewModel.processEvent(VoucherCreationStepOneEvent.resetFillState)
+                tracker.sendClickKuponTypeEvent(isVoucherProduct)
                 dismiss()
             }
             setSecondaryCTAClickListener { dismiss() }
@@ -277,8 +291,8 @@ class VoucherTypeFragment : BaseDaggerFragment() {
         currentVoucherConfiguration: VoucherConfiguration
     ) {
         if (pageMode == PageMode.CREATE) {
-            if (voucherConfiguration.isFinishedFillAllStep()) {
-                navigateToVoucherSummaryPage(voucherConfiguration)
+            if (currentVoucherConfiguration.isFinishedFillAllStep()) {
+                navigateToVoucherSummaryPage(currentVoucherConfiguration)
             } else {
                 navigateToVoucherInformationPage(pageMode, currentVoucherConfiguration)
             }

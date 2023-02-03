@@ -9,6 +9,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToaster
@@ -55,6 +57,7 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.moremenu.MoreMenuBottomSheet
 import com.tokopedia.mvc.presentation.download.DownloadVoucherImageBottomSheet
+import com.tokopedia.mvc.presentation.list.dialog.CallTokopediaCareDialog
 import com.tokopedia.mvc.presentation.list.dialog.StopVoucherConfirmationDialog
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.presentation.product.list.ProductListActivity
@@ -68,11 +71,13 @@ import com.tokopedia.mvc.util.constant.ImageUrlConstant
 import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.mvc.util.constant.VoucherTargetConstant.VOUCHER_TARGET_PUBLIC
 import com.tokopedia.mvc.util.tracker.ShareBottomSheetTracker
+import com.tokopedia.mvc.util.tracker.VoucherDetailTracker
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.constants.BroadcastChannelType
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -100,6 +105,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             "https://m.tokopedia.com/broadcast-chat/create/content?voucher_id="
         private const val tncUrl =
             "https://www.tokopedia.com/help/seller/article/syarat-ketentuan-kupon-toko-saya"
+        private const val TOKOPEDIA_CARE_STRING_FORMAT = "%s?url=%s"
+        private const val TOKOPEDIA_CARE_PATH = "help"
     }
 
     // binding
@@ -131,6 +138,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     // dialog
     private var stopVoucherDialog: StopVoucherConfirmationDialog? = null
+
+    // tracker
+    @Inject
+    lateinit var voucherDetailTracker: VoucherDetailTracker
 
     @Inject
     lateinit var tracker: ShareBottomSheetTracker
@@ -254,7 +265,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun setupHeaderSection(data: VoucherDetailData) {
         binding?.run {
             header.headerTitle = data.voucherName
-            header.setNavigationOnClickListener { activity?.finish() }
+            header.setNavigationOnClickListener {
+                voucherDetailTracker.sendClickArrowBackEvent(data)
+                activity?.finish()
+            }
             if (layoutHeader.parent != null) {
                 layoutHeader.inflate()
             }
@@ -277,7 +291,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             btnDownloadImageVoucher.apply {
                 isVisible =
                     data.voucherStatus == VoucherStatus.NOT_STARTED || data.voucherStatus == VoucherStatus.ONGOING
-                setOnClickListener { viewModel.onTapDownloadVoucherImage() }
+                setOnClickListener {
+                    viewModel.onTapDownloadVoucherImage()
+                    voucherDetailTracker.sendClickDownloadEvent(data)
+                }
             }
         }
     }
@@ -382,11 +399,12 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     }
                 }
             }
-            if (data.isVps == TRUE && data.isSubsidy == TRUE) {
-                btnUbahKupon.gone()
+            if (data.isVps == TRUE || data.isSubsidy == TRUE) {
+                btnUbahKupon.invisible()
             }
             btnUbahKupon.setOnClickListener {
                 SummaryActivity.start(context, data.toVoucherConfiguration())
+                voucherDetailTracker.sendClickEditEvent(data)
             }
         }
     }
@@ -660,6 +678,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 openThreeDotsBottomSheet(data)
             }
             btnBroadcastChat.setOnClickListener {
+                voucherDetailTracker.sendClickBroadCastChatEvent(data)
                 shareToBroadcastChat(data.voucherId)
             }
         }
@@ -668,11 +687,13 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 openThreeDotsBottomSheet(data)
             }
             btnBroadcastChat.setOnClickListener {
+                voucherDetailTracker.sendClickBroadCastChatEvent(data)
                 shareToBroadcastChat(data.voucherId)
             }
             btnShare.setOnClickListener {
                 stateButtonShareBinding?.btnShare.startLoading()
                 viewModel.generateVoucherImage()
+                voucherDetailTracker.sendClickShareEvent(data)
             }
         }
         stateButtonDuplicateBinding?.apply {
@@ -680,6 +701,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 openThreeDotsBottomSheet(data)
             }
             btnDuplicate.setOnClickListener {
+                voucherDetailTracker.sendClickDuplicateEvent(data)
                 val intent = SummaryActivity.buildDuplicateModeIntent(context, data.voucherId)
                 startActivity(intent)
             }
@@ -687,6 +709,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     }
 
     private fun openThreeDotsBottomSheet(data: VoucherDetailData) {
+        voucherDetailTracker.sendClick3DotsButtonEvent(data)
         val voucherStatus = viewModel.getThreeDotsBottomSheetType(data)
         activity?.let {
             moreMenuBottomSheet =
@@ -708,9 +731,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         moreMenuBottomSheet?.dismiss()
         when (menuUiModel) {
             is MoreMenuUiModel.TermsAndConditions -> {
+                voucherDetailTracker.sendClickTNCEvent(data)
                 openTncPage()
             }
-            else -> showConfirmationStopVoucherDialog(data)
+            else -> deleteOrStopVoucher(data)
         }
     }
 
@@ -947,13 +971,21 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         stopVoucherDialog = StopVoucherConfirmationDialog(context ?: return)
     }
 
+    private fun deleteOrStopVoucher(data: VoucherDetailData) {
+        if (data.isVps == TRUE || data.isSubsidy == TRUE) {
+            showCallTokopediaCareDialog(data.voucherStatus)
+        } else {
+            showConfirmationStopVoucherDialog(data)
+        }
+    }
+
     private fun showConfirmationStopVoucherDialog(data: VoucherDetailData) {
         val voucherStatus = data.voucherStatus
-
         stopVoucherDialog?.let { dialog ->
             with(dialog) {
                 setOnPositiveConfirmed {
                     updateVoucherStatusData(data)
+                    sendDeleteOrStopVoucherTracker(data)
                     setDismissDialog()
                 }
                 show(
@@ -965,6 +997,29 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun showCallTokopediaCareDialog(voucherStatus: VoucherStatus) {
+        context?.let {
+            val title = getTitleTokopediaCareDialog(voucherStatus)
+            val desc = getDescTokopediaCareDialog(voucherStatus)
+            CallTokopediaCareDialog(it).apply {
+                setTitle(title)
+                setDescription(desc)
+                setOnPositiveConfirmed {
+                    goToTokopediaCare()
+                }
+                show(getString(R.string.smvc_call_tokopedia_care), getString(R.string.smvc_back))
+            }
+        }
+    }
+
+    private fun sendDeleteOrStopVoucherTracker(data: VoucherDetailData) {
+        if (data.voucherStatus == VoucherStatus.NOT_STARTED) {
+            voucherDetailTracker.sendClickBatalkanEvent(data)
+        } else {
+            voucherDetailTracker.sendClickHentikanEvent(data)
+        }
+    }
+
     private fun getTitleStopVoucherDialog(voucherStatus: VoucherStatus): String {
         return if (voucherStatus == VoucherStatus.NOT_STARTED) {
             getString(R.string.smvc_delete_voucher_confirmation_title_of_dialog)
@@ -973,7 +1028,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun getStringDescStopVoucherDialog(voucherStatus: VoucherStatus, voucherName: String): String {
+    private fun getStringDescStopVoucherDialog(
+        voucherStatus: VoucherStatus,
+        voucherName: String
+    ): String {
         return if (voucherStatus == VoucherStatus.NOT_STARTED) {
             getString(R.string.smvc_delete_voucher_confirmation_body_dialog)
         } else {
@@ -989,6 +1047,22 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun getTitleTokopediaCareDialog(voucherStatus: VoucherStatus): String {
+        return if (voucherStatus == VoucherStatus.NOT_STARTED) {
+            getString(R.string.smvc_cannot_deleted_call_tokopedia_care_title_dialog)
+        } else {
+            getString(R.string.smvc_cannot_canceled_call_tokopedia_care_title_dialog)
+        }
+    }
+
+    private fun getDescTokopediaCareDialog(voucherStatus: VoucherStatus): String {
+        return if (voucherStatus == VoucherStatus.NOT_STARTED) {
+            getString(R.string.smvc_cannot_deleted_call_tokopedia_care_desc_dialog)
+        } else {
+            getString(R.string.smvc_cannot_canceled_call_tokopedia_care_desc_dialog)
+        }
+    }
+
     private fun redirectToProductListPage(voucherDetail: VoucherDetailData) {
         val intent = ProductListActivity.buildIntentForVoucherDetailPage(
             context = activity ?: return,
@@ -1001,6 +1075,17 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         startActivityForResult(
             intent,
             NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_EXISTING_SELECTION
+        )
+    }
+
+    private fun goToTokopediaCare() {
+        RouteManager.route(
+            activity,
+            String.format(
+                TOKOPEDIA_CARE_STRING_FORMAT,
+                ApplinkConst.WEBVIEW,
+                TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CARE_PATH)
+            )
         )
     }
 }

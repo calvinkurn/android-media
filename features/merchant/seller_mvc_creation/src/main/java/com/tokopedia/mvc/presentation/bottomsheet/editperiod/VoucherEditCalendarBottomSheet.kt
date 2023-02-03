@@ -153,6 +153,7 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
                 }
             }
         }
+        timePicker?.datePickerButton?.text = getString(R.string.smvc_select)
     }
 
     private fun initTitleForTimePicker(selectedDate: Date) {

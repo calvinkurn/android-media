@@ -34,7 +34,7 @@ class SummaryPageRedirectionHelper(
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode != Activity.RESULT_OK) return
-        when(requestCode) {
+        when (requestCode) {
             REQUEST_CODE_ADD_PRODUCT -> listener.onAddProductResult()
             REQUEST_CODE_VIEW_PRODUCT -> listener.onViewProductResult()
             REQUEST_CODE_CHANGE_COUPON_TYPE -> listener.onVoucherTypePageResult()
@@ -90,11 +90,16 @@ class SummaryPageRedirectionHelper(
 
     fun redirectToVoucherTypePage(
         fragment: Fragment,
-        configuration: VoucherConfiguration
+        configuration: VoucherConfiguration,
+        isAdding: Boolean
     ) {
         val context = fragment.context ?: return
-        val intent = VoucherTypeActivity.buildEditModeIntent(context, configuration)
-        fragment.startActivityForResult(intent, REQUEST_CODE_CHANGE_COUPON_TYPE)
+        if (isAdding) {
+            VoucherTypeActivity.buildCreateModeIntent(context, configuration)
+        } else {
+            val intent = VoucherTypeActivity.buildEditModeIntent(context, configuration)
+            fragment.startActivityForResult(intent, REQUEST_CODE_CHANGE_COUPON_TYPE)
+        }
         sharedPreferencesUtil.setStepPageName(context, VoucherTypeActivity::class.java.name)
     }
 

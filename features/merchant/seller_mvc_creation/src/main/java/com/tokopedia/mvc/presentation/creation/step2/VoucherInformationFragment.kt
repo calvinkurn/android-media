@@ -58,6 +58,7 @@ import com.tokopedia.mvc.util.convertUnsafeDateTime
 import com.tokopedia.mvc.util.decideCalendarPeriodEndDate
 import com.tokopedia.mvc.util.decideCalendarPeriodStartDate
 import com.tokopedia.mvc.util.extension.setToAllCapsMode
+import com.tokopedia.mvc.util.tracker.VoucherInfoTracker
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
@@ -120,14 +121,17 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private var getSelectedDateStarting: (Calendar) -> Unit = {
         viewModel.processEvent(VoucherCreationStepTwoEvent.OnVoucherStartDateChanged(it))
+        tracker.sendClickFieldDatePickerMulaiEvent()
     }
 
     private var getSelectedDateEnding: (Calendar) -> Unit = {
         viewModel.processEvent(VoucherCreationStepTwoEvent.OnVoucherEndDateChanged(it))
+        tracker.sendClickFieldDatePickerBerakhirEvent()
     }
 
     private var getSelectedRecurringPeriod: (Int) -> Unit = {
         viewModel.processEvent(VoucherCreationStepTwoEvent.OnVoucherRecurringPeriodSelected(it))
+        tracker.sendClickDropdownEvent(it.toString())
     }
 
     // bottom sheet
@@ -143,14 +147,16 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
     }
 
+    // tracker
+    @Inject
+    lateinit var tracker: VoucherInfoTracker
+
     override fun getScreenName(): String =
         VoucherInformationFragment::class.java.canonicalName.orEmpty()
 
     override fun initInjector() {
         DaggerMerchantVoucherCreationComponent.builder()
-            .baseAppComponent(
-                (activity?.applicationContext as? BaseMainApplication)?.baseAppComponent
-            )
+            .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
             .build()
             .inject(this)
     }
@@ -254,9 +260,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun handleAction(action: VoucherCreationStepTwoAction) {
         when (action) {
-            is VoucherCreationStepTwoAction.BackToPreviousStep -> backToPreviousStep(
-                action.voucherConfiguration
-            )
+            is VoucherCreationStepTwoAction.BackToPreviousStep -> backToPreviousStep(action.voucherConfiguration)
             is VoucherCreationStepTwoAction.NavigateToNextStep -> navigateToNextStep(
                 action.pageMode,
                 action.voucherConfiguration
@@ -317,14 +321,11 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private fun presetValue() {
         setVoucherTarget(voucherConfiguration.isVoucherPublic)
-        val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
-        if (currentVoucherConfiguration.isFinishFilledStepTwo || pageMode == PageMode.EDIT) {
-            voucherNameSectionBinding?.tfVoucherName?.run {
-                editText.setText(voucherConfiguration.voucherName)
-            }
-            voucherCodeSectionBinding?.tfVoucherCode?.run {
-                editText.setText(voucherConfiguration.voucherCode)
-            }
+        voucherNameSectionBinding?.tfVoucherName?.run {
+            if (voucherConfiguration.voucherName.isNotEmpty()) editText.setText(voucherConfiguration.voucherName)
+        }
+        voucherCodeSectionBinding?.tfVoucherCode?.run {
+            if (voucherConfiguration.voucherCode.isNotEmpty()) editText.setText(voucherConfiguration.voucherCode)
         }
         if (pageMode == PageMode.EDIT) {
             voucherCodeSectionBinding?.run {
@@ -362,6 +363,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             }
             setNavigationOnClickListener {
                 viewModel.processEvent(VoucherCreationStepTwoEvent.TapBackButton)
+                tracker.sendClickKembaliArrowEvent()
             }
         }
     }
@@ -399,6 +401,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             showChangeTargetConfirmationDialog(isPublic)
         } else {
             viewModel.processEvent(VoucherCreationStepTwoEvent.ChooseVoucherTarget(isPublic))
+            tracker.sendClickTargetKuponEvent(isPublic)
         }
     }
 
@@ -430,6 +433,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                         true
                     )
                 )
+                tracker.sendClickTargetKuponEvent(isPublic)
                 dismiss()
             }
             setSecondaryCTAClickListener { dismiss() }
@@ -481,6 +485,9 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
 
         voucherNameSectionBinding?.run {
+            tfVoucherName.editText.setOnFocusChangeListener { _, isFocus ->
+                if (isFocus) tracker.sendClickFieldNamaKuponEvent()
+            }
             tfVoucherName.editText.textChangesAsFlow()
                 .debounce { DEBOUNCE }
                 .distinctUntilChanged()
@@ -500,7 +507,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         voucherNameSectionBinding?.run {
             tfVoucherName.isInputError = isVoucherNameError
             tfVoucherName.setMessage(voucherNameErrorMsg)
-            tpgCheckHere.apply {
+            tpgPelajari.apply {
                 isVisible = voucherNameErrorMsg.contains(
                     getString(R.string.smvc_larang_label),
                     ignoreCase = true
@@ -520,6 +527,9 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
         voucherCodeSectionBinding?.run {
             tfVoucherCode.apply {
+                editText.setOnFocusChangeListener { _, isFocus ->
+                    if (isFocus) tracker.sendClickFieldKodeKuponEvent()
+                }
                 prependText(voucherConfiguration.voucherCodePrefix)
                 editText.setToAllCapsMode()
                 editText.textChangesAsFlow()
@@ -581,6 +591,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                         isChecked
                     )
                 )
+                tracker.sendClickCheckBoxEvent()
             }
 
             tfRepeat.run {
@@ -686,7 +697,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                             DATE_WITH_SECOND_PRECISION_ISO_8601
                         )
                     startCalendar = getGregorianDate(startDate)
-                } catch (_: Throwable) {}
+                } catch (_: Throwable) {
+                }
             }
         }
     }
@@ -709,7 +721,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                         DATE_WITH_SECOND_PRECISION_ISO_8601
                     )
                     endCalendar = getGregorianDate(endDate)
-                } catch (_: Throwable) {}
+                } catch (_: Throwable) {
+                }
             }
         }
     }
@@ -892,9 +905,10 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
 
         buttonSectionBinding?.run {
-            btnBack.setOnClickListener { viewModel.processEvent(
-                VoucherCreationStepTwoEvent.TapBackButton
-            ) }
+            btnBack.setOnClickListener {
+                viewModel.processEvent(VoucherCreationStepTwoEvent.TapBackButton)
+                tracker.sendClickKembaliButtonEvent()
+            }
             btnContinue.text = if (pageMode == PageMode.CREATE) {
                 getString(R.string.smvc_continue)
             } else {
@@ -1029,6 +1043,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                                 voucherConfiguration
                             )
                         )
+                        tracker.sendClickLanjutEvent()
                     }
                 }
             }

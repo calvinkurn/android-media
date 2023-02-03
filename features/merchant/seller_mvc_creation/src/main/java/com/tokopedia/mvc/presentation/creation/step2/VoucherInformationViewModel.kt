@@ -36,6 +36,11 @@ class VoucherInformationViewModel @Inject constructor(
     private val currentState: VoucherCreationStepTwoUiState
         get() = _uiState.value
 
+    companion object {
+        private const val ROUNDED_PERIOD_IN_MINUTES = 30
+        private const val ROUNDED_PERIOD_HAPPEN_PER_DAY = 4
+    }
+
     fun processEvent(event: VoucherCreationStepTwoEvent) {
         when (event) {
             is VoucherCreationStepTwoEvent.InitVoucherConfiguration -> initVoucherConfiguration(
@@ -75,7 +80,8 @@ class VoucherInformationViewModel @Inject constructor(
                 isLoading = false,
                 pageMode = pageMode,
                 voucherConfiguration = voucherConfiguration.copy(
-                    isFinishFilledStepOne = true
+                    isFinishFilledStepOne = true,
+                    startPeriod = it.voucherConfiguration.startPeriod.roundTimePerHalfHour()
                 )
             )
         }
@@ -265,5 +271,18 @@ class VoucherInformationViewModel @Inject constructor(
         } else {
             VoucherCreationStepTwoFieldValidation.ALL
         }
+    }
+
+    private fun Date.roundTimePerHalfHour(): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = this
+
+        val unroundedMinutes: Int = calendar.get(Calendar.MINUTE)
+        val mod = unroundedMinutes % ROUNDED_PERIOD_IN_MINUTES
+        calendar.add(
+            Calendar.MINUTE,
+            if (mod < ROUNDED_PERIOD_HAPPEN_PER_DAY) -mod else ROUNDED_PERIOD_IN_MINUTES - mod
+        )
+        return calendar.time
     }
 }

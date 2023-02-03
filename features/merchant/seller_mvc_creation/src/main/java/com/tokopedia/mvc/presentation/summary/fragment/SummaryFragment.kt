@@ -107,12 +107,12 @@ class SummaryFragment :
 
     @Inject
     lateinit var viewModel: SummaryViewModel
-    
+
     @Inject
     lateinit var tracker: SummaryPageTracker
 
     lateinit var pageNameMapper: SummaryPagePageNameMapper
-    
+
     @Inject
     lateinit var sharedPreferencesUtil: SharedPreferencesUtil
 
@@ -158,7 +158,7 @@ class SummaryFragment :
         }
         return super.onFragmentBackPressed()
     }
-    
+
     override fun onResume() {
         super.onResume()
         redirectionHelper.onResume(context ?: return)
@@ -503,7 +503,8 @@ class SummaryFragment :
     }
 
     private fun onTypeCouponBtnChangeClicked(configuration: VoucherConfiguration) {
-        redirectionHelper.redirectToVoucherTypePage(this, configuration)
+        val isAdding = viewModel.checkIsAdding(configuration)
+        redirectionHelper.redirectToVoucherTypePage(this, configuration, isAdding)
         val sectionName = binding?.layoutType?.tpgProductListTitle?.text.toString()
         tracker.sendClickUbahEvent(configuration.voucherId.toString(), sectionName)
     }
