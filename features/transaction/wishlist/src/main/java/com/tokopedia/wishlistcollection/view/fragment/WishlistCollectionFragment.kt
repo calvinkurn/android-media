@@ -144,10 +144,6 @@ class WishlistCollectionFragment :
     private val coachMarkItemSharing2 = arrayListOf<CoachMark2Item>()
     private var coachMarkSharing2: CoachMark2? = null
 
-    private var isCoachMarkShowing = false
-    private var isCoachMarkSharing1Showing = false
-    private var isCoachMarkSharing2Showing = false
-
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -233,19 +229,10 @@ class WishlistCollectionFragment :
     }
 
     private fun manageCoachmark(isVisibleToUser: Boolean) {
-        when (isVisibleToUser) {
-            false -> {
-                if (isCoachMarkShowing) {
-                    isCoachMarkShowing = false
-                    coachMark?.dismissCoachMark()
-                } else if (isCoachMarkSharing1Showing) {
-                    isCoachMarkSharing1Showing = false
-                    coachMarkSharing1?.dismissCoachMark()
-                } else if (isCoachMarkSharing2Showing) {
-                    isCoachMarkSharing2Showing = false
-                    coachMarkSharing2?.dismissCoachMark()
-                }
-            }
+        if (!isVisibleToUser) {
+            coachMark?.dismissCoachMark()
+            coachMarkSharing1?.dismissCoachMark()
+            coachMarkSharing2?.dismissCoachMark()
         }
     }
 
@@ -980,7 +967,6 @@ class WishlistCollectionFragment :
                 it.showCoachMark(coachMarkItemSharing2, null, 1)
                 it.stepPrev?.visibility = View.GONE
                 it.stepPagination?.visibility = View.GONE
-                isCoachMarkSharing2Showing = true
             }
             CoachMarkPreference.setShown(requireContext(), COACHMARK_WISHLIST_SHARING, true)
         }
@@ -1020,7 +1006,6 @@ class WishlistCollectionFragment :
 
             if (!it.isShowing && isValidToShowCoachMark() && coachMarkItem.isNotEmpty()) {
                 it.showCoachMark(coachMarkItem, null)
-                isCoachMarkShowing = true
             }
             CoachMarkPreference.setShown(requireContext(), COACHMARK_WISHLIST, true)
         }
