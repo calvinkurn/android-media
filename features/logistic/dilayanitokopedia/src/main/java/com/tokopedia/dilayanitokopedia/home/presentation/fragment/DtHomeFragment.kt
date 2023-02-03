@@ -240,7 +240,10 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 if (position != 0 && scrollPosition == 0) return
                 if (scrollPosition == -1) return
 
-                if (statusBarState == AnchorTabStatus.MAXIMIZE && scrollPosition != 0) {
+                /**
+                 * minimize when clicked anchor tab, exclude first position
+                 */
+                if (statusBarState == AnchorTabStatus.MAXIMIZE && scrollPosition != 1) {
                     setAnchorTabMinimize()
                 }
 
@@ -726,7 +729,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 super.onScrolled(recyclerView, dx, dy)
 
                 /**
-                 *  maximize anchor when scroll up && reach top
+                 *  minimize when scroll down
                  */
                 if (dy >= 0) {
                     if (statusBarState == AnchorTabStatus.MAXIMIZE && recyclerView.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
@@ -745,12 +748,10 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 super.onScrollStateChanged(recyclerView, newState)
 
                 /**
-                 *  minimize anchor when scroll down
+                 *  maximize anchor when reach top
                  */
-                if (!recyclerView.canScrollVertically(-1)) {
-                    if (statusBarState == AnchorTabStatus.MINIMIZE) {
-                        setAnchorTabMaximize()
-                    }
+                if (!recyclerView.canScrollVertically(-1) && statusBarState == AnchorTabStatus.MINIMIZE && newState == 0) {
+                    setAnchorTabMaximize()
                 }
             }
         })
