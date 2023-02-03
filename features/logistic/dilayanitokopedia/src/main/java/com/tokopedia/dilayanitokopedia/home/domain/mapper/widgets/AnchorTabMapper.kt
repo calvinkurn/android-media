@@ -12,8 +12,16 @@ object AnchorTabMapper {
 
     @VisibleForTesting
     const val KEY_ANCHOR_IDENTIFIER = "anchor_indentifier"
+
     @VisibleForTesting
     const val KEYWOARD_CHANNEL_GROUP_ID = "channelgroupid_"
+
+
+    /**
+     * true : to allow show item tab but notclickable if there is empty feParam
+     * false : remove item tab has empty feParam
+     */
+    private const val ALLOW_ITEM_ANCHOR_TAB_NOT_CLICKABLE = false
 
     /**
      * Mapping layout list to list menu Anchor tab
@@ -21,23 +29,47 @@ object AnchorTabMapper {
     fun GetHomeAnchorTabResponse.GetHomeIconV2.mapMenuList(): List<AnchorTabUiModel> {
         var listMenu = mutableListOf<AnchorTabUiModel>()
 
-        this.icons.forEachIndexed anchorTabForEach@{ index, homeIcon ->
+        this.icons.forEach { homeIcon ->
 
-            val listFeParam = splitKeyValueAnchorTabParam(homeIcon.feParam)
-            val valueAnchorIdentifier = listFeParam?.getValue(KEY_ANCHOR_IDENTIFIER).toString()
-            val channelGroupId = valueAnchorIdentifier.replace(KEYWOARD_CHANNEL_GROUP_ID, "")
+            val channelGroupId = if (homeIcon.feParam.isNotEmpty()) {
+                val listFeParam = splitKeyValueAnchorTabParam(homeIcon.feParam).orEmpty()
+                val valueAnchorIdentifier = listFeParam.getValue(KEY_ANCHOR_IDENTIFIER).toString()
+                valueAnchorIdentifier.replace(KEYWOARD_CHANNEL_GROUP_ID, "")
+            } else {
+                homeIcon.feParam
+            }
 
-            val anchorTab = AnchorTabUiModel(
-                homeIcon.id.toString(),
-                homeIcon.name,
-                homeIcon.imageUrl,
-                channelGroupId
-            )
+            when {
+                channelGroupId.isNotEmpty() -> {
+                    val anchorTab = mapItemAnchorTab(homeIcon, channelGroupId)
+                    listMenu.add(anchorTab)
+                }
+                isAllowItemAnchorTabNotClickable() -> {
+                    val anchorTab = mapItemAnchorTab(homeIcon, channelGroupId)
+                    listMenu.add(anchorTab)
+                }
+            }
 
-            listMenu.add(anchorTab)
-            listMenu = listMenu.toMutableList()
         }
+
         return listMenu.toList()
+    }
+
+    private fun mapItemAnchorTab(
+        homeIcon: GetHomeAnchorTabResponse.GetHomeIconV2.Icon,
+        channelGroupId: String
+    ): AnchorTabUiModel {
+        return AnchorTabUiModel(
+            homeIcon.id.toString(),
+            homeIcon.name,
+            homeIcon.imageUrl,
+            channelGroupId
+        )
+    }
+
+
+    private fun isAllowItemAnchorTabNotClickable(): Boolean {
+        return ALLOW_ITEM_ANCHOR_TAB_NOT_CLICKABLE
     }
 
     private fun splitKeyValueAnchorTabParam(url: String): Map<String, String>? {
