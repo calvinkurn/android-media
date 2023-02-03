@@ -86,7 +86,14 @@ class PlayMoreActionBottomSheet @Inject constructor(
     private val reportAction by lazy {
         PlayMoreActionUiModel(
             type = PlayMoreActionType.Report,
-            icon = getIconUnifyDrawable(requireContext(), IconUnify.WARNING, MethodChecker.getColor(requireContext(), com.tokopedia.unifycomponents.R.color.Unify_NN900)),
+            icon = getIconUnifyDrawable(
+                requireContext(),
+                IconUnify.WARNING,
+                MethodChecker.getColor(
+                    requireContext(),
+                    com.tokopedia.unifycomponents.R.color.Unify_NN900
+                )
+            ),
             subtitleRes = R.string.play_kebab_report_title,
             onClick = {
                 shouldOpenUserReport()
@@ -110,23 +117,17 @@ class PlayMoreActionBottomSheet @Inject constructor(
         )
     }
 
-    private val chromecastAction by lazy {
-        PlayMoreActionUiModel(
-            type = PlayMoreActionType.Chromecast,
-            icon = null,
-            subtitleRes = R.string.play_kebab_chromecast,
-            onClick = {
-                onChromeCastClicked()
-            },
-            priority = 2,
-            onImpress = { analytic2?.impressChromecast() }
-        )
-    }
-
     private val watchAction by lazy {
         PlayMoreActionUiModel(
             type = PlayMoreActionType.WatchMode,
-            icon = getIconUnifyDrawable(requireContext(), IconUnify.VISIBILITY, MethodChecker.getColor(requireContext(), com.tokopedia.unifycomponents.R.color.Unify_NN900)),
+            icon = getIconUnifyDrawable(
+                requireContext(),
+                IconUnify.VISIBILITY,
+                MethodChecker.getColor(
+                    requireContext(),
+                    com.tokopedia.unifycomponents.R.color.Unify_NN900
+                )
+            ),
             subtitleRes = R.string.play_kebab_watch_mode,
             onClick = {
                 analytic2?.clickWatchMode()
@@ -143,7 +144,8 @@ class PlayMoreActionBottomSheet @Inject constructor(
         super.onCreate(savedInstanceState)
 
         if (requireParentFragment() is PlayUserInteractionFragment) {
-            val grandParentActivity = ((requireParentFragment() as PlayUserInteractionFragment).parentFragment) as PlayFragment
+            val grandParentActivity =
+                ((requireParentFragment() as PlayUserInteractionFragment).parentFragment) as PlayFragment
 
             playViewModel = ViewModelProvider(
                 grandParentActivity,
@@ -203,7 +205,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
         playViewModel.observableBottomInsetsState.observe(
             viewLifecycleOwner,
             DistinctObserver { bottomInsets ->
-                renderCastView(bottomInsets)
                 renderPiPView(bottomInsets = bottomInsets)
             }
         )
@@ -211,7 +212,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
     private fun observeCast() {
         playViewModel.observableCastState.observe(viewLifecycleOwner) {
-            renderCastView()
             renderPiPView()
         }
     }
@@ -227,7 +227,9 @@ class PlayMoreActionBottomSheet @Inject constructor(
             playViewModel.uiState.withCache().collectLatest {
                 val cachedState = it
 
-                if (cachedState.isChanged { it.status.channelStatus.statusType }) renderPiPView(isFreezeOrBanned = cachedState.value.status.channelStatus.statusType.isFreeze || cachedState.value.status.channelStatus.statusType.isBanned)
+                if (cachedState.isChanged { it.status.channelStatus.statusType }) renderPiPView(
+                    isFreezeOrBanned = cachedState.value.status.channelStatus.statusType.isFreeze || cachedState.value.status.channelStatus.statusType.isBanned
+                )
 
                 if (analytic2 != null || cachedState.value.channel.channelInfo.id.isBlank()) return@collectLatest
                 analytic2 = analytic2Factory.create(
@@ -238,27 +240,12 @@ class PlayMoreActionBottomSheet @Inject constructor(
         }
     }
 
-    private fun renderCastView(
-        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
-    ) {
-        if (playViewModel.isCastAllowed && !bottomInsets.isAnyShown) {
-            val currentVisibility = listOfAction.contains(chromecastAction)
-            if (currentVisibility) {
-                analytic.impressCast(playViewModel.latestCompleteChannelData.channelDetail.channelInfo.id, playViewModel.channelType)
-            }
-            buildListAction(action = chromecastAction)
-        } else {
-            removeAction(chromecastAction)
-        }
-    }
-
     private fun renderPiPView(
         videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
         isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
-        val currentVisibility = listOfAction.contains(chromecastAction)
-        if (!playViewModel.isPiPAllowed || !videoPlayer.isGeneral() || isFreezeOrBanned || playViewModel.isCastAllowed || currentVisibility) {
+        if (!playViewModel.isPiPAllowed || !videoPlayer.isGeneral() || isFreezeOrBanned || playViewModel.isCastAllowed) {
             removeAction(pipAction)
             return
         }
@@ -347,7 +334,9 @@ class PlayMoreActionBottomSheet @Inject constructor(
     private val listOfAction = mutableListOf<PlayMoreActionUiModel>()
 
     private fun buildListAction(action: PlayMoreActionUiModel) {
-        if (!listOfAction.contains(watchAction) && !playViewModel.videoOrientation.isHorizontal && !playViewModel.hasNoMedia) listOfAction.add(watchAction) // Watch Mode
+        if (!listOfAction.contains(watchAction) && !playViewModel.videoOrientation.isHorizontal && !playViewModel.hasNoMedia) listOfAction.add(
+            watchAction
+        ) // Watch Mode
         if (!listOfAction.contains(action)) listOfAction.add(action)
     }
 
@@ -409,9 +398,17 @@ class PlayMoreActionBottomSheet @Inject constructor(
         }
     }
 
-    private fun showDialog(title: String, description: String, primaryCTAText: String, secondaryCTAText: String, primaryAction: () -> Unit, secondaryAction: () -> Unit = {}) {
+    private fun showDialog(
+        title: String,
+        description: String,
+        primaryCTAText: String,
+        secondaryCTAText: String,
+        primaryAction: () -> Unit,
+        secondaryAction: () -> Unit = {}
+    ) {
         activity?.let {
-            val dialog = DialogUnify(context = it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            val dialog =
+                DialogUnify(context = it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.apply {
                 setTitle(title)
                 setDescription(description)
@@ -449,13 +446,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
      */
     override fun onCloseButtonClicked(view: KebabMenuSheetViewComponent) {
         hideSheets()
-    }
-
-    private fun onChromeCastClicked() {
-        analytic.clickCast()
-        // new tracker
-        analytic2?.clickChromecast()
-        dismiss()
     }
 
     /***
