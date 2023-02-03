@@ -1960,12 +1960,26 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void updateCheckboxDynamicData(DynamicDataPassingParamRequest.DynamicDataParam newParam, boolean isChecked) {
         DynamicDataPassingParamRequest existingDdpParam = shipmentPresenter.getDynamicDataParam();
-        if (existingDdpParam.getData().contains(newParam)) {
-            if (!isChecked) {
-                existingDdpParam.getData().remove(newParam);
+        if (newParam.getAttribute().equalsIgnoreCase(IS_DONATION)) {
+            if (existingDdpParam.getData().contains(newParam)) {
+                for (DynamicDataPassingParamRequest.DynamicDataParam existingParam : shipmentPresenter.getDynamicDataParam().getData()) {
+                    if (existingParam.getAttribute().equalsIgnoreCase(IS_DONATION)) {
+                        existingParam.setDonation(isChecked);
+                    }
+                }
+            } else {
+                existingDdpParam.getData().add(newParam);
             }
-        } else {
-            existingDdpParam.getData().add(newParam);
+        } else if (newParam.getAttribute().equalsIgnoreCase(ADD_ON_DETAILS)) {
+            if (existingDdpParam.getData().contains(newParam)) {
+                for (DynamicDataPassingParamRequest.DynamicDataParam existingParam : shipmentPresenter.getDynamicDataParam().getData()) {
+                    if (existingParam.getUniqueId().equalsIgnoreCase(newParam.getUniqueId())) {
+                        existingParam.setAddOn(newParam.getAddOn());
+                    }
+                }
+            } else {
+                existingDdpParam.getData().add(newParam);
+            }
         }
         shipmentPresenter.setDynamicDataParam(existingDdpParam);
     }
