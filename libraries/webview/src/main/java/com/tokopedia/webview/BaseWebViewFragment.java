@@ -29,11 +29,8 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,9 +74,6 @@ import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.picker.common.MediaPicker;
-import com.tokopedia.picker.common.PageSource;
-import com.tokopedia.picker.common.PickerParam;
-import com.tokopedia.picker.common.types.ModeType;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.url.TokopediaUrl;
@@ -88,16 +82,11 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import kotlin.Function;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
@@ -118,7 +107,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private ValueCallback<Uri> uploadMessageBeforeLolipop;
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
     public final static int ATTACH_FILE_REQUEST = 1;
-    public final static int ATTACH_MEDIA_PICKER = 11;
     private static final String HCI_CAMERA_KTP = "android-js-call://ktp";
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private static final String LOGIN_APPLINK = "tokopedia://login";
@@ -166,7 +154,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private UserSession userSession;
     private PermissionCheckerHelper permissionCheckerHelper;
     private RemoteConfig remoteConfig;
-    private String mCameraPhotoPath;
 
     /**
      * return the url to load in the webview
@@ -413,20 +400,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         return;
                     }
 
-                    if (intent == null) {
-                        // If there is not intent, then we may have taken a photo
-                        if (mCameraPhotoPath != null) {
-                            results = new Uri[]{Uri.parse(mCameraPhotoPath)};
-                        }
+                    String dataString = intent.getDataString();
+                    if(dataString != null) {
+                        results = new Uri[]{Uri.parse(dataString)};
                     }else {
-                        String dataString = intent.getDataString();
-                        if(dataString != null) {
-                            results = new Uri[]{Uri.parse(dataString)};
-                        }else {
-                            List<String> images = MediaPicker.INSTANCE.result(intent).getOriginalPaths();
-                            if(!images.isEmpty()){
-                                results = new Uri[]{Uri.parse("file:"+images.get(0))};
-                            }
+                        List<String> images = MediaPicker.INSTANCE.result(intent).getOriginalPaths();
+                        if(!images.isEmpty()){
+                            results = new Uri[]{Uri.parse("file:"+images.get(0))};
                         }
                     }
                 }
@@ -553,34 +533,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 uploadMessageAfterLolipop.onReceiveValue(null);
             }
             uploadMessageAfterLolipop = filePathCallback;
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                // Create the File where the photo should go
-                File photoFile = null;
-                try {
-                    photoFile = createImageFile();
-                    takePictureIntent.putExtra("PhotoPath", mCameraPhotoPath);
-                } catch (IOException ex) {
-                    // Error occurred while creating the File
-                    Log.e("Test",ex.getMessage());
-                }
-                // Continue only if the File was successfully created
-                if (photoFile != null) {
-                    mCameraPhotoPath = "file:" + photoFile.getAbsolutePath();
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                            Uri.fromFile(photoFile));
-                } else {
-                    takePictureIntent = null;
-                }
-            }
+
             Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
             contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
             contentSelectionIntent.setType("*/*");
-            Intent[] intentArray = new Intent[2];
-            intentArray[0] = takePictureIntent;
+            Intent[] intentArray = new Intent[1];
             if(getContext() != null){
                 Intent mediaPickerIntent =  WebViewHelper.INSTANCE.getMediaPickerIntent(getContext());
-                intentArray[1] = mediaPickerIntent;
+                intentArray[0] = mediaPickerIntent;
             }
 
             Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
@@ -1176,21 +1136,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             globalError.setVisibility(View.GONE);
         }
         webView.reload();
-    }
-
-    private File createImageFile() throws IOException {
-        // Wont work on or after Q = 11 = 30
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
-        File imageFile = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-        return imageFile;
     }
 
     @Override
