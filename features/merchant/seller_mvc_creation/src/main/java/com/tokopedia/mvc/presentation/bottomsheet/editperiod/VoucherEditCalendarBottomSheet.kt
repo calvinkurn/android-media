@@ -139,7 +139,7 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
 
             if (date1 == date2 && month1 == month2) {
                 pickerStartTime.apply {
-                    add(Calendar.HOUR_OF_DAY, ADD_3_HOURS)
+                    setUpStartTime()
                 }
             } else {
                 pickerStartTime.apply {
@@ -172,6 +172,14 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
                 context?.resources?.getString(R.string.edit_period_calendar_show_tag)
                     .toBlankOrString()
             )
+        }
+    }
+
+    private fun GregorianCalendar.setUpStartTime() {
+        add(Calendar.HOUR_OF_DAY, ADD_3_HOURS)
+        val minute = get(Calendar.MINUTE)
+        if (minute in MINUTE_INTERVAL..MAX_MINUTE_OF_DAY) {
+            add(Calendar.MINUTE, MINUTE_IN_HOURS - minute)
         }
     }
 
@@ -289,5 +297,6 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
         private const val HOUR_INTERVAL = 1
         private const val MINUTE_INTERVAL = 30
         private const val ADD_3_HOURS = 3
+        private const val MINUTE_IN_HOURS = 60
     }
 }

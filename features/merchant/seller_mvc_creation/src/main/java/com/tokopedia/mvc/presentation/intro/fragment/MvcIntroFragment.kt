@@ -24,6 +24,7 @@ import com.tokopedia.mvc.presentation.intro.uimodel.VoucherIntroTypeData
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherTypeUiModel
 import com.tokopedia.mvc.presentation.intro.util.MvcIntroPageTracker
 import com.tokopedia.mvc.presentation.intro.util.MvcIntroRecyclerViewScrollListener
+import com.tokopedia.mvc.util.constant.FIRST_INDEX
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -237,6 +238,9 @@ class MvcIntroFragment :
     // When user clicks on the Arrow Button
     override fun onClickButton() {
         mvcIntroPageTracker.sendMvcIntroPageArrowButton()
+        binding?.recyclerView?.apply {
+            layoutManager?.scrollToPosition(FIRST_INDEX)
+        }
         setWhiteBackgroundForToolbar()
     }
 
