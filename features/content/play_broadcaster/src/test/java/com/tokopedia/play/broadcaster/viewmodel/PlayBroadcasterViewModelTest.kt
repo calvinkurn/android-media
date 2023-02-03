@@ -24,7 +24,6 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.assertEmpty
 import com.tokopedia.play.broadcaster.util.assertEqualTo
@@ -82,6 +81,7 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
         coEvery { mockGetAddedTagUseCase.executeOnBackground() } returns mockAddedTag
         coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSectionList
+        coEvery { mockRepo.getBroadcastingConfig(any(), any()) } returns uiModelBuilder.buildBroadcastingConfigUiModel()
     }
 
     @Test
@@ -120,8 +120,6 @@ class PlayBroadcasterViewModelTest {
 
     @Test
     fun `given seller allowed to stream, and channelStatus Unknown, then it should trigger createChannel()`() {
-        val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
-
         val mockConfig = uiModelBuilder.buildConfigurationUiModel(
             streamAllowed = true,
             channelStatus = ChannelStatus.Unknown
@@ -139,7 +137,7 @@ class PlayBroadcasterViewModelTest {
         val mock = spyk(robot.getViewModel(), recordPrivateCalls = true)
 
         robot.use {
-            mock.submitAction(PlayBroadcastAction.GetAccountList(TYPE_SHOP))
+            mock.submitAction(PlayBroadcastAction.GetConfiguration(TYPE_SHOP))
 
             verify { mock invokeNoArgs "createChannel" }
         }
@@ -321,7 +319,7 @@ class PlayBroadcasterViewModelTest {
                 it.getAccountConfiguration()
             }
             state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
-            state.accountStateInfo.type.assertEqualTo(AccountStateInfoType.NotAcceptTNC)
+            state.accountStateInfo.type.assertEqualTo(AccountStateInfoType.NotWhitelisted)
             state.accountStateInfo.selectedAccount.type.assertEqualTo(TYPE_SHOP)
             it.getViewModel().isAllowChangeAccount.assertFalse()
             it.getViewModel().tncList.assertEqualTo(mockTnc)
@@ -388,7 +386,7 @@ class PlayBroadcasterViewModelTest {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel()
 
-        coEvery { mockHydraSharedPreferences.getLastSelectedAccount() } returns TYPE_USER
+        coEvery { mockHydraSharedPreferences.getLastSelectedAccountType() } returns TYPE_USER
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
 
@@ -415,7 +413,7 @@ class PlayBroadcasterViewModelTest {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel(tncShop = false)
 
-        coEvery { mockHydraSharedPreferences.getLastSelectedAccount() } returns TYPE_SHOP
+        coEvery { mockHydraSharedPreferences.getLastSelectedAccountType() } returns TYPE_SHOP
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
 
@@ -487,7 +485,7 @@ class PlayBroadcasterViewModelTest {
     @Test
     fun `when shop account not eligible and buyer account not eligible then selected account is shop with info`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
-        val accountMock = uiModelBuilder.buildAccountListModel(tncShop = false, usernameBuyer = false)
+        val accountMock = uiModelBuilder.buildAccountListModel(tncShop = false, usernameBuyer = false, tncBuyer = false)
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock

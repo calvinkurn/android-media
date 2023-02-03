@@ -465,15 +465,27 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
     }
 
     private fun sendClickPGevent(linkID: String?, state: String) {
+        val params: AffiliatePromotionBottomSheetParams? =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                arguments?.getSerializable(
+                    KEY_PARAMS,
+                    AffiliatePromotionBottomSheetParams::class.java
+                )
+            } else {
+                arguments?.getSerializable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
+            }
         var eventAction = ""
         var eventCategory = ""
-        val eventLabel =
+        var eventLabel =
             if (originScreen == ORIGIN_PROMOSIKAN) "$linkID - $status - $state" else "$linkID - $state"
         when (originScreen) {
             ORIGIN_HOME -> {
                 eventAction =
                     AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PRODUK_YANG_DIPROMOSIKAN
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
+                if (params?.ssaInfo?.ssaStatus == true) {
+                    eventLabel += " - komisi extra"
+                }
             }
             ORIGIN_HOME_GENERATED -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_DAFTAR_LINK_PRODUK
@@ -505,6 +517,15 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
     }
 
     private fun sendClickPGeventShop(linkID: String?, status: String, entryFlag: String) {
+        val params: AffiliatePromotionBottomSheetParams? =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                arguments?.getSerializable(
+                    KEY_PARAMS,
+                    AffiliatePromotionBottomSheetParams::class.java
+                )
+            } else {
+                arguments?.getSerializable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
+            }
         var eventAction = ""
         var eventCategory = ""
         var eventLabel = ""
@@ -515,6 +536,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_SHOP_LINK_DENGAN_PERFORMA
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
                 eventLabel = "$linkID - $status"
+                if (params?.ssaInfo?.ssaStatus == true) {
+                    eventLabel += "komisi extra"
+                }
             }
             ORIGIN_PROMOSIKAN -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_SHOP_SEARCH_RESULT

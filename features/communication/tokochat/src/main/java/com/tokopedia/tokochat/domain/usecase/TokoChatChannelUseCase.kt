@@ -22,7 +22,10 @@ class TokoChatChannelUseCase @Inject constructor(
         orderChatType: OrderChatType
     ) {
         repository.getConversationRepository().initGroupBookingChat(
-            orderId, serviceType, groupBookingListener, orderChatType
+            orderId,
+            serviceType,
+            groupBookingListener,
+            orderChatType
         )
     }
 
@@ -44,6 +47,10 @@ class TokoChatChannelUseCase @Inject constructor(
 
     fun getMemberLeftLiveData(): MutableLiveData<String> {
         return repository.getConversationRepository().getMemberLeftLiveDataCallback()
+    }
+
+    fun resetMemberLeftLiveData() {
+        repository.getConversationRepository().resetMemberLeftLiveDataCallback()
     }
 
     fun getLiveChannel(channelId: String): LiveData<ConversationsChannel?> {

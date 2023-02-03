@@ -302,7 +302,7 @@ object AffiliateAnalytics {
             const val CLICK_PRIMARY_BUTTON = "click - primary button"
             const val CLICK_SECONDARY_BUTTON = "click - secondary button"
             const val CLICK_SHOP_LINK_DENGAN_PERFORMA = "click - shop - link dengan performa"
-            const val CLICK_SALIN_LINK_SHOP_LINK_DENGAN_PERFORMA = "click - salin link - shop -  link dengan performa"
+            const val CLICK_SALIN_LINK_SHOP_LINK_DENGAN_PERFORMA = "click - salin link - shop - link dengan performa"
             const val CLICK_SALIN_LINK_SHOP_SEARCH_RESULT = "click - salin link - shop - search result page"
             const val CLICK_SHOP_SEARCH_RESULT_PAGE = "click - shop - search result page"
             const val IMPRESSION_SHOP_LINK_DENGAN_PERFORMA = "impression - shop - link dengan performa"
