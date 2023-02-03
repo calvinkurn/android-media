@@ -51,6 +51,7 @@ import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStep
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoEvent
 import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
 import com.tokopedia.mvc.presentation.creation.step3.VoucherSettingActivity
+import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeEvent
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.DateTimeUtils
 import com.tokopedia.mvc.util.constant.BundleConstant
@@ -189,6 +190,11 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         observeUiState()
         observeUiAction()
         viewModel.processEvent(VoucherCreationStepTwoEvent.HandleCoachMark)
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        viewModel.processEvent(VoucherCreationStepTwoEvent.TapBackButton)
+        return super.onFragmentBackPressed()
     }
 
     private fun observeUiState() {

@@ -47,6 +47,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.SuccessUploadBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
+import com.tokopedia.mvc.presentation.creation.step3.VoucherSettingActivity
 import com.tokopedia.mvc.presentation.summary.helper.SummaryPagePageNameMapper
 import com.tokopedia.mvc.presentation.summary.helper.SummaryPageRedirectionHelper
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
@@ -156,7 +157,17 @@ class SummaryFragment :
             } else {
                 tracker.sendClickArrowBackEvent(it.voucherId.toString())
             }
+            if (viewModel.checkIsAdding(it)) {
+                VoucherSettingActivity.buildCreateModeIntent(
+                    requireContext(),
+                    it.copy(
+                        isFinishFilledStepThree = false
+                    ),
+                    viewModel.products.value.orEmpty()
+                )
+            }
         }
+        activity?.finish()
         return super.onFragmentBackPressed()
     }
 
@@ -246,6 +257,7 @@ class SummaryFragment :
                     val message = getString(R.string.smvc_summary_page_success_upload_message, it.voucherName)
                     sharedPreferencesUtil.setUploadResult(this, message)
                     RouteManager.route(this, SELLER_MVC_LIST)
+                    activity?.finish()
                 }
             }
         }
@@ -292,7 +304,6 @@ class SummaryFragment :
     private fun HeaderUnify.setupHeader() {
         title = context.getString(R.string.smvc_summary_page_title)
         setNavigationOnClickListener {
-            activity?.finish()
             onFragmentBackPressed()
         }
     }

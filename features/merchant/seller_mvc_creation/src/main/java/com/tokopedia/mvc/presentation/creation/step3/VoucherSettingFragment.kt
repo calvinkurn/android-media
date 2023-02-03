@@ -165,6 +165,11 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         viewModel.processEvent(VoucherCreationStepThreeEvent.HandleCoachMark)
     }
 
+    override fun onFragmentBackPressed(): Boolean {
+        viewModel.processEvent(VoucherCreationStepThreeEvent.TapBackButton)
+        return super.onFragmentBackPressed()
+    }
+
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.collect { state -> handleUiState(state) }
