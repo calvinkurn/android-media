@@ -2963,14 +2963,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         updateDynamicDataPassingUseCase.setParams(dynamicDataPassingParamRequest);
         updateDynamicDataPassingUseCase.execute(
                 dynamicDataPassingUiModel -> {
-                    if (getView() != null) {
-                        getView().stopEmbraceTrace();
-                        getView().stopTrace();
-                        if (!isFireAndForget) {
-                            getView().doCheckout();
-                        } else {
-                            this.dynamicData = dynamicDataPassingUiModel.getDynamicData();
-                        }
+                    this.dynamicData = dynamicDataPassingUiModel.getDynamicData();
+                    if (getView() != null && !isFireAndForget) {
+                        getView().doCheckout();
                     }
                     return Unit.INSTANCE;
                 }, throwable -> {
@@ -2981,8 +2976,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             errorMessage = ErrorHandler.getErrorMessage(getView().getActivityContext(), throwable);
                         }
                         getView().showToastError(errorMessage);
-                        getView().stopTrace();
-                        getView().logOnErrorLoadCheckoutPage(throwable);
                     }
                     return Unit.INSTANCE;
                 }
