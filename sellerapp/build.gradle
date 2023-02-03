@@ -46,7 +46,7 @@ android {
 
     project.ext {
         defaultVersionCode = 220412500;
-        defaultVersionName = "2.138-test";
+        defaultVersionName = "2.125-test";
     }
 
     packagingOptions {
