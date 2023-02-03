@@ -23,6 +23,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.TopadsManageGroupAdsResponse
 import com.tokopedia.topads.create.R
@@ -86,10 +87,12 @@ class MpAdGroupFragment :
 
     private var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-    private val adGroupViewModel: MpAdsGroupsViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(MpAdsGroupsViewModel::class.java)
+    @JvmField @Inject
+    var viewModelFactory: ViewModelFactory?=null
+
+    private val adGroupViewModel: MpAdsGroupsViewModel? by lazy {
+        if(viewModelFactory==null) null
+        else ViewModelProvider(this, viewModelFactory!!).get(MpAdsGroupsViewModel::class.java)
     }
 
     private val mHandler = Handler(Looper.getMainLooper())
@@ -120,7 +123,7 @@ class MpAdGroupFragment :
         attachFilterClickListener()
         setupAdSearchBar()
         observeViewModel()
-        adGroupViewModel.loadFirstPage()
+        adGroupViewModel?.loadFirstPage()
     }
 
     private fun setupHeader() {
@@ -147,7 +150,7 @@ class MpAdGroupFragment :
             isEnabled = false
             setOnClickListener {
                 isLoading = true
-                adGroupViewModel.moveTopAdsGroup(productId)
+                adGroupViewModel?.moveTopAdsGroup(productId)
                 MpTracker.clickAdGroupSimpanCta()
             }
         }
@@ -156,7 +159,7 @@ class MpAdGroupFragment :
     private fun createEndlessRecyclerViewListener() {
         endlessScrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                adGroupViewModel.loadMorePages()
+                adGroupViewModel?.loadMorePages()
             }
         }
     }
@@ -185,9 +188,9 @@ class MpAdGroupFragment :
     }
 
     private fun observeViewModel() {
-        adGroupViewModel.mainListLiveData.observe(viewLifecycleOwner, ::submitListToAdapter)
-        adGroupViewModel.hasNextLiveData.observe(viewLifecycleOwner, ::onMoreGroupsLoaded)
-        adGroupViewModel.topadsCreditLiveData.observe(viewLifecycleOwner, ::onTopadsCreditCheck)
+        adGroupViewModel?.mainListLiveData?.observe(viewLifecycleOwner, ::submitListToAdapter)
+        adGroupViewModel?.hasNextLiveData?.observe(viewLifecycleOwner, ::onMoreGroupsLoaded)
+        adGroupViewModel?.topadsCreditLiveData?.observe(viewLifecycleOwner, ::onTopadsCreditCheck)
     }
 
     private fun attachFilterClickListener() {
@@ -305,14 +308,14 @@ class MpAdGroupFragment :
         )
     }
 
-    private fun isFilterOptionSelected(filterParam: String) = adGroupViewModel.sortParam == filterParam
+    private fun isFilterOptionSelected(filterParam: String) = adGroupViewModel?.sortParam == filterParam
 
     override fun onApplyButtonClicked(optionList: List<Option>?) {
         optionList?.let { it1 ->
-            adGroupViewModel.sortParam = ""
+            adGroupViewModel?.sortParam = ""
             it1.forEach {
                 if (it.inputState == "true") {
-                    adGroupViewModel.sortParam = it.value
+                    adGroupViewModel?.sortParam = it.value
                 }
             }
             resetAdGroupList()
@@ -335,7 +338,7 @@ class MpAdGroupFragment :
     // Call this method to reset the ad group list
     private fun resetAdGroupList() {
         endlessScrollListener?.resetState()
-        adGroupViewModel.loadFirstPage()
+        adGroupViewModel?.loadFirstPage()
     }
 
     override fun onAdStatClicked(bottomSheet: BottomSheetUnify) {
@@ -345,12 +348,12 @@ class MpAdGroupFragment :
     override fun onAdGroupClicked(index: Int, active: Boolean) {
         if (active) {
             binding?.adGroupCta?.isEnabled = true
-            adGroupViewModel.chooseAdGroup(index)
+            adGroupViewModel?.chooseAdGroup(index)
             MpTracker.clickExistingAdGroup()
         } else {
             binding?.adGroupCta?.isEnabled = false
             binding?.adGroupCta?.isLoading = false
-            adGroupViewModel.unChooseAdGroup(index)
+            adGroupViewModel?.unChooseAdGroup(index)
         }
     }
 
@@ -364,15 +367,15 @@ class MpAdGroupFragment :
 
     // Reload Logic
     override fun onReload() {
-        adGroupViewModel.loadMorePages()
+        adGroupViewModel?.loadMorePages()
     }
 
     // Search Logic
     private fun loadPageWithKeyword(query: String?) {
-        adGroupViewModel.searchKeyword = query.orEmpty()
+        adGroupViewModel?.searchKeyword = query.orEmpty()
         mHandler.removeCallbacksAndMessages(null)
         mHandler.postDelayed({
-            adGroupViewModel.loadFirstPage()
+            adGroupViewModel?.loadFirstPage()
         }, SEARCH_DELAY_TIME)
     }
 
@@ -400,7 +403,7 @@ class MpAdGroupFragment :
         }
         dialog.setOnDismissListener {
             binding?.adGroupCta?.isLoading = false
-            adGroupViewModel.unChooseAdGroup(adGroupViewModel.getSelectedAdGroupPosition())
+            adGroupViewModel?.unChooseAdGroup(adGroupViewModel?.getSelectedAdGroupPosition().orZero())
         }
         dialog.show()
     }
@@ -423,7 +426,7 @@ class MpAdGroupFragment :
         }
         dialog.setOnDismissListener {
             binding?.adGroupCta?.isLoading = false
-            adGroupViewModel.unChooseAdGroup(adGroupViewModel.getSelectedAdGroupPosition())
+            adGroupViewModel?.unChooseAdGroup(adGroupViewModel?.getSelectedAdGroupPosition().orZero())
         }
         dialog.show()
     }

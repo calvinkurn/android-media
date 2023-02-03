@@ -32,11 +32,12 @@ class MpAdCreationActivity : BaseActivity(),HasComponent<CreateAdsComponent> ,Ro
     var userSession: UserSessionInterface?=null
     @Inject set
 
-    @Inject
-    lateinit var factory:ViewModelProvider.Factory
+    @JvmField @Inject
+    var factory:ViewModelProvider.Factory? = null
 
     private val adCreationViewModel by lazy {
-        ViewModelProvider(this,factory).get(MpAdCreationViewModel::class.java)
+        if(factory==null) null
+        else ViewModelProvider(this,factory!!).get(MpAdCreationViewModel::class.java)
     }
 
     private var binding:MpAdCreationActivityBinding?=null
@@ -50,7 +51,7 @@ class MpAdCreationActivity : BaseActivity(),HasComponent<CreateAdsComponent> ,Ro
         getProductIdFromIntent()
         initInjector()
         observeViewModel()
-        adCreationViewModel.getShopInfo(userSession?.shopId.orEmpty())
+        adCreationViewModel?.getShopInfo(userSession?.shopId.orEmpty())
     }
 
     private fun getProductIdFromIntent(){
@@ -58,12 +59,11 @@ class MpAdCreationActivity : BaseActivity(),HasComponent<CreateAdsComponent> ,Ro
     }
 
     private fun initInjector(){
-        DaggerCreateAdsComponent.builder().baseAppComponent(
-            (application as BaseMainApplication).baseAppComponent).build().inject(this)
+        component.inject(this)
     }
 
     private fun observeViewModel(){
-        adCreationViewModel.shopInfoResult.observe(this){
+        adCreationViewModel?.shopInfoResult?.observe(this){
             when(it){
                 is Success -> {
                     binding?.mpAdCreationFlipper?.displayedChild = 1
