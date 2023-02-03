@@ -63,7 +63,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDat
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
@@ -103,47 +102,104 @@ object DynamicProductDetailMapper {
         data.forEachIndexed { index, component ->
             when (component.type) {
                 ProductDetailConstant.NOTIFY_ME -> {
-                    listOfComponent.add(ProductNotifyMeDataModel(type = component.type, name = component.componentName))
+                    listOfComponent.add(
+                        ProductNotifyMeDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
                 }
                 ProductDetailConstant.DISCUSSION_FAQ -> {
-                    listOfComponent.add(ProductDiscussionMostHelpfulDataModel(type = component.type, name = component.componentName))
+                    listOfComponent.add(
+                        ProductDiscussionMostHelpfulDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
                 }
                 ProductDetailConstant.PRODUCT_DETAIL -> {
                     listOfComponent.add(mapToProductDetailInfo(component = component))
                 }
                 ProductDetailConstant.MINI_SOCIAL_PROOF -> {
-                    listOfComponent.add(ProductMiniSocialProofDataModel(type = component.type, name = component.componentName))
+                    listOfComponent.add(
+                        ProductMiniSocialProofDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
                 }
                 ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK -> {
-                    listOfComponent.add(ProductMiniSocialProofStockDataModel(type = component.type, name = component.componentName))
+                    listOfComponent.add(
+                        ProductMiniSocialProofStockDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
                 }
                 ProductDetailConstant.REVIEW -> {
-                    listOfComponent.add(ProductMostHelpfulReviewDataModel(type = component.type, name = component.componentName))
+                    listOfComponent.add(
+                        ProductMostHelpfulReviewDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
                 }
                 ProductDetailConstant.INFO -> {
                     val contentData = component.componentData.firstOrNull()
-                    val customInfoData = mapToGeneralInfo(contentData, type = component.type, name = component.componentName)
+                    val customInfoData = mapToGeneralInfo(
+                        contentData,
+                        type = component.type,
+                        name = component.componentName
+                    )
 
                     customInfoData?.let {
                         listOfComponent.add(it)
                     }
                 }
                 ProductDetailConstant.MINI_SHOP_WIDGET -> {
-                    listOfComponent.add(ProductMiniShopWidgetDataModel(type = component.type, name = component.componentName))
+                    listOfComponent.add(
+                        ProductMiniShopWidgetDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
                 }
                 ProductDetailConstant.PRODUCT_LIST -> {
                     when (component.componentName) {
                         PDP_7, PDP_9_TOKONOW ->
-                            listOfComponent.add(ProductRecomWidgetDataModel(type = component.type, name = component.componentName, position = index))
+                            listOfComponent.add(
+                                ProductRecomWidgetDataModel(
+                                    type = component.type,
+                                    name = component.componentName,
+                                    position = index
+                                )
+                            )
                         SHOPADS_CAROUSEL -> {
-                            listOfComponent.add(TopadsHeadlineUiModel(type = component.type, name = component.componentName))
+                            listOfComponent.add(
+                                TopadsHeadlineUiModel(
+                                    type = component.type,
+                                    name = component.componentName
+                                )
+                            )
                         }
                         else ->
-                            listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
+                            listOfComponent.add(
+                                ProductRecommendationDataModel(
+                                    type = component.type,
+                                    name = component.componentName,
+                                    position = index
+                                )
+                            )
                     }
                 }
                 ProductDetailConstant.VIEW_TO_VIEW -> {
-                    listOfComponent.add(ViewToViewWidgetDataModel(type = component.type, name= component.componentName, position = index))
+                    listOfComponent.add(
+                        ViewToViewWidgetDataModel(
+                            type = component.type,
+                            name = component.componentName,
+                            position = index
+                        )
+                    )
                 }
                 ProductDetailConstant.PRODUCT_LIST_VERTICAL -> {
                     listOfComponent.add(
@@ -155,49 +211,96 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(LoadingDataModel())
                 }
                 ProductDetailConstant.VARIANT -> {
-                    if (component.componentName == ProductDetailConstant.MINI_VARIANT_OPTIONS) {
-                        listOfComponent.add(ProductSingleVariantDataModel(type = component.type, name = component.componentName))
-                    } else {
-                        listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
-                    }
+                    listOfComponent.add(
+                        ProductSingleVariantDataModel(
+                            type = component.type,
+                            name = ProductDetailConstant.MINI_VARIANT_OPTIONS
+                        )
+                    )
                 }
                 ProductDetailConstant.PRODUCT_CONTENT -> {
-                    listOfComponent.add(ProductContentDataModel(type = component.type, name = component.componentName))
+                    listOfComponent.add(
+                        ProductContentDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
                 }
                 ProductDetailConstant.MEDIA -> {
-                    listOfComponent.add(ProductMediaDataModel(type = component.type, name = component.componentName))
+                    listOfComponent.add(
+                        ProductMediaDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
                 }
                 ProductDetailConstant.TICKER_INFO -> {
-                    listOfComponent.add(ProductTickerInfoDataModel(type = component.type, name = component.componentName))
+                    listOfComponent.add(
+                        ProductTickerInfoDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
                 }
                 ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY -> {
-                    listOfComponent.add(ProductShopCredibilityDataModel(type = component.type, name = component.componentName))
+                    listOfComponent.add(
+                        ProductShopCredibilityDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
                 }
                 ProductDetailConstant.PRODUCT_CUSTOM_INFO -> {
                     val contentData = component.componentData.firstOrNull()
-                    val customInfoData = mapToCustomInfoUiModel(contentData, component.componentName, component.type)
+                    val customInfoData =
+                        mapToCustomInfoUiModel(contentData, component.componentName, component.type)
 
                     customInfoData?.let {
                         listOfComponent.add(it)
                     }
                 }
                 ProductDetailConstant.TOP_ADS -> {
-                    listOfComponent.add(TopAdsImageDataModel(type = component.type, name = component.componentName))
+                    listOfComponent.add(
+                        TopAdsImageDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
                 }
                 ProductDetailConstant.REPORT -> {
-                    listOfComponent.add(ProductReportDataModel(type = component.type, name = component.componentName))
+                    listOfComponent.add(
+                        ProductReportDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
                 }
                 ProductDetailConstant.SHIPMENT -> {
-                    listOfComponent.add(ProductShipmentDataModel(type = component.type, name = component.componentName))
+                    listOfComponent.add(
+                        ProductShipmentDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
                 }
                 /**
                  * shipment_v2 use the same data model with shipment
                  */
                 ProductDetailConstant.SHIPMENT_V2 -> {
-                    listOfComponent.add(ProductShipmentDataModel(type = component.type, name = component.componentName))
+                    listOfComponent.add(
+                        ProductShipmentDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
                 }
                 ProductDetailConstant.MVC -> {
-                    listOfComponent.add(ProductMerchantVoucherSummaryDataModel(type = component.type, name = component.componentName))
+                    listOfComponent.add(
+                        ProductMerchantVoucherSummaryDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
                 }
                 ProductDetailConstant.ONE_LINERS -> {
                     listOfComponent.add(
@@ -251,7 +354,12 @@ object DynamicProductDetailMapper {
                     )
                 }
                 ProductDetailConstant.AR_BUTTON -> {
-                    listOfComponent.add(ArButtonDataModel(type = component.type, name = component.componentName))
+                    listOfComponent.add(
+                        ArButtonDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
                 }
                 ProductDetailConstant.FINTECH_WIDGET_TYPE -> {
                     listOfComponent.add(
@@ -329,7 +437,8 @@ object DynamicProductDetailMapper {
         }?.componentData?.firstOrNull() ?: ComponentData()
 
         val bestSellerComponent = mapToOneLinersComponent(ProductDetailConstant.BEST_SELLER, data)
-        val stockAssuranceComponent = mapToOneLinersComponent(ProductDetailConstant.STOCK_ASSURANCE, data)
+        val stockAssuranceComponent =
+            mapToOneLinersComponent(ProductDetailConstant.STOCK_ASSURANCE, data)
 
         val newDataWithMedia = contentData?.copy(
             media = mediaData.media,
@@ -408,7 +517,10 @@ object DynamicProductDetailMapper {
             null
         } else {
             data.map {
-                com.tokopedia.product.detail.common.data.model.product.Wholesale(it.minQty, it.price.value)
+                com.tokopedia.product.detail.common.data.model.product.Wholesale(
+                    it.minQty,
+                    it.price.value
+                )
             }
         }
     }
@@ -506,7 +618,8 @@ object DynamicProductDetailMapper {
         val totalVideoToShow = data.detail?.videos?.size.orZero()
         val totalImageToShow = data.detail?.images?.size.orZero()
         val totalMediaToShow = totalVideoToShow + totalImageToShow
-        val totalNotShowedMedia = data.detail?.mediaCount.toIntOrZero().minus(totalMediaToShow).coerceAtLeast(Int.ZERO)
+        val totalNotShowedMedia =
+            data.detail?.mediaCount.toIntOrZero().minus(totalMediaToShow).coerceAtLeast(Int.ZERO)
         val mappedVideoThumbnails = data.detail?.videos?.mapIndexed { index, video ->
             val hasNext = data.isHasNext
             val lastItem = index == totalMediaToShow - 1
@@ -575,7 +688,8 @@ object DynamicProductDetailMapper {
     }
 
     fun generateUserLocationRequest(localData: LocalCacheModel): UserLocationRequest {
-        val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
+        val latlong =
+            if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
         return UserLocationRequest(
             districtID = localData.district_id.checkIfNumber("district_id"),
             addressID = localData.address_id.checkIfNumber("address_id"),
@@ -594,7 +708,8 @@ object DynamicProductDetailMapper {
     }
 
     fun generateUserLocationRequestRates(localData: LocalCacheModel): String {
-        val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
+        val latlong =
+            if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
         return "${localData.district_id}|${localData.postal_code}|$latlong"
     }
 
@@ -616,7 +731,12 @@ object DynamicProductDetailMapper {
         }
     }
 
-    fun generateProductShareData(productInfo: DynamicProductInfoP1, userId: String, shopUrl: String, bundleId: String): ProductData {
+    fun generateProductShareData(
+        productInfo: DynamicProductInfoP1,
+        userId: String,
+        shopUrl: String,
+        bundleId: String
+    ): ProductData {
         return ProductData(
             userId,
             productInfo.finalPrice.getCurrencyFormatted(),
@@ -658,7 +778,10 @@ object DynamicProductDetailMapper {
         )
     }
 
-    fun generateImageGeneratorData(product: DynamicProductInfoP1, bebasOngkir: BebasOngkirImage): PdpParamModel {
+    fun generateImageGeneratorData(
+        product: DynamicProductInfoP1,
+        bebasOngkir: BebasOngkirImage
+    ): PdpParamModel {
         return PdpParamModel(
             productId = product.basic.productID,
             isBebasOngkir = isBebasOngkir(bebasOngkir.boType),
@@ -709,7 +832,6 @@ object DynamicProductDetailMapper {
                 (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO) ||
                 (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) ||
                 (it.name() == ProductDetailConstant.VALUE_PROP && !isOfficialStore) ||
-                (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) ||
                 (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) ||
                 (it.type() == ProductDetailConstant.PRODUCT_LIST && GlobalConfig.isSellerApp()) ||
                 (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner)) ||
@@ -732,7 +854,10 @@ object DynamicProductDetailMapper {
         }.toMutableList()
     }
 
-    private fun getMaxPriceVariant(productInfo: DynamicProductInfoP1, variantData: ProductVariant?): Double {
+    private fun getMaxPriceVariant(
+        productInfo: DynamicProductInfoP1,
+        variantData: ProductVariant?
+    ): Double {
         return if (productInfo.data.variant.isVariant && variantData != null) {
             variantData.maxFinalPrice.toDouble()
         } else {
