@@ -6,7 +6,7 @@
       "event": "view_item",
       "eventAction": "impression on banner dynamic channel mission widget",
       "eventCategory": "homepage",
-      "eventLabel": "",
+      "eventLabel": ".* - .*",
       "trackerId": "40379",
       "businessUnit": "home & browse",
       "channelId": ".*",
@@ -16,8 +16,7 @@
           "creative_name": ".*",
           "creative_slot": ".*",
           "item_id": ".*_.*_.*_.*",
-          "item_name": "/ - p.* - dynamic channel mission widget - banner - .* - .* - .*",
-          "creative_url": ""
+          "item_name": "/ - p.* - dynamic channel mission widget - banner - .* - .* - .*"
         }
       ],
       "userId": ".*",
