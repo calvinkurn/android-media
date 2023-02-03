@@ -261,12 +261,12 @@ class MpAdGroupFragment :
     // Filter Logic
     private fun showFilterBottomSheet() {
         FilterGeneralDetailBottomSheet().also {
-            it.enableResetButton = false
             it.show(
                 fragmentManager = childFragmentManager,
                 filter = getFilerData(),
                 callback = this,
-                buttonApplyFilterDetailText = context?.getString(R.string.ad_group_filter_bottomsheet_cta)
+                buttonApplyFilterDetailText = context?.getString(R.string.ad_group_filter_bottomsheet_cta),
+                enableResetButton = false
             )
         }
     }

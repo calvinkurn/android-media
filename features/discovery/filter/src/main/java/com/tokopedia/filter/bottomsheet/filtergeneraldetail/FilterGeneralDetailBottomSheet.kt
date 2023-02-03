@@ -45,18 +45,19 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
         filterGeneralDetailAdapter.setOptionList(it)
     }
 
-    var enableResetButton = true
+    private var enableResetButton = true
 
     private var binding: FilterGeneralDetailBottomSheetBinding? = null
 
     fun show(
         fragmentManager: FragmentManager,
         filter: Filter, callback: Callback,
-        buttonApplyFilterDetailText: String? = null) {
+        buttonApplyFilterDetailText: String? = null,enableResetButton:Boolean = true) {
             this.filter = filter.copyParcelable()
             this.originalSelectedOptionList.addAll(filter.getSelectedOptions())
             this.callback = callback
             this.buttonApplyFilterDetailText = buttonApplyFilterDetailText
+            this.enableResetButton = enableResetButton
 
             show(fragmentManager, FILTER_GENERAL_DETAIL_BOTTOM_SHEET_TAG)
     }
