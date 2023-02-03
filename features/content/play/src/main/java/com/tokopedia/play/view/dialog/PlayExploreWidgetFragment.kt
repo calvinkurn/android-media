@@ -505,11 +505,8 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     private fun setLayoutManager(state: ExploreWidgetState) {
-        val current = binding.rvWidgets.layoutManager
-        val newLayoutManager = if (state !is ExploreWidgetState.Success) shimmerLayoutManager else widgetLayoutManager
-        if (current == newLayoutManager) return
-        binding.rvWidgets.layoutManager = newLayoutManager
-        scrollListener.updateLayoutManager(newLayoutManager)
+        binding.rvWidgets.layoutManager = if (state !is ExploreWidgetState.Success) shimmerLayoutManager else widgetLayoutManager
+        scrollListener.updateLayoutManager(binding.rvWidgets.layoutManager)
     }
 
     private fun getVisibleChips(): Map<ChipWidgetUiModel, Int> {
