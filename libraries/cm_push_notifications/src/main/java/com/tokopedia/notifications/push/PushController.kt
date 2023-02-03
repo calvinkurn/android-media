@@ -300,24 +300,8 @@ class PushController(val context: Context) : CoroutineScope {
                 IrisAnalyticsEvents.PUSH_RECEIVED,
                 baseNotificationModel
             )
-            trackTokoChatPushNotification()
         } else {
             checkNotificationChannelAndSendEvent(baseNotificationModel)
-        }
-    }
-
-    private fun trackTokoChatPushNotification() {
-        try {
-            launch {
-                tokoChatPushNotifCallbackUseCase(
-                    TokoChatPushNotifCallbackUseCase.Param(
-                        pushNotifId = "Test123",
-                        timestamp = Date().toFormattedString("yyyy-MM-dd'T'HH:mm:ssZZZZZ")
-                    )
-                )
-            }
-        } catch (throwable: Throwable) {
-            throwable.printStackTrace()
         }
     }
 
@@ -333,6 +317,7 @@ class PushController(val context: Context) : CoroutineScope {
                     IrisAnalyticsEvents.PUSH_RECEIVED,
                     baseNotificationModel
                 )
+                trackTokoChatPushNotification()
             }
             NotificationSettingsUtils.NotificationMode.DISABLED,
             NotificationSettingsUtils.NotificationMode.CHANNEL_DISABLED -> {
@@ -342,6 +327,21 @@ class PushController(val context: Context) : CoroutineScope {
                     baseNotificationModel
                 )
             }
+        }
+    }
+
+    private fun trackTokoChatPushNotification() {
+        try {
+            launch {
+                tokoChatPushNotifCallbackUseCase(
+                    TokoChatPushNotifCallbackUseCase.Param(
+                        pushNotifId = "Test123",
+                        timestamp = Date().toFormattedString("yyyy-MM-dd'T'HH:mm:ssZZZZZ")
+                    )
+                )
+            }
+        } catch (throwable: Throwable) {
+            throwable.printStackTrace()
         }
     }
 
