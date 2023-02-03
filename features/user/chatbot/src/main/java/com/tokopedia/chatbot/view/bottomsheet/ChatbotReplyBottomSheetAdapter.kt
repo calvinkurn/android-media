@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.view.bottomsheet
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -45,6 +46,7 @@ class ChatbotReplyBottomSheetAdapter(
         return list.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setList(list: List<ChatbotReplyOptionsUiModel>) {
         this.list.clear()
         this.list.addAll(list)
@@ -55,4 +57,3 @@ class ChatbotReplyBottomSheetAdapter(
         fun onClickMessageReply(messageUiModel: MessageUiModel)
     }
 }
-
