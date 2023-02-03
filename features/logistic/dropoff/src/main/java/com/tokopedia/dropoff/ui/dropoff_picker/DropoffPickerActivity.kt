@@ -1,5 +1,6 @@
 package com.tokopedia.dropoff.ui.dropoff_picker
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.IntentSender
@@ -53,6 +54,12 @@ const val REQUEST_CODE_LOCATION: Int = 1
 const val REQUEST_CODE_AUTOCOMPLETE: Int = 2
 
 class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
+
+    companion object {
+        private const val MAP_CAMERA_ZOOM = 16f
+        private const val LATITUDE_KEY = "BUNDLE_LATITUDE"
+        private const val LONGITUDE_KEY = "BUNDLE_LONGITUDE"
+    }
 
     private lateinit var mPermissionChecker: PermissionCheckerHelper
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -466,6 +473,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         )
     }
 
+    @SuppressLint("MissingPermission")
     private fun checkAndRequestLocation() {
         val locationRequest = LocationRequest.create()?.apply {
             interval = 10000
@@ -535,10 +543,4 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 goToAutoComplete.invoke(null)
             }
         }
-
-    companion object {
-        private const val MAP_CAMERA_ZOOM = 16f
-        private const val LATITUDE_KEY = "BUNDLE_LATITUDE"
-        private const val LONGITUDE_KEY = "BUNDLE_LONGITUDE"
-    }
 }
