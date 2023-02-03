@@ -46,6 +46,7 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
+import com.tokopedia.tokofood.common.util.TokofoodAddressExt.updateLocalChosenAddressPinpoint
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
@@ -522,29 +523,10 @@ class SearchResultFragment :
     }
 
     private fun updateLocalAddressData(data: Any?) {
-        (data as? Pair<*, *>)?.let { latLng ->
-            val latitude = latLng.first
-            val longitude = latLng.second
+        (data as? Pair<*, *>)?.let { (latitude, longitude) ->
             if (latitude is String && longitude is String) {
-                context?.let { ctx ->
-                    val currentAddressData = ChooseAddressUtils.getLocalizingAddressData(ctx)
-                    currentAddressData.let { chooseAddressData ->
-                        ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                            context = ctx,
-                            addressId = chooseAddressData.address_id,
-                            cityId = chooseAddressData.city_id,
-                            districtId = chooseAddressData.district_id,
-                            lat = latitude,
-                            long = longitude,
-                            label = chooseAddressData.label,
-                            postalCode = chooseAddressData.postal_code,
-                            warehouseId = chooseAddressData.warehouse_id,
-                            shopId = chooseAddressData.shop_id,
-                            warehouses = chooseAddressData.warehouses,
-                            serviceType = chooseAddressData.service_type,
-                            lastUpdate = chooseAddressData.tokonow_last_update
-                        )
-                    }
+                context?.run {
+                    updateLocalChosenAddressPinpoint(latitude, longitude)
                     refreshAddressData()
                 }
             }

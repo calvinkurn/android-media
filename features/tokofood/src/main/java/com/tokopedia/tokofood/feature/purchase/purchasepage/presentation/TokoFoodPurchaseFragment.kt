@@ -53,6 +53,7 @@ import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
+import com.tokopedia.tokofood.common.util.TokofoodAddressExt.updateLocalChosenAddressPinpoint
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
@@ -375,9 +376,7 @@ class TokoFoodPurchaseFragment :
                 )
                 PurchaseUiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT -> navigateToSetPinpoint(it.data as LocationPass)
                 PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> {
-                    (it.data as? Pair<*, *>)?.let { latLng ->
-                        val latitude = latLng.first
-                        val longitude = latLng.second
+                    (it.data as? Pair<*, *>)?.let { (latitude, longitude) ->
                         if (latitude is String && longitude is String) {
                             setupChooseAddress(latitude, longitude)
                             loadData()
@@ -479,26 +478,7 @@ class TokoFoodPurchaseFragment :
     }
 
     private fun setupChooseAddress(latitude: String, longitude: String) {
-        context?.let { ctx ->
-            val currentAddressData = ChooseAddressUtils.getLocalizingAddressData(ctx)
-            currentAddressData.let { chooseAddressData ->
-                ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                    context = ctx,
-                    addressId = chooseAddressData.address_id,
-                    cityId = chooseAddressData.city_id,
-                    districtId = chooseAddressData.district_id,
-                    lat = latitude,
-                    long = longitude,
-                    label = chooseAddressData.label,
-                    postalCode = chooseAddressData.postal_code,
-                    warehouseId = chooseAddressData.warehouse_id,
-                    shopId = chooseAddressData.shop_id,
-                    warehouses = chooseAddressData.warehouses,
-                    serviceType = chooseAddressData.service_type,
-                    lastUpdate = chooseAddressData.tokonow_last_update
-                )
-            }
-        }
+        context?.updateLocalChosenAddressPinpoint(latitude, longitude)
     }
 
     private fun collectSharedUiState() {
