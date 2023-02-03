@@ -14,9 +14,6 @@ object RollenceKey {
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
 
     // home component rollence section
-    const val HOME_COMPONENT_LEGO24BANNER_EXP = "lego24_new"
-    const val HOME_COMPONENT_LEGO24BANNER_OLD = "lego24_old"
-    const val HOME_COMPONENT_LEGO24BANNER_VARIANT = "lego24_new"
     const val HOME_COMPONENT_HPB_DURATION_EXP = "hpb_scroll_duration"
     const val HOME_COMPONENT_HPB_DURATION_CONTROL = "control_scroll_5s"
     const val HOME_COMPONENT_HPB_DURATION_VARIANT_4S = "scroll_4s"
