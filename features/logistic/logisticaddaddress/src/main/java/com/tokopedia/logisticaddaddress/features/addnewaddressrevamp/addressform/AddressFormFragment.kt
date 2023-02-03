@@ -466,7 +466,6 @@ class AddressFormFragment :
     @SuppressLint("SetTextI18n")
     private fun prepareLayout(data: DistrictItem?) {
         setupLabelChips("Rumah")
-        setupMapsAvailabilityTicker()
         binding?.run {
             if (userSession.name.isNotEmpty() && !userSession.name.contains(
                     toppers,
@@ -508,9 +507,7 @@ class AddressFormFragment :
             binding?.run {
                 cardAddressNegative.root.setOnClickListener {
                     AddNewAddressRevampAnalytics.onClickAturPinpointNegative(userSession.userId)
-                    if (viewModel.isGmsAvailable) {
-                        checkKotaKecamatan()
-                    }
+                    checkKotaKecamatan()
                 }
 
                 formAddressNegative.etKotaKecamatan.textFieldInput.setText(currentKotaKecamatan)
@@ -582,14 +579,6 @@ class AddressFormFragment :
         }
     }
 
-    private fun setupMapsAvailabilityTicker() {
-        if (viewModel.isGmsAvailable) {
-            binding?.tickerMapsUnavailable?.gone()
-        } else {
-            binding?.tickerMapsUnavailable?.visible()
-        }
-    }
-
     private fun setupLabelChips(currentLabel: String) {
         labelAlamatList = context?.resources?.getStringArray(R.array.labelAlamatList)
             ?.map { Pair(it, it.equals(currentLabel, ignoreCase = true)) }?.toTypedArray()
@@ -606,7 +595,6 @@ class AddressFormFragment :
     @SuppressLint("SetTextI18n")
     private fun prepareEditLayout(data: KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse) {
         setupLabelChips(data.addrName)
-        setupMapsAvailabilityTicker()
         binding?.formAccount?.run {
             etNamaPenerima.textFieldInput.setText(data.receiverName)
             infoNameLayout.visibility = View.GONE
@@ -636,9 +624,7 @@ class AddressFormFragment :
                 cardAddressNegative.run {
                     root.setOnClickListener {
                         EditAddressRevampAnalytics.onClickAturPinPoint(userSession.userId)
-                        if (viewModel.isGmsAvailable) {
-                            checkKotaKecamatan()
-                        }
+                        checkKotaKecamatan()
                     }
                     btnChangeNegative.visibility = View.VISIBLE
                     btnArrow.visibility = View.GONE
@@ -709,14 +695,10 @@ class AddressFormFragment :
                 formattedAddress = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
                 cardAddressPinpoint.run {
                     context?.let {
-                        if (viewModel.isGmsAvailable) {
-                            btnChange.visible()
-                            btnChange.setOnClickListener {
-                                goToPinpointPage()
-                                EditAddressRevampAnalytics.onClickAturPinPoint(userSession.userId)
-                            }
-                        } else {
-                            btnChange.gone()
+                        btnChange.visible()
+                        btnChange.setOnClickListener {
+                            goToPinpointPage()
+                            EditAddressRevampAnalytics.onClickAturPinPoint(userSession.userId)
                         }
                     }
                     tvPinpointTitle.visibility = View.VISIBLE
@@ -1135,6 +1117,7 @@ class AddressFormFragment :
         bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, true)
         bundle.putBoolean(EXTRA_IS_EDIT, isEdit)
         bundle.putString(EXTRA_POSTAL_CODE, currentPostalCode)
+        bundle.putBoolean(EXTRA_GMS_AVAILABILITY, viewModel.isGmsAvailable)
         if (!isPositiveFlow && !isEdit) bundle.putBoolean(EXTRA_IS_POLYGON, true)
         startActivityForResult(
             context?.let { PinpointNewPageActivity.createIntent(it, bundle) },
@@ -1222,38 +1205,34 @@ class AddressFormFragment :
 
     private fun setupNegativePinpointCard() {
         binding?.run {
-            if (viewModel.isGmsAvailable) {
-                if (!isPinpoint) {
-                    cardAddressNegative.icLocation.setImage(IconUnify.LOCATION_OFF)
-                    cardAddressNegative.addressDistrict.text =
-                        if (isEdit) {
-                            getString(R.string.tv_pinpoint_not_defined_edit)
-                        } else {
-                            context?.let {
-                                HtmlLinkHelper(
-                                    it,
-                                    getString(R.string.tv_pinpoint_not_defined)
-                                ).spannedString
-                            }
+            if (!isPinpoint) {
+                cardAddressNegative.icLocation.setImage(IconUnify.LOCATION_OFF)
+                cardAddressNegative.addressDistrict.text =
+                    if (isEdit) {
+                        getString(R.string.tv_pinpoint_not_defined_edit)
+                    } else {
+                        context?.let {
+                            HtmlLinkHelper(
+                                it,
+                                getString(R.string.tv_pinpoint_not_defined)
+                            ).spannedString
                         }
-                } else {
-                    cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
-                    cardAddressNegative.addressDistrict.text =
-                        if (isEdit) {
-                            getString(R.string.tv_pinpoint_defined_edit)
-                        } else {
-                            context?.let {
-                                HtmlLinkHelper(
-                                    it,
-                                    getString(R.string.tv_pinpoint_defined)
-                                ).spannedString
-                            }
-                        }
-                    cardAddressNegative.btnChangeNegative.text =
-                        getString(R.string.change_pinpoint_positive_text)
-                }
+                    }
             } else {
-                cardAddressNegative.root.gone()
+                cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
+                cardAddressNegative.addressDistrict.text =
+                    if (isEdit) {
+                        getString(R.string.tv_pinpoint_defined_edit)
+                    } else {
+                        context?.let {
+                            HtmlLinkHelper(
+                                it,
+                                getString(R.string.tv_pinpoint_defined)
+                            ).spannedString
+                        }
+                    }
+                cardAddressNegative.btnChangeNegative.text =
+                    getString(R.string.change_pinpoint_positive_text)
             }
         }
     }
@@ -1709,8 +1688,8 @@ class AddressFormFragment :
         if (!isEdit) {
             currentLat = 0.0
             currentLong = 0.0
-            saveDataModel?.latitude = "0.0"
-            saveDataModel?.longitude = "0.0"
+            saveDataModel?.latitude = ""
+            saveDataModel?.longitude = ""
             this.isPinpoint = false
             binding?.run {
                 cardAddressNegative.icLocation.setImage(IconUnify.LOCATION_OFF)
