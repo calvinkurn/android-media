@@ -89,7 +89,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
+        <com.tokopedia.feedplus.view.customview.PostProgressUpdateView
             android:id="@+id/postUpdateView"
             android:visibility="gone"
             android:layout_width="match_parent"

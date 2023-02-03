@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.ResultBalanceAndPoint
-import com.tokopedia.home_account.account_settings.domain.UserProfileSafeModeUseCase
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
 import com.tokopedia.home_account.pref.AccountPreference
@@ -44,7 +43,7 @@ class HomeAccountUserViewModel @Inject constructor(
     private val fingerprintPreference: FingerprintPreference,
     private val getHomeAccountUserUseCase: HomeAccountUserUsecase,
     private val getUserShortcutUseCase: HomeAccountShortcutUseCase,
-    private val setUserProfileSafeModeUseCase: SafeSettingProfileUseCase,
+    private val setUserProfileSafeModeUseCase: UpdateSafeModeUseCase,
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
     private val getCentralizedUserAssetConfigUseCase: GetCentralizedUserAssetConfigUseCase,
@@ -54,7 +53,7 @@ class HomeAccountUserViewModel @Inject constructor(
     private val getCoBrandCCBalanceAndPointUseCase: GetCoBrandCCBalanceAndPointUseCase,
     private val getLinkStatusUseCase: GetLinkStatusUseCase,
     private val getPhoneUseCase: GetUserProfile,
-    private val userProfileSafeModeUseCase: UserProfileSafeModeUseCase,
+    private val userProfileSafeModeUseCase: GetSafeModeUseCase,
     private val checkFingerprintToggleStatusUseCase: CheckFingerprintToggleStatusUseCase,
     private val tokopediaPlusUseCase: TokopediaPlusUseCase,
     private val saveAttributeOnLocal: SaveAttributeOnLocalUseCase,
@@ -138,31 +137,40 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
-    fun getSafeModeValue() {
-        userProfileSafeModeUseCase.executeQuerySafeMode(
-            { (profileSettingResponse) ->
-                accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, profileSettingResponse.safeMode)
-                _safeModeStatus.value = profileSettingResponse.safeMode
-            },
-            { it.printStackTrace() }
-        )
+    fun setSafeMode(isActive: Boolean) {
+        launch {
+            try {
+                val param = SafeModeParam(isActive)
+                setUserProfileSafeModeUseCase(param)
+                val safeMode = userProfileSafeModeUseCase(Unit).userProfileSetting.safeMode
+                updateSaveModeValue(safeMode)
+            } catch (ignored: Exception) { }
+        }
     }
 
-    fun setSafeMode(isActive: Boolean) {
-        setUserProfileSafeModeUseCase.executeQuerySetSafeMode(
-                { getSafeModeValue() },
-                { throwable ->
-                    throwable.printStackTrace()
-                }, isActive)
+    fun getSafeModeValue() {
+        launch {
+            try {
+                val result = userProfileSafeModeUseCase(Unit)
+                updateSaveModeValue(result.userProfileSetting.safeMode)
+            } catch (ignored: Exception) { }
+        }
+    }
+
+    fun updateSaveModeValue(isActive: Boolean) {
+        accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, isActive)
+        _safeModeStatus.value = isActive
     }
 
     fun getShortcutData() {
-        launchCatchError(block = {
-            val shortcutResponse = getUserShortcutUseCase(Unit)
-            _shortcutData.value = Success(shortcutResponse)
-        }, onError = {
-            _shortcutData.value = Fail(it)
-        })
+        launch {
+            try {
+                val shortcutResponse = getUserShortcutUseCase(Unit)
+                _shortcutData.value = Success(shortcutResponse)
+            } catch (e: Exception) {
+                _shortcutData.value = Fail(e)
+            }
+        }
     }
 
     fun getBuyerData(isSupportBiometric: Boolean = false) {

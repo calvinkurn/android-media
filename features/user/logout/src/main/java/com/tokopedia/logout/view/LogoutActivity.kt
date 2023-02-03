@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -189,7 +190,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private fun clearData() {
         hideLoading()
-        removeTokoChat()
+        disconnectTokoChat()
         clearStickyLogin()
         logoutGoogleAccountIfExist()
         TrackApp.getInstance().moEngage.logoutEvent()
@@ -327,6 +328,12 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
                 cookieManager.removeAllCookies {}
             }
         } catch (ignored: Exception) {}
+    }
+
+    private fun disconnectTokoChat() {
+        if (application is AbstractionRouter) {
+            (application as AbstractionRouter).disconnectTokoChat()
+        }
     }
 
     companion object {

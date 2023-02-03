@@ -135,11 +135,20 @@
             android:id="@+id/userConsentKyc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:actionText="@string/kyc_intro_button"
             app:defaultTemplate="TNC_PRIVACY_MANDATORY"
             app:layout_constraintTop_toBottomOf="@id/divider1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/kyc_benefit_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:text="@string/kyc_intro_button" />
 
     </LinearLayout>
 

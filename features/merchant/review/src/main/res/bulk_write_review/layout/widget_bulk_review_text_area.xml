@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.TextAreaUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:scrollbars="vertical"
+    app:unify_text_field_input_type="text"
+    app:unify_text_field_label_static="true"
+    app:unify_text_field_placeholder="@string/review_create_text_area_placeholder"
+    tools:layout_height="wrap_content" />
