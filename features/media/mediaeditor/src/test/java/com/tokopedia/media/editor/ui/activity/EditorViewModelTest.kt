@@ -10,6 +10,7 @@ import org.junit.Assert.*
 import org.junit.Test
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
+import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getTokopediaCacheDir
 import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
@@ -214,12 +215,16 @@ class EditorViewModelTest {
     @Test
     fun `save image to gallery with overlay logo`() {
         // Given
+        val tempOverlayUrl = "temp_url"
         val dataList = createUiModelState(0, -1)
         dataList.first().apply {
             editList.add(
                 EditorDetailUiModel(
                     resultUrl = this.getOriginalUrl(),
-                    editorToolType = EditorToolType.ADD_LOGO
+                    editorToolType = EditorToolType.ADD_LOGO,
+                    addLogoValue = EditorAddLogoUiModel(
+                        overlayLogoUrl = tempOverlayUrl
+                    )
                 )
             )
         }
