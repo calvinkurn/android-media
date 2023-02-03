@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.core.content.res.ResourcesCompat
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -34,14 +33,15 @@ class AdvertisingCostBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         setTitle(context?.resources?.getString(R.string.ad_group_stats_advertisement_costs_bottomsheet_title).orEmpty())
-        setupBottomSheetText()
+        infoTv = Typography(requireContext())
+        setChild(infoTv)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun setupBottomSheetText(){
-        val content = context?.resources?.getString(R.string.ad_group_stats_advertisement_costs_bottomsheet_content).orEmpty()
+        val content = context?.getString(R.string.ad_group_stats_advertisement_costs_bottomsheet_content).orEmpty()
         val textColor = ResourcesCompat.getColor(requireContext().resources,com.tokopedia.unifyprinciples.R.color.Unify_NN950,null)
-        infoTv = Typography(requireContext()).apply {
+        infoTv?.apply {
             text = SpannableUtils.applySpannable(
                 content,
                 SpannedString(BOLD_TEXT_1, listOf(
@@ -54,11 +54,11 @@ class AdvertisingCostBottomSheet : BottomSheetUnify() {
             setType(Typography.PARAGRAPH_2)
             setTextColor(textColor)
         }
-        setChild(infoTv)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupBottomSheetText()
         val lp = infoTv?.layoutParams as? LinearLayout.LayoutParams
         lp?.bottomMargin = context?.dpToPx(BOTTOM_MARGIN)?.toInt().orZero()
     }

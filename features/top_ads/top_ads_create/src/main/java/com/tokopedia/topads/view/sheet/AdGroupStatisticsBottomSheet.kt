@@ -15,7 +15,6 @@ import com.tokopedia.topads.create.R
 class AdGroupStatisticsBottomSheet : BottomSheetUnify() {
 
     companion object{
-        private const val infoText = "Statistik yang ditampilkan adalah data performa grup 3 hari terakhir"
         private const val BOTTOM_MARGIN = 16
     }
 
@@ -26,20 +25,21 @@ class AdGroupStatisticsBottomSheet : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        infoTv = Typography(requireContext()).apply {
-            text = infoText
-            setType(Typography.PARAGRAPH_2)
-            setTextColor(ResourcesCompat.getColor(requireContext().resources,com.tokopedia.unifyprinciples.R.color.Unify_NN950,null))
-        }
-        setTitle(context?.resources?.getString(R.string.ad_group_stats_bottomsheet_title).orEmpty())
+        infoTv = Typography(requireContext())
+        setTitle(context?.getString(R.string.ad_group_stats_bottomsheet_title).orEmpty())
         setChild(infoTv)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val lp = infoTv?.layoutParams as? LinearLayout.LayoutParams
-        lp?.bottomMargin = context?.dpToPx(BOTTOM_MARGIN)?.toInt().orZero()
+        infoTv?.apply {
+            text = context?.getString(R.string.ad_group_stats_bottomsheet_text).orEmpty()
+            setType(Typography.PARAGRAPH_2)
+            setTextColor(ResourcesCompat.getColor(requireContext().resources,com.tokopedia.unifyprinciples.R.color.Unify_NN950,null))
+            val lp = layoutParams as? LinearLayout.LayoutParams
+            lp?.bottomMargin = context?.dpToPx(BOTTOM_MARGIN)?.toInt().orZero()
+        }
     }
 
 }

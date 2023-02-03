@@ -169,6 +169,7 @@
     <string name="mp_ad_group_list_search_hint">Cari grup iklan di sini</string>
     <string name="mp_ad_creation_grp_list_infinite_reload_text">Beberapa grup gagal dimuat. Muat Ulang</string>
     <string name="ad_group_stats_bottomsheet_title">Statistik Grup Iklan</string>
+    <string name="ad_group_stats_bottomsheet_text">Statistik yang ditampilkan adalah data performa grup 3 hari terakhir</string>
     <string name="ad_group_stats_advertisement_costs_bottomsheet_title">Biaya Iklan</string>
     <string name="ad_group_stats_advertisement_costs_bottomsheet_content">Biaya iklan di pencarian adalah biaya yang dikenakan jika iklanmu diklik di halaman pencarian.\n\nBiaya iklan di rekomendasi adalah Biaya yang dikenakan jika iklanmu diklik  di bagian rekomendasi produk.</string>
     <string name="ad_group_impression">Tampil</string>
