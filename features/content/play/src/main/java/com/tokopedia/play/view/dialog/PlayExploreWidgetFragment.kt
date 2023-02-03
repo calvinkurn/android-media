@@ -105,6 +105,13 @@ class PlayExploreWidgetFragment @Inject constructor(
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) analytic?.scrollExplore()
             }
+
+            override fun checkLoadMore(view: RecyclerView?, dx: Int, dy: Int) {
+                val lastVisibleItem = widgetLayoutManager.findLastVisibleItemPosition()
+                val firstVisibleItem = widgetLayoutManager.findFirstVisibleItemPosition()
+                val isEndPage = (lastVisibleItem == firstVisibleItem) && hasNextPage
+                if(isEndPage || lastVisibleItem + visibleThreshold > layoutManager.itemCount && hasNextPage) loadMoreNextPage()
+            }
         }
     }
 
