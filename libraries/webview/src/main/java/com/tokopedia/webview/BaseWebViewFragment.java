@@ -76,6 +76,10 @@ import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.network.utils.URLGenerator;
+import com.tokopedia.picker.common.MediaPicker;
+import com.tokopedia.picker.common.PageSource;
+import com.tokopedia.picker.common.PickerParam;
+import com.tokopedia.picker.common.types.ModeType;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.url.TokopediaUrl;
@@ -93,6 +97,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kotlin.Function;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
@@ -113,6 +118,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private ValueCallback<Uri> uploadMessageBeforeLolipop;
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
     public final static int ATTACH_FILE_REQUEST = 1;
+    public final static int ATTACH_MEDIA_PICKER = 11;
     private static final String HCI_CAMERA_KTP = "android-js-call://ktp";
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private static final String LOGIN_APPLINK = "tokopedia://login";
@@ -416,6 +422,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         String dataString = intent.getDataString();
                         if(dataString != null) {
                             results = new Uri[]{Uri.parse(dataString)};
+                        }else {
+                            List<String> images = MediaPicker.INSTANCE.result(intent).getOriginalPaths();
+                            if(!images.isEmpty()){
+                                results = new Uri[]{Uri.parse(images.get(0))};
+                            }
                         }
                     }
                 }
@@ -565,8 +576,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
             contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
             contentSelectionIntent.setType("*/*");
-            Intent[] intentArray = new Intent[1];
+            Intent[] intentArray = new Intent[2];
             intentArray[0] = takePictureIntent;
+            if(getContext() != null){
+                Intent mediaPickerIntent =  WebViewHelper.INSTANCE.getMediaPickerIntent(getContext());
+                intentArray[1] = mediaPickerIntent;
+            }
 
             Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
             chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
