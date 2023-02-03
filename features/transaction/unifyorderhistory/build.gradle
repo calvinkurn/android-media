@@ -42,7 +42,6 @@ android {
 
 dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     implementation projectOrAar(rootProject.ext.libraries.applink)

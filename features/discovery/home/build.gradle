@@ -52,7 +52,6 @@ android {
 dependencies {
     // Feature
     implementation projectOrAar(rootProject.ext.features.atc_common)
-    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.commonDigital)
     implementation projectOrAar(rootProject.ext.features.commonWallet)
     implementation projectOrAar(rootProject.ext.features.discoveryCommon)

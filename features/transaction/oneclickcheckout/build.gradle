@@ -41,7 +41,6 @@ android {
 
 dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
-    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.retrofit
 

@@ -32,7 +32,6 @@ android {
 
 dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
-    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation rootProject.ext.miscDependencies.coroutineAndroid
 
     implementation rootProject.ext.networkDependencies.retrofit
