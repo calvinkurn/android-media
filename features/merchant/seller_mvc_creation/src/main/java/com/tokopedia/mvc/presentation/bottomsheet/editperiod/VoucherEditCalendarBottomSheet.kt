@@ -4,8 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.OnDateChangedListener
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
@@ -13,14 +17,24 @@ import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetEditPeriodCalendarBinding
+import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
+import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.VoucherEditCalendarViewModel
 import com.tokopedia.mvc.presentation.quota.QuotaInfoBottomSheet
 import com.tokopedia.mvc.util.getToday
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: VoucherEditCalendarViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProvider(this, viewModelFactory).get(VoucherEditCalendarViewModel::class.java)
+    }
 
     private var binding by autoClearedNullable<SmvcBottomsheetEditPeriodCalendarBinding>()
 
@@ -32,6 +46,13 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
     private var hour: Int = 0
     private var minute: Int = 0
     private var callback: (Calendar) -> Unit = {}
+    private var isFromVoucherCreation: Boolean = false
+
+    private val coachMark by lazy {
+        context?.let {
+            CoachMark2(it)
+        }
+    }
 
     private var timePicker: DateTimePickerUnify? = null
     private val dateFormat = SimpleDateFormat("d MMMM", LocaleUtils.getIDLocale())
@@ -53,8 +74,18 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
         setAction(context?.getString(R.string.edit_period_see_remaining_quota).toBlankOrString()) {
             showQuotaInfoBottomSheet()
         }
+        initInjector()
         dateFormat.timeZone = TimeZone.getDefault()
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun initInjector() {
+        DaggerMerchantVoucherCreationComponent.builder()
+            .baseAppComponent(
+                (activity?.applicationContext as? BaseMainApplication)?.baseAppComponent
+            )
+            .build()
+            .inject(this)
     }
 
     private fun showQuotaInfoBottomSheet() {
@@ -66,6 +97,8 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         calendar = binding?.voucherCreationCalendar?.calendarPickerView
         renderCalendar(arrayListOf())
+        initObservers()
+        viewModel.checkToShowCoachmark()
 
         calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
             override fun onDateSelected(date: Date) {
@@ -75,6 +108,14 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
             override fun onDateUnselected(date: Date) {
             }
         })
+    }
+
+    private fun initObservers() {
+        viewModel.isCoachMarkShown.observe(viewLifecycleOwner) { isShown ->
+            if (!isShown && isFromVoucherCreation) {
+                showCoachMark()
+            }
+        }
     }
 
     var listener = object : OnDateChangedListener {
@@ -174,7 +215,9 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
                 }: ${dateFormat.format(selectedDate)}"
             )
             setInfoVisible(true)
-            datePickerButton.text = this@VoucherEditCalendarBottomSheet.getString(R.string.smvc_select).toBlankOrString()
+            datePickerButton.text = this@VoucherEditCalendarBottomSheet.getString(
+                R.string.smvc_select
+            ).toBlankOrString()
             datePickerButton.setOnClickListener {
                 getDate()
                 callback.invoke(getDate())
@@ -204,6 +247,20 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun showCoachMark() {
+        val coachMarkItem = ArrayList<CoachMark2Item>()
+        coachMarkItem.add(
+            CoachMark2Item(
+                bottomSheetAction,
+                getString(R.string.smvc_edit_period_coachmark_title),
+                getString(R.string.smvc_edit_period_coachmark_description),
+                CoachMark2.POSITION_BOTTOM
+            )
+        )
+        coachMark?.showCoachMark(coachMarkItem)
+        coachMark?.onDismissListener = { viewModel.setSharedPrefCoachMarkAlreadyShown() }
+    }
+
     companion object {
         @JvmStatic
         fun newInstance(
@@ -212,7 +269,8 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
             maxDate: GregorianCalendar,
             hour: Int,
             minute: Int,
-            callback: (Calendar) -> Unit
+            callback: (Calendar) -> Unit,
+            isFromVoucherCreation: Boolean = false
         ): VoucherEditCalendarBottomSheet {
             return VoucherEditCalendarBottomSheet().apply {
                 this.startDate = minDate
@@ -221,6 +279,7 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
                 this.hour = hour
                 this.minute = minute
                 this.callback = callback
+                this.isFromVoucherCreation = isFromVoucherCreation
             }
         }
 

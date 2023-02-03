@@ -272,6 +272,9 @@
     <string name="edit_period_calendar_show_tag">TimePicker Show</string>
     <string name="edit_period_see_remaining_quota">Lihat Sisa Kuota</string>
     <string name="edit_period_date_picker_end_date_warning">Tanggal berakhir otomatis berubah karena periode berlangsung kupon maks. 31 hari</string>
+    <string name="smvc_edit_period_coachmark_title">Cek info sisa kuota bulanan di sini</string>
+    <string name="smvc_edit_period_coachmark_description">Kuota akan dipotong saat kamu buat kupon sesuai tanggal mulai dan berakhir yang dipilih. Cek sisa kuota untuk setiap bulannya di sini, ya.</string>
+
 
     <!-- Voucher Display -->
     <string name="voucher_bs_coupon_display_title">Tampilan Kupon</string>
