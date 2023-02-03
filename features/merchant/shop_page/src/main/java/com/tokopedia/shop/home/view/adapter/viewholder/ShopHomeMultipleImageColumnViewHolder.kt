@@ -1,7 +1,6 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +15,6 @@ import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeMultipleImageColumnAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -25,8 +23,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class ShopHomeMultipleImageColumnViewHolder(
-        itemView: View,
-        private val listener: ShopHomeDisplayWidgetListener
+    itemView: View,
+    private val listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(itemView) {
 
     companion object {
@@ -37,7 +35,6 @@ class ShopHomeMultipleImageColumnViewHolder(
         private const val SPAN_SIZE_TRIPLE = 2
         private const val SPAN_SIZE_DOUBLE_DATA_SIZE = 2
         private const val SPAN_SIZE_TRIPLE_DATA_SIZE = 3
-
     }
     private val viewBinding: WidgetShopHomeMultipleImageColumnBinding? by viewBinding()
     private var shopHomeMultipleImageColumnAdapter: ShopHomeMultipleImageColumnAdapter? = null

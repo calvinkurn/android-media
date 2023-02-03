@@ -1,7 +1,7 @@
 package com.tokopedia.product.detail.view.listener
 
 import android.util.SparseIntArray
-import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStore
@@ -20,10 +20,12 @@ import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.ImageUnify
 
 interface DynamicProductDetailListener {
     fun refreshPage()
@@ -83,7 +85,6 @@ interface DynamicProductDetailListener {
     fun goToEducational(url: String)
 
     fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
-    fun showCustomInfoCoachMark(componentName: String, viewTarget: View)
 
     /**
      * BestSellerViewHolder
@@ -99,6 +100,7 @@ interface DynamicProductDetailListener {
         appLink: String,
         label: String
     )
+    fun showOneLinersImsCoachMark(view: ImageUnify?)
 
     /**
      * ProductDiscussionViewHolder
@@ -269,6 +271,7 @@ interface DynamicProductDetailListener {
      * ProductRecom
      */
     fun loadTopads(pageName: String)
+    fun loadViewToView(pageName: String)
 
     fun loadPlayWidget()
 
@@ -368,6 +371,13 @@ interface DynamicProductDetailListener {
     )
 
     /**
+     * ProductArViewHolder
+     */
+    fun showArCoachMark(view:ConstraintLayout?)
+    fun hideArCoachMark()
+    fun goToArPage(componentTrackDataModel: ComponentTrackDataModel)
+
+    /**
      * ProductCategoryCarouselViewHolder
      */
     fun onCategoryCarouselImageClicked(
@@ -406,7 +416,8 @@ interface DynamicProductDetailListener {
     fun onClickProductInBundling(
         bundleId: String,
         bundleProductId: String,
-        componentTrackDataModel: ComponentTrackDataModel
+        componentTrackDataModel: ComponentTrackDataModel,
+        isOldBundlingWidget: Boolean = true
     )
 
     /**
@@ -441,4 +452,21 @@ interface DynamicProductDetailListener {
     fun onImpressRecommendationVertical(componentTrackDataModel: ComponentTrackDataModel)
     fun startVerticalRecommendation(pageName: String)
     fun getRecommendationVerticalTrackData(): ComponentTrackDataModel?
+
+    /**
+     * ViewToView widget recommendation
+     */
+    fun onViewToViewImpressed(
+        data: ViewToViewItemData,
+        title: String,
+        itemPosition: Int,
+        adapterPosition: Int,
+    )
+    fun onViewToViewClicked(
+        data: ViewToViewItemData,
+        title: String,
+        itemPosition: Int,
+        adapterPosition: Int,
+    )
+    fun onViewToViewReload(pageName: String)
 }

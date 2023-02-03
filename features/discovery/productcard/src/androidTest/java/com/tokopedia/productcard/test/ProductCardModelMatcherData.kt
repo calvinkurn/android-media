@@ -909,7 +909,7 @@ private fun testNoShopBadge(): ProductCardModelMatcher {
             productName = "No Shop Badge",
             productImageUrl = productImageUrl,
             shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
-                badges.add(ShopBadge(isShown = false, imageUrl = "https://ecs7.tokopedia.net/img/blank.gif"))
+                badges.add(ShopBadge(isShown = false, imageUrl = "https://images.tokopedia.net/img/blank.gif"))
             },
             formattedPrice = "Rp7.999.000",
             shopLocation = "DKI Jakarta"

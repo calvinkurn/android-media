@@ -92,12 +92,12 @@ interface UserProfileTracker {
 
     fun clickProfileRecommendation(
         userId: String,
-        shopId: String,
+        item: ShopRecomUiModelItem,
         imageUrl: String,
         postPosition: Int
     )
 
-    fun clickFollowProfileRecommendation(userId: String, shopId: String)
+    fun clickFollowProfileRecommendation(userId: String, item: ShopRecomUiModelItem)
 
     fun clickCreatePost(userId: String)
 
@@ -127,6 +127,9 @@ interface UserProfileTracker {
 
     fun clickAccessMedia(userId: String, self: Boolean, allow: String)
 
-    fun sendAll()
+    fun clickCreateShorts(userId: String)
 
+    fun viewCreateShorts(userId: String)
+
+    fun sendAll()
 }

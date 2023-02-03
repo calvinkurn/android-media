@@ -7,13 +7,13 @@ import com.google.gson.annotations.SerializedName
  */
 data class AddToCartMultiParam(
         @SerializedName("product_id")
-        val productId: Long = -1,
+        val productId: String = "0",
 
         @SerializedName("product_name")
         val productName: String = "",
 
         @SerializedName("product_price")
-        val productPrice: Long = -1,
+        val productPrice: Double = 0.0,
 
         @SerializedName("quantity")
         val qty: Int = -1,
@@ -22,13 +22,13 @@ data class AddToCartMultiParam(
         val notes: String = "",
 
         @SerializedName("shop_id")
-        val shopId: Int = -1,
+        val shopId: String = "0",
 
         @SerializedName("customer_id")
-        val custId: Int = -1,
+        val custId: String = "0",
 
         @SerializedName("warehouse_id")
-        val warehouseId: Int = -1,
+        val warehouseId: String = "0",
 
         @SerializedName("category")
         val category: String = ""

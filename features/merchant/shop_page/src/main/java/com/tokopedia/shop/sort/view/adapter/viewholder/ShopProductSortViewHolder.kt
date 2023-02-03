@@ -15,7 +15,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class ShopProductSortViewHolder(itemView: View) : AbstractViewHolder<ShopProductSortModel?>(itemView) {
 
-    private val viewBinding : ItemShopProductSortBinding? by viewBinding()
+    private val viewBinding: ItemShopProductSortBinding? by viewBinding()
     private var etalasePickerItemName: TextView? = null
     private var checkedImageView: ImageView? = null
     override fun bind(shopProductFilterModel: ShopProductSortModel?) {

@@ -3,6 +3,7 @@ package com.tokopedia.media.loader.tracker
 import android.content.Context
 import android.graphics.Bitmap
 import com.bumptech.glide.load.engine.GlideException
+import com.tokopedia.dev_monitoring_tools.userjourney.UserJourney
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.logger.ServerLogger
@@ -34,6 +35,9 @@ object MediaLoaderTracker : CoroutineScope {
     private const val CDN_HOST_NAME_MAP_KEY = "remote_host_name"
     private const val CDN_NAME_KEY = "remote_cdn_name"
     private const val CDN_ERROR_DETAIL = "error_detail"
+    private const val CDN_PAGE_SOURCE_KEY = "page_source"
+    private const val CDN_JOURNEY_KEY = "journey"
+
     private const val CDN_IMG_SIZE_NOT_AVAILBLE = "n/a"
 
     override val coroutineContext: CoroutineContext
@@ -61,7 +65,6 @@ object MediaLoaderTracker : CoroutineScope {
         val fileSize = bitmap?.allocationByteCount?.toString() ?: "0"
         val fileSizeInMb = fileSize.toLong().formattedToMB()
 
-
         // tracker
         track(
             context = context.applicationContext,
@@ -88,8 +91,10 @@ object MediaLoaderTracker : CoroutineScope {
         context: Context,
         url: String,
         loadTime: String = "",
-        exception: GlideException?,
+        exception: GlideException?
     ) {
+        if (!RemoteCdnService.isValidUrl(url)) return
+
         val pageName = try {
             context.javaClass.name.split(".").last()
         } catch (e: Throwable) {
@@ -119,6 +124,8 @@ object MediaLoaderTracker : CoroutineScope {
             map[CDN_IP_MAP_KEY] = ipInfo
             map[CDN_HOST_NAME_MAP_KEY] = hostName
             map[CDN_NAME_KEY] = cdnName
+            map[CDN_PAGE_SOURCE_KEY] = getCdnPageSource(context)
+            map[CDN_JOURNEY_KEY] = UserJourney.getReadableJourneyActivity()
             map[CDN_ERROR_DETAIL] = "localizedMessage=${exception?.localizedMessage}, cause=${exception?.cause}, rootCauses=${exception?.rootCauses}"
 
             ServerLogger.log(
@@ -126,8 +133,11 @@ object MediaLoaderTracker : CoroutineScope {
                 tag = TAG_CDN_MONITORING,
                 message = map
             )
-
         }, onError = {})
+    }
+
+    private fun getCdnPageSource(context: Context): String {
+        return context.javaClass.canonicalName.orEmpty()
     }
 
     private fun MediaLoaderTrackerParam.toMap(context: Context): Map<String, String> {
@@ -155,7 +165,6 @@ object MediaLoaderTracker : CoroutineScope {
             else -> "Unknown"
         }
     }
-
 }
 
 data class IsIcon(val value: Boolean)

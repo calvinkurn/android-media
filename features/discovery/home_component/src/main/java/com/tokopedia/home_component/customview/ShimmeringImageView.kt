@@ -25,7 +25,7 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
 
     companion object{
         private const val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
-        private const val TRUNCATED_URL_PREFIX = "https://ecs7.tokopedia.net/img/cache/"
+        private const val TRUNCATED_URL_PREFIX = "https://images.tokopedia.net/img/cache/"
     }
 
     private var loaderImageView: LoaderUnify?=null

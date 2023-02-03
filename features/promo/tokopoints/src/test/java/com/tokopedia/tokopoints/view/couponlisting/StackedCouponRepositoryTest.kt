@@ -8,13 +8,10 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-import org.junit.Assert.*
-import org.mockito.ArgumentMatchers.any
 
 class StackedCouponRepositoryTest {
 

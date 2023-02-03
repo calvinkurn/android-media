@@ -2,27 +2,27 @@ package com.tokopedia.tokopedianow.search.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnATCNonVariantClickListener
-import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemClickListener
-import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemImpressedListener
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
+import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowBroadmatchBinding
 import com.tokopedia.tokopedianow.search.presentation.listener.BroadMatchListener
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
-import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.mapper.mapToLabelGroup
-import com.tokopedia.tokopedianow.searchcategory.presentation.mapper.mapToNonVariant
 import com.tokopedia.utils.view.binding.viewBinding
 
 class BroadMatchViewHolder(
     itemView: View,
-    private val broadMatchListener: BroadMatchListener
-): AbstractViewHolder<BroadMatchDataView>(itemView) {
-
+    private val listener: BroadMatchListener
+): AbstractViewHolder<BroadMatchDataView>(itemView),
+    TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener,
+    TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
+{
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_broadmatch
@@ -30,117 +30,113 @@ class BroadMatchViewHolder(
 
     private var binding: ItemTokopedianowBroadmatchBinding? by viewBinding()
 
-    private val titleView by lazy {
-        binding?.tokopediaNowBroadMatchTitle
+    override fun bind(element: BroadMatchDataView) {
+        binding?.apply {
+            setItems(
+                items = element.broadMatchItemModelList,
+                seeMoreModel = element.seeMoreModel
+            )
+            setHeader(
+                headerModel = element.headerModel
+            )
+            setListener(
+                productCardCarouselListener = this@BroadMatchViewHolder,
+                headerCarouselListener = this@BroadMatchViewHolder
+            )
+        }
     }
 
-    private val seeAllView by lazy {
-        binding?.tokopediaNowBroadMatchSeeAll
+    override fun bind(element: BroadMatchDataView?, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() == true && element != null) {
+            binding?.setItems(
+                items = element.broadMatchItemModelList.map { it.copy() },
+                seeMoreModel = element.seeMoreModel
+            )
+        }
     }
 
-    private val carouselProductCardView by lazy {
-        binding?.tokopediaNowBroadMatchCarouselProductCard
+    private fun ItemTokopedianowBroadmatchBinding.setItems(
+        items: List<Visitable<*>>,
+        seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null
+    ) {
+        productCardCarousel.bindItems(
+            items = items,
+            seeMoreModel  = seeMoreModel
+        )
     }
 
-    override fun bind(element: BroadMatchDataView?) {
-        element ?: return
-
-        bindTitle(element)
-        bindSeeMore(element)
-        bindCarousel(element)
-    }
-
-    private fun bindTitle(element: BroadMatchDataView) {
-        titleView?.text = element.keyword
-    }
-
-    private fun bindSeeMore(element: BroadMatchDataView) {
-        seeAllView?.shouldShowWithAction(element.applink.isNotEmpty()) {
-            seeAllView?.setOnClickListener {
-                broadMatchListener.onBroadMatchSeeAllClicked(element)
+    private fun ItemTokopedianowBroadmatchBinding.setHeader(
+        headerModel: TokoNowDynamicHeaderUiModel? = null
+    ) {
+        header.showIfWithBlock(headerModel != null) {
+            headerModel?.apply {
+                setModel(this)
             }
         }
     }
 
-    private fun bindCarousel(element: BroadMatchDataView) {
-        val broadMatchItemList = element.broadMatchItemDataViewList
-        val productCardModelList = broadMatchItemList.mapToProductCardModel()
-
-        carouselProductCardView?.bindCarouselProductCardViewGrid(
-            productCardModelList = productCardModelList,
-            recyclerViewPool = broadMatchListener.getRecyclerViewPool(),
-            scrollToPosition = broadMatchListener.onGetCarouselScrollPosition(adapterPosition),
-            showSeeMoreCard = false,
-            carouselProductCardOnItemClickListener = object: OnItemClickListener {
-                override fun onItemClick(
-                    productCardModel: ProductCardModel,
-                    carouselProductCardPosition: Int,
-                ) {
-                    val broadMatchItem = broadMatchItemList
-                        .getOrNull(carouselProductCardPosition) ?: return
-
-                    broadMatchListener.onBroadMatchItemClicked(broadMatchItem)
-                }
-            },
-            carouselProductCardOnItemImpressedListener = object: OnItemImpressedListener {
-                override fun onItemImpressed(
-                    productCardModel: ProductCardModel,
-                    carouselProductCardPosition: Int,
-                ) {
-                    val broadMatchItem = broadMatchItemList
-                        .getOrNull(carouselProductCardPosition) ?: return
-
-                    broadMatchListener.onBroadMatchItemImpressed(broadMatchItem)
-                }
-
-                override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
-                    return broadMatchItemList.getOrNull(carouselProductCardPosition)
-                }
-            },
-            carouselProductCardOnItemATCNonVariantClickListener = object: OnATCNonVariantClickListener {
-                override fun onATCNonVariantClick(
-                    productCardModel: ProductCardModel,
-                    carouselProductCardPosition: Int,
-                    quantity: Int,
-                ) {
-                    val broadMatchItem = broadMatchItemList
-                        .getOrNull(carouselProductCardPosition) ?: return
-
-                    saveCarouselScrollPosition()
-
-                    broadMatchListener.onBroadMatchItemATCNonVariant(
-                        broadMatchItem,
-                        quantity,
-                        adapterPosition,
-                    )
-                }
-            },
+    private fun ItemTokopedianowBroadmatchBinding.setListener(
+        productCardCarouselListener: TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener,
+        headerCarouselListener: TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
+    ) {
+        productCardCarousel.setListener(
+            productCardCarouselListener = productCardCarouselListener,
+        )
+        header.setListener(
+            headerListener =  headerCarouselListener
         )
     }
 
-    private fun List<BroadMatchItemDataView>.mapToProductCardModel() = map {
-        ProductCardModel(
-            productName = it.name,
-            formattedPrice = it.priceString,
-            productImageUrl = it.imageUrl,
-            countSoldRating = it.ratingAverage,
-            labelGroupList = it.labelGroupDataList.mapToLabelGroup(),
-            nonVariant = it.nonVariantATC?.mapToNonVariant(),
+    override fun onProductCardClicked(
+        position: Int,
+        product: TokoNowProductCardCarouselItemUiModel
+    ) {
+        listener.onBroadMatchItemClicked(
+            broadMatchItemDataView = product,
+            broadMatchIndex = position
         )
     }
 
-    private fun saveCarouselScrollPosition() {
-        val adapterPosition = this.adapterPosition
-        val carouselScrollPosition = carouselProductCardView?.getCurrentPosition() ?: 0
-
-        broadMatchListener.onSaveCarouselScrollPosition(
-            adapterPosition = adapterPosition,
-            scrollPosition = carouselScrollPosition,
+    override fun onProductCardImpressed(
+        position: Int,
+        product: TokoNowProductCardCarouselItemUiModel
+    ) {
+        listener.onBroadMatchItemImpressed(
+            broadMatchItemDataView = product,
+            broadMatchIndex = position
         )
     }
 
-    override fun onViewRecycled() {
-        saveCarouselScrollPosition()
-        super.onViewRecycled()
+    override fun onProductCardQuantityChanged(
+        position: Int,
+        product: TokoNowProductCardCarouselItemUiModel,
+        quantity: Int
+    ) {
+        listener.onBroadMatchItemATCNonVariant(
+            broadMatchItemDataView = product,
+            quantity = quantity,
+            broadMatchIndex = position
+        )
     }
+
+    override fun onSeeMoreClicked(seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel) {
+        listener.onBroadMatchSeeAllClicked(
+            title = seeMoreUiModel.headerName,
+            appLink = seeMoreUiModel.appLink
+        )
+    }
+
+    override fun onSeeAllClicked(headerName: String, appLink: String) {
+        listener.onBroadMatchSeeAllClicked(
+            title = headerName,
+            appLink = appLink
+        )
+    }
+
+    override fun onChannelExpired() { /* nothing to do */ }
+
+    override fun onProductCardAddVariantClicked(
+        position: Int,
+        product: TokoNowProductCardCarouselItemUiModel
+    ) { /* nothing to do */ }
 }

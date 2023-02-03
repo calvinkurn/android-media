@@ -12,7 +12,7 @@ import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeCarousellProductPlaceholderViewHolder(
-        itemView: View,
+    itemView: View
 ) : AbstractViewHolder<BaseShopHomeWidgetUiModel>(itemView) {
 
     companion object {
@@ -33,5 +33,4 @@ class ShopHomeCarousellProductPlaceholderViewHolder(
             adapter?.notifyDataSetChanged()
         }
     }
-
 }

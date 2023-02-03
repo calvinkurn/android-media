@@ -11,9 +11,9 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmerShcTitle"
         android:layout_width="@dimen/shc_dimen_120dp"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_height="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         app:loader_corner_radius="5dp"
         app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,7 +21,7 @@
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/cardShcShimmer0"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/shc_dimen_12dp"
         android:layout_marginTop="@dimen/shc_dimen_12dp"
@@ -38,8 +38,8 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="@dimen/shc_dimen_80dp"
-                android:layout_height="@dimen/layout_lvl2"
-                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_height="16dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="@dimen/shc_dimen_10dp"
                 app:loader_corner_radius="5dp"
                 app:loader_type="rect"
@@ -48,10 +48,10 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="@dimen/shc_dimen_110dp"
-                android:layout_height="@dimen/layout_lvl2"
-                android:layout_marginStart="@dimen/layout_lvl2"
-                android:layout_marginTop="@dimen/layout_lvl1"
-                android:layout_marginBottom="@dimen/layout_lvl3"
+                android:layout_height="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="24dp"
                 app:loader_corner_radius="5dp"
                 app:loader_type="rect"
                 app:layout_constraintStart_toStartOf="parent"
@@ -61,7 +61,7 @@
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/cardShcShimmer1"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/shc_dimen_12dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -76,8 +76,8 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="@dimen/shc_dimen_80dp"
-                android:layout_height="@dimen/layout_lvl2"
-                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_height="16dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="@dimen/shc_dimen_10dp"
                 app:loader_corner_radius="5dp"
                 app:loader_type="rect"
@@ -86,10 +86,10 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="@dimen/shc_dimen_110dp"
-                android:layout_height="@dimen/layout_lvl2"
-                android:layout_marginStart="@dimen/layout_lvl2"
-                android:layout_marginTop="@dimen/layout_lvl1"
-                android:layout_marginBottom="@dimen/layout_lvl3"
+                android:layout_height="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="24dp"
                 app:loader_corner_radius="5dp"
                 app:loader_type="rect"
                 app:layout_constraintStart_toStartOf="parent"
@@ -99,8 +99,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shcLoaderMultiLineGraph"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

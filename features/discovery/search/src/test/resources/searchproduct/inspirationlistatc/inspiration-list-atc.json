@@ -3427,11 +3427,11 @@
                   "img_url": ""
                 },
                 "ads": {
-                  "id": "",
-                  "product_click_url": "",
-                  "product_wishlist_url": "",
-                  "shop_click_url": "",
-                  "product_view_url": ""
+                  "id": "123123",
+                  "product_click_url": "http://test.com",
+                  "product_wishlist_url": "http://test.com",
+                  "shop_click_url": "http://test.com",
+                  "product_view_url": "http://test.com"
                 },
                 "shop": {
                   "id": 7951058,

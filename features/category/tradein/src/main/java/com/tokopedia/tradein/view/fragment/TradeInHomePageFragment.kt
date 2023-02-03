@@ -111,15 +111,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             arguments?.getString(CACHE_ID, "")?.let {
                 setUpPdpData(it)
             }
-            findViewById<NavToolbar>(R.id.initial_price_navToolbar)?.run {
-                viewLifecycleOwner.lifecycle.addObserver(this)
-                setIcon(
-                    IconBuilder()
-                        .addIcon(IconList.ID_INFORMATION) {
-                            setUpEducationalFragment()
-                        }
-                )
-            }
+
             chooseAddressWidget = findViewById(R.id.tradein_choose_address_widget)
             chooseAddressWidget?.bindChooseAddress(this@TradeInHomePageFragment)
             findViewById<View>(R.id.collapse_view).setOnClickListener {
@@ -133,18 +125,6 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                 }
             }
         }
-    }
-
-    private fun setUpEducationalFragment() {
-        view?.findViewById<View>(R.id.educational_frame_content_layout)?.show()
-        view?.findViewById<View>(R.id.initial_price_navToolbar)?.hide()
-        val newFragment = TradeInEducationalPageFragment.getFragmentInstance()
-        (newFragment as TradeInEducationalPageFragment).setUpTradeInClick(this)
-        childFragmentManager.beginTransaction()
-            .replace(R.id.educational_frame_content_layout, newFragment, newFragment.tag)
-            .commit()
-        tradeInAnalytics.clickEducationalButton(tradeInHomePageVM.is3PLSelected.value ?: false, tradeInHomePageVM.imei, tradeInHomePageVM.isDiagnosed)
-        tradeInAnalytics.openEducationalScreen()
     }
 
     override fun onClick() {
@@ -331,6 +311,8 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                         )
                     }
                 }
+
+                findViewById<View>(R.id.tradein_promo_view).isVisible = tradeInDetail.activePromo.title.isNotEmpty()
             }
         }
     }

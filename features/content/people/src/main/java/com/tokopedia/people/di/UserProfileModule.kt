@@ -11,7 +11,13 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class UserProfileModule {
+class UserProfileModule(
+    private val activityContext: Context,
+) {
+
+    @Provides
+    @UserProfileScope
+    fun provideActivityContext() = activityContext
 
     @Provides
     @UserProfileScope
@@ -30,5 +36,4 @@ class UserProfileModule {
     fun provideTrackingQueue(@ApplicationContext context: Context): TrackingQueue {
         return TrackingQueue(context)
     }
-
 }

@@ -46,21 +46,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txt_variant_category_name"
         app:typographyType="body_2"
+        app:typographyWeight="bold"
         tools:visibility="visible" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_atc_variant"
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chip_group_atc_variant"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:clipToPadding="false"
-        android:orientation="horizontal"
         android:paddingStart="16dp"
         android:paddingEnd="4dp"
+        app:chipSpacingHorizontal="4dp"
+        app:chipSpacingVertical="8dp"
+        app:singleLine="false"
+        app:singleSelection="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_variant_category_name"
-        tools:ignore="RtlSymmetry"
-        tools:itemCount="1" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_variant_category_name"  />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

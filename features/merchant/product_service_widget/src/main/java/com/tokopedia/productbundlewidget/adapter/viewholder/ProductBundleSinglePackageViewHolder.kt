@@ -33,6 +33,12 @@ class ProductBundleSinglePackageViewHolder(itemView: View): RecyclerView.ViewHol
                     )
                 )
                 background.setTintMode(PorterDuff.Mode.MULTIPLY)
+            } else {
+                val textColor = ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifycomponents.R.color.Unify_NN950
+                )
+                setTextColor(textColor)
             }
         }
     }

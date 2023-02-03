@@ -3,7 +3,9 @@ package com.tokopedia.tokofood.feature.home.analytics
 import android.os.Bundle
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_CLICK_CAROUSEL_BANNER
@@ -223,6 +225,17 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendGeneralEvent(eventData)
     }
 
+    fun viewSearchBarCoachmark(userId: String?, destinationId: String?, title: String, subtitle: String) {
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, TokoFoodAnalyticsConstants.VIEW_COACHMARK)
+            putString(TrackAppUtils.EVENT_LABEL, String.EMPTY)
+            putString(TRACKER_ID, TokoFoodAnalyticsConstants.TRACKER_ID_39609)
+        }
+        eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionSearchBarCoachmark(title, subtitle))
+        eventDataLayer.viewItem(userId, destinationId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventDataLayer)
+    }
+
     private fun getPromotionItemIcon(data: List<DynamicIcon>, horizontalPosition: Int = -Int.ONE, verticalPosition: Int): ArrayList<Bundle> {
         val promotionBundle = arrayListOf<Bundle>()
         promotionBundle.addAll(
@@ -282,6 +295,19 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
                     putString(Promotion.ITEM_ID, "${it.name} - ${it.id}")
                     putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.CATEGORY_WIDGET} - ${channelModel.verticalPosition + Int.ONE} - ${channelModel.channelHeader.name}")
                 }
+            }
+        )
+        return promotionBundle
+    }
+
+    private fun getPromotionSearchBarCoachmark(title: String, subtitle: String): ArrayList<Bundle> {
+        val promotionBundle = arrayListOf<Bundle>()
+        promotionBundle.add(
+            Bundle().apply {
+                putString(Promotion.ITEM_ID, TokoFoodAnalyticsConstants.COMPONENT_SEARCH_BAR)
+                putString(Promotion.ITEM_NAME, TokoFoodAnalyticsConstants.TITLE_PREFIX + title)
+                putString(Promotion.CREATIVE_SLOT, Int.ZERO.toString())
+                putString(Promotion.CREATIVE_NAME, TokoFoodAnalyticsConstants.SUBTITLE_PREFIX + subtitle)
             }
         )
         return promotionBundle

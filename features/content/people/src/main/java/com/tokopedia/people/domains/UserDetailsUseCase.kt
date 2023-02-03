@@ -8,9 +8,13 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.people.model.ProfileHeaderBase
 import javax.inject.Inject
 
+/**
+isBlocking
+isBlockedBy
+ */
 @GqlQuery(UserDetailsUseCase.QUERY_NAME, UserDetailsUseCase.QUERY)
 class UserDetailsUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository
+    graphqlRepository: GraphqlRepository,
 ) : GraphqlUseCase<ProfileHeaderBase>(graphqlRepository) {
 
     init {
@@ -21,7 +25,7 @@ class UserDetailsUseCase @Inject constructor(
 
     suspend fun executeOnBackground(username: String): ProfileHeaderBase {
         val request = mapOf(
-            KEY_USERNAME to username
+            KEY_USERNAME to username,
         )
         setRequestParams(request)
 
@@ -68,6 +72,8 @@ class UserDetailsUseCase @Inject constructor(
                   }
                   hasAcceptTnC
                   shouldSeoIndex
+                  isBlocking
+                  isBlockedBy
                 }
             }
         """

@@ -23,7 +23,7 @@ class CouponCatalogViewModel @Inject constructor(private val repository: CouponC
             catalogDetailLiveData.value = Loading()
             val response = repository.getcatalogDetail(uniqueCatalogCode)
             val data = response.getData<CatalogDetailOuter>(CatalogDetailOuter::class.java)
-            data?.let { catalogDetailLiveData.value = Success(data.detail!!) }
+            data?.let { catalogDetailLiveData.value = Success(data.detail) }
         }) {
             catalogDetailLiveData.value = ErrorMessage(it.localizedMessage)
         }
@@ -32,7 +32,7 @@ class CouponCatalogViewModel @Inject constructor(private val repository: CouponC
     override fun fetchLatestStatus(catalogsIds: List<Int>) {
         launchCatchError(block = {
             val data = repository.fetchLatestStatus(catalogsIds)
-            data.catalogStatus?.let {
+            data.catalogStatus.let {
                 if (!it.catalogs.isNullOrEmpty()) {
                     latestStatusLiveData.value = data.catalogStatus.catalogs?.get(0)
                 }
@@ -43,7 +43,7 @@ class CouponCatalogViewModel @Inject constructor(private val repository: CouponC
     override fun startSendGift(id: Int, title: String?, pointStr: String?, banner: String?) {
         launchCatchError(block = {
             val data = repository.startSendGift(id)
-            if (data.preValidateRedeem != null && data.preValidateRedeem.isValid == 1) {
+            if (data.preValidateRedeem.isValid == 1) {
                 sendGiftPageLiveData.value = Success(SendGiftPage(id, title, pointStr, banner))
             } else throw NullPointerException()
         }) {

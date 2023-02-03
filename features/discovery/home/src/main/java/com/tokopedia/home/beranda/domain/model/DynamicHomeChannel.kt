@@ -226,7 +226,7 @@ data class DynamicHomeChannel(
                 "event", "promoClick",
                 "eventCategory", "homepage",
                 "eventAction", "curated list banner click",
-                "eventLabel", String.format("%s - %s", header.name, header.applink),
+                "eventLabel", "${header.name} - ${header.applink}",
                 channelId, id,
                 "ecommerce",
                 DataLayer.mapOf(

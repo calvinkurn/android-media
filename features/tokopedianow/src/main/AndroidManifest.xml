@@ -21,6 +21,24 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".seeallcategory.persentation.activity.TokoNowSeeAllCategoryActivity"
+            android:exported="false"
+            android:label="@string/title_tokopedia_now"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_tokopedia_now"
+                    android:pathPattern="@string/path_tokopedia_now_see_all_category"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name="com.tokopedia.tokopedianow.categorylist.presentation.activity.TokoNowCategoryListActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
@@ -41,7 +59,6 @@
             android:name="com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -59,7 +76,6 @@
             android:name=".datefilter.presentation.activity.TokoNowDateFilterActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -133,7 +149,6 @@
             android:name="com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -152,7 +167,6 @@
             android:name="com.tokopedia.tokopedianow.educationalinfo.presentation.activity.TokoNowEducationalInfoActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -256,7 +270,6 @@
             android:name="com.tokopedia.tokopedianow.recipelist.presentation.activity.TokoNowRecipeFilterActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -295,7 +308,6 @@
             android:name="com.tokopedia.tokopedianow.recipesearch.presentation.activity.TokoNowRecipeSearchIngredientActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
 
             <intent-filter>
@@ -315,7 +327,6 @@
             android:name="com.tokopedia.tokopedianow.recipedetail.presentation.activity.TokoNowRecipeSimilarProductActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -330,5 +341,12 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.tokopedia.tokopedianow.similarproduct.activity.TokoNowSimilarProductActivity"
+            android:exported="false"
+            android:label="@string/title_tokopedia_now"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Translucent"
+            android:windowSoftInputMode="adjustResize"/>
     </application>
 </manifest>

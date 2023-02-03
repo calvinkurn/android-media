@@ -208,10 +208,9 @@ internal data class SearchShopModel(
         ) {
 
             data class ShopItemProduct(
-                    @SuppressLint("Invalid Data Type")
                     @SerializedName("id")
                     @Expose
-                    val id: Int = 0,
+                    val id: String = "0",
 
                     @SerializedName("name")
                     @Expose

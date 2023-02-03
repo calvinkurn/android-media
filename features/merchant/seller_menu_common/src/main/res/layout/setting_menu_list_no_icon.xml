@@ -9,8 +9,8 @@
 
     <View
         android:id="@+id/iconEmptySpace"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginStart="@dimen/sah_dimen_20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,7 +20,7 @@
         android:id="@+id/settingMenuTitle"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginStart="16dp"
         android:gravity="center_vertical"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -2,7 +2,6 @@ package com.tokopedia.search.result.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
@@ -10,6 +9,7 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 import com.tokopedia.search.result.product.addtocart.AddToCartConstant.DEFAULT_PARENT_ID
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.DEFAULT_KEYWORD_INTENT
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.KEYWORD_INTENT_LOW
+import com.tokopedia.search.result.product.wishlist.Wishlistable
 import com.tokopedia.search.utils.getFormattedPositionName
 import com.tokopedia.search.utils.orNone
 import com.tokopedia.topads.sdk.domain.model.Badge
@@ -19,7 +19,7 @@ import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.StringUtils
 import com.tokopedia.topads.sdk.domain.model.Data as TopAdsProductData
 
-class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
+class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, Wishlistable {
     var productID: String = ""
     var warehouseID: String = ""
     var productName: String = ""
@@ -34,7 +34,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
     var shopName: String = ""
     var shopCity: String = ""
     var shopUrl: String = ""
-    var isWishlisted = false
+    override var isWishlisted = false
     var isWishlistButtonEnabled = true
     var badgesList: List<BadgeItemDataView>? = null
     var position = 0
@@ -73,6 +73,12 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
     var keywordIntention: Int = DEFAULT_KEYWORD_INTENT
     var showButtonAtc: Boolean = false
     var parentId: String = DEFAULT_PARENT_ID
+
+    override fun setWishlist(productID: String, isWishlisted: Boolean) {
+        if (this.productID == productID) {
+            this.isWishlisted = isWishlisted
+        }
+    }
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
@@ -214,6 +220,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
             item.dimension131 = externalReference
             item.keywordIntention = keywordIntention
             item.showButtonAtc = showButtonAtc
+            item.parentId = topAds.product.parentId
             return item
         }
 

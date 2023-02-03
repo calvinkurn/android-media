@@ -16,13 +16,15 @@ open class KolCommentNewModel : Visitable<KolCommentTypeFactory?>, Parcelable {
     var userId: String?
         protected set
     protected var canDeleteComment: Boolean
+    protected var canReportComment: Boolean
     var userBadges: String?
         protected set
     var isShop: Boolean
 
     constructor(id: String?, userId: String?, userUrl: String?, avatarUrl: String?, name: String?,
                 review: String?, time: String?, isOfficial: Boolean,
-                canDeleteComment: Boolean, userBadges: String?, isShop: Boolean) {
+                canDeleteComment: Boolean, userBadges: String?, isShop: Boolean,
+                canReportComment: Boolean) {
         this.id = id
         this.userId = userId
         this.userUrl = userUrl
@@ -34,11 +36,14 @@ open class KolCommentNewModel : Visitable<KolCommentTypeFactory?>, Parcelable {
         this.canDeleteComment = canDeleteComment
         this.userBadges = userBadges
         this.isShop = isShop
+        this.canReportComment = canReportComment
     }
 
     fun canDeleteComment(): Boolean {
         return canDeleteComment
     }
+
+    fun canReportComment(): Boolean = canReportComment
 
     override fun describeContents(): Int {
         return 0
@@ -56,6 +61,7 @@ open class KolCommentNewModel : Visitable<KolCommentTypeFactory?>, Parcelable {
         dest.writeByte(if (canDeleteComment) 1.toByte() else 0.toByte())
         dest.writeString(userBadges)
         dest.writeByte(if (isShop) 1.toByte() else 0.toByte())
+        dest.writeByte(if (canReportComment) 1.toByte() else 0.toByte())
     }
 
     protected constructor(`in`: Parcel) {
@@ -70,6 +76,7 @@ open class KolCommentNewModel : Visitable<KolCommentTypeFactory?>, Parcelable {
         canDeleteComment = `in`.readByte().toInt() != 0
         userBadges = `in`.readString()
         isShop = `in`.readByte().toInt() != 0
+        canReportComment = `in`.readByte().toInt() != 0
     }
 
     companion object {

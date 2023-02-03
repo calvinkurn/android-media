@@ -93,7 +93,7 @@ class ServerErrorView : NestedScrollView {
         }
         imageError?.setImageResource(noConnectionImageId)
         buttonFontColor?.let { btnError?.setTextColor(it) }
-        buttonColor?.let { btnError?.setButtonColor(it) }
+        buttonColor?.let { btnError?.buttonColor=it }
         buttonFontSize?.toFloat()?.let { btnError?.setTextSize(TypedValue.COMPLEX_UNIT_SP, it) }
         tvTitleError?.text = errorTitle
         tvLabelError?.text = errorSubTitle

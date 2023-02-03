@@ -8,10 +8,9 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.LayoutMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetLayoutResponse
-import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetLayoutUiModel
 import com.tokopedia.usecase.RequestParams
 
 /**
@@ -23,7 +22,7 @@ class GetLayoutUseCase(
     gqlRepository: GraphqlRepository,
     mapper: LayoutMapper,
     dispatchers: CoroutineDispatchers
-) : CloudAndCacheGraphqlUseCase<GetLayoutResponse, List<BaseWidgetUiModel<*>>>(
+) : CloudAndCacheGraphqlUseCase<GetLayoutResponse, WidgetLayoutUiModel>(
     gqlRepository, mapper, dispatchers, GetLayoutGqlQuery()
 ) {
 
@@ -34,7 +33,7 @@ class GetLayoutUseCase(
         super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
     }
 
-    override suspend fun executeOnBackground(): List<BaseWidgetUiModel<*>> {
+    override suspend fun executeOnBackground(): WidgetLayoutUiModel {
         val gqlRequest = GraphqlRequest(graphqlQuery, classType, params.parameters)
         val gqlResponse: GraphqlResponse = graphqlRepository.response(
             listOf(gqlRequest), cacheStrategy
@@ -42,11 +41,11 @@ class GetLayoutUseCase(
 
         val errors: List<GraphqlError>? = gqlResponse.getError(classType)
         if (errors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<GetLayoutResponse>()
+            val data = gqlResponse.getData<GetLayoutResponse>(GetLayoutResponse::class.java)
             val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
             return mapper.mapRemoteDataToUiData(data, isFromCache)
         } else {
-            throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
+            throw RuntimeException(errors.firstOrNull()?.message.orEmpty())
         }
     }
 
@@ -95,7 +94,9 @@ class GetLayoutUseCase(
                   }
                   isDismissible
                   dismissibleState
+                  useRealtime
                 }
+                shopState
               }
             }
         """
