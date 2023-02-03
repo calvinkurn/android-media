@@ -25,7 +25,12 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.editor.analytics.addLogoToText
+import com.tokopedia.media.editor.analytics.cropRatioToText
 import com.tokopedia.media.editor.analytics.editordetail.EditorDetailAnalytics
+import com.tokopedia.media.editor.analytics.getToolEditorText
+import com.tokopedia.media.editor.analytics.removeBackgroundToText
+import com.tokopedia.media.editor.analytics.watermarkToText
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.ui.component.RotateToolUiComponent.Companion.ROTATE_BTN_DEGREE
@@ -43,12 +48,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOV
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_GRAY
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
-import com.tokopedia.media.editor.utils.addLogoToText
 import com.tokopedia.media.loader.loadImageRounded
-import com.tokopedia.media.editor.utils.cropRatioToText
-import com.tokopedia.media.editor.utils.getToolEditorText
-import com.tokopedia.media.editor.utils.removeBackgroundToText
-import com.tokopedia.media.editor.utils.watermarkToText
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder

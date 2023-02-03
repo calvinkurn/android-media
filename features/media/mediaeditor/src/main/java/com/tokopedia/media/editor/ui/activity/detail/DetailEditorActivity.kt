@@ -6,12 +6,12 @@ import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.media.editor.analytics.getToolEditorText
 import com.tokopedia.media.editor.base.BaseEditorActivity
 import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.ui.fragment.DetailEditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
-import com.tokopedia.media.editor.utils.getToolEditorText
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.cache.PickerCacheManager
 import javax.inject.Inject

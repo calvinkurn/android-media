@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
+import com.tokopedia.media.editor.analytics.getToolEditorText
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
@@ -27,7 +28,6 @@ import com.tokopedia.media.editor.ui.component.ToolsUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.cropCenterImage
-import com.tokopedia.media.editor.utils.getToolEditorText
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.EDITOR_ADD_LOGO_TOOL
