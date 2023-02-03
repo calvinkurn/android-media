@@ -204,6 +204,7 @@ class UiModelBuilder {
                     iconUrl = "icon.url.shop",
                     badge = "icon.badge",
                     hasUsername = usernameShop,
+                    hasAcceptTnc = tncShop,
                     enable = tncShop
                 )
             )
@@ -215,6 +216,7 @@ class UiModelBuilder {
                     iconUrl = "icon.url.buyer",
                     badge = "icon.badge",
                     hasUsername = usernameBuyer,
+                    hasAcceptTnc = tncBuyer,
                     enable = tncBuyer
                 )
             )
@@ -226,6 +228,7 @@ class UiModelBuilder {
                     iconUrl = "icon.url.shop",
                     badge = "icon.badge",
                     hasUsername = usernameShop,
+                    hasAcceptTnc = tncShop,
                     enable = tncShop
                 ),
                 ContentAccountUiModel(
@@ -235,6 +238,7 @@ class UiModelBuilder {
                     iconUrl = "icon.url.buyer",
                     badge = "icon.badge",
                     hasUsername = usernameBuyer,
+                    hasAcceptTnc = tncBuyer,
                     enable = tncBuyer
                 ),
             )
@@ -282,6 +286,7 @@ class UiModelBuilder {
     fun buildShortsConfig(
         shortsId: String = "123",
         shortsAllowed: Boolean = true,
+        isBanned: Boolean = false,
         tncList: List<TermsAndConditionUiModel> = buildTncList(),
         maxTitleCharacter: Int = 24,
         maxTaggedProduct: Int = 30,
@@ -289,6 +294,7 @@ class UiModelBuilder {
     ) = PlayShortsConfigUiModel(
         shortsId = shortsId,
         shortsAllowed = shortsAllowed,
+        isBanned = isBanned,
         tncList = tncList,
         maxTitleCharacter = maxTitleCharacter,
         maxTaggedProduct = maxTaggedProduct,

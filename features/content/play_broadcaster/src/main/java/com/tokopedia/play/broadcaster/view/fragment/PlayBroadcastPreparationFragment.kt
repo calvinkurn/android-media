@@ -327,7 +327,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             is SellerTncBottomSheet -> {
                 childFragment.setDataSource(object : SellerTncBottomSheet.DataSource {
                     override fun getTitle(): String {
-                        return getString(com.tokopedia.content.common.R.string.play_bro_tnc_title)
+                        return getString(R.string.play_bro_tnc_title)
                     }
 
                     override fun getTermsAndCondition(): List<TermsAndConditionUiModel> {
@@ -784,14 +784,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
             AccountStateInfoType.Banned -> showWarningInfoBottomSheet()
             AccountStateInfoType.NotAcceptTNC -> {
-                if (state.selectedAccount.isShop) {
-                    showTermsAndConditionBottomSheet()
-                } else {
-                    showUGCOnboardingBottomSheet(UGCOnboardingParentFragment.OnboardingType.Tnc)
-                }
+                showUGCOnboardingBottomSheet(UGCOnboardingParentFragment.OnboardingType.Tnc)
             }
             AccountStateInfoType.NoUsername -> {
                 showUGCOnboardingBottomSheet(UGCOnboardingParentFragment.OnboardingType.Complete)
+            }
+            AccountStateInfoType.NotWhitelisted -> {
+                showTermsAndConditionBottomSheet()
             }
             AccountStateInfoType.Unknown -> return
         }

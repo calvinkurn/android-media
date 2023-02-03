@@ -1630,12 +1630,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
                 false
             }
-            selectedAccount.isUser && !selectedAccount.hasUsername -> {
+            selectedAccount.isUser && !selectedAccount.hasAcceptTnc -> {
                 if (isFirstOpen && isAllowChangeAccount) return false
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
                     AccountStateInfo(
-                        type = AccountStateInfoType.NoUsername,
+                        type = if(selectedAccount.hasUsername) AccountStateInfoType.NotAcceptTNC else AccountStateInfoType.NoUsername,
                         selectedAccount = selectedAccount
                     )
                 }
@@ -1643,16 +1643,17 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
             !selectedAccount.enable -> {
                 if (isFirstOpen && isAllowChangeAccount) return false
+
+                /** Use the same logic as iOS */
+                tncList.clear()
+                tncList.addAll(configUiModel.tnc)
+
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
                     AccountStateInfo(
-                        type = AccountStateInfoType.NotAcceptTNC,
+                        type = AccountStateInfoType.NotWhitelisted,
                         selectedAccount = selectedAccount
                     )
-                }
-                if (selectedAccount.isShop) {
-                    tncList.clear()
-                    tncList.addAll(configUiModel.tnc)
                 }
                 false
             }
