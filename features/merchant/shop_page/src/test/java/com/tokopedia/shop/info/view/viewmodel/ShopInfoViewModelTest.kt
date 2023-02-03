@@ -1,5 +1,6 @@
 package com.tokopedia.shop.info.view.viewmodel
 
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.shop.common.constant.ShopPartnerFsFullfillmentServiceTypeDef
 import com.tokopedia.shop.common.data.model.ShopInfoData
@@ -334,8 +335,8 @@ class ShopInfoViewModelTest : ShopInfoViewModelTestFixture() {
             sipaNumber = epharmacyInfo.sipaNumber,
             apj = epharmacyInfo.apj,
             partnerLabel = partnerLabel,
-            fsType = partnerInfo[0].fsType,
-            partnerName = partnerInfo[0].partnerName
+            fsType = partnerInfo.firstOrNull()?.fsType.orZero(),
+            partnerName = partnerInfo.firstOrNull()?.partnerName.orEmpty()
         )
     }
 
