@@ -247,11 +247,18 @@ class PlayExploreWidgetFragment @Inject constructor(
         binding.viewExploreWidgetEmpty.tvDescEmptyExploreWidget.movementMethod =
             LinkMovementMethod.getInstance()
 
+        adjustWidth()
+    }
+
+    private fun adjustWidth() {
         /**
          * Swipe Refresh always fill to screen need a bit adjustment here
          */
         binding.rvWidgets.addOneTimeGlobalLayoutListener {
-            binding.srExploreWidget.layoutParams.width = binding.rvWidgets.width
+            val mWidth = binding.rvWidgets.width
+            if(mWidth == binding.srExploreWidget.width) return@addOneTimeGlobalLayoutListener
+            binding.srExploreWidget.layoutParams.width = mWidth
+            binding.srExploreWidget.requestLayout()
         }
     }
 
@@ -359,6 +366,8 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
+
+        adjustWidth()
 
         val window = dialog?.window ?: return
         window.setGravity(Gravity.END)
