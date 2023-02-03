@@ -24,7 +24,6 @@ import com.tokopedia.mvc.presentation.intro.uimodel.VoucherIntroTypeData
 import com.tokopedia.mvc.presentation.intro.uimodel.VoucherTypeUiModel
 import com.tokopedia.mvc.presentation.intro.util.MvcIntroPageTracker
 import com.tokopedia.mvc.presentation.intro.util.MvcIntroRecyclerViewScrollListener
-import com.tokopedia.mvc.util.constant.FIRST_INDEX
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -63,15 +62,11 @@ class MvcIntroFragment :
         this.contentList = getContentList()
         mvcAdapter = MvcIntroAdapter()
 
-        mvcLayoutManager = object : LinearLayoutManager(
+        mvcLayoutManager = LinearLayoutManager(
             context,
             LinearLayoutManager.VERTICAL,
             false
-        ) {
-            override fun canScrollVertically(): Boolean {
-                return false
-            }
-        }
+        )
         binding?.recyclerView?.layoutManager = mvcLayoutManager
         mvcAdapter?.clearAllElements()
         mvcAdapter?.addElement(contentList)
@@ -240,29 +235,8 @@ class MvcIntroFragment :
     }
 
     // When user clicks on the Arrow Button
-    override fun enableRVScroll() {
+    override fun onClickButton() {
         mvcIntroPageTracker.sendMvcIntroPageArrowButton()
-        mvcLayoutManager = object : LinearLayoutManager(context, VERTICAL, false) {
-            override fun canScrollVertically(): Boolean {
-                return true
-            }
-        }
-
-        val recyclerView = binding?.recyclerView ?: return
-        scrollerListener?.let { recyclerView.removeOnScrollListener(it) }
-        scrollerListener = object : MvcIntroRecyclerViewScrollListener(mvcLayoutManager) {
-            override fun changeBackground(position: Int) {
-                changeBackgroundWithPosition(position)
-            }
-        }.also {
-            recyclerView.addOnScrollListener(it)
-        }
-
-        binding?.recyclerView?.apply {
-            layoutManager = mvcLayoutManager
-            layoutManager?.scrollToPosition(FIRST_INDEX)
-        }
-
         setWhiteBackgroundForToolbar()
     }
 
