@@ -275,7 +275,7 @@ class AffiliateAdapter(
             position,
             item?.ssaShopDetail?.shopName,
             "${item?.ssaShopDetail?.shopId}" +
-                " - ${item?.ssaCommissionDetail?.cumulativePercentageFormatted}" +
+                " - ${item?.ssaCommissionDetail?.cumulativePercentage}" +
                 " - active" +
                 " - komisi extra",
             itemsKey = AffiliateAnalytics.EventKeys.KEY_PROMOTIONS
