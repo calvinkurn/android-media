@@ -1,0 +1,105 @@
+{
+  "readme": "Play Broadcaster - Auto Generated Cover Analytic",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickContent",
+      "eventAction": "click - x template tab",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "(40737|40703)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - cover tab",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user) - .*",
+      "trackerId": "(40738|40704)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - template tambah produk",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "(40739|40705)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - x cover bottomsheet",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "(40740|40706)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - coba lagi template cover",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "(40741|40708)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - save generated cover",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user) - .* - \\d+ - .*",
+      "trackerId": "(40742|40709)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - delete generated cover",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user) - .* - \\d+ - .*",
+      "trackerId": "(40743|40710)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - generated cover",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user) - .* - \\d+ - .*",
+      "trackerId": "(40744|40711)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - save generated cover option",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user) - .* - \\d+ - .*",
+      "trackerId": "(40745|40712)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    }
+  ]
+}
