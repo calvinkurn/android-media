@@ -1389,6 +1389,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         }
                     }
 
+                    ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_DATA_RESULT);
+                    for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
+                        for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
+                           if (voucherOrdersItemUiModel.getUniqueId().equals(ordersItem.getUniqueId()) && voucherOrdersItemUiModel.isTypeLogistic()) {
+                                ordersItem.getCodes().remove(voucherOrdersItemUiModel.getCode());
+                           }
+                        }
+                    }
+
                     shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
                     if (!stillHasPromo) {
                         doResetButtonPromoCheckout();
