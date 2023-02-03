@@ -286,7 +286,7 @@ class EditorViewModelTest {
         var isShopAvail = false
 
         // When
-        every { userSession.shopId } returns userShopId
+        every { userSession.hasShop() } returns true
         isShopAvail = viewModel.isShopAvailable()
 
         // Then
@@ -299,7 +299,7 @@ class EditorViewModelTest {
         var isShopAvail = false
 
         // When
-        every { userSession.shopId } returns EditorViewModel.EMPTY_SHOP_ID
+        every { userSession.hasShop() } returns false
         isShopAvail = viewModel.isShopAvailable()
 
         // Then

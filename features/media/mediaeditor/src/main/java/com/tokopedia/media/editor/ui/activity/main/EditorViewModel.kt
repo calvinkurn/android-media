@@ -164,8 +164,4 @@ class EditorViewModel @Inject constructor(
 
         _updatedIndexItem.value = index
     }
-
-    companion object {
-        const val EMPTY_SHOP_ID = "0"
-    }
 }
