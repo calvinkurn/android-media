@@ -22,7 +22,7 @@ data class GetTargetedTickerResponse(
             val content: String,
             @SerializedName("ID")
             @Expose
-            val iD: Int,
+            val iD: String,
             @SerializedName("Metadata")
             @Expose
             val metadata: List<Metadata>,

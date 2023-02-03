@@ -7,6 +7,11 @@ import javax.inject.Inject
 
 class TickerStaticDataProvider @Inject constructor(private val resourceProvider: ResourceProvider) {
 
+    companion object{
+        const val TICKER_INFO = "info"
+        const val TICKER_WARNING = "warning"
+        const val TICKER_DANGER = "danger"
+    }
     private fun MutableList<TickerData>.addMultiLocationTicker(multiLocationSeller: Boolean) {
         if (multiLocationSeller) {
             add(
@@ -35,12 +40,12 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
         return mutableListOf<TickerData>().apply {
             addAll(
                 tickers.map {
-                    val tickerType = if (it.type.equals("info", ignoreCase = true)) {
+                    val tickerType = if (it.type.equals(TICKER_INFO, ignoreCase = true)) {
                         Ticker.TYPE_ANNOUNCEMENT
-                    } else if (it.type.equals("warning", ignoreCase = true)) {
+                    } else if (it.type.equals(TICKER_WARNING, ignoreCase = true)) {
                         Ticker.TYPE_WARNING
 
-                    } else if (it.type.equals("danger", ignoreCase = true)) {
+                    } else if (it.type.equals(TICKER_DANGER, ignoreCase = true)) {
                         Ticker.TYPE_ERROR
 
                     } else {

@@ -13,6 +13,7 @@ class GetTickerUseCase @Inject constructor(repository: GraphqlRepository) :
 
     companion object {
 
+        private const val PAGE_VALUE = "icarus.manage-product"
         private const val PARAM_PAGE = "page"
         private const val PARAM_TARGET = "target"
 
@@ -38,7 +39,7 @@ class GetTickerUseCase @Inject constructor(repository: GraphqlRepository) :
 
         private fun createRequestParams(): RequestParams {
             return RequestParams.create().apply {
-                putString(PARAM_PAGE, "icarus.manage-product")
+                putString(PARAM_PAGE, PAGE_VALUE)
                 putObject(PARAM_TARGET, emptyArray<String>())
             }
         }
