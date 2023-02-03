@@ -17,6 +17,7 @@ import com.tokopedia.play.broadcaster.type.ProductPrice
 import com.tokopedia.play.broadcaster.type.ProductStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
@@ -82,6 +83,19 @@ class UiModelBuilder {
             croppedCover = croppedCover,
             state = state
     )
+
+    fun buildBroadcastingConfigUiModel(): BroadcastingConfigUiModel {
+        return BroadcastingConfigUiModel(
+            audioRate = "123",
+            bitrateMode = "123",
+            fps = "123",
+            maxRetry = 1,
+            reconnectDelay = 1,
+            videoBitrate = "123",
+            videoWidth = "123",
+            videoHeight = "123",
+        )
+    }
 
     fun buildConfigurationUiModel(
         streamAllowed: Boolean = true,

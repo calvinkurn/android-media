@@ -24,7 +24,6 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.assertEmpty
 import com.tokopedia.play.broadcaster.util.assertEqualTo
@@ -82,6 +81,7 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
         coEvery { mockGetAddedTagUseCase.executeOnBackground() } returns mockAddedTag
         coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSectionList
+        coEvery { mockRepo.getBroadcastingConfig(any(), any()) } returns uiModelBuilder.buildBroadcastingConfigUiModel()
     }
 
     @Test
@@ -120,8 +120,6 @@ class PlayBroadcasterViewModelTest {
 
     @Test
     fun `given seller allowed to stream, and channelStatus Unknown, then it should trigger createChannel()`() {
-        val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
-
         val mockConfig = uiModelBuilder.buildConfigurationUiModel(
             streamAllowed = true,
             channelStatus = ChannelStatus.Unknown
@@ -139,7 +137,7 @@ class PlayBroadcasterViewModelTest {
         val mock = spyk(robot.getViewModel(), recordPrivateCalls = true)
 
         robot.use {
-            mock.submitAction(PlayBroadcastAction.GetAccountList(TYPE_SHOP))
+            mock.submitAction(PlayBroadcastAction.GetConfiguration(TYPE_SHOP))
 
             verify { mock invokeNoArgs "createChannel" }
         }

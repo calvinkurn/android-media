@@ -387,6 +387,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _observableChatList.value = mutableListOf()
     }
 
+    fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {
+        return mDataStore.getSetupDataStore()
+    }
+
     fun saveState(outState: Bundle) {
         outState.putParcelable(KEY_CONFIG, _configInfo.value)
         outState.putBoolean(KEY_IS_LIVE_STREAM_ENDED, isLiveStreamEnded)
@@ -405,11 +409,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     fun isLiveStreamEnded() = isLiveStreamEnded
 
-    override fun onCleared() {
-        super.onCleared()
-        viewModelScope.cancel()
-    }
-
     fun submitAction(event: PlayBroadcastAction) {
         when (event) {
             PlayBroadcastAction.EditPinnedMessage -> handleEditPinnedMessage()
@@ -419,8 +418,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
-            is PlayBroadcastAction.GetAccountList -> handleGetAccountList(event.selectedType)
+            is PlayBroadcastAction.GetConfiguration -> handleGetConfiguration(event.selectedType)
             is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount(event.needLoading)
+            is PlayBroadcastAction.SuccessOnBoardingUGC -> handleSuccessOnBoardingUGC()
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
@@ -457,11 +457,43 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {
-        return mDataStore.getSetupDataStore()
+    private fun handleGetConfiguration(selectedType: String) {
+        viewModelScope.launchCatchError(block = {
+            getFeedCheckWhitelist(selectedType)
+            getBroadcastingConfig()
+            getBroadcasterAuthorConfig(_selectedAccount.value)
+        }, onError = {
+            _observableConfigInfo.value = NetworkResult.Fail(it) {
+                this.handleGetConfiguration(selectedType)
+            }
+        })
     }
 
-    private fun getConfiguration(selectedAccount: ContentAccountUiModel) {
+    private suspend fun getFeedCheckWhitelist(selectedType: String) {
+        _accountStateInfo.value = AccountStateInfo()
+        _observableConfigInfo.value = NetworkResult.Loading
+
+        val accountList = repo.getAccountList()
+        _accountListState.value = accountList
+
+        if (accountList.isNotEmpty()) {
+            updateSelectedAccount(
+                getSelectedAccount(
+                    selectedType = selectedType,
+                    cacheSelectedType = sharedPref.getLastSelectedAccountType(),
+                    accountList = accountList
+                )
+            )
+        } else throw Throwable()
+    }
+
+    private suspend fun getBroadcastingConfig() {
+        val request = repo.getBroadcastingConfig(authorId, authorType)
+        hydraConfigStore.saveBroadcastingConfig(request)
+        _uiEvent.emit(PlayBroadcastEvent.InitializeBroadcaster(hydraConfigStore.getBroadcastingConfig()))
+    }
+
+    private fun getBroadcasterAuthorConfig(selectedAccount: ContentAccountUiModel) {
         viewModelScope.launchCatchError(block = {
             val currConfigInfo = _configInfo.value
             val configUiModel = repo.getChannelConfiguration(selectedAccount.id, selectedAccount.type)
@@ -522,7 +554,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             updateSelectedAccount(selectedAccount)
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
         }) {
-            _observableConfigInfo.value = NetworkResult.Fail(it) { getConfiguration(selectedAccount) }
+            _observableConfigInfo.value = NetworkResult.Fail(it) { getBroadcasterAuthorConfig(selectedAccount) }
         }
     }
 
@@ -1536,32 +1568,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         mIsBroadcastStopped = true
     }
 
-    private fun handleGetAccountList(selectedType: String) {
-        viewModelScope.launchCatchError(block = {
-            _accountStateInfo.value = AccountStateInfo()
-            _observableConfigInfo.value = NetworkResult.Loading
-
-            val accountList = repo.getAccountList()
-
-            _accountListState.value = accountList
-
-            if (accountList.isNotEmpty()) {
-                updateSelectedAccount(
-                    getSelectedAccount(
-                        selectedType = selectedType,
-                        cacheSelectedType = sharedPref.getLastSelectedAccountType(),
-                        accountList = accountList
-                    )
-                )
-                getConfiguration(_selectedAccount.value)
-            } else {
-                throw Throwable()
-            }
-        }, onError = {
-                _observableConfigInfo.value = NetworkResult.Fail(it) { this.handleGetAccountList(selectedType) }
-            })
-    }
-
     private fun getSelectedAccount(
         selectedType: String,
         cacheSelectedType: String,
@@ -1606,7 +1612,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 else -> TYPE_SHOP
             }
         )
-        getConfiguration(currentSelected)
+        getBroadcasterAuthorConfig(currentSelected)
     }
 
     private fun switchAccount(selectedType: String): ContentAccountUiModel {
@@ -1665,6 +1671,17 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _selectedAccount.update { selectedAccount }
         sharedPref.setLastSelectedAccountType(selectedAccount.type)
         hydraConfigStore.setAuthor(selectedAccount)
+    }
+
+    private fun handleSuccessOnBoardingUGC() {
+        viewModelScope.launchCatchError(block = {
+            getFeedCheckWhitelist(TYPE_USER)
+            getBroadcasterAuthorConfig(_selectedAccount.value)
+        }, onError = {
+            _observableConfigInfo.value = NetworkResult.Fail(it) {
+                this.handleGetConfiguration(TYPE_USER)
+            }
+        })
     }
 
     /**
