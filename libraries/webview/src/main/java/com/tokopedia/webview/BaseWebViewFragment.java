@@ -107,6 +107,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private ValueCallback<Uri> uploadMessageBeforeLolipop;
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
     public final static int ATTACH_FILE_REQUEST = 1;
+    public final static String FILE_PREFIX = "file:";
     private static final String HCI_CAMERA_KTP = "android-js-call://ktp";
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private static final String LOGIN_APPLINK = "tokopedia://login";
@@ -406,7 +407,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                     }else {
                         List<String> images = MediaPicker.INSTANCE.result(intent).getOriginalPaths();
                         if(!images.isEmpty()){
-                            results = new Uri[]{Uri.parse("file:"+images.get(0))};
+                            results = new Uri[]{Uri.parse(FILE_PREFIX + images.get(0))};
                         }
                     }
                 }
