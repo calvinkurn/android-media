@@ -1,6 +1,8 @@
 package com.tokopedia.affiliate.ui.viewholder
 
 import android.graphics.Color
+import android.os.Build
+import android.text.Html
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
@@ -93,16 +95,27 @@ class AffiliatePromotionShopItemVH(
     }
 
     private fun setUpAdditionData(item: AffiliateSearchData.SearchAffiliate.Data.Card.Item) {
-        getAdditionalDataFromType(item, COMMISSION_AMOUNT_TYPE)?.let { info ->
+        if (item.ssaStatus == true) {
             textViewAdditionalInfo1.apply {
                 visible()
-                text = info.htmlText
-                if (info.color?.isNotEmpty() == true) setTextColor(Color.parseColor(info.color))
+                text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    Html.fromHtml(item.message, Html.FROM_HTML_MODE_LEGACY)
+                } else {
+                    Html.fromHtml(item.message)
+                }
+            }
+        } else {
+            getAdditionalDataFromType(item, COMMISSION_AMOUNT_TYPE)?.let { info ->
+                textViewAdditionalInfo1.apply {
+                    visible()
+                    text = info.htmlText
+                    if (info.color?.isNotEmpty() == true) setTextColor(Color.parseColor(info.color))
+                }
             }
         }
         getAdditionalDataFromType(item, PER_GOOD_SOLD)?.let { info ->
             textViewAdditionalInfo2.apply {
-                visible()
+                isVisible = item.ssaStatus == false
                 text = info.htmlText
                 if (info.color?.isNotEmpty() == true) setTextColor(Color.parseColor(info.color))
             }
