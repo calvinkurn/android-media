@@ -490,6 +490,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
             ORIGIN_HOME_GENERATED -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_DAFTAR_LINK_PRODUK
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
+                if (params?.ssaInfo?.ssaStatus == true) {
+                    eventLabel += " - komisi extra"
+                }
             }
             ORIGIN_PERNAH_DIBELI_PROMOSIKA -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DIABEL

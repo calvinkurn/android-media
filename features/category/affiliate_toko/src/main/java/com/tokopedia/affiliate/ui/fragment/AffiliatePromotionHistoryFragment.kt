@@ -26,6 +26,7 @@ import com.tokopedia.affiliate.interfaces.ProductClickInterface
 import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
+import com.tokopedia.affiliate.ui.viewholder.AffiliatePerformaSharedProductCardsItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateSharedProductCardsItemVH
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSharedProductCardsModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromotionHistoryViewModel
@@ -127,7 +128,6 @@ class AffiliatePromotionHistoryFragment :
             errorIllustration.hide()
             errorTitle.text = getString(R.string.affiliate_choose_product)
             errorDescription.text = getString(R.string.affiliate_choose_product_description)
-            setButtonFull(true)
             errorAction.text = getString(R.string.affiliate_promote_affiliatw)
             errorSecondaryAction.gone()
             setActionClickListener {
@@ -157,6 +157,15 @@ class AffiliatePromotionHistoryFragment :
             item.product.itemTitle?.let {
                 itemName = it
             }
+            var label =
+                if (item.product.status == AffiliatePerformaSharedProductCardsItemVH.PRODUCT_ACTIVE) {
+                    AffiliateAnalytics.LabelKeys.ACTIVE
+                } else {
+                    AffiliateAnalytics.LabelKeys.INACTIVE
+                }
+            if (item.product.ssaStatus == true) {
+                label += "komisi extra"
+            }
             AffiliateAnalytics.trackEventImpression(
                 AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
                 AffiliateAnalytics.ActionKeys.IMPRESSION_DAFTAR_LINK_PRODUK,
@@ -165,7 +174,7 @@ class AffiliatePromotionHistoryFragment :
                 itemID,
                 listSize,
                 itemName,
-                itemID
+                "$itemID - $label"
             )
         }
     }
@@ -267,9 +276,20 @@ class AffiliatePromotionHistoryFragment :
     ) {
         if (status == AffiliateSharedProductCardsItemVH.PRODUCT_ACTIVE) {
             AffiliatePromotionBottomSheet.newInstance(
+                AffiliatePromotionBottomSheetParams(
+                    null,
+                    productId,
+                    productName,
+                    productImage,
+                    productUrl,
+                    productIdentifier,
+                    AffiliatePromotionBottomSheet.ORIGIN_HOME_GENERATED,
+                    !isUserBlackListed,
+                    type = type,
+                    ssaInfo = ssaInfo
+                ),
                 AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
-                null, null, productId, productName, productImage, productUrl, productIdentifier,
-                AffiliatePromotionBottomSheet.ORIGIN_HOME_GENERATED, !isUserBlackListed, type = type
+                null
             ).show(childFragmentManager, "")
         } else {
             AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_PRODUCT_INACTIVE)
