@@ -1,5 +1,7 @@
 package com.tokopedia.tokopedianow.seeallcategory.persentation.fragment
 
+import com.tokopedia.imageassets.ImageUrl
+
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -39,7 +41,7 @@ import javax.inject.Inject
 class TokoNowSeeAllCategoryFragment: Fragment(), SeeAllCategoryItemViewHolder.SeeAllCategoryListener {
 
     companion object {
-        private const val ERROR_STATE_NOT_FOUND_IMAGE_URL = "https://images.tokopedia.net/img/error_page_400_category_list.png"
+        private const val ERROR_STATE_NOT_FOUND_IMAGE_URL = ImageUrl.ERROR_STATE_NOT_FOUND_IMAGE_URL
         private const val SPAN_COUNT = 3
 
         fun newInstance(warehouseId: String): TokoNowSeeAllCategoryFragment {

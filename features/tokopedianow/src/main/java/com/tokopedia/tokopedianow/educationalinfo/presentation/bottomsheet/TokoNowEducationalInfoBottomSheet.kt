@@ -1,5 +1,7 @@
 package com.tokopedia.tokopedianow.educationalinfo.presentation.bottomsheet
 
+import com.tokopedia.imageassets.ImageUrl
+
 import android.content.Context
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
@@ -32,7 +34,7 @@ class TokoNowEducationalInfoBottomSheet :
 
     companion object {
         private const val SOURCE_PLAY = "play"
-        private const val BACKGROUND_BOTTOMSHEET = "https://images.tokopedia.net/img/android/tokonow/bg_bottomsheet_tokomart_educational_information.png"
+        private const val BACKGROUND_BOTTOMSHEET = ImageUrl.BACKGROUND_BOTTOMSHEET
         private val TAG = TokoNowEducationalInfoBottomSheet::class.simpleName
 
         fun newInstance(): TokoNowEducationalInfoBottomSheet {

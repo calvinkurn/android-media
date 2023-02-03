@@ -1,5 +1,7 @@
 package com.tokopedia.updateinactivephone.features.onboarding.regular
 
+import com.tokopedia.imageassets.ImageUrl
+
 import android.app.Activity
 import android.content.Intent
 import androidx.core.content.ContextCompat
@@ -38,6 +40,6 @@ class InactivePhoneCaptureSelfieFragment : BaseInactivePhoneOnboardingFragment()
     }
 
     companion object {
-        private const val IMAGE_SELFIE_SAMPLE = "https://images.tokopedia.net/img/android/user/inactive-phone/inactivephone_selfie.png"
+        private const val IMAGE_SELFIE_SAMPLE = ImageUrl.IMAGE_SELFIE_SAMPLE
     }
 }

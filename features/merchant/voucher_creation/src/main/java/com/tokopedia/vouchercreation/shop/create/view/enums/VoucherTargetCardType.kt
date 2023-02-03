@@ -1,5 +1,7 @@
 package com.tokopedia.vouchercreation.shop.create.view.enums
 
+import com.tokopedia.imageassets.ImageUrl
+
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.tokopedia.vouchercreation.R
@@ -36,10 +38,10 @@ enum class VoucherTargetCardType(@DrawableRes val iconDrawableRes: Int,
 }
 
 object VoucherDisplay {
-    const val PUBLIC_SHOP = "https://images.tokopedia.net/android/others/cashback_public_voucher_shop.png"
-    const val PUBLIC_PRODUCT = "https://images.tokopedia.net/android/others/cashback_public_voucher_product.png"
-    const val PUBLIC_CART = "https://images.tokopedia.net/android/merchant/others/mvc_image_public_cart.png"
-    const val PRIVATE_SOCMED = "https://images.tokopedia.net/android/merchant/others/mvc_image_private_socmed.png"
-    const val PRIVATE_CHAT = "https://images.tokopedia.net/android/merchant/others/mvc_image_private_chat.png"
-    const val PRIVATE_DOWNLOAD = "https://images.tokopedia.net/android/merchant/others/mvc_image_private_download.png"
+    const val PUBLIC_SHOP = ImageUrl.PUBLIC_SHOP
+    const val PUBLIC_PRODUCT = ImageUrl.PUBLIC_PRODUCT
+    const val PUBLIC_CART = ImageUrl.PUBLIC_CART
+    const val PRIVATE_SOCMED = ImageUrl.PRIVATE_SOCMED
+    const val PRIVATE_CHAT = ImageUrl.PRIVATE_CHAT
+    const val PRIVATE_DOWNLOAD = ImageUrl.PRIVATE_DOWNLOAD
 }

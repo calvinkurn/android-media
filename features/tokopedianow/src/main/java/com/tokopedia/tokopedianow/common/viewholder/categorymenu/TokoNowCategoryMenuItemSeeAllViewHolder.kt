@@ -1,5 +1,7 @@
 package com.tokopedia.tokopedianow.common.viewholder.categorymenu
 
+import com.tokopedia.imageassets.ImageUrl
+
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -16,8 +18,8 @@ class TokoNowCategoryMenuItemSeeAllViewHolder(
 ): AbstractViewHolder<TokoNowCategoryMenuItemSeeAllUiModel>(itemView) {
 
     companion object {
-        const val IMG_DARK_MODE = "https://images.tokopedia.net/img/tokopedianow/see-all-category-dark.png"
-        const val IMG_LIGHT_MODE = "https://images.tokopedia.net/img/tokopedianow/see-all-category-light.png"
+        const val IMG_DARK_MODE = ImageUrl.IMG_DARK_MODE
+        const val IMG_LIGHT_MODE = ImageUrl.IMG_LIGHT_MODE
 
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_category_menu_item_see_all

@@ -1,5 +1,7 @@
 package com.tokopedia.tokomember_common_widget
 
+import com.tokopedia.imageassets.ImageUrl
+
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
@@ -12,7 +14,7 @@ import kotlinx.android.synthetic.main.tm_coupon_preview.view.*
 import kotlin.math.floor
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
-const val TM_COUPON_PREVIEW = "https://images.tokopedia.net/img/android/res/singleDpi/tm_coupon_skeleton.png"
+const val TM_COUPON_PREVIEW = ImageUrl.TM_COUPON_PREVIEW
 
 class TmCouponViewPreview @JvmOverloads constructor(
     context: Context,

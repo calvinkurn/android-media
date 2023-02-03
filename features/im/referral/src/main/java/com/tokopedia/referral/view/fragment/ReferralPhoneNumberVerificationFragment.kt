@@ -1,5 +1,7 @@
 package com.tokopedia.referral.view.fragment
 
+import com.tokopedia.imageassets.ImageUrl
+
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -78,6 +80,6 @@ class ReferralPhoneNumberVerificationFragment : BaseDaggerFragment() {
             return ReferralPhoneNumberVerificationFragment()
         }
         const val EXTRA_PHONE = "phone"
-        const val URL_TOKOCASH_SHARE = "https://images.tokopedia.net/img/android/others/ic_referral_tokocash.png"
+        const val URL_TOKOCASH_SHARE = ImageUrl.URL_TOKOCASH_SHARE
     }
 }

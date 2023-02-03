@@ -1,5 +1,7 @@
 package com.tokopedia.tokopedianow.common.view
 
+import com.tokopedia.imageassets.ImageUrl
+
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -12,7 +14,7 @@ class NoAddressEmptyStateView @JvmOverloads constructor(context: Context, attrs:
         BaseCustomView(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val IMG_NO_ADDRESS = "https://images.tokopedia.net/img/tokonow/tokonow_ic_empty_state_no_address_small.png"
+        private const val IMG_NO_ADDRESS = ImageUrl.IMG_NO_ADDRESS
     }
 
     private var binding: LayoutTokopedianowEmptyStateNoAddressBinding? = null

@@ -1,7 +1,9 @@
 package com.tokopedia.gm.common.constant
 
-const val IMG_URL_REGULAR_MERCHANT_POPUP = "https://images.tokopedia.net/img/android/gold_merchant_common/regular_merchant_popup.png"
-const val IMG_URL_POWER_MERCHANT_IDLE_POPUP = "https://images.tokopedia.net/img/android/power_merchant_subscribe/power_merchant_idle.png"
+import com.tokopedia.imageassets.ImageUrl
+
+const val IMG_URL_REGULAR_MERCHANT_POPUP = ImageUrl.IMG_URL_REGULAR_MERCHANT_POPUP
+const val IMG_URL_POWER_MERCHANT_IDLE_POPUP = ImageUrl.IMG_URL_POWER_MERCHANT_IDLE_POPUP
 const val GM_TITLE = "Power Merchant"
 const val PATTERN_DATE_SHOP_INFO = "yyyy-MM-dd"
 const val NEW_SELLER_DAYS = 90

@@ -1,9 +1,11 @@
 package com.tokopedia.seller_migration_common.constants
 
+import com.tokopedia.imageassets.ImageUrl
+
 object SellerMigrationConstants {
-    const val SELLER_MIGRATION_SHOP_PAGE_TAB_FEED_LINK = "https://images.tokopedia.net/android/merchant/seller_migrationv2/Frame@2x.png"
-    const val SELLER_MIGRATION_FRAGMENT_BANNER_LINK = "https://images.tokopedia.net/android/seller_migration_fragment_banner.png"
-    const val SELLER_MIGRATION_POST_FEED_BANNER_LINK = "https://images.tokopedia.net/android/merchant/seller_migration/seller_migration_post_feed.png"
+    const val SELLER_MIGRATION_SHOP_PAGE_TAB_FEED_LINK = ImageUrl.SELLER_MIGRATION_SHOP_PAGE_TAB_FEED_LINK
+    const val SELLER_MIGRATION_FRAGMENT_BANNER_LINK = ImageUrl.SELLER_MIGRATION_FRAGMENT_BANNER_LINK
+    const val SELLER_MIGRATION_POST_FEED_BANNER_LINK = ImageUrl.SELLER_MIGRATION_POST_FEED_BANNER_LINK
     const val PACKAGE_SELLER_APP = "com.tokopedia.sellerapp"
     const val APPLINK_PLAYSTORE = "market://details?id="
     const val URL_PLAYSTORE = "https://play.google.com/store/apps/details?id="
@@ -12,21 +14,21 @@ object SellerMigrationConstants {
     const val SELLER_MIGRATION_KEY_AUTO_LOGIN = "is_auto_login"
     const val SELLER_MIGRATION_KEY_AUTO_ANCHOR_ACCOUNT_SHOP = "is_auto_anchor"
 
-    const val URL_PROMO_ICON = "https://images.tokopedia.net/android/sellermigration/ic_promo.png"
-    const val URL_PLAY_ICON = "https://images.tokopedia.net/android/sellermigration/ic_tokopedia_play.png"
-    const val URL_STATISTICS_ICON = "https://images.tokopedia.net/android/sellermigration/ic_statistics_review.png"
-    const val URL_FINANCE_ICON = "https://images.tokopedia.net/android/sellermigration/ic_saldo_prio.png"
-    const val URL_FEATURED_PRODUCT_ICON = "https://images.tokopedia.net/android/sellermigration/ic_featured_product.png"
-    const val URL_MULTI_EDIT_ICON = "https://images.tokopedia.net/android/sellermigration/ic_multi_edit.png"
-    const val URL_CASHBACK_ICON = "https://images.tokopedia.net/android/sellermigration/ic_manage_cashback.png"
-    const val URL_VARIANT_ICON = "https://images.tokopedia.net/android/sellermigration/ic_variant.png"
-    const val URL_ATTACH_VOUCHER_ICON = "https://images.tokopedia.net/android/sellermigration/ic_attach_voucher.png"
-    const val URL_TEMPLATE_CHAT_ICON = "https://images.tokopedia.net/android/sellermigration/ic_template_chat.png"
-    const val URL_SMART_REPLY_DISCUSSION_ICON = "https://images.tokopedia.net/android/sellermigration/ic_discussion_smart_reply.png"
-    const val URL_SELLER_INSIGHT_ICON = "https://images.tokopedia.net/android/sellermigration/ic_seller_insight.png"
-    const val URL_TEMPLATE_REVIEW_ICON = "https://images.tokopedia.net/android/sellermigration/ic_template_review.png"
-    const val URL_TOPADS_ICON = "https://images.tokopedia.net/android/sellermigration/ic_topads.png"
-    const val URL_STOCK_REMINDER_ICON = "https://images.tokopedia.net/android/sellermigration/ic_stock_reminder.png"
-    const val URL_FEED_ICON = "https://images.tokopedia.net/android/sellermigration/ic_feed.png"
-    const val URL_SHOP_FUND_ICON = "https://images.tokopedia.net/android/sellermigration/ic_shop_fund.png"
+    const val URL_PROMO_ICON = ImageUrl.URL_PROMO_ICON
+    const val URL_PLAY_ICON = ImageUrl.URL_PLAY_ICON
+    const val URL_STATISTICS_ICON = ImageUrl.URL_STATISTICS_ICON
+    const val URL_FINANCE_ICON = ImageUrl.URL_FINANCE_ICON
+    const val URL_FEATURED_PRODUCT_ICON = ImageUrl.URL_FEATURED_PRODUCT_ICON
+    const val URL_MULTI_EDIT_ICON = ImageUrl.URL_MULTI_EDIT_ICON
+    const val URL_CASHBACK_ICON = ImageUrl.URL_CASHBACK_ICON
+    const val URL_VARIANT_ICON = ImageUrl.URL_VARIANT_ICON
+    const val URL_ATTACH_VOUCHER_ICON = ImageUrl.URL_ATTACH_VOUCHER_ICON
+    const val URL_TEMPLATE_CHAT_ICON = ImageUrl.URL_TEMPLATE_CHAT_ICON
+    const val URL_SMART_REPLY_DISCUSSION_ICON = ImageUrl.URL_SMART_REPLY_DISCUSSION_ICON
+    const val URL_SELLER_INSIGHT_ICON = ImageUrl.URL_SELLER_INSIGHT_ICON
+    const val URL_TEMPLATE_REVIEW_ICON = ImageUrl.URL_TEMPLATE_REVIEW_ICON
+    const val URL_TOPADS_ICON = ImageUrl.URL_TOPADS_ICON
+    const val URL_STOCK_REMINDER_ICON = ImageUrl.URL_STOCK_REMINDER_ICON
+    const val URL_FEED_ICON = ImageUrl.URL_FEED_ICON
+    const val URL_SHOP_FUND_ICON = ImageUrl.URL_SHOP_FUND_ICON
 }

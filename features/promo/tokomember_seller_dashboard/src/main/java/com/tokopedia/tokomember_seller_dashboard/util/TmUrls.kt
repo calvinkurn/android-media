@@ -1,14 +1,16 @@
 package com.tokopedia.tokomember_seller_dashboard.util
 
-const val TM_INTRO_BG = "https://images.tokopedia.net/img/android/res/singleDpi/tm_intro_bg.png"
-const val TM_ERROR_PROGRAM = "https://images.tokopedia.net/img/android/res/singleDpi/tm_program_not_found.png"
-const val TM_ERROR_GEN = "https://images.tokopedia.net/img/android/res/singleDpi/tm_server_error.png"
-const val TM_ERROR_NO_INTERNET = "https://images.tokopedia.net/img/android/res/singleDpi/tm_no_internet.png"
-const val TM_SUCCESS_HAPPY = "https://images.tokopedia.net/img/android/res/singleDpi/tm_happy_success.png"
-const val TM_EMPTY_COUPON = "https://images.tokopedia.net/img/android/res/singleDpi/tm_empty_coupon.png"
-const val TM_THUMBNAIL_VIDEO = "https://images.tokopedia.net/img/android/res/singleDpi/tm_thumbnail_video.jpg"
-const val TM_DETAIL_BG = "https://images.tokopedia.net/img/android/res/singleDpi/tm_program_detail.png"
-const val TM_SELLER_NO_OS = "https://images.tokopedia.net/img/android/res/singleDpi/tm_intro_seller_noos.png"
+import com.tokopedia.imageassets.ImageUrl
+
+const val TM_INTRO_BG = ImageUrl.TM_INTRO_BG
+const val TM_ERROR_PROGRAM = ImageUrl.TM_ERROR_PROGRAM
+const val TM_ERROR_GEN = ImageUrl.TM_ERROR_GEN
+const val TM_ERROR_NO_INTERNET = ImageUrl.TM_ERROR_NO_INTERNET
+const val TM_SUCCESS_HAPPY = ImageUrl.TM_SUCCESS_HAPPY
+const val TM_EMPTY_COUPON = ImageUrl.TM_EMPTY_COUPON
+const val TM_THUMBNAIL_VIDEO = ImageUrl.TM_THUMBNAIL_VIDEO
+const val TM_DETAIL_BG = ImageUrl.TM_DETAIL_BG
+const val TM_SELLER_NO_OS = ImageUrl.TM_SELLER_NO_OS
 
 const val TM_SELLER_INTRO_EDU = "https://seller.tokopedia.com/edu/TokoMember/"
 const val TM_SELLER_INTRO_OS  = "https://seller.tokopedia.com/edu/official-store/"

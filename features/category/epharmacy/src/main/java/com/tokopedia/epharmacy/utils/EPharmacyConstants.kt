@@ -1,5 +1,7 @@
 package com.tokopedia.epharmacy.utils
 
+import com.tokopedia.imageassets.ImageUrl
+
 const val EXTRA_ORDER_ID_LONG = "extra_order_id_long"
 const val EXTRA_CHECKOUT_ID_STRING = "extra_checkout_id_string"
 const val EXTRA_ENTRY_POINT_STRING = "extra_entry_point_string"
@@ -47,6 +49,6 @@ const val ENTRY_POINT_CHECKOUT = "Checkout"
 const val DATA_TYPE = "data_type"
 const val ENABLER_NAME = "enabler_name"
 
-const val EPHARMACY_BOTTOM_SHEET_BOTTOM_TNC_IMAGE_URL = "https://images.tokopedia.net/img/green-waves.png"
-const val EPHARMACY_BOTTOM_SHEET_BOTTOM_IMAGE_URL = "https://images.tokopedia.net/img/miniconsul-toped-illustration.png"
+const val EPHARMACY_BOTTOM_SHEET_BOTTOM_TNC_IMAGE_URL = ImageUrl.EPHARMACY_BOTTOM_SHEET_BOTTOM_TNC_IMAGE_URL
+const val EPHARMACY_BOTTOM_SHEET_BOTTOM_IMAGE_URL = ImageUrl.EPHARMACY_BOTTOM_SHEET_BOTTOM_IMAGE_URL
 const val EPHARMACY_PDP_INFO_DATA_TYPE = "obat_keras_info"

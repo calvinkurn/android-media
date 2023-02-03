@@ -1,5 +1,7 @@
 package com.tokopedia.tokopedianow.common.bottomsheet
 
+import com.tokopedia.imageassets.ImageUrl
+
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,8 +18,8 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class TokoNowOnBoard20mBottomSheet: BottomSheetUnify() {
 
     companion object {
-        private const val IMG_TIME = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_educational_information_two_hours.png"
-        private const val IMG_GUARANTEED_QUALITY = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_educational_information_guaranteed_quality.png"
+        private const val IMG_TIME = ImageUrl.IMG_TIME
+        private const val IMG_GUARANTEED_QUALITY = ImageUrl.IMG_GUARANTEED_QUALITY
         private val TAG = TokoNowOnBoard20mBottomSheet::class.simpleName
 
         fun newInstance(): TokoNowOnBoard20mBottomSheet {

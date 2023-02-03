@@ -1,5 +1,7 @@
 package com.tokopedia.pms.paymentlist.presentation.viewholder
 
+import com.tokopedia.imageassets.ImageUrl
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -88,7 +90,7 @@ class BankTransferViewHolder(
 
     companion object {
         private val LAYOUT_ID = R.layout.bank_transfer_payment_list_item
-        private const val CARD_ICON_URL = "https://images.tokopedia.net/img/toppay/product/marketplace.png"
+        private const val CARD_ICON_URL = ImageUrl.CARD_ICON_URL
 
         fun getViewHolder(
             inflater: LayoutInflater,

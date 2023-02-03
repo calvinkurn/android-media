@@ -1,5 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
+import com.tokopedia.imageassets.ImageUrl
+
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -30,7 +32,7 @@ class ReviewViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.home_item_review
         private const val FPM_REVIEW = "home_review"
-        private const val cardBg = "https://images.tokopedia.net/android/others/review_home_bg.png"
+        private const val cardBg = ImageUrl.cardBg
         private const val IMAGE_RADIUS = 8
         private const val CARD_REVIEW_CLICK_AT = 5
         private const val CARD_REVIEW_CLICK_DELAY = 0L

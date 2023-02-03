@@ -1,5 +1,7 @@
 package com.tokopedia.shop.flashsale.presentation.list.list.dialog
 
+import com.tokopedia.imageassets.ImageUrl
+
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
@@ -33,7 +35,7 @@ class ShopDecorationDialog {
 
     companion object {
         private const val MAX_DIALOG_WIDTH_IN_PERCENT = 0.9f
-        private const val IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_flash_sale_toko_introduction.png"
+        private const val IMAGE_URL = ImageUrl.ShopDecorationDialog_IMAGE_URL
     }
 
     @SuppressLint("UnifyComponentUsage")

@@ -1,5 +1,7 @@
 package com.tokopedia.data_explorer.db_explorer.presentation
 
+import com.tokopedia.imageassets.ImageUrl
+
 object Constants {
 
     object Keys {
@@ -9,7 +11,7 @@ object Constants {
     }
 
     object Urls {
-        const val EMPTY_DATA_URL = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png"
+        const val EMPTY_DATA_URL = ImageUrl.EMPTY_DATA_URL
     }
 
     object ErrorMessages {

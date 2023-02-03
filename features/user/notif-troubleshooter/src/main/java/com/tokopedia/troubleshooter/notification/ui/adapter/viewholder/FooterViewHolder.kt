@@ -1,5 +1,7 @@
 package com.tokopedia.troubleshooter.notification.ui.adapter.viewholder
 
+import com.tokopedia.imageassets.ImageUrl
+
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
@@ -76,7 +78,7 @@ class FooterViewHolder(
     companion object {
         @LayoutRes val LAYOUT = R.layout.item_footer_message
 
-        private const val FOOTER_IMG = "https://images.tokopedia.net/img/android/user/notif-troubleshooter/ic_ts_notif_footer.png"
+        private const val FOOTER_IMG = ImageUrl.FOOTER_IMG
         private const val URL_TOKOPEDIA_CARE = "tokopedia://webview?url=https://www.tokopedia.com/help/article/apa-itu-push-notification"
         private const val EMPTY_DRAWABLE = 0
     }

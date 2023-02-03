@@ -1,5 +1,7 @@
 package com.tokopedia.updateinactivephone.features.onboarding.regular
 
+import com.tokopedia.imageassets.ImageUrl
+
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
@@ -144,6 +146,6 @@ class InactivePhoneCaptureIdCardFragment : BaseInactivePhoneOnboardingFragment()
         private const val DP_4 = 4
         private const val DP_8 = 8
         private const val DP_12 = 12
-        private const val IMAGE_ID_CARD_SAMPLE = "https://images.tokopedia.net/img/android/user/inactive-phone/inactivephone_ktp.png"
+        private const val IMAGE_ID_CARD_SAMPLE = ImageUrl.IMAGE_ID_CARD_SAMPLE
     }
 }

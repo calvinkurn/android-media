@@ -1,5 +1,7 @@
 package com.tokopedia.tokopedianow.recipebookmark.persentation.fragment
 
+import com.tokopedia.imageassets.ImageUrl
+
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -46,7 +48,7 @@ import javax.inject.Inject
 class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener {
 
     companion object {
-        private const val NO_DATA_IMAGE = "https://images.tokopedia.net/img/android/tokonow/no_data_recipe_bookmarks.png"
+        private const val NO_DATA_IMAGE = ImageUrl.TokoNowRecipeBookmarkFragment_NO_DATA_IMAGE
 
         const val DEFAULT_PAGE = 1
         const val DEFAULT_PER_PAGE = 10

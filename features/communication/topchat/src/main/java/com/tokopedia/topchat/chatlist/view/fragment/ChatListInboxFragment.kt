@@ -1,5 +1,7 @@
 package com.tokopedia.topchat.chatlist.view.fragment
 
+import com.tokopedia.imageassets.ImageUrl
+
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -1094,8 +1096,8 @@ open class ChatListInboxFragment :
 
     companion object {
         const val OPEN_DETAIL_MESSAGE = 1324
-        const val CHAT_SELLER_EMPTY = "https://images.tokopedia.net/img/android/others/chat-seller-empty.png"
-        const val CHAT_BUYER_EMPTY = "https://images.tokopedia.net/img/android/others/chat-buyer-empty.png"
+        const val CHAT_SELLER_EMPTY = ImageUrl.CHAT_SELLER_EMPTY
+        const val CHAT_BUYER_EMPTY = ImageUrl.CHAT_BUYER_EMPTY
         const val CHAT_SELLER_EMPTY_SMART_REPLY = "https://images.tokopedia.net/android/others/toped_confused.webp"
         const val TAG = "ChatListFragment"
         private const val NO_INT_ARGUMENT = 0

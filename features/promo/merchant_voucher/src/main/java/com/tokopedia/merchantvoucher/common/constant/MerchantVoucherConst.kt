@@ -1,7 +1,9 @@
 package com.tokopedia.merchantvoucher.common.constant
 
+import com.tokopedia.imageassets.ImageUrl
+
 object MerchantVoucherConst {
-    const val DELIVERY_VOUCHER_IMAGE_URL = "https://images.tokopedia.net/img/android/merchant_voucher/delivery_voucher_image.png"
-    const val DISCOUNT_VOUCHER_IMAGE_URL = "https://images.tokopedia.net/img/android/merchant_voucher/discount_voucher_image.png"
-    const val DISCOUNT_OR_CASHBACK_VOUCHER_IMAGE_URL = "https://images.tokopedia.net/img/android/merchant_voucher/discount_or_cashback_voucher_image.png"
+    const val DELIVERY_VOUCHER_IMAGE_URL = ImageUrl.DELIVERY_VOUCHER_IMAGE_URL
+    const val DISCOUNT_VOUCHER_IMAGE_URL = ImageUrl.DISCOUNT_VOUCHER_IMAGE_URL
+    const val DISCOUNT_OR_CASHBACK_VOUCHER_IMAGE_URL = ImageUrl.DISCOUNT_OR_CASHBACK_VOUCHER_IMAGE_URL
 }

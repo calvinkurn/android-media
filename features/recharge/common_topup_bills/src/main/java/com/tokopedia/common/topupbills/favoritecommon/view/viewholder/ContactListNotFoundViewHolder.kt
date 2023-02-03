@@ -1,5 +1,7 @@
 package com.tokopedia.common.topupbills.favoritecommon.view.viewholder
 
+import com.tokopedia.imageassets.ImageUrl
+
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.topupbills.R
@@ -18,6 +20,6 @@ class ContactListNotFoundViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_topup_bills_contact_not_found
-        const val NOT_FOUND_STATE_IMG_URL = "https://images.tokopedia.net/img/https:/images.tokopedia.net/img/android/digital/common_topup_bills/common_topup_ic_illustration_not_found.png"
+        const val NOT_FOUND_STATE_IMG_URL = ImageUrl.NOT_FOUND_STATE_IMG_URL
     }
 }

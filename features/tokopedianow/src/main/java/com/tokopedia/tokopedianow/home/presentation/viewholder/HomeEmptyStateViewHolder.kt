@@ -1,5 +1,7 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
+import com.tokopedia.imageassets.ImageUrl
+
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -22,7 +24,7 @@ class HomeEmptyStateViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_home_empty_state
         const val SHIPPING_CHOOSE_ADDRESS_TAG = "SHIPPING_CHOOSE_ADDRESS_TAG"
-        const val EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE_IMAGE = "https://images.tokopedia.net/img/android/tokonow/ic_no_address_empty_state_and_local_chache.png"
+        const val EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE_IMAGE = ImageUrl.EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE_IMAGE
     }
 
     private var binding: ItemTokopedianowHomeEmptyStateBinding? by viewBinding()

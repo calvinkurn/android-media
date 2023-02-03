@@ -1,5 +1,7 @@
 package com.tokopedia.recharge_credit_card
 
+import com.tokopedia.imageassets.ImageUrl
+
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.ImageView
@@ -116,6 +118,6 @@ class RechargeCCActivity : BaseSimpleActivity(), HasComponent<RechargeCCComponen
         private const val CATEGORY_ID_DEFAULT = "26"
         private const val MENU_ID_DEFAULT = "169"
 
-        private const val CC_IMG_VERIFIED = "https://images.tokopedia.net/img/cc_ic_logo_verified.png"
+        private const val CC_IMG_VERIFIED = ImageUrl.CC_IMG_VERIFIED
     }
 }

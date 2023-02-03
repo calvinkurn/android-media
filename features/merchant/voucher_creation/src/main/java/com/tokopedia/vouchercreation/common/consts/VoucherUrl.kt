@@ -1,5 +1,7 @@
 package com.tokopedia.vouchercreation.common.consts
 
+import com.tokopedia.imageassets.ImageUrl
+
 import com.tokopedia.url.TokopediaUrl
 
 object VoucherUrl {
@@ -10,10 +12,10 @@ object VoucherUrl {
     val HELP_URL = "$HOST$HELP"
 
     //These are default url for banners that we will use in case the server returned error
-    const val BANNER_BASE_URL = "https://images.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
-    const val FREE_DELIVERY_URL = "https://images.tokopedia.net/img/merchant-coupon/banner/v3/label/label_gratis_ongkir.png"
-    const val CASHBACK_URL = "https://images.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback.png"
-    const val CASHBACK_UNTIL_URL = "https://images.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback_hingga.png"
-    const val POST_IMAGE_URL = "https://images.tokopedia.net/img/merchant-coupon/banner/v3/base_image/ig_post.jpg"
+    const val BANNER_BASE_URL = ImageUrl.BANNER_BASE_URL
+    const val FREE_DELIVERY_URL = ImageUrl.FREE_DELIVERY_URL
+    const val CASHBACK_URL = ImageUrl.CASHBACK_URL
+    const val CASHBACK_UNTIL_URL = ImageUrl.CASHBACK_UNTIL_URL
+    const val POST_IMAGE_URL = ImageUrl.POST_IMAGE_URL
     const val NO_VOUCHER_RESULT_URL = "https://images.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp"
 }

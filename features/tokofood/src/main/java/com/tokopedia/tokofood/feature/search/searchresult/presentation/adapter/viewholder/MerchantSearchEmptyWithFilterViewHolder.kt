@@ -1,5 +1,7 @@
 package com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder
 
+import com.tokopedia.imageassets.ImageUrl
+
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -49,7 +51,7 @@ class MerchantSearchEmptyWithFilterViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_search_merchant_empty_full
 
-        private const val EMPTY_STATE_URL = "https://images.tokopedia.net/img/android/tokofood/merchant_not_found.png"
+        private const val EMPTY_STATE_URL = ImageUrl.EMPTY_STATE_URL
     }
 
 }
