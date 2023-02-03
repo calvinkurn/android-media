@@ -18,6 +18,8 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.content.DeeplinkMapperContent
 import com.tokopedia.applink.content.DeeplinkMapperContent.getContentCreatePostDeepLink
 import com.tokopedia.applink.content.DeeplinkMapperContent.getKolDeepLink
+import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationHomeFeedExplore
+import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationHomeFeedVideo
 import com.tokopedia.applink.content.DeeplinkMapperContent.getWebHostWebViewLink
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
@@ -243,6 +245,10 @@ object DeeplinkMapper {
             DeeplinkMapperContent.getRegisteredNavigationContentFromHttp(uri, deeplink)
         if (appLinkContent.isNotBlank()) return appLinkContent
 
+        val appLinkFeed =
+            DeeplinkMapperContent.getRegisteredNavigationFeedVideoFromHttp(uri, deeplink)
+        if (appLinkFeed.isNotBlank()) return appLinkFeed
+
         val applinkDigital =
             DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)
         if (applinkDigital.isNotEmpty()) {
@@ -332,6 +338,7 @@ object DeeplinkMapper {
         DLP.host(ApplinkConst.CATEGORY_HOST) { _, uri, deeplink, _ -> getRegisteredCategoryNavigation(deeplink, uri) },
         DLP.matchPattern(ApplinkConst.PLAY_DETAIL) { _, _, deeplink, _ -> DeeplinkMapperContent.getRegisteredNavigation(deeplink) },
         DLP.startWith(ApplinkConst.PLAY_BROADCASTER) { _, _, deeplink, _ -> DeeplinkMapperContent.getRegisteredNavigation(deeplink) },
+        DLP.startWith(ApplinkConst.PLAY_SHORTS) { _, _, deeplink, _ -> DeeplinkMapperContent.getRegisteredNavigation(deeplink) },
         DLP.host(ApplinkConst.HOME_HOT_HOST) { _, _, deeplink, _ -> getRegisteredHotlist(deeplink) },
         DLP.matchPattern(ApplinkConst.PRODUCT_EDIT) { _, _, _, idList ->
             DeepLinkMapperProductManage.getEditProductInternalAppLink(
@@ -344,6 +351,7 @@ object DeeplinkMapper {
         },
         DLP.startWith(ApplinkConst.PRODUCT_MANAGE) { _, _, deeplink, _ -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink) },
         DLP.startWith(ApplinkConst.PRODUCT_CREATE_REVIEW) { _, uri, _, _ -> getRegisteredNavigationProductReview(uri) },
+        DLP.startWith(ApplinkConst.PRODUCT_BULK_CREATE_REVIEW) { _, _, _, _ -> ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW },
         DLP.host(ApplinkConst.REVIEW_HOST) { _, _, deeplink, _ -> getRegisteredNavigationReputation(deeplink) },
         DLP.startWith(ApplinkConst.SELLER_REVIEW) { _, _, deeplink, _ -> ApplinkConstInternalMarketplace.SELLER_REVIEW_DETAIL },
         DLP.startWith(ApplinkConst.TOKOPOINTS) { ctx, _, deeplink, _ -> getRegisteredNavigationTokopoints(deeplink) },
@@ -408,6 +416,14 @@ object DeeplinkMapper {
             ApplinkConst.FEED,
             targetDeeplink = { _, _, _, _ -> getRegisteredNavigationHomeFeed() }
         ),
+        DLP.exact(
+            ApplinkConst.FEED_EXPLORE,
+            targetDeeplink = { _, _, _, _ -> getRegisteredNavigationHomeFeedExplore() }
+        ),
+        DLP.exact(
+            ApplinkConst.FEED_VIDEO,
+            targetDeeplink = { _, _, deeplink, _ -> getRegisteredNavigationHomeFeedVideo(deeplink) }
+        ),
         DLP(
             Exact(ApplinkConst.PROMO).or(Exact(ApplinkConst.PROMO_LIST)),
             targetDeeplink = { _, _, _, _ -> ApplinkConstInternalPromo.PROMO_LIST }
@@ -470,12 +486,10 @@ object DeeplinkMapper {
 
         DLP.matchPattern(ApplinkConst.ORDER_HISTORY_SHOP) { _, _, _, idList -> UriUtil.buildUri(ApplinkConstInternalMarketplace.ORDER_HISTORY, idList?.getOrNull(0)) },
         DLP.startWith(ApplinkConst.RESET_PASSWORD, ApplinkConstInternalUserPlatform.FORGOT_PASSWORD),
-        DLP.matchPattern(ApplinkConst.KOL_COMMENT) { _, _, deeplink, _ -> getKolDeepLink(deeplink) },
         DLP.matchPattern(
             ApplinkConst.CONTENT_DETAIL,
             targetDeeplink = { _, _, deeplink, _ -> getKolDeepLink(deeplink) }
         ),
-        DLP.host(ApplinkConst.KOL_YOUTUBE_HOST_BASE) { _, _, deeplink, _ -> getKolDeepLink(deeplink) },
         DLP.startWith(ApplinkConst.DISCOVERY) { _, _, deeplink, _ -> getDiscoveryDeeplink(deeplink) },
         DLP(
             DLPLogic { _, uri, _ -> matchWithHostAndHasPath(uri, ApplinkConst.HOST_CATEGORY_P) },

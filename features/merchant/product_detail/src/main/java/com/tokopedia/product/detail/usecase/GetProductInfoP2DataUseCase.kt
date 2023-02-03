@@ -544,6 +544,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               applink
               subtitle
             }
+            customInfoTitle {
+               title
+               status
+               componentName
+            }
           }
         }""".trimIndent()
     }
@@ -623,6 +628,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.shopAdditional = responseData.shopAdditional
             p2UiData.arInfo = arInfo
             p2UiData.obatKeras = responseData.obatKeras
+            p2UiData.customInfoTitle = responseData.customInfoTitle
         }
         return p2UiData
     }

@@ -34,7 +34,6 @@ import com.tokopedia.cart.view.subscriber.GetRecommendationSubscriber
 import com.tokopedia.cart.view.subscriber.UpdateAndReloadCartSubscriber
 import com.tokopedia.cart.view.subscriber.UpdateCartAndValidateUseSubscriber
 import com.tokopedia.cart.view.subscriber.UpdateCartCounterSubscriber
-import com.tokopedia.cart.view.subscriber.UpdateCartSubscriber
 import com.tokopedia.cart.view.subscriber.ValidateUseSubscriber
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
@@ -185,6 +184,8 @@ class CartListPresenter @Inject constructor(
         private const val QUERY_APP_CLIENT_ID = "{app_client_id}"
         private val REGEX_NUMBER = "[^0-9]".toRegex()
         private val SOURCE_CART = "cart"
+
+        private const val MAX_TOTAL_AMOUNT_ELIGIBLE_FOR_COD = 1000000.0
     }
 
     override fun attachView(view: ICartListView) {
@@ -531,7 +532,7 @@ class CartListPresenter @Inject constructor(
             totalAmount += itemPriceAmount
             if (!cartItemHolderData.isCod) return false
         }
-        return totalAmount <= UpdateCartSubscriber.MAX_TOTAL_AMOUNT_ELIGIBLE_FOR_COD
+        return totalAmount <= MAX_TOTAL_AMOUNT_ELIGIBLE_FOR_COD
     }
 
     override fun processToUpdateAndReloadCartData(cartId: String, getCartState: Int) {
@@ -703,25 +704,25 @@ class CartListPresenter @Inject constructor(
 
         for (wholesalePriceData in wholesalePriceDataList) {
             if (itemQty >= wholesalePriceData.qtyMin) {
-                subTotalWholesalePrice = (itemQty * wholesalePriceData.prdPrc).toDouble()
+                subTotalWholesalePrice = (itemQty * wholesalePriceData.prdPrc)
                 hasCalculateWholesalePrice = true
                 val wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     wholesalePriceData.prdPrc, false
                 ).removeDecimalSuffix()
                 cartItemHolderData.wholesalePriceFormatted = wholesalePriceFormatted
                 cartItemHolderData.wholesalePrice = wholesalePriceData.prdPrc
-                subtotalBeforeSlashedPrice = itemQty * cartItemHolderData.wholesalePrice.toDouble()
+                subtotalBeforeSlashedPrice = itemQty * cartItemHolderData.wholesalePrice
                 break
             }
         }
 
         if (!hasCalculateWholesalePrice) {
-            subTotalWholesalePrice = (itemQty * cartItemHolderData.productPrice).toDouble()
+            subTotalWholesalePrice = (itemQty * cartItemHolderData.productPrice)
             cartItemHolderData.wholesalePriceFormatted = null
-            cartItemHolderData.wholesalePrice = 0
+            cartItemHolderData.wholesalePrice = 0.0
             subtotalBeforeSlashedPrice =
-                if (cartItemHolderData.productOriginalPrice > 0) (itemQty * cartItemHolderData.productOriginalPrice).toDouble()
-                else (itemQty * cartItemHolderData.productPrice).toDouble()
+                if (cartItemHolderData.productOriginalPrice > 0) (itemQty * cartItemHolderData.productOriginalPrice)
+                else (itemQty * cartItemHolderData.productPrice)
         }
 
         if (cartItemHolderData.productCashBack.isNotBlank()) {
@@ -1668,11 +1669,11 @@ class CartListPresenter @Inject constructor(
         }
 
         val addToCartRequestParams = AddToCartRequestParams().apply {
-            this.productId = productId
-            this.shopId = shopId
+            this.productId = productId.toString()
+            this.shopId = shopId.toString()
             this.quantity = quantity
             this.notes = ""
-            this.warehouseId = 0
+            this.warehouseId = "0"
             this.atcFromExternalSource = externalSource
             this.productName = productName
             this.category = productCategory
@@ -1697,7 +1698,7 @@ class CartListPresenter @Inject constructor(
     override fun processAddToCartExternal(productId: Long) {
         view?.showProgressLoading()
         val requestParams = RequestParams.create()
-        requestParams.putLong(AddToCartExternalUseCase.PARAM_PRODUCT_ID, productId)
+        requestParams.putString(AddToCartExternalUseCase.PARAM_PRODUCT_ID, productId.toString())
         requestParams.putString(AddToCartExternalUseCase.PARAM_USER_ID, userSessionInterface.userId)
         compositeSubscription.add(
             addToCartExternalUseCase.createObservable(requestParams)

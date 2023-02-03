@@ -4,10 +4,14 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 
 data class UserConsentPayload (
+    @SerializedName("identifier")
+    var identifier: String = "",
     @SerializedName("collection_id")
     var collectionId: String = "",
-    @SerializedName("verion")
-    var version: String = "",
+    @SerializedName("dataElements")
+    var dataElements: Map<String, String>? = mapOf(),
+    @SerializedName("default")
+    var default: Boolean = false,
     @SerializedName("purpose")
     var purposes: MutableList<PurposeDataModel> = mutableListOf()
 ) {

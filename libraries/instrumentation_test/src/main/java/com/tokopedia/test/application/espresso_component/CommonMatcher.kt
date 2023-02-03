@@ -3,9 +3,9 @@ package com.tokopedia.test.application.espresso_component
 import android.view.View
 import androidx.test.espresso.matcher.ViewMatchers
 import org.hamcrest.BaseMatcher
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Description
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 
 object CommonMatcher {
     /**
@@ -15,7 +15,7 @@ object CommonMatcher {
      * @param tagStringValue tag string value of your view
      */
     fun withTagStringValue(tagStringValue: String): Matcher<View> {
-        return ViewMatchers.withTagValue(Matchers.`is`(tagStringValue))
+        return ViewMatchers.withTagValue(CoreMatchers.`is`(tagStringValue))
     }
 
     /**
@@ -64,8 +64,8 @@ object CommonMatcher {
      * @param position view position that you want to get
      */
     fun getElementFromMatchAtPosition(
-            matcher: Matcher<View>,
-            position: Int
+        matcher: Matcher<View>,
+        position: Int
     ): Matcher<View?>? {
         return object : BaseMatcher<View?>() {
             var counter = 0

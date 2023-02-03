@@ -45,8 +45,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 200000123;
-        defaultVersionName = "2.00.123";
+        defaultVersionCode = 220412500;
+        defaultVersionName = "2.125-test";
     }
 
     packagingOptions {
@@ -426,6 +426,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.fragmentTest
 
     androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
+    implementation project(rootProject.ext.features.watch)
 }
 
 apply plugin: 'com.google.gms.google-services'

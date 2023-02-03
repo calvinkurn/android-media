@@ -19,27 +19,25 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_CLICK_ATC_SRP_PRODUCT
+import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_CLICK_SRP_PRODUCT
+import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_IMPRESSION_SRP_PRODUCT
+import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Category.CATEGORY_EMPTY_SEARCH_RESULT
+import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Value.SRP_PRODUCT_ITEM_LABEL
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_ATC_SRP_PRODUCT_TOKONOW
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_SRP_PRODUCT_TOKONOW
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_SRP_RECOM_OOC
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_SRP_PRODUCT_TOKONOW
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_SRP_RECOM_OOC
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_DASH_SEARCH_PAGE
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_EMPTY_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKOOW_SEARCH_RESULT_PAGE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.RECOM_LIST_PAGE
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.RECOM_LIST_PAGE_EMPTY_SEARCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ATC_VARIANT
 import com.tokopedia.tokopedianow.search.di.SearchComponent
 import com.tokopedia.tokopedianow.search.presentation.listener.BroadMatchListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CTATokoNowHomeListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CategoryJumperListener
 import com.tokopedia.tokopedianow.search.presentation.listener.SuggestionListener
-import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
-import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
 import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFactoryImpl
@@ -161,7 +159,6 @@ class TokoNowSearchFragment :
     override fun sendDecreaseQtyTrackingEvent(productId: String) {
         SearchTracking.sendDecreaseQtyEvent(tokoNowSearchViewModel.query, productId)
     }
-
     override fun createTypeFactory() = SearchTypeFactoryImpl(
             tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(TOKONOW_DASH_SEARCH_PAGE),
             chooseAddressListener = this,
@@ -170,15 +167,19 @@ class TokoNowSearchFragment :
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
+            tokoNowSimilarProductTrackerListener = createSimilarProductCallback(false),
             switcherWidgetListener = this,
             tokoNowEmptyStateNoResultListener = this,
             suggestionListener = this,
             categoryJumperListener = this,
             ctaTokoNowHomeListener = this,
-            recommendationCarouselListener = this,
             broadMatchListener = this,
-            recomWidgetBindPageNameListener = this,
-            feedbackWidgetListener = this
+            feedbackWidgetListener = this,
+            productRecommendationOocListener = createProductRecommendationOocCallback(),
+            productRecommendationBindOocListener = createProductRecommendationOocCallback(),
+            productRecommendationListener = createProductRecommendationCallback().copy(
+                query = getViewModel().query
+            )
     )
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
@@ -238,6 +239,35 @@ class TokoNowSearchFragment :
         )
     }
 
+    override fun onWishlistButtonClicked(
+        productId: String,
+        isWishlistSelected: Boolean,
+        descriptionToaster: String,
+        ctaToaster: String,
+        type: Int,
+        ctaClickListener: (() -> Unit)?
+    ) {
+        if(isWishlistSelected) {
+            SearchTracking.trackClickAddToWishlist(
+                getViewModel().warehouseId,
+                productId
+            )
+        }
+        else{
+            SearchTracking.trackClickRemoveFromWishlist(
+                getViewModel().warehouseId,
+                productId
+            )
+        }
+        getViewModel().updateWishlistStatus(
+            productId,
+            isWishlistSelected
+        )
+        showToaster(descriptionToaster, type, ctaToaster) {
+            ctaClickListener?.invoke()
+        }
+    }
+
     private fun getQueryParamWithoutExcludes(): Map<String, String> {
         return FilterHelper.createParamsWithoutExcludes(tokoNowSearchViewModel.queryParam)
     }
@@ -279,7 +309,7 @@ class TokoNowSearchFragment :
     }
 
     override fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView) {
-        SearchTracking.sendChooseVariantEvent(tokoNowSearchViewModel.query, productItemDataView.id)
+        SearchTracking.sendChooseVariantEvent(tokoNowSearchViewModel.query, productItemDataView.productCardModel.productId)
 
         super.onProductChooseVariantClicked(productItemDataView)
     }
@@ -348,7 +378,7 @@ class TokoNowSearchFragment :
         return if (isOOC) {
             IMPRESSION_SRP_RECOM_OOC
         } else {
-            IMPRESSION_SRP_PRODUCT_TOKONOW
+            ACTION_IMPRESSION_SRP_PRODUCT
         }
     }
 
@@ -356,16 +386,16 @@ class TokoNowSearchFragment :
         return if (isOOC) {
             CLICK_SRP_RECOM_OOC
         } else {
-            CLICK_SRP_PRODUCT_TOKONOW
+            ACTION_CLICK_SRP_PRODUCT
         }
     }
 
-    override fun getAtcEventAction(isOOC: Boolean): String {
-        return CLICK_ATC_SRP_PRODUCT_TOKONOW
+    override fun getAtcEventAction(): String {
+        return ACTION_CLICK_ATC_SRP_PRODUCT
     }
 
     override fun getEventCategory(isOOC: Boolean): String {
-        return if (isOOC) TOKOOW_SEARCH_RESULT_PAGE else TOKONOW_EMPTY_RESULT
+        return if (isOOC) TOKOOW_SEARCH_RESULT_PAGE else CATEGORY_EMPTY_SEARCH_RESULT
     }
 
     override fun getListValue(isOOC: Boolean, recommendationItem: RecommendationItem): String {
@@ -378,19 +408,23 @@ class TokoNowSearchFragment :
             )
         } else {
             String.format(
-                RECOM_LIST_PAGE_EMPTY_SEARCH,
-                recommendationItem.recommendationType
+                SRP_PRODUCT_ITEM_LABEL,
+                "${recommendationItem.recommendationType} - " +
+                    "${recommendationItem.pageName} - ${recommendationItem.header}"
             )
         }
     }
 
-    override fun getEventLabel(isOOC: Boolean): String {
+    override fun getEventLabel(): String {
         return getViewModel().query
     }
 
     override fun getRecyclerViewPool() = recycledViewPool
 
-    override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {
+    override fun onBroadMatchItemImpressed(
+        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
+        broadMatchIndex: Int
+    ) {
         val trackingQueue = trackingQueue ?: return
 
         SearchTracking.sendBroadMatchImpressionEvent(
@@ -398,21 +432,25 @@ class TokoNowSearchFragment :
             broadMatchItemDataView = broadMatchItemDataView,
             keyword = getViewModel().query,
             userId = getUserId(),
+            position = broadMatchIndex
         )
     }
 
-    override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {
+    override fun onBroadMatchItemClicked(
+        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
+        broadMatchIndex: Int
+    ) {
         SearchTracking.sendBroadMatchClickEvent(
             broadMatchItemDataView = broadMatchItemDataView,
             keyword = getViewModel().query,
             userId = getUserId(),
+            position = broadMatchIndex
         )
-
-        RouteManager.route(context, broadMatchItemDataView.applink)
+        RouteManager.route(context, broadMatchItemDataView.appLink)
     }
 
     override fun onBroadMatchItemATCNonVariant(
-        broadMatchItemDataView: BroadMatchItemDataView,
+        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
         quantity: Int,
         broadMatchIndex: Int,
     ) {
@@ -420,7 +458,7 @@ class TokoNowSearchFragment :
     }
 
     private fun sendATCBroadMatchTrackingEvent(
-        atcTrackingData: Triple<Int, String, BroadMatchItemDataView>
+        atcTrackingData: Triple<Int, String, TokoNowProductCardCarouselItemUiModel>
     ) {
         val (quantity, _, broadMatchItemDataView) = atcTrackingData
 
@@ -432,24 +470,16 @@ class TokoNowSearchFragment :
         )
     }
 
-    override fun onBroadMatchSeeAllClicked(broadMatchDataView: BroadMatchDataView) {
-        SearchTracking.sendBroadMatchSeeAllClickEvent(broadMatchDataView, getViewModel().query)
+    override fun onBroadMatchSeeAllClicked(title: String, appLink: String) {
+        SearchTracking.sendBroadMatchSeeAllClickEvent(title, getViewModel().query)
 
-        val applink = getBroadMatchSeeAllApplink(broadMatchDataView)
-
-        RouteManager.route(context, applink)
+        RouteManager.route(context, getBroadMatchSeeAllApplink(appLink))
     }
 
-    private fun getBroadMatchSeeAllApplink(broadMatchDataView: BroadMatchDataView) =
-        if (broadMatchDataView.applink.startsWith(ApplinkConst.TokopediaNow.SEARCH))
-            modifyApplinkToSearchResult(broadMatchDataView.applink)
-        else broadMatchDataView.applink
-
-    override fun onSeeMoreClick(data: RecommendationCarouselData, applink: String) {
-        SearchTracking.sendRecommendationSeeAllClickEvent(getViewModel().query)
-
-        RouteManager.route(context, applink)
-    }
+    private fun getBroadMatchSeeAllApplink(appLink: String) =
+        if (appLink.startsWith(ApplinkConst.TokopediaNow.SEARCH))
+            modifyApplinkToSearchResult(appLink)
+        else appLink
 
     override fun sendOOCOpenScreenTracking(isTracked: Boolean) {
         SearchTracking.sendOOCOpenScreenTracking(userSession.isLoggedIn)

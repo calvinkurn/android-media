@@ -149,8 +149,6 @@ public class RemoteConfigKey {
 
     public static final String APP_ENABLE_BANNED_NAVIGATION = "app_enable_banned_navigation";
 
-    public static final String TOPCHAT_COMPRESS = "android_topchat_compress";
-
     public static final String ENABLE_CART_ICON_IN_SEARCH = "android_customer_enable_cart_icon_in_search";
     public static final String ENABLE_CART_ICON_IN_SHOP = "android_customer_enable_cart_icon_in_shop";
 
@@ -179,8 +177,6 @@ public class RemoteConfigKey {
     public static final String MAINAPP_RECHARGE_NEW_ORDER_DETAIL = "android_main_app_enable_new_recharge_order_detail";
     public static final String MAINAPP_RECHARGE_ATC_CHECKOUT_GQL = "android_enable_digital_gql";
     public static final String MAINAPP_RECHARGE_BUYER_ORDER_DETAIL = "android_enable_dg_order_detail_new";
-    public static final String MAINAPP_DEALS_ENABLE_PDP = "android_enable_deals_pdp";
-    public static final String MAINAPP_DEALS_ENABLE_CHECKOUT = "android_enable_deals_checkout";
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
 
@@ -312,4 +308,10 @@ public class RemoteConfigKey {
     public static final String RECOM_USE_GQL_FED_QUERY = "android_recom_use_gql_fed_query";
 
     public static final String HOME_USE_NEW_PULL_REFRESH = "android_home_use_new_pull_refresh";
+
+    public static final String PAYMENT_OVERLONG_THRESHOLD = "android_payment_overlong_threshold";
+
+    public static final String ENABLE_WEBVIEW_PRINT_JS_INTERFACE = "android_enable_webview_print_jsinterface";
+
+    public static final String SELLER_HOME_ENABLE_WATCH_APP_CHECKING = "android_sellerapp_home_enable_watch_app_checking";
 }

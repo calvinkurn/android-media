@@ -21,7 +21,7 @@ class FourthScreenState(private val mCaption: String, private val mQuestion: Str
     }
 
     override fun getMessageColor(): Int {
-        return R.color.csat_dms_message_color_good
+        return R.color.csat_dms_rating_active_4
     }
 
     override fun getMessage(): String {
