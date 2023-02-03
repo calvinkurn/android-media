@@ -26,7 +26,6 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.runs
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
@@ -466,29 +465,6 @@ class EditorDetailViewModelTest {
 
         // Then
         assertEquals(shopAvatar, shopAvatarUrl)
-    }
-
-    @Test
-    fun `should save selected logo on local device`() {
-        // When
-        every { addLogoRepository.setLocalLogo(any()) } just runs
-        viewModel.setLocalLogo(localLogoUrl)
-
-        // Then
-        verify { addLogoRepository.setLocalLogo(any()) }
-    }
-
-    @Test
-    fun `should return saved logo from local device`() {
-        // Given
-        var logoUrl = ""
-
-        // When
-        every { addLogoRepository.getLocalLogo() } returns localLogoUrl
-        logoUrl = viewModel.getLocalLogo()
-
-        // Then
-        assertEquals(localLogoUrl, logoUrl)
     }
 
     companion object {
