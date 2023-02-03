@@ -109,8 +109,10 @@ class PlayExploreWidgetFragment @Inject constructor(
             override fun checkLoadMore(view: RecyclerView?, dx: Int, dy: Int) {
                 val lastVisibleItem = widgetLayoutManager.findLastVisibleItemPosition()
                 val firstVisibleItem = widgetLayoutManager.findFirstVisibleItemPosition()
-                val isEndPage = (lastVisibleItem == firstVisibleItem) && hasNextPage
-                if(isEndPage || lastVisibleItem + visibleThreshold > layoutManager.itemCount && hasNextPage) loadMoreNextPage()
+                if ((firstVisibleItem == 0 && lastVisibleItem == layoutManager.itemCount - 1) && hasNextPage)
+                    loadMoreNextPage()
+                else
+                    super.checkLoadMore(view, dx, dy)
             }
         }
     }
