@@ -26,30 +26,31 @@
         android:id="@+id/widget_header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/sr_explore_widget"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_chips"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/content_common_space_16"
         android:layout_marginTop="@dimen/content_common_space_16"
         android:clipToPadding="false"
         android:orientation="horizontal"
         android:paddingEnd="@dimen/content_common_space_16"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/sr_explore_widget"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/sr_explore_widget"
         app:layout_constraintTop_toBottomOf="@+id/widget_header"
+        tools:itemCount="3"
         tools:listitem="@layout/view_widget_chips" />
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/sr_explore_widget"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
+        app:layout_constrainedWidth="true"
         android:layout_marginStart="@dimen/unify_space_8"
         android:layout_marginTop="@dimen/content_common_space_16"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -59,13 +60,24 @@
         app:layout_constraintTop_toBottomOf="@+id/rv_chips"
         app:layout_constraintVertical_bias="1.0">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_widgets"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingBottom="@dimen/unify_space_8"
-            tools:listitem="@layout/view_play_widget_card_medium_channel" />
+        <FrameLayout
+            android:id="@+id/layer_rv_widget"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_widgets"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:layout_marginEnd="@dimen/unify_space_8"
+                android:paddingBottom="@dimen/unify_space_8"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="2"
+                tools:itemCount="10"
+                tools:listitem="@layout/view_play_widget_card_medium_channel" />
+        </FrameLayout>
+
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     <include
