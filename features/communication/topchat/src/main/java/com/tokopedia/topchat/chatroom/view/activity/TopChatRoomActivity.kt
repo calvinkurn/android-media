@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -593,6 +594,13 @@ open class TopChatRoomActivity :
             return
         } else {
             super.onBackPressed()
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (::chatRoomFragment.isInitialized) {
+            chatRoomFragment.setupAttachmentsPreview(intent?.extras)
         }
     }
 

@@ -1,6 +1,0 @@
-mutation userProfileSettingUpdate($safeMode: Boolean){
-   userProfileSettingUpdate(safeMode:$safeMode){
-     isSuccess
-     error
-   }
- }
