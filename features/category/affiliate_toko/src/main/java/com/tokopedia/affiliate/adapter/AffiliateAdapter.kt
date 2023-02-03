@@ -12,6 +12,7 @@ import com.tokopedia.affiliate.PRODUCT_INACTIVE
 import com.tokopedia.affiliate.SHOP_CLOSED
 import com.tokopedia.affiliate.SHOP_INACTIVE
 import com.tokopedia.affiliate.model.response.AffiliatePerformanceListData
+import com.tokopedia.affiliate.model.response.AffiliateSSAShopListResponse
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.ui.custom.AffiliateStickyHeaderView
 import com.tokopedia.affiliate.ui.custom.OnStickyHeaderListener
@@ -20,12 +21,14 @@ import com.tokopedia.affiliate.ui.viewholder.AffiliatePerformaSharedProductCards
 import com.tokopedia.affiliate.ui.viewholder.AffiliatePerformanceChipRVVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliatePromotionCardItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliatePromotionShopItemVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateSSAShopItemVH
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDataPlatformShimmerModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateFilterModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformanceChipRVModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionCardModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionShopModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSSAShopUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShimmerModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateStaggeredShimmerModel
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -43,6 +46,7 @@ class AffiliateAdapter(
         private const val PRODUCT_ACTIVE = 1
         const val SOURCE_HOME = "home"
         const val SOURCE_PROMOSIKAN = "promosikan"
+        const val SOURCE_SSA_SHOP = "ssa_shop"
     }
 
     private val itemImpressionSet = HashSet<Int>()
@@ -83,6 +87,7 @@ class AffiliateAdapter(
         when (source) {
             SOURCE_HOME -> handleHomeImpressions(holder)
             SOURCE_PROMOSIKAN -> handlePromoImpressions(holder)
+            SOURCE_SSA_SHOP -> handleSSAShopImpression(holder)
         }
 
         super.onViewAttachedToWindow(holder)
@@ -109,6 +114,24 @@ class AffiliateAdapter(
                     item?.let { productModel ->
                         sendPromoProductImpression(
                             productModel.promotionItem,
+                            holder.bindingAdapterPosition
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun handleSSAShopImpression(
+        holder: AbstractViewHolder<*>
+    ) {
+        when (holder) {
+            is AffiliateSSAShopItemVH -> {
+                if (!itemImpressionSet.add(holder.bindingAdapterPosition)) {
+                    val item = list[holder.bindingAdapterPosition] as? AffiliateSSAShopUiModel
+                    item?.let { shopModel ->
+                        sendSSAShopImpression(
+                            shopModel.ssaShop,
                             holder.bindingAdapterPosition
                         )
                     }
@@ -243,6 +266,26 @@ class AffiliateAdapter(
             position,
             item.title,
             "${item.itemId} - ${item.commission?.amount} - $status"
+        )
+    }
+
+    private fun sendSSAShopImpression(
+        item: AffiliateSSAShopListResponse.Data.SSAShop.ShopDataItem?,
+        position: Int
+    ) {
+        AffiliateAnalytics.trackEventImpression(
+            AffiliateAnalytics.EventKeys.VIEW_ITEM,
+            AffiliateAnalytics.ActionKeys.IMPRESSION_SSA_SHOP,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_SSA_PAGE,
+            userId,
+            item?.ssaShopDetail?.shopId.toString(),
+            position,
+            item?.ssaShopDetail?.shopName,
+            "${item?.ssaShopDetail?.shopId}" +
+                " - ${item?.ssaCommissionDetail?.cumulativePercentage}" +
+                " - active" +
+                " - komisi extra",
+            itemsKey = AffiliateAnalytics.EventKeys.KEY_PROMOTIONS
         )
     }
 
