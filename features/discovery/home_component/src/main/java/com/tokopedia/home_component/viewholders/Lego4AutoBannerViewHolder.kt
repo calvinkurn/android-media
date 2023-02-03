@@ -12,20 +12,24 @@ import com.tokopedia.home_component.decoration.GridSpacingItemDecoration
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.Lego4AutoBannerListener
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.ChannelStyleUtil
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.Lego4AutoTabletConfiguration
 import com.tokopedia.home_component.viewholders.adapter.Lego4AutoBannerAdapter
 import com.tokopedia.home_component.visitable.Lego4AutoDataModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * @author by yoasfs on 27/07/20
  */
-class Lego4AutoBannerViewHolder (itemView: View,
-                                 val legoListener: Lego4AutoBannerListener?,
-                                 val homeComponentListener: HomeComponentListener?,
-                                 val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null): AbstractViewHolder<Lego4AutoDataModel>(itemView) {
+class Lego4AutoBannerViewHolder(
+    itemView: View,
+    val legoListener: Lego4AutoBannerListener?,
+    val homeComponentListener: HomeComponentListener?,
+    val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null
+) : AbstractViewHolder<Lego4AutoDataModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.global_component_lego_banner_auto
@@ -52,7 +56,8 @@ class Lego4AutoBannerViewHolder (itemView: View,
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
             dividerTop = binding?.homeComponentDividerHeader,
-            dividerBottom = binding?.homeComponentDividerFooter
+            dividerBottom = binding?.homeComponentDividerFooter,
+            useBottomPadding = element.channelModel.channelConfig.borderStyle == ChannelStyleUtil.BORDER_STYLE_BLEEDING
         )
     }
 
@@ -74,23 +79,34 @@ class Lego4AutoBannerViewHolder (itemView: View,
     }
 
     private fun initItems(element: Lego4AutoDataModel) {
-        adapter = Lego4AutoBannerAdapter(legoListener, adapterPosition, isCacheData)
-        adapter.addData(element)
+        val isUsingPadding = element.channelModel.channelConfig.borderStyle == ChannelStyleUtil.BORDER_STYLE_PADDING
+        adapter = Lego4AutoBannerAdapter(legoListener, adapterPosition, isCacheData, element)
         recyclerView.adapter = adapter
-        adapter.notifyDataSetChanged()
-        if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                GridSpacingItemDecoration(Lego4AutoTabletConfiguration.getSpanCount(itemView.context), Lego4AutoTabletConfiguration.getSpacingSpaceForLego4Auto(), false))
+        if (recyclerView.itemDecorationCount == Int.ZERO) {
+            recyclerView.addItemDecoration(
+                GridSpacingItemDecoration(
+                    Lego4AutoTabletConfiguration.getSpanCount(itemView.context),
+                    Lego4AutoTabletConfiguration.getSpacingSpaceForLego4Auto(isUsingPadding),
+                    false
+                )
+            )
+        }
+        val marginValue = if (isUsingPadding) itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt() else Int.ZERO
+        recyclerView.setPadding(marginValue, Int.ZERO, marginValue, marginValue)
     }
 
     private fun setHeaderComponent(element: Lego4AutoDataModel) {
-        binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
-            override fun onSeeAllClick(link: String) {
-                legoListener?.onSeeAllClicked(element.channelModel, adapterPosition)
-            }
+        binding?.homeComponentHeaderView?.setChannel(
+            element.channelModel,
+            object : HeaderListener {
+                override fun onSeeAllClick(link: String) {
+                    legoListener?.onSeeAllClicked(element.channelModel, adapterPosition)
+                }
 
-            override fun onChannelExpired(channelModel: ChannelModel) {
-                homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
+                override fun onChannelExpired(channelModel: ChannelModel) {
+                    homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
+                }
             }
-        })
+        )
     }
 }

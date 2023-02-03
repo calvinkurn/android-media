@@ -482,6 +482,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 eventAction =
                     AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PRODUK_YANG_DIPROMOSIKAN
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
+                if (params?.ssaInfo?.ssaStatus == true) {
+                    eventLabel += " - komisi extra"
+                }
             }
             ORIGIN_HOME_GENERATED -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_DAFTAR_LINK_PRODUK
@@ -534,6 +537,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_SHOP_LINK_DENGAN_PERFORMA
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
                 eventLabel = "$linkID - $status"
+                if (params?.ssaInfo?.ssaStatus == true) {
+                    eventLabel += "komisi extra"
+                }
             }
             ORIGIN_PROMOSIKAN -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_SHOP_SEARCH_RESULT

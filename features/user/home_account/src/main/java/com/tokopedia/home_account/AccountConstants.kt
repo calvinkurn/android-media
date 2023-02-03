@@ -157,8 +157,6 @@ object AccountConstants {
     }
 
     object Query {
-        const val NEW_QUERY_BUYER_ACCOUNT_HOME = "query_account_buyer"
-        const val QUERY_USER_REWARDSHORCUT = "query_account_shortcut"
         const val QUERY_GET_BALANCE = "query_get_balance"
         const val QUERY_GET_USER_ASSET_CONFIG = "query_get_user_asset_config"
         const val QUERY_TOKOPOINTS_DRAWER_LIST = "query_tokopoints_drawerr_list"

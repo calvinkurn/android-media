@@ -13,7 +13,8 @@
       "event": "view_item",
       "eventAction": "home banner impression",
       "sessionIris": ".*",
-      "eventLabel": ".*"
+      "eventLabel": ".*",
+      "userId": ".*"
     },
     {
       "promotions": [{
@@ -35,7 +36,8 @@
       "channelId": ".*",
       "campaignCode": ".*",
       "currentSite": "tokopediamarketplace",
-      "businessUnit": "home & browse"
+      "businessUnit": "home & browse",
+      "userId": ".*"
     },
     {
       "businessUnit": "home & browse",
@@ -74,7 +76,8 @@
       "channelId": ".*",
       "campaignCode": ".*",
       "currentSite": "tokopediamarketplace",
-      "businessUnit": "home & browse"
+      "businessUnit": "home & browse",
+      "userId": ".*"
     },
     {
       "businessUnit": "home & browse",
@@ -113,7 +116,8 @@
       "channelId": ".*",
       "campaignCode": ".*",
       "businessUnit": "home & browse",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*"
     },
     {
       "businessUnit": "home & browse",

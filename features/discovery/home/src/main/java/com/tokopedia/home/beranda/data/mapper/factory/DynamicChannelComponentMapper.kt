@@ -3,6 +3,9 @@ package com.tokopedia.home.beranda.data.mapper.factory
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.model.*
+import com.tokopedia.home_component.util.ChannelStyleUtil
+import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
+import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
 
 object DynamicChannelComponentMapper {
     fun mapHomeChannelToComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int): ChannelModel {
@@ -61,7 +64,9 @@ object DynamicChannelComponentMapper {
                         serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(channel.header.serverTimeUnix),
                         createdTimeMillis = channel.timestamp,
                         isAutoRefreshAfterExpired = channel.isAutoRefreshAfterExpired,
-                        dividerType = channel.dividerType
+                        dividerType = channel.dividerType,
+                        dividerSize = channel.styleParam.parseDividerSize(),
+                        borderStyle = channel.styleParam.parseBorderStyle(),
                 ),
                 trackingAttributionModel = TrackingAttributionModel(
                         galaxyAttribution = channel.galaxyAttribution,
@@ -199,7 +204,9 @@ object DynamicChannelComponentMapper {
                                 ),
                                 createdTimeMillis = channel.timestamp,
                                 isAutoRefreshAfterExpired = channel.isAutoRefreshAfterExpired,
-                                dividerType = channel.dividerType
+                                dividerType = channel.dividerType,
+                                dividerSize = channel.styleParam.parseDividerSize(),
+                                borderStyle = channel.styleParam.parseBorderStyle(),
                         ),
                         trackingAttributionModel = TrackingAttributionModel(
                                 galaxyAttribution = channel.galaxyAttribution,
