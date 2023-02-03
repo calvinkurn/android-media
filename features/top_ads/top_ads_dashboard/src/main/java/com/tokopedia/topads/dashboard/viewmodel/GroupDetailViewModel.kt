@@ -126,12 +126,13 @@ class GroupDetailViewModel @Inject constructor(
 
     fun changeBidState(
         isAutomatic: Boolean, groupId: Int,
-        suggestBidPerClick: Float = 0f, bidPencarian: Float = 0f, bidRecomendasi: Float = 0f,
+        suggestBidPerClick: Float = 0f, bidPencarian: Float = 0f, bidRecomendasi: Float = 0f, dailyBudget : Int = 0,
         onSuccess: () -> Unit
     ) {
         val dataGrp = hashMapOf<String, Any?>(
             ParamObject.ACTION_TYPE to ParamObject.ACTION_EDIT,
-            ParamObject.GROUPID to groupId
+            ParamObject.GROUPID to groupId,
+            ParamObject.DAILY_BUDGET to dailyBudget
         )
         val dataKey = hashMapOf<String, Any?>()
         if (isAutomatic) {

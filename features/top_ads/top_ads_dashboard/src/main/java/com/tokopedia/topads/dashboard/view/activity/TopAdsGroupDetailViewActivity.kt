@@ -363,7 +363,8 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             isAutomatic, groupId.toIntOrZero(),
             suggestedBid.toFloatOrZero(),
             bidPencarian.toFloatOrZero(),
-            bidRecomendasi.toFloatOrZero()
+            bidRecomendasi.toFloatOrZero(),
+            TopAdsEditUtils.calculateDailyBudget(bidPencarian.toIntOrZero(), bidRecomendasi.toIntOrZero())
         ) {
             loadData()
         }
