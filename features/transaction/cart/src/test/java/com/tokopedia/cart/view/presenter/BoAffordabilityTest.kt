@@ -21,12 +21,52 @@ import java.io.IOException
 @ExperimentalCoroutinesApi
 class BoAffordabilityTest : BaseCartTest() {
 
+    // enableBoAffordability == false && enableBundleCrossSell == false
     @Test
-    fun `WHEN shop products is overweight THEN should not hit API`() {
+    fun `WHEN enableBoAffordability and enableBundleCrossSell is false THEN should not hit API`() {
         // GIVEN
         val cartString = "123-123-123"
         val cartShopHolderData = CartShopHolderData(
-            cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
+            cartString = cartString,
+            maximumShippingWeight = 1000.0,
+            maximumWeightWording = "overweight",
+            isAllSelected = true,
+            productUiModelList = arrayListOf(
+                CartItemHolderData(
+                    isSelected = true,
+                    quantity = 1,
+                    productWeight = 1
+                )
+            )
+        )
+        val expectedCartShopHolderData = cartShopHolderData.copy()
+
+        // WHEN
+        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
+
+        // THEN
+        verify {
+            expectedCartShopHolderData.cartShopGroupTicker = CartShopGroupTickerData(
+                state = CartShopGroupTickerState.EMPTY
+            )
+            view.updateCartShopGroupTicker(expectedCartShopHolderData)
+        }
+        coVerify(inverse = true) {
+            cartShopGroupTickerAggregatorUseCase(any())
+        }
+    }
+
+    // enableBoAffordability == true && enableBundleCrossSell == false
+    @Test
+    fun `WHEN shop products is overweight THEN should not hit cart aggregator API`() {
+        // GIVEN
+        val cartString = "123-123-123"
+        val tickerData = CartShopGroupTickerData(
+            enableBoAffordability = true
+        )
+        val cartShopHolderData = CartShopHolderData(
+            cartShopGroupTicker = tickerData,
             cartString = cartString,
             maximumShippingWeight = 1.0,
             maximumWeightWording = "overweight",
@@ -39,6 +79,7 @@ class BoAffordabilityTest : BaseCartTest() {
                 )
             )
         )
+        val expectedCartShopHolderData = cartShopHolderData.copy()
 
         // WHEN
         cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
@@ -46,10 +87,10 @@ class BoAffordabilityTest : BaseCartTest() {
 
         // THEN
         verify {
-            cartShopHolderData.cartShopGroupTicker = CartShopGroupTickerData(
+            expectedCartShopHolderData.cartShopGroupTicker = tickerData.copy(
                 state = CartShopGroupTickerState.FAILED
             )
-            view.updateCartShopGroupTicker(cartShopHolderData)
+            view.updateCartShopGroupTicker(expectedCartShopHolderData)
         }
 
         coVerify(inverse = true) {
@@ -58,11 +99,14 @@ class BoAffordabilityTest : BaseCartTest() {
     }
 
     @Test
-    fun `WHEN shop products is not overweight THEN should hit API`() {
+    fun `WHEN shop products is not overweight THEN should hit cart aggregator API`() {
         // GIVEN
         val cartString = "123-123-123"
+        val tickerData = CartShopGroupTickerData(
+            enableBoAffordability = true
+        )
         val cartShopHolderData = CartShopHolderData(
-            cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
+            cartShopGroupTicker = tickerData,
             cartString = cartString,
             maximumShippingWeight = 1000.0,
             maximumWeightWording = "overweight",
@@ -77,7 +121,8 @@ class BoAffordabilityTest : BaseCartTest() {
                 )
             )
         )
-        val ticker = "dapat bebas ongkir"
+        val tickerText = "dapat bebas ongkir"
+        val expectedCartShopHolderData = cartShopHolderData.copy()
 
         coEvery {
             cartShopGroupTickerAggregatorUseCase(any())
@@ -85,7 +130,7 @@ class BoAffordabilityTest : BaseCartTest() {
             CartShopGroupTickerAggregatorData(
                 minTransaction = 0L,
                 ticker = CartShopGroupTickerAggregatorTicker(
-                    text = ticker
+                    text = tickerText
                 )
             )
         )
@@ -96,11 +141,11 @@ class BoAffordabilityTest : BaseCartTest() {
 
         // THEN
         verify {
-            cartShopHolderData.cartShopGroupTicker = CartShopGroupTickerData(
+            expectedCartShopHolderData.cartShopGroupTicker = tickerData.copy(
                 state = CartShopGroupTickerState.SUCCESS_AFFORD,
-                tickerText = ticker
+                tickerText = tickerText
             )
-            view.updateCartShopGroupTicker(cartShopHolderData)
+            view.updateCartShopGroupTicker(expectedCartShopHolderData)
         }
 
         coVerify {
@@ -112,11 +157,15 @@ class BoAffordabilityTest : BaseCartTest() {
     fun `WHEN bo affordability success not afford THEN should show not afford ticker`() {
         // GIVEN
         val cartString = "123-123-123"
+        val tickerData = CartShopGroupTickerData(
+            enableBoAffordability = true
+        )
         val cartShopHolderData = CartShopHolderData(
-            cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
+            cartShopGroupTicker = tickerData,
             cartString = cartString
         )
-        val ticker = "+ Rp10.000 lagi untuk dapat bebas ongkir"
+        val tickerText = "+ Rp10.000 lagi untuk dapat bebas ongkir"
+        val expectedCartShopHolderData = cartShopHolderData.copy()
 
         coEvery {
             cartShopGroupTickerAggregatorUseCase(any())
@@ -124,7 +173,7 @@ class BoAffordabilityTest : BaseCartTest() {
             CartShopGroupTickerAggregatorData(
                 minTransaction = 1_000L,
                 ticker = CartShopGroupTickerAggregatorTicker(
-                    text = ticker
+                    text = tickerText
                 )
             )
         )
@@ -135,11 +184,11 @@ class BoAffordabilityTest : BaseCartTest() {
 
         // THEN
         verify {
-            cartShopHolderData.cartShopGroupTicker = CartShopGroupTickerData(
+            expectedCartShopHolderData.cartShopGroupTicker = tickerData.copy(
                 state = CartShopGroupTickerState.SUCCESS_NOT_AFFORD,
-                tickerText = ticker
+                tickerText = tickerText
             )
-            view.updateCartShopGroupTicker(cartShopHolderData)
+            view.updateCartShopGroupTicker(expectedCartShopHolderData)
         }
     }
 
@@ -147,11 +196,15 @@ class BoAffordabilityTest : BaseCartTest() {
     fun `WHEN bo affordability success afford THEN should show afford ticker`() {
         // GIVEN
         val cartString = "123-123-123"
+        val tickerData = CartShopGroupTickerData(
+            enableBoAffordability = true
+        )
         val cartShopHolderData = CartShopHolderData(
-            cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
+            cartShopGroupTicker = tickerData,
             cartString = cartString
         )
-        val ticker = "dapat bebas ongkir"
+        val tickerText = "dapat bebas ongkir"
+        val expectedCartShopHolderData = cartShopHolderData.copy()
 
         coEvery {
             cartShopGroupTickerAggregatorUseCase(any())
@@ -159,7 +212,7 @@ class BoAffordabilityTest : BaseCartTest() {
             CartShopGroupTickerAggregatorData(
                 minTransaction = 0L,
                 ticker = CartShopGroupTickerAggregatorTicker(
-                    text = ticker
+                    text = tickerText
                 )
             )
         )
@@ -170,11 +223,11 @@ class BoAffordabilityTest : BaseCartTest() {
 
         // THEN
         verify {
-            cartShopHolderData.cartShopGroupTicker = CartShopGroupTickerData(
+            expectedCartShopHolderData.cartShopGroupTicker = tickerData.copy(
                 state = CartShopGroupTickerState.SUCCESS_AFFORD,
-                tickerText = ticker
+                tickerText = tickerText
             )
-            view.updateCartShopGroupTicker(cartShopHolderData)
+            view.updateCartShopGroupTicker(expectedCartShopHolderData)
         }
     }
 
@@ -182,11 +235,15 @@ class BoAffordabilityTest : BaseCartTest() {
     fun `WHEN bo affordability response empty THEN should not show ticker`() {
         // GIVEN
         val cartString = "123-123-123"
+        val tickerData = CartShopGroupTickerData(
+            enableBoAffordability = true
+        )
         val cartShopHolderData = CartShopHolderData(
-            cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
+            cartShopGroupTicker = tickerData,
             cartString = cartString
         )
-        val ticker = ""
+        val tickerText = ""
+        val expectedCartShopHolderData = cartShopHolderData.copy()
 
         coEvery {
             cartShopGroupTickerAggregatorUseCase(any())
@@ -194,7 +251,7 @@ class BoAffordabilityTest : BaseCartTest() {
             CartShopGroupTickerAggregatorData(
                 minTransaction = 0L,
                 ticker = CartShopGroupTickerAggregatorTicker(
-                    text = ticker
+                    text = tickerText
                 )
             )
         )
@@ -205,11 +262,11 @@ class BoAffordabilityTest : BaseCartTest() {
 
         // THEN
         verify {
-            cartShopHolderData.cartShopGroupTicker = CartShopGroupTickerData(
+            expectedCartShopHolderData.cartShopGroupTicker = tickerData.copy(
                 state = CartShopGroupTickerState.EMPTY,
-                tickerText = ticker
+                tickerText = tickerText
             )
-            view.updateCartShopGroupTicker(cartShopHolderData)
+            view.updateCartShopGroupTicker(expectedCartShopHolderData)
         }
     }
 
@@ -217,10 +274,14 @@ class BoAffordabilityTest : BaseCartTest() {
     fun `WHEN get bo affordability failed THEN should show failed ticker`() {
         // GIVEN
         val cartString = "123-123-123"
+        val tickerData = CartShopGroupTickerData(
+            enableBoAffordability = true
+        )
         val cartShopHolderData = CartShopHolderData(
-            cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
+            cartShopGroupTicker = tickerData,
             cartString = cartString
         )
+        val expectedCartShopHolderData = cartShopHolderData.copy()
 
         coEvery {
             cartShopGroupTickerAggregatorUseCase(any())
@@ -232,10 +293,10 @@ class BoAffordabilityTest : BaseCartTest() {
 
         // THEN
         verify {
-            cartShopHolderData.cartShopGroupTicker = CartShopGroupTickerData(
+            expectedCartShopHolderData.cartShopGroupTicker = tickerData.copy(
                 state = CartShopGroupTickerState.FAILED
             )
-            view.updateCartShopGroupTicker(cartShopHolderData)
+            view.updateCartShopGroupTicker(expectedCartShopHolderData)
         }
     }
 
@@ -380,4 +441,8 @@ class BoAffordabilityTest : BaseCartTest() {
         // THEN
         assertEquals("123|123|123,123", slotParam.captured.ratesParam.destination)
     }
+
+    // enableBoAffordability == false && enableBundleCrossSell == true
+
+    // enableBoAffordability == true && enableBundleCrossSell == true
 }
