@@ -2,7 +2,7 @@
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.tokopedia.df.dilayanitokopedia">
 
-    <dist:module dist:title="@string/dt_home_title">
+    <dist:module dist:title="@string/title_logistic_dt">
         <dist:delivery>
             <dist:on-demand />
             <dist:install-time>
