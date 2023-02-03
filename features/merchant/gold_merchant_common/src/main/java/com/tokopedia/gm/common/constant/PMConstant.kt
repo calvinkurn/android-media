@@ -1,5 +1,7 @@
 package com.tokopedia.gm.common.constant
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -16,21 +18,21 @@ object PMConstant {
     object Images {
         const val PM_BADGE =
             "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant@3x.png"
-        const val PM_BADGE_INACTIVE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20inactive.png"
-        const val PM_SHOP_ICON = "https://images.tokopedia.net/img/android/gold_merchant_common/power_merchant_shop@3x.png"
-        const val PM_PRO_BADGE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@3x.png"
-        const val PM_NEW_REQUIREMENT = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_new_requirement.png"
-        const val PM_ADD_PRODUCT_BOTTOM_SHEET = "https://images.tokopedia.net/img/android/power_merchant_subscribe/img_pm_add_product_illustration.png"
-        const val PM_TOTAL_ORDER_TERM = "https://images.tokopedia.net/img/android/gold_merchant_common/img_pm_improve_shop_order.png"
-        const val IMG_TOPED_PM_ACTIVE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/toped/img_toped_pm_active.png"
-        const val IMG_TOPED_PM_INACTIVE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/toped/img_toped_pm_inactive.png"
-        const val IMG_TOPED_PM_PRO_ACTIVE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/toped/img_toped_pm_pro_active.png"
-        const val IMG_TOPED_NEW_SELLER_PM_ACTIVE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/toped/img_toped_new_seller_pm_active.png"
-        const val IMG_TOPED_NEW_SELLER_PM_PRO_ACTIVE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/toped/img_toped_new_seller_pm_pro_active.png"
-        const val PM_POTENTIAL_BENEFIT_01 = "https://images.tokopedia.net/img/android/gold_merchant_common/img_pm_visitor_chart.png"
-        const val PM_POTENTIAL_BENEFIT_02 = "https://images.tokopedia.net/img/android/gold_merchant_common/img_pm_improve_shop_order.png"
-        const val PM_POTENTIAL_BENEFIT_03 = "https://images.tokopedia.net/img/android/gold_merchant_common/img_pm_improve_shop_performance.png"
-        const val PM_MODERATED_SHOP = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_moderated_shop.png"
+        const val PM_BADGE_INACTIVE = TokopediaImageUrl.PM_BADGE_INACTIVE
+        const val PM_SHOP_ICON = TokopediaImageUrl.PM_SHOP_ICON
+        const val PM_PRO_BADGE = TokopediaImageUrl.PM_PRO_BADGE
+        const val PM_NEW_REQUIREMENT = TokopediaImageUrl.PM_NEW_REQUIREMENT
+        const val PM_ADD_PRODUCT_BOTTOM_SHEET = TokopediaImageUrl.PM_ADD_PRODUCT_BOTTOM_SHEET
+        const val PM_TOTAL_ORDER_TERM = TokopediaImageUrl.PM_TOTAL_ORDER_TERM
+        const val IMG_TOPED_PM_ACTIVE = TokopediaImageUrl.IMG_TOPED_PM_ACTIVE
+        const val IMG_TOPED_PM_INACTIVE = TokopediaImageUrl.IMG_TOPED_PM_INACTIVE
+        const val IMG_TOPED_PM_PRO_ACTIVE = TokopediaImageUrl.IMG_TOPED_PM_PRO_ACTIVE
+        const val IMG_TOPED_NEW_SELLER_PM_ACTIVE = TokopediaImageUrl.IMG_TOPED_NEW_SELLER_PM_ACTIVE
+        const val IMG_TOPED_NEW_SELLER_PM_PRO_ACTIVE = TokopediaImageUrl.IMG_TOPED_NEW_SELLER_PM_PRO_ACTIVE
+        const val PM_POTENTIAL_BENEFIT_01 = TokopediaImageUrl.PM_POTENTIAL_BENEFIT_01
+        const val PM_POTENTIAL_BENEFIT_02 = TokopediaImageUrl.PM_TOTAL_ORDER_TERM
+        const val PM_POTENTIAL_BENEFIT_03 = TokopediaImageUrl.PM_POTENTIAL_BENEFIT_03
+        const val PM_MODERATED_SHOP = TokopediaImageUrl.PM_MODERATED_SHOP
     }
 
     object AppLink {

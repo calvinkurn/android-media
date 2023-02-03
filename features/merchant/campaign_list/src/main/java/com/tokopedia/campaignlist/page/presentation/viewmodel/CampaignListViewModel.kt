@@ -1,5 +1,7 @@
 package com.tokopedia.campaignlist.page.presentation.viewmodel
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -34,7 +36,7 @@ class CampaignListViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
-        const val NPL_ICON_URL = "https://images.tokopedia.net/img/android/campaign_list/npl_icon.png"
+        const val NPL_ICON_URL = TokopediaImageUrl.NPL_ICON_URL
         private const val ONGOING_STATUS_ID = "7"
         private const val NO_OVERLOAD_PRODUCT = 0
         private const val NO_PRODUCT = 0

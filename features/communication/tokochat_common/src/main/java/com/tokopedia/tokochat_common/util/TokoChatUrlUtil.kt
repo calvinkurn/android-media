@@ -1,5 +1,7 @@
 package com.tokopedia.tokochat_common.util
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import com.tokopedia.url.TokopediaUrl
 
 object TokoChatUrlUtil {
@@ -11,8 +13,8 @@ object TokoChatUrlUtil {
     /**
      * Image Urls
      */
-    const val IV_MASKING_PHONE_NUMBER = "https://images.tokopedia.net/img/android/tokochat/iv_masking_phone_number.png"
-    const val IC_TOKOFOOD_SOURCE = "https://images.tokopedia.net/img/android/tokochat/ic_tokofood_source.png"
+    const val IV_MASKING_PHONE_NUMBER = TokopediaImageUrl.IV_MASKING_PHONE_NUMBER
+    const val IC_TOKOFOOD_SOURCE = TokopediaImageUrl.IC_TOKOFOOD_SOURCE
     const val IMAGE_UNAVAILABLE_GENERAL_URL =
         "https://images.tokopedia.net/img/android/tokochat/tokochat_img_chat_unavailable_general.png"
 

@@ -1,5 +1,7 @@
 package com.tokopedia.tokopedianow.home.presentation.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -204,7 +206,7 @@ class TokoNowHomeFragment : Fragment(),
         const val SOURCE_TRACKING = "tokonow page"
         const val DEFAULT_QUANTITY = 0
         const val SHARE_HOME_URL = "https://www.tokopedia.com/now"
-        const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg"
+        const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = TokopediaImageUrl.THUMBNAIL_AND_OG_IMAGE_SHARE_URL
 
         const val REFERRAL_PAGE_URL = "https://www.tokopedia.com/seru/undang-untung/"
         const val PAGE_SHARE_NAME = "Tokonow"
@@ -213,7 +215,7 @@ class TokoNowHomeFragment : Fragment(),
         const val SUCCESS_CODE = "200"
         const val KEY_IS_OPEN_MINICART_LIST = "isMiniCartOpen"
         const val KEY_SERVICE_TYPE = "service_type"
-        const val URL_IMAGE_DIALOG_REFERRAL = "https://images.tokopedia.net/img/tokonow/referral/surprise gift.png"
+        const val URL_IMAGE_DIALOG_REFERRAL = TokopediaImageUrl.URL_IMAGE_DIALOG_REFERRAL
         const val QUERY_REFERRAL_CODE = "referralcode"
 
         fun newInstance() = TokoNowHomeFragment()

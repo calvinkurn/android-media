@@ -1,5 +1,7 @@
 package com.tokopedia.smartbills.presentation.widget
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
@@ -34,7 +36,7 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
     companion object{
         private val TAG = SmartBillsNominalBottomSheet::class.simpleName
 
-        private const val EMPTY_IMAGE_GLOBAL_ERROR = "https://images.tokopedia.net/img/add_bils_sbm_empty_nominal_4x.png"
+        private const val EMPTY_IMAGE_GLOBAL_ERROR = TokopediaImageUrl.EMPTY_IMAGE_GLOBAL_ERROR
 
         private const val PARAM_MENU_ID = "menu_id"
         private const val PARAM_CATEGORY_ID = "category_id"

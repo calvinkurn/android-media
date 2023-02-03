@@ -1,5 +1,7 @@
 package com.tokopedia.unifyorderhistory.util
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 /**
  * Created by fwidjaja on 05/07/20.
  */
@@ -174,7 +176,7 @@ object UohConsts {
     const val TDN_DIMEN_ID = 3
     const val TDN_RADIUS = 16
 
-    const val PMS_IMAGE_URL = "https://images.tokopedia.net/img/android/uoh/saldo_tempo.png"
+    const val PMS_IMAGE_URL = TokopediaImageUrl.PMS_IMAGE_URL
 
     const val BELI_LAGI_LABEL = "Beli Lagi"
     const val ULAS_LABEL = "Ulas"
