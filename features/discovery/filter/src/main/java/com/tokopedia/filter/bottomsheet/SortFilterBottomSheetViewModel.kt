@@ -7,10 +7,10 @@ import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
+import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxDataView
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
-import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxDataView
 import com.tokopedia.filter.bottomsheet.sort.SortItemViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewModel
 import com.tokopedia.filter.common.data.DataValue
@@ -575,6 +575,12 @@ internal class SortFilterBottomSheetViewModel {
 
     fun getSelectedSortMap(): Map<String, String> {
         return selectedSortMap
+    }
+
+    fun getSortAutoFilterMap(): Map<String, String> {
+        val activeFilterMap = filterController.getActiveFilterMap()
+        val hasNoDuplicateFilter = sortApplyFilterMap.none { activeFilterMap.containsKey(it.key) }
+        return if (hasNoDuplicateFilter) sortApplyFilterMap else emptyMap()
     }
 
     fun resetSortAndFilter() {

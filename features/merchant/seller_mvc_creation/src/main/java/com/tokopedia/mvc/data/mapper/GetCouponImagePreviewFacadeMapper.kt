@@ -47,6 +47,8 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
         private const val COUPON_PRODUCT_VOUCHER_CASHBACK_PERCENTAGE = "voucher_cashback_percentage"
         private const val COUPON_PRODUCT_VOUCHER_NOMINAL_AMOUNT = "voucher_nominal_amount"
         private const val COUPON_PRODUCT_VOUCHER_NOMINAL_SYMBOL = "voucher_nominal_symbol"
+        private const val COUPON_PRODUCT_VOUCHER_DISCOUNT_TYPE = "voucher_discount_type"
+        private const val COUPON_PRODUCT_VOUCHER_DISCOUNT_PERCENTAGE = "voucher_discount_percentage"
 
         private const val COUPON_PRODUCT_SHOP_LOGO = "shop_logo"
         private const val COUPON_PRODUCT_SHOP_NAME = "shop_name"
@@ -69,6 +71,8 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
             GenerateImageParams(COUPON_PRODUCT_VOUCHER_BENEFIT_TYPE, imageParams.voucherBenefitType),
             GenerateImageParams(COUPON_PRODUCT_VOUCHER_CASHBACK_TYPE, imageParams.voucherCashbackType),
             GenerateImageParams(COUPON_PRODUCT_VOUCHER_CASHBACK_PERCENTAGE, imageParams.voucherCashbackPercentage.toString()),
+            GenerateImageParams(COUPON_PRODUCT_VOUCHER_DISCOUNT_TYPE, imageParams.voucherCashbackType),
+            GenerateImageParams(COUPON_PRODUCT_VOUCHER_DISCOUNT_PERCENTAGE, imageParams.voucherCashbackPercentage.toString()),
             GenerateImageParams(COUPON_PRODUCT_VOUCHER_NOMINAL_AMOUNT, imageParams.voucherNominalAmount.toString()),
             GenerateImageParams(COUPON_PRODUCT_VOUCHER_NOMINAL_SYMBOL, imageParams.voucherNominalSymbol),
             GenerateImageParams(COUPON_PRODUCT_SHOP_LOGO, imageParams.shopLogo),
@@ -116,12 +120,6 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
                 else -> BENEFIT_TYPE_IDR
             }
 
-            val couponType = when (voucherConfiguration.promoType) {
-                PromoType.CASHBACK -> "cashback"
-                PromoType.FREE_SHIPPING -> "shipping"
-                else -> ""
-            }
-
             return UpdateCouponRequestParams(
                 voucherId = couponId,
                 benefitIdr = voucherConfiguration.benefitIdr,
@@ -130,7 +128,7 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
                 benefitType = benefitType,
                 code = voucherConfiguration.voucherCode,
                 couponName = voucherConfiguration.voucherName,
-                couponType = couponType,
+                couponType = voucherConfiguration.promoType.text,
                 dateStart = startDate,
                 dateEnd = endDate,
                 hourStart = startHour,
@@ -165,11 +163,6 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
                 voucherConfiguration.promoType == PromoType.CASHBACK && voucherConfiguration.benefitType == BenefitType.PERCENTAGE -> BENEFIT_TYPE_PERCENT
                 else -> BENEFIT_TYPE_IDR
             }
-            val couponType = when (voucherConfiguration.promoType) {
-                PromoType.CASHBACK -> "cashback"
-                PromoType.FREE_SHIPPING -> "shipping"
-                else -> ""
-            }
 
             return CreateCouponProductParams(
                 benefitIdr = voucherConfiguration.benefitIdr,
@@ -178,7 +171,7 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
                 benefitType = benefitType,
                 code = voucherConfiguration.voucherCode,
                 couponName = voucherConfiguration.voucherName,
-                couponType = couponType,
+                couponType = voucherConfiguration.promoType.text,
                 dateStart = startDate,
                 dateEnd = endDate,
                 hourStart = startHour,
@@ -218,6 +211,8 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
             voucherCashbackPercentage = voucherConfiguration.benefitPercent,
             voucherNominalAmount = voucherConfiguration.getNominalAmount(),
             voucherNominalSymbol = voucherConfiguration.getSymbol(),
+            voucherDiscountType = voucherConfiguration.getCashbackType(),
+            voucherDiscountPercentage = voucherConfiguration.benefitPercent,
             shopLogo = shop.logo,
             shopName = MethodChecker.fromHtml(shop.name).toString(),
             voucherCode = voucherConfiguration.getCouponCode(isCreateMode, couponCodePrefix),

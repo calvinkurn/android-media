@@ -26,6 +26,7 @@ class ChoiceOfVoucherViewHolder(itemView: View?) : AbstractViewHolder<ChoiceOfVo
     override fun bind(element: ChoiceOfVoucherUiModel?) {
         binding?.apply {
             title.text = element?.title.toBlankOrString()
+            containerLayout.setBackgroundResource(R.drawable.bg_intro_choice_of_target)
             element?.list?.getOrNull(ZEROTH_INDEX)?.let {
                 viewFlexibleForCoupons.setDataForHtml(
                     it.benefitTitle,

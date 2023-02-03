@@ -57,7 +57,7 @@ class PlayBroadcastTnCTest {
             }
 
             state.channel
-                .canStream
+                .streamAllowed
                 .assertEqualTo(false)
 
             state.channel
@@ -81,7 +81,7 @@ class PlayBroadcastTnCTest {
             }
 
             state.channel
-                .canStream
+                .streamAllowed
                 .assertEqualTo(true)
         }
     }

@@ -47,10 +47,12 @@ import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.SuccessUploadBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
+import com.tokopedia.mvc.presentation.summary.helper.SummaryPagePageNameMapper
 import com.tokopedia.mvc.presentation.summary.helper.SummaryPageRedirectionHelper
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.mvc.util.constant.BundleConstant
+import com.tokopedia.mvc.util.tracker.SummaryPageTracker
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
@@ -101,10 +103,18 @@ class SummaryFragment :
             LoaderDialog(it)
         }
     }
-    private val redirectionHelper = SummaryPageRedirectionHelper(this)
+    private val redirectionHelper by lazy { SummaryPageRedirectionHelper(this, sharedPreferencesUtil) }
 
     @Inject
     lateinit var viewModel: SummaryViewModel
+
+    @Inject
+    lateinit var tracker: SummaryPageTracker
+
+    lateinit var pageNameMapper: SummaryPagePageNameMapper
+
+    @Inject
+    lateinit var sharedPreferencesUtil: SharedPreferencesUtil
 
     override fun getScreenName() = ""
 
@@ -130,11 +140,28 @@ class SummaryFragment :
         binding?.setupView()
         setupObservables()
         setupPageMode()
+        redirectionHelper.onViewCreated(view, savedInstanceState)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         redirectionHelper.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        viewModel.configuration.value?.let {
+            if (viewModel.checkIsAdding(it)) {
+                tracker.sendClickKembaliArrowFifthStepEvent()
+            } else {
+                tracker.sendClickArrowBackEvent(it.voucherId.toString())
+            }
+        }
+        return super.onFragmentBackPressed()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        redirectionHelper.onResume(context ?: return)
     }
 
     override fun onAddProductResult() {
@@ -147,6 +174,17 @@ class SummaryFragment :
 
     override fun onVoucherTypePageResult() {
         activity?.finish()
+    }
+
+    override fun onPageDataChanged(pageJavaName: String) {
+        val pageName = pageNameMapper.mapPageName(pageJavaName)
+        Toaster.build(
+            view ?: return,
+            context?.getString(R.string.smvc_summary_page_success_change_data_message, pageName).toString(),
+            Toaster.LENGTH_SHORT,
+            Toaster.TYPE_NORMAL,
+            context?.getString(R.string.smvc_ok).toString()
+        ).show()
     }
 
     private fun setupPageMode() {
@@ -205,13 +243,15 @@ class SummaryFragment :
             } else {
                 context?.run {
                     val message = getString(R.string.smvc_summary_page_success_upload_message, it.voucherName)
-                    SharedPreferencesUtil.setUploadResult(this, message)
+                    sharedPreferencesUtil.setUploadResult(this, message)
                     RouteManager.route(this, SELLER_MVC_LIST)
                 }
             }
         }
         viewModel.errorUpload.observe(viewLifecycleOwner) {
-            showErrorUploadDialog(ErrorHandler.getErrorMessage(context, it))
+            showErrorUploadDialog(ErrorHandler.getErrorMessagePair(
+                context, it, ErrorHandler.Builder()
+            ).first.orEmpty())
         }
         viewModel.isInputValid.observe(viewLifecycleOwner) {
             binding?.layoutSubmission?.btnSubmit?.isEnabled = it
@@ -252,6 +292,7 @@ class SummaryFragment :
         title = context.getString(R.string.smvc_summary_page_title)
         setNavigationOnClickListener {
             activity?.finish()
+            onFragmentBackPressed()
         }
     }
 
@@ -328,6 +369,13 @@ class SummaryFragment :
         }
         cbTnc.setOnClickListener {
             viewModel.validateTnc(cbTnc.isChecked)
+            viewModel.configuration.value?.let {
+                if (viewModel.checkIsAdding(it)) {
+                    tracker.sendClickCheckboxSyaratKetentuanEvent()
+                } else {
+                    tracker.sendClickCheckboxOnTncEvent(it.voucherId.toString())
+                }
+            }
         }
     }
 
@@ -441,6 +489,7 @@ class SummaryFragment :
             .setOnBroadCastClickListener(::onSuccessBottomsheetBroadCastClick)
         bottomSheet.setOnDismissListener {
             RouteManager.route(context, SELLER_MVC_LIST)
+            tracker.sendClickCloseEvent(configuration.voucherId.toString())
         }
         bottomSheet.show(childFragmentManager)
     }
@@ -456,19 +505,27 @@ class SummaryFragment :
     private fun onTypeCouponBtnChangeClicked(configuration: VoucherConfiguration) {
         val isAdding = viewModel.checkIsAdding(configuration)
         redirectionHelper.redirectToVoucherTypePage(this, configuration, isAdding)
+        val sectionName = binding?.layoutType?.tpgProductListTitle?.text.toString()
+        tracker.sendClickUbahEvent(configuration.voucherId.toString(), sectionName)
     }
 
     private fun onInformationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
-        val isAdding = viewModel.checkIsAdding(configuration)
+        val sectionName = binding?.layoutInfo?.tpgVoucherInfoTitle?.text.toString()
+        val isAdding = viewModel.checkIsAdding(configuration) && !enableDuplicateVoucher
         redirectionHelper.redirectToCouponInfoPage(this, configuration, isAdding)
+        tracker.sendClickUbahEvent(configuration.voucherId.toString(), sectionName)
     }
 
     private fun onConfigurationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
-        val isAdding = viewModel.checkIsAdding(configuration)
+        val sectionName = binding?.layoutSetting?.tpgVoucherSettingTitle?.text.toString()
+        val isAdding = viewModel.checkIsAdding(configuration) && !enableDuplicateVoucher
         redirectionHelper.redirectToCouponConfigurationPage(this, configuration, isAdding)
+        tracker.sendClickUbahEvent(configuration.voucherId.toString(), sectionName)
     }
 
     private fun onChangeProductBtnChangeClicked(configuration: VoucherConfiguration) {
+        val sectionName = binding?.layoutProducts?.tpgProductListTitle?.text.toString()
+        tracker.sendClickUbahEvent(configuration.voucherId.toString(), sectionName)
         redirectionHelper.redirectToAddProductPage(
             this,
             configuration = configuration,
@@ -478,6 +535,8 @@ class SummaryFragment :
     }
 
     private fun onProductListBtnChangeClicked(configuration: VoucherConfiguration) {
+        val sectionName = binding?.layoutProducts?.tpgProductListTitle?.text.toString()
+        tracker.sendClickUbahEvent(configuration.voucherId.toString(), sectionName)
         redirectionHelper.redirectToViewProductPage(
             this,
             configuration = configuration,
@@ -488,9 +547,11 @@ class SummaryFragment :
 
     private fun onSuccessBottomsheetBroadCastClick(voucherConfiguration: VoucherConfiguration) {
         context?.let { SharingUtil.shareToBroadCastChat(it, voucherConfiguration.voucherId) }
+        tracker.sendClickBroadcastPopUpEvent()
     }
 
     private fun onSuccessBottomsheetAdsClick(voucherConfiguration: VoucherConfiguration) {
         RouteManager.route(context, TOPADS_HEADLINE_CREATE)
+        tracker.sendClickTopadsPopUpEvent()
     }
 }
