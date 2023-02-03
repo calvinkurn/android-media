@@ -206,6 +206,10 @@ public class MainParentActivity extends BaseActivity implements
     private static final String SUFFIX_ALPHA = "-alpha";
     private static final String NOTIFICATION_USER_SETTING_KEY = "isUserSettingSent";
 
+    public static final String UOH_PAGE = "UohListFragment";
+
+    public static final String WISHLIST_COLLECTION_PAGE = "WishlistCollectionFragment";
+
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
     @Inject
@@ -786,7 +790,7 @@ public class MainParentActivity extends BaseActivity implements
             bundleWishlistCollection = new Bundle();
         }
         bundleWishlistCollection.putString(PARAM_ACTIVITY_WISHLIST_COLLECTION, PARAM_HOME);
-        bundleWishlistCollection.putString("WishlistCollectionFragment", MainParentActivity.class.getSimpleName());
+        bundleWishlistCollection.putString(WISHLIST_COLLECTION_PAGE, MainParentActivity.class.getSimpleName());
         fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_COLLECTION_FRAGMENT, bundleWishlistCollection));
 
         Bundle bundleUoh = getIntent().getExtras();
@@ -795,7 +799,7 @@ public class MainParentActivity extends BaseActivity implements
         }
         bundleUoh.putString(UOH_SOURCE_FILTER_KEY, "");
         bundleUoh.putString(PARAM_ACTIVITY_ORDER_HISTORY, PARAM_HOME);
-        bundleUoh.putString("UohListFragment", MainParentActivity.class.getSimpleName());
+        bundleUoh.putString(UOH_PAGE, MainParentActivity.class.getSimpleName());
         fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.UOH_LIST_FRAGMENT, bundleUoh));
 
         return fragmentList;
