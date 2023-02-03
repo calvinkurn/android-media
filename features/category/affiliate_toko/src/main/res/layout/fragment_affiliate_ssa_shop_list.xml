@@ -1,0 +1,120 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tokopedia.affiliate.ui.fragment.AffiliateSSAShopListFragment">
+
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/ssa_shop_navToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?actionBarSize"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:toolbarAlwaysShowShadow="false"
+        app:toolbarBackButton="back"
+        app:toolbarContentType="typeCustom"
+        app:toolbarCustomContent="@layout/affiliate_navbar_custom_content"
+        app:toolbarInitialFillColor="transparent"
+        app:toolbarInitialTheme="light" />
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/ssa_shop_swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/ssa_shop_navToolbar">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ssa_shop_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            tools:itemCount="1"
+            tools:listitem="@layout/affiliate_ssa_shop_item_layout"
+            tools:visibility="gone" />
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/ssa_shop_global_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:visibility="gone"
+        app:globalerrors_type="SERVER_ERROR"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ssa_shop_navToolbar"
+        tools:visibility="visible" />
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/empty_ssa_state_image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="40dp"
+        app:completeUrl="https://images.tokopedia.net/img/affiliate/asset/product-not-found.png"
+        app:imageDpiSupportType="singleDpi"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ssa_shop_navToolbar"
+        tools:ignore="ContentDescription" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/empty_ssa_state_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="64dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/affiliate_empty_ssa_list_title"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/empty_ssa_state_image"
+        app:typographyType="heading_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/empty_ssa_state_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="64dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/affiliate_empty_ssa_list_desc"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/empty_ssa_state_title"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/empty_ssa_state_cta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="24dp"
+        android:text="@string/affiliate_empty_ssa_list_cta"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/empty_ssa_state_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="empty_ssa_state_cta, empty_ssa_state_desc, empty_ssa_state_title, empty_ssa_state_image" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/ssa_shop_progress_bar"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular" />
+</androidx.constraintlayout.widget.ConstraintLayout>
