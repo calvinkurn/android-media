@@ -777,22 +777,27 @@ class ShopPageProductListFragment :
                         false,
                         shopProductViewModel.isUpcoming
                     )
-                    ShopTrackProductTypeDef.PRODUCT -> shopPageTracking?.clickWishlist(
-                        !shopProductViewModel.isWishList,
-                        isLogin,
-                        getSelectedEtalaseChip(),
-                        getSelectedEtalaseChip(),
-                        CustomDimensionShopPageProduct.create(
-                            shopId,
-                            isOfficialStore,
-                            isGoldMerchant,
-                            shopProductViewModel.id,
-                            shopRef
-                        ),
-                        shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                        shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                        shopProductViewModel.isUpcoming
-                    )
+                    ShopTrackProductTypeDef.PRODUCT -> {
+                        ProductCardOptionsModel(
+                            isWishlisted = !shopProductViewModel.isWishList
+                        )
+                        shopPageTracking?.clickWishlist(
+                            !shopProductViewModel.isWishList,
+                            isLogin,
+                            getSelectedEtalaseChip(),
+                            getSelectedEtalaseChip(),
+                            CustomDimensionShopPageProduct.create(
+                                shopId,
+                                isOfficialStore,
+                                isGoldMerchant,
+                                shopProductViewModel.id,
+                                shopRef
+                            ),
+                            shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                            shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                            shopProductViewModel.isUpcoming
+                        )
+                    }
                     else -> // highlight
                         shopPageTracking?.clickWishlist(
                             !shopProductViewModel.isWishList,
