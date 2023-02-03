@@ -37,7 +37,6 @@ android {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
-    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.medialoader)
 
     implementation projectOrAar(rootProject.ext.libraries.liveness_lib)

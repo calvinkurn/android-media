@@ -245,6 +245,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
     implementation projectOrAar(rootProject.ext.libraries.linker)
     implementation projectOrAar(rootProject.ext.libraries.weaver)
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.libraries.interceptors)
     implementation projectOrAar(rootProject.ext.features.logisticaddaddress)
     implementation projectOrAar(rootProject.ext.features.logisticCommon)

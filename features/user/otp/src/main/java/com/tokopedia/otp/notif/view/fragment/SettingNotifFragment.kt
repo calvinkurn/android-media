@@ -1,7 +1,5 @@
 package com.tokopedia.otp.notif.view.fragment
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -180,7 +178,7 @@ class SettingNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
         const val PARAM_DEVICE_STATUS = "device_status"
 
-        private const val LINK_IMG_PHONE_OTP_PUSH_NOTIF = TokopediaImageUrl.LINK_IMG_PHONE_OTP_PUSH_NOTIF
+        private const val LINK_IMG_PHONE_OTP_PUSH_NOTIF = "https://images.tokopedia.net/android/user/phone_otp_push_notif.png"
 
         fun createInstance(bundle: Bundle): SettingNotifFragment {
             val fragment = SettingNotifFragment()

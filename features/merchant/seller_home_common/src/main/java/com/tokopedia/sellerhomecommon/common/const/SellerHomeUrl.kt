@@ -1,12 +1,10 @@
 package com.tokopedia.sellerhomecommon.common.const
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 object SellerHomeUrl {
 
-    internal const val IMG_EMPTY_STATE = TokopediaImageUrl.IMG_EMPTY_STATE
-    const val IMG_LAYOUT_NO_PERMISSION = TokopediaImageUrl.IMG_LAYOUT_NO_PERMISSION
-    const val IMG_CARD_ORNAMENT_GREEN = TokopediaImageUrl.IMG_CARD_ORNAMENT_GREEN
-    const val IMG_CARD_ORNAMENT_YELLOW = TokopediaImageUrl.IMG_CARD_ORNAMENT_YELLOW
-    const val IMG_NO_ACCESS_STATE = TokopediaImageUrl.IMG_NO_ACCESS_STATE
+    internal const val IMG_EMPTY_STATE = "https://images.tokopedia.net/android/others/shc_post_list_info_empty_state.png"
+    const val IMG_LAYOUT_NO_PERMISSION = "https://images.tokopedia.net/img/android/seller_home_common/shc_seller_home_no_permission.png"
+    const val IMG_CARD_ORNAMENT_GREEN = "https://images.tokopedia.net/img/android/seller_home_common/sah_card_good_plus.png"
+    const val IMG_CARD_ORNAMENT_YELLOW = "https://images.tokopedia.net/img/android/seller_home_common/sah_card_warning_plus.png"
+    const val IMG_NO_ACCESS_STATE = "https://images.tokopedia.net/seller-dashboard/stock_product.png"
 }

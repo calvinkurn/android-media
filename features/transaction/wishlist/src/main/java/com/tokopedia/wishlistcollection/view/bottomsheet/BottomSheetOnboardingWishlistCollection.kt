@@ -1,7 +1,5 @@
 package com.tokopedia.wishlistcollection.view.bottomsheet
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +14,7 @@ import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionFragment
 class BottomSheetOnboardingWishlistCollection: BottomSheetUnify() {
     private var binding by autoClearedNullable<BottomsheetWishlistCollectionOnboardingBinding>()
     private var actionListener: ActionListener? = null
-    private val imageUrl = TokopediaImageUrl.imageUrl
+    private val imageUrl = "https://images.tokopedia.net/img/android/wishlistcollection/img_onboarding.png"
 
     companion object {
         private const val TAG: String = "WishlistCollectionOnboardingBottomSheet"

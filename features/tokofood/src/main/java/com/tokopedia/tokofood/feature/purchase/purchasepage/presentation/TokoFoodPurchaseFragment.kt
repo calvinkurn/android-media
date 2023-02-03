@@ -1,7 +1,5 @@
 package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -1109,7 +1107,7 @@ class TokoFoodPurchaseFragment :
         private const val SOURCE = "checkout_page"
         private const val PAGE_NAME = "checkout_page"
 
-        private const val NO_PINPOINT_URL = TokopediaImageUrl.IMG_STATIC_URI_NO_PIN_POIN
+        private const val NO_PINPOINT_URL = "https://images.tokopedia.net/img/ic-tokofood_home_no_pin_poin.png"
 
         fun createInstance(): TokoFoodPurchaseFragment {
             return TokoFoodPurchaseFragment()

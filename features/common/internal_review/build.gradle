@@ -20,7 +20,6 @@ buildscript {
 
 dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
-    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.unifyDependencies.components

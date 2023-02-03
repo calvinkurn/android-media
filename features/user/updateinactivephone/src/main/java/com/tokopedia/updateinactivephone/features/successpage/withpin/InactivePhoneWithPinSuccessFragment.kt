@@ -1,7 +1,5 @@
 package com.tokopedia.updateinactivephone.features.successpage.withpin
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.hide
@@ -38,7 +36,7 @@ open class InactivePhoneWithPinSuccessFragment : BaseInactivePhoneSuccessFragmen
     }
 
     companion object {
-        private const val IMAGE_HEADER_URL_EXPEDITED = TokopediaImageUrl.IMAGE_HEADER_URL_EXPEDITED
+        private const val IMAGE_HEADER_URL_EXPEDITED = "https://images.tokopedia.net/img/android/user/inactive_phone_expedited_success_page.png"
         fun instance(bundle: Bundle): InactivePhoneWithPinSuccessFragment {
             return InactivePhoneWithPinSuccessFragment().apply {
                 arguments = bundle

@@ -1,7 +1,5 @@
 package com.tokopedia.smartbills.presentation.widget
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -41,7 +39,7 @@ class SmartBillsToolTipBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val TAG = "SmartBillsToolTipBottomSheet"
-        private const val IMAGE_URL = TokopediaImageUrl.SmartBillsToolTipBottomSheet_IMAGE_URL
+        private const val IMAGE_URL = "https://images.tokopedia.net/img/tooltips_image_sbm.png"
 
         @JvmStatic
         fun newInstance(context: Context, listener: SmartBillsToolTipBottomSheet.Listener): SmartBillsToolTipBottomSheet {

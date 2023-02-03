@@ -1,7 +1,5 @@
 package com.tokopedia.unifyorderhistory.view.fragment
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -318,8 +316,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             }
         }
 
-        const val URL_IMG_EMPTY_SEARCH_LIST = TokopediaImageUrl.URL_IMG_EMPTY_SEARCH_LIST
-        const val URL_IMG_EMPTY_ORDER_LIST = TokopediaImageUrl.URL_IMG_EMPTY_ORDER_LIST
+        const val URL_IMG_EMPTY_SEARCH_LIST = "https://images.tokopedia.net/img/android/uoh/uoh_empty_search_list.png"
+        const val URL_IMG_EMPTY_ORDER_LIST = "https://images.tokopedia.net/img/android/uoh/uoh_empty_order_list.png"
         const val CREATE_REVIEW_APPLINK = "product-review/create/"
         const val CREATE_REVIEW_MESSAGE = "create_review_message"
         const val CREATE_REVIEW_REQUEST_CODE = 200

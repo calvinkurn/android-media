@@ -1,7 +1,5 @@
 package com.tokopedia.tokofood.feature.merchant.common.util
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.app.Activity
 import android.content.Context
 import android.view.View
@@ -144,6 +142,6 @@ class MerchantShareComponentUtil(
 
     companion object {
         const val SHARE_STR_FMT = "%s %s"
-        const val MERCHANT_THUMBNAIL_URL = TokopediaImageUrl.MERCHANT_THUMBNAIL_URL
+        const val MERCHANT_THUMBNAIL_URL = "https://images.tokopedia.net/img/tokofood/merchant_share.png"
     }
 }

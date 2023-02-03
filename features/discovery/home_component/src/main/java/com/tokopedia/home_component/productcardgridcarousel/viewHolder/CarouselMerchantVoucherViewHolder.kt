@@ -1,7 +1,5 @@
 package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -32,8 +30,8 @@ class CarouselMerchantVoucherViewHolder (
     private var binding: HomeBannerItemMerchantVoucherBinding? by viewBinding()
     companion object{
         val LAYOUT = R.layout.home_banner_item_merchant_voucher
-        private const val BACKGROUND_MVC_WHITE = TokopediaImageUrl.BACKGROUND_MVC_WHITE
-        private const val BACKGROUND_MVC_DARK = TokopediaImageUrl.BACKGROUND_MVC_DARK
+        private const val BACKGROUND_MVC_WHITE = "https://images.tokopedia.net/img/android/home/mvc_light_mode.png"
+        private const val BACKGROUND_MVC_DARK = "https://images.tokopedia.net/img/android/home/mvc_dark_mode.png"
     }
 
     override fun bind(element: CarouselMerchantVoucherDataModel) {

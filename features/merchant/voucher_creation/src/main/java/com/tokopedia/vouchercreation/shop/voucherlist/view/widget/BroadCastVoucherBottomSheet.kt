@@ -1,7 +1,5 @@
 package com.tokopedia.vouchercreation.shop.voucherlist.view.widget
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,7 +31,7 @@ class BroadCastVoucherBottomSheet : BottomSheetUnify() {
             }
         }
         const val TAG: String = "SuccessCreateBottomSheet"
-        private const val TPD_VOUCHER_IMAGE_URL = TokopediaImageUrl.TPD_VOUCHER_IMAGE_URL
+        private const val TPD_VOUCHER_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/mvc/mvc_voucher.png"
         private const val DATE_FORMAT = "dd MMMM yyyy"
         private const val HOUR_FORMAT = "HH:mm"
         private const val VOUCHER = "voucher"

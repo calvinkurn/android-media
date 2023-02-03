@@ -39,7 +39,6 @@ android {
 dependencies {
 
     implementation rootProject.ext.firebase.crashlytics
-    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
 
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.supportV4

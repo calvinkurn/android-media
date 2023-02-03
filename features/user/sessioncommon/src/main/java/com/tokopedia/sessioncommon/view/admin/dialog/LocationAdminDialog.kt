@@ -1,7 +1,5 @@
 package com.tokopedia.sessioncommon.view.admin.dialog
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.content.Context
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -11,7 +9,7 @@ import com.tokopedia.sessioncommon.R
 class LocationAdminDialog(context: Context?, dismissListener: (() -> Unit)? = null) {
 
     companion object {
-        private const val IMAGE_URL = TokopediaImageUrl.LocationAdminDialog_IMAGE_URL
+        private const val IMAGE_URL = "https://images.tokopedia.net/android/others/ic_location_admin_info.png"
     }
 
     private var dialog: DialogUnify? = null

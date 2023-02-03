@@ -1,7 +1,5 @@
 package com.tokopedia.shop.common.widget
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.graphics.drawable.Drawable
@@ -27,7 +25,7 @@ import com.tokopedia.unifyprinciples.Typography
 class PartialButtonShopFollowersView private constructor(val view: View, private val listener: PartialButtonShopFollowersListener) {
 
     companion object {
-        const val SHOP_FOLLOWERS_IMG_ASSET = TokopediaImageUrl.SHOP_FOLLOWERS_IMG_ASSET
+        const val SHOP_FOLLOWERS_IMG_ASSET = "https://images.tokopedia.net/android/other/il_pdp%20bts_follower.png"
         const val GONE_ANIMATION_DURATION = 300L
         fun build(_view: View, _buttonListener: PartialButtonShopFollowersListener) = PartialButtonShopFollowersView(_view, _buttonListener)
     }

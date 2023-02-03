@@ -1,7 +1,5 @@
 package com.tokopedia.wishlistcollection.util
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 object WishlistCollectionConsts {
     const val REQUEST_CODE_COLLECTION_DETAIL = 128
     const val EXTRA_NEED_REFRESH = "EXTRA_NEED_REFRESH"
@@ -28,7 +26,7 @@ object WishlistCollectionConsts {
     const val EXTRA_COLLECTION_ID_DESTINATION = "EXTRA_COLLECTION_ID_DESTINATION"
     const val EXTRA_COLLECTION_NAME_DESTINATION = "EXTRA_COLLECTION_NAME_DESTINATION"
 
-    const val BG_TICKER = TokopediaImageUrl.BG_TICKER
+    const val BG_TICKER = "https://images.tokopedia.net/img/android/wishlistcollection/bg_ticker_wishlist_collection.png"
 
     const val ACTION_KEBAB_UPDATE_COLLECTION = "UPDATE_COLLECTION"
     const val ACTION_KEBAB_SHARE_COLLECTION = "SHARE_COLLECTION"

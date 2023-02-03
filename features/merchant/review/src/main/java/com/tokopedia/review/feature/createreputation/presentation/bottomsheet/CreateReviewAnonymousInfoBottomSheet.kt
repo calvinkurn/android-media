@@ -1,7 +1,5 @@
 package com.tokopedia.review.feature.createreputation.presentation.bottomsheet
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +14,7 @@ class CreateReviewAnonymousInfoBottomSheet : BottomSheetUnify() {
     companion object {
         const val TAG = "CreateReviewAnonymousInfoBottomSheet"
 
-        private const val ILLUSTRATION_URL = TokopediaImageUrl.ILLUSTRATION_URL
+        private const val ILLUSTRATION_URL = "https://images.tokopedia.net/img/android/review/illustration_review_anonymous_info_bottom_sheet.png"
     }
 
     private var binding by viewBinding(BottomsheetCreateReviewAnonymousInfoBinding::bind)

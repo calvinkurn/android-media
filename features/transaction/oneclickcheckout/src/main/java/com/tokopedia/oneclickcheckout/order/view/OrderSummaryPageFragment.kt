@@ -1,7 +1,5 @@
 package com.tokopedia.oneclickcheckout.order.view
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -1741,7 +1739,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         const val QUERY_GATEWAY_CODE = "gateway_code"
         const val QUERY_TENURE_TYPE = "tenure_type"
 
-        private const val NO_ADDRESS_IMAGE = TokopediaImageUrl.NO_ADDRESS_IMAGE
+        private const val NO_ADDRESS_IMAGE = "https://images.tokopedia.net/img/android/cart/ic_occ_no_address.png"
 
         private const val SOURCE_OTHERS = "others"
         private const val SOURCE_PDP = "pdp"

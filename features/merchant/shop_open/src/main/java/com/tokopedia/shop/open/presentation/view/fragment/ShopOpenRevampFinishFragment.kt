@@ -1,7 +1,5 @@
 package com.tokopedia.shop.open.presentation.view.fragment
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
@@ -40,7 +38,7 @@ class ShopOpenRevampFinishFragment : Fragment() {
     }
 
     companion object {
-        const val LOTTIE_ANIMATION = TokopediaImageUrl.LOTTIE_ANIMATION
+        const val LOTTIE_ANIMATION = "https://images.tokopedia.net/android/lottie/merchant/others/REV_Merchant_Onboarding_lottie.json"
         private const val LOTTIE_ANIMATION_DURATION = 3000L
     }
 

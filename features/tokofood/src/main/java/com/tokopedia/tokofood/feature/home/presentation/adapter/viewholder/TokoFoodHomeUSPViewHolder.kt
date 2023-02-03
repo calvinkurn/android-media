@@ -1,7 +1,5 @@
 package com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
@@ -30,8 +28,8 @@ class TokoFoodHomeUSPViewHolder(
         val LAYOUT = R.layout.item_tokofood_usp
 
         private const val USP_SIZE = 3
-        private const val GO_FOOD_IMAGE_LIGHT = TokopediaImageUrl.GO_FOOD_IMAGE_LIGHT
-        private const val GO_FOOD_IMAGE_DARK = TokopediaImageUrl.GO_FOOD_IMAGE_DARK
+        private const val GO_FOOD_IMAGE_LIGHT = "https://images.tokopedia.net/img/powered_by_gofood_light.png"
+        private const val GO_FOOD_IMAGE_DARK = "https://images.tokopedia.net/img/powered_by_gofood_dark_new.png"
     }
 
     private var binding: ItemTokofoodUspBinding? by viewBinding()

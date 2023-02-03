@@ -40,7 +40,6 @@ android {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.commonDigital)
-    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.commonPayment)
     implementation projectOrAar(rootProject.ext.features.commonTopupBills)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)

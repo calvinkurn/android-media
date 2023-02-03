@@ -1,7 +1,5 @@
 package com.tokopedia.vouchercreation.shop.create.view.fragment.step
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -80,7 +78,7 @@ class SetVoucherPeriodFragment : Fragment() {
             this.isEdit = isEdit
         }
 
-        private const val BANNER_BASE_URL = TokopediaImageUrl.BANNER_BASE_URL
+        private const val BANNER_BASE_URL = "https://images.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
 
         private const val START_DATE_TIME_PICKER_TAG = "startDateTimePicker"
         private const val END_DATE_TIME_PICKER_TAG = "endDateTimePicker"

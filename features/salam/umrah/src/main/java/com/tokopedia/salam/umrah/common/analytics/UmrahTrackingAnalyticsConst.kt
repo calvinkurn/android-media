@@ -1,7 +1,5 @@
 package com.tokopedia.salam.umrah.common.analytics
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 const val UMRAH_CLICK_EVENT = "clickUmroh"
 const val UMRAH_CLICK_CATEGORY_ORDER_DETAIL = "order detail page umroh"
 const val UMRAH_CLICK_ACTION_INVOICE = "click invoice"
@@ -118,7 +116,7 @@ const val DURASI_PERJALANAN = "durasi perjalanan"
 const val HARGA_PAKET = "harga paket"
 const val SLIDER_BANNER = "slider banner"
 
-const val MY_UMRAH_AND_DREAM_FUND_CREATIVE = TokopediaImageUrl.MY_UMRAH_AND_DREAM_FUND_CREATIVE
+const val MY_UMRAH_AND_DREAM_FUND_CREATIVE = "https://images.tokopedia.net/assets-tokopedia-lite/v2/firdaus/kratos/a61bc722.png"
 
 const val UMRAH_TRAVEL_PAGE_CATEGORY = "travel page umroh"
 const val UMRAH_TRAVEL_PAGE_GALERY_CATEGORY = "travel galeri page umroh"

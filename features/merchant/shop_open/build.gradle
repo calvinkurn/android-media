@@ -46,7 +46,6 @@ android {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.coreNetwork)
-    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)

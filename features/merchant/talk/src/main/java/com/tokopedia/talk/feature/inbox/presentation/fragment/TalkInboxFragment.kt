@@ -1,7 +1,5 @@
 package com.tokopedia.talk.feature.inbox.presentation.fragment
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -71,7 +69,7 @@ open class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxA
         const val TAB_PARAM = "tab_param"
         const val FILTER_PARAM = "filter"
         const val FILTER_UNREAD = "unread"
-        const val EMPTY_DISCUSSION_IMAGE = TokopediaImageUrl.EMPTY_DISCUSSION_IMAGE
+        const val EMPTY_DISCUSSION_IMAGE = "https://images.tokopedia.net/android/talk_inbox_empty.png"
         const val REPLY_REQUEST_CODE = 420
         const val EMPTY_SELLER_READ_DISCUSSION =
             "https://images.tokopedia.net/android/others/talk_inbox_seller_empty_read.png"

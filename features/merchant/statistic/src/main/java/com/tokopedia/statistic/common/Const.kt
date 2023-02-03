@@ -1,7 +1,5 @@
 package com.tokopedia.statistic.common
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 /**
  * Created By @ilhamsuaib on 16/09/20
  */
@@ -71,6 +69,6 @@ object Const {
     }
 
     object Image {
-        const val IMG_EXCLUSIVE_IDENTIFIER = TokopediaImageUrl.IMG_EXCLUSIVE_IDENTIFIER
+        const val IMG_EXCLUSIVE_IDENTIFIER = "https://images.tokopedia.net/img/android/statistic/img_stc_exclusive_identifier.png"
     }
 }

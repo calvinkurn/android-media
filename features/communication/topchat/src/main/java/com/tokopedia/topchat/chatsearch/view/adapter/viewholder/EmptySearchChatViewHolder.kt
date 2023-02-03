@@ -1,7 +1,5 @@
 package com.tokopedia.topchat.chatsearch.view.adapter.viewholder
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -39,6 +37,6 @@ class EmptySearchChatViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_empty_chat_search
-        private const val iconUrl = TokopediaImageUrl.iconUrl
+        private const val iconUrl = "https://images.tokopedia.net/img/android/user/chat/img_chat_empty_search_result.png"
     }
 }

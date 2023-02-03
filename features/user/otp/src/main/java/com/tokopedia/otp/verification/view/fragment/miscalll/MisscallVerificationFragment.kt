@@ -1,7 +1,5 @@
 package com.tokopedia.otp.verification.view.fragment.miscalll
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
@@ -215,7 +213,7 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
         private const val REGEX_PHONE_NUMBER = """[+()\-\s]"""
         private const val REGEX_PHONE_NUMBER_REGION = "^(\\+\\d{1,2})"
 
-        private const val URL_IMG_VERIFICATION_MISCALL_NEW = TokopediaImageUrl.URL_IMG_VERIFICATION_MISCALL_NEW
+        private const val URL_IMG_VERIFICATION_MISCALL_NEW = "https://images.tokopedia.net/img/android/user/miscall/ic_miscall_verification.png"
 
         fun createInstance(bundle: Bundle?): VerificationFragment {
             val fragment = MisscallVerificationFragment()

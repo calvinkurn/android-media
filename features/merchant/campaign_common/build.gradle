@@ -23,7 +23,6 @@ android {
 
 dependencies {
     implementation rootProject.ext.supportLibDependencies.design
-    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid

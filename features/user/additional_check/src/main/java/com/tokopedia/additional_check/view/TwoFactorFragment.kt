@@ -1,7 +1,5 @@
 package com.tokopedia.additional_check.view
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -225,9 +223,9 @@ class TwoFactorFragment: BaseDaggerFragment() {
         const val RESULT_POJO_KEY = "modelKey"
         const val IS_FROM_2FA = "is_from_2fa_checker"
 
-        private const val PIN_ONBOARDING_IMG = TokopediaImageUrl.PIN_ONBOARDING_IMG
-        private const val PHONE_ONBOARDING_IMG = TokopediaImageUrl.PHONE_ONBOARDING_IMG
-        private const val PIN_SUCCESS_IMG = TokopediaImageUrl.PIN_SUCCESS_IMG
+        private const val PIN_ONBOARDING_IMG = "https://images.tokopedia.net/android/user/image_pin_two_factor.png"
+        private const val PHONE_ONBOARDING_IMG = "https://images.tokopedia.net/android/user/image_phone_two_factor.png"
+        private const val PIN_SUCCESS_IMG = "https://images.tokopedia.net/android/user/image_pin_success_two_factor.png"
 
         fun newInstance(bundle: Bundle?): Fragment{
             return TwoFactorFragment().apply {

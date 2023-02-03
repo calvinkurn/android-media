@@ -1,7 +1,5 @@
 package com.tokopedia.product.detail.view.viewholder
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -21,7 +19,7 @@ class ProductDiscussionMostHelpfulViewHolder(private val view: View,
 ) : AbstractViewHolder<ProductDiscussionMostHelpfulDataModel>(view) {
 
     companion object {
-        private const val EMPTY_TALK_IMAGE_URL = TokopediaImageUrl.EMPTY_TALK_IMAGE_URL
+        private const val EMPTY_TALK_IMAGE_URL = "https://images.tokopedia.net/android/others/talk_product_detail_empty.png"
         val LAYOUT = R.layout.item_dynamic_discussion_most_helpful
     }
 

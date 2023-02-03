@@ -1,7 +1,5 @@
 package com.tokopedia.shop.common.view.viewholder
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -19,7 +17,7 @@ class MembershipItemUnregisteredViewHolder(view: View, private val listener: Mem
     private var txtButtonRegistration: TextView = view.findViewById(R.id.btn_register_membership)
 
     companion object {
-        private const val URL_IMG_BG_MEMBERSHIP = TokopediaImageUrl.URL_IMG_BG_MEMBERSHIP
+        private const val URL_IMG_BG_MEMBERSHIP = "https://images.tokopedia.net/img/android/membership/bg_membership_banner.png"
     }
 
     override fun bind(element: ItemUnregisteredViewModel) {

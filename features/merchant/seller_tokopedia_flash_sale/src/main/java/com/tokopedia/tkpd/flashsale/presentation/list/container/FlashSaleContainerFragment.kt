@@ -1,7 +1,5 @@
 package com.tokopedia.tkpd.flashsale.presentation.list.container
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -49,7 +47,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         private const val DEFAULT_TOTAL_CAMPAIGN_COUNT = 0
         private const val FEATURE_LEARN_MORE_ARTICLE_URL = "https://seller.tokopedia.com/edu/fitur-admin-toko/"
         private const val SELLER_EDU_ARTICLE_URL = "https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/"
-        private const val INELIGIBLE_ACCESS_IMAGE_URL = TokopediaImageUrl.INELIGIBLE_ACCESS_IMAGE_URL
+        private const val INELIGIBLE_ACCESS_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_ineligible_access_fs_tokopedia.png"
         @JvmStatic
         fun newInstance() = FlashSaleContainerFragment()
     }

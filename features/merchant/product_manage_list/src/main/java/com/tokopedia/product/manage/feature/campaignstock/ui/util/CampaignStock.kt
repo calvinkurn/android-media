@@ -1,7 +1,5 @@
 package com.tokopedia.product.manage.feature.campaignstock.ui.util
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.content.Context
 import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -10,7 +8,7 @@ import com.tokopedia.product.manage.R
 object CampaignStock {
     const val MAX_STOCK_COUNT = 999999
 
-    const val REDIRECTION_IMAGE_URL = TokopediaImageUrl.REDIRECTION_IMAGE_URL
+    const val REDIRECTION_IMAGE_URL = "https://images.tokopedia.net/android/img_campaign_stock_redirection.png"
 }
 
 /**

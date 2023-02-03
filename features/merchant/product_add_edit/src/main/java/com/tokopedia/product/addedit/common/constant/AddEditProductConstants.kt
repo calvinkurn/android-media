@@ -1,7 +1,5 @@
 package com.tokopedia.product.addedit.common.constant
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 object AddEditProductConstants {
     const val EXTRA_CACHE_MANAGER_ID = "CACHE_MANAGER_ID"
     const val EXTRA_IS_EDIT_MODE = "EXTRA_IS_EDIT_MODE"
@@ -26,18 +24,18 @@ object AddEditProductConstants {
     const val EXT_JPG = ".jpg"
     const val EXT_JPEG = ".jpeg"
 
-    const val PHOTO_TIPS_URL_1 = TokopediaImageUrl.PHOTO_TIPS_URL_1
-    const val PHOTO_TIPS_URL_2 = TokopediaImageUrl.PHOTO_TIPS_URL_2
-    const val PHOTO_TIPS_URL_3 = TokopediaImageUrl.PHOTO_TIPS_URL_3
+    const val PHOTO_TIPS_URL_1 = "https://images.tokopedia.net/android/others/stuart/product_photo_choosing_tips_1.png"
+    const val PHOTO_TIPS_URL_2 = "https://images.tokopedia.net/android/others/stuart/product_photo_choosing_tips_2.png"
+    const val PHOTO_TIPS_URL_3 = "https://images.tokopedia.net/android/others/stuart/product_photo_choosing_tips_3.png"
 
-    const val PHOTO_NEW_USER_SPECIFICATION = TokopediaImageUrl.PHOTO_NEW_USER_SPECIFICATION
-    const val PHOTO_SIGNAL_STATUS_SPECIFICATION = TokopediaImageUrl.PHOTO_SIGNAL_STATUS_SPECIFICATION
-    const val PHOTO_TITLE_VALIDATION_SUCCESS = TokopediaImageUrl.PHOTO_TITLE_VALIDATION_SUCCESS
-    const val PHOTO_TITLE_VALIDATION_ERROR = TokopediaImageUrl.PHOTO_TITLE_VALIDATION_ERROR
+    const val PHOTO_NEW_USER_SPECIFICATION = "https://images.tokopedia.net/img/android/merchant/category_spesific_field/new_user_specification.png"
+    const val PHOTO_SIGNAL_STATUS_SPECIFICATION = "https://images.tokopedia.net/img/android/product_service/add_edit_product/specification_signal_status.png"
+    const val PHOTO_TITLE_VALIDATION_SUCCESS = "https://images.tokopedia.net/img/android/product_service/product_title_bottomsheet_success.png"
+    const val PHOTO_TITLE_VALIDATION_ERROR = "https://images.tokopedia.net/img/android/product_service/product_title_bottomsheet_error.png"
 
-    const val LIGHT_BULB_ICON = TokopediaImageUrl.LIGHT_BULB_ICON
-    const val ROUND_GREEN_CHECK_MARK_ICON = TokopediaImageUrl.ROUND_GREEN_CHECK_MARK_ICON
-    const val INFORMATION_ICON = TokopediaImageUrl.INFORMATION_ICON
+    const val LIGHT_BULB_ICON = "https://images.tokopedia.net/img/android/product-service/aep/icons/light_bulb_3x.png"
+    const val ROUND_GREEN_CHECK_MARK_ICON = "https://images.tokopedia.net/img/android/product-service/aep/icons/round_green_checkmark_3x.png"
+    const val INFORMATION_ICON = "https://images.tokopedia.net/img/android/product-service/aep/icons/information_icon_3x.png"
 
     const val MAX_PRODUCT_IMAGE_SIZE_IN_MB = 30
     const val MAX_PRODUCT_IMAGE_SIZE_IN_KB = MAX_PRODUCT_IMAGE_SIZE_IN_MB * 1024

@@ -1,7 +1,5 @@
 package com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
@@ -141,8 +139,8 @@ class MerchantSearchOOCViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_search_ooc
         
-        private const val IMG_STATIC_URI_NO_PIN_POIN = TokopediaImageUrl.IMG_STATIC_URI_NO_PIN_POIN
-        private const val IMG_STATIC_URI_NO_ADDRESS = TokopediaImageUrl.IMG_STATIC_URI_NO_ADDRESS
+        private const val IMG_STATIC_URI_NO_PIN_POIN = "https://images.tokopedia.net/img/ic-tokofood_home_no_pin_poin.png"
+        private const val IMG_STATIC_URI_NO_ADDRESS = "https://images.tokopedia.net/img/ic_tokofood_home_no_address.png"
     }
 
 }
