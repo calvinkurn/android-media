@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentSetupCoverUploadImageBinding
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
@@ -67,7 +69,9 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
             is PlayBroadcastSetupBottomSheet -> {
                 childFragment.setListener(object : PlayBroadcastSetupBottomSheet.Listener {
                     override fun onCoverChanged(cover: PlayCoverUiModel) {
-                        parentViewModel.submitAction(PlayBroadcastAction.SetCover(cover))
+                        parentViewModel.submitAction(
+                            PlayBroadcastAction.SetCover(cover)
+                        )
                     }
                 })
                 childFragment.setDataSource(object : PlayBroadcastSetupBottomSheet.DataSource {
@@ -75,12 +79,16 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
                         return parentViewModel.productSectionList.flatMap { it.products }
                     }
 
-                    override fun getAuthorId(): String {
-                        return parentViewModel.authorId
+                    override fun getSelectedAccount(): ContentAccountUiModel {
+                        return parentViewModel.selectedAccount
                     }
 
                     override fun getChannelId(): String {
                         return parentViewModel.channelId
+                    }
+
+                    override fun getPageSource(): PlayBroPageSource {
+                        return PlayBroPageSource.Live
                     }
                 })
             }

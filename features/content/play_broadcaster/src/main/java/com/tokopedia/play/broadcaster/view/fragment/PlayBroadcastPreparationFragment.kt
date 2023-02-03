@@ -231,32 +231,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     }
                 })
             }
-            is PlayBroadcastSetupBottomSheet -> {
-                childFragment.setListener(object : PlayBroadcastSetupBottomSheet.Listener {
-                    override fun onCoverChanged(cover: PlayCoverUiModel) {
-                        parentViewModel.submitAction(
-                            PlayBroadcastAction.SetCover(cover)
-                        )
-                    }
-                })
-                childFragment.setDataSource(object : PlayBroadcastSetupBottomSheet.DataSource {
-                    override fun getProductList(): List<ProductUiModel> {
-                        return parentViewModel.productSectionList.flatMap { it.products }
-                    }
-
-                    override fun getSelectedAccount(): ContentAccountUiModel {
-                        return parentViewModel.selectedAccount
-                    }
-
-                    override fun getChannelId(): String {
-                        return parentViewModel.channelId
-                    }
-
-                    override fun getPageSource(): PlayBroPageSource {
-                        return PlayBroPageSource.Live
-                    }
-                })
-            }
             is ContentAccountTypeBottomSheet -> {
                 childFragment.setData(parentViewModel.contentAccountList)
                 childFragment.setListener(object : ContentAccountTypeBottomSheet.Listener {
