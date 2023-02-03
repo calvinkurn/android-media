@@ -1259,13 +1259,11 @@ class WishlistCollectionDetailFragment :
             if (activityWishlistV2 != PARAM_HOME) {
                 wishlistCollectionDetailNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
                 icons = IconBuilder().apply {
-                    if (WishlistV2RemoteConfigRollenceUtil.isEnableRollenceWishlistSharing()) {
-                        if (collectionType == TYPE_COLLECTION_PRIVATE_SELF ||
-                            collectionType == TYPE_COLLECTION_PUBLIC_SELF ||
-                            collectionType == TYPE_COLLECTION_PUBLIC_OTHERS
-                        ) {
-                            addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleCollectionSharing() }, disableDefaultGtmTracker = true)
-                        }
+                    if (collectionType == TYPE_COLLECTION_PRIVATE_SELF ||
+                        collectionType == TYPE_COLLECTION_PUBLIC_SELF ||
+                        collectionType == TYPE_COLLECTION_PUBLIC_OTHERS
+                    ) {
+                        addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleCollectionSharing() }, disableDefaultGtmTracker = true)
                     }
                     addIcon(iconId = IconList.ID_CART, disableRouteManager = true, onClick = { handleGoToCartPage() })
                     addIcon(iconId = IconList.ID_NAV_GLOBAL) {}
