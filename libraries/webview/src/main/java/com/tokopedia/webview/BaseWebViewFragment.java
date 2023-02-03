@@ -538,8 +538,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
             contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
             contentSelectionIntent.setType("*/*");
-            Intent[] intentArray = new Intent[1];
+            Intent[] intentArray = new Intent[0];
             if(getContext() != null){
+                intentArray = new Intent[1];
                 Intent mediaPickerIntent =  WebViewHelper.INSTANCE.getMediaPickerIntent(getContext());
                 intentArray[0] = mediaPickerIntent;
             }
