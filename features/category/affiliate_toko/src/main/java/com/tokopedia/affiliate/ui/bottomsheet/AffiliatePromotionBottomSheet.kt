@@ -185,8 +185,8 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        affiliatePromotionBSViewModel = ViewModelProvider(this, viewModelProvider)
-            .get(AffiliatePromotionBSViewModel::class.java)
+        affiliatePromotionBSViewModel =
+            ViewModelProvider(this, viewModelProvider)[AffiliatePromotionBSViewModel::class.java]
         init()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -505,6 +505,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_RESULT_PAGE
                 eventCategory =
                     AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
+                if (params?.ssaInfo?.ssaStatus == true) {
+                    eventLabel += " - komisi extra"
+                }
             }
         }
         AffiliateAnalytics.sendEvent(
@@ -544,6 +547,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_SHOP_SEARCH_RESULT
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
                 eventLabel = "$linkID - $entryFlag - $status"
+                if (params?.ssaInfo?.ssaStatus == true) {
+                    eventLabel += " - komisi extra"
+                }
             }
             ORIGIN_SSA_SHOP -> {
                 event = AffiliateAnalytics.EventKeys.CLICK_CONTENT
