@@ -33,6 +33,7 @@ kapt {
 dependencies {
 
     implementation rootProject.ext.firebase.crashlytics
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)

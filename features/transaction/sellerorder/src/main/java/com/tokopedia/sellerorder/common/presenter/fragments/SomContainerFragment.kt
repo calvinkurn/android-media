@@ -1,5 +1,7 @@
 package com.tokopedia.sellerorder.common.presenter.fragments
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -35,7 +37,7 @@ class SomContainerFragment : TkpdBaseV4Fragment(), SomListFragment.SomListClickL
             }
         }
 
-        private const val URL_WELCOME_ILLUSTRATION = "https://images.tokopedia.net/img/android/sellerorder/ic_som_welcome_page_illustration.png"
+        private const val URL_WELCOME_ILLUSTRATION = TokopediaImageUrl.URL_WELCOME_ILLUSTRATION
     }
 
     private var binding by viewBinding(FragmentSomContainerBinding::bind)

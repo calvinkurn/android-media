@@ -1,5 +1,7 @@
 package com.tokopedia.home_account
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 
 /**
  * @author okasurya on 7/20/18.
@@ -173,9 +175,9 @@ object AccountConstants {
         const val KEY_IMAGE_HOST = "image_host"
         const val CDN_URL = "https://images.tokopedia.net"
         const val PLAYSTORE_URL = "https://play.google.com/store/apps/details?id="
-        const val TOKOPOINTS_ICON = "https://images.tokopedia.net/img/img/phoenix/tokopoints.png"
-        const val SALDO_ICON = "https://images.tokopedia.net/img/android/user/emoney/saldo.png"
-        const val OVO_ICON = "https://images.tokopedia.net/img/android/user/emoney/ovo.png"
+        const val TOKOPOINTS_ICON = TokopediaImageUrl.TOKOPOINTS_ICON
+        const val SALDO_ICON = TokopediaImageUrl.SALDO_ICON
+        const val OVO_ICON = TokopediaImageUrl.OVO_ICON
     }
 
     object SettingCode {
