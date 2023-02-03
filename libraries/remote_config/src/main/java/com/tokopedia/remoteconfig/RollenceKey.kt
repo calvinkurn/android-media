@@ -46,8 +46,6 @@ object RollenceKey {
     // Purchase Platform
     const val CONTROL_VARIANT = "control_variant"
     const val EXPERIMENT_VARIANT = "experiment_variant"
-    const val WISHLIST_COLLECTION = "WL_collection_andro"
-    const val WISHLIST_COLLECTION_SHARING = "WL_sharing_andro"
     const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
 
     // SRP Video Sneak Peek Autoplay

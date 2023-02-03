@@ -5322,32 +5322,20 @@ open class DynamicProductDetailFragment :
                     productId: String
                 ) {
                     context?.let { context ->
-                        if (result.success &&
-                            WishlistV2RemoteConfigRollenceUtil.isUsingWishlistCollection(context)
-                        ) {
-                            val applinkCollection =
-                                "$WISHLIST_COLLECTION_BOTTOMSHEET?$PATH_PRODUCT_ID=$productId&$PATH_SRC=$DEFAULT_X_SOURCE"
-                            val intentBottomSheetWishlistCollection =
-                                RouteManager.getIntent(context, applinkCollection)
-                            val isOos = viewModel.getDynamicProductInfoP1?.getFinalStock()
-                                ?.toIntOrNull() == 0
-                            intentBottomSheetWishlistCollection.putExtra(
-                                WishlistV2CommonConsts.IS_PRODUCT_ACTIVE,
-                                !isOos
-                            )
-                            startActivityForResult(
-                                intentBottomSheetWishlistCollection,
-                                REQUEST_CODE_ADD_WISHLIST_COLLECTION
-                            )
-                        } else {
-                            view?.let { v ->
-                                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
-                                    result,
-                                    context,
-                                    v
-                                )
-                            }
-                        }
+                        val applinkCollection =
+                            "$WISHLIST_COLLECTION_BOTTOMSHEET?$PATH_PRODUCT_ID=$productId&$PATH_SRC=$DEFAULT_X_SOURCE"
+                        val intentBottomSheetWishlistCollection =
+                            RouteManager.getIntent(context, applinkCollection)
+                        val isOos = viewModel.getDynamicProductInfoP1?.getFinalStock()
+                            ?.toIntOrNull() == 0
+                        intentBottomSheetWishlistCollection.putExtra(
+                            WishlistV2CommonConsts.IS_PRODUCT_ACTIVE,
+                            !isOos
+                        )
+                        startActivityForResult(
+                            intentBottomSheetWishlistCollection,
+                            REQUEST_CODE_ADD_WISHLIST_COLLECTION
+                        )
                     }
                     if (result.success) {
                         updateFabIcon(productId, true)
