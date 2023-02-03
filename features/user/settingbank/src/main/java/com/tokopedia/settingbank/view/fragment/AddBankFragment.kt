@@ -11,7 +11,6 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -26,13 +25,11 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.di.SettingBankComponent
 import com.tokopedia.settingbank.domain.model.*
 import com.tokopedia.settingbank.util.AddBankAccountException
-import com.tokopedia.settingbank.util.getBankTypeFromAbbreviation
 import com.tokopedia.settingbank.util.textChangedListener
 import com.tokopedia.settingbank.view.activity.AddBankActivity
 import com.tokopedia.settingbank.view.viewModel.AddAccountViewModel
@@ -48,7 +45,6 @@ import kotlinx.android.synthetic.main.fragment_add_bank.*
 import kotlinx.android.synthetic.main.fragment_add_bank.add_account_button
 import kotlinx.android.synthetic.main.fragment_add_bank.progress_bar
 import javax.inject.Inject
-import kotlin.math.min
 
 
 class AddBankFragment : BaseDaggerFragment() {
@@ -134,7 +130,7 @@ class AddBankFragment : BaseDaggerFragment() {
         setTncText()
         startObservingViewModels()
         setBankName()
-        setTextPeriksaOffset()
+        configAccountNumberEditText()
         textPeriksa.setOnClickListener { checkAccountNumber() }
         add_account_button.setOnClickListener { onClickAddBankAccount() }
         if (!::bank.isInitialized) {
@@ -142,11 +138,18 @@ class AddBankFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setTextPeriksaOffset() {
+    private fun configAccountNumberEditText() {
         textPeriksa?.post {
             textPeriksa.translationY =
                 (textAreaBankAccountNumber.editText.measuredHeight.toFloat()
                     - textPeriksa.measuredHeight.toFloat()) / 2 + TEXT_PERIKSA_MARGIN_OFFSET_DP.toPx()
+
+            textAreaBankAccountNumber.editText.setPadding(
+                textAreaBankAccountNumber.editText.paddingLeft,
+                textAreaBankAccountNumber.editText.paddingTop,
+                textPeriksa.measuredWidth + + BANK_ACC_NUMBER_PADDING_RIGHT_DP.toPx(),
+                textAreaBankAccountNumber.editText.paddingBottom,
+            )
         }
     }
 
@@ -190,7 +193,6 @@ class AddBankFragment : BaseDaggerFragment() {
             inputType = InputType.TYPE_TEXT_VARIATION_PERSON_NAME
             textAreaBankAccountHolderName.editText.filters = getAlphabetOnlyInputFilter()
         }
-        setAccountNumberInputFilter()
 
     }
 
@@ -247,7 +249,8 @@ class AddBankFragment : BaseDaggerFragment() {
                     }
                     is ValidateAccountNumberSuccess -> {
                         setAccountNumberError(null)
-                        onValidateAccountNumber(it)
+                        onValidateAccountNumber()
+                        setPeriksaButtonState(true)
                     }
                 }
             })
@@ -287,18 +290,21 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun handleCheckAccountState(data: CheckAccountNameState) {
         setPeriksaButtonState(false)
-        this.checkAccountNameState = data
         when (data) {
             is AccountNameFinalValidationSuccess -> {
                 onAccountNumberAndNameValidationSuccess(data)
+                if (data.checkAccountAction != ActionValidateAccountName)
+                    this.checkAccountNameState = data
             }
 
             is EditableAccountName -> {
                 onEditableAccountFound(data)
+                this.checkAccountNameState = data
             }
 
             is AccountNameCheckError -> {
                 onAccountNumberCheckError(data)
+                this.checkAccountNameState = data
             }
         }
     }
@@ -322,7 +328,7 @@ class AddBankFragment : BaseDaggerFragment() {
         add_account_button.isEnabled = true
         groupAccountNameAuto.gone()
         textAreaBankAccountHolderName.visible()
-        textAreaBankAccountHolderName.editText.isEnabled = true
+        textAreaBankAccountHolderName.requestFocus()
         if (data.accountName.isNotEmpty())
             textAreaBankAccountHolderName.editText.setText(data.accountName)
 
@@ -330,16 +336,17 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun onAccountNumberCheckError(data: AccountNameCheckError) {
-        add_account_button.isEnabled = false
         if (data.accountName.isEmpty()) {
+            add_account_button.isEnabled = false
             setAccountNumberError(data.message)
         } else {
+            add_account_button.isEnabled = true
             groupAccountNameAuto.gone()
             textAreaBankAccountHolderName.visible()
+            textAreaBankAccountHolderName.requestFocus()
             textAreaBankAccountHolderName.editText.setText(
                 if (data.successCode == SUCCESS_CODE_428) "" else data.accountName
             )
-            textAreaBankAccountHolderName.editText.isEnabled = data.successCode == SUCCESS_CODE_428
             showManualAccountNameError(
                 data.message,
                 if (data.successCode == SUCCESS_CODE_428) false else null,
@@ -378,12 +385,8 @@ class AddBankFragment : BaseDaggerFragment() {
         textAreaBankAccountHolderName.isInputError = isInputError ?: errorStr?.isNotEmpty() ?: false
     }
 
-    private fun onValidateAccountNumber(onTextChanged: ValidateAccountNumberSuccess) {
-        setPeriksaButtonState(onTextChanged.isCheckEnable)
-        add_account_button.isEnabled = onTextChanged.isAddBankButtonEnable
+    private fun onValidateAccountNumber() {
         builder.setAccountNumber(textAreaBankAccountNumber.editText.text.toString())
-        setPeriksaButtonState(onTextChanged.isCheckEnable)
-        add_account_button.isEnabled = onTextChanged.isAddBankButtonEnable
         hideAccountHolderNameUI()
     }
 
@@ -405,18 +408,7 @@ class AddBankFragment : BaseDaggerFragment() {
         this.checkAccountNameState = null
         setBankName()
         textAreaBankAccountNumber.editText.setText("")
-        setAccountNumberInputFilter()
         hideAccountHolderNameUI()
-    }
-
-    private fun setAccountNumberInputFilter() {
-        if (::bank.isInitialized) {
-            val abbreviation = bank.abbreviation ?: ""
-            val bankAccountNumberCount = getBankTypeFromAbbreviation(abbreviation)
-            val filterArray = arrayOfNulls<InputFilter>(1)
-            filterArray[0] = InputFilter.LengthFilter(bankAccountNumberCount.count)
-            textAreaBankAccountNumber.editText.filters = filterArray
-        }
     }
 
     private fun setBankName() {
@@ -437,18 +429,35 @@ class AddBankFragment : BaseDaggerFragment() {
                     bankSettingAnalytics.eventOnAutoNameSimpanClick()
                     if (builder.isManual()) builder.setAccountName(accountHolderCustomName, true)
                     openConfirmationPopUp()
-                } else if (checkAccountNameState is EditableAccountName) {
+                } else {
                     bankSettingAnalytics.eventOnManualNameSimpanClick()
                     checkAccountNameLength(accountHolderCustomName) {
-                        if ((checkAccountNameState as EditableAccountName).isValidBankAccount) {
-                            builder.setAccountName(accountHolderCustomName, true)
-                            openConfirmationPopUp()
-                        } else {
-                            addAccountViewModel.validateEditedAccountInfo(
-                                bank.bankID,
-                                textAreaBankAccountNumber.editText.text.toString(),
-                                accountHolderCustomName
-                            )
+                        when (checkAccountNameState) {
+                            is EditableAccountName -> {
+                                if ((checkAccountNameState as EditableAccountName).isValidBankAccount) {
+                                    builder.setAccountName(accountHolderCustomName, true)
+                                    openConfirmationPopUp()
+
+                                } else {
+                                    addAccountViewModel.validateEditedAccountInfo(
+                                        bank.bankID,
+                                        textAreaBankAccountNumber.editText.text.toString(),
+                                        accountHolderCustomName
+                                    )
+                                }
+                            }
+                            is AccountNameCheckError -> {
+                                if ((checkAccountNameState as AccountNameCheckError).isValidBankAccount) {
+                                    builder.setAccountName(accountHolderCustomName, true)
+                                    openConfirmationPopUp()
+                                } else {
+                                    addAccountViewModel.validateEditedAccountInfo(
+                                        bank.bankID,
+                                        textAreaBankAccountNumber.editText.text.toString(),
+                                        accountHolderCustomName
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -568,6 +577,7 @@ class AddBankFragment : BaseDaggerFragment() {
         private const val BANK_ACC_START_IDX = 3
         private const val BANK_ACC_LAST_IDX = 50
         private const val TEXT_PERIKSA_MARGIN_OFFSET_DP = 5
+        private const val BANK_ACC_NUMBER_PADDING_RIGHT_DP = 20
         private const val SUCCESS_CODE_428 = 428
     }
 

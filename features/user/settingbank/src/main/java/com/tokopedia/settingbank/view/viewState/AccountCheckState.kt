@@ -8,6 +8,7 @@ data class AccountNameCheckError(
     val accountName: String,
     val message : String?,
     val successCode: Int,
+    val isValidBankAccount: Boolean,
 ) : CheckAccountNameState()
 
 data class AccountNameFinalValidationSuccess(val accountHolderName : String,
