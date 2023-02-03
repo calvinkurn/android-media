@@ -52,6 +52,7 @@ import com.tokopedia.mvc.presentation.summary.helper.SummaryPageRedirectionHelpe
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.mvc.util.constant.BundleConstant
+import com.tokopedia.mvc.util.tracker.SummaryPageTracker
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
@@ -106,8 +107,12 @@ class SummaryFragment :
 
     @Inject
     lateinit var viewModel: SummaryViewModel
+    
     @Inject
+    lateinit var tracker: SummaryPageTracker
+
     lateinit var pageNameMapper: SummaryPagePageNameMapper
+    
     @Inject
     lateinit var sharedPreferencesUtil: SharedPreferencesUtil
 
@@ -143,6 +148,17 @@ class SummaryFragment :
         redirectionHelper.onActivityResult(requestCode, resultCode, data)
     }
 
+    override fun onFragmentBackPressed(): Boolean {
+        viewModel.configuration.value?.let {
+            if (viewModel.checkIsAdding(it)) {
+                tracker.sendClickKembaliArrowFifthStepEvent()
+            } else {
+                tracker.sendClickArrowBackEvent(it.voucherId.toString())
+            }
+        }
+        return super.onFragmentBackPressed()
+    }
+    
     override fun onResume() {
         super.onResume()
         redirectionHelper.onResume(context ?: return)
@@ -276,6 +292,7 @@ class SummaryFragment :
         title = context.getString(R.string.smvc_summary_page_title)
         setNavigationOnClickListener {
             activity?.finish()
+            onFragmentBackPressed()
         }
     }
 
@@ -352,6 +369,13 @@ class SummaryFragment :
         }
         cbTnc.setOnClickListener {
             viewModel.validateTnc(cbTnc.isChecked)
+            viewModel.configuration.value?.let {
+                if (viewModel.checkIsAdding(it)) {
+                    tracker.sendClickCheckboxSyaratKetentuanEvent()
+                } else {
+                    tracker.sendClickCheckboxOnTncEvent(it.voucherId.toString())
+                }
+            }
         }
     }
 
@@ -465,6 +489,7 @@ class SummaryFragment :
             .setOnBroadCastClickListener(::onSuccessBottomsheetBroadCastClick)
         bottomSheet.setOnDismissListener {
             RouteManager.route(context, SELLER_MVC_LIST)
+            tracker.sendClickCloseEvent(configuration.voucherId.toString())
         }
         bottomSheet.show(childFragmentManager)
     }
@@ -479,19 +504,27 @@ class SummaryFragment :
 
     private fun onTypeCouponBtnChangeClicked(configuration: VoucherConfiguration) {
         redirectionHelper.redirectToVoucherTypePage(this, configuration)
+        val sectionName = binding?.layoutType?.tpgProductListTitle?.text.toString()
+        tracker.sendClickUbahEvent(configuration.voucherId.toString(), sectionName)
     }
 
     private fun onInformationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
+        val sectionName = binding?.layoutInfo?.tpgVoucherInfoTitle?.text.toString()
         val isAdding = viewModel.checkIsAdding(configuration) && !enableDuplicateVoucher
         redirectionHelper.redirectToCouponInfoPage(this, configuration, isAdding)
+        tracker.sendClickUbahEvent(configuration.voucherId.toString(), sectionName)
     }
 
     private fun onConfigurationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
+        val sectionName = binding?.layoutSetting?.tpgVoucherSettingTitle?.text.toString()
         val isAdding = viewModel.checkIsAdding(configuration) && !enableDuplicateVoucher
         redirectionHelper.redirectToCouponConfigurationPage(this, configuration, isAdding)
+        tracker.sendClickUbahEvent(configuration.voucherId.toString(), sectionName)
     }
 
     private fun onChangeProductBtnChangeClicked(configuration: VoucherConfiguration) {
+        val sectionName = binding?.layoutProducts?.tpgProductListTitle?.text.toString()
+        tracker.sendClickUbahEvent(configuration.voucherId.toString(), sectionName)
         redirectionHelper.redirectToAddProductPage(
             this,
             configuration = configuration,
@@ -501,6 +534,8 @@ class SummaryFragment :
     }
 
     private fun onProductListBtnChangeClicked(configuration: VoucherConfiguration) {
+        val sectionName = binding?.layoutProducts?.tpgProductListTitle?.text.toString()
+        tracker.sendClickUbahEvent(configuration.voucherId.toString(), sectionName)
         redirectionHelper.redirectToViewProductPage(
             this,
             configuration = configuration,
@@ -511,9 +546,11 @@ class SummaryFragment :
 
     private fun onSuccessBottomsheetBroadCastClick(voucherConfiguration: VoucherConfiguration) {
         context?.let { SharingUtil.shareToBroadCastChat(it, voucherConfiguration.voucherId) }
+        tracker.sendClickBroadcastPopUpEvent()
     }
 
     private fun onSuccessBottomsheetAdsClick(voucherConfiguration: VoucherConfiguration) {
         RouteManager.route(context, TOPADS_HEADLINE_CREATE)
+        tracker.sendClickTopadsPopUpEvent()
     }
 }
