@@ -129,14 +129,14 @@ public class GTMAnalytics extends ContextAnalytics {
     private static String UTM_MEDIUM_HOLDER = "";
     private static String UTM_CAMPAIGN_HOLDER = "";
 
-    public static void setUTMParamsForSession(Map<String, Object> maps){
-        if(maps != null && maps.get(AppEventTracking.GTM.UTM_SOURCE) != null) {
+    public static void setUTMParamsForSession(Map<String, Object> maps) {
+        if (maps != null && maps.get(AppEventTracking.GTM.UTM_SOURCE) != null) {
             UTM_SOURCE_HOLDER = Objects.requireNonNull(maps.get(AppEventTracking.GTM.UTM_SOURCE)).toString();
         }
-        if(maps != null && maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null) {
+        if (maps != null && maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null) {
             UTM_MEDIUM_HOLDER = Objects.requireNonNull(maps.get(AppEventTracking.GTM.UTM_MEDIUM)).toString();
         }
-        if(maps != null && maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null) {
+        if (maps != null && maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null) {
             UTM_CAMPAIGN_HOLDER = Objects.requireNonNull(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN)).toString();
         }
     }
@@ -1251,7 +1251,28 @@ public class GTMAnalytics extends ContextAnalytics {
                 if (oriBundle.get(key) instanceof String) {
                     targetBundle.putString(key, oriBundle.get(key).toString());
                 }
-            } catch (Exception ignored) { }
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    private void copyBundleStringRoot(Bundle oriBundle, Bundle targetBundle) {
+        // copy all key in original bundle to gav4 bundle, except for promotions
+        // and if there is item_list, will be converted to item_list_name in GAv4
+        for (String key : oriBundle.keySet()) {
+            try {
+                String targetkey;
+                if (key.equals(ITEM_LIST)) {
+                    targetkey = FirebaseAnalytics.Param.ITEM_LIST_NAME;
+                } else {
+                    targetkey = key;
+                }
+                Object value = oriBundle.get(key);
+                if (value instanceof String) {
+                    targetBundle.putString(targetkey, value.toString());
+                }
+            } catch (Exception ignored) {
+            }
         }
     }
 
@@ -1275,7 +1296,7 @@ public class GTMAnalytics extends ContextAnalytics {
                 promotionsGA4.add(newBundle);
             }
             Bundle ecommerceBundleGA4 = new Bundle();
-            copyBundleString(oriBundle, ecommerceBundleGA4);
+            copyBundleStringRoot(oriBundle, ecommerceBundleGA4);
             ecommerceBundleGA4.putParcelableArrayList(ITEMS, promotionsGA4);
             return ecommerceBundleGA4;
         } else {
@@ -1306,7 +1327,7 @@ public class GTMAnalytics extends ContextAnalytics {
             if (creativeSlot != null) {
                 ecommerceBundleGA4.putString(CREATIVE_SLOT, creativeSlot);
             }
-            copyBundleString(oriBundle, ecommerceBundleGA4);
+            copyBundleStringRoot(oriBundle, ecommerceBundleGA4);
         }
         return ecommerceBundleGA4;
     }
@@ -1314,7 +1335,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private Bundle createBundleGA4BundleProductClick(Bundle oriBundle) {
         Object promotions = oriBundle.get(KEY_PROMOTIONS);
         Bundle ecommerceBundleGA4 = new Bundle();
-        copyBundleString(oriBundle, ecommerceBundleGA4);
+        copyBundleStringRoot(oriBundle, ecommerceBundleGA4);
         if (promotions != null) {
             List promotionList = (List) promotions;
             ArrayList<Bundle> promotionsGA4 = new ArrayList<>();
