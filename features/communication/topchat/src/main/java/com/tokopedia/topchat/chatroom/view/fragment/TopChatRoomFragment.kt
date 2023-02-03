@@ -811,7 +811,7 @@ open class TopChatRoomFragment :
             getParamString(ApplinkConst.Chat.SEARCH_PRODUCT_KEYWORD, arguments, savedInstanceState)
     }
 
-    private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
+    fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
         val isFromAnotherChat = isFromAnotherChat(savedInstanceState)
         if (!isFromAnotherChat) {
             initProductPreview(savedInstanceState)
@@ -1061,7 +1061,7 @@ open class TopChatRoomFragment :
         // change the retry value
         element.isRetry = false
         adapter.updatePreviewState(element.localId)
-        viewModel.startUploadImages(element)
+        viewModel.startUploadImages(element, isUploadImageSecure())
     }
 
     override fun onProductClicked(element: ProductAttachmentUiModel) {
@@ -1616,7 +1616,7 @@ open class TopChatRoomFragment :
     private fun handleImageToUpload(imagePathList: List<String>) {
         processImagePathToUpload(imagePathList)?.let { model ->
             onSendAndReceiveMessage()
-            viewModel.startUploadImages(model)
+            viewModel.startUploadImages(model, isUploadImageSecure())
             topchatViewState?.scrollToBottom()
             sellerReviewHelper.hasRepliedChat = true
         }
@@ -3110,7 +3110,8 @@ open class TopChatRoomFragment :
             UploadImageChatService.enqueueWork(
                 it,
                 image,
-                viewModel.roomMetaData.msgId
+                viewModel.roomMetaData.msgId,
+                isUploadImageSecure()
             )
         }
     }
@@ -3523,6 +3524,13 @@ open class TopChatRoomFragment :
         return abTestPlatform.getString(AB_TEST_NEW_SRW, AB_TEST_OLD_SRW) == AB_TEST_NEW_SRW
     }
 
+    protected fun isUploadImageSecure(): Boolean {
+        return abTestPlatform.getString(
+            key = ROLLENCE_UPLOAD_SECURE,
+            defaultValue = ""
+        ) == ROLLENCE_UPLOAD_SECURE
+    }
+
     override fun onClickSRWTab() {
         val productIds = viewModel.attachmentPreviewData.keys.joinToString(separator = ",")
         TopChatAnalyticsKt.eventClickSRWTabChatTextAreaLayout(
@@ -3562,6 +3570,7 @@ open class TopChatRoomFragment :
 
         const val AB_TEST_NEW_SRW = "srw_new_design"
         const val AB_TEST_OLD_SRW = "control_variant"
+        const val ROLLENCE_UPLOAD_SECURE = "chat_upsecure_an"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
