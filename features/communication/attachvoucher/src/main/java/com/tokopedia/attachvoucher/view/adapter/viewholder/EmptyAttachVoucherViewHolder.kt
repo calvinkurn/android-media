@@ -1,7 +1,5 @@
 package com.tokopedia.attachvoucher.view.adapter.viewholder
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -14,7 +12,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class EmptyAttachVoucherViewHolder(itemView: View?) : AbstractViewHolder<EmptyModel>(itemView) {
 
-    private val emptyIconUrl = ImageUrl.emptyIconUrl
+    private val emptyIconUrl = "https://images.tokopedia.net/android/others/Voucher_Ilustration@3x.png"
 
     private val binding: ItemAttachvoucherEmptyBinding? by viewBinding()
 

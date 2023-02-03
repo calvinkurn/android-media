@@ -1,7 +1,5 @@
 package com.tokopedia.product_ar.util
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
@@ -19,8 +17,8 @@ import com.tokopedia.unifyprinciples.Typography
 class AnimatedTextIcon : LinearLayout {
 
     companion object {
-        private const val GALERY_IMAGE = ImageUrl.GALERY_IMAGE
-        private const val CAMERA_IMAGE = ImageUrl.CAMERA_IMAGE
+        private const val GALERY_IMAGE = "https://images.tokopedia.net/img/android/others/ic_gallery_ar_small.png"
+        private const val CAMERA_IMAGE = "https://images.tokopedia.net/img/android/others/ic_camera_ar_small.png"
     }
 
     constructor(context: Context) : super(context)

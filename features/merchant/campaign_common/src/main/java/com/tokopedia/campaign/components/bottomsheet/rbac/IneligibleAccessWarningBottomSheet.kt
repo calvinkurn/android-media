@@ -1,7 +1,5 @@
 package com.tokopedia.campaign.components.bottomsheet.rbac
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +15,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class IneligibleAccessWarningBottomSheet : BottomSheetUnify() {
 
     companion object {
-        private const val DEFAULT_IMAGE_URL = ImageUrl.DEFAULT_IMAGE_URL
+        private const val DEFAULT_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_ineligible_access.png"
 
         @JvmStatic
         fun newInstance() = IneligibleAccessWarningBottomSheet()

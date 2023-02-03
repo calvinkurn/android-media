@@ -1,7 +1,5 @@
 package com.tokopedia.seller.search.common
 
-import com.tokopedia.imageassets.ImageUrl
-
 object GlobalSearchSellerConstant {
     const val ORDER = "order"
     const val FAQ = "faq"
@@ -17,7 +15,7 @@ object GlobalSearchSellerConstant {
 
     const val WWW_APP_LINK_PREFIX = "https://www.tokopedia.com"
     const val HTTPS_APP_LINK_PREFIX = "https://tokopedia.com"
-    const val IC_NO_HISTORY_URL = ImageUrl.IC_NO_HISTORY_URL
+    const val IC_NO_HISTORY_URL = "https://images.tokopedia.net/android/sellersearch/ic_no_history_search@3x.png"
 
     internal const val KEYWORD = "keyword"
 }

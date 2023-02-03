@@ -1,7 +1,5 @@
 package com.tokopedia.manageaddress.ui.manageaddress
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -238,6 +236,6 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
     }
 
     companion object {
-        private const val IMAGE_GIFT_CARD = ImageUrl.IMAGE_GIFT_CARD
+        private const val IMAGE_GIFT_CARD = "https://images.tokopedia.net/img/android/shareaddress/gift%20card%20-%20color.png"
     }
 }

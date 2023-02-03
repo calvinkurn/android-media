@@ -1,7 +1,5 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
@@ -15,7 +13,7 @@ class SellerMigrationReviewViewHolder(
 ) : AbstractViewHolder<SellerMigrationReviewModel>(view) {
 
     companion object {
-        const val SELLER_MIGRATION_IMAGE_URL = ImageUrl.SELLER_MIGRATION_IMAGE_URL
+        const val SELLER_MIGRATION_IMAGE_URL = "https://images.tokopedia.net/android/others/seller_migration_review_viewholder.png"
         val LAYOUT: Int = R.layout.item_seller_migration_review
     }
 

@@ -1,7 +1,5 @@
 package com.tokopedia.gopay.kyc.presentation.fragment
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -64,7 +62,7 @@ class GoPayUploadSuccessFragment : GoPayKycBaseFragment() {
     companion object {
         fun newInstance() = GoPayUploadSuccessFragment()
         const val SUCCESS_IMAGE_NAME = "gopay_kyc_upload_success.png"
-        const val SUCCESS_IMAGE_PATH = ImageUrl.SUCCESS_IMAGE_PATH
+        const val SUCCESS_IMAGE_PATH = "https://images.tokopedia.net/img/android/res/singleDpi/gopay_kyc_upload_success.png"
 
     }
 }

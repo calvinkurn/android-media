@@ -1,7 +1,5 @@
 package com.tokopedia.contactus.resolution.view
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -81,7 +79,7 @@ class ResolutionSuccessFragment : TkpdBaseV4Fragment() {
 
     companion object {
         private const val KEY_URL = "url"
-        private const val URL_IMAGE = ImageUrl.URL_IMAGE
+        private const val URL_IMAGE = "https://images.tokopedia.net/img/resolution/icons/resolution_success_state.png"
 
         fun createNewInstance(url: String): Fragment {
             return ResolutionSuccessFragment().apply {

@@ -1,7 +1,5 @@
 package com.tokopedia.updateinactivephone.features.successpage.regular
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.show
@@ -57,7 +55,7 @@ open class InactivePhoneRegularSuccessFragment : BaseInactivePhoneSuccessFragmen
     }
 
     companion object {
-        private const val IMAGE_HEADER_URL_REGULAR = ImageUrl.IMAGE_HEADER_URL_REGULAR
+        private const val IMAGE_HEADER_URL_REGULAR = "https://images.tokopedia.net/img/android/user/inactive-phone/inactivephone_success.png"
 
         fun instance(bundle: Bundle): InactivePhoneRegularSuccessFragment {
             return InactivePhoneRegularSuccessFragment().apply {

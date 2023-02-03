@@ -1,7 +1,5 @@
 package com.tokopedia.tokopedianow.categorylist.presentation.bottomsheet
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
@@ -48,7 +46,7 @@ import javax.inject.Inject
 class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
 
     companion object {
-        private const val ERROR_STATE_NOT_FOUND_IMAGE_URL = ImageUrl.ERROR_STATE_NOT_FOUND_IMAGE_URL
+        private const val ERROR_STATE_NOT_FOUND_IMAGE_URL = "https://images.tokopedia.net/img/error_page_400_category_list.png"
         private val TAG = TokoNowCategoryListBottomSheet::class.simpleName
 
         fun newInstance(warehouseId: String): TokoNowCategoryListBottomSheet {

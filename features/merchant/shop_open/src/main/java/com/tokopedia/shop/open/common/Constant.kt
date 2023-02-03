@@ -1,7 +1,5 @@
 package com.tokopedia.shop.open.common
 
-import com.tokopedia.imageassets.ImageUrl
-
 object PageNameConstant {
     const val SPLASH_SCREEN_PAGE = "GREETING_PAGE"
     const val QUISIONER_PAGE = "QUISIONER_PAGE"
@@ -19,7 +17,7 @@ object TermsAndConditionsLink {
 }
 
 object ImageAssets {
-    val IMG_SHOP_OPEN_SPLASH_SCREEN = ImageUrl.IMG_SHOP_OPEN_SPLASH_SCREEN
+    val IMG_SHOP_OPEN_SPLASH_SCREEN = "https://images.tokopedia.net/android/others/seller_empty_state.png"
 }
 
 object ScreenNameTracker {

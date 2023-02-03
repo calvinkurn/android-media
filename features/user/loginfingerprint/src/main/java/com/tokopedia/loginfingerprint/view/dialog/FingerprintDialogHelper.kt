@@ -1,7 +1,5 @@
 package com.tokopedia.loginfingerprint.view.dialog
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.content.Context
 import android.view.View
 import androidx.fragment.app.FragmentActivity
@@ -14,8 +12,8 @@ import com.tokopedia.unifycomponents.UnifyButton
 
 object FingerprintDialogHelper {
 
-    const val BIOMETRIC_OFFERING_MAIN_IMG = ImageUrl.BIOMETRIC_OFFERING_MAIN_IMG
-    const val BIOMETRIC_OFFERING_SUCCESS_IMG = ImageUrl.BIOMETRIC_OFFERING_SUCCESS_IMG
+    const val BIOMETRIC_OFFERING_MAIN_IMG = "https://images.tokopedia.net/img/android/user/home_account/img_register_biometric.png"
+    const val BIOMETRIC_OFFERING_SUCCESS_IMG = "https://images.tokopedia.net/img/android/user/home_account/img_biometric_register_success.png"
 
     fun showFingerprintLockoutDialog(context: Context?, onPositiveButtonClick: () -> Unit? = {}, onDismiss: () -> Unit? = {}) {
         context?.run {

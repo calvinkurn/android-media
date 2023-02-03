@@ -1,7 +1,5 @@
 package com.tokopedia.product.detail.view.viewholder
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.globalerror.GlobalError
@@ -21,7 +19,7 @@ class PageErrorViewHolder(val view: View,
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_global_error
-        private const val IMG_URL_ERROR_TOBACCO = ImageUrl.IMG_URL_ERROR_TOBACCO
+        private const val IMG_URL_ERROR_TOBACCO = "https://images.tokopedia.net/android/tobacco/banned_product_slice.png"
         private const val TNC_BANNED_PRODUCT = "https://m.tokopedia.com/terms"
     }
 

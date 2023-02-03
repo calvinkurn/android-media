@@ -1,7 +1,5 @@
 package com.tokopedia.logisticorder.view
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -542,7 +540,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         private const val ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID"
         private const val ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL"
         private const val ARGUMENTS_CALLER = "ARGUMENTS_CALLER"
-        private const val ICON_OPEN_TIPPING_GOJEK = ImageUrl.ICON_OPEN_TIPPING_GOJEK
+        private const val ICON_OPEN_TIPPING_GOJEK = "https://images.tokopedia.net/img/android/tipping/Group 3125093.png"
 
         fun createFragment(orderId: String?, liveTrackingUrl: String?, caller: String?): TrackingPageFragment {
             return TrackingPageFragment().apply {

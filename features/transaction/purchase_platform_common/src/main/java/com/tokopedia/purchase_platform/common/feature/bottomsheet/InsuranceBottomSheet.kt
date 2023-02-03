@@ -1,7 +1,5 @@
 package com.tokopedia.purchase_platform.common.feature.bottomsheet
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.content.Context
 import android.view.LayoutInflater
 import androidx.annotation.DrawableRes
@@ -14,7 +12,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 class InsuranceBottomSheet {
 
     companion object {
-        private const val IMAGE_URL  = ImageUrl.IMAGE_URL
+        private const val IMAGE_URL  = "https://images.tokopedia.net/img/logistic/assets/shipping-insurance.png"
     }
 
     private var desc: String = ""

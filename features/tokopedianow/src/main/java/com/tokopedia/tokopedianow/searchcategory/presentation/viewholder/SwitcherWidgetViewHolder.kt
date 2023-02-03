@@ -1,7 +1,5 @@
 package com.tokopedia.tokopedianow.searchcategory.presentation.viewholder
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -21,9 +19,9 @@ class SwitcherWidgetViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_search_category_switcher_widget
-        private const val SWITCHER_WIDGET_BG_URL = ImageUrl.SWITCHER_WIDGET_BG_URL
-        private const val SWITCHER_WIDGET_CARD_2H_BG_URL = ImageUrl.SWITCHER_WIDGET_CARD_2H_BG_URL
-        private const val SWITCHER_WIDGET_CARD_20M_BG_URL = ImageUrl.SWITCHER_WIDGET_CARD_20M_BG_URL
+        private const val SWITCHER_WIDGET_BG_URL = "https://images.tokopedia.net/img/android/tokonow/tokopedianow_bg_search_category_switcher_widget.png"
+        private const val SWITCHER_WIDGET_CARD_2H_BG_URL = "https://images.tokopedia.net/img/android/tokonow/tokopedianow_bg_search_category_switcher_widget_card_2h.png"
+        private const val SWITCHER_WIDGET_CARD_20M_BG_URL = "https://images.tokopedia.net/img/android/tokonow/tokopedianow_bg_search_category_switcher_widget_card_15m.png"
     }
 
     private var binding: ItemTokopedianowSearchCategorySwitcherWidgetBinding? by viewBinding()

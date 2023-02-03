@@ -1,7 +1,5 @@
 package com.tokopedia.hotel.homepage.presentation.fragment
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -864,7 +862,7 @@ class HotelHomepageFragment :
 
         const val TAG_GUEST_INFO = "guestHotelInfo"
 
-        const val HOMEPAGE_BG_IMAGE_URL = ImageUrl.HOMEPAGE_BG_IMAGE_URL
+        const val HOMEPAGE_BG_IMAGE_URL = "https://images.tokopedia.net/img/android/res/singleDpi/bg_hotel_homepage_background.png"
 
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
 

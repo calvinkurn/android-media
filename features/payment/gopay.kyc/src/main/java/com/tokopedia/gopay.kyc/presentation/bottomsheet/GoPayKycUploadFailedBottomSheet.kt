@@ -1,7 +1,5 @@
 package com.tokopedia.gopay.kyc.presentation.bottomsheet
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -129,7 +127,7 @@ class GoPayKycUploadFailedBottomSheet : BottomSheetUnify() {
         private const val KTP_PATH = "ktp_path"
         private const val SELFIE_KTP_PATH = "selfie_ktp_path"
         const val FAILED_IMAGE_NAME = "gopay_kyc_upload_failed.png"
-        const val FAILED_IMAGE_PATH = ImageUrl.FAILED_IMAGE_PATH
+        const val FAILED_IMAGE_PATH = "https://images.tokopedia.net/img/android/res/singleDpi/gopay_kyc_upload_failed.png"
 
         fun show(ktpPath: String, selfieKtpPath: String, childFragmentManager: FragmentManager) {
             val bundle = Bundle().apply {

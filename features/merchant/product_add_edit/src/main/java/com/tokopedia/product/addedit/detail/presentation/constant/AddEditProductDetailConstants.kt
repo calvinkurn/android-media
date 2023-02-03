@@ -1,7 +1,5 @@
 package com.tokopedia.product.addedit.detail.presentation.constant
 
-import com.tokopedia.imageassets.ImageUrl
-
 class AddEditProductDetailConstants {
     companion object {
         const val MAX_PRODUCT_PHOTOS = 5
@@ -47,7 +45,7 @@ class AddEditProductDetailConstants {
         const val BUNDLE_CACHE_MANAGER_ID = "bundle_cache_manager_id"
 
         // price recommendation
-        const val PRICE_RECOMMENDATION_BANNER_URL = ImageUrl.PRICE_RECOMMENDATION_BANNER_URL
+        const val PRICE_RECOMMENDATION_BANNER_URL = "https://images.tokopedia.net/img/android/product-add-edit/banner_price_recommendation.png"
         const val MAX_LENGTH_PRICE = 11 // Sample: 999.999.999
 
         // CPL

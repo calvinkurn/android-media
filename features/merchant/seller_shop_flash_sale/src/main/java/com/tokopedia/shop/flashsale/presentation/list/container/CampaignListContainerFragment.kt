@@ -1,7 +1,5 @@
 package com.tokopedia.shop.flashsale.presentation.list.container
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -43,7 +41,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
 
     companion object {
         private const val REDIRECTION_DELAY : Long = 500
-        private const val EMPTY_STATE_IMAGE_URL = ImageUrl.EMPTY_STATE_IMAGE_URL
+        private const val EMPTY_STATE_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/shop_outdoor.png"
         private const val FEATURE_INTRODUCTION_URL = "https://seller.tokopedia.com/edu/flash-sale-toko/"
 
         @JvmStatic

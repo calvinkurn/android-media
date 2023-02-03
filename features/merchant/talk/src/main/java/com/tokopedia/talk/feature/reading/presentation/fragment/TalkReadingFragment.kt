@@ -1,7 +1,5 @@
 package com.tokopedia.talk.feature.reading.presentation.fragment
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -78,7 +76,7 @@ open class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         const val TALK_REPLY_ACTIVITY_REQUEST_CODE = 202
         const val TALK_WRITE_ACTIVITY_REQUEST_CODE = 203
         const val LOGIN_ACTIVITY_REQUEST_CODE = 204
-        const val TALK_READING_EMPTY_IMAGE_URL = ImageUrl.TALK_READING_EMPTY_IMAGE_URL
+        const val TALK_READING_EMPTY_IMAGE_URL = "https://images.tokopedia.net/android/others/talk_reading_empty_state.png"
 
         @JvmStatic
         fun createNewInstance(productId: String, shopId: String, isVariantSelected: Boolean, availableVariants: String): TalkReadingFragment =

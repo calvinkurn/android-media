@@ -1,7 +1,5 @@
 package com.tokopedia.vouchercreation.shop.voucherlist.view.viewholder
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -25,7 +23,7 @@ class EmptyStateViewHolder(
 ) : AbstractViewHolder<EmptyStateUiModel>(itemView) {
 
     companion object {
-        const val EMPTY_IMAGE_URL = ImageUrl.EMPTY_IMAGE_URL
+        const val EMPTY_IMAGE_URL = "https://images.tokopedia.net/android/others/mvc_empty_state.png"
 
         @LayoutRes
         val RES_LAYOUT = R.layout.item_mvc_voucher_list_empty_state

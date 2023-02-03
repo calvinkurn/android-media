@@ -1,11 +1,9 @@
 package com.tokopedia.shop_showcase.common
 
-import com.tokopedia.imageassets.ImageUrl
-
 object ImageAssets {
-    const val PRODUCT_EMPTY = ImageUrl.PRODUCT_EMPTY
-    const val SEARCH_SHOWCASE_NOT_FOUND = ImageUrl.SEARCH_SHOWCASE_NOT_FOUND
-    const val PICKER_LIST_EMPTY = ImageUrl.PICKER_LIST_EMPTY
+    const val PRODUCT_EMPTY = "https://images.tokopedia.net/android/others/illustration_product_empty.png"
+    const val SEARCH_SHOWCASE_NOT_FOUND = "https://images.tokopedia.net/android/merchant/shop_showcase/search_empty.png"
+    const val PICKER_LIST_EMPTY = "https://images.tokopedia.net/android/shop/showcase_picker_empty_state.png"
 }
 
 object AppScreen {

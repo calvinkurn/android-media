@@ -1,7 +1,5 @@
 package com.tokopedia.gopay.kyc.presentation.fragment
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -133,7 +131,7 @@ class GoPayPlusSelfieKtpInstructionsFragment : GoPayKycBaseFragment() {
         const val INSTRUCTION_IMAGE_NAME = "gopay_kyc_selfie_instruction_step.png"
         const val CORRECT_IMAGE_NAME = "gopay_kyc_selfie_ktp_correct_instruction.png"
         const val INCORRECT_IMAGE_NAME = "gopay_kyc_selfie_ktp_incorrect_instruction.png"
-        const val INSTRUCTION_IMAGE_PATH = ImageUrl.INSTRUCTION_IMAGE_PATH
+        const val INSTRUCTION_IMAGE_PATH = "https://images.tokopedia.net/img/android/res/singleDpi/gopay_kyc_selfie_instruction_step.png"
         const val CORRECT_IMAGE_PATH =
             "https://images.tokopedia.net/img/android/res/singleDpi/gopay_kyc_selfie_ktp_correct_instruction.png"
         const val INCORRECT_IMAGE_PATH =

@@ -1,7 +1,5 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
@@ -28,7 +26,7 @@ class HomeQuestTitleViewHolder(
 ): AbstractViewHolder<HomeQuestTitleUiModel>(itemView) {
 
     companion object {
-        private const val BG_QUEST_TITLE = ImageUrl.BG_QUEST_TITLE
+        private const val BG_QUEST_TITLE = "https://images.tokopedia.net/img/android/tokonow/bg_quest_title.png"
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_quest_title_widget
     }

@@ -1,17 +1,15 @@
 package com.tokopedia.product.addedit.productlimitation.domain.constant
 
-import com.tokopedia.imageassets.ImageUrl
-
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 
 class AddEditProductUrlConstants {
     companion object {
-        const val IMAGE_URL_UPGRADE_TO_PM = ImageUrl.IMAGE_URL_UPGRADE_TO_PM
-        const val IMAGE_URL_UPGRADE_TO_PM_PRO = ImageUrl.IMAGE_URL_UPGRADE_TO_PM_PRO
-        const val IMAGE_URL_USE_VARIANT = ImageUrl.IMAGE_URL_USE_VARIANT
-        const val IMAGE_URL_DELETE_PRODUCTS = ImageUrl.IMAGE_URL_DELETE_PRODUCTS
-        const val IMAGE_URL_USE_PROMOTION = ImageUrl.IMAGE_URL_USE_PROMOTION
+        const val IMAGE_URL_UPGRADE_TO_PM = "https://images.tokopedia.net/img/android/merchant/add-edit-product/product_limitation_pm.png"
+        const val IMAGE_URL_UPGRADE_TO_PM_PRO = "https://images.tokopedia.net/img/android/product_service/product_limitation_PM_pro.png"
+        const val IMAGE_URL_USE_VARIANT = "https://images.tokopedia.net/img/android/merchant/add-edit-product/product_limitation_variant.png"
+        const val IMAGE_URL_DELETE_PRODUCTS = "https://images.tokopedia.net/img/android/merchant/add-edit-product/product_limitation_deleting.png"
+        const val IMAGE_URL_USE_PROMOTION = "https://images.tokopedia.net/img/android/merchant/add-edit-product/product_limitation_ads.png"
 
         val ACTION_URL_UPGRADE_TO_PM = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
         const val ACTION_URL_USE_VARIANT = "https://seller.tokopedia.com/edu/fitur-varian"

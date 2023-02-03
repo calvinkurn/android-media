@@ -1,7 +1,5 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -32,7 +30,7 @@ class DigitalHomePageSearchEmptyStateViewHolder (itemView: View?, val emptyListe
 
     companion object {
         val LAYOUT = R.layout.view_digital_home_search_empty
-        const val IMG_LINK = ImageUrl.IMG_LINK
+        const val IMG_LINK = "https://images.tokopedia.net/img/subhome_empty_state.png"
     }
 
     interface DigitalHomepageSearchEmptyListener {

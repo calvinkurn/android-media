@@ -1,10 +1,8 @@
 package com.tokopedia.shopadmin.common.constants
 
-import com.tokopedia.imageassets.ImageUrl
-
 object AdminImageUrl {
-    const val IL_CONFIRMATION_INVITATION = ImageUrl.IL_CONFIRMATION_INVITATION
-    const val IL_INVITATION_EXPIRES = ImageUrl.IL_INVITATION_EXPIRES
-    const val IL_INVITATION_REJECTED = ImageUrl.IL_INVITATION_REJECTED
-    const val IL_WELCOME_INVITATION_ACCEPTED = ImageUrl.IL_WELCOME_INVITATION_ACCEPTED
+    const val IL_CONFIRMATION_INVITATION = "https://images.tokopedia.net/img/android/shop_admin/il_confirmation_invitation.png"
+    const val IL_INVITATION_EXPIRES = "https://images.tokopedia.net/img/android/shop_admin/il_invitation_expires.png"
+    const val IL_INVITATION_REJECTED = "https://images.tokopedia.net/img/android/shop_admin/il_invitation_rejected.png"
+    const val IL_WELCOME_INVITATION_ACCEPTED = "https://images.tokopedia.net/img/android/shop_admin/il_welcome_invitation_accepted.png"
 }

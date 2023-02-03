@@ -1,7 +1,5 @@
 package com.tokopedia.review.feature.createreputation.presentation.fragment
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -97,11 +95,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
         private const val LOTTIE_ANIM_5 =
             "https://images.tokopedia.net/android/reputation/lottie_anim_pedi_5.json"
 
-        private const val IMAGE_PEDIE_1 = ImageUrl.IMAGE_PEDIE_1
-        private const val IMAGE_PEDIE_2 = ImageUrl.IMAGE_PEDIE_2
-        private const val IMAGE_PEDIE_3 = ImageUrl.IMAGE_PEDIE_3
-        private const val IMAGE_PEDIE_4 = ImageUrl.IMAGE_PEDIE_4
-        private const val IMAGE_PEDIE_5 = ImageUrl.IMAGE_PEDIE_5
+        private const val IMAGE_PEDIE_1 = "https://images.tokopedia.net/android/pedie/1star.png"
+        private const val IMAGE_PEDIE_2 = "https://images.tokopedia.net/android/pedie/2star.png"
+        private const val IMAGE_PEDIE_3 = "https://images.tokopedia.net/android/pedie/3star.png"
+        private const val IMAGE_PEDIE_4 = "https://images.tokopedia.net/android/pedie/4star.png"
+        private const val IMAGE_PEDIE_5 = "https://images.tokopedia.net/android/pedie/5star.png"
 
         const val RATING_1 = 1
         const val RATING_2 = 2

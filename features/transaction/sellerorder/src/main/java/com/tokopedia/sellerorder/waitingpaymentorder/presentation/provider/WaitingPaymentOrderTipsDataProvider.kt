@@ -1,7 +1,5 @@
 package com.tokopedia.sellerorder.waitingpaymentorder.presentation.provider
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.content.Context
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderTipsUiModel
@@ -13,8 +11,8 @@ import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingP
 class WaitingPaymentOrderTipsDataProvider {
 
     companion object {
-        private const val URL_IMAGE_WAITING_PAYMENT_ORDER_TIPS_BEST_SELLING = ImageUrl.URL_IMAGE_WAITING_PAYMENT_ORDER_TIPS_BEST_SELLING
-        private const val URL_IMAGE_WAITING_PAYMENT_ORDER_TIPS_EMPTY_STOCK = ImageUrl.URL_IMAGE_WAITING_PAYMENT_ORDER_TIPS_EMPTY_STOCK
+        private const val URL_IMAGE_WAITING_PAYMENT_ORDER_TIPS_BEST_SELLING = "https://images.tokopedia.net/android/others/ic_waiting_payment_order_tips_best_selling.png"
+        private const val URL_IMAGE_WAITING_PAYMENT_ORDER_TIPS_EMPTY_STOCK = "https://images.tokopedia.net/android/others/ic_waiting_payment_order_tips_empty_stock.png"
     }
 
     fun provideData(context: Context): List<WaitingPaymentOrderTipsUiModel> {

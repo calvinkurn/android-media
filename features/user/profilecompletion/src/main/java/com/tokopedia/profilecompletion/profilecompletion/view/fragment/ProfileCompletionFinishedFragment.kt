@@ -1,7 +1,5 @@
 package com.tokopedia.profilecompletion.profilecompletion.view.fragment
 
-import com.tokopedia.imageassets.ImageUrl
-
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -59,7 +57,7 @@ class ProfileCompletionFinishedFragment : BaseDaggerFragment() {
 
     companion object {
         const val TAG = "finished"
-        const val MAIN_IMG = ImageUrl.MAIN_IMG
+        const val MAIN_IMG = "https://images.tokopedia.net/img/android/user/profilecompletion/profilecompletion_akun_terverifikasi.png"
 
 	fun createInstance(): ProfileCompletionFinishedFragment {
 	    return ProfileCompletionFinishedFragment()
