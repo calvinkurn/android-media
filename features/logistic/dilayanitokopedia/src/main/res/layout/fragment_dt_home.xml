@@ -40,6 +40,12 @@
             app:toolbarInvertSearchBarColor="true"
             app:toolbarPageName="/" />
 
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_lca"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="choose_address_widget"/>
+
         <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
             android:id="@+id/choose_address_widget"
             android:layout_width="match_parent"
@@ -52,6 +58,11 @@
             app:layout_constraintTop_toBottomOf="@id/divider_view"
             tools:layout_height="200dp" />
 
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_anchor_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="header_comp_holder"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/header_comp_holder"
