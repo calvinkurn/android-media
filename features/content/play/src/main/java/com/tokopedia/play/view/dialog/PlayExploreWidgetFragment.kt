@@ -260,7 +260,7 @@ class PlayExploreWidgetFragment @Inject constructor(
          */
         binding.rvWidgets.addOneTimeGlobalLayoutListener {
             val mWidth = binding.rvWidgets.width
-            if(mWidth == binding.srExploreWidget.width) return@addOneTimeGlobalLayoutListener
+            if (mWidth == binding.srExploreWidget.width) return@addOneTimeGlobalLayoutListener
             binding.srExploreWidget.layoutParams.width = mWidth
             binding.srExploreWidget.requestLayout()
         }
@@ -304,7 +304,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     private fun observeEvent() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiEvent.collect { event ->
-                when(event){
+                when (event) {
                     ExploreWidgetInitialState -> scrollListener.resetState()
                     else -> {}
                 }
@@ -381,10 +381,12 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
+
+        setupDialog()
         getScreenLocation()
     }
 
-    private fun setupDialog () {
+    private fun setupDialog() {
         val window = dialog?.window ?: return
         window.setGravity(Gravity.END)
         window.setLayout(
