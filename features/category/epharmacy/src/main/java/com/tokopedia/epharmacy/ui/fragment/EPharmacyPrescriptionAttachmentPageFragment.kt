@@ -239,44 +239,36 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     }
 
     private fun onSuccessInitiateConsultation(consultationResponse: EPharmacyInitiateConsultationResponse) {
-        activity?.let { safeContext ->
-            startActivityForResult(
-//                    RouteManager.getIntent(safeContext, "${WEB_LINK_PREFIX}${consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.pwaLink}"),
-                RouteManager.getIntent(safeContext, "${WEB_LINK_PREFIX}https://www.tokopedia.com/e-pharmacy?flow=checkout&id=211468c4ff07934e13e74ab6012b5186"),
-                EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
+        if (consultationResponse.getInitiateConsultation?.header?.code == ERROR_CODE_OUTSIDE_WORKING_HOUR) {
+            ePharmacyPrescriptionAttachmentViewModel.ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.epharmacyGroups?.find {
+                it?.epharmacyGroupId == consultationResponse.epharmacyGroupId
+            }?.let { group ->
+                presentReminderScreen(
+                    true,
+                    group.consultationSource?.operatingSchedule?.daily?.openTime,
+                    group.consultationSource?.operatingSchedule?.daily?.closeTime,
+                    group.consultationSource?.id ?: 0L,
+                    group.epharmacyGroupId,
+                    group.consultationSource?.enablerName
+                )
+            }
+        } else if (consultationResponse.getInitiateConsultation?.initiateConsultationData != null &&
+            !consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.pwaLink.isNullOrBlank()
+        ) {
+            EPharmacyMiniConsultationAnalytics.viewMiniConsultationPage(
+                userSession.isLoggedIn,
+                userSession.userId,
+                consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.enablerName ?: "",
+                consultationResponse.epharmacyGroupId ?: "",
+                consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.id.toString()
             )
+            activity?.let { safeContext ->
+                startActivityForResult(
+                    RouteManager.getIntent(safeContext, "${WEB_LINK_PREFIX}${consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.pwaLink}"),
+                    EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
+                )
+            }
         }
-//        if (consultationResponse.getInitiateConsultation?.header?.code == ERROR_CODE_OUTSIDE_WORKING_HOUR) {
-//            ePharmacyPrescriptionAttachmentViewModel.ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.epharmacyGroups?.find {
-//                it?.epharmacyGroupId == consultationResponse.epharmacyGroupId
-//            }?.let { group ->
-//                presentReminderScreen(
-//                    true,
-//                    group.consultationSource?.operatingSchedule?.daily?.openTime,
-//                    group.consultationSource?.operatingSchedule?.daily?.closeTime,
-//                    group.consultationSource?.id ?: 0L,
-//                    group.epharmacyGroupId,
-//                    group.consultationSource?.enablerName
-//                )
-//            }
-//        } else if (consultationResponse.getInitiateConsultation?.initiateConsultationData != null &&
-//            !consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.pwaLink.isNullOrBlank()
-//        ) {
-//            EPharmacyMiniConsultationAnalytics.viewMiniConsultationPage(
-//                userSession.isLoggedIn,
-//                userSession.userId,
-//                consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.enablerName ?: "",
-//                consultationResponse.epharmacyGroupId ?: "",
-//                consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.id.toString()
-//            )
-//            activity?.let { safeContext ->
-//                startActivityForResult(
-// //                    RouteManager.getIntent(safeContext, "${WEB_LINK_PREFIX}${consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.pwaLink}"),
-//                    RouteManager.getIntent(safeContext, "${WEB_LINK_PREFIX}https://www.tokopedia.com/e-pharmacy?flow=checkout&id=211468c4ff07934e13e74ab6012b5186"),
-//                    EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
-//                )
-//            }
-//        }
     }
 
     private fun onFailInitiateConsultation(throwable: Throwable) {
