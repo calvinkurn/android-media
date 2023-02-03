@@ -152,7 +152,7 @@
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/payLaterActionCta"
-                android:layout_width="100dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="@+id/llBenefits"
                 app:layout_constraintEnd_toEndOf="@id/dividerBenefit"
