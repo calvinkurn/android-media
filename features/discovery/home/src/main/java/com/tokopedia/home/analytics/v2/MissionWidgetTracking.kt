@@ -7,7 +7,6 @@ import com.tokopedia.home.analytics.v2.MissionWidgetTracking.CustomAction.Compan
 import com.tokopedia.home.analytics.v2.MissionWidgetTracking.CustomAction.Companion.DIMENSION_40
 import com.tokopedia.home.analytics.v2.MissionWidgetTracking.CustomAction.Companion.DIMENSION_84
 import com.tokopedia.home.analytics.v2.MissionWidgetTracking.CustomAction.Companion.DIMENSION_96
-import com.tokopedia.home.analytics.v2.MissionWidgetTracking.CustomAction.Companion.ITEM_CATEGORY_FORMAT
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
@@ -22,8 +21,10 @@ object MissionWidgetTracking : BaseTrackerConst() {
         companion object {
             const val EVENT_ACTION_CLICK = "click on banner dynamic channel mission widget"
             const val EVENT_ACTION_CLICK_PRODUCT = "click on product dynamic channel mission widget"
-            const val EVENT_ACTION_IMPRESSION_BANNER = "impression on banner dynamic channel mission widget"
-            const val EVENT_ACTION_IMPRESSION_PRODUCT = "impression on product dynamic channel mission widget"
+            const val EVENT_ACTION_IMPRESSION_BANNER =
+                "impression on banner dynamic channel mission widget"
+            const val EVENT_ACTION_IMPRESSION_PRODUCT =
+                "impression on product dynamic channel mission widget"
             const val EVENT_LABEL_FORMAT = "%s - %s"
             const val TRACKER_ID = "trackerId"
             const val TRACKER_ID_CLICKED = "40381"
@@ -37,7 +38,8 @@ object MissionWidgetTracking : BaseTrackerConst() {
             const val DYNAMIC_CHANNEL_MISSION_WIDGET = "dynamic channel mission widget"
             const val BANNER = "banner"
             const val ITEM_NAME_FORMAT = "/ - p%s - %s - %s - %s - %s - %s"
-            const val ITEM_LIST_FORMAT = "/ - p%s - $DYNAMIC_CHANNEL_MISSION_WIDGET - product - %s - %s - %s - %s - %s - %s"
+            const val ITEM_LIST_FORMAT =
+                "/ - p%s - $DYNAMIC_CHANNEL_MISSION_WIDGET - product - %s - %s - %s - %s - %s - %s"
             const val TOPADS = "topads"
             const val NON_TOPADS = "non topads"
             const val CAROUSEL = "carousel"
@@ -45,11 +47,15 @@ object MissionWidgetTracking : BaseTrackerConst() {
             const val DIMENSION_40 = "dimension40"
             const val DIMENSION_84 = "dimension84"
             const val DIMENSION_96 = "dimension96"
-            const val ITEM_CATEGORY_FORMAT = "%s / %s / %s"
+            const val DIMENSION_96_FORMAT = "%s_%s"
         }
     }
 
-    fun sendMissionWidgetClicked(element: CarouselMissionWidgetDataModel, horizontalPosition: Int, userId: String) {
+    fun sendMissionWidgetClicked(
+        element: CarouselMissionWidgetDataModel,
+        horizontalPosition: Int,
+        userId: String
+    ) {
         val bundle = Bundle()
         val creativeName = element.channel.name
         val targetingByNumber = element.channel.trackingAttributionModel.persoType
@@ -57,21 +63,18 @@ object MissionWidgetTracking : BaseTrackerConst() {
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
         bundle.putString(Action.KEY, CustomAction.EVENT_ACTION_CLICK)
         bundle.putString(Category.KEY, Category.HOMEPAGE)
-        bundle.putString(
-            Label.KEY,
-            CustomAction.EVENT_LABEL_FORMAT.format(
-                element.id,
-                element.title
-            )
+        val eventLabel = CustomAction.EVENT_LABEL_FORMAT.format(
+            element.channel.id,
+            element.channel.channelHeader.name
         )
+        bundle.putString(Label.KEY, eventLabel)
         bundle.putString(CustomAction.TRACKER_ID, CustomAction.TRACKER_ID_CLICKED)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CampaignCode.KEY, element.channel.trackingAttributionModel.campaignCode)
-        val eventLabel = CustomAction.EVENT_LABEL_FORMAT.format(element.channel.id, element.channel.channelHeader.name)
-        bundle.putString(Label.CHANNEL_LABEL, eventLabel)
+        bundle.putString(Label.CHANNEL_LABEL, element.channel.id)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
         bundle.putString(UserId.KEY, userId)
-        bundle.putString(ChannelId.KEY, element.id.toString())
+        bundle.putString(ChannelId.KEY, element.channel.id)
         val promotion = Bundle()
         promotion.putString(Promotion.CREATIVE_NAME, creativeName)
         promotion.putString(Promotion.CREATIVE_SLOT, (horizontalPosition + 1).toString())
@@ -96,10 +99,17 @@ object MissionWidgetTracking : BaseTrackerConst() {
             )
         )
         bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(com.tokopedia.analytic_constant.Event.SELECT_CONTENT, bundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            com.tokopedia.analytic_constant.Event.SELECT_CONTENT,
+            bundle
+        )
     }
 
-    fun getMissionWidgetView(element: CarouselMissionWidgetDataModel, horizontalPosition: Int, userId: String): Map<String, Any> {
+    fun getMissionWidgetView(
+        element: CarouselMissionWidgetDataModel,
+        horizontalPosition: Int,
+        userId: String
+    ): Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         val creativeName = element.channel.name
         val targetingByNumber = element.channel.trackingAttributionModel.persoType
@@ -127,7 +137,10 @@ object MissionWidgetTracking : BaseTrackerConst() {
                 name = itemName
             )
         )
-        val eventLabel = CustomAction.EVENT_LABEL_FORMAT.format(element.channel.id, element.channel.channelHeader.name)
+        val eventLabel = CustomAction.EVENT_LABEL_FORMAT.format(
+            element.channel.id,
+            element.channel.channelHeader.name
+        )
         return trackingBuilder.constructBasicPromotionView(
             event = Event.PROMO_VIEW,
             eventCategory = Category.HOMEPAGE,
@@ -143,18 +156,22 @@ object MissionWidgetTracking : BaseTrackerConst() {
             .build()
     }
 
-    fun sendMissionWidgetClickedToPdp(element: CarouselMissionWidgetDataModel, horizontalPosition: Int, userId: String) {
+    fun sendMissionWidgetClickedToPdp(
+        element: CarouselMissionWidgetDataModel,
+        horizontalPosition: Int,
+        userId: String
+    ) {
         val bundle = Bundle()
+        val targetingByNumber = element.channel.trackingAttributionModel.persoType
+        val targetingByValue = element.channel.trackingAttributionModel.categoryId
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
         bundle.putString(Action.KEY, CustomAction.EVENT_ACTION_CLICK_PRODUCT)
         bundle.putString(Category.KEY, Category.HOMEPAGE)
-        bundle.putString(
-            Label.KEY,
-            CustomAction.EVENT_LABEL_FORMAT.format(
-                element.id,
-                element.title
-            )
+        val eventLabel = CustomAction.EVENT_LABEL_FORMAT.format(
+            element.channel.id,
+            element.channel.channelHeader.name
         )
+        bundle.putString(Label.KEY, eventLabel)
         bundle.putString(CustomAction.TRACKER_ID, CustomAction.TRACKER_ID_CLICKED_PDP)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
@@ -162,10 +179,7 @@ object MissionWidgetTracking : BaseTrackerConst() {
         val item = Bundle()
         item.putString(Items.INDEX, (horizontalPosition + 1).toString())
         item.putString(Items.ITEM_BRAND, DEFAULT_VALUE)
-        item.putString(
-            Items.ITEM_CATEGORY,
-            ITEM_CATEGORY_FORMAT.format(DEFAULT_VALUE, DEFAULT_VALUE, DEFAULT_VALUE)
-        )
+        item.putString(Items.ITEM_CATEGORY, element.categoryID)
         item.putString(Items.ITEM_ID, element.productID)
         item.putString(Items.ITEM_NAME, element.productName)
         item.putString(Items.ITEM_VARIANT, DEFAULT_VALUE)
@@ -181,24 +195,33 @@ object MissionWidgetTracking : BaseTrackerConst() {
         )
         item.putString(DIMENSION_40, itemList)
         item.putString(DIMENSION_84, element.id.toString())
-        item.putString(DIMENSION_96, "${element.pageName}_")
-        bundle.putParcelableArrayList(Items.KEY, arrayListOf(item))
-        bundle.putString(
-            ItemList.KEY,
-            itemList
+        item.putString(
+            DIMENSION_96,
+            CustomAction.DIMENSION_96_FORMAT.format(targetingByNumber, targetingByValue)
         )
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(com.tokopedia.analytic_constant.Event.SELECT_CONTENT, bundle)
+        bundle.putParcelableArrayList(Items.KEY, arrayListOf(item))
+        bundle.putString(ItemList.KEY, itemList)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            com.tokopedia.analytic_constant.Event.SELECT_CONTENT,
+            bundle
+        )
     }
 
-    fun getMissionWidgetProductView(element: CarouselMissionWidgetDataModel, horizontalPosition: Int, userId: String): Map<String, Any> {
+    fun getMissionWidgetProductView(
+        element: CarouselMissionWidgetDataModel,
+        horizontalPosition: Int,
+        userId: String
+    ): Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
+        val targetingByNumber = element.channel.trackingAttributionModel.persoType
+        val targetingByValue = element.channel.trackingAttributionModel.categoryId
         val listProducts = arrayListOf(
             Product(
                 brand = DEFAULT_VALUE,
-                category = ITEM_CATEGORY_FORMAT.format(DEFAULT_VALUE, DEFAULT_VALUE, DEFAULT_VALUE),
+                category = element.categoryID,
                 channelId = element.id.toString(),
-                persoType = element.pageName,
-                categoryId = DEFAULT_VALUE,
+                persoType = targetingByNumber,
+                categoryId = targetingByValue,
                 id = element.productID,
                 name = element.productName,
                 productPosition = (horizontalPosition + 1).toString(),
@@ -217,11 +240,15 @@ object MissionWidgetTracking : BaseTrackerConst() {
             element.buType,
             element.title
         )
+        val eventLabel = CustomAction.EVENT_LABEL_FORMAT.format(
+            element.channel.id,
+            element.channel.channelHeader.name
+        )
         return trackingBuilder.constructBasicProductView(
             event = Event.PRODUCT_VIEW,
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.EVENT_ACTION_IMPRESSION_PRODUCT,
-            eventLabel = Label.NONE,
+            eventLabel = eventLabel,
             products = listProducts,
             list = itemList
         )
