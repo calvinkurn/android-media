@@ -86,7 +86,7 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
 
-    implementation (rootProject.ext.miscDependencies.ucrop){
+    implementation (rootProject.ext.tkpdLibDependencies.ucrop){
         exclude group: 'com.android.support'
     }
 
