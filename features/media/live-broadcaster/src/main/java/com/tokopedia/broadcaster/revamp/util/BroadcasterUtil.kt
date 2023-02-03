@@ -40,12 +40,13 @@ object BroadcasterUtil {
     }
 
     fun getVideoConfig(videoRate: String?, videoFps: String?): VideoConfig {
-        val value = videoRate?.toIntOrZero()
-        val mVideoRate = if (value == 0) null else value
+        val valueVideoRate = videoRate?.toIntOrZero()
+        val mVideoRate = if (valueVideoRate == 0) null else valueVideoRate
+        val valueFps = if (videoFps.isNullOrEmpty()) null else videoFps.toFloat()
         return VideoConfig().apply {
             type = MediaFormat.MIMETYPE_VIDEO_AVC
             bitRate = mVideoRate ?: bitRate
-            fps = videoFps?.toFloat() ?: fps
+            fps = valueFps ?: fps
         }
     }
 
