@@ -238,9 +238,7 @@ class MvcIntroFragment :
     // When user clicks on the Arrow Button
     override fun onClickButton() {
         mvcIntroPageTracker.sendMvcIntroPageArrowButton()
-        binding?.recyclerView?.apply {
-            layoutManager?.scrollToPosition(FIRST_INDEX)
-        }
+        mvcLayoutManager?.scrollToPositionWithOffset(FIRST_INDEX, 0)
         setWhiteBackgroundForToolbar()
     }
 
