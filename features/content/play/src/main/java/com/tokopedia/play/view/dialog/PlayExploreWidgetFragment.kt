@@ -50,7 +50,6 @@ import com.tokopedia.play_common.util.AnimationUtils
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.awaitLayout
 import com.tokopedia.play_common.util.extension.buildSpannedString
-import com.tokopedia.play_common.util.extension.doOnLayout
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
@@ -138,7 +137,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         }
     }
 
-    private lateinit var sliderAnimation : SpringAnimation
+    private lateinit var sliderAnimation: SpringAnimation
 
     private val gestureDetector by lazyThreadSafetyNone {
         GestureDetector(
@@ -158,11 +157,16 @@ class PlayExploreWidgetFragment @Inject constructor(
                         newX -= VIEW_TRANSLATION_THRESHOLD
                     }
 
-                    if(newX < 0) return false
+                    if (newX < 0) return false
 
                     sliderAnimation = AnimationUtils.addSpringAnim(
-                        view = binding.root, property = SpringAnimation.TRANSLATION_X, startPosition = binding.root.x,
-                        finalPosition = newX, stiffness = SpringForce.STIFFNESS_LOW, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 0f
+                        view = binding.root,
+                        property = SpringAnimation.TRANSLATION_X,
+                        startPosition = binding.root.x,
+                        finalPosition = newX,
+                        stiffness = SpringForce.STIFFNESS_LOW,
+                        dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY,
+                        velocity = 0f
                     )
                     sliderAnimation.start()
                     return true
@@ -246,8 +250,8 @@ class PlayExploreWidgetFragment @Inject constructor(
         /**
          * Swipe Refresh always fill to screen need a bit adjustment here
          */
-        binding.rvWidgets.doOnLayout {
-            binding.srExploreWidget.layoutParams .width = it.width
+        binding.rvWidgets.addOneTimeGlobalLayoutListener {
+            binding.srExploreWidget.layoutParams.width = binding.rvWidgets.width
         }
     }
 
