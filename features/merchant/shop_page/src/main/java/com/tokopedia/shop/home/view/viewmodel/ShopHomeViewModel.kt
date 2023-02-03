@@ -218,9 +218,9 @@ class ShopHomeViewModel @Inject constructor(
 
     private var miniCartData: MiniCartSimplifiedData? = null
 
-    val latestShopHomeWidgetData: LiveData<ShopPageHomeWidgetLayoutUiModel>
-        get() = _latestShopHomeWidgetData
-    private val _latestShopHomeWidgetData = MutableLiveData<ShopPageHomeWidgetLayoutUiModel>()
+    val latestShopHomeWidgetLayoutData: LiveData<Result<ShopPageHomeWidgetLayoutUiModel>>
+        get() = _latestShopHomeWidgetLayoutData
+    private val _latestShopHomeWidgetLayoutData = MutableLiveData<Result<ShopPageHomeWidgetLayoutUiModel>>()
 
     fun getShopPageHomeWidgetLayoutData(
         shopId: String,
@@ -1227,7 +1227,7 @@ class ShopHomeViewModel @Inject constructor(
         return data.widgetType == WidgetType.BUNDLE
     }
 
-    fun getLatestShopHomeWidgetData(
+    fun getLatestShopHomeWidgetLayoutData(
         shopId: String,
         extParam: String,
         locData: LocalCacheModel
@@ -1238,9 +1238,9 @@ class ShopHomeViewModel @Inject constructor(
                 extParam,
                 locData
             )
-            _latestShopHomeWidgetData.postValue(shopHomeWidgetData)
+            _latestShopHomeWidgetLayoutData.postValue(Success(shopHomeWidgetData))
         }) {
-
+            _latestShopHomeWidgetLayoutData.postValue(Fail(it))
         }
     }
 
@@ -1265,7 +1265,7 @@ class ShopHomeViewModel @Inject constructor(
         )
         val layoutData = useCase.executeOnBackground().shopPageGetDynamicTab.tabData.firstOrNull {
             it.name == ShopPageTabName.HOME
-        }?.data?.homeLayoutData ?: HomeLayoutData()
-        return ShopPageHomeMapper.mapToShopHomeWidgetLayoutData(layoutData)
+        } ?: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData()
+        return ShopPageHomeMapper.mapToShopHomeWidgetLayoutData(layoutData.data.homeLayoutData)
     }
 }

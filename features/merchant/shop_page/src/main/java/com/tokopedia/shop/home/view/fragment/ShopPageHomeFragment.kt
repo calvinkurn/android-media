@@ -444,14 +444,37 @@ open class ShopPageHomeFragment :
         observeLiveData()
         observeShopHomeWidgetContentData()
         observeShopPageMiniCartSharedViewModel()
-        observeLatestShopHomeWidgetData()
+        observeLatestShopHomeWidgetLayoutData()
         isLoadInitialData = true
     }
 
-    private fun observeLatestShopHomeWidgetData() {
-        viewModel?.latestShopHomeWidgetData?.observe(viewLifecycleOwner) {
-            setShopHomeWidgetLayoutData(it)
+    private fun observeLatestShopHomeWidgetLayoutData() {
+        viewModel?.latestShopHomeWidgetLayoutData?.observe(viewLifecycleOwner) {
+            when(it) {
+                is Success -> {
+                    getRecyclerView(view)?.visible()
+                    setShopHomeWidgetLayoutData(it.data)
+                }
+                is Fail -> {
+                    onErrorGetLatestShopHomeWidgetLayoutData(it.throwable)
+                }
+            }
         }
+    }
+
+    private fun onErrorGetLatestShopHomeWidgetLayoutData(throwable: Throwable) {
+        globalErrorShopPage?.visible()
+        if (throwable is MessageErrorException) {
+            globalErrorShopPage?.setType(GlobalError.SERVER_ERROR)
+        } else {
+            globalErrorShopPage?.setType(GlobalError.NO_CONNECTION)
+        }
+        globalErrorShopPage?.errorSecondaryAction?.show()
+        globalErrorShopPage?.setOnClickListener {
+            globalErrorShopPage?.errorSecondaryAction?.hide()
+            getLatestShopHomeWidgetLayoutData()
+        }
+        getRecyclerView(view)?.hide()
     }
 
     open fun initView() {
@@ -3550,24 +3573,22 @@ open class ShopPageHomeFragment :
     override fun onTimerFinished(model: ShopHomeNewProductLaunchCampaignUiModel) {
         shopHomeAdapter.removeWidget(model)
         endlessRecyclerViewScrollListener.resetState()
-        shopHomeAdapter.removeProductList()
-        shopHomeAdapter.showLoading()
-        scrollToTop()
-        getLatestShopHomeWidgetData()
+        getLatestShopHomeWidgetLayoutData()
     }
 
     // flash sale widget
     override fun onTimerFinished(model: ShopHomeFlashSaleUiModel) {
         shopHomeAdapter.removeWidget(model)
         endlessRecyclerViewScrollListener.resetState()
+        getLatestShopHomeWidgetLayoutData()
+    }
+
+    private fun getLatestShopHomeWidgetLayoutData(){
+        globalErrorShopPage?.hide()
         shopHomeAdapter.removeProductList()
         shopHomeAdapter.showLoading()
         scrollToTop()
-        getLatestShopHomeWidgetData()
-    }
-
-    private fun getLatestShopHomeWidgetData(){
-        viewModel?.getLatestShopHomeWidgetData(
+        viewModel?.getLatestShopHomeWidgetLayoutData(
             shopId,
             extParam,
             ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
