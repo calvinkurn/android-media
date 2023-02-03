@@ -282,6 +282,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webSettings.setDomStorageEnabled(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
+        webSettings.setAllowFileAccess(true);
+        webSettings.setAllowContentAccess(true);
         webView.setWebChromeClient(new MyWebChromeClient());
         webView.setWebViewClient(new MyWebViewClient());
         webSettings.setMediaPlaybackRequiresUserGesture(false);
