@@ -477,9 +477,13 @@ class AffiliateHomeFragment :
     ) {
         if (status == AffiliateSharedProductCardsItemVH.PRODUCT_ACTIVE) {
             AffiliatePromotionBottomSheet.newInstance(
+                AffiliatePromotionBottomSheetParams(
+                    null, productId, productName, productImage, productUrl, productIdentifier,
+                    AffiliatePromotionBottomSheet.ORIGIN_HOME, !isUserBlackListed, type = type,
+                    ssaInfo = ssaInfo
+                ),
                 AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
-                null, null, productId, productName, productImage, productUrl, productIdentifier,
-                AffiliatePromotionBottomSheet.ORIGIN_HOME, !isUserBlackListed, type = type
+                null
             ).show(childFragmentManager, "")
         } else {
             AffiliateHowToPromoteBottomSheet.newInstance(

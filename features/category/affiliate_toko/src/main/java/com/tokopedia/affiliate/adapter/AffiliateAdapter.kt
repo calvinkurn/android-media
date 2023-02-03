@@ -50,8 +50,11 @@ class AffiliateAdapter(
 
     fun addShimmer(isStaggered: Boolean = false) {
         for (i in 1..SHIMMER_ITEM_COUNT) {
-            if (isStaggered) addElement(AffiliateStaggeredShimmerModel())
-            else addElement(AffiliateShimmerModel())
+            if (isStaggered) {
+                addElement(AffiliateStaggeredShimmerModel())
+            } else {
+                addElement(AffiliateShimmerModel())
+            }
         }
     }
 
@@ -136,9 +139,15 @@ class AffiliateAdapter(
         item: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item,
         position: Int
     ) {
-        val status =
-            if (item.status == PRODUCT_ACTIVE) AffiliateAnalytics.LabelKeys.ACTIVE
-            else AffiliateAnalytics.LabelKeys.INACTIVE
+        var label =
+            if (item.status == PRODUCT_ACTIVE) {
+                AffiliateAnalytics.LabelKeys.ACTIVE
+            } else {
+                AffiliateAnalytics.LabelKeys.INACTIVE
+            }
+        if (item.ssaStatus == true) {
+            label += " - komisi extra"
+        }
         AffiliateAnalytics.trackEventImpression(
             AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
             AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUK_YANG_DIPROMOSIKAN,
@@ -153,7 +162,8 @@ class AffiliateAdapter(
             item.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue
             } - ${
             item.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue
-            } - $status",
+            } - $label",
+            AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SELECT_CONTENT
         )
     }
 
@@ -161,9 +171,15 @@ class AffiliateAdapter(
         item: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item,
         position: Int
     ) {
-        val status =
-            if (item.status == PRODUCT_ACTIVE) AffiliateAnalytics.LabelKeys.ACTIVE
-            else AffiliateAnalytics.LabelKeys.INACTIVE
+        var label =
+            if (item.status == PRODUCT_ACTIVE) {
+                AffiliateAnalytics.LabelKeys.ACTIVE
+            } else {
+                AffiliateAnalytics.LabelKeys.INACTIVE
+            }
+        if (item.ssaStatus == true) {
+            label += " - komisi extra"
+        }
         AffiliateAnalytics.trackEventImpression(
             AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
             AffiliateAnalytics.ActionKeys.IMPRESSION_SHOP_LINK_DENGAN_PERFORMA,
@@ -178,7 +194,7 @@ class AffiliateAdapter(
             item.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue
             } - ${
             item.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue
-            } - $status",
+            } - $label",
             AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SHOP_SELECT_CONTENT
         )
     }

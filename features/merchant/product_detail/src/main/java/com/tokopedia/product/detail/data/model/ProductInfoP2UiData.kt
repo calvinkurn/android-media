@@ -62,7 +62,6 @@ data class ProductInfoP2UiData(
     var ticker: ProductTicker = ProductTicker(),
     var navBar: NavBar = NavBar(),
     var shopFinishRate: String = "",
-    var isToolbarTransparent: Boolean = false,
     var shopAdditional: ProductShopAdditional = ProductShopAdditional(),
     var arInfo: ProductArInfo = ProductArInfo(),
     var obatKeras: ObatKeras = ObatKeras(),

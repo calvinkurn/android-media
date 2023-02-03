@@ -6,6 +6,7 @@ import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.data.response.TopadsDashboardDeposits
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsTickerUseCase
 import com.tokopedia.topads.dashboard.data.model.beranda.RecommendationStatistics
 import com.tokopedia.topads.dashboard.data.model.beranda.TopAdsLatestReading
 import com.tokopedia.topads.dashboard.data.model.beranda.TopadsWidgetSummaryStatisticsModel
@@ -36,6 +37,7 @@ class TopAdsDashboardViewModelTest {
     private lateinit var summaryStatisticsUseCase: TopAdsWidgetSummaryStatisticsUseCase
     private lateinit var recommendationStatisticsUseCase: TopadsRecommendationStatisticsUseCase
     private lateinit var topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase
+    private lateinit var topadsTickerUseCase: TopAdsTickerUseCase
     private lateinit var viewModel: TopAdsDashboardViewModel
 
     @Before
@@ -43,8 +45,9 @@ class TopAdsDashboardViewModelTest {
         summaryStatisticsUseCase = mockk(relaxed = true)
         recommendationStatisticsUseCase = mockk(relaxed = true)
         topAdsGetShopDepositUseCase = mockk(relaxed = true)
+        topadsTickerUseCase = mockk(relaxed = true)
         viewModel = TopAdsDashboardViewModel(
-            summaryStatisticsUseCase, recommendationStatisticsUseCase, topAdsGetShopDepositUseCase
+            summaryStatisticsUseCase, recommendationStatisticsUseCase, topAdsGetShopDepositUseCase, topadsTickerUseCase
         )
     }
 
