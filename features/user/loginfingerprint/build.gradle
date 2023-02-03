@@ -33,6 +33,7 @@ dependencies {
 
     //Features
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.chooseaccount)
 
     //Libraries
