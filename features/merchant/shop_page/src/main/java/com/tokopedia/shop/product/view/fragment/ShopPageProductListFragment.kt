@@ -777,12 +777,7 @@ class ShopPageProductListFragment :
                         false,
                         shopProductViewModel.isUpcoming
                     )
-                    ShopTrackProductTypeDef.PRODUCT -> {
-                        ProductCardOptionsModel(
-                            isWishlisted = !shopProductViewModel.isWishList,
-                            productId = shopProductViewModel.id ?: ""
-                        )
-                        shopPageTracking?.clickWishlist(
+                    ShopTrackProductTypeDef.PRODUCT -> shopPageTracking?.clickWishlist(
                             !shopProductViewModel.isWishList,
                             isLogin,
                             getSelectedEtalaseChip(),
@@ -798,7 +793,6 @@ class ShopPageProductListFragment :
                             shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
                             shopProductViewModel.isUpcoming
                         )
-                    }
                     else -> // highlight
                         shopPageTracking?.clickWishlist(
                             !shopProductViewModel.isWishList,
