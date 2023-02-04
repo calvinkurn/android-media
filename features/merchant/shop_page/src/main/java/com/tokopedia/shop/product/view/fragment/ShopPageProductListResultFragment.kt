@@ -1174,34 +1174,6 @@ class ShopPageProductListResultFragment :
         return affiliateCookieHelper.createAffiliateLink(basePdpAppLink)
     }
 
-    private fun onSuccessAddWishlist(productId: String) {
-        showToastSuccess(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-            ctaAction = {
-                goToWishlist()
-            }
-        )
-        shopProductAdapter.updateWishListStatus(productId, true)
-    }
-
-    private fun onErrorRemoveWishlist(errorMessage: String) {
-        NetworkErrorHelper.showCloseSnackbar(activity, errorMessage)
-    }
-
-    private fun onSuccessRemoveWishlist(productId: String) {
-        showToastSuccess(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
-            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
-            ctaAction = {}
-        )
-        shopProductAdapter.updateWishListStatus(productId, false)
-    }
-
-    private fun onErrorAddWishList(errorMessage: String) {
-        onErrorAddToWishList(MessageErrorException(errorMessage))
-    }
-
     private fun onErrorAddToWishList(e: Throwable) {
         if (!viewModel.isLogin) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)

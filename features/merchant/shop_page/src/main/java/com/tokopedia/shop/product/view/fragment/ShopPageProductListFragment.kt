@@ -244,40 +244,6 @@ class ShopPageProductListFragment :
         }
     }
 
-    private fun onErrorAddWishList(errorMessage: String?) {
-        onErrorAddToWishList(MessageErrorException(errorMessage))
-    }
-
-    private fun onSuccessAddWishlist(productId: String) {
-        showToastSuccess(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-            ctaAction = {
-                goToWishlist()
-            }
-        )
-        shopProductAdapter.updateWishListStatus(productId, true)
-    }
-
-    private fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-        NetworkErrorHelper.showCloseSnackbar(activity, errorMessage)
-    }
-
-    private fun onSuccessRemoveWishlist(productId: String) {
-        showToastSuccess(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
-            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
-            ctaAction = null
-        )
-        shopProductAdapter.updateWishListStatus(productId, false)
-    }
-
-    private fun showToastSuccess(message: String) {
-        activity?.run {
-            view?.let { Toaster.make(it, message) }
-        }
-    }
-
     private fun showToastSuccess(message: String, ctaText: String = "", ctaAction: View.OnClickListener? = null) {
         activity?.run {
             view?.let {
