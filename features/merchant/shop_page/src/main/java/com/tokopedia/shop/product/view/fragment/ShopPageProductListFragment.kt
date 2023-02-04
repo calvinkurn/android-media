@@ -778,21 +778,21 @@ class ShopPageProductListFragment :
                         shopProductViewModel.isUpcoming
                     )
                     ShopTrackProductTypeDef.PRODUCT -> shopPageTracking?.clickWishlist(
-                            !shopProductViewModel.isWishList,
-                            isLogin,
-                            getSelectedEtalaseChip(),
-                            getSelectedEtalaseChip(),
-                            CustomDimensionShopPageProduct.create(
-                                shopId,
-                                isOfficialStore,
-                                isGoldMerchant,
-                                shopProductViewModel.id,
-                                shopRef
-                            ),
-                            shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                            shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                            shopProductViewModel.isUpcoming
-                        )
+                        !shopProductViewModel.isWishList,
+                        isLogin,
+                        getSelectedEtalaseChip(),
+                        getSelectedEtalaseChip(),
+                        CustomDimensionShopPageProduct.create(
+                            shopId,
+                            isOfficialStore,
+                            isGoldMerchant,
+                            shopProductViewModel.id,
+                            shopRef
+                        ),
+                        shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                        shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                        shopProductViewModel.isUpcoming
+                    )
                     else -> // highlight
                         shopPageTracking?.clickWishlist(
                             !shopProductViewModel.isWishList,
@@ -825,7 +825,7 @@ class ShopPageProductListFragment :
         if (productCardOptionsModel.wishlistResult.isAddWishlist) {
             handleWishlistActionAddToWishlistV2(productCardOptionsModel)
         } else {
-            handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel.wishlistResult)
+            handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel)
         }
     }
 
