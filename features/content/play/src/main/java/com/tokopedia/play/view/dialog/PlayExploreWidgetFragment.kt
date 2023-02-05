@@ -345,16 +345,13 @@ class PlayExploreWidgetFragment @Inject constructor(
         param: WidgetParamUiModel
     ) {
         setLayoutManager(state)
+        showEmpty(state is ExploreWidgetState.Empty)
 
         when (state) {
             ExploreWidgetState.Success -> {
-                showEmpty(false)
                 widgetAdapter.setItemsAndAnimateChanges(widget)
                 scrollListener.updateStateAfterGetData()
                 scrollListener.setHasNextPage(param.hasNextPage)
-            }
-            ExploreWidgetState.Empty -> {
-                showEmpty(true)
             }
             ExploreWidgetState.Loading -> {
                 widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
