@@ -59,6 +59,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 import javax.inject.Inject
+import kotlin.math.roundToInt
 import com.tokopedia.play.R as playR
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -389,10 +390,11 @@ class PlayExploreWidgetFragment @Inject constructor(
         val window = dialog?.window ?: return
         window.setGravity(Gravity.END)
         window.setLayout(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
+            (getScreenWidth() * EXPLORE_WIDGET_WIDTH_RATIO).roundToInt(),
             ViewGroup.LayoutParams.MATCH_PARENT
         )
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        window.setWindowAnimations(playR.style.ExploreWidgetWindowAnim)
 
         getScreenLocation()
     }
@@ -532,6 +534,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         private const val DIALOG_VISIBILITY_THRESHOLD = 600f
         private const val VIEW_TRANSLATION_THRESHOLD = 100f
         private const val VIEW_TRANSLATION_VELOCITY = 16f
+        private const val EXPLORE_WIDGET_WIDTH_RATIO = 0.7
 
         fun get(fragmentManager: FragmentManager): PlayExploreWidgetFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? PlayExploreWidgetFragment
