@@ -51,6 +51,7 @@ import com.tokopedia.play_common.util.AnimationUtils
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.awaitLayout
 import com.tokopedia.play_common.util.extension.buildSpannedString
+import com.tokopedia.play_common.util.extension.doOnNextLayout
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
@@ -260,19 +261,12 @@ class PlayExploreWidgetFragment @Inject constructor(
         binding.viewExploreWidgetEmpty.tvDescEmptyExploreWidget.movementMethod =
             LinkMovementMethod.getInstance()
 
-        adjustWidth()
-        setupDialog()
-    }
-
-    private fun adjustWidth() {
         /**
          * Swipe Refresh always fill to screen need a bit adjustment here
          */
-        binding.rvWidgets.addOneTimeGlobalLayoutListener {
+        binding.rvWidgets.doOnNextLayout {
             val mWidth = binding.rvWidgets.width
-            if (mWidth == binding.srExploreWidget.width) return@addOneTimeGlobalLayoutListener
             binding.srExploreWidget.layoutParams.width = mWidth
-            binding.srExploreWidget.requestLayout()
         }
     }
 
@@ -392,11 +386,6 @@ class PlayExploreWidgetFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
 
-        setupDialog()
-        getScreenLocation()
-    }
-
-    private fun setupDialog() {
         val window = dialog?.window ?: return
         window.setGravity(Gravity.END)
         window.setLayout(
@@ -404,7 +393,8 @@ class PlayExploreWidgetFragment @Inject constructor(
             ViewGroup.LayoutParams.MATCH_PARENT
         )
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        window.setWindowAnimations(playR.style.ExploreWidgetWindowAnim)
+
+        getScreenLocation()
     }
 
     private fun getScreenLocation() {
