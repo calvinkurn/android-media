@@ -135,7 +135,6 @@ class ShopPageProductListFragment :
         private const val REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 208
         private const val REQUEST_CODE_MEMBERSHIP_STAMP = 2091
         private const val REQUEST_CODE_ADD_PRODUCT = 3697
-        private const val GRID_SPAN_COUNT = 2
         private const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
         const val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"
         const val SAVED_SELECTED_ETALASE_NAME = "saved_etalase_name"
@@ -265,10 +264,6 @@ class ShopPageProductListFragment :
                 ).show()
             }
         }
-    }
-
-    private fun goToWishlist() {
-        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
     private fun loadNewProductData() {

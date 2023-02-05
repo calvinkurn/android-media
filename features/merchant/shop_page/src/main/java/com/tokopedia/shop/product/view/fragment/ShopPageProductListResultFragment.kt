@@ -1256,10 +1256,6 @@ class ShopPageProductListResultFragment :
         )
     }
 
-    private fun goToWishlist() {
-        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
-    }
-
     private fun onSuccessGetSortFilterData(shopStickySortFilter: ShopStickySortFilter) {
         val etalaseList = shopStickySortFilter.etalaseList
         defaultEtalaseName = etalaseList.firstOrNull()?.etalaseName.orEmpty()
@@ -1565,7 +1561,6 @@ class ShopPageProductListResultFragment :
 
         private val GRID_SPAN_COUNT = 2
         private const val SORT_NEWEST = "1"
-        private const val ALREADY_FOLLOW_SHOP = 1
         private const val PRODUCT_INELIGIBLE = "ineligible"
 
         val SAVED_SELECTED_ETALASE_LIST = "saved_etalase_list"
