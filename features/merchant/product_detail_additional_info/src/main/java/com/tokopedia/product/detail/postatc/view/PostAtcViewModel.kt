@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
+import com.tokopedia.product.detail.postatc.model.PostAtcInfo
+import com.tokopedia.product.detail.postatc.model.PostAtcLayout
 import com.tokopedia.product.detail.postatc.usecase.GetPostAtcLayoutUseCase
 import com.tokopedia.product.detail.postatc.util.mapToUiModel
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -28,16 +30,27 @@ class PostAtcViewModel @Inject constructor(
     private val _recommendations = MutableLiveData<List<RecommendationWidget>>()
     val recommendations: LiveData<List<RecommendationWidget>> = _recommendations
 
+    val postAtcInfo: PostAtcInfo = PostAtcInfo()
+
     fun fetchLayout(
         productId: String,
         cartId: String,
-        layoutId: String
+        layoutId: String,
+        pageSource: String
     ) {
         launchCatchError(block = {
             val result = getPostAtcLayoutUseCase.execute(
                 productId,
                 cartId,
                 layoutId
+            )
+
+            updateInfo(
+                productId,
+                cartId,
+                layoutId,
+                pageSource,
+                result
             )
 
             val uiModels = result.components.mapToUiModel()
@@ -59,6 +72,28 @@ class PostAtcViewModel @Inject constructor(
             it
         })
 
+    }
+
+    private fun updateInfo(
+        productId: String,
+        cartId: String,
+        layoutId: String,
+        pageSource: String,
+        data: PostAtcLayout
+    ) {
+        postAtcInfo.apply {
+            this.productId = productId
+            this.cartId = cartId
+            this.layoutId = layoutId
+            this.pageSource = pageSource
+            layoutName = data.name
+
+            val basicInfo = data.basicInfo
+            val category = basicInfo.category
+            categoryId = category.id
+            categoryName = category.name
+            shopId = basicInfo.shopId
+        }
     }
 
 }

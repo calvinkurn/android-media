@@ -1,9 +1,6 @@
 package com.tokopedia.product.detail.postatc.component.productinfo
 
-import android.view.View.OnClickListener
-import androidx.core.content.ContextCompat.startActivity
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.databinding.ItemProductInfoBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcListener
 import com.tokopedia.product.detail.postatc.base.PostAtcViewHolder
@@ -19,11 +16,19 @@ class ProductInfoViewHolder(
             postAtcProductInfoSubtitle.text = element.subtitle
             postAtcProductInfoButton.text = element.buttonText
 
-            postAtcProductInfoButton.setOnClickListener(buttonClickListener)
+            postAtcProductInfoButton.setOnClickListener { onClickLihatKeranjang(element) }
+
+            root.addOnImpressionListener(element.impressHolder) {
+                listener.impressComponent(getComponentTrackData(element))
+            }
         }
     }
 
-    private val buttonClickListener = OnClickListener {
-        listener.goToCart("123")
+    private fun onClickLihatKeranjang(element: ProductInfoUiModel) {
+        listener.onClickLihatKeranjang(
+            element.cartId,
+            getComponentTrackData(element)
+        )
     }
+
 }

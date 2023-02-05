@@ -19,7 +19,6 @@ class PostAtcAdapter(
             .addDelegate(LoadingDelegate())
     }
 
-
     fun updateRecommendation(widgets: List<RecommendationWidget>) {
         val items = getItems()
         widgets.forEach { widget ->

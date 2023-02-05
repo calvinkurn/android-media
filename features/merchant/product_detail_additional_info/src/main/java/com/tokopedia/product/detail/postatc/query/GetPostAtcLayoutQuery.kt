@@ -12,8 +12,24 @@ object GetPostAtcLayoutQuery : GqlQueryInterface {
     override fun getOperationNameList() = listOf(OPERATION_NAME)
 
     override fun getQuery() = """
-        query $OPERATION_NAME($$PARAM_PRODUCT_ID: String, $$PARAM_LAYOUT_ID: String, $$PARAM_CART_ID: String) {
-            pdpGetPostATCLayout($PARAM_PRODUCT_ID: $$PARAM_PRODUCT_ID, $PARAM_LAYOUT_ID: $$PARAM_LAYOUT_ID, $PARAM_CART_ID: $$PARAM_CART_ID) {
+        query $OPERATION_NAME(
+            $$PARAM_PRODUCT_ID: String, 
+            $$PARAM_LAYOUT_ID: String, 
+            $$PARAM_CART_ID: String
+        ) {
+            pdpGetPostATCLayout(
+                $PARAM_PRODUCT_ID: $$PARAM_PRODUCT_ID, 
+                $PARAM_LAYOUT_ID: $$PARAM_LAYOUT_ID, 
+                $PARAM_CART_ID: $$PARAM_CART_ID
+            ) {
+                name
+                basicInfo {
+                    shopID
+                    category {
+                        id
+                        name
+                    }
+                }
                 components {
                     name
                     type

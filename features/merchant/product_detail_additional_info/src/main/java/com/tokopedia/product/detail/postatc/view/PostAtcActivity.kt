@@ -23,6 +23,7 @@ class PostAtcActivity : BaseSimpleActivity() {
          */
         private const val PARAM_CART_ID = "cartID"
         private const val PARAM_LAYOUT_ID = "layoutID"
+        private const val PARAM_PAGE_SOURCE = "pageSource"
     }
 
     override fun getNewFragment(): Fragment? = null
@@ -40,12 +41,14 @@ class PostAtcActivity : BaseSimpleActivity() {
         val extras = intent.extras ?: return
         val layoutId = extras.getString(PARAM_LAYOUT_ID, "")
         val cartId = extras.getString(PARAM_CART_ID, "")
+        val pageSource = extras.getString(PARAM_PAGE_SOURCE, "")
 
         showImmediately(supportFragmentManager, PostAtcBottomSheet.TAG) {
             PostAtcBottomSheet.instance(
                 productId,
                 cartId,
-                layoutId
+                layoutId,
+                pageSource
             )
         }
     }

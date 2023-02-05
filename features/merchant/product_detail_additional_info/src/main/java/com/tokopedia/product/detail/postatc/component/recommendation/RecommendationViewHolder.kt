@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.postatc.component.recommendation
 
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.databinding.ItemRecommendationBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcListener
 import com.tokopedia.product.detail.postatc.base.PostAtcViewHolder
@@ -33,6 +34,9 @@ class RecommendationViewHolder(
                     basicListener = this@RecommendationViewHolder,
                     tokonowListener = this@RecommendationViewHolder
                 )
+            }
+            root.addOnImpressionListener(element.impressHolder) {
+                listener.impressComponent(getComponentTrackData(element))
             }
         }
     }
