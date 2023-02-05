@@ -13,6 +13,7 @@ class AdStatHorizontalDecoration(private val offset:Int) : RecyclerView.ItemDeco
 
     companion object{
         private const val CIRCLE_RADIUS = 4f
+        private const val FIRST_POS = 0
     }
 
     override fun getItemOffsets(
@@ -22,7 +23,7 @@ class AdStatHorizontalDecoration(private val offset:Int) : RecyclerView.ItemDeco
         state: RecyclerView.State
     ) {
         parent.getChildAdapterPosition(view).let {
-            if(it==RecyclerView.NO_POSITION || it==0) return
+            if(it==RecyclerView.NO_POSITION || it== FIRST_POS) return
         }
         outRect.left = offset
     }
@@ -32,7 +33,7 @@ class AdStatHorizontalDecoration(private val offset:Int) : RecyclerView.ItemDeco
         for(idx in  0 until childCount){
             val view = parent.getChildAt(idx)
             val adapterPos = parent.getChildAdapterPosition(view)
-            if(adapterPos!=RecyclerView.NO_POSITION && adapterPos > 0 && !checkVhLoadingState(parent,adapterPos)){
+            if(adapterPos!=RecyclerView.NO_POSITION && adapterPos > FIRST_POS && !checkVhLoadingState(parent,adapterPos)){
                 val rect = RectF()
                 rect.left = view.left - offset/2f
                 rect.right = rect.left + 2 * CIRCLE_RADIUS

@@ -16,6 +16,11 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.*
+import com.tokopedia.topads.constants.MpTopadsConst.AUTO_BID_CONST
+import com.tokopedia.topads.constants.MpTopadsConst.BASIC_DATE_FORMAT
+import com.tokopedia.topads.constants.MpTopadsConst.CONST_2
+import com.tokopedia.topads.constants.MpTopadsConst.IDR_CONST
+import com.tokopedia.topads.constants.MpTopadsConst.PRODUCT_ID_PARAM
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.create.databinding.FragmentMpCreateAdGroupBinding
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -46,8 +51,9 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
     private var productId: String? = null
 
     companion object {
+        private const val REQUEST_CODE = 99
         fun newInstance(productId: String): MpCreateAdGroupFragment {
-            return MpCreateAdGroupFragment().apply { arguments = Bundle().apply { putString("productId", productId) } }
+            return MpCreateAdGroupFragment().apply { arguments = Bundle().apply { putString(PRODUCT_ID_PARAM, productId) } }
         }
     }
 
@@ -59,7 +65,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        productId = arguments?.getString("productId")
+        productId = arguments?.getString(PRODUCT_ID_PARAM)
     }
 
     override fun onCreateView(
@@ -193,7 +199,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
 
     private fun onSuccessNameSuggestion(response: TopAdsProductResponse) {
         response.product.let {
-            var groupName: String = (if(it.category?.name.isNullOrEmpty()) getString(R.string.group) else it.category?.name) + " " + DateUtil.getCurrentDate().formatTo("dd/MM/yy")
+            var groupName: String = (if(it.category?.name.isNullOrEmpty()) getString(R.string.group) else it.category?.name) + " " + DateUtil.getCurrentDate().formatTo(BASIC_DATE_FORMAT)
             autofillGroupName = groupName
             createGroupViewModel.validateGroup(groupName, this::checkAutofillGroupNameValidation)
         }
@@ -261,9 +267,9 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
         dialog.setPrimaryCTAClickListener {
             MpTracker.clickAdGroupCreatedManageCta()
             val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS).apply {
-                putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
+                putExtra(TopAdsDashboardConstant.TAB_POSITION, CONST_2)
                 putExtra(TopAdsDashboardConstant.GROUPID, createdGroupId)
-                putExtra(TopAdsDashboardConstant.GROUP_STRATEGY,"auto_bid")
+                putExtra(TopAdsDashboardConstant.GROUP_STRATEGY,AUTO_BID_CONST)
             }
             startActivity(intent)
             dialog.dismiss()
@@ -278,7 +284,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
 
     private fun openInsufficientCreditsDialog(data: DepositAmount) {
         var dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setDescription(getString(R.string.success_group_creation_insufficient_credits_text).replace("Rpx.xxx", "Rp${data.amount}"))
+        dialog.setDescription(getString(R.string.success_group_creation_insufficient_credits_text).replace(IDR_CONST, "Rp${data.amount}"))
         dialog.setTitle(getString(R.string.ads_created_successfully_but_cant_appear_yet))
         dialog.setPrimaryCTAText(getString(R.string.add_credit))
         dialog.setSecondaryCTAText(getString(R.string.later))
@@ -286,7 +292,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
             MpTracker.clickAddCreditCta()
             val intent = Intent(activity, TopAdsAddCreditActivity::class.java)
             intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
-            startActivityForResult(intent, 99)
+            startActivityForResult(intent, REQUEST_CODE)
         }
         dialog.setSecondaryCTAClickListener {
             MpTracker.clickAddCreditLaterStayCta()

@@ -44,6 +44,7 @@ class MpAdsGroupsViewModel @Inject constructor(
     companion object{
         private const val NO_POSITION = -1
         private const val PER_PAGE = 20
+        private const val FIRST_POS = 1
     }
 
     // Data list to hold all ad groups
@@ -90,7 +91,7 @@ class MpAdsGroupsViewModel @Inject constructor(
         getTopAdsGroupsUseCase.getAdGroups(
             shopId,
             searchKeyword,
-            1,
+            FIRST_POS,
             if(sortParam.isEmpty()) "" else "-$sortParam",
             ::onFirstPageSuccess,
             ::onFirstPageFailure
@@ -217,14 +218,14 @@ class MpAdsGroupsViewModel @Inject constructor(
         visitableList.clear()
         visitableList.add(CreateAdGroupUiModel())
         visitableList.addAll(groupList)
-        setAdGroupStartPosition(1)
+        setAdGroupStartPosition(FIRST_POS)
         updateVisitableLiveData()
     }
 
     // Call this method to add Ad groups to the existing visitable list
     private fun addMoreAdGroups(groupList:List<AdGroupUiModel>){
         visitableList.addAll(groupList)
-        setAdGroupStartPosition(1)
+        setAdGroupStartPosition(FIRST_POS)
         updateVisitableLiveData()
     }
 

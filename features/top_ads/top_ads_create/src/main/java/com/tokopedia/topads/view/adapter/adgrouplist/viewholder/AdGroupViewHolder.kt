@@ -5,6 +5,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.topads.constants.MpTopadsConst.CONST_0
+import com.tokopedia.topads.constants.MpTopadsConst.CONST_1
+import com.tokopedia.topads.constants.MpTopadsConst.CONST_3
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.create.databinding.AdGroupItemViewholderLayoutBinding
 import com.tokopedia.topads.data.AdGroupSettingData
@@ -48,7 +51,7 @@ class AdGroupViewHolder(itemView: View,private val listener:AdGroupListener) : A
 
     private fun bindTopRow(data:AdGroupStatsData){
         if(data.loading){
-            binding?.adStatsTopRow?.setAllLoading(3)
+            binding?.adStatsTopRow?.setAllLoading(CONST_3)
             removeStatClickListeners(binding?.adStatsTopRow)
             return
         }
@@ -67,12 +70,12 @@ class AdGroupViewHolder(itemView: View,private val listener:AdGroupListener) : A
                 )
             )
         }
-        attachStatClickListeners(binding?.adStatsTopRow,0)
+        attachStatClickListeners(binding?.adStatsTopRow,CONST_0)
     }
 
     private fun bindBottomRow(data:AdGroupSettingData){
         if(data.loading){
-            binding?.adStatsBottomRow?.setAllLoading(3)
+            binding?.adStatsBottomRow?.setAllLoading(CONST_3)
             removeStatClickListeners(binding?.adStatsBottomRow)
             return
         }
@@ -88,7 +91,7 @@ class AdGroupViewHolder(itemView: View,private val listener:AdGroupListener) : A
                 )
             )
         }
-        attachStatClickListeners(binding?.adStatsBottomRow,1)
+        attachStatClickListeners(binding?.adStatsBottomRow,CONST_1)
     }
 
     private fun bindSelectedState(){

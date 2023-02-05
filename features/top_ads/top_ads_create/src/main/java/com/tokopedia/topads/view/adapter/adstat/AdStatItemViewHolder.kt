@@ -7,6 +7,8 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.topads.constants.MpTopadsConst.CONST_0
+import com.tokopedia.topads.constants.MpTopadsConst.CONST_1
 import com.tokopedia.topads.create.databinding.AdGroupStatItemBinding
 import com.tokopedia.topads.view.datamodel.AdStatModel
 
@@ -14,11 +16,11 @@ class AdStatItemViewHolder(private val binding:AdGroupStatItemBinding) : Recycle
 
     fun bind(data:AdStatModel){
         if(data.loading){
-            binding.root.setDisplayedChild(0)
+            binding.root.setDisplayedChild(CONST_0)
         }
         else {
             binding.apply {
-                root.setDisplayedChild(1)
+                root.setDisplayedChild(CONST_1)
                 adStatTv.text = getCombinedStat(data)
             }
         }

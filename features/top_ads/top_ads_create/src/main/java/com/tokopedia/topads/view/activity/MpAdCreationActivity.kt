@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.topads.common.domain.model.TopadsShopInfoV2Model
+import com.tokopedia.topads.constants.MpTopadsConst.PRODUCT_ID_PARAM
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.create.databinding.MpAdCreationActivityBinding
 import com.tokopedia.topads.di.CreateAdsComponent
@@ -29,8 +30,8 @@ class MpAdCreationActivity : BaseActivity(),HasComponent<CreateAdsComponent> ,Ro
     }
 
 
+    @JvmField @Inject
     var userSession: UserSessionInterface?=null
-    @Inject set
 
     @JvmField @Inject
     var factory:ViewModelProvider.Factory? = null
@@ -55,7 +56,7 @@ class MpAdCreationActivity : BaseActivity(),HasComponent<CreateAdsComponent> ,Ro
     }
 
     private fun getProductIdFromIntent(){
-        productId = intent.data?.getQueryParameter("product_id").orEmpty()
+        productId = intent.data?.getQueryParameter(PRODUCT_ID_PARAM).orEmpty()
     }
 
     private fun initInjector(){

@@ -1,9 +1,9 @@
 package com.tokopedia.topads.common.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.topads.common.data.model.AdGroupStatsParam
-import com.tokopedia.topads.common.data.raw.TOP_ADS_GROUPS_STATISTIC_GQL
 import com.tokopedia.topads.common.data.response.TopAdsGroupsStatisticResponseResponse
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
@@ -11,11 +11,14 @@ import com.tokopedia.utils.date.toString
 import java.util.*
 import javax.inject.Inject
 
+@GqlQuery("GetTopAdsGroupsStatistics",TOP_ADS_GROUPS_STATISTIC_GQL)
 class GetTopAdsGroupsStatisticsUseCase@Inject constructor() : GraphqlUseCase<TopAdsGroupsStatisticResponseResponse>() {
 
     companion object{
         private const val PARAM_KEY = "queryInput"
         private const val ROLLBACK_DAYS = 3
+        private const val GOAL_ID_PARAM = "1"
+        private const val SEPARATE_STATISTIC_PARAM = "true"
     }
 
     fun getAdGroupsStatistics(
@@ -29,7 +32,7 @@ class GetTopAdsGroupsStatisticsUseCase@Inject constructor() : GraphqlUseCase<Top
     ){
         setRequestParams(getRequestParams(shopId, keyword, page, sort,groupIds))
         setTypeClass(TopAdsGroupsStatisticResponseResponse::class.java)
-        setGraphqlQuery(TOP_ADS_GROUPS_STATISTIC_GQL)
+        setGraphqlQuery(GetTopAdsGroupsStatistics())
         execute({
             if(it.response?.errors?.isNotEmpty().orFalse()){
                 failure.invoke(Throwable(it.response!!.errors!![0].detail))
@@ -48,8 +51,8 @@ class GetTopAdsGroupsStatisticsUseCase@Inject constructor() : GraphqlUseCase<Top
                 keyword = keyword,
                 page = page,
                 sort = sort,
-                separateStatistic = "true",
-                goalId = "1",
+                separateStatistic = SEPARATE_STATISTIC_PARAM,
+                goalId = GOAL_ID_PARAM,
                 startDate = startDate,
                 endDate = endDate,
                 groupIds = groupIds
@@ -58,3 +61,29 @@ class GetTopAdsGroupsStatisticsUseCase@Inject constructor() : GraphqlUseCase<Top
     }
 
 }
+
+const val TOP_ADS_GROUPS_STATISTIC_GQL = """
+    query GetTopadsDashboardGroupStatisticsV3(${'$'}queryInput:GetTopadsDashboardGroupStatisticsInputTypeV3!){
+      GetTopadsDashboardGroupStatisticsV3(queryInput:${'$'}queryInput){
+          page{
+            current
+            per_page
+            min
+            max
+            total
+         }
+        data{
+          group_id
+          stat_total_impression
+          stat_total_click
+          stat_total_conversion
+        }
+        errors{
+          code
+          detail
+          title
+        } 
+      }
+}
+"""
+

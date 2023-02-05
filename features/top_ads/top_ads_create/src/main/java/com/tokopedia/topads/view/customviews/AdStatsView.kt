@@ -17,6 +17,10 @@ class AdStatsView @JvmOverloads constructor(
     defStyleAttr:Int = 0
 ) : BaseCustomView(context, attrs,defStyleAttr) {
 
+    companion object{
+        private const val OFFSET = 30
+    }
+
     private var rv:RecyclerView?=null
     private var statAdapter:AdStatAdapter?=null
 
@@ -33,7 +37,7 @@ class AdStatsView @JvmOverloads constructor(
                 false
             )
             layoutManager = rvLayoutManager
-            addItemDecoration(AdStatHorizontalDecoration(30))
+            addItemDecoration(AdStatHorizontalDecoration(OFFSET))
             statAdapter = AdStatAdapter()
             adapter = statAdapter
         }

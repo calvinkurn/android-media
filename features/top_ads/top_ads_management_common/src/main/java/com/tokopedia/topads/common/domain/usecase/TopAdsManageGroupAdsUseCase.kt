@@ -1,13 +1,14 @@
 package com.tokopedia.topads.common.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.topads.common.data.raw.TOP_ADS_MANAGE_GROUP_ADS_GQL
 import com.tokopedia.topads.common.data.response.GroupEditInput
 import com.tokopedia.topads.common.data.response.TopadsManageGroupAdsInput
 import com.tokopedia.topads.common.data.response.TopadsManageGroupAdsResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
+@GqlQuery("TopAdsManageGroupAds",TOP_ADS_MANAGE_GROUP_ADS_GQL)
 class TopAdsManageGroupAdsUseCase @Inject constructor() : GraphqlUseCase<TopadsManageGroupAdsResponse>() {
 
     companion object{
@@ -27,7 +28,7 @@ class TopAdsManageGroupAdsUseCase @Inject constructor() : GraphqlUseCase<TopadsM
     ){
        setTypeClass(TopadsManageGroupAdsResponse::class.java)
         setRequestParams(requestParams.parameters)
-        setGraphqlQuery(TOP_ADS_MANAGE_GROUP_ADS_GQL)
+        setGraphqlQuery(TopAdsManageGroupAds())
         execute(
             {
                 success.invoke(it)
@@ -62,3 +63,21 @@ class TopAdsManageGroupAdsUseCase @Inject constructor() : GraphqlUseCase<TopadsM
         }
     }
 }
+
+const val TOP_ADS_MANAGE_GROUP_ADS_GQL = """
+mutation topadsManageGroupAds(${'$'}input:TopadsManageGroupAdsInput!){
+  topadsManageGroupAds(input:${'$'}input){
+    groupResponse{
+      data {
+        id
+        resourceUrl
+      }
+      errors {
+        code
+        detail
+        title
+      }
+    }
+  }
+}
+"""
