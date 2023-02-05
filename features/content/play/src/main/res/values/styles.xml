@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="ExploreWidgetWindowAnim">
-        <!--   Temporary anim will ask designer later     -->
         <item name="android:windowEnterAnimation">@anim/anim_play_enter_page</item>
         <item name="android:windowExitAnimation">@anim/anim_play_exit_page</item>
     </style>

@@ -177,8 +177,8 @@ class PlayExploreWidgetFragment @Inject constructor(
                         startPosition = binding.root.x,
                         finalPosition = newX,
                         stiffness = SpringForce.STIFFNESS_LOW,
-                        dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY,
-                        velocity = 0f
+                        dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY,
+                        velocity = VIEW_TRANSLATION_VELOCITY
                     )
                     sliderAnimation.start()
                     return true
@@ -541,6 +541,7 @@ class PlayExploreWidgetFragment @Inject constructor(
 
         private const val DIALOG_VISIBILITY_THRESHOLD = 600f
         private const val VIEW_TRANSLATION_THRESHOLD = 100f
+        private const val VIEW_TRANSLATION_VELOCITY = 16f
 
         fun get(fragmentManager: FragmentManager): PlayExploreWidgetFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? PlayExploreWidgetFragment

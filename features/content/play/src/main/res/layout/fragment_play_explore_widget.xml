@@ -5,11 +5,11 @@
     android:id="@+id/parent_explore"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="@color/Unify_Background"
     android:paddingTop="@dimen/content_common_space_16"
     app:rcl_bottomRightRadius="@dimen/content_common_space_16"
     app:rcl_topLeftRadius="@dimen/content_common_space_16"
-    android:animateLayoutChanges="true"
     tools:context=".view.dialog.PlayExploreWidgetFragment">
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -40,9 +40,11 @@
         android:orientation="horizontal"
         android:paddingEnd="@dimen/content_common_space_16"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintEnd_toEndOf="@id/sr_explore_widget"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/sr_explore_widget"
+        android:layout_marginStart="@dimen/content_common_space_16"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/widget_header"
         tools:itemCount="3"
         tools:listitem="@layout/view_widget_chips" />
@@ -51,9 +53,9 @@
         android:id="@+id/sr_explore_widget"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        app:layout_constrainedWidth="true"
         android:layout_marginStart="@dimen/unify_space_8"
         android:layout_marginTop="@dimen/content_common_space_16"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -70,15 +72,14 @@
                 android:id="@+id/rv_widgets"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:clipToPadding="false"
                 android:layout_marginEnd="@dimen/unify_space_8"
+                android:clipToPadding="false"
                 android:paddingBottom="@dimen/unify_space_8"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:spanCount="2"
                 tools:itemCount="10"
                 tools:listitem="@layout/view_play_widget_card_medium_channel" />
         </FrameLayout>
-
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     <include
@@ -88,7 +89,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/rv_chips"
         app:layout_constraintStart_toStartOf="@+id/rv_chips"
         app:layout_constraintTop_toBottomOf="@+id/rv_chips" />
 </com.tokopedia.play_common.view.RoundedConstraintLayout>
