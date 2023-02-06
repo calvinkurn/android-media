@@ -172,7 +172,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
         val icons = IconBuilder().addNotebookIcon()
 
         navToolbar = TokoNowNavToolbar(
-            context = context,
+            activity = activity,
             navToolbar = binding?.navToolbar,
             pageName = pageName,
             hintData = searchHintData

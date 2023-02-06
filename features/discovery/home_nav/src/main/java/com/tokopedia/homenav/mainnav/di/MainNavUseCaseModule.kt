@@ -13,7 +13,7 @@ import com.tokopedia.homenav.mainnav.data.pojo.review.ReviewProduct
 import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFilteredPojo
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
-import com.tokopedia.homenav.mainnav.data.pojo.wishlist.WishlistData
+import com.tokopedia.homenav.mainnav.data.pojo.wishlist.GetWishlistCollection
 import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
@@ -121,7 +121,7 @@ class MainNavUseCaseModule {
     @MainNavScope
     @Provides
     fun provideGetWishlistUseCase(graphqlRepository: GraphqlRepository): GetWishlistNavUseCase{
-        val useCase = GraphqlUseCase<WishlistData>(graphqlRepository)
+        val useCase = GraphqlUseCase<GetWishlistCollection>(graphqlRepository)
         return GetWishlistNavUseCase(useCase)
     }
 

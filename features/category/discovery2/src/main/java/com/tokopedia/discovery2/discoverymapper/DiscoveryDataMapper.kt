@@ -2,12 +2,14 @@ package com.tokopedia.discovery2.discoverymapper
 
 import com.tkpd.atcvariant.util.roundToIntOrZero
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
-import com.tokopedia.discovery2.*
+import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.MultipleShopMVCCarousel.CAROUSEL_ITEM_DESIGN
 import com.tokopedia.discovery2.Constant.MultipleShopMVCCarousel.SINGLE_ITEM_DESIGN
 import com.tokopedia.discovery2.Constant.ProductCardModel.PDP_VIEW_THRESHOLD
 import com.tokopedia.discovery2.Constant.ProductCardModel.SOLD_PERCENTAGE_LOWER_LIMIT
 import com.tokopedia.discovery2.Constant.ProductCardModel.SOLD_PERCENTAGE_UPPER_LIMIT
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
@@ -172,7 +174,9 @@ class DiscoveryDataMapper {
             }
             val dataItem = mutableListOf<DataItem>()
             it.typeProductCard = subComponentName
-            it.creativeName = creativeName
+            if(it.creativeName.isNullOrEmpty()) {
+                it.creativeName = creativeName
+            }
             dataItem.add(it)
             componentsItem.data = dataItem
             if (parentSectionId?.isNotEmpty() == true)
@@ -321,6 +325,7 @@ class DiscoveryDataMapper {
                 hasThreeDots = dataItem.hasThreeDots,
                 hasButtonThreeDotsWishlist = dataItem.hasThreeDotsWishlist,
                 hasAddToCartWishlist = dataItem.hasATCWishlist,
+                hasAddToCartButton = !dataItem.hasATCWishlist && dataItem.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART && dataItem.isActiveProductCard == true,
                 hasSimilarProductWishlist = dataItem.hasSimilarProductWishlist == true,
                 variant = variantProductCard(dataItem),
                 nonVariant = nonVariantProductCard(dataItem),
@@ -383,7 +388,7 @@ class DiscoveryDataMapper {
     }
 
     private fun nonVariantProductCard(dataItem: DataItem): ProductCardModel.NonVariant? {
-        return if (!dataItem.hasATC || checkForVariantProductCard(dataItem.parentProductId)) {
+        return if (dataItem.atcButtonCTA != Constant.ATCButtonCTATypes.MINI_CART || checkForVariantProductCard(dataItem.parentProductId)) {
             null
         } else {
             ProductCardModel.NonVariant(
@@ -395,7 +400,7 @@ class DiscoveryDataMapper {
     }
 
     private fun variantProductCard(dataItem: DataItem): ProductCardModel.Variant? {
-        return if (dataItem.hasATC && checkForVariantProductCard(dataItem.parentProductId)) {
+        return if (dataItem.atcButtonCTA == Constant.ATCButtonCTATypes.MINI_CART && checkForVariantProductCard(dataItem.parentProductId)) {
             ProductCardModel.Variant(
                 dataItem.quantity,
             )

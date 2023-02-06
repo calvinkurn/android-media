@@ -27,9 +27,13 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.empty_state.EmptyStateUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -80,6 +84,8 @@ import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetUpdateWishli
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerBottomSheetMenu
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromCollectionPage
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewModel
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -129,13 +135,13 @@ class WishlistCollectionFragment :
     }
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
 
-    private val coachMarkItem = ArrayList<CoachMark2Item>()
+    private val coachMarkItem = arrayListOf<CoachMark2Item>()
     private var coachMark: CoachMark2? = null
 
-    private val coachMarkItemSharing1 = ArrayList<CoachMark2Item>()
+    private val coachMarkItemSharing1 = arrayListOf<CoachMark2Item>()
     private var coachMarkSharing1: CoachMark2? = null
 
-    private val coachMarkItemSharing2 = ArrayList<CoachMark2Item>()
+    private val coachMarkItemSharing2 = arrayListOf<CoachMark2Item>()
     private var coachMarkSharing2: CoachMark2? = null
 
     override fun getScreenName(): String = ""
@@ -215,6 +221,19 @@ class WishlistCollectionFragment :
         super.onViewCreated(view, savedInstanceState)
         prepareLayout()
         observingData()
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        manageCoachmark(isVisibleToUser)
+    }
+
+    private fun manageCoachmark(isVisibleToUser: Boolean) {
+        if (!isVisibleToUser) {
+            coachMark?.dismissCoachMark()
+            coachMarkSharing1?.dismissCoachMark()
+            coachMarkSharing2?.dismissCoachMark()
+        }
     }
 
     private fun observingData() {
@@ -349,6 +368,7 @@ class WishlistCollectionFragment :
                 is Success -> {
                     finishRefresh()
                     if (result.data.status == OK) {
+                        showRvWishlistCollection()
                         wishlistCollectionPref?.getHasClosed()
                             ?.let { collectionAdapter.setTickerHasClosed(it) }
 
@@ -385,10 +405,9 @@ class WishlistCollectionFragment :
                         if (result.data.data.collections.size == 1) {
                             onlyAllCollection = true
                             checkOnboarding()
-                        } else if (result.data.data.collections.size > 1) {
                         }
                     } else {
-                        // TODO: show global error page?
+                        showGlobalErrorWishlistCollection(ResponseErrorException())
                         val errorMessage = result.data.errorMessage.first().ifEmpty {
                             context?.getString(
                                 R.string.wishlist_v2_common_error_msg
@@ -398,7 +417,7 @@ class WishlistCollectionFragment :
                     }
                 }
                 is Fail -> {
-                    // TODO: show global error page?
+                    showGlobalErrorWishlistCollection(result.throwable)
                     finishRefresh()
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                     showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
@@ -409,6 +428,56 @@ class WishlistCollectionFragment :
 
     private fun getDeleteWishlistProgress() {
         collectionViewModel.getDeleteWishlistProgress()
+    }
+
+    private fun showRvWishlistCollection() {
+        binding?.run {
+            rlWishlistCollectionError.gone()
+            rlWishlistCollectionContent.visible()
+        }
+    }
+
+    private fun showGlobalErrorWishlistCollection(throwable: Throwable) {
+        val errorType = when (throwable) {
+            is MessageErrorException -> null
+            is SocketTimeoutException, is UnknownHostException -> GlobalError.NO_CONNECTION
+            else -> GlobalError.SERVER_ERROR
+        }
+        if (errorType == null) {
+            binding?.run {
+                rlWishlistCollectionContent.gone()
+                rlWishlistCollectionError.visible()
+                globalErrorWishlistCollection.gone()
+                emptyStateWishlistCollection.apply {
+                    visible()
+                    showMessageExceptionError(throwable)
+                }
+            }
+        } else {
+            binding?.run {
+                rlWishlistCollectionContent.gone()
+                rlWishlistCollectionError.visible()
+                emptyStateWishlistCollection.gone()
+                globalErrorWishlistCollection.apply {
+                    visible()
+                    setType(errorType)
+                    setActionClickListener {
+                        doRefresh()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun EmptyStateUnify.showMessageExceptionError(throwable: Throwable) {
+        var errorMessage = context?.let {
+            ErrorHandler.getErrorMessage(it, throwable)
+        } ?: ""
+        if (errorMessage.isEmpty()) {
+            errorMessage =
+                getString(R.string.wishlist_v2_failed_to_get_information)
+        }
+        setDescription(errorMessage)
     }
 
     override fun onPause() {
@@ -759,7 +828,7 @@ class WishlistCollectionFragment :
     }
 
     override fun onShareItemShown(anchorView: View) {
-        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING)) {
+        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING) && userVisibleHint) {
             showCoachmarkKebabItem2(anchorView)
         }
     }
@@ -776,7 +845,7 @@ class WishlistCollectionFragment :
         _firstCollectionName = collectionName
         _firstActionsCollection = actions
         _firstCollectionIndicatorTitle = collectionIndicatorTitle
-        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING)) {
+        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING) && userVisibleHint) {
             showWishlistCollectionSharingCoachMark(anchorKebabMenuView, collectionId, collectionName, actions, collectionIndicatorTitle)
         }
     }
@@ -834,7 +903,7 @@ class WishlistCollectionFragment :
             it.stepButtonTextLastChild =
                 getString(R.string.collection_coachmark_lanjut)
 
-            if (!it.isShowing) {
+            if (!it.isShowing && coachMarkItemSharing1.isNotEmpty()) {
                 it.showCoachMark(coachMarkItemSharing1, null, 1)
                 it.stepPrev?.visibility = View.GONE
                 it.stepPagination?.visibility = View.GONE
@@ -843,6 +912,7 @@ class WishlistCollectionFragment :
     }
 
     private fun showCoachmarkKebabItem2(view: View) {
+        if (!userVisibleHint) return
         if (coachMarkItemSharing2.isEmpty()) {
             coachMarkItemSharing2.add(
                 CoachMark2Item(
@@ -886,7 +956,7 @@ class WishlistCollectionFragment :
             it.stepButtonTextLastChild =
                 getString(R.string.collection_coachmark_finish)
 
-            if (!it.isShowing) {
+            if (!it.isShowing && coachMarkItemSharing2.isNotEmpty()) {
                 it.showCoachMark(coachMarkItemSharing2, null, 1)
                 it.stepPrev?.visibility = View.GONE
                 it.stepPagination?.visibility = View.GONE
@@ -896,6 +966,7 @@ class WishlistCollectionFragment :
     }
 
     private fun showWishlistCollectionCoachMark(view1: View, view2: View) {
+        if (!userVisibleHint) return
         if (coachMarkItem.isEmpty()) {
             coachMarkItem.add(
                 CoachMark2Item(
@@ -926,7 +997,7 @@ class WishlistCollectionFragment :
                 getString(R.string.collection_coachmark_try_create_wishlist)
             it.stepPrev?.text = getString(R.string.collection_coachmark_back)
 
-            if (!it.isShowing) {
+            if (!it.isShowing && coachMarkItem.isNotEmpty()) {
                 it.showCoachMark(coachMarkItem, null)
             }
             CoachMarkPreference.setShown(requireContext(), COACHMARK_WISHLIST, true)

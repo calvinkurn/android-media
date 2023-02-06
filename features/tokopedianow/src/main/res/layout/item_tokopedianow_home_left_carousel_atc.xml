@@ -1,85 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:id="@+id/container_mixleft"
     android:layout_marginTop="12dp"
     android:layout_marginBottom="8dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/dynamic_header_custom_view">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/content_container"
+    <com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
+        android:id="@+id/dynamic_header_custom_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/parallax_background"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <View
+        android:id="@+id/parallax_background"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@id/real_time_recommendation_carousel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dynamic_header_custom_view" />
 
-        <com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderCustomView
-            android:id="@+id/dynamic_header_custom_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintTop_toTopOf="parent"/>
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/parallax_image_view"
+        android:layout_width="104dp"
+        android:layout_height="0dp"
+        android:alpha="1"
+        android:scaleType="centerCrop"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@id/real_time_recommendation_carousel"
+        app:layout_constraintStart_toStartOf="@+id/parallax_background"
+        app:layout_constraintTop_toBottomOf="@id/dynamic_header_custom_view"
+        app:layout_constraintVertical_bias="0.0" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/container_mixleft"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            app:layout_constraintTop_toBottomOf="@+id/dynamic_header_custom_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_product"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingStart="112dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:layout_marginTop="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/real_time_recommendation_carousel"
+        app:layout_constraintEnd_toEndOf="@+id/parallax_background"
+        app:layout_constraintStart_toStartOf="@+id/parallax_background"
+        app:layout_constraintTop_toBottomOf="@id/dynamic_header_custom_view"
+        app:layout_constraintVertical_bias="1.0"
+        tools:itemCount="10"
+        tools:listitem="@layout/item_tokopedianow_product_card_carousel"
+        tools:orientation="horizontal"
+        tools:spanCount="3"
+        tools:ignore="RtlSymmetry" />
 
-            <View
-                android:id="@+id/parallax_background"
-                android:paddingTop="14dp"
-                android:paddingBottom="14dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"/>
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/parallax_image"
-                android:layout_height="0dp"
-                android:layout_width="@dimen/product_card_flashsale_width"
-                android:scaleType="centerCrop"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_product"
-                android:layout_width="0dp"
-                android:layout_height="322dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
-                android:clipToPadding="false"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/parallax_background"
-                app:layout_constraintStart_toStartOf="@+id/parallax_background"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0"
-                tools:itemCount="10"
-                tools:layout_height="300dp"
-                tools:listitem="@layout/item_tokopedianow_home_left_carousel_atc_product_card"
-                tools:orientation="horizontal"
-                tools:spanCount="3"
-                tools:translationX="200dp" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <com.tokopedia.tokopedianow.common.view.RealTimeRecommendationCarouselView
-            android:id="@+id/real_time_recommendation_carousel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/container_mixleft" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</LinearLayout>
+    <com.tokopedia.tokopedianow.common.view.RealTimeRecommendationCarouselView
+        android:id="@+id/real_time_recommendation_carousel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/parallax_background" />
+</androidx.constraintlayout.widget.ConstraintLayout>

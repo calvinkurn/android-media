@@ -12,7 +12,7 @@ import com.google.gson.annotations.SerializedName;
 public class District implements Parcelable {
     @SerializedName("district_id")
     @Expose
-    public Integer districtId;
+    public long districtId;
     @SerializedName("district_name")
     @Expose
     public String districtName;
@@ -33,7 +33,7 @@ public class District implements Parcelable {
     }
 
     protected District(Parcel in) {
-        this.districtId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.districtId = (Long) in.readValue(Long.class.getClassLoader());
         this.districtName = in.readString();
     }
 

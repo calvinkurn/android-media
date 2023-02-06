@@ -227,7 +227,6 @@ class TokoChatFragment :
         observeTokoChatBackground()
         observeChatRoomTicker()
         observeChannelDetails()
-        observeMemberLeft()
         observeLoadOrderTransactionStatus()
         observeUpdateOrderTransactionStatus()
         observeChatConnection()
@@ -437,24 +436,36 @@ class TokoChatFragment :
             when (it) {
                 is Success -> setHeaderData(it.data)
                 is Fail -> {
-                    hideShimmeringHeader()
-                    val doesChatNotExist: Boolean = if (it.throwable is ConversationsNetworkError) {
-                        (it.throwable as ConversationsNetworkError).errorList.firstOrNull()?.code?.contains(
-                            CHAT_DOES_NOT_EXIST,
-                            ignoreCase = true
-                        ) ?: false
-                    } else {
-                        false
-                    }
-                    if (doesChatNotExist) {
-                        showUnavailableBottomSheet()
-                    } else {
-                        showGlobalErrorLayout(onActionClick = {
-                            initializeChatRoom(null)
-                        })
-                    }
+                    handleFailGetChannelDetails(it.throwable)
                 }
             }
+            observeMemberLeft()
+        }
+    }
+
+    private fun handleFailGetChannelDetails(error: Throwable) {
+        hideShimmeringHeader()
+        try {
+            val doesChatNotExist: Boolean = if (error is ConversationsNetworkError) {
+                error.errorList.firstOrNull()?.code?.contains(
+                    CHAT_DOES_NOT_EXIST,
+                    ignoreCase = true
+                ) ?: false
+            } else {
+                false
+            }
+            if (doesChatNotExist) {
+                showUnavailableBottomSheet()
+            } else {
+                showGlobalErrorWithRefreshAction()
+            }
+        } catch (throwable: Throwable) {
+            showGlobalErrorWithRefreshAction()
+            logExceptionTokoChat(
+                throwable,
+                TokoChatErrorLogger.ErrorType.ERROR_PAGE,
+                ::handleFailGetChannelDetails.name
+            )
         }
     }
 
@@ -482,8 +493,14 @@ class TokoChatFragment :
     }
 
     private fun observeMemberLeft() {
+        // reset member left live data before observe to remove old data
+        viewModel.resetMemberLeft()
         observe(viewModel.getMemberLeft()) {
-            showUnavailableBottomSheet()
+            // If the livedata gives null, then do nothing
+            // If the livedata gives old data, then do nothing
+            if (it != null && it == headerUiModel?.id) {
+                showUnavailableBottomSheet()
+            }
         }
     }
 
@@ -710,15 +727,26 @@ class TokoChatFragment :
 
     override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
         removeShimmering()
-        val errorCode = error.errorList.firstOrNull()?.code ?: ""
-        if (errorCode.contains(CHAT_CLOSED_CODE, ignoreCase = true)) {
-            showUnavailableBottomSheet()
-        } else {
-            showGlobalErrorLayout(onActionClick = {
-                initializeChatRoom(null)
-            })
+        handleOnErrorCreateGroupBooking(error)
+    }
+
+    private fun handleOnErrorCreateGroupBooking(error: ConversationsNetworkError) {
+        try {
+            val errorCode = error.errorList.firstOrNull()?.code ?: ""
+            if (errorCode.contains(CHAT_CLOSED_CODE, ignoreCase = true)) {
+                showUnavailableBottomSheet()
+            } else {
+                showGlobalErrorWithRefreshAction()
+            }
+            logExceptionTokoChat(error, TokoChatErrorLogger.ErrorType.ERROR_PAGE, ::initGroupBooking.name)
+        } catch (throwable: Throwable) {
+            showGlobalErrorWithRefreshAction()
+            logExceptionTokoChat(
+                throwable,
+                TokoChatErrorLogger.ErrorType.ERROR_PAGE,
+                ::handleOnErrorCreateGroupBooking.name
+            )
         }
-        logExceptionTokoChat(error, TokoChatErrorLogger.ErrorType.ERROR_PAGE, ::initGroupBooking.name)
     }
 
     override fun onGroupBookingChannelCreationStarted() {
@@ -1037,6 +1065,12 @@ class TokoChatFragment :
                 }
             }
         )
+    }
+
+    private fun showGlobalErrorWithRefreshAction() {
+        showGlobalErrorLayout(onActionClick = {
+            initializeChatRoom(null)
+        })
     }
 
     companion object {

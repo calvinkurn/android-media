@@ -6,7 +6,6 @@
     <string name="tokopedianow_common_empty_state_desc">Siap-siap nikmati layanan 2 jam tiba &amp; gratis ongkir. Nantikan kabar dari kami, ya!</string>
     <string name="tokopedianow_common_empty_state_button_change_address">Ubah Alamat</string>
     <string name="tokopedianow_common_empty_state_button_return">Belanja di Tokopedia</string>
-    <string name="tokopedianow_common_empty_state_bullet_symbol">•</string>
 
     <string name="tokopedianow_empty_state_no_address_and_local_cache_title">Masukkan alamat dulu buat akses Tokopedia NOW!</string>
     <string name="tokopedianow_empty_state_no_address_and_local_cache_description">Supaya bisa dapat rekomendasi produk dari Tokopedia NOW! ke alamatmu.</string>
@@ -55,10 +54,9 @@
 
     <string name="tokopedianow_global_search_button">Cari di Tokopedia</string>
     <string name="tokopedianow_explore_tokopedia_now_button">Jelajahi Tokopedia NOW!</string>
-    <string name="tokopedianow_category_is_failed_to_display_title">Oops, bagian ini gagal ditampilkan</string>
-    <string name="tokopedianow_category_is_failed_to_display_description">Klik ikon di samping untuk coba lagi</string>
+    <string name="tokopedianow_category_is_failed_to_display_title">Kategori gagal ditampilkan</string>
+    <string name="tokopedianow_category_is_failed_to_display_description">Klik ikon di samping untuk coba lagi.</string>
     <string name="tokopedianow_search_bar_hint">Cari di Tokopedia NOW!</string>
-    <string name="tokopedianow_lihat">Lihat</string>
     <string name="tokopedianow_all_products">Semua Produk</string>
     <string name="tokopedianow_dynamic_header_subtitle_default_value">Berakhir dalam</string>
 
@@ -87,7 +85,7 @@
     <string name="tokopedianow_repurchase_empty_state_no_history_desc_filter">Coba ubah filter, atau cari barang di Tokopedia NOW!.</string>
     <string name="tokopedianow_repurchase_empty_state_no_history_desc_search">Coba ubah kata kuncimu, atau cari barang di Tokopedia NOW!.</string>
     <string name="tokopedianow_repurchase_empty_state_no_history_button">Belanja di Tokopedia NOW!</string>
-    <string name="tokopedianow_repurchase_category_grid_title">Mau belanja apa?</string>
+    <string name="tokopedianow_repurchase_category_menu_title">Cek kategori lainnya</string>
     <string name="tokopedianow_repurchase_title_page">Beli Lagi</string>
     <string name="tokopedianow_repurchase_no_result_title">Belum pernah belanja di Tokopedia NOW!</string>
     <string name="tokopedianow_repurchase_no_result_description_two_hours">Belanja sekarang, pesanan tiba dalam 2 jam!</string>
@@ -98,15 +96,11 @@
     <string name="tokopedianow_sort_filter_item_last_bought_bottomsheet">Terakhir Kamu Beli</string>
     <string name="tokopedianow_sort_filter_title">Urutkan</string>
 
-    <string name="tokopedianow_date_filter_title_bottomsheet">Pilih Tanggal</string>
     <string name="tokopedianow_date_filter_all_date_transactions_chip_and_item_bottomsheet_title">Semua Tanggal</string>
     <string name="tokopedianow_date_filter_last_one_month_chip_and_item_bottomsheet_title">30 Hari Terakhir</string>
     <string name="tokopedianow_date_filter_last_three_months_chip_and_item_bottomsheet_title">90 Hari Terakhir</string>
-    <string name="tokopedianow_date_filter_custom_date_item_bottomsheet_title">Pilih Tanggal Sendiri</string>
     <string name="tokopedianow_date_filter_custom_date_chip_title">%1$s - %2$s</string>
     <string name="tokopedianow_date_filter_apply_filter_bottomshet">Terapkan</string>
-    <string name="tokopedianow_date_filter_item_start_date_bottomshet">Mulai dari</string>
-    <string name="tokopedianow_date_filter_item_end_date_bottomshet">Sampai</string>
 
     <string name="tokopedianow_repurchase_sort_chip_title">Sering Kamu Beli</string>
     <string name="tokopedianow_repurchase_all_category_filter_chip_title">Semua Kategori</string>
@@ -120,7 +114,6 @@
     <string name="tokopedianow_quest_shop_again_and_get_gift">Belanja lagi, dapatin hadiah!</string>
     <string name="tokopedianow_quest_widget_all_claimed_title"><![CDATA[<b>Yay!</b> Kamu sudah dapat semua hadiah dari <b>Tokopedia NOW!</b>]]></string>
     <string name="tokopedianow_quest_widget_all_claimed_desc">Cek Hadiah Saya</string>
-    <string name="tokopedianow_quest_widget_all_claimed_total_claimed">5/5</string>
     <string name="tokopedianow_quest_sequence_widget_title">Penawaran spesial untukmu</string>
     <string name="tokopedianow_quest_sequence_widget_see_all">Lihat Detail</string>
 
@@ -159,21 +152,13 @@
     <string name="tokopedianow_20m_empty_state_desc">Nantikan kabar dari kami, ya. Saat ini, kamu bisa nikmati layanan 2 jam tiba dulu.</string>
     <string name="tokopedianow_20m_empty_state_primary_btn">Belanja 2 Jam Tiba</string>
 
-    <string name ="tokopedianow_home_referral_widget_title">Mau cashback %1$s?</string>
     <string name="tokopedianow_home_referral_widget_desc_sender"><![CDATA[Ajak temanmu cobain belanja di NOW! <font color=\'%1$s\'>Selengkapnya</font>]]></string>
     <string name="tokopedianow_home_referral_widget_desc_receiver"><![CDATA[Yuk, <b>%1$s</b> untuk pakai kuponnya sebelum hangus!]]></string>
     <string name="tokopedianow_home_referral_widget_button_text_sender">Ajak Belanja NOW!</string>
-    <string name="tokopedianow_home_referral_widget_button_text_receiver">Cek Detail</string>
     <string name="tokopedianow_home_referral_toaster">Oops, referral sedang ada kendala. Tunggu sebentar dan coba lagi nanti, ya.</string>
-    <string name="tokopedianow_home_referral_share_title">Bagi Link Referral Tokopedia NOW &amp;  Dapatkan Cashback 20rb</string>
-    <string name="tokopedianow_home_referral_share_desc">Jangan simpan sendiri, cashback kamu akan bertambah kalau kamu ajak temanmu bergabung</string>
-    <string name="tokopedianow_home_referral_share_main_text">ngajak kamu pakai Tokopedia NOW!. Belanja kebutuhan harian, 2 jam tiba &amp; gratis ongkir. Cuma pakai link ini, dapat kupon cashback Rp20 rb setelah transaksi! </string>
-    <string name="tokopedianow_home_referral_share_your_friend">Temanmu</string>
 
     <!-- Mix Left Carousel Widget -->
     <string name="tokopedianow_mix_left_carousel_widget_see_all">Lihat Semua</string>
-    <string name="tokopedianow_mix_left_carousel_widget_subtitle">Berakhir dalam</string>
-    <string name="tokopedianow_mix_left_carousel_widget_see_all_desc">Masih banyak barang lainnya, lho!</string>
 
     <!-- On Boarding 20m -->
     <string name="tokopedianow_on_boarding_title_bottomsheet">Tokopedia NOW! 20 menit tiba</string>
@@ -260,4 +245,21 @@
     <string name="error_referral_on_limit">Yaah, kupon Belanja NOW! dari temanmu sudah mencapai batas maksimum.</string>
     <string name="error_referral_click_their_own_link">Kupon Belanja NOW! hanya bisa dipakai sama temanmu yang pengguna baru.</string>
     <string name="error_referrral_recurring_user">Yaah, kupon Belanja NOW! hanya berlaku khusus pengguna baru saja.</string>
+
+    <string name="tokopedianow_content_description_quantity_editor_view_add">tombol tambah</string>
+    <string name="tokopedianow_content_description_quantity_editor_view_sub">tombol kurang</string>
+
+    <string name="tokopedianow_product_card_similar_product">Pilihan Serupa</string>
+    <string name="tokopedianow_product_card_percentage">%d%%</string>
+    <string name="tokopedianow_product_card_wishlist_add_success">Barang berhasil disimpan di Wishlist. Kamu akan dapat notifikasi saat stok kembali.</string>
+    <string name="tokopedianow_product_card_wishlist_add_fail">Oops, barang gagal disimpan di Wishlist.</string>
+    <string name="tokopedianow_product_card_wishlist_remove_success">Barang sudah dihapus dari Wishlist.</string>
+    <string name="tokopedianow_product_card_wishlist_remove_fail">Oops, barang gagal dihapus dari Wishlist.</string>
+
+    <string name="tokopedianow_toaster_ok">Oke</string>
+    <string name="tokopedianow_toaster_retry">Coba Lagi</string>
+    <string name="tokopedianow_toaster_see">Lihat</string>
+
+    <string name="tokopedianow_product_card_similar_product_error_description">Tidak Ada Produk Serupa yang Tersedia</string>
+
 </resources>

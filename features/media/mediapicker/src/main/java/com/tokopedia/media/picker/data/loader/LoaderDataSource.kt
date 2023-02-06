@@ -9,9 +9,9 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.MediaStore.Files.FileColumns.*
-import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.picker.common.PickerParam
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 
@@ -24,7 +24,7 @@ interface LoaderDataSource {
 
 open class LoaderDataSourceImpl(
     private val context: Context,
-    private val cacheManager: ParamCacheManager
+    private val cacheManager: PickerCacheManager
 ) : LoaderDataSource {
 
     @SuppressLint("AnnotateVersionCheck")

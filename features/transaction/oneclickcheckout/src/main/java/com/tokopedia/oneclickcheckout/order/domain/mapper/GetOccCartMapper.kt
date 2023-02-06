@@ -73,7 +73,7 @@ class GetOccCartMapper @Inject constructor() {
                 val shopShipmentResult = ShopShipment().apply {
                     isDropshipEnabled = shopShipment.isDropshipEnabled == 1
                     shipCode = shopShipment.shipCode
-                    shipId = shopShipment.shipId
+                    shipId = shopShipment.shipId.toIntOrZero()
                     shipLogo = shopShipment.shipLogo
                     shipName = shopShipment.shipName
                 }
@@ -83,9 +83,9 @@ class GetOccCartMapper @Inject constructor() {
                         val shipProdResult = com.tokopedia.logisticcart.shipping.model.ShipProd().apply {
                             additionalFee = shipProd.additionalFee
                             minimumWeight = shipProd.minimumWeight
-                            shipGroupId = shipProd.shipGroupId
+                            shipGroupId = shipProd.shipGroupId.toIntOrZero()
                             shipGroupName = shipProd.shipGroupName
-                            shipProdId = shipProd.shipProdId
+                            shipProdId = shipProd.shipProdId.toIntOrZero()
                             shipProdName = shipProd.shipProdName
                         }
                         shipProdListResult.add(shipProdResult)
@@ -316,7 +316,7 @@ class GetOccCartMapper @Inject constructor() {
                 bid = payment.bid,
                 specificGatewayCampaignOnlyType = payment.specificGatewayCampaignOnlyType,
                 walletData = mapPaymentWalletData(payment.walletAdditionalData, data.paymentAdditionalData.callbackUrl),
-                paymentFees = mapPaymentFee(payment.paymentFeeDetail)
+                originalPaymentFees = mapPaymentFee(payment.paymentFeeDetail)
         )
     }
 
