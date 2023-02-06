@@ -500,11 +500,11 @@ class SellerHomeViewModel @Inject constructor(
     }
 
     fun startSse(realTimeDataKeys: List<String>) {
-        stopSSE()
         viewModelScope.launch(dispatcher.io) {
-            if (realTimeDataKeys.isNotEmpty()) {
-                widgetSse.get().connect(SELLER_HOME_SSE, realTimeDataKeys)
-                widgetSse.get().listen().handleSseMessage(_cardWidgetData, _milestoneWidgetData)
+            val sse = widgetSse.get()
+            if (realTimeDataKeys.isNotEmpty() && !sse.isConnected()) {
+                sse.connect(SELLER_HOME_SSE, realTimeDataKeys)
+                sse.listen().handleSseMessage(_cardWidgetData, _milestoneWidgetData)
             }
         }
     }

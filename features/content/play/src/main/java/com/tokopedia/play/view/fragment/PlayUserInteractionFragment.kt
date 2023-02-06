@@ -44,6 +44,8 @@ import com.tokopedia.play.extensions.*
 import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.component.UiComponent
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
+import com.tokopedia.play.util.*
+import com.tokopedia.play.util.CachedState
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.measureWithTimeout
@@ -870,7 +872,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderInteractiveDialog(prevState?.interactive, state.interactive)
                 renderWinnerBadge(state = state.winnerBadge)
 
-                handleStatus(state.status)
+                handleStatus(cachedState)
                 renderEngagement(prevState?.engagement, state.engagement)
 
                 if (prevState?.tagItems?.product != state.tagItems.product &&
@@ -1682,7 +1684,10 @@ class PlayUserInteractionFragment @Inject constructor(
     }
     //endregion
 
-    private fun handleStatus(status: PlayStatusUiModel) {
+    private fun handleStatus(state: CachedState<PlayViewerNewUiState>) {
+        if(state.isNotChanged { it.status.channelStatus.statusType }) return
+
+        val status = state.value.status
         getBottomSheetInstance().setState(status.channelStatus.statusType.isFreeze)
 
         if (status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned || status.channelStatus.statusType.isArchive) {

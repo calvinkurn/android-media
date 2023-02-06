@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
 import com.tokopedia.media.editor.data.repository.ColorFilterRepository
 import com.tokopedia.media.editor.data.repository.ContrastFilterRepository
 import com.tokopedia.media.editor.data.repository.RotateFilterRepository
@@ -54,6 +55,7 @@ class EditorDetailViewModelTest {
     private val rotateFilterRepository = mockk<RotateFilterRepository>()
     private val saveImageRepository = mockk<SaveImageRepository>()
     private val getWatermarkUseCase = mockk<GetWatermarkUseCase>()
+    private val addLogoRepository = mockk<AddLogoFilterRepository>()
 
     private val viewModel = DetailEditorViewModel(
         resourceProvider,
@@ -64,7 +66,8 @@ class EditorDetailViewModelTest {
         watermarkFilterRepository,
         rotateFilterRepository,
         saveImageRepository,
-        getWatermarkUseCase
+        getWatermarkUseCase,
+        addLogoRepository
     )
 
     @Test
@@ -454,7 +457,19 @@ class EditorDetailViewModelTest {
         assertTrue(isError)
     }
 
+    @Test
+    fun `should return user shop avatar`() {
+        // When
+        every { userSession.shopAvatar } returns shopAvatar
+        val shopAvatarUrl = viewModel.getAvatarShop()
+
+        // Then
+        assertEquals(shopAvatar, shopAvatarUrl)
+    }
+
     companion object {
         private const val videoKey = "/storage/sdcard/Pictures/Video1.mp4"
+        private const val shopAvatar = "images.tokopedia.com/shop_avatar/default.jpg"
+        private const val localLogoUrl = "/storage/sdcard/Pictures/Image.png"
     }
 }
