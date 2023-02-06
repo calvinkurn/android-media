@@ -16,6 +16,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.LocalShipping
@@ -35,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.extensions.tag
+import com.tokopedia.common_compose.principles.AppBar
 import com.tokopedia.common_compose.principles.NestButton
 import com.tokopedia.common_compose.principles.NestTextField
 import com.tokopedia.common_compose.principles.NestTicker
@@ -94,30 +96,32 @@ fun ReschedulePickupScreen(
         }
     }
 
-    ModalBottomSheetLayout(
-        sheetShape = NestBottomSheetShape(),
-        sheetState = sheetState,
-        sheetContent = {
-            RescheduleBottomSheetLayout(
-                state.value.bottomSheet,
-                closeSheet,
-                state.value.options,
-                onDayChosen,
-                onTimeChosen,
-                onReasonChosen
+    Scaffold(topBar = { AppBar(title = stringResource(id = R.string.title_reschedule_pickup_activity)) }) {
+        ModalBottomSheetLayout(
+            sheetShape = NestBottomSheetShape(),
+            sheetState = sheetState,
+            sheetContent = {
+                RescheduleBottomSheetLayout(
+                    state.value.bottomSheet,
+                    closeSheet,
+                    state.value.options,
+                    onDayChosen,
+                    onTimeChosen,
+                    onReasonChosen
+                )
+            }
+        ) {
+            ReschedulePickupScreenLayout(
+                state = state,
+                input = input,
+                onSubtitleClicked = onSubtitleClicked,
+                onOtherReasonChanged = onOtherReasonChanged,
+                onSaveReschedule = onSaveReschedule,
+                onOpenBottomSheet = openSheet,
+                onClickDialogButton = onClickDialogButton,
+                onCloseDialog = onCloseDialog
             )
         }
-    ) {
-        ReschedulePickupScreenLayout(
-            state = state,
-            input = input,
-            onSubtitleClicked = onSubtitleClicked,
-            onOtherReasonChanged = onOtherReasonChanged,
-            onSaveReschedule = onSaveReschedule,
-            onOpenBottomSheet = openSheet,
-            onClickDialogButton = onClickDialogButton,
-            onCloseDialog = onCloseDialog
-        )
     }
 }
 
