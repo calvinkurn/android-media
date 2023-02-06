@@ -52,7 +52,6 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
  */
 class DtHomeAdapterTypeFactory(
     private val homeRecommendationFeedListener: DtHomeCategoryListener,
-    private val featuredShopListener: FeaturedShopListener,
     private val bannerComponentListener: BannerComponentListener? = null,
     private val dynamicLegoBannerCallback: DynamicLegoBannerListener? = null,
     private val homeTopComponentListener: HomeComponentListener? = null,
@@ -107,8 +106,6 @@ class DtHomeAdapterTypeFactory(
             }
 
             MixLeftComponentViewHolder.LAYOUT -> MixLeftComponentViewHolder(view, homeLeftCarouselListener, null)
-
-            FeaturedShopViewHolder.LAYOUT -> FeaturedShopViewHolder(view, featuredShopListener, null)
 
             MixTopComponentViewHolder.LAYOUT -> MixTopComponentViewHolder(
                 view,

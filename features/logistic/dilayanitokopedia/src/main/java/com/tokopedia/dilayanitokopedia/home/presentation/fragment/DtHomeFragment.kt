@@ -49,11 +49,9 @@ import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
 import com.tokopedia.dilayanitokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
-import com.tokopedia.home_component.listener.FeaturedShopListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.listener.MixTopComponentListener
-import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.gone
@@ -152,7 +150,6 @@ class DtHomeFragment :
         DtHomeAdapter(
             typeFactory = DtHomeAdapterTypeFactory(
                 homeRecommendationFeedListener = createRecommendationCallback(),
-                featuredShopListener = createFeatureShopCallback(),
                 bannerComponentListener = createSlideBannerCallback(),
                 homeTopComponentListener = createTopComponentCallback(),
                 homeTopCarouselListener = createTopCarouselCallback(),
@@ -644,44 +641,6 @@ class DtHomeFragment :
         }
     }
 
-    private fun createFeatureShopCallback(): FeaturedShopListener {
-        return object : FeaturedShopListener {
-            override fun onSeeAllClicked(channelModel: ChannelModel, position: Int) {
-                // no-op
-            }
-
-            override fun onSeeAllBannerClicked(
-                channelModel: ChannelModel,
-                applink: String,
-                position: Int
-            ) {
-                // no-op
-            }
-
-            override fun onFeaturedShopBannerBackgroundClicked(channel: ChannelModel) {
-                // no-op
-            }
-
-            override fun onFeaturedShopItemImpressed(
-                channelModel: ChannelModel,
-                channelGrid: ChannelGrid,
-                position: Int,
-                parentPosition: Int
-            ) {
-                // no-op
-            }
-
-            override fun onFeaturedShopItemClicked(
-                channelModel: ChannelModel,
-                channelGrid: ChannelGrid,
-                position: Int,
-                parentPosition: Int
-            ) {
-                // no-op
-            }
-        }
-    }
-
     private fun bindChooseAddressWidget() {
         chooseAddressWidget?.bindChooseAddress(object :
             ChooseAddressWidget.ChooseAddressWidgetListener {
@@ -794,13 +753,13 @@ class DtHomeFragment :
         val lastVisible = linearLayoutManager?.findLastVisibleItemPosition()
         val listIsRecommendationForYou = viewModelDtHome.isLastWidgetIsRecommendationForYou()
         val endHasBeenReached = (lastVisible?.plus(1) ?: 0) >= totalItemCount
-        if (totalItemCount > 0 && endHasBeenReached && listIsRecommendationForYou == true) {
+        if ((totalItemCount > 0 && endHasBeenReached && listIsRecommendationForYou == true) || viewModelDtHome.isOnLoading) {
             // you have reached to the bottom of your recycler view
             showChooseAddressView(false)
             showAnchorTabView(false)
         } else {
-            showChooseAddressView(true)
-            showAnchorTabView(true)
+            showChooseAddressView()
+            showAnchorTabView()
         }
     }
 

@@ -43,6 +43,15 @@ class DtHomeViewModel @Inject constructor(
 
     private val homeRecommendationDataModel = HomeRecommendationFeedDataModel()
 
+    val isOnLoading: Boolean
+        get() = homeLayoutList.value?.let {
+            if (it is Success) {
+                it.data.state == DtLayoutState.LOADING
+            } else {
+                false
+            }
+        } ?: false
+
     fun getHomeVisitableList(): List<Visitable<*>> {
         return homeLayoutItemList.mapNotNull { it.layout }
     }
