@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
@@ -94,7 +95,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     private val _updateQuantityState: MutableSharedFlow<List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>> =
         MutableSharedFlow()
 
-    private val _updateQuantityStateFlow: MutableStateFlow<UpdateParam?> = MutableStateFlow(null)
+    private val _updateQuantityStateFlow: MutableStateFlow<UpdateQuantityTokofoodParam?> = MutableStateFlow(null)
     val updateQuantityStateFlow = _updateQuantityStateFlow.asStateFlow()
 
     private val _shouldRefreshCartData = MutableSharedFlow<Boolean>()
@@ -113,7 +114,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 .flatMapConcat { productList ->
                     flow {
                         showPartialLoading()
-                        emit(TokoFoodPurchaseUiModelMapper.mapUiModelToUpdateParam(productList, shopId.value))
+                        emit(TokoFoodPurchaseUiModelMapper.mapUiModelToUpdateQuantityParam(productList))
                     }
                 }
                 .collect {

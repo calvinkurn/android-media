@@ -14,6 +14,7 @@ data class UiEvent(
         const val EVENT_SUCCESS_DELETE_UNAVAILABLE_PRODUCTS = 5
         const val EVENT_SUCCESS_UPDATE_NOTES = 6
         const val EVENT_SUCCESS_UPDATE_QUANTITY = 7
+        const val EVENT_SUCCESS_UPDATE_QUANTITY_NEW = 71
         const val EVENT_SUCCESS_UPDATE_CART = 8
         const val EVENT_SUCCESS_LOAD_CART = 9
         const val EVENT_SUCCESS_ADD_TO_CART = 10

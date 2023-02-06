@@ -2,9 +2,13 @@ package com.tokopedia.tokofood.feature.merchant.presentation.mapper
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.domain.metadata.CartMetadataVariantTokoFood
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodBusinessData
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodCart
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
@@ -33,19 +37,6 @@ object TokoFoodMerchantUiModelMapper {
         )
     }
 
-    fun mapProductUiModelToUpdateProductParams(
-        productUiModel: ProductUiModel,
-        addOnUiModels: List<AddOnUiModel> = listOf()
-    ): UpdateProductParam {
-        return UpdateProductParam(
-            productId = productUiModel.id,
-            cartId = productUiModel.cartId,
-            notes = productUiModel.orderNote,
-            quantity = productUiModel.orderQty,
-            variants = mapCustomListItemsToVariantParams(addOnUiModels)
-        )
-    }
-
     fun mapCustomOrderDetailToAtcRequestParam(
             shopId: String,
             cartId: String,
@@ -66,22 +57,6 @@ object TokoFoodMerchantUiModelMapper {
                             variants = mapCustomListItemsToVariantParams(addOnUiModels)
                     )
                 }
-        )
-    }
-
-    fun mapCustomOrderDetailToUpdateProductParams(
-        productId: String,
-        customOrderDetail: CustomOrderDetail
-    ): UpdateProductParam {
-        val addOnUiModels = customOrderDetail.customListItems
-            .filter { it.addOnUiModel != null }
-            .map { customListItem -> customListItem.addOnUiModel ?: AddOnUiModel() }
-        return UpdateProductParam(
-            productId = productId,
-            cartId = customOrderDetail.cartId,
-            notes = customOrderDetail.orderNote,
-            quantity = customOrderDetail.qty,
-            variants = mapCustomListItemsToVariantParams(addOnUiModels)
         )
     }
 

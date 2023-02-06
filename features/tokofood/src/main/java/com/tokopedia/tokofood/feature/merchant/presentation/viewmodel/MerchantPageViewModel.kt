@@ -12,11 +12,13 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.mvcwidget.MvcData
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodBusinessData
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodCart
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.presentation.mapper.CustomOrderDetailsMapper.mapTokoFoodProductsToCustomOrderDetails
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
-import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.util.ResourceProvider
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.*
 import com.tokopedia.tokofood.feature.merchant.domain.usecase.GetMerchantDataUseCase
@@ -40,7 +42,6 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashMap
 
@@ -59,8 +60,8 @@ class MerchantPageViewModel @Inject constructor(
     val mvcLiveData: LiveData<MvcData?> get() = _mvcLiveData
 
     private val _quantityUpdateState = MutableSharedFlow<Boolean>()
-    private val _currentProductsWithUpdatedQuantity: MutableMap<String, List<UpdateProductParam>> = mutableMapOf()
-    val updateQuantityParam = MutableSharedFlow<UpdateParam>(Int.ONE)
+    private val _currentProductsWithUpdatedQuantity: MutableMap<String, Int> = mutableMapOf()
+    val updateQuantityParam = MutableSharedFlow<UpdateQuantityTokofoodParam>(Int.ONE)
 
     // map of productId to card positions info <dataset,adapter>
     val productMap: HashMap<String, Pair<Int, Int>> = hashMapOf()
@@ -359,61 +360,32 @@ class MerchantPageViewModel @Inject constructor(
         )
     }
 
-    fun updateQuantity(shopId: String, productUiModel: ProductUiModel) {
-        val currentProducts = _currentProductsWithUpdatedQuantity[shopId].orEmpty().toMutableList()
-        val shouldReplaceProductIndex = getShouldReplaceProductIndex(currentProducts, productUiModel.cartId, productUiModel.id)
-        val updatedProductParam = TokoFoodMerchantUiModelMapper.mapProductUiModelToUpdateProductParams(productUiModel)
-        if (shouldReplaceProductIndex == null) {
-            currentProducts.add(updatedProductParam)
-        } else {
-            currentProducts[shouldReplaceProductIndex] = updatedProductParam
-        }
-        _currentProductsWithUpdatedQuantity[shopId] = currentProducts
-
-        viewModelScope.launch {
-            _quantityUpdateState.emit(true)
-        }
-    }
-
     fun updateQuantity(
-        shopId: String,
-        productId: String,
-        customOrderDetail: CustomOrderDetail
+        cartId: String,
+        quantity: Int
     ) {
-        val currentProducts = _currentProductsWithUpdatedQuantity[shopId].orEmpty().toMutableList()
-        val shouldReplaceProductIndex = getShouldReplaceProductIndex(currentProducts, customOrderDetail.cartId, productId)
-        val updatedProductParam = TokoFoodMerchantUiModelMapper.mapCustomOrderDetailToUpdateProductParams(productId, customOrderDetail)
-        if (shouldReplaceProductIndex == null) {
-            currentProducts.add(updatedProductParam)
-        } else {
-            currentProducts[shouldReplaceProductIndex] = updatedProductParam
-        }
-        _currentProductsWithUpdatedQuantity[shopId] = currentProducts
+        _currentProductsWithUpdatedQuantity[cartId]
+        _currentProductsWithUpdatedQuantity[cartId] = quantity
 
         viewModelScope.launch {
             _quantityUpdateState.emit(true)
         }
     }
 
-    private fun getShouldReplaceProductIndex(
-        currentProducts: List<UpdateProductParam>,
-        cartId: String,
-        productId: String
-    ): Int? {
-        var shouldReplaceProductIndex: Int? = null
-        currentProducts.forEachIndexed { index, updateProductParam ->
-            if (updateProductParam.cartId == cartId && updateProductParam.productId == productId) {
-                shouldReplaceProductIndex = index
-            }
-        }
-        return shouldReplaceProductIndex
-    }
-
-    private fun getCurrentQuantityUpdateParams(): List<UpdateParam> {
+    private fun getCurrentQuantityUpdateParams(): List<UpdateQuantityTokofoodParam> {
         return _currentProductsWithUpdatedQuantity.entries.map {
-            UpdateParam(
-                shopId = it.key,
-                productList = it.value
+            // TODO: Add businessId
+            UpdateQuantityTokofoodParam(
+                source = SOURCE,
+                businessData = UpdateQuantityTokofoodBusinessData(
+                    businessId = String.EMPTY,
+                    carts = listOf(
+                        UpdateQuantityTokofoodCart(
+                            cartId = it.key,
+                            quantity = it.value
+                        )
+                    )
+                )
             )
         }
     }
@@ -455,5 +427,6 @@ class MerchantPageViewModel @Inject constructor(
         private const val DAYS_INCREASE = 2
 
         private const val UPDATE_QUANTITY_DEBOUNCE = 500L
+        private const val SOURCE = "merchant_page"
     }
 }

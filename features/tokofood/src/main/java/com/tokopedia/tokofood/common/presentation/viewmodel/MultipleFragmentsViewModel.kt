@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokofood.common.domain.param.RemoveCartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodParamNew
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.domain.usecase.AddToCartTokoFoodUseCase
@@ -16,6 +17,7 @@ import com.tokopedia.tokofood.common.domain.usecase.LoadCartTokoFoodUseCase
 import com.tokopedia.tokofood.common.domain.usecase.RemoveCartTokoFoodUseCase
 import com.tokopedia.tokofood.common.domain.usecase.RemoveCartTokofoodUseCaseNew
 import com.tokopedia.tokofood.common.domain.usecase.UpdateCartTokoFoodUseCase
+import com.tokopedia.tokofood.common.domain.usecase.UpdateQuantityTokofoodUseCase
 import com.tokopedia.tokofood.common.minicartwidget.view.MiniCartUiModel
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
@@ -29,7 +31,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -43,6 +44,7 @@ class MultipleFragmentsViewModel @Inject constructor(
     private val loadCartTokoFoodUseCase: Lazy<LoadCartTokoFoodUseCase>,
     private val addToCartTokoFoodUseCase: Lazy<AddToCartTokoFoodUseCase>,
     private val updateCartTokoFoodUseCase: Lazy<UpdateCartTokoFoodUseCase>,
+    private val updateQuantityTokofoodUseCase: Lazy<UpdateQuantityTokofoodUseCase>,
     private val removeCartTokoFoodUseCase: Lazy<RemoveCartTokoFoodUseCase>,
     private val removeCartTokofoodUseCaseNew: Lazy<RemoveCartTokofoodUseCaseNew>,
     private val dispatchers: CoroutineDispatchers,
@@ -304,6 +306,35 @@ class MultipleFragmentsViewModel @Inject constructor(
                         state = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY,
                         source = source,
                         data = updateParam to it.data
+                    )
+                )
+            }
+        }, onError = {
+            cartDataValidationState.emit(
+                UiEvent(
+                    state = UiEvent.EVENT_FAILED_UPDATE_QUANTITY,
+                    source = source,
+                    throwable = it
+                )
+            )
+        })
+    }
+
+    fun updateQuantity(updateParam: UpdateQuantityTokofoodParam,
+                       source: String,
+                       shouldRefreshCart: Boolean = true) {
+        launchCatchError(block = {
+            withContext(dispatchers.io) {
+                updateQuantityTokofoodUseCase.get().execute(updateParam)
+            }.let {
+                if (shouldRefreshCart) {
+                    loadCartList(source)
+                }
+                cartDataValidationState.emit(
+                    UiEvent(
+                        state = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY_NEW,
+                        source = source,
+                        data = updateParam
                     )
                 )
             }

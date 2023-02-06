@@ -2,8 +2,12 @@ package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodBusinessData
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodCart
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodPromo
@@ -36,6 +40,8 @@ object TokoFoodPurchaseUiModelMapper {
     private const val MIN_QUANTITY_STOCK = 1
 
     private const val INDEX_AFTER_FROM_PROMO = 2
+
+    private const val SOURCE = "checkout_page"
 
     fun mapShopInfoToUiModel(shop: CheckoutTokoFoodShop): TokoFoodPurchaseFragmentUiModel {
         return TokoFoodPurchaseFragmentUiModel(true, shop.name, shop.distance)
@@ -383,6 +389,22 @@ object TokoFoodPurchaseUiModelMapper {
                 )
             },
             shopId = shopId
+        )
+    }
+
+    fun mapUiModelToUpdateQuantityParam(uiModels: List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>): UpdateQuantityTokofoodParam {
+        // TODO: Add businessId
+        return UpdateQuantityTokofoodParam(
+            source = SOURCE,
+            businessData = UpdateQuantityTokofoodBusinessData(
+                businessId = String.EMPTY,
+                carts = uiModels.map {
+                    UpdateQuantityTokofoodCart(
+                        cartId = it.cartId,
+                        quantity = it.quantity
+                    )
+                }
+            )
         )
     }
 
