@@ -9,12 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
+import com.tokopedia.media.editor.analytics.getToolEditorText
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
@@ -26,13 +28,14 @@ import com.tokopedia.media.editor.ui.component.ToolsUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.cropCenterImage
-import com.tokopedia.media.editor.utils.getToolEditorText
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
+import com.tokopedia.picker.common.EDITOR_ADD_LOGO_TOOL
 import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.picker.common.utils.isVideoFormat
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
@@ -51,6 +54,8 @@ class EditorFragment @Inject constructor(
     private var activeImageUrl: String = ""
     private var loader: LoaderDialog? = null
     private var autoCropStartTime: Long = 0
+
+    private var toaster: Snackbar? = null
 
     fun isShowDialogConfirmation(): Boolean {
         return viewModel.getEditState(activeImageUrl)?.editList?.isNotEmpty() ?: false
@@ -143,7 +148,7 @@ class EditorFragment @Inject constructor(
         observeUpdateIndex()
     }
 
-    private fun imageCrop(bitmap: Bitmap, originalPath: String){
+    private fun imageCrop(bitmap: Bitmap, originalPath: String) {
         val cropRatio = viewModel.editorParam.value?.autoCropRatio() ?: ImageRatioType.RATIO_1_1
         val imageRatio = bitmap.width.toFloat() / bitmap.height
         cropCenterImage(bitmap, cropRatio)?.apply {
@@ -172,6 +177,7 @@ class EditorFragment @Inject constructor(
             EditorToolType.CROP -> editorHomeAnalytics.clickCrop()
             EditorToolType.REMOVE_BACKGROUND -> editorHomeAnalytics.clickRemoveBackground()
             EditorToolType.WATERMARK -> editorHomeAnalytics.clickWatermark()
+            EditorToolType.ADD_LOGO -> editorHomeAnalytics.clickAddLogo()
         }
     }
 
@@ -191,6 +197,7 @@ class EditorFragment @Inject constructor(
                     paramData.watermarkMode = item.watermarkMode
                     paramData.removeBackgroundUrl = item.removeBackgroundUrl
                     paramData.cropRotateValue = item.cropRotateValue
+                    paramData.addLogoValue = item.addLogoValue
 
                     // need to store brightness / contrast implement sequence (result will be diff)
                     // if contrast is latest filter then isContrastExecuteFirst = false
@@ -210,6 +217,7 @@ class EditorFragment @Inject constructor(
                     putExtra(DetailEditorActivity.PARAM_EDITOR, viewModel.editorParam.value)
                 }
 
+                toaster?.dismiss()
                 startActivityForResult(intent, DetailEditorActivity.EDITOR_RESULT_CODE)
             }
         }
@@ -241,7 +249,8 @@ class EditorFragment @Inject constructor(
         viewModel.undoState(activeImageUrl)?.apply {
             viewBinding?.viewPager?.updateImage(
                 thumbnailDrawerComponent.getCurrentIndex(),
-                this.getImageUrl()
+                this.getImageUrl(),
+                overlayImageUrl = this.getOverlayLogoValue()?.overlayLogoUrl ?: ""
             )
 
             renderUndoButton(this)
@@ -261,7 +270,8 @@ class EditorFragment @Inject constructor(
         viewModel.redoState(activeImageUrl)?.apply {
             viewBinding?.viewPager?.updateImage(
                 thumbnailDrawerComponent.getCurrentIndex(),
-                this.getImageUrl()
+                this.getImageUrl(),
+                overlayImageUrl = this.getOverlayLogoValue()?.overlayLogoUrl ?: ""
             )
 
             renderUndoButton(this)
@@ -321,6 +331,15 @@ class EditorFragment @Inject constructor(
 
     private fun observeEditorParam() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
+            val isAddLogoEnable =
+                RemoteConfigInstance.getInstance().abTestPlatform.getString(EDITOR_ADD_LOGO_TOOL) == EDITOR_ADD_LOGO_TOOL
+            if (!isAddLogoEnable || !viewModel.isShopAvailable()) {
+                it.editorToolsList().apply {
+                    val removeIndex = find { toolId -> toolId == EditorToolType.ADD_LOGO }
+                    remove(removeIndex)
+                }
+            }
+
             editorToolComponent.setupView(it.editorToolsList())
             thumbnailDrawerComponent.setupView(viewModel.editStateList.values.toList())
 
@@ -353,7 +372,11 @@ class EditorFragment @Inject constructor(
 
                 renderToolsIconActiveState(editorUiModel)
 
-                viewBinding?.viewPager?.updateImage(it, editorUiModel.getImageUrl())
+                viewBinding?.viewPager?.updateImage(
+                    it,
+                    editorUiModel.getImageUrl(),
+                    overlayImageUrl = editorUiModel.getOverlayLogoValue()?.overlayLogoUrl ?: ""
+                )
             }
         }
     }
@@ -366,7 +389,7 @@ class EditorFragment @Inject constructor(
             val ratioWidth = autoCropRatio?.getRatioX()?.toFloat() ?: 1f
             val ratioHeight = autoCropRatio?.getRatioY()?.toFloat() ?: 1f
 
-            Toaster.build(
+            toaster = Toaster.build(
                 editorFragmentContainer,
                 getString(
                     editorR.string.editor_auto_crop_format,
@@ -375,7 +398,8 @@ class EditorFragment @Inject constructor(
                 ),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL
-            ).show()
+            )
+            toaster?.show()
         }
     }
 

@@ -8,10 +8,12 @@ import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.EstimatedTimeArrival
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceTextData
 import com.tokopedia.logisticCommon.domain.param.EditAddressParam
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
@@ -357,7 +359,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 shipperName = selectedShippingCourierUiModel.productData.shipperName,
                 needPinpoint = flagNeedToSetPinpoint,
                 serviceErrorMessage = if (flagNeedToSetPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else errorMessage,
-                insurance = OrderInsurance(selectedShippingCourierUiModel.productData.insurance),
+                insurance = setupInsurance(selectedShippingCourierUiModel.productData.insurance),
                 serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
                 serviceEta = getShippingServiceETA(selectedShippingDurationUiModel.serviceData.texts),
                 whitelabelDescription = selectedShippingDurationUiModel.serviceData.texts.textServiceDesc,
@@ -430,7 +432,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 shipperName = selectedShippingCourierUiModel.productData.shipperName,
                 needPinpoint = flagNeedToSetPinpoint,
                 serviceErrorMessage = if (flagNeedToSetPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else errorMessage,
-                insurance = OrderInsurance(selectedShippingCourierUiModel.productData.insurance),
+                insurance = setupInsurance(selectedShippingCourierUiModel.productData.insurance),
                 serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
                 serviceEta = getShippingServiceETA(selectedShippingDurationUiModel.serviceData.texts),
                 whitelabelDescription = selectedShippingDurationUiModel.serviceData.texts.textServiceDesc,
@@ -546,7 +548,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 shipperName = selectedShippingCourierUiModel.productData.shipperName,
                 needPinpoint = flagNeedToSetPinpoint,
                 serviceErrorMessage = if (flagNeedToSetPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else errorMessage,
-                insurance = OrderInsurance(selectedShippingCourierUiModel.productData.insurance),
+                insurance = setupInsurance(selectedShippingCourierUiModel.productData.insurance),
                 serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
                 serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
                 isHideChangeCourierCard = selectedShippingDurationUiModel.serviceData.selectedShipperProductId > 0,
@@ -706,7 +708,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                             checksum = selectedShippingCourierUiModel.productData.checkSum,
                             shipperId = selectedShippingCourierUiModel.productData.shipperId,
                             shipperName = selectedShippingCourierUiModel.productData.shipperName,
-                            insurance = OrderInsurance(selectedShippingCourierUiModel.productData.insurance),
+                            insurance = setupInsurance(selectedShippingCourierUiModel.productData.insurance),
                             shippingPrice = selectedShippingCourierUiModel.productData.price.price,
                             shippingEta = getShippingCourierETA(selectedShippingCourierUiModel.productData.estimatedTimeArrival),
                             shippingRecommendationData = shippingRecommendationData,
@@ -755,7 +757,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 checksum = selectedShippingCourierUiModel.productData.checkSum,
                 shipperId = selectedShippingCourierUiModel.productData.shipperId,
                 shipperName = selectedShippingCourierUiModel.productData.shipperName,
-                insurance = OrderInsurance(selectedShippingCourierUiModel.productData.insurance),
+                insurance = setupInsurance(selectedShippingCourierUiModel.productData.insurance),
                 shippingPrice = selectedShippingCourierUiModel.productData.price.price,
                 serviceEta = getShippingServiceETA(selectedShippingDurationViewModel.serviceData.texts),
                 whitelabelDescription = selectedShippingDurationViewModel.serviceData.texts.textServiceDesc,
@@ -822,7 +824,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                         logisticPromoViewModel = logisticPromoUiModel,
                         shippingRecommendationData = shippingRecommendationData,
                         isServicePickerEnable = true,
-                        insurance = OrderInsurance(logisticPromoShipping.productData.insurance),
+                        insurance = setupInsurance(logisticPromoShipping.productData.insurance),
                         serviceErrorMessage = if (needPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else logisticPromoShipping.productData.error?.errorMessage,
                         needPinpoint = needPinpoint,
                         logisticPromoTickerMessage = null,
@@ -860,6 +862,23 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
             )
         }
         return orderShipment
+    }
+
+    private fun setupInsurance(insuranceData: InsuranceData): OrderInsurance {
+        val orderInsurance = OrderInsurance(insuranceData, isCheckInsurance = false)
+        when (insuranceData.insuranceType) {
+            InsuranceConstant.INSURANCE_TYPE_MUST -> {
+                orderInsurance.isCheckInsurance = true
+            }
+            InsuranceConstant.INSURANCE_TYPE_NO -> {
+                orderInsurance.isCheckInsurance = false
+            }
+            InsuranceConstant.INSURANCE_TYPE_OPTIONAL -> {
+                orderInsurance.isCheckInsurance =
+                    insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES
+            }
+        }
+        return orderInsurance
     }
 
     suspend fun setChosenAddress(address: RecipientAddressModel): ChosenAddressModel? {

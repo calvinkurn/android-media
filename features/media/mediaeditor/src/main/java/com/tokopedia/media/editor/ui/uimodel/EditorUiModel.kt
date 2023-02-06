@@ -19,7 +19,8 @@ class EditorUiModel(
     init {
         try {
             isVideo = isVideoFormat(originalUrl)
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
     }
 
     fun getImageUrl(): String {
@@ -95,6 +96,20 @@ class EditorUiModel(
 
     fun isImageEdited(): Boolean {
         return editList.size > backValue
+    }
+
+    fun getOverlayLogoValue(): EditorAddLogoUiModel? {
+        val maxStateLimit = (editList.size - 1) - backValue
+        var searchResult: EditorAddLogoUiModel? = null
+
+        editList.forEachIndexed { index, editorDetailUiModel ->
+            if (index > maxStateLimit) return@forEachIndexed
+            if (editorDetailUiModel.addLogoValue.overlayLogoUrl.isNotEmpty()) {
+                searchResult = editorDetailUiModel.addLogoValue
+            }
+        }
+
+        return searchResult
     }
 
     companion object {

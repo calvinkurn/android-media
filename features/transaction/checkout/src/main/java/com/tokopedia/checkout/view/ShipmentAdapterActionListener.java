@@ -95,7 +95,7 @@ public interface ShipmentAdapterActionListener {
 
     void onProcessToPayment();
 
-    void onChangeTradeInDropOffClicked();
+    void onChangeTradeInDropOffClicked(String latitude, String longitude);
 
     boolean isTradeInByDropOff();
 

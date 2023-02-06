@@ -255,6 +255,7 @@ public interface ApplinkConst {
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
     String LOGISTIC_SELLER_RESCHEDULE = "tokopedia://seller/reschedulepickup";
     String ORDER_POD = "tokopedia://shipping/pod/{order_id}";
+    String PINPOINT_WEBVIEW = "tokopedia://pin-point-picker-result";
     String SHARE_ADDRESS = "tokopedia://share_address";
 
     String LINK_ACCOUNT = "tokopedia://gojek-account-link";
