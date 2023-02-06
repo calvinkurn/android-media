@@ -1,11 +1,7 @@
 package com.tokopedia.privacycenter.ui.consentwithdrawal.adapter.viewholder
 
 import android.graphics.Typeface
-import android.text.SpannableString
-import android.text.TextPaint
-import android.text.style.ClickableSpan
 import android.view.View
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.adapterdelegate.BaseViewHolder
@@ -26,34 +22,6 @@ class PurposeViewHolder(
 ) : BaseViewHolder(itemView) {
 
     private val itemViewBinding by viewBinding(ConsentWithdrawalPurposeItemViewBinding::bind)
-
-    private fun setupSpannableText(text: String) {
-        val sourceString = text
-
-        val spannable = SpannableString(sourceString)
-
-        spannable.setSpan(
-            object : ClickableSpan() {
-                override fun onClick(view: View) {
-                }
-
-                override fun updateDrawState(ds: TextPaint) {
-                    super.updateDrawState(ds)
-                    ds.isUnderlineText = false
-                    ds.typeface = Typeface.DEFAULT_BOLD
-                    ds.color = ContextCompat.getColor(
-                        itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
-                    )
-                }
-            },
-            sourceString.indexOf("Daftar"),
-            sourceString.length,
-            0
-        )
-
-        itemViewBinding?.itemDesc?.setText(spannable, TextView.BufferType.SPANNABLE)
-    }
 
     fun onBind(item: PurposeUiModel) {
         itemViewBinding?.apply {
