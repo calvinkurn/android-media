@@ -13,6 +13,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.talk.R
 import com.tokopedia.talk.feature.sellersettings.common.activity.TalkSellerSettingsActivity
@@ -22,7 +24,9 @@ import com.tokopedia.talk.feature.sellersettings.settings.analytics.TalkSettings
 import com.tokopedia.talk.feature.sellersettings.settings.analytics.TalkSettingsTrackingConstants
 import com.tokopedia.talk.feature.sellersettings.settings.presentation.di.DaggerTalkSettingsComponent
 import com.tokopedia.talk.feature.sellersettings.settings.presentation.di.TalkSettingsComponent
+import com.tokopedia.talk.feature.sellersettings.settings.presentation.viewmodel.TalkSettingsViewModel
 import com.tokopedia.talk.feature.sellersettings.settings.presentation.widget.TalkSettingsOption
+import javax.inject.Inject
 
 class TalkSettingsFragment : BaseDaggerFragment(), HasComponent<TalkSettingsComponent> {
 
@@ -30,6 +34,9 @@ class TalkSettingsFragment : BaseDaggerFragment(), HasComponent<TalkSettingsComp
         const val SMART_REPLY_NAVIGATION = "smartReply"
         const val TEMPLATE_LIST_NAVIGATION = "templateList"
     }
+
+    @Inject
+    lateinit var viewModel: TalkSettingsViewModel
 
     private var navigation: String = ""
     private var talkSettingsTemplateOption: TalkSettingsOption? = null
@@ -47,9 +54,9 @@ class TalkSettingsFragment : BaseDaggerFragment(), HasComponent<TalkSettingsComp
     override fun getComponent(): TalkSettingsComponent? {
         return activity?.run {
             DaggerTalkSettingsComponent
-                    .builder()
-                    .talkComponent(TalkInstance.getComponent(application))
-                    .build()
+                .builder()
+                .talkComponent(TalkInstance.getComponent(application))
+                .build()
         }
     }
 
@@ -68,6 +75,7 @@ class TalkSettingsFragment : BaseDaggerFragment(), HasComponent<TalkSettingsComp
         setNavigation()
         setToolbarTitle()
         showLabel()
+        observeSmartReplyDecommissionConfig()
     }
 
     private fun getDataFromArguments() {
@@ -75,11 +83,11 @@ class TalkSettingsFragment : BaseDaggerFragment(), HasComponent<TalkSettingsComp
             val talkSettingsFragmentArgs = TalkSettingsFragmentArgs.fromBundle(it)
             navigation = talkSettingsFragmentArgs.navigation
         }
-        if(navigation.isGoToSmartReply()) {
+        if (navigation.isGoToSmartReply()) {
             goToSmartReply()
             return
         }
-        if(navigation.isGoToTemplateList()) {
+        if (navigation.isGoToTemplateList()) {
             goToTemplate()
             return
         }
@@ -164,4 +172,13 @@ class TalkSettingsFragment : BaseDaggerFragment(), HasComponent<TalkSettingsComp
         return (activity as? UserSessionListener)?.getShopId() ?: ""
     }
 
+    private fun observeSmartReplyDecommissionConfig() {
+        viewModel.smartReplyDecommissionConfig.observe(viewLifecycleOwner) { config ->
+            if (config.showSmartReplyEntryPoint) {
+                talkSettingsSmartReplyOption?.show()
+            } else {
+                talkSettingsSmartReplyOption?.gone()
+            }
+        }
+    }
 }

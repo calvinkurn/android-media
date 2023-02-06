@@ -5,7 +5,7 @@ import com.tokopedia.talk.feature.sellersettings.settings.presentation.fragment.
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.di.TalkSmartReplyDetailScope
 import dagger.Component
 
-@Component(dependencies = [TalkComponent::class])
+@Component(modules = [TalkSettingsViewModelModule::class], dependencies = [TalkComponent::class])
 @TalkSmartReplyDetailScope
 interface TalkSettingsComponent {
     fun inject(talkSettingsFragment: TalkSettingsFragment)
