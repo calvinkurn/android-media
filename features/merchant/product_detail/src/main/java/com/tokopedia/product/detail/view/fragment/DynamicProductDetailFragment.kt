@@ -3537,7 +3537,6 @@ open class DynamicProductDetailFragment :
             if (isScheduled) {
                 val common = CommonTracker(it, viewModel.userId)
                 ShipmentTracking.sendClickLihatJadwalLainnyaOnScheduleDelivery(
-                    trackingQueue,
                     chipsLabel,
                     common,
                     componentTrackDataModel
