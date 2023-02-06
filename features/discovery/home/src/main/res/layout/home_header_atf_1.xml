@@ -22,8 +22,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_banner_background"
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_banner"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="#8153E4"
@@ -32,15 +32,15 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/rv_banner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:scaleType="fitStart"
-        android:src="@drawable/dummy_banner"
-        app:layout_constraintTop_toBottomOf="@id/view_balance_widget"
-        app:unify_image_corner_radius="0" />
+<!--    <com.tokopedia.unifycomponents.ImageUnify-->
+<!--        android:id="@+id/rv_banner"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:adjustViewBounds="true"-->
+<!--        android:scaleType="fitStart"-->
+<!--        android:src="@drawable/dummy_banner"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/view_balance_widget"-->
+<!--        app:unify_image_corner_radius="0" />-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header_top_rounded"
