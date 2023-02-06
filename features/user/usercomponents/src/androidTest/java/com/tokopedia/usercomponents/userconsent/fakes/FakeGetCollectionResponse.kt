@@ -2,7 +2,7 @@ package com.tokopedia.usercomponents.userconsent.fakes
 
 import com.google.gson.Gson
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst
-import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionResponse
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionResponse
 
 object FakeGetCollectionResponse {
 
@@ -13,6 +13,17 @@ object FakeGetCollectionResponse {
     fun collectionTnCSingleMandatory(): ConsentCollectionResponse {
         val gson = getDefaultResponse()
         with(gson.data.collectionPoints.first()) {
+            attributes.policyNoticeType = UserConsentConst.TERM_CONDITION
+            attributes.collectionPointPurposeRequirement = UserConsentConst.MANDATORY
+            attributes.collectionPointStatementOnlyFlag = UserConsentConst.CHECKLIST
+        }
+        return gson
+    }
+
+    fun collectionTnCSingleMandatoryNotNeedConsent(): ConsentCollectionResponse {
+        val gson = getDefaultResponse()
+        with(gson.data.collectionPoints.first()) {
+            needConsent = false
             attributes.policyNoticeType = UserConsentConst.TERM_CONDITION
             attributes.collectionPointPurposeRequirement = UserConsentConst.MANDATORY
             attributes.collectionPointStatementOnlyFlag = UserConsentConst.CHECKLIST

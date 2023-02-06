@@ -5,7 +5,7 @@ import android.content.Context
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.talk.stub.common.di.component.BaseAppComponentStubInstance
 import com.tokopedia.talk.stub.common.di.component.TalkComponentStubInstance
 import com.tokopedia.talk.stub.common.graphql.coroutines.domain.repository.GraphqlRepositoryStub

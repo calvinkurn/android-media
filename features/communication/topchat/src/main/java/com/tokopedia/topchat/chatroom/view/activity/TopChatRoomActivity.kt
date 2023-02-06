@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -18,7 +19,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import androidx.window.*
 import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoTracker
@@ -42,8 +42,8 @@ import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.view.fragment.ChatListInboxFragment
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
+import com.tokopedia.topchat.chatlist.view.fragment.ChatListInboxFragment
 import com.tokopedia.topchat.chatroom.di.ChatComponent
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
@@ -56,11 +56,17 @@ import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.util.ViewUtil
+import com.tokopedia.topchat.common.util.ViewUtil.FLAT_STATE
+import com.tokopedia.topchat.common.util.ViewUtil.HALF_OPEN_STATE
+import com.tokopedia.topchat.common.util.ViewUtil.getFoldingFeatureState
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 
-open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatComponent>,
-    StickerFragment.Listener, TopChatRoomFlexModeListener {
+open class TopChatRoomActivity :
+    BaseChatToolbarActivity(),
+    HasComponent<ChatComponent>,
+    StickerFragment.Listener,
+    TopChatRoomFlexModeListener {
 
     private var chatComponent: ChatComponent? = null
 
@@ -87,7 +93,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
      */
     private var currentlyInFlexMode: Boolean = false
 
-    //messageId for chatroom fragment intent, replaced to applink's parameter when intent doesn't have the extra
+    // messageId for chatroom fragment intent, replaced to applink's parameter when intent doesn't have the extra
     private var messageId: String = "0"
 
     private var chatTemplateSeparatedView: TopChatTemplateSeparatedView? = null
@@ -106,14 +112,15 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         if (intent != null && intent.extras != null) {
             bundle.putAll(intent.extras)
 
-            if(role == null) {
+            if (role == null) {
                 role = intent.getIntExtra(Constant.CHAT_USER_ROLE_KEY, RoleType.BUYER)
             }
-            if(currentActiveChat == null) {
+            if (currentActiveChat == null) {
                 currentActiveChat = intent.getStringExtra(Constant.CHAT_CURRENT_ACTIVE)
             } else {
-                //open another chatroom, remove attachment
+                // open another chatroom, remove attachment & reset web socket
                 bundle.putBoolean(Constant.CHAT_REMOVE_ATTACHMENT, true)
+                bundle.putBoolean(Constant.CHAT_RESET_WEBSOCKET, true)
             }
         }
 
@@ -275,17 +282,29 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     override fun setupFragment(savedInstance: Bundle?) {
-        //Do nothing
+        // Do nothing
     }
 
     override fun onStart() {
         super.onStart()
         layoutUpdatesJob = CoroutineScope(Dispatchers.Main).launch {
-            windowInfoRepo.windowLayoutInfo(this@TopChatRoomActivity)
-                .collect { newLayoutInfo ->
-                    changeLayout(newLayoutInfo)
+            try {
+                windowInfoRepo.windowLayoutInfo(this@TopChatRoomActivity)
+                    .collect { newLayoutInfo ->
+                        changeLayout(newLayoutInfo)
+                    }
+            } catch (throwable: Throwable) {
+                if (throwable !is CancellationException) {
+                    onErrorGetWindowLayoutInfo()
                 }
+            }
         }
+    }
+
+    private fun onErrorGetWindowLayoutInfo() {
+        setupChatRoomOnlyToolbar()
+        handleNonFlexModeView()
+        currentlyInFlexMode = false
     }
 
     override fun onStop() {
@@ -299,14 +318,14 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         frameLayoutChatList = findViewById(R.id.chatlist_fragment)
         chatTemplateSeparatedView = findViewById(R.id.separated_chat_template)
 
-        //variable toolbar is chatroom's toolbar
+        // variable toolbar is chatroom's toolbar
         toolbarChatList = findViewById(R.id.toolbar_chatlist)
 
         windowInfoRepo = WindowInfoTracker.getOrCreate(this@TopChatRoomActivity)
     }
 
     private fun setupFragments(savedInstanceState: Bundle?) {
-        if(isAllowedFlexMode()) {
+        if (isAllowedFlexMode()) {
             chatSavedInstance = savedInstanceState
             setupFlexModeFragments(savedInstanceState)
         } else {
@@ -322,7 +341,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
             role = null
             currentActiveChat = null
         } else {
-            messageId = currentActiveChat?: ZER0_MESSAGE_ID
+            messageId = currentActiveChat ?: ZER0_MESSAGE_ID
         }
         chatRoomFragment = newFragment as TopChatRoomFragment
         chatListFragment = ChatListInboxFragment.createFragment(role, currentActiveChat)
@@ -355,15 +374,17 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     private fun changeLayout(windowLayoutInfo: WindowLayoutInfo) {
         if (isAllowedFlexMode()) {
             val foldingFeature = getFoldingFeature(windowLayoutInfo.displayFeatures)
-            displayState = (foldingFeature?.state ?: EMPTY_STATE) as Int
-            currentlyInFlexMode = if (windowLayoutInfo.displayFeatures.isNotEmpty()
-                && !isTableTop(foldingFeature)
+            displayState = getFoldingFeatureState(foldingFeature?.state)
+            currentlyInFlexMode = if (windowLayoutInfo.displayFeatures.isNotEmpty() &&
+                !isTableTop(foldingFeature)
             ) {
                 val isSuccess = ViewUtil.alignViewToDeviceFeatureBoundaries(
                     windowLayoutInfo,
                     constraintLayoutParent,
-                    R.id.chatlist_fragment, R.id.chatroom_fragment,
-                    R.id.toolbar, R.id.device_feature
+                    R.id.chatlist_fragment,
+                    R.id.chatroom_fragment,
+                    R.id.toolbar,
+                    R.id.device_feature
                 )
                 attachChatListFragment()
                 attachChatRoomFragment()
@@ -385,7 +406,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     private fun getFoldingFeature(displayFeatures: List<DisplayFeature>): FoldingFeature? {
-        return if(displayFeatures.isNotEmpty() && displayFeatures.first() is FoldingFeature) {
+        return if (displayFeatures.isNotEmpty() && displayFeatures.first() is FoldingFeature) {
             displayFeatures.first() as FoldingFeature
         } else {
             null
@@ -415,13 +436,13 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     private fun checkPeriodicallyUntilListRendered(msgId: String) {
         CoroutineScope(Dispatchers.IO).launch {
             var tryCounter = 0
-            while(!chatListFragment.stopTryingIndicator && tryCounter <= COUNTER_THRESHOLD) {
+            while (!chatListFragment.stopTryingIndicator && tryCounter <= COUNTER_THRESHOLD) {
                 if (!chatListFragment.adapter?.list.isNullOrEmpty() &&
-                    chatListFragment.adapter?.activeChat != null )
-                {
+                    chatListFragment.adapter?.activeChat != null
+                ) {
                     try {
                         chatListFragment.setIndicatorCurrentActiveChat(msgId)
-                    //to prevent: Cannot call this method while RecyclerView is computing a layout or scrolling
+                        // to prevent: Cannot call this method while RecyclerView is computing a layout or scrolling
                     } catch (ignored: Exception) {
                         ignored.printStackTrace()
                     }
@@ -437,10 +458,11 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     override fun isFlexMode(): Boolean {
-        return (displayState == FLAT_STATE
-                || displayState == HALF_OPEN_STATE)
-                && isAllowedFlexMode() 
-                && currentlyInFlexMode
+        return (
+            displayState == FLAT_STATE ||
+                displayState == HALF_OPEN_STATE
+            ) &&
+            isAllowedFlexMode() && currentlyInFlexMode
     }
 
     private fun hideKeyboard() {
@@ -492,7 +514,8 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
                 ColorDrawable(
                     MethodChecker.getColor(
                         this@TopChatRoomActivity,
-                        com.tokopedia.unifyprinciples.R.color.Unify_Background)
+                        com.tokopedia.unifyprinciples.R.color.Unify_Background
+                    )
                 )
             )
             setDisplayHomeAsUpEnabled(true)
@@ -537,7 +560,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if(isFlexMode()) {
+        return if (isFlexMode()) {
             when (item.itemId) {
                 R.id.menu_chat_search -> {
                     RouteManager.route(this, ApplinkConstInternalMarketplace.CHAT_SEARCH)
@@ -556,27 +579,33 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     private fun isAllowedFlexMode(): Boolean {
-        if(remoteConfig == null) {
+        if (remoteConfig == null) {
             remoteConfig = FirebaseRemoteConfigImpl(this)
         }
-        return remoteConfig?.getBoolean(Constant.TOPCHAT_ALLOWED_FLEX_MODE, true)?: true
+        return remoteConfig?.getBoolean(Constant.TOPCHAT_ALLOWED_FLEX_MODE, true) ?: true
     }
 
     private fun isTableTop(foldFeature: FoldingFeature?) =
         foldFeature?.state == FoldingFeature.State.HALF_OPENED &&
-                foldFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
+            foldFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
 
     override fun onBackPressed() {
-        if(::chatRoomFragment.isInitialized && chatRoomFragment.onBackPressed()) {
+        if (::chatRoomFragment.isInitialized && chatRoomFragment.onBackPressed()) {
             return
         } else {
             super.onBackPressed()
         }
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (::chatRoomFragment.isInitialized) {
+            chatRoomFragment.setupAttachmentsPreview(intent?.extras)
+        }
+    }
+
     companion object {
         const val SOURCE_ASK_BUYER = "tx_ask_buyer"
-        val REQUEST_ATTACH_IMAGE = 2325
         val LABEL_USER = "Pengguna"
         val LABEL_SELLER = "Penjual"
         val ROLE_SELLER = "shop"
@@ -586,9 +615,6 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
 
         private const val DELAY = 1000L
         private const val COUNTER_THRESHOLD = 10
-        private const val EMPTY_STATE = 0
-        private const val FLAT_STATE = 1
-        private const val HALF_OPEN_STATE = 2
         private const val ZER0_MESSAGE_ID = "0"
         private const val SIXTEEN_DP = 16
         private var role: Int? = null
@@ -596,5 +622,4 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
 
         const val IS_FROM_ANOTHER_CALL = "is_from_another_chat"
     }
-
 }

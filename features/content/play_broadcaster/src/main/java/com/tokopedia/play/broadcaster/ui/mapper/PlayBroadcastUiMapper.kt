@@ -7,6 +7,7 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.domain.model.config.GetBroadcastingConfigurationResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetSellerLeaderboardSlotResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
@@ -16,8 +17,8 @@ import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessag
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
-import com.tokopedia.play.broadcaster.type.*
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameParticipantUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
@@ -48,6 +49,19 @@ class PlayBroadcastUiMapper @Inject constructor(
     private val textTransformer: HtmlTextTransformer,
     private val uriParser: UriParser,
 ) : PlayBroadcastMapper {
+
+    override fun mapBroadcastingConfig(response: GetBroadcastingConfigurationResponse): BroadcastingConfigUiModel {
+        return BroadcastingConfigUiModel(
+            audioRate = response.broadcasterGetBroadcastingConfig.config.audioRate,
+            bitrateMode = response.broadcasterGetBroadcastingConfig.config.bitrateMode,
+            fps = response.broadcasterGetBroadcastingConfig.config.fps,
+            maxRetry = response.broadcasterGetBroadcastingConfig.config.maxRetry,
+            reconnectDelay = response.broadcasterGetBroadcastingConfig.config.reconnectDelay,
+            videoBitrate = response.broadcasterGetBroadcastingConfig.config.videoBitrate,
+            videoHeight = response.broadcasterGetBroadcastingConfig.config.videoHeight,
+            videoWidth = response.broadcasterGetBroadcastingConfig.config.videoWidth,
+        )
+    }
 
     override fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia) =
         LiveStreamInfoUiModel(
@@ -109,6 +123,7 @@ class PlayBroadcastUiMapper @Inject constructor(
 
         return ConfigurationUiModel(
             streamAllowed = config.streamAllowed,
+            shortVideoAllowed = config.shortVideoAllowed,
             channelId = channelStatus.first,
             channelStatus = channelStatus.second,
             durationConfig = DurationConfigUiModel(
@@ -517,7 +532,8 @@ class PlayBroadcastUiMapper @Inject constructor(
                 badge = it.badge,
                 type = it.type,
                 hasUsername = it.livestream.hasUsername,
-                hasAcceptTnc = it.livestream.enable,
+                hasAcceptTnc = it.hasAcceptTnc,
+                enable = it.livestream.enable,
             )
         }
     }

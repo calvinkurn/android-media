@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.postdetail.data.mapper
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXAuthor
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
@@ -24,7 +25,7 @@ import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 class ContentDetailMapperImpl : ContentDetailMapper {
 
     override fun mapContent(contents: List<FeedXCard>, cursor: String) = ContentDetailUiModel(
-        postList = contents,
+        postList = contents.map { it.copyPostData() },
         cursor = cursor
     )
 
@@ -46,9 +47,9 @@ class ContentDetailMapperImpl : ContentDetailMapper {
                             description = it.author.description,
                             id = it.author.id,
                             logoURL = it.author.logoURL,
-                            name = it.author.name,
+                            name = MethodChecker.fromHtml(it.author.name).toString(),
                             type = it.author.type,
-                            webLink = it.author.webLink,
+                            webLink = it.author.webLink
                         ),
                         subTitle = it.subTitle,
                         text = it.text,
@@ -69,11 +70,11 @@ class ContentDetailMapperImpl : ContentDetailMapper {
                                         logoURL = commentList.author.logoURL,
                                         name = commentList.author.name,
                                         type = commentList.author.type,
-                                        webLink = commentList.author.webLink,
+                                        webLink = commentList.author.webLink
                                     )
                                 )
                             },
-                            mods = it.comment.mods,
+                            mods = it.comment.mods
                         ),
                         like = FeedXLike(
                             label = it.like.label,
@@ -81,31 +82,31 @@ class ContentDetailMapperImpl : ContentDetailMapper {
                             count = it.like.count,
                             likedBy = it.like.likedBy,
                             isLiked = it.like.isLiked,
-                            mods = it.like.mods,
+                            mods = it.like.mods
                         ),
                         appLink = it.appLink,
                         share = FeedXShare(
                             label = it.share.label,
                             operation = it.share.operation,
-                            mods = it.share.mods,
+                            mods = it.share.mods
                         ),
                         followers = FeedXFollowers(
                             isFollowed = it.followers.isFollowed,
                             label = it.followers.label,
                             count = it.followers.count,
                             countFmt = it.followers.countFmt,
-                            mods = it.followers.mods,
+                            mods = it.followers.mods
                         ),
                         webLink = it.webLink,
                         views = FeedXViews(
                             label = it.views.label,
                             countFmt = it.views.countFmt,
                             count = it.views.count,
-                            mods = it.views.mods,
+                            mods = it.views.mods
                         ),
                         mediaRatio = FeedXMediaRatio(
                             width = it.mediaRatio.width,
-                            height = it.mediaRatio.height,
+                            height = it.mediaRatio.height
                         ),
                         hashtagAppLinkFmt = it.hashtagAppLinkFmt,
                         hashtagWebLinkFmt = it.hashtagWebLinkFmt,
@@ -125,13 +126,13 @@ class ContentDetailMapperImpl : ContentDetailMapper {
                                         tagIndex = tagging.tagIndex,
                                         posX = tagging.posX,
                                         posY = tagging.posY,
-                                        mediaIndex = 0,
+                                        mediaIndex = 0
                                     )
                                 },
-                                mods = media.mods,
+                                mods = media.mods
                             )
                         },
-                        products = it.tags.map { tag ->
+                        tags = it.tags.map { tag ->
                             FeedXProduct(
                                 appLink = tag.appLink,
                                 bebasOngkirStatus = tag.bebasOngkirStatus,
@@ -157,12 +158,12 @@ class ContentDetailMapperImpl : ContentDetailMapper {
                                 webLink = tag.webLink,
                                 productName = tag.name,
                                 shopName = tag.shopName,
-                                shopID = tag.shopID,
+                                shopID = tag.shopID
                             )
                         }
                     )
                 },
-                cursor = pagination.cursor,
+                cursor = pagination.cursor
             )
         }
     }
@@ -190,5 +191,4 @@ class ContentDetailMapperImpl : ContentDetailMapper {
 
     override fun mapWishlistData(rowNumber: Int, productId: String) =
         WishlistContentModel(rowNumber = rowNumber, productId = productId)
-
 }

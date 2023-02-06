@@ -52,6 +52,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.VARIANT_ID
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.WishListManager
+import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewmodel.livestate.DiscoveryLiveState
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
@@ -396,13 +397,17 @@ class DiscoveryViewModel @Inject constructor(
                 )
     }
 
-    fun scrollToPinnedComponent(listComponent: List<ComponentsItem>, pinnedComponentId: String?): Int {
+    fun scrollToPinnedComponent(listComponent: List<ComponentsItem>, pinnedComponentId: String?): Pair<Int,Boolean> {
+        var isTabsAbovePinnedComponent = false
         listComponent.forEachIndexed { index, componentsItem ->
+            if(componentsItem.name == ComponentsList.Tabs.componentName){
+                isTabsAbovePinnedComponent = true
+            }
             if (componentsItem.id == pinnedComponentId) {
-                return index
+                return Pair(index,isTabsAbovePinnedComponent)
             }
         }
-        return PINNED_COMPONENT_FAIL_STATUS
+        return Pair(PINNED_COMPONENT_FAIL_STATUS,isTabsAbovePinnedComponent)
     }
 
     fun getQueryParameterMapFromBundle(bundle: Bundle?): MutableMap<String, String?> {

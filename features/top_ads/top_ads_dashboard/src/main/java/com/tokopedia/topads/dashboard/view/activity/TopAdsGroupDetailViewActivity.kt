@@ -134,7 +134,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
 
     private var dataStatistic: DataStatistic? = null
     private var selectedStatisticType: Int = 0
-    private var groupId: Int? = 0
+    private var groupId: String? = "0"
     private var priceSpent: String? = "0"
     private var groupStatus: String? = ""
     private var groupName: String? = ""
@@ -220,7 +220,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             tabLayout?.customTabMode = TabLayout.MODE_SCROLLABLE
         }
         val bundle = Bundle()
-        bundle.putInt(GROUP_ID, groupId ?: 0)
+        bundle.putString(GROUP_ID, groupId)
         bundle.putString(GROUP_NAME, groupName)
         bundle.putInt(GROUP_TOTAL, groupTotal)
         bundle.putInt("placementType", placementType)
@@ -257,7 +257,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                     CLICK_GROUP_EDIT_ICON, "")
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
                     putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
-                    putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
+                    putExtra(TopAdsDashboardConstant.GROUPID, groupId)
                     putExtra(TopAdsDashboardConstant.GROUP_STRATEGY, autoBidStatus)
                 }
                 startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
@@ -360,7 +360,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         bidPencarian: String = "", bidRecomendasi: String = "",
     ) {
         viewModel.changeBidState(
-            isAutomatic, groupId ?: 0,
+            isAutomatic, groupId.toIntOrZero(),
             suggestedBid.toFloatOrZero(),
             bidPencarian.toFloatOrZero(),
             bidRecomendasi.toFloatOrZero()
@@ -460,8 +460,9 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     private fun loadData() {
-        viewModel.getGroupInfo(resources, groupId.toString(), GROUP_DETAIL_PAGE, ::onSuccessGroupInfo)
-        viewModel.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo, groupId.toString(), placementType)
+        viewModel.getGroupInfo(resources, groupId ?: "0", GROUP_DETAIL_PAGE, ::onSuccessGroupInfo)
+        viewModel.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo,
+            groupId ?: "0", placementType)
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
@@ -525,7 +526,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
 
     fun getBidForKeywords(list: MutableList<String>) {
         val suggestions = java.util.ArrayList<DataSuggestions>()
-        suggestions.add(DataSuggestions("", listOf(groupId.toString())))
+        suggestions.add(DataSuggestions("", listOf(groupId ?: "0")))
         viewModel.getBidInfo(suggestions, GROUP_DETAIL_PAGE, this::onSuccessSuggestion)
     }
 
@@ -561,7 +562,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             bundle.putBoolean(FROM_REKOMENDASI, false)
         }
         bundle.putBoolean(FROM_DETAIL, true)
-        bundle.putString(GROUPID, groupId.toString())
+        bundle.putString(GROUPID, groupId)
         return bundle
     }
 
@@ -579,13 +580,14 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     private fun getBundleArguments() {
-        groupId = intent?.extras?.getString(GROUP_ID)?.toIntOrZero()
+        groupId = intent?.extras?.getString(GROUP_ID)
         priceSpent = intent?.extras?.getString(TopAdsDashboardConstant.PRICE_SPEND)
     }
 
     private fun loadStatisticsData() {
         if (startDate == null || endDate == null) return
-        viewModel.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo, groupId.toString(), placementType)
+        viewModel.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo,
+            groupId ?: "0", placementType)
     }
 
     private fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
@@ -625,11 +627,11 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         setResult(Activity.RESULT_OK)
         when {
             isChecked -> {
-                viewModel.setGroupAction(ACTION_ACTIVATE, listOf(groupId.toString()), resources)
+                viewModel.setGroupAction(ACTION_ACTIVATE, listOf(groupId ?: "0"), resources)
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
                     CLICK_TOGGLE_ON, "")
             }
-            else -> viewModel.setGroupAction(ACTION_DEACTIVATE, listOf(groupId.toString()), resources)
+            else -> viewModel.setGroupAction(ACTION_DEACTIVATE, listOf(groupId ?: "0"), resources)
         }
     }
 

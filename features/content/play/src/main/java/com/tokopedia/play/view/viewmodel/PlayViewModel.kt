@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.linker.model.LinkerShareResult
@@ -182,7 +183,7 @@ class PlayViewModel @AssistedInject constructor(
     private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
     private val _bottomInsets = MutableStateFlow(emptyMap<BottomInsetsType, BottomInsetsState>())
     private val _status = MutableStateFlow(PlayStatusUiModel.Empty)
-    private val _interactive = MutableStateFlow<InteractiveStateUiModel>(InteractiveStateUiModel.Empty)
+    private val _interactive = MutableStateFlow(InteractiveStateUiModel.Empty)
     private val _leaderboard = MutableStateFlow(LeaderboardUiModel.Empty)
     private val _leaderboardUserBadgeState = MutableStateFlow(PlayLeaderboardBadgeUiState())
     private val _likeInfo = MutableStateFlow(PlayLikeInfoUiModel())
@@ -198,6 +199,17 @@ class PlayViewModel @AssistedInject constructor(
 
     /** Needed to decide whether we need to call setResult() or no when leaving play room */
     private val _isChannelReportLoaded = MutableStateFlow(false)
+
+    private val _isFollowPopUpShown = MutableStateFlow(FollowPopUpUiState.Empty)
+
+    private val _isThreeDotsOpened = MutableStateFlow(false)
+    private val _isSharingOpened = MutableStateFlow(false)
+    private val _videoProperty = MutableStateFlow(VideoPropertyUiModel.Empty)
+
+    private val _followPopUpUiState = combine(_bottomInsets, _isFollowPopUpShown, _partnerInfo, _isThreeDotsOpened, _isSharingOpened, _interactive, _videoProperty) {
+        bottomInsets, popUp, partner, kebab, sharing, interactive, videoState ->
+            !bottomInsets.isAnyShown && popUp.shouldShow && partner.needFollow && partner.id == popUp.partnerId && !kebab && !sharing && !interactive.isPlaying && (!videoState.state.hasNoData || videoPlayer.isYouTube)
+    }.flowOn(dispatchers.computation)
 
     private val _winnerBadgeUiState = combine(
         _leaderboard, _bottomInsets, _status, _channelDetail, _leaderboardUserBadgeState
@@ -309,6 +321,7 @@ class PlayViewModel @AssistedInject constructor(
 
     }.flowOn(dispatchers.computation)
 
+
     /**
      * Until repeatOnLifecycle is available (by updating library version),
      * this can be used as an alternative to "complete" un-completable flow when page is not focused
@@ -333,10 +346,11 @@ class PlayViewModel @AssistedInject constructor(
         _addressUiState,
         _featuredProducts.distinctUntilChanged(),
         _engagementUiState,
+        _followPopUpUiState,
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
         status, quickReply, selectedVariant, isLoadingBuy, address,
-        featuredProducts, engagement ->
+        featuredProducts, engagement, followPopUp ->
         PlayViewerNewUiState(
             channel = channelDetail,
             interactive = interactive,
@@ -355,6 +369,7 @@ class PlayViewModel @AssistedInject constructor(
             address = address,
             featuredProducts = featuredProducts,
             engagement = engagement,
+            followPopUp = followPopUp,
         )
     }.stateIn(
         viewModelScope,
@@ -482,11 +497,14 @@ class PlayViewModel @AssistedInject constructor(
     val isTotalViewLoaded: Boolean
         get() = _isChannelReportLoaded.value
 
+    val partnerType: String
+        get() = mChannelData?.partnerInfo?.type?.value ?: ""
+
     private var socketJob: Job? = null
 
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
-    private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
+    private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>() /**Added StateFlow*/
     private val _observableVideoMeta = MutableLiveData<PlayVideoMetaInfoUiModel>() /**Changed**/
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
     private val _observableKebabSheets = MutableLiveData<Map<KebabMenuType, BottomInsetsState>>()
@@ -514,7 +532,9 @@ class PlayViewModel @AssistedInject constructor(
     private val videoStateListener = object : PlayViewerVideoStateListener {
         override fun onStateChanged(state: PlayViewerVideoState) {
             viewModelScope.launch(dispatchers.immediate) {
-                _observableVideoProperty.value = VideoPropertyUiModel(state)
+                val newState =  VideoPropertyUiModel(state)
+                _observableVideoProperty.value = newState
+                _videoProperty.update { newState }
             }
         }
     }
@@ -850,6 +870,7 @@ class PlayViewModel @AssistedInject constructor(
 
     fun hideThreeDotsSheet(){
         _observableKebabSheets.value = getDefaultKebabInsets()
+        _isThreeDotsOpened.update { false }
     }
 
     private fun getDefaultKebabInsets(): Map<KebabMenuType, BottomInsetsState> {
@@ -993,6 +1014,7 @@ class PlayViewModel @AssistedInject constructor(
             PlayViewerNewAction.AutoOpenInteractive -> handleAutoOpen()
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
             OpenCart -> openWithLogin(ApplinkConstInternalMarketplace.CART, REQUEST_CODE_LOGIN_CART)
+            DismissFollowPopUp -> _isFollowPopUpShown.update { it.copy(shouldShow = false) }
         }
     }
 
@@ -1075,8 +1097,10 @@ class PlayViewModel @AssistedInject constructor(
 
         removeCastSessionListener()
         removeCastStateListener()
-        
+
         resetChannelReportLoadedStatus()
+        cancelJob(FOLLOW_POP_UP_ID)
+        cancelJob(ONBOARDING_COACHMARK_ID)
     }
 
     private fun focusVideoPlayer(channelData: PlayChannelData) {
@@ -1157,7 +1181,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun updateChannelInfo(channelData: PlayChannelData) {
-        updatePartnerInfo(channelData.partnerInfo)
+        updatePartnerInfo(channelData)
         if (!channelData.status.channelStatus.statusType.isFreeze) {
             updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
         }
@@ -1342,22 +1366,15 @@ class PlayViewModel @AssistedInject constructor(
         this._partnerInfo.value = partnerInfo
     }
 
-    private var coachmarkJob: Job? = null
-
     private fun handleOnboarding(videoMetaInfo: PlayVideoMetaInfoUiModel) {
-        val isShown = playPreference.isCoachMark(userId = userId)
+        if(videoMetaInfo.videoPlayer.isYouTube) return
+        cancelJob(ONBOARDING_COACHMARK_ID)
 
-        playAnalytic.screenWithSwipeCoachMark(isShown = isShown, channelId = channelId, channelType = channelType, isLoggedIn = userSession.isLoggedIn, userId = userId)
+        jobMap[ONBOARDING_COACHMARK_ID] = viewModelScope.launch(dispatchers.computation) {
+            delay(ONBOARDING_DELAY)
 
-        coachmarkJob?.cancel()
-
-        if (isShown && !videoMetaInfo.videoPlayer.isYouTube) {
-            coachmarkJob = viewModelScope.launch(dispatchers.computation) {
-                delay(ONBOARDING_DELAY)
-
-                withContext(dispatchers.main) {
-                    _observableOnboarding.value = Event(Unit)
-                }
+            withContext(dispatchers.main) {
+                _observableOnboarding.value = Event(Unit)
             }
         }
     }
@@ -1387,7 +1404,8 @@ class PlayViewModel @AssistedInject constructor(
      * Update channel data
      */
 
-    private fun updatePartnerInfo(partnerInfo: PlayPartnerInfo) {
+    private fun updatePartnerInfo(channelData: PlayChannelData) {
+        val partnerInfo = channelData.partnerInfo
         val isNeedToBeShown = if(userSession.isLoggedIn) partnerInfo.id.toString() != userSession.shopId && partnerInfo.id.toString() != userSession.userId else true
         if (partnerInfo.status !is PlayPartnerFollowStatus.NotFollowable && isNeedToBeShown) {
             viewModelScope.launchCatchError(block = {
@@ -1395,7 +1413,9 @@ class PlayViewModel @AssistedInject constructor(
 
                 val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
                 _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(result)) }
-            }, onError = {})
+            }, onError = {}).invokeOnCompletion {
+                handleFollowPopUp(channelData)
+            }
         } else {
             _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.NotFollowable) }
         }
@@ -1820,9 +1840,10 @@ class PlayViewModel @AssistedInject constructor(
                 val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
                 copy(isLoadingFollow = false, status = PlayPartnerFollowStatus.Followable(result))
             }
+            _uiEvent.emit(ShowInfoEvent(message = UiString.Resource(R.string.play_interactive_follow_success)))
         }) {
             _partnerInfo.setValue { (copy(isLoadingFollow = false)) }
-            _uiEvent.emit(ShowErrorEvent(it))
+            _uiEvent.emit(FailedFollow)
         }
 
         return followAction
@@ -2069,14 +2090,6 @@ class PlayViewModel @AssistedInject constructor(
     private fun handleClickFollowInteractive() = needLogin(REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE) {
         if (_partnerInfo.value.status !is PlayPartnerFollowStatus.NotFollowable) {
             doFollowUnfollow(shouldForceFollow = true) ?: return@needLogin
-
-            viewModelScope.launch {
-                _uiEvent.emit(
-                    ShowInfoEvent(message = UiString.Resource(R.string.play_interactive_follow_success))
-                )
-            }
-
-            val interactiveId = repo.getActiveInteractiveId() ?: return@needLogin
         }
     }
 
@@ -2291,10 +2304,13 @@ class PlayViewModel @AssistedInject constructor(
                 copyLink()
             }
         }
+
+        _isSharingOpened.update { true }
     }
 
     private fun handleCloseSharingOption() {
         playAnalytic.closeShareBottomSheet(channelId, partnerId, channelType.value, playShareExperience.isScreenshotBottomSheet())
+        _isSharingOpened.update { false }
     }
 
     private fun handleSharingOption(shareModel: ShareModel) {
@@ -2343,6 +2359,8 @@ class PlayViewModel @AssistedInject constructor(
         viewModelScope.launch {
             _uiEvent.emit(OpenKebabEvent)
         }
+
+        _isThreeDotsOpened.update { true }
     }
 
     private fun handleFooterClick(appLink: String){
@@ -2570,24 +2588,15 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    fun submitUserReport(channelId: Long,
-                         mediaUrl: String,
-                         shopId: Long,
+    fun submitUserReport(mediaUrl: String,
                          reasonId: Int,
                          timestamp: Long,
                          reportDesc: String){
         viewModelScope.launchCatchError(block = {
             _userReportSubmission.value = ResultState.Loading
-            val isSuccess =
-                repo.submitReport(
-                    channelId = channelId,
-                    mediaUrl = mediaUrl,
-                    shopId = shopId,
-                    reasonId = reasonId,
-                    timestamp = timestamp,
-                    reportDesc = reportDesc
-                )
-
+            val isSuccess = repo.submitReport(channelId = channelId.toLongOrZero(), partnerId = partnerId.orZero(),
+                    partnerType = PartnerType.getTypeByValue(partnerType),
+                    reasonId = reasonId, timestamp = timestamp, reportDesc = reportDesc, mediaUrl = mediaUrl)
             if(isSuccess){
                 _userReportSubmission.value = ResultState.Success
             }else{
@@ -2618,14 +2627,6 @@ class PlayViewModel @AssistedInject constructor(
             )
         }) {
             _uiEvent.emit(ShowErrorEvent(it))
-        }
-    }
-
-    private fun checkUpcomingCampaignSub(productUiModel: ProductSectionUiModel.Section){
-        viewModelScope.launchCatchError(block = {
-            val data = repo.checkUpcomingCampaign(campaignId = productUiModel.id)
-            if (data) updateReminderUi(productUiModel.config.reminder.reversed(), productUiModel.id)
-        }){
         }
     }
 
@@ -2684,6 +2685,27 @@ class PlayViewModel @AssistedInject constructor(
         playLog.sendAll(channelId, videoPlayer)
     }
 
+    private fun handleFollowPopUp (channelData: PlayChannelData) {
+        val streamerId = channelData.partnerInfo.id.toString()
+        val config = channelData.channelDetail.popupConfig
+        val cache = playPreference.isFollowPopup(streamerId)
+
+        viewModelScope.launch {
+            cancelJob(FOLLOW_POP_UP_ID)
+            jobMap[FOLLOW_POP_UP_ID] = launch(dispatchers.computation) {
+                delay(config.duration)
+                val needToBeShown = !isFreezeOrBanned && cache && config.isEnabled
+                if (!needToBeShown) return@launch
+                _isFollowPopUpShown.update { it.copy(shouldShow = true, partnerId = streamerId.toLong()) }
+                playPreference.setFollowPopUp(streamerId)
+            }
+        }
+    }
+
+    private fun cancelJob(identifier: String) {
+        jobMap[identifier]?.cancel()
+    }
+
     private fun CoroutineScope.launch(
         jobId: String = "",
         context: CoroutineContext = coroutineContext,
@@ -2734,8 +2756,10 @@ class PlayViewModel @AssistedInject constructor(
         private const val INTERVAL_LIKE_REMINDER_IN_MIN = 5L
         private const val DURATION_DIVIDER = 1000
         private const val REMINDER_JOB_ID = "RJ"
-
         private const val SUBSCRIBE_AWAY_THRESHOLD = 5000L
         private val defaultSharingStarted = SharingStarted.WhileSubscribed(SUBSCRIBE_AWAY_THRESHOLD)
+
+        private const val FOLLOW_POP_UP_ID  = "FOLLOW_POP_UP"
+        private const val ONBOARDING_COACHMARK_ID  = "ONBOARDING_COACHMARK"
     }
 }

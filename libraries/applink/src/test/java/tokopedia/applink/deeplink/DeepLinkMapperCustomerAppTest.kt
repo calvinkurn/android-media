@@ -8,27 +8,15 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
-import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
-import com.tokopedia.applink.internal.ApplinkConstInternalContent
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperWishlist
 import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow
+import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import io.mockk.clearStaticMockk
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkObject
-import io.mockk.mockkStatic
+import io.mockk.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -37,7 +25,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 211
+        const val SIZE_MAPPER = 214
     }
 
     override fun setup() {
@@ -222,6 +210,20 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation?TAB_POSITION=1"
         assertEqualsDeepLinkMapper(ApplinkConst.FEED, expectedDeepLink)
+    }
+
+    @Test
+    fun `check feed explore tab appLink then should return tokopedia internal home navigation tab feed content with explore tab position in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation?TAB_POSITION=1&FEED_TAB_POSITION=2"
+        assertEqualsDeepLinkMapper(ApplinkConst.FEED_EXPLORE, expectedDeepLink)
+    }
+
+    @Test
+    fun `check feed video tab appLink then should return tokopedia internal home navigation tab feed content with video tab position in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation?TAB_POSITION=1&FEED_TAB_POSITION=3&tab="
+        assertEqualsDeepLinkMapper(ApplinkConst.FEED_VIDEO, expectedDeepLink)
     }
 
     @Test
@@ -1677,25 +1679,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check kol comment appLink then should return tokopedia internal kol comment in customerapp`() {
-        val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://content/comment/1234?isFromApplink=true"
-        val appLink = UriUtil.buildUri(ApplinkConst.KOL_COMMENT, "1234")
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
-    }
-
-    @Test
-    fun `check kol youtube appLink then should return tokopedia internal kol youtube in customerapp`() {
-        val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://kolyoutube/https://www.youtube.com/watch?v=U5BwfqBpiWU"
-        val appLink = UriUtil.buildUri(
-            ApplinkConst.KOL_YOUTUBE,
-            "https://www.youtube.com/watch?v=U5BwfqBpiWU"
-        )
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
-    }
-
-    @Test
     fun `check play detail appLink then should return tokopedia internal play detail in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://play/1234"
         val appLink = UriUtil.buildUri(ApplinkConst.PLAY_DETAIL, "1234")
@@ -1734,11 +1717,10 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check privacy center appLink then should return tokopedia internal privacy center in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/privacy-center"
-        val rollencePrivacyCenter = "privacy_center_and"
 
         every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(rollencePrivacyCenter)
-        } returns rollencePrivacyCenter
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.ROLLENCE_PRIVACY_CENTER)
+        } returns DeeplinkMapperUser.ROLLENCE_PRIVACY_CENTER
 
         assertEqualsDeepLinkMapper(ApplinkConst.PRIVACY_CENTER, expectedDeepLink)
     }
@@ -1746,10 +1728,8 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check privacy center appLink then should return tokopedia internal home navigation in customerapp`() {
         val expectedDeepLink = ApplinkConsInternalHome.HOME_NAVIGATION
-        val rollencePrivacyCenter = "privacy_center_and"
-
         every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(rollencePrivacyCenter)
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.ROLLENCE_PRIVACY_CENTER)
         } returns ""
 
         assertEqualsDeepLinkMapper(ApplinkConst.PRIVACY_CENTER, expectedDeepLink)
@@ -2320,6 +2300,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
             ApplinkConst.KYC_FORM_ONLY_NO_PARAM,
             expectedDeepLink
         )
+    }
+
+    @Test
+    fun `check KYC_FORM_ONLY_WITH_PARAM`() {
+        val dl = UriUtil.buildUri(ApplinkConst.KYC_FORM_ONLY, "1", "true", "true", "1")
+        assertEqualsDeepLinkMapper(dl, "${DeeplinkConstant.SCHEME_INTERNAL}://user/user-identification-only?projectId=1&showIntro=true&redirectUrl=true&type=1")
     }
 
     @Test

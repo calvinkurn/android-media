@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.common.feature.variant.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -9,6 +10,7 @@ import com.tokopedia.product.manage.common.feature.variant.data.query.GetProduct
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
+@GqlQuery("GetProductVariantGqlQuery", GetProductVariant.QUERY)
 class GetProductVariantUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ): GraphqlUseCase<GetProductVariantResponse>(graphqlRepository) {
@@ -56,7 +58,7 @@ class GetProductVariantUseCase @Inject constructor(
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         setCacheStrategy(cacheStrategy)
 
-        setGraphqlQuery(GetProductVariant.QUERY)
+        setGraphqlQuery(GetProductVariantGqlQuery())
         setTypeClass(GetProductVariantResponse::class.java)
     }
 

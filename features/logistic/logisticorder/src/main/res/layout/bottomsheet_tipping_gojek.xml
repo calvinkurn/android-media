@@ -128,8 +128,9 @@
                 android:orientation="horizontal">
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/tipping_method"
-                    android:layout_width="24dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="24dp"
+                    android:adjustViewBounds="true"
                     android:paddingEnd="6dp"
                     android:paddingRight="6dp"/>
                 <com.tokopedia.unifyprinciples.Typography

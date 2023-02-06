@@ -39,6 +39,7 @@ import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.mapper.model.EmbraceConfig;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
+import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
@@ -60,6 +61,8 @@ import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.devicefingerprint.datavisor.lifecyclecallback.DataVisorLifecycleCallbacks;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.encryption.security.AESEncryptorECB;
+import com.tokopedia.encryption.security.RSA;
+import com.tokopedia.encryption.utils.RSAKeys;
 import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.inappupdate.InAppUpdateLifecycleCallback;
 import com.tokopedia.journeydebugger.JourneySubscriber;
@@ -97,6 +100,7 @@ import com.tokopedia.tokopatch.TokoPatch;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.security.interfaces.RSAPrivateKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -135,14 +139,16 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final String NOTIFICATION_CHANNEL_DESC_BTS_ONE = "notification channel for custom sound with BTS tone";
     private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_customerapp_log_config_scalyr";
-    private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_customerapp_log_config_new_relic";
+    private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_customerapp_log_config_v3_new_relic";
     private static final String REMOTE_CONFIG_EMBRACE_KEY_LOG = "android_customerapp_log_config_embrace";
     private static final String REMOTE_CONFIG_TELEMETRY_ENABLED = "android_telemetry_enabled";
     private static final String PARSER_SCALYR_MA = "android-main-app-p%s";
     private static final String ENABLE_ASYNC_AB_TEST = "android_enable_async_abtest";
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
     private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
+    private final String STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY = "key_strict_mode_leak_publisher_toggle";
     private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
+    private final boolean STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE = false;
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -155,7 +161,22 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         initCacheManager();
 
         if (GlobalConfig.isAllowDebuggingTools()) {
-            new Cassava.Builder(this).initialize();
+            new Cassava.Builder(this)
+                    .setRemoteValidator(new RemoteSpec() {
+                        @NonNull
+                        @Override
+                        public String getUrl() {
+                            return TokopediaUrl.getInstance().getAPI();
+                        }
+
+                        @NonNull
+                        @Override
+                        public String getToken() {
+                            return  getString(com.tokopedia.keys.R.string.thanos_token_key);
+                        }
+                    })
+                    .setLocalRootPath("tracker")
+                    .initialize();
         }
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
@@ -425,7 +446,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         devMonitoring.initCrashMonitoring();
         devMonitoring.initANRWatcher();
         devMonitoring.initTooLargeTool(ConsumerMainApplication.this);
-        devMonitoring.initLeakCanary(getLeakCanaryToggleValue());
+        devMonitoring.initLeakCanary(getLeakCanaryToggleValue(), getStrictModeLeakPublisherToggleValue(), this);
 
         DeviceInfo.getAdsIdSuspend(ConsumerMainApplication.this, new Function1<String, Unit>() {
             @Override
@@ -444,10 +465,18 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(LEAK_CANARY_TOGGLE_KEY, LEAK_CANARY_DEFAULT_TOGGLE);
     }
 
+    private boolean getStrictModeLeakPublisherToggleValue() {
+        return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY, STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE);
+    }
+
     private void initLogManager() {
         LogManager.init(ConsumerMainApplication.this, new LoggerProxy() {
             final AESEncryptorECB encryptor = new AESEncryptorECB();
             final SecretKey secretKey = encryptor.generateKey(NewRelicConstants.ENCRYPTION_KEY);
+
+            final RSA encryptorRSA = new RSA();
+            final RSAPrivateKey privateKeyRSA = encryptorRSA.stringToPrivateKey(RSAKeys.PRIVATE_RSA_KEY_STR);
+
 
             @Override
             public Function1<String, String> getDecrypt() {
@@ -469,6 +498,17 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 };
             }
 
+
+            @Override
+            public Function1<String, String> getDecryptNrKey() {
+                return new Function1<String, String>() {
+                    @Override
+                    public String invoke(String s) {
+                        return encryptorRSA.decrypt(s, privateKeyRSA, com.tokopedia.encryption.utils.Constants.RSA_OAEP_ALGORITHM);
+                    }
+                };
+            }
+
             @NotNull
             @Override
             public String getVersionName() {
@@ -484,6 +524,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             @Override
             public String getScalyrToken() {
                 return Keys.getAUTH_SCALYR_API_KEY();
+
             }
 
             @NotNull

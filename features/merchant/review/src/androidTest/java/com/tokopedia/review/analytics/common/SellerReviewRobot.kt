@@ -1,6 +1,7 @@
 package com.tokopedia.review.analytics.common
 
 import android.app.Activity
+import android.app.Instrumentation
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
@@ -8,11 +9,13 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.rule.ActivityTestRule
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.review.common.Utils
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import org.hamcrest.Matcher
@@ -36,6 +39,10 @@ class SellerReviewRobot {
 
     fun <T : Activity> performClose(activityTestRule: ActivityTestRule<T>) {
         activityTestRule.finishActivity()
+    }
+
+    fun performBack() {
+        Espresso.pressBackUnconditionally()
     }
 
     fun clickAction(idView: Int) {
@@ -82,9 +89,32 @@ class SellerReviewRobot {
         }
     }
 
+    fun blockAllIntent() {
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+    }
+
     infix fun assertTest(action: SellerReviewRobot.() -> Unit) = SellerReviewRobot().apply(action)
 
     fun validate(cassavaTestRule: CassavaTestRule, fileName: String) {
+        ViewMatchers.assertThat(
+            cassavaTestRule.validate(fileName),
+            hasAllSuccess()
+        )
+    }
+
+    fun validateWithTimeout(cassavaTestRule: CassavaTestRule, fileName: String, timeout: Long = 5000L) {
+        val startTime = System.currentTimeMillis()
+        while ((System.currentTimeMillis() - startTime) < timeout) {
+            try {
+                ViewMatchers.assertThat(
+                    cassavaTestRule.validate(fileName),
+                    hasAllSuccess()
+                )
+                return
+            } catch (_: Throwable) {
+
+            }
+        }
         ViewMatchers.assertThat(
             cassavaTestRule.validate(fileName),
             hasAllSuccess()

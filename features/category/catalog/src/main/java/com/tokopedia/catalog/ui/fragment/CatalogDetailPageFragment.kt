@@ -39,7 +39,6 @@ import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
-import com.tokopedia.catalog.model.datamodel.CatalogComparisionDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogComparisonNewDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
 import com.tokopedia.catalog.model.raw.*
@@ -65,7 +64,6 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -155,8 +153,6 @@ class CatalogDetailPageFragment :
     private var lastAttachItemPosition: Int = 0
     private var isScrollDownButtonClicked = false
 
-    private var isNewComparison = false
-
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
@@ -183,7 +179,6 @@ class CatalogDetailPageFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRollence()
         injectComponents()
         initViews(view)
         if (arguments != null) {
@@ -248,19 +243,6 @@ class CatalogDetailPageFragment :
                 slideUpMoreProductsView()
             }
         }
-    }
-
-    private fun initRollence() {
-        isNewComparison =
-            when (
-                RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    CatalogConstant.CATALOG_COMPARISON,
-                    ""
-                )
-            ) {
-                CatalogConstant.CATALOG_COMPARISON -> true
-                else -> false
-            }
     }
 
     private fun initViews(parentView: View) {
@@ -334,17 +316,11 @@ class CatalogDetailPageFragment :
                     is Success -> {
                         it.data.listOfComponents.forEach { component ->
                             catalogUiUpdater.updateModel(component)
-                            if (component is CatalogComparisionDataModel && comparisonCatalogId.isBlank()) {
-                                recommendedCatalogId = (component).comparisionCatalog[CatalogConstant.COMPARISION_DETAIL]?.id ?: ""
-                            } else if (component is CatalogComparisonNewDataModel && comparisonCatalogId.isBlank()) {
+                            if (component is CatalogComparisonNewDataModel && comparisonCatalogId.isBlank()) {
                                 recommendedCatalogId = component.specsList?.firstOrNull()?.subcard?.firstOrNull()?.featureRightData?.id ?: ""
                             }
                         }
-                        if (isNewComparison) {
-                            catalogUiUpdater.mapOfData.remove(CatalogConstant.COMPARISON)
-                        } else {
-                            catalogUiUpdater.mapOfData.remove(CatalogConstant.COMPARISON_NEW)
-                        }
+
                         catalogUrl = catalogUiUpdater.productInfoMap?.url ?: ""
                         fullSpecificationDataModel = it.data.fullSpecificationDataModel
                         catalogImages = catalogUiUpdater.productInfoMap?.images ?: arrayListOf()
@@ -630,8 +606,7 @@ class CatalogDetailPageFragment :
 
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(
-                0,
-                linkerShareData,
+                0, linkerShareData,
                 object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
                         context?.resources?.getString(
@@ -1032,6 +1007,7 @@ class CatalogDetailPageFragment :
 
     override fun onPause() {
         super.onPause()
+        trackingQueue.sendAll()
         catalogLinearLayoutManager?.removeAllHandlers()
     }
 

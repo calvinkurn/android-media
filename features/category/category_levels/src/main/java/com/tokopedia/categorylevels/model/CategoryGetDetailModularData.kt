@@ -122,6 +122,8 @@ data class CategoryGetDetailModularData(
                 var dynamic: Boolean = false,
                 @SerializedName("categoryDetail")
                 val categoryDetail: Boolean = false,
+                @SerializedName("backgroundImageURL")
+                val backgroundImageURL: String? = null
             )
         }
     }

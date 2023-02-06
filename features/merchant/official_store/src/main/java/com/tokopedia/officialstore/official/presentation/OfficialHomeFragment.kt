@@ -35,13 +35,13 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.officialstore.ApplinkConstant.CLICK_TYPE_WISHLIST
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OSPerformanceConstant
-import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_PREPARING_OS_HOME
 import com.tokopedia.officialstore.OfficialStoreInstance
-import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OSFeaturedShopTracking
+import com.tokopedia.officialstore.ApplinkConstant.CLICK_TYPE_WISHLIST
+import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_PREPARING_OS_HOME
+import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.category.presentation.data.OSChooseAddressData
@@ -55,21 +55,21 @@ import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBannerDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBenefitDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialFeaturedShopDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBenefitDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
+import com.tokopedia.officialstore.official.presentation.listener.RecommendationWidgetCallback
+import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreHomeComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreLegoBannerComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSMixLeftComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSMixTopComponentCallback
 import com.tokopedia.officialstore.official.presentation.listener.OSFeaturedBrandCallback
 import com.tokopedia.officialstore.official.presentation.listener.OSFeaturedShopDCCallback
 import com.tokopedia.officialstore.official.presentation.listener.OSMerchantVoucherCallback
-import com.tokopedia.officialstore.official.presentation.listener.OSMixLeftComponentCallback
-import com.tokopedia.officialstore.official.presentation.listener.OSMixTopComponentCallback
 import com.tokopedia.officialstore.official.presentation.listener.OSSpecialReleaseComponentCallback
-import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreHomeComponentCallback
-import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreLegoBannerComponentCallback
-import com.tokopedia.officialstore.official.presentation.listener.RecommendationWidgetCallback
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -87,11 +87,11 @@ import javax.inject.Inject
 import com.tokopedia.wishlist_common.R as Rwishlist
 
 class OfficialHomeFragment :
-    BaseDaggerFragment(),
-    HasComponent<OfficialStoreHomeComponent>,
-    RecommendationListener,
-    FeaturedShopListener,
-    DynamicChannelEventHandler {
+        BaseDaggerFragment(),
+        HasComponent<OfficialStoreHomeComponent>,
+        RecommendationListener,
+        FeaturedShopListener,
+        DynamicChannelEventHandler{
 
     companion object {
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
@@ -150,6 +150,7 @@ class OfficialHomeFragment :
                     viewModel.loadMoreProducts(categoriesWithoutClosingSquare, page)
 
                     viewModel.addLoadingMore()
+
                 }
             }
         }
@@ -163,8 +164,7 @@ class OfficialHomeFragment :
         officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
         if (savedInstanceState == null) {
             officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(
-                KEY_PERFORMANCE_PREPARING_OS_HOME
-            )
+                KEY_PERFORMANCE_PREPARING_OS_HOME)
         }
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -192,20 +192,20 @@ class OfficialHomeFragment :
         recyclerView?.layoutManager = layoutManager
 
         val adapterTypeFactory = OfficialHomeAdapterTypeFactory(
-            this,
-            this,
-            RecommendationWidgetCallback(this, this.context, userSession.userId),
-            OfficialStoreHomeComponentCallback(),
-            OfficialStoreLegoBannerComponentCallback(this),
-            OSMixLeftComponentCallback(this),
-            OSMixTopComponentCallback(this),
-            OSFeaturedBrandCallback(this, tracking),
-            OSFeaturedShopDCCallback(this),
-            recyclerView?.recycledViewPool,
-            OSMerchantVoucherCallback(this),
-            OSSpecialReleaseComponentCallback(this, userSession.userId),
-            onTopAdsHeadlineClicked,
-            this
+                this,
+                this,
+                RecommendationWidgetCallback(this, this.context, userSession.userId),
+                OfficialStoreHomeComponentCallback(),
+                OfficialStoreLegoBannerComponentCallback(this),
+                OSMixLeftComponentCallback(this),
+                OSMixTopComponentCallback(this),
+                OSFeaturedBrandCallback(this, tracking),
+                OSFeaturedShopDCCallback(this),
+                recyclerView?.recycledViewPool,
+                OSMerchantVoucherCallback(this),
+                OSSpecialReleaseComponentCallback(this, userSession.userId),
+                onTopAdsHeadlineClicked,
+                this
         )
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.itemAnimator = null
@@ -228,11 +228,14 @@ class OfficialHomeFragment :
         loadData()
         setListener()
         getOfficialStorePageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
-        if (savedInstanceState == null) {
-            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(
-                KEY_PERFORMANCE_PREPARING_OS_HOME
-            )
-        }
+        if (savedInstanceState == null) officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(
+            KEY_PERFORMANCE_PREPARING_OS_HOME)
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        tracking?.sendAll()
     }
 
     override fun getScreenName(): String {
@@ -246,10 +249,10 @@ class OfficialHomeFragment :
     override fun getComponent(): OfficialStoreHomeComponent? {
         return activity?.run {
             DaggerOfficialStoreHomeComponent
-                .builder()
-                .officialStoreHomeModule(OfficialStoreHomeModule())
-                .officialStoreComponent(OfficialStoreInstance.getComponent(application))
-                .build()
+                    .builder()
+                    .officialStoreHomeModule(OfficialStoreHomeModule())
+                    .officialStoreComponent(OfficialStoreInstance.getComponent(application))
+                    .build()
         }
     }
 
@@ -277,43 +280,39 @@ class OfficialHomeFragment :
         }
 
         handleProductCardOptionsActivityResult(
-            requestCode,
-            resultCode,
-            data,
-            object : ProductCardOptionsWishlistCallback {
-                override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
-                    handleWishlistAction(productCardOptionsModel)
-                }
+                requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
+            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                handleWishlistAction(productCardOptionsModel)
             }
+        }
         )
     }
 
-    private fun observeOfficialStoreList() {
-        viewModel.officialStoreLiveData.observe(viewLifecycleOwner) { dataModel ->
+    private fun observeOfficialStoreList(){
+        viewModel.officialStoreLiveData.observe(viewLifecycleOwner){ dataModel ->
             removeLoading(dataModel.isCache)
             swipeRefreshLayout?.isRefreshing = false
-            adapter?.submitList(dataModel.dataList)
-            if (dataModel.dataList.any { it is OfficialBannerDataModel }) {
+            adapter?.submitList(dataModel.dataList.toList())
+            if(dataModel.dataList.any { it is OfficialBannerDataModel }){
                 bannerPerformanceMonitoring.stopTrace()
             }
-            if (dataModel.dataList.any { it is OfficialFeaturedShopDataModel }) {
+            if(dataModel.dataList.any { it is OfficialFeaturedShopDataModel }){
                 shopPerformanceMonitoring.stopTrace()
             }
-            if (dataModel.dataList.any {
+            if(dataModel.dataList.any {
                 it !is OfficialBannerDataModel &&
-                    it !is OfficialFeaturedShopDataModel &&
-                    it !is OfficialBenefitDataModel &&
-                    it !is OfficialLoadingDataModel &&
-                    it !is OfficialLoadingMoreDataModel
-            }
-            ) {
+                it !is OfficialFeaturedShopDataModel &&
+                it !is OfficialBenefitDataModel &&
+                it !is OfficialLoadingDataModel &&
+                it !is OfficialLoadingMoreDataModel
+            }){
                 dynamicChannelPerformanceMonitoring.stopTrace()
             }
         }
     }
 
     private fun observeError() {
-        viewModel.officialStoreError.observe(viewLifecycleOwner) {
+        viewModel.officialStoreError.observe(viewLifecycleOwner){
             swipeRefreshLayout?.isRefreshing = false
             showErrorNetwork(it)
             bannerPerformanceMonitoring.stopTrace()
@@ -322,8 +321,8 @@ class OfficialHomeFragment :
         }
     }
 
-    private fun observeRecomUpdated() {
-        viewModel.recomUpdated.observe(viewLifecycleOwner) {
+    private fun observeRecomUpdated(){
+        viewModel.recomUpdated.observe(viewLifecycleOwner){
             val data = it.getContentIfNotHandled()
             data?.let {
                 endlessScrollListener.updateStateAfterGetData()
@@ -357,11 +356,9 @@ class OfficialHomeFragment :
         val clipboard = view.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clipData = ClipData.newPlainText(getString(R.string.os_coupon_code_label), cta.couponCode)
         clipboard.setPrimaryClip(clipData)
-        Toaster.build(
-            view.parent as ViewGroup,
-            getString(R.string.os_toaster_coupon_copied),
-            Snackbar.LENGTH_LONG
-        ).show()
+        Toaster.build(view.parent as ViewGroup,
+                getString(R.string.os_toaster_coupon_copied),
+                Snackbar.LENGTH_LONG).show()
     }
 
     private fun getLocation(): String {
@@ -370,71 +367,67 @@ class OfficialHomeFragment :
 
     override fun onProductImpression(item: RecommendationItem) {
         tracking?.eventImpressionProductRecommendation(
-            item,
-            isLogin(),
-            category?.title.toString(),
-            viewModel.productRecommendationTitleSection,
-            item.position.toString()
+                item,
+                isLogin(),
+                category?.title.toString(),
+                viewModel.productRecommendationTitleSection,
+                item.position.toString()
         )
     }
 
     override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {
         if (isLogin()) {
             if (isAddWishlist) {
-                viewModel.addWishlistV2(
-                    item,
-                    object : WishlistV2ActionListener {
-                        override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                            val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-                            view?.let {
-                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, it)
-                            }
+                viewModel.addWishlistV2(item, object: WishlistV2ActionListener{
+                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+                        view?.let {
+                            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, it)
                         }
-
-                        override fun onSuccessAddWishlist(
-                            result: AddToWishlistV2Response.Data.WishlistAddV2,
-                            productId: String
-                        ) {
-                            context?.let { context ->
-                                view?.let { v ->
-                                    AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
-                                }
-                            }
-                            if (item.isTopAds) {
-                                hitWishlistTopadsClickUrl(item)
-                            }
-                        }
-
-                        override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) { }
-                        override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) { }
                     }
-                )
+
+                    override fun onSuccessAddWishlist(
+                        result: AddToWishlistV2Response.Data.WishlistAddV2,
+                        productId: String
+                    ) {
+                        context?.let { context ->
+                            view?.let { v ->
+                                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                            }
+                        }
+                        if (item.isTopAds) {
+                            hitWishlistTopadsClickUrl(item)
+                        }
+                    }
+
+                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) { }
+                    override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) { }
+
+                })
             } else {
-                viewModel.removeWishlistV2(
-                    item,
-                    object : WishlistV2ActionListener {
-                        override fun onErrorAddWishList(throwable: Throwable, productId: String) { }
-                        override fun onSuccessAddWishlist(result: AddToWishlistV2Response.Data.WishlistAddV2, productId: String) { }
+                viewModel.removeWishlistV2(item, object: WishlistV2ActionListener{
+                    override fun onErrorAddWishList(throwable: Throwable, productId: String) { }
+                    override fun onSuccessAddWishlist(result: AddToWishlistV2Response.Data.WishlistAddV2, productId: String) { }
 
-                        override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
-                            val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-                            view?.let {
-                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, it)
-                            }
+                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+                        view?.let {
+                            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, it)
                         }
+                    }
 
-                        override fun onSuccessRemoveWishlist(
-                            result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
-                            productId: String
-                        ) {
-                            context?.let { context ->
-                                view?.let { v ->
-                                    AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
-                                }
+                    override fun onSuccessRemoveWishlist(
+                        result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                        productId: String
+                    ) {
+                        context?.let { context ->
+                            view?.let { v ->
+                                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
                             }
                         }
                     }
-                )
+
+                })
             }
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
@@ -453,7 +446,7 @@ class OfficialHomeFragment :
         context?.let {
             TopAdsUrlHitter(it).hitClickUrl(
                 this::class.java.simpleName,
-                item.clickUrl + CLICK_TYPE_WISHLIST,
+                item.clickUrl+CLICK_TYPE_WISHLIST,
                 item.productId.toString(),
                 item.name,
                 item.imageUrl
@@ -464,15 +457,15 @@ class OfficialHomeFragment :
     override fun onThreeDotsClick(item: RecommendationItem, vararg position: Int) {
         recommendationWishlistItem = item
         showProductCardOptions(
-            this,
-            ProductCardOptionsModel(
-                hasWishlist = true,
-                productId = item.productId.toString(),
-                isWishlisted = item.isWishlist,
-                isTopAds = item.isTopAds,
-                topAdsWishlistUrl = item.wishlistUrl,
-                productPosition = position.getOrElse(0) { 0 }
-            )
+                this,
+                ProductCardOptionsModel(
+                        hasWishlist = true,
+                        productId = item.productId.toString(),
+                        isWishlisted = item.isWishlist,
+                        isTopAds = item.isTopAds,
+                        topAdsWishlistUrl = item.wishlistUrl,
+                        productPosition = position.getOrElse(0) { 0 }
+                )
         )
     }
 
@@ -491,12 +484,12 @@ class OfficialHomeFragment :
 
         gridData.let {
             tracking?.clickLego36Image(
-                viewModel.currentSlugDC,
-                channelModel.channelHeader.name,
-                (position + POS_1).toString(POS_10),
-                it,
-                channelModel,
-                getUserId()
+                    viewModel.currentSlugDC,
+                    channelModel.channelHeader.name,
+                    (position + POS_1).toString(POS_10),
+                    it,
+                    channelModel,
+                    getUserId()
             )
         }
 
@@ -522,15 +515,16 @@ class OfficialHomeFragment :
             channelData.grids.getOrNull(position)?.let { gridData ->
                 val applink = gridData.applink
                 tracking?.flashSalePDPClick(
-                    viewModel.currentSlugDC,
-                    channelData.header?.name ?: "",
-                    (position + POS_1).toString(POS_10),
-                    gridData,
-                    channelData.id,
-                    getUserId()
+                        viewModel.currentSlugDC,
+                        channelData.header?.name ?: "",
+                        (position + POS_1).toString(POS_10),
+                        gridData,
+                        channelData.id,
+                        getUserId()
                 )
                 RouteManager.route(context, applink)
             }
+
         }
     }
 
@@ -547,11 +541,11 @@ class OfficialHomeFragment :
 
     override fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String, headerName: String, channelBannerAttribution: String) {
         tracking?.mixTopBannerCtaButtonClicked(
-            viewModel.currentSlugDC,
-            cta.text,
-            channelId,
-            headerName,
-            channelBannerAttribution
+                viewModel.currentSlugDC,
+                cta.text,
+                channelId,
+                headerName,
+                channelBannerAttribution
         )
         if (cta.couponCode.isEmpty()) {
             RouteManager.route(context, applink)
@@ -573,18 +567,18 @@ class OfficialHomeFragment :
 
     override fun onProductCardImpressed(position: Int, grid: ChannelGrid, channel: ChannelModel) {
         tracking?.carouselProductCardImpression(
-            viewModel.currentSlugDC,
-            channel,
-            grid,
-            position.toString(),
-            getUserId()
+                viewModel.currentSlugDC,
+                channel,
+                grid,
+                position.toString(),
+                getUserId()
         )
     }
 
     override fun onCarouselSeeAllCardClicked(channel: ChannelModel, applink: String) {
         tracking?.carouselViewAllCardClicked(
-            viewModel.currentSlugDC,
-            channel
+                viewModel.currentSlugDC,
+                channel
         )
         if (!TextUtils.isEmpty(applink)) {
             RouteManager.route(context, applink)
@@ -609,8 +603,8 @@ class OfficialHomeFragment :
 
     override fun onCarouselSeeAllHeaderClicked(channel: ChannelModel, applink: String) {
         tracking?.carouselHeaderSeeAllClick(
-            viewModel.currentSlugDC,
-            channel
+                viewModel.currentSlugDC,
+                channel
         )
         if (!TextUtils.isEmpty(applink)) {
             RouteManager.route(context, applink)
@@ -619,39 +613,39 @@ class OfficialHomeFragment :
 
     override fun onProductCardClicked(position: Int, channel: ChannelModel, grid: ChannelGrid, applink: String) {
         tracking?.carouselProductCardClicked(
-            viewModel.currentSlugDC,
-            channel,
-            grid,
-            position.toString(),
-            getUserId()
+                viewModel.currentSlugDC,
+                channel,
+                grid,
+                position.toString(),
+                getUserId()
         )
         RouteManager.route(context, applink)
     }
 
     override fun onShopImpression(categoryName: String, position: Int, shopData: Shop) {
         tracking?.eventImpressionShop(
-            categoryName = categoryName,
-            shopPosition = position,
-            shopName = shopData.name.orEmpty(),
-            url = shopData.imageUrl.orEmpty(),
-            additionalInformation = shopData.additionalInformation.orEmpty(),
-            featuredBrandId = shopData.featuredBrandId.orEmpty(),
-            isLogin = isLogin(),
-            shopId = shopData.shopId.orEmpty()
+                categoryName = categoryName,
+                shopPosition = position,
+                shopName = shopData.name.orEmpty(),
+                url = shopData.imageUrl.orEmpty(),
+                additionalInformation = shopData.additionalInformation.orEmpty(),
+                featuredBrandId = shopData.featuredBrandId.orEmpty(),
+                isLogin = isLogin(),
+                shopId = shopData.shopId.orEmpty()
         )
     }
 
     override fun onShopClick(categoryName: String, position: Int, shopData: Shop) {
         tracking?.eventClickShop(
-            categoryName = categoryName,
-            shopPosition = position,
-            shopName = shopData.name.orEmpty(),
-            url = shopData.url.orEmpty(),
-            additionalInformation = shopData.additionalInformation.orEmpty(),
-            featuredBrandId = shopData.featuredBrandId.orEmpty(),
-            isLogin = isLogin(),
-            shopId = shopData.shopId.orEmpty(),
-            campaignCode = shopData.campaignCode.orEmpty()
+                categoryName = categoryName,
+                shopPosition = position,
+                shopName = shopData.name.orEmpty(),
+                url = shopData.url.orEmpty(),
+                additionalInformation = shopData.additionalInformation.orEmpty(),
+                featuredBrandId = shopData.featuredBrandId.orEmpty(),
+                isLogin = isLogin(),
+                shopId = shopData.shopId.orEmpty(),
+                campaignCode = shopData.campaignCode.orEmpty()
         )
         RouteManager.route(context, shopData.url)
     }
@@ -660,7 +654,7 @@ class OfficialHomeFragment :
         OSFeaturedShopTracking.getEventClickShopWidget(
             channel = channelModel,
             grid = channelGrid,
-            categoryName = category?.title ?: "",
+            categoryName = category?.title?:"",
             bannerPosition = position,
             userId = userSession.userId
         )
@@ -669,13 +663,13 @@ class OfficialHomeFragment :
 
     override fun onFeaturedShopDCImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
         tracking?.trackingQueueObj?.putEETracking(
-            OSFeaturedShopTracking.getEventImpressionShopWidget(
-                channel = channelModel,
-                grid = channelGrid,
-                categoryName = category?.title ?: "",
-                bannerPosition = position,
-                userId = userSession.userId
-            )
+                OSFeaturedShopTracking.getEventImpressionShopWidget(
+                        channel = channelModel,
+                        grid = channelGrid,
+                        categoryName = category?.title?:"",
+                        bannerPosition = position,
+                        userId = userSession.userId
+                )
         )
 
         viewModel.recordShopWidgetImpression(channelModel.id, channelGrid.id)
@@ -716,9 +710,7 @@ class OfficialHomeFragment :
     private fun castContextToOfficialStorePerformanceMonitoring(context: Context): OfficialStorePerformanceMonitoringListener? {
         return if (context is OfficialStorePerformanceMonitoringListener) {
             context
-        } else {
-            null
-        }
+        } else null
     }
 
     private fun getOfficialStorePageLoadTimeCallback(): PageLoadTimePerformanceInterface? {
@@ -743,22 +735,19 @@ class OfficialHomeFragment :
 
         if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
             if (!isLoadedOnce || isRefresh) {
-                viewModel.loadFirstData(
-                    category,
-                    getLocation(),
-                    onBannerCacheStartLoad = {
-                        officialStorePerformanceMonitoringListener?.officialStorePageLoadTimePerformanceInterface?.startCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CACHE)
-                    },
-                    onBannerCacheStopLoad = {
-                        officialStorePerformanceMonitoringListener?.officialStorePageLoadTimePerformanceInterface?.stopCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CACHE)
-                    },
-                    onBannerCloudStartLoad = {
-                        officialStorePerformanceMonitoringListener?.officialStorePageLoadTimePerformanceInterface?.startCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CLOUD)
-                    },
-                    onBannerCloudStopLoad = {
-                        officialStorePerformanceMonitoringListener?.officialStorePageLoadTimePerformanceInterface?.stopCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CLOUD)
-                    }
-                )
+                viewModel.loadFirstData(category, getLocation(),
+                        onBannerCacheStartLoad = {
+                            officialStorePerformanceMonitoringListener?.officialStorePageLoadTimePerformanceInterface?.startCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CACHE)
+                        },
+                        onBannerCacheStopLoad = {
+                            officialStorePerformanceMonitoringListener?.officialStorePageLoadTimePerformanceInterface?.stopCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CACHE)
+                        },
+                        onBannerCloudStartLoad = {
+                            officialStorePerformanceMonitoringListener?.officialStorePageLoadTimePerformanceInterface?.startCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CLOUD)
+                        },
+                        onBannerCloudStopLoad = {
+                            officialStorePerformanceMonitoringListener?.officialStorePageLoadTimePerformanceInterface?.stopCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CLOUD)
+                        })
                 isLoadedOnce = true
 
                 getOfficialStorePageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
@@ -778,11 +767,9 @@ class OfficialHomeFragment :
 
     private fun showErrorNetwork(t: Throwable) {
         view?.let {
-            Toaster.build(
-                it,
-                ErrorHandler.getErrorMessage(context, t),
-                Snackbar.LENGTH_LONG,
-                TYPE_ERROR
+            Toaster.build(it,
+                    ErrorHandler.getErrorMessage(context, t),
+                    Snackbar.LENGTH_LONG, TYPE_ERROR
             ).show()
         }
     }
@@ -812,10 +799,13 @@ class OfficialHomeFragment :
                                 isScrolling = false
                             }, DELAY_200L)
                         }
+
                     }
+
                 })
             }
         }
+
     }
 
     private fun setLoadMoreListener() {
@@ -825,46 +815,40 @@ class OfficialHomeFragment :
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
         val wishlistResult = productCardOptionsModel.wishlistResult
 
-        if (wishlistResult.isUserLoggedIn) {
+        if (wishlistResult.isUserLoggedIn)
             handleWishlistActionForLoggedInUser(productCardOptionsModel)
-        } else {
+        else
             RouteManager.route(context, ApplinkConst.LOGIN)
-        }
 
         tracking?.eventClickWishlist(
-            category?.title.toEmptyStringIfNull(),
-            !productCardOptionsModel.isWishlisted,
-            isLogin(),
-            productCardOptionsModel.productId.toLongOrZero(),
-            productCardOptionsModel.isTopAds
+                category?.title.toEmptyStringIfNull(),
+                !productCardOptionsModel.isWishlisted,
+                isLogin(),
+                productCardOptionsModel.productId.toLongOrZero(),
+                productCardOptionsModel.isTopAds
         )
     }
 
     private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isSuccess) {
+        if (productCardOptionsModel.wishlistResult.isSuccess)
             handleWishlistV2ActionSuccess(productCardOptionsModel)
-        } else {
+        else
             showErrorWishlistV2(productCardOptionsModel.wishlistResult)
-        }
     }
 
     private fun handleWishlistV2ActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isAddWishlist) {
+        if (productCardOptionsModel.wishlistResult.isAddWishlist)
             showSuccessAddWishlistV2(productCardOptionsModel.wishlistResult)
-        } else {
+        else
             showSuccessRemoveWishlistV2()
-        }
 
         updateWishlist(productCardOptionsModel.wishlistResult.isAddWishlist, productCardOptionsModel.productPosition)
     }
 
     private fun showSuccessAddWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         val msg = wishlistResult.messageV2.ifEmpty {
-            if (wishlistResult.isSuccess) {
-                getString(Rwishlist.string.on_success_add_to_wishlist_msg)
-            } else {
-                getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
-            }
+            if (wishlistResult.isSuccess) getString(Rwishlist.string.on_success_add_to_wishlist_msg)
+            else getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
         }
 
         var typeToaster = TYPE_NORMAL
@@ -891,11 +875,8 @@ class OfficialHomeFragment :
 
     private fun showErrorWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         val errorMsg = wishlistResult.messageV2.ifEmpty {
-            if (wishlistResult.isAddWishlist) {
-                getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
-            } else {
-                getString(Rwishlist.string.on_failed_remove_from_wishlist_msg)
-            }
+            if (wishlistResult.isAddWishlist) getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
+            else getString(Rwishlist.string.on_failed_remove_from_wishlist_msg)
         }
 
         activity?.let {
@@ -912,17 +893,17 @@ class OfficialHomeFragment :
                 putExtra(PDP_EXTRA_UPDATED_POSITION, position)
                 startActivityForResult(this, REQUEST_FROM_PDP)
             }
-        } catch (e: Exception) {
+        }catch (e: Exception){
         }
     }
 
     private fun eventTrackerClickListener(item: RecommendationItem, position: Int) {
         tracking?.eventClickProductRecommendation(
-            item,
-            position.toString(),
-            viewModel.productRecommendationTitleSection,
-            isLogin(),
-            category?.title.toString()
+                item,
+                position.toString(),
+                viewModel.productRecommendationTitleSection,
+                isLogin(),
+                category?.title.toString()
         )
     }
 
@@ -938,15 +919,12 @@ class OfficialHomeFragment :
         RouteManager.route(context, appLink)
     }
 
-    override fun onBestSellerThreeDotsClick(
-        recommendationItem: RecommendationItem,
-        widgetPosition: Int
-    ) {
+    override fun onBestSellerThreeDotsClick(recommendationItem: RecommendationItem,
+        widgetPosition: Int) {
         recommendationWishlistItem = recommendationItem
         showProductCardOptions(
             this,
-            recommendationItem.createProductCardOptionsModel(widgetPosition)
-        )
+            recommendationItem.createProductCardOptionsModel(widgetPosition))
     }
 
     override fun onBestSellerSeeMoreTextClick(appLink: String) {
@@ -968,6 +946,7 @@ class OfficialHomeFragment :
             return false
         }
         return false
+
     }
 
     private fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {

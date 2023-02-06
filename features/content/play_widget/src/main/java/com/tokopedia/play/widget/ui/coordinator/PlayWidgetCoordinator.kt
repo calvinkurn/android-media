@@ -168,7 +168,7 @@ class PlayWidgetCoordinator constructor(
         widget.setState(state)
 
         autoRefreshCoordinator.configureAutoRefresh(state.model.config)
-        autoPlayCoordinator.configureAutoPlay(widget, state.model.config)
+        autoPlayCoordinator.configureAutoPlay(widget, state.model.config, state.widgetType)
     }
 
     fun setImpressionHelper(helper: ImpressionHelper) {

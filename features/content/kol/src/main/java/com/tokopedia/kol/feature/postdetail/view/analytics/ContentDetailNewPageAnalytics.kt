@@ -15,7 +15,6 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.constant.Constant
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -51,6 +50,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         private const val LONG_VIDEO_SGC_RECOM = "sgc long video recom"
         private const val SGC_VOD_PLAY = "sgc play long video"
         private const val SGC_VOD_PLAY_RECOM = "sgc play long video recom"
+        private const val UGC_VOD_PLAY = "ugc play long video"
+        private const val UGC_VOD_PLAY_RECOM = "ugc play long video recom"
         private const val SGC_IMAGE_RECOM = "sgc image recom"
         private const val ASGC = "asgc"
         private const val VIDEO = "sgc video"
@@ -58,6 +59,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT = "FeedXCardProductsHighlight"
         private const val TYPE_FEED_X_CARD_PLAY = "FeedXCardPlay"
         private const val TYPE_FEED_X_CARD_POST = "FeedXCardPost"
+
+        private const val UGC_AUTHOR_TYPE = "3"
 
     }
 
@@ -69,7 +72,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -84,7 +88,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -99,7 +104,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -114,7 +120,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -129,7 +136,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -144,7 +152,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -163,7 +172,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                     getPostType(
                         contentDetailPageAnalyticsDataModel.type,
                         contentDetailPageAnalyticsDataModel.isFollowed,
-                        TYPE_VIDEO
+                        TYPE_VIDEO,
+                        contentDetailPageAnalyticsDataModel.authorType
                     )
                 )
             }
@@ -175,7 +185,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                     getPostType(
                         contentDetailPageAnalyticsDataModel.type,
                         contentDetailPageAnalyticsDataModel.isFollowed,
-                        TYPE_LONG_VIDEO
+                        TYPE_LONG_VIDEO,
+                        contentDetailPageAnalyticsDataModel.authorType
                     )
                 )
             }
@@ -187,7 +198,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                     getPostType(
                         contentDetailPageAnalyticsDataModel.type,
                         contentDetailPageAnalyticsDataModel.isFollowed,
-                        contentDetailPageAnalyticsDataModel.mediaType
+                        contentDetailPageAnalyticsDataModel.mediaType,
+                        contentDetailPageAnalyticsDataModel.authorType
                     )
                 )
 
@@ -220,7 +232,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -238,13 +251,15 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }" else "click - double tap unlike - ${
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -259,7 +274,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -274,7 +290,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -289,7 +306,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -304,7 +322,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -319,7 +338,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -334,7 +354,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
@@ -350,7 +371,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
@@ -369,7 +391,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getProductLabel(
@@ -391,7 +414,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getProductLabel(
@@ -418,7 +442,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
@@ -426,6 +451,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             trackerID = contentDetailPageAnalyticsDataModel.trackerId //33269
         )
     }
+
     fun sendClickThreeDotsSgcRecomm(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
@@ -433,7 +459,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
@@ -449,7 +476,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = if (contentDetailPageAnalyticsDataModel.isTypeSGCVideo) EventCategory.CONTENT_DETAIL_PAGE else EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
@@ -477,7 +505,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
@@ -496,7 +525,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
@@ -525,7 +555,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -549,7 +580,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -576,7 +608,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_REPORT,
@@ -595,7 +628,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_REPORT,
@@ -611,7 +645,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_THREE_DOTS,
@@ -619,6 +654,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             trackerID = contentDetailPageAnalyticsDataModel.trackerId
         )
     }
+
     fun sendClickXThreeDotsReportSheet(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
@@ -626,7 +662,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_REPORT,
@@ -645,7 +682,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_THREE_DOTS,
@@ -664,7 +702,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_THREE_DOTS,
@@ -680,7 +719,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = if (contentDetailPageAnalyticsDataModel.isTypeSGCVideo) EventCategory.CONTENT_DETAIL_PAGE else EventCategory.CONTENT_DETAIL_PAGE_THREE_DOTS,
@@ -696,7 +736,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_THREE_DOTS,
@@ -714,37 +755,39 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
             eventLabel = EventLabel.getProductLabel(contentDetailPageAnalyticsDataModel),
             eCommerceData = DataLayer.mapOf(Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR) +
-                    getAddData(
-                        getActionFieldData(
-                            getListData(
-                                "/cdp - ${
-                                    getPostType(
-                                        contentDetailPageAnalyticsDataModel.type,
-                                        contentDetailPageAnalyticsDataModel.isFollowed,
-                                        contentDetailPageAnalyticsDataModel.mediaType
-                                    )
-                                }"
-                            )
-                        ) +
-                                getProductsData(
-                                    listOf(
-                                        getProductData(
-                                            product.id,
-                                            product.name,
-                                            product.priceFmt.getDigits().toZeroIfNull(),
-                                            1,
-                                            contentDetailPageAnalyticsDataModel.shopId,
-                                            contentDetailPageAnalyticsDataModel.shopName
-                                        )
-                                    )
+                getAddData(
+                    getActionFieldData(
+                        getListData(
+                            "/cdp - ${
+                                getPostType(
+                                    contentDetailPageAnalyticsDataModel.type,
+                                    contentDetailPageAnalyticsDataModel.isFollowed,
+                                    contentDetailPageAnalyticsDataModel.mediaType,
+                                    contentDetailPageAnalyticsDataModel.authorType
                                 )
-                    ),
+                            }"
+                        )
+                    ) +
+                        getProductsData(
+                            listOf(
+                                getProductData(
+                                    product.id,
+                                    product.name,
+                                    product.priceFmt.getDigits().toZeroIfNull(),
+                                    1,
+                                    contentDetailPageAnalyticsDataModel.shopId,
+                                    contentDetailPageAnalyticsDataModel.shopName
+                                )
+                            )
+                        )
+                ),
             trackerID = contentDetailPageAnalyticsDataModel.trackerId
         )
     }
@@ -766,7 +809,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -781,13 +825,15 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
             trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "34160" else "34178"
         )
     }
+
     fun sendClickLanjutMenontonLongVideo(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
@@ -795,7 +841,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -810,7 +857,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getWatchVideoLabel(contentDetailPageAnalyticsDataModel),
@@ -818,7 +866,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    fun sendClickVideoSgcVideoEvent (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+    fun sendClickVideoSgcVideoEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - video - sgc video",
@@ -834,7 +882,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -842,6 +891,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
 
         )
     }
+
     fun sendClickFullScreenLongVideo(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
@@ -849,7 +899,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -859,7 +910,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     }
 
 
-    fun sendClickXShareDetailPage (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+    fun sendClickXShareDetailPage(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_SHARE,
@@ -867,7 +918,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -876,7 +928,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    fun sendClickShareOptionInShareBottomSheet (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+    fun sendClickShareOptionInShareBottomSheet(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_SHARE,
@@ -884,7 +936,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getProductShareLabel(contentDetailPageAnalyticsDataModel),
@@ -892,6 +945,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
 
         )
     }
+
     fun sendClickShareProductSgcRecommEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
@@ -903,7 +957,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
 
     }
 
-    fun sendClickGreyAreaShareBottomSheet (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+    fun sendClickGreyAreaShareBottomSheet(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_SHARE,
@@ -911,7 +965,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
@@ -920,8 +975,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    fun sendClickBackOnContentDetailpage (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
-        createAnalyticsData (
+    fun sendClickBackOnContentDetailpage(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+        createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - back - sgc video",
             eventCategory = "content detail page - post detail",
@@ -930,7 +985,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    fun sendClickProductTagAsgcEvent (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+    fun sendClickProductTagAsgcEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         trackEnhancedEcommerceEventWithMap(
             eventName = EventName.PRODUCT_CLICK,
             eventAction = "click - product tag - asgc",
@@ -949,12 +1004,15 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    fun sendClickThreeDotsMenuLaporkanAsgcEvent (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
-        createAnalyticsData (
+    fun sendClickThreeDotsMenuLaporkanAsgcEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+        createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - three dots menu laporkan - asgc",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_THREE_DOTS,
-            eventLabel = EventLabel.getPostReportLabel(contentDetailPageAnalyticsDataModel, "laporkan"),
+            eventLabel = EventLabel.getPostReportLabel(
+                contentDetailPageAnalyticsDataModel,
+                "laporkan"
+            ),
             trackerID = "34115"
         )
     }
@@ -973,14 +1031,15 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     }
 
 
-    fun sendClickHashtagEventCommentPage (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+    fun sendClickHashtagEventCommentPage(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - hashtag - ${
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
@@ -990,14 +1049,15 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     }
 
 
-    fun sendClickBackOnCommentPage (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+    fun sendClickBackOnCommentPage(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - back - ${
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
@@ -1007,14 +1067,15 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     }
 
 
-    fun sendClickShopOnConmmentPage (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+    fun sendClickShopOnConmmentPage(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - shop name - ${
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
@@ -1024,14 +1085,15 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     }
 
 
-    fun sendClickCommentCreator (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+    fun sendClickCommentCreator(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - comment creator - ${
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
@@ -1041,14 +1103,15 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     }
 
 
-    fun sendClickReportOnComment (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+    fun sendClickReportOnComment(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - report - ${
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
@@ -1057,14 +1120,15 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    fun sendClickDeleteComment (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+    fun sendClickDeleteComment(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - delete - ${
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
@@ -1076,14 +1140,15 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     /**
     can be used when like button developed on comment
      ***/
-    fun sendClickLikeComment (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+    fun sendClickLikeComment(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - like - ${
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
@@ -1092,14 +1157,15 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    fun sendClickSendComment (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+    fun sendClickSendComment(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - send - ${
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
@@ -1108,14 +1174,15 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    fun sendClickKembalikanToUndoDeleteSgcImageEvent (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+    fun sendClickKembalikanToUndoDeleteSgcImageEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - kembalikan to undo delete - ${
                 getPostType(
                     contentDetailPageAnalyticsDataModel.type,
                     contentDetailPageAnalyticsDataModel.isFollowed,
-                    contentDetailPageAnalyticsDataModel.mediaType
+                    contentDetailPageAnalyticsDataModel.mediaType,
+                    contentDetailPageAnalyticsDataModel.authorType
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
@@ -1172,7 +1239,11 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         Product.CATEGORY, "",
     )
 
-    private fun createItemMap(feedXProduct: FeedXProduct, index: String, list: String = ""): Map<String, Any> =
+    private fun createItemMap(
+        feedXProduct: FeedXProduct,
+        index: String,
+        list: String = ""
+    ): Map<String, Any> =
         DataLayer.mapOf(
             Product.INDEX, index,
             Product.BRAND, "",
@@ -1184,6 +1255,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             Product.PRICE,
             if (feedXProduct.isDiscount) feedXProduct.priceDiscount.toString() else feedXProduct.price.toString(),
         )
+
     private fun getPromoViewData(data: Any): Map<String, Any> =
         DataLayer.mapOf(PROMO_VIEW, data)
 
@@ -1200,7 +1272,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         DataLayer.mapOf(ACTION_FIELD, data)
 
     private fun getListData(data: Any): Map<String, Any> = DataLayer.mapOf(LIST, data)
-    
+
     private fun getImpressionPost(
         contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel,
         itemName: String = ""
@@ -1232,7 +1304,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
 
         if (trackerID.isNotEmpty())
-        TrackApp.getInstance().gtm.sendGeneralEvent(generalData)
+            TrackApp.getInstance().gtm.sendGeneralEvent(generalData)
 
     }
 
@@ -1269,7 +1341,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             TRACKER_ID to trackerID
         )
         if (trackerID.isNotEmpty())
-        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, generalData)
+            TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, generalData)
 
     }
 
@@ -1300,12 +1372,17 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     private fun getPostType(
         type: String,
         isFollowed: Boolean,
-        mediaType: String = "image"
+        mediaType: String = "image",
+        authorType: String
     ): String {
         return if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !isFollowed)
             ASGC_RECOM
         else if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && isFollowed)
             ASGC
+        else if (type == TYPE_FEED_X_CARD_PLAY && !isFollowed && authorType == UGC_AUTHOR_TYPE)
+            UGC_VOD_PLAY_RECOM
+        else if (type == TYPE_FEED_X_CARD_PLAY && isFollowed && authorType == UGC_AUTHOR_TYPE)
+            UGC_VOD_PLAY
         else if (type == TYPE_FEED_X_CARD_PLAY && !isFollowed)
             SGC_VOD_PLAY_RECOM
         else if (type == TYPE_FEED_X_CARD_PLAY && isFollowed)

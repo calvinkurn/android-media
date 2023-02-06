@@ -20,6 +20,9 @@ sealed class ShareModel {
     var isAffiliate: Boolean = false
     var socialMediaOrderingScore:Int = 100
 
+    /* source id from imagenerator contextual image */
+    var sourceId: String = ""
+
     data class CopyLink(
             override var socialMediaIcon: Drawable? = null,
             override var socialMediaName: String? = "",

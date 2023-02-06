@@ -35,7 +35,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory.TRADEIN
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.COMMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.CONTENT_REPORT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_CONTENT_POST_DETAIL
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.MEDIA_PREVIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.VIDEO_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals.DEALS_BRAND_DETAIL_PAGE
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals.DEALS_BRAND_PAGE
@@ -53,7 +52,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHAT_BOT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.INBOX_TALK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
@@ -212,7 +210,6 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_OPERATIONAL_CONTACT_US = "df_operational_contact_us"
     const val DF_SALAM_UMRAH = "df_salam_umrah"
     const val DF_TRAVEL = "df_travel"
-    const val DF_USER_PRIVACYCENTER = "df_user_privacycenter"
     const val DF_USER_LIVENESS = "df_user_liveness"
     const val DF_USER_SETTINGS = "df_user_settings"
     const val DF_USER_FINGERPRINT = "df_user_fingerprint"
@@ -259,10 +256,8 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(PLAY_DETAIL) }, DF_BASE, R.string.applink_title_play))
             add(DFP({ it.startsWithPattern(COMMENT) }, DF_BASE, R.string.applink_kol_title_comment))
             add(DFP({ it.startsWithPattern(INTERNAL_CONTENT_POST_DETAIL) }, DF_BASE, R.string.applink_kol_title_post_detail))
-            add(DFP({ it.startsWithPattern(KOL_YOUTUBE) }, DF_BASE, R.string.applink_kol_title_post_youtube))
             add(DFP({ it.startsWithPattern(CONTENT_REPORT) }, DF_BASE, R.string.applink_kol_title_content_report))
             add(DFP({ it.startsWithPattern(VIDEO_DETAIL) }, DF_BASE, R.string.applink_kol_title_video_detail))
-            add(DFP({ it.startsWithPattern(MEDIA_PREVIEW) }, DF_BASE, R.string.applink_kol_title_media_preview))
             add(DFP({ it.startsWithPattern(PLAY_BROADCASTER)
                     || it.startsWith(ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER) }, DF_CONTENT_PLAY_BROADCASTER, R.string.applink_title_play_broadcaster))
             add(DFP({
@@ -426,6 +421,10 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_MERCHANT_NONLOGIN, R.string.title_create_review))
 
             add(DFP({
+                it.startsWithPattern(ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW)
+            }, DF_MERCHANT_NONLOGIN, R.string.title_bulk_create_review))
+
+            add(DFP({
                 it.startsWithPattern(ApplinkConstInternalMarketplace.REVIEW_DETAIL)
             }, DF_MERCHANT_NONLOGIN, R.string.title_review_detail))
 
@@ -495,7 +494,6 @@ object DeeplinkDFMapper : CoroutineScope {
                 it.startsWith(DEALS_HOMEPAGE) ||
                         it.startsWith(DEALS_BRAND_PAGE) ||
                         it.startsWith(DEALS_CATEGORY_PAGE) ||
-                        it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE) ||
                         it.startsWith(DEALS_BRAND_DETAIL_PAGE)
             }, DF_ENTERTAINMENT, R.string.title_entertainment, { DFWebviewFallbackUrl.ENTERTAINMENT_DEALS }))
 
@@ -569,11 +567,11 @@ object DeeplinkDFMapper : CoroutineScope {
                 it.startsWithPattern(ACCOUNT_LINKING_WEBVIEW) ||
                 it.startsWithPattern(SEARCH_HISTORY) ||
                 it.startsWithPattern(SHARING_WISHLIST)
-            }, DF_USER_PRIVACYCENTER, R.string.title_privacy_center))
+            }, DF_USER_SETTINGS, R.string.title_privacy_center))
 
             // Media
             add(DFP({
-                it.startsWith(INTERNAL_MEDIA_PICKER) ||
+                it.startsWithPattern(INTERNAL_MEDIA_PICKER) ||
                         it.startsWith(INTERNAL_MEDIA_PICKER_ALBUM) ||
                         it.startsWith(INTERNAL_MEDIA_PICKER_PREVIEW)
             }, DF_FEED_CONTENT_CREATION, R.string.title_image_picker))
@@ -726,10 +724,8 @@ object DeeplinkDFMapper : CoroutineScope {
             // Content
             add(DFP({ it.startsWithPattern(COMMENT) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_comment))
             add(DFP({ it.startsWithPattern(INTERNAL_CONTENT_POST_DETAIL) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_post_detail))
-            add(DFP({ it.startsWithPattern(KOL_YOUTUBE) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_post_youtube))
             add(DFP({ it.startsWithPattern(CONTENT_REPORT) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_content_report))
             add(DFP({ it.startsWithPattern(VIDEO_DETAIL) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_video_detail))
-            add(DFP({ it.startsWithPattern(MEDIA_PREVIEW) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_media_preview))
             add(DFP({ it.startsWithPattern(PLAY_BROADCASTER) }, DF_BASE_SELLER_APP, R.string.applink_title_play_broadcaster))
 
             // Logistic

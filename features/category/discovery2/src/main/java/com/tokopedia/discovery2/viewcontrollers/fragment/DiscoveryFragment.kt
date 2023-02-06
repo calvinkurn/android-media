@@ -17,6 +17,7 @@ import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -176,6 +177,7 @@ class DiscoveryFragment :
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var chooseAddressWidgetDivider: View? = null
     private var shouldShowChooseAddressWidget: Boolean = true
+    private var hideShowChangeAvailable: Boolean = true
     private lateinit var coordinatorLayout: CoordinatorLayout
     private lateinit var parentLayout: FrameLayout
     private lateinit var appBarLayout: AppBarLayout
@@ -184,6 +186,7 @@ class DiscoveryFragment :
     private var miniCartData: MiniCartSimplifiedData? = null
     private var miniCartInitialized: Boolean = false
     private var userPressed: Boolean = false
+    private var isTabPresentToDoubleScroll: Boolean = false
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -354,34 +357,36 @@ class DiscoveryFragment :
                     ivToTop.show()
                 }
                 scrollDist += dy
+                if (recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION)) {
+                    if (dy > 0 && shouldShowChooseAddressWidget && scrollDist > MINIMUM) {
+                        shouldShowChooseAddressWidget = false
+                        hideShowChangeAvailable = true
+                        recyclerView.postDelayed(100) {
+                            hideShowChooseAddressOnScroll()
+                        }
+                    }
+                } else {
+                    if (dy <= 0 && !shouldShowChooseAddressWidget && discoveryViewModel.getAddressVisibilityValue()) {
+                        shouldShowChooseAddressWidget = true
+                        hideShowChangeAvailable = true
+                        recyclerView.postDelayed(100) {
+                            hideShowChooseAddressOnScroll()
+                        }
+                    }
+                }
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION) &&
-                    newState == RecyclerView.SCROLL_STATE_IDLE
-                ) {
+                if (!recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION) && (newState == RecyclerView.SCROLL_STATE_IDLE))
                     ivToTop.hide()
-                }
                 if (scrollDist > MINIMUM) {
-                    chooseAddressWidget?.hide()
-                    chooseAddressWidgetDivider?.hide()
-                    shouldShowChooseAddressWidget = false
                     scrollDist = 0
                     discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         scrollToLastSection()
                     }
                 } else if (scrollDist < -MINIMUM) {
-                    if (discoveryViewModel.getAddressVisibilityValue()) {
-                        chooseAddressWidget?.show()
-                        if (isLightThemeStatusBar != true) {
-                            chooseAddressWidgetDivider?.show()
-                        } else {
-                            chooseAddressWidgetDivider?.hide()
-                        }
-                        shouldShowChooseAddressWidget = true
-                    }
                     scrollDist = 0
                     discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
                     if (mAnchorHeaderView.childCount == 0) {
@@ -395,6 +400,7 @@ class DiscoveryFragment :
         })
         recyclerView.setOnTouchListenerRecyclerView { v, event ->
             userPressed = true
+            isTabPresentToDoubleScroll = false
             if (event.actionMasked == MotionEvent.ACTION_UP) {
                 v.performClick()
             }
@@ -403,15 +409,18 @@ class DiscoveryFragment :
         recyclerView.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 userPressed = true
+                isTabPresentToDoubleScroll = false
                 return false
             }
 
             override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
                 userPressed = true
+                isTabPresentToDoubleScroll = false
             }
 
             override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
                 userPressed = true
+                isTabPresentToDoubleScroll = false
             }
         })
 
@@ -443,13 +452,6 @@ class DiscoveryFragment :
                             requestStatusBarDark()
                             navToolbar.setShowShadowEnabled(true)
                             navToolbar.showShadow(true)
-                            if (discoveryViewModel.getAddressVisibilityValue()) {
-                                context?.let {
-                                    chooseAddressWidget?.background =
-                                        ColorDrawable(it.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
-                                    chooseAddressWidget?.updateWidget()
-                                }
-                            }
                         }
                     }
                 }
@@ -461,9 +463,33 @@ class DiscoveryFragment :
 
     }
 
+    private fun hideShowChooseAddressOnScroll(){
+        if(!hideShowChangeAvailable)
+            return
+        hideShowChangeAvailable = false
+        if(!shouldShowChooseAddressWidget) {
+            chooseAddressWidget?.hide()
+            chooseAddressWidgetDivider?.hide()
+        }else{
+            chooseAddressWidget?.show()
+            if (isLightThemeStatusBar != true) {
+                chooseAddressWidgetDivider?.show()
+            } else {
+                chooseAddressWidgetDivider?.hide()
+            }
+        }
+    }
+
     private fun scrollToLastSection() {
         if (!userPressed && !autoScrollSectionID.isNullOrEmpty()) {
             scrollToSection(autoScrollSectionID!!)
+        }else if(!userPressed && isTabPresentToDoubleScroll){
+//            isTabPresentToDoubleScroll = false
+            pinnedAlreadyScrolled = false
+            discoveryAdapter.currentList?.let {
+                if (it.isNotEmpty())
+                    scrollToPinnedComponent(it)
+            }
         }
     }
 
@@ -1261,10 +1287,11 @@ class DiscoveryFragment :
         if (!pinnedAlreadyScrolled) {
             val pinnedComponentId = arguments?.getString(COMPONENT_ID, "")
             if (!pinnedComponentId.isNullOrEmpty()) {
-                val position = discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
+                val (position, isTabPresent) = discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
+                isTabPresentToDoubleScroll = isTabPresent
                 if (position >= 0) {
-                    userPressed = true
-                    recyclerView.smoothScrollToPosition(position)
+                    userPressed = false
+                    recyclerView.smoothScrollToPosition(position, isTabPresent)
                     isManualScroll = false
                 }
             }
@@ -1276,7 +1303,7 @@ class DiscoveryFragment :
         val position = discoveryViewModel.scrollToPinnedComponent(
             discoveryAdapter.currentList,
             componentID
-        )
+        ).first
         if (position >= 0) {
             userPressed = false
             smoothScrollToComponentWithPosition(position)
@@ -1592,6 +1619,7 @@ class DiscoveryFragment :
         when (view) {
             ivToTop -> {
                 userPressed = true
+                isTabPresentToDoubleScroll = false
                 recyclerView.smoothScrollToPosition(DEFAULT_SCROLL_POSITION)
                 ivToTop.hide()
             }
