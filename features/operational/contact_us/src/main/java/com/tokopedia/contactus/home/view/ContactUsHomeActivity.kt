@@ -1,71 +1,65 @@
-package com.tokopedia.contactus.home.view;
+package com.tokopedia.contactus.home.view
 
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-
-import androidx.fragment.app.Fragment;
-
-import com.google.android.play.core.splitcompat.SplitCompat;
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.createticket.ContactUsConstant;
-import com.tokopedia.contactus.switcheractivity.inbox.InboxSwitcherActivity;
-import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.webview.BaseSessionWebViewFragment;
-import com.tokopedia.webview.BaseWebViewFragment;
+import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import androidx.fragment.app.Fragment
+import com.tokopedia.url.TokopediaUrl.Companion.getInstance
+import com.tokopedia.contactus.switcheractivity.inbox.InboxSwitcherActivity.Companion.start
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.contactus.createticket.ContactUsConstant
+import com.tokopedia.webview.BaseSessionWebViewFragment
+import com.tokopedia.webview.BaseWebViewFragment
+import com.google.android.play.core.splitcompat.SplitCompat
+import com.tokopedia.contactus.R
+import java.lang.Exception
 
 /**
  * Created by sandeepgoyal on 02/04/18.
  */
-
-public class ContactUsHomeActivity extends BaseSimpleActivity {
-
-    public static final String URL_HELP = TokopediaUrl.Companion.getInstance().getWEB() + "help?utm_source=android";
-
-    @Override
-    protected Fragment getNewFragment() {
-        String url = getIntent().getStringExtra(ContactUsConstant.EXTRAS_PARAM_URL);
-        if (url != null && url.length() > 0) {
-            return BaseSessionWebViewFragment.newInstance(url);
+class ContactUsHomeActivity : BaseSimpleActivity() {
+    override fun getNewFragment(): Fragment {
+        val url = intent.getStringExtra(ContactUsConstant.EXTRAS_PARAM_URL)
+        return if (url != null && url.length > 0) {
+            BaseSessionWebViewFragment.newInstance(url)
         } else {
-            return BaseSessionWebViewFragment.newInstance(URL_HELP);
+            BaseSessionWebViewFragment.newInstance(URL_HELP)
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
-    @Override
-    public void onBackPressed() {
+    override fun onBackPressed() {
         try {
-            BaseWebViewFragment webViewFragment = (BaseWebViewFragment) getFragment();
+            val webViewFragment = fragment as BaseWebViewFragment?
             if (webViewFragment != null && webViewFragment.getWebView().canGoBack()) {
-                webViewFragment.getWebView().goBack();
+                webViewFragment.getWebView().goBack()
             } else {
-                super.onBackPressed();
+                super.onBackPressed()
             }
-        } catch (Exception e) {
-            super.onBackPressed();
+        } catch (e: Exception) {
+            super.onBackPressed()
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        SplitCompat.installActivity(this);
-        getMenuInflater().inflate(R.menu.contactus_menu_home, menu);
-        return true;
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        SplitCompat.installActivity(this)
+        menuInflater.inflate(R.menu.contactus_menu_home, menu)
+        return true
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
         if (id == R.id.action_inbox) {
-            InboxSwitcherActivity.start(this);
-            return true;
+            start(this)
+            return true
         }
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item)
+    }
+
+    companion object {
+        val URL_HELP = getInstance().WEB + "help?utm_source=android"
     }
 }
