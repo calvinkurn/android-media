@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.dialog
 
-import android.animation.ObjectAnimator
 import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -10,7 +9,8 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.*
-import android.view.animation.LinearInterpolator
+import androidx.dynamicanimation.animation.SpringAnimation
+import androidx.dynamicanimation.animation.SpringForce
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
 import com.tokopedia.play.ui.explorewidget.*
@@ -36,6 +37,7 @@ import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.*
+import com.tokopedia.play.view.uimodel.event.ExploreWidgetInitialState
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
@@ -45,15 +47,19 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.util.AnimationUtils
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.awaitLayout
 import com.tokopedia.play_common.util.extension.buildSpannedString
+import com.tokopedia.play_common.util.extension.doOnNextLayout
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 import javax.inject.Inject
+import kotlin.math.roundToInt
 import com.tokopedia.play.R as playR
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -97,9 +103,26 @@ class PlayExploreWidgetFragment @Inject constructor(
                 viewModel.submitAction(NextPageWidgets)
             }
 
+            override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
+                if (binding.rvWidgets.getChildAt(0) != null) {
+                    binding.srExploreWidget.isEnabled = widgetLayoutManager.findFirstVisibleItemPosition() == 0 && binding.rvWidgets.getChildAt(0).top == 0
+                }
+                super.onScrolled(view, dx, dy)
+            }
+
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) analytic?.scrollExplore()
+            }
+
+            override fun checkLoadMore(view: RecyclerView?, dx: Int, dy: Int) {
+                if (dx < 0 && dy < 0) return
+                val lastVisibleItem = widgetLayoutManager.findLastVisibleItemPosition()
+                val firstVisibleItem = widgetLayoutManager.findFirstVisibleItemPosition()
+                if ((firstVisibleItem == 0 && lastVisibleItem == layoutManager.itemCount - 1) && hasNextPage)
+                    loadMoreNextPage()
+                else
+                    super.checkLoadMore(view, dx, dy)
             }
         }
     }
@@ -135,7 +158,9 @@ class PlayExploreWidgetFragment @Inject constructor(
         }
     }
 
-    private val gestureDetector by lazy {
+    private lateinit var sliderAnimation: SpringAnimation
+
+    private val gestureDetector by lazyThreadSafetyNone {
         GestureDetector(
             requireContext(),
             object : GestureDetector.SimpleOnGestureListener() {
@@ -153,13 +178,18 @@ class PlayExploreWidgetFragment @Inject constructor(
                         newX -= VIEW_TRANSLATION_THRESHOLD
                     }
 
-                    if(newX < 0) return false
+                    if (newX < 0) return false
 
-                    view?.let {
-                        ObjectAnimator.ofFloat(it, View.TRANSLATION_X, it.x, newX).apply {
-                            interpolator = LinearInterpolator()
-                        }.start()
-                    }
+                    sliderAnimation = AnimationUtils.addSpringAnim(
+                        view = binding.root,
+                        property = SpringAnimation.TRANSLATION_X,
+                        startPosition = binding.root.x,
+                        finalPosition = newX,
+                        stiffness = SpringForce.STIFFNESS_LOW,
+                        dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY,
+                        velocity = VIEW_TRANSLATION_VELOCITY
+                    )
+                    sliderAnimation.start()
                     return true
                 }
             }
@@ -201,6 +231,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         setupHeader()
         setupView()
         observeState()
+        observeEvent()
     }
 
     private fun setupHeader() {
@@ -237,6 +268,14 @@ class PlayExploreWidgetFragment @Inject constructor(
             }
         binding.viewExploreWidgetEmpty.tvDescEmptyExploreWidget.movementMethod =
             LinkMovementMethod.getInstance()
+
+        /**
+         * Swipe Refresh always fill to screen need a bit adjustment here
+         */
+        binding.rvWidgets.doOnNextLayout {
+            val mWidth = binding.rvWidgets.width
+            binding.srExploreWidget.layoutParams.width = mWidth
+        }
     }
 
     private fun observeState() {
@@ -274,6 +313,17 @@ class PlayExploreWidgetFragment @Inject constructor(
         }
     }
 
+    private fun observeEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.uiEvent.collect { event ->
+                when (event) {
+                    ExploreWidgetInitialState -> scrollListener.resetState()
+                    else -> {}
+                }
+            }
+        }
+    }
+
     private fun renderChips(chips: TabMenuUiModel) {
         when (chips.state) {
             ResultState.Success -> {
@@ -302,16 +352,13 @@ class PlayExploreWidgetFragment @Inject constructor(
         param: WidgetParamUiModel
     ) {
         setLayoutManager(state)
+        showEmpty(state is ExploreWidgetState.Empty)
 
         when (state) {
             ExploreWidgetState.Success -> {
-                showEmpty(false)
                 widgetAdapter.setItemsAndAnimateChanges(widget)
                 scrollListener.updateStateAfterGetData()
                 scrollListener.setHasNextPage(param.hasNextPage)
-            }
-            ExploreWidgetState.Empty -> {
-                showEmpty(true)
             }
             ExploreWidgetState.Loading -> {
                 widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
@@ -347,7 +394,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         val window = dialog?.window ?: return
         window.setGravity(Gravity.END)
         window.setLayout(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
+            (getScreenWidth() * EXPLORE_WIDGET_WIDTH_RATIO).roundToInt(),
             ViewGroup.LayoutParams.MATCH_PARENT
         )
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -458,12 +505,14 @@ class PlayExploreWidgetFragment @Inject constructor(
         dismiss()
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        if (::sliderAnimation.isInitialized) sliderAnimation.cancel()
+    }
+
     private fun setLayoutManager(state: ExploreWidgetState) {
-        val current = binding.rvWidgets.layoutManager
-        val newLayoutManager = if (state !is ExploreWidgetState.Success) shimmerLayoutManager else widgetLayoutManager
-        if (current == newLayoutManager) return
-        binding.rvWidgets.layoutManager = newLayoutManager
-        scrollListener.updateLayoutManager(newLayoutManager)
+        binding.rvWidgets.layoutManager = if (state !is ExploreWidgetState.Success) shimmerLayoutManager else widgetLayoutManager
+        scrollListener.updateLayoutManager(binding.rvWidgets.layoutManager)
     }
 
     private fun getVisibleChips(): Map<ChipWidgetUiModel, Int> {
@@ -488,6 +537,8 @@ class PlayExploreWidgetFragment @Inject constructor(
 
         private const val DIALOG_VISIBILITY_THRESHOLD = 600f
         private const val VIEW_TRANSLATION_THRESHOLD = 100f
+        private const val VIEW_TRANSLATION_VELOCITY = 16f
+        private const val EXPLORE_WIDGET_WIDTH_RATIO = 0.7
 
         fun get(fragmentManager: FragmentManager): PlayExploreWidgetFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? PlayExploreWidgetFragment

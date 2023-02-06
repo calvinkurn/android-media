@@ -133,17 +133,6 @@
     },
     {
       "event": "viewContentIris",
-      "eventAction": "impression - chromecast button",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - (live|vod)",
-      "trackerId": "39868",
-      "businessUnit": "play",
-      "currentSite": "tokopediamarketplace",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "event": "viewContentIris",
       "eventAction": "impression - mode nonton button",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
@@ -170,17 +159,6 @@
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
       "trackerId": "39871",
-      "businessUnit": "play",
-      "currentSite": "tokopediamarketplace",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "event": "clickContent",
-      "eventAction": "click - chromecast button",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - (live|vod)",
-      "trackerId": "39872",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",

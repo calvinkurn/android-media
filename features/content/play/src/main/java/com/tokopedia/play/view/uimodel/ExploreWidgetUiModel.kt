@@ -103,7 +103,7 @@ val WidgetParamUiModel.hasNextPage: Boolean
 
 val List<WidgetUiModel>.getChannelBlocks: List<WidgetItemUiModel>
     get() {
-        return this.filterIsInstance<WidgetItemUiModel>()
+        return this.filterIsInstance<WidgetItemUiModel>().distinctBy { it.item.items }
     }
 
 val List<WidgetUiModel>.getChips: TabMenuUiModel
