@@ -7,6 +7,7 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.notifier.NotifierCheckReminder
@@ -19,6 +20,8 @@ import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.BANNER_ACTION_CODE
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.view.DarkModeUtil
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import io.mockk.*
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
@@ -58,7 +61,7 @@ class MultiBannerViewModelTest {
     val list = arrayListOf<DataItem>()
     var dataItem:DataItem = mockk()
     var userSession: UserSession = mockk()
-    var context: Context = mockk()
+    var context: Context = mockk(relaxed = true)
 
     @Before
     fun setup() {
@@ -504,6 +507,38 @@ class MultiBannerViewModelTest {
 
         viewModel.setComponentPromoNameForCoupons(ComponentNames.DoubleBanner.componentName,list)
         assert(viewModel.getComponentData().value?.data?.firstOrNull()?.componentPromoName == "double_promo_code")
+    }
+
+    @Test
+    fun `test for checkForDarkMode`() {
+        spyk(context.isDarkMode())
+
+        viewModel.checkForDarkMode(context)
+
+        verify { context.isDarkMode() }
+    }
+
+    @Test
+    fun `test for layoutSelector`() {
+        every { componentsItem.name } returns ComponentNames.SingleBanner.componentName
+
+        assert( viewModel.layoutSelector() == R.layout.disco_shimmer_single_banner_layout )
+
+        every { componentsItem.name } returns ComponentNames.DoubleBanner.componentName
+
+        assert( viewModel.layoutSelector() == R.layout.disco_shimmer_double_banner_layout )
+
+        every { componentsItem.name } returns ComponentNames.TripleBanner.componentName
+
+        assert( viewModel.layoutSelector() == R.layout.disco_shimmer_triple_banner_layout )
+
+        every { componentsItem.name } returns ComponentNames.QuadrupleBanner.componentName
+
+        assert( viewModel.layoutSelector() == R.layout.disco_shimmer_quadruple_banner_layout )
+
+        every { componentsItem.name } returns ComponentNames.BottomNavigation.componentName
+
+        assert( viewModel.layoutSelector() == R.layout.multi_banner_layout )
     }
 
     @After

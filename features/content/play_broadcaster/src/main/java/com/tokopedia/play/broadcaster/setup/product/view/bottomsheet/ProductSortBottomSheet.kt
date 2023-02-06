@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.orUnknown
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSortBinding
 import com.tokopedia.play.broadcaster.setup.product.view.model.SortListModel
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.SortListViewComponent
@@ -20,7 +23,9 @@ import javax.inject.Inject
 /**
  * Created by kenny.hadisaputra on 02/02/22
  */
-class ProductSortBottomSheet @Inject constructor() : BottomSheetUnify() {
+class ProductSortBottomSheet @Inject constructor(
+    private val analytic: PlayBroSetupProductAnalytic,
+) : BottomSheetUnify() {
 
     private var _binding: BottomSheetPlayBroProductSortBinding? = null
     private val binding: BottomSheetPlayBroProductSortBinding
@@ -34,6 +39,8 @@ class ProductSortBottomSheet @Inject constructor() : BottomSheetUnify() {
 
     private var mListener: Listener? = null
 
+    private var mDataSource: DataSource? = null
+
     private var mSelectedSort: SortUiModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,16 +53,27 @@ class ProductSortBottomSheet @Inject constructor() : BottomSheetUnify() {
 
         setupView()
         setupObserve()
+        setupAnalytic()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        analytic.viewProductSortingBottomSheet()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
         mListener = null
+        mDataSource = null
     }
 
     fun setListener(listener: Listener?) {
         mListener = listener
+    }
+
+    fun setDataSource(dataSource: DataSource?) {
+        mDataSource = dataSource
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -78,6 +96,11 @@ class ProductSortBottomSheet @Inject constructor() : BottomSheetUnify() {
             dismiss()
         }
 
+        setCloseClickListener {
+            analytic.clickCloseOnProductSortingBottomSheet()
+            dismiss()
+        }
+
         refreshSortList()
     }
 
@@ -92,6 +115,10 @@ class ProductSortBottomSheet @Inject constructor() : BottomSheetUnify() {
                 }
             }
         }
+    }
+
+    private fun setupAnalytic() {
+        analytic.setSelectedAccount(mDataSource?.getSelectedAccount().orUnknown())
     }
 
     private fun refreshSortList() {
@@ -138,5 +165,9 @@ class ProductSortBottomSheet @Inject constructor() : BottomSheetUnify() {
 
     interface Listener {
         fun onSortChosen(bottomSheet: ProductSortBottomSheet, item: SortUiModel)
+    }
+
+    interface DataSource {
+        fun getSelectedAccount(): ContentAccountUiModel
     }
 }

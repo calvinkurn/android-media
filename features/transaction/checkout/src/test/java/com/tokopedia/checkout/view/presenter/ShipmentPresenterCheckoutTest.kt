@@ -1072,7 +1072,7 @@ class ShipmentPresenterCheckoutTest {
         // Then
         assert(checkoutRequest.crossSell!!.listItem.isNotEmpty())
         assertEquals(
-            CrossSellItemRequestModel(1, 100, "upsell", 2),
+            CrossSellItemRequestModel(1, 100.0, "upsell", 2),
             checkoutRequest.crossSell!!.listItem[0]
         )
     }

@@ -190,7 +190,7 @@ class UohListViewModelTest {
     fun getOrderHistoryData_shouldReturnSuccess() {
         // given
         coEvery {
-            uohListUseCase(any())
+            uohListUseCase(Pair(UohListParam(), false))
         } returns UohListOrder(uohOrders = UohListOrder.UohOrders(listOrderHistory))
 
         // when
@@ -205,7 +205,7 @@ class UohListViewModelTest {
     fun getOrderHistoryData_shouldReturnFail() {
         // given
         coEvery {
-            uohListUseCase(any())
+            uohListUseCase(Pair(UohListParam(), false))
         } throws Exception()
 
         // when
@@ -219,7 +219,7 @@ class UohListViewModelTest {
     fun getOrderHistoryData_shouldNotReturnEmpty() {
         // given
         coEvery {
-            uohListUseCase(any())
+            uohListUseCase(Pair(UohListParam(), false))
         } returns UohListOrder(uohOrders = UohListOrder.UohOrders(listOrderHistory))
 
         // when
@@ -228,6 +228,36 @@ class UohListViewModelTest {
         // then
         assert(uohListViewModel.orderHistoryListResult.value is Success)
         assert((uohListViewModel.orderHistoryListResult.value as Success<UohListOrder.UohOrders>).data.orders.isNotEmpty())
+    }
+
+    // order_history_list on index delayed
+    @Test
+    fun loadUohItemDelay_shouldReturnSuccess() {
+        // given
+        coEvery {
+            uohListUseCase(Pair(UohListParam(), true))
+        } returns UohListOrder(uohOrders = UohListOrder.UohOrders(listOrderHistory))
+
+        // when
+        uohListViewModel.loadUohItemDelay(true, UohListParam(), 3)
+
+        // then
+        assert(uohListViewModel.uohItemDelayResult.value is Success)
+        assert((uohListViewModel.uohItemDelayResult.value as Success<Pair<UohListOrder, Int>>).data.first.uohOrders.orders[0].orderUUID.equals("abc", true))
+    }
+
+    @Test
+    fun loadUohItemDelay_shouldReturnFail() {
+        // given
+        coEvery {
+            uohListUseCase(Pair(UohListParam(), true))
+        } throws Exception()
+
+        // when
+        uohListViewModel.loadUohItemDelay(true, UohListParam(), 3)
+
+        // then
+        assert(uohListViewModel.uohItemDelayResult.value is Fail)
     }
 
     // recommendation

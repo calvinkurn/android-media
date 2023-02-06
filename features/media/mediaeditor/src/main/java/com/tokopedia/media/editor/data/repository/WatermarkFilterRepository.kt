@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.media.editor.data.entity.EditorDetailEntity
 import javax.inject.Inject
 import com.tokopedia.media.editor.ui.uimodel.EditorWatermarkUiModel
@@ -34,7 +35,7 @@ interface WatermarkFilterRepository {
 }
 
 class WatermarkFilterRepositoryImpl @Inject constructor(
-    val context: Context
+    @ApplicationContext val context: Context
 ) : WatermarkFilterRepository {
     private var logoDrawable: Drawable? = null
 

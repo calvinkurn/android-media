@@ -8,6 +8,13 @@ const val CART_REVAMP_V3_QUERY =
             error_message
             status
             data {
+              coachmark {
+                Plus {
+                    is_shown
+                    title
+                    content
+                }
+              }
               errors
               popup_error_message
               pop_up_message

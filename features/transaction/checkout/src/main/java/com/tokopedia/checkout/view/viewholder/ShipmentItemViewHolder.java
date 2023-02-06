@@ -40,6 +40,8 @@ import com.tokopedia.checkout.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.adapter.ShipmentInnerProductListAdapter;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
+import com.tokopedia.coachmark.CoachMark2;
+import com.tokopedia.coachmark.CoachMark2Item;
 import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.kotlin.extensions.view.TextViewExtKt;
 import com.tokopedia.logisticCommon.data.constant.CourierConstant;
@@ -60,6 +62,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDa
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView;
+import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifycomponents.CardUnify;
 import com.tokopedia.unifycomponents.HtmlLinkHelper;
@@ -258,6 +261,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography tvAddOnCostLabel;
     private Typography tvAddOnPrice;
 
+    private PlusCoachmarkPrefs plusCoachmarkPrefs;
+
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
     }
@@ -266,6 +271,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         super(itemView);
         this.mActionListener = actionListener;
         phoneNumberRegexPattern = Pattern.compile(PHONE_NUMBER_REGEX_PATTERN);
+        plusCoachmarkPrefs = new PlusCoachmarkPrefs(itemView.getContext());
 
         bindViewIds(itemView);
     }
@@ -965,6 +971,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             // Is normal shipping
             renderNormalShippingCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
         }
+        showMultiplePlusOrderCoachmark(shipmentCartItemModel, containerShippingExperience);
     }
 
     private void renderNormalShippingCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {
@@ -1346,6 +1353,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 }
             } else {
                 renderNoSelectedCourier(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, saveStateType);
+                showMultiplePlusOrderCoachmark(shipmentCartItemModel, layoutStateNoSelectedShipping);
             }
         }
     }
@@ -2248,6 +2256,23 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             if (shipperId == id) return true;
         }
         return false;
+    }
+
+    private void showMultiplePlusOrderCoachmark(ShipmentCartItemModel shipmentCartItemModel, View anchorView) {
+        if (shipmentCartItemModel.getCoachmarkPlus().isShown() && !plusCoachmarkPrefs.getPlusCoachMarkHasShown()) {
+            ArrayList<CoachMark2Item> coachMarkItem = new ArrayList<>();
+            CoachMark2 coachMark = new CoachMark2(itemView.getContext());
+            coachMarkItem.add(
+                    new CoachMark2Item(
+                            anchorView,
+                            shipmentCartItemModel.getCoachmarkPlus().getTitle(),
+                            shipmentCartItemModel.getCoachmarkPlus().getContent(),
+                            CoachMark2.POSITION_BOTTOM
+                    )
+            );
+            coachMark.showCoachMark(coachMarkItem, null, 0);
+            plusCoachmarkPrefs.setPlusCoachmarkHasShown(true);
+        }
     }
 
     private interface SaveStateDebounceListener {
