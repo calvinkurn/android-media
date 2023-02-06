@@ -209,6 +209,8 @@ import com.tokopedia.product.detail.tracking.GeneralInfoTracking
 import com.tokopedia.product.detail.tracking.OneLinersTracking
 import com.tokopedia.product.detail.tracking.PageErrorTracker
 import com.tokopedia.product.detail.tracking.PageErrorTracking
+import com.tokopedia.product.detail.tracking.ProductArTrackerData
+import com.tokopedia.product.detail.tracking.ProductArTracking
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracker
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracking
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
@@ -218,8 +220,6 @@ import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_IS_N
 import com.tokopedia.product.detail.tracking.ShopAdditionalTracking
 import com.tokopedia.product.detail.tracking.ShopCredibilityTracker
 import com.tokopedia.product.detail.tracking.ShopCredibilityTracking
-import com.tokopedia.product.detail.tracking.ProductArTrackerData
-import com.tokopedia.product.detail.tracking.ProductArTracking
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtilCallback
@@ -682,6 +682,17 @@ open class DynamicProductDetailFragment :
                             userId = viewModel.userId,
                             shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: ""
                         )
+                    }
+                    is OneTimeMethodEvent.HitVariantTracker -> {
+                        DynamicProductDetailTracking.Click.onVariantLevel1Clicked(
+                            viewModel.getDynamicProductInfoP1,
+                            pdpUiUpdater?.productNewVariantDataModel,
+                            viewModel.variantData,
+                            getComponentPositionBeforeUpdate(pdpUiUpdater?.productNewVariantDataModel)
+                        )
+                    }
+                    else -> {
+                        //noop
                     }
                 }
             }
@@ -2562,14 +2573,8 @@ open class DynamicProductDetailFragment :
             updateButtonState()
         }
 
-        if (pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected() == false && shouldFireVariantTracker) {
-            shouldFireVariantTracker = false
-            DynamicProductDetailTracking.Click.onVariantLevel1Clicked(
-                viewModel.getDynamicProductInfoP1,
-                pdpUiUpdater?.productNewVariantDataModel,
-                viewModel.variantData,
-                getComponentPositionBeforeUpdate(pdpUiUpdater?.productNewVariantDataModel)
-            )
+        if (pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected() == false) {
+            viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.HitVariantTracker)
         }
 
         pdpUiUpdater?.updateArData(productId ?: "",

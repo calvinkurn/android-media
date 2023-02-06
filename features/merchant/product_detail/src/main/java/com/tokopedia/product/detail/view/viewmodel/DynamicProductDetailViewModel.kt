@@ -1183,6 +1183,15 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     it.copy(event = event, impressRestriction = true)
                 }
             }
+            is OneTimeMethodEvent.HitVariantTracker -> {
+                if (_oneTimeMethod.value.hitVariantTracker) return
+                _oneTimeMethod.update {
+                    it.copy(event = event, hitVariantTracker = true)
+                }
+            }
+            OneTimeMethodEvent.Empty -> {
+                //noop
+            }
         }
     }
 

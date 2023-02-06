@@ -4,7 +4,8 @@ import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 
 data class OneTimeMethodState(
     val event: OneTimeMethodEvent = OneTimeMethodEvent.Empty,
-    val impressRestriction: Boolean = false
+    val impressRestriction: Boolean = false,
+    val hitVariantTracker: Boolean = false,
 )
 
 sealed class OneTimeMethodEvent {
@@ -12,5 +13,6 @@ sealed class OneTimeMethodEvent {
         val reData: RestrictionData
     ) : OneTimeMethodEvent()
 
+    object HitVariantTracker : OneTimeMethodEvent()
     object Empty : OneTimeMethodEvent()
 }
