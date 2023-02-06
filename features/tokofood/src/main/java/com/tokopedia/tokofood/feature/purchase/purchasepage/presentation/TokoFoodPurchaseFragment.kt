@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -48,7 +47,6 @@ import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodConsentBottomSheet
 import com.tokopedia.tokofood.common.presentation.UiEvent
@@ -57,7 +55,6 @@ import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
-import com.tokopedia.tokofood.common.util.TokofoodGtpSwitcher
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
@@ -483,19 +480,6 @@ class TokoFoodPurchaseFragment :
                         showLoadingDialog()
                     }
                     UiEvent.EVENT_SUCCESS_DELETE_PRODUCT -> {
-                        if (it.source == SOURCE) {
-                            (it.data as? Pair<*, *>)?.let { pair ->
-                                (pair.first as? String)?.let { previousCartId ->
-                                    (pair.second as? CartTokoFoodData)?.carts?.firstOrNull()?.let { product ->
-                                        viewBinding?.recyclerViewPurchase?.post {
-                                            viewModel.deleteProduct(product.productId, previousCartId)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    UiEvent.EVENT_SUCCESS_DELETE_PRODUCT_NEW -> {
                         if (it.source == SOURCE) {
                             (it.data as? String)?.let { cartId ->
                                 viewBinding?.recyclerViewPurchase?.post {
@@ -1000,10 +984,6 @@ class TokoFoodPurchaseFragment :
         putExtra(ApplinkConstInternalPayment.CHECKOUT_TIMESTAMP, currentTimestamp)
     }
 
-    private fun getIsShouldUseGtpMigration(): Boolean {
-        return TokofoodGtpSwitcher.getShouldUseGtpQueries()
-    }
-
     override fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
         return viewModel.getNextItems(currentIndex, count)
     }
@@ -1038,20 +1018,11 @@ class TokoFoodPurchaseFragment :
     }
 
     override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
-        if (getIsShouldUseGtpMigration()) {
-            activityViewModel?.deleteProductNew(
-                cartId = element.cartId,
-                source = SOURCE,
-                shouldRefreshCart = false
-            )
-        } else {
-            activityViewModel?.deleteProduct(
-                productId = element.id,
-                cartId = element.cartId,
-                source = SOURCE,
-                shouldRefreshCart = false
-            )
-        }
+        activityViewModel?.deleteProduct(
+            cartId = element.cartId,
+            source = SOURCE,
+            shouldRefreshCart = false
+        )
     }
 
     override fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {

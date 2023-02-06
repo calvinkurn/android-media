@@ -3,7 +3,7 @@ package com.tokopedia.tokofood.common.domain.param
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.EMPTY
 
-data class RemoveCartTokofoodParamNew (
+data class RemoveCartTokofoodParam (
     @SerializedName("business_data")
     val businessData: List<RemoveCartTokofoodBusinessData> = listOf()
 ) {
@@ -14,8 +14,8 @@ data class RemoveCartTokofoodParamNew (
 
     companion object {
         @JvmStatic
-        fun getProductParamById(cartId: String): RemoveCartTokofoodParamNew {
-            return RemoveCartTokofoodParamNew(
+        fun getProductParamById(cartId: String): RemoveCartTokofoodParam {
+            return RemoveCartTokofoodParam(
                 businessData = listOf(
                     RemoveCartTokofoodBusinessData(
                         // TODO: Add BusinessId

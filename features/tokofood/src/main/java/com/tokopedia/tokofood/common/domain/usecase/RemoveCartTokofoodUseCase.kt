@@ -4,7 +4,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodParamNew
+import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodParam
 import com.tokopedia.tokofood.common.domain.response.CartGeneralRemoveCartData
 import com.tokopedia.tokofood.common.domain.response.RemoveCartTokofoodResponseNew
 import javax.inject.Inject
@@ -12,7 +12,7 @@ import javax.inject.Inject
 // TODO: Remove New
 
 private const val QUERY = """
-        mutation RemoveCartTokofoodNew(${'$'}params: RemoveCartTokofoodParam!) {
+        mutation RemoveCartTokofood(${'$'}params: RemoveCartTokofoodParam!) {
           cart_general_remove_cart(params: ${'$'}params) {
             data {
               success
@@ -22,16 +22,16 @@ private const val QUERY = """
         }
     """
 
-@GqlQuery("RemoveCartTokofoodNew", QUERY)
-class RemoveCartTokofoodUseCaseNew @Inject constructor(repository: GraphqlRepository) :
+@GqlQuery("RemoveCartTokofood", QUERY)
+class RemoveCartTokofoodUseCase @Inject constructor(repository: GraphqlRepository) :
     GraphqlUseCase<RemoveCartTokofoodResponseNew>(repository) {
 
     init {
         setTypeClass(RemoveCartTokofoodResponseNew::class.java)
-        setGraphqlQuery(RemoveCartTokofoodNew())
+        setGraphqlQuery(RemoveCartTokofood())
     }
 
-    suspend fun execute(removeCartParam: RemoveCartTokofoodParamNew): CartGeneralRemoveCartData {
+    suspend fun execute(removeCartParam: RemoveCartTokofoodParam): CartGeneralRemoveCartData {
         val param = generateParams(removeCartParam)
         setRequestParams(param)
         val response = executeOnBackground()
@@ -45,7 +45,7 @@ class RemoveCartTokofoodUseCaseNew @Inject constructor(repository: GraphqlReposi
     companion object {
         private const val PARAMS_KEY = "params"
 
-        private fun generateParams(params: RemoveCartTokofoodParamNew): Map<String, Any> {
+        private fun generateParams(params: RemoveCartTokofoodParam): Map<String, Any> {
             return mapOf(PARAMS_KEY to params)
         }
     }

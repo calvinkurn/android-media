@@ -19,7 +19,7 @@ class CustomOrderDetailBottomSheet :
     BottomSheetUnify(), OrderDetailViewHolder.OnOrderDetailItemClickListener {
 
     interface OnCustomOrderDetailClickListener {
-        fun onDeleteCustomOrderButtonClicked(cartId: String, productId: String)
+        fun onDeleteCustomOrderButtonClicked(cartId: String)
         fun onUpdateCustomOrderQtyButtonClicked(
             productId: String,
             quantity: Int,
@@ -146,7 +146,7 @@ class CustomOrderDetailBottomSheet :
 
     override fun onDeleteButtonClicked(adapterPosition: Int, cartId: String) {
         adapter.removeCustomProduct(cartId, adapterPosition)
-        productUiModel?.let { clickListener?.onDeleteCustomOrderButtonClicked(cartId, it.id) }
+        clickListener?.onDeleteCustomOrderButtonClicked(cartId)
         if (adapter.getCustomOrderDetails().isEmpty()) dismiss()
     }
 

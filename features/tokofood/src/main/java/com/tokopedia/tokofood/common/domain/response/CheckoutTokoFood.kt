@@ -4,13 +4,10 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
-import com.tokopedia.tokofood.common.domain.param.RemoveCartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodBusinessData
 import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodCartGroup
-import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodParamNew
-import com.tokopedia.tokofood.common.domain.param.RemoveItemTokoFoodParam
+import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodParam
 import com.tokopedia.tokofood.common.minicartwidget.view.MiniCartUiModel
 
 data class CheckoutTokoFoodResponse(
@@ -110,23 +107,28 @@ data class CheckoutTokoFoodData(
         )
     }
 
-    fun getRemoveUnavailableCartParam(shopId: String): RemoveCartTokoFoodParam {
-        val cartList = unavailableSections.firstOrNull()?.products?.map {
-            it.mapToRemoveItemParam(shopId)
-        }.orEmpty()
-        return RemoveCartTokoFoodParam(cartList)
-    }
-
-    fun getRemoveAllCartParam(shopId: String): RemoveCartTokoFoodParam {
-        val cartList = getProductListFromCart().map {
-            it.mapToRemoveItemParam(shopId)
-        }
-        return RemoveCartTokoFoodParam(carts = cartList)
-    }
-
-    fun getRemoveAllCartParamNew(): RemoveCartTokofoodParamNew {
+    fun getRemoveUnavailableCartParam(): RemoveCartTokofoodParam {
         // TODO: Add businessId
-        return RemoveCartTokofoodParamNew(
+        val cartIdList = unavailableSections.firstOrNull()?.products?.map {
+            it.cartId
+        }.orEmpty()
+        return RemoveCartTokofoodParam(
+            businessData = listOf(
+                RemoveCartTokofoodBusinessData(
+                    businessId = "",
+                    cartGroups = listOf(
+                        RemoveCartTokofoodCartGroup(
+                            cartIds = cartIdList
+                        )
+                    )
+                )
+            )
+        )
+    }
+
+    fun getRemoveAllCartParam(): RemoveCartTokofoodParam {
+        // TODO: Add businessId
+        return RemoveCartTokofoodParam(
             businessData = listOf(
                 RemoveCartTokofoodBusinessData(
                     businessId = "",
@@ -228,15 +230,7 @@ data class CheckoutTokoFoodProduct(
     val quantity: Int = 0,
     @SerializedName("variants")
     val variants: List<CheckoutTokoFoodProductVariant> = listOf()
-) {
-    fun mapToRemoveItemParam(shopId: String): RemoveItemTokoFoodParam {
-        return RemoveItemTokoFoodParam(
-            cartId = cartId.toLongOrZero(),
-            productId = productId,
-            shopId = shopId
-        )
-    }
-}
+)
 
 data class CheckoutTokoFoodProductVariant(
     @SerializedName("variant_id")
