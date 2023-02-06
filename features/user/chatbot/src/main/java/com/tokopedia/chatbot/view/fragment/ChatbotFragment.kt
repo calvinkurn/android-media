@@ -204,6 +204,7 @@ class ChatbotFragment :
     TypingListener,
     ChatOptionListListener,
     CsatOptionListListener,
+    View.OnClickListener,
     TransactionInvoiceBottomSheetListener,
     StickyActionButtonClickListener,
     VideoUploadListener,
@@ -309,60 +310,73 @@ class ChatbotFragment :
         }
     }
 
-//    override fun onClick(v: View?) {
-//        smallReplyBox?.hide()
-//        val id = v?.id
-//        if (id == getBindingView().chatbotViewHelpRate.btnInactive1.id ||
-//            id == getBindingView().chatbotViewHelpRate.btnInactive2.id ||
-//            id == getBindingView().chatbotViewHelpRate.btnInactive3.id ||
-//            id == getBindingView().chatbotViewHelpRate.btnInactive4.id ||
-//            id == getBindingView().chatbotViewHelpRate.btnInactive5.id
-//        ) {
-//            onEmojiClick(v)
-//        }
-//    }
-
-//    private fun onEmojiClick(view: View?) {
-//        when (view?.id) {
-//            getBindingView().chatbotViewHelpRate.btnInactive1.id -> {
-//                onClickEmoji(RATING_ONE)
-//            }
-//            getBindingView().chatbotViewHelpRate.btnInactive2.id -> {
-//                onClickEmoji(RATING_TWO)
-//            }
-//            getBindingView().chatbotViewHelpRate.btnInactive3.id -> {
-//                onClickEmoji(RATING_THREE)
-//            }
-//            getBindingView().chatbotViewHelpRate.btnInactive4.id -> {
-//                onClickEmoji(RATING_FOUR)
-//            }
-//            getBindingView().chatbotViewHelpRate.btnInactive5.id -> {
-//                onClickEmoji(RATING_FIVE)
-//            }
-//        }
-//    }
-
-    override fun openCsat(csatResponse: WebSocketCsatResponse) {
-        mCsatResponse = csatResponse
-        if (::mCsatResponse.isInitialized) {
-      //      getBindingView().listQuickReply.hide()
-            showCsatRatingView()
+    override fun onClick(v: View?) {
+        smallReplyBox?.hide()
+        val id = v?.id
+        if (id == getBindingView().chatbotViewHelpRate.btnInactive1.id ||
+            id == getBindingView().chatbotViewHelpRate.btnInactive2.id ||
+            id == getBindingView().chatbotViewHelpRate.btnInactive3.id ||
+            id == getBindingView().chatbotViewHelpRate.btnInactive4.id ||
+            id == getBindingView().chatbotViewHelpRate.btnInactive5.id
+        ) {
+            onEmojiClick(v)
         }
     }
 
-    private fun showCsatRatingView() {
-//        getBindingView().chatbotViewHelpRate.txtHelpTitle.text =
-//            mCsatResponse.attachment?.attributes?.title
-//       getBindingView().chatbotViewHelpRate.layoutOfRate.show()
+    private fun onEmojiClick(view: View?) {
+        when (view?.id) {
+            getBindingView().chatbotViewHelpRate.btnInactive1.id -> {
+                onClickEmoji(RATING_ONE)
+            }
+            getBindingView().chatbotViewHelpRate.btnInactive2.id -> {
+                onClickEmoji(RATING_TWO)
+            }
+            getBindingView().chatbotViewHelpRate.btnInactive3.id -> {
+                onClickEmoji(RATING_THREE)
+            }
+            getBindingView().chatbotViewHelpRate.btnInactive4.id -> {
+                onClickEmoji(RATING_FOUR)
+            }
+            getBindingView().chatbotViewHelpRate.btnInactive5.id -> {
+                onClickEmoji(RATING_FIVE)
+            }
+        }
+    }
+
+    override fun openCsatOldFlow(csatResponse: WebSocketCsatResponse) {
+        mCsatResponse = csatResponse
+        if (::mCsatResponse.isInitialized) {
+            getBindingView().listQuickReply.hide()
+            showCsatRatingViewOldFlow()
+        }
+    }
+
+    override fun openCsatNewFlow(csatResponse: WebSocketCsatResponse) {
+        mCsatResponse = csatResponse
+        if (::mCsatResponse.isInitialized) {
+            //      getBindingView().listQuickReply.hide()
+            showCsatRatingViewNewFlow()
+        }
+    }
+
+    private fun showCsatRatingViewOldFlow() {
+        getBindingView().chatbotViewHelpRate.txtHelpTitle.text =
+            mCsatResponse.attachment?.attributes?.title
+        getBindingView().chatbotViewHelpRate.layoutOfRate.show()
+        chatbotAnalytics.get().eventShowView(ACTION_IMPRESSION_CSAT_SMILEY_VIEW)
+        hideKeyboard()
+    }
+
+    private fun showCsatRatingViewNewFlow() {
         chatbotAnalytics.get().eventShowView(ACTION_IMPRESSION_CSAT_SMILEY_VIEW)
         hideKeyboard()
         smallReplyBox?.hide()
         onClickEmoji(RATING_FIVE)
     }
 
-//    private fun hideCsatRatingView() {
-//        getBindingView().chatbotViewHelpRate.layoutOfRate.hide()
-//    }
+    private fun hideCsatRatingView() {
+        getBindingView().chatbotViewHelpRate.layoutOfRate.hide()
+    }
 
     private fun onClickEmoji(number: Int) {
         startActivityForResult(
@@ -590,12 +604,13 @@ class ChatbotFragment :
         getRecyclerView(view)?.addItemDecoration(ChatBubbleItemDecorator(setDateIndicator()))
         chatbotAdapter = adapter as ChatbotAdapter
 
-  //      attachListenersForRating()
+        attachListenersForRating()
 
         super.onViewCreated(view, savedInstanceState)
         viewState?.initView()
         presenter.checkForSession(messageId)
         presenter.checkUploadVideoEligibility(messageId)
+        context?.let { presenter.remoteConfigForCsatExperiment(it) }
         showTicker()
 
         initRecyclerViewListener()
@@ -606,13 +621,13 @@ class ChatbotFragment :
         }
     }
 
-//    private fun attachListenersForRating() {
-//        getBindingView().chatbotViewHelpRate.btnInactive1.setOnClickListener(this@ChatbotFragment)
-//        getBindingView().chatbotViewHelpRate.btnInactive2.setOnClickListener(this@ChatbotFragment)
-//        getBindingView().chatbotViewHelpRate.btnInactive3.setOnClickListener(this@ChatbotFragment)
-//        getBindingView().chatbotViewHelpRate.btnInactive4.setOnClickListener(this@ChatbotFragment)
-//        getBindingView().chatbotViewHelpRate.btnInactive5.setOnClickListener(this@ChatbotFragment)
-//    }
+    private fun attachListenersForRating() {
+        getBindingView().chatbotViewHelpRate.btnInactive1.setOnClickListener(this@ChatbotFragment)
+        getBindingView().chatbotViewHelpRate.btnInactive2.setOnClickListener(this@ChatbotFragment)
+        getBindingView().chatbotViewHelpRate.btnInactive3.setOnClickListener(this@ChatbotFragment)
+        getBindingView().chatbotViewHelpRate.btnInactive4.setOnClickListener(this@ChatbotFragment)
+        getBindingView().chatbotViewHelpRate.btnInactive5.setOnClickListener(this@ChatbotFragment)
+    }
 
     private fun goToOnboardingActivity() {
         val hasBeenShownVideoUploadOnBoarding = videoUploadOnBoarding.hasBeenShown()
@@ -1048,6 +1063,7 @@ class ChatbotFragment :
         chatbotAnalytics.get().eventClick(ACTION_QUICK_REPLY_BUTTON_CLICKED)
         presenter.sendQuickReply(messageId, model, SendableUiModel.generateStartTime(), opponentId)
         getViewState()?.hideQuickReplyOnClick()
+        hideCsatRatingView()
     }
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String, isSecure: Boolean) {
@@ -1150,7 +1166,7 @@ class ChatbotFragment :
     }
 
     override fun onSuccessSubmitCsatRating(msg: String) {
-  //      hideCsatRatingView()
+        hideCsatRatingView()
         view?.let {
             Toaster.showNormalWithAction(it, msg, Snackbar.LENGTH_LONG, SNACK_BAR_TEXT_OK, View.OnClickListener { })
         }
