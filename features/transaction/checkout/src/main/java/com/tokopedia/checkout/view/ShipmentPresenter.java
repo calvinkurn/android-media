@@ -1331,6 +1331,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             getView().resetCourier(cartPosition);
                                         }
                                     }
+                                    if (logisticDonePublisher != null) {
+                                        logisticDonePublisher.onCompleted();
+                                    }
+                                    if (logisticPromoDonePublisher != null) {
+                                        logisticPromoDonePublisher.onCompleted();
+                                    }
                                 }
 
                                 @Override
