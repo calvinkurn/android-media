@@ -243,6 +243,9 @@ object ProductTrackingConstant {
         const val CLICK_PRODUCT_BUNDLING = "click - product bundling"
         const val CLICK_CHECK_PRODUCT_BUNDLING = "click - lihat paket on bundling component"
         const val IMPRESSION_PRODUCT_BUNDLING = "impression - bundling component"
+
+        const val CLICK_LOCATION_RESTRICTION = "click - button on pdp restriction bottomsheet"
+        const val IMPRESS_LOCATION_RESTRICTION = "impression - pdp restriction bottomsheet"
     }
 
 
@@ -350,5 +353,7 @@ object ProductTrackingConstant {
         const val TRACKER_ID_IMPRESS_THUMBNAIL = "31789"
         const val TRACKER_ID_CLICK_SPECIFICATION = "36325"
         const val TRACKER_ID_IMPRESS_SPECIFICATION = "36326"
+        const val TRACKER_ID_CLICK_LOCATION_RESTRICTION = "40907"
+        const val TRACKER_ID_IMPRESSION_LOCATION_RESTRICTION = "40906"
     }
 }

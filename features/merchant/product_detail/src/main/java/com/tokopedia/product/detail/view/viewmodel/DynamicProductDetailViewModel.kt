@@ -53,20 +53,19 @@ import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
+import com.tokopedia.product.detail.data.model.ui.OneTimeMethodEvent
+import com.tokopedia.product.detail.data.model.ui.OneTimeMethodState
 import com.tokopedia.product.detail.data.model.upcoming.NotifyMeUiData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateTokoNowRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PAGE_NUMBER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PRICE_MINIMUM_SHIPPING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_ERROR_TYPE
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_STATUS_KEY
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_BE_ERROR
@@ -111,16 +110,18 @@ import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import dagger.Lazy
-import javax.inject.Inject
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
@@ -129,6 +130,7 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import timber.log.Timber
+import javax.inject.Inject
 
 open class DynamicProductDetailViewModel @Inject constructor(private val dispatcher: CoroutineDispatchers,
                                                              private val getPdpLayoutUseCase: Lazy<GetPdpLayoutUseCase>,
@@ -275,6 +277,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private val _verticalRecommendation = MutableLiveData<Result<RecommendationWidget>>()
     val verticalRecommendation: LiveData<Result<RecommendationWidget>> = _verticalRecommendation
+
+    private val _oneTimeMethod = MutableStateFlow(OneTimeMethodState())
+    val oneTimeMethodState: StateFlow<OneTimeMethodState> = _oneTimeMethod
 
     var videoTrackerData: Pair<Long, Long>? = null
 
@@ -1169,4 +1174,16 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             _verticalRecommendation.value = Fail(it)
         })
     }
+
+    fun changeOneTimeMethod(event: OneTimeMethodEvent) {
+        when (event) {
+            is OneTimeMethodEvent.ImpressRestriction -> {
+                if (_oneTimeMethod.value.impressRestriction) return
+                _oneTimeMethod.update {
+                    it.copy(event = event, impressRestriction = true)
+                }
+            }
+        }
+    }
+
 }

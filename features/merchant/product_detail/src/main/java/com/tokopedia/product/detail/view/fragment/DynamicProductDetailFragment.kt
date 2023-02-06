@@ -23,6 +23,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
@@ -122,6 +123,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APP
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.RQUEST_CODE_ACTIVATE_GOPAY
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.RQUEST_CODE_UPDATE_FINTECH_WIDGET
 import com.tokopedia.product.detail.common.ProductEducationalHelper
+import com.tokopedia.product.detail.common.ProductTrackingCommon
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.SingleClick
 import com.tokopedia.product.detail.common.VariantConstant
@@ -140,6 +142,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMultiloca
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
+import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
@@ -167,6 +170,7 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.Pro
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
+import com.tokopedia.product.detail.data.model.ui.OneTimeMethodEvent
 import com.tokopedia.product.detail.data.model.upcoming.NotifyMeUiData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailAlreadyHit
 import com.tokopedia.product.detail.data.util.DynamicProductDetailAlreadySwipe
@@ -296,6 +300,7 @@ import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
+import kotlinx.coroutines.flow.collect
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
@@ -663,6 +668,24 @@ open class DynamicProductDetailFragment :
         observeDeleteCart()
         observePlayWidget()
         observeVerticalRecommendation()
+        observeOneTimeMethod()
+    }
+
+    private fun observeOneTimeMethod() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.oneTimeMethodState.collect {
+                when(it.event) {
+                    is OneTimeMethodEvent.ImpressRestriction ->  {
+                        ProductTrackingCommon.Restriction.impressLocationRestriction(
+                            trackingQueue = trackingQueue,
+                            data = it.event.reData,
+                            userId = viewModel.userId,
+                            shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: ""
+                        )
+                    }
+                }
+            }
+        }
     }
 
     override fun loadData(forceRefresh: Boolean) {
@@ -3164,7 +3187,14 @@ open class DynamicProductDetailFragment :
             reData = reData,
             isFavoriteShop = pdpUiUpdater?.shopCredibility?.isFavorite ?: false,
             isShopOwner = viewModel.isShopOwner(),
-            reView = nplFollowersButton
+            reView = nplFollowersButton,
+            impressLocationRestriction = {
+                viewModel.changeOneTimeMethod(
+                    OneTimeMethodEvent.ImpressRestriction(
+                        reData ?: RestrictionData()
+                    )
+                )
+            }
         )
     }
 
@@ -3276,9 +3306,18 @@ open class DynamicProductDetailFragment :
                 }
             }
             reData.restrictionLocationType() -> {
-                goToShipmentErrorAddressOrChat(Int.ZERO)
+                onRestrictionLocationClicked(reData)
             }
         }
+    }
+
+    private fun onRestrictionLocationClicked(reData: RestrictionData) {
+        ProductTrackingCommon.Restriction.clickLocationRestriction(
+            data = reData,
+            userId = viewModel.userId,
+            shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: ""
+        )
+        goToShipmentErrorAddressOrChat(Int.ZERO)
     }
 
     private fun logException(t: Throwable) {
