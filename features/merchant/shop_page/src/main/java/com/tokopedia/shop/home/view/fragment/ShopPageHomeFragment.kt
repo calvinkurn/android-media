@@ -208,7 +208,6 @@ open class ShopPageHomeFragment :
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
         private const val MIN_BUNDLE_SIZE = 1
-        private const val CONFETTI_URL = "https://lottie.host/4f90b6ee-99d3-4ebc-bffa-77743ef1c969/qct14qmgfM.json"
 
         fun createInstance(
             shopId: String,
@@ -293,6 +292,7 @@ open class ShopPageHomeFragment :
     private val shopHomeWidgetCarouselPositionSavedState = SparseIntArray()
     private var listHomeTabBackgroundColor: List<String> = listOf()
     private var homeTabBackgroundPatternImage: String = ""
+    private var homeTabLottieUrl: String = ""
     private var topView: View? = null
     private var centerView: View? = null
     private var bottomView: View? = null
@@ -3758,7 +3758,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun showConfetti() {
-        (parentFragment as? NewShopPageFragment)?.setupShopPageLottieAnimation(CONFETTI_URL)
+        (parentFragment as? NewShopPageFragment)?.setupShopPageLottieAnimation(homeTabLottieUrl)
     }
 
     private fun isShowConfetti(): Boolean {
@@ -3776,6 +3776,11 @@ open class ShopPageHomeFragment :
     fun setHomeTabBackgroundPatternImage(backgroundPatternImage: String) {
 //        this.homeTabBackgroundPatternImage = backgroundPatternImage
         this.homeTabBackgroundPatternImage = "https://lh5.googleusercontent.com/asDRxKClmQFn3HdBLxkZ2Q6LW8bn8biZulsgv-AIRsoJe85gb7Xi90sLr4qkX_CsU3s=w2400"
+    }
+
+    fun setHomeTabLottieUrl(lottieUrl: String){
+//        this.homeTabLottieUrl = lottieUrl
+        this.homeTabLottieUrl = "https://lottie.host/4f90b6ee-99d3-4ebc-bffa-77743ef1c969/qct14qmgfM.json"
     }
 
 

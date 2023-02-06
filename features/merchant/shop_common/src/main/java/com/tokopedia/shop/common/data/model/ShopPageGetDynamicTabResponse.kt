@@ -38,6 +38,8 @@ data class ShopPageGetDynamicTabResponse(
             var textColor: String = "",
             @SerializedName("bgImage")
             var backgroundImage: String = "",
+            @SerializedName("imgLottie")
+            var lottieUrl: String = "",
             @SerializedName("shopLayoutFeatures")
             var shopLayoutFeature: List<ShopLayoutFeature> = arrayListOf(),
             @SerializedName("data")
