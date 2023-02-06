@@ -19,16 +19,16 @@ import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategoryLoadingStateUiModel
-import com.tokopedia.tokofood.feature.search.searchresult.domain.usecase.TokofoodFilterSortUseCase
-import com.tokopedia.tokofood.feature.search.searchresult.domain.usecase.TokofoodSearchMerchantUseCase
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodFilterSortMapper
-import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodSearchResultHelper.getActiveCount
-import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodSearchResultHelper.resetParams
-import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodSearchResultHelper.setAppliedInputState
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodMerchantSearchResultMapper
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodSearchResultHelper
+import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodSearchResultHelper.getActiveCount
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodSearchResultHelper.hasFilterSortApplied
+import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodSearchResultHelper.resetParams
+import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodSearchResultHelper.setAppliedInputState
 import com.tokopedia.tokofood.feature.search.searchresult.domain.response.TokofoodSearchMerchantResponse
+import com.tokopedia.tokofood.feature.search.searchresult.domain.usecase.TokofoodFilterSortUseCase
+import com.tokopedia.tokofood.feature.search.searchresult.domain.usecase.TokofoodSearchMerchantUseCase
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchEmptyWithFilterUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchEmptyWithoutFilterUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchOOCUiModel
@@ -77,7 +77,7 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     private val _appliedFilterCount = MutableSharedFlow<Int>(Int.ONE)
     val appliedFilterCount: SharedFlow<Int>
         get() = _appliedFilterCount
-    
+
     val searchParameterMap: SharedFlow<HashMap<String, String>> =
         combine(_searchKeyword, _searchMap) { keyword, map ->
             val searchParameter = currentSearchParameterMap.value ?: hashMapOf()
@@ -386,8 +386,10 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     }
     private fun shouldLoadMore(lastVisibleItemIndex: Int, itemCount: Int): Boolean {
         val lastItemIndex = itemCount - Int.ONE
-        val scrolledToLastItem = (lastVisibleItemIndex == lastItemIndex
-                && lastVisibleItemIndex.isMoreThanZero())
+        val scrolledToLastItem = (
+            lastVisibleItemIndex == lastItemIndex &&
+                lastVisibleItemIndex.isMoreThanZero()
+            )
         val hasNextPage = TokofoodSearchResultHelper.getIsHasNextPage(pageKeyLiveData.value)
         val containsOtherState =
             tokofoodMerchantSearchResultMapper.getIsVisitableContainOtherStates(currentVisitables.value)
@@ -446,8 +448,10 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         )
     }
 
-    private suspend fun emitSuccessIfInCoverage(response: TokofoodSearchMerchantResponse,
-                                                onSuccess: suspend () -> Unit) {
+    private suspend fun emitSuccessIfInCoverage(
+        response: TokofoodSearchMerchantResponse,
+        onSuccess: suspend () -> Unit
+    ) {
         if (response.tokofoodSearchMerchant.state.isOOC) {
             emitOutOfCoverageState()
         } else {
@@ -552,8 +556,10 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         return listOf(MerchantSearchEmptyWithFilterUiModel)
     }
 
-    private fun showQuickSortBottomSheet(sortList: List<Sort>,
-                                         selectedSortValue: String) {
+    private fun showQuickSortBottomSheet(
+        sortList: List<Sort>,
+        selectedSortValue: String
+    ) {
         _uiEventFlow.tryEmit(
             TokofoodSearchUiEvent(
                 state = TokofoodSearchUiEvent.EVENT_OPEN_QUICK_SORT_BOTTOMSHEET,
@@ -587,25 +593,30 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         return DynamicFilterModel(updatedDataValue)
     }
 
-    private fun editPinpoint(addressId: String,
-                             latitude: String,
-                             longitude: String) {
+    private fun editPinpoint(
+        addressId: String,
+        latitude: String,
+        longitude: String
+    ) {
         launchCatchError(
             block = {
                 val isSuccess = withContext(dispatcher.io) {
                     keroEditAddressUseCase.execute(addressId, latitude, longitude)
                 }
-                val uiEventState =
-                    if (isSuccess) {
-                        TokofoodSearchUiEvent.EVENT_SUCCESS_EDIT_PINPOINT
-                    } else {
-                        TokofoodSearchUiEvent.EVENT_FAILED_EDIT_PINPOINT
-                    }
-                _uiEventFlow.tryEmit(
-                    TokofoodSearchUiEvent(
-                        state = uiEventState
+                if (isSuccess) {
+                    _uiEventFlow.tryEmit(
+                        TokofoodSearchUiEvent(
+                            state = TokofoodSearchUiEvent.EVENT_SUCCESS_EDIT_PINPOINT,
+                            data = Pair(latitude, longitude)
+                        )
                     )
-                )
+                } else {
+                    _uiEventFlow.tryEmit(
+                        TokofoodSearchUiEvent(
+                            state = TokofoodSearchUiEvent.EVENT_FAILED_EDIT_PINPOINT
+                        )
+                    )
+                }
             },
             onError = {
                 _uiEventFlow.tryEmit(
@@ -632,5 +643,4 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
 
         private const val SHARING_DELAY_MILLIS = 5000L
     }
-
 }
