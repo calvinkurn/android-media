@@ -109,17 +109,17 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
         promoCodes: List<String>
     ): GoCicilInstallmentRequest {
         return GoCicilInstallmentRequest(
-                            gatewayCode = orderPayment.gatewayCode,
-                            merchantCode = orderPayment.creditCard.additionalData.merchantCode,
-                            profileCode = orderPayment.creditCard.additionalData.profileCode,
-                            userId = userId,
-                            paymentAmount = orderCost.totalPriceWithoutPaymentFees,
-                            merchantType = orderCart.shop.merchantType,
-                            address = orderProfile.address,
+            gatewayCode = orderPayment.gatewayCode,
+            merchantCode = orderPayment.creditCard.additionalData.merchantCode,
+            profileCode = orderPayment.creditCard.additionalData.profileCode,
+            userId = userId,
+            paymentAmount = orderCost.totalPriceWithoutPaymentFees,
+            merchantType = orderCart.shop.merchantType,
+            address = orderProfile.address,
             shop = orderCart.shop,
             products = orderCart.products,
             promoCodes = promoCodes
-                        )
+        )
     }
 
     suspend fun getGopayAdminFee(
