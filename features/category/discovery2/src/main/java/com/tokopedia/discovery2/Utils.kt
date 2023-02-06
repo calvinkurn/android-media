@@ -486,7 +486,6 @@ class Utils {
                 val tabPosition = splitValues[0].toIntOrNull()?.minus(1)
                 val actualValue = splitValues[1]
                 if (tabPosition == null || actualValue.isEmpty()) return ""
-//                add logic of comparison of tabId with this Component's TabID
                 if (tabPosition == components.tabPosition) {
                     return actualValue
                 }
