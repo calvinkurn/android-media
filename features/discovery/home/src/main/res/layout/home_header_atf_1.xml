@@ -13,34 +13,15 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingDefaultResource">
 
-        <View
-            android:id="@+id/header_background_home"
-            android:layout_width="match_parent"
-            android:layout_height="700dp"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_banner"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="#8153E4"
-            app:layout_constraintBottom_toBottomOf="@+id/header_background_home"
-            app:layout_constraintTop_toTopOf="@+id/header_background_home" />
+            android:layout_height="wrap_content"
+            android:src="@drawable/atf_big"
+            android:scaleType="matrix"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-<!--    <com.tokopedia.unifycomponents.ImageUnify-->
-<!--        android:id="@+id/rv_banner"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:adjustViewBounds="true"-->
-<!--        android:scaleType="fitStart"-->
-<!--        android:src="@drawable/dummy_banner"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/view_balance_widget"-->
-<!--        app:unify_image_corner_radius="0" />-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header_top_rounded"
@@ -70,7 +51,7 @@
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_pull_refresh"
+        app:layout_constraintTop_toBottomOf="@+id/view_empty"
         tools:layout_height="10dp"
         tools:visibility="visible" />
 
@@ -82,11 +63,18 @@
         android:inflatedId="@+id/view_balance_widget"
         android:layout="@layout/view_stub_balance_widget_view"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/rv_banner"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view_choose_address"
         tools:visibility="visible" />
+
+    <View
+        android:id="@+id/view_empty_banner"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        app:layout_constraintTop_toBottomOf="@id/view_balance_widget"
+        app:layout_constraintBottom_toBottomOf="@id/header_top_rounded"
+        />
 
     <com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/view_pull_refresh"
@@ -95,6 +83,6 @@
         app:color_type="white"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_empty" />
+        app:layout_constraintTop_toBottomOf="@id/view_balance_widget" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

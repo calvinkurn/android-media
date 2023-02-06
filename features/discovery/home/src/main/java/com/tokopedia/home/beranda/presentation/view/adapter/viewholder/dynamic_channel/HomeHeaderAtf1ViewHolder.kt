@@ -1,5 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
+import android.graphics.Matrix
+import android.graphics.RectF
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -14,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.utils.view.binding.viewBinding
+
 
 /**
  * Created by dhaba
@@ -55,6 +58,7 @@ class HomeHeaderAtf1ViewHolder(
         binding?.viewPullRefresh?.let {
             listener.pullRefreshIconCaptured(it)
         }
+        bottomCropBanner()
     }
 
     private fun renderEmptySpace() {
@@ -77,5 +81,41 @@ class HomeHeaderAtf1ViewHolder(
 
     override fun bind(element: HomeHeaderAtf1DataModel, payloads: MutableList<Any>) {
         bind(element)
+    }
+
+    private fun bottomCropBanner() {
+        val imageBanner = binding?.ivBanner
+        imageBanner?.run {
+            val matrix: Matrix? = this.imageMatrix
+
+            val scale: Float
+            val viewWidth: Int = width - paddingLeft - paddingRight
+            val viewHeight: Int = height - paddingTop - paddingBottom
+            val drawableWidth: Int = drawable.intrinsicWidth
+            val drawableHeight: Int = drawable.intrinsicHeight
+
+            //Get the scale
+
+            //Get the scale
+            scale = if (drawableWidth * viewHeight > drawableHeight * viewWidth) {
+                viewHeight.toFloat() / drawableHeight.toFloat()
+            } else {
+                viewWidth.toFloat() / drawableWidth.toFloat()
+            }
+
+            //Define the rect to take image portion from
+
+            //Define the rect to take image portion from
+            val drawableRect = RectF(
+                0f,
+                drawableHeight - viewHeight / scale,
+                drawableWidth.toFloat(),
+                drawableHeight.toFloat()
+            )
+            val viewRect = RectF(0f, 0f, viewWidth.toFloat(), viewHeight.toFloat())
+            matrix?.setRectToRect(drawableRect, viewRect, Matrix.ScaleToFit.FILL)
+
+            imageMatrix = matrix
+        }
     }
 }
