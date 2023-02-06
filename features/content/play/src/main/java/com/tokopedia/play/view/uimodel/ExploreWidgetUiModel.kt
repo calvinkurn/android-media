@@ -144,4 +144,7 @@ sealed class ExploreWidgetState {
 
     val isFail: Boolean
         get() = this is Fail
+
+    val isEmpty: Boolean
+        get() = this is Empty
 }
