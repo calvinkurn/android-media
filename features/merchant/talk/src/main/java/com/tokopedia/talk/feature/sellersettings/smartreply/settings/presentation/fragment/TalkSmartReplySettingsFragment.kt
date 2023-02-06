@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -18,21 +17,23 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
-import com.tokopedia.talk.feature.sellersettings.smartreply.common.util.TalkSmartReplyConstants
-import com.tokopedia.talk.feature.sellersettings.smartreply.settings.di.DaggerTalkSmartReplySettingsComponent
-import com.tokopedia.talk.feature.sellersettings.smartreply.settings.di.TalkSmartReplySettingsComponent
-import com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.viewmodel.TalkSmartReplySettingsViewModel
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.constants.TalkConstants
+import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.getNavigationResult
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.removeNavigationResult
 import com.tokopedia.talk.feature.sellersettings.common.util.TalkSellerSettingsConstants
 import com.tokopedia.talk.feature.sellersettings.smartreply.common.data.SmartReplyDataWrapper
+import com.tokopedia.talk.feature.sellersettings.smartreply.common.util.TalkSmartReplyConstants
+import com.tokopedia.talk.feature.sellersettings.smartreply.settings.di.DaggerTalkSmartReplySettingsComponent
+import com.tokopedia.talk.feature.sellersettings.smartreply.settings.di.TalkSmartReplySettingsComponent
+import com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.viewmodel.TalkSmartReplySettingsViewModel
 import com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.widget.TalkSmartReplySettingsStatusWidget
 import com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.widget.TalkSmartReplyStatisticsWidget
 import com.tokopedia.talk.feature.sellersettings.template.presentation.fragment.TalkTemplateBottomsheet
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -47,6 +48,7 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
     private var talkSmartReplyStatisticsWidget: TalkSmartReplyStatisticsWidget? = null
     private var talkSmartReplySettingsLoading: View? = null
     private var talkSmartReplySettingsStatusWidget: TalkSmartReplySettingsStatusWidget? = null
+    private var talkSmartReplyTicker: Ticker? = null
 
     override fun getScreenName(): String {
         return ""
@@ -75,6 +77,7 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
         bindViewReferences(view)
         showLoading()
         observeSmartReplyData()
+        observeSmartReplyDecommissionConfig()
         setToolbarTitle()
         setupOnBackPressed()
         onFragmentResult()
@@ -100,6 +103,14 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
                 }
             }
         })
+    }
+
+    private fun observeSmartReplyDecommissionConfig() {
+        viewModel.smartReplyDecommissionConfig.observe(viewLifecycleOwner) { config ->
+            talkSmartReplyTicker?.tickerTitle = config.tickerConfig.title
+            talkSmartReplyTicker?.setHtmlDescription(config.tickerConfig.text)
+            talkSmartReplyTicker?.showWithCondition(config.tickerConfig.show)
+        }
     }
 
     private fun updateStatisticsData(totalQuestion: String, totalAnsweredBySmartReply: String, speed: String) {
@@ -189,6 +200,7 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
         talkSmartReplyStatisticsWidget = view.findViewById(R.id.talkSmartReplyStatisticsWidget)
         talkSmartReplySettingsStatusWidget = view.findViewById(R.id.talkSmartReplySettingsStatusWidget)
         talkSmartReplySettingsLoading = view.findViewById(R.id.talkSmartReplySettingsLoading)
+        talkSmartReplyTicker = view.findViewById(R.id.ticker_talk_smart_reply)
     }
 
 }
