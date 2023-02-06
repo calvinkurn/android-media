@@ -8,7 +8,6 @@ const val AFFILIATE_LOGIN_REQUEST_CODE = 1023
 const val AFFILIATE_REGISTER_REQUEST_CODE = 1024
 const val AFFILIATE_REQUEST_CODE_LOGOUT = 1025
 const val LINK_HISTORY_BUTTON_CLICKED = 403
-const val AFFILIATE_HELP_URL = "https://affiliate.tokopedia.com/help?navigation=hide"
 const val AFFILIATE_HELP_URL_WEBVIEW =
     "tokopedia://webview?titlebar=true&url=https://affiliate.tokopedia.com/help?navigation=hide"
 const val AFFILIATE_TANDC_URL =
@@ -182,6 +181,7 @@ const val PAGE_ANNOUNCEMENT_PROMOSIKAN = 2
 const val PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY = 3
 
 const val AFFILIATE_SHOP_ADP = "aff_shop_adp"
+const val AFFILIATE_SSA_SHOP = "aff_ssa_portal"
 
 const val PAGE_TYPE_PDP = "pdp"
 

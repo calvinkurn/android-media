@@ -142,6 +142,10 @@ class TitleFormView : ConstraintLayout {
         binding.textFieldTitle.editText.setText(title)
     }
 
+    fun setPlaceholder(placeholder: String) {
+        binding.textFieldTitle.setPlaceholder(placeholder)
+    }
+
     fun setLoading(isLoading: Boolean) {
         if (isLoading) {
             binding.loaderLoadingTitleForm.visibility = View.VISIBLE

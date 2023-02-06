@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.shop.score.performance.presentation.widget.DetailPerformanceWidget
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/detailPerformanceWidgetTablet"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingDefaultResource"
-    xmlns:android="http://schemas.android.com/apk/res/android" />

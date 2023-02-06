@@ -18,7 +18,7 @@ sealed interface PlayShortsAction {
 
     /** Account */
     object ClickSwitchAccount : PlayShortsAction
-    object SwitchAccount : PlayShortsAction
+    data class SwitchAccount(val isRefreshAccountList: Boolean) : PlayShortsAction
 
     /** Title Form */
     object OpenTitleForm : PlayShortsAction
