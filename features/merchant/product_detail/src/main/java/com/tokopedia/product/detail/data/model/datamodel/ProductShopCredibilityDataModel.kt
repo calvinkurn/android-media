@@ -43,6 +43,12 @@ data class ProductShopCredibilityDataModel(
     var isFavorite: Boolean = false
 
 ) : DynamicPdpDataModel {
+
+    companion object {
+        const val TIPS_TYPE = "tips"
+        const val TICKER_TYPE = "ticker"
+    }
+
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun name(): String = name
@@ -51,6 +57,14 @@ data class ProductShopCredibilityDataModel(
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
+    }
+
+    fun getTickerType(): String {
+        return if (tickerDataResponse.firstOrNull()?.color == TIPS_TYPE) {
+            TIPS_TYPE
+        } else {
+            TICKER_TYPE
+        }
     }
 
     fun getTwoShopInfoHieararchy(

@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.getColor
 import com.tokopedia.content.common.R.color.Unify_Static_White
+import com.tokopedia.content.common.R.color.content_dms_white_disable
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroPreparationMenuBinding
-import com.tokopedia.content.common.R.color.content_dms_white_disable
 
 /**
  * Created By : Jonathan Darwin on January 25, 2022
@@ -46,8 +46,7 @@ class PreparationMenuView : ConstraintLayout {
             clBroSetProduct.setOnClickListener { mListener?.onClickSetProduct() }
             clBroSetSchedule.setOnClickListener { mListener?.onClickSetSchedule() }
             getColor(context, Unify_Static_White)
-        }
-        else {
+        } else {
             clBroSetCover.setOnClickListener(null)
             clBroSetProduct.setOnClickListener(null)
             clBroSetSchedule.setOnClickListener(null)

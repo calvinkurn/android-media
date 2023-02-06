@@ -49,10 +49,24 @@ class GetOrderExtensionRequestInfoUseCase @Inject constructor(
                 data {
                   text
                   new_deadline
+                  deadline_info {
+                    max_time
+                    max_date
+                  }
                   reason {
                     reason_title
                     reason_code
                     must_comment
+                  }
+                  eligible_dates {
+                    date
+                    extension_time
+                    is_disabled
+                  }
+                  special_dates {
+                    date
+                    event_name
+                    is_disabled
                   }
                   message
                   message_code

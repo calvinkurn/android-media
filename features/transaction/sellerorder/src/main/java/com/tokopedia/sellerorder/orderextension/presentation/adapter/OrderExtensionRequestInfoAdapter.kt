@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerorder.orderextension.presentation.adapter.diffutil.OrderExtensionRequestInfoDiffUtil
 import com.tokopedia.sellerorder.orderextension.presentation.adapter.typefactory.OrderExtensionRequestInfoAdapterTypeFactory
 import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.BaseOrderExtensionRequestInfoViewHolder
@@ -52,6 +53,18 @@ class OrderExtensionRequestInfoAdapter(
 
     private fun setRequestFocusAsFalse(index: Int) {
         (visitables.getOrNull(index) as? OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem)?.requestFocus = false
+    }
+
+    fun updatePickTime(timeText: String) {
+        val index = visitables.indexOfFirst {
+            it is OrderExtensionRequestInfoUiModel.PickTimeUiModel
+        }
+        if (index != -1){
+            val pickTimeUiModel = visitables.getOrNull(index) as OrderExtensionRequestInfoUiModel.PickTimeUiModel
+            pickTimeUiModel.timeText = timeText
+            visitables[index] = pickTimeUiModel
+            notifyItemChanged(index)
+        }
     }
 
     fun updateItems(newItems: List<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>) {

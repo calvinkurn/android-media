@@ -9,5 +9,5 @@ data class MvcShippingBenefitUiModel(
         @SerializedName("benefit_amount")
         var benefitAmount: Int = 0,
         @SerializedName("sp_id")
-        var spId: Int = 0
+        var spId: Long = 0
 ) : Parcelable

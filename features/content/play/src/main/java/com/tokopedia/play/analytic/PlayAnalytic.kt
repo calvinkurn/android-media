@@ -8,6 +8,7 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.Tracker
@@ -843,6 +844,19 @@ class PlayAnalytic(
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(KEY_TRACK_CURRENT_SITE)
             .setCustomProperty(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    fun screenWithSwipeCoachMark(isShown: Boolean) {
+        Tracker.Builder()
+            .setEvent("openScreen")
+            .setCustomProperty(ProductTrackingConstant.Tracking.KEY_TRACKER_ID, "13881")
+            .setBusinessUnit(VAL_BUSINESS_UNIT)
+            .setCurrentSite(VAL_CURRENT_SITE)
+            .setCustomProperty(KEY_IS_LOGGED_IN_STATUS, isLoggedIn)
+            .setCustomProperty(KEY_SCREEN_NAME, "/group-chat-room/$channelId/${mChannelType.value}/is coachmark $isShown")
             .setUserId(userId)
             .build()
             .send()

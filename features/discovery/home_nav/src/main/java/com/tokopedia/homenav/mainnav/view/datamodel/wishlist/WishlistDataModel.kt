@@ -9,14 +9,15 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder
  * Created by Frenzel on 18/04/22
  */
 data class WishlistDataModel(
-        val showViewAll: Boolean = false,
-        val wishlist: List<NavWishlistModel>
+    val showViewAll: Boolean = false,
+    val collections: List<NavWishlistModel>,
+    val isEmptyState: Boolean = false
 ): MainNavVisitable, ImpressHolder() {
     override fun id(): Any = "wishlist"
 
     override fun isContentTheSame(visitable: MainNavVisitable): Boolean =
             visitable is WishlistDataModel &&
-                    visitable.wishlist == wishlist
+                    visitable.collections == collections
 
     override fun type(factory: MainNavTypeFactory): Int {
         return factory.type(this)

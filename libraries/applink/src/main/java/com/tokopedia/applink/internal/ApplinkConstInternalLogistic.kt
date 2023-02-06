@@ -30,6 +30,8 @@ object ApplinkConstInternalLogistic {
 
     const val TNC_WEBVIEW = "$INTERNAL_LOGISTIC/logistictnc"
 
+    const val PINPOINT_WEBVIEW = "$INTERNAL_LOGISTIC/pin-point-picker-result"
+
     const val RESCHEDULE_PICKUP = "$INTERNAL_LOGISTIC/reschedulepickup?order_id={order_id}"
 
     const val PROOF_OF_DELIVERY = "$INTERNAL_LOGISTIC/shipping/pod/{orderId}"
