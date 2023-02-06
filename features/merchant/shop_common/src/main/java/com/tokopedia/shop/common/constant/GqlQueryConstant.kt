@@ -86,6 +86,10 @@ object GqlQueryConstant {
             "                sipaNumber\n" +
             "                apj\n" +
             "            }\n" +
+            "            partnerInfo {\n" +
+            "               partnerName\n" +
+            "               fsType\n" +
+            "            }\n" +
             "        }"
 
     const val SHOP_INFO_FOR_OS_REQUEST_QUERY_STRING = "result {\n" +

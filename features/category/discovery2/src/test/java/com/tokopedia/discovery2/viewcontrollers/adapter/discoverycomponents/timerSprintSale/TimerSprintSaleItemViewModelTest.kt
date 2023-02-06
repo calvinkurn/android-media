@@ -2,13 +2,14 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tim
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.discovery.common.utils.URLParser
+import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
-import io.mockk.MockKAnnotations
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.spyk
+import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -31,6 +32,9 @@ class TimerSprintSaleItemViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        mockkObject(Utils)
+        mockkStatic(::getComponent)
+        mockkConstructor(URLParser::class)
         Dispatchers.setMain(TestCoroutineDispatcher())
     }
 
@@ -39,6 +43,86 @@ class TimerSprintSaleItemViewModelTest {
 //    checkUpcomingSaleTimer
 //    checkForTimerComponent
 //    startTimer
+
+    @Test
+    fun `handleSaleEndSates when isFutureSale is true`() {
+        every { Utils.isFutureSale(any()) } returns true
+
+        viewModel.handleSaleEndSates()
+
+        Assert.assertEquals(viewModel.syncData.value,null)
+    }
+
+    @Test
+    fun `handleSaleEndSates when isFutureSaleOngoing is true`() {
+        every { Utils.isFutureSale(any()) } returns true
+        every { Utils.isFutureSaleOngoing(any(),any()) } returns true
+
+        viewModel.handleSaleEndSates()
+
+        Assert.assertEquals(viewModel.syncData.value,null)
+    }
+
+    @Test
+    fun `handleSaleEndSates when isSaleOver is true`() {
+        every { Utils.isFutureSale(any()) } returns false
+        every { Utils.isFutureSaleOngoing(any(),any()) } returns false
+        every { Utils.isSaleOver(any()) } returns true
+
+        viewModel.handleSaleEndSates()
+
+        Assert.assertEquals(viewModel.syncData.value,true)
+    }
+
+    @Test
+    fun `checkUpcomingSaleTimer`() {
+        val list = ArrayList<DataItem>()
+        list.add(mockk(relaxed = true))
+        coEvery { componentsItem.data } returns list
+        coEvery { componentsItem.id } returns ""
+        coEvery { getComponent(any(), any()) } returns componentsItem
+
+        viewModel.checkUpcomingSaleTimer()
+
+        Assert.assertEquals(viewModel.timerWithBannerCounter,null)
+    }
+
+    @Test
+    fun `startTimer `() {
+        val timerUnify: TimerUnifySingle = mockk(relaxed = true)
+        val list = mutableListOf(DataItem(startDate = "2029-11-01 10:00:00"))
+        coEvery { componentsItem.data } returns list
+        every { Utils.isFutureSale(any()) } returns true
+
+        viewModel.startTimer(timerUnify)
+
+        Assert.assertEquals(viewModel.timerWithBannerCounter != null,false)
+    }
+
+    @Test
+    fun `startTimer when isFutureSale is false`() {
+        val timerUnify: TimerUnifySingle = mockk(relaxed = true)
+        val list = mutableListOf(DataItem(startDate = "2029-11-01 10:00:00"))
+        coEvery { componentsItem.data } returns list
+        every { Utils.isFutureSale(any()) } returns false
+
+        viewModel.startTimer(timerUnify)
+
+        Assert.assertEquals(viewModel.timerWithBannerCounter != null,false)
+    }
+
+    @Test
+    fun `startTimer when isFutureSale is true and saleTimeMillis less than zero`() {
+        val timerUnify: TimerUnifySingle = mockk(relaxed = true)
+        val list = mutableListOf(DataItem(startDate = "2020-11-01 10:00:00"))
+        coEvery { componentsItem.data } returns list
+        every { Utils.isFutureSale(any()) } returns true
+
+        viewModel.startTimer(timerUnify)
+
+        Assert.assertEquals(viewModel.timerWithBannerCounter != null,false)
+    }
+
 
     @Test
     fun `start Date if no data present`() {
@@ -97,5 +181,8 @@ class TimerSprintSaleItemViewModelTest {
     @After
     fun shutDown() {
         Dispatchers.resetMain()
+        unmockkStatic(::getComponent)
+        unmockkConstructor(URLParser::class)
+        unmockkObject(Utils)
     }
 }
