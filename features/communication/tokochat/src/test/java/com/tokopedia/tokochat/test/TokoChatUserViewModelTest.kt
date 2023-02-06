@@ -61,4 +61,21 @@ class TokoChatUserViewModelTest : TokoChatViewModelTestFixture() {
             Assert.assertEquals(USER_ID_DUMMY, result)
         }
     }
+
+    @Test
+    fun `when reset member left livedata should return null`() {
+        runBlocking {
+            // Given
+            coEvery {
+                getChannelUseCase.getMemberLeftLiveData()
+            } returns MutableLiveData(null)
+
+            // When
+            viewModel.resetMemberLeft()
+            val result = viewModel.getMemberLeft().value
+
+            // Then
+            Assert.assertEquals(null, result)
+        }
+    }
 }

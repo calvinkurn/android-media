@@ -1,9 +1,6 @@
 package com.tokopedia.feedplus.view.analytics.entrypoint
 
-import com.tokopedia.feedplus.view.analytics.CONTENT
-import com.tokopedia.feedplus.view.analytics.CONTENT_FEED_TIMELINE
-import com.tokopedia.feedplus.view.analytics.FORMAT_TWO_PARAM
-import com.tokopedia.feedplus.view.analytics.MARKETPLACE
+import com.tokopedia.feedplus.view.analytics.*
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -117,6 +114,7 @@ class FeedEntryPointAnalytic @Inject constructor(
             )
     }
 
+
     companion object {
         private const val EVENT_NAME = "event"
         private const val EVENT_CATEGORY = "eventCategory"
@@ -124,8 +122,13 @@ class FeedEntryPointAnalytic @Inject constructor(
         private const val EVENT_LABEL = "eventLabel"
         private const val EVENT_BUSINESSUNIT = "businessUnit"
         private const val EVENT_CURRENTSITE = "currentSite"
+        private const val EVENT_TRACKER_ID = "trackerId"
+        private const val EVENT_SESSION_IRIS = "sessionIris"
 
         private const val EVENT_CLICK_FEED = "clickFeed"
+        private const val EVENT_CLICK_CONTENT = "clickContent"
+        private const val EVENT_VIEW_CONTENT = "viewContentIris"
         private const val EVENT_ACTION_CLICK_FORMAT = "click - %s"
+        private const val EVENT_ACTION_VIEW_FORMAT = "view - %s"
     }
 }

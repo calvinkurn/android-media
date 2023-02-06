@@ -171,6 +171,7 @@ class FilterPageTestHelper(
                 selectedFilterMapParameter = selectedFilterMap,
                 selectedSortMapParameter = mapOf(),
                 selectedSortName = "",
+                sortAutoFilterMapParameter = mapOf()
         )
     }
 

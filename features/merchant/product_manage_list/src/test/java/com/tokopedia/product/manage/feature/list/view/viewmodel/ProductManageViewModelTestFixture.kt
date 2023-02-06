@@ -11,6 +11,7 @@ import com.tokopedia.product.manage.common.feature.uploadstatus.domain.GetUpload
 import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.manage.feature.list.domain.GetShopManagerPopupsUseCase
+import com.tokopedia.product.manage.feature.list.domain.GetTickerUseCase
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.datasource.TickerStaticDataProvider
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
@@ -99,6 +100,9 @@ open class ProductManageViewModelTestFixture {
     lateinit var getStatusShopUseCase: GetStatusShopUseCase
 
     @RelaxedMockK
+    lateinit var getTickerUseCase: GetTickerUseCase
+
+    @RelaxedMockK
     lateinit var remoteConfigImpl: FirebaseRemoteConfigImpl
 
     protected lateinit var viewModel: ProductManageViewModel
@@ -128,8 +132,8 @@ open class ProductManageViewModelTestFixture {
             clearUploadStatusUseCase,
             getMaxStockThresholdUseCase,
             getStatusShopUseCase,
+            getTickerUseCase,
             tickerStaticDataProvider,
-            remoteConfigImpl,
             CoroutineTestDispatchersProvider
         )
     }

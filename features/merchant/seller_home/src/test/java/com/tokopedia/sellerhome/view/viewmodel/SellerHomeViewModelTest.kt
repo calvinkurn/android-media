@@ -3137,6 +3137,28 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `on start SSE when realTimeDataKeys is not empty and sse is not connected then set card widgets data liveData`() {
+        coroutineTestRule.runBlockingTest {
+            val page = "home"
+            val param = listOf("cardWidget")
+            val cardData = CardDataUiModel()
+            val mockResponse = listOf(cardData)
+            every { widgetSse.isConnected() } returns false
+            every { widgetSse.listen() } returns flow { flowOf(mockResponse) }
+
+            viewModel.startSse(param)
+
+            verify { widgetSse.isConnected() }
+            verify { widgetSse.connect(page, param) }
+            coVerify { widgetSse.listen() }
+
+            widgetSse.listen().collect {
+                viewModel.cardWidgetData.verifySuccessEquals(Success(listOf(cardData)))
+            }
+        }
+    }
+
+    @Test
     fun `on start SSE when realTimeDataKeys is not empty then set milestone widgets data liveData`() {
         coroutineTestRule.runBlockingTest {
             val page = "home"
@@ -3156,9 +3178,56 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `on start SSE when realTimeDataKeys is empty`() {
+    fun `on start SSE when realTimeDataKeys is not empty and sse is not connected then set milestone widgets data liveData`() {
+        coroutineTestRule.runBlockingTest {
+            val page = "home"
+            val param = listOf("milestoneWidget")
+            val milestoneData = MilestoneDataUiModel()
+            val mockResponse = listOf(milestoneData)
+            every { widgetSse.isConnected() } returns false
+            every { widgetSse.listen() } returns flow { flowOf(mockResponse) }
+
+            viewModel.startSse(param)
+
+            verify { widgetSse.isConnected() }
+            verify { widgetSse.connect(page, param) }
+            coVerify { widgetSse.listen() }
+            widgetSse.listen().collect {
+                viewModel.milestoneWidgetData.verifySuccessEquals(Success(listOf(milestoneData)))
+            }
+        }
+    }
+
+    @Test
+    fun `on start SSE when realTimeDataKeys is empty && sse is connected`() {
         val param = emptyList<String>()
+        every { widgetSse.isConnected() } returns true
+
         viewModel.startSse(param)
+
+        verify(inverse = true) { widgetSse.connect(anyString(), param) }
+        verify(inverse = true) { widgetSse.listen() }
+    }
+
+    @Test
+    fun `on start SSE when realTimeDataKeys is empty && sse is not connected`() {
+        val param = emptyList<String>()
+        every { widgetSse.isConnected() } returns false
+
+        viewModel.startSse(param)
+
+        verify(inverse = true) { widgetSse.connect(anyString(), param) }
+        verify(inverse = true) { widgetSse.listen() }
+    }
+
+    @Test
+    fun `on start SSE when realTimeDataKeys is not empty && sse is connected`() {
+        val param = listOf("cardWidget")
+        every { widgetSse.isConnected() } returns true
+
+        viewModel.startSse(param)
+
+        verify { widgetSse.isConnected() }
         verify(inverse = true) { widgetSse.connect(anyString(), param) }
         verify(inverse = true) { widgetSse.listen() }
     }

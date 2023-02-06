@@ -24,7 +24,10 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
     override fun getScreenName() = TAG
 
     private val onboardingType: Int
-        get() = arguments?.getInt(KEY_ONBOARDING_TYPE, VALUE_UNKNOWN) ?: VALUE_UNKNOWN
+        get() = arguments?.getInt(
+            KEY_ONBOARDING_TYPE,
+            OnboardingType.Unknown.value
+        ) ?: OnboardingType.Unknown.value
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,8 +61,8 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
                         mListener?.clickUsernameFieldOnCompleteOnboarding()
                     }
 
-                    override fun clickCheckBoxOnCompleteOnboarding() {
-                        mListener?.clickCheckBoxOnCompleteOnboarding()
+                    override fun clickAcceptTnc(isChecked: Boolean) {
+                        mListener?.clickAcceptTnc(isChecked)
                     }
 
                     override fun clickNextOnCompleteOnboarding() {
@@ -78,6 +81,10 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
             is UserTnCOnboardingBottomSheet -> {
                 childFragment.setListener(object : UserTnCOnboardingBottomSheet.Listener,
                         BaseUserOnboardingBottomSheet.Listener {
+                    override fun clickAcceptTnc(isChecked: Boolean) {
+                        mListener?.clickAcceptTnc(isChecked)
+                    }
+
                     override fun clickNextOnTncOnboarding() {
                         mListener?.clickNextOnTncOnboarding()
                     }
@@ -96,7 +103,7 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
 
     private fun showBottomSheet() {
         when (onboardingType) {
-            VALUE_ONBOARDING_TYPE_COMPLETE -> {
+            OnboardingType.Complete.value -> {
                 mListener?.impressCompleteOnboarding()
                 UserCompleteOnboardingBottomSheet.getFragment(
                     childFragmentManager,
@@ -105,7 +112,7 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
                     arguments = createArgument()
                 }.showNow(childFragmentManager)
             }
-            VALUE_ONBOARDING_TYPE_TNC -> {
+            OnboardingType.Tnc.value -> {
                 mListener?.impressTncOnboarding()
                 UserTnCOnboardingBottomSheet.getFragment(
                     childFragmentManager,
@@ -131,16 +138,24 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
         fun impressCompleteOnboarding() {}
         fun clickNextOnTncOnboarding() {}
         fun clickUsernameFieldOnCompleteOnboarding() {}
-        fun clickCheckBoxOnCompleteOnboarding() {}
+        fun clickAcceptTnc(isChecked: Boolean) {}
         fun clickNextOnCompleteOnboarding() {}
         fun clickCloseIcon() {}
     }
 
+    enum class OnboardingType(val value: Int) {
+        Unknown(0), Complete(1), Tnc(2)
+    }
+
     companion object {
         const val TAG = "FeedUGCOnboardingParentFragment"
+
         const val KEY_ONBOARDING_TYPE = "onboarding_type"
-        const val VALUE_ONBOARDING_TYPE_COMPLETE = 1
-        const val VALUE_ONBOARDING_TYPE_TNC = 2
-        const val VALUE_UNKNOWN = 0
+
+        fun createBundle(onboardingType: OnboardingType): Bundle {
+            return Bundle().apply {
+                putInt(KEY_ONBOARDING_TYPE, onboardingType.value)
+            }
+        }
     }
 }

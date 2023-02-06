@@ -511,7 +511,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 val recomWidget = recomData.first().copy(
                     recommendationFilterChips = recomFilterList
                 )
-                val dataModel = bestSellerMapper.mappingRecommendationWidget(recomWidget, cardInteraction = true)
+                val dataModel = bestSellerMapper.mappingRecommendationWidget(recomWidget, cardInteraction = true, bestSellerDataModel)
 
                 homeDataModel.updateWidgetModel(
                     visitable = dataModel.copy(
