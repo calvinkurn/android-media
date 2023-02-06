@@ -903,6 +903,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     ) {
         if (prevState == state) return
 
+        analytic.onImpressedProductCarousel()
+
         val sortedList = mutableListOf<ProductUiModel>()
         val newList = state.flatMap { tagSectionUiModel ->
             tagSectionUiModel.products

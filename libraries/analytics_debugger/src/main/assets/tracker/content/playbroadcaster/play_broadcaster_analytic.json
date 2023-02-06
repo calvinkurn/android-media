@@ -747,6 +747,17 @@
       "currentSite": "(tokopediaseller|tokopediamarketplace)",
       "businessUnit": "play",
       "theme": ".*"
+    },
+    {
+      "event": "viewPGIris",
+      "eventAction": "impressed - product carousel",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "26735",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }
