@@ -470,7 +470,9 @@ class SummaryFragment :
         viewModel.previewImage(
             isCreateMode = false,
             voucherConfiguration = configuration,
-            parentProductIds = configuration.productIds,
+            parentProductIds = selectedProducts.map { it.parentProductId }.ifEmpty {
+                configuration.productIds
+            },
             imageRatio = ImageRatio.SQUARE
         )
     }
