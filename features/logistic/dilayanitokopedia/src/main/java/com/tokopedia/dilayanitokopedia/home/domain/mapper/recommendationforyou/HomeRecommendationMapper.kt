@@ -12,8 +12,6 @@ object HomeRecommendationMapper {
 
     @VisibleForTesting
     const val TYPE_PRODUCT = "product"
-    private const val TYPE_BANNER = "banner"
-    private const val TYPE_BANNER_ADS = "banner_ads"
 
     fun mapToHomeRecommendationDataModel(
         graphqlResponse: GetHomeRecommendationProductV2,

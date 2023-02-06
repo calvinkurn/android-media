@@ -22,7 +22,7 @@ class GetAnchorTabUseCase @Inject constructor(
         private const val PARAM = "param"
         private const val PARAM_LOCATION = "location"
 
-        //value from backend home
+        // value hardcode for dt anchor tab icons
         private const val PARAM_VALUE_PAGE_DT = "page=dt&type=anchor-icon"
     }
 

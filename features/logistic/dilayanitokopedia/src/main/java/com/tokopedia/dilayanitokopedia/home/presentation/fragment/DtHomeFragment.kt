@@ -86,7 +86,11 @@ import javax.inject.Inject
  * Dilayani Tokopedia  ( DT )
  * Created by irpan on 07/09/22.
  */
-class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener, PermissionListener {
+class DtHomeFragment :
+    Fragment(),
+    ShareBottomsheetListener,
+    ScreenShotListener,
+    PermissionListener {
 
     companion object {
         const val SOURCE = "dilayanitokopedia"
@@ -101,8 +105,10 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
         private const val SHARE_LINK_TITLE = "Dilayani Tokopedia | Tokopedia"
         private const val SHARE_LINK_URL = "https://www.tokopedia.com/dilayani-tokopedia"
-        private const val SHARE_LINK_THUMBNAIL_IMAGE = "https://images.tokopedia.net/img/QBrNqa/2023/1/12/b0a09eb3-7876-4a21-a9ba-4c532f500559.png"
-        private const val SHARE_LINK_OG_IMAGE = "https://images.tokopedia.net/img/QBrNqa/2023/1/12/b0a09eb3-7876-4a21-a9ba-4c532f500559.png"
+        private const val SHARE_LINK_THUMBNAIL_IMAGE =
+            "https://images.tokopedia.net/img/QBrNqa/2023/1/12/b0a09eb3-7876-4a21-a9ba-4c532f500559.png"
+        private const val SHARE_LINK_OG_IMAGE =
+            "https://images.tokopedia.net/img/QBrNqa/2023/1/12/b0a09eb3-7876-4a21-a9ba-4c532f500559.png"
         private const val SHARE_LINK_PAGE_NAME = "DilayaniTokopedia"
     }
 

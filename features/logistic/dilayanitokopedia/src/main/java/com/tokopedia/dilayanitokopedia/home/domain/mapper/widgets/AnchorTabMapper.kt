@@ -16,7 +16,6 @@ object AnchorTabMapper {
     @VisibleForTesting
     const val KEYWOARD_CHANNEL_GROUP_ID = "channelgroupid_"
 
-
     /**
      * true : to allow show item tab but notclickable if there is empty feParam
      * false : remove item tab has empty feParam
@@ -49,7 +48,6 @@ object AnchorTabMapper {
                     listMenu.add(anchorTab)
                 }
             }
-
         }
 
         return listMenu.toList()
@@ -66,7 +64,6 @@ object AnchorTabMapper {
             channelGroupId
         )
     }
-
 
     private fun isAllowItemAnchorTabNotClickable(): Boolean {
         return ALLOW_ITEM_ANCHOR_TAB_NOT_CLICKABLE

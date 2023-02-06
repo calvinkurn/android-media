@@ -11,5 +11,7 @@ class HomeRecommendationLoadingViewHolder(view: View) : SmartAbstractViewHolder<
         val LAYOUT = R.layout.item_home_recommendation_for_you_loading_grid_layout
     }
 
-    override fun bind(element: HomeRecommendationLoading, listener: SmartListener) {}
+    override fun bind(element: HomeRecommendationLoading, listener: SmartListener) {
+        // no-op
+    }
 }
