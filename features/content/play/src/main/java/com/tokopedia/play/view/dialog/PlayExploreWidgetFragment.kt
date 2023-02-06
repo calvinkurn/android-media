@@ -103,6 +103,13 @@ class PlayExploreWidgetFragment @Inject constructor(
                 viewModel.submitAction(NextPageWidgets)
             }
 
+            override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
+                if (binding.rvWidgets.getChildAt(0) != null) {
+                    binding.srExploreWidget.isEnabled = widgetLayoutManager.findFirstVisibleItemPosition() == 0 && binding.rvWidgets.getChildAt(0).top == 0
+                }
+                super.onScrolled(view, dx, dy)
+            }
+
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) analytic?.scrollExplore()
