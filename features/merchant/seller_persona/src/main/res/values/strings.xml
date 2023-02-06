@@ -28,4 +28,8 @@
     <string name="sp_persona_toggle_to_inactive_toaster_message">Personalisasi tidak aktif. Tampilan Home kembali seperti sebelum menjawab kuis, ya.</string>
     <string name="sp_persona_toggle_to_active_toaster_message">Kamu sudah tahu tipe Seller-mu dan tampilan Home akan disesuaikan, ya.</string>
     <string name="sp_oke">Oke</string>
+    <string name="sp_poup_exit_title">Yakin mau keluar?</string>
+    <string name="sp_popup_exit_description">Jawaban kuismu tidak akan tersimpan jika kamu keluar sekarang.</string>
+    <string name="sp_popup_exit_primary_cta">Lanjutkan Kuis</string>
+    <string name="sp_popup_exit_secondary_cta">Ya, Keluar</string>
 </resources>

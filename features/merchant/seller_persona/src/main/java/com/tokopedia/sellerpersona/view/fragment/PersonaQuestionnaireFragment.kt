@@ -6,9 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -18,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.data.remote.model.QuestionnaireAnswerParam
+import com.tokopedia.sellerpersona.data.remote.model.SetUserPersonaDataModel
 import com.tokopedia.sellerpersona.databinding.FragmentPersonaQuestionnaireBinding
 import com.tokopedia.sellerpersona.view.adapter.QuestionnairePagerAdapter
 import com.tokopedia.sellerpersona.view.model.QuestionnairePagerUiModel
@@ -49,6 +53,13 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
     private val pagerAdapter by lazy { QuestionnairePagerAdapter() }
     private val progressBarInterpolator by lazy { AccelerateDecelerateInterpolator() }
     private var lastPosition = Int.ZERO
+    private val backPressedCallback by lazy {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                this@PersonaQuestionnaireFragment.handleOnBackPressed()
+            }
+        }
+    }
 
     override fun bind(
         layoutInflater: LayoutInflater,
@@ -67,6 +78,45 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
         setupView()
         setupViewPager()
         observeQuestionnaire()
+        setupOnBackPressed()
+    }
+
+    private fun setupOnBackPressed() {
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner, backPressedCallback
+        )
+    }
+
+    private fun handleOnBackPressed() {
+        context?.let {
+            val isAnyChanges = pagerAdapter.getPages().any { p ->
+                p.options?.any { o -> o.isSelected }.orFalse()
+            }
+            if (!isAnyChanges) {
+                findNavController().navigateUp()
+                return
+            }
+
+            val dialog = DialogUnify(
+                it,
+                DialogUnify.HORIZONTAL_ACTION,
+                DialogUnify.NO_IMAGE
+            )
+            with(dialog) {
+                setTitle(it.getString(R.string.sp_poup_exit_title))
+                setDescription(it.getString(R.string.sp_popup_exit_description))
+                setPrimaryCTAText(it.getString(R.string.sp_popup_exit_primary_cta))
+                setPrimaryCTAClickListener {
+                    dismiss()
+                }
+                setSecondaryCTAText(it.getString(R.string.sp_popup_exit_secondary_cta))
+                setSecondaryCTAClickListener {
+                    findNavController().navigateUp()
+                    dismiss()
+                }
+                show()
+            }
+        }
     }
 
     private fun setupViewPager() {
@@ -164,14 +214,20 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
                 btnSpPrev.isEnabled = true
                 btnSpNext.isLoading = false
                 when (it) {
-                    is Success -> {
-                        view.findNavController().navigate(R.id.actionQuestionnaireToResult)
-                    }
+                    is Success -> onSuccessPersonaResult(it.data)
                     is Fail -> {
 
                     }
                 }
             }
+        }
+    }
+
+    private fun onSuccessPersonaResult(data: SetUserPersonaDataModel) {
+        if (!data.isError) {
+            findNavController().navigate(R.id.actionQuestionnaireToResult)
+        } else {
+            //show error toaster
         }
     }
 
