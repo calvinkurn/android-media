@@ -28,13 +28,13 @@ class VoucherIntroViewMoreCustomView @JvmOverloads constructor(
         binding = SmvcCustomviewIntroViewMoreBinding.inflate(LayoutInflater.from(context), this, true)
         binding?.root?.apply {
             setOnClickListener {
-                listener?.enableRVScroll()
+                listener?.onClickButton()
                 hide()
             }
         }
     }
 
     interface ViewMoreListener {
-        fun enableRVScroll()
+        fun onClickButton()
     }
 }
