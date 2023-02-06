@@ -287,6 +287,7 @@ class ChatbotFragment :
 
     @Inject
     lateinit var getUserNameForReplyBubble: GetUserNameForReplyBubble
+    private var csatRemoteConfig: Boolean = false
 
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
@@ -344,7 +345,15 @@ class ChatbotFragment :
         }
     }
 
-    override fun openCsatOldFlow(csatResponse: WebSocketCsatResponse) {
+    override fun openCsat(csatResponse: WebSocketCsatResponse) {
+        if (csatRemoteConfig) {
+            openCsatNewFlow(csatResponse)
+        } else {
+            openCsatOldFlow(csatResponse)
+        }
+    }
+
+    private fun openCsatOldFlow(csatResponse: WebSocketCsatResponse) {
         mCsatResponse = csatResponse
         if (::mCsatResponse.isInitialized) {
             getBindingView().listQuickReply.hide()
@@ -352,10 +361,9 @@ class ChatbotFragment :
         }
     }
 
-    override fun openCsatNewFlow(csatResponse: WebSocketCsatResponse) {
+    private fun openCsatNewFlow(csatResponse: WebSocketCsatResponse) {
         mCsatResponse = csatResponse
         if (::mCsatResponse.isInitialized) {
-            //      getBindingView().listQuickReply.hide()
             showCsatRatingViewNewFlow()
         }
     }
@@ -2190,8 +2198,7 @@ class ChatbotFragment :
     }
 
     private fun remoteConfigForCsatExperiment() {
-        val csatRemoteConfig = context?.let { RemoteConfigHelper.isRemoteConfigForCsat(it) }
-        presenter.setRemoteConfigForCsat(csatRemoteConfig ?: false)
+        csatRemoteConfig = context?.let { RemoteConfigHelper.isRemoteConfigForCsat(it) } ?: false
     }
 
     override fun onDestroyView() {

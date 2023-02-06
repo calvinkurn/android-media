@@ -203,7 +203,6 @@ class ChatbotPresenter @Inject constructor(
     private val job = SupervisorJob()
     private var autoRetryJob: Job? = null
     var socketJob: Job? = null
-    var csatRemoteConfig: Boolean = false
 
     private var mediaUploadJobs = MutableStateFlow<MediaUploadJobMap>(mapOf())
     var mediaUploadResults = MutableStateFlow<MediaUploadResultMap>(mapOf())
@@ -372,11 +371,7 @@ class ChatbotPresenter @Inject constructor(
             webSocketResponse.jsonObject,
             WebSocketCsatResponse::class.java
         )
-        if (csatRemoteConfig) {
-            view.openCsatNewFlow(csatResponse)
-        } else {
-            view.openCsatOldFlow(csatResponse)
-        }
+        view.openCsat(csatResponse)
     }
 
     private fun handleUpdateToolbarAttachment() {
@@ -1391,9 +1386,5 @@ class ChatbotPresenter @Inject constructor(
                 )
             }
         )
-    }
-
-    fun setRemoteConfigForCsat(state: Boolean) {
-        csatRemoteConfig = state
     }
 }

@@ -38,9 +38,7 @@ interface ChatbotContract {
 
         fun clearChatText()
 
-        fun openCsatOldFlow(csatResponse: WebSocketCsatResponse)
-
-        fun openCsatNewFlow(csatResponse: WebSocketCsatResponse)
+        fun openCsat(csatResponse: WebSocketCsatResponse)
 
         fun onReceiveChatSepratorEvent(chatSepratorUiModel: ChatSepratorUiModel, quickReplyList: List<QuickReplyUiModel>)
 

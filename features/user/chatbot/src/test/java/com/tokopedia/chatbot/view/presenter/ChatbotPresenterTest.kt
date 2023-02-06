@@ -1011,10 +1011,6 @@ class ChatbotPresenterTest {
     fun `handleAttachment When receiving attachment type 13 to open csat with new flow(2 screens)`() {
         val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_13_OPEN_CSAT)
 
-        every {
-            presenter.setRemoteConfigForCsat(true)
-        } just runs
-
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.NewMessage(
                 SocketResponse.getResponse(SocketResponse.ATTACHMENT_13_OPEN_CSAT)
@@ -1025,27 +1021,6 @@ class ChatbotPresenterTest {
         presenter.handleAttachmentTypes(fullResponse, "4058088")
 
         assertNotNull(socketJob)
-    }
-
-    @Test
-    fun `handleAttachment When receiving attachment type 13 to open csat with old flow(3 screens)`() {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_13_OPEN_CSAT)
-
-        every {
-            presenter.setRemoteConfigForCsat(true)
-        } just runs
-
-        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
-            ChatbotWebSocketAction.NewMessage(
-                SocketResponse.getResponse(SocketResponse.ATTACHMENT_13_OPEN_CSAT)
-            )
-        )
-        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
-
-        presenter.handleAttachmentTypes(fullResponse, "4058088")
-
-        assertNotNull(socketJob)
-        verify { view.openCsatOldFlow(any()) }
     }
 
     @Test
@@ -2437,17 +2412,6 @@ class ChatbotPresenterTest {
         verify {
             view.videoUploadEligibilityHandler(any())
         }
-    }
-
-    @Test
-    fun `remoteConfigForCsatExperiment set value test`() {
-        every {
-            presenter.csatRemoteConfig = true
-        } just runs
-
-        presenter.setRemoteConfigForCsat(true)
-
-        assertTrue(presenter.csatRemoteConfig)
     }
 
     private fun getAttachSingleInvoiceUiModelWithNull(): AttachInvoiceSingleUiModel {
