@@ -2478,7 +2478,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
     override fun onPause() {
         super.onPause()
-        trackingQueue?.sendAll()
     }
 
     override fun onDestroyView() {
