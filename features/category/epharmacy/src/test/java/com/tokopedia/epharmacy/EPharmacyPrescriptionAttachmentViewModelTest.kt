@@ -10,6 +10,7 @@ import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationRes
 import com.tokopedia.epharmacy.network.response.InitiateConsultation
 import com.tokopedia.epharmacy.usecase.EPharmacyGetConsultationDetailsUseCase
 import com.tokopedia.epharmacy.usecase.EPharmacyInitiateConsultationUseCase
+import com.tokopedia.epharmacy.utils.EPHARMACY_ANDROID_SOURCE
 import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -152,7 +153,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         } coAnswers {
             firstArg<(String, EPharmacyInitiateConsultationResponse) -> Unit>().invoke("", response)
         }
-        viewModel.initiateConsultation(InitiateConsultationParam(InitiateConsultationParam.InitiateConsultationParamInput("123")))
+        viewModel.initiateConsultation(InitiateConsultationParam(InitiateConsultationParam.InitiateConsultationParamInput("123", EPHARMACY_ANDROID_SOURCE)))
         assert(viewModel.initiateConsultation.value is Success)
     }
 
@@ -164,7 +165,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         } coAnswers {
             firstArg<(String, EPharmacyInitiateConsultationResponse) -> Unit>().invoke("", response)
         }
-        viewModel.initiateConsultation(InitiateConsultationParam(InitiateConsultationParam.InitiateConsultationParamInput("123")))
+        viewModel.initiateConsultation(InitiateConsultationParam(InitiateConsultationParam.InitiateConsultationParamInput("123", EPHARMACY_ANDROID_SOURCE)))
         Assert.assertEquals(
             (viewModel.initiateConsultation.value as Fail).throwable.localizedMessage,
             "Data Invalid"
@@ -178,7 +179,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.initiateConsultation(InitiateConsultationParam(InitiateConsultationParam.InitiateConsultationParamInput("123")))
+        viewModel.initiateConsultation(InitiateConsultationParam(InitiateConsultationParam.InitiateConsultationParamInput("123", EPHARMACY_ANDROID_SOURCE)))
         Assert.assertEquals(
             (viewModel.initiateConsultation.value as Fail).throwable,
             mockThrowable
