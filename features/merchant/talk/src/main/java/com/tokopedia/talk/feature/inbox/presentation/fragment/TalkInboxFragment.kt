@@ -28,8 +28,10 @@ import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.clearImage
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -311,6 +313,7 @@ open class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxA
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeInboxList()
+        observeSmartReplyDecommissionConfig()
     }
 
     override fun onAttachActivity(context: Context?) {
@@ -434,6 +437,18 @@ open class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxA
                 }
             }
         })
+    }
+
+    private fun observeSmartReplyDecommissionConfig() {
+        viewModel.smartReplyDecommissionConfig.observe(viewLifecycleOwner) { config ->
+            runCatching {
+                binding?.tickerTalkInbox?.tickerTitle = config.tickerConfig.title
+                binding?.tickerTalkInbox?.setHtmlDescription(config.tickerConfig.text)
+                binding?.tickerTalkInbox?.showWithCondition(config.tickerConfig.show)
+            }.onFailure {
+                binding?.tickerTalkInbox?.gone()
+            }
+        }
     }
 
     private fun renderOldData(data: List<TalkInboxOldUiModel>, hasNext: Boolean) {
