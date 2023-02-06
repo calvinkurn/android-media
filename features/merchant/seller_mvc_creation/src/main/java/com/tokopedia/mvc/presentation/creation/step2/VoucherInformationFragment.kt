@@ -626,7 +626,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                             maxDate,
                             startHour,
                             startMinute,
-                            getSelectedDateStarting
+                            getSelectedDateStarting,
+                            isFromVoucherCreation = true
                         )
                     voucherEditCalendarBottomSheet?.show(
                         childFragmentManager,
@@ -648,7 +649,8 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                             maxDate,
                             startHour,
                             startMinute,
-                            getSelectedDateEnding
+                            getSelectedDateEnding,
+                            isFromVoucherCreation = true
                         )
                     voucherEditCalendarBottomSheet?.show(
                         childFragmentManager,

@@ -1,0 +1,21 @@
+[
+  {
+    "data": {
+      "getPaymentFee": {
+        "success": true,
+        "errors": [],
+        "data": [
+          {
+            "code": "platform_fee",
+            "title": "Biaya Jasa Aplikasi",
+            "fee": 2000,
+            "tooltip_info": "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu.",
+            "show_tooltip": true,
+            "show_slashed": false,
+            "slashed_fee": 0
+          }
+        ]
+      }
+    }
+  }
+]

@@ -6,6 +6,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.config.GlobalConfig
 import io.mockk.every
@@ -366,5 +367,57 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     fun `check NOTIFICATION sellerapp`() {
         val expectedDeepLink = "tokopedia://sellerinfo"
         assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, ApplinkConst.NOTIFICATION, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller mvc intro, should return internal shop mvc intro`() {
+        val expectedDeepLink = ApplinkConstInternalSellerapp.SELLER_MVC_INTRO
+        assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, ApplinkConst.SellerApp.SELLER_MVC_INTRO, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller mvc list, should return internal shop mvc list`() {
+        val expectedDeepLink = ApplinkConstInternalSellerapp.SELLER_MVC_LIST
+        assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, ApplinkConst.SellerApp.SELLER_MVC_LIST, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller mvc list active, should return internal shop mvc list active`() {
+        val expectedDeepLink = ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ACTIVE
+        assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, ApplinkConst.SellerApp.SELLER_MVC_LIST_ACTIVE, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller mvc list history, should return internal shop mvc list history`() {
+        val expectedDeepLink = ApplinkConstInternalSellerapp.SELLER_MVC_LIST_HISTORY
+        assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, ApplinkConst.SellerApp.SELLER_MVC_LIST_HISTORY, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller mvc create with voucher type param, should return internal shop mvc create with voucher type param`() {
+        val mockVoucherType = "shop"
+        val appLink = UriUtil.buildUri(
+            ApplinkConst.SellerApp.SELLER_MVC_CREATE,
+            mockVoucherType
+        )
+        val expectedDeepLink = UriUtil.buildUri(
+            ApplinkConstInternalSellerapp.SELLER_MVC_CREATE,
+            mockVoucherType
+        )
+        assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller mvc detail with voucher id param, should return internal seller mvc detail with voucher id param`() {
+        val mockVoucherId = "123"
+        val appLink = UriUtil.buildUri(
+            ApplinkConst.SellerApp.SELLER_MVC_DETAIL,
+            mockVoucherId
+        )
+        val expectedDeepLink = UriUtil.buildUri(
+            ApplinkConstInternalSellerapp.SELLER_MVC_DETAIL,
+            mockVoucherId
+        )
+        assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, appLink, expectedDeepLink)
     }
 }
