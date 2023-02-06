@@ -883,10 +883,12 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             onBottomSheetClosed = {}
         )
 
+        val onBroadcastChatCardTapped = { tracker.sendClickBroadcastChatEvent() }
         universalShareBottomSheet?.setBroadcastChannel(
             activity ?: return,
             BroadcastChannelType.BLAST_PROMO,
-            voucherDetail.voucherId.toString()
+            voucherDetail.voucherId.toString(),
+            onBroadcastChatCardTapped
         )
 
         universalShareBottomSheet?.show(childFragmentManager, universalShareBottomSheet?.tag)
