@@ -1,6 +1,5 @@
 package com.tokopedia.media.editor.ui.activity.main
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
@@ -20,6 +19,8 @@ import com.tokopedia.media.editor.utils.ParamCacheManager
 import com.tokopedia.media.editor.utils.isGranted
 import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.RESULT_INTENT_EDITOR
+import com.tokopedia.picker.common.cache.EditorCacheManager
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import javax.inject.Inject
 import com.tokopedia.media.editor.R as editorR
 
@@ -32,7 +33,10 @@ class EditorActivity : BaseEditorActivity() {
     lateinit var fragmentFactory: FragmentFactory
 
     @Inject
-    lateinit var paramCache: ParamCacheManager
+    lateinit var pickerParam: PickerCacheManager
+
+    @Inject
+    lateinit var editorParam: EditorCacheManager
 
     @Inject
     lateinit var editorHomeAnalytics: EditorHomeAnalytics
@@ -57,7 +61,7 @@ class EditorActivity : BaseEditorActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelable(CACHE_PARAM_INTENT_DATA, paramCache.getEditorParam())
+        outState.putParcelable(CACHE_PARAM_INTENT_DATA, editorParam.get())
     }
 
     override fun getNewFragment(): Fragment {
@@ -68,7 +72,7 @@ class EditorActivity : BaseEditorActivity() {
 
     override fun initBundle(savedInstanceState: Bundle?) {
         intent?.getParcelableExtra<EditorParam>(EXTRA_EDITOR_PARAM)?.also {
-            paramCache.setEditorParam(it)
+            editorParam.set(it)
             viewModel.setEditorParam(it)
         }
 
@@ -77,7 +81,7 @@ class EditorActivity : BaseEditorActivity() {
         }
 
         intent?.getParcelableExtra<PickerParam>(EXTRA_PICKER_PARAM)?.also {
-            paramCache.setPickerParam(it)
+            pickerParam.set(it)
         }
     }
 

@@ -18,6 +18,7 @@ data class ContentAccountUiModel(
     val badge: String,
     val type: String,
     val hasUsername: Boolean,
+    val hasAcceptTnc: Boolean,
     val enable: Boolean,
 ): Parcelable {
     val isUser: Boolean
@@ -40,6 +41,7 @@ data class ContentAccountUiModel(
             badge = "",
             type = "",
             hasUsername = false,
+            hasAcceptTnc = false,
             enable = false,
         )
     }
