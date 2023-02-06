@@ -36,7 +36,6 @@ abstract class HomeFeedEndlessScrollListener(layoutManager: RecyclerView.LayoutM
         }
     }
 
-    protected fun init() {}
     fun setEndlessLayoutManagerListener(endlessLayoutManagerListener: EndlessLayoutManagerListener?) {
         this.endlessLayoutManagerListener = endlessLayoutManagerListener
     }
