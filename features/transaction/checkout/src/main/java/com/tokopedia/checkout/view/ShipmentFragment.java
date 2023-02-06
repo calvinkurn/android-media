@@ -1150,13 +1150,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
 
                     List<ShipmentCartItemModel> shipmentCartItemModelLists = shipmentAdapter.getShipmentCartItemModelList();
-                    if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.size() > 0) {
+                    if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.size() > 0 && !shipmentCartItemModel.isFreeShippingPlus()) {
                         for (ShipmentCartItemModel tmpShipmentCartItemModel : shipmentCartItemModelLists) {
                             for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
                                 if (!shipmentCartItemModel.getCartString().equals(tmpShipmentCartItemModel.getCartString()) &&
                                         tmpShipmentCartItemModel.getCartString().equals(ordersItem.getUniqueId()) &&
                                         tmpShipmentCartItemModel.getSelectedShipmentDetailData() != null &&
-                                        tmpShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+                                        tmpShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null &&
+                                        !tmpShipmentCartItemModel.isFreeShippingPlus()
+                                ) {
                                     ordersItem.getCodes().remove(tmpShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getLogPromoCode());
                                 }
                             }
@@ -1385,6 +1387,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                 if (promoMerchantCode.length() > 0) {
                                     stillHasPromo = true;
                                     break;
+                                }
+                            }
+                        }
+                    }
+
+                    ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_DATA_RESULT);
+                    if (validateUsePromoRevampUiModel != null) {
+                        for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
+                            for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
+                                if (voucherOrdersItemUiModel.getUniqueId().equals(ordersItem.getUniqueId()) && voucherOrdersItemUiModel.isTypeLogistic()) {
+                                    ordersItem.getCodes().remove(voucherOrdersItemUiModel.getCode());
                                 }
                             }
                         }
@@ -2122,12 +2135,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
 
             List<ShipmentCartItemModel> shipmentCartItemModelLists = shipmentAdapter.getShipmentCartItemModelList();
-            if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.size() > 0) {
+            if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.size() > 0 && !shipmentCartItemModel.isFreeShippingPlus()) {
                 for (ShipmentCartItemModel tmpShipmentCartItemModel : shipmentCartItemModelLists) {
                     for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
                         if (!shipmentCartItemModel.getCartString().equals(tmpShipmentCartItemModel.getCartString()) &&
                                 tmpShipmentCartItemModel.getCartString().equals(ordersItem.getUniqueId()) &&
-                                tmpShipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                                tmpShipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
+                                !tmpShipmentCartItemModel.isFreeShippingPlus()) {
                             ordersItem.getCodes().remove(tmpShipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
                         }
                     }
@@ -2218,9 +2232,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         shipmentPresenter.cancelAutoApplyPromoStackLogistic(0, promoLogisticCode, shipmentCartItemModel);
                         ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();
                         if (validateUsePromoRequest != null) {
-                            for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                                if (ordersItem != null && ordersItem.getCodes().size() > 0) {
-                                    ordersItem.getCodes().remove(promoLogisticCode);
+                            if (shipmentCartItemModel.isFreeShippingPlus()) {
+                                for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
+                                    if (ordersItem != null && ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString()) &&
+                                            ordersItem.getCodes().size() > 0) {
+                                        ordersItem.getCodes().remove(promoLogisticCode);
+                                    }
+                                }
+                            }
+                            else {
+                                for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
+                                    if (ordersItem != null && ordersItem.getCodes().size() > 0) {
+                                        ordersItem.getCodes().remove(promoLogisticCode);
+                                    }
                                 }
                             }
                         }
@@ -2617,7 +2641,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     if (lastApplyUiModel != null) {
                         for (LastApplyVoucherOrdersItemUiModel lastApplyVoucherOrdersItemUiModel : lastApplyUiModel.getVoucherOrders()) {
                             if (shipmentCartItemModel.getCartString().equalsIgnoreCase(lastApplyVoucherOrdersItemUiModel.getUniqueId())) {
-                                if (!listOrderCodes.contains(lastApplyVoucherOrdersItemUiModel.getCode())) {
+                                if (!listOrderCodes.contains(lastApplyVoucherOrdersItemUiModel.getCode()) && !lastApplyVoucherOrdersItemUiModel.isTypeLogistic()) {
                                     listOrderCodes.add(lastApplyVoucherOrdersItemUiModel.getCode());
                                 }
                                 break;
