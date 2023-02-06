@@ -12,9 +12,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerPartialOrderFulfillmentTracker
 import com.tokopedia.buyerorderdetail.databinding.PartialOrderFulfillmentBottomsheetBinding
 import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
-import com.tokopedia.buyerorderdetail.presentation.activity.PartialOrderFulfillmentActivity
 import com.tokopedia.buyerorderdetail.presentation.adapter.PartialOrderFulfillmentAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.PartialOrderFulfillmentListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.PartialOrderFulfillmentTypeFactoryImpl
@@ -22,7 +22,6 @@ import com.tokopedia.buyerorderdetail.presentation.model.EstimateInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PartialOrderFulfillmentWrapperUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofErrorUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofFulfilledToggleUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.PofProductFulfilledUiModel
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.PartialOrderFulfillmentViewModel
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -86,8 +85,10 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
 
     override fun onPofFulfilledToggleClicked(
         isExpanded: Boolean,
-        fulfilledItems: List<PofProductFulfilledUiModel>
+        item: PofFulfilledToggleUiModel
     ) {
+        BuyerPartialOrderFulfillmentTracker.eventClickTotalAvailableItemPof()
+
         val oldItem = partialOrderFulfillmentAdapter.filterUiModel<PofFulfilledToggleUiModel>()
         oldItem?.let {
             val newItem = it.copy(isExpanded = isExpanded)
@@ -95,13 +96,15 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
         }
 
         if (isExpanded) {
-            partialOrderFulfillmentAdapter.expandFulfilledProducts(fulfilledItems)
+            partialOrderFulfillmentAdapter.expandFulfilledProducts(item.pofProductFulfilledList)
         } else {
             partialOrderFulfillmentAdapter.collapseFulfilledProducts()
         }
     }
 
     override fun onRefundEstimateInfoClicked(estimateInfoUiModel: EstimateInfoUiModel) {
+        BuyerPartialOrderFulfillmentTracker.eventClickEstimateIconInPopupPof()
+
         val refundEstimateInfoBottomSheet = PofEstimateRefundInfoBottomSheet.newInstance(
             estimateInfoUiModel.title,
             estimateInfoUiModel.info
@@ -110,6 +113,7 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
     }
 
     override fun onFooterHyperlinkClicked(linkUrl: String) {
+        BuyerPartialOrderFulfillmentTracker.eventClickTermsAndConditionsInPopupPof()
         goToWebView(linkUrl)
     }
 
@@ -223,6 +227,7 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
 
     private fun setupCta() = binding?.run {
         btnPrimaryConfirm.setOnClickListener {
+            BuyerPartialOrderFulfillmentTracker.eventClickConfirmationInPopupPof()
             orderId?.let { orderId ->
                 btnPrimaryConfirm.isLoading = true
                 viewModel.approvePartialOrderFulfillment(orderId)
@@ -238,6 +243,7 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
     }
 
     private fun showConfirmedCancelledOrderBottomSheet() {
+        BuyerPartialOrderFulfillmentTracker.eventClickRejectOrderInPopupPof()
         orderId?.let {
             val bottomSheet = PofConfirmRejectBottomSheet.newInstance(it)
             bottomSheet.show(childFragmentManager)

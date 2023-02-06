@@ -48,7 +48,6 @@ import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailTool
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.PofDetailRefundedBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.PofEstimateRefundInfoBottomSheet
-import com.tokopedia.buyerorderdetail.presentation.bottomsheet.SubmissionOrderExtensionBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.coachmark.CoachMarkManager
 import com.tokopedia.buyerorderdetail.presentation.dialog.RequestCancelResultDialog
 import com.tokopedia.buyerorderdetail.presentation.helper.BuyerOrderDetailStickyActionButtonHandler
@@ -802,14 +801,17 @@ open class BuyerOrderDetailFragment :
     }
 
     override fun onCollapseProductList() {
+        BuyerOrderDetailTracker.eventClickSeeLessProduct()
         viewModel.collapseProductList()
     }
 
     override fun onExpandProductList() {
+        BuyerOrderDetailTracker.eventClickSeeAllProduct()
         viewModel.expandProductList()
     }
 
     override fun estimateRefundInfoClicked(estimateInfoUiModel: EstimateInfoUiModel) {
+        BuyerOrderDetailTracker.eventClickEstimateIconInBom()
         val bottomSheet = PofEstimateRefundInfoBottomSheet.newInstance(estimateInfoUiModel.title, estimateInfoUiModel.info)
         bottomSheet.show(childFragmentManager)
     }

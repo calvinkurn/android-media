@@ -3,6 +3,7 @@ package com.tokopedia.buyerorderdetail.presentation.model
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.PartialOrderFulfillmentTypeFactoryImpl
 
 data class PofFulfilledToggleUiModel(
+    val orderId: String,
     val totalFulfilled: Long,
     val isExpanded: Boolean,
     val pofProductFulfilledList: List<PofProductFulfilledUiModel>

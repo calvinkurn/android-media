@@ -59,6 +59,7 @@ class PartialOrderFulfillmentMapper @Inject constructor() {
 
             add(
                 PofFulfilledToggleUiModel(
+                    orderId = infoRespondPartialOrderFulfillment.orderId.toString(),
                     totalFulfilled = infoRespondPartialOrderFulfillment.totalFulfilled,
                     isExpanded = false,
                     pofProductFulfilledList = productFulfilledList

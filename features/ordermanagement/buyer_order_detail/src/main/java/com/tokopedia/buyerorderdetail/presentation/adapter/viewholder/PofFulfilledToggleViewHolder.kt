@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.databinding.ItemPofStillAvailableToggleBinding
 import com.tokopedia.buyerorderdetail.presentation.model.PofFulfilledToggleUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.PofProductFulfilledUiModel
 
 class PofFulfilledToggleViewHolder(
     view: View,
@@ -52,12 +51,15 @@ class PofFulfilledToggleViewHolder(
         icDropdown.setOnClickListener {
             listener.onPofFulfilledToggleClicked(!item.isExpanded, item.pofProductFulfilledList)
         }
+        binding.root.setOnClickListener {
+            listener.onPofFulfilledToggleClicked(!item.isExpanded, item.pofProductFulfilledList)
+        }
     }
 
     interface Listener {
         fun onPofFulfilledToggleClicked(
             isExpanded: Boolean,
-            fulfilledItems: List<PofProductFulfilledUiModel>
+            item: PofFulfilledToggleUiModel
         )
     }
 }

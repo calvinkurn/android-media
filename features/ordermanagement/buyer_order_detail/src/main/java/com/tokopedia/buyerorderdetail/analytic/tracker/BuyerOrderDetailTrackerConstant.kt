@@ -51,6 +51,18 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_ACTION_CLICK_BUY_AGAIN_SUCCESS = "click beli lagi success"
     const val EVENT_ACTION_CLICK_INSURANCE_WIDGET = "click on insurance button"
     const val EVENT_ACTION_CLICK_RESOLUTION_WIDGET = "click on resolution widget"
+    const val EVENT_ACTION_CLICK_SEE_ALL_PRODUCTS = "click lihat semua produk"
+    const val EVENT_ACTION_CLICK_SEE_LESS_PRODUCTS = "click lihat lebih sedikit"
+    const val EVENT_ACTION_CLICK_ESTIMATE_ICON_POF_BOM_DETAIL = "click icon estimasi dana dikembalikan"
+
+    // pof
+    const val EVENT_ACTION_CLICK_TOTAL_AVAILABLE_ITEM_POF = "click jumlah barang tersedia - popup pof"
+    const val EVENT_ACTION_CLICK_ESTIMATE_ICON_IN_POPUP_POF = "click icon estimasi dana dikembalikan - popup pof"
+    const val EVENT_ACTION_CLICK_TERMS_AND_CONDITIONS_IN_POPUP_POF = "click lihat syarat dan ketentuan - popup pof"
+    const val EVENT_ACTION_CLICK_REJECT_ORDER_IN_POPUP_POF = "click batalkan pesanan - popup pof"
+    const val EVENT_ACTION_CLICK_CONFIRMATION_IN_POPUP_POF = "click konfirmasi - popup pof"
+    const val EVENT_ACTION_CLICK_BACK_IN_POPUP_POF_CANCEL = "click kembali - popup pof cancel"
+    const val EVENT_ACTION_CLICK_CANCELLATION_IN_POPUP_POF_CANCEL = "click batalkan - popup pof cancel"
 
     // event labels
     const val EVENT_LABEL_ATTEMPT_BUY_AGAIN = "attempt - order_id: "
@@ -88,6 +100,16 @@ object BuyerOrderDetailTrackerConstant {
     const val TRACKER_ID_RE_UPLOAD_PRESCRIPTION = "32743"
     const val TRACKER_ID_CHECK_PRESCRIPTION = "32744"
     const val TRACKER_ID_CLICK_INSURANCE_WIDGET = "37322"
+    const val TRACKER_ID_41140 = "41140"
+    const val TRACKER_ID_41141 = "41141"
+    const val TRACKER_ID_41142 = "41142"
+    const val TRACKER_ID_41143 = "41143"
+    const val TRACKER_ID_41144 = "41144"
+    const val TRACKER_ID_41151 = "41151"
+    const val TRACKER_ID_41152 = "41152"
+    const val TRACKER_ID_41154 = "41154"
+    const val TRACKER_ID_41155 = "41155"
+    const val TRACKER_ID_41156 = "41156"
 
     // others
     const val MARKER_ORDER_LIST_DETAIL_MARKETPLACE = "/order list detail - marketplace"

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerPartialOrderFulfillmentTracker
 import com.tokopedia.buyerorderdetail.databinding.PofConfirmRejectBottomsheetBinding
 import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.presentation.activity.PartialOrderFulfillmentActivity
@@ -82,14 +83,16 @@ class PofConfirmRejectBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun setBtnPrimaryCancellation() {
+    private fun setBtnSecondaryBack() {
         binding?.btnSecondaryBack?.setOnClickListener {
+            BuyerPartialOrderFulfillmentTracker.eventClickBackInPopupPofCancel()
             dismiss()
         }
     }
 
-    private fun setBtnSecondaryBack() {
+    private fun setBtnPrimaryCancellation() {
         binding?.btnPrimaryCancellation?.setOnClickListener {
+            BuyerPartialOrderFulfillmentTracker.eventClickCancellationInPopupPofCancel()
             orderId?.let {
                 showBtnPrimaryLoading()
                 viewModel.rejectPartialOrderFulfillment(it)
