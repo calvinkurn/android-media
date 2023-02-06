@@ -24,6 +24,7 @@ object LoggerConstant {
         const val UPDATE_CART_FOR_CHECKOUT_ERROR = "update_cart_for_checkout_error"
         const val LOAD_CHECKOUT_PAGE_ERROR = "load_checkout_page_error"
         const val LOAD_COURIER_ERROR = "load_courier_error"
+        const val APPLY_BO_ERROR = "apply_bo_error"
         const val CHECKOUT_ERROR = "checkout_error"
         const val LOAD_PROMO_CHECKOUT_PAGE_ERROR = "load_promo_checkout_page_error"
         const val APPLY_PROMO_CHECKOUT_ERROR = "apply_promo_checkout_error"

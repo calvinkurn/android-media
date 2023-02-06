@@ -1330,6 +1330,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             getView().showToastError(e.getMessage());
                                             getView().resetCourier(cartPosition);
                                         }
+                                        getView().logOnErrorApplyBo(e, cartPosition, promoCode);
                                     }
                                 }
 
@@ -1397,6 +1398,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     if (shipmentCartItemModel.getCartString().equals(voucherOrdersItemUiModel.getUniqueId())) {
                         if (getView() != null) {
                             getView().resetCourier(shipmentCartItemModel);
+                            getView().logOnErrorApplyBo(new MessageErrorException(voucherOrdersItemUiModel.getMessageUiModel().getText()), shipmentCartItemModel, voucherOrdersItemUiModel.getCode());
                         }
                     }
                 }
@@ -1415,6 +1417,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     if (shipmentCartItemModel.getCartString().equals(voucherOrdersItemUiModel.getUniqueId())) {
                         if (getView() != null) {
                             getView().resetCourier(shipmentCartItemModel);
+                            getView().logOnErrorApplyBo(new MessageErrorException(voucherOrdersItemUiModel.getMessageUiModel().getText()), shipmentCartItemModel, voucherOrdersItemUiModel.getCode());
                         }
                     }
                 }
@@ -1428,6 +1431,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 if (shipmentCartItemModel.getCartString().equals(cartString)) {
                     if (getView() != null) {
                         getView().resetCourier(shipmentCartItemModel);
+                        getView().logOnErrorApplyBo(new MessageErrorException("voucher order not found"), shipmentCartItemModel, promoCode);
                         break;
                     }
                 }

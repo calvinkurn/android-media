@@ -3706,6 +3706,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void logOnErrorApplyBo(Throwable throwable, int itemPosition, String boPromoCode) {
+        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
+        if (shipmentCartItemModel != null) {
+            CheckoutLogger.INSTANCE.logOnErrorApplyBo(throwable, shipmentCartItemModel, isOneClickShipment(), isTradeIn(), isTradeInByDropOff(), boPromoCode);
+        }
+    }
+
+    @Override
+    public void logOnErrorApplyBo(Throwable throwable, ShipmentCartItemModel shipmentCartItemModel, String boPromoCode) {
+        CheckoutLogger.INSTANCE.logOnErrorApplyBo(throwable, shipmentCartItemModel, isOneClickShipment(), isTradeIn(), isTradeInByDropOff(), boPromoCode);
+    }
+
+    @Override
     public void logOnErrorCheckout(Throwable throwable, String request) {
         CheckoutLogger.INSTANCE.logOnErrorCheckout(throwable, request, isOneClickShipment(), isTradeIn(), isTradeInByDropOff());
     }
