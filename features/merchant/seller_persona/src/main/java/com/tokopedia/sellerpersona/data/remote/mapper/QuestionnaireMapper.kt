@@ -2,7 +2,7 @@ package com.tokopedia.sellerpersona.data.remote.mapper
 
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.sellerpersona.data.remote.model.QuestionnaireModel
-import com.tokopedia.sellerpersona.view.model.QuestionOptionSingleUiModel
+import com.tokopedia.sellerpersona.view.model.BaseOptionUiModel
 import com.tokopedia.sellerpersona.view.model.QuestionnairePagerUiModel
 import javax.inject.Inject
 
@@ -23,17 +23,27 @@ class QuestionnaireMapper @Inject constructor() {
                 } else {
                     QuestionnairePagerUiModel.QuestionnaireType.MULTIPLE_ANSWER
                 },
-                options = getOptions(it.options)
+                options = getOptions(it.type, it.options)
             )
         }.orEmpty()
     }
 
-    private fun getOptions(options: List<QuestionnaireModel.OptionModel>?): List<QuestionOptionSingleUiModel>? {
+    private fun getOptions(
+        type: Int,
+        options: List<QuestionnaireModel.OptionModel>?
+    ): List<BaseOptionUiModel>? {
         return options?.map {
-            QuestionOptionSingleUiModel(
-                value = it.value,
-                title = it.title
-            )
+            if (type == Int.ONE) {
+                BaseOptionUiModel.QuestionOptionSingleUiModel(
+                    value = it.value,
+                    title = it.title
+                )
+            } else {
+                BaseOptionUiModel.QuestionOptionMultipleUiModel(
+                    value = it.value,
+                    title = it.title
+                )
+            }
         }
     }
 }

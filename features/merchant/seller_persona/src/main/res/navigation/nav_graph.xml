@@ -35,7 +35,13 @@
         android:id="@+id/questionnaireFragment"
         android:name="com.tokopedia.sellerpersona.view.fragment.PersonaQuestionnaireFragment"
         android:label="@string/sp_opening_page_type"
-        tools:layout="@layout/fragment_persona_questionnaire" />
+        tools:layout="@layout/fragment_persona_questionnaire" >
+        <action
+            android:id="@+id/actionQuestionnaireToResult"
+            app:destination="@id/resultFragment"
+            app:popUpTo="@id/questionnaireFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/selectTypeFragment"
         android:name="com.tokopedia.sellerpersona.view.fragment.PersonaSelectTypeFragment"

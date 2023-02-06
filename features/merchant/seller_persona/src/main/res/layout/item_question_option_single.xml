@@ -9,9 +9,9 @@
     android:layout_marginBottom="6dp"
     android:background="@drawable/sp_bg_question_inactive"
     android:paddingStart="12dp"
-    android:paddingTop="12dp"
+    android:paddingTop="11dp"
     android:paddingEnd="12dp"
-    android:paddingBottom="12dp">
+    android:paddingBottom="11dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSpOptionValue"

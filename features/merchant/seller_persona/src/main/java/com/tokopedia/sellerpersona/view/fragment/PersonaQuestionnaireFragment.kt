@@ -7,12 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.sellerpersona.R
+import com.tokopedia.sellerpersona.data.remote.model.QuestionnaireAnswerParam
 import com.tokopedia.sellerpersona.databinding.FragmentPersonaQuestionnaireBinding
 import com.tokopedia.sellerpersona.view.adapter.QuestionnairePagerAdapter
 import com.tokopedia.sellerpersona.view.model.QuestionnairePagerUiModel
@@ -123,7 +128,7 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
                 val lastSlideIndex = pagerAdapter.itemCount.minus(Int.ONE)
                 val isLastSlide = vpSpQuestionnaire.currentItem == lastSlideIndex
                 if (isLastSlide) {
-                    submitAnswer()
+                    submitAnswer(it)
                 } else {
                     moveToNextQuestion()
                 }
@@ -144,8 +149,30 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
         binding?.vpSpQuestionnaire?.setCurrentItem(currentPosition.plus(Int.ONE), true)
     }
 
-    private fun submitAnswer() {
+    private fun submitAnswer(view: View) {
+        binding?.run {
+            btnSpPrev.isEnabled = false
+            btnSpNext.isLoading = true
+            val answers = pagerAdapter.getPages().map { pager ->
+                QuestionnaireAnswerParam(
+                    id = pager.id.toLongOrZero(),
+                    answers = pager.options.orEmpty().filter { it.isSelected }.map { it.value }
+                )
+            }
+            viewModel.submitAnswer(answers)
+            viewModel.setPersonaResult.observeOnce(viewLifecycleOwner) {
+                btnSpPrev.isEnabled = true
+                btnSpNext.isLoading = false
+                when (it) {
+                    is Success -> {
+                        view.findNavController().navigate(R.id.actionQuestionnaireToResult)
+                    }
+                    is Fail -> {
 
+                    }
+                }
+            }
+        }
     }
 
     private fun setPreviousButtonVisibility(position: Int) {

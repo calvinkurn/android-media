@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerpersona.databinding.ItemQuestionnairePagerBinding
+import com.tokopedia.sellerpersona.view.adapter.viewholder.BaseOptionViewHolder
+import com.tokopedia.sellerpersona.view.model.BaseOptionUiModel
 import com.tokopedia.sellerpersona.view.model.QuestionnairePagerUiModel
 
 /**
@@ -30,6 +32,10 @@ class QuestionnairePagerAdapter : Adapter<QuestionnairePagerAdapter.PagerViewHol
 
     override fun getItemCount(): Int = pages.size
 
+    fun getPages(): List<QuestionnairePagerUiModel> {
+        return pages
+    }
+
     fun setPages(pages: List<QuestionnairePagerUiModel>) {
         this.pages.clear()
         this.pages.addAll(pages)
@@ -39,10 +45,21 @@ class QuestionnairePagerAdapter : Adapter<QuestionnairePagerAdapter.PagerViewHol
 
     inner class PagerViewHolder(
         private val binding: ItemQuestionnairePagerBinding
-    ) : ViewHolder(binding.root) {
+    ) : ViewHolder(binding.root), BaseOptionViewHolder.Listener {
 
         private val optionAdapter by lazy {
-            OptionsAdapter()
+            OptionsAdapter(this)
+        }
+
+        override fun onOptionItemSelectedListener(option: BaseOptionUiModel) {
+            when (option) {
+                is BaseOptionUiModel.QuestionOptionSingleUiModel -> {
+                    handleSingleOptionSelected(option)
+                }
+                is BaseOptionUiModel.QuestionOptionMultipleUiModel -> {
+                    handleMultipleOptionSelected(option)
+                }
+            }
         }
 
         fun bind() {
@@ -71,6 +88,27 @@ class QuestionnairePagerAdapter : Adapter<QuestionnairePagerAdapter.PagerViewHol
                     if (!isItemEqual) {
                         optionAdapter.clearAllElements()
                         optionAdapter.addElement(options)
+                    }
+                }
+            }
+        }
+
+        private fun handleMultipleOptionSelected(option: BaseOptionUiModel.QuestionOptionMultipleUiModel) {
+            pages[absoluteAdapterPosition].options?.forEach {
+                if (it.value == option.value) {
+                    it.isSelected = option.isSelected
+                }
+            }
+        }
+
+        private fun handleSingleOptionSelected(option: BaseOptionUiModel.QuestionOptionSingleUiModel) {
+            pages[absoluteAdapterPosition].options?.forEachIndexed { i, it ->
+                if (option.isSelected) {
+                    if (it.value == option.value) {
+                        it.isSelected = true
+                    } else if (it.isSelected) {
+                        it.isSelected = false
+                        optionAdapter.notifyItemChanged(i)
                     }
                 }
             }

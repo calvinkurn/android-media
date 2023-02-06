@@ -2,17 +2,18 @@ package com.tokopedia.sellerpersona.view.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.databinding.ItemQuestionOptionSingleBinding
-import com.tokopedia.sellerpersona.view.model.QuestionOptionSingleUiModel
+import com.tokopedia.sellerpersona.view.model.BaseOptionUiModel
 
 /**
  * Created by @ilhamsuaib on 02/02/23.
  */
 
-class OptionSingleViewHolder(itemView: View) :
-    AbstractViewHolder<QuestionOptionSingleUiModel>(itemView) {
+class OptionSingleViewHolder(
+    private val listener: Listener,
+    itemView: View
+) : BaseOptionViewHolder<BaseOptionUiModel.QuestionOptionSingleUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -25,12 +26,18 @@ class OptionSingleViewHolder(itemView: View) :
         ItemQuestionOptionSingleBinding.bind(itemView)
     }
 
-    override fun bind(element: QuestionOptionSingleUiModel) {
+    override fun bind(element: BaseOptionUiModel.QuestionOptionSingleUiModel) {
         with(binding) {
             tvSpOptionValue.text = String.format(OPTION_VALUE_FORMAT, element.value)
             tvSpOptionTitle.text = element.title
 
             setBackground(element.isSelected)
+            root.setOnClickListener {
+                val isSelected = element.isSelected
+                element.isSelected = !isSelected
+                setBackground(!isSelected)
+                listener.onOptionItemSelectedListener(element)
+            }
         }
     }
 
