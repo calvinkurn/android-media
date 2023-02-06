@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.postatc.base
 
+import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 object PostAtcTracking {
@@ -42,7 +43,6 @@ object PostAtcTracking {
     }
 
     fun sendClickLihatKeranjang(
-        trackingQueue: TrackingQueue,
         common: CommonTracker,
         component: ComponentTrackData
     ) {
@@ -65,6 +65,6 @@ object PostAtcTracking {
             "userId" to common.userId
         )
 
-        trackingQueue.putEETracking(mapEvent)
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 }

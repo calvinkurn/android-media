@@ -8,19 +8,22 @@ object GetPostAtcLayoutQuery : GqlQueryInterface {
     private const val PARAM_PRODUCT_ID = "productID"
     private const val PARAM_CART_ID = "cartID"
     private const val PARAM_LAYOUT_ID = "layoutID"
+    private const val PARAM_PAGE_SOURCE = "source"
 
     override fun getOperationNameList() = listOf(OPERATION_NAME)
 
     override fun getQuery() = """
         query $OPERATION_NAME(
-            $$PARAM_PRODUCT_ID: String, 
-            $$PARAM_LAYOUT_ID: String, 
-            $$PARAM_CART_ID: String
+            $$PARAM_PRODUCT_ID: String,
+            $$PARAM_LAYOUT_ID: String,
+            $$PARAM_CART_ID: String,
+            $$PARAM_PAGE_SOURCE: String
         ) {
             pdpGetPostATCLayout(
-                $PARAM_PRODUCT_ID: $$PARAM_PRODUCT_ID, 
-                $PARAM_LAYOUT_ID: $$PARAM_LAYOUT_ID, 
-                $PARAM_CART_ID: $$PARAM_CART_ID
+                $PARAM_PRODUCT_ID: $$PARAM_PRODUCT_ID,
+                $PARAM_LAYOUT_ID: $$PARAM_LAYOUT_ID,
+                $PARAM_CART_ID: $$PARAM_CART_ID,
+                $PARAM_PAGE_SOURCE: $$PARAM_PAGE_SOURCE
             ) {
                 name
                 basicInfo {
@@ -54,10 +57,12 @@ object GetPostAtcLayoutQuery : GqlQueryInterface {
     fun createParams(
         productId: String,
         cartId: String,
-        layoutId: String
+        layoutId: String,
+        pageSource: String
     ) = mapOf(
         PARAM_PRODUCT_ID to productId,
         PARAM_CART_ID to cartId,
-        PARAM_LAYOUT_ID to layoutId
+        PARAM_LAYOUT_ID to layoutId,
+        PARAM_PAGE_SOURCE to pageSource
     )
 }

@@ -225,7 +225,6 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         componentTrackData: ComponentTrackData
     ) {
         PostAtcTracking.sendClickLihatKeranjang(
-            trackingQueue,
             commonTracker.get(),
             componentTrackData
         )

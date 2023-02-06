@@ -42,7 +42,8 @@ class PostAtcViewModel @Inject constructor(
             val result = getPostAtcLayoutUseCase.execute(
                 productId,
                 cartId,
-                layoutId
+                layoutId,
+                pageSource
             )
 
             updateInfo(

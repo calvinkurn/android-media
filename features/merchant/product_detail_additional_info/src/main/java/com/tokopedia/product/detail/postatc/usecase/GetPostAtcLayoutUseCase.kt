@@ -19,13 +19,15 @@ class GetPostAtcLayoutUseCase @Inject constructor(
     suspend fun execute(
         productId: String,
         cartId: String,
-        layoutId: String
+        layoutId: String,
+        pageSource: String
     ): PostAtcLayout {
         setRequestParams(
             GetPostAtcLayoutQuery.createParams(
                 productId = productId,
                 cartId = cartId,
-                layoutId = layoutId
+                layoutId = layoutId,
+                pageSource = pageSource
             )
         )
         return executeOnBackground().postAtcLayout
