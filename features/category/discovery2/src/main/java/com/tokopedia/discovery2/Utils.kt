@@ -475,5 +475,25 @@ class Utils {
             }
             return getComponent(compId, components.pageEndPoint)
         }
+
+        fun isRPCFilterApplicableForTab(
+            valueOfRpcFilter: String,
+            components: ComponentsItem
+        ): String {
+            if (valueOfRpcFilter.contains("_")) {
+                val splitValues = valueOfRpcFilter.split("_")
+                if(splitValues.size < 2) return ""
+                val tabPosition = splitValues[0].toIntOrNull()?.minus(1)
+                val actualValue = splitValues[1]
+                if (tabPosition == null || actualValue.isEmpty()) return ""
+//                add logic of comparison of tabId with this Component's TabID
+                if (tabPosition == components.tabPosition) {
+                    return actualValue
+                }
+                return ""
+            } else {
+                return valueOfRpcFilter
+            }
+        }
     }
 }
