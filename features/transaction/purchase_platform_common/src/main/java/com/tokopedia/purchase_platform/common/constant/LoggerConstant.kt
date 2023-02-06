@@ -7,7 +7,7 @@ object LoggerConstant {
     }
 
     object Key {
-        const val TYPE = "type"
+        const val ERROR_TYPE = "error_type"
         const val MESSAGE = "message"
         const val STACK_TRACE = "stack_trace"
         const val PRODUCT_ID_LIST = "product_id_list"

@@ -11,7 +11,7 @@ object PromoCheckoutLogger {
         if (shouldTriggerLog(throwable)) {
             val errorMessage = throwable.message ?: "unknown exception"
             val mapData = mapOf(
-                    LoggerConstant.Key.TYPE to LoggerConstant.Type.LOAD_PROMO_CHECKOUT_PAGE_ERROR,
+                    LoggerConstant.Key.ERROR_TYPE to LoggerConstant.Type.LOAD_PROMO_CHECKOUT_PAGE_ERROR,
                     LoggerConstant.Key.MESSAGE to errorMessage,
                     LoggerConstant.Key.STACK_TRACE to throwable.stackTraceToString()
             )
@@ -28,7 +28,7 @@ object PromoCheckoutLogger {
         if (shouldTriggerLog(throwable)) {
             val errorMessage = throwable.message ?: "unknown exception"
             val mapData = mapOf(
-                    LoggerConstant.Key.TYPE to LoggerConstant.Type.APPLY_PROMO_CHECKOUT_ERROR,
+                    LoggerConstant.Key.ERROR_TYPE to LoggerConstant.Type.APPLY_PROMO_CHECKOUT_ERROR,
                     LoggerConstant.Key.MESSAGE to errorMessage,
                     LoggerConstant.Key.STACK_TRACE to throwable.stackTraceToString()
             )

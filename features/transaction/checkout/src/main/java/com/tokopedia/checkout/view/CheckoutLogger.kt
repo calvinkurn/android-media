@@ -20,7 +20,7 @@ object CheckoutLogger {
         if (shouldTriggerLog(throwable)) {
             val errorMessage = throwable.message ?: "unknown exception"
             val mapData = mapOf(
-                LoggerConstant.Key.TYPE to LoggerConstant.Type.LOAD_CHECKOUT_PAGE_ERROR,
+                LoggerConstant.Key.ERROR_TYPE to LoggerConstant.Type.LOAD_CHECKOUT_PAGE_ERROR,
                 LoggerConstant.Key.IS_OCS to isOneClickShipment.toString(),
                 LoggerConstant.Key.IS_TRADE_IN to isTradeIn.toString(),
                 LoggerConstant.Key.IS_TRADE_IN_INDOPAKET to isTradeInByDropOff.toString(),
@@ -51,7 +51,7 @@ object CheckoutLogger {
 
             val errorMessage = throwable.message ?: "unknown exception"
             val mapData = mapOf(
-                LoggerConstant.Key.TYPE to LoggerConstant.Type.LOAD_COURIER_ERROR,
+                LoggerConstant.Key.ERROR_TYPE to LoggerConstant.Type.LOAD_COURIER_ERROR,
                 LoggerConstant.Key.IS_OCS to isOneClickShipment.toString(),
                 LoggerConstant.Key.IS_TRADE_IN to isTradeIn.toString(),
                 LoggerConstant.Key.IS_TRADE_IN_INDOPAKET to isTradeInByDropOff.toString(),
@@ -78,7 +78,7 @@ object CheckoutLogger {
         if (shouldTriggerLog(throwable)) {
             val errorMessage = throwable.message ?: "unknown exception"
             val mapData = mapOf(
-                LoggerConstant.Key.TYPE to LoggerConstant.Type.CHECKOUT_ERROR,
+                LoggerConstant.Key.ERROR_TYPE to LoggerConstant.Type.CHECKOUT_ERROR,
                 LoggerConstant.Key.IS_OCS to isOneClickShipment.toString(),
                 LoggerConstant.Key.IS_TRADE_IN to isTradeIn.toString(),
                 LoggerConstant.Key.IS_TRADE_IN_INDOPAKET to isTradeInByDropOff.toString(),
