@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Constant.ProductTemplate.LIST
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -133,6 +134,9 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     private suspend fun getMaxHeightProductCard(list: java.util.ArrayList<ComponentsItem>) {
         val productCardModelArray = ArrayList<ProductCardModel>()
         list.forEach {
+            if(it.properties?.template == LIST){
+                return
+            }
             it.data?.firstOrNull()?.let { dataItem ->
                 dataItem.hasNotifyMe = (dataItem.notifyMe != null)
                 productCardModelArray.add(DiscoveryDataMapper().mapDataItemToProductCardModel(dataItem, components.name))
