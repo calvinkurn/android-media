@@ -57,6 +57,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -178,7 +179,11 @@ class DtHomeFragment :
             .inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentDtHomeBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -230,7 +235,8 @@ class DtHomeFragment :
     }
 
     private fun initAnchorTabMenu() {
-        anchorTabLinearLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        anchorTabLinearLayoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         anchorTabAdapter = DtAnchorTabAdapter(anchorTabListener())
         binding?.headerCompHolder?.layoutManager = anchorTabLinearLayoutManager
         binding?.headerCompHolder?.adapter = anchorTabAdapter
@@ -267,7 +273,8 @@ class DtHomeFragment :
         activity?.let {
             statusBarBackground?.apply {
                 layoutParams?.height = ViewHelper.getStatusBarHeight(activity)
-                visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) View.INVISIBLE else View.VISIBLE
+                visibility =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) View.INVISIBLE else View.VISIBLE
             }
             setStatusBarAlpha()
         }
@@ -301,17 +308,30 @@ class DtHomeFragment :
     }
 
     private fun setIconNewTopNavigation() {
-        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-            .addIcon(IconList.ID_SHARE, onClick = ::onClickShareButton, disableDefaultGtmTracker = true)
-            .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
-            .addIcon(IconList.ID_NAV_GLOBAL) {}
+        val icons =
+            IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                .addIcon(
+                    IconList.ID_SHARE,
+                    onClick = ::onClickShareButton,
+                    disableDefaultGtmTracker = true
+                )
+                .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
+                .addIcon(IconList.ID_NAV_GLOBAL) {}
         navToolbar?.setIcon(icons)
     }
 
     private fun setupTopNavigation() {
         navToolbar?.let { toolbar ->
             viewLifecycleOwner.lifecycle.addObserver(toolbar)
-            initHint(SearchPlaceholder(Data(null, context?.resources?.getString(R.string.dt_search_bar_hint).orEmpty(), "")))
+            initHint(
+                SearchPlaceholder(
+                    Data(
+                        null,
+                        context?.resources?.getString(R.string.dt_search_bar_hint).orEmpty(),
+                        ""
+                    )
+                )
+            )
             activity?.let {
                 toolbar.setupToolbarWithStatusBar(it)
                 toolbar.setToolbarTitle(getString(R.string.dt_home_title))
@@ -451,8 +471,8 @@ class DtHomeFragment :
         initChooseAddressWidget()
         showHomeLayout(data)
         showHeaderBackground()
-        visibilityChooseAddress()
-        visibilityAnchorTab()
+        showChooseAddressView()
+        showAnchorTabView()
     }
 
     private fun updateAnchorTab(data: List<AnchorTabUiModel>) {
@@ -471,8 +491,11 @@ class DtHomeFragment :
     }
 
     private fun observeMenuList() {
-        observe(viewModelDtHome.menuList) {
-            updateAnchorTab(it)
+        observe(viewModelDtHome.anchorTabState) {
+            when (it) {
+                is Success -> updateAnchorTab(it.data)
+                else -> showAnchorTabView(false)
+            }
         }
     }
 
@@ -523,25 +546,17 @@ class DtHomeFragment :
     private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
         showHomeLayout(data)
         loadHeaderBackgroundLoading()
+        showChooseAddressView(false)
+        showAnchorTabView(false)
         showLayout()
-        visibilityChooseAddress(false)
-        visibilityAnchorTab(false)
     }
 
-    private fun visibilityChooseAddress(visible: Boolean = true) {
-        if (visible) {
-            binding?.chooseAddressWidget?.visible()
-        } else {
-            binding?.chooseAddressWidget?.gone()
-        }
+    private fun showChooseAddressView(isVisible: Boolean = true) {
+        binding?.groupLca?.isVisible = isVisible
     }
 
-    private fun visibilityAnchorTab(visible: Boolean = true) {
-        if (visible) {
-            binding?.headerCompHolder?.visible()
-        } else {
-            binding?.headerCompHolder?.gone()
-        }
+    private fun showAnchorTabView(isVisible: Boolean = true) {
+        binding?.groupAnchorTab?.isVisible = isVisible
     }
 
     private fun loadHeaderBackgroundLoading() {
@@ -587,7 +602,11 @@ class DtHomeFragment :
 
     private fun createTopComponentCallback(): HomeComponentListener? {
         return object : HomeComponentListener {
-            override fun onChannelExpired(channelModel: ChannelModel, channelPosition: Int, visitable: Visitable<*>) {
+            override fun onChannelExpired(
+                channelModel: ChannelModel,
+                channelPosition: Int,
+                visitable: Visitable<*>
+            ) {
                 // no-op
             }
         }
@@ -631,7 +650,11 @@ class DtHomeFragment :
                 // no-op
             }
 
-            override fun onSeeAllBannerClicked(channelModel: ChannelModel, applink: String, position: Int) {
+            override fun onSeeAllBannerClicked(
+                channelModel: ChannelModel,
+                applink: String,
+                position: Int
+            ) {
                 // no-op
             }
 
@@ -660,13 +683,14 @@ class DtHomeFragment :
     }
 
     private fun bindChooseAddressWidget() {
-        chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
+        chooseAddressWidget?.bindChooseAddress(object :
+            ChooseAddressWidget.ChooseAddressWidgetListener {
             override fun onLocalizingAddressUpdatedFromWidget() {
                 onRefreshLayout()
             }
 
             override fun onLocalizingAddressServerDown() {
-                visibilityChooseAddress(false)
+                showChooseAddressView(false)
             }
 
             override fun onClickChooseAddressTokoNowTracker() {
@@ -686,7 +710,7 @@ class DtHomeFragment :
             }
 
             override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
-                visibilityChooseAddress(isRollOutUser)
+                showChooseAddressView(isRollOutUser)
             }
 
             override fun onLocalizingAddressLoginSuccess() {
@@ -712,16 +736,18 @@ class DtHomeFragment :
     }
 
     private fun getChooseAddressWidgetCoachMarkItem(): CoachMark2Item? {
-        val isNeedToShowCoachMark = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(requireContext())
+        val isNeedToShowCoachMark =
+            ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(requireContext())
         return if (isNeedToShowCoachMark == true && chooseAddressWidget?.isShown == true) {
             chooseAddressWidget?.let { chooseAddressWidget ->
-                context?.getString(R.string.dt_home_choose_address_widget_coachmark_title)?.let { title ->
-                    CoachMark2Item(
-                        chooseAddressWidget,
-                        title,
-                        getString(R.string.dt_home_choose_address_widget_coachmark_description)
-                    )
-                }
+                context?.getString(R.string.dt_home_choose_address_widget_coachmark_title)
+                    ?.let { title ->
+                        CoachMark2Item(
+                            chooseAddressWidget,
+                            title,
+                            getString(R.string.dt_home_choose_address_widget_coachmark_description)
+                        )
+                    }
             }
         } else {
             return null
@@ -770,11 +796,11 @@ class DtHomeFragment :
         val endHasBeenReached = (lastVisible?.plus(1) ?: 0) >= totalItemCount
         if (totalItemCount > 0 && endHasBeenReached && listIsRecommendationForYou == true) {
             // you have reached to the bottom of your recycler view
-            binding?.headerCompHolder?.gone()
-            binding?.chooseAddressWidget?.gone()
+            showChooseAddressView(false)
+            showAnchorTabView(false)
         } else {
-            binding?.headerCompHolder?.visible()
-            binding?.chooseAddressWidget?.visible()
+            showChooseAddressView(true)
+            showAnchorTabView(true)
         }
     }
 
@@ -808,9 +834,11 @@ class DtHomeFragment :
          * get position from anchor tab using visitable
          * select and scroll tab anchor from pisition
          */
-        if (visiblePosition != null && visiblePosition != -1 && viewModelDtHome.getHomeVisitableList().isNotEmpty()) {
+        if (visiblePosition != null && visiblePosition != -1 && viewModelDtHome.getHomeVisitableList()
+                .isNotEmpty()
+        ) {
             val anchorTabUiModel = viewModelDtHome.getAnchorTabByVisitablePosition(visiblePosition)
-            val indexAnchorTab = viewModelDtHome.menuList.value?.indexOf(anchorTabUiModel)
+            val indexAnchorTab = viewModelDtHome.menuList?.indexOf(anchorTabUiModel)
 
             if (anchorTabUiModel != null && indexAnchorTab != null) {
                 smoothScrollAnchorTab(indexAnchorTab)
@@ -845,7 +873,8 @@ class DtHomeFragment :
         anchorTabAdapter?.setMaximizeIcons()
 
         val transparentUnify = android.R.color.transparent
-        val transparentColor = ResourcesCompat.getColor(requireContext().resources, transparentUnify, null)
+        val transparentColor =
+            ResourcesCompat.getColor(requireContext().resources, transparentUnify, null)
         navToolbar?.setBackgroundColor(transparentColor)
         binding?.headerCompHolder?.setBackgroundColor(transparentColor)
         binding?.chooseAddressWidget?.setBackgroundColor(transparentColor)
@@ -902,7 +931,8 @@ class DtHomeFragment :
                 }
             override val homeMainToolbarHeight: Int
                 get() {
-                    var height = requireActivity().resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+                    var height =
+                        requireActivity().resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
                     context?.let { context ->
                         navToolbar?.let {
                             height = navToolbar?.height
