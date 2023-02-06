@@ -33,6 +33,7 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -317,7 +318,7 @@ class PushController(val context: Context) : CoroutineScope {
                     IrisAnalyticsEvents.PUSH_RECEIVED,
                     baseNotificationModel
                 )
-                trackTokoChatPushNotification()
+                trackTokoChatPushNotification(baseNotificationModel)
             }
             NotificationSettingsUtils.NotificationMode.DISABLED,
             NotificationSettingsUtils.NotificationMode.CHANNEL_DISABLED -> {
@@ -330,15 +331,19 @@ class PushController(val context: Context) : CoroutineScope {
         }
     }
 
-    private fun trackTokoChatPushNotification() {
+    private fun trackTokoChatPushNotification(baseNotificationModel: BaseNotificationModel) {
         try {
             launch {
-                tokoChatPushNotifCallbackUseCase(
-                    TokoChatPushNotifCallbackUseCase.Param(
-                        pushNotifId = "Test123",
-                        timestamp = Date().toFormattedString("yyyy-MM-dd'T'HH:mm:ssZZZZZ")
+                val tokochatPNId = JSONObject(baseNotificationModel.customValues ?: "")
+                    .optString(CMConstant.CustomValuesKeys.TOKOCHAT_PN_ID)
+                if (!tokochatPNId.isNullOrEmpty()) {
+                    tokoChatPushNotifCallbackUseCase(
+                        TokoChatPushNotifCallbackUseCase.Param(
+                            pushNotifId = tokochatPNId,
+                            timestamp = Date().toFormattedString(formatTimeStamp)
+                        )
                     )
-                )
+                }
             }
         } catch (throwable: Throwable) {
             throwable.printStackTrace()
@@ -348,5 +353,6 @@ class PushController(val context: Context) : CoroutineScope {
     companion object {
         const val ANDROID_12_SDK_VERSION = 31
         const val AUTO_REDIRECTION_REMOTE_CONFIG_KEY = "android_user_otp_push_notif_auto_redirection"
+        private const val formatTimeStamp = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
     }
 }
