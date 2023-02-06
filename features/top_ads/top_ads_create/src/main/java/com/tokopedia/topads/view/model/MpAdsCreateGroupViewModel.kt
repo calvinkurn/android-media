@@ -11,9 +11,10 @@ import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetProductUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
+import com.tokopedia.topads.constants.MpTopadsConst.CREATE_GROUP_PAGE
 import javax.inject.Inject
 
-class MpAdsCreateGroupViewModel@Inject constructor(
+class MpAdsCreateGroupViewModel @Inject constructor(
     private val bidInfoUseCase: BidInfoUseCase,
     private val topAdsGetProductUseCase: TopAdsGetProductUseCase,
     private val topAdsGroupValidateNameUseCase: TopAdsGroupValidateNameUseCase,
@@ -22,7 +23,11 @@ class MpAdsCreateGroupViewModel@Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
-    fun getBidInfo(suggestions: List<DataSuggestions>, sourceValue: String, onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit) {
+    fun getBidInfo(
+        suggestions: List<DataSuggestions>,
+        sourceValue: String,
+        onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit
+    ) {
         bidInfoUseCase.setParams(suggestions, ParamObject.AUTO_BID_STATE, sourceValue)
         bidInfoUseCase.executeQuerySafeMode(
             {
@@ -40,8 +45,11 @@ class MpAdsCreateGroupViewModel@Inject constructor(
         }
     }
 
-    fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateNameV2) -> Unit)) {
-        topAdsGroupValidateNameUseCase.setParams(groupName, "android.mp_topads")
+    fun validateGroup(
+        groupName: String,
+        onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateNameV2) -> Unit)
+    ) {
+        topAdsGroupValidateNameUseCase.setParams(groupName, CREATE_GROUP_PAGE)
         topAdsGroupValidateNameUseCase.execute({
             onSuccess(it.topAdsGroupValidateName)
         }, { throwable ->
@@ -63,7 +71,7 @@ class MpAdsCreateGroupViewModel@Inject constructor(
                 0.0,
                 0.0,
                 dailyBudget,
-                "android.mp_topads"
+                CREATE_GROUP_PAGE
             )
         launchCatchError(block = {
             val response = topAdsCreateUseCase.execute(param)
@@ -78,9 +86,9 @@ class MpAdsCreateGroupViewModel@Inject constructor(
                 onError(error)
             }
         }, onError = {
-                onError(it.message)
-                it.printStackTrace()
-            })
+            onError(it.message)
+            it.printStackTrace()
+        })
     }
 
     fun getTopAdsDeposit(

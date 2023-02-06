@@ -10,4 +10,6 @@ object MpTopadsConst {
     const val PRODUCT_ID_PARAM = "product_id"
     const val IDR_CONST = "Rpx.xxx"
     const val BASIC_DATE_FORMAT = "dd/MM/yy"
+    const val GROUP_DETAIL_PAGE = "android.group_detail"
+    const val CREATE_GROUP_PAGE = "android.mp_create_group"
 }
