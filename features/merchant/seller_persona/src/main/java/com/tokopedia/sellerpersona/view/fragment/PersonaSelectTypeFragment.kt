@@ -5,15 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.sellerpersona.databinding.FragmentPersonaSelectTypeBinding
 import com.tokopedia.sellerpersona.view.adapter.PersonaTypeAdapter
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
+import com.tokopedia.sellerpersona.view.viewhelper.PersonaTypeItemDecoration
 import com.tokopedia.sellerpersona.view.viewmodel.SelectPersonaTypeViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -24,17 +24,21 @@ import javax.inject.Inject
  * Created by @ilhamsuaib on 26/01/23.
  */
 
-class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>() {
+class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>(),
+    PersonaTypeAdapter.Listener {
+
+    companion object {
+        const val KEY_SELECTED_PERSONA = "key_selected_persona"
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    @Inject
-    lateinit var personaTypeAdapter: PersonaTypeAdapter
-
     private val viewModel: SelectPersonaTypeViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SelectPersonaTypeViewModel::class.java)
     }
+    private val personaTypeAdapter by lazy { PersonaTypeAdapter(this) }
+    private val itemDecoration by lazy { PersonaTypeItemDecoration() }
 
     override fun inject() {
         daggerComponent?.inject(this)
@@ -54,6 +58,34 @@ class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>
 
         setupRecyclerView()
         observePersonaList()
+        onApplyButtonClicked()
+    }
+
+    private fun onApplyButtonClicked() {
+        binding?.btnSpSelectType?.setOnClickListener { _ ->
+            val selectedPersona = personaTypeAdapter.getItems().firstOrNull { it.isSelected }
+            selectedPersona?.let {
+                findNavController().previousBackStackEntry?.savedStateHandle?.set<PersonaUiModel>(
+                    KEY_SELECTED_PERSONA, it
+                )
+                findNavController().navigateUp()
+            }
+        }
+    }
+
+    override fun onItemClickListener(item: PersonaUiModel) {
+        if (item.isSelected) {
+            personaTypeAdapter.getItems().forEachIndexed { i, persona ->
+                if (item.name != persona.name) {
+                    persona.isSelected = false
+                    try {
+                        personaTypeAdapter.notifyItemChanged(i)
+                    } catch (e: Exception) {
+                        Timber.e(e)
+                    }
+                }
+            }
+        }
     }
 
     private fun observePersonaList() {
@@ -83,6 +115,8 @@ class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>
         binding?.rvSpSelectType?.run {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = personaTypeAdapter
+            removeItemDecoration(itemDecoration)
+            addItemDecoration(itemDecoration)
 
             try {
                 PagerSnapHelper().attachToRecyclerView(this)

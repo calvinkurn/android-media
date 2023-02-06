@@ -27,7 +27,7 @@ class GetPersonaStatusUseCase @Inject constructor(
         setRequestParams(createParam(shopId, page).parameters)
         //return executeOnBackground().data
         return PersonaStatusModel(
-            persona = "",
+            persona = "mom-and-pop",
             status = "1"
         )
     }

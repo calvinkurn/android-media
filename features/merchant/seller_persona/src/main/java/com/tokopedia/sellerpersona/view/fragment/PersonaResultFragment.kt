@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import com.tokopedia.applink.ApplinkConst
+import androidx.navigation.fragment.findNavController
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
@@ -23,6 +23,7 @@ import com.tokopedia.sellerpersona.databinding.FragmentPersonaResultBinding
 import com.tokopedia.sellerpersona.view.adapter.PersonaSimpleListAdapter
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
+import com.tokopedia.sellerpersona.view.model.PersonaUiModel
 import com.tokopedia.sellerpersona.view.viewmodel.PersonaResultViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -63,6 +64,15 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
         setupView()
         observePersonaList()
         observePersonaToggleStatus()
+        observeSelectedPersona()
+    }
+
+    private fun observeSelectedPersona() {
+        findNavController().currentBackStackEntry?.savedStateHandle
+            ?.getLiveData<PersonaUiModel>(PersonaSelectTypeFragment.KEY_SELECTED_PERSONA)
+            ?.observe(viewLifecycleOwner) {
+                //todo : handle after setting the persona
+            }
     }
 
     override fun inject() {
@@ -98,7 +108,8 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
                 SellerHomeApplinkConst.TOASTER_MESSAGE to toasterMessage,
                 SellerHomeApplinkConst.TOASTER_CTA to it.getString(R.string.sp_oke)
             )
-            val appLink = UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME, param)
+            val appLink =
+                UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME, param)
             RouteManager.route(it, appLink)
             it.finish()
         }
@@ -135,7 +146,9 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
             btnSpApplyPersona.gone()
             imgSpResultAvatar.loadImage(persona.avatarImage)
             imgSpResultBackdrop.loadImage(persona.backgroundImage)
-            rvSpResultInfoList.adapter = PersonaSimpleListAdapter(persona.itemList)
+            rvSpResultInfoList.adapter = PersonaSimpleListAdapter().apply {
+                setItems(persona.itemList)
+            }
             tvSpSellerType.text = String.format(PERSONA_TITLE, persona.headerTitle)
             tvSpSellerTypeNote.text = root.context.getString(
                 R.string.sp_result_account_type, persona.headerSubTitle

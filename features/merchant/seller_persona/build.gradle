@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 
@@ -33,6 +34,7 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.navigationSafeArgs
     }
 }
 

@@ -79,8 +79,7 @@ class GetPersonaListUseCase @Inject constructor(
                                 "itemList": [
                                     "Menerima 1-10 pesanan per hari",
                                     "Punya toko fisik (offline)",
-                                    "Punya pegawai yang mengurus operasional toko",
-                                    "Sering mencari peluang untuk strategi baru bisnismu"
+                                    "Punya pegawai yang mengurus operasional toko"
                                 ]
                             }
                         },
@@ -98,6 +97,7 @@ class GetPersonaListUseCase @Inject constructor(
                                     "Menerima 1-10 pesanan per hari",
                                     "Punya toko fisik (offline)",
                                     "Mengurus operasional toko",
+                                    "Mengakses Tokopedia Seller di desktop dan aplikasi HP",
                                     "Mengakses Tokopedia Seller di desktop dan aplikasi HP"
                                 ]
                             }

@@ -1,11 +1,14 @@
 package com.tokopedia.sellerpersona.view.model
 
+import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by @ilhamsuaib on 29/01/23.
  */
 
+@Parcelize
 data class PersonaUiModel(
     val name: String = String.EMPTY,
     val headerTitle: String = String.EMPTY,
@@ -15,4 +18,4 @@ data class PersonaUiModel(
     val bodyTitle: String = String.EMPTY,
     val itemList: List<String> = listOf(),
     var isSelected: Boolean = false
-)
+) : Parcelable
