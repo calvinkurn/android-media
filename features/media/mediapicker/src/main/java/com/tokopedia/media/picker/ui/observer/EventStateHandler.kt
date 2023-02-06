@@ -10,21 +10,21 @@ fun statePublished(eventState: EventPickerState) {
     EventFlowFactory.emit(eventState)
 }
 
-fun stateOnCameraCapturePublished(element: MediaUiModel) {
-    statePublished(EventPickerState.CameraCaptured(element))
+fun stateOnCameraCapturePublished(element: MediaUiModel, key: String) {
+    statePublished(EventPickerState.CameraCaptured(element, key))
 }
 
-fun stateOnChangePublished(elements: List<MediaUiModel>) {
-    statePublished(EventPickerState.SelectionChanged(elements))
+fun stateOnChangePublished(elements: List<MediaUiModel>, key: String) {
+    statePublished(EventPickerState.SelectionChanged(elements, key))
 }
 
-fun stateOnAddPublished(element: MediaUiModel) {
+fun stateOnAddPublished(element: MediaUiModel, key: String) {
     if (element.file?.exists() == false) return
-    statePublished(EventPickerState.SelectionAdded(element))
+    statePublished(EventPickerState.SelectionAdded(element, key))
 }
 
-fun stateOnRemovePublished(element: MediaUiModel) {
-    statePublished(EventPickerState.SelectionRemoved(element))
+fun stateOnRemovePublished(element: MediaUiModel, key: String) {
+    statePublished(EventPickerState.SelectionRemoved(element, key))
 }
 
 suspend fun Flow<EventState>.observe(
