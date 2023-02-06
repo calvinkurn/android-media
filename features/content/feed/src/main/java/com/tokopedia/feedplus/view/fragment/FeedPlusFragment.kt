@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -767,8 +768,18 @@ class FeedPlusFragment :
                         }
                         is Success -> {
                             reportBottomSheet.setFinalView()
-                            onSuccessDeletePost(it.data.rowNumber)
+                            onSuccessDeletePost(it.data.rowNumber, isPostReported = true)
                         }
+                    }
+                }
+            )
+
+            shopIdsFollowStatusToUpdateData.observe(
+                lifecycleOwner,
+                Observer {
+                    when (it) {
+                        is Success -> onSuccessResyncFollowStatus(it.data)
+                        is Fail -> {}
                     }
                 }
             )
@@ -1157,6 +1168,7 @@ class FeedPlusFragment :
         if (isUserEventTrackerDoneOnResume) {
             isUserEventTrackerDoneOnResume = false
         }
+        feedViewModel.updateFollowStatus()
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         registerNewFeedReceiver()
@@ -1414,7 +1426,7 @@ class FeedPlusFragment :
         val intent = RouteManager.getIntent(
             requireContext(),
             UriUtil.buildUriAppendParam(
-                ApplinkConstInternalContent.COMMENT_NEW,
+                ApplinkConstInternalContent.COMMENT,
                 mapOf(
                     COMMENT_ARGS_POSITION to rowNumber.toString()
                 )
@@ -2317,23 +2329,9 @@ class FeedPlusFragment :
         redirectLink: String,
         isSingleItem: Boolean
     ) {
-        if (adapter.getlist()[positionInFeed] is DynamicPostModel) {
-            val (id, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostModel
-            trackCardPostClick(positionInFeed, trackingPostModel)
-
-            if (!isSingleItem && activity != null) {
-                RouteManager.route(
-                    requireContext(),
-                    UriUtil.buildUriAppendParam(
-                        ApplinkConstInternalContent.MEDIA_PREVIEW,
-                        mapOf(
-                            MEDIA_PREVIEW_INDEX to contentPosition.toString()
-                        )
-                    ),
-                    id.toString()
-                )
-            }
-        }
+        /**
+         * will be revamped in the future
+         */
     }
 
     override fun onAffiliateTrackClicked(trackList: List<TrackingModel>, isClick: Boolean) {
@@ -2435,16 +2433,9 @@ class FeedPlusFragment :
         contentPosition: Int,
         youtubeId: String
     ) {
-        val redirectUrl = ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId)
-
-        if (context != null) {
-            RouteManager.route(context, redirectUrl)
-        }
-
-        if (adapter.getlist()[positionInFeed] is DynamicPostModel) {
-            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostModel
-            trackCardPostClick(positionInFeed, trackingPostModel)
-        }
+        /**
+         * will be revamped in the future
+         */
     }
 
     override fun onPollOptionClick(
@@ -2905,6 +2896,7 @@ class FeedPlusFragment :
     private fun onSuccessGetFirstFeed(firstPageDomainModel: DynamicFeedFirstPageDomainModel) {
         if (!firstPageDomainModel.shouldOverwrite) {
             adapter.updateList(firstPageDomainModel.dynamicFeedDomainModel.postList)
+            feedViewModel.updateCurrentFollowState(adapter.getlist())
             return
         }
         if (isRefreshForPostCOntentCreation) {
@@ -2916,6 +2908,7 @@ class FeedPlusFragment :
             if (!fetchedPostIsSameAsTopMostPost) {
                 adapter.addListItemAtTop(firstPageDomainModel.dynamicFeedDomainModel.postList[1])
             }
+            feedViewModel.updateCurrentFollowState(adapter.getlist())
             return
         }
 
@@ -2938,6 +2931,8 @@ class FeedPlusFragment :
             onShowEmpty()
         }
 
+        feedViewModel.updateCurrentFollowState(adapter.getlist())
+
         sendMoEngageOpenFeedEvent()
         stopTracePerformanceMon()
     }
@@ -2959,6 +2954,7 @@ class FeedPlusFragment :
 
             adapter.removeEmpty()
             adapter.addList(model.postList)
+            feedViewModel.updateCurrentFollowState(adapter.getlist())
         }
     }
 
@@ -3129,17 +3125,19 @@ class FeedPlusFragment :
         showToast(errorMessage, Toaster.TYPE_ERROR)
     }
 
-    private fun onSuccessDeletePost(rowNumber: Int) {
+    private fun onSuccessDeletePost(rowNumber: Int, isPostReported: Boolean = false) {
         if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostUiModel) {
             adapter.getlist().removeAt(rowNumber)
             adapter.notifyItemRemoved(rowNumber)
-            Toaster.build(
-                requireView(),
-                getString(R.string.feed_post_deleted),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                getString(com.tokopedia.kolcommon.R.string.content_action_ok)
-            ).show()
+            if (!isPostReported) {
+                Toaster.build(
+                    requireView(),
+                    getString(R.string.feed_post_deleted),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(com.tokopedia.kolcommon.R.string.content_action_ok)
+                ).show()
+            }
         }
         if (adapter.getlist().isEmpty()) {
             showRefresh()
@@ -4022,39 +4020,39 @@ class FeedPlusFragment :
             ""
         }
 
-    override fun onShopRecomCloseClicked(itemID: Long) {
-        feedShopRecomWidgetAnalytics.sendClickXShopRecommendationEvent(itemID.toString())
-        feedViewModel.handleClickRemoveButtonShopRecom(itemID)
+    override fun onShopRecomCloseClicked(item: ShopRecomUiModelItem) {
+        feedShopRecomWidgetAnalytics.sendClickXShopRecommendationEvent(getShopRecomEventLabel(item))
+        feedViewModel.handleClickRemoveButtonShopRecom(item.id)
     }
 
-    override fun onShopRecomFollowClicked(itemID: Long) {
+    override fun onShopRecomFollowClicked(item: ShopRecomUiModelItem) {
         if (userSession.isLoggedIn) {
-            feedShopRecomWidgetAnalytics.sendClickFollowShopRecommendationEvent(itemID.toString())
-            feedViewModel.handleClickFollowButtonShopRecom(itemID)
+            feedShopRecomWidgetAnalytics.sendClickFollowShopRecommendationEvent(
+                getShopRecomEventLabel(item)
+            )
+            feedViewModel.handleClickFollowButtonShopRecom(item.id)
         } else {
             onGoToLogin()
         }
     }
 
     override fun onShopRecomItemClicked(
-        itemID: Long,
-        appLink: String,
-        imageUrl: String,
+        item: ShopRecomUiModelItem,
         postPosition: Int
     ) {
         feedShopRecomWidgetAnalytics.sendClickShopRecommendationEvent(
-            eventLabel = itemID.toString(),
-            shopId = itemID.toString(),
-            shopsImageUrl = imageUrl,
+            eventLabel = getShopRecomEventLabel(item),
+            shopId = item.id.toString(),
+            shopsImageUrl = item.logoImageURL,
             postPosition = postPosition
         )
-        RouteManager.route(requireContext(), appLink)
+        RouteManager.route(requireContext(), item.applink)
     }
 
     override fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int) {
         shopRecomImpression.initiateShopImpress(item) { shopImpress ->
             feedShopRecomWidgetAnalytics.sendImpressionShopRecommendationEvent(
-                item.id.toString(),
+                getShopRecomEventLabel(item),
                 shopImpress,
                 postPosition
             )
@@ -4063,5 +4061,38 @@ class FeedPlusFragment :
 
     override fun onShopRecomLoadingNextPage(nextCursor: String) {
         feedViewModel.getShopRecomWidget(nextCursor)
+    }
+
+    private fun getShopRecomEventLabel(item: ShopRecomUiModelItem) =
+        when (item.type) {
+            ShopRecomUiModelItem.FOLLOW_TYPE_SHOP -> {
+                "shop - ${item.id}"
+            }
+            ShopRecomUiModelItem.FOLLOW_TYPE_BUYER -> {
+                "user - ${item.id}"
+            }
+            else -> String.EMPTY
+        }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun onSuccessResyncFollowStatus(data: Map<String, Boolean>) {
+        val newList = feedViewModel.processFollowStatusUpdate(adapter.getList(), data)
+
+        if (newList.isNotEmpty()) {
+//            val scrollPosition = getCurrentPosition()
+//            clearData()
+//            adapter.addList(newList)
+//
+//            recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
+//                ViewTreeObserver.OnGlobalLayoutListener {
+//                override fun onGlobalLayout() {
+//                    recyclerView.scrollToPosition(scrollPosition)
+//                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+//                }
+//            })
+            adapter.updateList(newList)
+        }
+
+        feedViewModel.clearFollowIdToUpdate()
     }
 }

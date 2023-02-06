@@ -30,240 +30,288 @@ class FlightAnalytics @Inject constructor() {
 
     fun eventOpenScreen(screenName: String) {
         val mapOpenScreen = mapOf(
-                FlightAnalyticsKeys.EVENT_NAME to FlightAnalyticsEvents.OPEN_SCREEN_EVENT,
-                FlightAnalyticsKeys.CURRENT_SITE to FlightAnalyticsDefaults.FLIGHT_CURRENT_SITE,
-                FlightAnalyticsKeys.BUSSINESS_UNIT to FlightAnalyticsDefaults.FLIGHT_BU,
-                FlightAnalyticsKeys.CATEGORY to FlightAnalyticsDefaults.FLIGHT_SMALL
+            FlightAnalyticsKeys.EVENT_NAME to FlightAnalyticsEvents.OPEN_SCREEN_EVENT,
+            FlightAnalyticsKeys.CURRENT_SITE to FlightAnalyticsDefaults.FLIGHT_CURRENT_SITE,
+            FlightAnalyticsKeys.BUSSINESS_UNIT to FlightAnalyticsDefaults.FLIGHT_BU,
+            FlightAnalyticsKeys.CATEGORY to FlightAnalyticsDefaults.FLIGHT_SMALL
         )
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, mapOpenScreen)
     }
 
     fun eventClickTransactions(screenName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        FlightAnalyticsEvents.GENERIC_EVENT,
-                        FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        FlightAnalyticsCategory.CLICK_TRANSACTIONS,
-                        screenName
-                )
+            TrackAppUtils.gtmData(
+                FlightAnalyticsEvents.GENERIC_EVENT,
+                FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                FlightAnalyticsCategory.CLICK_TRANSACTIONS,
+                screenName
+            )
         )
     }
 
-    fun eventPromotionClick(position: Int,
-                            banner: TravelCollectiveBannerModel.Banner,
-                            screenName: String,
-                            userId: String) {
+    fun eventPromotionClick(
+        position: Int,
+        banner: TravelCollectiveBannerModel.Banner,
+        screenName: String,
+        userId: String
+    ) {
         val promo = Bundle().apply {
             putString(FlightAnalyticsKeys.ID, banner.id)
             putString(FlightAnalyticsKeys.NAME, "${banner.attribute.promoCode} - slider banner")
             putString(FlightAnalyticsKeys.CREATIVE_SLOT, position.toString())
-            putString(FlightAnalyticsKeys.CREATIVE_NAME, banner.attribute.description.toLowerCase(
-                Locale.getDefault()))
+            putString(
+                FlightAnalyticsKeys.CREATIVE_NAME,
+                banner.attribute.description.toLowerCase(
+                    Locale.getDefault()
+                )
+            )
             putString(FlightAnalyticsKeys.CREATIVE_URL, banner.attribute.appUrl)
         }
         val mapBundle = constructFlightParams(
-                eventName = FlightAnalyticsEvents.PROMO_CLICK_EVENT,
-                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                eventAction = FlightAnalyticsAction.PROMOTION_CLICK,
-                eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $position - ${banner.attribute.promoCode}",
-                screenName = screenName,
-                userId = userId,
-                eCommerce = Bundle().apply {
-                    putParcelableArrayList(FlightAnalyticsKeys.PROMOTIONS, arrayListOf(promo))
-                }
+            eventName = FlightAnalyticsEvents.PROMO_CLICK_EVENT,
+            eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+            eventAction = FlightAnalyticsAction.PROMOTION_CLICK,
+            eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $position - ${banner.attribute.promoCode}",
+            screenName = screenName,
+            userId = userId,
+            eCommerce = Bundle().apply {
+                putParcelableArrayList(FlightAnalyticsKeys.PROMOTIONS, arrayListOf(promo))
+            }
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(FlightAnalyticsEvents.PROMO_CLICK_EVENT, mapBundle)
     }
 
     fun eventTripTypeClick(label: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        FlightAnalyticsEvents.GENERIC_EVENT,
-                        FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        FlightAnalyticsCategory.CLICK_TRIP_TYPE,
-                        label
-                )
+            TrackAppUtils.gtmData(
+                FlightAnalyticsEvents.GENERIC_EVENT,
+                FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                FlightAnalyticsCategory.CLICK_TRIP_TYPE,
+                label
+            )
         )
     }
 
     fun eventOriginClick(cityName: String, airportId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        FlightAnalyticsEvents.GENERIC_EVENT,
-                        FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        FlightAnalyticsCategory.SELECT_ORIGIN,
-                        "$cityName|$airportId"
-                )
+            TrackAppUtils.gtmData(
+                FlightAnalyticsEvents.GENERIC_EVENT,
+                FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                FlightAnalyticsCategory.SELECT_ORIGIN,
+                "$cityName|$airportId"
+            )
         )
     }
 
     fun eventDestinationClick(cityName: String, airportId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        FlightAnalyticsEvents.GENERIC_EVENT,
-                        FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        FlightAnalyticsCategory.SELECT_DESTINATION,
-                        "$cityName|$airportId"
-                )
+            TrackAppUtils.gtmData(
+                FlightAnalyticsEvents.GENERIC_EVENT,
+                FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                FlightAnalyticsCategory.SELECT_DESTINATION,
+                "$cityName|$airportId"
+            )
         )
     }
 
     fun eventClassClick(label: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        FlightAnalyticsEvents.GENERIC_EVENT,
-                        FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        FlightAnalyticsCategory.SELECT_CLASS,
-                        label
-                )
+            TrackAppUtils.gtmData(
+                FlightAnalyticsEvents.GENERIC_EVENT,
+                FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                FlightAnalyticsCategory.SELECT_CLASS,
+                label
+            )
         )
     }
 
-    fun eventSearchClick(homepageModel: FlightHomepageModel,
-                         screenName: String,
-                         userId: String) {
+    fun eventSearchClick(
+        homepageModel: FlightHomepageModel,
+        screenName: String,
+        userId: String
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                constructFlightMap(
-                        eventName = FlightAnalyticsEvents.CLICK_SEARCH_EVENT,
-                        eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        eventAction = FlightAnalyticsAction.CLICK_SEARCH,
-                        // flight - departure-arrival - oneway|roundtrip - adult-child-infant - class - departure date (optional : " - return date" if round trip)
-                        eventLabel = String.format("%s - %s-%s - %s - %s-%s-%s - %s - %s%s",
-                                FlightAnalyticsDefaults.FLIGHT_SMALL,
-                                if (homepageModel.departureAirport != null &&
-                                        homepageModel.departureAirport?.airportCode?.isEmpty() == true) {
-                                    homepageModel.departureAirport?.cityCode
-                                } else if (homepageModel.departureAirport != null) {
-                                    homepageModel.departureAirport?.airportCode
-                                } else {
-                                    ""
-                                },
-                                if (homepageModel.arrivalAirport != null &&
-                                        homepageModel.arrivalAirport?.airportCode?.isEmpty() == true) {
-                                    homepageModel.arrivalAirport?.cityCode
-                                } else if (homepageModel.arrivalAirport != null) {
-                                    homepageModel.arrivalAirport?.airportCode
-                                } else {
-                                    ""
-                                },
-                                if (homepageModel.isOneWay) "oneway" else "roundtrip",
-                                homepageModel.flightPassengerViewModel?.adult ?: 1,
-                                homepageModel.flightPassengerViewModel?.children ?: 0,
-                                homepageModel.flightPassengerViewModel?.infant ?: 0,
-                                homepageModel.flightClass?.title
-                                        ?: FlightAnalyticsDefaults.CLASS_EKONOMI,
-                                DateUtil.formatDate(DateUtil.YYYY_MM_DD,
-                                        DateUtil.YYYYMMDD,
-                                        homepageModel.departureDate ?: ""),
-                                if (homepageModel.isOneWay) ""
-                                else String.format(" - %s", DateUtil.formatDate(
-                                        DateUtil.YYYY_MM_DD,
-                                        DateUtil.YYYYMMDD,
-                                        homepageModel.returnDate ?: ""))
-                        ),
-                        screenName = screenName,
-                        userId = userId
-                )
+            constructFlightMap(
+                eventName = FlightAnalyticsEvents.CLICK_SEARCH_EVENT,
+                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                eventAction = FlightAnalyticsAction.CLICK_SEARCH,
+                // flight - departure-arrival - oneway|roundtrip - adult-child-infant - class - departure date (optional : " - return date" if round trip)
+                eventLabel = String.format(
+                    Locale.getDefault(),
+                    "%s - %s-%s - %s - %s-%s-%s - %s - %s%s",
+                    FlightAnalyticsDefaults.FLIGHT_SMALL,
+                    if (homepageModel.departureAirport != null &&
+                        homepageModel.departureAirport?.airportCode?.isEmpty() == true
+                    ) {
+                        homepageModel.departureAirport?.cityCode
+                    } else if (homepageModel.departureAirport != null) {
+                        homepageModel.departureAirport?.airportCode
+                    } else {
+                        ""
+                    },
+                    if (homepageModel.arrivalAirport != null &&
+                        homepageModel.arrivalAirport?.airportCode?.isEmpty() == true
+                    ) {
+                        homepageModel.arrivalAirport?.cityCode
+                    } else if (homepageModel.arrivalAirport != null) {
+                        homepageModel.arrivalAirport?.airportCode
+                    } else {
+                        ""
+                    },
+                    if (homepageModel.isOneWay) "oneway" else "roundtrip",
+                    homepageModel.flightPassengerViewModel?.adult ?: 1,
+                    homepageModel.flightPassengerViewModel?.children ?: 0,
+                    homepageModel.flightPassengerViewModel?.infant ?: 0,
+                    homepageModel.flightClass?.title
+                        ?: FlightAnalyticsDefaults.CLASS_EKONOMI,
+                    DateUtil.formatDate(
+                        DateUtil.YYYY_MM_DD,
+                        DateUtil.YYYYMMDD,
+                        homepageModel.departureDate ?: ""
+                    ),
+                    if (homepageModel.isOneWay) {
+                        ""
+                    } else {
+                        String.format(
+                            Locale.getDefault(),
+                            " - %s",
+                            DateUtil.formatDate(
+                                DateUtil.YYYY_MM_DD,
+                                DateUtil.YYYYMMDD,
+                                homepageModel.returnDate ?: ""
+                            )
+                        )
+                    }
+                ),
+                screenName = screenName,
+                userId = userId
+            )
         )
     }
 
     fun eventQuickFilterClick(filterName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                constructFlightMap(
-                        eventName = FlightAnalyticsEvents.FLIGHT_CLICK_EVENT,
-                        eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        eventAction = FlightAnalyticsAction.WIDGET_CLICK_FILTER,
-                        eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $filterName",
-                        screenName = FlightAnalyticsScreenName.SEARCH,
-                        userId = userId
-                )
+            constructFlightMap(
+                eventName = FlightAnalyticsEvents.FLIGHT_CLICK_EVENT,
+                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                eventAction = FlightAnalyticsAction.WIDGET_CLICK_FILTER,
+                eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $filterName",
+                screenName = FlightAnalyticsScreenName.SEARCH,
+                userId = userId
+            )
         )
     }
 
     fun eventChangeSearchClick(userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                constructFlightMap(
-                        eventName = FlightAnalyticsEvents.FLIGHT_CLICK_EVENT,
-                        eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        eventAction = FlightAnalyticsAction.CLICK_CHANGE_SEARCH,
-                        eventLabel = FlightAnalyticsLabel.FLIGHT_CHANGE_SEARCH,
-                        screenName = FlightAnalyticsScreenName.SEARCH,
-                        userId = userId
-                )
+            constructFlightMap(
+                eventName = FlightAnalyticsEvents.FLIGHT_CLICK_EVENT,
+                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                eventAction = FlightAnalyticsAction.CLICK_CHANGE_SEARCH,
+                eventLabel = FlightAnalyticsLabel.FLIGHT_CHANGE_SEARCH,
+                screenName = FlightAnalyticsScreenName.SEARCH,
+                userId = userId
+            )
         )
     }
 
-    fun eventSearchView(searchPassModel: FlightSearchPassDataModel,
-                        searchFound: Boolean) {
+    fun eventSearchView(
+        searchPassModel: FlightSearchPassDataModel,
+        searchFound: Boolean
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                constructFlightMap(
-                        eventName = FlightAnalyticsEvents.VIEW_SEARCH_EVENT,
-                        eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        eventAction = FlightAnalyticsAction.VIEW_SEARCH,
-                        eventLabel = String.format("%s - %s-%s - %s - %s-%s-%s - %s - %s%s",
-                                FlightAnalyticsDefaults.FLIGHT_SMALL,
-                                if (searchPassModel.departureAirport.airportCode.isEmpty()) {
-                                    searchPassModel.departureAirport.cityCode
-                                } else {
-                                    searchPassModel.departureAirport.airportCode
-                                },
-                                if (searchPassModel.arrivalAirport.airportCode.isEmpty()) {
-                                    searchPassModel.arrivalAirport.cityCode
-                                } else {
-                                    searchPassModel.arrivalAirport.airportCode
-                                },
-                                if (searchPassModel.isOneWay) "oneway" else "roundtrip",
-                                searchPassModel.flightPassengerModel.adult,
-                                searchPassModel.flightPassengerModel.children,
-                                searchPassModel.flightPassengerModel.infant,
-                                searchPassModel.flightClass.title,
-                                DateUtil.formatDate(DateUtil.YYYY_MM_DD,
-                                        DateUtil.YYYYMMDD, searchPassModel.departureDate),
-                                if (searchPassModel.isOneWay) "" else String.format(" - %s",
-                                        DateUtil.formatDate(DateUtil.YYYY_MM_DD,
-                                                DateUtil.YYYYMMDD, searchPassModel.returnDate))
-                        ),
-                        customMap = hashMapOf(
-                                FlightAnalyticsKeys.FROM to if (searchPassModel.departureAirport.airportCode.isEmpty()) {
-                                    searchPassModel.departureAirport.cityCode
-                                } else {
-                                    searchPassModel.departureAirport.airportCode
-                                },
-                                FlightAnalyticsKeys.DESTINATION to if (searchPassModel.arrivalAirport.airportCode.isEmpty()) {
-                                    searchPassModel.arrivalAirport.cityCode
-                                } else {
-                                    searchPassModel.arrivalAirport.airportCode
-                                },
-                                FlightAnalyticsKeys.DEPARTURE_DATE to DateUtil.formatDate(
-                                        DateUtil.YYYY_MM_DD,
-                                        DateUtil.YYYYMMDD,
-                                        searchPassModel.departureDate),
-                                FlightAnalyticsKeys.DEPARTURE_DATE_FORMATTED to searchPassModel.departureDate,
-                                FlightAnalyticsKeys.RETURN_DATE to if (searchPassModel.isOneWay) ""
-                                else DateUtil.formatDate(
-                                        DateUtil.YYYY_MM_DD,
-                                        DateUtil.YYYYMMDD,
-                                        searchPassModel.returnDate),
-                                FlightAnalyticsKeys.RETURN_DATE_FORMATTED to if (searchPassModel.isOneWay) ""
-                                else searchPassModel.returnDate,
-                                FlightAnalyticsKeys.RETURN_TICKET to if (searchPassModel.isOneWay) "false" else "true",
-                                FlightAnalyticsKeys.PASSENGER to "${searchPassModel.flightPassengerModel.adult}${searchPassModel.flightPassengerModel.children}${searchPassModel.flightPassengerModel.infant}",
-                                FlightAnalyticsKeys.TRAVEL_WITH_KIDS to if (searchPassModel.flightPassengerModel.children > 0 || searchPassModel.flightPassengerModel.infant > 0) "true" else "false",
-                                FlightAnalyticsKeys.CLASS to searchPassModel.flightClass.title,
-                                FlightAnalyticsKeys.SEARCH_FOUND to if (searchFound) "true" else "false"
-                        ).also {
-                            if (searchPassModel.linkUrl.contains("tokopedia://pesawat") ||
-                                    searchPassModel.linkUrl.contains("tokopedia-android-internal://pesawat")) {
-                                it[FlightAnalyticsKeys.DEEPLINK_URL] = searchPassModel.linkUrl
-                                it[FlightAnalyticsKeys.URL] = ""
-                            } else {
-                                it[FlightAnalyticsKeys.DEEPLINK_URL] = ""
-                                it[FlightAnalyticsKeys.URL] = searchPassModel.linkUrl
-                            }
-                        },
-                        screenName = null,
-                        userId = null
-                )
+            constructFlightMap(
+                eventName = FlightAnalyticsEvents.VIEW_SEARCH_EVENT,
+                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                eventAction = FlightAnalyticsAction.VIEW_SEARCH,
+                eventLabel = String.format(
+                    Locale.getDefault(),
+                    "%s - %s-%s - %s - %s-%s-%s - %s - %s%s",
+                    FlightAnalyticsDefaults.FLIGHT_SMALL,
+                    if (searchPassModel.departureAirport.airportCode.isEmpty()) {
+                        searchPassModel.departureAirport.cityCode
+                    } else {
+                        searchPassModel.departureAirport.airportCode
+                    },
+                    if (searchPassModel.arrivalAirport.airportCode.isEmpty()) {
+                        searchPassModel.arrivalAirport.cityCode
+                    } else {
+                        searchPassModel.arrivalAirport.airportCode
+                    },
+                    if (searchPassModel.isOneWay) "oneway" else "roundtrip",
+                    searchPassModel.flightPassengerModel.adult,
+                    searchPassModel.flightPassengerModel.children,
+                    searchPassModel.flightPassengerModel.infant,
+                    searchPassModel.flightClass.title,
+                    DateUtil.formatDate(
+                        DateUtil.YYYY_MM_DD,
+                        DateUtil.YYYYMMDD,
+                        searchPassModel.departureDate
+                    ),
+                    if (searchPassModel.isOneWay) {
+                        ""
+                    } else {
+                        String.format(
+                            Locale.getDefault(),
+                            " - %s",
+                            DateUtil.formatDate(
+                                DateUtil.YYYY_MM_DD,
+                                DateUtil.YYYYMMDD,
+                                searchPassModel.returnDate
+                            )
+                        )
+                    }
+                ),
+                customMap = hashMapOf(
+                    FlightAnalyticsKeys.FROM to if (searchPassModel.departureAirport.airportCode.isEmpty()) {
+                        searchPassModel.departureAirport.cityCode
+                    } else {
+                        searchPassModel.departureAirport.airportCode
+                    },
+                    FlightAnalyticsKeys.DESTINATION to if (searchPassModel.arrivalAirport.airportCode.isEmpty()) {
+                        searchPassModel.arrivalAirport.cityCode
+                    } else {
+                        searchPassModel.arrivalAirport.airportCode
+                    },
+                    FlightAnalyticsKeys.DEPARTURE_DATE to DateUtil.formatDate(
+                        DateUtil.YYYY_MM_DD,
+                        DateUtil.YYYYMMDD,
+                        searchPassModel.departureDate
+                    ),
+                    FlightAnalyticsKeys.DEPARTURE_DATE_FORMATTED to searchPassModel.departureDate,
+                    FlightAnalyticsKeys.RETURN_DATE to if (searchPassModel.isOneWay) {
+                        ""
+                    } else {
+                        DateUtil.formatDate(
+                            DateUtil.YYYY_MM_DD,
+                            DateUtil.YYYYMMDD,
+                            searchPassModel.returnDate
+                        )
+                    },
+                    FlightAnalyticsKeys.RETURN_DATE_FORMATTED to if (searchPassModel.isOneWay) {
+                        ""
+                    } else {
+                        searchPassModel.returnDate
+                    },
+                    FlightAnalyticsKeys.RETURN_TICKET to if (searchPassModel.isOneWay) "false" else "true",
+                    FlightAnalyticsKeys.PASSENGER to "${searchPassModel.flightPassengerModel.adult}${searchPassModel.flightPassengerModel.children}${searchPassModel.flightPassengerModel.infant}",
+                    FlightAnalyticsKeys.TRAVEL_WITH_KIDS to if (searchPassModel.flightPassengerModel.children > 0 || searchPassModel.flightPassengerModel.infant > 0) "true" else "false",
+                    FlightAnalyticsKeys.CLASS to searchPassModel.flightClass.title,
+                    FlightAnalyticsKeys.SEARCH_FOUND to if (searchFound) "true" else "false"
+                ).also {
+                    if (searchPassModel.linkUrl.contains("tokopedia://pesawat") ||
+                        searchPassModel.linkUrl.contains("tokopedia-android-internal://pesawat")
+                    ) {
+                        it[FlightAnalyticsKeys.DEEPLINK_URL] = searchPassModel.linkUrl
+                        it[FlightAnalyticsKeys.URL] = ""
+                    } else {
+                        it[FlightAnalyticsKeys.DEEPLINK_URL] = ""
+                        it[FlightAnalyticsKeys.URL] = searchPassModel.linkUrl
+                    }
+                },
+                screenName = null,
+                userId = null
+            )
         )
     }
 
@@ -271,122 +319,142 @@ class FlightAnalytics @Inject constructor() {
         val label = transformSearchProductClickLabel(journeyModel)
         label.append(" - ${journeyModel.fare.adultNumeric}")
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        FlightAnalyticsEvents.GENERIC_EVENT,
-                        FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        FlightAnalyticsAction.CLICK_SEARCH_PRODUCT,
-                        label.toString()
-                )
+            TrackAppUtils.gtmData(
+                FlightAnalyticsEvents.GENERIC_EVENT,
+                FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                FlightAnalyticsAction.CLICK_SEARCH_PRODUCT,
+                label.toString()
+            )
         )
         productClickEnhanceEcommmerce(
-                searchPassData,
-                journeyModel,
-                label
+            searchPassData,
+            journeyModel,
+            label
         )
     }
 
-    fun eventProductViewNotFound(searchPassData: FlightSearchPassDataModel,
-                                 userId: String) {
+    fun eventProductViewNotFound(
+        searchPassData: FlightSearchPassDataModel,
+        userId: String
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                constructFlightMap(
-                        eventName = FlightAnalyticsEvents.SEARCH_RESULT_EVENT,
-                        eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        eventAction = FlightAnalyticsAction.CLICK_SEARCH_PRODUCT_NOT_FOUND,
-                        eventLabel = String.format("%s - %s-%s - %s - %s-%s-%s - %s - %s%s",
-                                FlightAnalyticsDefaults.FLIGHT_SMALL,
-                                if (searchPassData.departureAirport.airportCode.isEmpty()) searchPassData.departureAirport.cityCode else searchPassData.departureAirport.airportCode,
-                                if (searchPassData.arrivalAirport.airportCode.isEmpty()) searchPassData.arrivalAirport.cityCode else searchPassData.arrivalAirport.airportCode,
-                                if (searchPassData.isOneWay) "oneway" else "roundtrip",
-                                searchPassData.flightPassengerModel.adult,
-                                searchPassData.flightPassengerModel.children,
-                                searchPassData.flightPassengerModel.infant,
-                                searchPassData.flightClass.title,
-                                DateUtil.formatDate(DateUtil.YYYY_MM_DD, DateUtil.YYYYMMDD, searchPassData.departureDate),
-                                if (searchPassData.isOneWay) "" else String.format(" - %s", DateUtil.formatDate(
-                                        DateUtil.YYYY_MM_DD, DateUtil.YYYYMMDD, searchPassData.returnDate))
-                        ),
-                        screenName = FlightAnalyticsScreenName.SEARCH,
-                        userId = userId
-                )
+            constructFlightMap(
+                eventName = FlightAnalyticsEvents.SEARCH_RESULT_EVENT,
+                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                eventAction = FlightAnalyticsAction.CLICK_SEARCH_PRODUCT_NOT_FOUND,
+                eventLabel = String.format(
+                    Locale.getDefault(),
+                    "%s - %s-%s - %s - %s-%s-%s - %s - %s%s",
+                    FlightAnalyticsDefaults.FLIGHT_SMALL,
+                    if (searchPassData.departureAirport.airportCode.isEmpty()) searchPassData.departureAirport.cityCode else searchPassData.departureAirport.airportCode,
+                    if (searchPassData.arrivalAirport.airportCode.isEmpty()) searchPassData.arrivalAirport.cityCode else searchPassData.arrivalAirport.airportCode,
+                    if (searchPassData.isOneWay) "oneway" else "roundtrip",
+                    searchPassData.flightPassengerModel.adult,
+                    searchPassData.flightPassengerModel.children,
+                    searchPassData.flightPassengerModel.infant,
+                    searchPassData.flightClass.title,
+                    DateUtil.formatDate(DateUtil.YYYY_MM_DD, DateUtil.YYYYMMDD, searchPassData.departureDate),
+                    if (searchPassData.isOneWay) {
+                        ""
+                    } else {
+                        String.format(
+                            Locale.getDefault(),
+                            " - %s",
+                            DateUtil.formatDate(
+                                DateUtil.YYYY_MM_DD,
+                                DateUtil.YYYYMMDD,
+                                searchPassData.returnDate
+                            )
+                        )
+                    }
+                ),
+                screenName = FlightAnalyticsScreenName.SEARCH,
+                userId = userId
+            )
         )
     }
 
-    fun eventProductViewV2EnhanceEcommerce(searchPassData: FlightSearchPassDataModel,
-                                           journeyModelList: List<FlightJourneyModel>,
-                                           screenName: String,
-                                           userId: String) {
-
+    fun eventProductViewV2EnhanceEcommerce(
+        searchPassData: FlightSearchPassDataModel,
+        journeyModelList: List<FlightJourneyModel>,
+        screenName: String,
+        userId: String
+    ) {
         val products = arrayListOf<Bundle>()
         for ((index, item) in journeyModelList.withIndex()) {
             products.add(transformSearchProductViewV2(searchPassData, item, index + 1))
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                FlightAnalyticsEvents.PRODUCT_VIEW_EVENT,
-                constructFlightParams(
-                        eventName = FlightAnalyticsEvents.PRODUCT_VIEW_EVENT,
-                        eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        eventAction = FlightAnalyticsAction.PRODUCT_VIEW_ACTION_V2,
-                        eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - " +
-                                "${if (searchPassData.departureAirport.airportCode.isEmpty()) searchPassData.departureAirport.cityCode else searchPassData.departureAirport.airportCode}-" +
-                                (if (searchPassData.arrivalAirport.airportCode.isEmpty()) searchPassData.arrivalAirport.cityCode else searchPassData.arrivalAirport.airportCode),
-                        screenName = screenName,
-                        userId = userId,
-                        eCommerce = Bundle().apply {
-                            putParcelableArrayList(FlightAnalyticsKeys.ITEMS, products)
-                            putString(FlightAnalyticsKeys.LIST, "/flight")
-                        }
-                )
+            FlightAnalyticsEvents.PRODUCT_VIEW_EVENT,
+            constructFlightParams(
+                eventName = FlightAnalyticsEvents.PRODUCT_VIEW_EVENT,
+                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                eventAction = FlightAnalyticsAction.PRODUCT_VIEW_ACTION_V2,
+                eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - " +
+                    "${if (searchPassData.departureAirport.airportCode.isEmpty()) searchPassData.departureAirport.cityCode else searchPassData.departureAirport.airportCode}-" +
+                    (if (searchPassData.arrivalAirport.airportCode.isEmpty()) searchPassData.arrivalAirport.cityCode else searchPassData.arrivalAirport.airportCode),
+                screenName = screenName,
+                userId = userId,
+                eCommerce = Bundle().apply {
+                    putParcelableArrayList(FlightAnalyticsKeys.ITEMS, products)
+                    putString(FlightAnalyticsKeys.LIST, "/flight")
+                }
+            )
         )
     }
 
-    fun eventSearchProductClickV2FromList(searchPassData: FlightSearchPassDataModel,
-                                          journeyModel: FlightJourneyModel?,
-                                          screenName: String,
-                                          userId: String) {
+    fun eventSearchProductClickV2FromList(
+        searchPassData: FlightSearchPassDataModel,
+        journeyModel: FlightJourneyModel?,
+        screenName: String,
+        userId: String
+    ) {
         journeyModel?.let {
             val product = transformSearchProductClickV2(searchPassData, journeyModel, 0)
 
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                    FlightAnalyticsEvents.PRODUCT_CLICK_EVENT,
-                    constructFlightParams(
-                            eventName = FlightAnalyticsEvents.PRODUCT_CLICK_EVENT,
-                            eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                            eventAction = FlightAnalyticsAction.PRODUCT_CLICK_SEARCH_LIST,
-                            eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - ${journeyModel.departureAirport}-${journeyModel.arrivalAirport}",
-                            screenName = screenName,
-                            userId = userId,
-                            eCommerce = Bundle().apply {
-                                putParcelableArrayList(FlightAnalyticsKeys.ITEMS, arrayListOf(product))
-                                putString(FlightAnalyticsKeys.LIST, "/flight")
-                            }
-                    )
+                FlightAnalyticsEvents.PRODUCT_CLICK_EVENT,
+                constructFlightParams(
+                    eventName = FlightAnalyticsEvents.PRODUCT_CLICK_EVENT,
+                    eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                    eventAction = FlightAnalyticsAction.PRODUCT_CLICK_SEARCH_LIST,
+                    eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - ${journeyModel.departureAirport}-${journeyModel.arrivalAirport}",
+                    screenName = screenName,
+                    userId = userId,
+                    eCommerce = Bundle().apply {
+                        putParcelableArrayList(FlightAnalyticsKeys.ITEMS, arrayListOf(product))
+                        putString(FlightAnalyticsKeys.LIST, "/flight")
+                    }
+                )
             )
         }
     }
 
-    fun eventSearchProductClickV2FromList(searchPassData: FlightSearchPassDataModel,
-                                          journeyModel: FlightJourneyModel?,
-                                          adapterPosition: Int,
-                                          screenName: String,
-                                          userId: String) {
+    fun eventSearchProductClickV2FromList(
+        searchPassData: FlightSearchPassDataModel,
+        journeyModel: FlightJourneyModel?,
+        adapterPosition: Int,
+        screenName: String,
+        userId: String
+    ) {
         journeyModel?.let {
             val product = transformSearchProductClickV2(searchPassData, journeyModel, adapterPosition)
 
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                    FlightAnalyticsEvents.PRODUCT_CLICK_EVENT,
-                    constructFlightParams(
-                            eventName = FlightAnalyticsEvents.PRODUCT_CLICK_EVENT,
-                            eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                            eventAction = FlightAnalyticsAction.PRODUCT_CLICK_SEARCH_LIST,
-                            eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - ${journeyModel.departureAirport}-${journeyModel.arrivalAirport}",
-                            screenName = screenName,
-                            userId = userId,
-                            eCommerce = Bundle().apply {
-                                putParcelableArrayList(FlightAnalyticsKeys.ITEMS, arrayListOf(product))
-                                putString(FlightAnalyticsKeys.LIST, "/flight")
-                            }
-                    )
+                FlightAnalyticsEvents.PRODUCT_CLICK_EVENT,
+                constructFlightParams(
+                    eventName = FlightAnalyticsEvents.PRODUCT_CLICK_EVENT,
+                    eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                    eventAction = FlightAnalyticsAction.PRODUCT_CLICK_SEARCH_LIST,
+                    eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - ${journeyModel.departureAirport}-${journeyModel.arrivalAirport}",
+                    screenName = screenName,
+                    userId = userId,
+                    eCommerce = Bundle().apply {
+                        putParcelableArrayList(FlightAnalyticsKeys.ITEMS, arrayListOf(product))
+                        putString(FlightAnalyticsKeys.LIST, "/flight")
+                    }
+                )
             )
         }
     }
@@ -394,138 +462,151 @@ class FlightAnalytics @Inject constructor() {
     fun eventSearchDetailClick(journeyModel: FlightJourneyModel, adapterPosition: Int) {
         val label = transformSearchDetailLabel(journeyModel, adapterPosition)
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        FlightAnalyticsEvents.GENERIC_EVENT,
-                        FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        FlightAnalyticsAction.CLICK_SEARCH_DETAIL,
-                        label.toString()
-                )
+            TrackAppUtils.gtmData(
+                FlightAnalyticsEvents.GENERIC_EVENT,
+                FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                FlightAnalyticsAction.CLICK_SEARCH_DETAIL,
+                label.toString()
+            )
         )
     }
 
     fun eventDetailPriceTabClick(detailModel: FlightDetailModel) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        FlightAnalyticsEvents.GENERIC_EVENT,
-                        FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        FlightAnalyticsAction.CLICK_PRICE_TAB,
-                        transformEventDetailLabel(detailModel)
-                )
+            TrackAppUtils.gtmData(
+                FlightAnalyticsEvents.GENERIC_EVENT,
+                FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                FlightAnalyticsAction.CLICK_PRICE_TAB,
+                transformEventDetailLabel(detailModel)
+            )
         )
     }
 
     fun eventDetailFacilitiesTabClick(detailModel: FlightDetailModel) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        FlightAnalyticsEvents.GENERIC_EVENT,
-                        FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        FlightAnalyticsAction.CLICK_FACILITIES_TAB,
-                        transformEventDetailLabel(detailModel)
-                )
+            TrackAppUtils.gtmData(
+                FlightAnalyticsEvents.GENERIC_EVENT,
+                FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                FlightAnalyticsAction.CLICK_FACILITIES_TAB,
+                transformEventDetailLabel(detailModel)
+            )
         )
     }
 
     fun eventDetailTabClick(detailModel: FlightDetailModel) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        FlightAnalyticsEvents.GENERIC_EVENT,
-                        FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        FlightAnalyticsAction.CLICK_DETAIL_TAB,
-                        transformEventDetailLabel(detailModel)
-                )
+            TrackAppUtils.gtmData(
+                FlightAnalyticsEvents.GENERIC_EVENT,
+                FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                FlightAnalyticsAction.CLICK_DETAIL_TAB,
+                transformEventDetailLabel(detailModel)
+            )
         )
     }
 
-    fun eventCheckoutClick(departureTrip: FlightDetailModel?,
-                           returnTrip: FlightDetailModel?,
-                           searchPassData: FlightSearchPassDataModel,
-                           comboKey: String,
-                           userId: String) {
+    fun eventCheckoutClick(
+        departureTrip: FlightDetailModel?,
+        returnTrip: FlightDetailModel?,
+        searchPassData: FlightSearchPassDataModel,
+        comboKey: String,
+        userId: String
+    ) {
         val products = arrayListOf<Bundle>()
 
         departureTrip?.let { departure ->
-            products.addAll(constructEnhanceEcommerceProduct(
+            products.addAll(
+                constructEnhanceEcommerceProduct(
                     departure,
                     comboKey,
                     searchPassData.flightClass.title,
                     returnTrip == null
-            ))
+                )
+            )
             returnTrip?.let {
-                products.addAll(constructEnhanceEcommerceProduct(
+                products.addAll(
+                    constructEnhanceEcommerceProduct(
                         it,
                         comboKey,
                         searchPassData.flightClass.title,
                         false
-                ))
+                    )
+                )
             }
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                FlightAnalyticsEvents.CHECKOUT_EVENT,
-                constructFlightParams(
-                        eventName = FlightAnalyticsEvents.CHECKOUT_EVENT,
-                        eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        eventAction = FlightAnalyticsAction.BOOKING_NEXT,
-                        eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - ${departureTrip?.departureAirport ?: ""}-${departureTrip?.arrivalAirport ?: ""}",
-                        screenName = FlightAnalyticsScreenName.BOOKING,
-                        userId = userId,
-                        eCommerce = Bundle().apply {
-                            putParcelableArrayList(FlightAnalyticsKeys.ITEMS, products)
-                            putString(FlightAnalyticsKeys.CHECKOUT_STEP, "1")
-                            putString(FlightAnalyticsKeys.CHECKOUT_OPTION, FlightAnalyticsAction.BOOKING_NEXT)
-                        }
-                )
+            FlightAnalyticsEvents.CHECKOUT_EVENT,
+            constructFlightParams(
+                eventName = FlightAnalyticsEvents.CHECKOUT_EVENT,
+                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                eventAction = FlightAnalyticsAction.BOOKING_NEXT,
+                eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - ${departureTrip?.departureAirport ?: ""}-${departureTrip?.arrivalAirport ?: ""}",
+                screenName = FlightAnalyticsScreenName.BOOKING,
+                userId = userId,
+                eCommerce = Bundle().apply {
+                    putParcelableArrayList(FlightAnalyticsKeys.ITEMS, products)
+                    putString(FlightAnalyticsKeys.CHECKOUT_STEP, "1")
+                    putString(FlightAnalyticsKeys.CHECKOUT_OPTION, FlightAnalyticsAction.BOOKING_NEXT)
+                }
+            )
         )
     }
 
     fun eventPassengerClick(adult: Int, children: Int, infant: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        FlightAnalyticsEvents.GENERIC_EVENT,
-                        FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        FlightAnalyticsAction.SELECT_PASSENGER,
-                        "$adult ${FlightAnalyticsLabel.ADULT} - $children ${FlightAnalyticsLabel.CHILD} - $infant ${FlightAnalyticsLabel.INFANT}"
-                )
+            TrackAppUtils.gtmData(
+                FlightAnalyticsEvents.GENERIC_EVENT,
+                FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                FlightAnalyticsAction.SELECT_PASSENGER,
+                "$adult ${FlightAnalyticsLabel.ADULT} - $children ${FlightAnalyticsLabel.CHILD} - $infant ${FlightAnalyticsLabel.INFANT}"
+            )
         )
     }
 
-    fun eventAddToCart(flightClass: FlightClassModel,
-                       departureModel: FlightDetailModel?,
-                       returnModel: FlightDetailModel?,
-                       comboKey: String,
-                       userId: String) {
+    fun eventAddToCart(
+        flightClass: FlightClassModel,
+        departureModel: FlightDetailModel?,
+        returnModel: FlightDetailModel?,
+        comboKey: String,
+        userId: String
+    ) {
         val products = arrayListOf<Bundle>()
 
         departureModel?.let { departure ->
-            products.addAll(constructEnhanceEcommerceProduct(
+            products.addAll(
+                constructEnhanceEcommerceProduct(
                     departure,
                     comboKey,
                     flightClass.title,
-                    returnModel == null))
+                    returnModel == null
+                )
+            )
             returnModel?.let {
-                products.addAll(constructEnhanceEcommerceProduct(
+                products.addAll(
+                    constructEnhanceEcommerceProduct(
                         it,
                         comboKey,
                         flightClass.title,
                         false
-                ))
+                    )
+                )
             }
         }
 
         try {
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                    FlightAnalyticsEvents.ATC_EVENT,
-                    constructFlightParams(
-                            eventName = FlightAnalyticsEvents.ATC_EVENT,
-                            eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                            eventAction = FlightAnalyticsAction.ADD_TO_CART,
-                            eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - ${departureModel?.departureAirport ?: ""}-${departureModel?.arrivalAirport ?: ""}",
-                            screenName = FlightAnalyticsScreenName.BOOKING,
-                            userId = userId,
-                            eCommerce = Bundle().apply {
-                                putParcelableArrayList(FlightAnalyticsKeys.ITEMS, products)
-                            }
-                    )
+                FlightAnalyticsEvents.ATC_EVENT,
+                constructFlightParams(
+                    eventName = FlightAnalyticsEvents.ATC_EVENT,
+                    eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                    eventAction = FlightAnalyticsAction.ADD_TO_CART,
+                    eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - ${departureModel?.departureAirport ?: ""}-${departureModel?.arrivalAirport ?: ""}",
+                    screenName = FlightAnalyticsScreenName.BOOKING,
+                    userId = userId,
+                    eCommerce = Bundle().apply {
+                        putParcelableArrayList(FlightAnalyticsKeys.ITEMS, products)
+                    }
+                )
             )
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -533,11 +614,11 @@ class FlightAnalytics @Inject constructor() {
     }
 
     fun eventPromoImpression(
-            position: Int,
-            banner: TravelCollectiveBannerModel.Banner,
-            screenName: String,
-            userId: String) {
-
+        position: Int,
+        banner: TravelCollectiveBannerModel.Banner,
+        screenName: String,
+        userId: String
+    ) {
         val promo = Bundle().apply {
             putString(FlightAnalyticsKeys.ID, banner.id)
             putString(FlightAnalyticsKeys.NAME, "${banner.attribute.promoCode} - slider banner")
@@ -547,190 +628,213 @@ class FlightAnalytics @Inject constructor() {
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                FlightAnalyticsEvents.PROMO_VIEW_EVENT,
-                constructFlightParams(
-                        eventName = FlightAnalyticsEvents.PROMO_VIEW_EVENT,
-                        eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        eventAction = FlightAnalyticsAction.PROMOTION_VIEW,
-                        eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - ${position + 1} - ${banner.attribute.promoCode}",
-                        screenName = screenName,
-                        userId = userId,
-                        eCommerce = Bundle().apply {
-                            putParcelableArrayList(FlightAnalyticsKeys.PROMOTIONS, arrayListOf(promo))
-                        }
-                )
+            FlightAnalyticsEvents.PROMO_VIEW_EVENT,
+            constructFlightParams(
+                eventName = FlightAnalyticsEvents.PROMO_VIEW_EVENT,
+                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                eventAction = FlightAnalyticsAction.PROMOTION_VIEW,
+                eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - ${position + 1} - ${banner.attribute.promoCode}",
+                screenName = screenName,
+                userId = userId,
+                eCommerce = Bundle().apply {
+                    putParcelableArrayList(FlightAnalyticsKeys.PROMOTIONS, arrayListOf(promo))
+                }
+            )
         )
     }
 
-    fun eventProductDetailImpression(journeyModel: FlightJourneyModel,
-                                     adapterPosition: Int) {
+    fun eventProductDetailImpression(
+        journeyModel: FlightJourneyModel,
+        adapterPosition: Int
+    ) {
         val label = transformSearchDetailLabel(journeyModel, adapterPosition)
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        FlightAnalyticsEvents.GENERIC_EVENT,
-                        FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        FlightAnalyticsAction.PRODUCT_DETAIL_IMPRESSION,
-                        label.toString()
-                )
+            TrackAppUtils.gtmData(
+                FlightAnalyticsEvents.GENERIC_EVENT,
+                FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                FlightAnalyticsAction.PRODUCT_DETAIL_IMPRESSION,
+                label.toString()
+            )
         )
     }
 
     fun eventBranchCheckoutFlight(
-            productName: String,
-            journeyId: String,
-            invoiceId: String,
-            paymentId: String,
-            userId: String,
-            totalPrice: String) {
+        productName: String,
+        journeyId: String,
+        invoiceId: String,
+        paymentId: String,
+        userId: String,
+        totalPrice: String
+    ) {
         LinkerManager.getInstance().sendEvent(
-                LinkerUtils.createGenericRequest(
-                        LinkerConstants.EVENT_PURCHASE_FLIGHT,
-                        createLinkerData(
-                                productName,
-                                journeyId,
-                                invoiceId,
-                                paymentId,
-                                userId,
-                                totalPrice
-                        )
+            LinkerUtils.createGenericRequest(
+                LinkerConstants.EVENT_PURCHASE_FLIGHT,
+                createLinkerData(
+                    productName,
+                    journeyId,
+                    invoiceId,
+                    paymentId,
+                    userId,
+                    totalPrice
                 )
+            )
         )
     }
 
-    fun openOrderDetail(eventLabel: String,
-                        userId: String) {
+    fun openOrderDetail(
+        eventLabel: String,
+        userId: String
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                constructFlightMap(
-                        eventName = FlightAnalyticsEvents.SEARCH_RESULT_EVENT,
-                        eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        eventAction = FlightAnalyticsAction.VIEW_ORDER_DETAIL,
-                        eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $eventLabel",
-                        screenName = FlightAnalyticsScreenName.ORDER_DETAIL,
-                        userId = userId
-                )
+            constructFlightMap(
+                eventName = FlightAnalyticsEvents.SEARCH_RESULT_EVENT,
+                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                eventAction = FlightAnalyticsAction.VIEW_ORDER_DETAIL,
+                eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $eventLabel",
+                screenName = FlightAnalyticsScreenName.ORDER_DETAIL,
+                userId = userId
+            )
         )
     }
 
-    fun eventSendETicketOrderDetail(eventLabel: String,
-                                    userId: String) {
+    fun eventSendETicketOrderDetail(
+        eventLabel: String,
+        userId: String
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                constructFlightMap(
-                        eventName = FlightAnalyticsEvents.FLIGHT_CLICK_EVENT,
-                        eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        eventAction = FlightAnalyticsAction.CLICK_SEND_ETICKET,
-                        eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $eventLabel",
-                        screenName = FlightAnalyticsScreenName.ORDER_DETAIL,
-                        userId = userId
-                )
+            constructFlightMap(
+                eventName = FlightAnalyticsEvents.FLIGHT_CLICK_EVENT,
+                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                eventAction = FlightAnalyticsAction.CLICK_SEND_ETICKET,
+                eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $eventLabel",
+                screenName = FlightAnalyticsScreenName.ORDER_DETAIL,
+                userId = userId
+            )
         )
     }
 
-    fun eventDownloadETicketOrderDetail(eventLabel: String,
-                                        userId: String) {
+    fun eventDownloadETicketOrderDetail(
+        eventLabel: String,
+        userId: String
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                constructFlightMap(
-                        eventName = FlightAnalyticsEvents.FLIGHT_CLICK_EVENT,
-                        eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        eventAction = FlightAnalyticsAction.CLICK_DOWNLOAD_ETICKET,
-                        eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $eventLabel",
-                        screenName = FlightAnalyticsScreenName.ORDER_DETAIL,
-                        userId = userId
-                )
+            constructFlightMap(
+                eventName = FlightAnalyticsEvents.FLIGHT_CLICK_EVENT,
+                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                eventAction = FlightAnalyticsAction.CLICK_DOWNLOAD_ETICKET,
+                eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $eventLabel",
+                screenName = FlightAnalyticsScreenName.ORDER_DETAIL,
+                userId = userId
+            )
         )
     }
 
-    fun eventWebCheckInOrderDetail(eventLabel: String,
-                                   userId: String) {
+    fun eventWebCheckInOrderDetail(
+        eventLabel: String,
+        userId: String
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                constructFlightMap(
-                        eventName = FlightAnalyticsEvents.FLIGHT_CLICK_EVENT,
-                        eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        eventAction = FlightAnalyticsAction.CLICK_WEB_CHECKIN,
-                        eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $eventLabel",
-                        screenName = FlightAnalyticsScreenName.ORDER_DETAIL,
-                        userId = userId
-                )
+            constructFlightMap(
+                eventName = FlightAnalyticsEvents.FLIGHT_CLICK_EVENT,
+                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                eventAction = FlightAnalyticsAction.CLICK_WEB_CHECKIN,
+                eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $eventLabel",
+                screenName = FlightAnalyticsScreenName.ORDER_DETAIL,
+                userId = userId
+            )
         )
     }
 
-    fun eventCancelTicketOrderDetail(eventLabel: String,
-                                     userId: String) {
+    fun eventCancelTicketOrderDetail(
+        eventLabel: String,
+        userId: String
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                constructFlightMap(
-                        eventName = FlightAnalyticsEvents.FLIGHT_CLICK_EVENT,
-                        eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        eventAction = FlightAnalyticsAction.CLICK_CANCEL_TICKET,
-                        eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $eventLabel",
-                        screenName = FlightAnalyticsScreenName.ORDER_DETAIL,
-                        userId = userId
-                )
+            constructFlightMap(
+                eventName = FlightAnalyticsEvents.FLIGHT_CLICK_EVENT,
+                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                eventAction = FlightAnalyticsAction.CLICK_CANCEL_TICKET,
+                eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $eventLabel",
+                screenName = FlightAnalyticsScreenName.ORDER_DETAIL,
+                userId = userId
+            )
         )
     }
 
-    fun eventClickOnWebCheckIn(eventLabel: String,
-                               userId: String,
-                               isDeparture: Boolean) {
+    fun eventClickOnWebCheckIn(
+        eventLabel: String,
+        userId: String,
+        isDeparture: Boolean
+    ) {
         val action = if (isDeparture) FlightAnalyticsAction.CLICK_CHECKIN_DEPARTURE else FlightAnalyticsAction.CLICK_CHECKIN_RETURN
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                constructFlightMap(
-                        eventName = FlightAnalyticsEvents.FLIGHT_CLICK_EVENT,
-                        eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        eventAction = action,
-                        eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $eventLabel",
-                        screenName = FlightAnalyticsScreenName.WEB_CHECKIN,
-                        userId = userId
-                )
+            constructFlightMap(
+                eventName = FlightAnalyticsEvents.FLIGHT_CLICK_EVENT,
+                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                eventAction = action,
+                eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $eventLabel",
+                screenName = FlightAnalyticsScreenName.WEB_CHECKIN,
+                userId = userId
+            )
         )
     }
 
-    fun eventClickNextOnCancellationPassenger(eventLabel: String,
-                                              userId: String) {
+    fun eventClickNextOnCancellationPassenger(
+        eventLabel: String,
+        userId: String
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                constructFlightMap(
-                        eventName = FlightAnalyticsEvents.FLIGHT_CLICK_EVENT,
-                        eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        eventAction = FlightAnalyticsAction.CLICK_NEXT_CANCELLATION_PASSENGER,
-                        eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $eventLabel",
-                        screenName = FlightAnalyticsScreenName.CANCELLATION_PASSENGER,
-                        userId = userId
-                )
+            constructFlightMap(
+                eventName = FlightAnalyticsEvents.FLIGHT_CLICK_EVENT,
+                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                eventAction = FlightAnalyticsAction.CLICK_NEXT_CANCELLATION_PASSENGER,
+                eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $eventLabel",
+                screenName = FlightAnalyticsScreenName.CANCELLATION_PASSENGER,
+                userId = userId
+            )
         )
     }
 
-    fun eventClickNextOnCancellationReason(eventLabel: String,
-                                           userId: String) {
+    fun eventClickNextOnCancellationReason(
+        eventLabel: String,
+        userId: String
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                constructFlightMap(
-                        eventName = FlightAnalyticsEvents.FLIGHT_CLICK_EVENT,
-                        eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        eventAction = FlightAnalyticsAction.CLICK_NEXT_CANCELLATION_REASON,
-                        eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $eventLabel",
-                        screenName = FlightAnalyticsScreenName.CANCELLATION_REASON,
-                        userId = userId
-                )
+            constructFlightMap(
+                eventName = FlightAnalyticsEvents.FLIGHT_CLICK_EVENT,
+                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                eventAction = FlightAnalyticsAction.CLICK_NEXT_CANCELLATION_REASON,
+                eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $eventLabel",
+                screenName = FlightAnalyticsScreenName.CANCELLATION_REASON,
+                userId = userId
+            )
         )
     }
 
-    fun eventClickNextOnCancellationSubmit(eventLabel: String,
-                                           userId: String) {
+    fun eventClickNextOnCancellationSubmit(
+        eventLabel: String,
+        userId: String
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                constructFlightMap(
-                        eventName = FlightAnalyticsEvents.FLIGHT_CLICK_EVENT,
-                        eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        eventAction = FlightAnalyticsAction.CLICK_SUBMIT_CANCELLATION,
-                        eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $eventLabel",
-                        screenName = FlightAnalyticsScreenName.CANCELLATION_SUMMARY,
-                        userId = userId
-                )
+            constructFlightMap(
+                eventName = FlightAnalyticsEvents.FLIGHT_CLICK_EVENT,
+                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                eventAction = FlightAnalyticsAction.CLICK_SUBMIT_CANCELLATION,
+                eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - $eventLabel",
+                screenName = FlightAnalyticsScreenName.CANCELLATION_SUMMARY,
+                userId = userId
+            )
         )
     }
 
-    fun eventFlightPromotionClick(position: Int,
-                                  airlinePrice: AirlinePrice,
-                                  searchPassData: FlightSearchPassDataModel,
-                                  screenName: String,
-                                  userId: String,
-                                  isReturn: Boolean) {
+    fun eventFlightPromotionClick(
+        position: Int,
+        airlinePrice: AirlinePrice,
+        searchPassData: FlightSearchPassDataModel,
+        screenName: String,
+        userId: String,
+        isReturn: Boolean
+    ) {
         val action = if (isReturn) FlightAnalyticsAction.CLICK_RETURN_PROMOTION_CHIPS else FlightAnalyticsAction.CLICK_DEPARTURE_PROMOTION_CHIPS
         val promo = Bundle().apply {
             putString(FlightAnalyticsKeys.ID, airlinePrice.airlineID)
@@ -741,24 +845,26 @@ class FlightAnalytics @Inject constructor() {
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                FlightAnalyticsEvents.PROMO_CLICK_EVENT,
-                constructFlightParams(
-                        eventName = FlightAnalyticsEvents.PROMO_CLICK_EVENT,
-                        eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        eventAction = action,
-                        eventLabel = "${airlinePrice.airlineID} - ${searchPassData.getDepartureAirport(isReturn)} - ${searchPassData.getArrivalAirport(isReturn)} - ${airlinePrice.priceNumeric}",
-                        screenName = screenName,
-                        userId = userId,
-                        eCommerce = Bundle().apply {
-                            putParcelableArrayList(FlightAnalyticsKeys.PROMOTIONS, arrayListOf(promo))
-                        }
-                )
+            FlightAnalyticsEvents.PROMO_CLICK_EVENT,
+            constructFlightParams(
+                eventName = FlightAnalyticsEvents.PROMO_CLICK_EVENT,
+                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                eventAction = action,
+                eventLabel = "${airlinePrice.airlineID} - ${searchPassData.getDepartureAirport(isReturn)} - ${searchPassData.getArrivalAirport(isReturn)} - ${airlinePrice.priceNumeric}",
+                screenName = screenName,
+                userId = userId,
+                eCommerce = Bundle().apply {
+                    putParcelableArrayList(FlightAnalyticsKeys.PROMOTIONS, arrayListOf(promo))
+                }
+            )
         )
     }
 
-    fun eventVideoBannerImpression(videoBannerModel: TravelVideoBannerModel,
-                                   screenName: String,
-                                   userId: String) {
+    fun eventVideoBannerImpression(
+        videoBannerModel: TravelVideoBannerModel,
+        screenName: String,
+        userId: String
+    ) {
         val promo = Bundle().apply {
             putString(FlightAnalyticsKeys.ID, videoBannerModel.id)
             putString(FlightAnalyticsKeys.NAME, "/flight")
@@ -767,24 +873,26 @@ class FlightAnalytics @Inject constructor() {
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                FlightAnalyticsEvents.PROMO_VIEW_EVENT,
-                constructFlightParams(
-                        eventName = FlightAnalyticsEvents.PROMO_VIEW_EVENT,
-                        eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        eventAction = FlightAnalyticsAction.VIDEO_BANNER_VIEW,
-                        eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - ${FlightAnalyticsLabel.FLIGHT_TRAVEL_VIDEO_BANNER}",
-                        screenName = screenName,
-                        userId = userId,
-                        eCommerce = Bundle().apply {
-                            putParcelableArrayList(FlightAnalyticsKeys.PROMOTIONS, arrayListOf(promo))
-                        }
-                )
+            FlightAnalyticsEvents.PROMO_VIEW_EVENT,
+            constructFlightParams(
+                eventName = FlightAnalyticsEvents.PROMO_VIEW_EVENT,
+                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                eventAction = FlightAnalyticsAction.VIDEO_BANNER_VIEW,
+                eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - ${FlightAnalyticsLabel.FLIGHT_TRAVEL_VIDEO_BANNER}",
+                screenName = screenName,
+                userId = userId,
+                eCommerce = Bundle().apply {
+                    putParcelableArrayList(FlightAnalyticsKeys.PROMOTIONS, arrayListOf(promo))
+                }
+            )
         )
     }
 
-    fun eventVideoBannerClick(videoBannerModel: TravelVideoBannerModel,
-                              screenName: String,
-                              userId: String) {
+    fun eventVideoBannerClick(
+        videoBannerModel: TravelVideoBannerModel,
+        screenName: String,
+        userId: String
+    ) {
         val promo = Bundle().apply {
             putString(FlightAnalyticsKeys.ID, videoBannerModel.id)
             putString(FlightAnalyticsKeys.NAME, "/flight")
@@ -793,100 +901,102 @@ class FlightAnalytics @Inject constructor() {
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                FlightAnalyticsEvents.PROMO_CLICK_EVENT,
-                constructFlightParams(
-                        eventName = FlightAnalyticsEvents.PROMO_CLICK_EVENT,
-                        eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
-                        eventAction = FlightAnalyticsAction.VIDEO_BANNER_CLICK,
-                        eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - ${FlightAnalyticsLabel.FLIGHT_TRAVEL_VIDEO_BANNER}",
-                        screenName = screenName,
-                        userId = userId,
-                        eCommerce = Bundle().apply {
-                            putParcelableArrayList(FlightAnalyticsKeys.PROMOTIONS, arrayListOf(promo))
-                        }
-                )
+            FlightAnalyticsEvents.PROMO_CLICK_EVENT,
+            constructFlightParams(
+                eventName = FlightAnalyticsEvents.PROMO_CLICK_EVENT,
+                eventCategory = FlightAnalyticsDefaults.GENERIC_CATEGORY,
+                eventAction = FlightAnalyticsAction.VIDEO_BANNER_CLICK,
+                eventLabel = "${FlightAnalyticsDefaults.FLIGHT_SMALL} - ${FlightAnalyticsLabel.FLIGHT_TRAVEL_VIDEO_BANNER}",
+                screenName = screenName,
+                userId = userId,
+                eCommerce = Bundle().apply {
+                    putParcelableArrayList(FlightAnalyticsKeys.PROMOTIONS, arrayListOf(promo))
+                }
+            )
         )
     }
 
     private fun createLinkerData(
-            productName: String,
-            journeyId: String,
-            invoiceId: String,
-            paymentId: String,
-            userId: String,
-            totalPrice: String
+        productName: String,
+        journeyId: String,
+        invoiceId: String,
+        paymentId: String,
+        userId: String,
+        totalPrice: String
     ): LinkerData =
-            LinkerData().apply {
-                productCategory = FlightAnalyticsDefaults.FLIGHT_SMALL
-                this.productName = productName
-                this.journeyId = journeyId
-                this.userId = userId
-                this.invoiceId = invoiceId
-                this.paymentId = paymentId
-                this.price = totalPrice
+        LinkerData().apply {
+            productCategory = FlightAnalyticsDefaults.FLIGHT_SMALL
+            this.productName = productName
+            this.journeyId = journeyId
+            this.userId = userId
+            this.invoiceId = invoiceId
+            this.paymentId = paymentId
+            this.price = totalPrice
+        }
+
+    private fun constructFlightParams(
+        eventName: String?,
+        eventCategory: String?,
+        eventAction: String?,
+        eventLabel: String?,
+        screenName: String?,
+        userId: String?,
+        eCommerce: Bundle? = null,
+        sendCurrentSite: Boolean = true,
+        sendClientId: Boolean = true,
+        sendBusinessUnit: Boolean = true,
+        sendCategory: Boolean = true
+    ): Bundle =
+        Bundle().apply {
+            eventName?.let { putString(FlightAnalyticsKeys.EVENT, it) }
+            eventCategory?.let { putString(FlightAnalyticsKeys.EVENT_CATEGORY, it) }
+            eventAction?.let { putString(FlightAnalyticsKeys.EVENT_ACTION, it) }
+            eventLabel?.let { putString(FlightAnalyticsKeys.EVENT_LABEL, it) }
+            screenName?.let { putString(FlightAnalyticsKeys.SCREEN_NAME, it) }
+            userId?.let { putString(FlightAnalyticsKeys.USER_ID, it) }
+            eCommerce?.let { putAll(it) }
+            if (sendCurrentSite) putString(FlightAnalyticsKeys.CURRENT_SITE, FlightAnalyticsDefaults.FLIGHT_CURRENT_SITE)
+            if (sendClientId) putString(FlightAnalyticsKeys.CLIENT_ID, TrackApp.getInstance().gtm.clientIDString)
+            if (sendBusinessUnit) putString(FlightAnalyticsKeys.BUSSINESS_UNIT, FlightAnalyticsDefaults.FLIGHT_BU)
+            if (sendCategory) putString(FlightAnalyticsKeys.CATEGORY, FlightAnalyticsDefaults.FLIGHT_SMALL)
+        }
+
+    private fun constructFlightMap(
+        eventName: String?,
+        eventCategory: String?,
+        eventAction: String?,
+        eventLabel: String?,
+        screenName: String?,
+        userId: String?,
+        customMap: Map<String, Any>? = null,
+        sendCurrentSite: Boolean = true,
+        sendClientId: Boolean = true,
+        sendBusinessUnit: Boolean = true,
+        sendCategory: Boolean = true
+    ): Map<String, Any> =
+        HashMap<String, Any>().apply {
+            eventName?.let { put(FlightAnalyticsKeys.EVENT, it) }
+            eventCategory?.let { put(FlightAnalyticsKeys.EVENT_CATEGORY, it) }
+            eventAction?.let { put(FlightAnalyticsKeys.EVENT_ACTION, it) }
+            eventLabel?.let { put(FlightAnalyticsKeys.EVENT_LABEL, it) }
+            screenName?.let { put(FlightAnalyticsKeys.SCREEN_NAME, it) }
+            userId?.let { put(FlightAnalyticsKeys.USER_ID, it) }
+            if (sendCurrentSite) put(FlightAnalyticsKeys.CURRENT_SITE, FlightAnalyticsDefaults.FLIGHT_CURRENT_SITE)
+            if (sendClientId) put(FlightAnalyticsKeys.CLIENT_ID, TrackApp.getInstance().gtm.clientIDString)
+            if (sendBusinessUnit) put(FlightAnalyticsKeys.BUSSINESS_UNIT, FlightAnalyticsDefaults.FLIGHT_BU)
+            if (sendCategory) put(FlightAnalyticsKeys.CATEGORY, FlightAnalyticsDefaults.FLIGHT_SMALL)
+
+            customMap?.let {
+                putAll(it)
             }
-
-
-    private fun constructFlightParams(eventName: String?,
-                                      eventCategory: String?,
-                                      eventAction: String?,
-                                      eventLabel: String?,
-                                      screenName: String?,
-                                      userId: String?,
-                                      eCommerce: Bundle? = null,
-                                      sendCurrentSite: Boolean = true,
-                                      sendClientId: Boolean = true,
-                                      sendBusinessUnit: Boolean = true,
-                                      sendCategory: Boolean = true): Bundle =
-            Bundle().apply {
-                eventName?.let { putString(FlightAnalyticsKeys.EVENT, it) }
-                eventCategory?.let { putString(FlightAnalyticsKeys.EVENT_CATEGORY, it) }
-                eventAction?.let { putString(FlightAnalyticsKeys.EVENT_ACTION, it) }
-                eventLabel?.let { putString(FlightAnalyticsKeys.EVENT_LABEL, it) }
-                screenName?.let { putString(FlightAnalyticsKeys.SCREEN_NAME, it) }
-                userId?.let { putString(FlightAnalyticsKeys.USER_ID, it) }
-                eCommerce?.let { putAll(it) }
-                if (sendCurrentSite) putString(FlightAnalyticsKeys.CURRENT_SITE, FlightAnalyticsDefaults.FLIGHT_CURRENT_SITE)
-                if (sendClientId) putString(FlightAnalyticsKeys.CLIENT_ID, TrackApp.getInstance().gtm.clientIDString)
-                if (sendBusinessUnit) putString(FlightAnalyticsKeys.BUSSINESS_UNIT, FlightAnalyticsDefaults.FLIGHT_BU)
-                if (sendCategory) putString(FlightAnalyticsKeys.CATEGORY, FlightAnalyticsDefaults.FLIGHT_SMALL)
-
-            }
-
-    private fun constructFlightMap(eventName: String?,
-                                   eventCategory: String?,
-                                   eventAction: String?,
-                                   eventLabel: String?,
-                                   screenName: String?,
-                                   userId: String?,
-                                   customMap: Map<String, Any>? = null,
-                                   sendCurrentSite: Boolean = true,
-                                   sendClientId: Boolean = true,
-                                   sendBusinessUnit: Boolean = true,
-                                   sendCategory: Boolean = true): Map<String, Any> =
-            HashMap<String, Any>().apply {
-                eventName?.let { put(FlightAnalyticsKeys.EVENT, it) }
-                eventCategory?.let { put(FlightAnalyticsKeys.EVENT_CATEGORY, it) }
-                eventAction?.let { put(FlightAnalyticsKeys.EVENT_ACTION, it) }
-                eventLabel?.let { put(FlightAnalyticsKeys.EVENT_LABEL, it) }
-                screenName?.let { put(FlightAnalyticsKeys.SCREEN_NAME, it) }
-                userId?.let { put(FlightAnalyticsKeys.USER_ID, it) }
-                if (sendCurrentSite) put(FlightAnalyticsKeys.CURRENT_SITE, FlightAnalyticsDefaults.FLIGHT_CURRENT_SITE)
-                if (sendClientId) put(FlightAnalyticsKeys.CLIENT_ID, TrackApp.getInstance().gtm.clientIDString)
-                if (sendBusinessUnit) put(FlightAnalyticsKeys.BUSSINESS_UNIT, FlightAnalyticsDefaults.FLIGHT_BU)
-                if (sendCategory) put(FlightAnalyticsKeys.CATEGORY, FlightAnalyticsDefaults.FLIGHT_SMALL)
-
-                customMap?.let {
-                    putAll(it)
-                }
-            }
+        }
 
     private fun constructEnhanceEcommerceProduct(
-            detailModel: FlightDetailModel,
-            comboKey: String,
-            flightClass: String,
-            isOneWay: Boolean): List<Bundle> {
-
+        detailModel: FlightDetailModel,
+        comboKey: String,
+        flightClass: String,
+        isOneWay: Boolean
+    ): List<Bundle> {
         val name = "${detailModel.departureAirportCity}-${detailModel.arrivalAirportCity}"
 
         val totalPriceAdult = detailModel.adultNumericPrice * detailModel.countAdult
@@ -894,107 +1004,115 @@ class FlightAnalytics @Inject constructor() {
         val totalPriceInfant = detailModel.infantNumericPrice * detailModel.countInfant
 
         val layoverDayDiff: Long = DateUtil.getDayDiff(
-                DateUtil.formatDate(
-                        DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                        DateUtil.YYYY_MM_DD,
-                        detailModel.routeList[0].departureTimestamp
-                ),
-                DateUtil.formatDate(
-                        DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                        DateUtil.YYYY_MM_DD,
-                        detailModel.routeList[detailModel.routeList.size - 1].arrivalTimestamp
-                )
+            DateUtil.formatDate(
+                DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                DateUtil.YYYY_MM_DD,
+                detailModel.routeList[0].departureTimestamp
+            ),
+            DateUtil.formatDate(
+                DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                DateUtil.YYYY_MM_DD,
+                detailModel.routeList[detailModel.routeList.size - 1].arrivalTimestamp
+            )
         )
         val dayDiffString = if (layoverDayDiff > 0) " +$layoverDayDiff" else ""
 
         return arrayListOf(
-                Bundle().apply {
-                    putString(FlightAnalyticsKeys.NAME, name)
-                    putLong(FlightAnalyticsKeys.PRICE, (totalPriceAdult + totalPriceChild + totalPriceInfant).toLong())
-                    putString(FlightAnalyticsKeys.ID, if (comboKey.isNotEmpty()) comboKey else detailModel.id)
-                    putString(FlightAnalyticsKeys.BRAND, detailModel.routeList[0].airlineName)
-                    putString(FlightAnalyticsKeys.ITEM_CATEGORY, FlightAnalyticsDefaults.FLIGHT_FIRST_CAPITAL)
-                    putInt(FlightAnalyticsKeys.QUANTITY, detailModel.countAdult + detailModel.countChild + detailModel.countInfant)
-                    putString(FlightAnalyticsKeys.DIMENSION66, DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.YYYYMMDD, detailModel.routeList[0].departureTimestamp))
-                    putString(FlightAnalyticsKeys.DIMENSION67, if (isOneWay) "oneway" else "roundtrip")
-                    putString(FlightAnalyticsKeys.DIMENSION68, flightClass)
-                    putString(FlightAnalyticsKeys.DIMENSION69, "")
-                    putString(FlightAnalyticsKeys.DIMENSION70, if (detailModel.isRefundable == RefundableEnum.NOT_REFUNDABLE) "false" else "true")
-                    putString(FlightAnalyticsKeys.DIMENSION71, if (detailModel.totalTransit > 0) "true" else "false")
-                    putString(FlightAnalyticsKeys.DIMENSION72, if (detailModel.beforeTotal == "") "normal" else "strike")
-                    putString(FlightAnalyticsKeys.DIMENSION73, "${detailModel.countAdult} - ${detailModel.countChild} - ${detailModel.countInfant}")
-                    putString(FlightAnalyticsKeys.DIMENSION74, "${detailModel.routeList[0].airlineCode} - ${detailModel.routeList[0].flightNumber}")
-                    putString(FlightAnalyticsKeys.DIMENSION75, detailModel.departureTime)
-                    putString(FlightAnalyticsKeys.DIMENSION76, "${detailModel.arrivalTime}$dayDiffString")
-                    putString(FlightAnalyticsKeys.VARIANT, "$totalPriceAdult - $totalPriceChild - $totalPriceInfant")
-                }
+            Bundle().apply {
+                putString(FlightAnalyticsKeys.NAME, name)
+                putLong(FlightAnalyticsKeys.PRICE, (totalPriceAdult + totalPriceChild + totalPriceInfant).toLong())
+                putString(FlightAnalyticsKeys.ID, if (comboKey.isNotEmpty()) comboKey else detailModel.id)
+                putString(FlightAnalyticsKeys.BRAND, detailModel.routeList[0].airlineName)
+                putString(FlightAnalyticsKeys.ITEM_CATEGORY, FlightAnalyticsDefaults.FLIGHT_FIRST_CAPITAL)
+                putInt(FlightAnalyticsKeys.QUANTITY, detailModel.countAdult + detailModel.countChild + detailModel.countInfant)
+                putString(FlightAnalyticsKeys.DIMENSION66, DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.YYYYMMDD, detailModel.routeList[0].departureTimestamp))
+                putString(FlightAnalyticsKeys.DIMENSION67, if (isOneWay) "oneway" else "roundtrip")
+                putString(FlightAnalyticsKeys.DIMENSION68, flightClass)
+                putString(FlightAnalyticsKeys.DIMENSION69, "")
+                putString(FlightAnalyticsKeys.DIMENSION70, if (detailModel.isRefundable == RefundableEnum.NOT_REFUNDABLE) "false" else "true")
+                putString(FlightAnalyticsKeys.DIMENSION71, if (detailModel.totalTransit > 0) "true" else "false")
+                putString(FlightAnalyticsKeys.DIMENSION72, if (detailModel.beforeTotal == "") "normal" else "strike")
+                putString(FlightAnalyticsKeys.DIMENSION73, "${detailModel.countAdult} - ${detailModel.countChild} - ${detailModel.countInfant}")
+                putString(FlightAnalyticsKeys.DIMENSION74, "${detailModel.routeList[0].airlineCode} - ${detailModel.routeList[0].flightNumber}")
+                putString(FlightAnalyticsKeys.DIMENSION75, detailModel.departureTime)
+                putString(FlightAnalyticsKeys.DIMENSION76, "${detailModel.arrivalTime}$dayDiffString")
+                putString(FlightAnalyticsKeys.VARIANT, "$totalPriceAdult - $totalPriceChild - $totalPriceInfant")
+            }
         )
     }
 
-    private fun productClickEnhanceEcommmerce(searchPassData: FlightSearchPassDataModel,
-                                              journeyModel: FlightJourneyModel,
-                                              label: StringBuilder) {
+    private fun productClickEnhanceEcommmerce(
+        searchPassData: FlightSearchPassDataModel,
+        journeyModel: FlightJourneyModel,
+        label: StringBuilder
+    ) {
         val products = arrayListOf<Bundle>()
         if (searchPassData.flightPassengerModel.adult > 0) {
             products.add(
-                    Bundle().apply {
-                        putString(FlightAnalyticsKeys.ID, journeyModel.id)
-                        putString(FlightAnalyticsKeys.NAME, "${journeyModel.departureAirportCity}-${journeyModel.arrivalAirportCity} - ${FlightAnalyticsDefaults.FLIGHT_FIRST_CAPITAL}")
-                        putString(FlightAnalyticsKeys.PRICE, journeyModel.fare.adultNumeric.toString())
-                        putString(FlightAnalyticsKeys.BRAND, journeyModel.routeList[0].airlineName)
-                        putString(FlightAnalyticsKeys.ITEM_CATEGORY, FlightAnalyticsDefaults.FLIGHT_FIRST_CAPITAL)
-                        putString(FlightAnalyticsKeys.VARIANT, "${searchPassData.flightClass.title} - Adult")
-                        putString(FlightAnalyticsKeys.QUANTITY, searchPassData.flightPassengerModel.adult.toString())
-                        putString("list", "/flight")
-                    }
+                Bundle().apply {
+                    putString(FlightAnalyticsKeys.ID, journeyModel.id)
+                    putString(FlightAnalyticsKeys.NAME, "${journeyModel.departureAirportCity}-${journeyModel.arrivalAirportCity} - ${FlightAnalyticsDefaults.FLIGHT_FIRST_CAPITAL}")
+                    putString(FlightAnalyticsKeys.PRICE, journeyModel.fare.adultNumeric.toString())
+                    putString(FlightAnalyticsKeys.BRAND, journeyModel.routeList[0].airlineName)
+                    putString(FlightAnalyticsKeys.ITEM_CATEGORY, FlightAnalyticsDefaults.FLIGHT_FIRST_CAPITAL)
+                    putString(FlightAnalyticsKeys.VARIANT, "${searchPassData.flightClass.title} - Adult")
+                    putString(FlightAnalyticsKeys.QUANTITY, searchPassData.flightPassengerModel.adult.toString())
+                    putString("list", "/flight")
+                }
             )
         }
 
         if (searchPassData.flightPassengerModel.children > 0) {
             products.add(
-                    Bundle().apply {
-                        putString(FlightAnalyticsKeys.ID, journeyModel.id)
-                        putString(FlightAnalyticsKeys.NAME, "${journeyModel.departureAirportCity}-${journeyModel.arrivalAirportCity} - ${FlightAnalyticsDefaults.FLIGHT_FIRST_CAPITAL}")
-                        putString(FlightAnalyticsKeys.PRICE, journeyModel.fare.childNumeric.toString())
-                        putString(FlightAnalyticsKeys.BRAND, journeyModel.routeList[0].airlineName)
-                        putString(FlightAnalyticsKeys.ITEM_CATEGORY, FlightAnalyticsDefaults.FLIGHT_FIRST_CAPITAL)
-                        putString(FlightAnalyticsKeys.VARIANT, "${searchPassData.flightClass.title} - Child")
-                        putString(FlightAnalyticsKeys.QUANTITY, searchPassData.flightPassengerModel.children.toString())
-                        putString("list", "/flight")
-                    }
+                Bundle().apply {
+                    putString(FlightAnalyticsKeys.ID, journeyModel.id)
+                    putString(FlightAnalyticsKeys.NAME, "${journeyModel.departureAirportCity}-${journeyModel.arrivalAirportCity} - ${FlightAnalyticsDefaults.FLIGHT_FIRST_CAPITAL}")
+                    putString(FlightAnalyticsKeys.PRICE, journeyModel.fare.childNumeric.toString())
+                    putString(FlightAnalyticsKeys.BRAND, journeyModel.routeList[0].airlineName)
+                    putString(FlightAnalyticsKeys.ITEM_CATEGORY, FlightAnalyticsDefaults.FLIGHT_FIRST_CAPITAL)
+                    putString(FlightAnalyticsKeys.VARIANT, "${searchPassData.flightClass.title} - Child")
+                    putString(FlightAnalyticsKeys.QUANTITY, searchPassData.flightPassengerModel.children.toString())
+                    putString("list", "/flight")
+                }
             )
         }
 
         if (searchPassData.flightPassengerModel.infant > 0) {
             products.add(
-                    Bundle().apply {
-                        putString(FlightAnalyticsKeys.ID, journeyModel.id)
-                        putString(FlightAnalyticsKeys.NAME, "${journeyModel.departureAirportCity}-${journeyModel.arrivalAirportCity} - ${FlightAnalyticsDefaults.FLIGHT_FIRST_CAPITAL}")
-                        putString(FlightAnalyticsKeys.PRICE, journeyModel.fare.infantNumeric.toString())
-                        putString(FlightAnalyticsKeys.BRAND, journeyModel.routeList[0].airlineName)
-                        putString(FlightAnalyticsKeys.ITEM_CATEGORY, FlightAnalyticsDefaults.FLIGHT_FIRST_CAPITAL)
-                        putString(FlightAnalyticsKeys.VARIANT, "${searchPassData.flightClass.title} - Infant")
-                        putString(FlightAnalyticsKeys.QUANTITY, searchPassData.flightPassengerModel.infant.toString())
-                        putString("list", "/flight")
-                    }
+                Bundle().apply {
+                    putString(FlightAnalyticsKeys.ID, journeyModel.id)
+                    putString(FlightAnalyticsKeys.NAME, "${journeyModel.departureAirportCity}-${journeyModel.arrivalAirportCity} - ${FlightAnalyticsDefaults.FLIGHT_FIRST_CAPITAL}")
+                    putString(FlightAnalyticsKeys.PRICE, journeyModel.fare.infantNumeric.toString())
+                    putString(FlightAnalyticsKeys.BRAND, journeyModel.routeList[0].airlineName)
+                    putString(FlightAnalyticsKeys.ITEM_CATEGORY, FlightAnalyticsDefaults.FLIGHT_FIRST_CAPITAL)
+                    putString(FlightAnalyticsKeys.VARIANT, "${searchPassData.flightClass.title} - Infant")
+                    putString(FlightAnalyticsKeys.QUANTITY, searchPassData.flightPassengerModel.infant.toString())
+                    putString("list", "/flight")
+                }
             )
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                FlightAnalyticsEvents.PRODUCT_CLICK_EVENT,
-                Bundle().apply {
-                    putString(FlightAnalyticsKeys.EVENT, FlightAnalyticsEvents.PRODUCT_CLICK_EVENT)
-                    putString(FlightAnalyticsKeys.EVENT_CATEGORY, FlightAnalyticsDefaults.GENERIC_CATEGORY)
-                    putString(FlightAnalyticsKeys.EVENT_ACTION, FlightAnalyticsAction.PRODUCT_CLICK_SEARCH_DETAIL)
-                    putString(FlightAnalyticsKeys.EVENT_LABEL, label.toString())
-                    putBundle(FlightAnalyticsKeys.ECOMMERCE, Bundle().apply {
+            FlightAnalyticsEvents.PRODUCT_CLICK_EVENT,
+            Bundle().apply {
+                putString(FlightAnalyticsKeys.EVENT, FlightAnalyticsEvents.PRODUCT_CLICK_EVENT)
+                putString(FlightAnalyticsKeys.EVENT_CATEGORY, FlightAnalyticsDefaults.GENERIC_CATEGORY)
+                putString(FlightAnalyticsKeys.EVENT_ACTION, FlightAnalyticsAction.PRODUCT_CLICK_SEARCH_DETAIL)
+                putString(FlightAnalyticsKeys.EVENT_LABEL, label.toString())
+                putBundle(
+                    FlightAnalyticsKeys.ECOMMERCE,
+                    Bundle().apply {
                         putParcelableArrayList(FlightAnalyticsKeys.PRODUCTS, products)
-                        putBundle(FlightAnalyticsKeys.ACTION_FIELD, Bundle().apply {
-                            putString("list", "/flight")
-                        })
-                    })
-                    putString(FlightAnalyticsKeys.LIST, "/flight")
-                }
+                        putBundle(
+                            FlightAnalyticsKeys.ACTION_FIELD,
+                            Bundle().apply {
+                                putString("list", "/flight")
+                            }
+                        )
+                    }
+                )
+                putString(FlightAnalyticsKeys.LIST, "/flight")
+            }
         )
     }
 
@@ -1009,7 +1127,7 @@ class FlightAnalytics @Inject constructor() {
 
         if (journeyModel.routeList.isNotEmpty()) {
             val timeResult = "${journeyModel.routeList[0].departureTimestamp.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).getDayDiffFromToday()} - " +
-                    "${journeyModel.routeList[journeyModel.routeList.size - 1].arrivalTimestamp.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).getDayDiffFromToday()}"
+                "${journeyModel.routeList[journeyModel.routeList.size - 1].arrivalTimestamp.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).getDayDiffFromToday()}"
             label.append(" - $timeResult")
         }
 
@@ -1021,17 +1139,17 @@ class FlightAnalytics @Inject constructor() {
     }
 
     private fun transformRefundableLabel(refundable: RefundableEnum): String =
-            when (refundable) {
-                RefundableEnum.REFUNDABLE -> {
-                    FlightAnalyticsLabel.REFUNDABLE
-                }
-                RefundableEnum.PARTIAL_REFUNDABLE -> {
-                    FlightAnalyticsLabel.PARTIALLY_REFUNDABLE
-                }
-                else -> {
-                    FlightAnalyticsLabel.NOT_REFUNDABLE
-                }
+        when (refundable) {
+            RefundableEnum.REFUNDABLE -> {
+                FlightAnalyticsLabel.REFUNDABLE
             }
+            RefundableEnum.PARTIAL_REFUNDABLE -> {
+                FlightAnalyticsLabel.PARTIALLY_REFUNDABLE
+            }
+            else -> {
+                FlightAnalyticsLabel.NOT_REFUNDABLE
+            }
+        }
 
     private fun transformSearchProductClickLabel(journeyModel: FlightJourneyModel): StringBuilder {
         val result = StringBuilder()
@@ -1044,17 +1162,18 @@ class FlightAnalytics @Inject constructor() {
 
         if (journeyModel.routeList.isNotEmpty()) {
             val timeResult = "${journeyModel.routeList[0].departureTimestamp.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).getDayDiffFromToday()} - " +
-                    "${journeyModel.routeList[journeyModel.routeList.size - 1].arrivalTimestamp.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).getDayDiffFromToday()}"
+                "${journeyModel.routeList[journeyModel.routeList.size - 1].arrivalTimestamp.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).getDayDiffFromToday()}"
             result.append(" - $timeResult")
         }
 
         return result
     }
 
-    private fun transformSearchProductViewV2(searchPassDataViewModel: FlightSearchPassDataModel,
-                                             journeyModel: FlightJourneyModel,
-                                             position: Int)
-            : Bundle {
+    private fun transformSearchProductViewV2(
+        searchPassDataViewModel: FlightSearchPassDataModel,
+        journeyModel: FlightJourneyModel,
+        position: Int
+    ): Bundle {
         var isRefundable = "false"
         for (route in journeyModel.routeList) {
             if (route.isRefundable) {
@@ -1076,9 +1195,11 @@ class FlightAnalytics @Inject constructor() {
             totalInfantPrice = (journeyModel.fare.infantNumeric * searchPassDataViewModel.flightPassengerModel.infant).toLong()
         }
 
-        val dayArrival = if (journeyModel.addDayArrival > 0)
+        val dayArrival = if (journeyModel.addDayArrival > 0) {
             "+${journeyModel.addDayArrival}"
-        else ""
+        } else {
+            ""
+        }
 
         return Bundle().apply {
             putString(FlightAnalyticsKeys.NAME, "${journeyModel.departureAirportCity}-${journeyModel.arrivalAirportCity}")
@@ -1096,9 +1217,12 @@ class FlightAnalytics @Inject constructor() {
             putString(FlightAnalyticsKeys.DIMENSION70, isRefundable)
             putString(FlightAnalyticsKeys.DIMENSION71, if (journeyModel.totalTransit > 0) "true" else "false")
             putString(FlightAnalyticsKeys.DIMENSION72, if (journeyModel.beforeTotal == "") "normal" else "strike")
-            putString(FlightAnalyticsKeys.DIMENSION73, "${searchPassDataViewModel.flightPassengerModel.adult} - " +
+            putString(
+                FlightAnalyticsKeys.DIMENSION73,
+                "${searchPassDataViewModel.flightPassengerModel.adult} - " +
                     "${searchPassDataViewModel.flightPassengerModel.children} - " +
-                    "${searchPassDataViewModel.flightPassengerModel.infant}")
+                    "${searchPassDataViewModel.flightPassengerModel.infant}"
+            )
             putString(FlightAnalyticsKeys.DIMENSION74, "${journeyModel.routeList[0].airline} - ${journeyModel.routeList[0].flightNumber}")
             putString(FlightAnalyticsKeys.DIMENSION75, journeyModel.departureTime)
             putString(FlightAnalyticsKeys.DIMENSION76, "${journeyModel.arrivalTime}$dayArrival")
@@ -1107,9 +1231,11 @@ class FlightAnalytics @Inject constructor() {
         }
     }
 
-    private fun transformSearchProductClickV2(searchPassData: FlightSearchPassDataModel,
-                                              journeyModel: FlightJourneyModel,
-                                              position: Int): Bundle {
+    private fun transformSearchProductClickV2(
+        searchPassData: FlightSearchPassDataModel,
+        journeyModel: FlightJourneyModel,
+        position: Int
+    ): Bundle {
         var isRefundable = "false"
         for (route in journeyModel.routeList) {
             if (route.isRefundable) {
@@ -1165,7 +1291,7 @@ class FlightAnalytics @Inject constructor() {
             val airlines = detailModel.routeList[0].airlineName.toLowerCase(Locale.getDefault())
             stringBuilder.append(airlines)
             val timeResult = "${detailModel.routeList[0].departureTimestamp.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).getDayDiffFromToday()} - " +
-                    "${detailModel.routeList[detailModel.routeList.size - 1].arrivalTimestamp.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).getDayDiffFromToday()}"
+                "${detailModel.routeList[detailModel.routeList.size - 1].arrivalTimestamp.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).getDayDiffFromToday()}"
             stringBuilder.append(" - $timeResult")
         }
         stringBuilder.append(" - ${transformRefundableLabel(detailModel.isRefundable)}")
@@ -1173,12 +1299,12 @@ class FlightAnalytics @Inject constructor() {
 
         return stringBuilder.toString()
     }
-
 }
 
 object FlightAnalyticsDefaults {
     const val GENERIC_CATEGORY = "digital - flight"
     const val FLIGHT_CURRENT_SITE = "tokopediadigitalflight"
+    const val DIGITAL_CURRENT_SITE = "tokopediadigital"
     const val FLIGHT_BU = "travel & entertainment"
     const val FLIGHT_FIRST_CAPITAL = "Flight"
     const val FLIGHT_SMALL = "flight"
@@ -1272,6 +1398,8 @@ object FlightAnalyticsCategory {
     const val CLICK_TRIP_TYPE = "select trip type"
     const val SELECT_ORIGIN = "select origin"
     const val SELECT_CLASS = "select flight class"
+    const val CLICK_DG_FLIGHT_PAGE = "top nav - dg flight page"
+    const val DG_FLIGHT_PAGE = "dg flight page"
 }
 
 object FlightAnalyticsLabel {
@@ -1332,4 +1460,11 @@ object FlightAnalyticsScreenName {
     const val CANCELLATION_PASSENGER = "/flight/cancellationpassenger"
     const val CANCELLATION_REASON = "/flight/cancellationreason"
     const val CANCELLATION_SUMMARY = "/flight/cancellationsummary"
+}
+
+object FlightAnalyticsTrackerId {
+    const val CLICK_SHARE = "36939"
+    const val CLOSE_SHARE = "36940"
+    const val CLICK_CHANNEL = "36941"
+    const val VIEW_SHARE = "36942"
 }

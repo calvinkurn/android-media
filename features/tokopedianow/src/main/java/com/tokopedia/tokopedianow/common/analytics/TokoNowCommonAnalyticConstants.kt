@@ -50,14 +50,17 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_CREATIVE_NAME = "creative_name"
         const val KEY_CREATIVE_SLOT = "creative_slot"
         const val KEY_DIMENSION_104 = "dimension104"
+        const val KEY_DIMENSION_100 = "dimension100"
         const val KEY_DIMENSION_38 = "dimension38"
         const val KEY_DIMENSION_79 = "dimension79"
         const val KEY_DIMENSION_82 = "dimension82"
         const val KEY_DIMENSION_84 = "dimension84"
         const val KEY_DIMENSION_49 = "dimension49"
+        const val KEY_DIMENSION_56 = "dimension56"
         const val KEY_DIMENSION_40 = "dimension40"
         const val KEY_DIMENSION_45 = "dimension45"
         const val KEY_DIMENSION_90 = "dimension90"
+        const val KEY_DIMENSION_96 = "dimension96"
         const val KEY_QUANTITY = "quantity"
         const val KEY_SHOP_ID = "shop_id"
         const val KEY_SHOP_NAME = "shop_name"
@@ -83,6 +86,7 @@ object TokoNowCommonAnalyticConstants {
     }
 
     object VALUE {
+        const val CURRENT_SITE_HOME_AND_BROWSE = "home & browse"
         const val CURRENT_SITE_TOKOPEDIA_MARKET_PLACE = "tokopediamarketplace"
         const val BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE = "tokopediamarketplace"
         const val BUSINESS_UNIT_PHYSICAL_GOODS = "Physical Goods"
@@ -93,6 +97,7 @@ object TokoNowCommonAnalyticConstants {
         const val DEFAULT_NULL_VALUE = "null"
         const val DEFAULT_CATEGORY_ID = "0"
         const val DEFAULT_EMPTY_VALUE = ""
+        const val DEFAULT_HEADER_CATEGORY_MENU = "Cek kategori lainnya"
     }
 
     object ACTION{
@@ -108,6 +113,9 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_ACTION_CLICK_CLOSE_SHARE_BOTTOM_SHEET  = "click - close share bottom sheet"
         const val EVENT_ACTION_CLICK_ADD_TO_WISHLIST  = "click bell add to wishlist"
         const val EVENT_ACTION_CLICK_REMOVE_FROM_WISHLIST  = "click bell remove from wishlist"
+        const val EVENT_ACTION_IMPRESSION_CATEGORY_MENU_WIDGET = "impression category menu widget"
+        const val EVENT_ACTION_CLICK_CATEGORY_MENU_WIDGET = "click category menu widget"
+        const val EVENT_ACTION_CLICK_SEE_ALL_CATEGORY = "click lihat semua category menu"
     }
 
     object TRACKER_ID{
