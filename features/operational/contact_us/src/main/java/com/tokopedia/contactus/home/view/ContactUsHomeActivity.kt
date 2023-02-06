@@ -33,7 +33,7 @@ class ContactUsHomeActivity : BaseSimpleActivity() {
 
     override fun onBackPressed() {
         try {
-            val webViewFragment = fragment as BaseWebViewFragment?
+            val webViewFragment = fragment as? BaseWebViewFragment
             if (webViewFragment != null && webViewFragment.getWebView().canGoBack()) {
                 webViewFragment.getWebView().goBack()
             } else {
