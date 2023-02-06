@@ -150,6 +150,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         }, fail = {
             showError(it)
         })
+        PostAtcTracking.impressionPostAtcBottomSheet(trackingQueue, commonTracker.get())
     }
 
     private val recommendationsObserver = Observer<List<RecommendationWidget>> {
@@ -213,11 +214,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
     }
 
     override fun impressComponent(componentTrackData: ComponentTrackData) {
-        PostAtcTracking.impressComponent(
-            trackingQueue,
-            commonTracker.get(),
-            componentTrackData,
-        )
+
     }
 
     override fun onClickLihatKeranjang(
