@@ -58,7 +58,6 @@ import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.REPLY_BOX_TOGGLE_VALUE
 import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.TYPE_BIG_REPLY_BOX
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.RemoteConfigHelper
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
@@ -204,7 +203,7 @@ class ChatbotPresenter @Inject constructor(
     private val job = SupervisorJob()
     private var autoRetryJob: Job? = null
     var socketJob: Job? = null
-    private var csatRemoteConfig: Boolean = false
+    var csatRemoteConfig: Boolean = false
 
     private var mediaUploadJobs = MutableStateFlow<MediaUploadJobMap>(mapOf())
     var mediaUploadResults = MutableStateFlow<MediaUploadResultMap>(mapOf())
@@ -1394,7 +1393,7 @@ class ChatbotPresenter @Inject constructor(
         )
     }
 
-    fun remoteConfigForCsatExperiment(context: Context) {
-        csatRemoteConfig = RemoteConfigHelper.isRemoteConfigForCsat(context)
+    fun setRemoteConfigForCsat(state: Boolean) {
+        csatRemoteConfig = state
     }
 }

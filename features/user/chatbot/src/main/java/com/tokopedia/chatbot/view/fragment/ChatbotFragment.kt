@@ -81,6 +81,7 @@ import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_MEDIA_ITEM_COUNT
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_VIDEO_COUNT
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.SOURCE_ID_FOR_VIDEO_UPLOAD
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.RemoteConfigHelper
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
@@ -610,7 +611,7 @@ class ChatbotFragment :
         viewState?.initView()
         presenter.checkForSession(messageId)
         presenter.checkUploadVideoEligibility(messageId)
-        context?.let { presenter.remoteConfigForCsatExperiment(it) }
+        remoteConfigForCsatExperiment()
         showTicker()
 
         initRecyclerViewListener()
@@ -2186,6 +2187,11 @@ class ChatbotFragment :
             replyBubbleContainer?.referredMsg,
             onSendingMessage(msg, startTime, replyBubbleContainer?.referredMsg)
         )
+    }
+
+    private fun remoteConfigForCsatExperiment() {
+        val csatRemoteConfig = context?.let { RemoteConfigHelper.isRemoteConfigForCsat(it) }
+        presenter.setRemoteConfigForCsat(csatRemoteConfig ?: false)
     }
 
     override fun onDestroyView() {

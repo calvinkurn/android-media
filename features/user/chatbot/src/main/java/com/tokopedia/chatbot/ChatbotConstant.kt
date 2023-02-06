@@ -108,8 +108,4 @@ object ChatbotConstant {
         const val MAX_MEDIA_ITEM_COUNT = 0
         const val MAX_DURATION_FOR_VIDEO = 300000
     }
-
-    object RemoteConfigData {
-        const val REMOTE_CONFIG_CSAT_FLOW = "android_chatbot_csat_experiment"
-    }
 }
