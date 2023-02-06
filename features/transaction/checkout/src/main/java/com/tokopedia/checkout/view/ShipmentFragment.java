@@ -2168,7 +2168,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onShippingDurationChoosen(List<ShippingCourierUiModel> shippingCourierUiModels, ShippingCourierUiModel selectedCourier, RecipientAddressModel recipientAddressModel, int cartPosition, int selectedServiceId, ServiceData serviceData, boolean flagNeedToSetPinpoint, boolean isDurationClick, boolean isClearPromo) {
-        CourierItemData courierItemData = shippingCourierConverter.convertToCourierItemData(selectedCourier, null);
+        CourierItemData courierItemData = null;
+        if (selectedCourier != null) {
+            courierItemData = shippingCourierConverter.convertToCourierItemData(selectedCourier, null);
+        }
         onShippingDurationChoosen(shippingCourierUiModels, courierItemData, recipientAddressModel,
                 cartPosition, selectedServiceId, serviceData,
                 flagNeedToSetPinpoint, isDurationClick, isClearPromo, false);
