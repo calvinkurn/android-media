@@ -457,7 +457,7 @@ class CartShopViewHolder(
 
     private fun renderCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
         if (cartShopHolderData.hasSelectedProduct && !cartShopHolderData.isError &&
-            cartShopHolderData.cartShopGroupTicker.enableTicker &&
+            cartShopHolderData.cartShopGroupTicker.enableCartAggregator &&
             !cartShopHolderData.isOverweight
         ) {
             binding.apply {

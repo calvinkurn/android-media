@@ -4379,7 +4379,7 @@ class CartFragment :
     }
 
     override fun checkCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.cartShopGroupTicker.enableTicker && !cartShopHolderData.isError && cartShopHolderData.hasSelectedProduct) {
+        if (cartShopHolderData.cartShopGroupTicker.enableCartAggregator && !cartShopHolderData.isError && cartShopHolderData.hasSelectedProduct) {
             cartShopHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
             dPresenter.checkCartShopGroupTicker(cartShopHolderData)
         }
