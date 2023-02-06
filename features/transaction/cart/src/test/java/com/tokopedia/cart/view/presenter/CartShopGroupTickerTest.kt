@@ -15,13 +15,60 @@ import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.IOException
 
 @ExperimentalCoroutinesApi
-class BoAffordabilityTest : BaseCartTest() {
+class CartShopGroupTickerTest : BaseCartTest() {
 
-    // enableBoAffordability == false && enableBundleCrossSell == false
+    companion object {
+
+        fun selectedProductWithoutBundle() = CartItemHolderData(
+            productId = "111",
+            cartId = "111",
+            isSelected = true,
+            isBundlingItem = false,
+            bundleIds = emptyList()
+        )
+        fun unselectedProductWithoutBundle() = CartItemHolderData(
+            productId = "222",
+            cartId = "222",
+            isSelected = false,
+            isBundlingItem = false,
+            bundleIds = emptyList()
+        )
+        fun selectedProductWithBundle() = CartItemHolderData(
+            productId = "555",
+            cartId = "555",
+            isSelected = true,
+            isBundlingItem = false,
+            bundleIds = listOf("356", "467")
+        )
+        fun unselectedProductWithBundle() = CartItemHolderData(
+            productId = "666",
+            cartId = "666",
+            isSelected = false,
+            isBundlingItem = false,
+            bundleIds = listOf("578", "689")
+        )
+        fun selectedBundleProduct() = CartItemHolderData(
+            productId = "333",
+            cartId = "333",
+            isSelected = true,
+            isBundlingItem = true,
+            bundleIds = listOf("134", "245")
+        )
+        fun unselectedBundleProduct() = CartItemHolderData(
+            productId = "444",
+            cartId = "444",
+            isSelected = false,
+            isBundlingItem = true,
+            bundleIds = listOf("123", "234")
+        )
+    }
+
     @Test
     fun `WHEN enableBoAffordability and enableBundleCrossSell is false THEN should not hit API`() {
         // GIVEN
@@ -57,7 +104,6 @@ class BoAffordabilityTest : BaseCartTest() {
         }
     }
 
-    // enableBoAffordability == true && enableBundleCrossSell == false
     @Test
     fun `WHEN shop products is overweight THEN should not hit cart aggregator API`() {
         // GIVEN
@@ -442,7 +488,94 @@ class BoAffordabilityTest : BaseCartTest() {
         assertEquals("123|123|123,123", slotParam.captured.ratesParam.destination)
     }
 
-    // enableBoAffordability == false && enableBundleCrossSell == true
+    @Test
+    fun `WHEN cart aggregator disabled with valid product THEN bundle cross sell should be disabled`() {
+        // GIVEN
+        val cartShopHolderData = CartShopHolderData(
+            cartShopGroupTicker = CartShopGroupTickerData(
+                enableCartAggregator = false
+            ),
+            productUiModelList = arrayListOf(
+                unselectedProductWithoutBundle(),
+                unselectedProductWithBundle(),
+                unselectedBundleProduct(),
+                selectedProductWithoutBundle(),
+                selectedProductWithBundle(),
+            )
+        )
 
-    // enableBoAffordability == true && enableBundleCrossSell == true
+        // WHEN
+        val enableBundleCrossSell = cartListPresenter.checkEnableBundleCrossSell(cartShopHolderData)
+
+        // THEN
+        assertFalse(enableBundleCrossSell)
+    }
+
+    @Test
+    fun `WHEN cart aggregator enabled with valid product THEN bundle cross sell should be enabled`() {
+        // GIVEN
+        val cartShopHolderData = CartShopHolderData(
+            cartShopGroupTicker = CartShopGroupTickerData(
+                enableCartAggregator = true
+            ),
+            productUiModelList = arrayListOf(
+                unselectedProductWithoutBundle(),
+                unselectedProductWithBundle(),
+                unselectedBundleProduct(),
+                selectedProductWithoutBundle(),
+                selectedProductWithBundle(),
+            )
+        )
+
+        // WHEN
+        val enableBundleCrossSell = cartListPresenter.checkEnableBundleCrossSell(cartShopHolderData)
+
+        // THEN
+        assertTrue(enableBundleCrossSell)
+    }
+
+    @Test
+    fun `WHEN cart aggregator enabled with selected bundle product THEN bundle cross sell should be disabled`() {
+        // GIVEN
+        val cartShopHolderData = CartShopHolderData(
+            cartShopGroupTicker = CartShopGroupTickerData(
+                enableCartAggregator = true
+            ),
+            productUiModelList = arrayListOf(
+                unselectedProductWithoutBundle(),
+                unselectedProductWithBundle(),
+                unselectedBundleProduct(),
+                selectedProductWithoutBundle(),
+                selectedProductWithBundle(),
+                selectedBundleProduct(),
+            )
+        )
+
+        // WHEN
+        val enableBundleCrossSell = cartListPresenter.checkEnableBundleCrossSell(cartShopHolderData)
+
+        // THEN
+        assertFalse(enableBundleCrossSell)
+    }
+
+    @Test
+    fun `WHEN cart aggregator enabled with no selected product THEN bundle cross sell should be disabled`() {
+        // GIVEN
+        val cartShopHolderData = CartShopHolderData(
+            cartShopGroupTicker = CartShopGroupTickerData(
+                enableCartAggregator = true
+            ),
+            productUiModelList = arrayListOf(
+                unselectedProductWithoutBundle(),
+                unselectedProductWithBundle(),
+                unselectedBundleProduct(),
+            )
+        )
+
+        // WHEN
+        val enableBundleCrossSell = cartListPresenter.checkEnableBundleCrossSell(cartShopHolderData)
+
+        // THEN
+        assertFalse(enableBundleCrossSell)
+    }
 }
