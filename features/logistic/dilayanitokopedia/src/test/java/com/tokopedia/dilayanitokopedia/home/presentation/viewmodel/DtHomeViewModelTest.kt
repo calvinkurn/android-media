@@ -95,6 +95,7 @@ class DtHomeViewModelTest {
         Assert.assertTrue(viewModel.isLastWidgetIsRecommendationForYou() ?: false)
         Assert.assertNotNull(viewModel.getAnchorTabByVisitablePosition(0))
         Assert.assertNotNull(viewModel.getPositionUsingGroupId(groupId))
+        Assert.assertFalse(viewModel.isOnLoading)
     }
 
     @Test
@@ -167,6 +168,7 @@ class DtHomeViewModelTest {
         Assert.assertTrue(viewModel.isLastWidgetIsRecommendationForYou() ?: false)
         Assert.assertNull(viewModel.getAnchorTabByVisitablePosition(0))
         Assert.assertNull(viewModel.getPositionUsingGroupId(groupId))
+        Assert.assertFalse(viewModel.isOnLoading)
     }
 
     @Test
@@ -207,6 +209,7 @@ class DtHomeViewModelTest {
         viewModel.refreshLayout()
 
         // Then
+        Assert.assertTrue(viewModel.isOnLoading)
         verify {
             homeLayoutListObserver.onChanged(Success(data))
         }
