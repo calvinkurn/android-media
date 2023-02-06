@@ -6,6 +6,8 @@ import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ADD_
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.IS_DONATION;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ORDER_LEVEL;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PRODUCT_LEVEL;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_NORMAL;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_OCS;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO;
 
@@ -2955,6 +2957,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         ddpParam.setData(listDataParam);
+        String source = SOURCE_NORMAL;
+        if (isOneClickShipment) source = SOURCE_OCS;
+        ddpParam.setSource(source);
         setDynamicDataParam(ddpParam);
     }
 

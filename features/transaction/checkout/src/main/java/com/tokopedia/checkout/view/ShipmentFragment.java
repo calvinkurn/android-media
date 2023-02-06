@@ -16,6 +16,8 @@ import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.IS_D
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ORDER_LEVEL;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PAYMENT_LEVEL;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PRODUCT_LEVEL;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_NORMAL;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_OCS;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET;
@@ -1960,28 +1962,39 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void updateCheckboxDynamicData(DynamicDataPassingParamRequest.DynamicDataParam newParam, boolean isChecked) {
         DynamicDataPassingParamRequest existingDdpParam = shipmentPresenter.getDynamicDataParam();
+        boolean isAdded = false;
         if (newParam.getAttribute().equalsIgnoreCase(IS_DONATION)) {
-            if (existingDdpParam.getData().contains(newParam)) {
-                for (DynamicDataPassingParamRequest.DynamicDataParam existingParam : shipmentPresenter.getDynamicDataParam().getData()) {
-                    if (existingParam.getAttribute().equalsIgnoreCase(IS_DONATION)) {
-                        existingParam.setDonation(isChecked);
-                    }
+            for (DynamicDataPassingParamRequest.DynamicDataParam existingParam : shipmentPresenter.getDynamicDataParam().getData()) {
+                if (existingParam.getAttribute().equalsIgnoreCase(IS_DONATION)) {
+                    isAdded = true;
+                    existingParam.setDonation(isChecked);
                 }
-            } else {
-                existingDdpParam.getData().add(newParam);
             }
         } else if (newParam.getAttribute().equalsIgnoreCase(ADD_ON_DETAILS)) {
-            if (existingDdpParam.getData().contains(newParam)) {
+            if (isChecked) {
                 for (DynamicDataPassingParamRequest.DynamicDataParam existingParam : shipmentPresenter.getDynamicDataParam().getData()) {
                     if (existingParam.getUniqueId().equalsIgnoreCase(newParam.getUniqueId())) {
+                        isAdded = true;
                         existingParam.setAddOn(newParam.getAddOn());
                     }
                 }
             } else {
-                existingDdpParam.getData().add(newParam);
+                for (int i=0; i<existingDdpParam.getData().size(); i++) {
+                    DynamicDataPassingParamRequest.DynamicDataParam existingParam = shipmentPresenter.getDynamicDataParam().getData().get(i);
+                    if (existingParam.getUniqueId().equalsIgnoreCase(newParam.getUniqueId())) {
+                        existingDdpParam.getData().remove(i);
+                    }
+                }
             }
         }
+        if (!isAdded && isChecked) {
+            existingDdpParam.getData().add(newParam);
+        }
+        String source = SOURCE_NORMAL;
+        if (isOneClickShipment()) source = SOURCE_OCS;
+        existingDdpParam.setSource(source);
         shipmentPresenter.setDynamicDataParam(existingDdpParam);
+        shipmentPresenter.updateDynamicData(existingDdpParam, true);
     }
 
     @Override
@@ -3801,25 +3814,35 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void updateAddOnsDynamicDataPassing(AddOnsDataModel addOnsDataModel, AddOnResult addOnResult, int identifier, String cartString, Long cartId) {
         // identifier : 0 = product level, 1  = order level
+        if (addOnResult.getAddOnData().isEmpty()) {
+            // unchecked
+            DynamicDataPassingParamRequest.DynamicDataParam uncheckedDynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
+            uncheckedDynamicDataParam.setAttribute(ADD_ON_DETAILS);
+            if (identifier == 1) {
+                uncheckedDynamicDataParam.setLevel(ORDER_LEVEL);
+                uncheckedDynamicDataParam.setUniqueId(cartString);
+            } else if (identifier == 0) {
+                uncheckedDynamicDataParam.setLevel(PRODUCT_LEVEL);
+                uncheckedDynamicDataParam.setParentUniqueId(cartString);
+                uncheckedDynamicDataParam.setUniqueId(String.valueOf(cartId));
+            }
+            updateCheckboxDynamicData(uncheckedDynamicDataParam, false);
+        } else {
+            DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
+            dynamicDataParam.setAttribute(ADD_ON_DETAILS);
+            dynamicDataParam.setAddOn(DynamicDataPassingMapper.INSTANCE.getAddOn(addOnResult, isOneClickShipment()));
             if (identifier == 1) {
                 // order level
-                DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
                 dynamicDataParam.setLevel(ORDER_LEVEL);
                 dynamicDataParam.setUniqueId(cartString);
-                dynamicDataParam.setAttribute(ADD_ON_DETAILS);
-                dynamicDataParam.setAddOn(DynamicDataPassingMapper.INSTANCE.getAddOn(addOnResult, isOneClickShipment()));
-                updateCheckboxDynamicData(dynamicDataParam, true);
-
             } else if (identifier == 0) {
                 // product level
-                DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
                 dynamicDataParam.setLevel(PRODUCT_LEVEL);
                 dynamicDataParam.setParentUniqueId(cartString);
                 dynamicDataParam.setUniqueId(String.valueOf(cartId));
-                dynamicDataParam.setAttribute(ADD_ON_DETAILS);
-                dynamicDataParam.setAddOn(DynamicDataPassingMapper.INSTANCE.getAddOn(addOnResult, isOneClickShipment()));
-                updateCheckboxDynamicData(dynamicDataParam, true);
             }
+            updateCheckboxDynamicData(dynamicDataParam, true);
+        }
     }
 
     @Override

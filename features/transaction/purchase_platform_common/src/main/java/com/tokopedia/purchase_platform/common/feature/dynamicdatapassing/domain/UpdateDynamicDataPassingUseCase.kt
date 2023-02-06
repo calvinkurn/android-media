@@ -20,7 +20,7 @@ class UpdateDynamicDataPassingUseCase @Inject constructor(
     private var params: Map<String, Any?>? = null
 
     fun setParams(params: DynamicDataPassingParamRequest) {
-        this.params = mapOf("params" to params)
+        this.params = mapOf("request" to params)
     }
 
     @GqlQuery(UPDATE_DYNAMIC_DATA_PASSING_QUERY, query)
@@ -52,8 +52,8 @@ class UpdateDynamicDataPassingUseCase @Inject constructor(
         private const val UPDATE_DYNAMIC_DATA_PASSING_QUERY = "UpdateDynamicDataPassingQuery"
 
         const val query = """
-            mutation UpdateDynamicDataPassingQuery(${'$'}param: String) {
-                  update_dynamic_data_passing(param: ${'$'}param) {
+            mutation UpdateDynamicDataMutation(${'$'}request: UpdateDynamicDataRequest) {
+                  update_dynamic_data(request: ${'$'}request) {
                     status
                     error_message
                     data {

@@ -3,6 +3,9 @@ package com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.r
 import com.google.gson.annotations.SerializedName
 
 data class DynamicDataPassingParamRequest(
+    @SerializedName("source")
+    var source: String = "",
+
     @SerializedName("data")
     var data: List<DynamicDataParam> = arrayListOf()
 ) {
