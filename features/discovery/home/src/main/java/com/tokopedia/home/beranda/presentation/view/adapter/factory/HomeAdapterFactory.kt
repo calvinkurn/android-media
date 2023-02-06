@@ -122,6 +122,7 @@ import com.tokopedia.home_component.viewholders.SpecialReleaseViewHolder
 import com.tokopedia.home_component.viewholders.VpsWidgetViewHolder
 import com.tokopedia.home_component.viewholders.MissionWidgetViewHolder
 import com.tokopedia.home_component.viewholders.Lego4ProductViewHolder
+import com.tokopedia.home_component.viewholders.MixLeftPaddingComponentViewHolder
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
 import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
@@ -144,6 +145,7 @@ import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.Lego4ProductDataModel
+import com.tokopedia.home_component.visitable.MixLeftPaddingDataModel
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
@@ -437,6 +439,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return Lego4ProductViewHolder.LAYOUT
     }
 
+    override fun type(mixLeftPaddingDataModel: MixLeftPaddingDataModel): Int {
+        return MixLeftPaddingComponentViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -523,8 +529,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                             view,
                             legoListener,
                             homeComponentListener,
-                            parentRecycledViewPool,
-                            cardInteraction = true
+                            parentRecycledViewPool
                     )
             RecommendationListCarouselViewHolder.LAYOUT -> viewHolder =
                     RecommendationListCarouselViewHolder(
@@ -629,6 +634,13 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             VpsWidgetViewHolder.LAYOUT -> viewHolder = VpsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener, parentRecycledViewPool)
             MissionWidgetViewHolder.LAYOUT -> viewHolder = MissionWidgetViewHolder(view, missionWidgetComponentListener, cardInteraction = true)
             Lego4ProductViewHolder.LAYOUT -> viewHolder = Lego4ProductViewHolder(view, legoProductListener, homeComponentListener, parentRecycledViewPool, cardInteraction = true)
+            MixLeftPaddingComponentViewHolder.LAYOUT -> viewHolder =
+                MixLeftPaddingComponentViewHolder(
+                    view,
+                    mixLeftComponentListener,
+                    homeComponentListener,
+                    cardInteraction = true
+                )
             else -> viewHolder = super.createViewHolder(view, type)
 
         }

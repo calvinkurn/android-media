@@ -332,13 +332,20 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
                     getString(R.string.goto_playstore),
                     { PlayServiceUtils.gotoPlayStore(this) },
                     getString(R.string.continue_without_install))
-            else -> updateInformationView(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
+            else -> {
+                toggleDfConfig()
+                updateInformationView(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
                     getString(R.string.download_error_general_title),
                     getString(R.string.download_error_general_subtitle),
                     getString(R.string.df_installer_try_again),
                     ::downloadFeature,
                     getString(R.string.continue_without_install))
+            }
         }
+    }
+
+    private fun toggleDfConfig(){
+        allowRunningServiceFromActivity = !allowRunningServiceFromActivity
     }
 
     private fun updateInformationView(imageRes: Int, title: String, subTitle: String,

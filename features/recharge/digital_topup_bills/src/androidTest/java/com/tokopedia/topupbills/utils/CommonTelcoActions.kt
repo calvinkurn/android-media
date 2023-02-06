@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -62,10 +63,11 @@ object CommonTelcoActions {
     ) {
         Intents.intending(
             IntentMatchers.hasComponent(
-            ComponentNameMatchers.hasClassName(TopupBillsPersoSavedNumberActivity::class.java.name)))
+                ComponentNameMatchers.hasClassName(TopupBillsPersoSavedNumberActivity::class.java.name)
+            )
+        )
             .respondWith(createOrderNumberWithType(number, type, categoryId))
     }
-
 
     fun clientNumberWidget_typeNumber(number: String) {
         onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input))
@@ -75,6 +77,10 @@ object CommonTelcoActions {
     fun clientNumberWidget_validateText(text: String) {
         onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input))
             .check(matches(ViewMatchers.withText(text)))
+    }
+
+    fun clientNumberWidget_scrollToChip_withText(text: String) {
+        onView(ViewMatchers.withText(text)).perform(scrollTo())
     }
 
     fun clientNumberWidget_clickFilterChip_withText(text: String) {
