@@ -72,7 +72,6 @@
                 android:id="@+id/rv_widgets"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="@dimen/unify_space_8"
                 android:clipToPadding="false"
                 android:paddingBottom="@dimen/unify_space_8"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
