@@ -91,11 +91,11 @@ import javax.inject.Inject
  * Created by Yehezkiel on 05/05/21
  */
 class AtcVariantBottomSheet : BottomSheetUnify(),
-        AtcVariantListener,
-        PartialAtcButtonListener,
-        PartialButtonShopFollowersListener,
-        AtcVariantBottomSheetListener,
-        HasComponent<AtcVariantComponent> {
+    AtcVariantListener,
+    PartialAtcButtonListener,
+    PartialButtonShopFollowersListener,
+    AtcVariantBottomSheetListener,
+    HasComponent<AtcVariantComponent> {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -123,7 +123,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     private val adapterFactory by lazy { AtcVariantAdapterTypeFactoryImpl(this, compositeSubscription, this) }
     private val adapter by lazy {
         val asyncDifferConfig = AsyncDifferConfig.Builder(AtcVariantDiffutil())
-                .build()
+            .build()
         AtcVariantAdapter(asyncDifferConfig, adapterFactory)
     }
     private var viewContent: View? = null
@@ -205,8 +205,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         if (checkLogin()) return
         val aggregatorData = viewModel.getVariantAggregatorData()
         val intent = RouteManager.getIntent(context,
-                ApplinkConst.TOPCHAT_ROOM_ASKSELLER,
-                aggregatorData?.simpleBasicInfo?.shopID ?: "")
+            ApplinkConst.TOPCHAT_ROOM_ASKSELLER,
+            aggregatorData?.simpleBasicInfo?.shopID ?: "")
 
         val productId = adapter.getHeaderDataModel()?.productId ?: ""
 
@@ -344,10 +344,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     private fun renderRestrictionBottomSheet(reData: RestrictionData) {
         ProductDetailRestrictionHelper.renderRestrictionUi(
-                reData = reData,
-                isFavoriteShop = viewModel.getActivityResultData().isFollowShop,
-                isShopOwner = sharedViewModel.aggregatorParams.value?.isShopOwner ?: false,
-                reView = nplFollowersButton
+            reData = reData,
+            isFavoriteShop = viewModel.getActivityResultData().isFollowShop,
+            isShopOwner = sharedViewModel.aggregatorParams.value?.isShopOwner ?: false,
+            reView = nplFollowersButton
         )
     }
 
@@ -437,8 +437,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                     viewModel.updateActivityResult(atcSuccessMessage = "")
                     if (this is AkamaiErrorException && message != null) {
                         showToasterError(
-                                message ?: "",
-                                getString(R.string.atc_variant_oke_label)
+                            message ?: "",
+                            getString(R.string.atc_variant_oke_label)
                         )
                     } else {
                         showToasterError(getErrorMessage(this), getString(R.string.atc_variant_oke_label))
@@ -453,21 +453,21 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         val productId = adapter.getHeaderDataModel()?.productId ?: ""
 
         ProductTrackingCommon.eventEcommerceAtcError(message, productId, userSessionInterface.userId, sharedViewModel.aggregatorParams.value?.pageSource
-                ?: "")
+            ?: "")
     }
 
     private fun getErrorMessage(throwable: Throwable): String {
         return if (throwable is ResponseErrorException) {
             throwable.message
-                    ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
+                ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
         } else if (throwable is AkamaiErrorException && throwable.message != null) {
             throwable.message
-                    ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
+                ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
         } else {
             context?.let {
                 ErrorHandler.getErrorMessage(it, throwable)
             }
-                    ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
+                ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
         }
     }
 
@@ -477,7 +477,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         trackSuccessAtc(cartId)
 
         if (sharedViewModel.aggregatorParams.value?.showQtyEditor == true ||
-                sharedViewModel.aggregatorParams.value?.isTokoNow == true) {
+            sharedViewModel.aggregatorParams.value?.isTokoNow == true) {
             onSuccessAtcTokoNow(result.errorMessage.firstOrNull(), cartId)
             return
         }
@@ -503,15 +503,15 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         val variantAggregatorData = viewModel.getVariantAggregatorData()
         val selectedQuantity = if (viewModel.getSelectedQuantity(productId) == 0) {
             variantAggregatorData?.variantData?.getChildByProductId(productId)?.getFinalMinOrder()
-                    ?: 0
+                ?: 0
         } else {
             viewModel.getSelectedQuantity(productId)
         }
         val selectedChild = variantAggregatorData?.variantData?.getChildByProductId(productId)
         val shopType = if (sharedViewModel.aggregatorParams.value?.isTokoNow == true) ProductDetailCommonConstant.VALUE_TOKONOW else variantAggregatorData?.shopType
-                ?: ""
+            ?: ""
         val variantTitle = adapter.getHeaderDataModel()?.listOfVariantTitle?.joinToString(separator = ", ")
-                ?: ""
+            ?: ""
 
         val ratesEstimateData = variantAggregatorData?.getP2RatesEstimateByProductId(productId)?.p2RatesData
         val buyerDistrictId = context?.let {
@@ -520,31 +520,31 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         val sellerDistrictId = viewModel.getSelectedWarehouse(productId)?.districtId ?: ""
 
         ProductTrackingCommon.eventEcommerceAddToCart(
-                userId = userSessionInterface.userId,
-                cartId = cartId,
-                buttonAction = buttonActionType,
-                buttonText = buttonText,
-                productId = productId,
-                shopId = variantAggregatorData?.simpleBasicInfo?.shopID ?: "",
-                productName = selectedChild?.name ?: "",
-                productPrice = selectedChild?.finalPrice ?: 0.0,
-                quantity = selectedQuantity,
-                variantName = variantTitle,
-                isMultiOrigin = viewModel.getSelectedWarehouse(productId)?.isFulfillment ?: false,
-                shopType = shopType,
-                shopName = variantAggregatorData?.simpleBasicInfo?.shopName ?: "",
-                categoryName = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryNameFormatted()
-                        ?: "",
-                categoryId = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryIdFormatted()
-                        ?: "",
-                bebasOngkirType = variantAggregatorData?.getBebasOngkirStringType(productId) ?: "",
-                pageSource = aggregatorParams?.pageSource ?: "",
-                cdListName = aggregatorParams?.trackerCdListName ?: "",
-                isCod = variantAggregatorData?.isCod ?: false,
-                ratesEstimateData = ratesEstimateData,
-                buyerDistrictId = buyerDistrictId,
-                sellerDistrictId = sellerDistrictId,
-                lcaWarehouseId = localizationChooseAddressData?.warehouse_id ?: ""
+            userId = userSessionInterface.userId,
+            cartId = cartId,
+            buttonAction = buttonActionType,
+            buttonText = buttonText,
+            productId = productId,
+            shopId = variantAggregatorData?.simpleBasicInfo?.shopID ?: "",
+            productName = selectedChild?.name ?: "",
+            productPrice = selectedChild?.finalPrice ?: 0.0,
+            quantity = selectedQuantity,
+            variantName = variantTitle,
+            isMultiOrigin = viewModel.getSelectedWarehouse(productId)?.isFulfillment ?: false,
+            shopType = shopType,
+            shopName = variantAggregatorData?.simpleBasicInfo?.shopName ?: "",
+            categoryName = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryNameFormatted()
+                ?: "",
+            categoryId = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryIdFormatted()
+                ?: "",
+            bebasOngkirType = variantAggregatorData?.getBebasOngkirStringType(productId) ?: "",
+            pageSource = aggregatorParams?.pageSource ?: "",
+            cdListName = aggregatorParams?.trackerCdListName ?: "",
+            isCod = variantAggregatorData?.isCod ?: false,
+            ratesEstimateData = ratesEstimateData,
+            buyerDistrictId = buyerDistrictId,
+            sellerDistrictId = sellerDistrictId,
+            lcaWarehouseId = localizationChooseAddressData?.warehouse_id ?: ""
         )
     }
 
@@ -556,7 +556,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 dismiss()
             }, {
                 showToasterError(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
-                        getString(R.string.atc_variant_oke_label))
+                    getString(R.string.atc_variant_oke_label))
             })
         } else {
             goToCheckout()
@@ -572,8 +572,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             val message = if (successMessage == null || successMessage.isEmpty()) it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default) else
                 successMessage
             viewModel.updateActivityResult(
-                    atcSuccessMessage = message,
-                    cartId = cartId
+                atcSuccessMessage = message,
+                cartId = cartId
             )
             showToasterSuccess(message, getString(R.string.atc_variant_oke_label)) {
             }
@@ -598,9 +598,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 ProductCartHelper.goToCartCheckout(getAtcActivity(), "")
             }
             viewModel.updateActivityResult(
-                    atcSuccessMessage = message,
-                    requestCode = ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT,
-                    cartId = cartId
+                atcSuccessMessage = message,
+                requestCode = ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT,
+                cartId = cartId
             )
         }
     }
@@ -608,10 +608,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     private fun goToCheckout() {
         context?.let {
             ProductCartHelper.goToCheckout(it as AtcVariantActivity, ShipmentFormRequest
-                    .BundleBuilder()
-                    .deviceId("")
-                    .build()
-                    .bundle)
+                .BundleBuilder()
+                .deviceId("")
+                .build()
+                .bundle)
         }
     }
 
@@ -629,9 +629,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     override fun getComponent(): AtcVariantComponent {
         return DaggerAtcVariantComponent
-                .builder()
-                .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
+            .builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
     }
 
     override fun onDeleteQuantityClicked(productId: String) {
@@ -646,17 +646,17 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         if (state == VariantConstant.STATE_SELECTED || state == VariantConstant.STATE_SELECTED_EMPTY) return
         adapter.removeTextWatcherQuantityViewHolder(rvVariantBottomSheet)
         viewModel.onVariantClicked(
-                sharedViewModel.aggregatorParams.value?.showQtyEditor ?: false,
-                variantOptions.variantCategoryKey,
-                variantOptions.variantId,
-                variantOptions.imageOriginal,
-                variantOptions.level)
+            sharedViewModel.aggregatorParams.value?.showQtyEditor ?: false,
+            variantOptions.variantCategoryKey,
+            variantOptions.variantId,
+            variantOptions.imageOriginal,
+            variantOptions.level)
     }
 
     override fun onVariantGuideLineClicked(url: String) {
         val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
         ProductTrackingCommon.onVariantGuidelineClicked(adapter.getHeaderDataModel()?.productId
-                ?: "", pageSource)
+            ?: "", pageSource)
         goToImagePreview(arrayListOf(url))
     }
 
@@ -683,12 +683,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON,
             ProductDetailCommonConstant.KEY_DEFAULT_CHOOSE_VARIANT -> {
                 ProductTrackingCommon.eventClickPilihVariant(adapter.getHeaderDataModel()?.productId
-                        ?: "", pageSource, cartType, parentId, productIdPreviousPage)
+                    ?: "", pageSource, cartType, parentId, productIdPreviousPage)
                 onSaveButtonClicked()
             }
             ProductDetailCommonConstant.KEY_SAVE_TRADEIN_BUTTON -> {
                 ProductTrackingCommon.eventClickPilihVariant(adapter.getHeaderDataModel()?.productId
-                        ?: "", pageSource, cartType, parentId, productIdPreviousPage)
+                    ?: "", pageSource, cartType, parentId, productIdPreviousPage)
                 viewModel.updateActivityResult(requestCode = REQUEST_CODE_TRADEIN_PDP)
                 onSaveButtonClicked()
             }
@@ -704,7 +704,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     override fun shouldHideTextHabis(): Boolean {
         return sharedViewModel.aggregatorParams.value?.pageSource ==
-                VariantPageSource.SHOP_COUPON_PAGESOURCE.source
+            VariantPageSource.SHOP_COUPON_PAGESOURCE.source
     }
 
     private fun onSaveButtonClicked() {
@@ -737,7 +737,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         if (!alreadyHitQtyTrack) {
             alreadyHitQtyTrack = true
             ProductTrackingCommon.onQuantityEditorClicked(productId, sharedViewModel.aggregatorParams?.value?.pageSource
-                    ?: "", oldValue, quantity)
+                ?: "", oldValue, quantity)
         }
 
         viewModel.updateQuantity(quantity, productId)
@@ -785,14 +785,14 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             }
 
             viewModel.hitAtc(buttonAction,
-                    sharedData?.shopId?.toIntOrZero() ?: 0,
-                    viewModel.getVariantAggregatorData()?.simpleBasicInfo?.category?.getCategoryNameFormatted()
-                            ?: "",
-                    userSessionInterface.userId,
-                    sharedData?.minimumShippingPrice ?: 0.0,
-                    sharedData?.trackerAttribution ?: "",
-                    sharedData?.trackerListNamePdp ?: "",
-                    sharedData?.showQtyEditor ?: false
+                sharedData?.shopId?.toIntOrZero() ?: 0,
+                viewModel.getVariantAggregatorData()?.simpleBasicInfo?.category?.getCategoryNameFormatted()
+                    ?: "",
+                userSessionInterface.userId,
+                sharedData?.minimumShippingPrice ?: 0.0,
+                sharedData?.trackerAttribution ?: "",
+                sharedData?.trackerListNamePdp ?: "",
+                sharedData?.showQtyEditor ?: false
             )
         }
     }
@@ -828,13 +828,13 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             val data = viewModel.ratesLiveData.value as? Success ?: return false
 
             ProductDetailCommonBottomSheetBuilder.getShippingErrorBottomSheet(
-                    it,
-                    data.data.errorBottomSheet,
-                    data.data.p2RatesData.p2RatesError.firstOrNull()?.errorCode ?: 0,
-                    onButtonClicked = { errorCode ->
-                        goToChooseAddress(errorCode)
-                    },
-                    onHomeClicked = { goToHomePage() }
+                it,
+                data.data.errorBottomSheet,
+                data.data.p2RatesData.p2RatesError.firstOrNull()?.errorCode ?: 0,
+                onButtonClicked = { errorCode ->
+                    goToChooseAddress(errorCode)
+                },
+                onHomeClicked = { goToHomePage() }
             ).show(childFragmentManager, BS_SHIPMENT_ERROR_ATC_VARIANT)
             return true
         } ?: return false
@@ -893,7 +893,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             activity?.let {
                 goToLogin = true
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                        ATC_LOGIN_REQUEST_CODE)
+                    ATC_LOGIN_REQUEST_CODE)
             }
         }
         return goToLogin
@@ -902,11 +902,11 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     private fun showProgressDialog(onCancelClicked: (() -> Unit)? = null) {
         if (loadingProgressDialog == null) {
             loadingProgressDialog = activity?.createDefaultProgressDialog(
-                    getString(com.tokopedia.abstraction.R.string.title_loading),
-                    cancelable = onCancelClicked != null,
-                    onCancelClicked = {
-                        onCancelClicked?.invoke()
-                    })
+                getString(com.tokopedia.abstraction.R.string.title_loading),
+                cancelable = onCancelClicked != null,
+                onCancelClicked = {
+                    onCancelClicked?.invoke()
+                })
         }
         loadingProgressDialog?.run {
             if (!isShowing) {
@@ -920,21 +920,21 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             getString(com.tokopedia.product.detail.common.R.string.add_to_cart_error_variant)
         } else {
             getString(com.tokopedia.product.detail.common.R.string.add_to_cart_error_variant_builder, viewModel.getVariantData()?.getVariantsIdentifier()
-                    ?: "")
+                ?: "")
         }
 
         val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
         ProductTrackingCommon.onVariantPartiallySelected(variantErrorMessage, adapter.getHeaderDataModel()?.productId
-                ?: "", pageSource)
+            ?: "", pageSource)
         showToasterError(variantErrorMessage, getString(R.string.atc_variant_oke_label))
     }
 
 
     private fun renderButton(data: PartialButtonDataModel) {
         baseAtcBtn?.renderButtonView(
-                data.isProductSelectedBuyable,
-                data.isShopOwner,
-                data.cartTypeData
+            data.isProductSelectedBuyable,
+            data.isShopOwner,
+            data.cartTypeData
         )
     }
 

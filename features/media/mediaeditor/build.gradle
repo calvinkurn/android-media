@@ -60,6 +60,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.header
+    implementation rootProject.ext.unifyDependencies.iconNotification
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
