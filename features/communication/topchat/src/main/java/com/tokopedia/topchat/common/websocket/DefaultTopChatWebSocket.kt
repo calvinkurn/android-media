@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.common.websocket
 
-import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
-import com.tokopedia.chat_common.data.WebsocketEvent
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.util.Session
 import com.tokopedia.network.authentication.AuthHelper.Companion.getUserAgent
@@ -10,20 +10,20 @@ import okhttp3.*
 import javax.inject.Inject
 
 class DefaultTopChatWebSocket @Inject constructor(
+    @ApplicationContext context: Context,
     private val okHttpClient: OkHttpClient,
     private val webSocketUrl: String,
     private val token: String,
     private val page: String,
     private val irisSession: Session,
-    webSocketParser: WebSocketParser,
-    webSocketLogger: WebSocketLogger
+    webSocketParser: WebSocketParser
 ) : TopchatWebSocket {
 
     var webSocket: WebSocket? = null
     private var isDestroyed = false
 
     private val webSocketListener = DebugWebSocketLogListener(
-        webSocketLogger,
+        context,
         webSocketParser,
         page
     )
@@ -47,12 +47,6 @@ class DefaultTopChatWebSocket @Inject constructor(
 
     override fun sendPayload(wsPayload: String) {
         webSocket?.send(wsPayload)
-
-        webSocketListener.onSendLogMessage(
-            payload = wsPayload,
-            header = webSocket?.request()?.headers.toString(),
-            code = WebsocketEvent.Event.DEBUG_EVENT_SEND_WS_PAYLOAD
-        )
     }
 
     override fun reset() {

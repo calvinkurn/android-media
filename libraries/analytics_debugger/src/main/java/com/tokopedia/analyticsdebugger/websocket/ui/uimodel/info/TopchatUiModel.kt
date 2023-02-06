@@ -3,7 +3,7 @@ package com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info
 import android.os.Parcel
 import android.os.Parcelable
 
-data class TopchatWebSocketLogDetailInfoUiModel(
+data class TopchatUiModel(
     val source: String = "",
     val code: String = "",
     val messageId: String = "",
@@ -28,12 +28,12 @@ data class TopchatWebSocketLogDetailInfoUiModel(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<TopchatWebSocketLogDetailInfoUiModel> {
-        override fun createFromParcel(parcel: Parcel): TopchatWebSocketLogDetailInfoUiModel {
-            return TopchatWebSocketLogDetailInfoUiModel(parcel)
+    companion object CREATOR : Parcelable.Creator<TopchatUiModel> {
+        override fun createFromParcel(parcel: Parcel): TopchatUiModel {
+            return TopchatUiModel(parcel)
         }
 
-        override fun newArray(size: Int): Array<TopchatWebSocketLogDetailInfoUiModel?> {
+        override fun newArray(size: Int): Array<TopchatUiModel?> {
             return arrayOfNulls(size)
         }
     }

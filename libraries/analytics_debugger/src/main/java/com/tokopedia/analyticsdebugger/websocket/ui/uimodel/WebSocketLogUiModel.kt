@@ -2,8 +2,8 @@ package com.tokopedia.analyticsdebugger.websocket.ui.uimodel
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.PlayWebSocketLogGeneralInfoUiModel
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.TopchatWebSocketLogDetailInfoUiModel
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.PlayUiModel
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.TopchatUiModel
 
 /**
  * Created By : Jonathan Darwin on December 01, 2021
@@ -16,16 +16,16 @@ data class WebSocketLogUiModel(
     val event: String,
     val message: String,
     val dateTime: String = "",
-    val play: PlayWebSocketLogGeneralInfoUiModel? = null,
-    val topchat: TopchatWebSocketLogDetailInfoUiModel? = null
+    val play: PlayUiModel? = null,
+    val topchat: TopchatUiModel? = null
 ) : WebSocketLog(), Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readLong(),
         parcel.readString().toString(),
         parcel.readString().toString(),
         parcel.readString().toString(),
-        parcel.readParcelable(PlayWebSocketLogGeneralInfoUiModel::class.java.classLoader),
-        parcel.readParcelable(TopchatWebSocketLogDetailInfoUiModel::class.java.classLoader)
+        parcel.readParcelable(PlayUiModel::class.java.classLoader),
+        parcel.readParcelable(TopchatUiModel::class.java.classLoader)
     ) {
     }
 

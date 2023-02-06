@@ -4,8 +4,8 @@ import com.tokopedia.analyticsdebugger.util.DateTimeUtil
 import com.tokopedia.analyticsdebugger.websocket.data.local.entity.PlayWebSocketLogEntity
 import com.tokopedia.analyticsdebugger.websocket.data.local.entity.TopchatWebSocketLogEntity
 import com.tokopedia.analyticsdebugger.websocket.domain.usecase.GetSourcesLogUseCase
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.PlayWebSocketLogGeneralInfoUiModel
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.TopchatWebSocketLogDetailInfoUiModel
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.PlayUiModel
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.TopchatUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.view.ChipModel
 import javax.inject.Inject
@@ -18,7 +18,7 @@ class WebSocketLogMapper @Inject constructor() {
     fun mapPlayEntityToUiModel(entities: List<PlayWebSocketLogEntity>) = entities.map {
         WebSocketLogUiModel(
             id = it.id,
-            play = PlayWebSocketLogGeneralInfoUiModel(
+            play = PlayUiModel(
                 source = it.source.ifEmpty { "-" },
                 channelId = it.channelId.ifEmpty { "-" },
                 gcToken = it.gcToken.ifEmpty { "-" },
@@ -33,7 +33,7 @@ class WebSocketLogMapper @Inject constructor() {
     fun mapTopchatEntityToUiModel(entities: List<TopchatWebSocketLogEntity>) = entities.map {
         WebSocketLogUiModel(
             id = it.id,
-            topchat = TopchatWebSocketLogDetailInfoUiModel(
+            topchat = TopchatUiModel(
                 source = it.source.ifEmpty { "-" },
                 code = it.code.ifEmpty { "-" },
                 messageId = it.messageId.ifEmpty { "-" },

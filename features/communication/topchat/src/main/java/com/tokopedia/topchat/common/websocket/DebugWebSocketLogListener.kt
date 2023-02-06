@@ -1,11 +1,14 @@
 package com.tokopedia.topchat.common.websocket
 
+import android.content.Context
 import com.google.gson.Gson
-import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
+import com.google.gson.GsonBuilder
+import com.tokopedia.analyticsdebugger.debugger.ws.TopchatWebSocketLogger
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.TopchatUiModel
 import com.tokopedia.chat_common.data.WebsocketEvent
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.topchat.chatlist.domain.pojo.reply.WebSocketResponseData
-import com.tokopedia.websocket.WebSocketResponse
+import okhttp3.Headers
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
@@ -18,48 +21,21 @@ import okio.ByteString
  * We need to create this mediator to store the log for Logger.
  */
 class DebugWebSocketLogListener constructor(
-    private val webSocketLogger: WebSocketLogger,
+    context: Context,
     private val webSocketParser: WebSocketParser,
     private val page: String
 ) {
 
-    init {
-        webSocketLogger.init(
-            mapOf(
-                "source" to page,
-                "code" to "\"\"",
-                "messageId" to "\"\"",
-            ).toString()
-        )
-    }
-
-    fun onSendLogMessage(payload: String, header: String = "", code: Int = 0) {
-        if (!GlobalConfig.isAllowDebuggingTools()) return
-        if (page.isEmpty()) return
-
-        val (response, data) = payload.parse()
-
-        val responseCode = if (code != 0) code else response.code
-        val messageId = data?.msgId.toString()
-
-        // Need re-init to send the response code and message id
-        webSocketLogger.init(
-            mapOf(
-                "source" to page,
-                "code" to response.code.toString().ifEmpty { "\"\"" },
-                "messageId" to messageId.ifEmpty { "\"\"" },
-                "header" to header,
-            ).toString()
-        )
-
-        webSocketLogger.send(
-            WebsocketEvent.Event.mapToEventName(responseCode),
-            response.jsonElement.toString()
-        )
-    }
+    private val webSocketLogger = TopchatWebSocketLogger(context)
 
     fun build(listener: WebSocketListener): WebSocketListener {
         if (!GlobalConfig.isAllowDebuggingTools()) return listener
+
+        webSocketLogger.init(
+            TopchatUiModel(
+                source = page
+            )
+        )
 
         return object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
@@ -68,10 +44,23 @@ class DebugWebSocketLogListener constructor(
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
-                val header = webSocket.request().headers.toString()
-                onSendLogMessage(
-                    payload = text,
-                    header = header
+                val response = webSocketParser.parseResponse(text)
+                val data = Gson().fromJson(response.jsonObject, WebSocketResponseData::class.java)
+                val messageId = data?.msgId.toString()
+
+                // Need re-init to send the response code and message id
+                webSocketLogger.init(
+                    TopchatUiModel(
+                        source = page.ifEmpty { "\"\"" },
+                        code = response.code.toString().ifEmpty { "\"\"" },
+                        messageId = messageId.ifEmpty { "\"\"" },
+                        header = headerRequest(webSocket.request().headers)
+                    )
+                )
+
+                webSocketLogger.send(
+                    WebsocketEvent.Event.mapToEventName(response.code),
+                    response.jsonElement.toString()
                 )
 
                 listener.onMessage(webSocket, text)
@@ -98,15 +87,16 @@ class DebugWebSocketLogListener constructor(
         }
     }
 
-    private fun String.parse(): Pair<WebSocketResponse, WebSocketResponseData?> {
-        val response = webSocketParser.parseResponse(this)
-
-        val data = try {
-            Gson().fromJson(response.jsonObject, WebSocketResponseData::class.java)
-        } catch (t: Throwable) {
-            WebSocketResponseData()
+    private fun headerRequest(header: Headers): String {
+        val headers = mutableMapOf<String, String>().apply {
+            for (i in 0 until header.size) {
+                put(header.name(i), header.value(i))
+            }
         }
 
-        return Pair(response, data)
+        return GsonBuilder()
+            .setPrettyPrinting()
+            .create()
+            .toJson(headers)
     }
 }

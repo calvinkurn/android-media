@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.databinding.FragmentWebsocketDetailLoggingBinding
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.PlayWebSocketLogGeneralInfoUiModel
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.TopchatWebSocketLogDetailInfoUiModel
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.PlayUiModel
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.TopchatUiModel
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -49,13 +49,13 @@ class WebSocketDetailLoggingFragment: Fragment() {
         }
     }
 
-    private fun onPlayDetailInfoLoaded(data: PlayWebSocketLogGeneralInfoUiModel?) {
+    private fun onPlayDetailInfoLoaded(data: PlayUiModel?) {
         setLogDetailFirst(R.string.websocket_log_channel_id_label, data?.channelId.toString())
         setLogDetailSecond(R.string.warehouse_id, data?.warehouseId.toString())
         setLogDetailThird(R.string.websocket_log_gc_token_label, data?.gcToken.toString())
     }
 
-    private fun onTopchatDetailInfoLoaded(data: TopchatWebSocketLogDetailInfoUiModel?) {
+    private fun onTopchatDetailInfoLoaded(data: TopchatUiModel?) {
         setLogDetailFirst(R.string.websocket_log_code_id_label, data?.code.toString())
         setLogDetailSecond(R.string.websocket_log_message_id_label, data?.messageId.toString())
         setHeaderRequest(data?.header.toString())
@@ -85,5 +85,6 @@ class WebSocketDetailLoggingFragment: Fragment() {
     private fun setHeaderRequest(header: String) {
         binding?.tvWebsocketDetailLogHeader?.text = header
         binding?.tvWebsocketDetailLogHeader?.show()
+        binding?.tvWebsocketHeaderLabel?.show()
     }
 }

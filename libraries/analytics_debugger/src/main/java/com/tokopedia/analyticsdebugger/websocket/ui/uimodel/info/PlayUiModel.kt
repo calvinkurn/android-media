@@ -3,7 +3,7 @@ package com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info
 import android.os.Parcel
 import android.os.Parcelable
 
-data class PlayWebSocketLogGeneralInfoUiModel(
+data class PlayUiModel(
     val source: String = "",
     val channelId: String = "",
     val warehouseId: String = "",
@@ -28,12 +28,12 @@ data class PlayWebSocketLogGeneralInfoUiModel(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<PlayWebSocketLogGeneralInfoUiModel> {
-        override fun createFromParcel(parcel: Parcel): PlayWebSocketLogGeneralInfoUiModel {
-            return PlayWebSocketLogGeneralInfoUiModel(parcel)
+    companion object CREATOR : Parcelable.Creator<PlayUiModel> {
+        override fun createFromParcel(parcel: Parcel): PlayUiModel {
+            return PlayUiModel(parcel)
         }
 
-        override fun newArray(size: Int): Array<PlayWebSocketLogGeneralInfoUiModel?> {
+        override fun newArray(size: Int): Array<PlayUiModel?> {
             return arrayOfNulls(size)
         }
     }

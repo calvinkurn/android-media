@@ -7,8 +7,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
-import com.tokopedia.analyticsdebugger.debugger.ws.TopchatWebSocketLogger
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
@@ -227,11 +225,11 @@ class ChatModule {
     @ChatScope
     @Provides
     fun provideTopChatWebSocket(
+        @ApplicationContext context: Context,
         userSession: UserSessionInterface,
         client: OkHttpClient,
         irisSession: Session,
-        webSocketParser: WebSocketParser,
-        webSocketLogger: WebSocketLogger
+        webSocketParser: WebSocketParser
     ): TopchatWebSocket {
         val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN
             .plus(ChatUrl.CONNECT_WEBSOCKET)
@@ -243,30 +241,14 @@ class ChatModule {
                 userSession.userId
             )
         return DefaultTopChatWebSocket(
+            context,
             client,
             webSocketUrl,
             userSession.accessToken,
             PAGE_CHATROOM,
             irisSession,
-            webSocketParser,
-            webSocketLogger
+            webSocketParser
         )
-    }
-
-    @Provides
-    @ChatScope
-    fun provideWebSocketLogger(
-        @ApplicationContext context: Context
-    ) : WebSocketLogger {
-        return if (GlobalConfig.isAllowDebuggingTools()) {
-            TopchatWebSocketLogger(context)
-        } else {
-            object : WebSocketLogger {
-                override fun init(data: String) = Unit
-                override fun send(event: String, message: String) = Unit
-                override fun send(event: String) = Unit
-            }
-        }
     }
 
     @ChatScope

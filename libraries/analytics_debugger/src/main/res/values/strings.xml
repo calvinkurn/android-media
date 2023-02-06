@@ -25,6 +25,8 @@
     <string name="websocket_log_gc_token_label">GC Token</string>
     <string name="websocket_log_code_id_label">Code ID</string>
     <string name="websocket_log_message_id_label">Message ID</string>
+    <string name="websocket_log_header_label">Header</string>
+    <string name="websocket_log_payload_label">Payload</string>
 
     <string name="websocket_log_delete_all_message">Delete All Logs Success</string>
     <string name="websocket_log_default_error_message">Something went wrong</string>

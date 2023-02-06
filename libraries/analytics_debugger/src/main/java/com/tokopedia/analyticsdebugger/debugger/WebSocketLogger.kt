@@ -16,13 +16,13 @@ import kotlin.coroutines.CoroutineContext
  * Created By : Jonathan Darwin on December 01, 2021
  */
 
-interface WebSocketLogger {
-    fun init(data: String)
+interface WebSocketLogger<T> {
+    fun init(data: T)
     fun send(event: String)
     fun send(event: String, message: String)
 }
 
-abstract class BaseWebSocketLogger(val context: Context) : WebSocketLogger, CoroutineScope {
+abstract class BaseWebSocketLogger<T>(val context: Context) : WebSocketLogger<T>, CoroutineScope {
 
     var insertWebSocketLogUseCase: InsertWebSocketLogUseCase
         private set
@@ -59,19 +59,6 @@ abstract class BaseWebSocketLogger(val context: Context) : WebSocketLogger, Coro
             this
         } else {
             gson.toJson(JsonParser.parseString(this))
-        }
-    }
-
-    /**
-     * Util to decode from the string to gson object.
-     *
-     * @param data
-     */
-    inline fun <reified T> Gson.parseDetailInfo(data: String): T? {
-        return try {
-            fromJson(data, T::class.java)
-        } catch (e: Exception) {
-            null
         }
     }
 }

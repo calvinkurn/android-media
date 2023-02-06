@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
 import com.tokopedia.analyticsdebugger.debugger.ws.PlayWebSocketLogger
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.PlayUiModel
 import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.authentication.AuthHelper
@@ -30,12 +31,12 @@ class PlayWebSocketImpl(
 
     private val client: OkHttpClient
 
-    private val webSocketLogger: WebSocketLogger by lazy {
+    private val webSocketLogger: WebSocketLogger<PlayUiModel> by lazy {
         if (GlobalConfig.isAllowDebuggingTools()) {
             PlayWebSocketLogger(context)
         } else {
-            object : WebSocketLogger {
-                override fun init(data: String) {}
+            object : WebSocketLogger<PlayUiModel> {
+                override fun init(data: PlayUiModel) {}
                 override fun send(event: String) {}
                 override fun send(event: String, message: String) {}
             }
@@ -99,7 +100,14 @@ class PlayWebSocketImpl(
         close()
         val url = generateUrl(channelId, warehouseId, gcToken)
         mWebSocket = client.newWebSocket(getRequest(url, userSession.accessToken), webSocketListener)
-        webSocketLogger.init(buildGeneralInfo(channelId, warehouseId, gcToken, source).toString())
+        webSocketLogger.init(
+            PlayUiModel(
+                source = source.ifEmpty { "\"\"" },
+                channelId = channelId.ifEmpty { "\"\"" },
+                warehouseId = warehouseId.ifEmpty { "\"\"" },
+                gcToken = gcToken.ifEmpty { "\"\"" },
+            )
+        )
     }
 
     override fun close() {
@@ -135,15 +143,6 @@ class PlayWebSocketImpl(
                 .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
                 .header(HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
                 .build()
-    }
-
-    private fun buildGeneralInfo(channelId: String, warehouseId: String, gcToken: String, source: String): Map<String, String> {
-        return mapOf(
-            "source" to if(source.isEmpty()) "\"\"" else source,
-            "channelId" to if(channelId.isEmpty()) "\"\"" else channelId,
-            "warehouseId" to if(warehouseId.isEmpty()) "\"\"" else warehouseId,
-            "gcToken" to if(gcToken.isEmpty()) "\"\"" else gcToken,
-        )
     }
 
     companion object {
