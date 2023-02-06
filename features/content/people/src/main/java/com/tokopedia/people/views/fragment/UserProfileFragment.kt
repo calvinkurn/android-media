@@ -442,6 +442,7 @@ class UserProfileFragment @Inject constructor(
                             if (viewModel.isSelfProfile) emptyPostSelf() else emptyPostVisitor()
                             mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
                         } else {
+                            mainBinding.shopRecommendation.hide()
                             mainBinding.profileTabs.viewPager.currentItem = viewPagerSelectedPage
                             mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
                         }
