@@ -5,11 +5,11 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.databinding.ActivityManageAddressBinding
 import com.tokopedia.manageaddress.di.DaggerManageAddressComponent
@@ -42,7 +42,7 @@ class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponen
     private fun initViews() {
         val bundle = Bundle()
         if (intent != null && intent.extras != null) {
-            if(!intent.hasExtra(PARAM_SOURCE)) {
+            if (!intent.hasExtra(PARAM_SOURCE)) {
                 intent.putExtra(PARAM_SOURCE, ManageAddressSource.NOTIFICATION.source)
             }
 
@@ -74,19 +74,6 @@ class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponen
             } else {
                 gone()
             }
-        }
-    }
-
-    override fun onBackPressed() {
-        val currentFragment = getMainAddressFragment()
-        if (currentFragment != null) {
-            if (currentFragment.isFromEditChosenAddress == true) {
-                currentFragment.setAddressDataOnBackButton()
-            } else {
-                super.onBackPressed()
-            }
-        } else {
-            super.onBackPressed()
         }
     }
 

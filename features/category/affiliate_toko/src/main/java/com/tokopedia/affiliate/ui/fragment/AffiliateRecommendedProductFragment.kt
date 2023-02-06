@@ -22,6 +22,7 @@ import com.tokopedia.affiliate.adapter.AffiliateItemOffSetDecoration
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
+import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateStaggeredPromotionCardModel
@@ -65,14 +66,17 @@ class AffiliateRecommendedProductFragment :
     private lateinit var affiliateRecommendedProductViewModel: AffiliateRecommendedProductViewModel
     private val adapter: AffiliateAdapter =
         AffiliateAdapter(AffiliateAdapterFactory(promotionClickInterface = this))
-    private var affiliatePromoInterface : AffiliatePromoInterface? = null
+    private var affiliatePromoInterface: AffiliatePromoInterface? = null
     private var identifier = BOUGHT_IDENTIFIER
 
     companion object {
         private const val GRID_SPAN_COUNT: Int = 2
         const val BOUGHT_IDENTIFIER = "recent_purchase"
         const val LAST_VIEWED_IDENTIFIER = "recent_view"
-        fun getFragmentInstance(recommendationType: String, promoInterface : AffiliatePromoInterface): Fragment {
+        fun getFragmentInstance(
+            recommendationType: String,
+            promoInterface: AffiliatePromoInterface
+        ): Fragment {
             return AffiliateRecommendedProductFragment().apply {
                 identifier = recommendationType
                 affiliatePromoInterface = promoInterface
@@ -109,7 +113,6 @@ class AffiliateRecommendedProductFragment :
         recommended_global_error.run {
             errorIllustration.hide()
             errorSecondaryAction.gone()
-            setButtonFull(true)
             if (identifier == BOUGHT_IDENTIFIER) {
                 errorTitle.text = getString(R.string.affiliate_no_product_bought_on_tokopedia_yet)
                 errorDescription.text =
@@ -189,13 +192,25 @@ class AffiliateRecommendedProductFragment :
             item.product.title?.let {
                 itemName = it
             }
-            var label = ""
+            var label = itemID
             lastItem?.product?.commission?.amount?.let {
-                label = "$itemID - {$it}"
+                label += " - $it"
             }
-            val action =
-                if (identifier == BOUGHT_IDENTIFIER) AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_PERNAH_DIBELI
-                else AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_PERNAH_DILIHAT
+            if (lastItem?.product?.ssaStatus == true) {
+                label += " - komisi extra"
+            }
+            val (action, itemList) =
+                if (identifier == BOUGHT_IDENTIFIER) {
+                    arrayOf(
+                        AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_PERNAH_DIBEL,
+                        AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_PERNAH_DIBELI
+                    )
+                } else {
+                    arrayOf(
+                        AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_PERNAH_DILIHAT,
+                        AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_PERNAH_DILIHAT
+                    )
+                }
             AffiliateAnalytics.trackEventImpression(
                 AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
                 action,
@@ -204,7 +219,8 @@ class AffiliateRecommendedProductFragment :
                 itemID,
                 listSize,
                 itemName,
-                label
+                label,
+                itemList
             )
         }
     }
@@ -216,9 +232,9 @@ class AffiliateRecommendedProductFragment :
         affiliateRecommendedProductViewModel.getShimmerVisibility()
             .observe(viewLifecycleOwner) { visibility ->
                 if (visibility != null) {
-                    if (visibility)
+                    if (visibility) {
                         adapter.addShimmer(true)
-                    else {
+                    } else {
                         adapter.removeShimmer(listSize)
                     }
                 }
@@ -315,17 +331,30 @@ class AffiliateRecommendedProductFragment :
         position: Int,
         commison: String,
         status: String,
-        type: String?
+        type: String?,
+        ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?
     ) {
-        pushPromosikanEvent(itemID, itemName, position, commison)
+        pushPromosikanEvent(itemID, itemName, position, commison, ssaInfo?.ssaStatus)
         val origin =
-            if (identifier == BOUGHT_IDENTIFIER) AffiliatePromotionBottomSheet.ORIGIN_PERNAH_DIBELI_PROMOSIKA
-            else AffiliatePromotionBottomSheet.ORIGIN_TERAKHIR_DILIHAT
+            if (identifier == BOUGHT_IDENTIFIER) {
+                AffiliatePromotionBottomSheet.ORIGIN_PERNAH_DIBELI_PROMOSIKA
+            } else {
+                AffiliatePromotionBottomSheet.ORIGIN_TERAKHIR_DILIHAT
+            }
         AffiliatePromotionBottomSheet.newInstance(
+            AffiliatePromotionBottomSheetParams(
+                null,
+                itemID,
+                itemName,
+                itemImage,
+                itemURL,
+                "",
+                origin,
+                commission = commison,
+                ssaInfo = ssaInfo
+            ),
             AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
-            null, null,
-            itemID, itemName, itemImage, itemURL,
-            "", origin, commission = commison
+            null
         ).show(childFragmentManager, "")
     }
 
@@ -333,7 +362,8 @@ class AffiliateRecommendedProductFragment :
         productId: String,
         productName: String,
         position: Int,
-        commison: String
+        commission: String,
+        ssaStatus: Boolean?
     ) {
         val item: String
         val eventAction: String
@@ -344,6 +374,10 @@ class AffiliateRecommendedProductFragment :
             item = AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_PERNAH_DILIHAT
             eventAction = AffiliateAnalytics.ActionKeys.PROMOSIKAN_PERNAH_DILIHAT
         }
+        var label = "$productId - $commission"
+        if (ssaStatus == true) {
+            label += " - komisi extra"
+        }
         AffiliateAnalytics.trackEventImpression(
             AffiliateAnalytics.EventKeys.SELECT_CONTENT,
             eventAction,
@@ -352,11 +386,11 @@ class AffiliateRecommendedProductFragment :
             productId,
             position + 1,
             productName,
-            "$productId - $commison",
+            label,
             item
         )
     }
 
-    override fun onButtonClick(errorCta: AffiliateSearchData.SearchAffiliate.Data.Error.ErrorCta?) = Unit
-
+    override fun onButtonClick(errorCta: AffiliateSearchData.SearchAffiliate.Data.Error.ErrorCta?) =
+        Unit
 }

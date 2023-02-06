@@ -38,8 +38,8 @@ import kotlinx.coroutines.launch
 class ProductTagViewModel @AssistedInject constructor(
     @Assisted(PRODUCT_TAG_SOURCE_RAW) productTagSourceRaw: String,
     @Assisted(SHOP_BADGE) val shopBadge: String,
-    @Assisted(AUTHOR_ID) private val authorId: String,
-    @Assisted(AUTHOR_TYPE) private val authorType: String,
+    @Assisted(AUTHOR_ID) val authorId: String,
+    @Assisted(AUTHOR_TYPE) val authorType: String,
     @Assisted(INITIAL_SELECTED_PRODUCT) private val initialSelectedProduct: List<SelectedProductUiModel>,
     @Assisted(PRODUCT_TAG_CONFIG) private val productTagConfig: ContentProductTagConfig,
     private val repo: ProductTagRepository,

@@ -55,17 +55,4 @@ class PlayNewAnalytic @Inject constructor(
                         .build()
                         .send()
         }
-
-        fun screenWithSwipeCoachMark(isShown: Boolean, isLoggedIn: Boolean, channelType: PlayChannelType, userId: String, channelId: String) {
-            Tracker.Builder()
-                .setEvent("openScreen")
-                .setCustomProperty(KEY_TRACKER_ID, "13881")
-                .setBusinessUnit(VAL_BUSINESS_UNIT)
-                .setCurrentSite(VAL_CURRENT_SITE)
-                .setCustomProperty(KEY_IS_LOGGED_IN_STATUS, isLoggedIn.toString())
-                .setCustomProperty(KEY_SCREEN_NAME, "/group-chat-room/$channelId/${channelType.value}/is coachmark $isShown")
-                .setUserId(userId)
-                .build()
-                .send()
-        }
 }
