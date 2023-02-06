@@ -210,7 +210,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                         if (viewModel.isFormFilled) {
                             showSwitchAccountConfirmationDialog(contentAccount)
                         } else {
-                            viewModel.submitAction(PlayShortsAction.SwitchAccount)
+                            viewModel.submitAction(PlayShortsAction.SwitchAccount(isRefreshAccountList = false))
                         }
                     }
 
@@ -644,7 +644,7 @@ class PlayShortsPreparationFragment @Inject constructor(
             )
             setSecondaryCTAClickListener {
                 dismiss()
-                viewModel.submitAction(PlayShortsAction.SwitchAccount)
+                viewModel.submitAction(PlayShortsAction.SwitchAccount(isRefreshAccountList = false))
             }
         }
 
