@@ -31,7 +31,7 @@ class PurposeViewHolder(
                 onUrlClicked = { link, _ ->
                     RouteManager.route(
                         itemView.context,
-                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, link.removeSurrounding("“", "”"))
+                        "${ApplinkConst.WEBVIEW}?url=${link.removeSurrounding("“", "”")}"
                     )
                 }, applyCustomStyling = {
                     isUnderlineText = false
