@@ -1,10 +1,12 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ContentCard
 
 import android.app.Application
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.usecase.contentCardUseCase.ContentCardUseCase
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentCard.ContentCardViewModel
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import io.mockk.*
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +24,7 @@ class ContentCardModelTest {
     val rule = InstantTaskExecutorRule()
     private val componentsItem: ComponentsItem = mockk(relaxed = true)
     private val application: Application = mockk()
+    var context: Context = mockk(relaxed = true)
     private var viewModel: ContentCardViewModel =
         spyk(ContentCardViewModel(application, componentsItem, 99))
 
@@ -97,5 +100,14 @@ class ContentCardModelTest {
     @Test
     fun `test for component position`() {
         TestCase.assertEquals(viewModel.position, 99)
+    }
+
+    @Test
+    fun `test for checkForDarkMode`() {
+        spyk(context.isDarkMode())
+
+        viewModel.checkForDarkMode(context)
+
+        verify { context.isDarkMode() }
     }
 }

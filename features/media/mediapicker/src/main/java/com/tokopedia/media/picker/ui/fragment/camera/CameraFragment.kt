@@ -19,7 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
-import com.tokopedia.media.common.utils.ParamCacheManager
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.media.databinding.FragmentCameraBinding
 import com.tokopedia.media.picker.analytics.*
 import com.tokopedia.media.picker.analytics.camera.CameraAnalytics
@@ -32,6 +32,7 @@ import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnCameraCapturePublished
 import com.tokopedia.media.picker.ui.widget.LoaderDialogWidget
 import com.tokopedia.media.picker.utils.exceptionHandler
+import com.tokopedia.media.picker.utils.generateKey
 import com.tokopedia.media.picker.utils.wrapper.FlingGestureWrapper
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.uimodel.MediaUiModel
@@ -44,7 +45,7 @@ import javax.inject.Inject
 
 open class CameraFragment @Inject constructor(
     private var viewModelFactory: ViewModelProvider.Factory,
-    private var param: ParamCacheManager,
+    private var param: PickerCacheManager,
     private var cameraAnalytics: CameraAnalytics,
 ) : BaseDaggerFragment()
     , CameraControllerComponent.Listener
@@ -319,7 +320,7 @@ open class CameraFragment @Inject constructor(
 
     private fun onShowMediaThumbnail(element: MediaUiModel?) {
         if (element == null) return
-        stateOnCameraCapturePublished(element)
+        stateOnCameraCapturePublished(element, param.get().generateKey())
     }
 
     private fun setCameraFlashState() {

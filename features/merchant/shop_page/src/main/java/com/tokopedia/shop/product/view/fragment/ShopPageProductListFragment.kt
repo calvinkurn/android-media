@@ -846,6 +846,12 @@ class ShopPageProductListFragment :
                 AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(productCardOptionsModel.wishlistResult, context, v)
             }
         }
+        if (productCardOptionsModel.wishlistResult.isSuccess) {
+            shopProductAdapter.updateWishListStatus(
+                productId = productCardOptionsModel.productId,
+                wishList = false
+            )
+        }
     }
 
     override fun onSeeAllClicked(shopProductEtalaseChipItemViewModel: ShopEtalaseItemDataModel) {

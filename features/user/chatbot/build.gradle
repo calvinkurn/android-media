@@ -85,6 +85,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayer
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     //test
     testImplementation rootProject.ext.testDependencies.mockk

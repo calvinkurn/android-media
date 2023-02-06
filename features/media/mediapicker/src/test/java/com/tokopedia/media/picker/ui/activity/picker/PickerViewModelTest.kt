@@ -1,7 +1,8 @@
 package com.tokopedia.media.picker.ui.activity.picker
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.media.common.utils.ParamCacheManager
+import com.tokopedia.media.picker.data.FeatureToggleManager
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.media.picker.data.mapper.mediaToUiModel
 import com.tokopedia.media.picker.data.mapper.toModel
 import com.tokopedia.media.picker.data.repository.BitmapConverterRepository
@@ -11,6 +12,7 @@ import com.tokopedia.media.picker.ui.observer.*
 import com.tokopedia.media.update
 import com.tokopedia.media.util.awaitItem
 import com.tokopedia.media.util.collectIntoChannel
+import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.uimodel.MediaUiModel
@@ -39,7 +41,8 @@ class PickerViewModelTest {
     private val deviceInfoRepository = mockk<DeviceInfoRepository>()
     private val bitmapConverterRepository = mockk<BitmapConverterRepository>()
     private val mediaRepository = mockk<MediaRepository>()
-    private val paramCacheManager = mockk<ParamCacheManager>()
+    private val paramCacheManager = mockk<PickerCacheManager>()
+    private val featureToggleManager = mockk<FeatureToggleManager>()
 
     private lateinit var viewModel: PickerViewModel
 
@@ -53,6 +56,7 @@ class PickerViewModelTest {
             mediaRepository,
             bitmapConverterRepository,
             paramCacheManager,
+            featureToggleManager,
             coroutineScopeRule.dispatchers
         )
     }
@@ -65,7 +69,7 @@ class PickerViewModelTest {
     @Test
     fun `ui event should be invoked the CameraCapture when camera state is published`() = runBlocking {
         // Given
-        stateOnCameraCapturePublished(mediaUiModelList.first())
+        stateOnCameraCapturePublished(mediaUiModelList.first(), eventTestKey.value)
 
         // When
         val result = viewModel.uiEvent
@@ -74,13 +78,13 @@ class PickerViewModelTest {
 
         // Then
         assert(result is EventPickerState.CameraCaptured)
-        EventFlowFactory.reset()
+        EventFlowFactory.reset(eventTestKey.value)
     }
 
     @Test
     fun `ui event should be invoked the SelectionChanged when camera state is published`() = runBlocking {
         // Given
-        stateOnChangePublished(mediaUiModelList)
+        stateOnChangePublished(mediaUiModelList, eventTestKey.value)
 
         // When
         val result = viewModel.uiEvent
@@ -89,7 +93,7 @@ class PickerViewModelTest {
 
         // Then
         assert(result is EventPickerState.SelectionChanged)
-        EventFlowFactory.reset()
+        EventFlowFactory.reset(eventTestKey.value)
     }
 
     @Test
@@ -100,7 +104,7 @@ class PickerViewModelTest {
         } returns emptyList()
 
         // Then
-        viewModel.preSelectedMedias()
+        viewModel.preSelectedMedias(paramCacheManager.get())
 
         coVerify {
             bitmapConverterRepository.convert(any())!! wasNot Called
@@ -126,7 +130,7 @@ class PickerViewModelTest {
         coEvery { bitmapConverterRepository.convert(mockImageUrl) } returns mockConvertedPath
 
         // Then
-        viewModel.preSelectedMedias()
+        viewModel.preSelectedMedias(paramCacheManager.get())
 
         assertEquals(
             expectedValue,
@@ -137,7 +141,7 @@ class PickerViewModelTest {
     @Test
     fun `ui event should be invoked the SelectionRemoved when camera state is published`() = runBlocking {
         // Given
-        stateOnRemovePublished(mediaUiModelList.first())
+        stateOnRemovePublished(mediaUiModelList.first(), eventTestKey.value)
 
         // When
         val result = viewModel.uiEvent
@@ -146,7 +150,7 @@ class PickerViewModelTest {
 
         // Then
         assert(result is EventPickerState.SelectionRemoved)
-        EventFlowFactory.reset()
+        EventFlowFactory.reset(eventTestKey.value)
     }
 
     @Test
@@ -156,7 +160,7 @@ class PickerViewModelTest {
         every { givenFile.exists() } returns true
         every { givenFile.path } returns ""
 
-        stateOnAddPublished(givenFile.toUiModel())
+        stateOnAddPublished(givenFile.toUiModel(), eventTestKey.value)
 
         // When
         val result = viewModel.uiEvent
@@ -165,7 +169,7 @@ class PickerViewModelTest {
 
         // Then
         assert(result is EventPickerState.SelectionAdded)
-        EventFlowFactory.reset()
+        EventFlowFactory.reset(eventTestKey.value)
     }
 
     @Test
@@ -221,5 +225,7 @@ class PickerViewModelTest {
         val mediaList = mediaUiModelList.map {
             it.toModel()
         }
+
+        private val eventTestKey = PageSource.Unknown
     }
 }
