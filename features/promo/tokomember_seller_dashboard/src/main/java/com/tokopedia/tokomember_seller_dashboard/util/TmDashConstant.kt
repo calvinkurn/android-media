@@ -29,6 +29,7 @@ const val REQUEST_CODE_REFRESH_PROGRAM_LIST = 1
 const val REQUEST_CODE_REFRESH_HOME = 2
 const val BUNDLE_IS_SHOW_BS = "bundle_is_show_bs"
 const val BUNDLE_PROGRAM_ACTION = "bundle_program_action"
+const val PROGRAM_DETAIL_SCREEN = "program_detail"
 
 const val ACTION_CREATE = "create"
 const val ACTION_DETAIL = "detail"
@@ -45,7 +46,7 @@ const val ENDED = 5
 const val CANCELED = 6
 const val ACTIVE_AND_WAITING = 7
 
-const val PROGRAM_DETAIL_ACTIVE = "Aktif"
+const val PROGRAM_DETAIL_ACTIVE = "Program Aktif"
 const val PROGRAM_DETAIL_WAITING = "Menunggu Periode Aktif"
 
 const val COUPON_DELETED = -1
