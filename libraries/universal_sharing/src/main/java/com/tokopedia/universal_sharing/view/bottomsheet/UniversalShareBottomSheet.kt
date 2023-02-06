@@ -451,6 +451,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     // call this method before show method if the request data is awaited
+    @Deprecated("this function is deprecated. Please use enableAffiliateCommission")
     fun affiliateRequestDataAwaited() {
         showLoader = true
         handler = Handler(Looper.getMainLooper())
@@ -463,6 +464,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
      * call this method if the request data is received
      * ideally, call this method after show Bottomsheet. there is a case hitting gql is finished, but view is not ready
      */
+    @Deprecated("this function is deprecated. Please use enableAffiliateCommission")
     fun affiliateRequestDataReceived(validRequest: Boolean) {
         val userSession = UserSession(LinkerManager.getInstance().context)
         if (userSession.isLoggedIn && validRequest && isAffiliateEnabled()) {
@@ -1042,7 +1044,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     /**
      * to enable affiliate commission
-     * @see [docs](https://tokopedia.atlassian.net/wiki/spaces/AF/pages/1693717743/Validate+Affiliate+Link+Generation+Eligibility)
+     * @see [https://tokopedia.atlassian.net/wiki/spaces/AF/pages/1693717743/Validate+Affiliate+Link+Generation+Eligibility]
      */
     fun enableAffiliateCommission(affiliatePDPInput: AffiliatePDPInput) {
         isAffiliateCommissionEnabled = true
@@ -1051,6 +1053,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     fun isAffiliateCommissionEnabled() = isAffiliateCommissionEnabled
 
+    @Deprecated("this function is deprecated. Please use enableAffiliateCommission")
     fun setAffiliateRequestHolder(affiliatePDPInput: AffiliatePDPInput) {
         if (UserSession(LinkerManager.getInstance().context).isLoggedIn) {
             this.affiliatePDPQueryData = affiliatePDPInput
@@ -1180,10 +1183,19 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         setUtmCampaignData(pageName, userId, pageIdCombined, feature)
     }
 
+    /**
+     * this function is deprecated and replaced with [setLinkProperties]
+     */
+    @Deprecated("please use ")
     fun setOgImageUrl(imgUrl: String) {
         ogImageUrl = imgUrl
     }
 
+    /**
+     * this function to set properties that commonly used in [LinkerData]
+     * @see LinkerData is object that is used to create Branch link.
+     * @param linkProperties
+     */
     fun setLinkProperties(linkProperties: LinkProperties) {
         this.linkProperties = linkProperties
         ogImageUrl = linkProperties.ogImageUrl
