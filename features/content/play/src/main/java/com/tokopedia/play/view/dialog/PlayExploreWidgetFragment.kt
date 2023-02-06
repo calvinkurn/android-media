@@ -51,6 +51,7 @@ import com.tokopedia.play_common.util.AnimationUtils
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.awaitLayout
 import com.tokopedia.play_common.util.extension.buildSpannedString
+import com.tokopedia.play_common.util.extension.doOnPreDraw
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
@@ -271,8 +272,8 @@ class PlayExploreWidgetFragment @Inject constructor(
         /**
          * Swipe Refresh always fill to screen need a bit adjustment here
          */
-        binding.rvWidgets.addOneTimeGlobalLayoutListener {
-            val mWidth = binding.rvWidgets.width
+        binding.rvWidgets.doOnPreDraw {
+            val mWidth = binding.rvWidgets.measuredWidth
             binding.srExploreWidget.layoutParams.width = mWidth
         }
     }
@@ -537,7 +538,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         private const val DIALOG_VISIBILITY_THRESHOLD = 600f
         private const val VIEW_TRANSLATION_THRESHOLD = 100f
         private const val VIEW_TRANSLATION_VELOCITY = 16f
-        private const val EXPLORE_WIDGET_WIDTH_RATIO = 0.7
+        private const val EXPLORE_WIDGET_WIDTH_RATIO = 0.75
 
         fun get(fragmentManager: FragmentManager): PlayExploreWidgetFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? PlayExploreWidgetFragment
