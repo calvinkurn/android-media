@@ -759,18 +759,19 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     override fun selectedTenure(
         tenureSelectedModel: TenureSelectedModel,
-        newPositionToSelect: Int
+        newPositionToSelect: Int,
+        promoName: String,
     ) {
         tenureSelectedModel.installmentDetails?.let {
             installmentModel = it
         }
         amountToPay.text = tenureSelectedModel.priceText.orEmpty()
         paymentDuration.text = "x${tenureSelectedModel.tenure.orEmpty()}"
-        sendTenureSelectedAnalytics(newPositionToSelect)
+        sendTenureSelectedAnalytics(newPositionToSelect, promoName)
         updateRecyclerViewData(newPositionToSelect, tenureSelectedModel)
     }
 
-    private fun sendTenureSelectedAnalytics(newPositionToSelect: Int) {
+    private fun sendTenureSelectedAnalytics(newPositionToSelect: Int, promoName: String) {
         payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId]?.let { checkoutData ->
             sendAnalyticEvent(
                 PdpSimulationEvent.ClickTenureEvent(
@@ -778,7 +779,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     checkoutData.userState ?: "",
                     payLaterActivationViewModel.price.toString(),
                     checkoutData.tenureDetail[newPositionToSelect].tenure.toString(),
-                    checkoutData.gateway_name ?: ""
+                    checkoutData.gateway_name ?: "",
+                    promoName
                 )
             )
         }

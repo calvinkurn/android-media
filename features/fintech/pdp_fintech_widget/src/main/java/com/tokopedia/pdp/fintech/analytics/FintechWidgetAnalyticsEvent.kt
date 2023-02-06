@@ -6,7 +6,8 @@ sealed class FintechWidgetAnalyticsEvent {
         val linkingStatus: String,
         val userStatus: String,
         val chipType: String,
-        val partnerId: String
+        val partnerId: String,
+        val promoName: String?,
     ) : FintechWidgetAnalyticsEvent()
 
     data class ActivationBottomSheetClick(
@@ -24,6 +25,7 @@ sealed class FintechWidgetAnalyticsEvent {
         val installmentAmount:String?,
         val tenure: String?,
         val partner: String?,
-        val redirectionUrl:String?
+        val redirectionUrl:String?,
+        val promoName: String?,
     ): FintechWidgetAnalyticsEvent()
 }

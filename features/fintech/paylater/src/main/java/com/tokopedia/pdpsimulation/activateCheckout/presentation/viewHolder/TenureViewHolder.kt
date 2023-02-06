@@ -1,5 +1,6 @@
 package com.tokopedia.pdpsimulation.activateCheckout.presentation.viewHolder
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,6 +43,7 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
 
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun View.setTenureEnableLogic(
         tenureDetail: TenureDetail,
         tenureSelectedModel: TenureSelectedModel,
@@ -57,10 +59,18 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
         individualTenureItemContainer.isClickable = true
         radioSelector.isClickable = true
         individualTenureItemContainer.setOnClickListener {
-            tenureSelectListener.selectedTenure(tenureSelectedModel, currentPosition)
+            tenureSelectListener.selectedTenure(
+                tenureSelectedModel,
+                currentPosition,
+                tenureDetail.promoName ?: "",
+            )
         }
         radioSelector.setOnClickListener {
-            tenureSelectListener.selectedTenure(tenureSelectedModel, currentPosition)
+            tenureSelectListener.selectedTenure(
+                tenureSelectedModel,
+                currentPosition,
+                tenureDetail.promoName ?: "",
+            )
         }
     }
 

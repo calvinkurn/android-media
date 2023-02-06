@@ -79,14 +79,18 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         PayLaterSimulationAdapter(getAdapterTypeFactory())
     }
     private val tenureAdapter: PayLaterSimulationTenureAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        PayLaterSimulationTenureAdapter { payLaterList, position ->
-            sendTenureCLick(position, payLaterList)
+        PayLaterSimulationTenureAdapter { payLaterList, position, tenureText ->
+            sendTenureCLick(position, payLaterList, tenureText)
             simulationAdapter.addAllElements(payLaterList)
             rvPayLaterOption.scrollToPosition(0)
         }
     }
 
-    private fun sendTenureCLick(tenure: Int, payLaterList: ArrayList<BasePayLaterWidgetUiModel>) {
+    private fun sendTenureCLick(
+        tenure: Int,
+        payLaterList: ArrayList<BasePayLaterWidgetUiModel>,
+        tenureText: String,
+    ) {
         val allStatusOfPartner = extractDetailFromList(payLaterList)
         sendEvent(PayLaterTenureClick().apply {
             productId = payLaterArgsDescriptor.productId
@@ -95,6 +99,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
             productPrice = payLaterViewModel.finalProductPrice.toString()
             tenureOption = tenure
             payLaterPartnerName = allStatusOfPartner?.third.toString()
+            tenureOptionText = tenureText
         })
     }
 

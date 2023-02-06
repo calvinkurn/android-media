@@ -76,7 +76,8 @@ data class Detail(
     @SerializedName("user_state") val userState: String?,
     @SerializedName("user_balance_amt") val limit: String?,
     @SerializedName("tenure_header") val optionalTenureHeader: String?,
-    @SerializedName("linking_status") val linkingStatus: String?
+    @SerializedName("linking_status") val linkingStatus: String?,
+    @SerializedName("promo_name") val promoName: String?,
 ) : BasePayLaterWidgetUiModel, Parcelable {
     override fun type(typeFactory: PayLaterAdapterFactory): Int {
         return typeFactory.type(this)

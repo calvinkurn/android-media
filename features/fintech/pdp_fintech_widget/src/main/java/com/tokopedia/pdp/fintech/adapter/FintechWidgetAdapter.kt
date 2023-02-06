@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter.MyViewHolder
 import com.tokopedia.pdp.fintech.domain.datamodel.ChipsData
-import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.pdp.fintech.helper.Utils.returnRouteObject
 import com.tokopedia.pdp.fintech.helper.Utils.safeLet
 import com.tokopedia.pdp.fintech.helper.Utils.setListOfData

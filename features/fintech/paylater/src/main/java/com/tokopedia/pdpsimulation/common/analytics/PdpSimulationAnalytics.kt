@@ -1,5 +1,6 @@
 package com.tokopedia.pdpsimulation.common.analytics
 
+import android.annotation.SuppressLint
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -49,6 +50,7 @@ class PdpSimulationAnalytics @Inject constructor(
             event.productPrice,
             event.tenureOption.toString(),
             event.payLaterPartnerName,
+            event.tenureOptionText,
         )
         val map = TrackAppUtils.gtmData(
             CLICK_EVENT_NAME_FIN_TECH_V3,
@@ -103,7 +105,8 @@ class PdpSimulationAnalytics @Inject constructor(
             event.limit,
             event.redirectLink,
             event.payLaterPartnerName,
-            event.ctaWording
+            event.ctaWording,
+            event.promoName,
         )
         val map = TrackAppUtils.gtmData(
             EVENT_NAME_FIN_TECH,
@@ -188,12 +191,21 @@ class PdpSimulationAnalytics @Inject constructor(
                 pdpSimulationEvent.userStatus,
                 pdpSimulationEvent.productPrice,
                 pdpSimulationEvent.tenure,
-                pdpSimulationEvent.partnerName
+                pdpSimulationEvent.partnerName,
+                pdpSimulationEvent.promoName,
             )
         }
     }
 
-    private fun sendTenureClickAnalytic(productId: String, userStatus: String, productPrice: String, tenure: String, partnerName: String) {
+    @SuppressLint("PII Data Exposure")
+    private fun sendTenureClickAnalytic(
+        productId: String,
+        userStatus: String,
+        productPrice: String,
+        tenure: String,
+        partnerName: String,
+        promoName: String,
+    ) {
         val map = TrackAppUtils.gtmData(
             CLICK_EVENT_NAME_FIN_TECH_V3,
             OCC_EVENT_CATEGORY,
@@ -204,7 +216,8 @@ class PdpSimulationAnalytics @Inject constructor(
                 userStatus,
                 productPrice,
                 tenure,
-                partnerName
+                partnerName,
+                promoName
             )
         )
         sendGeneralEvent(map)

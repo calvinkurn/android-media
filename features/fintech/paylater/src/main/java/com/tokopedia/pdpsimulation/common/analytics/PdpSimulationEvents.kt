@@ -66,7 +66,8 @@ sealed class PdpSimulationEvent {
         val userStatus: String,
         val productPrice:String,
         val tenure: String,
-        val partnerName: String
+        val partnerName: String,
+        val promoName: String,
     ):PdpSimulationEvent()
 }
 
@@ -84,6 +85,7 @@ class PayLaterCtaClick : PayLaterAnalyticsBase() {
     var limit: String = ""
     var redirectLink: String = ""
     var ctaWording: String = ""
+    var promoName: String = ""
 }
 
 @Parcelize
@@ -100,5 +102,6 @@ class OccBottomSheetImpression : PayLaterAnalyticsBase(), Parcelable
 
 class PayLaterTenureClick :PayLaterAnalyticsBase()
 {
-    var productPrice:String = ""
+    var productPrice: String = ""
+    var tenureOptionText: String = ""
 }

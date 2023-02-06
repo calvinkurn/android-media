@@ -69,6 +69,7 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
                 type
               }
             }
+            promo_name
           }
         }
       } 
@@ -126,6 +127,7 @@ const val GQL_PAYLATER_ACTIVATION = """
       user_state
       user_balance_amt
       detail {
+        promo_name
         tenure
         tenure_disable
         label

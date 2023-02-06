@@ -1,5 +1,6 @@
 package com.tokopedia.pdp.fintech.analytics
 
+import android.annotation.SuppressLint
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -13,12 +14,14 @@ class PdpFintechWidgetAnalytics @Inject constructor(
     private val analyticTracker: ContextAnalytics
         get() = TrackApp.getInstance().gtm
 
+    @SuppressLint("PII Data Exposure")
     fun sendAnalyticsEvent(analyticsEvent: FintechWidgetAnalyticsEvent) {
         when (analyticsEvent) {
             is FintechWidgetAnalyticsEvent.PdpWidgetImpression ->
                 sendPdpWidgetImpression(
                     analyticsEvent.partnerId, analyticsEvent.linkingStatus,
-                    analyticsEvent.productId, analyticsEvent.userStatus, analyticsEvent.chipType
+                    analyticsEvent.productId, analyticsEvent.userStatus, analyticsEvent.chipType,
+                    analyticsEvent.promoName ?: "",
                 )
 
             is FintechWidgetAnalyticsEvent.ActivationBottomSheetClick -> sendActivationClick(
@@ -27,8 +30,17 @@ class PdpFintechWidgetAnalytics @Inject constructor(
                 analyticsEvent.partner,
                 analyticsEvent.ctaWording
             )
-            is FintechWidgetAnalyticsEvent.PdpWidgetClick -> sendPdpCLickEvent(analyticsEvent.productId,
-                analyticsEvent.linkingStatus,analyticsEvent.userStatus,analyticsEvent.chipType,analyticsEvent.installmentAmount,analyticsEvent.tenure,analyticsEvent.partner,analyticsEvent.redirectionUrl)
+            is FintechWidgetAnalyticsEvent.PdpWidgetClick -> sendPdpCLickEvent(
+                analyticsEvent.productId,
+                analyticsEvent.linkingStatus,
+                analyticsEvent.userStatus,
+                analyticsEvent.chipType,
+                analyticsEvent.installmentAmount,
+                analyticsEvent.tenure,
+                analyticsEvent.partner,
+                analyticsEvent.redirectionUrl,
+                analyticsEvent.promoName,
+            )
         }
     }
 
@@ -40,13 +52,14 @@ class PdpFintechWidgetAnalytics @Inject constructor(
         installmentAmount:String?,
         tenure: String?,
         partner: String?,
-        redirectionUrl: String?
+        redirectionUrl: String?,
+        promoName: String?,
     ) {
         val map = TrackAppUtils.gtmData(
             clickEvent,
             eventCategory,
             CLICK_FINTECH_PDP_WIDGET,
-            "$productId - true - $linkingStatus - $userStatus - $chipType - $installmentAmount - $tenure - $partner - $redirectionUrl"
+            "$productId - true - $linkingStatus - $userStatus - $chipType - $installmentAmount - $tenure - $partner - $redirectionUrl - $promoName"
         )
         sendGeneralEvent(map)
 
@@ -56,7 +69,7 @@ class PdpFintechWidgetAnalytics @Inject constructor(
         userStatus: String,
         linkingStatus: String,
         partner: String,
-        ctaWording: String
+        ctaWording: String,
     ) {
         val map = TrackAppUtils.gtmData(
             clickEvent,
@@ -82,13 +95,14 @@ class PdpFintechWidgetAnalytics @Inject constructor(
         linkingStatus: String,
         productId: String,
         userStatus: String,
-        chipType: String
+        chipType: String,
+        promoName: String,
     ) {
         val map = TrackAppUtils.gtmData(
             viewEvent,
             eventCategory,
             pdpBnplImpression,
-            "$productId - Yes - ${linkingStatus} - ${userSession.get().userId} - $userStatus - $chipType - $partnerId"
+            "$productId - Yes - ${linkingStatus} - ${userSession.get().userId} - $userStatus - $chipType - $partnerId - $promoName"
 
         )
         sendGeneralEvent(map)
