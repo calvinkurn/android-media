@@ -3639,7 +3639,8 @@ open class DynamicProductDetailFragment :
             context,
             productInfo.basic.productID,
             cartId = cartId,
-            pageSource = PostAtcHelper.Source.PDP
+            pageSource = PostAtcHelper.Source.PDP,
+            layoutId = productInfo.basic.postAtcLayout.layoutId
         )
     }
 
