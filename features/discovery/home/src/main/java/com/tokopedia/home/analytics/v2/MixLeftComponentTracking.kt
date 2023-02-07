@@ -72,7 +72,7 @@ object MixLeftComponentTracking : BaseTrackerConst() {
                         grid.price
                     ).toString(),
                     brand = Value.NONE_OTHER,
-                    category = Value.NONE_OTHER,
+                    category = grid.categoryBreadcrumbs,
                     variant = Value.NONE_OTHER,
                     productPosition = (position + 1).toString(),
                     channelId = channel.id,
@@ -118,7 +118,7 @@ object MixLeftComponentTracking : BaseTrackerConst() {
                         grid.price
                     ).toString(),
                     brand = Value.NONE_OTHER,
-                    category = Value.NONE_OTHER,
+                    category = grid.categoryBreadcrumbs,
                     variant = Value.NONE_OTHER,
                     productPosition = (position + 1).toString(),
                     channelId = channel.id,
@@ -193,6 +193,7 @@ object MixLeftComponentTracking : BaseTrackerConst() {
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendCampaignCode(channel.trackingAttributionModel.campaignCode)
+            .appendUserId(userId)
             .build()
     }
 
