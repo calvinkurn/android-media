@@ -6,6 +6,9 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home_account.common.AndroidFileUtil
+import com.tokopedia.profilecompletion.addphone.INVALID_PHONE_NUMBER
+import com.tokopedia.profilecompletion.addphone.data.UserProfileValidate
+import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
 import com.tokopedia.profilecompletion.biousername.BioUsernameInstrumentTest
 import com.tokopedia.profilecompletion.biousername.BioUsernameInstrumentTest.Companion.ERROR_MESSAGE_USERNAME
 import com.tokopedia.profilecompletion.changebiousername.data.SubmitBioUsername
@@ -52,6 +55,13 @@ class GraphqlRepositoryStub : GraphqlRepository {
                         GraphqlResponse(
                                 mapOf(SubmitBioUsernameResponse::class.java to SubmitBioUsernameResponse(
                                         SubmitBioUsername(status = true))), mapOf(), false)
+                }
+                it.contains("userProfileValidate") -> {
+                    if (param?.get("phone").toString() == INVALID_PHONE_NUMBER) {
+                        GraphqlResponse(getResponse<UserValidatePojo>(R.raw.user_profile_validate_failed), mapOf(), false)
+                    } else {
+                        GraphqlResponse(getResponse<UserValidatePojo>(R.raw.user_profile_validate_success), mapOf(), false)
+                    }
                 }
                 else -> GraphqlResponse(mapOf(), mapOf(), false)
             }

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.clearText
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.repeatedlyUntil
@@ -150,3 +151,41 @@ fun checkResultCode(activityResult: Instrumentation.ActivityResult, resultCode: 
     assertThat(activityResult, ActivityResultMatchers.hasResultCode(resultCode));
 }
 
+fun isDisplayed(vararg resIds: Int) {
+    resIds.forEach {
+        Espresso.onView(withId(it))
+            .check(matches(isDisplayed()))
+    }
+}
+
+fun isEnable(isEnabled: Boolean, resId: Int) {
+    Espresso.onView(withId(resId))
+        .check(
+            matches(
+                if (isEnabled) isEnabled() else not(isEnabled())
+            )
+        )
+}
+
+fun clearText(inputType: Int) {
+    Espresso.onView(ViewMatchers.withInputType(inputType))
+        .perform(clearText(), ViewActions.closeSoftKeyboard())
+}
+
+fun isTextDisplayed(vararg texts: String) {
+    texts.forEach {
+        Espresso.onView(withText(it))
+            .check(matches(isDisplayed()))
+    }
+}
+
+fun clickOnDisplayedView(resId: Int) {
+    Espresso.onView(withId(resId))
+        .check(matches(isDisplayed()))
+        .perform(click())
+}
+
+fun inputTextThenCloseKeyboard(inputType: Int, text: String) {
+    Espresso.onView(ViewMatchers.withInputType(inputType))
+        .perform(typeText(text), ViewActions.closeSoftKeyboard())
+}
