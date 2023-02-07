@@ -1,5 +1,6 @@
 package com.tokopedia.common_compose.principles
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.OutlinedTextField
@@ -21,22 +22,27 @@ fun NestTextField(
     isError: Boolean = false,
     supportingText: @Composable (() -> Unit)? = null
 ) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChanged,
-        textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950),
-        modifier = modifier.defaultMinSize(minHeight = 48.dp),
-        placeholder = placeholder,
-        trailingIcon = trailingIcon,
-        label = label,
-        enabled = enabled,
-        isError = isError,
-//        supportingText = supportingText,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = NestTheme.colors.GN._500,
-            errorBorderColor = NestTheme.colors.RN._500
-//            errorSupportingTextColor = NestTheme.colors.RN._500
-        ),
-        shape = RoundedCornerShape(8.dp)
-    )
+    Column {
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChanged,
+            textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950),
+            modifier = modifier.defaultMinSize(minHeight = 48.dp),
+            placeholder = placeholder,
+            trailingIcon = trailingIcon,
+            label = label,
+            enabled = enabled,
+            isError = isError,
+            //        supportingText = supportingText,
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = NestTheme.colors.GN._500,
+                errorBorderColor = NestTheme.colors.RN._500
+                //            errorSupportingTextColor = NestTheme.colors.RN._500
+            ),
+            shape = RoundedCornerShape(8.dp)
+        )
+        if (supportingText != null) {
+            supportingText()
+        }
+    }
 }
