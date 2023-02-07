@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/atf_big"
             android:adjustViewBounds="true"
+            app:unify_image_corner_radius="0"
             android:scaleType="matrix"
             app:layout_constraintBottom_toBottomOf="parent" />
 
@@ -27,8 +28,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header_top_rounded"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:background="@drawable/bg_rounded_header"
+        android:layout_height="16dp"
+        android:background="@drawable/bg_rounded_header_atf1"
         app:layout_constraintBottom_toBottomOf="@id/container_super_graphic_header" />
 
     <FrameLayout
