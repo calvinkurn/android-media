@@ -2,15 +2,13 @@ package com.tokopedia.common_compose.principles
 
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.ui.NestTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NestTextField(
     value: String,
@@ -33,11 +31,11 @@ fun NestTextField(
         label = label,
         enabled = enabled,
         isError = isError,
-        supportingText = supportingText,
+//        supportingText = supportingText,
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = NestTheme.colors.GN._500,
-            errorBorderColor = NestTheme.colors.RN._500,
-            errorSupportingTextColor = NestTheme.colors.RN._500
+            errorBorderColor = NestTheme.colors.RN._500
+//            errorSupportingTextColor = NestTheme.colors.RN._500
         ),
         shape = RoundedCornerShape(8.dp)
     )
