@@ -131,9 +131,11 @@ class GroupDetailViewModel @Inject constructor(
     ) {
         val dataGrp = hashMapOf<String, Any?>(
             ParamObject.ACTION_TYPE to ParamObject.ACTION_EDIT,
-            ParamObject.GROUPID to groupId,
-            ParamObject.DAILY_BUDGET to dailyBudget
+            ParamObject.GROUPID to groupId
         )
+        if(!isAutomatic)
+            dataGrp[ParamObject.DAILY_BUDGET] = dailyBudget
+
         val dataKey = hashMapOf<String, Any?>()
         if (isAutomatic) {
             dataKey[STRATEGIES] = arrayListOf(AUTO_BID_STATE)
