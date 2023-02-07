@@ -7,7 +7,7 @@ import com.tokopedia.remoteconfig.RollenceKey
  * Created by frenzel on 09/05/22.
  */
 object HomeRollenceController {
-    private var rollenceAtfValue: String = ""
+    var rollenceAtfValue: String = ""
 
     fun fetchAtfRollenceValue() {
         rollenceAtfValue = try {

@@ -101,16 +101,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
-import com.tokopedia.home.beranda.presentation.view.helper.HomeAutoRefreshListener
-import com.tokopedia.home.beranda.presentation.view.helper.TimerRunnable
-import com.tokopedia.home.beranda.presentation.view.helper.getAutoRefreshRunnableThread
-import com.tokopedia.home.beranda.presentation.view.helper.getPositionWidgetVertical
-import com.tokopedia.home.beranda.presentation.view.helper.isHomeTokonowCoachmarkShown
-import com.tokopedia.home.beranda.presentation.view.helper.isSubscriptionCoachmarkShown
-import com.tokopedia.home.beranda.presentation.view.helper.runAutoRefreshJob
-import com.tokopedia.home.beranda.presentation.view.helper.setHomeTokonowCoachmarkShown
-import com.tokopedia.home.beranda.presentation.view.helper.setSubscriptionCoachmarkShown
-import com.tokopedia.home.beranda.presentation.view.helper.stopAutoRefreshJob
+import com.tokopedia.home.beranda.presentation.view.helper.*
 import com.tokopedia.home.beranda.presentation.view.listener.BannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CampaignWidgetComponentCallback
@@ -557,7 +548,7 @@ open class HomeRevampFragment :
         BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
         isUsingNewPullRefresh = isUseNewPullRefresh()
         styleAtf = getStyleAtf()
-        getHomeViewModel().atfStyle = styleAtf
+//        getHomeViewModel().atfStyle = styleAtf
         getHomeViewModel().initFlow()
         val view = inflater.inflate(
             if (isUsingNewPullRefresh) R.layout.fragment_home_revamp else R.layout.fragment_home_revamp_old_refresh,
@@ -2749,7 +2740,7 @@ open class HomeRevampFragment :
     }
 
     override fun refreshBalanceWidget() {
-        if (styleAtf == RollenceKey.HOME_COMPONENT_ATF_1) {
+        if (HomeRollenceController.isUsingAtf1Variant()) {
             getHomeViewModel().getBalanceWidgetAtf1Data()
         } else {
             getHomeViewModel().getBalanceWidgetData()

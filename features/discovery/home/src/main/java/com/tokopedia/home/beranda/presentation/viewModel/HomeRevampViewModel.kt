@@ -21,6 +21,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -35,7 +36,6 @@ import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -137,18 +137,18 @@ open class HomeRevampViewModel @Inject constructor(
     var homeDataModel = HomeDynamicChannelModel()
     var currentTopAdsBannerPage: String = "1"
     var isFirstLoad = true
-    var atfStyle = ""
+//    private var atfStyle = ""
 
     //    @FlowPreview
     private fun homeFlowDynamicChannel(): Flow<HomeDynamicChannelModel?> {
-        return homeUseCase.get().getHomeDataFlow(atfStyle).flowOn(homeDispatcher.get().io)
+        return homeUseCase.get().getHomeDataFlow(HomeRollenceController.rollenceAtfValue).flowOn(homeDispatcher.get().io)
     }
 
     var getHomeDataJob: Job? = null
 
     init {
         _isRequestNetworkLiveData.value = Event(true)
-//        initFlow()
+        HomeRollenceController.fetchAtfRollenceValue()
         injectCouponTimeBased()
         homeRateLimit.reset(HOME_LIMITER_KEY)
     }
@@ -354,7 +354,7 @@ open class HomeRevampViewModel @Inject constructor(
     @FlowPreview
     fun initFlow() {
         homeFlowStarted = true
-        Log.d("dhabalog", "initFlow $atfStyle")
+//        Log.d("dhabalog", "initFlow $atfStyle")
         launchCatchError(coroutineContext, block = {
             Log.d("dhabalog", "initFlowlaunchcatcherror")
             homeFlowDynamicChannel().collect { homeNewDataModel ->
@@ -395,7 +395,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
         homeRateLimit.shouldFetch(HOME_LIMITER_KEY)
         onRefreshState = true
-        if (atfStyle == RollenceKey.HOME_COMPONENT_ATF_1) {
+        if (HomeRollenceController.isUsingAtf1Variant()) {
             getBalanceWidgetAtf1LoadingState()
         } else {
             getBalanceWidgetLoadingState()
@@ -437,7 +437,7 @@ open class HomeRevampViewModel @Inject constructor(
             refreshHomeData()
             _isNeedRefresh.value = Event(true)
         } else {
-            if (atfStyle == RollenceKey.HOME_COMPONENT_ATF_1) {
+            if (HomeRollenceController.isUsingAtf1Variant()) {
                 getBalanceWidgetAtf1Data()
             } else {
                 getBalanceWidgetData()
@@ -515,7 +515,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun onRefreshMembership(position: Int, headerTitle: String) {
         if (!userSession.get().isLoggedIn) return
-        if (atfStyle == RollenceKey.HOME_COMPONENT_ATF_1) {
+        if (HomeRollenceController.isUsingAtf1Variant()) {
             findWidget<HomeHeaderAtf1DataModel> { headerModel, index ->
                 launch {
                     val currentHeaderDataModel = homeBalanceWidgetAtf1UseCase.get()
@@ -538,7 +538,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun onRefreshWalletApp(position: Int, headerTitle: String) {
         if (!userSession.get().isLoggedIn) return
-        if (atfStyle == RollenceKey.HOME_COMPONENT_ATF_1) {
+        if (HomeRollenceController.isUsingAtf1Variant()) {
             findWidget<HomeHeaderAtf1DataModel> { headerModel, index ->
                 launch {
                     val currentHeaderDataModel = homeBalanceWidgetAtf1UseCase.get()

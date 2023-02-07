@@ -24,6 +24,7 @@ import com.tokopedia.home.beranda.helper.MissionWidgetHelper
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.HomeServerLogger
@@ -206,7 +207,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     /**
                      * Get header data
                      */
-                    if (atfStyle == RollenceKey.HOME_COMPONENT_ATF_1) {
+                    if (HomeRollenceController.isUsingAtf1Variant()) {
                         if (currentHeaderAtf1DataModel == null) {
                             currentHeaderAtf1DataModel =
                                 homeBalanceWidgetAtf1UseCase.onGetBalanceWidgetData(
@@ -835,7 +836,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
             val currentTimeMillisString = System.currentTimeMillis().toString()
             var currentToken = ""
             var isAtfSuccess = true
-            if (atfStyle == RollenceKey.HOME_COMPONENT_ATF_1) {
+            if (HomeRollenceController.isUsingAtf1Variant()) {
                 currentHeaderAtf1DataModel = null
             } else {
                 currentHeaderDataModel = null
