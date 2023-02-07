@@ -22,11 +22,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class TalkInboxViewModel @Inject constructor(
-        dispatcher: CoroutineDispatchers,
-        private val talkInboxListUseCase: TalkInboxListUseCase,
-        private val userSession: UserSessionInterface,
-        private val talkInboxTracking: TalkInboxTracking,
-        private val firebaseRemoteConfig: RemoteConfig
+    dispatcher: CoroutineDispatchers,
+    private val talkInboxListUseCase: TalkInboxListUseCase,
+    private val userSession: UserSessionInterface,
+    private val talkInboxTracking: TalkInboxTracking,
+    private val firebaseRemoteConfig: RemoteConfig
 ) : BaseViewModel(dispatcher.io) {
 
     private val _inboxList: MediatorLiveData<TalkInboxViewState<DiscussionInbox>> = MediatorLiveData()
@@ -75,7 +75,6 @@ class TalkInboxViewModel @Inject constructor(
         return userSession.userId
     }
 
-
     fun setInboxType(inboxType: String) {
         this.type = inboxType
         resetFilter()
@@ -83,13 +82,13 @@ class TalkInboxViewModel @Inject constructor(
 
     fun setFilter(selectedFilter: TalkInboxFilter, isSellerView: Boolean, shouldTrack: Boolean) {
         if (this.filter == selectedFilter) {
-            if(shouldTrack) {
+            if (shouldTrack) {
                 sendFilterTracker(selectedFilter, isSellerView, false)
             }
             resetFilter()
             return
         }
-        if(shouldTrack) {
+        if (shouldTrack) {
             sendFilterTracker(selectedFilter, isSellerView, true)
         }
         this.filter = selectedFilter
@@ -151,14 +150,15 @@ class TalkInboxViewModel @Inject constructor(
                 setDefaultSmartDecommissionConfig()
             }
         }, onError = {
-            setDefaultSmartDecommissionConfig()
-        })
+                setDefaultSmartDecommissionConfig()
+            })
     }
 
     private fun setDefaultSmartDecommissionConfig() {
         _smartReplyDecommissionConfig.postValue(
             SmartReplyTalkDecommissionConfig.InboxPage(
-                TickerConfig(show = false, title = "", text = "")
+                isSmartReviewDisabled = false,
+                tickerConfig = TickerConfig(title = "", text = "")
             )
         )
     }

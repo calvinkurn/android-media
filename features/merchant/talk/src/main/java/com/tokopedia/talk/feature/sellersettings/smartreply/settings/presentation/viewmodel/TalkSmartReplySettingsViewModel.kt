@@ -19,9 +19,9 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class TalkSmartReplySettingsViewModel @Inject constructor(
-        private val discussionGetSmartReplyUseCase: DiscussionGetSmartReplyUseCase,
-        private val firebaseRemoteConfig: RemoteConfig,
-        dispatcher: CoroutineDispatchers
+    private val discussionGetSmartReplyUseCase: DiscussionGetSmartReplyUseCase,
+    private val firebaseRemoteConfig: RemoteConfig,
+    dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io) {
 
     private val _smartReplyData = MutableLiveData<Result<DiscussionGetSmartReply>>()
@@ -57,14 +57,15 @@ class TalkSmartReplySettingsViewModel @Inject constructor(
                 _smartReplyDecommissionConfig.postValue(config)
             }
         }, onError = {
-            setDefaultSmartDecommissionConfig()
-        })
+                setDefaultSmartDecommissionConfig()
+            })
     }
 
     private fun setDefaultSmartDecommissionConfig() {
         _smartReplyDecommissionConfig.postValue(
             SmartReplyTalkDecommissionConfig.SmartReplyPage(
-                TickerConfig(show = false, title = "", text = "")
+                isSmartReviewDisabled = false,
+                tickerConfig = TickerConfig(title = "", text = "")
             )
         )
     }

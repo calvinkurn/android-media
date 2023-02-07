@@ -18,6 +18,9 @@ data class SmartReplyTalkDecommissionConfig(
     val smartReplyStockPage: SmartReplyStockPage
 ) {
     data class InboxPage(
+        @SerializedName("is_smart_review_disabled")
+        @Expose
+        val isSmartReviewDisabled: Boolean,
         @SerializedName("ticker_config")
         @Expose
         val tickerConfig: TickerConfig
@@ -30,12 +33,18 @@ data class SmartReplyTalkDecommissionConfig(
     )
 
     data class SmartReplyPage(
+        @SerializedName("is_smart_review_disabled")
+        @Expose
+        val isSmartReviewDisabled: Boolean,
         @SerializedName("ticker_config")
         @Expose
         val tickerConfig: TickerConfig
     )
 
     data class SmartReplyStockPage(
+        @SerializedName("is_smart_review_disabled")
+        @Expose
+        val isSmartReviewDisabled: Boolean,
         @SerializedName("ticker_config")
         @Expose
         val tickerConfig: TickerConfig,
@@ -46,9 +55,6 @@ data class SmartReplyTalkDecommissionConfig(
 }
 
 data class TickerConfig(
-    @SerializedName("show")
-    @Expose
-    val show: Boolean,
     @SerializedName("title")
     @Expose
     val title: String,
@@ -58,13 +64,7 @@ data class TickerConfig(
 )
 
 data class ToasterConfig(
-    @SerializedName("enabled")
-    @Expose
-    val enabled: String,
     @SerializedName("text")
     @Expose
-    val text: String,
-    @SerializedName("cta")
-    @Expose
-    val cta: String
+    val text: String
 )

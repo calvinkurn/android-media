@@ -1,11 +1,19 @@
 package com.tokopedia.talk.feature.sellersettings.smartreply.detail.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.cachemanager.gson.GsonSingleton
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.talk.common.constants.TalkConstants
+import com.tokopedia.talk.feature.inbox.data.SmartReplyTalkDecommissionConfig
+import com.tokopedia.talk.feature.inbox.data.TickerConfig
+import com.tokopedia.talk.feature.inbox.data.ToasterConfig
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.data.TalkSmartReplyDetailButtonState
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.domain.usecase.DiscussionSetSmartReplySettingsUseCase
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.domain.usecase.DiscussionSetSmartReplyTemplateUseCase
@@ -17,10 +25,11 @@ import javax.inject.Inject
 
 class
 TalkSmartReplyDetailViewModel @Inject constructor(
-        private val discussionSetSmartReplyTemplateUseCase: DiscussionSetSmartReplyTemplateUseCase,
-        private val discussionSetSmartReplySettingsUseCase: DiscussionSetSmartReplySettingsUseCase,
-        private val userSession: UserSessionInterface,
-        dispatchers: CoroutineDispatchers
+    private val discussionSetSmartReplyTemplateUseCase: DiscussionSetSmartReplyTemplateUseCase,
+    private val discussionSetSmartReplySettingsUseCase: DiscussionSetSmartReplySettingsUseCase,
+    private val userSession: UserSessionInterface,
+    private val firebaseRemoteConfig: RemoteConfig,
+    dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
     private val _setSmartReplyResult = MutableLiveData<Result<String>>()
@@ -31,6 +40,10 @@ TalkSmartReplyDetailViewModel @Inject constructor(
     val buttonState: LiveData<TalkSmartReplyDetailButtonState>
         get() = _buttonState
 
+    private val _smartReplyDecommissionConfig: MediatorLiveData<SmartReplyTalkDecommissionConfig.SmartReplyStockPage> = MediatorLiveData()
+    val smartReplyDecommissionConfig: LiveData<SmartReplyTalkDecommissionConfig.SmartReplyStockPage>
+        get() = _smartReplyDecommissionConfig
+
     var isSmartReplyOn: Boolean = false
     var messageReady: String = ""
     var messageNotReady: String = ""
@@ -40,6 +53,10 @@ TalkSmartReplyDetailViewModel @Inject constructor(
         get() = userSession.shopName
     val shopAvatar: String
         get() = userSession.shopAvatar
+
+    init {
+        getSmartReplyDecommissionConfig()
+    }
 
     fun setSmartReply() {
         launchCatchError(block = {
@@ -105,4 +122,29 @@ TalkSmartReplyDetailViewModel @Inject constructor(
         resetMessagesFromBackgroundThread()
     }
 
+    private fun getSmartReplyDecommissionConfig() {
+        viewModelScope.launchCatchError(block = {
+            firebaseRemoteConfig.getString(
+                TalkConstants.SMART_REPLY_DECOMMISSION_REMOTE_CONFIG_KEY
+            ).let { jsonConfig ->
+                val config = GsonSingleton
+                    .instance
+                    .fromJson(jsonConfig, SmartReplyTalkDecommissionConfig::class.java)
+                    .smartReplyStockPage
+                _smartReplyDecommissionConfig.postValue(config)
+            }
+        }, onError = {
+                setDefaultSmartDecommissionConfig()
+            })
+    }
+
+    private fun setDefaultSmartDecommissionConfig() {
+        _smartReplyDecommissionConfig.postValue(
+            SmartReplyTalkDecommissionConfig.SmartReplyStockPage(
+                isSmartReviewDisabled = false,
+                tickerConfig = TickerConfig(title = "", text = ""),
+                toasterConfig = ToasterConfig(text = "")
+            )
+        )
+    }
 }
