@@ -55,7 +55,6 @@ import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.upcoming.NotifyMeUiData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
@@ -1384,12 +1383,8 @@ open class DynamicProductDetailViewModel @Inject constructor(
             })
     }
 
-    fun getChildOfVariantSelected(
-        singleVariant: ProductSingleVariantDataModel?,
-        optionalVariant: VariantDataModel?
-    ): VariantChild? {
-        val mapOfSelectedVariants = singleVariant?.mapOfSelectedVariant
-            ?: optionalVariant?.mapOfSelectedVariant ?: mutableMapOf()
+    fun getChildOfVariantSelected(singleVariant: ProductSingleVariantDataModel?): VariantChild? {
+        val mapOfSelectedVariants = singleVariant?.mapOfSelectedVariant ?: mutableMapOf()
         val selectedOptionIds = mapOfSelectedVariants.values.toList()
         val variantDataNonNull = variantData ?: ProductVariant()
 

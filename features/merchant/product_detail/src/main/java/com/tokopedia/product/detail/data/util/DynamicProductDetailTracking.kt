@@ -455,28 +455,6 @@ object DynamicProductDetailTracking {
             )
         }
 
-        fun onVariantErrorPartialySelected(productInfo: DynamicProductInfoP1?, actionButton: Int) {
-            val mapEvent = TrackAppUtils.gtmData(
-                ProductTrackingConstant.PDP.EVENT_VIEW_PDP_IRIS,
-                ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Action.IMPRESSION_CHOOSE_VARIANT_NOTIFICATION,
-                if (actionButton == ProductDetailCommonConstant.BUY_BUTTON) "beli button name" else "tambah ke keranjang"
-            )
-
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.IMPRESSION_CHOOSE_VARIANT_NOTIFICATION)
-        }
-
-        fun onVariantGuideLineClicked(productInfo: DynamicProductInfoP1?, variantData: VariantDataModel?, variantPosition: Int) {
-            val mapEvent = TrackAppUtils.gtmData(
-                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Action.CLICK_VARIANT_GUIDELINE,
-                ""
-            )
-
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, generateComponentTrackModel(variantData, variantPosition), ProductTrackingConstant.Action.CLICK_CHOOSE_PRODUCT_VARIANT)
-        }
-
         fun onSingleVariantClicked(productInfo: DynamicProductInfoP1?, variantUiData: ProductSingleVariantDataModel?, variantCommonData: ProductVariant?, variantPosition: Int) {
             val variantLevel = variantCommonData?.variants?.size?.toString()?.toList()?.joinToString(prefix = "level : ", postfix = ";")
             val variantTitle = variantCommonData?.variants?.mapNotNull { it.identifier }?.joinToString(",", prefix = "variant_title : ", postfix = ";")
@@ -499,30 +477,6 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, generateComponentTrackModel(variantUiData, variantPosition), ProductTrackingConstant.Action.CLICK_CHOOSE_PRODUCT_VARIANT)
-        }
-
-        fun onVariantLevel1Clicked(productInfo: DynamicProductInfoP1?, variantData: VariantDataModel?, variantCommonData: ProductVariant?, variantPosition: Int) {
-            val variantLevel = variantData?.listOfVariantCategory?.size.toString().toList().joinToString(prefix = "level : ", postfix = ";")
-            val variantTitle = variantData?.listOfVariantCategory?.map {
-                it.identifier
-            }?.joinToString(",", prefix = "variant_title : ", postfix = ";") ?: ""
-            val variantValue = "variant_value: " + generateVariantString(
-                variantCommonData,
-                productInfo?.basic?.productID
-                    ?: ""
-            ) + ";"
-            val variantId = "variant : " + productInfo?.basic?.productID + ";"
-
-            val mapEvent = TrackAppUtils.gtmData(
-                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Action.CLICK_CHOOSE_PRODUCT_VARIANT,
-                variantLevel + variantTitle + variantValue + variantId
-            )
-
-            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT
-
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, generateComponentTrackModel(variantData, variantPosition), ProductTrackingConstant.Action.CLICK_CHOOSE_PRODUCT_VARIANT)
         }
 
         fun eventFollowShop(

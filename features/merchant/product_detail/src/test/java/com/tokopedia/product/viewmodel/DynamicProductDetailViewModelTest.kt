@@ -1463,7 +1463,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.TRADE_IN })
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO })
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.VALUE_PROP })
-        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.VARIANT_OPTIONS })
         // remove unused palugada
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO })
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO })
