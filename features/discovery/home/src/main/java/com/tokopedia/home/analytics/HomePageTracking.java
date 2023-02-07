@@ -244,6 +244,29 @@ public class HomePageTracking {
         trackingQueue.putEETracking((HashMap<String, Object>) data);
     }
 
+    public static void eventEnhanceImpressionLegoAndCuratedHomePage(
+            TrackingQueue trackingQueue,
+            List<Object> legoAndCuratedList,
+            String userId
+    ) {
+
+        Map<String, Object> data = DataLayer.mapOf(
+                "event", "promoView",
+                "eventCategory", "homepage",
+                "eventAction", "home banner impression",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        legoAndCuratedList.toArray(new Object[legoAndCuratedList.size()])
+                                )
+                        )
+                ),
+                "userId", userId
+        );
+        trackingQueue.putEETracking((HashMap<String, Object>) data);
+    }
+
     public static void eventClickOnHomePageRecommendationTab(
             RecommendationTabDataModel recommendationTabDataModel) {
 
