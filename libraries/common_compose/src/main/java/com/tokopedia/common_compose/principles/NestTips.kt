@@ -13,11 +13,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Lightbulb
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,9 +42,9 @@ fun NestTips(
                 )
             }
             Icon(
-                imageVector = Icons.Outlined.Lightbulb,
+                painter = painterResource(id = com.tokopedia.iconunify.R.drawable.iconunify_lightbulb),
                 contentDescription = "tips icon",
-                modifier = Modifier.align(Alignment.TopEnd).padding(end = 4.dp, top = 4.dp),
+                modifier = Modifier.align(Alignment.TopEnd).padding(end = 4.dp, top = 4.dp).height(20.dp),
                 tint = NestTheme.colors.NN._300
             )
             Column(modifier = Modifier.padding(16.dp)) {

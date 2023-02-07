@@ -17,17 +17,13 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowDropDown
-import androidx.compose.material.icons.outlined.LocalShipping
-import androidx.compose.material.icons.outlined.Receipt
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -220,19 +216,19 @@ private fun OrderInfo(courier: String, invoice: String) {
             OrderInfoItem(
                 title = stringResource(id = R.string.label_title_courier_reschedule_pick_up),
                 value = courier,
-                icon = Icons.Outlined.LocalShipping
+                icon = com.tokopedia.iconunify.R.drawable.iconunify_courier
             )
             OrderInfoItem(
                 title = stringResource(id = R.string.label_title_invoice_reschedule_pick_up),
                 value = invoice,
-                icon = Icons.Outlined.Receipt
+                icon = com.tokopedia.iconunify.R.drawable.iconunify_bill_all
             )
         }
     }
 }
 
 @Composable
-private fun OrderInfoItem(title: String, value: String, icon: ImageVector) {
+private fun OrderInfoItem(title: String, value: String, icon: Int) {
     Row(
         modifier = Modifier
             .wrapContentHeight()
@@ -240,7 +236,7 @@ private fun OrderInfoItem(title: String, value: String, icon: ImageVector) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            imageVector = icon,
+            painter = painterResource(id = icon),
             contentDescription = "icon order info $title"
         )
         Column(modifier = Modifier.padding(start = 10.dp)) {
@@ -411,7 +407,7 @@ fun DropDownIcon() {
         onClick = {}
     ) {
         Icon(
-            imageVector = Icons.Outlined.ArrowDropDown,
+            painter = painterResource(id = com.tokopedia.iconunify.R.drawable.iconunify_chevron_down),
             contentDescription = "drop down"
         )
     }
