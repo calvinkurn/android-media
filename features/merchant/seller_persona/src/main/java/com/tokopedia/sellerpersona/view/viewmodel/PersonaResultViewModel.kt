@@ -11,12 +11,13 @@ import com.tokopedia.sellerpersona.data.remote.usecase.GetPersonaDataUseCase
 import com.tokopedia.sellerpersona.data.remote.usecase.TogglePersonaUseCase
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
+import com.tokopedia.sellerpersona.view.model.PersonaUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -27,26 +28,26 @@ class PersonaResultViewModel @Inject constructor(
     private val getPersonaDataUseCase: Lazy<GetPersonaDataUseCase>,
     private val togglePersonaUseCase: Lazy<TogglePersonaUseCase>,
     private val userSession: Lazy<UserSessionInterface>,
-    dispatchers: CoroutineDispatchers
+    private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
-    val personaList: LiveData<Result<PersonaDataUiModel>>
-        get() = _personaList
+    val personaData: LiveData<Result<PersonaDataUiModel>>
+        get() = _personaData
     val togglePersonaStatus: LiveData<Result<TogglePersonaModel>>
         get() = _togglePersonaStatus
 
-    private val _personaList = MutableLiveData<Result<PersonaDataUiModel>>()
+    private val _personaData = MutableLiveData<Result<PersonaDataUiModel>>()
     private val _togglePersonaStatus = MutableLiveData<Result<TogglePersonaModel>>()
 
-    fun fetchPersonaList() {
+    fun fetchPersonaData() {
         launchCatchError(block = {
             val result = getPersonaDataUseCase.get().execute(
                 userSession.get().shopId,
                 Constants.PERSONA_PAGE_PARAM
             )
-            _personaList.postValue(Success(result))
+            _personaData.postValue(Success(result))
         }, onError = {
-            _personaList.postValue(Fail(it))
+            _personaData.postValue(Fail(it))
         })
     }
 
@@ -59,5 +60,16 @@ class PersonaResultViewModel @Inject constructor(
         }, onError = {
             _togglePersonaStatus.postValue(Fail(it))
         })
+    }
+
+    fun setPersona(persona: PersonaUiModel) {
+        launch(context = dispatchers.io) {
+            val personaData = PersonaDataUiModel(
+                persona = persona.name,
+                personaStatus = PersonaStatus.ACTIVE,
+                personaData = persona
+            )
+            _personaData.postValue(Success(personaData))
+        }
     }
 }

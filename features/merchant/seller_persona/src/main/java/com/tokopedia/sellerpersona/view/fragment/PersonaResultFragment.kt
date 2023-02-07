@@ -51,6 +51,8 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
         ViewModelProvider(this, viewModelFactory).get(PersonaResultViewModel::class.java)
     }
     private var isPersonaActive = false
+    private var personaData: PersonaDataUiModel? = null
+    private var shouldShowDefaultApplyButton = false
 
     override fun bind(
         layoutInflater: LayoutInflater, container: ViewGroup?
@@ -62,21 +64,22 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
         super.onViewCreated(view, savedInstanceState)
         fetchPersonaList()
         setupView()
-        observePersonaList()
+        observePersonaData()
         observePersonaToggleStatus()
-        observeSelectedPersona()
-    }
-
-    private fun observeSelectedPersona() {
-        findNavController().currentBackStackEntry?.savedStateHandle
-            ?.getLiveData<PersonaUiModel>(PersonaSelectTypeFragment.KEY_SELECTED_PERSONA)
-            ?.observe(viewLifecycleOwner) {
-                //todo : handle after setting the persona
-            }
+        observeNavigationResult()
     }
 
     override fun inject() {
         daggerComponent?.inject(this)
+    }
+
+    private fun observeNavigationResult() {
+        findNavController().currentBackStackEntry?.savedStateHandle
+            ?.getLiveData<PersonaUiModel>(PersonaSelectTypeFragment.KEY_SELECTED_PERSONA)
+            ?.observe(viewLifecycleOwner) {
+                shouldShowDefaultApplyButton = true
+                viewModel.setPersona(it)
+            }
     }
 
     private fun observePersonaToggleStatus() {
@@ -119,10 +122,13 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
 
     }
 
-    private fun observePersonaList() {
-        viewLifecycleOwner.observe(viewModel.personaList) {
+    private fun observePersonaData() {
+        viewLifecycleOwner.observe(viewModel.personaData) {
             when (it) {
-                is Success -> showPersonaData(it.data)
+                is Success -> {
+                    this.personaData = it.data
+                    showPersonaData(it.data)
+                }
                 is Fail -> handleError(it.throwable)
             }
         }
@@ -141,9 +147,9 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
             dismissLoadingState()
             setTipsVisibility(data.persona)
             setupSwitcher()
+            setupApplyButton()
 
             val persona = data.personaData
-            btnSpApplyPersona.gone()
             imgSpResultAvatar.loadImage(persona.avatarImage)
             imgSpResultBackdrop.loadImage(persona.backgroundImage)
             rvSpResultInfoList.adapter = PersonaSimpleListAdapter().apply {
@@ -169,16 +175,29 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
         }
     }
 
+    private fun setupApplyButton() {
+        binding?.run {
+            if (shouldShowDefaultApplyButton) {
+                btnSpApplyPersona.visible()
+                btnSpApplyPersona.text = root.context.getString(R.string.sp_apply)
+            } else {
+                btnSpApplyPersona.gone()
+            }
+        }
+    }
+
     private fun setupSwitcher() {
         binding?.run {
             switchSpActivatePersona.isChecked = isPersonaActive
             switchSpActivatePersona.setOnCheckedChangeListener { _, isChecked ->
                 val shouldBtnVisible = isPersonaActive != isChecked
-                if (shouldBtnVisible) {
-                    btnSpApplyPersona.visible()
-                    btnSpApplyPersona.text = root.context.getString(R.string.sp_apply_changes)
-                } else {
-                    btnSpApplyPersona.gone()
+                if (!shouldShowDefaultApplyButton) {
+                    if (shouldBtnVisible) {
+                        btnSpApplyPersona.visible()
+                        btnSpApplyPersona.text = root.context.getString(R.string.sp_apply_changes)
+                    } else {
+                        btnSpApplyPersona.gone()
+                    }
                 }
                 setTextPersonaActiveStatus(isChecked)
             }
@@ -212,7 +231,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
 
     private fun fetchPersonaList() {
         showLoadingState()
-        viewModel.fetchPersonaList()
+        viewModel.fetchPersonaData()
     }
 
     private fun showLoadingState() {
@@ -241,8 +260,10 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
                     .navigate(R.id.actionResultFragmentToQuestionnaireFragment)
             }
             tvSpSelectManualType.setOnClickListener {
-                it.findNavController()
-                    .navigate(R.id.actionResultFragmentToSelectTyoeFragment)
+                val persona = personaData?.persona
+                val action = PersonaResultFragmentDirections
+                    .actionResultFragmentToSelectTypeFragment(persona)
+                it.findNavController().navigate(action)
             }
         }
     }

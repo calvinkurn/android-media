@@ -27,8 +27,9 @@
             android:id="@+id/actionResultFragmentToQuestionnaireFragment"
             app:destination="@id/questionnaireFragment" />
         <action
-            android:id="@+id/actionResultFragmentToSelectTyoeFragment"
-            app:destination="@id/selectTypeFragment" />
+            android:id="@+id/actionResultFragmentToSelectTypeFragment"
+            app:destination="@id/selectTypeFragment"
+            app:enterAnim="@anim/nav_default_enter_anim" />
     </fragment>
 
     <fragment
@@ -46,5 +47,10 @@
         android:id="@+id/selectTypeFragment"
         android:name="com.tokopedia.sellerpersona.view.fragment.PersonaSelectTypeFragment"
         android:label="@string/sp_select_seller_type"
-        tools:layout="@layout/fragment_persona_select_type" />
+        tools:layout="@layout/fragment_persona_select_type" >
+        <argument
+            android:name="persona"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
 </navigation>
