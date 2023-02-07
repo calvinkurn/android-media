@@ -654,42 +654,4 @@
         <key>android_robust_tester</key>
         <value></value>
     </entry>
-    <entry>
-        <key>android_seller_app_smart_reply_talk_decommission_config</key>
-        <value>
-            <![CDATA[
-                {
-                  "inbox_page": {
-                    "ticker_config": {
-                      "show": true,
-                      "title": "Smart Reply Diskusi hanya aktif s.d. 3 Mar",
-                      "text": "Tenang, menjawab Diskusi soal stok tetap mudah pakai Template Diskusi! <a href=\"https://www.tokopedia.com/\">Lihat Detail</a>"
-                    }
-                  },
-                  "talk_setting_page": {
-                    "show_smart_reply_entrypoint": true
-                  },
-                  "smart_reply_page": {
-                    "ticker_config": {
-                      "show": true,
-                      "title": "Smart Reply Diskusi hanya aktif s.d. 3 Mar",
-                      "text": "Tenang, menjawab Diskusi soal stok tetap mudah pakai Template Diskusi! <a href=\"https://www.tokopedia.com/\">Lihat Detail</a>"
-                    }
-                  },
-                  "smart_reply_stock_page": {
-                    "ticker_config": {
-                      "show": true,
-                      "title": "",
-                      "text": "Pesan Smart Reply kamu sebelumnya sudah otomatis dinonaktifkan pada 4 Maret."
-                    },
-                    "toaster_config": {
-                      "enabled": false,
-                      "text": "Saat ini kamu sudah tidak bisa pakai pesan Smart Reply di Diskusi.",
-                      "cta": "Oke"
-                    }
-                  }
-                }
-            ]]>
-        </value>
-    </entry>
 </defaultsMap>
