@@ -364,7 +364,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             suggestedBid.toFloatOrZero(),
             bidPencarian.toFloatOrZero(),
             bidRecomendasi.toFloatOrZero(),
-            TopAdsEditUtils.calculateDailyBudget(bidPencarian.toIntOrZero(), bidRecomendasi.toIntOrZero())
+            dailyBudgetSpent?.text == TopAdsDashboardConstant.TIDAK_DIBATASI
         ) {
             loadData()
         }

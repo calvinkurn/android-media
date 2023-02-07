@@ -14,6 +14,7 @@ import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
+import com.tokopedia.topads.common.data.util.TopAdsEditUtils
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
@@ -126,15 +127,15 @@ class GroupDetailViewModel @Inject constructor(
 
     fun changeBidState(
         isAutomatic: Boolean, groupId: Int,
-        suggestBidPerClick: Float = 0f, bidPencarian: Float = 0f, bidRecomendasi: Float = 0f, dailyBudget : Int = 0,
+        suggestBidPerClick: Float = 0f, bidPencarian: Float = 0f, bidRecomendasi: Float = 0f, isDailyBudgetUnlimited: Boolean = false,
         onSuccess: () -> Unit
     ) {
         val dataGrp = hashMapOf<String, Any?>(
             ParamObject.ACTION_TYPE to ParamObject.ACTION_EDIT,
             ParamObject.GROUPID to groupId
         )
-        if(!isAutomatic)
-            dataGrp[ParamObject.DAILY_BUDGET] = dailyBudget
+        if(!isDailyBudgetUnlimited && !isAutomatic)
+            dataGrp[ParamObject.DAILY_BUDGET] = TopAdsEditUtils.calculateDailyBudget(bidPencarian.toInt(), bidRecomendasi.toInt())
 
         val dataKey = hashMapOf<String, Any?>()
         if (isAutomatic) {
