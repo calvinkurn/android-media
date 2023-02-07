@@ -12,15 +12,15 @@ import android.provider.MediaStore.Files.FileColumns.*
 import androidx.annotation.ChecksSdkIntAtLeast
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.data.entity.Media
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import javax.inject.Inject
 
 class MediaQueryDataSourceImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val param: ParamCacheManager
+    private val param: PickerCacheManager
 ) : MediaQueryDataSource {
 
     @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.Q)
