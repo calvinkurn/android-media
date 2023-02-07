@@ -16,7 +16,8 @@ data class DynamicLegoBannerDataModel(
     override fun equalsWith(b: Any?): Boolean {
         return if (b is DynamicLegoBannerDataModel) {
             channelModel.channelConfig.createdTimeMillis == b.channelModel.channelConfig.createdTimeMillis &&
-                channelModel.channelConfig.borderStyle == b.channelModel.channelConfig.borderStyle
+                channelModel.channelConfig.borderStyle == b.channelModel.channelConfig.borderStyle &&
+                isCache == b.isCache
         } else {
             false
         }

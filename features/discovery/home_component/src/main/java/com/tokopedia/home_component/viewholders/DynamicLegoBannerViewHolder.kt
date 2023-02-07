@@ -123,7 +123,7 @@ class DynamicLegoBannerViewHolder(
                 marginValue
             )
 
-            recyclerView.adapter = LegoItemAdapter(
+            val adapter = LegoItemAdapter(
                 legoListener,
                 element.channelModel,
                 adapterPosition + 1,
@@ -131,6 +131,8 @@ class DynamicLegoBannerViewHolder(
                 isUsingPaddingStyle,
                 element.cardInteraction
             )
+            recyclerView.adapter = adapter
+            adapter.notifyDataSetChanged()
         } else {
             legoListener?.getDynamicLegoBannerData(element.channelModel)
         }
