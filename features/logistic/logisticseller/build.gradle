@@ -13,10 +13,6 @@ repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 buildscript {
-    ext {
-        compose_compiler = "1.1.1"
-        compose_version = "1.1.1"
-    }
     repositories {
         google()
         mavenCentral()
@@ -40,7 +36,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = compose_compiler
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
     }
 
     packagingOptions {
@@ -60,6 +56,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
+
+    implementation rootProject.ext.unifyDependencies.icons
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.dagger
@@ -82,16 +80,11 @@ dependencies {
     //-------------------------------------------------------------------//
 
     // Compose
-    api rootProject.ext.composeDependencies.composeUi
-    api rootProject.ext.composeDependencies.composeRuntime
-    api rootProject.ext.composeDependencies.composeFoundation
-    api rootProject.ext.composeDependencies.composeMaterial
-    api rootProject.ext.composeDependencies.composeIconsExtended
-    api rootProject.ext.composeDependencies.composeActivity
-
-    //Macrobenchmark
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_version")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_version")
+    implementation rootProject.ext.composeDependencies.composeUi
+    implementation rootProject.ext.composeDependencies.composeRuntime
+    implementation rootProject.ext.composeDependencies.composeFoundation
+    implementation rootProject.ext.composeDependencies.composeMaterial
+    implementation rootProject.ext.composeDependencies.composeActivity
 }
 
 project.ext {
