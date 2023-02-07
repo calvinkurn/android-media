@@ -14,11 +14,15 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
+import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
 import com.tokopedia.affiliate.model.response.AffiliatePerformanceListData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateProductCardMetricsModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import timber.log.Timber
@@ -32,6 +36,10 @@ class AffiliatePerformaSharedProductCardsItemVH(
 ) : AbstractViewHolder<AffiliatePerformaSharedProductCardsModel>(itemView) {
     private val adapterMetrics = AffiliateAdapter(AffiliateAdapterFactory())
     private val metricRv = itemView.findViewById<RecyclerView>(R.id.metric_rv)
+    private val productImage = itemView.findViewById<ImageUnify>(R.id.product_image)
+    private val productName = itemView.findViewById<Typography>(R.id.product_name)
+    private val productStatus = itemView.findViewById<Typography>(R.id.product_status)
+    private val ssaLabel = itemView.findViewById<Label>(R.id.ssa_label)
     private val rvLayoutManager = GridLayoutManager(itemView.context, SPAN_COUNT)
 
     init {
@@ -50,7 +58,6 @@ class AffiliatePerformaSharedProductCardsItemVH(
         const val PRODUCT_INACTIVE = 0
         const val SPAN_COUNT = 3
         private const val PRODUCT_ITEM = 0
-
     }
 
     override fun bind(element: AffiliatePerformaSharedProductCardsModel?) {
@@ -66,7 +73,8 @@ class AffiliatePerformaSharedProductCardsItemVH(
                 tempList.add(
                     AffiliateProductCardMetricsModel(
                         metric,
-                        element.product.status ?: PRODUCT_INACTIVE
+                        element.product,
+                        element.affiliateSSEAdpTotalClickItem
                     )
                 )
             }
@@ -77,10 +85,9 @@ class AffiliatePerformaSharedProductCardsItemVH(
 
     private fun setItemData(element: AffiliatePerformaSharedProductCardsModel?) {
         element?.product?.let { product ->
-            itemView.findViewById<ImageUnify>(R.id.product_image)
-                ?.setImageUrl(product.image?.androidURL ?: "")
-            itemView.findViewById<Typography>(R.id.product_name)?.text = product.itemTitle
-            itemView.findViewById<Typography>(R.id.product_status)?.text =
+            productImage.setImageUrl(product.image?.androidURL ?: "")
+            productName.text = product.itemTitle
+            productStatus.text =
                 getString(R.string.affiliate_date, formatDate(element.product.linkGeneratedAt))
             val disabledColor = MethodChecker.getColor(
                 itemView.context,
@@ -90,24 +97,45 @@ class AffiliatePerformaSharedProductCardsItemVH(
                 itemView.context,
                 com.tokopedia.unifyprinciples.R.color.Unify_NN950
             )
-            itemView.findViewById<Typography>(R.id.product_status)?.setTextColor(disabledColor)
-            itemView.findViewById<Typography>(R.id.product_name)?.setTextColor(
+            productStatus.setTextColor(disabledColor)
+            productName.setTextColor(
                 if (product.status == PRODUCT_ACTIVE) {
                     activeColor
                 } else {
                     disabledColor
                 }
             )
+            ssaLabel.apply {
+                isVisible = product.ssaStatus.orFalse()
+                text = product.ssaLabel?.labelText.orEmpty()
+            }
 
             itemView.setOnClickListener {
-                if (product.itemType == PRODUCT_ITEM) sendSelectContentEvent(product) else sendShopClickEvent(
-                    product
-                )
+                if (product.itemType == PRODUCT_ITEM) {
+                    sendSelectContentEvent(product)
+                } else {
+                    sendShopClickEvent(
+                        product
+                    )
+                }
                 productClickInterface?.onProductClick(
-                    product.itemID!!, product.itemTitle ?: "", product.image?.androidURL
-                        ?: "", product.defaultLinkURL ?: "",
-                    product.itemID!!, product.status ?: PRODUCT_INACTIVE,
-                    if (product.itemType == PRODUCT_ITEM) PAGE_TYPE_PDP else PAGE_TYPE_SHOP
+                    product.itemID!!,
+                    product.itemTitle ?: "",
+                    product.image?.androidURL
+                        ?: "",
+                    product.defaultLinkURL ?: "",
+                    product.itemID!!,
+                    product.status ?: PRODUCT_INACTIVE,
+                    if (product.itemType == PRODUCT_ITEM) PAGE_TYPE_PDP else PAGE_TYPE_SHOP,
+                    ssaInfo = AffiliatePromotionBottomSheetParams.SSAInfo(
+                        ssaStatus = product.ssaStatus.orFalse(),
+                        ssaMessage = product.ssaMessage.orEmpty(),
+                        message = product.message.orEmpty(),
+                        label = AffiliatePromotionBottomSheetParams.SSAInfo.Label(
+                            labelType = product.ssaLabel?.labelType.orEmpty(),
+                            labelText = product.ssaLabel?.labelText.orEmpty()
+                        )
+                    )
                 )
             }
         }
@@ -130,9 +158,18 @@ class AffiliatePerformaSharedProductCardsItemVH(
         } ?: ""
     }
 
-    private fun sendSelectContentEvent(product: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item) {
-        val label =
-            if (product.status == PRODUCT_ACTIVE) AffiliateAnalytics.LabelKeys.ACTIVE else AffiliateAnalytics.LabelKeys.INACTIVE
+    private fun sendSelectContentEvent(
+        product: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item
+    ) {
+        var label =
+            if (product.status == PRODUCT_ACTIVE) {
+                AffiliateAnalytics.LabelKeys.ACTIVE
+            } else {
+                AffiliateAnalytics.LabelKeys.INACTIVE
+            }
+        if (product.ssaStatus == true) {
+            label += "komisi extra"
+        }
         AffiliateAnalytics.trackEventImpression(
             AffiliateAnalytics.EventKeys.SELECT_CONTENT,
             AffiliateAnalytics.ActionKeys.CLICK_PRODUCT_PRODUL_YANG_DIPROMOSIKAN,
@@ -140,14 +177,26 @@ class AffiliatePerformaSharedProductCardsItemVH(
             UserSession(itemView.context).userId,
             product.itemID,
             bindingAdapterPosition - 1,
-            "${product.itemID} - ${product.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue} - ${product.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue} - ${product.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue} - $label",
+            product.itemTitle,
+            "${product.itemID}" +
+                " - ${product.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue}" +
+                " - ${product.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue}" +
+                " - ${product.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue}" +
+                " - $label",
             AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SELECT_CONTENT
         )
     }
 
     private fun sendShopClickEvent(shop: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item) {
-        val label =
-            if (shop.status == PRODUCT_ACTIVE) AffiliateAnalytics.LabelKeys.ACTIVE else AffiliateAnalytics.LabelKeys.INACTIVE
+        var label =
+            if (shop.status == PRODUCT_ACTIVE) {
+                AffiliateAnalytics.LabelKeys.ACTIVE
+            } else {
+                AffiliateAnalytics.LabelKeys.INACTIVE
+            }
+        if (shop.ssaStatus == true) {
+            label += "komisi extra"
+        }
         AffiliateAnalytics.trackEventImpression(
             AffiliateAnalytics.EventKeys.SELECT_CONTENT,
             AffiliateAnalytics.ActionKeys.CLICK_SHOP_LINK_DENGAN_PERFORMA,
@@ -156,7 +205,11 @@ class AffiliatePerformaSharedProductCardsItemVH(
             shop.itemID,
             bindingAdapterPosition - 1,
             shop.itemTitle,
-            "${shop.itemID} - ${shop.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue} - ${shop.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue} - ${shop.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue} - $label",
+            "${shop.itemID}" +
+                " - ${shop.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue}" +
+                " - ${shop.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue}" +
+                " - ${shop.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue}" +
+                " - $label",
             AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SHOP_SELECT_CONTENT
         )
     }

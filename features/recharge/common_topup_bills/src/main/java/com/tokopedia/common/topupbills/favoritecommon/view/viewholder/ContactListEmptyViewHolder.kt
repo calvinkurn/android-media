@@ -19,6 +19,6 @@ class ContactListEmptyViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_topup_bills_saved_number_empty_state
-        const val EMPTY_STATE_IMG_URL = "https://images.tokopedia.net/img/https:/images.tokopedia.net/img/android/digital/common_topup_bills/common_topup_ic_illustration_not_found.png"
+        const val EMPTY_STATE_IMG_URL = "https://images.tokopedia.net/img/common_topup_ic_illustration_not_found.png"
     }
 }

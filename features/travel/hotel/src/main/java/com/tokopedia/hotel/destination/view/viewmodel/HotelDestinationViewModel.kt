@@ -19,6 +19,7 @@ import com.tokopedia.hotel.destination.data.model.SearchDestination
 import com.tokopedia.hotel.destination.usecase.GetHotelRecentSearchUseCase
 import com.tokopedia.hotel.destination.usecase.GetPropertyPopularUseCase
 import com.tokopedia.hotel.destination.view.fragment.HotelRecommendationFragment
+import com.tokopedia.hotel.destination.view.mapper.HotelDestinationMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.locationmanager.DeviceLocation
@@ -34,11 +35,13 @@ import javax.inject.Inject
  */
 
 class HotelDestinationViewModel @Inject constructor(
-        private val userSessionInterface: UserSessionInterface,
-        private val getPropertyPopularUseCase: GetPropertyPopularUseCase,
-        private val getHotelRecentSearchUseCase: GetHotelRecentSearchUseCase,
-        val graphqlRepository: GraphqlRepository,
-        val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.io) {
+    private val userSessionInterface: UserSessionInterface,
+    private val getPropertyPopularUseCase: GetPropertyPopularUseCase,
+    private val getHotelRecentSearchUseCase: GetHotelRecentSearchUseCase,
+    private val hotelDestinationMapper: HotelDestinationMapper,
+    val graphqlRepository: GraphqlRepository,
+    val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.io) {
 
     val popularSearch = MutableLiveData<Result<List<PopularSearch>>>()
     val recentSearch = MutableLiveData<Result<List<RecentSearch>>>()
@@ -75,7 +78,7 @@ class HotelDestinationViewModel @Inject constructor(
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_SEARCH_RESPONSE, dataParams)
                 graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<HotelSuggestion.Response>()
-            searchDestination.postValue(Loaded(Success(data.propertySearchSuggestion.searchDestinationList.toMutableList())))
+            searchDestination.postValue(Loaded(Success(hotelDestinationMapper.mapSource(data).toMutableList())))
         }) {
             searchDestination.postValue(Loaded(Fail(it)))
         }
@@ -104,8 +107,7 @@ class HotelDestinationViewModel @Inject constructor(
                 if (locationResult == null) return
                 locationResult.locations.forEach {
                     if (it != null) {
-                        if (it.latitude == 0.0 && it.longitude == 0.0) longLat.postValue(Fail(Throwable()))
-                        else longLat.postValue(Success(Pair(it.longitude, it.latitude)))
+                        validateLocation(it.latitude, it.longitude)
                         try {
                             fusedLocationProviderClient.removeLocationUpdates(locationCallback)
                         } catch (e: Throwable) {
@@ -122,15 +124,26 @@ class HotelDestinationViewModel @Inject constructor(
 
         try {
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
-        }catch (e: SecurityException){
+        } catch (e: SecurityException) {
             e.printStackTrace()
+        }
+    }
+
+    fun validateLocation(latitude: Double, longitude: Double) {
+        if (latitude == DEFAULT_LATITUDE && longitude == DEFAULT_LONGITUDE) {
+            longLat.postValue(Fail(Throwable()))
+        } else {
+            longLat.postValue(Success(Pair(longitude, latitude)))
         }
     }
 
     fun onGetLocation(): Function1<DeviceLocation, Unit> {
         return { (latitude, longitude) ->
-            if (latitude == 0.0 && longitude == 0.0) longLat.postValue(Fail(Throwable()))
-            else longLat.postValue(Success(Pair(longitude, latitude)))
+            if (latitude == DEFAULT_LATITUDE && longitude == DEFAULT_LONGITUDE) {
+                longLat.postValue(Fail(Throwable()))
+            } else {
+                longLat.postValue(Success(Pair(longitude, latitude)))
+            }
         }
     }
 
@@ -142,5 +155,7 @@ class HotelDestinationViewModel @Inject constructor(
         const val PARAM_DATA = "data"
         const val PARAM_USER_ID = "id"
         const val PARAM_DELETE_RECENT_UUID = "uuid"
+        const val DEFAULT_LATITUDE = 0.0
+        const val DEFAULT_LONGITUDE = 0.0
     }
 }
