@@ -353,6 +353,12 @@ class WishlistCollectionDetailFragment :
         observingData()
     }
 
+    override fun onDestroyView() {
+        bottomSheetCollection = null
+        bottomSheetCollectionSettings = null
+        super.onDestroyView()
+    }
+
     private fun isAutoRefreshEnabled(): Boolean {
         return try {
             return getFirebaseRemoteConfig()?.getBoolean(HOME_ENABLE_AUTO_REFRESH_WISHLIST) ?: false
@@ -3022,6 +3028,7 @@ class WishlistCollectionDetailFragment :
     private fun onCollectionSettingsClicked(collectionId: String, collectionName: String) {
         bottomSheetCollectionSettings =
             BottomSheetWishlistCollectionSettings.newInstance(collectionName, collectionId, collectionType, listSettingButtons)
+        bottomSheetCollectionSettings?.setOnDismissListener { bottomSheetCollectionSettings = null }
         bottomSheetCollectionSettings?.setListener(this@WishlistCollectionDetailFragment)
         if (bottomSheetCollectionSettings?.isAdded == true || childFragmentManager.isStateSaved) return
         bottomSheetCollectionSettings?.show(childFragmentManager)
@@ -3491,6 +3498,7 @@ class WishlistCollectionDetailFragment :
             source,
             false
         )
+        bottomSheetCollection?.setOnDismissListener { bottomSheetCollection = null }
         if (bottomSheetCollection?.isAdded == true || fragmentManager.isStateSaved) return
         bottomSheetCollection?.setActionListener(this@WishlistCollectionDetailFragment)
         bottomSheetCollection?.show(fragmentManager)
