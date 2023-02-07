@@ -71,6 +71,7 @@ import com.tokopedia.chatbot.chatbot2.view.uimodel.helpfullquestion.HelpFullQues
 import com.tokopedia.chatbot.chatbot2.view.uimodel.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.rating.ChatRatingUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.seprator.ChatSepratorUiModel
+import com.tokopedia.chatbot.chatbot2.view.uimodel.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.chatbot2.view.util.Attachment34RenderType
 import com.tokopedia.chatbot.chatbot2.view.util.CheckDynamicAttachmentValidity
 import com.tokopedia.chatbot.chatbot2.view.util.helper.generateInput
@@ -89,6 +90,7 @@ import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSubmitChatCsat
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSubmitCsatRatingState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotUpdateToolbarState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotVideoUploadEligibilityState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotVideoUploadFailureState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.CheckUploadSecureState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.GetTickerDataState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.TicketListState
@@ -211,8 +213,8 @@ class ChatbotViewModel @Inject constructor(
     private val _imageUploadFailureData = MutableLiveData<ChatbotImageUploadFailureState.ImageUploadErrorBody>()
     val imageUploadFailureData: LiveData<ChatbotImageUploadFailureState.ImageUploadErrorBody>
         get() = _imageUploadFailureData
-    private val _videoUploadFailure = MutableLiveData<Boolean>()
-    val videoUploadFailure: LiveData<Boolean>
+    private val _videoUploadFailure = MutableLiveData<ChatbotVideoUploadFailureState>()
+    val videoUploadFailure: LiveData<ChatbotVideoUploadFailureState>
         get() = _videoUploadFailure
     private val _bigReplyBoxState = MutableLiveData<BigReplyBoxState>()
     val bigReplyBoxState: LiveData<BigReplyBoxState>
@@ -855,7 +857,8 @@ class ChatbotViewModel @Inject constructor(
                         startNewUploadMediaJob(
                             currentUri,
                             it.messageId,
-                            it.startTime
+                            it.startTime,
+                            it.videoUploadUiModel
                         )
                     )
                     mediaUploadJobs.value.values.joinAll()
@@ -867,7 +870,8 @@ class ChatbotViewModel @Inject constructor(
     fun startNewUploadMediaJob(
         uri: String,
         messageId: String,
-        startTime: String
+        startTime: String,
+        videoUploadUiModel: VideoUploadUiModel
     ): Job {
         return launchCatchError(block = {
             val filePath = File(uri)
@@ -883,7 +887,12 @@ class ChatbotViewModel @Inject constructor(
                         ChatbotVideoUploadResult.Success(it.uploadId, it.videoUrl)
                     }
                     is UploadResult.Error -> {
-                        _videoUploadFailure.postValue(true)
+                        _videoUploadFailure.postValue(
+                            ChatbotVideoUploadFailureState.ChatbotVideoUploadFailure(
+                                videoUploadUiModel,
+                                it.message
+                            )
+                        )
                         ChatbotVideoUploadResult.Error(it.message)
                     }
                 }

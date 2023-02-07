@@ -161,6 +161,7 @@ import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSubmitChatCsat
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSubmitCsatRatingState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotUpdateToolbarState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotVideoUploadEligibilityState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotVideoUploadFailureState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.CheckUploadSecureState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.GetTickerDataState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.TopBotNewSessionState
@@ -857,8 +858,10 @@ class ChatbotFragment2 :
 
         // TODO fix the Video Upload Ui Model here
         viewModel.videoUploadFailure.observe(viewLifecycleOwner) {
-            if (it) {
-                //    onErrorVideoUpload("", VideoUploadUiModel())
+            when (it) {
+                is ChatbotVideoUploadFailureState.ChatbotVideoUploadFailure -> {
+                    onErrorVideoUpload(it.uiModel, it.message)
+                }
             }
         }
 
@@ -1449,8 +1452,8 @@ class ChatbotFragment2 :
             viewModel.filterMediaUploadJobs(paths.originalPaths)
             val list = mutableListOf<VideoUploadData>()
             paths.originalPaths.forEach {
-                list.add(VideoUploadData(it, messageId, SendableUiModel.generateStartTime()))
                 processVideoPathToUpload(it)?.let { videoUploadUiModel ->
+                    list.add(VideoUploadData(it, messageId, SendableUiModel.generateStartTime(), videoUploadUiModel))
                     getViewState()?.onVideoUpload(videoUploadUiModel)
                 }
                 sendAnalyticsForVideoUpload(it)
@@ -1914,7 +1917,8 @@ class ChatbotFragment2 :
                 VideoUploadData(
                     element.videoUrl,
                     messageId,
-                    SendableUiModel.generateStartTime()
+                    SendableUiModel.generateStartTime(),
+                    element
                 )
             )
         )
@@ -1930,7 +1934,7 @@ class ChatbotFragment2 :
         )
     }
 
-    private fun onErrorVideoUpload(errorMsg: String, uiModel: VideoUploadUiModel) {
+    private fun onErrorVideoUpload(uiModel: VideoUploadUiModel, errorMsg: String) {
         getBindingView().footer.showToasterError(
             errorMsg
         )

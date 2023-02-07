@@ -1301,7 +1301,8 @@ class ChatbotViewModelTest {
         viewModel.startNewUploadMediaJob(
             "https://vod-tokopedia.com/abc",
             "123456",
-            "1234"
+            "1234",
+            it.videoUploadUiModel
         )
 
         assertTrue(result is ChatbotVideoUploadResult.Success)
@@ -1321,7 +1322,8 @@ class ChatbotViewModelTest {
         viewModel.startNewUploadMediaJob(
             "https://vod-tokopedia.com/abc",
             "123456",
-            "123"
+            "123",
+            it.videoUploadUiModel
         )
 
         assertTrue(result is ChatbotVideoUploadResult.Error)
@@ -1344,7 +1346,17 @@ class ChatbotViewModelTest {
     @Test
     fun `tryUploadMedia success when shouldResetFailedUpload is true`() {
         runBlockingTest {
-            val data: Pair<Boolean, List<VideoUploadData>> = Pair(true, listOf(VideoUploadData("123", "111", "456")))
+            val data: Pair<Boolean, List<VideoUploadData>> = Pair(
+                true,
+                listOf(
+                    VideoUploadData(
+                        "123",
+                        "111",
+                        "456",
+                        videoUploadUiModel
+                    )
+                )
+            )
             viewModel.mediaUploadResults.value = mutableMapOf<String, ChatbotVideoUploadResult>().apply {
                 put("123", ChatbotVideoUploadResult.Success("444", "555"))
             }
@@ -1358,7 +1370,17 @@ class ChatbotViewModelTest {
     @Test
     fun `tryUploadMedia success when shouldResetFailedUpload is false`() {
         runBlockingTest {
-            val data: Pair<Boolean, List<VideoUploadData>> = Pair(false, listOf(VideoUploadData("123", "111", "456")))
+            val data: Pair<Boolean, List<VideoUploadData>> = Pair(
+                false,
+                listOf(
+                    VideoUploadData(
+                        "123",
+                        "111",
+                        "456",
+                        videoUploadUiModel
+                    )
+                )
+            )
             viewModel.tryUploadMedia(data)
 
             assertTrue(data.second.isNotEmpty())
@@ -1368,7 +1390,17 @@ class ChatbotViewModelTest {
     @Test
     fun `tryUploadMedia success when shouldResetFailedUpload is false with null data`() {
         runBlockingTest {
-            val data: Pair<Boolean, List<VideoUploadData>> = Pair(false, listOf(VideoUploadData(null, "111", "456")))
+            val data: Pair<Boolean, List<VideoUploadData>> = Pair(
+                false,
+                listOf(
+                    VideoUploadData(
+                        null,
+                        "111",
+                        "456",
+                        videoUploadUiModel
+                    )
+                )
+            )
             viewModel.tryUploadMedia(data)
 
             assertTrue(data.second.isNotEmpty())
@@ -1378,7 +1410,7 @@ class ChatbotViewModelTest {
     @Test
     fun `updateMediaUris success`() {
         val data = mutableListOf<VideoUploadData>()
-        data.add(VideoUploadData("123", "456", "789"))
+        data.add(VideoUploadData("123", "456", "789", videoUploadUiModel))
         viewModel.updateMediaUris(data)
 
         assertTrue(
