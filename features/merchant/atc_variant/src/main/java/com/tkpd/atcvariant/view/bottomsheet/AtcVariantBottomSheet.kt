@@ -988,8 +988,18 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 RouteManager.route(context, it)
             }
         } else if (reData.restrictionLocationType()) {
-            goToChooseAddress(Int.ZERO)
+            onRestrictionLocationClicked(reData)
         }
+    }
+
+    private fun onRestrictionLocationClicked(reData : RestrictionData) {
+        ProductTrackingCommon.Restriction.clickLocationRestriction(
+            data = reData,
+            userId = userSessionInterface.userId,
+            shopId = viewModel.getVariantAggregatorData()?.simpleBasicInfo?.shopID ?: "",
+            pageSource = VariantPageSource.PDP_PAGESOURCE.source
+        )
+        goToChooseAddress(Int.ZERO)
     }
 
     override fun onTokoCabangClicked(uspImageUrl: String) {

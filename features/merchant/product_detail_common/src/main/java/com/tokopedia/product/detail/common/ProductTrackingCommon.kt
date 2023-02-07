@@ -466,7 +466,6 @@ object ProductTrackingCommon {
                 KEY_CATEGORY to ProductTrackingConstant.Category.PDP,
                 KEY_LABEL to label,
                 KEY_TRACKER_ID to ProductTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_LOCATION_RESTRICTION,
-                BUSINESS_UNIT to BUSINESS_UNIT_PDP,
                 KEY_CURRENT_SITE to CURRENT_SITE,
                 KEY_PRODUCT_ID to productId,
                 KEY_USER_ID to userId,
