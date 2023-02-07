@@ -20,7 +20,7 @@ abstract class PickerModule {
 
     @Binds
     @ActivityScope
-    abstract fun providePickerCacheManager(source: PickerCacheManager) : PickerParamCacheManager
+    abstract fun providePickerCacheManager(source: PickerParamCacheManager) : PickerCacheManager
 
     @Binds
     @ActivityScope
