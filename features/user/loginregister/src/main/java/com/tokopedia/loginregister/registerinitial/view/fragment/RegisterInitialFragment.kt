@@ -360,13 +360,15 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     private fun prepareView() {
         activity?.let { act ->
             if (!isUsingRedefineRegisterEmailMandatoryOptionalVariant()) {
-                bottomSheet = SocmedBottomSheet(object : SocmedBottomSheetListener {
-                    override fun onItemClick(provider: ProviderData) {
-                        if (provider.id.contains(LoginConstants.DiscoverLoginId.GPLUS)) {
-                            onRegisterGoogleClick()
+                bottomSheet = SocmedBottomSheet().apply {
+                    listener = object : SocmedBottomSheetListener {
+                        override fun onItemClick(provider: ProviderData) {
+                            if (provider.id.contains(LoginConstants.DiscoverLoginId.GPLUS)) {
+                                onRegisterGoogleClick()
+                            }
                         }
                     }
-                })
+                }
                 bottomSheet?.setCloseClickListener {
                     registerAnalytics.trackClickCloseSocmedButton()
                     bottomSheet?.dismiss()
