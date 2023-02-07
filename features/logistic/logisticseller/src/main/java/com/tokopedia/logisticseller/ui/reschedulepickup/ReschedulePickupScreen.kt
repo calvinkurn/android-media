@@ -18,9 +18,9 @@ import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.LocalShipping
-import androidx.compose.material.icons.filled.Receipt
+import androidx.compose.material.icons.outlined.ArrowDropDown
+import androidx.compose.material.icons.outlined.LocalShipping
+import androidx.compose.material.icons.outlined.Receipt
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -220,12 +220,12 @@ private fun OrderInfo(courier: String, invoice: String) {
             OrderInfoItem(
                 title = stringResource(id = R.string.label_title_courier_reschedule_pick_up),
                 value = courier,
-                icon = Icons.Filled.LocalShipping
+                icon = Icons.Outlined.LocalShipping
             )
             OrderInfoItem(
                 title = stringResource(id = R.string.label_title_invoice_reschedule_pick_up),
                 value = invoice,
-                icon = Icons.Filled.Receipt
+                icon = Icons.Outlined.Receipt
             )
         }
     }
@@ -294,7 +294,7 @@ private fun InputDay(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit, da
         value = day,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(vertical = 8.dp, horizontal = 16.dp)
             .clickable { onOpenBottomSheet(RescheduleBottomSheetState.DAY) },
         label = {
             NestTypography(
@@ -303,9 +303,9 @@ private fun InputDay(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit, da
             )
         },
         enabled = false,
-        placeholder = {
-            NestTypography(text = stringResource(id = R.string.placeholder_day_reschedule_pick_up))
-        },
+//        placeholder = {
+//            NestTypography(text = stringResource(id = R.string.placeholder_day_reschedule_pick_up))
+//        },
         trailingIcon = { DropDownIcon() }
     )
 }
@@ -316,7 +316,7 @@ private fun InputTime(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit, t
         value = time,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(vertical = 8.dp, horizontal = 16.dp)
             .clickable {
                 onOpenBottomSheet(
                     RescheduleBottomSheetState.TIME
@@ -339,7 +339,7 @@ private fun InputReason(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit,
         value = reason,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(vertical = 8.dp, horizontal = 16.dp)
             .clickable { onOpenBottomSheet(RescheduleBottomSheetState.REASON) },
         label = {
             NestTypography(text = stringResource(id = R.string.label_reason_reschedule_pickup))
@@ -359,7 +359,7 @@ private fun InputCustomReason(
         value = customReason,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(vertical = 8.dp, horizontal = 16.dp),
         label = {
             NestTypography(text = stringResource(id = R.string.label_detail_reason_reschedule_pickup))
         },
@@ -401,7 +401,7 @@ fun DropDownIcon() {
         onClick = {}
     ) {
         Icon(
-            imageVector = Icons.Filled.ArrowDropDown,
+            imageVector = Icons.Outlined.ArrowDropDown,
             contentDescription = "drop down"
         )
     }

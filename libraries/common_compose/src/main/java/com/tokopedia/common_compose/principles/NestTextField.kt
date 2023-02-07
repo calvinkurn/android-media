@@ -1,5 +1,6 @@
 package com.tokopedia.common_compose.principles
 
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
@@ -26,7 +27,7 @@ fun NestTextField(
         value = value,
         onValueChange = onValueChanged,
         textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950),
-        modifier = modifier,
+        modifier = modifier.defaultMinSize(minHeight = 48.dp),
         placeholder = placeholder,
         trailingIcon = trailingIcon,
         label = label,

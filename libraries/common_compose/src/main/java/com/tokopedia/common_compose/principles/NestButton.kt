@@ -1,5 +1,6 @@
 package com.tokopedia.common_compose.principles
 
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,7 +24,7 @@ fun NestButton(
     val backgroundColor = ButtonDefaults.buttonColors(backgroundColor = NestTheme.colors.GN._500)
 
     Button(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().defaultMinSize(minHeight = 40.dp),
         onClick = onClick,
         shape = RoundedCornerShape(8.dp),
         colors = backgroundColor,
@@ -35,7 +36,7 @@ fun NestButton(
                 color = NestTheme.colors.NN._0,
                 fontWeight = FontWeight.Bold
             ),
-            modifier = Modifier.padding(vertical = 10.dp),
+            modifier = Modifier.padding(vertical = 8.dp),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
