@@ -9,13 +9,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
-import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.ActivityAlbumBinding
 import com.tokopedia.media.picker.analytics.PickerAnalytics
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.ui.adapter.AlbumAdapter
 import com.tokopedia.media.picker.ui.fragment.OnAlbumClickListener
 import com.tokopedia.picker.common.basecomponent.uiComponent
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
 import com.tokopedia.picker.common.uimodel.AlbumUiModel
@@ -28,7 +28,7 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
     lateinit var factory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var param: ParamCacheManager
+    lateinit var param: PickerCacheManager
 
     @Inject
     lateinit var pickerAnalytics: PickerAnalytics
