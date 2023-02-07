@@ -93,7 +93,7 @@ class SellerOnboardingActivity : BaseActivity() {
 
     private fun setPageBackground() {
         try {
-            binding?.backgroundSob?.setImageResource(R.drawable.bg_sob_full)
+            binding?.backgroundSob?.setImageResource(R.drawable.bg_sob_thematic_ramadhan)
         } catch (e: Resources.NotFoundException) {
             Timber.e(e)
         }
@@ -112,18 +112,8 @@ class SellerOnboardingActivity : BaseActivity() {
                     setSlideIndicator(position)
                     setPreviousButtonVisibility(position)
                     updateNextButtonState(position)
-                    updateHeaderBackground(position)
                 }
             })
-        }
-    }
-
-    private fun updateHeaderBackground(position: Int) {
-        try {
-            val slideItem = slideItems[position]
-            binding?.imgSobHeader?.loadImage(slideItem.headerResBg)
-        } catch (e: Exception) {
-            //do nothing
         }
     }
 

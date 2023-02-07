@@ -17,17 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/bg_sob_full" />
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/imgSobHeader"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/sob_dimen_112"
-        android:scaleType="fitXY"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/bg_sob_slide_header_home"/>
+        tools:srcCompat="@drawable/bg_sob_thematic_ramadhan" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/sobViewPager"

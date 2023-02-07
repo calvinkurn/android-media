@@ -449,15 +449,15 @@ class OtherMenuViewHolder(
         val headerBackgroundResource: Int
         when {
             userSession.isShopOfficialStore -> {
-                imageResource = R.drawable.bg_sah_new_other_curved_header_os
+                imageResource = R.drawable.bg_sah_other_curved_header_thematic_os
                 headerBackgroundResource = R.drawable.bg_sah_new_other_header_os
             }
             userSession.isGoldMerchant -> {
-                imageResource = R.drawable.bg_sah_new_other_curved_header_pm
+                imageResource = R.drawable.bg_sah_other_curved_header_thematic_pm
                 headerBackgroundResource = R.drawable.bg_sah_new_other_header_pm
             }
             else -> {
-                imageResource = R.drawable.bg_sah_new_other_curved_header_rm
+                imageResource = R.drawable.bg_sah_other_curved_header_thematic_rm
                 headerBackgroundResource = R.drawable.bg_sah_new_other_header_rm
             }
         }

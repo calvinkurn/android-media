@@ -44,6 +44,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -1910,24 +1911,29 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
         when {
             isOfficialStore -> {
-                showRegularHomeBackground(R.drawable.sah_shop_state_bg_official_store)
+                showRegularHomeBackground(R.drawable.sah_shop_state_bg_os_thematic)
             }
             isPowerMerchant -> {
-                showRegularHomeBackground(R.drawable.sah_shop_state_bg_power_merchant)
+                showRegularHomeBackground(R.drawable.sah_shop_state_bg_pm_thematic)
             }
             else -> {
-                viewBgShopStatus.gone()
+                showRegularHomeBackground(R.drawable.sah_shop_state_bg_rm_thematic)
             }
         }
     }
 
     private fun showRegularHomeBackground(backgroundResource: Int) {
         binding?.run {
-            val height = requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
-            viewBgShopStatus.layoutParams.height = height
-            viewBgShopStatus.visible()
-            viewBgShopStatus.setImageResource(backgroundResource)
-            viewBgShopStatus.requestLayout()
+            try {
+                val height =
+                    requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
+                viewBgShopStatus.layoutParams.height = height
+                viewBgShopStatus.visible()
+                viewBgShopStatus.setImageResource(backgroundResource)
+                viewBgShopStatus.requestLayout()
+            } catch (e: Exception) {
+                viewBgShopStatus.hide()
+            }
         }
     }
 
