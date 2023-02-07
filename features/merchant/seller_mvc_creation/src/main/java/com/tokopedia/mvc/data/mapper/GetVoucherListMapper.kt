@@ -22,6 +22,7 @@ class GetVoucherListMapper @Inject constructor() {
         merchantVoucherModel.let {
             Voucher(
                 id = it.voucherId.toLongOrZero(),
+                parentId = it.parentVoucherId.toLongOrZero(),
                 name = it.voucherName,
                 type = it.voucherType,
                 typeFormatted = it.voucherTypeFormatted,
