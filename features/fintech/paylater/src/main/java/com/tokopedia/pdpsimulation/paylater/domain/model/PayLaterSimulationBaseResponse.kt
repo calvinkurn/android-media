@@ -23,6 +23,7 @@ data class PayLaterAllData(
     @SerializedName("small_text") val smallText: String?,
     @SerializedName("sections") val detail: List<GatewaySection>,
     @SerializedName("label") val label: Label?,
+    @SerializedName("promo_name") val promoName: String?,
 ) : Parcelable
 
 @Parcelize

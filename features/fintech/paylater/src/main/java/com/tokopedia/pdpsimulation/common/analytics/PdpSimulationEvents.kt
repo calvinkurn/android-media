@@ -78,6 +78,7 @@ open class PayLaterAnalyticsBase {
     var payLaterPartnerName: String = ""
     var linkingStatus: String = ""
     var action: String = ""
+    var promoName: String = ""
 }
 
 class PayLaterCtaClick : PayLaterAnalyticsBase() {

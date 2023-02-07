@@ -7,6 +7,7 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
         tenure
         text
         small_text
+        promo_name
         label {
           text
           text_color

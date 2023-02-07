@@ -84,7 +84,7 @@ class PdpSimulationAnalytics @Inject constructor(
     private fun sendPayLaterImpressionEvent(event: PayLaterAnalyticsBase) {
         val label = computeLabel(
             event.productId, event.linkingStatus, event.userStatus,
-            event.tenureOption.toString(), event.payLaterPartnerName
+            event.tenureOption.toString(), event.payLaterPartnerName, event.promoName
         )
         val map = TrackAppUtils.gtmData(
             IRIS_EVENT_NAME_FIN_TECH_V3,

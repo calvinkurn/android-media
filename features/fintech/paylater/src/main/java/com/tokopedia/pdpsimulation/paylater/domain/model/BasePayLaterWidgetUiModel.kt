@@ -11,7 +11,8 @@ data class SimulationUiModel(
     val smallText: String?,
     var isSelected: Boolean = false,
     var simulationList: ArrayList<BasePayLaterWidgetUiModel>? = null,
-    var label: LabelUiModel? = null,
+    var label: LabelUiModel? = LabelUiModel(),
+    var promoName: String = "",
 ) {
     data class LabelUiModel(
         val text: String = "",
