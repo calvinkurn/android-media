@@ -12,6 +12,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.inboxtickets.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxtickets.view.utils.Utils
+import com.tokopedia.contactus.utils.CommonConstant.INDEX_ONE
+import com.tokopedia.contactus.utils.CommonConstant.INDEX_ZERO
+import com.tokopedia.contactus.utils.CommonConstant.SIZE_ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
@@ -103,8 +106,8 @@ class TicketListAdapter(
 
     fun clear() {
         isFooterAdded = false
-        while (itemCount > 0) {
-            remove(getItem(0))
+        while (itemCount > SIZE_ZERO) {
+            remove(getItem(INDEX_ZERO))
         }
     }
 
@@ -112,14 +115,14 @@ class TicketListAdapter(
         get() = itemList.isEmpty()
 
     private fun isLastPosition(position: Int): Boolean {
-        return position == itemList.size - 1
+        return position == itemList.size - INDEX_ONE
     }
 
     @SuppressLint("NotifyDataSetChanged")
     fun removeFooter() {
         if (isFooterAdded) {
             isFooterAdded = false
-            val position = itemList.size - 1
+            val position = itemList.size - INDEX_ONE
             val item = getItem(position)
             if (item === footerItem) {
                 itemList.removeAt(position)

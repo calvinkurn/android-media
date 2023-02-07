@@ -60,6 +60,11 @@ import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.InboxDetail
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.InboxDetailUiState
 import com.tokopedia.contactus.inboxtickets.view.utils.CLOSED
 import com.tokopedia.contactus.inboxtickets.view.utils.Utils
+import com.tokopedia.contactus.utils.CommonConstant.FIRST_INITIALIZE_ZERO
+import com.tokopedia.contactus.utils.CommonConstant.INDEX_ONE
+import com.tokopedia.contactus.utils.CommonConstant.INDEX_ZERO
+import com.tokopedia.contactus.utils.CommonConstant.INVALID_NUMBER
+import com.tokopedia.contactus.utils.CommonConstant.SIZE_ZERO
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating
 import com.tokopedia.imagepicker.common.*
@@ -103,6 +108,7 @@ class TicketFragment :
         private const val INVALID_IMAGE_RESULT = -2
         const val REQUEST_IMAGE_PICKER = 145
         const val ROLE_TYPE_AGENT = "agent"
+        const val WAITING_TIME_TO_SCROLL = 300L
     }
 
     private val ticketId by lazy {
@@ -165,17 +171,17 @@ class TicketFragment :
                 return INVALID_IMAGE_RESULT
             }
             val numOfImages = uploadImageList.size
-            if (numOfImages > 0) {
+            if (numOfImages > SIZE_ZERO) {
                 val count = Utils().verifyAllImages(uploadImageList)
                 return if (numOfImages == count) {
                     numOfImages
                 } else {
-                    -1
+                    INVALID_NUMBER
                 }
-            } else if (numOfImages == 0) {
-                return 0
+            } else if (numOfImages == SIZE_ZERO) {
+                return SIZE_ZERO
             }
-            return -1
+            return INVALID_NUMBER
         }
 
     private val userMessage: String
@@ -299,9 +305,9 @@ class TicketFragment :
         ) {
             rvSelectedImages?.hide()
             rvMessageList?.setPadding(
-                0,
-                0,
-                0,
+                FIRST_INITIALIZE_ZERO,
+                FIRST_INITIALIZE_ZERO,
+                FIRST_INITIALIZE_ZERO,
                 activity?.resources?.getDimensionPixelSize(
                     R.dimen.contact_us_text_toolbar_height_collapsed
                 )
@@ -372,12 +378,12 @@ class TicketFragment :
             resultCode == Activity.RESULT_OK
         ) {
             val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
-            if (imagePathList.size <= 0) {
+            if (imagePathList.size <= SIZE_ZERO) {
                 return
             }
-            val imagePath = imagePathList[0]
+            val imagePath = imagePathList[INDEX_ZERO]
             if (!TextUtils.isEmpty(imagePath)) {
-                val position = imageUploadAdapter?.itemCount ?: 0
+                val position = imageUploadAdapter?.itemCount.orZero()
                 val image = ImageUpload()
                 image.position = position
                 image.imageId = "image" + UUID.randomUUID().toString()
@@ -431,9 +437,9 @@ class TicketFragment :
         if (rvSelectedImages?.visibility != View.VISIBLE) {
             rvSelectedImages?.show()
             rvMessageList?.setPadding(
-                0,
-                0,
-                0,
+                FIRST_INITIALIZE_ZERO,
+                FIRST_INITIALIZE_ZERO,
+                FIRST_INITIALIZE_ZERO,
                 activity?.resources?.getDimensionPixelSize(
                     R.dimen.contact_us_text_toolbar_height_expanded
                 )
@@ -483,7 +489,7 @@ class TicketFragment :
             is InboxDetailUiEffect.OnSearchInboxDetailKeyword -> {
                 hideProgressBar()
                 enterSearchMode(uiEffect.searchKeyword, uiEffect.sizeSearch)
-                if (uiEffect.sizeSearch > 0) {
+                if (uiEffect.sizeSearch > SIZE_ZERO) {
                     sendTrackerSearchFindResult()
                 } else {
                     binding?.root?.showErrorToasterWithCta(
@@ -512,7 +518,7 @@ class TicketFragment :
                             viewModel.refreshLayout()
                         }
                     })
-                onClickEmoji(0, uiEffect.ticketNumber)
+                onClickEmoji(INDEX_ZERO, uiEffect.ticketNumber)
             }
 
             is InboxDetailUiEffect.OnCloseInboxDetailFailed -> {
@@ -569,15 +575,15 @@ class TicketFragment :
 
     private fun submitCsatRating(data: Intent?) {
         showProgressBar()
-        val rating = data?.extras?.getInt(BaseFragmentProvideRating.EMOJI_STATE) ?: 0
-        val reason = data?.getStringExtra(BaseFragmentProvideRating.SELECTED_ITEM) ?: ""
+        val rating = data?.extras?.getInt(BaseFragmentProvideRating.EMOJI_STATE).orZero()
+        val reason = data?.getStringExtra(BaseFragmentProvideRating.SELECTED_ITEM).orEmpty()
         viewModel.submitCsatRating(reason, rating)
     }
 
     @SuppressLint("DeprecatedMethod")
     private fun sendGTMEventClickSubmitCsatRating(number: String, rating: Int, reason: String) {
         val captions = activity?.resources?.getStringArray(R.array.contactus_csat_caption)
-        val caption = if (rating == 0) "" else captions?.get(rating - 1).orEmpty()
+        val caption = if (rating == FIRST_INITIALIZE_ZERO) "" else captions?.get(rating - INDEX_ONE).orEmpty()
         val reasonListAsInt = reason.split(";")
         val reasonListAsString = viewModel.getReasonListAsString(reasonListAsInt)
         val reasonAsString = reasonListAsString.joinToString(";")
@@ -593,7 +599,7 @@ class TicketFragment :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == R.id.action_search) {
             toggleSearch(View.VISIBLE, item)
-            enterSearchMode("", -1)
+            enterSearchMode("", INVALID_NUMBER)
             true
         } else {
             false
@@ -609,9 +615,9 @@ class TicketFragment :
         if (visibility == View.VISIBLE) {
             binding?.viewHelpRate?.root?.hide()
             rvMessageList?.setPadding(
-                0,
-                0,
-                0,
+                FIRST_INITIALIZE_ZERO,
+                FIRST_INITIALIZE_ZERO,
+                FIRST_INITIALIZE_ZERO,
                 activity?.resources?.getDimensionPixelSize(
                     R.dimen.contact_us_text_toolbar_height_collapsed
                 )
@@ -620,9 +626,9 @@ class TicketFragment :
         } else {
             binding?.viewHelpRate?.root?.show()
             rvMessageList?.setPadding(
-                0,
-                0,
-                0,
+                FIRST_INITIALIZE_ZERO,
+                FIRST_INITIALIZE_ZERO,
+                FIRST_INITIALIZE_ZERO,
                 activity?.resources?.getDimensionPixelSize(R.dimen.help_rate_height) ?: return
             )
         }
@@ -634,9 +640,9 @@ class TicketFragment :
         binding?.layoutReplayMessage?.root?.hide()
         binding?.viewLinkBottom?.root?.show()
         rvMessageList?.setPadding(
-            0,
-            0,
-            0,
+            FIRST_INITIALIZE_ZERO,
+            FIRST_INITIALIZE_ZERO,
+            FIRST_INITIALIZE_ZERO,
             activity?.resources?.getDimensionPixelSize(
                 R.dimen.contact_us_text_toolbar_height_collapsed
             )
@@ -647,7 +653,7 @@ class TicketFragment :
     private fun updateClosedStatus() {
         if (!viewModel.isCommentEmpty()) {
             viewModel.setLastCommentAsClosed()
-            detailAdapter?.notifyItemChanged(0)
+            detailAdapter?.notifyItemChanged(INDEX_ZERO)
         }
     }
 
@@ -673,8 +679,8 @@ class TicketFragment :
         binding?.viewLinkBottom?.root?.hide()
         detailAdapter?.enterSearchMode(search)
         val placeHolder = "/%s"
-        if (total <= 0) {
-            if (total == 0) {
+        if (total <= SIZE_ZERO) {
+            if (total == SIZE_ZERO) {
                 currentRes?.text = "0"
                 totalRes?.text = "/0"
             } else {
@@ -689,7 +695,7 @@ class TicketFragment :
             ivNext?.isClickable = true
             onClickNextPrev(ivPrevious)
         }
-        rvMessageList?.setPadding(0, 0, 0, 0)
+        rvMessageList?.setPadding(FIRST_INITIALIZE_ZERO, FIRST_INITIALIZE_ZERO, FIRST_INITIALIZE_ZERO, FIRST_INITIALIZE_ZERO)
     }
 
     private fun onClickNextPrev(v: View?) {
@@ -702,8 +708,8 @@ class TicketFragment :
     }
 
     private fun scrollToResult(index: Int) {
-        if (index != -1) {
-            layoutManager?.scrollToPositionWithOffset(index, 0)
+        if (index != INVALID_NUMBER) {
+            layoutManager?.scrollToPositionWithOffset(index, INDEX_ZERO)
         }
     }
 
@@ -874,8 +880,8 @@ class TicketFragment :
 
     fun setHelpOnClick(agreed: Boolean) {
         var item: CommentsItem? = null
-        var commentPosition = 0
-        for (i in (detailAdapter?.itemCount?.minus(1) ?: 0) downTo 0) {
+        var commentPosition = FIRST_INITIALIZE_ZERO
+        for (i in (detailAdapter?.itemCount?.minus(INDEX_ONE).orZero()) downTo INDEX_ZERO) {
             val item1 = viewModel.getCommentOnPosition(i)
             if (item1.createdBy.role == "agent") {
                 item = item1
@@ -991,12 +997,12 @@ class TicketFragment :
         edMessage?.text?.clear()
         setSubmitButtonEnabled(false)
         imageUploadAdapter?.clearAll()
-        imageUploadAdapter?.notifyItemChanged(imageUploadAdapter!!.itemCount - 1)
+        imageUploadAdapter?.notifyItemChanged(imageUploadAdapter!!.itemCount - INDEX_ONE)
         rvSelectedImages?.hide()
         rvMessageList?.setPadding(
-            0,
-            0,
-            0,
+            FIRST_INITIALIZE_ZERO,
+            FIRST_INITIALIZE_ZERO,
+            FIRST_INITIALIZE_ZERO,
             activity?.resources?.getDimensionPixelSize(
                 R.dimen.contact_us_text_toolbar_height_collapsed
             )
@@ -1098,7 +1104,7 @@ class TicketFragment :
             )
             rvMessageList?.adapter = detailAdapter
             rvMessageList?.show()
-            scrollToPosition(detailAdapter?.itemCount?.minus(1) ?: 0)
+            scrollToPosition(detailAdapter?.itemCount?.minus(INDEX_ONE).orZero())
         } else {
             rvMessageList?.hide()
         }
@@ -1106,7 +1112,7 @@ class TicketFragment :
     }
 
     private fun scrollToPosition(position: Int) {
-        Observable.timer(300, TimeUnit.MILLISECONDS)
+        Observable.timer(WAITING_TIME_TO_SCROLL, TimeUnit.MILLISECONDS)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Subscriber<Long>() {
@@ -1121,14 +1127,14 @@ class TicketFragment :
     }
 
     private fun updateUiBasedOnStatus(ticketDetail: Tickets) {
-        val lastCommentStatus = ticketDetail.getTicketComment()[0].ticketStatus
-        val lastComment = ticketDetail.getTicketComment()[ticketDetail.getTicketComment().size - 1]
+        val lastCommentStatus = ticketDetail.getTicketComment()[INDEX_ZERO].ticketStatus
+        val lastComment = ticketDetail.getTicketComment()[ticketDetail.getTicketComment().size - INDEX_ONE]
         when (lastCommentStatus) {
             TICKET_STATUS_IN_PROCESS -> {
                 rvMessageList?.setPadding(
-                    0,
-                    0,
-                    0,
+                    FIRST_INITIALIZE_ZERO,
+                    FIRST_INITIALIZE_ZERO,
+                    FIRST_INITIALIZE_ZERO,
                     activity?.resources?.getDimensionPixelSize(
                         R.dimen.contact_us_text_toolbar_height_collapsed
                     )
@@ -1155,7 +1161,7 @@ class TicketFragment :
     }
 
     private fun setHeaderPriorityLabel(ticketDetail: Tickets) {
-        ticketDetail.getTicketComment()[0].priorityLabel = isOfficialStore.orFalse()
+        ticketDetail.getTicketComment()[INDEX_ZERO].priorityLabel = isOfficialStore.orFalse()
         viewModel.setLastCommentAsOfficialStore(isOfficialStore.orFalse())
     }
 
@@ -1248,8 +1254,7 @@ class TicketFragment :
 
     private fun onBackPressed() {
         if ((
-                imageUploadAdapter?.itemCount
-                    ?: 0
+                imageUploadAdapter?.itemCount.orZero()
                 ) > 1 || binding?.layoutReplayMessage?.root?.visibility == View.VISIBLE &&
             edMessage?.isFocused == true && edMessage?.text?.isNotEmpty() == true && parentFragmentManager.backStackEntryCount <= 0
         ) {

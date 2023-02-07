@@ -11,7 +11,7 @@ class BadCsatReasonListItem() : Parcelable {
     var messageEn: String? = null
     @SuppressLint("Invalid Data Type")
     @SerializedName("id")
-    var id: Int = 0
+    var id: Long = 0L
     @SerializedName("message")
     var message: String? = null
 
@@ -19,13 +19,13 @@ class BadCsatReasonListItem() : Parcelable {
 
     constructor(parcel: Parcel) : this() {
         messageEn = parcel.readString()
-        id = parcel.readInt()
+        id = parcel.readLong()
         message = parcel.readString()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(messageEn)
-        parcel.writeInt(id)
+        parcel.writeLong(id)
         parcel.writeString(message)
     }
 

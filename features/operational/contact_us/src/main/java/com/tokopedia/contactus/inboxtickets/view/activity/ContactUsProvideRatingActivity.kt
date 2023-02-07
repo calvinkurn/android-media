@@ -24,6 +24,9 @@ import com.tokopedia.contactus.inboxtickets.view.viewModel.ContactUsRatingViewMo
 import com.tokopedia.contactus.inboxtickets.view.viewModel.ContactUsRatingViewModel.Companion.FOURTH_EMOJI
 import com.tokopedia.contactus.inboxtickets.view.viewModel.ContactUsRatingViewModel.Companion.SECOND_EMOJI
 import com.tokopedia.contactus.inboxtickets.view.viewModel.ContactUsRatingViewModel.Companion.THIRD_EMOJI
+import com.tokopedia.contactus.utils.CommonConstant.FIRST_INITIALIZE_ZERO
+import com.tokopedia.contactus.utils.CommonConstant.INDEX_ONE
+import com.tokopedia.contactus.utils.CommonConstant.INDEX_ZERO
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating
 import com.tokopedia.csat_rating.presenter.screenState.ScreenState
@@ -90,7 +93,7 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
             BaseFragmentProvideRating.PARAM_OPTIONS_CSAT
         ) ?: ArrayList()
         viewModel.setReasonList(reasonItemList)
-        val emojiState = intent?.getIntExtra(BaseFragmentProvideRating.CLICKED_EMOJI, 0)
+        val emojiState = intent?.getIntExtra(BaseFragmentProvideRating.CLICKED_EMOJI, FIRST_INITIALIZE_ZERO)
             ?: BaseFragmentProvideRating.NO_EMOJI
         viewModel.setSelectedEmoji(emojiState)
         viewModel.setCsatTitle(intent?.getStringExtra(BaseFragmentProvideRating.CSAT_TITLE) ?: "")
@@ -270,7 +273,7 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
                 if (selectedOption.contains(typeFilter)) {
                     selectedOption.remove(typeFilter)
                 } else {
-                    if (!(filterList.isNotEmpty() && filterList[0].id > 0)) {
+                    if (!(filterList.isNotEmpty() && filterList[INDEX_ZERO].id > FIRST_INITIALIZE_ZERO)) {
                         // Neglect
                     }
                     if (typeFilter != null) {
@@ -351,7 +354,7 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
             filters += "$filter;"
         }
         if (filters.isNotEmpty()) {
-            filters = filters.substring(0, filters.length - 1)
+            filters = filters.substring(INDEX_ZERO, filters.length - INDEX_ONE)
         }
         return filters
     }

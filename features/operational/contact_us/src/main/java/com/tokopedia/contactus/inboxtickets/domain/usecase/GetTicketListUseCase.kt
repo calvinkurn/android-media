@@ -3,6 +3,7 @@ package com.tokopedia.contactus.inboxtickets.domain.usecase
 import com.tokopedia.contactus.inboxtickets.data.ContactUsRepository
 import com.tokopedia.contactus.inboxtickets.data.gqlqueries.TICKET_LIST_QUERY
 import com.tokopedia.contactus.inboxtickets.data.model.InboxTicketListResponse
+import com.tokopedia.contactus.utils.CommonConstant.FIRST_INITIALIZE_ZERO
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -29,7 +30,7 @@ class GetTicketListUseCase @Inject constructor(
         requestParams.putString(USERID, userSession.userId)
         requestParams.putInt(PAGE, page)
         requestParams.putInt(STATUS, status)
-        if (rating != 0) requestParams.putInt(RATING, rating)
+        if (rating != FIRST_INITIALIZE_ZERO) requestParams.putInt(RATING, rating)
         return requestParams
     }
 }

@@ -33,6 +33,12 @@ import com.tokopedia.contactus.inboxtickets.domain.usecase.PostMessageUseCase2
 import com.tokopedia.contactus.inboxtickets.domain.usecase.SecureUploadUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.SubmitRatingUseCase
 import com.tokopedia.contactus.inboxtickets.view.utils.Utils
+import com.tokopedia.contactus.utils.CommonConstant.FIRST_INITIALIZE_ZERO
+import com.tokopedia.contactus.utils.CommonConstant.INDEX_ONE
+import com.tokopedia.contactus.utils.CommonConstant.INDEX_ZERO
+import com.tokopedia.contactus.utils.CommonConstant.INVALID_NUMBER
+import com.tokopedia.contactus.utils.CommonConstant.SIZE_ONE
+import com.tokopedia.contactus.utils.CommonConstant.SIZE_ZERO
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -98,7 +104,7 @@ class InboxDetailViewModel @Inject constructor(
 
     private var ticketId: String = ""
     val searchIndices = arrayListOf<Int>()
-    private var next = 0
+    private var next = FIRST_INITIALIZE_ZERO
 
     fun isShowRating() = currentState.ticketDetail.isShowRating
 
@@ -111,7 +117,7 @@ class InboxDetailViewModel @Inject constructor(
     fun getTicketNumber() = currentState.ticketDetail.getTicketNumber()
 
     fun getTicketRating() =
-        currentState.ticketDetail.getTicketComment()[currentState.ticketDetail.getTicketComment().size - 1].rating
+        currentState.ticketDetail.getTicketComment()[currentState.ticketDetail.getTicketComment().size - INDEX_ONE].rating
 
     fun getCommentOnPosition(position: Int): CommentsItem {
         return currentState.ticketDetail.getTicketComment()[position]
@@ -125,7 +131,7 @@ class InboxDetailViewModel @Inject constructor(
     }
 
     fun getFirstCommentId() =
-        currentState.ticketDetail.getTicketComment()[currentState.ticketDetail.getTicketComment().size - 1].id
+        currentState.ticketDetail.getTicketComment()[currentState.ticketDetail.getTicketComment().size - INDEX_ONE].id
 
     fun isNeedAttachment() = currentState.ticketDetail.isNeedAttachment
 
@@ -264,7 +270,7 @@ class InboxDetailViewModel @Inject constructor(
             mCommentsItem = ArrayList()
             mCommentsItem.add(topItem)
         } else {
-            mCommentsItem.add(0, topItem)
+            mCommentsItem.add(INDEX_ZERO, topItem)
         }
     }
 
@@ -308,8 +314,8 @@ class InboxDetailViewModel @Inject constructor(
     }
 
     private fun getShortTime(createTime: String): String {
-        var count = 0
-        var i = 0
+        var count = FIRST_INITIALIZE_ZERO
+        var i = FIRST_INITIALIZE_ZERO
         while (i < createTime.length) {
             val c = createTime.get(i)
             if (c == ' ') {
@@ -318,7 +324,7 @@ class InboxDetailViewModel @Inject constructor(
             }
             i++
         }
-        return if (createTime.isNotEmpty()) createTime.substring(0, i) else ""
+        return if (createTime.isNotEmpty()) createTime.substring(INDEX_ZERO, i) else ""
     }
 
     fun onSearchSubmitted(text: String) {
@@ -335,7 +341,7 @@ class InboxDetailViewModel @Inject constructor(
         launch {
             withContext(coroutineDispatcherProvider.default) {
                 initializeIndicesList(searchText)
-                next = 0
+                next = FIRST_INITIALIZE_ZERO
                 _uiEffect.emit(
                     InboxDetailUiEffect.OnSearchInboxDetailKeyword(
                         isOnProgress = false,
@@ -361,10 +367,10 @@ class InboxDetailViewModel @Inject constructor(
     }
 
     fun getNextResult() {
-        if (searchIndices.size > 0) {
-            if (next >= -1 && next < searchIndices.size.minus(1)) {
-                next += 1
-                _onFindKeywordAtTicket.value = OnFindKeywordAtTicket(searchIndices[next], next + 1)
+        if (searchIndices.size > SIZE_ZERO) {
+            if (next >= INVALID_NUMBER && next < searchIndices.size.minus(INDEX_ONE)) {
+                next += INDEX_ONE
+                _onFindKeywordAtTicket.value = OnFindKeywordAtTicket(searchIndices[next], next + INDEX_ONE)
             } else {
                 _onFindKeywordAtTicket.value = OnFindKeywordAtTicket(status = OUT_OF_BOND)
             }
@@ -374,10 +380,10 @@ class InboxDetailViewModel @Inject constructor(
     }
 
     fun getPreviousResult() {
-        if (searchIndices.size > 0) {
-            if (next > -1 && next < searchIndices.size) {
+        if (searchIndices.size > SIZE_ZERO) {
+            if (next > INVALID_NUMBER && next < searchIndices.size) {
                 _onFindKeywordAtTicket.value =
-                    OnFindKeywordAtTicket(searchIndices[next--], next + 1)
+                    OnFindKeywordAtTicket(searchIndices[next--], next + INDEX_ONE)
             } else {
                 _onFindKeywordAtTicket.value = OnFindKeywordAtTicket(status = OUT_OF_BOND)
             }
@@ -409,8 +415,8 @@ class InboxDetailViewModel @Inject constructor(
 
     fun sendMessage(isUploadImageValid: Int, imageList: List<ImageUpload>, message: String) {
         when {
-            isUploadImageValid >= 1 -> sendMessageWithImages(imageList, message)
-            isUploadImageValid == 0 -> sendTextMessage(imageList, message)
+            isUploadImageValid >= INDEX_ONE -> sendMessageWithImages(imageList, message)
+            isUploadImageValid == INDEX_ZERO -> sendTextMessage(imageList, message)
             else -> {
                 _isImageInvalid.value = true
             }
@@ -421,7 +427,7 @@ class InboxDetailViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val requestParam = postMessageUseCase.createRequestParams(
-                    ticketId, message, 0, "", getLastReplyFromAgent(), userSession.userId
+                    ticketId, message, SIZE_ZERO, "", getLastReplyFromAgent(), userSession.userId
                 )
 
                 val replyTicketResponse = postMessageUseCase.getCreateTicketResult(requestParam)
@@ -439,7 +445,7 @@ class InboxDetailViewModel @Inject constructor(
                     _uiEffect.emit(InboxDetailUiEffect.SendTextMessageSuccess(newItemMessage))
 
                 } else if (!errorResponse.isNullOrEmpty()) {
-                    val errorMessage = errorResponse[0].message
+                    val errorMessage = errorResponse[INDEX_ZERO].message
                     _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed(messageError = errorMessage))
                 } else {
                     _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed())
@@ -481,7 +487,7 @@ class InboxDetailViewModel @Inject constructor(
                     val requestParam = postMessageUseCase.createRequestParams(
                         ticketId,
                         message,
-                        1,
+                        SIZE_ONE,
                         utils.getAttachmentAsString(imageList),
                         getLastReplyFromAgent(),
                         userSession.userId
@@ -607,7 +613,7 @@ class InboxDetailViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val stepTwoResponse = postMessageUseCase2.getInboxDataResponse(requestParams)
-                if (stepTwoResponse.getTicketAttach().getAttachment().isSuccess > 0) {
+                if (stepTwoResponse.getTicketAttach().getAttachment().isSuccess > SIZE_ZERO) {
                     val newItemMessage = addNewLocalComment(imageList, message)
                     _uiEffect.emit(InboxDetailUiEffect.SendTextMessageSuccess(newItemMessage))
                 } else {

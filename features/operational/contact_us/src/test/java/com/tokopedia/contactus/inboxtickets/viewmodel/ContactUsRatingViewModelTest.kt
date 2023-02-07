@@ -170,7 +170,7 @@ class ContactUsRatingViewModelTest {
         for (i in 1..6) {
             badCsatReasonListItem.add(
                 BadCsatReasonListItem().apply {
-                    id = i
+                    id = i.toLong()
                     messageEn = "message-$i"
                     message = "message-$i"
                 }

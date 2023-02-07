@@ -81,6 +81,7 @@ class InboxContactUsFragment :
         private const val RAISE_TICKET_TAG = "raiseTicket"
         private const val PAGE_SIZE = 10
         const val REQUEST_DETAILS = 204
+        const val REQUEST_CLEAR_ACTIVITY = 100
 
         @JvmStatic
         fun newInstance(): InboxContactUsFragment {
@@ -460,7 +461,7 @@ class InboxContactUsFragment :
                         context,
                         ContactUsHomeActivity::class.java
                     ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP),
-                    100
+                    REQUEST_CLEAR_ACTIVITY
                 )
                 activity?.finish()
             }

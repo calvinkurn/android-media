@@ -13,6 +13,7 @@ import com.tokopedia.contactus.R
 import com.tokopedia.contactus.inboxtickets.domain.AttachmentItem
 import com.tokopedia.contactus.inboxtickets.view.adapter.AttachmentAdapter.AttachmentViewHolder
 import com.tokopedia.contactus.inboxtickets.view.listeners.AttachmentListener
+import com.tokopedia.contactus.utils.CommonConstant.INDEX_ZERO
 import java.io.File
 
 private const val HEADER_USER_ID_KEY = "X-TKPD-UserId"
@@ -51,7 +52,7 @@ class AttachmentAdapter constructor(
 
     private fun isUrl(src: String): Boolean {
         return if (src.length >= HTTP_LENGTH) {
-            src.substring(0, HTTP_LENGTH) == "http"
+            src.substring(INDEX_ZERO, HTTP_LENGTH) == "http"
         } else false
     }
 
