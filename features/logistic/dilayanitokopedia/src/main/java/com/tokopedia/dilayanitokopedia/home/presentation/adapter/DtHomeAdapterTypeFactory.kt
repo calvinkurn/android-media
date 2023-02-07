@@ -14,7 +14,6 @@ import com.tokopedia.dilayanitokopedia.home.presentation.viewholder.recomendatio
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
-import com.tokopedia.home_component.listener.FeaturedShopListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.listener.MixTopComponentListener

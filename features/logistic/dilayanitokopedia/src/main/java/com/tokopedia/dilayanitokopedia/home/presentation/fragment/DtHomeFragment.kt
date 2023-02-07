@@ -532,6 +532,8 @@ class DtHomeFragment :
     private fun onRefreshLayout() {
         rvLayoutManager?.setScrollEnabled(true)
         anchorTabAdapter?.resetToFirst()
+        smoothScrollAnchorTab(0)
+        setAnchorTabMaximize()
         updateCurrentPageLocalCacheModelData()
         refreshLayout()
     }
@@ -643,39 +645,39 @@ class DtHomeFragment :
 
     private fun bindChooseAddressWidget() {
         chooseAddressWidget?.bindChooseAddress(object :
-            ChooseAddressWidget.ChooseAddressWidgetListener {
-            override fun onLocalizingAddressUpdatedFromWidget() {
-                onRefreshLayout()
-            }
+                ChooseAddressWidget.ChooseAddressWidgetListener {
+                override fun onLocalizingAddressUpdatedFromWidget() {
+                    onRefreshLayout()
+                }
 
-            override fun onLocalizingAddressServerDown() {
-                showChooseAddressView(false)
-            }
+                override fun onLocalizingAddressServerDown() {
+                    showChooseAddressView(false)
+                }
 
-            override fun onClickChooseAddressTokoNowTracker() {
-                // no-op
-            }
+                override fun onClickChooseAddressTokoNowTracker() {
+                    // no-op
+                }
 
-            override fun needToTrackTokoNow(): Boolean = false
+                override fun needToTrackTokoNow(): Boolean = false
 
-            override fun getLocalizingAddressHostFragment(): Fragment = this@DtHomeFragment
+                override fun getLocalizingAddressHostFragment(): Fragment = this@DtHomeFragment
 
-            override fun getLocalizingAddressHostSourceData(): String = SOURCE
+                override fun getLocalizingAddressHostSourceData(): String = SOURCE
 
-            override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE_TRACKING
+                override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE_TRACKING
 
-            override fun onLocalizingAddressUpdatedFromBackground() {
-                // no-op
-            }
+                override fun onLocalizingAddressUpdatedFromBackground() {
+                    // no-op
+                }
 
-            override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
-                showChooseAddressView(isRollOutUser)
-            }
+                override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
+                    showChooseAddressView(isRollOutUser)
+                }
 
-            override fun onLocalizingAddressLoginSuccess() {
-                // no-op
-            }
-        })
+                override fun onLocalizingAddressLoginSuccess() {
+                    // no-op
+                }
+            })
     }
 
     private fun showCoachMark() {
@@ -794,7 +796,7 @@ class DtHomeFragment :
          * select and scroll tab anchor from pisition
          */
         if (visiblePosition != null && visiblePosition != -1 && viewModelDtHome.getHomeVisitableList()
-                .isNotEmpty()
+            .isNotEmpty()
         ) {
             val anchorTabUiModel = viewModelDtHome.getAnchorTabByVisitablePosition(visiblePosition)
             val indexAnchorTab = viewModelDtHome.menuList?.indexOf(anchorTabUiModel)
