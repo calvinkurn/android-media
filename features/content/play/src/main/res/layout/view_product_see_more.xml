@@ -1,48 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    >
+    android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_play_product_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_play_product_count"
         android:gravity="center"
         android:includeFontPadding="false"
         android:inputType="textNoSuggestions"
-        android:textAlignment="center"
-        android:textColor="@color/play_dms_product_count_color"
-        android:background="@drawable/bg_play_product_count"
+        android:paddingStart="@dimen/unify_space_4"
         android:paddingTop="@dimen/spacing_lvl1"
-        android:paddingStart="@dimen/spacing_lvl3"
-        android:paddingEnd="@dimen/spacing_lvl3"
+        android:paddingEnd="@dimen/unify_space_4"
         android:paddingBottom="@dimen/spacing_lvl1"
-        android:layout_marginBottom="@dimen/spacing_lvl1"
         android:text="@string/play_zero"
-        app:layout_constraintEnd_toEndOf="@id/ic_play_product_see_more"
-        app:layout_constraintStart_toStartOf="@id/ic_play_product_see_more"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/ic_play_product_see_more"
-        app:layout_constraintVertical_chainStyle="packed"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_NN0"
+        android:translationZ="@dimen/play_dp_1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        tools:text="123"
-        />
+        tools:text="123" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ic_play_product_see_more"
-        android:layout_width="@dimen/layout_lvl4"
-        android:layout_height="@dimen/layout_lvl4"
-        app:srcCompat="@drawable/ic_product_icon"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_play_product_count"
+        android:layout_width="@dimen/content_common_space_40"
+        android:layout_height="@dimen/content_common_space_40"
         app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:srcCompat="@drawable/ic_product_more" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
