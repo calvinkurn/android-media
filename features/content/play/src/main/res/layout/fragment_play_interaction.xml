@@ -168,7 +168,6 @@
         app:layout_constraintBottom_toBottomOf="@id/view_send_chat"
         app:layout_constraintEnd_toStartOf="@id/view_product_see_more"
         app:layout_constraintStart_toStartOf="@id/view_size"
-        app:layout_constraintTop_toTopOf="@id/view_send_chat"
         tools:visibility="visible"
         />
 

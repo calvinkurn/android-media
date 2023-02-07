@@ -23,7 +23,7 @@
         android:translationZ="@dimen/play_dp_1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:typographyType="body_3"
+        app:typographyType="small"
         app:typographyWeight="bold"
         tools:text="123" />
 
