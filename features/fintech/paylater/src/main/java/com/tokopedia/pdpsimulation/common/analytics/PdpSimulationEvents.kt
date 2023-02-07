@@ -86,7 +86,6 @@ class PayLaterCtaClick : PayLaterAnalyticsBase() {
     var limit: String = ""
     var redirectLink: String = ""
     var ctaWording: String = ""
-    var promoName: String = ""
 }
 
 @Parcelize
