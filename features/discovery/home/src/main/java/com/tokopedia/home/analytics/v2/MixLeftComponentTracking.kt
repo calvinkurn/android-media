@@ -149,7 +149,7 @@ object MixLeftComponentTracking : BaseTrackerConst() {
             .build()
     }
 
-    private fun getMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int, positionOnHome: Int): Map<String, Any> {
+    private fun getMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int, positionOnHome: Int, userId: String): Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductClick(
             event = Event.PRODUCT_CLICK,
@@ -259,8 +259,8 @@ object MixLeftComponentTracking : BaseTrackerConst() {
             .build()
     }
 
-    fun sendMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int, positionOnHome: Int) {
-        getTracker().sendEnhanceEcommerceEvent(getMixLeftProductClick(channel, grid, position, positionOnHome))
+    fun sendMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int, positionOnHome: Int, userId: String) {
+        getTracker().sendEnhanceEcommerceEvent(getMixLeftProductClick(channel, grid, position, positionOnHome, userId))
     }
 
     fun sendMixLeftSeeAllCardClick(channel: ChannelModel, userId: String) {
