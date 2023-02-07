@@ -2976,6 +2976,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }, throwable -> {
                     Timber.d(throwable);
                     if (getView() != null) {
+                        getView().setHasRunningApiCall(false);
+                        getView().hideLoading();
                         String errorMessage = throwable.getMessage();
                         if (!(throwable instanceof CartResponseErrorException) && !(throwable instanceof AkamaiErrorException)) {
                             errorMessage = ErrorHandler.getErrorMessage(getView().getActivityContext(), throwable);
