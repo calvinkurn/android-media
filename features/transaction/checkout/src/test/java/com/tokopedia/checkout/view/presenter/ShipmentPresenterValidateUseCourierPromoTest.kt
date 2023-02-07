@@ -186,6 +186,7 @@ class ShipmentPresenterValidateUseCourierPromoTest {
             view.generateValidateUsePromoRequest()
             view.showToastError(errorMessage)
             view.resetCourier(shipmentCartItemModel)
+            view.logOnErrorApplyBo(match { it.message == errorMessage }, shipmentCartItemModel, "")
             view.renderPromoCheckoutFromCourierSuccess(validateUseModel, position, noToast)
         }
     }

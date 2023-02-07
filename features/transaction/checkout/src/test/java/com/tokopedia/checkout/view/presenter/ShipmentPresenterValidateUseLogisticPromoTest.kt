@@ -195,6 +195,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
             view.setStateLoadingCourierStateAtIndex(cartPosition, true)
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.resetCourier(shipmentCartItemModel)
+            view.logOnErrorApplyBo(match { it.message == "voucher order not found" }, shipmentCartItemModel, promoCode)
             view.updateButtonPromoCheckout(promoUiModel, true)
         }
     }
@@ -234,6 +235,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(errorMessage)
             view.resetCourier(shipmentCartItemModel)
+            view.logOnErrorApplyBo(match { it.message == errorMessage }, shipmentCartItemModel, promoCode)
             view.updateButtonPromoCheckout(promoUiModel, true)
         }
     }
@@ -288,7 +290,10 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     fun validateUseError_ShouldShowErrorAndResetCourier() {
         // Given
         val errorMessage = "error"
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(Throwable(errorMessage))
+        val throwable = Throwable(errorMessage)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
+            throwable
+        )
 
         // When
         val cartPosition = 0
@@ -301,6 +306,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
             checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(errorMessage)
             view.showToastError(errorMessage)
             view.resetCourier(cartPosition)
+            view.logOnErrorApplyBo(throwable, cartPosition, "")
         }
     }
 
@@ -308,7 +314,10 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     fun validateUseErrorAkamai_ShouldShowErrorAndResetCourierAndClearPromo() {
         // Given
         val errorMessage = "error"
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(AkamaiErrorException(errorMessage))
+        val akamaiErrorException = AkamaiErrorException(errorMessage)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
+            akamaiErrorException
+        )
 
         // When
         val cartPosition = 0
@@ -323,6 +332,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
             view.resetAllCourier()
             view.cancelAllCourierPromo()
             view.doResetButtonPromoCheckout()
+            view.logOnErrorApplyBo(akamaiErrorException, cartPosition, "")
         }
     }
 
