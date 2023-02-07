@@ -18,7 +18,7 @@ import com.tokopedia.hotel.common.util.HotelRecentSearchDataQuery.RECENT_SEARCH_
 import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
 
 @GqlQuery("QueryHotelPropertyReview", PROPERTY_REVIEW)
-internal object HotelPropertyReviewQuery{
+internal object HotelPropertyReviewQuery {
     const val PROPERTY_REVIEW = """
         query propertyReview(${'$'}data:PropertyReviewRequest!){
           propertyReview(input:${'$'}data){
@@ -45,7 +45,7 @@ internal object HotelPropertyReviewQuery{
 }
 
 @GqlQuery("QueryHotelPropertySearch", PROPERTY_SEARCH)
-internal object HotelPropertySearchQuery{
+internal object HotelPropertySearchQuery {
     const val PROPERTY_SEARCH = """
         query PropertySearch(${'$'}data:PropertySearchRequest!) {
         propertySearch(input: ${'$'}data){
@@ -153,13 +153,14 @@ internal object HotelPropertySearchQuery{
             values
             selected
         }
+        source
     }
     }
     """
 }
 
 @GqlQuery("QueryHotelDestinationSearch", DESTINATION_SEARCH)
-internal object HotelDestinationSearchQuery{
+internal object HotelDestinationSearchQuery {
     const val DESTINATION_SEARCH = """
         query suggestion(${'$'}data: PropertySuggestionSearchParam!) {
           propertySearchSuggestion(input:${'$'}data) {
@@ -180,13 +181,14 @@ internal object HotelDestinationSearchQuery{
               keyword
               totalSuggestion
             }
+            source
           }
         }
     """
 }
 
 @GqlQuery("QueryHotelGetCart", GET_CART)
-internal object HotelGetCartQuery{
+internal object HotelGetCartQuery {
     const val GET_CART = """
         query PropertyCart(${'$'}data: PropertyGetCartRequest!) {
           status
@@ -289,7 +291,7 @@ internal object HotelGetCartQuery{
 }
 
 @GqlQuery("QueryHotelHomepageDefaultParameter", DEFAULT_HOMEPAGE_PARAMETER)
-internal object HotelHomepageDefaultParameterQuery{
+internal object HotelHomepageDefaultParameterQuery {
     const val DEFAULT_HOMEPAGE_PARAMETER = """
         query propertyDefaultHome{
             propertyDefaultHome{
@@ -311,7 +313,7 @@ internal object HotelHomepageDefaultParameterQuery{
 }
 
 @GqlQuery("QueryHotelPropertyDetail", PROPERTY_DETAIL)
-internal object HotelPropertyDetailQuery{
+internal object HotelPropertyDetailQuery {
     const val PROPERTY_DETAIL = """
         query propertyDetail(${'$'}data:PropertyDetailRequest!){
         propertyDetail(input:${'$'}data){
@@ -411,7 +413,7 @@ internal object HotelPropertyDetailQuery{
 }
 
 @GqlQuery("QueryHotelOrderDetail", ORDER_DETAILS)
-internal object HotelOrderDetailQuery{
+internal object HotelOrderDetailQuery {
     const val ORDER_DETAILS = """
         query OrderDetailsQuery(${'$'}orderCategoryStr: String,${'$'}orderId: String) {
           status
@@ -555,7 +557,7 @@ internal object HotelOrderDetailQuery{
 }
 
 @GqlQuery("QueryHotelRecentSearchData", RECENT_SEARCH_DATA)
-internal object HotelRecentSearchDataQuery{
+internal object HotelRecentSearchDataQuery {
     const val RECENT_SEARCH_DATA = """
         query TravelCollectiveRecentSearches() {
           TravelCollectiveRecentSearches(product:HOTEL, platform: HOTELPAGE){
@@ -581,7 +583,7 @@ internal object HotelRecentSearchDataQuery{
 }
 
 @GqlQuery("QueryHotelPropertyRoomList", PROPERTY_ROOM_LIST)
-internal object HotelPropertyRoomListQuery{
+internal object HotelPropertyRoomListQuery {
     const val PROPERTY_ROOM_LIST = """
         query PropertySearchRoom(${'$'}data:PropertySearchRoomRequest!){
           propertySearchRoom(input:${'$'}data){
@@ -698,7 +700,7 @@ internal object HotelPropertyRoomListQuery{
 }
 
 @GqlQuery("QueryHotelNearbyLandmarks", HOTEL_NEARBY_LANDMARKS)
-internal object HotelNearbyLandmarksQuery{
+internal object HotelNearbyLandmarksQuery {
     const val HOTEL_NEARBY_LANDMARKS = """
         query propertySearchPlace(${'$'}data :PropertySearchPlaceRequest!){
           propertySearchPlace(input:${'$'}data){
@@ -723,7 +725,7 @@ internal object HotelNearbyLandmarksQuery{
 }
 
 @GqlQuery("QueryHotelGetPopularProperty", GET_POPULAR_PROPERTY_QUERY)
-internal object HotelGetPopularPropertyQuery{
+internal object HotelGetPopularPropertyQuery {
     const val GET_POPULAR_PROPERTY_QUERY = """
         query {
           propertyPopular {
@@ -740,7 +742,7 @@ internal object HotelGetPopularPropertyQuery{
 }
 
 @GqlQuery("QueryHotelGetRecentSearch", GET_HOTEL_RECENT_SEARCH_QUERY)
-internal object HotelGetRecentSearchQuery{
+internal object HotelGetRecentSearchQuery {
     const val GET_HOTEL_RECENT_SEARCH_QUERY = """
         query propertyRecentSearch(${'$'}id: Int!){
          status
@@ -773,7 +775,7 @@ internal object HotelGetRecentSearchQuery{
 }
 
 @GqlQuery("QueryHotelGetCancellation", GET_CANCELLATION)
-internal object HotelGetCancellationQuery{
+internal object HotelGetCancellationQuery {
     const val GET_CANCELLATION = """
         query getCancellation(${'$'}data: PropertyGetCancellationRequest!){
           propertyGetCancellation(input: ${'$'}data        ){
@@ -887,6 +889,6 @@ internal object HotelGetCancellationQuery{
 }
 
 @GqlQuery("QueryHotelCancelVoucher", HOTEL_CANCEL_VOUCHER)
-internal object HotelCancelVoucherQuery{
+internal object HotelCancelVoucherQuery {
     const val HOTEL_CANCEL_VOUCHER = PromoCheckoutCommonQueryConst.QUERY_FLIGHT_CANCEL_VOUCHER
 }

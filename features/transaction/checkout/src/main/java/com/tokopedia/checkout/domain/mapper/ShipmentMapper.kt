@@ -19,6 +19,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.AddressData
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.checkout.domain.model.cartshipmentform.CheckoutCoachmarkPlusData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CourierSelectionErrorData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData
@@ -44,6 +45,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipProd
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.feature.coachmarkplus.CoachmarkPlusResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EthicalDrugResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
@@ -150,6 +152,7 @@ class ShipmentMapper @Inject constructor() {
             upsell = mapUpsell(shipmentAddressFormDataResponse.upsell)
             newUpsell = mapUpsell(shipmentAddressFormDataResponse.newUpsell)
             cartData = shipmentAddressFormDataResponse.cartData
+            coachmarkPlus = mapCoachmarkPlus(shipmentAddressFormDataResponse.coachmark)
             isUsingDdp = shipmentAddressFormDataResponse.dynamicDataPassing.isDdp
             dynamicData = shipmentAddressFormDataResponse.dynamicDataPassing.dynamicData
         }
@@ -743,7 +746,8 @@ class ShipmentMapper @Inject constructor() {
                     code = voucherOrdersItem.code
                     uniqueId = voucherOrdersItem.uniqueId
                     message = mapLastApplyMessageUiModel(voucherOrdersItem.message)
-                }
+                type = voucherOrdersItem.type
+                    }
             )
         }
 
@@ -1055,6 +1059,14 @@ class ShipmentMapper @Inject constructor() {
             upsell.id,
             upsell.additionalVerticalId,
             upsell.transactionType
+        )
+    }
+
+    private fun mapCoachmarkPlus(coachmarkPlus: CoachmarkPlusResponse): CheckoutCoachmarkPlusData {
+        return CheckoutCoachmarkPlusData(
+            isShown = coachmarkPlus.plus.isShown,
+            title = coachmarkPlus.plus.title,
+            content = coachmarkPlus.plus.content
         )
     }
 

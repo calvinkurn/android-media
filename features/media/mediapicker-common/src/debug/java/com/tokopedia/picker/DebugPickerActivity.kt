@@ -16,6 +16,7 @@ import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.R
 import com.tokopedia.picker.common.databinding.ActivityPickerDebugBinding
 import com.tokopedia.picker.common.types.EditorToolType
+import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
@@ -59,6 +60,10 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
 
                                 if (contains(EditorToolType.WATERMARK)) {
                                     withWatermark()
+                                }
+
+                                if (contains(EditorToolType.ADD_LOGO)) {
+                                    withAddLogo()
                                 }
                             }
 

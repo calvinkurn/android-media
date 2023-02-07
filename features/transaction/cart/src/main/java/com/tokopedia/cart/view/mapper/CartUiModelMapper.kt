@@ -25,6 +25,7 @@ import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
 import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityData
+import com.tokopedia.cart.view.uimodel.CartShopCoachmarkPlusData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
@@ -108,7 +109,10 @@ object CartUiModelMapper {
 
     fun mapAvailableShopUiModel(cartData: CartData): List<CartShopHolderData> {
         val cartShopHolderDataList = mutableListOf<CartShopHolderData>()
-        cartData.availableSection.availableGroupGroups.forEach { availableGroup ->
+        val firstPlusAvailableGroupIndex = cartData.availableSection.availableGroupGroups.indexOfFirst {
+            it.shipmentInformation.freeShippingGeneral.isBoTypePlus()
+        }
+        cartData.availableSection.availableGroupGroups.forEachIndexed { index, availableGroup ->
             val productUiModelList = mutableListOf<CartItemHolderData>()
             availableGroup.cartDetails.forEach { cartDetail ->
                 cartDetail.products.forEach { product ->
@@ -175,6 +179,11 @@ object CartUiModelMapper {
                     it.uniqueId == cartString && it.shippingId > 0 &&
                     it.spId > 0 && it.type == "logistic"
                 }?.code ?: ""
+                coachmarkPlus = CartShopCoachmarkPlusData(
+                    isShown = cartData.coachmark.plus.isShown && (firstPlusAvailableGroupIndex == index),
+                    title = cartData.coachmark.plus.title,
+                    content = cartData.coachmark.plus.content
+                )
             }
             cartShopHolderDataList.add(shopUiModel)
         }
