@@ -1718,7 +1718,7 @@ open class DynamicProductDetailFragment :
         viewModel.loadViewToView(
             pageName = pageName,
             productId = p1.basic.productID,
-            isTokoNow = p1.basic.isTokoNow,
+            isTokoNow = p1.basic.isTokoNow
         )
     }
 
@@ -2911,9 +2911,11 @@ open class DynamicProductDetailFragment :
         observe(viewModel.loadViewToView) { data ->
             data.doSuccessOrFail({
                 if (it.data.recommendationItemList.size > 1) {
-                    pdpUiUpdater?.updateViewToViewData(it.data.copy(
-                        recommendationItemList = it.data.recommendationItemList
-                    ))
+                    pdpUiUpdater?.updateViewToViewData(
+                        it.data.copy(
+                            recommendationItemList = it.data.recommendationItemList
+                        )
+                    )
                     updateUi()
                 } else {
                     pdpUiUpdater?.removeComponent(it.data.recomUiPageName)
@@ -3528,17 +3530,28 @@ open class DynamicProductDetailFragment :
         title: String,
         chipsLabel: List<String>,
         isCod: Boolean,
-        componentTrackDataModel: ComponentTrackDataModel?
+        isScheduled: Boolean,
+        componentTrackDataModel: ComponentTrackDataModel
     ) {
         viewModel.getDynamicProductInfoP1?.let {
-            DynamicProductDetailTracking.Click.eventClickShipment(
-                viewModel.getDynamicProductInfoP1,
-                viewModel.userId,
-                componentTrackDataModel,
-                title,
-                chipsLabel,
-                isCod
-            )
+            if (isScheduled) {
+                val common = CommonTracker(it, viewModel.userId)
+                ShipmentTracking.sendClickLihatJadwalLainnyaOnScheduleDelivery(
+                    chipsLabel,
+                    common,
+                    componentTrackDataModel
+                )
+            } else {
+                DynamicProductDetailTracking.Click.eventClickShipment(
+                    viewModel.getDynamicProductInfoP1,
+                    viewModel.userId,
+                    componentTrackDataModel,
+                    title,
+                    chipsLabel,
+                    isCod
+                )
+            }
+
             val boData = viewModel.getBebasOngkirDataByProductId()
 
             val productId = it.basic.productID
@@ -5793,7 +5806,7 @@ open class DynamicProductDetailFragment :
         data: ViewToViewItemData,
         title: String,
         itemPosition: Int,
-        adapterPosition: Int,
+        adapterPosition: Int
     ) {
         DynamicProductDetailTracking.ViewToView.eventImpressViewToView(
             position = itemPosition,
@@ -5802,7 +5815,7 @@ open class DynamicProductDetailFragment :
             pageTitle = title,
             viewModel.getDynamicProductInfoP1,
             viewModel.userId,
-            trackingQueue,
+            trackingQueue
         )
     }
 
@@ -5810,7 +5823,7 @@ open class DynamicProductDetailFragment :
         data: ViewToViewItemData,
         title: String,
         itemPosition: Int,
-        adapterPosition: Int,
+        adapterPosition: Int
     ) {
         DynamicProductDetailTracking.ViewToView.eventClickViewToView(
             position = itemPosition,
@@ -5818,18 +5831,18 @@ open class DynamicProductDetailFragment :
             pageName = data.recommendationData.pageName,
             pageTitle = title,
             viewModel.getDynamicProductInfoP1,
-            viewModel.userId,
+            viewModel.userId
         )
         val activity = activity ?: return
         showImmediately(
             childFragmentManager,
-            ViewToViewBottomSheet.TAG,
+            ViewToViewBottomSheet.TAG
         ) {
             ViewToViewBottomSheet.newInstance(
                 activity.classLoader,
                 fragmentFactory,
                 data,
-                viewModel.getDynamicProductInfoP1?.basic?.productID ?: "",
+                viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
             )
         }
     }
@@ -5846,21 +5859,6 @@ open class DynamicProductDetailFragment :
         val common = CommonTracker(productInfo, viewModel.userId)
 
         ShipmentTracking.sendImpressionScheduledDeliveryComponent(
-            trackingQueue,
-            labels,
-            common,
-            componentTrackDataModel
-        )
-    }
-
-    override fun onClickShipmentScheduledDelivery(
-        labels: List<String>,
-        componentTrackDataModel: ComponentTrackDataModel
-    ) {
-        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
-        val common = CommonTracker(productInfo, viewModel.userId)
-
-        ShipmentTracking.sendClickLihatJadwalLainnyaOnScheduleDelivery(
             trackingQueue,
             labels,
             common,

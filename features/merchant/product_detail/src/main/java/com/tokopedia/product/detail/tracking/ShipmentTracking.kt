@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.tracking
 
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 object ShipmentTracking {
@@ -42,7 +43,6 @@ object ShipmentTracking {
     }
 
     fun sendClickLihatJadwalLainnyaOnScheduleDelivery(
-        trackingQueue: TrackingQueue,
         labels: List<String>,
         common: CommonTracker,
         component: ComponentTrackDataModel
@@ -63,6 +63,6 @@ object ShipmentTracking {
             "shopId" to common.shopId,
             "userId" to common.userId
         )
-        trackingQueue.putEETracking(mapEvent)
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 }

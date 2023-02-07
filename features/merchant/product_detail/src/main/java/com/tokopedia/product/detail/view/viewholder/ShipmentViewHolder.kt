@@ -224,19 +224,13 @@ class ShipmentViewHolder(
                 pdpShipmentCourierLabel2
             )
         ) {
-            if (rates.isScheduled) {
-                listener.onClickShipmentScheduledDelivery(
-                    labels,
-                    getComponentTrackData(element)
-                )
-            } else {
-                listener.openShipmentClickedBottomSheet(
-                    rates.title,
-                    labels,
-                    element.isCod,
-                    componentTrackDataModel
-                )
-            }
+            listener.openShipmentClickedBottomSheet(
+                rates.title,
+                labels,
+                element.isCod,
+                rates.isScheduled,
+                getComponentTrackData(element)
+            )
         }
     }
 

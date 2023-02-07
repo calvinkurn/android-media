@@ -361,7 +361,8 @@ interface DynamicProductDetailListener {
         title: String,
         chipsLabel: List<String>,
         isCod: Boolean,
-        componentTrackDataModel: ComponentTrackDataModel?
+        isScheduled: Boolean,
+        componentTrackDataModel: ComponentTrackDataModel
     )
 
     fun clickShippingComponentError(
@@ -371,11 +372,6 @@ interface DynamicProductDetailListener {
     )
 
     fun onImpressScheduledDelivery(
-        labels: List<String>,
-        componentTrackDataModel: ComponentTrackDataModel
-    )
-
-    fun onClickShipmentScheduledDelivery(
         labels: List<String>,
         componentTrackDataModel: ComponentTrackDataModel
     )
@@ -469,13 +465,13 @@ interface DynamicProductDetailListener {
         data: ViewToViewItemData,
         title: String,
         itemPosition: Int,
-        adapterPosition: Int,
+        adapterPosition: Int
     )
     fun onViewToViewClicked(
         data: ViewToViewItemData,
         title: String,
         itemPosition: Int,
-        adapterPosition: Int,
+        adapterPosition: Int
     )
     fun onViewToViewReload(pageName: String)
 }

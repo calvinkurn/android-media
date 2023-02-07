@@ -89,7 +89,8 @@ class RatesEstimationBoeViewModel @Inject constructor(
                 request.shopTier,
                 generateUniqueId(request),
                 request.orderValue,
-                request.boMetadata
+                request.boMetadata,
+                request.warehouseId
             ),
             request.forceRefresh
         )
