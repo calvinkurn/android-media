@@ -32,6 +32,7 @@ import com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity
 import com.tokopedia.topupbills.utils.CommonTelcoActions
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickClearBtn
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickFilterChip_withText
+import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_scrollToChip_withText
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_typeNumber
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_validateText
 import com.tokopedia.topupbills.utils.CommonTelcoActions.pdp_clickBuyWidget
@@ -64,14 +65,26 @@ class TelcoPostpaidLoginInstrumentTest {
         Intents.init()
         graphqlCacheManager.deleteAll()
         setupGraphqlMockResponse {
-            addMockResponse(KEY_QUERY_MENU_DETAIL, ResourceUtils.getJsonFromResource(PATH_RESPONSE_POSTPAID_MENU_DETAIL_LOGIN),
-                    MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(KEY_QUERY_FAV_NUMBER, ResourceUtils.getJsonFromResource(PATH_RESPONSE_POSTPAID_FAV_NUMBER),
-                    MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(KEY_QUERY_PREFIX_SELECT, ResourceUtils.getJsonFromResource(PATH_RESPONSE_POSTPAID_PREFIX_SELECT),
-                    MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(KEY_QUERY_ENQUIRY, ResourceUtils.getJsonFromResource(PATH_RESPONSE_POSTPAID_ENQUIRY),
-                    MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(
+                KEY_QUERY_MENU_DETAIL,
+                ResourceUtils.getJsonFromResource(PATH_RESPONSE_POSTPAID_MENU_DETAIL_LOGIN),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
+            addMockResponse(
+                KEY_QUERY_FAV_NUMBER,
+                ResourceUtils.getJsonFromResource(PATH_RESPONSE_POSTPAID_FAV_NUMBER),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
+            addMockResponse(
+                KEY_QUERY_PREFIX_SELECT,
+                ResourceUtils.getJsonFromResource(PATH_RESPONSE_POSTPAID_PREFIX_SELECT),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
+            addMockResponse(
+                KEY_QUERY_ENQUIRY,
+                ResourceUtils.getJsonFromResource(PATH_RESPONSE_POSTPAID_ENQUIRY),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
         }
 
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
@@ -100,7 +113,6 @@ class TelcoPostpaidLoginInstrumentTest {
 
         assertThat(cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_LOGIN), hasAllSuccess())
     }
-
 
     fun validate_pdp_client_number_widget_interaction() {
         clientNumberWidget_clickClearBtn()
@@ -132,6 +144,7 @@ class TelcoPostpaidLoginInstrumentTest {
         clientNumberWidget_clickFilterChip_withText("Tokopedia")
         clientNumberWidget_validateText("081232323239")
         clientNumberWidget_clickClearBtn()
+        clientNumberWidget_scrollToChip_withText("081208120812")
         clientNumberWidget_clickFilterChip_withText("081208120812")
         clientNumberWidget_validateText("081208120812")
     }
@@ -172,7 +185,6 @@ class TelcoPostpaidLoginInstrumentTest {
         closeSoftKeyboard()
         pdp_validateBuyWidgetDisplayed()
         pdp_clickBuyWidget()
-
     }
 
     fun validate_interaction_saved_number() {
@@ -202,10 +214,17 @@ class TelcoPostpaidLoginInstrumentTest {
 
         Thread.sleep(3000)
         tabLayout_clickTabWithText("Transaksi Terakhir")
-        val viewInteraction = onView(AllOf.allOf(isDescendantOfA(withId(R.id.layout_widget)),
-                withId(R.id.recycler_view_menu_component), isDisplayed())).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions
-                .actionOnItemAtPosition<TopupBillsRecentNumbersAdapter.RecentNumbersItemViewHolder>(0, click()))
+        val viewInteraction = onView(
+            AllOf.allOf(
+                isDescendantOfA(withId(R.id.layout_widget)),
+                withId(R.id.recycler_view_menu_component),
+                isDisplayed()
+            )
+        ).check(matches(isDisplayed()))
+        viewInteraction.perform(
+            RecyclerViewActions
+                .actionOnItemAtPosition<TopupBillsRecentNumbersAdapter.RecentNumbersItemViewHolder>(0, click())
+        )
         Thread.sleep(3000)
         enquiry_phone_number()
     }

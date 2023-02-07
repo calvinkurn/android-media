@@ -95,7 +95,7 @@ import com.tokopedia.tokopedianow.repurchase.presentation.listener.CategoryMenuC
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductRecommendationCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductRecommendationOocCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.RepurchaseProductCardListener
-import com.tokopedia.tokopedianow.repurchase.presentation.listener.SimilarProductCallback
+import com.tokopedia.tokopedianow.repurchase.presentation.listener.TokoNowSimilarProductTrackerCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayoutUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedDateFilter
@@ -160,7 +160,7 @@ class TokoNowRepurchaseFragment:
         RepurchaseAdapter(
             RepurchaseAdapterTypeFactory(
                 productCardListener = createProductCardListener(),
-                similarProductListener = createSimilarProductCallback(),
+                tokoNowSimilarProductTrackerListener = createSimilarProductTrackerCallback(),
                 tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
                 tokoNowChooseAddressWidgetListener = this,
                 tokoNowListener = this,
@@ -1043,8 +1043,8 @@ class TokoNowRepurchaseFragment:
         )
     }
 
-    private fun createSimilarProductCallback(): SimilarProductCallback {
-        return SimilarProductCallback(analytics)
+    private fun createSimilarProductTrackerCallback(): TokoNowSimilarProductTrackerCallback {
+        return TokoNowSimilarProductTrackerCallback(analytics)
     }
 
     private fun createCategoryMenuCallback(): CategoryMenuCallback {

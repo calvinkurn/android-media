@@ -186,6 +186,7 @@ class DiscoveryFragment :
     private var miniCartData: MiniCartSimplifiedData? = null
     private var miniCartInitialized: Boolean = false
     private var userPressed: Boolean = false
+    private var isTabPresentToDoubleScroll: Boolean = false
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -399,6 +400,7 @@ class DiscoveryFragment :
         })
         recyclerView.setOnTouchListenerRecyclerView { v, event ->
             userPressed = true
+            isTabPresentToDoubleScroll = false
             if (event.actionMasked == MotionEvent.ACTION_UP) {
                 v.performClick()
             }
@@ -407,15 +409,18 @@ class DiscoveryFragment :
         recyclerView.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 userPressed = true
+                isTabPresentToDoubleScroll = false
                 return false
             }
 
             override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
                 userPressed = true
+                isTabPresentToDoubleScroll = false
             }
 
             override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
                 userPressed = true
+                isTabPresentToDoubleScroll = false
             }
         })
 
@@ -478,6 +483,13 @@ class DiscoveryFragment :
     private fun scrollToLastSection() {
         if (!userPressed && !autoScrollSectionID.isNullOrEmpty()) {
             scrollToSection(autoScrollSectionID!!)
+        }else if(!userPressed && isTabPresentToDoubleScroll){
+//            isTabPresentToDoubleScroll = false
+            pinnedAlreadyScrolled = false
+            discoveryAdapter.currentList?.let {
+                if (it.isNotEmpty())
+                    scrollToPinnedComponent(it)
+            }
         }
     }
 
@@ -1275,10 +1287,11 @@ class DiscoveryFragment :
         if (!pinnedAlreadyScrolled) {
             val pinnedComponentId = arguments?.getString(COMPONENT_ID, "")
             if (!pinnedComponentId.isNullOrEmpty()) {
-                val position = discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
+                val (position, isTabPresent) = discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
+                isTabPresentToDoubleScroll = isTabPresent
                 if (position >= 0) {
-                    userPressed = true
-                    recyclerView.smoothScrollToPosition(position)
+                    userPressed = false
+                    recyclerView.smoothScrollToPosition(position, isTabPresent)
                     isManualScroll = false
                 }
             }
@@ -1290,7 +1303,7 @@ class DiscoveryFragment :
         val position = discoveryViewModel.scrollToPinnedComponent(
             discoveryAdapter.currentList,
             componentID
-        )
+        ).first
         if (position >= 0) {
             userPressed = false
             smoothScrollToComponentWithPosition(position)
@@ -1608,6 +1621,7 @@ class DiscoveryFragment :
         when (view) {
             ivToTop -> {
                 userPressed = true
+                isTabPresentToDoubleScroll = false
                 recyclerView.smoothScrollToPosition(DEFAULT_SCROLL_POSITION)
                 ivToTop.hide()
             }
