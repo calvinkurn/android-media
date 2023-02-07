@@ -61,6 +61,9 @@ data class GetCheckWhitelistResponse(
         @SerializedName("type")
         val type: String = "",
 
+        @SerializedName("has_accept_tnc")
+        val hasAcceptTnc: Boolean = false,
+
         @SerializedName("post")
         val post: PostConfig = PostConfig(),
 

@@ -1,14 +1,17 @@
 package com.tokopedia.media.picker.di.module
 
 import android.content.Context
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.media.common.utils.ParamCacheManager
+import com.tokopedia.media.picker.data.FeatureToggleManager
+import com.tokopedia.media.picker.data.FeatureToggleManagerImpl
 import com.tokopedia.media.picker.data.loader.LoaderDataSource
 import com.tokopedia.media.picker.data.loader.LoaderDataSourceImpl
 import com.tokopedia.media.picker.data.repository.*
-import com.tokopedia.media.picker.data.repository.CreateMediaRepositoryImpl
+import com.tokopedia.picker.common.cache.PickerCacheManager
+import com.tokopedia.picker.common.cache.PickerParamCacheManager
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -16,6 +19,20 @@ import dagger.Provides
 
 @Module
 object PickerModule {
+
+    @Provides
+    @ActivityScope
+    fun provideFeatureToggleManager(): FeatureToggleManager {
+        return FeatureToggleManagerImpl()
+    }
+
+    @Provides
+    fun providePickerCacheManager(
+        @ApplicationContext context: Context,
+        gson: Gson
+    ): PickerCacheManager {
+        return PickerParamCacheManager(context, gson)
+    }
 
     @Provides
     @ActivityScope
@@ -29,7 +46,7 @@ object PickerModule {
     @ActivityScope
     fun provideLoaderDataSource(
         @ApplicationContext context: Context,
-        cacheManager: ParamCacheManager
+        cacheManager: PickerCacheManager
     ) : LoaderDataSource {
         return LoaderDataSourceImpl(context, cacheManager)
     }

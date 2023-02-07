@@ -26,6 +26,8 @@ class AffiliatePromotionProductCard {
     companion object {
 
         private const val LABEL_POSITION = "category"
+        private const val SSA_LABEL_POSITION = "costperunit"
+        private const val SSA_LABEL_TYPE = "textGreen"
         private const val LABEL_TYPE = "status"
         private const val LABEL_COLOR = "transparentBlack"
         private const val LABEL_COLOR_COMMISSION = "textGreen"
@@ -34,6 +36,36 @@ class AffiliatePromotionProductCard {
         private const val LABEL_INTEGRITY = "integrity"
 
         fun toAffiliateProductModel(item: AffiliateSearchData.SearchAffiliate.Data.Card.Item): ProductCardModel {
+            val labelGroupList = arrayListOf(
+                ProductCardModel.LabelGroup(
+                    LABEL_POSITION,
+                    getAdditionalDataFromType(item, AdditionalInfoType.COMMISSION_AMOUNT_TYPE),
+                    LABEL_COLOR_COMMISSION
+                ),
+                ProductCardModel.LabelGroup(
+                    LABEL_SISA,
+                    getAdditionalDataFromType(item, AdditionalInfoType.PRODUCT_STOCK_TYPE),
+                    LABEL_SISA_COLOR
+                ),
+                ProductCardModel.LabelGroup(
+                    LABEL_INTEGRITY,
+                    getFooterDataFromType(item, FooterType.SALES)?.footerText ?: ""
+                ),
+                ProductCardModel.LabelGroup(
+                    LABEL_TYPE,
+                    getMessageDataFromType(item),
+                    LABEL_COLOR
+                )
+            )
+            if (item.ssaStatus == true) {
+                labelGroupList.add(
+                    ProductCardModel.LabelGroup(
+                        SSA_LABEL_POSITION,
+                        item.label?.labelText ?: "komisi extra",
+                        SSA_LABEL_TYPE
+                    )
+                )
+            }
             return ProductCardModel(
                 productImageUrl = item.image?.androidURL ?: item.image?.iosURL ?: "",
                 productName = item.title ?: "",
@@ -46,26 +78,7 @@ class AffiliatePromotionProductCard {
                     AdditionalInfoType.SLASHED_PRICE_TYPE
                 ),
                 priceRange = getAdditionalDataFromType(item, AdditionalInfoType.FINAL_PRICE_TYPE),
-                labelGroupList = arrayListOf(
-                    ProductCardModel.LabelGroup(
-                        LABEL_POSITION,
-                        getAdditionalDataFromType(item, AdditionalInfoType.COMMISSION_AMOUNT_TYPE),
-                        LABEL_COLOR_COMMISSION
-                    ),
-                    ProductCardModel.LabelGroup(
-                        LABEL_SISA,
-                        getAdditionalDataFromType(item, AdditionalInfoType.PRODUCT_STOCK_TYPE),
-                        LABEL_SISA_COLOR
-                    ),
-                    ProductCardModel.LabelGroup(
-                        LABEL_INTEGRITY,
-                        getFooterDataFromType(item, FooterType.SALES)?.footerText ?: ""
-                    ),
-                    ProductCardModel.LabelGroup(
-                        LABEL_TYPE,
-                        getMessageDataFromType(item), LABEL_COLOR
-                    )
-                ),
+                labelGroupList = labelGroupList,
                 shopBadgeList = arrayListOf(
                     ProductCardModel.ShopBadge(
                         getFooterDataFromType(
@@ -108,6 +121,5 @@ class AffiliatePromotionProductCard {
                 else -> ""
             }
         }
-
     }
 }

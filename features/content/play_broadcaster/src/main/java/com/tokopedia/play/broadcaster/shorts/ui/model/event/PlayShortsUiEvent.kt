@@ -20,6 +20,8 @@ sealed interface PlayShortsUiEvent {
 
     data class UGCOnboarding(val hasUsername: Boolean) : PlayShortsUiEvent
 
+    object AccountBanned : PlayShortsUiEvent
+
     object AccountNotEligible : PlayShortsUiEvent
 
     object SellerNotEligible : PlayShortsUiEvent
