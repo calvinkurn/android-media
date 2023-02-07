@@ -556,18 +556,20 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun sendCTAClickEvent() {
         payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId]?.let { checkoutData ->
             sendAnalyticEvent(
                 PdpSimulationEvent.ClickCTACheckoutPage(
                     payLaterActivationViewModel.selectedProductId,
-                    checkoutData.userState ?: "",
+                    checkoutData.userState.orEmpty(),
                     checkoutData.gateway_name.orEmpty(),
-                    checkoutData.tenureDetail[selectedTenurePosition].monthly_installment.orEmpty(),
-                    checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
+                    checkoutData.tenureDetail.getOrNull(selectedTenurePosition)?.monthly_installment.orEmpty(),
+                    checkoutData.tenureDetail.getOrNull(selectedTenurePosition)?.tenure.toString(),
                     quantity.toString(),
                     checkoutData.userAmount ?: "",
-                    payLaterActivationViewModel.variantName
+                    payLaterActivationViewModel.variantName,
+                    checkoutData.tenureDetail.getOrNull(selectedTenurePosition)?.promoName.orEmpty()
                 )
             )
         }

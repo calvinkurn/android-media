@@ -1,5 +1,6 @@
 package com.tokopedia.pdpsimulation.paylater.presentation.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,7 @@ class PayLaterSimulationTenureAdapter(
     private val tenureItemList = arrayListOf<SimulationUiModel>()
     var lastSelectedPosition = -1
 
+    @SuppressLint("PII Data Exposure")
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -32,7 +34,7 @@ class PayLaterSimulationTenureAdapter(
                         showPayLaterOption(
                             tenureItemList[pos].simulationList!!,
                             tenureItemList[pos].tenure?:0,
-                            tenureItemList[pos].text ?: "",
+                            tenureItemList[pos].promoName,
                         )
                         changeAndUpdateSelection(pos)
                     }

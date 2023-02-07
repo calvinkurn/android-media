@@ -1,5 +1,6 @@
 package com.tokopedia.pdpsimulation.paylater.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -49,6 +50,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
+@SuppressLint("PII Data Exposure")
 class PdpSimulationFragment : BaseDaggerFragment() {
 
     @Inject
@@ -79,8 +81,8 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         PayLaterSimulationAdapter(getAdapterTypeFactory())
     }
     private val tenureAdapter: PayLaterSimulationTenureAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        PayLaterSimulationTenureAdapter { payLaterList, position, tenureText ->
-            sendTenureCLick(position, payLaterList, tenureText)
+        PayLaterSimulationTenureAdapter { payLaterList, position, promoName ->
+            sendTenureCLick(position, payLaterList, promoName)
             simulationAdapter.addAllElements(payLaterList)
             rvPayLaterOption.scrollToPosition(0)
         }
@@ -89,7 +91,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     private fun sendTenureCLick(
         tenure: Int,
         payLaterList: ArrayList<BasePayLaterWidgetUiModel>,
-        tenureText: String,
+        promoName: String,
     ) {
         val allStatusOfPartner = extractDetailFromList(payLaterList)
         sendEvent(PayLaterTenureClick().apply {
@@ -99,7 +101,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
             productPrice = payLaterViewModel.finalProductPrice.toString()
             tenureOption = tenure
             payLaterPartnerName = allStatusOfPartner?.third.toString()
-            tenureOptionText = tenureText
+            this.promoName = promoName
         })
     }
 

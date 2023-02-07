@@ -58,7 +58,8 @@ sealed class PdpSimulationEvent {
         val tenure: String,
         val quantity: String,
         val limit: String,
-        val variantName: String
+        val variantName: String,
+        val promoName: String,
     ):PdpSimulationEvent()
 
     data class ClickTenureEvent(
@@ -103,5 +104,4 @@ class OccBottomSheetImpression : PayLaterAnalyticsBase(), Parcelable
 class PayLaterTenureClick :PayLaterAnalyticsBase()
 {
     var productPrice: String = ""
-    var tenureOptionText: String = ""
 }

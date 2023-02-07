@@ -24,6 +24,7 @@ class PdpSimulationAnalytics @Inject constructor(
         }
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun sendOccInstallmentBottomSheet(event: OccBottomSheetImpression) {
         val label = computeLabel(
             event.productId,
@@ -42,6 +43,7 @@ class PdpSimulationAnalytics @Inject constructor(
         sendGeneralEvent(map)
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun sendPayLaterTenureClick(event: PayLaterTenureClick) {
         val label = computeLabel(
             event.productId,
@@ -50,7 +52,7 @@ class PdpSimulationAnalytics @Inject constructor(
             event.productPrice,
             event.tenureOption.toString(),
             event.payLaterPartnerName,
-            event.tenureOptionText,
+            event.promoName,
         )
         val map = TrackAppUtils.gtmData(
             CLICK_EVENT_NAME_FIN_TECH_V3,
@@ -61,6 +63,7 @@ class PdpSimulationAnalytics @Inject constructor(
         sendGeneralEvent(map)
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun sendInstallmentBottomSheet(event: PayLaterBottomSheetImpression) {
 
         val label = computeLabel(
@@ -95,6 +98,7 @@ class PdpSimulationAnalytics @Inject constructor(
         sendGeneralEvent(map)
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun sendClickCtaEvent(event: PayLaterCtaClick) {
         val label = computeLabel(
             event.productId,
@@ -128,6 +132,7 @@ class PdpSimulationAnalytics @Inject constructor(
     private fun computeLabel(vararg args: String) =
         args.filter { it.isNotEmpty() }.joinToString(" - ")
 
+    @SuppressLint("PII Data Exposure")
     fun sendOccEvent(pdpSimulationEvent: PdpSimulationEvent) {
         when (pdpSimulationEvent) {
 
@@ -185,6 +190,7 @@ class PdpSimulationAnalytics @Inject constructor(
                 pdpSimulationEvent.quantity,
                 pdpSimulationEvent.limit,
                 pdpSimulationEvent.variantName,
+                pdpSimulationEvent.promoName,
             )
             is PdpSimulationEvent.ClickTenureEvent -> sendTenureClickAnalytic(
                 pdpSimulationEvent.productId,
@@ -223,6 +229,7 @@ class PdpSimulationAnalytics @Inject constructor(
         sendGeneralEvent(map)
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun sendCTACheckoutClicked(
         productId: String,
         userStatus: String,
@@ -231,7 +238,8 @@ class PdpSimulationAnalytics @Inject constructor(
         tenure: String,
         quantity: String,
         limit: String,
-        variantName: String
+        variantName: String,
+        promoName: String,
     ) {
         val map = TrackAppUtils.gtmData(
             CLICK_EVENT_NAME_FIN_TECH_V3,
@@ -246,7 +254,8 @@ class PdpSimulationAnalytics @Inject constructor(
                 tenure,
                 quantity,
                 limit,
-                variantName
+                variantName,
+                promoName,
             )
         )
         sendGeneralEvent(map)
