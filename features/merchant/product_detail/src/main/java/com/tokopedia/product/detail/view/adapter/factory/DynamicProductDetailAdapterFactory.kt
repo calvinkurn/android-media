@@ -37,7 +37,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDat
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 
@@ -47,7 +46,6 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductGeneralInfoDataModel): Int
     fun type(data: ProductRecommendationDataModel): Int
     fun type(data: PageErrorDataModel): Int
-    fun type(data: VariantDataModel): Int
     fun type(data: ProductNotifyMeDataModel): Int
     fun type(data: ProductMediaDataModel): Int
     fun type(data: ProductContentDataModel): Int

@@ -49,7 +49,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -1638,26 +1637,14 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
                 "28323839" to "94748052"
             )
         )
-        `child options id is available when get child of variant selected`(singleVariant, null)
-    }
-
-    @Test
-    fun `child is available when get child of variant selected with options variant only`() {
-        val variantData = VariantDataModel(
-            mapOfSelectedVariant = mutableMapOf(
-                "28323838" to "94748049",
-                "28323839" to "94748052"
-            )
-        )
-        `child options id is available when get child of variant selected`(null, variantData)
+        `child options id is available when get child of variant selected`(singleVariant)
     }
 
     @Test
     fun `child is null when get child of variant selected with single and options variant is null`() {
         `on success get pdp layout mini variants options`()
         val childVariant = viewModel.getChildOfVariantSelected(
-            singleVariant = null,
-            optionalVariant = null
+            singleVariant = null
         )
         Assert.assertTrue(childVariant == null)
     }
@@ -1666,15 +1653,13 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `child is null when get child of variant selected with single and options variant is empty`() {
         `on success get pdp layout mini variants options`()
         val childVariant = viewModel.getChildOfVariantSelected(
-            singleVariant = ProductSingleVariantDataModel(),
-            optionalVariant = VariantDataModel()
+            singleVariant = ProductSingleVariantDataModel()
         )
         Assert.assertTrue(childVariant == null)
     }
 
     private fun `child options id is available when get child of variant selected`(
         singleVariant: ProductSingleVariantDataModel?,
-        optionalVariant: VariantDataModel?
     ) {
         // given pdp layout data
         `on success get pdp layout mini variants options`()
@@ -1682,8 +1667,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val p1Result = (viewModel.productLayout.value as Success).data
         // then, get child of variant selected
         val childVariant = viewModel.getChildOfVariantSelected(
-            singleVariant = singleVariant,
-            optionalVariant = optionalVariant
+            singleVariant = singleVariant
         )
 
         // assert the expectation
@@ -1704,8 +1688,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.variantData = null
 
         val childVariant = viewModel.getChildOfVariantSelected(
-            singleVariant = singleVariant,
-            optionalVariant = null
+            singleVariant = singleVariant
         )
 
         Assert.assertTrue(viewModel.variantData == null)

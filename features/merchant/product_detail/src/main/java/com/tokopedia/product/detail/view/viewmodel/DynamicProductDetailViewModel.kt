@@ -226,10 +226,6 @@ open class DynamicProductDetailViewModel @Inject constructor(
     val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
         get() = _addToCartLiveData
 
-    private val _initialVariantData = MutableLiveData<List<VariantCategory>?>()
-    val initialVariantData: LiveData<List<VariantCategory>?>
-        get() = _initialVariantData
-
     private val _singleVariantData = MutableLiveData<VariantCategory?>()
     val singleVariantData: LiveData<VariantCategory?>
         get() = _singleVariantData
@@ -492,25 +488,15 @@ open class DynamicProductDetailViewModel @Inject constructor(
 
     fun processVariant(
         data: ProductVariant,
-        mapOfSelectedVariant: MutableMap<String, String>?,
-        shouldRenderSingleVariant: Boolean
+        mapOfSelectedVariant: MutableMap<String, String>?
     ) {
         launchCatchError(dispatcher.io, block = {
-            if (shouldRenderSingleVariant) {
-                _singleVariantData.postValue(
-                    ProductDetailVariantLogic.determineVariant(
-                        mapOfSelectedOptionIds = mapOfSelectedVariant.orEmpty(),
-                        productVariant = data
-                    )
+            _singleVariantData.postValue(
+                ProductDetailVariantLogic.determineVariant(
+                    mapOfSelectedOptionIds = mapOfSelectedVariant.orEmpty(),
+                    productVariant = data
                 )
-            } else {
-                _initialVariantData.postValue(
-                    VariantCommonMapper.processVariant(
-                        data,
-                        mapOfSelectedVariant
-                    )
-                )
-            }
+            )
         }) {}
     }
 

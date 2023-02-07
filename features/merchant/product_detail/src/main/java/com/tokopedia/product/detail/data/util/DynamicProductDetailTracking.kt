@@ -23,7 +23,6 @@ import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.util.TrackingUtil.removeCurrencyPrice
 import com.tokopedia.product.detail.data.util.TrackingUtil.sendTrackingBundle
 import com.tokopedia.product.util.processor.Product
@@ -52,14 +51,6 @@ object DynamicProductDetailTracking {
         customDimension[KEY_SESSION_IRIS] = irisSessionId
 
         TrackApp.getInstance().gtm.sendScreenAuthenticated(ProductTrackingConstant.Tracking.PRODUCT_DETAIL_SCREEN_NAME, customDimension)
-    }
-
-    private fun generateComponentTrackModel(variantData: VariantDataModel?, variantPosition: Int): ComponentTrackDataModel? {
-        return ComponentTrackDataModel(
-            variantData?.type.orEmpty(),
-            variantData?.name.orEmpty(),
-            variantPosition
-        )
     }
 
     fun generateComponentTrackModel(data: DynamicPdpDataModel?, position: Int): ComponentTrackDataModel {

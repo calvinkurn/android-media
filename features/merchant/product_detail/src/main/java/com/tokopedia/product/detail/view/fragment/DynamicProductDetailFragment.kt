@@ -647,7 +647,6 @@ open class DynamicProductDetailFragment :
         observeRecommendationProduct()
         observeImageVariantPartialyChanged()
         observeAddToCart()
-        observeInitialVariantData()
         observeSingleVariantData()
         observeonVariantClickedData()
         observeOnThumbnailVariantSelected()
@@ -2687,12 +2686,6 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun observeInitialVariantData() {
-        viewLifecycleOwner.observe(viewModel.initialVariantData) {
-            pdpUiUpdater?.updateVariantData(it)
-        }
-    }
-
     private fun observeAddToCart() {
         viewLifecycleOwner.observe(viewModel.addToCartLiveData) { data ->
             hideProgressDialog()
@@ -3475,8 +3468,6 @@ open class DynamicProductDetailFragment :
     }
 
     private fun renderVariant(data: ProductVariant?) {
-        val shouldRenderSingleVariant = pdpUiUpdater?.productSingleVariant != null
-
         if (data == null || !data.hasChildren || data.errorCode > 0) {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.MINI_VARIANT_OPTIONS)
         } else {
@@ -3484,8 +3475,7 @@ open class DynamicProductDetailFragment :
             val selectedOptionIds = determineInitialOptionId(productId)
             viewModel.processVariant(
                 data,
-                selectedOptionIds,
-                shouldRenderSingleVariant
+                selectedOptionIds
             )
         }
     }
