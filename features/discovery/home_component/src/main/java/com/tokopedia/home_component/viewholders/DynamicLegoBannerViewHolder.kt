@@ -97,7 +97,6 @@ class DynamicLegoBannerViewHolder(
             )
 
             recyclerView.clearDecorations()
-            // setup for lego rollence
             val layout = element.channelModel.channelConfig.layout
             if (layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE || layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE) {
                 val spanCount = if (layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE) {
@@ -116,7 +115,6 @@ class DynamicLegoBannerViewHolder(
                     )
                 }
             }
-            // end for lego rollence
             val marginValue = if (isUsingPaddingStyle) itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt() else 0
             recyclerView.setPadding(
                 marginValue,
