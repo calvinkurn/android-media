@@ -16,23 +16,22 @@ import kotlin.coroutines.CoroutineContext
  * Created By : Jonathan Darwin on December 01, 2021
  */
 
-interface WebSocketLogger<T> {
-    fun init(data: T)
+interface WebSocketLogger {
+    fun init(data: String)
     fun send(event: String)
     fun send(event: String, message: String)
 }
 
-abstract class BaseWebSocketLogger<T>(val context: Context) : WebSocketLogger<T>, CoroutineScope {
+abstract class BaseWebSocketLogger(val context: Context) : WebSocketLogger, CoroutineScope {
 
     var insertWebSocketLogUseCase: InsertWebSocketLogUseCase
         private set
 
     private val dispatchers = CoroutineDispatchersProvider
 
-    protected val gson: Gson = GsonBuilder()
+    protected val gson = GsonBuilder()
         .disableHtmlEscaping()
         .setPrettyPrinting()
-        .create()
 
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + dispatchers.io
@@ -58,7 +57,20 @@ abstract class BaseWebSocketLogger<T>(val context: Context) : WebSocketLogger<T>
         return if (this.isEmpty()) {
             this
         } else {
-            gson.toJson(JsonParser.parseString(this))
+            gson.create().toJson(JsonParser.parseString(this))
+        }
+    }
+
+    /**
+     * Util to decode from the string to gson object.
+     *
+     * @param data
+     */
+    inline fun <reified T> Gson.parseDetailInfo(data: String): T? {
+        return try {
+            fromJson(data, T::class.java)
+        } catch (e: Exception) {
+            null
         }
     }
 }

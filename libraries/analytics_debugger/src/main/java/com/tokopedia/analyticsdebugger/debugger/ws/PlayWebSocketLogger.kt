@@ -8,12 +8,14 @@ import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPageSour
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
 import kotlinx.coroutines.launch
 
-class PlayWebSocketLogger constructor(mContext: Context) : BaseWebSocketLogger<PlayUiModel>(mContext) {
+class PlayWebSocketLogger constructor(mContext: Context) : BaseWebSocketLogger(mContext) {
 
     private var detail: PlayUiModel? = null
 
-    override fun init(data: PlayUiModel) {
-        detail = data
+    override fun init(data: String) {
+        detail = gson
+            .create()
+            .parseDetailInfo(data)
     }
 
     override fun send(event: String, message: String) {

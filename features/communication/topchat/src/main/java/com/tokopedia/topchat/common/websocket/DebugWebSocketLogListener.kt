@@ -4,7 +4,6 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.analyticsdebugger.debugger.ws.TopchatWebSocketLogger
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.TopchatUiModel
 import com.tokopedia.chat_common.data.WebsocketEvent
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.topchat.chatlist.domain.pojo.reply.WebSocketResponseData
@@ -32,38 +31,39 @@ class DebugWebSocketLogListener constructor(
         if (!GlobalConfig.isAllowDebuggingTools()) return listener
 
         webSocketLogger.init(
-            TopchatUiModel(
-                source = page
-            )
+            mapOf(
+                "source" to page
+            ).toString()
         )
 
         return object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
-                webSocketLogger.send("Web Socket Open")
                 listener.onOpen(webSocket, response)
+
+                webSocketLogger.send("Web Socket Open")
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
+                listener.onMessage(webSocket, text)
+
                 val response = webSocketParser.parseResponse(text)
                 val data = Gson().fromJson(response.jsonObject, WebSocketResponseData::class.java)
                 val messageId = data?.msgId.toString()
 
                 // Need re-init to send the response code and message id
                 webSocketLogger.init(
-                    TopchatUiModel(
-                        source = page.ifEmpty { "\"\"" },
-                        code = response.code.toString().ifEmpty { "\"\"" },
-                        messageId = messageId.ifEmpty { "\"\"" },
-                        header = headerRequest(webSocket.request().headers)
-                    )
+                    mapOf(
+                        "source" to page.ifEmpty { "\"\"" },
+                        "code" to response.code.toString().ifEmpty { "\"\"" },
+                        "messageId" to messageId.ifEmpty { "\"\"" },
+                        "header" to headerRequest(webSocket.request().headers)
+                    ).toString()
                 )
 
                 webSocketLogger.send(
                     WebsocketEvent.Event.mapToEventName(response.code),
                     response.jsonElement.toString()
                 )
-
-                listener.onMessage(webSocket, text)
             }
 
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
@@ -71,18 +71,18 @@ class DebugWebSocketLogListener constructor(
             }
 
             override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-                webSocketLogger.send("Web Socket Closing")
                 listener.onClosing(webSocket, code, reason)
+                webSocketLogger.send("Web Socket Closing")
             }
 
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-                webSocketLogger.send("Web Socket Close (Intended)")
                 listener.onClosed(webSocket, code, reason)
+                webSocketLogger.send("Web Socket Close (Intended)")
             }
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                webSocketLogger.send("Web Socket Close (Error)")
                 listener.onFailure(webSocket, t, response)
+                webSocketLogger.send("Web Socket Close (Error)")
             }
         }
     }

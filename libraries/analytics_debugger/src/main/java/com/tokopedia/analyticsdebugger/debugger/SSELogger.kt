@@ -18,7 +18,7 @@ import java.lang.Exception
 /**
  * Created By : Jonathan Darwin on November 17, 2021
  */
-class SSELogger(context: Context) : WebSocketLogger<String> {
+class SSELogger(context: Context) : WebSocketLogger {
 
     private val insertSSELogUseCase: InsertSSELogUseCase
     private val dispatchers: CoroutineDispatchers
@@ -64,10 +64,10 @@ class SSELogger(context: Context) : WebSocketLogger<String> {
     }
 
     companion object {
-        private var instance: WebSocketLogger<String>? = null
+        private var instance: WebSocketLogger? = null
 
         @JvmStatic
-        fun getInstance(context: Context): WebSocketLogger<String> {
+        fun getInstance(context: Context): WebSocketLogger {
             if (instance == null) {
                 instance = if (GlobalConfig.isAllowDebuggingTools()) {
                     SSELogger(context.applicationContext)
@@ -76,11 +76,11 @@ class SSELogger(context: Context) : WebSocketLogger<String> {
                 }
             }
 
-            return instance as WebSocketLogger<String>
+            return instance as WebSocketLogger
         }
 
-        private fun emptyInstance(): WebSocketLogger<String> {
-            return object: WebSocketLogger<String> {
+        private fun emptyInstance(): WebSocketLogger {
+            return object: WebSocketLogger {
                 override fun init(data: String) {}
                 override fun send(event: String, message: String) {}
                 override fun send(event: String) {}

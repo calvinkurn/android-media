@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
 import com.tokopedia.analyticsdebugger.debugger.ws.PlayWebSocketLogger
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.PlayUiModel
 import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.authentication.AuthHelper
@@ -31,12 +30,12 @@ class PlayWebSocketImpl(
 
     private val client: OkHttpClient
 
-    private val webSocketLogger: WebSocketLogger<PlayUiModel> by lazy {
+    private val webSocketLogger: WebSocketLogger by lazy {
         if (GlobalConfig.isAllowDebuggingTools()) {
             PlayWebSocketLogger(context)
         } else {
-            object : WebSocketLogger<PlayUiModel> {
-                override fun init(data: PlayUiModel) {}
+            object : WebSocketLogger {
+                override fun init(data: String) {}
                 override fun send(event: String) {}
                 override fun send(event: String, message: String) {}
             }
@@ -100,14 +99,7 @@ class PlayWebSocketImpl(
         close()
         val url = generateUrl(channelId, warehouseId, gcToken)
         mWebSocket = client.newWebSocket(getRequest(url, userSession.accessToken), webSocketListener)
-        webSocketLogger.init(
-            PlayUiModel(
-                source = source.ifEmpty { "\"\"" },
-                channelId = channelId.ifEmpty { "\"\"" },
-                warehouseId = warehouseId.ifEmpty { "\"\"" },
-                gcToken = gcToken.ifEmpty { "\"\"" },
-            )
-        )
+        webSocketLogger.init(buildGeneralInfo(channelId, warehouseId, gcToken, source).toString())
     }
 
     override fun close() {
@@ -134,6 +126,15 @@ class PlayWebSocketImpl(
             append("$wsBaseUrl$PLAY_WEB_SOCKET_GROUP_CHAT$channelId$PLAY_WEB_SOCKET_GROUP_CHAT_WH$warehouseId")
             if (gcToken.isNotEmpty()) append("&token=$gcToken")
         }
+    }
+
+    private fun buildGeneralInfo(channelId: String, warehouseId: String, gcToken: String, source: String): Map<String, String> {
+        return mapOf(
+            "source" to source.ifEmpty { "\"\"" },
+            "channelId" to channelId.ifEmpty { "\"\"" },
+            "warehouseId" to warehouseId.ifEmpty { "\"\"" },
+            "gcToken" to gcToken.ifEmpty { "\"\"" },
+        )
     }
 
     private fun getRequest(url: String, accessToken: String): Request {

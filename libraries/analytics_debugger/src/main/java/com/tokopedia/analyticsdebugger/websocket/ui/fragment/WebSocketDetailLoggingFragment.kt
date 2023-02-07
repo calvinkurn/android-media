@@ -11,6 +11,7 @@ import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.PlayUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info.TopchatUiModel
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -39,14 +40,27 @@ class WebSocketDetailLoggingFragment: Fragment() {
     }
 
     private fun setData() {
-        binding?.tvWebsocketDetailLogMessage?.text = model?.message
-        binding?.tvWebsocketDetailLogDateTime?.text = model?.dateTime
-        binding?.tvWebsocketDetailLogTitle?.text = model?.event
+        onShowLogEventLabel()
+        onShowLogMessage()
 
         when {
             model?.play != null -> onPlayDetailInfoLoaded(model?.play)
             model?.topchat != null -> onTopchatDetailInfoLoaded(model?.topchat)
         }
+    }
+
+    private fun onShowLogEventLabel() {
+        binding?.tvWebsocketDetailLogDateTime?.text = model?.dateTime
+        binding?.tvWebsocketDetailLogTitle?.text = model?.event
+    }
+
+    private fun onShowLogMessage() {
+        val shouldShow = model?.message?.isNotEmpty() == true
+
+        binding?.tvWebsocketPayloadLabel?.showWithCondition(shouldShow)
+        binding?.tvWebsocketDetailLogMessage?.showWithCondition(shouldShow)
+
+        binding?.tvWebsocketDetailLogMessage?.text = model?.message
     }
 
     private fun onPlayDetailInfoLoaded(data: PlayUiModel?) {
@@ -64,27 +78,27 @@ class WebSocketDetailLoggingFragment: Fragment() {
     private fun setLogDetailFirst(label: Int, data: String) {
         binding?.tvWebsocketDetailLog1Label?.text = getString(label)
         binding?.tvWebsocketDetailLog1?.text = data
-        binding?.tvWebsocketDetailLog1Label?.show()
-        binding?.tvWebsocketDetailLog1?.show()
+        binding?.tvWebsocketDetailLog1Label?.showWithCondition(data.isNotEmpty())
+        binding?.tvWebsocketDetailLog1?.showWithCondition(data.isNotEmpty())
     }
 
     private fun setLogDetailSecond(label: Int, data: String) {
         binding?.tvWebsocketDetailLog2Label?.text = getString(label)
         binding?.tvWebsocketDetailLog2?.text = data
-        binding?.tvWebsocketDetailLog2Label?.show()
-        binding?.tvWebsocketDetailLog2?.show()
+        binding?.tvWebsocketDetailLog2Label?.showWithCondition(data.isNotEmpty())
+        binding?.tvWebsocketDetailLog2?.showWithCondition(data.isNotEmpty())
     }
 
     private fun setLogDetailThird(label: Int, data: String) {
         binding?.tvWebsocketDetailLog3Label?.text = getString(label)
         binding?.tvWebsocketDetailLog3?.text = data
-        binding?.tvWebsocketDetailLog3Label?.show()
-        binding?.tvWebsocketDetailLog3?.show()
+        binding?.tvWebsocketDetailLog3Label?.showWithCondition(data.isNotEmpty())
+        binding?.tvWebsocketDetailLog3?.showWithCondition(data.isNotEmpty())
     }
 
     private fun setHeaderRequest(header: String) {
         binding?.tvWebsocketDetailLogHeader?.text = header
-        binding?.tvWebsocketDetailLogHeader?.show()
-        binding?.tvWebsocketHeaderLabel?.show()
+        binding?.tvWebsocketDetailLogHeader?.showWithCondition(header.isNotEmpty())
+        binding?.tvWebsocketHeaderLabel?.showWithCondition(header.isNotEmpty())
     }
 }
