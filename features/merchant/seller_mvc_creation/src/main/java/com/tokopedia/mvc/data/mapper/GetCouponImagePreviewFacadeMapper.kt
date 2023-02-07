@@ -113,12 +113,7 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
             val startHour = voucherConfiguration.startPeriod.formatTo(HH_MM)
             val endDate = voucherConfiguration.endPeriod.formatTo(YYYY_MM_DD)
             val endHour = voucherConfiguration.endPeriod.formatTo(HH_MM)
-            val benefitType = when {
-                voucherConfiguration.promoType == PromoType.FREE_SHIPPING -> BENEFIT_TYPE_IDR
-                voucherConfiguration.promoType == PromoType.CASHBACK && voucherConfiguration.benefitType == BenefitType.NOMINAL -> BENEFIT_TYPE_IDR
-                voucherConfiguration.promoType == PromoType.CASHBACK && voucherConfiguration.benefitType == BenefitType.PERCENTAGE -> BENEFIT_TYPE_PERCENT
-                else -> BENEFIT_TYPE_IDR
-            }
+            val benefitType = voucherConfiguration.getBenefitTypeConst()
 
             return UpdateCouponRequestParams(
                 voucherId = couponId,
@@ -149,7 +144,9 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
         }
     }
 
-    fun mapToCreateCouponProductParam(useCaseParam: CreateCouponProductUseCase.CreateCouponUseCaseParam): CreateCouponProductParams {
+    fun mapToCreateCouponProductParam(
+        useCaseParam: CreateCouponProductUseCase.CreateCouponUseCaseParam
+    ): CreateCouponProductParams {
         with (useCaseParam) {
             val isPublic = if (voucherConfiguration.isVoucherPublic) SERVER_VALUE_TRUE else SERVER_VALUE_FALSE
             val isVoucherProduct = if (voucherConfiguration.isVoucherProduct) SERVER_VALUE_TRUE else SERVER_VALUE_FALSE
@@ -157,12 +154,7 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
             val startHour = voucherConfiguration.startPeriod.formatTo(HH_MM)
             val endDate = voucherConfiguration.endPeriod.formatTo(YYYY_MM_DD)
             val endHour = voucherConfiguration.endPeriod.formatTo(HH_MM)
-            val benefitType = when {
-                voucherConfiguration.promoType == PromoType.FREE_SHIPPING -> BENEFIT_TYPE_IDR
-                voucherConfiguration.promoType == PromoType.CASHBACK && voucherConfiguration.benefitType == BenefitType.NOMINAL -> BENEFIT_TYPE_IDR
-                voucherConfiguration.promoType == PromoType.CASHBACK && voucherConfiguration.benefitType == BenefitType.PERCENTAGE -> BENEFIT_TYPE_PERCENT
-                else -> BENEFIT_TYPE_IDR
-            }
+            val benefitType = voucherConfiguration.getBenefitTypeConst()
 
             return CreateCouponProductParams(
                 benefitIdr = voucherConfiguration.benefitIdr,
@@ -287,6 +279,15 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
             PromoType.CASHBACK -> ImageGeneratorConstants.VoucherBenefitType.CASHBACK
             PromoType.FREE_SHIPPING -> ImageGeneratorConstants.VoucherBenefitType.GRATIS_ONGKIR
         }
+    }
+
+    private fun VoucherConfiguration.getBenefitTypeConst() = when {
+        promoType == PromoType.FREE_SHIPPING -> BENEFIT_TYPE_IDR
+        promoType == PromoType.CASHBACK && benefitType == BenefitType.NOMINAL -> BENEFIT_TYPE_IDR
+        promoType == PromoType.CASHBACK && benefitType == BenefitType.PERCENTAGE -> BENEFIT_TYPE_PERCENT
+        promoType == PromoType.DISCOUNT && benefitType == BenefitType.NOMINAL -> BENEFIT_TYPE_IDR
+        promoType == PromoType.DISCOUNT && benefitType == BenefitType.PERCENTAGE -> BENEFIT_TYPE_PERCENT
+        else -> BENEFIT_TYPE_IDR
     }
 
     private fun VoucherConfiguration.getCouponVisibility(): String {
