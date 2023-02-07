@@ -27,6 +27,7 @@ interface UserConsentDescriptionDelegate {
 
     fun openConsentPageDetail(pageId: String, type: String = "1", tab: String = "")
     fun openDefaultConsentPageDetail(url: String)
+    fun openPrivacyPolicyPage()
 }
 
 class UserConsentDescription constructor(
@@ -97,7 +98,7 @@ class UserConsentDescription constructor(
                             userConsentAnalytics.trackOnPolicyHyperLinkClicked(it)
                         }
 
-                        delegate.openConsentPageDetail(attributes.policyNoticePolicyPageID, tab = PRIVACY)
+                        delegate.openPrivacyPolicyPage()
                     }
                 },
                 this.indexOf(delegate.textPolicy),
@@ -152,7 +153,7 @@ class UserConsentDescription constructor(
                             userConsentAnalytics.trackOnPolicyHyperLinkClicked(it)
                         }
 
-                        delegate.openConsentPageDetail(attributes.policyNoticePolicyPageID, tab = PRIVACY)
+                        delegate.openPrivacyPolicyPage()
                     }
                 },
                 this.indexOf(delegate.textPolicy),

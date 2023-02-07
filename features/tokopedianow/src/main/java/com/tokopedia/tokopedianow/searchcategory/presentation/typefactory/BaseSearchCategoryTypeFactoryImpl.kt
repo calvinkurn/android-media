@@ -30,7 +30,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryF
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
-import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
+import com.tokopedia.tokopedianow.similarproduct.listener.TokoNowSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataView
@@ -65,7 +65,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     protected val switcherWidgetListener: SwitcherWidgetListener,
     protected val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     private val feedbackWidgetListener: TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener,
-    private val similarProductListener: SimilarProductListener,
+    private val tokoNowSimilarProductTrackerListener: TokoNowSimilarProductTrackerListener,
     private val productRecommendationBindOocListener: TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener,
     private val productRecommendationOocListener: TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener,
     private val productRecommendationListener: TokoNowProductRecommendationView.TokoNowProductRecommendationListener?
@@ -118,7 +118,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
             ProductItemViewHolder.LAYOUT -> ProductItemViewHolder(
                 itemView = view,
                 listener = productItemListener,
-                similarProductListener = similarProductListener
+                similarProductTrackerListener = tokoNowSimilarProductTrackerListener
             )
             BannerViewHolder.LAYOUT -> BannerViewHolder(
                 itemView = view,

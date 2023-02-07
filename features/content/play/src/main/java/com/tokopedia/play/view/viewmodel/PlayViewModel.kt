@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.linker.model.LinkerShareResult
@@ -1099,6 +1100,7 @@ class PlayViewModel @AssistedInject constructor(
 
         resetChannelReportLoadedStatus()
         cancelJob(FOLLOW_POP_UP_ID)
+        cancelJob(ONBOARDING_COACHMARK_ID)
     }
 
     private fun focusVideoPlayer(channelData: PlayChannelData) {
@@ -1364,22 +1366,15 @@ class PlayViewModel @AssistedInject constructor(
         this._partnerInfo.value = partnerInfo
     }
 
-    private var coachmarkJob: Job? = null
-
     private fun handleOnboarding(videoMetaInfo: PlayVideoMetaInfoUiModel) {
-        val isShown = playPreference.isCoachMark(userId = userId)
+        if(videoMetaInfo.videoPlayer.isYouTube) return
+        cancelJob(ONBOARDING_COACHMARK_ID)
 
-        playAnalytic.screenWithSwipeCoachMark(isShown = isShown, channelId = channelId, channelType = channelType, isLoggedIn = userSession.isLoggedIn, userId = userId)
+        jobMap[ONBOARDING_COACHMARK_ID] = viewModelScope.launch(dispatchers.computation) {
+            delay(ONBOARDING_DELAY)
 
-        coachmarkJob?.cancel()
-
-        if (isShown && !videoMetaInfo.videoPlayer.isYouTube) {
-            coachmarkJob = viewModelScope.launch(dispatchers.computation) {
-                delay(ONBOARDING_DELAY)
-
-                withContext(dispatchers.main) {
-                    _observableOnboarding.value = Event(Unit)
-                }
+            withContext(dispatchers.main) {
+                _observableOnboarding.value = Event(Unit)
             }
         }
     }
@@ -2593,24 +2588,15 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    fun submitUserReport(channelId: Long,
-                         mediaUrl: String,
-                         shopId: Long,
+    fun submitUserReport(mediaUrl: String,
                          reasonId: Int,
                          timestamp: Long,
                          reportDesc: String){
         viewModelScope.launchCatchError(block = {
             _userReportSubmission.value = ResultState.Loading
-            val isSuccess =
-                repo.submitReport(
-                    channelId = channelId,
-                    mediaUrl = mediaUrl,
-                    shopId = shopId,
-                    reasonId = reasonId,
-                    timestamp = timestamp,
-                    reportDesc = reportDesc
-                )
-
+            val isSuccess = repo.submitReport(channelId = channelId.toLongOrZero(), partnerId = partnerId.orZero(),
+                    partnerType = PartnerType.getTypeByValue(partnerType),
+                    reasonId = reasonId, timestamp = timestamp, reportDesc = reportDesc, mediaUrl = mediaUrl)
             if(isSuccess){
                 _userReportSubmission.value = ResultState.Success
             }else{
@@ -2774,5 +2760,6 @@ class PlayViewModel @AssistedInject constructor(
         private val defaultSharingStarted = SharingStarted.WhileSubscribed(SUBSCRIBE_AWAY_THRESHOLD)
 
         private const val FOLLOW_POP_UP_ID  = "FOLLOW_POP_UP"
+        private const val ONBOARDING_COACHMARK_ID  = "ONBOARDING_COACHMARK"
     }
 }
