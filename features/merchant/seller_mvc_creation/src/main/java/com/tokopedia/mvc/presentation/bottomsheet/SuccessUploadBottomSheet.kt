@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_LONGMONTH_YEAR_WITH_TIME
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetSuccessUploadVoucherBinding
@@ -96,7 +96,7 @@ class SuccessUploadBottomSheet: BottomSheetUnify() {
         voucher.apply {
             val startPeriod = startPeriod.toFormattedString(DATE_LONGMONTH_YEAR_WITH_TIME)
             val endPeriod = endPeriod.toFormattedString(DATE_LONGMONTH_YEAR_WITH_TIME)
-            val voucherPeriodInfo = if (totalPeriod.isMoreThanZero()) {
+            val voucherPeriodInfo = if (totalPeriod > Int.ONE) {
                 context?.getString(R.string.smvc_success_upload_multiperiod_desc, voucherName, totalPeriod)
             } else {
                 context?.getString(R.string.smvc_success_upload_desc, voucherName, startPeriod, endPeriod)

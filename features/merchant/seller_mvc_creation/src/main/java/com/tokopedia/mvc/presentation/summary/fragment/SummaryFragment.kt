@@ -512,6 +512,7 @@ class SummaryFragment :
         bottomSheet.setOnDismissListener {
             RouteManager.route(context, SELLER_MVC_LIST)
             tracker.sendClickCloseEvent(configuration.voucherId.toString())
+            activity?.finish()
         }
         bottomSheet.show(childFragmentManager)
     }
