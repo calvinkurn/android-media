@@ -20,6 +20,17 @@ object FakeGetCollectionResponse {
         return gson
     }
 
+    fun collectionTnCSingleMandatoryNotNeedConsent(): ConsentCollectionResponse {
+        val gson = getDefaultResponse()
+        with(gson.data.collectionPoints.first()) {
+            needConsent = false
+            attributes.policyNoticeType = UserConsentConst.TERM_CONDITION
+            attributes.collectionPointPurposeRequirement = UserConsentConst.MANDATORY
+            attributes.collectionPointStatementOnlyFlag = UserConsentConst.CHECKLIST
+        }
+        return gson
+    }
+
     fun collectionTnCSingleOptional(): ConsentCollectionResponse {
         val gson = getDefaultResponse()
         with(gson.data.collectionPoints.first()) {
