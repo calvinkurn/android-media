@@ -5,12 +5,15 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.chatbot2.data.csatoptionlist.CsatAttributesPojo
 import com.tokopedia.chatbot.chatbot2.data.helpfullquestion.HelpFullQuestionPojo
@@ -50,6 +53,7 @@ import com.tokopedia.chatbot.chatbot2.view.uimodel.csatoptionlist.CsatOptionsUiM
 import com.tokopedia.chatbot.chatbot2.view.uimodel.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.rating.ChatRatingUiModel
+import com.tokopedia.chatbot.chatbot2.view.uimodel.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.chatbot2.view.util.helper.getEnvResoLink
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.MediaUploadJobMap
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.BigReplyBoxState
@@ -66,6 +70,7 @@ import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSubmitChatCsat
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSubmitCsatRatingState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotUpdateToolbarState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotVideoUploadEligibilityState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotVideoUploadFailureState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.CheckUploadSecureState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.GetTickerDataState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.TopBotNewSessionState
@@ -1302,7 +1307,7 @@ class ChatbotViewModelTest {
             "https://vod-tokopedia.com/abc",
             "123456",
             "1234",
-            it.videoUploadUiModel
+            generateChatUiModelWithVideo("abc", 111)
         )
 
         assertTrue(result is ChatbotVideoUploadResult.Success)
@@ -1323,11 +1328,11 @@ class ChatbotViewModelTest {
             "https://vod-tokopedia.com/abc",
             "123456",
             "123",
-            it.videoUploadUiModel
+            generateChatUiModelWithVideo("abc", 111)
         )
 
         assertTrue(result is ChatbotVideoUploadResult.Error)
-        assertTrue(viewModel.videoUploadFailure.value == true)
+        assertTrue(viewModel.videoUploadFailure.value is ChatbotVideoUploadFailureState.ChatbotVideoUploadFailure)
     }
 
     @Test
@@ -1353,7 +1358,7 @@ class ChatbotViewModelTest {
                         "123",
                         "111",
                         "456",
-                        videoUploadUiModel
+                        generateChatUiModelWithVideo("abc", 111)
                     )
                 )
             )
@@ -1377,7 +1382,7 @@ class ChatbotViewModelTest {
                         "123",
                         "111",
                         "456",
-                        videoUploadUiModel
+                        generateChatUiModelWithVideo("abc", 111)
                     )
                 )
             )
@@ -1397,7 +1402,7 @@ class ChatbotViewModelTest {
                         null,
                         "111",
                         "456",
-                        videoUploadUiModel
+                        generateChatUiModelWithVideo("", 120)
                     )
                 )
             )
@@ -1410,7 +1415,7 @@ class ChatbotViewModelTest {
     @Test
     fun `updateMediaUris success`() {
         val data = mutableListOf<VideoUploadData>()
-        data.add(VideoUploadData("123", "456", "789", videoUploadUiModel))
+        data.add(VideoUploadData("123", "456", "789", generateChatUiModelWithVideo("abc", 111)))
         viewModel.updateMediaUris(data)
 
         assertTrue(
@@ -3011,5 +3016,18 @@ class ChatbotViewModelTest {
         method.invoke(viewModel)
 
         verify { ticketListContactUsUsecase.cancelJobs() }
+    }
+
+    private fun generateChatUiModelWithVideo(video: String, totalLength: Long): VideoUploadUiModel {
+        return VideoUploadUiModel.Builder().withMsgId("123")
+            .withFromUid("456")
+            .withAttachmentId((System.currentTimeMillis() / ChatbotConstant.ONE_SECOND_IN_MILLISECONDS).toString())
+            .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
+            .withReplyTime(SendableUiModel.SENDING_TEXT)
+            .withStartTime(SendableUiModel.generateStartTime())
+            .withVideoUrl(video)
+            .withIsDummy(true)
+            .withLength(totalLength)
+            .build()
     }
 }
