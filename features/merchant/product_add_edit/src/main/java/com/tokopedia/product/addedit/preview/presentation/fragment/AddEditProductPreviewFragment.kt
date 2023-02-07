@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.motion.widget.MotionLayout
@@ -33,8 +32,6 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkContentPosition
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
@@ -61,6 +58,7 @@ import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
+import com.tokopedia.product.addedit.databinding.FragmentAddEditProductPreviewBinding
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE_IMPROVEMENT
@@ -133,19 +131,17 @@ import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiM
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
 import com.tokopedia.shop.common.constant.admin_roles.AdminPermissionUrl
-import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.net.URLEncoder
 import javax.inject.Inject
@@ -171,56 +167,54 @@ class AddEditProductPreviewFragment :
     private var isAdminEligible = true
     private var isProductLimitEligible: Boolean = true
 
+    private var binding by autoClearedNullable<FragmentAddEditProductPreviewBinding>()
+
     // photo
-    private var addEditProductPhotoButton: Typography? = null
-    private var productPhotosView: RecyclerView? = null
+    private val addEditProductPhotoButton by lazy { binding?.addProductPhotoStepLayout?.tvStartAddEditProductPhoto }
+    private val productPhotosView: RecyclerView? by lazy { binding?.addProductPhotoStepLayout?.rvProductPhotos }
+    private val addProductPhotoTipsLayout by lazy { binding?.addProductPhotoStepLayout?.addProductPhotoTipsLayout }
     private var productPhotoAdapter: ProductPhotoAdapter? = null
     private var photoItemTouchHelper: ItemTouchHelper? = null
-    private var addProductPhotoTipsLayout: ViewGroup? = null
 
     // detail
-    private var addEditProductDetailTitle: Typography? = null
-    private var addEditProductDetailButton: Typography? = null
-    private var productDetailPreviewLayout: ViewGroup? = null
-    private var productNameView: Typography? = null
-    private var productPriceView: Typography? = null
-    private var productStockView: Typography? = null
-    private var iconOutOfStock: IconUnify? = null
-    private var dividerDetail: DividerUnify? = null
+    private val addEditProductDetailTitle by lazy { binding?.addProductDetailStepLayout?.tvProductDetail }
+    private val addEditProductDetailButton by lazy { binding?.addProductDetailStepLayout?.tvStartAddEditProductDetail }
+    private val productDetailPreviewLayout by lazy { binding?.addProductDetailStepLayout?.productDetailPreviewLayout }
+    private val productNameView by lazy { binding?.addProductDetailStepLayout?.tvProductName }
+    private val productPriceView by lazy { binding?.addProductDetailStepLayout?.tvProductPrice }
+    private val productStockView by lazy { binding?.addProductDetailStepLayout?.tvProductStock }
+    private val iconOutOfStock by lazy { binding?.addProductDetailStepLayout?.iconOutOfStock }
+    private val dividerDetail by lazy { binding?.addProductDetailStepLayout?.dividerDetail }
     private var outOfStockCoachMark: CoachMark2? = null
 
     // description
-    private var addEditProductDescriptionTitle: Typography? = null
-    private var addEditProductDescriptionButton: Typography? = null
+    private val addEditProductDescriptionTitle by lazy { binding?.addProductDescriptionStepLayout?.tvProductDescription }
+    private val addEditProductDescriptionButton by lazy { binding?.addProductDescriptionStepLayout?.tvStartAddEditProductDescription }
 
     // variant
-    private var addEditProductVariantLayout: ViewGroup? = null
-    private var addEditProductVariantButton: Typography? = null
-    private var addProductVariantTipsLayout: ViewGroup? = null
-    private var sellerFeatureCarousel: SellerFeatureCarousel? = null
+    private val addEditProductVariantLayout by lazy { binding?.addProductVariantStepLayout }
+    private val addEditProductVariantButton by lazy { binding?.addProductVariantStepLayout?.tvStartAddEditProductVariant }
+    private val addProductVariantTipsLayout by lazy { binding?.addProductVariantStepLayout?.addProductVariantTipsLayout }
+    private val sellerFeatureCarousel by lazy { binding?.aepProductNoVariantLayout?.sellerFeatureCarousel }
 
     // shipment
-    private var addEditProductShipmentTitle: Typography? = null
-    private var addEditProductShipmentButton: Typography? = null
-
-    // promotion
-    private var editProductPromotionLayout: ViewGroup? = null
-    private var editProductPromotionButton: Typography? = null
+    private val addEditProductShipmentTitle by lazy { binding?.addProductShipmentStepLayout?.tvProductShipment }
+    private val addEditProductShipmentButton by lazy { binding?.addProductShipmentStepLayout?.tvStartAddEditProductShipment }
 
     // product status
-    private var editProductStatusLayout: ViewGroup? = null
-    private var productStatusSwitch: SwitchUnify? = null
+    private val editProductStatusLayout by lazy { binding?.editProductStatusLayout }
+    private val productStatusSwitch by lazy { binding?.editProductStatusLayout?.suProductStatus}
 
     // loading
-    private var loadingLayout: MotionLayout? = null
+    private val loadingLayout by lazy { binding?.loadingLayout }
 
     // admin revamp
-    private var multiLocationTicker: Ticker? = null
-    private var adminRevampErrorLayout: FrameLayout? = null
-    private var adminRevampGlobalError: GlobalError? = null
+    private val multiLocationTicker by lazy { binding?.tickerAddEditMultiLocation }
+    private val adminRevampErrorLayout by lazy { binding?.addEditErrorLayout }
+    private val adminRevampGlobalError by lazy { binding?.addEditAdminGlobalError }
 
     // product limitation
-    private var productLimitationTicker: Ticker? = null
+    private val productLimitationTicker by lazy { binding?.tickerAddEditProductLimitation }
     private var productLimitationBottomSheet: ProductLimitationBottomSheet? = null
 
     private lateinit var userSession: UserSessionInterface
@@ -262,7 +256,8 @@ class AddEditProductPreviewFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_add_edit_product_preview, container, false)
+        binding = FragmentAddEditProductPreviewBinding.inflate(inflater)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -278,17 +273,15 @@ class AddEditProductPreviewFragment :
         setupToolbar()
 
         // setup views prop
-        setupPhotosViews(view)
-        setupDetailViews(view)
-        setupDescriptionViews(view)
-        setupVariantViews(view)
-        setupShipmentViews(view)
-        setupStatusViews(view)
-        setupLoadingViews(view)
-        setupAdminRevampViews(view)
+        setupPhotosViews()
+        setupDetailViews()
+        setupDescriptionViews()
+        setupVariantViews()
+        setupShipmentViews()
+        setupStatusViews()
         setupDoneButton(view)
         setupSellerAppViews()
-        setupProductLimitationViews(view)
+        setupProductLimitationViews()
 
         onFragmentResult()
         setupBackPressed()
@@ -515,8 +508,7 @@ class AddEditProductPreviewFragment :
         )
     }
 
-    private fun setupPhotosViews(view: View) {
-        productPhotosView = view.findViewById(R.id.rv_product_photos)
+    private fun setupPhotosViews() {
         productPhotoAdapter = ProductPhotoAdapter(viewModel.getMaxProductPhotos(), true, mutableListOf(), this)
         productPhotosView?.let {
             it.adapter = productPhotoAdapter
@@ -525,41 +517,37 @@ class AddEditProductPreviewFragment :
             photoItemTouchHelper = ItemTouchHelper(photoItemTouchHelperCallback)
             photoItemTouchHelper?.attachToRecyclerView(it)
         }
-        addProductPhotoTipsLayout = view.findViewById(R.id.add_product_photo_tips_layout)
-        addEditProductPhotoButton = view.findViewById(R.id.tv_start_add_edit_product_photo)
+
         addEditProductPhotoButton?.setOnClickListener {
-            // tracking
-            val buttonTextStart: String = getString(R.string.action_start)
-            if (isEditing()) {
-                ProductEditStepperTracking.trackClickChangeProductPic(shopId)
-                moveToImagePicker()
-            } else if (addEditProductPhotoButton?.text == buttonTextStart) {
-                ProductAddStepperTracking.trackStart(shopId)
-                // validate whether shop has location
-                isStartButtonClicked = true
-                if (hasLocation) {
-                    moveToImagePicker()
-                } else {
-                    validateShopLocation()
-                }
-            } else {
-                moveToImagePicker()
-            }
-        }
-        addProductPhotoTipsLayout?.setOnClickListener {
-            showPhotoTips()
+
+            setupBottomSheetProductLimitation(ProductLimitationModel())
+            productLimitationBottomSheet?.show(childFragmentManager, context)
+
+
+//            // tracking
+//            val buttonTextStart: String = getString(R.string.action_start)
+//            if (isEditing()) {
+//                ProductEditStepperTracking.trackClickChangeProductPic(shopId)
+//                moveToImagePicker()
+//            } else if (addEditProductPhotoButton?.text == buttonTextStart) {
+//                ProductAddStepperTracking.trackStart(shopId)
+//                // validate whether shop has location
+//                isStartButtonClicked = true
+//                if (hasLocation) {
+//                    moveToImagePicker()
+//                } else {
+//                    validateShopLocation()
+//                }
+//            } else {
+//                moveToImagePicker()
+//            }
+//        }
+//        addProductPhotoTipsLayout?.setOnClickListener {
+//            showPhotoTips()
         }
     }
 
-    private fun setupDetailViews(view: View) {
-        addEditProductDetailTitle = view.findViewById(R.id.tv_product_detail)
-        addEditProductDetailButton = view.findViewById(R.id.tv_start_add_edit_product_detail)
-        productDetailPreviewLayout = view.findViewById(R.id.product_detail_preview_layout)
-        productNameView = view.findViewById(R.id.tv_product_name)
-        productPriceView = view.findViewById(R.id.tv_product_price)
-        productStockView = view.findViewById(R.id.tv_product_stock)
-        iconOutOfStock = view.findViewById(R.id.icon_out_of_stock)
-        dividerDetail = view.findViewById(R.id.divider_detail)
+    private fun setupDetailViews() {
         addEditProductDetailButton?.setOnClickListener {
             if (isEditing()) {
                 ProductEditStepperTracking.trackChangeProductDetail(shopId)
@@ -572,9 +560,7 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun setupDescriptionViews(view: View) {
-        addEditProductDescriptionTitle = view.findViewById(R.id.tv_product_description)
-        addEditProductDescriptionButton = view.findViewById(R.id.tv_start_add_edit_product_description)
+    private fun setupDescriptionViews() {
         addEditProductDescriptionButton?.setOnClickListener {
             if (isEditing()) {
                 ProductEditStepperTracking.trackChangeProductDesc(shopId)
@@ -583,9 +569,7 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun setupShipmentViews(view: View) {
-        addEditProductShipmentTitle = view.findViewById(R.id.tv_product_shipment)
-        addEditProductShipmentButton = view.findViewById(R.id.tv_start_add_edit_product_shipment)
+    private fun setupShipmentViews() {
         addEditProductShipmentButton?.setOnClickListener {
             if (isEditing()) {
                 ProductEditStepperTracking.trackChangeShipping(shopId)
@@ -594,11 +578,7 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun setupVariantViews(view: View) {
-        addEditProductVariantLayout = view.findViewById(R.id.add_product_variant_step_layout)
-        addEditProductVariantButton = view.findViewById(R.id.tv_start_add_edit_product_variant)
-        addProductVariantTipsLayout = view.findViewById(R.id.add_product_variant_tips_layout)
-        sellerFeatureCarousel = view.findViewById(R.id.sellerFeatureCarousel)
+    private fun setupVariantViews() {
         addEditProductVariantButton?.setOnClickListener {
             if (isEditing()) {
                 ProductEditStepperTracking.trackAddProductVariant(shopId)
@@ -613,19 +593,7 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun setupAdminRevampViews(view: View) {
-        multiLocationTicker = view.findViewById(R.id.ticker_add_edit_multi_location)
-        adminRevampErrorLayout = view.findViewById(R.id.add_edit_error_layout)
-        adminRevampGlobalError = view.findViewById(R.id.add_edit_admin_global_error)
-    }
-
-    private fun setupLoadingViews(view: View) {
-        loadingLayout = view.findViewById(R.id.loading_layout)
-    }
-
-    private fun setupStatusViews(view: View) {
-        editProductStatusLayout = view.findViewById(R.id.edit_product_status_layout)
-        productStatusSwitch = view.findViewById(R.id.su_product_status)
+    private fun setupStatusViews() {
         productStatusSwitch?.setOnClickListener {
             val isChecked = productStatusSwitch?.isChecked ?: false
 
@@ -867,7 +835,6 @@ class AddEditProductPreviewFragment :
         enableDescriptionEdit()
         enableVariantEdit()
         enableShipmentEdit()
-        enablePromotionEdit()
         enableStatusEdit()
     }
 
@@ -895,7 +862,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun enableVariantEdit() {
-        addEditProductVariantLayout?.showWithCondition(GlobalConfig.isSellerApp())
+        addEditProductVariantLayout?.root?.showWithCondition(GlobalConfig.isSellerApp())
         sellerFeatureCarousel?.showWithCondition(!GlobalConfig.isSellerApp())
     }
 
@@ -918,16 +885,8 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun enablePromotionEdit() {
-        if (GlobalConfig.isSellerApp()) {
-            editProductPromotionLayout?.animateExpand()
-        } else {
-            editProductPromotionLayout?.animateCollapse()
-        }
-    }
-
     private fun enableStatusEdit() {
-        editProductStatusLayout?.animateExpand()
+        editProductStatusLayout?.root?.animateExpand()
     }
 
     private fun disableShipmentEdit() {
@@ -1866,8 +1825,7 @@ class AddEditProductPreviewFragment :
         productLimitationBottomSheet?.show(childFragmentManager, context)
     }
 
-    private fun setupProductLimitationViews(view: View) {
-        productLimitationTicker = view.findViewById(R.id.ticker_add_edit_product_limitation)
+    private fun setupProductLimitationViews() {
         val productLimitStartDate = getString(R.string.label_product_limitation_start_date)
         val tickers = listOf(
             TickerData(
