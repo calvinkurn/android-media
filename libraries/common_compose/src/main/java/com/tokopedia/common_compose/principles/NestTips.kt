@@ -61,6 +61,7 @@ fun NestTips(
                 description?.run {
                     NestTypography(
                         text = this,
+                        modifier = Modifier.padding(top = 4.dp),
                         textStyle = NestTheme.typography.small.copy(color = NestTheme.colors.NN._950)
                     )
                 }

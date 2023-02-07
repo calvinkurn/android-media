@@ -274,7 +274,7 @@ private fun InputSectionSubtitle(
         text = Subtitle(),
         textStyle = NestTheme.typography.body3,
         modifier = Modifier
-            .padding(horizontal = 16.dp)
+            .padding(start = 16.dp, end = 16.dp, top = 4.dp)
             .clickable { onSubtitleClicked(applink) }
     )
 }
