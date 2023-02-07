@@ -49,7 +49,7 @@ data class GoCicilInstallmentRequest(
                         add(
                             ORDER_METADATA_PRODUCT_DATA_CATEGORY,
                             JsonObject().apply {
-                                addProperty(ORDER_METADATA_PRODUCT_CATEGORY_ID, product.categoryId)
+                                addProperty(ORDER_METADATA_PRODUCT_CATEGORY_ID, product.categoryId.toLongOrZero())
                                 addProperty(ORDER_METADATA_PRODUCT_CATEGORY_NAME, product.lastLevelCategory)
                                 addProperty(ORDER_METADATA_PRODUCT_CATEGORY_IDENTIFIER, product.categoryIdentifier)
                             }
