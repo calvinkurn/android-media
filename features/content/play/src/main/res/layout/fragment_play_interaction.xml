@@ -109,7 +109,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/content_common_space_16"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/view_share_experience"
+        app:layout_constraintBottom_toTopOf="@id/view_vod_comment"
         app:layout_constraintEnd_toEndOf="@id/view_size"
         tools:visibility="visible" />
 
@@ -373,5 +373,19 @@
         app:layout_constraintTop_toTopOf="@id/view_stats_info"
         android:visibility="visible"
         tools:visibility="visible" />
+
+    <include
+        android:id="@+id/view_vod_comment"
+        layout="@layout/view_vod_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/content_common_space_16"
+        android:layout_marginBottom="@dimen/content_common_space_16"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/view_share_experience"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintStart_toStartOf="@+id/view_share_experience"
+        app:layout_goneMarginEnd="@dimen/spacing_lvl3" />
 
 </com.tokopedia.play.view.custom.PlayInteractionConstraintLayout>
