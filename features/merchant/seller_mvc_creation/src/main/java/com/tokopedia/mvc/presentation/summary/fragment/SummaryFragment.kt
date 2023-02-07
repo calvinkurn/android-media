@@ -30,6 +30,7 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.common.util.SharedPreferencesUtil
+import com.tokopedia.mvc.databinding.SmvcDialogLoadingBinding
 import com.tokopedia.mvc.databinding.SmvcFragmentSummaryBinding
 import com.tokopedia.mvc.databinding.SmvcFragmentSummaryPreviewBinding
 import com.tokopedia.mvc.databinding.SmvcFragmentSummarySubmissionBinding
@@ -94,16 +95,14 @@ class SummaryFragment :
     }
 
     private var binding by autoClearedNullable<SmvcFragmentSummaryBinding>()
+    private var bindingLoadingDialog by autoClearedNullable<SmvcDialogLoadingBinding>()
+    private var loadingDialog: LoaderDialog? = null
+
     private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode }
     private val configuration by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration }
     private val selectedProducts by lazy { arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty() }
     private val voucherId by lazy { arguments?.getLong(BundleConstant.BUNDLE_VOUCHER_ID) }
     private val enableDuplicateVoucher by lazy { arguments?.getBoolean(BundleConstant.BUNDLE_KEY_ENABLE_DUPLICATE_VOUCHER).orFalse() }
-    private val loadingDialog by lazy {
-        context?.let {
-            LoaderDialog(it)
-        }
-    }
     private val redirectionHelper by lazy { SummaryPageRedirectionHelper(this, sharedPreferencesUtil) }
 
     @Inject
@@ -133,6 +132,7 @@ class SummaryFragment :
         savedInstanceState: Bundle?
     ): View? {
         binding = SmvcFragmentSummaryBinding.inflate(inflater, container, false)
+        bindingLoadingDialog = SmvcDialogLoadingBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -142,7 +142,15 @@ class SummaryFragment :
         binding?.setupView()
         setupObservables()
         setupPageMode()
+        setupLoadingDialog()
         redirectionHelper.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun setupLoadingDialog() {
+        loadingDialog = LoaderDialog(context ?: return).apply {
+            loaderText.text = getString(R.string.smvc_summary_page_loading_dialog)
+            customView = bindingLoadingDialog?.root
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -273,7 +281,7 @@ class SummaryFragment :
             if (it) {
                 loadingDialog?.show()
             } else {
-                loadingDialog?.dismiss()
+                loadingDialog?.dialog?.hide()
             }
         }
     }
