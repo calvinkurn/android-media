@@ -59,6 +59,7 @@ import com.tokopedia.talk.feature.inbox.util.TalkInboxPreference
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -305,6 +306,7 @@ open class TalkInboxFragment :
         super.onViewCreated(view, savedInstanceState)
         initSharedPrefs()
         setupSettingsIcon()
+        setupTicker()
         initSortFilter()
         initErrorPage()
         hideToolbar()
@@ -657,6 +659,16 @@ open class TalkInboxFragment :
             }
             updateSettingsIconVisibility()
         }
+    }
+
+    private fun setupTicker() {
+        binding?.tickerTalkInbox?.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                RouteManager.route(context, linkUrl.toString())
+            }
+
+            override fun onDismiss() {}
+        })
     }
 
     private fun updateSettingsIconVisibility() {

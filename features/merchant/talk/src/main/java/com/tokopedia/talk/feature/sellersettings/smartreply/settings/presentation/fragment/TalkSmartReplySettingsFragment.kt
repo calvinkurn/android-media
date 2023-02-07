@@ -34,6 +34,7 @@ import com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentatio
 import com.tokopedia.talk.feature.sellersettings.template.presentation.fragment.TalkTemplateBottomsheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -80,6 +81,7 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
         observeSmartReplyDecommissionConfig()
         setToolbarTitle()
         setupOnBackPressed()
+        setupTicker()
         onFragmentResult()
         setSmartReplyInfoClickListener()
     }
@@ -168,6 +170,16 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
                 }
             }
         )
+    }
+
+    private fun setupTicker() {
+        talkSmartReplyTicker?.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                RouteManager.route(context, linkUrl.toString())
+            }
+
+            override fun onDismiss() {}
+        })
     }
 
     private fun onFragmentResult() {
