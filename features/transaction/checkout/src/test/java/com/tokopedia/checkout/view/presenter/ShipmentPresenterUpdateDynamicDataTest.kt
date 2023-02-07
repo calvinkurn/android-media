@@ -134,7 +134,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
         val dynamicData = UpdateDynamicDataPassingUiModel("data")
 
         coEvery {
-            updateDynamicDataPassingUseCase.setParams(any())
+            updateDynamicDataPassingUseCase.setParams(any(), any())
         } just Runs
         coEvery {
             updateDynamicDataPassingUseCase.execute(any(), any())
@@ -158,7 +158,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
         val dynamicData = UpdateDynamicDataPassingUiModel("data")
 
         coEvery {
-            updateDynamicDataPassingUseCase.setParams(any())
+            updateDynamicDataPassingUseCase.setParams(any(), any())
         } just Runs
         coEvery {
             updateDynamicDataPassingUseCase.execute(any(), any())
@@ -183,7 +183,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
         val error = CartResponseErrorException("error")
 
         coEvery {
-            updateDynamicDataPassingUseCase.setParams(any())
+            updateDynamicDataPassingUseCase.setParams(any(), any())
         } just Runs
         coEvery { updateDynamicDataPassingUseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(error)
@@ -205,7 +205,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
         // Given
         val error = Exception("error")
         coEvery {
-            updateDynamicDataPassingUseCase.setParams(any())
+            updateDynamicDataPassingUseCase.setParams(any(), any())
         } just Runs
         coEvery { updateDynamicDataPassingUseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(error)
