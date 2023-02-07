@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedia.feedplus.view.presenter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.feedplus.domain.repository.FeedPlusRepository
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -28,9 +29,15 @@ class FeedPlusContainerTest {
 
     private val mockRepo: FeedPlusRepository = mockk(relaxed = true)
     private val mockUserSession : UserSessionInterface = mockk(relaxed = true)
+    private val mockPlayShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig = mockk(relaxed = true)
 
     @Before
     fun setup() {
-        viewModel = FeedPlusContainerViewModel(testDispatcher, mockRepo, mockUserSession)
+        viewModel = FeedPlusContainerViewModel(
+            testDispatcher,
+            mockRepo,
+            mockUserSession,
+            mockPlayShortsEntryPointRemoteConfig
+        )
     }
 }
