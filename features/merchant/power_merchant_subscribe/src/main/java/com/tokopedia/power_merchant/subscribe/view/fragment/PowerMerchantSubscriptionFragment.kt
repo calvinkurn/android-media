@@ -11,17 +11,13 @@ import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.data.source.local.model.*
 import com.tokopedia.kotlin.extensions.orFalse
@@ -32,7 +28,6 @@ import com.tokopedia.power_merchant.subscribe.analytics.performance.PerformanceM
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
-import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantPrefManager
 import com.tokopedia.power_merchant.subscribe.databinding.FragmentPmPowerMerchantSubscriptionBinding
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.FallbackActivity
@@ -60,7 +55,6 @@ open class PowerMerchantSubscriptionFragment :
     BaseListFragment<BaseWidgetUiModel, WidgetAdapterFactoryImpl>(), PMWidgetListener {
 
     companion object {
-        private const val COACH_MARK_RENDER_SHOW = 1000L
         fun createInstance(): PowerMerchantSubscriptionFragment {
             return PowerMerchantSubscriptionFragment()
         }
@@ -86,9 +80,6 @@ open class PowerMerchantSubscriptionFragment :
     protected var isModeratedShop = false
     protected var pmBasicInfo: PowerMerchantBasicInfoUiModel? = null
 
-    private val coachMark by getCoachMarkInstance()
-    private var feeServiceView: View? = null
-
     protected val sharedViewModel: PowerMerchantSharedViewModel by lazy {
         ViewModelProvider(
             requireActivity(),
@@ -96,21 +87,8 @@ open class PowerMerchantSubscriptionFragment :
         ).get(PowerMerchantSharedViewModel::class.java)
     }
 
-    private val powerMerchantPrefManager: PowerMerchantPrefManager? by lazy {
-        context?.let { context ->
-            PowerMerchantPrefManager(context)
-        }
-    }
-
-    private val isUpgradePm by lazy {
-        activity?.intent?.data?.getQueryParameter(ApplinkConstInternalMarketplace.ARGS_IS_UPGRADE)
-            .toBoolean()
-    }
-
     private val indexOfUpgradePmProWidget: Int
         get() = adapter.data.indexOfFirst { it is WidgetUpgradePmProUiModel }
-
-    private var isAlreadyScrolled = false
 
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_SUBSCRIBE
 
@@ -205,14 +183,6 @@ open class PowerMerchantSubscriptionFragment :
                 ApplinkConstInternalGlobal.WEBVIEW,
                 Constant.Url.PM_SERVICE_FEE
             )
-        }
-    }
-
-    override fun setOnServiceFeeViewBind(view: View) {
-        val isShowCoachMark = powerMerchantPrefManager?.getFinishCoachMark().orTrue()
-        if (!isShowCoachMark) {
-            this.feeServiceView = view
-            scrollTo<WidgetShopGradeUiModel>()
         }
     }
 
@@ -589,7 +559,6 @@ open class PowerMerchantSubscriptionFragment :
             when (it) {
                 is Success -> {
                     renderPmActiveState(it.data)
-                    showCoachMarkPm()
                 }
                 is Fail -> {
                     showErrorState(it.throwable)
@@ -665,11 +634,7 @@ open class PowerMerchantSubscriptionFragment :
         adapter.clearAllElements()
         renderList(widgets, false)
         recyclerView?.post {
-            if (isUpgradePm && !isAlreadyScrolled) {
-                smoothScrollToPmProSection()
-            } else {
-                recyclerView?.smoothScrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT)
-            }
+            recyclerView?.smoothScrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT)
         }
     }
 
@@ -783,110 +748,5 @@ open class PowerMerchantSubscriptionFragment :
             }
         }
         return null
-    }
-
-    private fun showCoachMarkPm() {
-        val isShowCoachMark = powerMerchantPrefManager?.getFinishCoachMark().orTrue()
-        if (!isShowCoachMark) {
-            recyclerView?.post {
-                scrollTo<WidgetFeeServiceUiModel>()
-            }
-
-            Handler(Looper.getMainLooper()).postDelayed({
-                val coachMarkItems = getCoachMarkItems()
-                if (coachMarkItems.value.isNotEmpty()) {
-                    coachMark?.showCoachMark(coachMarkItems.value)
-                }
-            }, COACH_MARK_RENDER_SHOW)
-        }
-    }
-
-    private inline fun <reified T : Visitable<*>> scrollTo() {
-        val positionItem = adapter.list.indexOfFirst { it is T }
-
-        context?.let {
-            if (positionItem != RecyclerView.NO_POSITION) {
-                val smoothScroller: RecyclerView.SmoothScroller =
-                    object : LinearSmoothScroller(it) {
-                        override fun getVerticalSnapPreference(): Int {
-                            return SNAP_TO_END
-                        }
-                    }
-                smoothScroller.targetPosition = positionItem
-                recyclerView?.layoutManager?.startSmoothScroll(smoothScroller)
-            }
-        }
-    }
-
-    private fun smoothScrollToPmProSection() {
-        val isShowCoachMark = powerMerchantPrefManager?.getFinishCoachMark().orTrue()
-        if (indexOfUpgradePmProWidget != RecyclerView.NO_POSITION && isShowCoachMark) {
-            context?.let {
-                val smoothScroller = object : LinearSmoothScroller(it) {
-                    override fun getVerticalSnapPreference(): Int = SNAP_TO_START
-                }
-                val layoutManager = recyclerView?.layoutManager as? LinearLayoutManager
-                smoothScroller.targetPosition = indexOfUpgradePmProWidget
-                layoutManager?.startSmoothScroll(smoothScroller)
-                isAlreadyScrolled = true
-            }
-        }
-    }
-
-    private fun getCoachMarkInstance(): Lazy<CoachMark2?> {
-        return lazy {
-            val coachMark = context?.let { CoachMark2(it) }
-            coachMark?.isDismissed = false
-            coachMark?.onFinishListener = {
-                powerMerchantPrefManager?.setIsShowCoachMarkPM(true)
-            }
-            coachMark?.setStepListener(object : CoachMark2.OnStepListener {
-                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                    val isGoingToNext = currentIndex == Int.ZERO
-                    if (isGoingToNext) {
-                        scrollTo<WidgetShopGradeUiModel>()
-                    } else {
-                        scrollTo<WidgetFeeServiceUiModel>()
-                    }
-                }
-            })
-            return@lazy coachMark
-        }
-    }
-
-    private fun getCoachMarkItems(): Lazy<ArrayList<CoachMark2Item>> {
-        return lazy {
-            arrayListOf<CoachMark2Item>().apply {
-                getPmGradesChevronView()?.let { view ->
-                    add(
-                        CoachMark2Item(
-                            view,
-                            view.context.getString(R.string.pm_coachmark_title_1),
-                            view.context.getString(R.string.pm_coachmark_description_1),
-                            position = CoachMark2.POSITION_BOTTOM
-                        )
-                    )
-                }
-                feeServiceView?.let { view ->
-                    add(
-                        CoachMark2Item(
-                            view,
-                            view.context.getString(R.string.pm_coachmark_title_2),
-                            view.context.getString(R.string.pm_coachmark_description_2),
-                            position = CoachMark2.POSITION_TOP
-                        )
-                    )
-                }
-            }
-        }
-    }
-
-    private fun getPmGradesChevronView(): View? {
-        return getViewHolder<WidgetShopGradeUiModel>()?.findViewById(R.id.chevronPmGrade)
-    }
-
-    private inline fun <reified T : Visitable<*>> getViewHolder(): View? {
-        val position = adapter.list.indexOfFirst { it is T }
-        return recyclerView?.layoutManager?.getChildAt(position)
     }
 }
