@@ -527,6 +527,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     private fun startPhotoUpload(groupId: String?, requestCode: Int = EPHARMACY_UPLOAD_REQUEST_CODE) {
         RouteManager.getIntent(activity, EPHARMACY_APPLINK).apply {
             putExtra(EXTRA_CHECKOUT_ID_STRING, groupId)
+            putExtra(EXTRA_SOURCE_STRING, UPLOAD_PAGE_SOURCE_PAP)
         }.also {
             startActivityForResult(it, requestCode)
         }

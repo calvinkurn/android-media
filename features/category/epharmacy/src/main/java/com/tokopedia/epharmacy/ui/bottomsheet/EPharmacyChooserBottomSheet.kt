@@ -1,4 +1,4 @@
-package com.tokopedia.epharmacy.ui.fragment
+package com.tokopedia.epharmacy.ui.bottomsheet
 
 import android.app.Dialog
 import android.content.Intent

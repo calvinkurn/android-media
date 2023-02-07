@@ -3,9 +3,9 @@ package com.tokopedia.epharmacy.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.epharmacy.ui.activity.EPharmacyActivity
 import com.tokopedia.epharmacy.ui.activity.EPharmacyAttachPrescriptionActivity
+import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyChooserBottomSheet
 import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyReminderScreenBottomSheet
 import com.tokopedia.epharmacy.ui.bottomsheet.MiniConsultationMasterBottomSheetInfo
-import com.tokopedia.epharmacy.ui.fragment.EPharmacyChooserBottomSheet
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyPrescriptionAttachmentPageFragment
 import com.tokopedia.epharmacy.ui.fragment.UploadPrescriptionFragment
 import dagger.Component

@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.epharmacy.databinding.EpharmacyMiniConsultationTransparentActivityBinding
-import com.tokopedia.epharmacy.ui.fragment.EPharmacyChooserBottomSheet
+import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyChooserBottomSheet
 import com.tokopedia.epharmacy.utils.ENABLER_IMAGE_URL
 import com.tokopedia.epharmacy.utils.EPHARMACY_CONSULTATION_SOURCE_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_NAME
