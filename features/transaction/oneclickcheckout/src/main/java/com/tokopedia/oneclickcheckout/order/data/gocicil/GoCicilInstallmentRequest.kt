@@ -35,7 +35,7 @@ data class GoCicilInstallmentRequest(
 
     private val sellerData
         get() = JsonObject().apply {
-            addProperty(ORDER_METADATA_SELLER_DATA_ID, shop.shopId.toLongOrZero())
+            addProperty(ORDER_METADATA_SELLER_DATA_ID, shop.shopId)
         }
 
     private val productData
