@@ -728,6 +728,9 @@ class WishlistCollectionFragment :
     ) {
         bottomSheetKebabMenu =
             BottomSheetKebabMenuWishlistCollection.newInstance(collectionName, collectionId, actions, collectionIndicatorTitle)
+        bottomSheetKebabMenu?.setOnDismissListener {
+            bottomSheetKebabMenu = null
+        }
         bottomSheetKebabMenu?.setListener(this@WishlistCollectionFragment)
         if (bottomSheetKebabMenu?.isAdded == true || childFragmentManager.isStateSaved) return
         bottomSheetKebabMenu?.show(childFragmentManager)
@@ -862,6 +865,9 @@ class WishlistCollectionFragment :
 
     private fun showBottomSheetOnboarding() {
         bottomSheetOnboarding = BottomSheetOnboardingWishlistCollection.newInstance()
+        bottomSheetOnboarding?.setOnDismissListener {
+            bottomSheetOnboarding = null
+        }
         bottomSheetOnboarding?.setListener(this@WishlistCollectionFragment)
         if (bottomSheetOnboarding?.isAdded == true || childFragmentManager.isStateSaved) return
         bottomSheetOnboarding?.show(childFragmentManager)
