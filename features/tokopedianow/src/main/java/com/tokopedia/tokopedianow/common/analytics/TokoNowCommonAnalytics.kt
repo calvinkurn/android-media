@@ -133,7 +133,7 @@ object TokoNowCommonAnalytics {
     }
 
     fun getDataLayer(event: String, action: String, category: String, label: String = "", trackerId: String = ""): MutableMap<String, Any> {
-        return if (trackerId.isNotBlank()) {
+        return if (trackerId.isBlank()) {
             DataLayer.mapOf(
                 EVENT, event,
                 EVENT_ACTION, action,
