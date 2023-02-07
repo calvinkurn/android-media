@@ -66,6 +66,7 @@ class PlayCoverSetupViewModelTest {
             productList = emptyList(),
             channelId = "",
             hydraConfigStore = HydraConfigStoreImpl(
+                BroadcastingConfigStoreImpl(),
                 channelConfigStore,
                 ProductConfigStoreImpl(),
                 titleConfigStore,

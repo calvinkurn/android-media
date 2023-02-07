@@ -5,14 +5,22 @@ import com.tokopedia.picker.common.uimodel.MediaUiModel
 
 sealed class EventPickerState : EventState {
     class CameraCaptured(
-        override val data: MediaUiModel?
+        override val data: MediaUiModel?,
+        override val key: String
     ) : EventPickerState(), OnMediaAddedEvent
 
     class SelectionAdded(
-        override val data: MediaUiModel?
+        override val data: MediaUiModel?,
+        override val key: String
     ) : EventPickerState(), OnMediaAddedEvent
 
-    class SelectionChanged(val data: List<MediaUiModel>): EventPickerState()
+    class SelectionChanged(
+        val data: List<MediaUiModel>,
+        override val key: String
+    ) : EventPickerState()
 
-    class SelectionRemoved(val media: MediaUiModel): EventPickerState()
+    class SelectionRemoved(
+        val media: MediaUiModel,
+        override val key: String
+    ) : EventPickerState()
 }
