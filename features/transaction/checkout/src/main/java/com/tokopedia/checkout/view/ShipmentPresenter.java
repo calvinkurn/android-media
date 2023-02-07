@@ -1331,6 +1331,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             getView().resetCourier(cartPosition);
                                         }
                                     }
+                                    if (logisticDonePublisher != null) {
+                                        logisticDonePublisher.onCompleted();
+                                    }
+                                    if (logisticPromoDonePublisher != null) {
+                                        logisticPromoDonePublisher.onCompleted();
+                                    }
                                 }
 
                                 @Override
@@ -1539,7 +1545,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             for (ShipmentCrossSellModel shipmentCrossSellModel : listShipmentCrossSellModel) {
                 if (shipmentCrossSellModel.isChecked()) {
                     crossSellItemRequestModel.setId(Utils.toIntOrZero(shipmentCrossSellModel.getCrossSellModel().getId()));
-                    crossSellItemRequestModel.setPrice((int) shipmentCrossSellModel.getCrossSellModel().getPrice());
+                    crossSellItemRequestModel.setPrice(shipmentCrossSellModel.getCrossSellModel().getPrice());
                     crossSellItemRequestModel.setAdditionalVerticalId(Utils.toIntOrZero(shipmentCrossSellModel.getCrossSellModel().getAdditionalVerticalId()));
                     crossSellItemRequestModel.setTransactionType(shipmentCrossSellModel.getCrossSellModel().getTransactionType());
                     listCrossSellItemRequest.add(crossSellItemRequestModel);
@@ -1549,7 +1555,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (shipmentNewUpsellModel.isSelected() && shipmentNewUpsellModel.isShow()) {
             CrossSellItemRequestModel crossSellItemRequestModel = new CrossSellItemRequestModel();
             crossSellItemRequestModel.setId(Utils.toIntOrZero(shipmentNewUpsellModel.getId()));
-            crossSellItemRequestModel.setPrice((int) shipmentNewUpsellModel.getPrice());
+            crossSellItemRequestModel.setPrice(shipmentNewUpsellModel.getPrice());
             crossSellItemRequestModel.setAdditionalVerticalId(Utils.toIntOrZero(shipmentNewUpsellModel.getAdditionalVerticalId()));
             crossSellItemRequestModel.setTransactionType(shipmentNewUpsellModel.getTransactionType());
             listCrossSellItemRequest.add(crossSellItemRequestModel);
@@ -1745,7 +1751,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         ShipmentStateRequestData shipmentStateRequestData = new ShipmentStateRequestData();
-        shipmentStateRequestData.setAddressId(Utils.toIntOrZero(recipientAddressModel.getId()));
+        shipmentStateRequestData.setAddressId(recipientAddressModel.getId());
         shipmentStateRequestData.setShopProductDataList(shipmentStateShopProductDataList);
         shipmentStateRequestDataList.add(shipmentStateRequestData);
 
@@ -2270,11 +2276,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             );
         } else {
             if (ratesPublisher == null) {
-                logisticDonePublisher = PublishSubject.create();
                 ratesPublisher = PublishSubject.create();
                 compositeSubscription.add(
                         ratesPublisher
                                 .concatMap(shipmentGetCourierHolderData -> {
+                                    logisticDonePublisher = PublishSubject.create();
                                     ratesUseCase.execute(shipmentGetCourierHolderData.getRatesParam())
                                             .map(shippingRecommendationData ->
                                                     stateConverter.fillState(shippingRecommendationData, shipmentGetCourierHolderData.getShopShipmentList(),
@@ -2779,11 +2785,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     )));
         } else {
             if (ratesPromoPublisher == null) {
-                logisticPromoDonePublisher = PublishSubject.create();
                 ratesPromoPublisher = PublishSubject.create();
                 compositeSubscription.add(
                         ratesPromoPublisher
                                 .concatMap(shipmentGetCourierHolderData -> {
+                                    logisticPromoDonePublisher = PublishSubject.create();
                                     ratesUseCase.execute(shipmentGetCourierHolderData.getRatesParam())
                                             .map(shippingRecommendationData ->
                                                     stateConverter.fillState(shippingRecommendationData, shipmentGetCourierHolderData.getShopShipmentList(),

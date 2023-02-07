@@ -63,15 +63,14 @@ object BundleInfoToSingleProductBundleMapper {
         val bundleItem = it.bundleItems.firstOrNull() ?: BundleItem()
         val productVariant = AtcVariantMapper.mapToProductVariant(bundleItem)
         if (productVariant.hasVariant) {
-            val child = productVariant.children.minByOrNull { child ->
-                child.finalPrice
-            }
+            val originalPrice = bundleItem.getPreviewOriginalPrice()
+            val discountedPrice = bundleItem.getPreviewBundlePrice()
             SingleProductBundleItem(
-                quantity = child?.stock?.minimumOrder.toIntOrZero(),
+                quantity = bundleItem.getPreviewMinOrder(),
                 productName = bundleItem.name,
-                originalPrice = child?.finalMainPrice.orZero(),
-                discountedPrice = child?.finalPrice.orZero(),
-                discount = child?.campaign?.discountedPercentage?.toInt().orZero(),
+                originalPrice = originalPrice,
+                discountedPrice = discountedPrice,
+                discount = DiscountUtil.getDiscountPercentage(originalPrice, discountedPrice),
                 imageUrl = bundleItem.picURL,
                 preorderDurationWording = getPreorderWording(context, it.preorder),
                 productVariant = productVariant

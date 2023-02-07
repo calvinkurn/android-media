@@ -36,8 +36,10 @@ import com.tokopedia.topads.dashboard.view.sheet.SummaryAdTypesBottomSheet
 import com.tokopedia.topads.dashboard.view.sheet.SummaryInformationBottomSheet
 import com.tokopedia.topads.dashboard.viewmodel.TopAdsDashboardViewModel
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_topads_dashboard_beranda_base.*
 import javax.inject.Inject
 
 /**
@@ -75,6 +77,10 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         fun createInstance(): TopAdsDashboardBerandaFragment {
             return TopAdsDashboardBerandaFragment()
         }
+
+        const val TYPE_INFO = "info"
+        const val TYPE_WARNING = "warning"
+        const val TYPE_ERROR = "error"
     }
 
     @Inject
@@ -237,10 +243,12 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
 
     private fun initializeGraph() {
-        parentFragmentManager
-            .beginTransaction()
-            .replace(R.id.graph_layout_beranda, graphLayoutFragment, "")
-            .commit()
+        if (parentFragment?.isStateSaved != true) {
+            parentFragmentManager
+                .beginTransaction()
+                .replace(R.id.graph_layout_beranda, graphLayoutFragment, "")
+                .commit()
+        }
     }
 
     private fun showFirstTimeDialog() {
@@ -324,6 +332,21 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 else -> {
                     binding.layoutLatestReading.root.hide()
                 }
+            }
+        }
+
+        topAdsDashboardViewModel.tickerLiveData.observe(viewLifecycleOwner) {
+            if(it.status.errorCode == 0){
+                tickerTopAds.show()
+                tickerTopAds.setHtmlDescription(it.data.tickerInfo.tickerMessage)
+                tickerTopAds.tickerType = when (it.data.tickerInfo.tickerType) {
+                    TYPE_ERROR -> Ticker.TYPE_ERROR
+                    TYPE_INFO -> Ticker.TYPE_ANNOUNCEMENT
+                    TYPE_WARNING -> Ticker.TYPE_WARNING
+                    else -> Ticker.TYPE_ANNOUNCEMENT
+                }
+            } else {
+                tickerTopAds.hide()
             }
         }
     }
@@ -435,6 +458,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         topAdsDashboardViewModel.fetchShopDeposit()
         adTypeChanged(selectedAdType)
         topAdsDashboardViewModel.fetchRecommendationStatistics()
+        topAdsDashboardViewModel.getTopadsTicker()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -246,6 +246,10 @@ object ProductTrackingConstant {
 
         const val CLICK_LOCATION_RESTRICTION = "click - button on pdp restriction bottomsheet"
         const val IMPRESS_LOCATION_RESTRICTION = "impression - pdp restriction bottomsheet"
+
+        const val VIEW_ITEM = "view_item"
+        const val PROMO_VIEW = "promoView"
+        const val PROMOTIONS = "promotions"
     }
 
 
@@ -355,5 +359,25 @@ object ProductTrackingConstant {
         const val TRACKER_ID_IMPRESS_SPECIFICATION = "36326"
         const val TRACKER_ID_CLICK_LOCATION_RESTRICTION = "40907"
         const val TRACKER_ID_IMPRESSION_LOCATION_RESTRICTION = "40906"
+    }
+
+    object ViewToView {
+        const val TRACKER_ID_IMPRESS = "40439"
+        const val TRACKER_ID_CLICK = "40441"
+
+        const val ACTION_IMPRESSION = "impression on banner v2v widget"
+        const val ACTION_CLICK = "click on banner v2v widget"
+
+        const val BUSINESS_UNIT_HOME = "home & browse"
+        const val CATEGORY_PDP = "product detail page"
+
+        const val KEY_CREATIVE_NAME = "creative_name"
+        const val KEY_CREATIVE_SLOT = "creative_slot"
+        const val KEY_ITEM_ID = "item_id"
+        const val KEY_ITEM_NAME = "item_name"
+
+        const val ITEM_NAME_FORMAT = "/product - p%s - v2v widget - rekomendasi untuk anda - banner - %s"
+
+        const val NULL_LABEL = "null"
     }
 }
