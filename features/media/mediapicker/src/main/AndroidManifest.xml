@@ -38,7 +38,7 @@
         <activity
             android:name=".picker.ui.activity.picker.PickerActivity"
             android:screenOrientation="portrait"
-            android:label="Camera"
+            android:label="Pilih Media"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
