@@ -27,7 +27,6 @@ import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
@@ -693,9 +692,9 @@ open class DynamicProductDetailFragment :
                     is OneTimeMethodEvent.HitVariantTracker -> {
                         DynamicProductDetailTracking.Click.onVariantLevel1Clicked(
                             viewModel.getDynamicProductInfoP1,
-                            pdpUiUpdater?.productNewVariantDataModel,
+                            pdpUiUpdater?.productOptionalVariantDataModel,
                             viewModel.variantData,
-                            getComponentPositionBeforeUpdate(pdpUiUpdater?.productNewVariantDataModel)
+                            getComponentPositionBeforeUpdate(pdpUiUpdater?.productOptionalVariantDataModel)
                         )
                     }
                     else -> {
@@ -2689,7 +2688,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun addVariantSelectedTracker() {
-        if (pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected() == false) {
+        if (pdpUiUpdater?.productOptionalVariantDataModel?.isPartialySelected() == false) {
             viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.HitVariantTracker)
         }
     }
@@ -3441,20 +3440,6 @@ open class DynamicProductDetailFragment :
             FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage, t))
         } else {
             t.printStackTrace()
-        }
-    }
-
-    private fun showSnackbarClose(string: String) {
-        view?.let {
-            Snackbar.make(it, string, Snackbar.LENGTH_LONG).apply {
-                setAction(getString(com.tokopedia.abstraction.R.string.close)) { dismiss() }
-                setActionTextColor(
-                    androidx.core.content.ContextCompat.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
-                    )
-                )
-            }.show()
         }
     }
 
