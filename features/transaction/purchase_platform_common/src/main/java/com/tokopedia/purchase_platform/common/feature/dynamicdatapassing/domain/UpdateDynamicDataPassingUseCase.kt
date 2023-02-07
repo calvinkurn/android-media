@@ -18,30 +18,46 @@ class UpdateDynamicDataPassingUseCase @Inject constructor(
 ) : UseCase<UpdateDynamicDataPassingUiModel>() {
 
     private var params: Map<String, Any?>? = null
+    private var isFireAndForget: Boolean = false
+    private var response: UpdateDynamicDataPassingResponse? = null
 
-    fun setParams(params: DynamicDataPassingParamRequest) {
+    @GqlQuery(UPDATE_DYNAMIC_DATA_FIRE_AND_FORGET_MUTATION, queryFireAndForget)
+    fun setParams(params: DynamicDataPassingParamRequest, isFireAndForget: Boolean) {
         this.params = mapOf("request" to params)
+        this.isFireAndForget = isFireAndForget
     }
 
-    @GqlQuery(UPDATE_DYNAMIC_DATA_PASSING_QUERY, query)
+    @GqlQuery(UPDATE_DYNAMIC_DATA_PASSING_MUTATION, query)
     override suspend fun executeOnBackground(): UpdateDynamicDataPassingUiModel {
         if (params == null) {
             throw RuntimeException("Parameter is null!")
         }
 
-        val request = GraphqlRequest(
-            UpdateDynamicDataPassingQuery(),
+        val requestFireAndForget = GraphqlRequest(
+            UpdateDynamicDataFireAndForgetMutation(),
             UpdateDynamicDataPassingResponse::class.java,
             params
         )
-        val response = graphqlRepository.response(listOf(request))
-            .getSuccessData<UpdateDynamicDataPassingResponse>()
 
-        if (response.status == "OK") {
-            return UpdateDynamicDataPassingUiModel(response.dynamicData)
+        val request = GraphqlRequest(
+            UpdateDynamicDataMutation(),
+            UpdateDynamicDataPassingResponse::class.java,
+            params
+        )
+
+        response = if (isFireAndForget) {
+            graphqlRepository.response(listOf(requestFireAndForget))
+                .getSuccessData<UpdateDynamicDataPassingResponse>()
         } else {
-            if (response.errorMessages.isNotEmpty()) {
-                throw CartResponseErrorException(response.errorMessages.joinToString())
+            graphqlRepository.response(listOf(request))
+                .getSuccessData<UpdateDynamicDataPassingResponse>()
+        }
+
+        if (response?.status == "OK") {
+            return UpdateDynamicDataPassingUiModel(response?.dynamicData ?: "")
+        } else {
+            if (response?.errorMessages?.isNotEmpty() == true) {
+                throw CartResponseErrorException(response?.errorMessages?.joinToString())
             } else {
                 throw CartResponseErrorException(CartConstant.CART_ERROR_GLOBAL)
             }
@@ -49,7 +65,23 @@ class UpdateDynamicDataPassingUseCase @Inject constructor(
     }
 
     companion object {
-        private const val UPDATE_DYNAMIC_DATA_PASSING_QUERY = "UpdateDynamicDataPassingQuery"
+        private const val UPDATE_DYNAMIC_DATA_FIRE_AND_FORGET_MUTATION = "UpdateDynamicDataFireAndForgetMutation"
+        private const val UPDATE_DYNAMIC_DATA_PASSING_MUTATION = "UpdateDynamicDataMutation"
+
+        /*note : please update both of 2 mutations below if change is needed
+        2 mutations below are same, but need to differentiate the mutation name
+        between fire & forget, and the regular one*/
+
+        const val queryFireAndForget = """
+            mutation UpdateDynamicDataFireAndForgetMutation(${'$'}request: UpdateDynamicDataRequest) {
+                  update_dynamic_data(request: ${'$'}request) {
+                    status
+                    error_message
+                    data {
+                      dynamic_data
+                    }
+                  }
+                }"""
 
         const val query = """
             mutation UpdateDynamicDataMutation(${'$'}request: UpdateDynamicDataRequest) {

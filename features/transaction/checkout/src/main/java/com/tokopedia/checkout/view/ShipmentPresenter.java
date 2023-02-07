@@ -2965,7 +2965,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void updateDynamicData(DynamicDataPassingParamRequest dynamicDataPassingParamRequest, boolean isFireAndForget) {
-        updateDynamicDataPassingUseCase.setParams(dynamicDataPassingParamRequest);
+        updateDynamicDataPassingUseCase.setParams(dynamicDataPassingParamRequest, isFireAndForget);
         updateDynamicDataPassingUseCase.execute(
                 dynamicDataPassingUiModel -> {
                     this.dynamicData = dynamicDataPassingUiModel.getDynamicData();
