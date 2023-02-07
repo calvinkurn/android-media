@@ -5,18 +5,18 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.media.R
-import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
 import com.tokopedia.media.picker.ui.adapter.PickerFragmentStateAdapter
 import com.tokopedia.media.picker.ui.adapter.decoration.PickerFragmentDecoration
 import com.tokopedia.media.picker.ui.fragment.camera.CameraFragment
 import com.tokopedia.media.picker.ui.fragment.gallery.GalleryFragment
 import com.tokopedia.picker.common.basecomponent.UiComponent
+import com.tokopedia.picker.common.cache.PickerCacheManager
 
 class PagerContainerUiComponent constructor(
     activity: FragmentActivity,
     parent: ViewGroup,
-    param: ParamCacheManager,
+    param: PickerCacheManager,
     private val factory: PickerFragmentFactory
 ) : UiComponent(parent, R.id.uc_vp_container) {
 
