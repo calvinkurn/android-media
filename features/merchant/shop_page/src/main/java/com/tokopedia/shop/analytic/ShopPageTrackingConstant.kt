@@ -163,6 +163,7 @@ object ShopPageTrackingConstant {
     const val CLICK_SHOP_BANNER = "click shop banner"
     const val CAMPAIGN_TAB_PRODUCT_IMPRESSION_EVENT_ACTION = "product impression"
     const val CAMPAIGN_TAB_PRODUCT_CLICK_EVENT_ACTION = "click product card"
+    const val SHOP_SEARCH_PRODUCT_CLICK_SEARCH_BOX = "click search box"
 
     // label
     const val CLICK_SHARE = "click share"
@@ -288,7 +289,9 @@ object ShopPageTrackingConstant {
     const val USER_ID = "userId"
     const val SHOP_NAME = "shop_name"
     const val PAGE_TYPE = "pageType"
+    const val ITEMS_PAGE_TYPE = "page_type"
     const val PRODUCT_ID = "productId"
+    const val ITEMS_PRODUCT_ID = "product_id"
     const val PAGE_SOURCE = "pageSource"
     const val RELATED_KEYWORD = "relatedKeyword"
     const val ECOMMERCE = "ecommerce"

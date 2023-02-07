@@ -45,7 +45,8 @@ data class CartShipmentAddressFormData(
     var epharmacyData: EpharmacyData = EpharmacyData(),
     var upsell: UpsellData = UpsellData(),
     var newUpsell: NewUpsellData = NewUpsellData(),
-    var cartData: String = ""
+    var cartData: String = "",
+    var coachmarkPlus: CheckoutCoachmarkPlusData = CheckoutCoachmarkPlusData(),
 ) : Parcelable {
 
     val getAvailablePurchaseProtection: ArrayList<String>

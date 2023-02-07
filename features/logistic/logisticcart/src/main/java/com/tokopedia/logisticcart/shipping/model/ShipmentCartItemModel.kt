@@ -117,6 +117,9 @@ class ShipmentCartItemModel(
     // Flag for tracking
     var isHasShownCourierError: Boolean = false,
 
+    // Multiple Order Plus Coachmark
+    var coachmarkPlus: CoachmarkPlusData = CoachmarkPlusData(),
+
     // Epharmacy
     var hasEthicalProducts: Boolean = false,
     var hasNonEthicalProducts: Boolean = false,

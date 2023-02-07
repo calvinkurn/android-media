@@ -436,4 +436,15 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
 
     }
+
+
+    @Override
+    public void connectTokoChat(Boolean isFromLoginFlow) {
+
+    }
+
+    @Override
+    public void disconnectTokoChat() {
+
+    }
 }

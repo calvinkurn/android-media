@@ -536,7 +536,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         if (!groupId.isNullOrBlank()) {
             ePharmacyPrescriptionAttachmentViewModel.initiateConsultation(
                 InitiateConsultationParam(
-                    InitiateConsultationParam.InitiateConsultationParamInput(groupId)
+                    InitiateConsultationParam.InitiateConsultationParamInput(groupId, EPHARMACY_ANDROID_SOURCE)
                 )
             )
         }

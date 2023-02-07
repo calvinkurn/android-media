@@ -27,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
@@ -40,13 +41,19 @@ import kotlin.math.min
 class CartShopViewHolder(private val binding: ItemShopBinding,
                          private val actionListener: ActionListener,
                          private val cartItemAdapterListener: CartItemAdapter.ActionListener,
-                         private val compositeSubscription: CompositeSubscription) : RecyclerView.ViewHolder(binding.root) {
+                         private val compositeSubscription: CompositeSubscription,
+                         private var plusCoachmark: CoachMark2?,
+) : RecyclerView.ViewHolder(binding.root) {
 
     // variable to hold identifier
     private var cartString: String = ""
 
     private val localCacheHandler: LocalCacheHandler by lazy {
         LocalCacheHandler(itemView.context, KEY_ONBOARDING_ICON_PIN)
+    }
+
+    private val plusCoachmarkPrefs: PlusCoachmarkPrefs by lazy {
+        PlusCoachmarkPrefs(itemView.context)
     }
 
     fun bindUpdatedWeight(cartShopHolderData: CartShopHolderData) {
@@ -375,6 +382,19 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                 if (!cartShopHolderData.hasSeenFreeShippingBadge && cartShopHolderData.isFreeShippingPlus) {
                     cartShopHolderData.hasSeenFreeShippingBadge = true
                     actionListener.onViewFreeShippingPlusBadge()
+                }
+                if (cartShopHolderData.coachmarkPlus.isShown && !plusCoachmarkPrefs.getPlusCoachMarkHasShown()) {
+                    val coachMarkItem = ArrayList<CoachMark2Item>()
+                    coachMarkItem.add(
+                        CoachMark2Item(
+                            imgFreeShipping,
+                            cartShopHolderData.coachmarkPlus.title,
+                            cartShopHolderData.coachmarkPlus.content,
+                            CoachMark2.POSITION_BOTTOM
+                        )
+                    )
+                    plusCoachmark?.showCoachMark(coachMarkItem)
+                    plusCoachmarkPrefs.setPlusCoachmarkHasShown(true)
                 }
             } else {
                 imgFreeShipping.gone()

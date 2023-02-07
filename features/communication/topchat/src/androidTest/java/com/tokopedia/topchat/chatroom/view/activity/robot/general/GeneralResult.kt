@@ -7,10 +7,12 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.Matcher
+import org.hamcrest.core.Is.`is`
 
 object GeneralResult {
 
@@ -43,5 +45,9 @@ object GeneralResult {
         onView(
             withId(R.id.recycler_view_chatroom)
         ).check(matches(matcher))
+    }
+
+    fun <T>assertViewObjectValue(realValue: T, expectedValue: T) {
+        assertThat(realValue, `is`(expectedValue))
     }
 }
