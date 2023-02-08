@@ -83,10 +83,9 @@
         layout="@layout/view_share_experience"
         android:layout_width="@dimen/layout_lvl4"
         android:layout_height="@dimen/layout_lvl4"
-        android:layout_marginEnd="@dimen/content_common_space_16"
         android:layout_marginBottom="@dimen/content_common_space_16"
         app:layout_constraintBottom_toTopOf="@+id/view_kebab_menu"
-        app:layout_constraintEnd_toEndOf="@+id/view_size"
+        app:layout_constraintEnd_toEndOf="@+id/view_kebab_menu"
         app:layout_constraintStart_toStartOf="@+id/view_kebab_menu" />
 
     <include
@@ -94,23 +93,22 @@
         layout="@layout/view_kebab_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/content_common_space_16"
         android:layout_marginBottom="@dimen/content_common_space_16"
         app:layout_constraintBottom_toTopOf="@id/view_product_see_more"
-        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintEnd_toEndOf="@+id/view_product_see_more"
         app:layout_constraintStart_toStartOf="@+id/view_product_see_more"
-        app:layout_goneMarginEnd="@dimen/spacing_lvl3" />
+        app:layout_goneMarginEnd="56dp" />
 
     <include
         android:id="@+id/view_like"
         layout="@layout/view_like"
         android:layout_width="@dimen/layout_lvl4"
         android:layout_height="@dimen/layout_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/content_common_space_16"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_vod_comment"
-        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintEnd_toEndOf="@id/view_vod_comment"
+        app:layout_constraintStart_toStartOf="@+id/view_vod_comment"
         tools:visibility="visible" />
 
     <include
@@ -357,8 +355,9 @@
         android:layout_marginBottom="@dimen/unify_space_12"
         android:orientation="horizontal"
         android:visibility="gone"
+        app:layout_goneMarginBottom="0dp"
         app:layout_constraintBottom_toTopOf="@id/view_product_featured"
-        app:layout_constraintEnd_toEndOf="@id/gl_like_bubble_start"
+        app:layout_constraintEnd_toStartOf="@id/gl_like_bubble_start"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/view_size" />
 
@@ -379,12 +378,11 @@
         layout="@layout/view_vod_comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/content_common_space_16"
         android:layout_marginBottom="@dimen/content_common_space_16"
         android:visibility="gone"
         tools:visibility="visible"
         app:layout_constraintBottom_toTopOf="@id/view_share_experience"
-        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintEnd_toEndOf="@id/view_share_experience"
         app:layout_constraintStart_toStartOf="@+id/view_share_experience"
         app:layout_goneMarginEnd="@dimen/spacing_lvl3" />
 
