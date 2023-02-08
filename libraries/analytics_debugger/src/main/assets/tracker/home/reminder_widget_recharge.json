@@ -16,7 +16,7 @@
       "event": "view_item",
       "eventAction": "impression on digital bills",
       "sessionIris": ".+",
-      "eventLabel": ".+"
+      "eventLabel": ".+ - .+ - .+"
     },
     {
       "promotions": [
@@ -32,7 +32,7 @@
       "event": "select_content",
       "eventAction": "click on digital bills",
       "sessionIris": ".+",
-      "eventLabel": ".+"
+      "eventLabel": ".+ - .+ - .+"
     }
   ]
 }
