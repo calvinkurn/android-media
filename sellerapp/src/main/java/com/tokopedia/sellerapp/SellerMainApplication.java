@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.work.Configuration;
 
@@ -16,6 +17,7 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
+import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -28,6 +30,8 @@ import com.tokopedia.dev_monitoring_tools.DevMonitoring;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.encryption.security.AESEncryptorECB;
+import com.tokopedia.encryption.security.RSA;
+import com.tokopedia.encryption.utils.RSAKeys;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
@@ -60,6 +64,7 @@ import com.tokopedia.tokopatch.TokoPatch;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.security.interfaces.RSAPrivateKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -82,7 +87,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
     public static final String ANDROID_ROBUST_ENABLE = "android_sellerapp_robust_enable";
     private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_sellerapp_log_config_scalyr";
-    private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_sellerapp_log_config_new_relic";
+    private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_sellerapp_log_config_v3_new_relic";
     private static final String REMOTE_CONFIG_EMBRACE_KEY_LOG = "android_sellerapp_log_config_embrace";
     private static final String PARSER_SCALYR_SA = "android-seller-app-p%s";
     private final String EMBRACE_PRIMARY_CARRIER_KEY = "operatorNameMain";
@@ -125,7 +130,22 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         initEmbrace();
 
         if (GlobalConfig.isAllowDebuggingTools()) {
-            new Cassava.Builder(this).initialize();
+            new Cassava.Builder(this)
+                    .setRemoteValidator(new RemoteSpec() {
+                        @NonNull
+                        @Override
+                        public String getUrl() {
+                            return TokopediaUrl.getInstance().getAPI();
+                        }
+
+                        @NonNull
+                        @Override
+                        public String getToken() {
+                            return  getString(com.tokopedia.keys.R.string.thanos_token_key);
+                        }
+                    })
+                    .setLocalRootPath("tracker")
+                    .initialize();
         }
         TrackApp.initTrackApp(this);
 
@@ -174,6 +194,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             final AESEncryptorECB encryptor = new AESEncryptorECB();
             final SecretKey secretKey = encryptor.generateKey(com.tokopedia.sellerapp.utils.constants.Constants.ENCRYPTION_KEY);
 
+            final RSA encryptorRSA = new RSA();
+            final RSAPrivateKey privateKeyRSA = encryptorRSA.stringToPrivateKey(RSAKeys.PRIVATE_RSA_KEY_STR);
+
             @Override
             public Function1<String, String> getDecrypt() {
                 return new Function1<String, String>() {
@@ -190,6 +213,16 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
                     @Override
                     public String invoke(String s) {
                         return encryptor.encrypt(s, secretKey);
+                    }
+                };
+            }
+
+            @Override
+            public Function1<String, String> getDecryptNrKey() {
+                return new Function1<String, String>() {
+                    @Override
+                    public String invoke(String s) {
+                        return encryptorRSA.decrypt(s, privateKeyRSA, com.tokopedia.encryption.utils.Constants.RSA_OAEP_ALGORITHM);
                     }
                 };
             }

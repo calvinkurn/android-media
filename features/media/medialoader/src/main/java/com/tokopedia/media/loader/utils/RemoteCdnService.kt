@@ -38,9 +38,14 @@ object RemoteCdnService {
     fun isValidUrl(urlString: String?): Boolean {
         if (urlString.isNullOrBlank()) return false
 
+        val urlRegex = "^(https?)://.*\$".toRegex()
+
         return try {
-            URLUtil.isValidUrl(urlString) && Patterns.WEB_URL.matcher(urlString).matches()
-        } catch (ignored: Exception) { false }
+            (URLUtil.isValidUrl(urlString) && Patterns.WEB_URL.matcher(urlString).matches()) ||
+                urlString.matches(urlRegex)
+        } catch (ignored: Exception) {
+            false
+        }
     }
 
     private fun HttpURLConnection.setRequestProperty(): HttpURLConnection {

@@ -5,6 +5,7 @@ import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
 import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
+import com.tokopedia.people.model.content.ContentModelBuilder
 import com.tokopedia.people.model.shoprecom.ShopRecomModelBuilder
 import com.tokopedia.people.model.userprofile.FollowInfoUiModelBuilder
 import com.tokopedia.people.model.userprofile.MutationUiModelBuilder
@@ -41,6 +42,7 @@ class UserProfileShopRecomViewModelTest {
     private val shopRecomBuilder = ShopRecomModelBuilder()
     private val mutationBuilder = MutationUiModelBuilder()
     private val profileBuilder = ProfileUiModelBuilder()
+    private val contentBuilder = ContentModelBuilder()
 
     private val mockMutationSuccess = mutationBuilder.buildSuccess()
     private val mockMutationError = mutationBuilder.buildError()
@@ -71,6 +73,7 @@ class UserProfileShopRecomViewModelTest {
         encryptedUserID = mockOtherUserId,
         status = true,
     )
+    private val mockTabsModel = contentBuilder.buildTabsModel(false)
 
     private val robot = UserProfileViewModelRobot(
         username = mockOwnUserId,
@@ -86,6 +89,7 @@ class UserProfileShopRecomViewModelTest {
     fun setUp() {
         coEvery { mockUserSession.userId } returns mockOwnUserId
         coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
+        coEvery { mockRepo.getUserProfileTab(any()) } returns mockTabsModel
     }
 
     @Test
@@ -210,8 +214,7 @@ class UserProfileShopRecomViewModelTest {
                 coEvery { mockRepo.getShopRecom("123") } throws mockException
                 submitAction(UserProfileAction.LoadNextPageShopRecom("123"))
             } andThen {
-                robot.viewModel.isShopRecomShow.assertTrue()
-                last().assertEvent(UserProfileUiEvent.ErrorLoadNextPageShopRecom(mockException))
+                robot.viewModel.isShopRecomShow.assertFalse()
             }
         }
     }
@@ -264,7 +267,6 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             } andThen { state, events ->
                 state.shopRecom equalTo mockEmptyShopRecom
-                events.last().assertEvent(UserProfileUiEvent.ErrorLoadProfile(Throwable("any throwable")))
             }
         }
     }

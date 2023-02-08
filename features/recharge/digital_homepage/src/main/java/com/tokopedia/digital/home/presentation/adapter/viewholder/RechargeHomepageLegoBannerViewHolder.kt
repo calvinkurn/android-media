@@ -51,8 +51,7 @@ class RechargeHomepageLegoBannerViewHolder(
         val binding = ViewRechargeHomeLegoBannerBinding.bind(itemView)
 
         val isCacheData = element.isCache
-        val isLego24UsingRollenceVariant =
-            HomeComponentRollenceController.isHomeComponentLego24BannerUsingRollenceVariant()
+        val isLego24UsingRollenceVariant = false
 
         setHeader(binding, element)
         setGrid(binding, element, isCacheData, isLego24UsingRollenceVariant)

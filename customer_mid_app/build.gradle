@@ -107,6 +107,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.appCommon)
     implementation projectOrAar(rootProject.ext.features.autocompleteComponent)
     implementation projectOrAar(rootProject.ext.features.tokochat_common)
+    implementation projectOrAar(rootProject.ext.features.tokochat_config_common)
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     if (rootProject.ext.debugToolsEnabled) {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
@@ -367,7 +368,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     androidTestImplementation rootProject.ext.testDependencies.retrofitMock
-    androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
+    androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebserver
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.miscDependencies.dagger
     androidTestImplementation rootProject.ext.miscDependencies.gson

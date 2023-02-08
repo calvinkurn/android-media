@@ -65,6 +65,7 @@ object ProductDetailConstant {
     const val UPCOMING_DEALS = "upcoming_deals"
     const val VARIANT_OPTIONS = "variant_options"
     const val MINI_VARIANT_OPTIONS = "mini_variant_options"
+    const val THUMB_MINI_VARIANT_OPTIONS = "thumbnail"
     const val VARIANT = "variant"
     const val PDP_3 = "pdp_3"
     const val PDP_7 = "pdp_7"
@@ -94,6 +95,7 @@ object ProductDetailConstant {
     const val HAMPERS_INFO = "palugada_hampers"
     const val PRODUCT_LIST_VERTICAL = "product_list_vertical"
     const val PDP_VERTICAL_LOADING = "pdp_vertical_loading"
+    const val VIEW_TO_VIEW = "view-to-view"
 
     const val BEST_SELLER = "best_seller"
     const val STOCK_ASSURANCE = "stock_assurance"

@@ -115,5 +115,6 @@
     <string name="seller_migration_smart_reply_title">SMART REPLY</string>
     <string name="seller_migration_smart_reply_subtitle">Atur balasan otomatis untuk jawab diskusi tentang stok.</string>
 
-
+    <string name="sma_update">Update</string>
+    <string name="sma_toaster_update_message">Biar bisa pakai fitur ini, update aplikasi Tokopedia Seller kamu, ya.</string>
 </resources>

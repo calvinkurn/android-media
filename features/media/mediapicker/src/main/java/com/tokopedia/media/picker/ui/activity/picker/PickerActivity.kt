@@ -1,6 +1,7 @@
 package com.tokopedia.media.picker.ui.activity.picker
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MotionEvent
@@ -8,12 +9,12 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
 import com.tokopedia.media.picker.analytics.PickerAnalytics
-import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.di.PickerInjector
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerFragmentFactoryImpl
@@ -23,25 +24,29 @@ import com.tokopedia.media.picker.ui.component.ParentContainerComponent
 import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
+import com.tokopedia.media.picker.utils.isOppoManufacturer
+import com.tokopedia.media.picker.ui.observer.stateOnRemovePublished
+import com.tokopedia.media.picker.utils.generateKey
 import com.tokopedia.media.picker.utils.permission.hasPermissionRequiredGranted
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
 import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.basecomponent.uiComponent
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
+import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.types.FragmentType
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.safeRemove
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
-import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.picker.common.utils.VideoDurationRetriever
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 import com.tokopedia.utils.image.ImageProcessingUtil
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
@@ -54,7 +59,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var param: ParamCacheManager
+    lateinit var param: PickerCacheManager
 
     @Inject
     lateinit var pickerAnalytics: PickerAnalytics
@@ -91,20 +96,33 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         )
     }
 
-    private var editorParam: EditorParam? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         supportFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_picker)
-
-        setupParamQueryAndDataIntent()
         restoreDataState(savedInstanceState)
 
-        initView()
         initObservable()
+        setupParam()
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+
+        if (isOppoManufacturer()) {
+            SplitCompat.installActivity(this)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        EventFlowFactory.dispose(param.get().generateKey())
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventFlowFactory.reset(param.get().generateKey())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -113,11 +131,13 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         // get data from preview if user had an updated the media elements
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_PREVIEW_PAGE && data != null) {
             data.getParcelableArrayListExtra<MediaUiModel>(RESULT_INTENT_PREVIEW)?.toList()?.let {
-                stateOnChangePublished(it)
+                stateOnChangePublished(it, param.get().generateKey())
             }
 
             // exit picker
             data.getParcelableExtra<PickerResult>(EXTRA_RESULT_PICKER)?.let {
+                onRemoveSubSourceMedia()
+
                 val withEditor = data.getBooleanExtra(EXTRA_EDITOR_PICKER, false)
 
                 if (withEditor) {
@@ -135,11 +155,6 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        EventFlowFactory.reset()
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelableArrayList(
@@ -148,32 +163,16 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         )
     }
 
-    private fun setupParamQueryAndDataIntent() {
-        val pickerParam = intent?.getParcelableExtra(EXTRA_PICKER_PARAM) ?: PickerParam()
+    private fun setupParam() {
+        val mParam = intent?.getParcelableExtra<PickerParam>(EXTRA_PICKER_PARAM)
 
-        onPageSourceNotFound(pickerParam)
-
-        if (pickerParam.isEditorEnabled()) {
-            val isEditorAllowed =
-                RemoteConfigInstance.getInstance().abTestPlatform.getString(PICKER_TO_EDITOR_ROLLENCE) == PICKER_TO_EDITOR_ROLLENCE
-
-            if (!isEditorAllowed) {
-                pickerParam.withoutEditor()
-            } else {
-                editorParam = pickerParam.getEditorParam() ?: EditorParam()
-            }
+        if (mParam?.pageSourceName()?.isNotEmpty() == true && mParam.subPageSourceName()
+                .isEmpty()
+        ) {
+            param.disposeSubPicker()
         }
 
-        // get data from uri query parameter
-        intent?.data?.let {
-            PickerUiConfig.getStartPageIndex(it)
-        }
-
-        // set the picker param as cache
-        param.setParam(pickerParam)
-
-        // get pre-included media items
-        viewModel.preSelectedMedias()
+        viewModel.setPickerParam(mParam)
     }
 
     private fun restoreDataState(savedInstanceState: Bundle?) {
@@ -183,12 +182,20 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             // restore the last media selection to the drawer
             it.getParcelableArrayList<MediaUiModel>(LAST_MEDIA_SELECTION)
                 ?.let { elements ->
-                    stateOnChangePublished(elements)
+                    stateOnChangePublished(elements, param.get().generateKey())
                 }
         }
     }
 
-    private fun initView() {
+    private fun initView(param: PickerParam) {
+        // get pre-included media items
+        viewModel.preSelectedMedias(param)
+
+        // get data from uri query parameter
+        intent?.data?.let {
+            PickerUiConfig.getStartPageIndex(it)
+        }
+
         if (isRootPermissionGranted()) {
             onPageViewByType()
         } else {
@@ -197,7 +204,19 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     }
 
     private fun initObservable() {
-        lifecycleScope.launchWhenResumed {
+        viewModel.pickerParam.observe(this) {
+            onPageSourceNotFound(it)
+            initView(it)
+        }
+
+        viewModel.editorParam.observe(this) {
+            val (result, param) = it
+
+            val intent = MediaEditor.intent(this@PickerActivity, result.originalPaths, param)
+            startActivityForResult(intent, REQUEST_EDITOR_PAGE)
+        }
+
+        lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.observe(
                 onChanged = {
                     medias.clear()
@@ -231,7 +250,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
                 mPickerFile?.toUiModel()
             }
 
-            stateOnChangePublished(fileToUiModel)
+            stateOnChangePublished(fileToUiModel, param.get().generateKey())
         }
     }
 
@@ -266,6 +285,12 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         }
     }
 
+    private fun onRemoveSubSourceMedia() {
+        if (param.get().subPageSourceName().isNotEmpty() && medias.isNotEmpty()) {
+            stateOnRemovePublished(medias.last(), param.get().generateKey())
+        }
+    }
+
     private fun onFinishIntent(data: PickerResult) {
         val intent = Intent()
         intent.putExtra(EXTRA_RESULT_PICKER, data)
@@ -274,10 +299,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     }
 
     private fun onEditorIntent(data: PickerResult) {
-        editorParam?.let {
-            val intent = MediaEditor.intent(this, data.originalPaths, it)
-            startActivityForResult(intent, REQUEST_EDITOR_PAGE)
-        }
+        viewModel.navigateToEditorPage(data)
     }
 
     private fun onPermissionPageView() {

@@ -58,5 +58,7 @@ data class Product(
         @SerializedName("txStats")
         val txStats: TxStats = TxStats(),
         @SerializedName("variant")
-        val variant: Variant = Variant()
+        val variant: Variant = Variant(),
+        @SerializedName("cpl")
+        val cpl: CPL = CPL(),
 )
