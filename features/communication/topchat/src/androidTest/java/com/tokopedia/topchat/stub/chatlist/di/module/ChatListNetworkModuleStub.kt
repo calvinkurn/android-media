@@ -152,20 +152,24 @@ class ChatListNetworkModuleStub {
     @ChatListScope
     @Provides
     fun provideTopChatWebSocket(
+        @ApplicationContext context: Context,
         userSession: UserSessionInterface,
         client: OkHttpClient,
-        irisSession: Session
+        irisSession: Session,
+        parser: WebSocketParser
     ): TopchatWebSocket {
         val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
             "?os_type=1" +
             "&device_id=" + userSession.deviceId +
             "&user_id=" + userSession.userId
         return DefaultTopChatWebSocket(
+            context,
             client,
             webSocketUrl,
             userSession.accessToken,
             "chatlist",
-            irisSession
+            irisSession,
+            parser
         )
     }
 

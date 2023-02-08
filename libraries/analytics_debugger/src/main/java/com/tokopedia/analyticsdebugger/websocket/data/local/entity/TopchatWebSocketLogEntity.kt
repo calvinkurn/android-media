@@ -5,24 +5,24 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 /**
-* Created By : Jonathan Darwin on December 01, 2021
-*/
+ * Created By : Jonathan Darwin on December 01, 2021
+ */
 
-const val WEBSOCKET_LOG_TABLE_NAME = "websocket_log"
+const val WS_TOPCHAT_TABLE_NAME = "topchat_websocket_log"
 
-@Entity(tableName = WEBSOCKET_LOG_TABLE_NAME)
-data class WebSocketLogEntity (
+@Entity(tableName = WS_TOPCHAT_TABLE_NAME)
+data class TopchatWebSocketLogEntity (
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
 
     @ColumnInfo(name = "source")
     val source: String,
 
-    @ColumnInfo(name = "channel_id")
-    val channelId: String,
+    @ColumnInfo(name = "message_id")
+    val messageId: String,
 
-    @ColumnInfo(name = "gc_token")
-    val gcToken: String,
+    @ColumnInfo(name = "code")
+    val code: String,
 
     @ColumnInfo(name = "event")
     val event: String,
@@ -30,9 +30,9 @@ data class WebSocketLogEntity (
     @ColumnInfo(name = "message")
     val message: String,
 
+    @ColumnInfo(name = "header")
+    val header: String,
+
     @ColumnInfo(name = "timestamp")
     val timestamp: Long,
-
-    @ColumnInfo(name = "warehouse_id")
-    val warehouseId: String,
 )

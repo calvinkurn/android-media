@@ -1,15 +1,15 @@
-package com.tokopedia.analyticsdebugger.websocket.ui.adapter
+package com.tokopedia.analyticsdebugger.websocket.ui.adapter.viewholder
 
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.websocket.ui.adapter.WebSocketViewHolder
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
 import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created By : Jonathan Darwin on December 03, 2021
  */
-class WebSocketLogViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+class PlayWebSocketLogViewHolder(itemView: View): WebSocketViewHolder(itemView) {
 
     private val tvTitle = itemView.findViewById<Typography>(R.id.tv_websocket_log_title)
     private val tvSource = itemView.findViewById<Typography>(R.id.tv_websocket_log_source)
@@ -17,16 +17,18 @@ class WebSocketLogViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) 
     private val tvChannelId = itemView.findViewById<Typography>(R.id.tv_websocket_log_channel_id)
     private val tvGcToken = itemView.findViewById<Typography>(R.id.tv_websocket_log_gc_token)
 
-    fun bind(webSocketLogUiModel: WebSocketLogUiModel, listener: ((WebSocketLogUiModel) -> Unit)?) {
+    override fun bind(model: WebSocketLogUiModel, listener: ((WebSocketLogUiModel) -> Unit)?) {
+        tvTitle.text = model.event
+        tvDateTime.text = model.dateTime
 
-        tvTitle.text = webSocketLogUiModel.event
-        tvSource.text = webSocketLogUiModel.generalInfo.source
-        tvDateTime.text = webSocketLogUiModel.dateTime
-        tvChannelId.text = webSocketLogUiModel.generalInfo.channelId
-        tvGcToken.text = webSocketLogUiModel.generalInfo.gcToken
+        if (model.play != null) {
+            tvSource.text = model.play.source
+            tvChannelId.text = model.play.channelId
+            tvGcToken.text = model.play.gcToken
+        }
         
         itemView.setOnClickListener { 
-            listener?.invoke(webSocketLogUiModel)
+            listener?.invoke(model)
         }
     }
 }

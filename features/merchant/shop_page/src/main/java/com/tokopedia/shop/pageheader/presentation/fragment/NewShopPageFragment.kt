@@ -262,7 +262,6 @@ class NewShopPageFragment :
         const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
         const val EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION"
         const val TAB_POSITION_HOME = 0
-        const val TAB_POSITION_FEED = 2
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
         const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
         const val SAVED_INITIAL_FILTER = "saved_initial_filter"
@@ -1379,12 +1378,6 @@ class NewShopPageFragment :
         searchBarLayout?.hide()
     }
 
-    private fun displayToolbarBuyer() {
-        textYourShop?.hide()
-        searchBarLayout?.show()
-        initSearchInputView()
-    }
-
     private fun initSearchInputView() {
         searchBarText?.setOnClickListener {
             clickSearch()
@@ -1837,34 +1830,6 @@ class NewShopPageFragment :
     private fun hideTabbing() {
         tabLayout?.hide()
         viewOneTabSeparator?.show()
-    }
-
-    private fun checkIfShouldShowOrHideScrollToTopButton(position: Int) {
-        val selectedFragment = viewPagerAdapter?.getRegisteredFragment(position)
-        if (selectedFragment is InterfaceShopPageClickScrollToTop) {
-            if (selectedFragment.isShowScrollToTopButton()) {
-                showScrollToTopButton()
-            } else {
-                hideScrollToTopButton()
-            }
-        } else {
-            hideScrollToTopButton()
-        }
-    }
-
-    private fun checkIfShouldShowOrHideShopPageFab(position: Int) {
-        val selectedFragment = viewPagerAdapter?.getRegisteredFragment(position)
-        if (selectedFragment is InterfaceShopPageFab) {
-            val config = selectedFragment.getShopPageFabConfig()
-            if (selectedFragment.shouldShowShopPageFab() && config != null) {
-                setupShopPageFab(config)
-                showShopPageFab()
-            } else {
-                hideShopPageFab()
-            }
-        } else {
-            hideShopPageFab()
-        }
     }
 
     private fun getSelectedDynamicTabPosition(): Int {
