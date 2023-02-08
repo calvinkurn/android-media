@@ -1,10 +1,8 @@
 package com.tokopedia.logisticseller.ui.reschedulepickup
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -133,11 +131,12 @@ fun ReschedulePickupScreenLayout(
     onClickDialogButton: (Boolean) -> Unit,
     onCloseDialog: (Boolean) -> Unit
 ) {
-    Box {
+    Column {
         Column(
             modifier = Modifier
                 .tag("reschedule_pickup_layout")
-                .fillMaxSize()
+                .fillMaxWidth()
+                .weight(1f)
                 .verticalScroll(rememberScrollState())
         ) {
             Title()
@@ -189,7 +188,6 @@ fun ReschedulePickupScreenLayout(
         }
         NestButton(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
                 .fillMaxWidth()
                 .padding(16.dp),
             text = stringResource(id = R.string.title_button_reschedule_pickup),
