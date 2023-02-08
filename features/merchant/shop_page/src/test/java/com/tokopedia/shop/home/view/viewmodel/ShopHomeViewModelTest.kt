@@ -2068,7 +2068,7 @@ class ShopHomeViewModelTest {
     }
 
     @Test
-    fun `when call getLatestShopHomeWidgetData success and there are no home tab, then latestShopHomeWidgetData value should be success with empty list`() {
+    fun `when call getLatestShopHomeWidgetData success and tab data is empty, then latestShopHomeWidgetData value should be success with empty list`() {
         coEvery {
             getShopDynamicTabUseCase.get().executeOnBackground()
         } returns ShopPageGetDynamicTabResponse()
@@ -2115,14 +2115,14 @@ class ShopHomeViewModelTest {
     }
 
     @Test
-    fun `when2 call getLatestShopHomeWidgetData success and with home tab data exists, then latestShopHomeWidgetData value should be success with no empty list`() {
+    fun `when call getLatestShopHomeWidgetData success and with home tab data not exists, then latestShopHomeWidgetData value should be success with no empty list`() {
         coEvery {
             getShopDynamicTabUseCase.get().executeOnBackground()
         } returns ShopPageGetDynamicTabResponse(
             shopPageGetDynamicTab = ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab(
                 tabData = listOf(
                     ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData(
-                        name = "asd",
+                        name = "other tab",
                         data = ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData.Data(
                             homeLayoutData = HomeLayoutData(
                                 widgetIdList = listOf(
@@ -2142,8 +2142,8 @@ class ShopHomeViewModelTest {
             addressWidgetData
         )
         val result = viewModel.latestShopHomeWidgetLayoutData.value
-//        assert(result is Success)
-//        assert((result as? Success)?.data?.listWidgetLayout?.isEmpty() != true)
+        assert(result is Success)
+        assert((result as? Success)?.data?.listWidgetLayout?.isEmpty() == true)
     }
 
     @Test

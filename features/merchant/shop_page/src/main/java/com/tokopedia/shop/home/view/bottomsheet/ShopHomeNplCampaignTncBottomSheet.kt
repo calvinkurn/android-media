@@ -50,7 +50,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
         private const val KEY_IS_OFFICIAL_STORE = "key_is_official_store"
         private const val KEY_IS_GOLD_MERCHANT = "key_is_gold_merchant"
         private const val KEY_LIST_RULE_ID = "key_list_rule_id"
-        private const val RULE_ID_33 = 33
+        private const val RULE_ID_FOLLOWERS_ONLY = 33
 
         fun createInstance(
             campaignId: String,
@@ -180,7 +180,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
             Observer {
                 when (it) {
                     is Success -> {
-                        if (!isLoggedIn || !isRuleId33(listRuleId)) {
+                        if (!isLoggedIn || !isRuleIdFollowersOnly(listRuleId)) {
                             hideFollowButton()
                         } else {
                             isFollowShop = it.data.status?.userIsFollowing == true
@@ -341,8 +341,8 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
         loaderUnify?.hide()
     }
 
-    private fun isRuleId33(listRuleId: List<String>): Boolean {
-        return listRuleId.any { it.toIntOrZero() == RULE_ID_33 }
+    private fun isRuleIdFollowersOnly(listRuleId: List<String>): Boolean {
+        return listRuleId.any { it.toIntOrZero() == RULE_ID_FOLLOWERS_ONLY }
     }
 
     private fun getHalfDeviceScreen(): Int = getScreenHeight() / 2
