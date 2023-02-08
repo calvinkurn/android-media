@@ -1,6 +1,7 @@
 package com.tokopedia.logisticseller.ui.reschedulepickup
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -132,55 +133,63 @@ fun ReschedulePickupScreenLayout(
     onClickDialogButton: (Boolean) -> Unit,
     onCloseDialog: (Boolean) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .tag("reschedule_pickup_layout")
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        Title()
-        OrderInfo(
-            courier = state.value.info.courier,
-            invoice = state.value.info.invoice
-        )
-        Divider(thickness = 8.dp)
-        InputSectionTitle()
-        InputSectionSubtitle(
-            onSubtitleClicked = onSubtitleClicked,
-            applink = state.value.info.applink
-        )
-        ReschedulePickupGuide(guide = state.value.info.guide)
-        InputDay(
-            day = input.day,
-            onOpenBottomSheet = { onOpenBottomSheet(RescheduleBottomSheetState.DAY) }
+    Box {
+        Column(
+            modifier = Modifier
+                .tag("reschedule_pickup_layout")
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            Title()
+            OrderInfo(
+                courier = state.value.info.courier,
+                invoice = state.value.info.invoice
+            )
+            Divider(thickness = 8.dp)
+            InputSectionTitle()
+            InputSectionSubtitle(
+                onSubtitleClicked = onSubtitleClicked,
+                applink = state.value.info.applink
+            )
+            ReschedulePickupGuide(guide = state.value.info.guide)
+            InputDay(
+                day = input.day,
+                onOpenBottomSheet = { onOpenBottomSheet(RescheduleBottomSheetState.DAY) }
 
-        )
-        InputTime(
-            time = input.time,
-            onOpenBottomSheet = {
-                onOpenBottomSheet(
-                    RescheduleBottomSheetState.TIME
+            )
+            InputTime(
+                time = input.time,
+                onOpenBottomSheet = {
+                    onOpenBottomSheet(
+                        RescheduleBottomSheetState.TIME
+                    )
+                }
+            )
+            if (state.value.info.summary.isNotEmpty()) {
+                ReschedulePickupSummary(
+                    summary = state.value.info.summary
                 )
             }
-        )
-        if (state.value.info.summary.isNotEmpty()) {
-            ReschedulePickupSummary(
-                summary = state.value.info.summary
+            InputReason(
+                reason = state.value.reason,
+                onOpenBottomSheet = { onOpenBottomSheet(RescheduleBottomSheetState.REASON) }
             )
-        }
-        InputReason(
-            reason = state.value.reason,
-            onOpenBottomSheet = { onOpenBottomSheet(RescheduleBottomSheetState.REASON) }
-        )
-        if (state.value.isCustomReason) {
-            InputCustomReason(
-                customReason = input.reason,
-                onOtherReasonChanged = { onOtherReasonChanged(it) },
-                error = state.value.customReasonError
+            if (state.value.isCustomReason) {
+                InputCustomReason(
+                    customReason = input.reason,
+                    onOtherReasonChanged = { onOtherReasonChanged(it) },
+                    error = state.value.customReasonError
+                )
+            }
+            RescheduleResultDialog(
+                saveRescheduleModel = state.value.saveRescheduleModel,
+                onClickDialogButton = onClickDialogButton,
+                onCloseDialog = onCloseDialog
             )
         }
         NestButton(
             modifier = Modifier
+                .align(Alignment.BottomCenter)
                 .fillMaxWidth()
                 .padding(16.dp),
             text = stringResource(id = R.string.title_button_reschedule_pickup),
@@ -188,11 +197,6 @@ fun ReschedulePickupScreenLayout(
         ) {
             onSaveReschedule()
         }
-        RescheduleResultDialog(
-            saveRescheduleModel = state.value.saveRescheduleModel,
-            onClickDialogButton = onClickDialogButton,
-            onCloseDialog = onCloseDialog
-        )
     }
 }
 
@@ -299,9 +303,9 @@ private fun InputDay(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit, da
             )
         },
         enabled = false,
-//        placeholder = {
-//            NestTypography(text = stringResource(id = R.string.placeholder_day_reschedule_pick_up))
-//        },
+        placeholder = {
+            NestTypography(text = stringResource(id = R.string.placeholder_day_reschedule_pick_up))
+        },
         trailingIcon = { DropDownIcon() }
     )
 }
