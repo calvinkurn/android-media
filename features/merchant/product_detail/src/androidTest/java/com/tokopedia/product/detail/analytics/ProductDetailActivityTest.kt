@@ -22,6 +22,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
 import com.tokopedia.product.detail.util.ProductDetailIdlingResource
 import com.tokopedia.product.detail.util.ProductDetailNetworkIdlingResource
@@ -29,12 +30,12 @@ import com.tokopedia.product.detail.util.ProductIdlingInterface
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionQuestionViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
+import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.variant_common.view.holder.VariantChipViewHolder
-import com.tokopedia.variant_common.view.holder.VariantImageViewHolder
 import org.hamcrest.core.AllOf.allOf
 import org.junit.*
 import org.junit.runner.RunWith
@@ -47,9 +48,11 @@ class ProductDetailActivityTest {
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
     @get:Rule
-    var activityRule: ActivityTestRule<ProductDetailActivity> = IntentsTestRule(ProductDetailActivity::class.java,
-            false,
-            false)
+    var activityRule: ActivityTestRule<ProductDetailActivity> = IntentsTestRule(
+        ProductDetailActivity::class.java,
+        false,
+        false
+    )
 
     @get:Rule
     var cassavaRule = CassavaTestRule()
@@ -76,11 +79,11 @@ class ProductDetailActivityTest {
             override fun idleState(): Boolean {
                 val fragment = activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
                 val variantPosition = fragment.productAdapter?.currentList?.indexOfFirst {
-                    it is VariantDataModel
+                    it is ProductSingleVariantDataModel
                 } ?: return false
 
-                val variantVh = fragment.getRecyclerView()?.findViewHolderForAdapterPosition(variantPosition) as? ProductVariantViewHolder
-                val vhContainer = variantVh?.view?.findViewById<RecyclerView>(R.id.rvContainerVariant)
+                val variantVh = fragment.getRecyclerView()?.findViewHolderForAdapterPosition(variantPosition) as? ProductSingleVariantViewHolder
+                val vhContainer = variantVh?.view?.findViewById<RecyclerView>(R.id.rv_single_variant)
 
                 return vhContainer?.findViewHolderForAdapterPosition(0) != null
             }
@@ -102,8 +105,10 @@ class ProductDetailActivityTest {
 
     @After
     fun finish() {
-        IdlingRegistry.getInstance().unregister(ProductDetailIdlingResource.idlingResource,
-                idlingResource)
+        IdlingRegistry.getInstance().unregister(
+            ProductDetailIdlingResource.idlingResource,
+            idlingResource
+        )
     }
 
     @Test
@@ -222,16 +227,16 @@ class ProductDetailActivityTest {
         IdlingRegistry.getInstance().register(idlingResourceVariant)
 
         onView(withId(R.id.rv_pdp)).perform(
-                RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
-                        hasDescendant(allOf(withId(R.id.rvContainerVariant))),
-                        scrollTo()
-                )
+            RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                hasDescendant(allOf(withId(R.id.rv_single_variant))),
+                scrollTo()
+            )
         )
 
         onView(
-                allOf(withId(R.id.rvContainerVariant))
+            allOf(withId(R.id.rv_single_variant))
         ).check(
-                matches(isDisplayed())
+            matches(isDisplayed())
         )
         IdlingRegistry.getInstance().unregister(idlingResourceVariant)
     }
@@ -239,8 +244,8 @@ class ProductDetailActivityTest {
     private fun clickSeeAllDiscussion() {
         onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll))), scrollTo()))
         onView(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll)))
-                .check(matches(isDisplayed()))
-                .perform(click())
+            .check(matches(isDisplayed()))
+            .perform(click())
     }
 
     private fun clickThreadDetailDiscussion() {
@@ -252,8 +257,8 @@ class ProductDetailActivityTest {
     private fun clickTabDiscussion() {
         onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.mini_social_proof_recycler_view))), scrollTo()))
         onView(allOf(withId(R.id.chipSocialProofItem)))
-                .check(matches(isDisplayed()))
-                .perform(click())
+            .check(matches(isDisplayed()))
+            .perform(click())
     }
 
     private fun setUpTimeoutIdlingResource() {
@@ -271,27 +276,25 @@ class ProductDetailActivityTest {
     private fun clickVariantTest() {
         onView(withId(R.id.rv_pdp)).perform(
             RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
-                hasDescendant(allOf(withId(R.id.rvContainerVariant))),
+                hasDescendant(allOf(withId(R.id.rv_single_variant))),
                 scrollTo()
             )
         )
         val viewInteraction = onView(
-            allOf(withId(R.id.rvContainerVariant))
+            allOf(withId(R.id.rv_single_variant))
         ).check(
             matches(isDisplayed())
         )
         viewInteraction.perform(
-            RecyclerViewActions.actionOnItemAtPosition<VariantImageViewHolder>(
-                0, clickChildViewWithId(
-                    com.tokopedia.variant_common.R.id.variantImgContainer
-                )
+            RecyclerViewActions.actionOnItemAtPosition<ProductSingleVariantViewHolder>(
+                0,
+                clickChildViewWithId(R.id.atc_variant_chip)
             )
         )
         viewInteraction.perform(
-            RecyclerViewActions.actionOnItemAtPosition<VariantChipViewHolder>(
-                1, clickChildViewWithId(
-                    com.tokopedia.variant_common.R.id.containerChipVariant
-                )
+            RecyclerViewActions.actionOnItemAtPosition<ProductSingleVariantViewHolder>(
+                1,
+                clickChildViewWithId(R.id.atc_variant_chip)
             )
         )
     }
@@ -299,20 +302,19 @@ class ProductDetailActivityTest {
     private fun clickSeeGuideSizeChart() {
         onView(withId(R.id.rv_pdp)).perform(
             RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
-                hasDescendant(allOf(withId(R.id.rvContainerVariant))),
+                hasDescendant(allOf(withId(R.id.rv_single_variant))),
                 scrollTo()
             )
         )
         val viewInteraction = onView(
-            allOf(withId(R.id.rvContainerVariant))
+            allOf(withId(R.id.rv_single_variant))
         ).check(
             matches(isDisplayed())
         )
         viewInteraction.perform(
-            RecyclerViewActions.actionOnItemAtPosition<VariantContainerViewHolder>(
-                1, clickChildViewWithId(
-                    com.tokopedia.variant_common.R.id.txtVariantGuideline
-                )
+            RecyclerViewActions.actionOnItemAtPosition<ProductThumbnailVariantViewHolder>(
+                1,
+                clickChildViewWithId(R.id.atc_variant_chip)
             )
         )
     }

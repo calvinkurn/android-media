@@ -96,7 +96,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Test
-import org.mockito.Matchers.anyInt
 import org.mockito.Matchers.anyString
 import rx.Observable
 import java.util.concurrent.TimeoutException
@@ -1112,10 +1111,10 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         viewModel.loadViewToView("view_to_view", "", false)
         Thread.sleep(500)
-        //hit again with same page name
+        // hit again with same page name
         viewModel.loadViewToView("view_to_view", "", false)
 
-        //make sure it will only called once
+        // make sure it will only called once
         coVerify(exactly = 1) {
             getRecommendationUseCase.getData(any())
         }
@@ -1549,31 +1548,12 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     // region variant
-    /**
-     *  Variant Section
-     */
-    @Test
-    fun `process initial variant`() {
-        viewModel.processVariant(ProductVariant(), mutableMapOf(), false)
-
-        Assert.assertTrue(viewModel.initialVariantData.value != null)
-    }
-
     @Test
     fun `process initial variant tokonow`() {
         val variantData = ProductDetailTestUtil.getMockVariant()
-        viewModel.processVariant(variantData, mutableMapOf(), true)
+        viewModel.processVariant(variantData, mutableMapOf())
 
-        Assert.assertTrue(viewModel.initialVariantData.value == null)
         Assert.assertTrue(viewModel.singleVariantData.value != null)
-    }
-
-    @Test
-    fun `process initial variant with empty child tokonow`() {
-        viewModel.processVariant(ProductVariant(), mutableMapOf(), true)
-
-        Assert.assertTrue(viewModel.initialVariantData.value == null)
-        Assert.assertTrue(viewModel.singleVariantData.value == null)
     }
 
     @Test
@@ -1589,8 +1569,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             ProductDetailVariantLogic.determineVariant(mapOfSelectedOptionIds, productVariant)
         } returns expectedVariantCategory
 
-        viewModel.processVariant(productVariant, mapOfSelectedOptionIds, true)
-        Assert.assertTrue(viewModel.initialVariantData.value == null)
+        viewModel.processVariant(productVariant, mapOfSelectedOptionIds)
         Assert.assertTrue(viewModel.singleVariantData.value == expectedVariantCategory)
     }
 
@@ -1605,28 +1584,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             ProductDetailVariantLogic.determineVariant(mapOfSelectedOptionIds, productVariant)
         } returns null
 
-        viewModel.processVariant(productVariant, mapOfSelectedOptionIds, true)
-        Assert.assertTrue(viewModel.initialVariantData.value == null)
+        viewModel.processVariant(productVariant, mapOfSelectedOptionIds)
         Assert.assertTrue(viewModel.singleVariantData.value == null)
-    }
-
-    @Test
-    fun `variant clicked not partial`() {
-        val partialySelect = false
-        val imageVariant = "image"
-        viewModel.onVariantClicked(ProductVariant(), mutableMapOf(), partialySelect, anyInt(), imageVariant)
-        Assert.assertTrue(viewModel.onVariantClickedData.value != null)
-        Assert.assertTrue(viewModel.updatedImageVariant.value == null)
-    }
-
-    @Test
-    fun `variant clicked partialy will post clicked variant option id`() {
-        val partialySelect = true
-        val variantOptionId = "1234567890"
-        viewModel.onVariantClicked(ProductVariant(), mutableMapOf(), partialySelect, anyInt(), variantOptionId)
-        Assert.assertTrue(viewModel.onVariantClickedData.value == null)
-        Assert.assertTrue(viewModel.updatedImageVariant.value != null)
-        Assert.assertTrue(viewModel.updatedImageVariant.value?.second == variantOptionId)
     }
 
     @Test
@@ -1659,7 +1618,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     private fun `child options id is available when get child of variant selected`(
-        singleVariant: ProductSingleVariantDataModel?,
+        singleVariant: ProductSingleVariantDataModel?
     ) {
         // given pdp layout data
         `on success get pdp layout mini variants options`()

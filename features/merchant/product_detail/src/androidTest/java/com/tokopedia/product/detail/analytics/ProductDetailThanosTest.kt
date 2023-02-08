@@ -21,11 +21,13 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.util.ProductDetailIdlingResource
 import com.tokopedia.product.detail.util.ProductDetailNetworkIdlingResource
 import com.tokopedia.product.detail.util.ProductIdlingInterface
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
+import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert.assertThat
@@ -62,11 +64,11 @@ class ProductDetailThanosTest {
             override fun idleState(): Boolean {
                 val fragment = activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
                 val variantPosition = fragment.productAdapter?.currentList?.indexOfFirst {
-                    it is VariantDataModel
+                    it is ProductSingleVariantDataModel
                 } ?: return false
 
-                val variantVh = fragment.getRecyclerView()?.findViewHolderForAdapterPosition(variantPosition) as? ProductVariantViewHolder
-                val vhContainer = variantVh?.view?.findViewById<RecyclerView>(R.id.rvContainerVariant)
+                val variantVh = fragment.getRecyclerView()?.findViewHolderForAdapterPosition(variantPosition) as? ProductSingleVariantViewHolder
+                val vhContainer = variantVh?.view?.findViewById<RecyclerView>(R.id.rv_single_variant)
 
                 return vhContainer?.findViewHolderForAdapterPosition(0) != null
             }
@@ -77,14 +79,17 @@ class ProductDetailThanosTest {
     var activityRule = IntentsTestRule(ProductDetailActivity::class.java, false, false)
 
     @get:Rule
-    var cassavaTestRule = CassavaTestRule(isFromNetwork = true,
-        sendValidationResult = true)
+    var cassavaTestRule = CassavaTestRule(
+        isFromNetwork = true,
+        sendValidationResult = true
+    )
 
     @Before
     fun setup() {
         setupGraphqlMockResponse(ProductDetailMockResponse())
         InstrumentationAuthHelper.clearUserSession()
-        val intent = ProductDetailActivity.createIntent(targetContext,
+        val intent = ProductDetailActivity.createIntent(
+            targetContext,
             ProductDetailActivityTest.PRODUCT_ID
         )
         activityRule.launchActivity(intent)
@@ -99,7 +104,8 @@ class ProductDetailThanosTest {
     fun finish() {
         IdlingRegistry.getInstance().unregister(
             ProductDetailIdlingResource.idlingResource,
-            idlingResource)
+            idlingResource
+        )
     }
 
     /**
@@ -131,13 +137,12 @@ class ProductDetailThanosTest {
 
         onView(withId(R.id.rv_pdp)).perform(
             RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
-                ViewMatchers.hasDescendant(allOf(withId(R.id.rvContainerVariant))),
+                ViewMatchers.hasDescendant(allOf(withId(R.id.rv_single_variant))),
                 ViewActions.scrollTo()
             )
         )
 
-        onView(allOf(withId(R.id.rvContainerVariant))).check(matches(isDisplayed()))
+        onView(allOf(withId(R.id.rv_single_variant))).check(matches(isDisplayed()))
         IdlingRegistry.getInstance().unregister(idlingResourceVariant)
     }
-
 }

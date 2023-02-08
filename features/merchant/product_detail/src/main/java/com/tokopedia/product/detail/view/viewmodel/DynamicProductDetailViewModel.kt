@@ -104,7 +104,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
-import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -218,10 +217,6 @@ open class DynamicProductDetailViewModel @Inject constructor(
     val toggleFavoriteResult: LiveData<Result<Pair<Boolean, Boolean>>>
         get() = _toggleFavoriteResult
 
-    private val _updatedImageVariant = MutableLiveData<Pair<List<VariantCategory>?, String>>()
-    val updatedImageVariant: LiveData<Pair<List<VariantCategory>?, String>>
-        get() = _updatedImageVariant
-
     private val _addToCartLiveData = MutableLiveData<Result<AddToCartDataModel>>()
     val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
         get() = _addToCartLiveData
@@ -229,10 +224,6 @@ open class DynamicProductDetailViewModel @Inject constructor(
     private val _singleVariantData = MutableLiveData<VariantCategory?>()
     val singleVariantData: LiveData<VariantCategory?>
         get() = _singleVariantData
-
-    private val _onVariantClickedData = MutableLiveData<List<VariantCategory>?>()
-    val onVariantClickedData: LiveData<List<VariantCategory>?>
-        get() = _onVariantClickedData
 
     // slicing from _onVariantClickedData, because thumbnail variant feature using vbs for refresh pdp info
     private val _onThumbnailVariantSelectedData = MutableLiveData<ProductSingleVariantDataModel?>()
@@ -497,32 +488,6 @@ open class DynamicProductDetailViewModel @Inject constructor(
                     productVariant = data
                 )
             )
-        }) {}
-    }
-
-    fun onVariantClicked(
-        data: ProductVariant?,
-        mapOfSelectedVariant: MutableMap<String, String>?,
-        isPartialySelected: Boolean,
-        variantLevel: Int,
-        variantId: String
-    ) {
-        launchCatchError(block = {
-            withContext(dispatcher.io) {
-                val processedVariant = VariantCommonMapper.processVariant(
-                    data,
-                    mapOfSelectedVariant,
-                    variantLevel,
-                    isPartialySelected
-                )
-
-                if (isPartialySelected) {
-                    _updatedImageVariant.postValue(processedVariant to variantId)
-                    return@withContext
-                } else {
-                    _onVariantClickedData.postValue(processedVariant)
-                }
-            }
         }) {}
     }
 
@@ -1374,10 +1339,9 @@ open class DynamicProductDetailViewModel @Inject constructor(
         val selectedOptionIds = mapOfSelectedVariants.values.toList()
         val variantDataNonNull = variantData ?: ProductVariant()
 
-        return VariantCommonMapper.selectedProductData(
-            variantData = variantDataNonNull,
-            selectedOptionIds = selectedOptionIds
-        )
+        return variantDataNonNull.children.firstOrNull {
+            it.optionIds == selectedOptionIds
+        }
     }
 
     /**

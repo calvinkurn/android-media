@@ -264,7 +264,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -645,10 +644,8 @@ open class DynamicProductDetailFragment :
         observeToggleFavourite()
         observeToggleNotifyMe()
         observeRecommendationProduct()
-        observeImageVariantPartialyChanged()
         observeAddToCart()
         observeSingleVariantData()
-        observeonVariantClickedData()
         observeOnThumbnailVariantSelected()
         observeATCTokonowData()
         observeATCTokonowResetCard()
@@ -2472,20 +2469,6 @@ open class DynamicProductDetailFragment :
             }, {
                 logException(it)
             })
-        }
-    }
-
-    private fun observeImageVariantPartialyChanged() {
-        viewLifecycleOwner.observe(viewModel.updatedImageVariant) {
-            pdpUiUpdater?.updateVariantData(it.first)
-            pdpUiUpdater?.updateMediaScrollPosition(it.second)
-            updateUi()
-        }
-    }
-
-    private fun observeonVariantClickedData() {
-        viewLifecycleOwner.observe(viewModel.onVariantClickedData) {
-            updateVariantDataAndUi(it)
         }
     }
 
@@ -5154,14 +5137,6 @@ open class DynamicProductDetailFragment :
             )
             intent.putExtra(SellerMigrationApplinkConst.EXTRA_SCREEN_NAME, screenName)
             startActivity(intent)
-        }
-    }
-
-    private fun getAbTestPlatform(): AbTestPlatform? {
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform
-        } catch (e: java.lang.IllegalStateException) {
-            null
         }
     }
 

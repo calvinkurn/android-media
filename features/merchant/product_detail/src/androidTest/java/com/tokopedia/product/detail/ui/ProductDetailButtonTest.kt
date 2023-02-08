@@ -22,11 +22,11 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.ui.base.BaseProductDetailUiTest
 import com.tokopedia.product.detail.ui.interceptor.*
 import com.tokopedia.product.detail.util.*
+import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.variant_common.view.holder.VariantImageViewHolder
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.core.AllOf
 import org.junit.After
@@ -74,7 +74,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
     @Test
     fun sticky_login_shows_login() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1() //given user logged in
+        InstrumentationAuthHelper.loginInstrumentationTestUser1() // given user logged in
 
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
 
@@ -92,12 +92,16 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         onView(withId(R.id.btn_topchat)).assertVisible()
 
         onView(withId(R.id.btn_buy_now))
-                .assertVisible()
-                .check(matches(ViewMatchers.withText("Stok Kosong")))
-                .check(matches(ViewAttributeMatcher {
-                    val buttonUnify = (it as UnifyButton)
-                    buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN && !buttonUnify.isEnabled
-                }))
+            .assertVisible()
+            .check(matches(ViewMatchers.withText("Stok Kosong")))
+            .check(
+                matches(
+                    ViewAttributeMatcher {
+                        val buttonUnify = (it as UnifyButton)
+                        buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN && !buttonUnify.isEnabled
+                    }
+                )
+            )
 
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
         support_button_not_visible()
@@ -110,14 +114,14 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         onView(withId(R.id.btn_topchat)).assertVisible()
 
         onView(withId(R.id.btn_buy_now))
-                .assertVisible()
-                .check(matches(ViewMatchers.withText("Beli test")))
+            .assertVisible()
+            .check(matches(ViewMatchers.withText("Beli test")))
 
         onView(withId(R.id.btn_add_to_cart))
-                .assertVisible()
-                .check(matches(ViewMatchers.withText("+ Keranjang test")))
+            .assertVisible()
+            .check(matches(ViewMatchers.withText("+ Keranjang test")))
 
-         support_button_not_visible()
+        support_button_not_visible()
     }
 
     @Test
@@ -128,16 +132,20 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         onView(withId(R.id.btn_topchat)).assertVisible()
 
         onView(withId(R.id.btn_buy_now))
-                .assertVisible()
-                .check(matches(ViewMatchers.withText("Beli pakai OVO")))
-                .check(matches(ViewAttributeMatcher {
-                    val buttonUnify = (it as UnifyButton)
-                    buttonUnify.buttonVariant == UnifyButton.Variant.GHOST && buttonUnify.buttonType == UnifyButton.Type.MAIN
-                }))
+            .assertVisible()
+            .check(matches(ViewMatchers.withText("Beli pakai OVO")))
+            .check(
+                matches(
+                    ViewAttributeMatcher {
+                        val buttonUnify = (it as UnifyButton)
+                        buttonUnify.buttonVariant == UnifyButton.Variant.GHOST && buttonUnify.buttonType == UnifyButton.Type.MAIN
+                    }
+                )
+            )
 
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
 
-         support_button_not_visible()
+        support_button_not_visible()
     }
 
     //region Error case
@@ -151,14 +159,18 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         onView(withId(R.id.btn_topchat)).assertVisible()
         onView(withId(R.id.btn_buy_now)).assertNotVisible()
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
-         onView(withId(R.id.seller_button_container)).assertNotVisible()
+        onView(withId(R.id.seller_button_container)).assertNotVisible()
 
-        onView(withId(R.id.btn_empty_stock)) .assertVisible()
-                .check(matches(ViewMatchers.withText("Stok Habis")))
-                .check(matches(ViewAttributeMatcher {
-                    val buttonUnify = (it as UnifyButton)
-                    buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN && !buttonUnify.isEnabled
-                }))
+        onView(withId(R.id.btn_empty_stock)).assertVisible()
+            .check(matches(ViewMatchers.withText("Stok Habis")))
+            .check(
+                matches(
+                    ViewAttributeMatcher {
+                        val buttonUnify = (it as UnifyButton)
+                        buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN && !buttonUnify.isEnabled
+                    }
+                )
+            )
     }
 
     @Test
@@ -170,26 +182,34 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         onView(withId(R.id.btn_topchat)).assertVisible()
 
         onView(withId(R.id.btn_buy_now))
-                .assertVisible()
-                .check(matches(ViewMatchers.withText("Beli")))
-                .check(matches(ViewAttributeMatcher {
-                    val buttonUnify = (it as UnifyButton)
-                    buttonUnify.buttonVariant == UnifyButton.Variant.GHOST && buttonUnify.buttonType == UnifyButton.Type.TRANSACTION
-                }))
+            .assertVisible()
+            .check(matches(ViewMatchers.withText("Beli")))
+            .check(
+                matches(
+                    ViewAttributeMatcher {
+                        val buttonUnify = (it as UnifyButton)
+                        buttonUnify.buttonVariant == UnifyButton.Variant.GHOST && buttonUnify.buttonType == UnifyButton.Type.TRANSACTION
+                    }
+                )
+            )
 
         onView(withId(R.id.btn_add_to_cart)).assertVisible()
-                .check(matches(ViewMatchers.withText("+ Keranjang")))
-                .check(matches(ViewAttributeMatcher {
-                    val buttonUnify = (it as UnifyButton)
-                    buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.TRANSACTION
-                }))
+            .check(matches(ViewMatchers.withText("+ Keranjang")))
+            .check(
+                matches(
+                    ViewAttributeMatcher {
+                        val buttonUnify = (it as UnifyButton)
+                        buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.TRANSACTION
+                    }
+                )
+            )
 
-         support_button_not_visible()
+        support_button_not_visible()
     }
 
     @Test
     fun check_button_atc_variant_noMinicart_tokonow_login() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1() //given user logged in
+        InstrumentationAuthHelper.loginInstrumentationTestUser1() // given user logged in
         customInterceptor.customP1ResponsePath = RESPONSE_P1_VARIANT_TOKONOW_PATH
         customInterceptor.customP2DataResponsePath = RESPONSE_P2_DATA_VARIANT_TOKONOW_PATH
         customInterceptor.customMiniCartResponsePath = RESPONSE_MINICART_EMPTY_PATH
@@ -199,20 +219,24 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         onView(withId(R.id.btn_topchat)).assertVisible()
 
         onView(withId(R.id.btn_buy_now))
-                .assertVisible()
-                .check(matches(ViewMatchers.withText("+ Keranjang")))
-                .check(matches(ViewAttributeMatcher {
-                    val buttonUnify = (it as UnifyButton)
-                    buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN
-                }))
+            .assertVisible()
+            .check(matches(ViewMatchers.withText("+ Keranjang")))
+            .check(
+                matches(
+                    ViewAttributeMatcher {
+                        val buttonUnify = (it as UnifyButton)
+                        buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN
+                    }
+                )
+            )
 
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
-         support_button_not_visible()
+        support_button_not_visible()
     }
 
     @Test
     fun check_button_atc_variant_minicart_tokonow_login() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1() //given user logged in
+        InstrumentationAuthHelper.loginInstrumentationTestUser1() // given user logged in
 
         customInterceptor.customP1ResponsePath = RESPONSE_P1_VARIANT_TOKONOW_PATH
         customInterceptor.customP2DataResponsePath = RESPONSE_P2_DATA_VARIANT_TOKONOW_PATH
@@ -226,22 +250,26 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         onView(withId(R.id.txt_static_total_quantity)).assertVisible()
         onView(withId(R.id.divider_button_quantity)).assertVisible()
         onView(withId(R.id.txt_product_name))
-                .assertVisible()
-                .check(matches(ViewMatchers.withText("PDP D4G1NG G1L1NG V4R THUMBN41L - Hitam")))
+            .assertVisible()
+            .check(matches(ViewMatchers.withText("PDP D4G1NG G1L1NG V4R THUMBN41L - Hitam")))
 
         onView(withId(R.id.btn_atc_tokonow_variant))
-                .assertVisible()
-                .check(matches(ViewMatchers.withText("+ Keranjang")))
-                .check(matches(ViewAttributeMatcher {
-                    val buttonUnify = (it as UnifyButton)
-                    buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN
-                }))
+            .assertVisible()
+            .check(matches(ViewMatchers.withText("+ Keranjang")))
+            .check(
+                matches(
+                    ViewAttributeMatcher {
+                        val buttonUnify = (it as UnifyButton)
+                        buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN
+                    }
+                )
+            )
 
         onView(withId(R.id.btn_delete_tokonow_non_var)).assertNotVisible()
         onView(withId(R.id.qty_tokonow_non_var)).assertNotVisible()
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
         onView(withId(R.id.btn_buy_now)).assertNotVisible()
-         support_button_not_visible()
+        support_button_not_visible()
     }
 
     @Test
@@ -256,20 +284,24 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         onView(withId(R.id.btn_topchat)).assertVisible()
 
         onView(withId(R.id.btn_buy_now))
-                .assertVisible()
-                .check(matches(ViewMatchers.withText("+ Keranjang")))
-                .check(matches(ViewAttributeMatcher {
-                    val buttonUnify = (it as UnifyButton)
-                    buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN
-                }))
+            .assertVisible()
+            .check(matches(ViewMatchers.withText("+ Keranjang")))
+            .check(
+                matches(
+                    ViewAttributeMatcher {
+                        val buttonUnify = (it as UnifyButton)
+                        buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN
+                    }
+                )
+            )
 
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
-         support_button_not_visible()
+        support_button_not_visible()
     }
 
     @Test
     fun check_quantity_editor_button_non_variant_login_minicart_tokonow() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1() //given user logged in
+        InstrumentationAuthHelper.loginInstrumentationTestUser1() // given user logged in
         customInterceptor.customP1ResponsePath = RESPONSE_P1_NON_VARIANT_TOKONOW_PATH
         customInterceptor.customP2DataResponsePath = RESPONSE_P2_DATA_NON_VARIANT_TOKONOW_PATH
         customInterceptor.customMiniCartResponsePath = RESPONSE_MINICART_PATH
@@ -277,10 +309,14 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
 
         onView(withId(R.id.qty_tokonow_non_var)).assertVisible()
-                .check(matches(ViewAttributeMatcher {
-                    val qtyEditor = (it as QuantityEditorUnify)
-                    qtyEditor.getValue() == 5
-                }))
+            .check(
+                matches(
+                    ViewAttributeMatcher {
+                        val qtyEditor = (it as QuantityEditorUnify)
+                        qtyEditor.getValue() == 5
+                    }
+                )
+            )
 
         onView(withId(R.id.btn_topchat)).assertVisible()
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
@@ -290,7 +326,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
     @Test
     fun check_button_atc_non_variant_login_noMinicart_tokonow() {
         // else if (!GlobalConfig.isSellerApp() && !onSuccessGetCartType)
-        InstrumentationAuthHelper.loginInstrumentationTestUser1() //given user logged in
+        InstrumentationAuthHelper.loginInstrumentationTestUser1() // given user logged in
 
         customInterceptor.customP1ResponsePath = RESPONSE_P1_NON_VARIANT_TOKONOW_PATH
         customInterceptor.customP2DataResponsePath = RESPONSE_P2_DATA_NON_VARIANT_TOKONOW_PATH
@@ -302,15 +338,19 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         onView(withId(R.id.btn_topchat)).assertVisible()
 
         onView(withId(R.id.btn_buy_now))
-                .assertVisible()
-                .check(matches(ViewMatchers.withText("+ Keranjang")))
-                .check(matches(ViewAttributeMatcher {
-                    val buttonUnify = (it as UnifyButton)
-                    buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN
-                }))
+            .assertVisible()
+            .check(matches(ViewMatchers.withText("+ Keranjang")))
+            .check(
+                matches(
+                    ViewAttributeMatcher {
+                        val buttonUnify = (it as UnifyButton)
+                        buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN
+                    }
+                )
+            )
 
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
-         support_button_not_visible()
+        support_button_not_visible()
     }
 
     @Test
@@ -334,12 +374,16 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         onView(withId(R.id.txt_total_quantity)).assertVisible()
 
         onView(withId(R.id.btn_atc_tokonow_variant))
-                .assertVisible()
-                .check(matches(ViewMatchers.withText("+ Keranjang")))
-                .check(matches(ViewAttributeMatcher {
-                    val buttonUnify = (it as UnifyButton)
-                    buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN
-                }))
+            .assertVisible()
+            .check(matches(ViewMatchers.withText("+ Keranjang")))
+            .check(
+                matches(
+                    ViewAttributeMatcher {
+                        val buttonUnify = (it as UnifyButton)
+                        buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN
+                    }
+                )
+            )
 
         onView(withId(R.id.btn_delete_tokonow_non_var)).assertNotVisible()
 
@@ -347,7 +391,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
         onView(withId(R.id.btn_buy_now)).assertNotVisible()
-     }
+    }
 
     @Test
     fun check_click_atc_tokonow_non_variant_non_login() {
@@ -359,14 +403,18 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
         onView(withId(R.id.btn_topchat)).assertVisible()
 
-        //gotologin page
+        // gotologin page
         onView(withId(R.id.btn_buy_now))
-                .assertVisible()
-                .check(matches(ViewMatchers.withText("+ Keranjang")))
-                .check(matches(ViewAttributeMatcher {
-                    val buttonUnify = (it as UnifyButton)
-                    buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN
-                }))
+            .assertVisible()
+            .check(matches(ViewMatchers.withText("+ Keranjang")))
+            .check(
+                matches(
+                    ViewAttributeMatcher {
+                        val buttonUnify = (it as UnifyButton)
+                        buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN
+                    }
+                )
+            )
 
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
     }
@@ -376,7 +424,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
     //region seller side
     @Test
     fun check_button_seller_side() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1() //given user logged in
+        InstrumentationAuthHelper.loginInstrumentationTestUser1() // given user logged in
         InstrumentationAuthHelper.userSession {
             setIsShopOwner(true)
             shopId = "1990266"
@@ -390,20 +438,28 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
         onView(withId(R.id.seller_button_container)).assertVisible()
         onView(withId(R.id.btn_edit_product))
-                .assertVisible()
-                .check(matches(ViewMatchers.withText("Ubah Produk")))
-                .check(matches(ViewAttributeMatcher {
-                    val buttonUnify = (it as UnifyButton)
-                    buttonUnify.buttonVariant == UnifyButton.Variant.GHOST && buttonUnify.buttonType == UnifyButton.Type.ALTERNATE
-                }))
+            .assertVisible()
+            .check(matches(ViewMatchers.withText("Ubah Produk")))
+            .check(
+                matches(
+                    ViewAttributeMatcher {
+                        val buttonUnify = (it as UnifyButton)
+                        buttonUnify.buttonVariant == UnifyButton.Variant.GHOST && buttonUnify.buttonType == UnifyButton.Type.ALTERNATE
+                    }
+                )
+            )
 
         onView(withId(R.id.btn_top_ads))
-                .assertVisible()
-                .check(matches(ViewMatchers.withText("Iklankan Produk")))
-                .check(matches(ViewAttributeMatcher {
-                    val buttonUnify = (it as UnifyButton)
-                    buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN
-                }))
+            .assertVisible()
+            .check(matches(ViewMatchers.withText("Iklankan Produk")))
+            .check(
+                matches(
+                    ViewAttributeMatcher {
+                        val buttonUnify = (it as UnifyButton)
+                        buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN
+                    }
+                )
+            )
     }
     //endregion
 
@@ -416,9 +472,13 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
     }
 
     private fun clickVariantTest() {
-        onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.rvContainerVariant))), ViewActions.scrollTo()))
-        val viewInteraction = onView(AllOf.allOf(withId(R.id.rvContainerVariant))).check(matches(ViewMatchers.isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantImageViewHolder>(0, CommonActions.clickChildViewWithId(R.id.containerChipVariant)))
+        onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.rv_single_variant))), ViewActions.scrollTo()))
+        val viewInteraction = onView(AllOf.allOf(withId(R.id.rv_single_variant))).check(
+            matches(
+                isDisplayed()
+            )
+        )
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<ProductSingleVariantViewHolder>(0, CommonActions.clickChildViewWithId(R.id.atc_variant_chip)))
     }
 
     private fun support_button_not_visible() {
