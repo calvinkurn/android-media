@@ -6,8 +6,6 @@ import com.tokopedia.media.picker.data.FeatureToggleManagerImpl
 import com.tokopedia.media.picker.data.MediaQueryDataSource
 import com.tokopedia.media.picker.data.MediaQueryDataSourceImpl
 import com.tokopedia.media.picker.data.repository.*
-import com.tokopedia.picker.common.cache.PickerCacheManager
-import com.tokopedia.picker.common.cache.PickerParamCacheManager
 import dagger.Binds
 import dagger.Module
 
@@ -17,10 +15,6 @@ abstract class PickerModule {
     @Binds
     @ActivityScope
     abstract fun provideFeatureToggleManager(source: FeatureToggleManagerImpl) : FeatureToggleManager
-
-    @Binds
-    @ActivityScope
-    abstract fun providePickerCacheManager(source: PickerParamCacheManager) : PickerCacheManager
 
     @Binds
     @ActivityScope
