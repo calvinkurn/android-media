@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
@@ -257,7 +258,7 @@ class GetProductVariantAggregatorUseCase @Inject constructor(
                 chooseAddress.latLong,
                 chooseAddress.city_id
             ),
-            ProductDetailCommonConstant.PARAM_TOKONOW to generateTokoNow()
+            ProductDetailCommonConstant.PARAM_TOKONOW to generateTokoNow(chooseAddress)
         )
     }
 
@@ -309,12 +310,11 @@ class GetProductVariantAggregatorUseCase @Inject constructor(
         )
     }
 
-    private fun generateTokoNow(): TokoNowParam {
-        val localCache = ChooseAddressUtils.getLocalizingAddressData(context)
+    private fun generateTokoNow(chooseAddress: LocalCacheModel): TokoNowParam {
         return TokoNowParam(
-            localCache.shop_id,
-            localCache.warehouse_id,
-            localCache.service_type
+            chooseAddress.shop_id,
+            chooseAddress.warehouse_id,
+            chooseAddress.service_type
         )
     }
 }
