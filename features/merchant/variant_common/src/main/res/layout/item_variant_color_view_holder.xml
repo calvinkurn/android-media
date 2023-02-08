@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingEnd="12dp"
+    android:paddingRight="12dp"
+    tools:ignore="RtlSymmetry">
+
+    <com.tokopedia.variant_common.view.customview.VariantCircleColorView
+        android:id="@+id/variantColorItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtVariantColorEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/variant_empty"
+        android:textColor="@color/Unify_N0"
+        android:visibility="gone"
+        app:typographyType="body_3" />
+
+</FrameLayout>

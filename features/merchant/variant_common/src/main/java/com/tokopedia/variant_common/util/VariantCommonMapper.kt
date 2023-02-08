@@ -69,6 +69,17 @@ object VariantCommonMapper {
         return listOfVariant
     }
 
+    fun selectedProductData(variantData: ProductVariant): Pair<Int, VariantChild?>? {
+        var pairOfValue: Pair<Int, VariantChild?>? = null
+        for ((index, it: VariantChild) in variantData.children.withIndex()) {
+            if (it.optionIds == selectedOptionId) {
+                pairOfValue = Pair(index, it)
+                break
+            }
+        }
+        return pairOfValue
+    }
+
     fun selectedProductData(variantData: ProductVariant, selectedOptionIds: List<String>): VariantChild? {
         return variantData.children.firstOrNull {
             it.optionIds == selectedOptionIds

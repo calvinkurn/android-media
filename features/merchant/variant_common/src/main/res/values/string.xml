@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="variant_empty">Habis</string>
+    <string name="variant_option_builder_1">Pilih %1$s: </string>
+    <string name="variant_option_builder_2">%1$d varian</string>
+    <string name="variant_guideline">Lihat Panduan</string>
+    <string name="variant_promo">PROMO</string>
+
+    <string name="content_desc_txtChipVariant">text varian %1s</string>
+</resources>

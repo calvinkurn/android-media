@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtVariantCategoryName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="Pilih Warna : " />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtVariantSelectedOption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:textColor="@color/Unify_N700_44"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txtVariantCategoryName"
+        app:layout_constraintBottom_toBottomOf="@+id/txtVariantCategoryName"
+        app:layout_constraintStart_toEndOf="@+id/txtVariantCategoryName"
+        app:layout_constraintTop_toTopOf="@+id/txtVariantCategoryName"
+        app:layout_constraintVertical_bias="0.9"
+        app:typographyType="body_2"
+        tools:text="10 Pilihan"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtVariantGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/variant_guideline"
+        android:textColor="@color/Unify_G500"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/txtVariantCategoryName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txtVariantCategoryName"
+        app:typographyType="body_2"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtVariantStockWording"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/txtVariantCategoryName"
+        app:layout_constraintTop_toBottomOf="@+id/rv_variant"
+        app:typographyType="body_3"
+        android:textColor="@color/Unify_N700_96"
+        tools:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_variant"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingLeft="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtVariantCategoryName"
+        tools:ignore="RtlSymmetry"
+        tools:itemCount="1" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
