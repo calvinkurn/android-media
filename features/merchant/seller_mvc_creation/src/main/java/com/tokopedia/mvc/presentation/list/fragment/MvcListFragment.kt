@@ -196,13 +196,13 @@ class MvcListFragment :
     }
 
     override fun onVoucherListMoreMenuClicked(voucher: Voucher) {
-        showMoreMenuBottomSheet(voucher)
+        showMoreMenuBottomSheet(voucher, pageSource = MvcListFragment::class.java.simpleName)
     }
 
     private fun showMoreMenuBottomSheet(
         voucher: Voucher,
         title: String = voucher.name,
-        isFromRecurringBottomSheet: Boolean = false
+        pageSource: String = ""
     ) {
         activity?.let {
             moreMenuBottomSheet =
@@ -210,7 +210,7 @@ class MvcListFragment :
                     it,
                     voucher,
                     title,
-                    isFromRecurringBottomSheet = isFromRecurringBottomSheet
+                    pageSource = pageSource
                 )
             moreMenuBottomSheet?.setOnMenuClickListener { menu ->
                 onClickListenerForMoreMenu(menu, voucher)
@@ -560,7 +560,7 @@ class MvcListFragment :
         val title =
             context?.getString(R.string.smvc_voucherlist_voucher_date_format, startDate, finishDate)
                 .toBlankOrString()
-        showMoreMenuBottomSheet(voucher, title, isFromRecurringBottomSheet = true)
+        showMoreMenuBottomSheet(voucher, title, pageSource = OtherPeriodBottomSheet::class.java.simpleName)
     }
 
     private fun setupObservables() {

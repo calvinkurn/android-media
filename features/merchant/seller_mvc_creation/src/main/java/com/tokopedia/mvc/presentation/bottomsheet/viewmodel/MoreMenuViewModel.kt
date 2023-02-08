@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
+import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
+import com.tokopedia.mvc.presentation.detail.VoucherDetailFragment
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.util.StringHandler
 import javax.inject.Inject
@@ -17,11 +19,10 @@ class MoreMenuViewModel @Inject constructor(
 
     fun getMenuList(
         voucher: Voucher?,
-        isFromVoucherDetail: Boolean,
         voucherStatus: VoucherStatus?,
-        isFromRecurringBottomSheet: Boolean
+        pageSource: String
     ): List<MoreMenuUiModel> {
-        if (isFromVoucherDetail) {
+        if (pageSource == VoucherDetailFragment::class.java.simpleName) {
             menuItem =
                 when (voucherStatus) {
                     VoucherStatus.ONGOING -> {
@@ -34,7 +35,7 @@ class MoreMenuViewModel @Inject constructor(
                         getVoucherDetailEndedStoppedOptionsListMenu()
                     }
                 }
-        } else if (isFromRecurringBottomSheet) {
+        } else if (pageSource == OtherPeriodBottomSheet::class.java.simpleName) {
             menuItem = getOtherScheduleListMenu()
         } else {
             if (voucher == null) {

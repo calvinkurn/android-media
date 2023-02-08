@@ -28,8 +28,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     private var binding by autoClearedNullable<SmvcBottomsheetThreeDotsMenuBinding>()
     private var adapter: MoreMenuAdapter? = null
     private var voucherStatus: VoucherStatus? = null
-    private var isFromVoucherDetailPage: Boolean = false
-    private var isFromRecurringBottomSheet: Boolean = false
+    private var pageSource: String = ""
     init {
         isFullpage = false
     }
@@ -54,9 +53,8 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         this.menuItem = viewModel.getMenuList(
             voucher,
-            isFromVoucherDetailPage,
             voucherStatus,
-            isFromRecurringBottomSheet
+            pageSource
         )
 
         adapter?.clearAllElements()
@@ -85,17 +83,15 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
             context: FragmentActivity,
             voucher: Voucher?,
             title: String = "",
-            isFromVoucherDetailPage: Boolean = false,
-            voucherStatus: VoucherStatus = VoucherStatus.PROCESSING,
-            isFromRecurringBottomSheet: Boolean = false
+            pageSource: String = "",
+            voucherStatus: VoucherStatus = VoucherStatus.PROCESSING
         ): MoreMenuBottomSheet {
             return MoreMenuBottomSheet().apply {
                 this.context = context
                 this.voucher = voucher
                 this.sheetTitle = title
-                this.isFromVoucherDetailPage = isFromVoucherDetailPage
                 this.voucherStatus = voucherStatus
-                this.isFromRecurringBottomSheet = isFromRecurringBottomSheet
+                this.pageSource = pageSource
             }
         }
     }
