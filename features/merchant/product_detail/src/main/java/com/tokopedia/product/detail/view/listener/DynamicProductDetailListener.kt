@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
@@ -71,6 +72,7 @@ interface DynamicProductDetailListener {
         type: String,
         url: String,
         position: Int,
+        variantOptionId: String,
         componentTrackDataModel: ComponentTrackDataModel?
     )
 
@@ -373,7 +375,7 @@ interface DynamicProductDetailListener {
     /**
      * ProductArViewHolder
      */
-    fun showArCoachMark(view:ConstraintLayout?)
+    fun showArCoachMark(view: ConstraintLayout?)
     fun hideArCoachMark()
     fun goToArPage(componentTrackDataModel: ComponentTrackDataModel)
 
@@ -416,7 +418,8 @@ interface DynamicProductDetailListener {
     fun onClickProductInBundling(
         bundleId: String,
         bundleProductId: String,
-        componentTrackDataModel: ComponentTrackDataModel
+        componentTrackDataModel: ComponentTrackDataModel,
+        isOldBundlingWidget: Boolean = true
     )
 
     /**
@@ -459,13 +462,20 @@ interface DynamicProductDetailListener {
         data: ViewToViewItemData,
         title: String,
         itemPosition: Int,
-        adapterPosition: Int,
+        adapterPosition: Int
     )
     fun onViewToViewClicked(
         data: ViewToViewItemData,
         title: String,
         itemPosition: Int,
-        adapterPosition: Int,
+        adapterPosition: Int
     )
     fun onViewToViewReload(pageName: String)
+
+    /**
+     * Thumbnail Variant
+     */
+    fun onThumbnailVariantSelected(variantId: String, categoryKey: String)
+
+    fun onThumbnailVariantImpress(data: VariantOptionWithAttribute, position: Int)
 }
