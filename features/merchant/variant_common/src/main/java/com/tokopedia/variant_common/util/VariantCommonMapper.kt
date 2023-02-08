@@ -14,6 +14,14 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 object VariantCommonMapper {
     private var selectedOptionId = listOf<String>()
 
+    fun mapVariantIdentifierToHashMap(variantData: ProductVariant?): MutableMap<String, String> {
+        return variantData?.variants?.associateBy({
+            it.pv.toString()
+        }, {
+            "0"
+        })?.toMutableMap() ?: mutableMapOf()
+    }
+
     fun processVariant(variantData: ProductVariant?, mapOfSelectedVariant: MutableMap<String, String>? = mutableMapOf(), level: Int = -1, isPartialySelected: Boolean = false): List<VariantCategory>? {
         val variantChilderValidation = validateVariantChildren(variantData?.children ?: listOf(), variantData?.variants?.size ?: 0)
         if (variantData == null) return null
