@@ -61,7 +61,8 @@ class ShippingDurationPresenter @Inject constructor(
         isFulfillment: Boolean,
         preOrderTime: Int,
         mvc: String,
-        cartData: String
+        cartData: String,
+        warehouseId: Long,
     ) {
         if (view != null) {
             view!!.showLoading()
@@ -78,7 +79,8 @@ class ShippingDurationPresenter @Inject constructor(
             }
             loadDuration(
                 selectedSpId, selectedServiceId, codHistory, isCorner, isLeasing,
-                shopShipmentList, isTradeInDropOff, shippingParam, pslCode, mvc, cartData
+                shopShipmentList, isTradeInDropOff, shippingParam, pslCode, mvc, cartData,
+                warehouseId
             )
         }
     }
@@ -94,7 +96,8 @@ class ShippingDurationPresenter @Inject constructor(
         shippingParam: ShippingParam,
         pslCode: String,
         mvc: String,
-        cartData: String
+        cartData: String,
+        warehouseId: Long
     ) {
         val param = RatesParam.Builder(shopShipmentList, shippingParam)
             .isCorner(isCorner)
@@ -103,6 +106,7 @@ class ShippingDurationPresenter @Inject constructor(
             .promoCode(pslCode)
             .mvc(mvc)
             .cartData(cartData)
+            .warehouseId(warehouseId.toString())
             .build()
         val observable: Observable<ShippingRecommendationData> = if (isRatesTradeInApi) {
             ratesApiUseCase.execute(param)
