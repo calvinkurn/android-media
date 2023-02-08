@@ -58,14 +58,11 @@ import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherStatusBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.changequota.ChangeQuotaBottomSheet
-import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.editperiod.VoucherEditPeriodBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.educenterbottomsheet.EduCenterBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.educenterbottomsheet.EduCenterClickListener
 import com.tokopedia.mvc.presentation.bottomsheet.educenterbottomsheet.model.EduCenterMenuModel
 import com.tokopedia.mvc.presentation.bottomsheet.moremenu.MoreMenuBottomSheet
-import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
-import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
 import com.tokopedia.mvc.presentation.download.DownloadVoucherImageBottomSheet
 import com.tokopedia.mvc.presentation.intro.MvcIntroActivity
@@ -101,6 +98,7 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
@@ -128,8 +126,6 @@ class MvcListFragment :
     private var binding by autoClearedNullable<SmvcFragmentMvcListBinding>()
     private var moreMenuBottomSheet: MoreMenuBottomSheet? = null
     private var voucherEditPeriodBottomSheet: VoucherEditPeriodBottomSheet? = null
-    private var displayVoucherBottomSheet: DisplayVoucherBottomSheet? = null
-    private var voucherPeriodBottomSheet: VoucherPeriodBottomSheet? = null
     private var otherPeriodBottomSheet: OtherPeriodBottomSheet? = null
     private var eduCenterBottomSheet: EduCenterBottomSheet? = null
     private var stopVoucherDialog: StopVoucherConfirmationDialog? = null
@@ -203,13 +199,18 @@ class MvcListFragment :
         showMoreMenuBottomSheet(voucher)
     }
 
-    private fun showMoreMenuBottomSheet(voucher: Voucher) {
+    private fun showMoreMenuBottomSheet(
+        voucher: Voucher,
+        title: String = voucher.name,
+        isFromRecurringBottomSheet: Boolean = false
+    ) {
         activity?.let {
             moreMenuBottomSheet =
                 MoreMenuBottomSheet.newInstance(
                     it,
                     voucher,
-                    voucher.name
+                    title,
+                    isFromRecurringBottomSheet = isFromRecurringBottomSheet
                 )
             moreMenuBottomSheet?.setOnMenuClickListener { menu ->
                 onClickListenerForMoreMenu(menu, voucher)
@@ -268,27 +269,6 @@ class MvcListFragment :
             else -> {
                 /*no-op*/
             }
-        }
-    }
-
-    // DUMMY DATA . USED FOR TESTING > REMOVE THEM
-    private fun showVoucherPeriodBottomSheet() {
-        val list = mutableListOf<DateStartEndData>(
-            DateStartEndData("2022-05-10", "2022-05-20", "00:30", "05:30"),
-            DateStartEndData("2022-06-11", "2022-06-21", "01:30", "06:30"),
-            DateStartEndData("2022-07-12", "2022-07-22", "02:30", "05:30"),
-            DateStartEndData("2022-08-13", "2022-08-23", "03:30", "07:30"),
-            DateStartEndData("2022-09-14", "2022-09-24", "04:30", "08:30"),
-            DateStartEndData("2022-10-15", "2022-10-25", "05:30", "09:30")
-        )
-        activity?.let {
-            voucherPeriodBottomSheet =
-                VoucherPeriodBottomSheet.newInstance(
-                    title = context?.resources?.getString(R.string.voucher_bs_period_title_1)
-                        .toBlankOrString(),
-                    dateList = list
-                )
-            voucherPeriodBottomSheet?.show(childFragmentManager, "")
         }
     }
 
@@ -567,7 +547,20 @@ class MvcListFragment :
 
     override fun onOtherPeriodMoreMenuClicked(dialog: OtherPeriodBottomSheet, voucher: Voucher) {
         dialog.dismiss()
-        showMoreMenuBottomSheet(voucher)
+        val startDate = DateUtil.formatDate(
+            DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+            DateUtil.DEFAULT_VIEW_FORMAT,
+            voucher.startTime
+        )
+        val finishDate = DateUtil.formatDate(
+            DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+            DateUtil.DEFAULT_VIEW_FORMAT,
+            voucher.finishTime
+        )
+        val title =
+            context?.getString(R.string.smvc_voucherlist_voucher_date_format, startDate, finishDate)
+                .toBlankOrString()
+        showMoreMenuBottomSheet(voucher, title, isFromRecurringBottomSheet = true)
     }
 
     private fun setupObservables() {

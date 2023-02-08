@@ -29,6 +29,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     private var adapter: MoreMenuAdapter? = null
     private var voucherStatus: VoucherStatus? = null
     private var isFromVoucherDetailPage: Boolean = false
+    private var isFromRecurringBottomSheet: Boolean = false
     init {
         isFullpage = false
     }
@@ -51,7 +52,12 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         setTitle(sheetTitle)
         binding?.recyclerView?.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        this.menuItem = viewModel.getMenuList(voucher, isFromVoucherDetailPage, voucherStatus)
+        this.menuItem = viewModel.getMenuList(
+            voucher,
+            isFromVoucherDetailPage,
+            voucherStatus,
+            isFromRecurringBottomSheet
+        )
 
         adapter?.clearAllElements()
         adapter?.addElement(menuItem)
@@ -62,7 +68,9 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
 
     private fun initInjector() {
         DaggerMerchantVoucherCreationComponent.builder()
-            .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+            .baseAppComponent(
+                (activity?.applicationContext as? BaseMainApplication)?.baseAppComponent
+            )
             .build()
             .inject(this)
     }
@@ -78,7 +86,8 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
             voucher: Voucher?,
             title: String = "",
             isFromVoucherDetailPage: Boolean = false,
-            voucherStatus: VoucherStatus = VoucherStatus.PROCESSING
+            voucherStatus: VoucherStatus = VoucherStatus.PROCESSING,
+            isFromRecurringBottomSheet: Boolean = false
         ): MoreMenuBottomSheet {
             return MoreMenuBottomSheet().apply {
                 this.context = context
@@ -86,6 +95,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
                 this.sheetTitle = title
                 this.isFromVoucherDetailPage = isFromVoucherDetailPage
                 this.voucherStatus = voucherStatus
+                this.isFromRecurringBottomSheet = isFromRecurringBottomSheet
             }
         }
     }

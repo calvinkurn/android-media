@@ -18,7 +18,8 @@ class MoreMenuViewModel @Inject constructor(
     fun getMenuList(
         voucher: Voucher?,
         isFromVoucherDetail: Boolean,
-        voucherStatus: VoucherStatus?
+        voucherStatus: VoucherStatus?,
+        isFromRecurringBottomSheet: Boolean
     ): List<MoreMenuUiModel> {
         if (isFromVoucherDetail) {
             menuItem =
@@ -33,6 +34,8 @@ class MoreMenuViewModel @Inject constructor(
                         getVoucherDetailEndedStoppedOptionsListMenu()
                     }
                 }
+        } else if (isFromRecurringBottomSheet) {
+            menuItem = getOtherScheduleListMenu()
         } else {
             if (voucher == null) {
                 return menuItem
