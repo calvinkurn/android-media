@@ -160,113 +160,113 @@ class NewShopPageViewModel @Inject constructor(
     val shopPageShopShareData: LiveData<Result<ShopInfo>>
         get() = _shopPageShopShareData
 
-    fun getShopPageTabData(
-        shopId: String,
-        shopDomain: String,
-        page: Int,
-        itemPerPage: Int,
-        shopProductFilterParameter: ShopProductFilterParameter,
-        keyword: String,
-        etalaseId: String,
-        isRefresh: Boolean,
-        widgetUserAddressLocalData: LocalCacheModel,
-        extParam: String
-    ) {
-        launchCatchError(block = {
-            val shopP1DataAsync = asyncCatchError(
-                dispatcherProvider.io,
-                block = {
-                    getShopP1Data(
-                        shopId,
-                        shopDomain,
-                        isRefresh,
-                        extParam,
-                        widgetUserAddressLocalData
-                    )
-                },
-                onError = {
-                    shopPageP1Data.postValue(
-                        Fail(
-                            ShopAsyncErrorException(
-                                ShopAsyncErrorException.AsyncQueryType.SHOP_PAGE_P1,
-                                it
-                            )
-                        )
-                    )
-                    null
-                }
-            )
-
-            val shopHeaderWidgetDataAsync = asyncCatchError(
-                dispatcherProvider.io,
-                block = {
-                    getShopPageHeaderData(
-                        shopId,
-                        isRefresh,
-                        widgetUserAddressLocalData
-                    )
-                },
-                onError = {
-                    shopPageP1Data.postValue(
-                        Fail(
-                            ShopAsyncErrorException(
-                                ShopAsyncErrorException.AsyncQueryType.SHOP_HEADER_WIDGET,
-                                it
-                            )
-                        )
-                    )
-                    null
-                }
-            )
-
-            val productListDataAsync = asyncCatchError(
-                dispatcherProvider.io,
-                block = {
-                    getProductListData(
-                        shopId,
-                        page,
-                        itemPerPage,
-                        shopProductFilterParameter,
-                        keyword,
-                        etalaseId,
-                        widgetUserAddressLocalData
-                    )
-                },
-                onError = {
-                    shopPageP1Data.postValue(
-                        Fail(
-                            ShopAsyncErrorException(
-                                ShopAsyncErrorException.AsyncQueryType.SHOP_INITIAL_PRODUCT_LIST,
-                                it
-                            )
-                        )
-                    )
-                    null
-                }
-            )
-            shopP1DataAsync.await()?.let { shopPageHeaderP1Data ->
-                productListDataAsync.await()?.let { shopProductData ->
-                    productListData = shopProductData
-                }
-                homeWidgetLayoutData = shopPageHeaderP1Data.shopInfoHomeTypeData.homeLayoutData
-                shopHeaderWidgetDataAsync.await()?.let { shopPageHeaderWidgetData ->
-                    shopPageP1Data.postValue(
-                        Success(
-                            NewShopPageHeaderMapper.mapToShopPageP1HeaderData(
-                                shopPageHeaderP1Data.isShopOfficialStore,
-                                shopPageHeaderP1Data.isShopPowerMerchant,
-                                shopPageHeaderP1Data.shopInfoHomeTypeData,
-                                shopPageHeaderP1Data.feedWhitelist,
-                                shopPageHeaderWidgetData
-                            )
-                        )
-                    )
-                }
-            }
-        }) { exception ->
-            shopPageP1Data.postValue(Fail(exception))
-        }
-    }
+//    fun getShopPageTabData(
+//        shopId: String,
+//        shopDomain: String,
+//        page: Int,
+//        itemPerPage: Int,
+//        shopProductFilterParameter: ShopProductFilterParameter,
+//        keyword: String,
+//        etalaseId: String,
+//        isRefresh: Boolean,
+//        widgetUserAddressLocalData: LocalCacheModel,
+//        extParam: String
+//    ) {
+//        launchCatchError(block = {
+//            val shopP1DataAsync = asyncCatchError(
+//                dispatcherProvider.io,
+//                block = {
+//                    getShopP1Data(
+//                        shopId,
+//                        shopDomain,
+//                        isRefresh,
+//                        extParam,
+//                        widgetUserAddressLocalData
+//                    )
+//                },
+//                onError = {
+//                    shopPageP1Data.postValue(
+//                        Fail(
+//                            ShopAsyncErrorException(
+//                                ShopAsyncErrorException.AsyncQueryType.SHOP_PAGE_P1,
+//                                it
+//                            )
+//                        )
+//                    )
+//                    null
+//                }
+//            )
+//
+//            val shopHeaderWidgetDataAsync = asyncCatchError(
+//                dispatcherProvider.io,
+//                block = {
+//                    getShopPageHeaderData(
+//                        shopId,
+//                        isRefresh,
+//                        widgetUserAddressLocalData
+//                    )
+//                },
+//                onError = {
+//                    shopPageP1Data.postValue(
+//                        Fail(
+//                            ShopAsyncErrorException(
+//                                ShopAsyncErrorException.AsyncQueryType.SHOP_HEADER_WIDGET,
+//                                it
+//                            )
+//                        )
+//                    )
+//                    null
+//                }
+//            )
+//
+//            val productListDataAsync = asyncCatchError(
+//                dispatcherProvider.io,
+//                block = {
+//                    getProductListData(
+//                        shopId,
+//                        page,
+//                        itemPerPage,
+//                        shopProductFilterParameter,
+//                        keyword,
+//                        etalaseId,
+//                        widgetUserAddressLocalData
+//                    )
+//                },
+//                onError = {
+//                    shopPageP1Data.postValue(
+//                        Fail(
+//                            ShopAsyncErrorException(
+//                                ShopAsyncErrorException.AsyncQueryType.SHOP_INITIAL_PRODUCT_LIST,
+//                                it
+//                            )
+//                        )
+//                    )
+//                    null
+//                }
+//            )
+//            shopP1DataAsync.await()?.let { shopPageHeaderP1Data ->
+//                productListDataAsync.await()?.let { shopProductData ->
+//                    productListData = shopProductData
+//                }
+//                homeWidgetLayoutData = shopPageHeaderP1Data.shopInfoHomeTypeData.homeLayoutData
+//                shopHeaderWidgetDataAsync.await()?.let { shopPageHeaderWidgetData ->
+//                    shopPageP1Data.postValue(
+//                        Success(
+//                            NewShopPageHeaderMapper.mapToShopPageP1HeaderData(
+//                                shopPageHeaderP1Data.isShopOfficialStore,
+//                                shopPageHeaderP1Data.isShopPowerMerchant,
+//                                shopPageHeaderP1Data.shopInfoHomeTypeData,
+//                                shopPageHeaderP1Data.feedWhitelist,
+//                                shopPageHeaderWidgetData
+//                            )
+//                        )
+//                    )
+//                }
+//            }
+//        }) { exception ->
+//            shopPageP1Data.postValue(Fail(exception))
+//        }
+//    }
 
     fun getNewShopPageTabData(
         shopId: String,

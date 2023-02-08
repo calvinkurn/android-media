@@ -1294,33 +1294,18 @@ class NewShopPageFragment :
 
     private fun getShopPageP1Data() {
         if (shopId.toIntOrZero() == 0 && shopDomain.orEmpty().isEmpty()) return
-        if (ShopUtil.isEnableShopDynamicTab(context)) {
-            shopViewModel?.getNewShopPageTabData(
-                shopId,
-                shopDomain.orEmpty(),
-                START_PAGE,
-                ShopUtil.getProductPerPage(context),
-                initialProductFilterParameter ?: ShopProductFilterParameter(),
-                "",
-                "",
-                isRefresh,
-                localCacheModel ?: LocalCacheModel(),
-                extParam
-            )
-        } else {
-            shopViewModel?.getShopPageTabData(
-                shopId,
-                shopDomain.orEmpty(),
-                START_PAGE,
-                ShopUtil.getProductPerPage(context),
-                initialProductFilterParameter ?: ShopProductFilterParameter(),
-                "",
-                "",
-                isRefresh,
-                localCacheModel ?: LocalCacheModel(),
-                extParam
-            )
-        }
+        shopViewModel?.getNewShopPageTabData(
+            shopId = shopId,
+            shopDomain = shopDomain.orEmpty(),
+            page = START_PAGE,
+            itemPerPage = ShopUtil.getProductPerPage(context),
+            shopProductFilterParameter = initialProductFilterParameter ?: ShopProductFilterParameter(),
+            keyword = "",
+            etalaseId = "",
+            isRefresh = isRefresh,
+            widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
+            extParam = extParam
+        )
     }
 
     private fun setDataFromAppLinkQueryParam() {
