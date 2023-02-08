@@ -12,12 +12,10 @@ import javax.inject.Inject
 
 /**
  * Dynamic Home Channel Query Docs:
- * https://tokopedia.atlassian.net/wiki/spaces/HP/pages/381550603/HPB+Home+-+Mojito+Channel
+ * https://tokopedia.atlassian.net/wiki/spaces/HP/pages/2043906993/HPB+Home+-+API+GQL+GraphQL+getHomeChannelV2
  */
 
-class GetHomeLayoutDataUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository
-): GraphqlUseCase<GetHomeLayoutResponse>(graphqlRepository) {
+class GetHomeLayoutDataUseCase @Inject constructor(graphqlRepository: GraphqlRepository) {
 
     companion object {
         private const val PARAM_TOKEN = "token"
@@ -28,9 +26,13 @@ class GetHomeLayoutDataUseCase @Inject constructor(
         private const val DEFAULT_NUM_OF_CHANNEL = 10
     }
 
+    private val graphql by lazy { GraphqlUseCase<GetHomeLayoutResponse>(graphqlRepository) }
+
     init {
-        setGraphqlQuery(GetHomeLayoutData)
-        setTypeClass(GetHomeLayoutResponse::class.java)
+        graphql.apply {
+            setGraphqlQuery(GetHomeLayoutData)
+            setTypeClass(GetHomeLayoutResponse::class.java)
+        }
     }
 
     suspend fun execute(
@@ -38,13 +40,14 @@ class GetHomeLayoutDataUseCase @Inject constructor(
         numOfChannel: Int = DEFAULT_NUM_OF_CHANNEL,
         localCacheModel: LocalCacheModel?
     ): List<HomeLayoutResponse> {
-        setRequestParams(RequestParams.create().apply {
-            putString(PARAM_TOKEN, token)
-            putInt(PARAM_NUM_OF_CHANNEL, numOfChannel)
-            putString(PARAM_LOCATION, mapLocation(localCacheModel))
-        }.parameters)
+        return graphql.run {
+            setRequestParams(RequestParams.create().apply {
+                putString(PARAM_TOKEN, token)
+                putInt(PARAM_NUM_OF_CHANNEL, numOfChannel)
+                putString(PARAM_LOCATION, mapLocation(localCacheModel))
+            }.parameters)
 
-        val response = executeOnBackground().response
-        return response.data
+            executeOnBackground().response.data
+        }
     }
 }
