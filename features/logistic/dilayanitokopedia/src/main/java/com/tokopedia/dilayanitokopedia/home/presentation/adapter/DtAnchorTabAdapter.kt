@@ -1,5 +1,6 @@
 package com.tokopedia.dilayanitokopedia.home.presentation.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,6 +45,7 @@ class DtAnchorTabAdapter(private val listener: AnchorTabListener) :
         notifyItemRangeChangeAll()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun selectMenu(selectedMenu: AnchorTabUiModel) {
         val newSelected = listMenu.indexOf(selectedMenu)
         this.selectedMenu = newSelected
