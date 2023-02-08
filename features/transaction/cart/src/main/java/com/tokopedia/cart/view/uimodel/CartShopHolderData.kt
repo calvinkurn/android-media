@@ -47,7 +47,8 @@ data class CartShopHolderData(
     var warehouseId: Long = 0,
     var isPo: Boolean = false,
     var poDuration: String = "",
-    var boCode: String = ""
+    var boCode: String = "",
+    var coachmarkPlus: CartShopCoachmarkPlusData = CartShopCoachmarkPlusData(),
 ) {
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
@@ -134,6 +135,12 @@ data class CartShopGroupTickerData(
         const val ACTION_OPEN_BOTTOM_SHEET_BUNDLING = "open_bottomsheet_bundling"
     }
 }
+
+class CartShopCoachmarkPlusData(
+    val isShown: Boolean = false,
+    val title: String = "",
+    val content: String = "",
+)
 
 enum class CartShopGroupTickerState {
     FIRST_LOAD, LOADING, FAILED, SUCCESS_AFFORD, SUCCESS_NOT_AFFORD, EMPTY

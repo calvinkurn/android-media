@@ -1701,6 +1701,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             override fun onPayClicked() {
                 viewModel.finalUpdate(onSuccessCheckout(), false)
             }
+
+            override fun onRefreshPaymentClicked() {
+                viewModel.calculateTotal()
+            }
         }
     }
 

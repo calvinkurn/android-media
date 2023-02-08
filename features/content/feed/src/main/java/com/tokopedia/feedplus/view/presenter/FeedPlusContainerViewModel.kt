@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.model.GetCheckWhitelistResponse
+import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
 import com.tokopedia.feedplus.domain.repository.FeedPlusRepository
@@ -19,7 +20,8 @@ import javax.inject.Inject
 class FeedPlusContainerViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
     private val repo: FeedPlusRepository,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
 ) : BaseViewModel(dispatchers.main){
 
     val tabResp = MutableLiveData<Result<FeedTabs>>()
@@ -39,7 +41,8 @@ class FeedPlusContainerViewModel @Inject constructor(
 
     val isShowShortsButton: Boolean
         get() = when(val whitelist = whitelistResp.value) {
-            is Success -> whitelist.data.isShopAccountShortsEligible || whitelist.data.isBuyerAccountExists
+            is Success -> (whitelist.data.isShopAccountShortsEligible || whitelist.data.isBuyerAccountExists) &&
+                            playShortsEntryPointRemoteConfig.isShowEntryPoint()
             else -> false
         }
 
