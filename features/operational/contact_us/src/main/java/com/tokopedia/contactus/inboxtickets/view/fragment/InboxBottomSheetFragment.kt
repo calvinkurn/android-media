@@ -15,6 +15,7 @@ import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity
+import com.tokopedia.kotlin.extensions.view.orZero
 
 abstract class InboxBottomSheetFragment : BottomSheetDialogFragment() {
     private var title: TextView? = null
@@ -22,7 +23,7 @@ abstract class InboxBottomSheetFragment : BottomSheetDialogFragment() {
     abstract fun setAdapter(adapter: RecyclerView.Adapter<*>?)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        layoutID = arguments?.getInt(RESID, R.layout.layout_bottom_sheet_fragment) ?: 0
+        layoutID = arguments?.getInt(RESID, R.layout.layout_bottom_sheet_fragment).orZero()
     }
 
     override fun onCreateView(

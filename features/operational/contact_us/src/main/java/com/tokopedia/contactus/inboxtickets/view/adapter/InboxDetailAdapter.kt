@@ -27,6 +27,12 @@ import com.tokopedia.contactus.inboxtickets.view.listeners.AttachmentListener
 import com.tokopedia.contactus.inboxtickets.view.listeners.InboxDetailListener
 import com.tokopedia.contactus.inboxtickets.view.utils.CLOSED
 import com.tokopedia.contactus.inboxtickets.view.utils.Utils
+import com.tokopedia.contactus.utils.CommonConstant.FIRST_INITIALIZE_ZERO
+import com.tokopedia.contactus.utils.CommonConstant.INDEX_ONE
+import com.tokopedia.contactus.utils.CommonConstant.INDEX_TWO
+import com.tokopedia.contactus.utils.CommonConstant.INITIALIZE_EIGHT
+import com.tokopedia.contactus.utils.CommonConstant.INITIALIZE_TWO
+import com.tokopedia.contactus.utils.CommonConstant.SIZE_ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -101,8 +107,8 @@ class InboxDetailAdapter(
 
     fun addComment(commentsItem: CommentsItem) {
         commentList.add(commentsItem)
-        notifyItemRangeChanged(itemCount - 2, 2)
-        inboxDetailListener.scrollTo(itemCount - 1)
+        notifyItemRangeChanged(itemCount - INDEX_TWO, INITIALIZE_TWO)
+        inboxDetailListener.scrollTo(itemCount - INDEX_ONE)
     }
 
     inner class InboxMessageViewHolder(val view: View) :
@@ -133,7 +139,7 @@ class InboxDetailAdapter(
         }
 
         fun bindViewHolder(position: Int) {
-            if (commentList[position].attachment?.size.orZero() > 0) {
+            if (commentList[position].attachment?.size.orZero() > SIZE_ZERO) {
                 if (attachmentAdapter == null) {
                     attachmentAdapter = AttachmentAdapter(
                         commentList[position].attachment
@@ -159,13 +165,13 @@ class InboxDetailAdapter(
                 rvAttachedImage?.show()
                 tvCollapsedTime?.setCompoundDrawablesWithIntrinsicBounds(
                     R.drawable.attach_rotated,
-                    0,
-                    0,
-                    0
+                    FIRST_INITIALIZE_ZERO,
+                    FIRST_INITIALIZE_ZERO,
+                    FIRST_INITIALIZE_ZERO
                 )
             } else {
                 rvAttachedImage?.hide()
-                tvCollapsedTime?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                tvCollapsedTime?.setCompoundDrawablesWithIntrinsicBounds(FIRST_INITIALIZE_ZERO, FIRST_INITIALIZE_ZERO, FIRST_INITIALIZE_ZERO, FIRST_INITIALIZE_ZERO)
             }
             val item = commentList[position]
             if (item.createdBy.isNullCreatedBy()) {
@@ -193,7 +199,7 @@ class InboxDetailAdapter(
                 )
                 ratingThumbsDown.hide()
             }
-            if (position == commentList.size - 1 || !commentList[position].isCollapsed || searchMode) {
+            if (position == commentList.size - INDEX_ONE || !commentList[position].isCollapsed || searchMode) {
                 tvDateRecent?.text = item.createTime
                 tvCollapsedTime?.text = ""
                 tvCollapsedTime?.hide()
@@ -226,13 +232,13 @@ class InboxDetailAdapter(
                     tvComment?.movementMethod = LinkMovementMethod.getInstance()
                 }
                 tvComment?.show()
-                if (position == commentList.size - 1 && needAttachment) {
+                if (position == commentList.size - INDEX_ONE && needAttachment) {
                     tvAttachmentHint?.text = hintAttachmentString
                     tvAttachmentHint?.show()
                 } else {
                     tvAttachmentHint?.hide()
                 }
-                if (commentList[position].attachment?.size.orZero() > 0) {
+                if (commentList[position].attachment?.size.orZero() > SIZE_ZERO) {
                     rvAttachedImage?.show()
                 }
             } else {
@@ -294,7 +300,7 @@ class InboxDetailAdapter(
 
         private fun toggleCollapse() {
             val tapIndex = adapterPosition
-            if (tapIndex != commentList.size - 1) {
+            if (tapIndex != commentList.size - INDEX_ONE) {
                 val item = commentList[tapIndex]
                 val isCollapsed = item.isCollapsed
                 item.isCollapsed = !isCollapsed
@@ -332,8 +338,8 @@ class InboxDetailAdapter(
         hintAttachmentString = SpannableString(src)
         hintAttachmentString.setSpan(
             StyleSpan(Typeface.BOLD),
-            0,
-            8,
+            FIRST_INITIALIZE_ZERO,
+            INITIALIZE_EIGHT,
             SpannableString.SPAN_INCLUSIVE_EXCLUSIVE
         )
     }
