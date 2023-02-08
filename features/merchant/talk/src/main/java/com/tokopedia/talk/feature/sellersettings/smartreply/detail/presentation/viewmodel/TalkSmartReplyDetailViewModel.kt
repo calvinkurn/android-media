@@ -12,8 +12,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.feature.inbox.data.SmartReplyTalkDecommissionConfig
-import com.tokopedia.talk.feature.inbox.data.TickerConfig
-import com.tokopedia.talk.feature.inbox.data.ToasterConfig
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.data.TalkSmartReplyDetailButtonState
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.domain.usecase.DiscussionSetSmartReplySettingsUseCase
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.domain.usecase.DiscussionSetSmartReplyTemplateUseCase
@@ -139,12 +137,6 @@ TalkSmartReplyDetailViewModel @Inject constructor(
     }
 
     private fun setDefaultSmartDecommissionConfig() {
-        _smartReplyDecommissionConfig.postValue(
-            SmartReplyTalkDecommissionConfig.SmartReplyStockPage(
-                isSmartReviewDisabled = false,
-                tickerConfig = TickerConfig(title = "", text = ""),
-                toasterConfig = ToasterConfig(text = "")
-            )
-        )
+        _smartReplyDecommissionConfig.postValue(SmartReplyTalkDecommissionConfig.SmartReplyStockPage())
     }
 }

@@ -40,8 +40,6 @@ class TalkSettingsViewModel @Inject constructor(
     }
 
     private fun setDefaultSmartDecommissionConfig() {
-        _smartReplyDecommissionConfig.postValue(
-            SmartReplyTalkDecommissionConfig.TalkSettingPage(showSmartReplyEntryPoint = true)
-        )
+        _smartReplyDecommissionConfig.postValue(SmartReplyTalkDecommissionConfig.TalkSettingPage())
     }
 }

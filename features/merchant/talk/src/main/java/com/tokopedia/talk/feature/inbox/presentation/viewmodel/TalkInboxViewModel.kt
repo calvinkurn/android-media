@@ -16,7 +16,6 @@ import com.tokopedia.talk.feature.inbox.data.SmartReplyTalkDecommissionConfig
 import com.tokopedia.talk.feature.inbox.data.TalkInboxFilter
 import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
 import com.tokopedia.talk.feature.inbox.data.TalkInboxViewState
-import com.tokopedia.talk.feature.inbox.data.TickerConfig
 import com.tokopedia.talk.feature.inbox.domain.usecase.TalkInboxListUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -155,11 +154,6 @@ class TalkInboxViewModel @Inject constructor(
     }
 
     private fun setDefaultSmartDecommissionConfig() {
-        _smartReplyDecommissionConfig.postValue(
-            SmartReplyTalkDecommissionConfig.InboxPage(
-                isSmartReviewDisabled = false,
-                tickerConfig = TickerConfig(title = "", text = "")
-            )
-        )
+        _smartReplyDecommissionConfig.postValue(SmartReplyTalkDecommissionConfig.InboxPage())
     }
 }

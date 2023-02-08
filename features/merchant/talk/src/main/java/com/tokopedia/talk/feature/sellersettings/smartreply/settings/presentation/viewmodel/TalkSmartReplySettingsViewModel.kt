@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.feature.inbox.data.SmartReplyTalkDecommissionConfig
-import com.tokopedia.talk.feature.inbox.data.TickerConfig
 import com.tokopedia.talk.feature.sellersettings.smartreply.settings.data.DiscussionGetSmartReply
 import com.tokopedia.talk.feature.sellersettings.smartreply.settings.domain.usecase.DiscussionGetSmartReplyUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -62,11 +61,6 @@ class TalkSmartReplySettingsViewModel @Inject constructor(
     }
 
     private fun setDefaultSmartDecommissionConfig() {
-        _smartReplyDecommissionConfig.postValue(
-            SmartReplyTalkDecommissionConfig.SmartReplyPage(
-                isSmartReviewDisabled = false,
-                tickerConfig = TickerConfig(title = "", text = "")
-            )
-        )
+        _smartReplyDecommissionConfig.postValue(SmartReplyTalkDecommissionConfig.SmartReplyPage())
     }
 }
