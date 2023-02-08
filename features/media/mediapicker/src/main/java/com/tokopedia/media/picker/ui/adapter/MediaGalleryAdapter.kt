@@ -1,3 +1,6 @@
+// This suppress necessary cause the method only executed when removing all items
+@file:Suppress("NotifyDataSetChanged")
+
 package com.tokopedia.media.picker.ui.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
