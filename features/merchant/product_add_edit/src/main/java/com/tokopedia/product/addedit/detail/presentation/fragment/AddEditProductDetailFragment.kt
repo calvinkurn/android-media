@@ -405,8 +405,6 @@ class AddEditProductDetailFragment :
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
         stopPerformanceMonitoring()
-
-        categoryChangeBottomSheet?.show(childFragmentManager)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -1471,8 +1469,8 @@ class AddEditProductDetailFragment :
         val isAdding = viewModel.isAdding || !isEditing
         val maxProductPhotoCount = viewModel.getMaxProductPhotos()
 
-        if(Rollence.getImagePickerRollence()) {
-            val pageSource = if(!isEditing) PageSource.AddProduct else PageSource.EditProduct
+        if (Rollence.getImagePickerRollence()) {
+            val pageSource = if (!isEditing) PageSource.AddProduct else PageSource.EditProduct
             doTracking(isEditing)
             val intent = ImagePickerAddEditNavigation.getIntentMultiplePicker(
                 ctx,
@@ -1497,7 +1495,7 @@ class AddEditProductDetailFragment :
         }
     }
 
-    private fun doTracking(isEdit : Boolean){
+    private fun doTracking(isEdit: Boolean) {
         val userId = UserSession(context).userId
         val shopId = UserSession(context).shopId
         MediaImprovementTracker.sendProductActionTracker(isEdit, userId, shopId)
@@ -2453,10 +2451,12 @@ class AddEditProductDetailFragment :
         )
     }
 
-    private fun updateImageListFromIntentData(data: Intent){
+    private fun updateImageListFromIntentData(data: Intent) {
         val result = MediaPicker.result(data)
-        val newUpdatedPhotos = viewModel.updateProductPhotos(result.editedImages.toMutableList(),
-            result.originalPaths.toMutableList())
+        val newUpdatedPhotos = viewModel.updateProductPhotos(
+            result.editedImages.toMutableList(),
+            result.originalPaths.toMutableList()
+        )
         productPictureList = newUpdatedPhotos.pictureList
         productPhotoAdapter?.setProductPhotoPaths(viewModel.productPhotoPaths)
         productPhotoAdapter?.let {
