@@ -12,4 +12,6 @@ class ProductInfoUiModel(
     override val name: String,
     override val type: String,
     override val impressHolder: ImpressHolder = ImpressHolder()
-) : PostAtcUiModel
+) : PostAtcUiModel{
+    override val id = hashCode()
+}

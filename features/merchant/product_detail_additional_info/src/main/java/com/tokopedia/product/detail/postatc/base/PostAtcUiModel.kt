@@ -10,5 +10,6 @@ interface PostAtcUiModel {
 
     val name: String
     val type: String
+    val id: Int
     val impressHolder: ImpressHolder
 }

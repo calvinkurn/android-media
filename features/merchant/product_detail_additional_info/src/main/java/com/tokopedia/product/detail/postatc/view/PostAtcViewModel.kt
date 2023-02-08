@@ -27,8 +27,8 @@ class PostAtcViewModel @Inject constructor(
     private val _layouts = MutableLiveData<Result<List<PostAtcUiModel>>>()
     val layouts: LiveData<Result<List<PostAtcUiModel>>> = _layouts
 
-    private val _recommendations = MutableLiveData<List<RecommendationWidget>>()
-    val recommendations: LiveData<List<RecommendationWidget>> = _recommendations
+    private val _recommendations = MutableLiveData<Pair<Int, Result<RecommendationWidget>>>()
+    val recommendations: LiveData<Pair<Int, Result<RecommendationWidget>>> = _recommendations
 
     val postAtcInfo: PostAtcInfo = PostAtcInfo()
 
@@ -60,7 +60,11 @@ class PostAtcViewModel @Inject constructor(
         }, onError = { _layouts.postValue(it.asFail()) })
     }
 
-    fun fetchRecommendation(productId: String, pageName: String) {
+    fun fetchRecommendation(
+        productId: String,
+        pageName: String,
+        uniqueId: Int
+    ) {
         launchCatchError(block = {
             val requestParams = GetRecommendationRequestParam(
                 pageNumber = 1,
@@ -68,9 +72,10 @@ class PostAtcViewModel @Inject constructor(
                 productIds = listOf(productId)
             )
             val result = getRecommendationUseCase.getData(requestParams)
-            _recommendations.postValue(result)
+            if (result.isEmpty()) throw Throwable("empty result")
+            else _recommendations.postValue(uniqueId to result.first().asSuccess())
         }, onError = {
-            it
+            _recommendations.postValue(uniqueId to it.asFail())
         })
 
     }

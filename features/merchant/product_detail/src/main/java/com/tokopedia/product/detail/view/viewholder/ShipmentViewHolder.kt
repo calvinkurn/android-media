@@ -248,6 +248,7 @@ class ShipmentViewHolder(
             root.show()
             pdpShipmentIcon.hide()
             pdpShipmentSubtitle.hide()
+            pdpShipmentTitleStrike.hide()
             pdpShipmentGroupTc.hide()
             pdpShipmentDestination.hide()
             pdpShipmentEstimation.hide()

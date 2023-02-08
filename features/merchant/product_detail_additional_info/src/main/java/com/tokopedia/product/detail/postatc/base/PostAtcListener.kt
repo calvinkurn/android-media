@@ -9,5 +9,6 @@ interface PostAtcListener {
     fun goToProduct(productId: String)
     fun refreshPage()
 
-    fun fetchRecommendation(pageName: String)
+    fun fetchRecommendation(pageName: String, uniqueId: Int)
+    fun removeComponent(position: Int)
 }

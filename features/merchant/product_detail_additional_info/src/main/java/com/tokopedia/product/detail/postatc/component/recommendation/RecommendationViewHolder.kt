@@ -14,7 +14,10 @@ class RecommendationViewHolder(
     private val listener: PostAtcListener
 ) : PostAtcViewHolder<RecommendationUiModel>(binding.root), RecomCarouselWidgetBasicListener, RecommendationCarouselTokonowListener {
 
+    private var id: Int? = null
+
     override fun bind(element: RecommendationUiModel) {
+        id = element.id
         binding.apply {
             val widget = element.widget
 
@@ -23,8 +26,8 @@ class RecommendationViewHolder(
                     basicListener = this@RecommendationViewHolder,
                     tokonowListener = this@RecommendationViewHolder
                 )
-                listener.fetchRecommendation(element.name)
-            } else {
+                listener.fetchRecommendation(element.name, element.id)
+            } else if (widget.recommendationItemList.isNotEmpty()) {
                 postAtcRecommCarousel.bind(
                     carouselData = RecommendationCarouselData(
                         recommendationData = widget,
@@ -34,9 +37,11 @@ class RecommendationViewHolder(
                     basicListener = this@RecommendationViewHolder,
                     tokonowListener = this@RecommendationViewHolder
                 )
-            }
-            root.addOnImpressionListener(element.impressHolder) {
-                listener.impressComponent(getComponentTrackData(element))
+                root.addOnImpressionListener(element.impressHolder) {
+                    listener.impressComponent(getComponentTrackData(element))
+                }
+            } else {
+                listener.removeComponent(element.id)
             }
         }
     }

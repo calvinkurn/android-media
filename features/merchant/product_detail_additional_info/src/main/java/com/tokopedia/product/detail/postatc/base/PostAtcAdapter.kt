@@ -19,13 +19,17 @@ class PostAtcAdapter(
             .addDelegate(LoadingDelegate())
     }
 
-    fun updateRecommendation(widgets: List<RecommendationWidget>) {
+    fun updateRecommendation(uniqueId: Int, widget: RecommendationWidget) {
         val items = getItems()
-        widgets.forEach { widget ->
-            items.filter { widget.pageName == it.name }.forEach { item ->
-                (item as RecommendationUiModel).widget = widget
-            }
+        items.firstOrNull { it.id == uniqueId }?.apply {
+            (this as RecommendationUiModel).widget = widget
+            notifyDataSetChanged()
         }
-        notifyDataSetChanged()
+    }
+
+    fun removeComponent(uniqueId: Int) {
+        getItems().firstOrNull { it.id == uniqueId }?.let {
+            removeItem(it)
+        }
     }
 }

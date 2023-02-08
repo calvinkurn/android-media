@@ -83,6 +83,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     private val adapter = PostAtcAdapter(this)
 
+    private lateinit var binding: PostAtcBottomSheetBinding
     private lateinit var productId: String
     private lateinit var cartId: String
     private lateinit var layoutId: String
@@ -109,10 +110,10 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
         clearContentPadding = true
 
-        val binding = PostAtcBottomSheetBinding.inflate(inflater, container, false)
-        setupView(binding)
-
-        setChild(binding.root)
+        binding = PostAtcBottomSheetBinding.inflate(inflater, container, false).also {
+            setupView(it)
+            setChild(it.root)
+        }
     }
 
     private fun setupView(binding: PostAtcBottomSheetBinding) = binding.apply {
@@ -153,8 +154,15 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         PostAtcTracking.impressionPostAtcBottomSheet(trackingQueue, commonTracker.get())
     }
 
-    private val recommendationsObserver = Observer<List<RecommendationWidget>> {
-        adapter.updateRecommendation(it)
+    private val recommendationsObserver = Observer<Pair<Int, Result<RecommendationWidget>>> { result ->
+        val uiModelId = result.first
+        result.second.doSuccessOrFail(success = {
+            val data = it.data
+            adapter.updateRecommendation(uiModelId, data)
+        }, fail = {
+            adapter.removeComponent(uiModelId)
+        })
+
     }
 
     private fun showError(it: Throwable) {
@@ -208,9 +216,9 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         initData()
     }
 
-    override fun fetchRecommendation(pageName: String) {
+    override fun fetchRecommendation(pageName: String, uniqueId: Int) {
         val productId = arguments?.getString(ARG_PRODUCT_ID) ?: return
-        viewModel.fetchRecommendation(productId, pageName)
+        viewModel.fetchRecommendation(productId, pageName, uniqueId)
     }
 
     override fun impressComponent(componentTrackData: ComponentTrackData) {
@@ -227,6 +235,13 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         )
 
         goToCart(cartId)
+    }
+
+    override fun removeComponent(uniqueId: Int) {
+        binding.postAtcRv.post {
+            adapter.removeComponent(uniqueId)
+            adapter.notifyDataSetChanged()
+        }
     }
 
     /**
