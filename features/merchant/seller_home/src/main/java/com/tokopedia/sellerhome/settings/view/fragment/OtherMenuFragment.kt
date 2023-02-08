@@ -658,6 +658,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         observe(viewModel.shopPeriodType) {
             when (it) {
                 is Success -> {
+                    updateShopStatusNewSellerBackground(it.data.isNewSeller)
                     setTrackerPerformanceMenu(it.data.isNewSeller)
                 }
                 is Fail -> {}
@@ -710,6 +711,12 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     private fun observeIsShowTageCentralizePromo() {
         viewModel.isShowTagCentralizePromo.observe(viewLifecycleOwner) {
             viewHolder?.setCentralizePromoTag(it)
+        }
+    }
+
+    private fun updateShopStatusNewSellerBackground(isNewSeller: Boolean) {
+        if (isNewSeller) {
+            viewHolder?.updateShopStatusNewSellerBackground()
         }
     }
 

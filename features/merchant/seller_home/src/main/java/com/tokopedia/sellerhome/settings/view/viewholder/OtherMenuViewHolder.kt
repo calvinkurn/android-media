@@ -472,6 +472,21 @@ class OtherMenuViewHolder(
         otherMenuHeader?.setBackgroundResource(headerBackgroundResource)
     }
 
+    fun updateShopStatusNewSellerBackground() {
+        val imageResourceId: Int = when {
+            userSession.isShopOfficialStore -> {
+                R.drawable.bg_sah_new_other_curved_header_os
+            }
+            userSession.isGoldMerchant -> {
+                R.drawable.bg_sah_new_other_curved_header_pm
+            }
+            else -> {
+                R.drawable.bg_sah_new_other_curved_header_rm
+            }
+        }
+        shopStatusCurvedImage?.setImageResource(imageResourceId)
+    }
+
     fun setInitialValues() {
         secondaryInfoAdapter.showInitialInfo()
         setHeaderValues()

@@ -589,14 +589,18 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     private fun setupBottomNav() {
         binding?.sahBottomNav?.setBackgroundColor(getResColor(android.R.color.transparent))
 
+        val (homeIconActive, homeIconInActive) = Pair(R.drawable.ic_sah_bottom_nav_home_ramadhan_active, R.drawable.ic_sah_bottom_nav_home_ramadhan_inactive)
+
+        val (homeLottieActive, homeLottieInActive) = Pair(R.raw.anim_bottom_nav_home_ramadhan, R.raw.anim_bottom_nav_home_ramadhan_to_enabled)
+
         menu.add(
             BottomMenu(
                 R.id.menu_home,
                 resources.getString(R.string.sah_home),
-                R.raw.anim_bottom_nav_home_ramadhan,
-                R.raw.anim_bottom_nav_home_ramadhan_to_enabled,
-                R.drawable.ic_sah_bottom_nav_home_ramadhan_active,
-                R.drawable.ic_sah_bottom_nav_home_ramadhan_inactive,
+                homeLottieInActive,
+                homeLottieActive,
+                homeIconActive,
+                homeIconInActive,
                 com.tokopedia.unifyprinciples.R.color.Unify_G600,
                 false,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,
@@ -662,6 +666,37 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         binding?.sahBottomNav?.setMenu(menu)
 
         binding?.sahBottomNav?.setMenuClickListener(this)
+    }
+
+    fun updateHomeThematicIcon(isNewSeller: Boolean) {
+
+        val (homeIconActive, homeIconInActive) = if (isNewSeller) {
+            Pair(R.drawable.ic_sah_bottom_nav_home_active, R.drawable.ic_sah_bottom_nav_home_inactive)
+        } else {
+            Pair(R.drawable.ic_sah_bottom_nav_home_ramadhan_active, R.drawable.ic_sah_bottom_nav_home_ramadhan_inactive)
+        }
+
+        val (homeLottieActive, homeLottieInActive) = if (isNewSeller) {
+            Pair(R.raw.anim_bottom_nav_home_to_enabled, R.raw.anim_bottom_nav_home)
+        } else {
+            Pair(R.raw.anim_bottom_nav_home_ramadhan, R.raw.anim_bottom_nav_home_ramadhan_to_enabled)
+        }
+
+
+        val bottomHomeMenu = BottomMenu(
+            R.id.menu_home,
+            resources.getString(R.string.sah_home),
+            homeLottieInActive,
+            homeLottieActive,
+            homeIconActive,
+            homeIconInActive,
+            com.tokopedia.unifyprinciples.R.color.Unify_G600,
+            false,
+            BOTTOM_NAV_EXIT_ANIM_DURATION,
+            BOTTOM_NAV_ENTER_ANIM_DURATION
+        )
+
+        binding?.sahBottomNav?.updateHomeIcon(bottomHomeMenu)
     }
 
     private fun initSellerHomePlt() {

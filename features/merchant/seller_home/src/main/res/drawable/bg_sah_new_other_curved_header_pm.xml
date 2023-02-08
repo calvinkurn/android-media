@@ -1,0 +1,10 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt" android:width="200dp" android:height="84dp" android:viewportWidth="360" android:viewportHeight="152">
+    <path android:pathData="M-100 52a280 100 0 1 0 560 0 280 100 0 1 0-560 0z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:startY="-48" android:startX="180" android:endY="89.284" android:endX="180" android:type="linear">
+                <item android:offset="0" android:color="@color/Unify_GN500"/>
+                <item android:offset="1" android:color="@color/Unify_GN600"/>
+            </gradient>
+        </aapt:attr>
+    </path>
+</vector>

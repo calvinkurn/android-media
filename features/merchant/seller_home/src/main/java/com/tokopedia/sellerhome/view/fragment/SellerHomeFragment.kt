@@ -1123,7 +1123,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         setupEmptyState()
         setRecyclerViewLayoutAnimation()
-        setViewBackground()
+        setViewBackground(isNewSellerState)
     }
 
     private fun setupEmptyState() {
@@ -1874,7 +1874,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             } else {
                 imgSahNewSellerLeft.gone()
                 imgSahNewSellerRight.gone()
-                setViewBackground()
+                setViewBackground(isNewSellerState)
             }
             setSectionWidgetTextColor()
         }
@@ -1906,18 +1906,30 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun setViewBackground() = binding?.run {
+    private fun setViewBackground(isNewSeller: Boolean) = binding?.run {
         val isOfficialStore = userSession.isShopOfficialStore
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
         when {
             isOfficialStore -> {
-                showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_OS_THEMATIC)
+                if (isNewSeller) {
+                    showRegularHomeBackgroundNewSeller(R.drawable.sah_shop_state_bg_official_store)
+                } else {
+                    showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_OS_THEMATIC)
+                }
             }
             isPowerMerchant -> {
-                showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_PM_THEMATIC)
+                if (isNewSeller) {
+                    showRegularHomeBackgroundNewSeller(R.drawable.sah_shop_state_bg_power_merchant)
+                } else {
+                    showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_PM_THEMATIC)
+                }
             }
             else -> {
-                showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_RM_THEMATIC)
+                if (isNewSeller) {
+                    viewBgShopStatus.gone()
+                } else {
+                    showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_RM_THEMATIC)
+                }
             }
         }
     }
@@ -1934,6 +1946,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         viewBgShopStatus.requestLayout()
                     })
                 }
+            } catch (e: Exception) {
+                viewBgShopStatus.hide()
+            }
+        }
+    }
+
+    private fun showRegularHomeBackgroundNewSeller(imageResourceId: Int) {
+        binding?.run {
+            try {
+                val height =
+                    requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
+                viewBgShopStatus.layoutParams.height = height
+                viewBgShopStatus.setImageResource(imageResourceId)
             } catch (e: Exception) {
                 viewBgShopStatus.hide()
             }
@@ -2742,6 +2767,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         } else if (shouldGetShopStateInfo) {
             getShopStateInfoIfEligible()
         }
+        (activity as? SellerHomeActivity)?.updateHomeThematicIcon(isNewSellerState)
     }
 
     private fun getShopStateInfoIfEligible() {
