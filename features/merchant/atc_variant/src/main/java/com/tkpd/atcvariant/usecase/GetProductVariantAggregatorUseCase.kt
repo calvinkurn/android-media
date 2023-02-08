@@ -84,6 +84,8 @@ class GetProductVariantAggregatorUseCase @Inject constructor(
                           description
                           attributeName
                           badgeURL
+                          buttonLink
+                          buttonText
                         }
                       }
                     }
