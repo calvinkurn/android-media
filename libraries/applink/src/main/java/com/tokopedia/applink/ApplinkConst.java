@@ -590,6 +590,10 @@ public interface ApplinkConst {
         String REPURCHASE = "tokopedia://tokomart/repurchase-page";
     }
 
+    interface DilayaniTokopedia {
+        String HOME = "tokopedia://dilayani-tokopedia";
+    }
+
     interface Query {
         String ORDER_TRACKING_ORDER_ID = "order_id";
         String ORDER_TRACKING_URL_LIVE_TRACKING = "url_live_tracking";
