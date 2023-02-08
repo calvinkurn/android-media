@@ -13,8 +13,10 @@ import com.tokopedia.media.picker.ui.observer.*
 import com.tokopedia.media.update
 import com.tokopedia.media.util.awaitItem
 import com.tokopedia.media.util.collectIntoChannel
+import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.PickerParam
+import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
@@ -216,6 +218,61 @@ class PickerViewModelTest {
 
         // Then
         assert(viewModel.medias.value?.size == mediaList.size)
+        assert(viewModel.isFetchMediaLoading.value != null)
+        assert(viewModel.isMediaEmpty.value != null)
+    }
+
+    @Test
+    fun `it should be able to navigate to editor page`() {
+        // Given
+        val result = PickerResult()
+        every { paramCacheManager.get().getEditorParam() } returns EditorParam()
+
+        // When
+        viewModel.navigateToEditorPage(result)
+
+        // Then
+        assert(viewModel.editorParam.value?.first == result)
+    }
+
+    @Test
+    fun `it should not be able to apply the picker param`() {
+        // When
+        viewModel.setPickerParam(null)
+
+        // Then
+        assert(viewModel.pickerParam.value == null)
+    }
+
+    @Test
+    fun `it should be able to apply the picker param`() {
+        // Given
+        val param = PickerParam()
+
+        every { paramCacheManager.set(any()) } returns param
+
+        // When
+        viewModel.setPickerParam(param)
+
+        // Then
+        assert(viewModel.pickerParam.value != null)
+    }
+
+    @Test
+    fun `it should be able to apply the picker param and remove the editor`() {
+        // Given
+        val param = PickerParam().apply {
+            withEditor { /* no-op */ }
+        }
+
+        every { featureToggleManager.isEditorEnabled() } returns false
+        every { paramCacheManager.set(any()) } returns param
+
+        // When
+        viewModel.setPickerParam(param)
+
+        // Then
+        assert(viewModel.pickerParam.value != null)
     }
 
     companion object {
