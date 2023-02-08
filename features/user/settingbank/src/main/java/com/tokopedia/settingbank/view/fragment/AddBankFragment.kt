@@ -37,6 +37,7 @@ import com.tokopedia.settingbank.view.viewState.*
 import com.tokopedia.settingbank.view.widgets.BankPrivacyPolicyBottomSheet
 import com.tokopedia.settingbank.view.widgets.BankTNCBottomSheet
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -494,6 +495,7 @@ class AddBankFragment : BaseDaggerFragment() {
                 setDescription(description)
                 setPrimaryCTAText(getString(R.string.sbank_ya_benar))
                 setSecondaryCTAText(getString(R.string.sbank_batal))
+                dialogSecondaryCTA.buttonVariant = UnifyButton.Variant.GHOST
                 setPrimaryCTAClickListener {
                     bankSettingAnalytics.eventDialogConfirmAddAccountClick()
                     openPinVerification()
