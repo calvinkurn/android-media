@@ -67,7 +67,7 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.kotlinTest
-    testImplementation rootProject.ext.testDependencies.retrofitMockWebser
+    testImplementation rootProject.ext.testDependencies.retrofitMockWebserver
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
 }
 

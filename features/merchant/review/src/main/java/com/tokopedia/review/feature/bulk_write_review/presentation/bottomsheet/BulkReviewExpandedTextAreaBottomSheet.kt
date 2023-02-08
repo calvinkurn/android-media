@@ -11,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.review.R
 import com.tokopedia.review.common.extension.collectWhenResumed
 import com.tokopedia.review.databinding.BottomsheetBulkReviewExpandedTextAreaBinding
@@ -49,7 +50,9 @@ class BulkReviewExpandedTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         binding = BottomsheetBulkReviewExpandedTextAreaBinding.inflate(inflater).also {
             setChild(it.root)
@@ -110,7 +113,7 @@ class BulkReviewExpandedTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope
                     }
                 }
             }
-        }, onError = {/* noop */})
+        }, onError = { /* noop */ })
     }
 
     private fun setupContainer() {
@@ -125,6 +128,7 @@ class BulkReviewExpandedTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope
     private fun setupTextArea() {
         removeBorder()
         setMaxLines()
+        binding?.textAreaBulkReviewExpanded?.labelText?.gone()
     }
 
     private fun removeBorder() {

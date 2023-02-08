@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
+import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.remoteconfig.RollenceKey
@@ -98,6 +99,9 @@ class NewShopPageViewModelTest {
     lateinit var affiliateCookieHelper: AffiliateCookieHelper
 
     @RelaxedMockK
+    lateinit var playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig
+
+    @RelaxedMockK
     lateinit var context: Context
 
     private val testCoroutineDispatcherProvider by lazy {
@@ -130,7 +134,8 @@ class NewShopPageViewModelTest {
                 updateFollowStatusUseCase,
                 gqlGetShopOperationalHourStatusUseCase,
                 sharedPreferences,
-                testCoroutineDispatcherProvider
+                testCoroutineDispatcherProvider,
+                playShortsEntryPointRemoteConfig,
         )
     }
 
@@ -656,6 +661,44 @@ class NewShopPageViewModelTest {
         shopPageViewModel.getSellerPlayWidgetData(mockShopId)
         val shopSellerPLayWidgetData = shopPageViewModel.shopSellerPLayWidgetData.value
         assert(shopSellerPLayWidgetData is Success)
+    }
+
+    @Test
+    fun `check whether shopSellerPLayWidgetData post success value and shortVideoAllowed is false and remoteConfig is false`() {
+        coEvery { playShortsEntryPointRemoteConfig.isShowEntryPoint() } returns false
+        val mockShopId = "123"
+        shopPageViewModel.getSellerPlayWidgetData(mockShopId)
+        val shopSellerPLayWidgetData = shopPageViewModel.shopSellerPLayWidgetData.value
+        assert(shopSellerPLayWidgetData is Success)
+        assert((shopSellerPLayWidgetData as? Success)?.data?.shortVideoAllowed == false)
+    }
+
+    @Test
+    fun `check whether shopSellerPLayWidgetData post success value and shortVideoAllowed is true and remoteConfig is false`() {
+        coEvery { playShortsEntryPointRemoteConfig.isShowEntryPoint() } returns false
+        val mockShopId = "123"
+        every { userSessionInterface.shopId } returns mockShopId
+        coEvery {
+            getBroadcasterShopConfigUseCase.get().executeOnBackground()
+        } returns Broadcaster.Config(shortVideoAllowed = true)
+        shopPageViewModel.getSellerPlayWidgetData(mockShopId)
+        val shopSellerPLayWidgetData = shopPageViewModel.shopSellerPLayWidgetData.value
+        assert(shopSellerPLayWidgetData is Success)
+        assert((shopSellerPLayWidgetData as? Success)?.data?.shortVideoAllowed == false)
+    }
+
+    @Test
+    fun `check whether shopSellerPLayWidgetData post success value and shortVideoAllowed is true and remoteConfig is true`() {
+        coEvery { playShortsEntryPointRemoteConfig.isShowEntryPoint() } returns true
+        val mockShopId = "123"
+        every { userSessionInterface.shopId } returns mockShopId
+        coEvery {
+            getBroadcasterShopConfigUseCase.get().executeOnBackground()
+        } returns Broadcaster.Config(shortVideoAllowed = true)
+        shopPageViewModel.getSellerPlayWidgetData(mockShopId)
+        val shopSellerPLayWidgetData = shopPageViewModel.shopSellerPLayWidgetData.value
+        assert(shopSellerPLayWidgetData is Success)
+        assert((shopSellerPLayWidgetData as? Success)?.data?.shortVideoAllowed == true)
     }
 
     @Test

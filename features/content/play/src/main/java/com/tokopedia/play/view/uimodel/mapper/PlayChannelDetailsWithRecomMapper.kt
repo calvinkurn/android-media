@@ -48,6 +48,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     videoInfo = mapVideoInfo(it.video),
                     emptyBottomSheetInfo = mapEmptyBottomSheet(it),
                     popupConfig = mapPopUp(it),
+                    exploreWidgetConfig = mapExploreWidgetConfig(it.config.exploreWidgetConfig)
                 ),
                 partnerInfo = mapPartnerInfo(it.partner, it.config.hasFollowButton),
                 likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
@@ -286,6 +287,12 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     private fun mapEmptyBottomSheet(data: ChannelDetailsWithRecomResponse.Data) = with(data.config.emptyBottomSheet){
         PlayEmptyBottomSheetInfoUiModel(header = headerText, body = bodyText, button = redirectButtonText, partnerAppLink = data.partner.appLink, imageUrl = imageUrl)
     }
+
+    private fun mapExploreWidgetConfig(
+        config: ChannelDetailsWithRecomResponse.ExploreWidgetConfig
+    ) = ExploreWidgetConfig(
+       group = config.group, sourceType = config.sourceType, sourceId = config.sourceId,
+    )
 
     private fun mapArchived(archiveData: ChannelDetailsWithRecomResponse.ArchivedData) = with(archiveData) {
         ArchivedUiModel(
