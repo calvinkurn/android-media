@@ -10,7 +10,6 @@ import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.authentication.AuthKeyExt
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
