@@ -51,6 +51,7 @@ import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker;
+import com.tokopedia.sessioncommon.worker.RefreshProfileWorker;
 import com.tokopedia.loginregister.login.router.LoginRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
@@ -150,6 +151,13 @@ public abstract class SellerRouterApplication extends MainApplication implements
         initTetraDebugger();
         initSeamlessLoginWorker();
         return true;
+    }
+
+    private void initSeamlessLoginWorker() {
+        UserSessionInterface userSession = new UserSession(context);
+        if(userSession.isLoggedIn()) {
+            TemporaryTokenWorker.Companion.scheduleWorker(this);
+        }
     }
 
     private void initSeamlessLoginWorker() {
