@@ -44,6 +44,31 @@ fun ImageView.loadImage(uri: Uri) {
     }
 }
 
+/**
+ * An extension function on [ImageView] receiver to load an image from some remote url.
+ *
+ * This function uses <b>Glide</b> which is a 3rd party library to handle all the networking and
+ * caching side of things. Glide handles the loading w.r.t. the lifecycle of the view for you.
+ *
+ * <b>Sample Usage</b>
+ *
+ * ```
+ * imageView.loadImage("https://someurl.com/someImage")
+ * ```
+ *
+ * <b>Sample Usage with Custom Properties</b>
+ *
+ * ```
+ * imageView.loadImage("https://someurl.com/someImage") {
+ *    setErrorDrawable(R.drawable.ic_error)
+ *    setCacheStrategy(MediaCacheStrategy.RESOURCE)
+ * }
+ * ```
+ *
+ * @receiver [ImageView]
+ * @param url Url to load image from
+ * @since v1.0.0
+ */
 inline fun ImageView.loadImage(
     url: String?,
     crossinline properties: Properties.() -> Unit = {}
