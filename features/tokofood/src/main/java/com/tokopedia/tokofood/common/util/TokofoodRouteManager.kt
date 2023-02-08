@@ -7,12 +7,10 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
-import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.feature.merchant.presentation.fragment.MerchantPageFragment
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodCategoryFragment
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
-import com.tokopedia.tokofood.feature.merchant.presentation.fragment.OrderCustomizationFragment
 import com.tokopedia.tokofood.feature.search.container.presentation.fragment.SearchContainerFragment
 
 object TokofoodRouteManager {
@@ -69,12 +67,7 @@ object TokofoodRouteManager {
             if (f == null) {
                 RouteManager.route(activity, mappedUriString)
             } else {
-                // If the fragment could take new params, we should replace the existed same class fragment with the new one
-                if (f is MerchantPageFragment || f is OrderCustomizationFragment || f is TokoFoodCategoryFragment || f is SearchContainerFragment) {
-                    (activity as? BaseTokofoodActivity)?.navigateToNewFragment(f, true, isFinishCurrent)
-                } else {
-                    activity.navigateToNewFragment(f)
-                }
+                activity.navigateToNewFragment(f, isFinishCurrent)
             }
         }
     }

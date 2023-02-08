@@ -56,11 +56,8 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
-class DiscomBottomSheetRevamp(
-    private var isPinpoint: Boolean = false,
-    private var isEdit: Boolean,
-    private var isGmsAvailable: Boolean
-) : BottomSheetUnify(),
+class DiscomBottomSheetRevamp :
+    BottomSheetUnify(),
     ZipCodeChipsAdapter.ActionListener,
     PopularCityAdapter.ActionListener,
     DiscomContract.View,
@@ -79,6 +76,9 @@ class DiscomBottomSheetRevamp(
     private val listDistrictAdapter by lazy { DiscomAdapterRevamp(this) }
     private var discomRevampListener: DiscomRevampListener? = null
     private lateinit var chipsLayoutManagerZipCode: ChipsLayoutManager
+    private var isPinpoint: Boolean = false
+    private var isEdit: Boolean = false
+    private var isGmsAvailable: Boolean = true
     private var input: String = ""
     private var mIsInitialLoading: Boolean = false
     private var isKodePosShown: Boolean = false
@@ -115,18 +115,24 @@ class DiscomBottomSheetRevamp(
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initLayout()
-        initInjector()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initInjector()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setCurrentLocationProvider()
         setViewListener()
+    }
+
+    fun setData(isPinpoint: Boolean = false, gmsAvailable: Boolean, isEdit: Boolean) {
+        this.isPinpoint = isPinpoint
+        this.isGmsAvailable = gmsAvailable
+        this.isEdit = isEdit
     }
 
     private fun setCurrentLocationProvider() {
@@ -140,7 +146,9 @@ class DiscomBottomSheetRevamp(
 
     override fun onDetach() {
         super.onDetach()
-        presenter.detach()
+        if (::presenter.isInitialized) {
+            presenter.detach()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

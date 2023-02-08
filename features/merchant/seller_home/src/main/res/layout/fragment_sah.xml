@@ -9,13 +9,37 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/viewBgShopStatus"
         android:layout_width="0dp"
-        android:layout_height="280dp"
+        android:layout_height="@dimen/sah_dimen_280dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relTicker"
         app:unify_image_corner_radius="0" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSahNewSellerLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="0"
+        tools:src="@tools:sample/avatars"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSahNewSellerRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="0"
+        tools:src="@tools:sample/avatars"
+        tools:visibility="visible" />
 
     <RelativeLayout
         android:id="@+id/relTicker"

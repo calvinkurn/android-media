@@ -90,7 +90,10 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         private const val NAVIGATION_OTHER_MENU_POSITION = 4
         private const val NAVIGATION_HOME_MENU_POSITION = 0
         private const val TRACKER_PREF_NAME = "NotificationUserSettings"
+        private const val WEAR_PREF_NAME = "WearPopupSharedPref"
+
         private const val NOTIFICATION_USER_SETTING_KEY = "isSellerSettingSent"
+        private const val WEAR_POPUP_KEY = "isWearPopupShown"
         private const val TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.spotify.music"
     }
 
@@ -126,6 +129,9 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     private var binding: ActivitySahSellerHomeBinding? = null
     private val sharedPreference: SharedPreferences by lazy {
         applicationContext.getSharedPreferences(TRACKER_PREF_NAME, MODE_PRIVATE)
+    }
+    private val wearSharedPreference: SharedPreferences by lazy {
+        applicationContext.getSharedPreferences(WEAR_PREF_NAME, MODE_PRIVATE)
     }
 
     override var loadTimeMonitoringListener: LoadTimeMonitoringListener? = null
@@ -170,7 +176,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         super.onResume()
         homeViewModel.getNotifications()
         homeViewModel.getAdminInfo()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 && remoteConfig.isWatchAppCheckingEnabled()) {
             homeViewModel.checkIfWearHasCompanionApp()
         }
 
@@ -391,13 +397,16 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             userSession,
             navigationHomeMenuView
         )
-        setNavigationOtherMenuView()
+        setNavigationView()
     }
 
-    private fun setNavigationOtherMenuView() {
-        val navigationOtherMenuView =
-            binding?.sahBottomNav?.getMenuViewByIndex(NAVIGATION_OTHER_MENU_POSITION)
-        navigator?.getHomeFragment()?.setNavigationOtherMenuView(navigationOtherMenuView)
+    private fun setNavigationView() {
+        val navigationOtherMenuView = binding
+            ?.sahBottomNav?.getMenuViewByIndex(NAVIGATION_OTHER_MENU_POSITION)
+        navigator?.getHomeFragment()?.setNavigationNavigationView(
+            navigationView = binding?.sahBottomNav,
+            otherMenuView = navigationOtherMenuView
+        )
     }
 
     private fun setupShadow() {
@@ -723,7 +732,9 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     private fun observeWearDialog() {
         homeViewModel.shouldAskInstallCompanionApp.observe(this) {
-            if (it) {
+            val isWearPopupShown: Boolean =
+                wearSharedPreference.getBoolean(WEAR_POPUP_KEY, true)
+            if (it && !isWearPopupShown) {
                 val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                 dialog.apply{
                     setTitle(resources.getString(R.string.wearos_install_popup_title))
@@ -740,6 +751,9 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                     }
                 }
                 dialog.show()
+                wearSharedPreference.edit()
+                    .putBoolean(WEAR_POPUP_KEY, true)
+                    .apply()
             }
         }
     }

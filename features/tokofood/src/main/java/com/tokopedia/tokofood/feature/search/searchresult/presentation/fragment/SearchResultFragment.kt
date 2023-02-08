@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -45,7 +46,7 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
-import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
+import com.tokopedia.tokofood.common.util.TokofoodAddressExt.updateLocalChosenAddressPinpoint
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
@@ -477,7 +478,7 @@ class SearchResultFragment :
                         onSuccessLoadDetailFilter(event.data)
                     }
                     TokofoodSearchUiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> {
-                        refreshAddressData()
+                        updateLocalAddressData(event.data)
                     }
                     TokofoodSearchUiEvent.EVENT_FAILED_LOAD_DETAIL_FILTER -> {
                         onFailedLoadDetailFilter(event.throwable)
@@ -516,6 +517,17 @@ class SearchResultFragment :
                         showPinpointErrorMessage(event.throwable)
                         refreshAddressData()
                     }
+                }
+            }
+        }
+    }
+
+    private fun updateLocalAddressData(data: Any?) {
+        (data as? Pair<*, *>)?.let { (latitude, longitude) ->
+            if (latitude is String && longitude is String) {
+                context?.run {
+                    updateLocalChosenAddressPinpoint(latitude, longitude)
+                    refreshAddressData()
                 }
             }
         }
@@ -885,7 +897,7 @@ class SearchResultFragment :
     }
 
     private fun navigateToNewFragment(fragment: Fragment) {
-        (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
+        (activity as? BaseMultiFragActivity)?.navigateToNewFragment(fragment)
     }
 
     companion object {

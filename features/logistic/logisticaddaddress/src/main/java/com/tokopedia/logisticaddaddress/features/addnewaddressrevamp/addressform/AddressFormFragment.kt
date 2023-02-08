@@ -836,10 +836,11 @@ class AddressFormFragment :
     }
 
     private fun showDistrictRecommendationBottomSheet(isPinpoint: Boolean) {
-        districtBottomSheet = DiscomBottomSheetRevamp(
+        districtBottomSheet = DiscomBottomSheetRevamp()
+        districtBottomSheet?.setData(
             isPinpoint = isPinpoint,
             isEdit = viewModel.isEdit,
-            isGmsAvailable = viewModel.isGmsAvailable
+            gmsAvailable = viewModel.isGmsAvailable
         )
         districtBottomSheet?.setListener(this)
         districtBottomSheet?.show(this.childFragmentManager)

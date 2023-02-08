@@ -4,8 +4,8 @@ import android.Manifest
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.media.R
-import com.tokopedia.media.common.utils.ParamCacheManager
-import com.tokopedia.media.picker.ui.uimodel.PermissionUiModel
+import com.tokopedia.media.picker.utils.permission.PermissionModel
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
 import io.mockk.every
@@ -21,7 +21,7 @@ import org.junit.runners.JUnit4
 class PermissionViewModelTest {
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val cacheManager = mockk<ParamCacheManager>(relaxed = true)
+    private val cacheManager = mockk<PickerCacheManager>(relaxed = true)
     private val permissionCodeName = mockk<Observer<List<String>>>(relaxed = true)
 
     private lateinit var viewModel: PermissionViewModel
@@ -37,7 +37,7 @@ class PermissionViewModelTest {
     fun `get dynamic permission list for camera page type with image mode only`() {
         // Given
         val expectedValue = listOf(
-            PermissionUiModel(
+            PermissionModel(
                 R.string.picker_permission_camera,
                 Manifest.permission.CAMERA
             )
@@ -57,11 +57,11 @@ class PermissionViewModelTest {
     fun `get dynamic permission list for camera page type with video mode only`() {
         // Given
         val expectedValue = listOf(
-            PermissionUiModel(
+            PermissionModel(
                 R.string.picker_permission_camera,
                 Manifest.permission.CAMERA
             ),
-            PermissionUiModel(
+            PermissionModel(
                 R.string.picker_permission_microphone,
                 Manifest.permission.RECORD_AUDIO
             )
@@ -81,7 +81,7 @@ class PermissionViewModelTest {
     fun `get dynamic permission list for gallery page type`() {
         // Given
         val expectedValue = listOf(
-            PermissionUiModel(
+            PermissionModel(
                 R.string.picker_permission_gallery,
                 Manifest.permission.READ_EXTERNAL_STORAGE
             )
@@ -100,15 +100,15 @@ class PermissionViewModelTest {
     fun `get dynamic permission list for camera and gallery page type`() {
         // Given
         val expectedValue = listOf(
-            PermissionUiModel(
+            PermissionModel(
                 R.string.picker_permission_microphone,
                 Manifest.permission.RECORD_AUDIO
             ),
-            PermissionUiModel(
+            PermissionModel(
                 R.string.picker_permission_camera,
                 Manifest.permission.CAMERA
             ),
-            PermissionUiModel(
+            PermissionModel(
                 R.string.picker_permission_gallery,
                 Manifest.permission.READ_EXTERNAL_STORAGE
             )

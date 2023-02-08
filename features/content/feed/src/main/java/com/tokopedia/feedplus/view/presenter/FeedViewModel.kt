@@ -1,10 +1,10 @@
 package com.tokopedia.feedplus.view.presenter
 
 import android.content.Context
-import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
@@ -12,10 +12,21 @@ import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_INTEREST
+import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
-import com.tokopedia.feedcomponent.data.feedrevamp.*
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXData
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
+import com.tokopedia.feedcomponent.data.feedrevamp.reversed
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
-import com.tokopedia.feedcomponent.domain.usecase.*
+import com.tokopedia.feedcomponent.domain.usecase.CheckUpcomingCampaignReminderUseCase
+import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
+import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetFollowingUseCase
+import com.tokopedia.feedcomponent.domain.usecase.PostUpcomingCampaignReminderUseCase
+import com.tokopedia.feedcomponent.domain.usecase.SCREEN_NAME_UPDATE_TAB
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Follow
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.UnFollow
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
@@ -28,28 +39,42 @@ import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
 import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.*
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.FOLLOW
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.LOADING_FOLLOW
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.LOADING_UNFOLLOW
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.UNFOLLOW
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
+import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.*
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedWidgetData
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
-import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
-import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
+import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopModel
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
-import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
+import com.tokopedia.kolcommon.domain.interactor.SubmitReportContentUseCase
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.ViewsKolModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -68,26 +93,20 @@ import javax.inject.Inject
 /**
  * @author by yoasfs on 2019-09-18
  */
-
-private const val PARAM_SHOP_DOMAIN = "shop_domain"
-private const val PARAM_SRC = "src"
-private const val PARAM_AD_KEY = "ad_key"
-private const val DEFAULT_VALUE_SRC = "fav_shop"
-
 class FeedViewModel @Inject constructor(
     private val baseDispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
-    private val likeKolPostUseCase: LikeKolPostUseCase,
-    private val addToCartUseCase: AddToCartUseCase,
-    private val submitActionContentUseCase: SubmitActionContentUseCase,
+    private val likeKolPostUseCase: SubmitLikeContentUseCase,
     private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
+    private val deletePostUseCase: SubmitActionContentUseCase,
+    private val addToCartUseCase: AddToCartUseCase,
     private val sendTopAdsUseCase: SendTopAdsUseCase,
     private val playWidgetTools: PlayWidgetTools,
     private val shopRecomUseCase: ShopRecomUseCase,
     private val shopRecomMapper: ShopRecomUiMapper,
     private val getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase,
+    private val sendReportUseCase: SubmitReportContentUseCase,
     private val getWhiteListNewUseCase: GetWhiteListNewUseCase,
-    private val sendReportUseCase: SendReportUseCase,
     private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
     private val trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase,
     private val feedXTrackViewerUseCase: FeedXTrackViewerUseCase,
@@ -97,11 +116,12 @@ class FeedViewModel @Inject constructor(
     private val doFollowUseCase: ProfileFollowUseCase,
     private val doUnfollowUseCase: ProfileUnfollowedUseCase,
     private val profileMutationMapper: ProfileMutationMapper,
+    private val getFollowingUseCase: GetFollowingUseCase,
 ) : BaseViewModel(baseDispatcher.main) {
 
     companion object {
-        private const val ERROR_UNFOLLOW_MESSAGE = "Oops, gagal meng-unfollow."
         private const val ERROR_FOLLOW_MESSAGE = "“Oops, gagal mem-follow."
+        private const val ERROR_UNFOLLOW_MESSAGE = "Oops, gagal meng-unfollow."
         const val PARAM_SOURCE_RECOM_PROFILE_CLICK = "click_recom_profile"
         const val PARAM_SOURCE_SEE_ALL_CLICK = "click_see_all"
         private const val ERROR_CUSTOM_MESSAGE = "Terjadi kesalahan koneksi. Silakan coba lagi."
@@ -109,12 +129,9 @@ class FeedViewModel @Inject constructor(
         private const val FOLLOW_TYPE_BUYER = 3
     }
 
-    private val userId: String
-        get() = if (userSession.isLoggedIn) userSession.userId else NON_LOGIN_USER_ID
-
     val getFeedFirstPageResp = MutableLiveData<Result<DynamicFeedFirstPageDomainModel>>()
     val getFeedNextPageResp = MutableLiveData<Result<DynamicFeedDomainModel>>()
-    val doFavoriteShopResp = MutableLiveData<Result<FeedPromotedShopViewModel>>()
+    val doFavoriteShopResp = MutableLiveData<Result<FeedPromotedShopModel>>()
     val followKolResp = MutableLiveData<Result<FollowKolViewModel>>()
     val followKolRecomResp = MutableLiveData<Result<FollowKolViewModel>>()
     val likeKolResp = MutableLiveData<Result<LikeKolViewModel>>()
@@ -125,7 +142,6 @@ class FeedViewModel @Inject constructor(
     val reportResponse = MutableLiveData<Result<DeletePostModel>>()
     val viewTrackResponse = MutableLiveData<Result<ViewsKolModel>>()
     val longVideoViewTrackResponse = MutableLiveData<Result<ViewsKolModel>>()
-
 
     private val _playWidgetModel = MutableLiveData<Result<CarouselPlayCardModel>>()
     val playWidgetModel: LiveData<Result<CarouselPlayCardModel>>
@@ -148,40 +164,279 @@ class FeedViewModel @Inject constructor(
     val feedWidgetLatestData: LiveData<Result<FeedWidgetData>>
         get() = _feedWidgetLatestData
 
+    private val _shopIdsFollowStatusToUpdateData = MutableLiveData<Result<Map<String, Boolean>>>()
+    val shopIdsFollowStatusToUpdateData: LiveData<Result<Map<String, Boolean>>>
+        get() = _shopIdsFollowStatusToUpdateData
+
     private var currentCursor = ""
     private val pagingHandler: PagingHandler = PagingHandler()
+
+    private val currentFollowState: MutableMap<String, Pair<Int, Boolean>> = mutableMapOf()
+
+    fun updateCurrentFollowState(list: List<Visitable<*>>) {
+        list.forEach { item ->
+            when (item) {
+                is DynamicPostModel -> currentFollowState[item.header.followCta.authorID] = Pair(
+                    item.header.followCta.authorType.toIntSafely(),
+                    item.header.followCta.isFollow
+                )
+                is DynamicPostUiModel -> currentFollowState[item.feedXCard.author.id] = Pair(
+                    item.feedXCard.author.type,
+                    item.feedXCard.followers.isFollowed
+                )
+                is ShopRecomWidgetModel -> item.shopRecomUiModel.items.map {
+                    currentFollowState[it.id.toString()] = Pair(it.type, it.state == FOLLOW)
+                }
+                is TopadsHeadLineV2Model -> item.run {
+                    cpmModel?.let {
+                        it.data.map { cpm ->
+                            currentFollowState[cpm.cpm.cpmShop.id] =
+                                Pair(GetFollowingUseCase.SHOP_TYPE, cpm.cpm.cpmShop.isFollowed)
+                        }
+                    }
+                    currentFollowState[feedXCard.author.id] = Pair(
+                        feedXCard.author.type,
+                        feedXCard.followers.isFollowed
+                    )
+                }
+                is TopadsShopUiModel -> item.dataList.map {
+                    if (it.shop.id.isNotEmpty()) {
+                        currentFollowState[it.shop.id] =
+                            Pair(GetFollowingUseCase.SHOP_TYPE, it.isFavorit)
+                    } else if (it.shop.ownerId.isNotEmpty()) {
+                        currentFollowState[it.shop.ownerId] =
+                            Pair(GetFollowingUseCase.SHOP_TYPE, it.isFavorit)
+                    }
+                }
+                is TopadsHeadlineUiModel -> item.cpmModel?.let {
+                    it.data.map { cpm ->
+                        currentFollowState[cpm.cpm.cpmShop.id] =
+                            Pair(GetFollowingUseCase.SHOP_TYPE, cpm.cpm.cpmShop.isFollowed)
+                    }
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    fun updateFollowStatus() {
+        val authorIds = currentFollowState.map { item -> Pair(item.key, item.value.first) }.toList()
+        if (authorIds.isNotEmpty())
+            viewModelScope.launchCatchError(block = {
+                val shopIdsToUpdate = mutableMapOf<String, Boolean>()
+                val response = withContext(baseDispatcher.io) {
+                    getFollowingUseCase(authorIds)
+                }
+                response.shopInfoById.result.forEach { item ->
+                    if (currentFollowState[item.shopCore.shopID] != null &&
+                        item.favoriteData.isFollowing != currentFollowState[item.shopCore.shopID]?.second
+                    ) {
+                        shopIdsToUpdate[item.shopCore.shopID] = item.favoriteData.isFollowing
+                        currentFollowState[item.shopCore.shopID] = Pair(
+                            currentFollowState[item.shopCore.shopID]?.first ?: 0,
+                            item.favoriteData.isFollowing
+                        )
+                    }
+                }
+                response.feedXProfileIsFollowing.isUserFollowing.forEach { item ->
+                    if (currentFollowState[item.userId] != null &&
+                        item.status != currentFollowState[item.userId]?.second
+                    ) {
+                        shopIdsToUpdate[item.userId] = item.status
+                        currentFollowState[item.userId] = Pair(
+                            currentFollowState[item.userId]?.first ?: 0, item.status
+                        )
+                    }
+                }
+                _shopIdsFollowStatusToUpdateData.value = Success(shopIdsToUpdate)
+            }) {
+                _shopIdsFollowStatusToUpdateData.value = Fail(it)
+            }
+    }
+
+    fun processFollowStatusUpdate(
+        currentList: MutableList<Visitable<*>>,
+        data: Map<String, Boolean>
+    ): MutableList<Visitable<*>> {
+        var newList = mutableListOf<Visitable<*>>();
+
+        if (data.isNotEmpty()) {
+            newList = currentList.map { item ->
+                if (item is ShopRecomWidgetModel) {
+                    val newItems = item.shopRecomUiModel.items.toMutableList()
+                    newItems.forEachIndexed { itemIndex, recomItem ->
+                        data[recomItem.id.toString()]?.let { followStatus ->
+                            newItems[itemIndex] = recomItem.copy(
+                                state = if (followStatus) FOLLOW else UNFOLLOW
+                            )
+                        }
+                    }
+                    item.copy(
+                        item.shopRecomUiModel.copy(
+                            items = newItems
+                        )
+                    )
+                } else if (item is TopadsShopUiModel) {
+                    val newItems = item.dataList.toMutableList()
+                    newItems.forEachIndexed { index, item ->
+                        val id = if (item.shop.id.isNotEmpty()) item.shop.id else item.shop.ownerId
+                        data[id]?.let { followStatus ->
+                            newItems[index] = item.copy(
+                                isFavorit = followStatus
+                            )
+                        }
+                    }
+
+                    item.copy(
+                        dataList = newItems
+                    )
+                } else if (item is TopadsHeadlineUiModel) {
+                    val newItems = (item.cpmModel?.data ?: listOf()).toMutableList()
+                    newItems.forEachIndexed { index, item ->
+                        data[item.cpm.cpmShop.id]?.let { followStatus ->
+                            newItems[index] = item.copy(
+                                cpm = item.cpm.copy(
+                                    cpmShop = item.cpm.cpmShop.copy(
+                                        isFollowed = followStatus
+                                    )
+                                )
+                            )
+                        }
+                    }
+
+                    item.copy(
+                        cpmModel = item.cpmModel?.copy(
+                            data = newItems
+                        ) ?: item.cpmModel
+                    )
+                } else if (item is TopadsHeadLineV2Model) {
+                    data[item.feedXCard.author.id]?.let { followStatus ->
+                        item.copy(
+                            cpmModel = item.cpmModel?.copy(
+                                data = (item.cpmModel as CpmModel).data.map { cpmItem ->
+                                    cpmItem.copy(
+                                        cpm = cpmItem.cpm.copy(
+                                            cpmShop = cpmItem.cpm.cpmShop.copy(
+                                                isFollowed = followStatus
+                                            )
+                                        )
+                                    )
+                                }.toMutableList()
+                            ) ?: item.cpmModel,
+                            feedXCard = item.feedXCard.copy(
+                                followers = item.feedXCard.followers.copy(
+                                    isFollowed = followStatus
+                                ),
+                                cpmData = item.feedXCard.cpmData.copy(
+                                    cpm = item.feedXCard.cpmData.cpm.copy(
+                                        cpmShop = item.feedXCard.cpmData.cpm.cpmShop.copy(
+                                            isFollowed = followStatus
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    } ?: item
+                } else {
+                    val shopId = when (item) {
+                        is DynamicPostModel -> item.header.followCta.authorID
+                        is DynamicPostUiModel -> item.feedXCard.author.id
+                        else -> ""
+                    }
+                    if (shopId != "") {
+                        data[shopId]?.let { followStatus ->
+                            when (item) {
+                                is DynamicPostModel -> item.copy(
+                                    header = item.header.copy(
+                                        followCta = item.header.followCta.copy(
+                                            isFollow = followStatus
+                                        )
+                                    )
+                                )
+
+                                is DynamicPostUiModel -> item.copy(
+                                    feedXCard = item.feedXCard.copy(
+                                        followers = item.feedXCard.followers.copy(
+                                            isFollowed = followStatus
+                                        )
+                                    )
+                                )
+
+                                else -> item
+
+                            }
+                        } ?: item
+                    } else {
+                        item
+                    }
+                }
+            }.toMutableList()
+        }
+
+        return newList
+    }
+
+    fun clearFollowIdToUpdate() {
+        if (_shopIdsFollowStatusToUpdateData.value != null &&
+            _shopIdsFollowStatusToUpdateData.value is Success &&
+            (_shopIdsFollowStatusToUpdateData.value as Success).data.isNotEmpty()
+        ) {
+            _shopIdsFollowStatusToUpdateData.value = Success(mapOf())
+        }
+    }
 
     fun sendReport(
         positionInFeed: Int,
         contentId: String,
         reasonType: String,
-        reasonMessage: String,
-        contentType: String,
+        reasonMessage: String
     ) {
-        sendReportUseCase.createRequestParams(
-            contentId.toIntOrZero(),
-            reasonType,
-            reasonMessage,
-            contentType
-        )
-        sendReportUseCase.execute(
-            {
-                val deleteModel = DeletePostModel(
-                    contentId,
-                    positionInFeed,
-                    it.feedReportSubmit.errorMessage,
-                    true,
+        viewModelScope.launchCatchError(block = {
+            sendReportUseCase.setRequestParams(
+                SubmitReportContentUseCase.createParam(
+                    contentId = contentId,
+                    reasonType = reasonType,
+                    reasonMessage = reasonMessage
                 )
-                if (it.feedReportSubmit.errorMessage.isEmpty()) {
-                    reportResponse.value = Success(deleteModel)
-                } else {
-                    reportResponse.value = Fail(Exception(it.feedReportSubmit.errorMessage))
-                }
-            },
-            {
-                reportResponse.value = Fail(it)
-            },
-        )
+            )
+            val response = withContext(baseDispatcher.io) {
+                sendReportUseCase.executeOnBackground()
+            }
+            if (response.content.errorMessage.isEmpty()) {
+                reportResponse.value = Success(
+                    DeletePostModel(
+                        contentId,
+                        positionInFeed,
+                        response.content.errorMessage,
+                        true
+                    )
+                )
+            } else {
+                reportResponse.value = Fail(MessageErrorException(response.content.errorMessage))
+            }
+        }) {
+            reportResponse.value = Fail(it)
+        }
+    }
+
+    fun trackVisitChannel(channelId: String, rowNumber: Int) {
+        viewModelScope.launchCatchError(block = {
+            trackVisitChannelBroadcasterUseCase.setRequestParams(
+                FeedBroadcastTrackerUseCase.createParams(
+                    channelId
+                )
+            )
+            val trackResponse = withContext(baseDispatcher.io) {
+                trackVisitChannelBroadcasterUseCase.executeOnBackground()
+            }
+            val data = ViewsKolModel()
+            data.rowNumber = rowNumber
+            data.isSuccess = trackResponse.reportVisitChannelTracking.success
+            viewTrackResponse.postValue(Success(data))
+        }) {
+            viewTrackResponse.postValue(Fail(it))
+        }
     }
 
     fun fetchLatestFeedPostWidgetData(detailId: String, rowNumber: Int) {
@@ -193,7 +448,7 @@ class FeedViewModel @Inject constructor(
                 if (response?.feedXHome?.items?.isNotEmpty() == true) {
                     val updatedData = FeedWidgetData(
                         rowNumber = rowNumber,
-                        feedXCard = response.feedXHome.items.first(),
+                        feedXCard = response.feedXHome.items.first()
                     )
                     _feedWidgetLatestData.postValue(Success(updatedData))
                 } else {
@@ -201,7 +456,7 @@ class FeedViewModel @Inject constructor(
                         Fail(CustomUiMessageThrowable(com.tokopedia.feedplus.R.string.feed_result_empty))
                     )
                 }
-            },
+            }
         ) {
             _feedWidgetLatestData.value = Fail(it)
         }
@@ -219,26 +474,6 @@ class FeedViewModel @Inject constructor(
         return null
     }
 
-    fun trackVisitChannel(channelId: String, rowNumber: Int) {
-        viewModelScope.launchCatchError(
-            baseDispatcher.io,
-            block = {
-                trackVisitChannelBroadcasterUseCase.setRequestParams(
-                    FeedBroadcastTrackerUseCase.createParams(
-                        channelId
-                    )
-                )
-                val trackResponse = trackVisitChannelBroadcasterUseCase.executeOnBackground()
-                val data = ViewsKolModel()
-                data.rowNumber = rowNumber
-                data.isSuccess = trackResponse.reportVisitChannelTracking.success
-                viewTrackResponse.postValue(Success(data))
-            },
-        ) {
-            viewTrackResponse.postValue(Fail(it))
-        }
-    }
-
     fun trackLongVideoView(activityId: String, rowNumber: Int) {
         viewModelScope.launchCatchError(
             baseDispatcher.io,
@@ -253,28 +488,35 @@ class FeedViewModel @Inject constructor(
                 data.rowNumber = rowNumber
                 data.isSuccess = trackResponse.feedXTrackViewerResponse.success
                 longVideoViewTrackResponse.postValue(Success(data))
-            },
+            }
         ) {
             longVideoViewTrackResponse.postValue(Fail(it))
         }
     }
 
     fun checkUpcomingCampaignInitialReminderStatus(campaign: FeedXCampaign, rowNumber: Int) {
-        viewModelScope.launchCatchError(baseDispatcher.io,
+        viewModelScope.launchCatchError(
+            baseDispatcher.io,
             block = {
                 val data = checkUpcomingCampaign(campaignId = campaign.campaignId)
                 val reminderStatusRes =
-                    if (data) FeedASGCUpcomingReminderStatus.On(campaign.campaignId) else FeedASGCUpcomingReminderStatus.Off(
-                        campaign.campaignId
+                    if (data) {
+                        FeedASGCUpcomingReminderStatus.On(campaign.campaignId)
+                    } else {
+                        FeedASGCUpcomingReminderStatus.Off(
+                            campaign.campaignId
+                        )
+                    }
+                _asgcReminderButtonInitialStatus.postValue(
+                    Success(
+                        FeedAsgcCampaignResponseModel(
+                            rowNumber = rowNumber,
+                            campaignId = campaign.campaignId,
+                            reminderStatus = reminderStatusRes
+                        )
                     )
-                _asgcReminderButtonInitialStatus.postValue(Success(
-                    FeedAsgcCampaignResponseModel(
-                        rowNumber = rowNumber,
-                        campaignId = campaign.campaignId,
-                        reminderStatus = reminderStatusRes
-                    ))
                 )
-            },
+            }
         ) {
             _asgcReminderButtonInitialStatus.postValue(Fail(it))
         }
@@ -293,7 +535,7 @@ class FeedViewModel @Inject constructor(
             block = {
                 val data = subscribeUpcomingCampaign(
                     campaignId = campaign.campaignId,
-                    reminderType = campaign.reminder,
+                    reminderType = campaign.reminder
                 )
                 if (data.first) {
                     val reminderStatusRes = campaign.reminder.reversed(campaign.campaignId)
@@ -301,13 +543,13 @@ class FeedViewModel @Inject constructor(
                         FeedAsgcCampaignResponseModel(
                             rowNumber = rowNumber,
                             campaignId = campaign.campaignId,
-                            reminderStatus = reminderStatusRes,
-                        ),
+                            reminderStatus = reminderStatusRes
+                        )
                     )
                 } else {
                     _asgcReminderButtonStatus.value = Fail(Throwable(data.second))
                 }
-            },
+            }
         ) {
             _asgcReminderButtonStatus.value = Fail(it)
         }
@@ -352,7 +594,7 @@ class FeedViewModel @Inject constructor(
                 }
 
                 if (shouldGetShopRecomWidget(results.dynamicFeedDomainModel)) getShopRecomWidget()
-            },
+            }
         ) {
             getFeedFirstPageResp.value = Fail(it)
         }
@@ -381,7 +623,7 @@ class FeedViewModel @Inject constructor(
                         _playWidgetModel.value = Fail(e)
                     }
                 }
-            },
+            }
         ) {
             getFeedNextPageResp.value = Fail(it)
         }
@@ -391,23 +633,27 @@ class FeedViewModel @Inject constructor(
         launchCatchError(block = {
             val response = withContext(baseDispatcher.io) {
                 shopFollowUseCase.executeOnBackground(
-                    shopId = promotedShopViewModel.shop.id,
+                    shopId = promotedShopViewModel.shop.id
                 )
             }
             val result = shopRecomMapper.mapShopFollow(response)
             doFavoriteShopResp.value = Success(
-                FeedPromotedShopViewModel(
+                FeedPromotedShopModel(
                     isSuccess = result is MutationUiModel.Success,
                     promotedShopViewModel = promotedShopViewModel,
                     adapterPosition = adapterPosition
                 )
             )
-        },) {
+        }) {
             doFavoriteShopResp.value = Fail(it)
         }
     }
 
-    fun doFollowKol(id: String, rowNumber: Int, isFollowedFromFollowRestrictionBottomSheet: Boolean = false) {
+    fun doFollowKol(
+        id: String,
+        rowNumber: Int,
+        isFollowedFromFollowRestrictionBottomSheet: Boolean = false
+    ) {
         launchCatchError(block = {
             val response = withContext(baseDispatcher.io) {
                 doFollowUseCase.executeOnBackground(id)
@@ -420,10 +666,10 @@ class FeedViewModel @Inject constructor(
                     status = 1, // todo: revamp the whole
                     isFollowedFromFollowRestrictionBottomSheet = isFollowedFromFollowRestrictionBottomSheet,
                     isSuccess = result is MutationUiModel.Success,
-                    isFollow = true,
+                    isFollow = true
                 )
             )
-        },) {
+        }) {
             followKolResp.value = Fail(Exception(ERROR_FOLLOW_MESSAGE))
         }
     }
@@ -440,36 +686,53 @@ class FeedViewModel @Inject constructor(
                     rowNumber = rowNumber,
                     status = 0,
                     isSuccess = result is MutationUiModel.Success,
-                    isFollow = false,
+                    isFollow = false
                 )
             )
-        },) {
+        }) {
             followKolResp.value = Fail(Exception(ERROR_UNFOLLOW_MESSAGE))
         }
     }
 
     fun doLikeKol(id: Long, rowNumber: Int) {
-        launchCatchError(
-            block = {
-                val results = withContext(baseDispatcher.io) {
-                    likeKol(id, rowNumber)
+        viewModelScope.launchCatchError(block = {
+            likeKolPostUseCase.setRequestParams(
+                SubmitLikeContentUseCase.createParam(
+                    contentId = id.toString(),
+                    action = SubmitLikeContentUseCase.ACTION_LIKE
+                )
+            )
+            val isSuccess = withContext(baseDispatcher.io) {
+                likeKolPostUseCase.executeOnBackground().doLikeKolPost.data.success == SubmitLikeContentUseCase.SUCCESS
+            }
+            likeKolResp.value =
+                if (isSuccess) {
+                    Success(LikeKolViewModel(id = id, rowNumber = rowNumber, isSuccess = true))
+                } else {
+                    Fail(CustomUiMessageThrowable(R.string.feed_like_error_message))
                 }
-                likeKolResp.value = Success(results)
-            },
-        ) {
+        }) {
             likeKolResp.value = Fail(it)
         }
     }
 
     fun doUnlikeKol(id: Long, rowNumber: Int) {
-        launchCatchError(
-            block = {
-                val results = withContext(baseDispatcher.io) {
-                    unlikeKol(id, rowNumber)
-                }
-                likeKolResp.value = Success(results)
-            },
-        ) {
+        viewModelScope.launchCatchError(block = {
+            likeKolPostUseCase.setRequestParams(
+                SubmitLikeContentUseCase.createParam(
+                    contentId = id.toString(),
+                    action = SubmitLikeContentUseCase.ACTION_UNLIKE
+                )
+            )
+            val isSuccess = withContext(baseDispatcher.io) {
+                likeKolPostUseCase.executeOnBackground().doLikeKolPost.data.success == SubmitLikeContentUseCase.SUCCESS
+            }
+            likeKolResp.value = if (isSuccess) {
+                Success(LikeKolViewModel(id = id, rowNumber = rowNumber, isSuccess = isSuccess))
+            } else {
+                throw MessageErrorException()
+            }
+        }) {
             likeKolResp.value = Fail(it)
         }
     }
@@ -486,10 +749,10 @@ class FeedViewModel @Inject constructor(
                     position = position,
                     rowNumber = rowNumber,
                     isSuccess = result is MutationUiModel.Success,
-                    isFollow = true,
+                    isFollow = true
                 )
             )
-        },) {
+        }) {
             followKolRecomResp.value = Fail(it)
         }
     }
@@ -506,29 +769,30 @@ class FeedViewModel @Inject constructor(
                     position = position,
                     rowNumber = rowNumber,
                     isSuccess = result is MutationUiModel.Success,
-                    isFollow = false,
+                    isFollow = false
                 )
             )
-        },) {
+        }) {
             followKolRecomResp.value = Fail(it)
         }
     }
 
     fun doDeletePost(id: String, rowNumber: Int) {
-        launchCatchError(
-            block = {
-                val response = withContext(baseDispatcher.io) {
-                    submitActionContentUseCase.setRequestParams(SubmitActionContentUseCase.paramToDeleteContent(id))
-                submitActionContentUseCase.executeOnBackground()
-            }
-            deletePostResp.value = Success(
-                DeletePostModel(
-                    id = id,
-                    rowNumber = rowNumber,
-                    isSuccess = TextUtils.isEmpty(response.content.error)
+        viewModelScope.launchCatchError(block = {
+            deletePostUseCase.setRequestParams(
+                SubmitActionContentUseCase.paramToDeleteContent(
+                    contentId = id
                 )
             )
-        },) {
+            val isSuccess = withContext(baseDispatcher.io) {
+                deletePostUseCase.executeOnBackground().content.success == SubmitPostData.SUCCESS
+            }
+            deletePostResp.value = if (isSuccess) {
+                Success(DeletePostModel(id = id, rowNumber = rowNumber, isSuccess = isSuccess))
+            } else {
+                throw MessageErrorException()
+            }
+        }) {
             deletePostResp.value = Fail(it)
         }
     }
@@ -546,7 +810,7 @@ class FeedViewModel @Inject constructor(
                     addToCart(postTagItem, shopId, type, isFollowed, activityId)
                 }
                 atcResp.value = Success(results)
-            },
+            }
         ) {
             atcResp.value = Fail(it)
         }
@@ -559,7 +823,7 @@ class FeedViewModel @Inject constructor(
                     trackAffiliate(url)
                 }
                 trackAffiliateResp.value = Success(results)
-            },
+            }
         ) {
         }
     }
@@ -571,10 +835,10 @@ class FeedViewModel @Inject constructor(
         follow: Boolean = true,
         isFollowedFromFollowRestrictionBottomSheet: Boolean = false
     ) {
-         launchCatchError(block = {
+        launchCatchError(block = {
             val response = withContext(baseDispatcher.io) {
                 shopFollowUseCase.executeOnBackground(
-                    shopId = shopId,
+                    shopId = shopId
                 )
             }
             val result = shopRecomMapper.mapShopFollow(response)
@@ -587,7 +851,7 @@ class FeedViewModel @Inject constructor(
                     isSuccess = result is MutationUiModel.Success
                 )
             )
-        },) {
+        }) {
             if (follow) {
                 toggleFavoriteShopResp.value =
                     Fail(CustomUiMessageThrowable(R.string.feed_unfollow_error_message))
@@ -602,7 +866,7 @@ class FeedViewModel @Inject constructor(
         shopId: String,
         shopName: String,
         imageUrl: String,
-        isClick: Boolean,
+        isClick: Boolean
     ) {
         if (isClick) {
             sendTopAdsUseCase.hitClick(url, shopId, shopName, imageUrl)
@@ -619,7 +883,7 @@ class FeedViewModel @Inject constructor(
             },
             onError = {
                 _playWidgetModel.value = Fail(it)
-            },
+            }
         )
     }
 
@@ -633,7 +897,7 @@ class FeedViewModel @Inject constructor(
         isFollowed: Boolean,
         onFail: (String) -> Unit,
         onSuccess: (String, String, String, Boolean, Int, Int, AddToWishlistV2Response.Data.WishlistAddV2) -> Unit,
-        context: Context,
+        context: Context
     ) {
         launch(baseDispatcher.main) {
             addToWishlistV2UseCase.setParams(productId, userSession.userId)
@@ -647,7 +911,7 @@ class FeedViewModel @Inject constructor(
                     isFollowed,
                     position,
                     positionInFeed,
-                    result.data,
+                    result.data
                 )
             } else if (result is Fail) {
                 val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
@@ -663,7 +927,7 @@ class FeedViewModel @Inject constructor(
                 val whiteListModel = getWhiteListNewUseCase.execute(type = WHITELIST_INTEREST)
                 DynamicFeedFirstPageDomainModel(
                     feedResponseModel,
-                    (whiteListModel.whitelist.error.isEmpty() && whiteListModel.whitelist.isWhitelist),
+                    (whiteListModel.whitelist.error.isEmpty() && whiteListModel.whitelist.isWhitelist)
                 )
             } else {
                 DynamicFeedFirstPageDomainModel(feedResponseModel, false)
@@ -686,35 +950,6 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun likeKol(id: Long, rowNumber: Int): LikeKolViewModel {
-        try {
-            val data = LikeKolViewModel()
-            data.id = id
-            data.rowNumber = rowNumber
-            val params = LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like)
-            val isSuccess = likeKolPostUseCase.createObservable(params).toBlocking().first()
-            data.isSuccess = isSuccess
-            return data
-        } catch (e: Throwable) {
-            throw e
-        }
-    }
-
-    private fun unlikeKol(id: Long, rowNumber: Int): LikeKolViewModel {
-        try {
-            val data = LikeKolViewModel()
-            data.id = id
-            data.rowNumber = rowNumber
-            val params =
-                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike)
-            val isSuccess = likeKolPostUseCase.createObservable(params).toBlocking().first()
-            data.isSuccess = isSuccess
-            return data
-        } catch (e: Throwable) {
-            throw e
-        }
-    }
-
     private suspend fun addToCart(
         postTagItem: FeedXProduct,
         shopId: String,
@@ -728,7 +963,7 @@ class FeedViewModel @Inject constructor(
                 shopId,
                 productName = postTagItem.productName,
                 price = postTagItem.price.toString(),
-                userId = userSession.userId,
+                userId = userSession.userId
             )
             try {
                 val data = AtcModel()
@@ -781,8 +1016,8 @@ class FeedViewModel @Inject constructor(
             val model = currentValue.data.playWidgetState
             _playWidgetModel.value = Success(
                 data = currentValue.data.copy(
-                    playWidgetState = playWidgetTools.updateTotalView(model, channelId, totalView),
-                ),
+                    playWidgetState = playWidgetTools.updateTotalView(model, channelId, totalView)
+                )
             )
         }
     }
@@ -794,7 +1029,7 @@ class FeedViewModel @Inject constructor(
     private suspend fun processPlayWidget(isAutoRefresh: Boolean = false): CarouselPlayCardModel {
         val response = playWidgetTools.getWidgetFromNetwork(
             widgetType = PlayWidgetUseCase.WidgetType.Feeds,
-            coroutineContext = baseDispatcher.io,
+            coroutineContext = baseDispatcher.io
         )
         val uiModel = playWidgetTools.mapWidgetToModel(response)
         return CarouselPlayCardModel(uiModel, isAutoRefresh)
@@ -809,8 +1044,11 @@ class FeedViewModel @Inject constructor(
             block = {
                 val request = requestShopRecomWidget(nextCursor)
                 if (request.shopRecomUiModel.isShown) {
-                    val items = if (nextCursor.isEmpty()) request.shopRecomUiModel.items
-                    else _shopRecom.value.shopRecomUiModel.items + request.shopRecomUiModel.items
+                    val items = if (nextCursor.isEmpty()) {
+                        request.shopRecomUiModel.items
+                    } else {
+                        _shopRecom.value.shopRecomUiModel.items + request.shopRecomUiModel.items
+                    }
 
                     _shopRecom.update {
                         it.copy(
@@ -820,9 +1058,9 @@ class FeedViewModel @Inject constructor(
                                 title = request.shopRecomUiModel.title,
                                 loadNextPage = request.shopRecomUiModel.loadNextPage,
                                 items = items,
-                                isRefresh = nextCursor.isEmpty(),
+                                isRefresh = nextCursor.isEmpty()
                             ),
-                            onError = "",
+                            onError = ""
                         )
                     }
                 } else {
@@ -834,10 +1072,10 @@ class FeedViewModel @Inject constructor(
                 _shopRecom.update { data ->
                     data.copy(
                         shopRecomUiModel = data.shopRecomUiModel.copy(loadNextPage = false),
-                        onError = it.message.orEmpty(),
+                        onError = it.message.orEmpty()
                     )
                 }
-            },
+            }
         )
     }
 
@@ -849,7 +1087,7 @@ class FeedViewModel @Inject constructor(
         val response = shopRecomUseCase.executeOnBackground(
             screenName = VAL_SCREEN_NAME_FEED_UPDATE,
             limit = VAL_LIMIT,
-            cursor = cursor,
+            cursor = cursor
         )
         val uiModel = shopRecomMapper.mapShopRecom(response, VAL_LIMIT)
         return ShopRecomWidgetModel(uiModel)
@@ -874,7 +1112,7 @@ class FeedViewModel @Inject constructor(
                     FOLLOW_TYPE_SHOP -> {
                         val request = shopFollowUseCase.executeOnBackground(
                             shopId = currentItem.id.toString(),
-                            action = if (currentState == FOLLOW) UnFollow else Follow,
+                            action = if (currentState == FOLLOW) UnFollow else Follow
                         )
                         shopRecomMapper.mapShopFollow(request)
                     }
@@ -904,7 +1142,7 @@ class FeedViewModel @Inject constructor(
                 _shopRecom.update { data ->
                     data.copy(onError = it.message.orEmpty())
                 }
-            },
+            }
         )
     }
 
@@ -912,16 +1150,16 @@ class FeedViewModel @Inject constructor(
         _shopRecom.update { data ->
             data.copy(
                 shopRecomUiModel = data.shopRecomUiModel.copy(
-                    items = data.shopRecomUiModel.items.filterNot { it.id == itemID },
+                    items = data.shopRecomUiModel.items.filterNot { it.id == itemID }
                 ),
-                onError = "",
+                onError = ""
             )
         }
     }
 
     private fun updateItemFollowStatusShopRecom(
         currentItem: ShopRecomUiModelItem,
-        currentState: ShopRecomFollowState,
+        currentState: ShopRecomFollowState
     ) {
         _shopRecom.update { data ->
             data.copy(
@@ -932,16 +1170,16 @@ class FeedViewModel @Inject constructor(
                         } else {
                             it
                         }
-                    },
+                    }
                 ),
-                onError = "",
+                onError = ""
             )
         }
     }
 
     private fun updateLoadingStateFollowShopRecom(
         itemID: Long,
-        state: ShopRecomFollowState,
+        state: ShopRecomFollowState
     ) {
         _shopRecom.update { data ->
             data.copy(
@@ -952,9 +1190,9 @@ class FeedViewModel @Inject constructor(
                         } else {
                             it
                         }
-                    },
+                    }
                 ),
-                onError = "",
+                onError = ""
             )
         }
     }

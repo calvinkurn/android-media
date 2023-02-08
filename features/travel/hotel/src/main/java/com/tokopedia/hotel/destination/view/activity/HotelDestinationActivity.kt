@@ -39,8 +39,8 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
     override fun isShowCloseButton(): Boolean = true
 
     override fun getComponent(): HotelDestinationComponent = DaggerHotelDestinationComponent.builder()
-            .hotelComponent(getHotelComponent())
-            .build()
+        .hotelComponent(getHotelComponent())
+        .build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,8 +64,11 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
     }
 
     private fun showSearchDestinationResult() {
-        supportFragmentManager.beginTransaction().replace(R.id.parent_view,
-                HotelSearchDestinationFragment(), SEARCH_DESTINATION_FRAGMENT_TAG).addToBackStack(null).commit()
+        supportFragmentManager.beginTransaction().replace(
+            R.id.parent_view,
+            HotelSearchDestinationFragment(),
+            SEARCH_DESTINATION_FRAGMENT_TAG
+        ).addToBackStack(null).commit()
     }
 
     private fun backToHotelRecommendation() {
@@ -73,7 +76,6 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
     }
 
     override fun onSearchTextChanged(text: String) {
-
         if (text == searchTemp) return
         searchTemp = text
         onTextChangedJob?.cancel()
@@ -87,7 +89,7 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
                 isSearching = true
                 showSearchDestinationResult()
             } else if (isSearching) {
-                //search
+                // search
                 doSearch(text)
             }
         }
@@ -99,14 +101,17 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
     }
 
     private fun doSearch(text: String) {
-        if (supportFragmentManager.findFragmentById(R.id.parent_view) is HotelSearchDestinationFragment)
+        if (supportFragmentManager.findFragmentById(R.id.parent_view) is HotelSearchDestinationFragment) {
             (supportFragmentManager.findFragmentById(R.id.parent_view) as HotelSearchDestinationFragment).onSearchQueryChange(text)
+        }
     }
 
     override fun onBackPressed() {
         finish()
-        overridePendingTransition(com.tokopedia.common.travel.R.anim.travel_anim_stay,
-                com.tokopedia.common.travel.R.anim.travel_slide_out_up)
+        overridePendingTransition(
+            com.tokopedia.common.travel.R.anim.travel_anim_stay,
+            com.tokopedia.common.travel.R.anim.travel_slide_out_up
+        )
     }
 
     companion object {
@@ -119,8 +124,9 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
         const val HOTEL_DESTINATION_SEARCH_ID = "search_id"
         const val HOTEL_CURRENT_LOCATION_LANG = "lang"
         const val HOTEL_CURRENT_LOCATION_LAT = "lat"
+        const val HOTEL_DESTINATION_RESULT_SOURCE = "source"
 
         fun createInstance(context: Context): Intent =
-                Intent(context, HotelDestinationActivity::class.java)
+            Intent(context, HotelDestinationActivity::class.java)
     }
 }

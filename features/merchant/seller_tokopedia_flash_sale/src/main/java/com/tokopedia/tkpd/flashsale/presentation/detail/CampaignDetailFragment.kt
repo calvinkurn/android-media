@@ -30,8 +30,8 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.*
 import com.tokopedia.tkpd.flashsale.common.bottomsheet.sse_submission_error.FlashSaleProductListSseSubmissionErrorBottomSheet
-import com.tokopedia.tkpd.flashsale.common.dialog.FlashSaleProductSseSubmissionProgressDialog
 import com.tokopedia.tkpd.flashsale.common.dialog.FlashSaleProductSseSubmissionDialog
+import com.tokopedia.tkpd.flashsale.common.dialog.FlashSaleProductSseSubmissionProgressDialog
 import com.tokopedia.tkpd.flashsale.common.extension.enablePaging
 import com.tokopedia.tkpd.flashsale.common.extension.toCalendar
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
@@ -64,6 +64,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     companion object {
         private const val PAGE_SIZE = 10
         private const val APPLINK_SEGMENTS_SIZE = 2
+        private const val DEFAULT_FOR_EMPTY_FLASH_SALE_ID = 0L
         private const val DELAY = 1500L
         private const val IMAGE_PRODUCT_ELIGIBLE_URL =
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/seller_toped_new.png"
@@ -94,25 +95,25 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private val viewModel by lazy { viewModelProvider.get(CampaignDetailViewModel::class.java) }
     private val checkProductBottomSheet = ProductCheckBottomSheet()
 
-    //main binding
+    // main binding
     private var binding by autoClearedNullable<StfsFragmentCampaignDetailBinding>()
 
-    //reusable binding
+    // reusable binding
     private var cdpHeaderBinding by autoClearedNullable<StfsCdpHeaderBinding>()
     private var cdpBodyBinding by autoClearedNullable<StfsCdpBodyBinding>()
 
-    //upcoming
+    // upcoming
     private var upcomingCdpMidBinding by autoClearedNullable<StfsCdpUpcomingMidBinding>()
     private var upcomingCdpBodyBinding by autoClearedNullable<StfsCdpUpcomingBodyBinding>()
 
-    //registered
+    // registered
     private var registeredCdpMidBinding by autoClearedNullable<StfsCdpRegisteredMidBinding>()
 
-    //ongoing
+    // ongoing
     private var ongoingCdpHeaderBinding by autoClearedNullable<StfsCdpHeaderBinding>()
     private var ongoingCdpMidBinding by autoClearedNullable<StfsCdpOngoingMidBinding>()
 
-    //finished
+    // finished
     private var finishedCdpHeaderBinding by autoClearedNullable<StfsCdpHeaderBinding>()
     private var finishedCdpMidBinding by autoClearedNullable<StfsCdpOngoingMidBinding>()
 
@@ -120,15 +121,15 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private val flashSaleId by lazy {
         val appLinkData = RouteManager.getIntent(activity, activity?.intent?.data.toString()).data
         if (isOpenedFromApplink(appLinkData)) {
-            appLinkData?.lastPathSegment?.toLong().orZero()
+            getFLashSaleIdFromApplink(appLinkData)
         } else {
-            arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
+            getFlashSaleIdFromBundle()
         }
     }
 
     private var totalSubmittedProduct: Long = Int.ZERO.toLong()
 
-    //coachmark
+    // coachmark
     private val coachMark by lazy {
         context?.let {
             CoachMark2(it)
@@ -145,20 +146,29 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                             itemPosition,
                             isChecked
                         )
-                    })
+                    }
+                )
             )
-            .add(OnSelectionProcessDelegateAdapter(
-                onProductItemClicked = { onProductClicked(it) }
-            ))
-            .add(FinishedProcessSelectionDelegateAdapter(
-                onProductItemClicked = { onProductClicked(it) }
-            ))
-            .add(OngoingDelegateAdapter(
-                onProductItemClicked = { onProductClicked(it) }
-            ))
-            .add(OngoingRejectedDelegateAdapter(
-                onProductItemClicked = { onProductClicked(it) }
-            ))
+            .add(
+                OnSelectionProcessDelegateAdapter(
+                    onProductItemClicked = { onProductClicked(it) }
+                )
+            )
+            .add(
+                FinishedProcessSelectionDelegateAdapter(
+                    onProductItemClicked = { onProductClicked(it) }
+                )
+            )
+            .add(
+                OngoingDelegateAdapter(
+                    onProductItemClicked = { onProductClicked(it) }
+                )
+            )
+            .add(
+                OngoingRejectedDelegateAdapter(
+                    onProductItemClicked = { onProductClicked(it) }
+                )
+            )
             .add(LoadingDelegateAdapter())
             .build()
     }
@@ -175,7 +185,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = StfsFragmentCampaignDetailBinding.inflate(inflater, container, false)
@@ -213,6 +224,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                         getFlashSaleSubmissionProgress(flashSaleId)
                     }
                     is Fail -> {
+                        binding?.run { header.setNavigationOnClickListener { activity?.finish() } }
                         showGlobalError()
                     }
                 }
@@ -337,9 +349,6 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun handleEffect(effect: CampaignDetailViewModel.UiEffect) {
         when (effect) {
-            is CampaignDetailViewModel.UiEffect.ShowGlobalError -> {
-                showGlobalError()
-            }
             CampaignDetailViewModel.UiEffect.ShowIneligibleAccessWarning -> {
                 navigateToIneligibleAccessPage()
             }
@@ -817,7 +826,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun navigateToChooseProductPage() {
         ChooseProductActivity.start(
-            context ?: return, flashSaleId,
+            context ?: return,
+            flashSaleId,
             viewModel.getTabName()
         )
     }
@@ -1569,7 +1579,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             globalError.apply {
                 show()
                 setActionClickListener {
-                    loadCampaignDetailData()
+                    activity?.finish()
                 }
             }
         }
@@ -1645,5 +1655,21 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun isOpenedFromApplink(appLinkData: Uri?): Boolean {
         return appLinkData?.lastPathSegment?.isNotEmpty() == true && appLinkData.pathSegments.size >= APPLINK_SEGMENTS_SIZE
+    }
+
+    private fun getFLashSaleIdFromApplink(appLinkData: Uri?): Long {
+        return try {
+            appLinkData?.lastPathSegment?.toLong().orZero()
+        } catch (e: NumberFormatException) {
+            DEFAULT_FOR_EMPTY_FLASH_SALE_ID
+        }
+    }
+
+    private fun getFlashSaleIdFromBundle(): Long {
+        return try {
+            arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
+        } catch (e: NumberFormatException) {
+            DEFAULT_FOR_EMPTY_FLASH_SALE_ID
+        }
     }
 }

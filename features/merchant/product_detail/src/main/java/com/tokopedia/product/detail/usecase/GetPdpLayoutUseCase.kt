@@ -339,6 +339,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                           additionalInfo
                         }
                       }
+                      componentType
                     },
                      ... on pdpDataOneLiner {
                        productID
@@ -358,6 +359,10 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                        widgetType
                        productID
                        whID
+                    }
+                    ... on pdpDataCustomInfoTitle {
+                      title
+                      status
                     }
                   }
                 }

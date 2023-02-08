@@ -7,13 +7,13 @@ import android.widget.TextView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 
 fun clickClickableSpan(textToClick: CharSequence): ViewAction {
     return object : ViewAction {
         override fun getConstraints(): Matcher<View> {
-            return Matchers.instanceOf(TextView::class.java)
+            return CoreMatchers.instanceOf(TextView::class.java)
         }
 
         override fun getDescription(): String {

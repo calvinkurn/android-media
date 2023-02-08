@@ -1,5 +1,6 @@
 package com.tokopedia.dropoff.ui.dropoff_picker
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.IntentSender
@@ -35,6 +36,7 @@ import com.tokopedia.dropoff.ui.autocomplete.AutoCompleteActivity
 import com.tokopedia.dropoff.ui.dropoff_picker.model.DropoffNearbyModel
 import com.tokopedia.dropoff.util.SimpleVerticalDivider
 import com.tokopedia.dropoff.util.getDescription
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticCommon.util.bitmapDescriptorFromVector
@@ -52,6 +54,12 @@ const val REQUEST_CODE_LOCATION: Int = 1
 const val REQUEST_CODE_AUTOCOMPLETE: Int = 2
 
 class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
+
+    companion object {
+        private const val MAP_CAMERA_ZOOM = 16f
+        private const val LATITUDE_KEY = "BUNDLE_LATITUDE"
+        private const val LONGITUDE_KEY = "BUNDLE_LONGITUDE"
+    }
 
     private lateinit var mPermissionChecker: PermissionCheckerHelper
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -142,17 +150,18 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
         mNearbiesBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet))
         mNearbiesBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
-        mNearbiesBehavior?.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onSlide(p0: View, p1: Float) {
-                // no op
-            }
-
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    tracker.trackExpandList()
+        mNearbiesBehavior?.setBottomSheetCallback(object :
+                BottomSheetBehavior.BottomSheetCallback() {
+                override fun onSlide(p0: View, p1: Float) {
+                    // no op
                 }
-            }
-        })
+
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                        tracker.trackExpandList()
+                    }
+                }
+            })
         mDetailBehavior = BottomSheetBehavior.from(mStoreDetail)
         mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
 
@@ -163,7 +172,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private fun initializeMap() {
-        mMapFragment = supportFragmentManager.findFragmentById(R.id.map_dropoff) as SupportMapFragment
+        mMapFragment =
+            supportFragmentManager.findFragmentById(R.id.map_dropoff) as SupportMapFragment
         if (MapsAvailabilityHelper.isMapsAvailable(this)) {
             mPermissionChecker = PermissionCheckerHelper()
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -186,9 +196,17 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private fun getNearestStoreFromIntent(data: Intent = intent) {
-        val latitude = data.getStringExtra(LATITUDE_KEY) ?: ""
-        val longitude = data.getStringExtra(LONGITUDE_KEY) ?: ""
+        var latitude = data.getStringExtra(LATITUDE_KEY) ?: ""
+        var longitude = data.getStringExtra(LONGITUDE_KEY) ?: ""
+        if (latitude.isEmpty() || longitude.isEmpty()) {
+            val lca = ChooseAddressUtils.getLocalizingAddressData(this)
+            if (lca.lat.isNotEmpty() && lca.long.isNotEmpty()) {
+                latitude = lca.lat
+                longitude = lca.long
+            }
+        }
         if (latitude.isNotEmpty() && longitude.isNotEmpty()) {
+            mNearbyAdapter.setStateLoading()
             viewModel.getStores("$latitude,$longitude")
         }
     }
@@ -246,7 +264,11 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         mPermissionChecker.onRequestPermissionsResult(
             this,
@@ -316,12 +338,18 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 getPermissions(),
                 object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
-                        mPermissionChecker.onPermissionDenied(this@DropoffPickerActivity, permissionText)
+                        mPermissionChecker.onPermissionDenied(
+                            this@DropoffPickerActivity,
+                            permissionText
+                        )
                         setNoPermissionsView()
                     }
 
                     override fun onNeverAskAgain(permissionText: String) {
-                        mPermissionChecker.onNeverAskAgain(this@DropoffPickerActivity, permissionText)
+                        mPermissionChecker.onNeverAskAgain(
+                            this@DropoffPickerActivity,
+                            permissionText
+                        )
                         setNoPermissionsView()
                     }
 
@@ -355,7 +383,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
     private fun drawCircle(radius: Int) {
         if (radius > 0) {
-            val circleColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G600)
+            val circleColor =
+                ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G600)
             val alphaCircleColor = ColorUtils.setAlphaComponent(circleColor, 40)
             mMap?.addCircle(
                 CircleOptions().center(mLastLocation)
@@ -444,6 +473,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         )
     }
 
+    @SuppressLint("MissingPermission")
     private fun checkAndRequestLocation() {
         val locationRequest = LocationRequest.create()?.apply {
             interval = 10000
@@ -513,10 +543,4 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 goToAutoComplete.invoke(null)
             }
         }
-
-    companion object {
-        private const val MAP_CAMERA_ZOOM = 16f
-        private const val LATITUDE_KEY = "BUNDLE_LATITUDE"
-        private const val LONGITUDE_KEY = "BUNDLE_LONGITUDE"
-    }
 }

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.UserNotLoginException
+import com.tokopedia.shop.common.constant.ShopPartnerFsFullfillmentServiceTypeDef
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.domain.GetMessageIdChatUseCase
 import com.tokopedia.shop.common.domain.GetShopReputationUseCase
@@ -110,6 +111,8 @@ class ShopInfoViewModel @Inject constructor(
             messageIdOnChatExist.postValue(Fail(it))
         }
     }
+
+    fun isShouldShowLicenseForDrugSeller(isGoApotik: Boolean, fsType: Int): Boolean = isGoApotik || fsType == ShopPartnerFsFullfillmentServiceTypeDef.EPHARMACY
 
     private suspend fun getMessageId(shopId: String): ChatExistingChat {
         getMessageIdChatUseCase.params = GetMessageIdChatUseCase.createParams(shopId)

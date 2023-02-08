@@ -333,3 +333,11 @@ public static com.tokopedia.stability.ChangeDelegate *;
 }
 # Conversations Chat SDK
 -keepclassmembers class com.gojek.conversations.babble.** { *; }
+
+-assumenosideeffects class timber.log.Timber {
+    public static void v(...);
+    public static void i(...);
+    public static void w(...);
+    public static void d(...);
+    public static void e(...);
+}

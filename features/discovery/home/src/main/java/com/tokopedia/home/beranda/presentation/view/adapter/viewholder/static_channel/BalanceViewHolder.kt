@@ -112,12 +112,12 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
         setPaddingCard()
         showImageSuccess(element)
 
-        //Load Text
+        // Load Text
         val balanceText = element.balanceTitleTextAttribute?.text ?: ""
         binding?.homeContainerBalance?.homeTvBalance?.text = balanceText
         binding?.homeContainerBalance?.homeHeaderTitleBalance?.text = element.headerTitle
 
-        //load reserve balance
+        // load reserve balance
         val reserveBalance = element.balanceSubTitleTextAttribute?.text ?: ""
         binding?.homeContainerBalance?.homeTvReserveBalance?.text = reserveBalance
         setFontReserveBalance(element)
@@ -129,8 +129,8 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
 
     private fun setFontReserveBalance(element: BalanceDrawerItemModel) {
         if (
-            (element.drawerItemType == TYPE_SUBSCRIPTION && !element.isSubscriberGoToPlus)
-            || element.drawerItemType == TYPE_WALLET_APP_NOT_LINKED
+            (element.drawerItemType == TYPE_SUBSCRIPTION && !element.isSubscriberGoToPlus) ||
+            element.drawerItemType == TYPE_WALLET_APP_NOT_LINKED
         ) {
             binding?.homeContainerBalance?.homeTvReserveBalance?.setWeight(Typography.BOLD)
             binding?.homeContainerBalance?.homeTvReserveBalance?.setTextColor(
@@ -151,9 +151,9 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
     }
 
     private fun showImageSuccess(element: BalanceDrawerItemModel) {
-        if (!element.iconImageUrl.isNullOrBlank())
+        if (!element.iconImageUrl.isNullOrBlank()) {
             binding?.homeContainerBalance?.homeIvLogoBalance?.setImageUrl(element.iconImageUrl)
-        else {
+        } else {
             showFailedImage()
         }
     }
@@ -192,7 +192,7 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
         binding?.homeContainerBalance?.homeContainerBalance?.handleItemClickType(
             element = element,
             rewardsAction = {
-                //handle click for type rewards
+                // handle click for type rewards
                 BalanceWidgetTracking.sendClickOnRewardsBalanceWidgetTracker(
                     listener?.userId ?: ""
                 )
