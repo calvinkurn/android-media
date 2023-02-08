@@ -1911,26 +1911,29 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
         when {
             isOfficialStore -> {
-                showRegularHomeBackground(R.drawable.sah_shop_state_bg_os_thematic)
+                showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_OS_THEMATIC)
             }
             isPowerMerchant -> {
-                showRegularHomeBackground(R.drawable.sah_shop_state_bg_pm_thematic)
+                showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_PM_THEMATIC)
             }
             else -> {
-                showRegularHomeBackground(R.drawable.sah_shop_state_bg_rm_thematic)
+                showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_RM_THEMATIC)
             }
         }
     }
 
-    private fun showRegularHomeBackground(backgroundResource: Int) {
+    private fun showRegularHomeBackground(imageUrl: String) {
         binding?.run {
             try {
                 val height =
                     requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
                 viewBgShopStatus.layoutParams.height = height
-                viewBgShopStatus.visible()
-                viewBgShopStatus.setImageResource(backgroundResource)
-                viewBgShopStatus.requestLayout()
+                viewBgShopStatus.loadImage(imageUrl) {
+                    listener(onSuccess = { _, _ ->
+                        viewBgShopStatus.visible()
+                        viewBgShopStatus.requestLayout()
+                    })
+                }
             } catch (e: Exception) {
                 viewBgShopStatus.hide()
             }
