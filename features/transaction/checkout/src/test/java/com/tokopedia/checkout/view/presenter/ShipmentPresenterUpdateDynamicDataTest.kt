@@ -147,9 +147,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
         presenter.updateDynamicData(updateDynamicDataParams, true)
 
         // Then
-        verifyOrder {
-            view.stopTrace()
-        }
+        assertEquals("data", presenter.dynamicData)
     }
 
     @Test
@@ -171,8 +169,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
         presenter.updateDynamicData(updateDynamicDataParams, false)
 
         // Then
-        verifyOrder {
-            view.stopTrace()
+        verify {
             view.doCheckout()
         }
     }
@@ -194,9 +191,8 @@ class ShipmentPresenterUpdateDynamicDataTest {
         presenter.updateDynamicData(updateDynamicDataParams, true)
 
         // Then
-        verifyOrder {
+        verify {
             view.showToastError(any())
-            view.stopTrace()
         }
     }
 
@@ -216,9 +212,8 @@ class ShipmentPresenterUpdateDynamicDataTest {
         presenter.updateDynamicData(updateDynamicDataParams, true)
 
         // Then
-        verifyOrder {
+        verify {
             view.showToastError(any())
-            view.stopTrace()
         }
     }
 

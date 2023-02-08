@@ -2,8 +2,8 @@ package com.tokopedia.checkout.view;
 
 import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_REGULAR_PRODUCT;
 import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_TOKONOW_PRODUCT;
-import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ADD_ON_DETAILS;
-import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.IS_DONATION;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ATTRIBUTE_ADDON_DETAILS;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ATTRIBUTE_DONATION;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ORDER_LEVEL;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PRODUCT_LEVEL;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_NORMAL;
@@ -250,7 +250,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     public boolean isUsingDdp = false;
     public DynamicDataPassingParamRequest dynamicDataParam;
-    private String dynamicData = "";
+    public String dynamicData = "";
 
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
@@ -2929,7 +2929,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
             dynamicDataParam.setLevel(DynamicDataPassingMapper.PAYMENT_LEVEL);
             dynamicDataParam.setUniqueId("");
-            dynamicDataParam.setAttribute(IS_DONATION);
+            dynamicDataParam.setAttribute(ATTRIBUTE_DONATION);
             dynamicDataParam.setDonation(cartShipmentAddressFormData.getDonation().isChecked());
             listDataParam.add(dynamicDataParam);
         }
@@ -2942,7 +2942,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
                     dynamicDataParam.setLevel(ORDER_LEVEL);
                     dynamicDataParam.setUniqueId(groupShop.getCartString());
-                    dynamicDataParam.setAttribute(ADD_ON_DETAILS);
+                    dynamicDataParam.setAttribute(ATTRIBUTE_ADDON_DETAILS);
                     dynamicDataParam.setAddOn(DynamicDataPassingMapper.INSTANCE.getAddOnFromSAF(groupShop.getAddOns(), isOneClickShipment));
                     listDataParam.add(dynamicDataParam);
                 }
@@ -2954,7 +2954,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         dynamicDataParam.setLevel(PRODUCT_LEVEL);
                         dynamicDataParam.setParentUniqueId(groupShop.getCartString());
                         dynamicDataParam.setUniqueId(String.valueOf(product.getCartId()));
-                        dynamicDataParam.setAttribute(ADD_ON_DETAILS);
+                        dynamicDataParam.setAttribute(ATTRIBUTE_ADDON_DETAILS);
                         dynamicDataParam.setAddOn(DynamicDataPassingMapper.INSTANCE.getAddOnFromSAF(product.getAddOnProduct(), isOneClickShipment));
                         listDataParam.add(dynamicDataParam);
                     }

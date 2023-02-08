@@ -11,8 +11,8 @@ import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_USER
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_DROP_OFF_ADDRESS;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_NORMAL_ADDRESS;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.VALUE_TRADE_IN;
-import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ADD_ON_DETAILS;
-import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.IS_DONATION;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ATTRIBUTE_ADDON_DETAILS;
+import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ATTRIBUTE_DONATION;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ORDER_LEVEL;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PAYMENT_LEVEL;
 import static com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PRODUCT_LEVEL;
@@ -128,7 +128,6 @@ import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
-import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet;
@@ -148,7 +147,6 @@ import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiMode
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
-import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
@@ -198,9 +196,6 @@ import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.currency.CurrencyFormatUtil;
 import com.tokopedia.utils.time.TimeHelper;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1979,14 +1974,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void updateCheckboxDynamicData(DynamicDataPassingParamRequest.DynamicDataParam newParam, boolean isChecked) {
         DynamicDataPassingParamRequest existingDdpParam = shipmentPresenter.getDynamicDataParam();
         boolean isAdded = false;
-        if (newParam.getAttribute().equalsIgnoreCase(IS_DONATION)) {
+        if (newParam.getAttribute().equalsIgnoreCase(ATTRIBUTE_DONATION)) {
             for (DynamicDataPassingParamRequest.DynamicDataParam existingParam : shipmentPresenter.getDynamicDataParam().getData()) {
-                if (existingParam.getAttribute().equalsIgnoreCase(IS_DONATION)) {
+                if (existingParam.getAttribute().equalsIgnoreCase(ATTRIBUTE_DONATION)) {
                     isAdded = true;
                     existingParam.setDonation(isChecked);
                 }
             }
-        } else if (newParam.getAttribute().equalsIgnoreCase(ADD_ON_DETAILS)) {
+        } else if (newParam.getAttribute().equalsIgnoreCase(ATTRIBUTE_ADDON_DETAILS)) {
             if (isChecked) {
                 for (DynamicDataPassingParamRequest.DynamicDataParam existingParam : shipmentPresenter.getDynamicDataParam().getData()) {
                     if (existingParam.getUniqueId().equalsIgnoreCase(newParam.getUniqueId())) {
@@ -2111,7 +2106,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
             dynamicDataParam.setLevel(PAYMENT_LEVEL);
             dynamicDataParam.setUniqueId("");
-            dynamicDataParam.setAttribute(IS_DONATION);
+            dynamicDataParam.setAttribute(ATTRIBUTE_DONATION);
             dynamicDataParam.setDonation(checked);
             updateCheckboxDynamicData(dynamicDataParam, checked);
         }
@@ -3841,7 +3836,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (addOnResult.getAddOnData().isEmpty()) {
             // unchecked
             DynamicDataPassingParamRequest.DynamicDataParam uncheckedDynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
-            uncheckedDynamicDataParam.setAttribute(ADD_ON_DETAILS);
+            uncheckedDynamicDataParam.setAttribute(ATTRIBUTE_ADDON_DETAILS);
             if (identifier == 1) {
                 uncheckedDynamicDataParam.setLevel(ORDER_LEVEL);
                 uncheckedDynamicDataParam.setUniqueId(cartString);
@@ -3853,7 +3848,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             updateCheckboxDynamicData(uncheckedDynamicDataParam, false);
         } else {
             DynamicDataPassingParamRequest.DynamicDataParam dynamicDataParam = new DynamicDataPassingParamRequest.DynamicDataParam();
-            dynamicDataParam.setAttribute(ADD_ON_DETAILS);
+            dynamicDataParam.setAttribute(ATTRIBUTE_ADDON_DETAILS);
             dynamicDataParam.setAddOn(DynamicDataPassingMapper.INSTANCE.getAddOn(addOnResult, isOneClickShipment()));
             if (identifier == 1) {
                 // order level
