@@ -2,11 +2,16 @@ package com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 
 data class TopchatUiModel(
+    @SerializedName("source")
     val source: String = "",
+    @SerializedName("code")
     val code: String = "",
+    @SerializedName("messageId")
     val messageId: String = "",
+    @SerializedName("header")
     val header: String = ""
 ) : Parcelable {
 

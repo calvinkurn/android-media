@@ -50,16 +50,22 @@ class WebSocketLoggingFragment : Fragment() {
         WebSocketLogAdapter()
     }
 
-    private lateinit var layoutManager: LinearLayoutManager
-    private lateinit var viewModel: WebSocketLoggingViewModel
+    private val viewModel: WebSocketLoggingViewModel by lazy {
+        ViewModelProvider(
+            this,
+            viewModelFactory
+        )[WebSocketLoggingViewModel::class.java]
+    }
+
+    private var layoutManager: LinearLayoutManager? = null
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
-            if (dy > 0) {
-                val totalItem = layoutManager.itemCount
-                val visibleItem = layoutManager.childCount
-                val pastVisibleItem = layoutManager.findFirstVisibleItemPosition()
+            if (dy > 0 && layoutManager != null) {
+                val totalItem = layoutManager!!.itemCount
+                val visibleItem = layoutManager!!.childCount
+                val pastVisibleItem = layoutManager!!.findFirstVisibleItemPosition()
 
                 if ((visibleItem + pastVisibleItem) >= totalItem) {
                     viewModel.submitAction(WebSocketLoggingAction.LoadNextPageAction)
@@ -84,7 +90,6 @@ class WebSocketLoggingFragment : Fragment() {
             .getString(WebSocketLoggingActivity.EXTRA_PAGE_SOURCE)
             .orEmpty()
 
-        viewModel = ViewModelProvider(this, viewModelFactory)[WebSocketLoggingViewModel::class.java]
         viewModel.setPageSource(WebSocketLogPageSource.fromString(pageSource))
         viewModel.submitAction(WebSocketLoggingAction.InitPage)
     }
@@ -99,7 +104,7 @@ class WebSocketLoggingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
+        initView()
         initObserver()
     }
 
@@ -111,7 +116,7 @@ class WebSocketLoggingFragment : Fragment() {
     /**
      * Initialization
      */
-    private fun initView(view: View) {
+    private fun initView() {
         layoutManager = LinearLayoutManager(context)
 
         binding?.rvWebsocketLog?.apply {

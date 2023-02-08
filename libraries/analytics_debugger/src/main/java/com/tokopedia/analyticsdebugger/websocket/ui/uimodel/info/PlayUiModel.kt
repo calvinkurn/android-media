@@ -2,11 +2,16 @@ package com.tokopedia.analyticsdebugger.websocket.ui.uimodel.info
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 
 data class PlayUiModel(
+    @SerializedName("source")
     val source: String = "",
+    @SerializedName("channelId")
     val channelId: String = "",
+    @SerializedName("warehouseId")
     val warehouseId: String = "",
+    @SerializedName("gcToken")
     val gcToken: String = "",
 ) : Parcelable {
 
