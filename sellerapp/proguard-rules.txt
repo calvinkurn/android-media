@@ -309,3 +309,6 @@ public static com.tokopedia.stability.ChangeDelegate *;
 -keep class com.google.gson.reflect.TypeToken { *; }
 -keep class * extends com.google.gson.reflect.TypeToken
 -keep class kotlin.coroutines.Continuation
+
+# Lifecycle
+-keep class androidx.lifecycle.ProcessLifecycleInitializer { *; }

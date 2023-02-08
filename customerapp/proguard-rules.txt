@@ -341,3 +341,6 @@ public static com.tokopedia.stability.ChangeDelegate *;
     public static void d(...);
     public static void e(...);
 }
+
+# Lifecycle
+-keep class androidx.lifecycle.ProcessLifecycleInitializer { *; }
