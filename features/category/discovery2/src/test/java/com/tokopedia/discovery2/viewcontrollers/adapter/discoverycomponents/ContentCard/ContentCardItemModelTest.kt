@@ -1,6 +1,8 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ContentCard
 
 import android.app.Application
+import android.content.Context
+import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -23,6 +25,7 @@ class ContentCardItemModelTest {
     val rule = InstantTaskExecutorRule()
     private val componentsItem: ComponentsItem = mockk(relaxed = true)
     private val application: Application = mockk()
+    private var context: Context = mockk()
     private var viewModel: ContentCardItemViewModel =
         spyk(ContentCardItemViewModel(application, componentsItem, 99))
 
@@ -31,13 +34,15 @@ class ContentCardItemModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
-        mockkObject(Utils.Companion)
+        every { application.applicationContext } returns context
+        mockkObject(Utils)
     }
 
     @After
     @Throws(Exception::class)
     fun tearDown() {
         Dispatchers.resetMain()
+        unmockkObject(Utils)
     }
 
     @Test
@@ -93,5 +98,33 @@ class ContentCardItemModelTest {
         val list = mutableListOf(DataItem(landingPage = LandingPage(appLink = "xyz")))
         every { componentsItem.data } returns list
         assert(viewModel.getNavigationUrl() == "xyz")
+    }
+
+    @Test
+    fun `test for startTimer`() {
+        val resource: Resources = mockk(relaxed = true)
+        every { application.resources } returns resource
+        every { application.applicationContext.resources } returns resource
+        every { viewModel.getStartDate() } returns "2021-11-01T10:00:00+07:00"
+        every { Utils.parseFlashSaleDate(any()) } returns "2029-11-01T10:00:00+07:00"
+        every { Utils.isFutureSale(any()) } returns true
+
+        viewModel.startTimer()
+
+        assert(viewModel.getTimerText().value != null)
+    }
+
+    @Test
+    fun `test for startTimer when saleTimeMillis is less than 0`() {
+        val resource: Resources = mockk(relaxed = true)
+        every { application.resources } returns resource
+        every { application.applicationContext.resources } returns resource
+        every { viewModel.getStartDate() } returns "2021-11-01T10:00:00+07:00"
+        every { Utils.parseFlashSaleDate(any()) } returns "2019-11-01T10:00:00+07:00"
+        every { Utils.isFutureSale(any()) } returns true
+
+        viewModel.startTimer()
+
+        assert(viewModel.getTimerText().value != null)
     }
 }

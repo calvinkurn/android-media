@@ -24,6 +24,7 @@ fun accountListResponse(
                 iconUrl = "icon.url.shop",
                 badge = "icon.badge",
                 hasUsername = false,
+                hasAcceptTnc = false,
                 enable = false,
             ),
             ContentAccountUiModel(
@@ -33,6 +34,7 @@ fun accountListResponse(
                 iconUrl = "icon.url.buyer",
                 badge = "icon.badge",
                 hasUsername = buyerHasUsername,
+                hasAcceptTnc = buyerHasAcceptTnc,
                 enable = buyerHasAcceptTnc,
             ),
         )
@@ -45,6 +47,7 @@ fun accountListResponse(
                 iconUrl = "icon.url.shop",
                 badge = "icon.badge",
                 hasUsername = true,
+                hasAcceptTnc = true,
                 enable = true,
             ),
             ContentAccountUiModel(
@@ -54,6 +57,7 @@ fun accountListResponse(
                 iconUrl = "icon.url.buyer",
                 badge = "icon.badge",
                 hasUsername = buyerHasUsername,
+                hasAcceptTnc=  buyerHasAcceptTnc,
                 enable = buyerHasAcceptTnc,
             ),
         )

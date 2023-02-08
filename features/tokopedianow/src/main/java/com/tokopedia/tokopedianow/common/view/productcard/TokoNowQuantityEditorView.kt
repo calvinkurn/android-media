@@ -382,4 +382,6 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             }
         }
     }
+
+    fun getQuantity(): Int = counter
 }
