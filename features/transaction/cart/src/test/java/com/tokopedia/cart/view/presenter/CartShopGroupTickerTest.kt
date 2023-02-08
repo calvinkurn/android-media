@@ -14,6 +14,7 @@ import io.mockk.coVerify
 import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.ticker
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -70,7 +71,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
     }
 
     @Test
-    fun `WHEN enableBoAffordability and enableBundleCrossSell is false THEN should not hit API`() {
+    fun `WHEN bo affordability and bundling is disabled THEN should not hit API`() {
         // GIVEN
         val cartString = "123-123-123"
         val cartShopHolderData = CartShopHolderData(
@@ -100,6 +101,64 @@ class CartShopGroupTickerTest : BaseCartTest() {
             view.updateCartShopGroupTicker(expectedCartShopHolderData)
         }
         coVerify(inverse = true) {
+            cartShopGroupTickerAggregatorUseCase(any())
+        }
+    }
+
+    @Test
+    fun `WHEN shop product is overweight but bo affordability disabled and bundling enabled THEN should hit cart aggregator API`() {
+        // GIVEN
+        val cartString = "123-123-123"
+        val tickerData = CartShopGroupTickerData(
+            enableCartAggregator = true,
+            enableBoAffordability = false
+        )
+        val cartShopHolderData = CartShopHolderData(
+            cartShopGroupTicker = tickerData,
+            cartString = cartString,
+            maximumShippingWeight = 1.0,
+            maximumWeightWording = "overweight",
+            isAllSelected = true,
+            productUiModelList = arrayListOf(
+                CartItemHolderData(
+                    productId = "111",
+                    cartId = "111",
+                    isSelected = true,
+                    quantity = 10,
+                    productWeight = 1000000,
+                    isBundlingItem = false,
+                    bundleIds = listOf("123", "234")
+                )
+            )
+        )
+        val tickerText = "dapat bebas ongkir"
+        val expectedCartShopHolderData = cartShopHolderData.copy()
+
+        coEvery {
+            cartShopGroupTickerAggregatorUseCase(any())
+        } returns CartShopGroupTickerAggregatorResponse(
+            CartShopGroupTickerAggregatorData(
+                minTransaction = 0L,
+                ticker = CartShopGroupTickerAggregatorTicker(
+                    text = tickerText
+                )
+            )
+        )
+
+        // WHEN
+        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
+
+        // THEN
+        verify {
+            expectedCartShopHolderData.cartShopGroupTicker = tickerData.copy(
+                state = CartShopGroupTickerState.SUCCESS_AFFORD,
+                tickerText = tickerText
+            )
+            view.updateCartShopGroupTicker(expectedCartShopHolderData)
+        }
+
+        coVerify {
             cartShopGroupTickerAggregatorUseCase(any())
         }
     }
@@ -500,7 +559,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
                 unselectedProductWithBundle(),
                 unselectedBundleProduct(),
                 selectedProductWithoutBundle(),
-                selectedProductWithBundle(),
+                selectedProductWithBundle()
             )
         )
 
@@ -523,7 +582,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
                 unselectedProductWithBundle(),
                 unselectedBundleProduct(),
                 selectedProductWithoutBundle(),
-                selectedProductWithBundle(),
+                selectedProductWithBundle()
             )
         )
 
@@ -547,7 +606,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
                 unselectedBundleProduct(),
                 selectedProductWithoutBundle(),
                 selectedProductWithBundle(),
-                selectedBundleProduct(),
+                selectedBundleProduct()
             )
         )
 
@@ -568,7 +627,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
             productUiModelList = arrayListOf(
                 unselectedProductWithoutBundle(),
                 unselectedProductWithBundle(),
-                unselectedBundleProduct(),
+                unselectedBundleProduct()
             )
         )
 
