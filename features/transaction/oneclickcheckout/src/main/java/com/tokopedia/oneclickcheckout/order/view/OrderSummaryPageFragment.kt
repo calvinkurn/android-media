@@ -73,7 +73,6 @@ import com.tokopedia.oneclickcheckout.common.view.utils.animateGone
 import com.tokopedia.oneclickcheckout.common.view.utils.animateShow
 import com.tokopedia.oneclickcheckout.databinding.FragmentOrderSummaryPageBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
-import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
@@ -1465,15 +1464,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 val orderCost = viewModel.orderTotal.value.orderCost
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_AMOUNT, orderCost.totalPriceWithoutPaymentFees)
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_BID, payment.bid)
+                val goCicilInstallmentRequest = viewModel.generateGoCicilInstallmentRequest(orderCost)
                 putExtra(
                     PaymentListingActivity.EXTRA_ORDER_METADATA,
-                    GoCicilInstallmentRequest(
-                        merchantType = viewModel.orderCart.shop.merchantType,
-                        paymentAmount = orderCost.totalPriceWithoutPaymentFees,
-                        address = profile.address,
-                        shop = viewModel.orderCart.shop,
-                        products = viewModel.orderCart.products
-                    ).orderMetadata
+                    goCicilInstallmentRequest.orderMetadata
+                )
+                putExtra(
+                    PaymentListingActivity.EXTRA_PROMO_PARAM,
+                    goCicilInstallmentRequest.promoParam
                 )
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)

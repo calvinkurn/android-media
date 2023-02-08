@@ -77,6 +77,9 @@ data class GoCicilInstallmentRequest(
             )
         }.toString()
 
+    val promoParam
+        get() = promoCodes.joinToString(",")
+
     companion object {
         private const val USER_DEFINED_VALUE_KEY_USER_ID = "user_id"
 

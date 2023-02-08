@@ -39,7 +39,7 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(
             PARAM_USER_DEFINED_VALUE to param.userDefinedValue,
             PARAM_PAYMENT_AMOUNT to param.paymentAmount,
             PARAM_ORDER_METADATA to param.orderMetadata,
-            PARAM_PROMO_PARAM to param.promoCodes.joinToString(","),
+            PARAM_PROMO_PARAM to param.promoParam,
             PARAM_APP_VERSION to generateAppVersionForPayment()
         )
     }
