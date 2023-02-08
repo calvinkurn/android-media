@@ -50,6 +50,7 @@
 /features/common/resources_common                   	@tokopedia/android-core-dev
 /features/common/qr_scanner                   	        @tokopedia/android-core-dev
 /features/common/feedback_form                          @tokopedia/android-core-dev
+/features/common/internal_review/                       @tokopedia/android-core-dev
 
 /features/discovery/category_common/                	@tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant/                       @tokopedia/android-minionstuart-dev
@@ -326,7 +327,7 @@
 /libraries/fingerprint/									@tokopedia/android-core-dev
 /libraries/floating_window                              @tokopedia/android-core-dev @tokopedia/android-minionlance-dev
 /libraries/graphql/									    @tokopedia/android-core-dev
-/libraries/image_assets/                                @tokopedia/android-minionken-dev
+/libraries/image_assets/                                @tokopedia/android-minionken-dev @tokopedia/android-minionstuart-dev
 /libraries/image_picker/								@tokopedia/android-core-dev
 /libraries/image_picker_insta/							@tokopedia/android-minionlance-dev
 /libraries/image_picker_insta_common/					@tokopedia/android-minionlance-dev
@@ -383,6 +384,7 @@
 /libraries/macrobenchmark/								@tokopedia/android-core-dev
 /libraries/universal_sharing/							@tokopedia/android-core-dev
 /libraries/sse/                                         @tokopedia/android-core-dev @tokopedia/android-minionlance-dev
+/libraries/data_explorer/                               @tokopedia/android-minionmark-dev
 
 /config/detekt/                                         @tokopedia/android-gatekeeper-linter
 /buildconfig/                                           @tokopedia/android-core-dev
