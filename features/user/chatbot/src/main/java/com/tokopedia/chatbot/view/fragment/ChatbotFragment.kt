@@ -92,8 +92,6 @@ import com.tokopedia.chatbot.attachinvoice.view.TransactionInvoiceBottomSheet
 import com.tokopedia.chatbot.attachinvoice.view.TransactionInvoiceBottomSheetListener
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotMediaRetryBottomSheet
-import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotReplyBubbleBottomSheet
-import com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter.ReplyBubbleBottomSheetAdapter
 import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleUiModel
@@ -107,7 +105,6 @@ import com.tokopedia.chatbot.data.seprator.ChatSepratorUiModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.databinding.FragmentChatbotBinding
-import com.tokopedia.chatbot.databinding.RetryUploadMediaBottomSheetLayoutBinding
 import com.tokopedia.chatbot.di.ChatbotModule
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
@@ -131,7 +128,6 @@ import com.tokopedia.chatbot.view.activity.ChatbotOnboardingActivity
 import com.tokopedia.chatbot.view.activity.ChatbotVideoActivity
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
-import com.tokopedia.chatbot.view.adapter.MediaRetryBottomSheetAdapter
 import com.tokopedia.chatbot.view.adapter.util.RecyclerViewScrollListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
@@ -221,8 +217,7 @@ class ChatbotFragment :
     ChatbotSendButtonListener,
     ChatbotFloatingInvoice.InvoiceListener,
     ReplyBoxClickListener,
-    ChatbotReplyBottomSheetAdapter.ReplyBubbleBottomSheetListener,
-    ReplyBubbleBottomSheetAdapter.ReplyBubbleBottomSheetListener {
+    ChatbotReplyBottomSheetAdapter.ReplyBubbleBottomSheetListener {
 
     val SNACK_BAR_TEXT_OK = "OK"
     val BOT_OTHER_REASON_TEXT = "bot_other_reason"
@@ -297,7 +292,7 @@ class ChatbotFragment :
     @Inject
     lateinit var getUserNameForReplyBubble: GetUserNameForReplyBubble
 
-    private var replyBubbleBottomSheet: ChatbotReplyBubbleBottomSheet? = null
+    private var replyBubbleBottomSheet: ChatbotReplyBottomSheet? = null
     private var mediaRetryBottomSheet: ChatbotMediaRetryBottomSheet? = null
 
     companion object {

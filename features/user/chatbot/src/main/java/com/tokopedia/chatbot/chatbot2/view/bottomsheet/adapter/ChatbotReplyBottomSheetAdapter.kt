@@ -1,32 +1,32 @@
-package com.tokopedia.chatbot.view.bottomsheet.adapter
+package com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chatbot.databinding.ItemChatbotReplyButtonBinding
+import com.tokopedia.chatbot.view.uimodel.ChatbotReplyOptionsUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class ReplyBubbleBottomSheetAdapter(
-    private val messageUiModel: MessageUiModel
+class ChatbotReplyBottomSheetAdapter(
+    private val callback: (ChatbotReplyOptionsUiModel) -> Unit
 ) :
-    RecyclerView.Adapter<ReplyBubbleBottomSheetAdapter.ReplyBubbleBottomSheetViewHolder>() {
+    RecyclerView.Adapter<ChatbotReplyBottomSheetAdapter.ReplyBubbleBottomSheetViewHolder>() {
 
-    val list = mutableListOf<Pair<String, Int>>()
+    val list = mutableListOf<ChatbotReplyOptionsUiModel>()
     private var listener: ReplyBubbleBottomSheetListener? = null
-
-    fun setListener(listener: ReplyBubbleBottomSheetListener) {
-        this.listener = listener
-    }
 
     inner class ReplyBubbleBottomSheetViewHolder(itemView: ItemChatbotReplyButtonBinding) : RecyclerView.ViewHolder(itemView.root) {
         private val title: Typography = itemView.title
         private val icon: IconUnify = itemView.icon
-        fun bind(item: Pair<String, Int>) {
-            title.text = item.first
-            icon.setImage(item.second)
-            itemView.setOnClickListener { listener?.onClickMessageReply(messageUiModel) }
+        fun bind(item: ChatbotReplyOptionsUiModel) {
+            title.text = item.title
+            icon.setImage(item.icon)
+            itemView.setOnClickListener {
+                callback(item)
+            }
         }
     }
 
@@ -46,7 +46,8 @@ class ReplyBubbleBottomSheetAdapter(
         return list.size
     }
 
-    fun setList(list: List<Pair<String, Int>>) {
+    @SuppressLint("NotifyDataSetChanged")
+    fun setList(list: List<ChatbotReplyOptionsUiModel>) {
         this.list.clear()
         this.list.addAll(list)
         notifyDataSetChanged()

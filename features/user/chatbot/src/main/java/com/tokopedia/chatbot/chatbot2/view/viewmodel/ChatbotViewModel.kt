@@ -19,12 +19,12 @@ import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chatbot.ChatbotConstant
-import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.CHAT_DIVIDER
-import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.OPEN_CSAT
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.SESSION_CHANGE
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CHAT_SEPARATOR
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CSAT_OPTIONS
-import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_OPTION_LIST
-import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.UPDATE_TOOLBAR
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CSAT_VIEW
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_HELPFULL_QUESTION
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_UPDATE_TOOLBAR
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY
 import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceLinkPojo
@@ -716,7 +716,7 @@ class ChatbotViewModel @Inject constructor(
             if (message is HelpFullQuestionsUiModel) {
                 input.list.add(
                     ChipGetChatRatingListInput.ChatRating(
-                        TYPE_OPTION_LIST.toLongOrZero(),
+                        TYPE_HELPFULL_QUESTION.toLongOrZero(),
                         message.helpfulQuestion?.caseChatId ?: ""
                     )
                 )
@@ -778,7 +778,7 @@ class ChatbotViewModel @Inject constructor(
                     when {
                         msg is HelpFullQuestionsUiModel &&
                             rate.attachmentType ==
-                            TYPE_OPTION_LIST.toLongOrZero()
+                            TYPE_HELPFULL_QUESTION.toLongOrZero()
                         -> (msg.helpfulQuestion?.caseChatId == rate.caseChatID)
                         msg is CsatOptionsUiModel &&
                             rate.attachmentType ==
@@ -1061,7 +1061,7 @@ class ChatbotViewModel @Inject constructor(
             WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE -> {
                 val attachmentType = chatResponse?.attachment?.type
                 if (attachmentType == SESSION_CHANGE ||
-                    attachmentType == UPDATE_TOOLBAR ||
+                    attachmentType == TYPE_UPDATE_TOOLBAR ||
                     attachmentType == DYNAMIC_ATTACHMENT
                 ) {
                     return
@@ -1091,9 +1091,9 @@ class ChatbotViewModel @Inject constructor(
         val attachmentType = chatResponse?.attachment?.type
         if (attachmentType != null) {
             when (attachmentType) {
-                OPEN_CSAT -> handleOpenCsatAttachment(webSocketResponse)
-                UPDATE_TOOLBAR -> handleUpdateToolbarAttachment()
-                CHAT_DIVIDER -> handleChatDividerAttachment()
+                TYPE_CSAT_VIEW -> handleOpenCsatAttachment(webSocketResponse)
+                TYPE_UPDATE_TOOLBAR -> handleUpdateToolbarAttachment()
+                TYPE_CHAT_SEPARATOR -> handleChatDividerAttachment()
                 SESSION_CHANGE -> handleSessionChangeAttachment()
                 DYNAMIC_ATTACHMENT -> handleDynamicAttachment34(pojo)
                 else -> mapToVisitable(pojo)

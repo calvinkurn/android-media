@@ -49,10 +49,11 @@ object ChatbotConstant {
 
     object AttachmentType {
         const val TYPE_CSAT_VIEW = "13"
+        const val TYPE_UPDATE_TOOLBAR = "14"
         const val TYPE_CHAT_SEPARATOR = "15"
         const val TYPE_HELPFULL_QUESTION = "22"
         const val TYPE_CSAT_OPTIONS = "23"
-        const val TYPE_STICKED_BUTTON_ACTIONS = "25"
+        const val TYPE_STICKY_BUTTON = "25"
         const val TYPE_SECURE_IMAGE_UPLOAD = "26"
         const val TYPE_REPLY_BUBBLE = "28"
         const val TYPE_VIDEO_UPLOAD = "30"

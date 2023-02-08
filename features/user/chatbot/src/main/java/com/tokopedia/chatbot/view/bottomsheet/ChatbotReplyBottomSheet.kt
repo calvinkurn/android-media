@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.databinding.ReplyBubbleBottomSheetLayoutBinding
+import com.tokopedia.chatbot.databinding.BottomsheetChatbotReplyBinding
 import com.tokopedia.chatbot.view.uimodel.ChatbotReplyOptionsUiModel
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -17,9 +17,9 @@ class ChatbotReplyBottomSheet(
     private val messageUiModel: MessageUiModel,
     private val listener: ChatbotReplyBottomSheetAdapter.ReplyBubbleBottomSheetListener,
     private val isReplyBubbleEnabled: Boolean
-): BottomSheetUnify() {
+) : BottomSheetUnify() {
 
-    private var binding by autoClearedNullable<ReplyBubbleBottomSheetLayoutBinding>()
+    private var binding by autoClearedNullable<BottomsheetChatbotReplyBinding>()
     private var replyAdapter: ChatbotReplyBottomSheetAdapter? = null
 
     init {
@@ -33,7 +33,7 @@ class ChatbotReplyBottomSheet(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = ReplyBubbleBottomSheetLayoutBinding.inflate(LayoutInflater.from(context))
+        binding = BottomsheetChatbotReplyBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)
 
         setTitle(
@@ -78,4 +78,3 @@ class ChatbotReplyBottomSheet(
         this.replyAdapter = ChatbotReplyBottomSheetAdapter(callback)
     }
 }
-

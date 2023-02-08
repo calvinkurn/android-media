@@ -16,11 +16,11 @@ import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
-import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.STICKY_BUTTON
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CSAT_OPTIONS
-import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_OPTION_LIST
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_HELPFULL_QUESTION
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_REPLY_BUBBLE
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_STICKY_BUTTON
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.chatbot2.data.csatoptionlist.CsatAttributesPojo
@@ -63,9 +63,9 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
             TYPE_INVOICES_SELECTION -> convertToInvoiceSelection(pojo, jsonAttributes)
             TYPE_CHAT_BALLOON_ACTION -> convertToChatActionSelectionBubbleModel(pojo, jsonAttributes)
             TYPE_QUICK_REPLY_SEND -> convertToMessageViewModel(pojo)
-            TYPE_OPTION_LIST -> convertToHelpQuestionViewModel(pojo)
+            TYPE_HELPFULL_QUESTION -> convertToHelpQuestionViewModel(pojo)
             TYPE_CSAT_OPTIONS -> convertToCsatOptionsViewModel(pojo)
-            STICKY_BUTTON -> convertToStickedButtonActionsViewModel(pojo)
+            TYPE_STICKY_BUTTON -> convertToStickedButtonActionsViewModel(pojo)
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(pojo, jsonAttributes)
             TYPE_REPLY_BUBBLE -> convertToReplyBubble(pojo, jsonAttributes)
             AttachmentType.Companion.TYPE_INVOICE_SEND -> convertToSendInvoice(pojo, jsonAttributes)

@@ -1,6 +1,8 @@
 package com.tokopedia.chatbot.chatbot2.view.fragment
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -13,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
@@ -112,8 +115,8 @@ import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.StickyAct
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.VideoUploadListener
 import com.tokopedia.chatbot.chatbot2.view.attachmentmenu.ChatbotImageMenu
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotMediaRetryBottomSheet
-import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotReplyBubbleBottomSheet
-import com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter.ReplyBubbleBottomSheetAdapter
+import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotReplyBottomSheet
+import com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter.ChatbotReplyBottomSheetAdapter
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBox
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBoxBottomSheet
 import com.tokopedia.chatbot.chatbot2.view.customview.floatinginvoice.ChatbotFloatingInvoice
@@ -174,6 +177,7 @@ import com.tokopedia.chatbot.view.customview.chatroom.SmallReplyBox
 import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
+import com.tokopedia.chatbot.view.uimodel.ChatbotReplyOptionsUiModel
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
@@ -218,7 +222,7 @@ class ChatbotFragment2 :
     ChatbotSendButtonListener,
     ChatbotFloatingInvoice.InvoiceListener,
     ReplyBoxClickListener,
-    ReplyBubbleBottomSheetAdapter.ReplyBubbleBottomSheetListener,
+    ChatbotReplyBottomSheetAdapter.ReplyBubbleBottomSheetListener,
     com.tokopedia.chatbot.chatbot2.view.listener.ChatbotSendButtonListener,
     com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener.ReplyBoxClickListener {
 
@@ -281,7 +285,7 @@ class ChatbotFragment2 :
     private var rating = 0
     private var replyTime = ""
     private var isGetChatFromOnClick = false
-    private var replyBubbleBottomSheet: ChatbotReplyBubbleBottomSheet? = null
+    private var replyBubbleBottomSheet: ChatbotReplyBottomSheet? = null
     private var mediaRetryBottomSheet: ChatbotMediaRetryBottomSheet? = null
 
     // Used for resetting the usecase when user replies to message from not page 1
@@ -326,6 +330,7 @@ class ChatbotFragment2 :
         private const val CSAT_ATTRIBUTES = "csat_attribute"
         private const val TICKER_TYPE_ANNOUNCEMENT = "announcement"
         private const val TICKER_TYPE_WARNING = "warning"
+        private const val COPY_TO_CLIPBOARD_LABEL = "Tokopedia-Chatbot"
     }
 
     override fun initInjector() {
@@ -1985,15 +1990,60 @@ class ChatbotFragment2 :
         return senderNameForReply
     }
 
-    override fun showReplyOption(messageUiModel: MessageUiModel) {
-        if (replyBubbleEnabled) {
-            activity?.let {
-                replyBubbleBottomSheet = ChatbotReplyBubbleBottomSheet(messageUiModel, this)
-                replyBubbleBottomSheet?.show(
-                    childFragmentManager,
-                    context?.resources?.getString(R.string.chatbot_reply_bubble_bottomsheet_retry)
-                )
+    override fun showReplyOption(messageUiModel: MessageUiModel, messageBubble: TextView?) {
+        activity?.let {
+            replyBubbleBottomSheet = ChatbotReplyBottomSheet(messageUiModel, this, replyBubbleEnabled)
+            replyBubbleBottomSheet?.setOnMenuClickListener { menu ->
+                onClickReplyMenuListener(menu, messageUiModel, messageBubble)
             }
+            replyBubbleBottomSheet?.show(
+                childFragmentManager,
+                context?.resources?.getString(R.string.chatbot_reply_bubble_bottomsheet_retry)
+            )
+        }
+    }
+
+    private fun onClickReplyMenuListener(
+        menu: ChatbotReplyOptionsUiModel,
+        messageUiModel: MessageUiModel,
+        messageBubble: TextView?
+    ) {
+        replyBubbleBottomSheet?.dismiss()
+        when (menu) {
+            is ChatbotReplyOptionsUiModel.Reply -> {
+                sendReplyToSpecificChat(messageUiModel)
+            }
+            is ChatbotReplyOptionsUiModel.CopyToClipboard -> {
+                copyToClipBoard(messageBubble)
+            }
+        }
+    }
+
+    private fun sendReplyToSpecificChat(messageUiModel: MessageUiModel) {
+        senderNameForReply = messageUiModel.from
+        setGuidelineForReplyBubble(true)
+        replyBubbleContainer?.composeReplyData(
+            messageUiModel,
+            "",
+            true,
+            getUserNameForReplyBubble.getUserName(messageUiModel)
+        )
+    }
+
+    private fun copyToClipBoard(messageBubble: TextView?) {
+        activity?.let {
+            val clipboard = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+            val clip = ClipData.newPlainText(
+                COPY_TO_CLIPBOARD_LABEL,
+                messageBubble?.text.toString()
+            )
+            clipboard.setPrimaryClip(clip)
+            _viewBinding?.smallReplyBox?.showToaster(
+                context?.resources?.getString(
+                    R.string.chatbot_bottomsheet_copy_success_toaster
+                ).toBlankOrString()
+            )
         }
     }
 

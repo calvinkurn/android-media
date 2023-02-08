@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chat_common.data.MessageUiModel
-import com.tokopedia.chatbot.databinding.ReplyButtonItemviewBinding
+import com.tokopedia.chatbot.databinding.ItemChatbotReplyButtonBinding
 import com.tokopedia.chatbot.view.uimodel.ChatbotReplyOptionsUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -18,7 +18,7 @@ class ChatbotReplyBottomSheetAdapter(
     val list = mutableListOf<ChatbotReplyOptionsUiModel>()
     private var listener: ReplyBubbleBottomSheetListener? = null
 
-    inner class ReplyBubbleBottomSheetViewHolder(itemView: ReplyButtonItemviewBinding) : RecyclerView.ViewHolder(itemView.root) {
+    inner class ReplyBubbleBottomSheetViewHolder(itemView: ItemChatbotReplyButtonBinding) : RecyclerView.ViewHolder(itemView.root) {
         private val title: Typography = itemView.title
         private val icon: IconUnify = itemView.icon
         fun bind(item: ChatbotReplyOptionsUiModel) {
@@ -34,7 +34,7 @@ class ChatbotReplyBottomSheetAdapter(
         parent: ViewGroup,
         viewType: Int
     ): ReplyBubbleBottomSheetViewHolder {
-        val view = ReplyButtonItemviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val view = ItemChatbotReplyButtonBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ReplyBubbleBottomSheetViewHolder(view)
     }
 

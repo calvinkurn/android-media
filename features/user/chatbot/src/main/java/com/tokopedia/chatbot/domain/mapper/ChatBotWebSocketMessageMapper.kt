@@ -19,7 +19,7 @@ import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CSAT_OPTIONS
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_HELPFULL_QUESTION
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_REPLY_BUBBLE
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
-import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_STICKED_BUTTON_ACTIONS
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_STICKY_BUTTON
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceSentPojo
@@ -66,7 +66,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
             TYPE_QUICK_REPLY_SEND -> convertToMessageViewModel(pojo)
             TYPE_HELPFULL_QUESTION -> convertToHelpQuestionViewModel(pojo)
             TYPE_CSAT_OPTIONS -> convertToCsatOptionsViewModel(pojo)
-            TYPE_STICKED_BUTTON_ACTIONS -> convertToStickedButtonActionsViewModel(pojo)
+            TYPE_STICKY_BUTTON -> convertToStickedButtonActionsViewModel(pojo)
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(pojo, jsonAttributes)
             TYPE_REPLY_BUBBLE -> convertToReplyBubble(pojo, jsonAttributes)
             AttachmentType.Companion.TYPE_INVOICE_SEND -> convertToSendInvoice(pojo, jsonAttributes)
