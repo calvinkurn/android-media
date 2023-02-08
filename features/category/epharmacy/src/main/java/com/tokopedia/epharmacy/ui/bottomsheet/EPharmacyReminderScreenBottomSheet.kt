@@ -17,6 +17,7 @@ import com.tokopedia.epharmacy.utils.LabelKeys.Companion.IN_WORKING_HOURS
 import com.tokopedia.epharmacy.utils.LabelKeys.Companion.OUTSIDE_WORKING_HOURS
 import com.tokopedia.epharmacy.viewmodel.EPharmacyReminderBsViewModel
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.picker.common.basecomponent.utils.rootCurrentView
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -93,10 +94,10 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupBottomSheetUiData()
-        setupObservers()
         extractArguments()
         sendViewEvent()
+        setupBottomSheetUiData()
+        setupObservers()
     }
 
     private fun extractArguments() {
@@ -158,6 +159,7 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                 reminderParentView.errorTitle.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_title)
                 reminderParentView.errorDescription.text = getMessageString()
                 reminderParentView.errorSecondaryAction.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_button_text)
+                reminderParentView.errorSecondaryAction.show()
                 reminderParentView.setSecondaryActionClickListener {
                     requestParams()?.let { it1 ->
                         viewModel?.setForReminder(it1)
@@ -168,7 +170,6 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                         )
                     }
                 }
-                reminderParentView.setButtonFull(true)
                 reminderParentView.errorAction.hide()
             }
         }
@@ -178,7 +179,8 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
         val openTimeLocal: Date? = EPharmacyUtils.formatDateToLocal(dateString = arguments?.getString(OPEN_TIME) ?: "")
         val closeTimeLocal: Date? = EPharmacyUtils.formatDateToLocal(dateString = arguments?.getString(CLOSE_TIME) ?: "")
         return getString(
-            com.tokopedia.epharmacy.R.string.epharmacy_reminder_description,
+            if(isOutsideWorkingHours) com.tokopedia.epharmacy.R.string.epharmacy_reminder_description_outside
+            else  com.tokopedia.epharmacy.R.string.epharmacy_reminder_description,
             EPharmacyUtils.getTimeFromDate(openTimeLocal),
             EPharmacyUtils.getTimeFromDate(closeTimeLocal)
         )
@@ -192,7 +194,8 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                 input = EpharmacyUserReminderParam.Input(
                     reminderType = reminderType,
                     EpharmacyUserReminderParam.Input.EpharmacyConsultationInfoParams(
-                        consultationSourceId = consultationSourceId
+                        consultationSourceId = consultationSourceId,
+                        if(isOutsideWorkingHours)OUTSIDE_WORKING_HOURS_SOURCE else WORKING_HOURS_SOURCE
                     )
                 )
             )

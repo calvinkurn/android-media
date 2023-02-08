@@ -29,6 +29,7 @@
 
     <string name="epharmacy_reminder_title">Yaah, belum ada dokter yang tersedia saat ini</string>
     <string name="epharmacy_reminder_description">Semua dokter mungkin sedang sibuk. Silakan hubungi dokter di %s – %s WIB.</string>
+    <string name="epharmacy_reminder_description_outside">Silakan hubungi di jam operasional dokter pada %s – %s WIB, ya.</string>
     <string name="epharmacy_reminder_button_text">Ingatkan Saya</string>
     <string name="epharmacy_reminder_success">Kami akan kirim pengingat jika ada dokter yang tersedia, ya!</string>
     <string name="epharmacy_reminder_fail">Silakan Coba lagi</string>

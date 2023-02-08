@@ -103,3 +103,5 @@ const val REMINDER_ILLUSTRATION_IMAGE = "https://images.tokopedia.net/img/pharma
 
 const val EPHARMACY_ANDROID_SOURCE = "ANDROID"
 const val UPLOAD_PAGE_SOURCE_PAP = "PAP"
+const val OUTSIDE_WORKING_HOURS_SOURCE = "outside_working_hours"
+const val WORKING_HOURS_SOURCE = "working_hours"

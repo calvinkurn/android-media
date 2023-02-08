@@ -42,7 +42,7 @@ class EPharmacyReminderBsViewModelTest {
             input = EpharmacyUserReminderParam.Input(
                 reminderType = 1,
                 EpharmacyUserReminderParam.Input.EpharmacyConsultationInfoParams(
-                    consultationSourceId = 9
+                    consultationSourceId = 9, ""
                 )
             )
         )
@@ -64,7 +64,7 @@ class EPharmacyReminderBsViewModelTest {
             input = EpharmacyUserReminderParam.Input(
                 reminderType = 1,
                 EpharmacyUserReminderParam.Input.EpharmacyConsultationInfoParams(
-                    consultationSourceId = 9
+                    consultationSourceId = 9 ,""
                 )
             )
         )
@@ -85,7 +85,7 @@ class EPharmacyReminderBsViewModelTest {
             input = EpharmacyUserReminderParam.Input(
                 reminderType = 1,
                 EpharmacyUserReminderParam.Input.EpharmacyConsultationInfoParams(
-                    consultationSourceId = 9
+                    consultationSourceId = 9 , ""
                 )
             )
         )
