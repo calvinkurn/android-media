@@ -11,6 +11,7 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.authentication.AuthKeyExt
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
@@ -23,7 +24,7 @@ import java.io.IOException
  */
 class DigitalInterceptor(@ApplicationContext context: Context,
                          networkRouter: NetworkRouter,
-                         userSessionInterface: UserSessionInterface) : TkpdAuthInterceptor(context, networkRouter, userSessionInterface) {
+                         userSessionInterface: UserSessionInterface) : TkpdOldAuthInterceptor(context, networkRouter, userSessionInterface) {
     private val context: Context
     private val digitalAuthKey: String
         get() = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
