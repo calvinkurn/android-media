@@ -13,6 +13,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_ID_DEFAULT_VALUE
 import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_BUNDLE_APPLINK_WITH_PARAM
 import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_BUNDLE_REQUEST_CODE
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
@@ -139,7 +140,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
                 listener?.onError(it)
             }
             viewModel.isBundleEmpty.observe(this) {
-                tfTitle?.isVisible = !it
+                tfTitle?.isVisible = !it && tfTitle?.text?.isNotEmpty().orTrue()
                 if (it) listener?.onBundleEmpty()
             }
         }
