@@ -54,6 +54,7 @@ open class NestedRecyclerView : CustomRecyclerView, NestedScrollingParent3 {
         !skipsTouchInterception && super.onInterceptTouchEvent(e)
 
     override fun onNestedScroll(target: View, dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int, type: Int) {
+        // no-op
     }
 
     override fun onNestedScroll(

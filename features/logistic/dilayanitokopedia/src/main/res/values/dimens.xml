@@ -16,7 +16,6 @@
     <dimen name="dt_usp_illustration_height">32dp</dimen>
     <dimen name="dt_usp_illustration_width">32dp</dimen>
     <dimen name="dt_switcher_coachmark_left_margin">55dp</dimen>
-    <dimen name="dt_space_item_recipe_bZookmark">16dp</dimen>
 
     <!--Loader Unify -->
     <dimen name="corner_radius_shimmering_small">6dp</dimen>

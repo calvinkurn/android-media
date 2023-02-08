@@ -47,7 +47,6 @@ class HomeRecommendationFeedViewHolder(
         layoutParams?.height = listener.windowHeight + paddingTopOutsideSticky - listener.homeMainAnchorTabHeight
         container?.layoutParams = layoutParams
 
-
         val adapter = ViewPagerAdapter((context as DtHomeActivity).supportFragmentManager)
         viewPager?.adapter = adapter
         viewPager?.currentItem = 0
@@ -69,6 +68,5 @@ class HomeRecommendationFeedViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.dt_home_recommendation_viewholder
-        private val TAG = HomeRecommendationFeedViewHolder::class.java.simpleName
     }
 }
