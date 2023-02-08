@@ -99,9 +99,6 @@ class ShopPageCampaignFragment :
     private var topView: View? = null
     private var centerView: View? = null
     private var bottomView: View? = null
-    private val customDimensionShopPage: CustomDimensionShopPage by lazy {
-        CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
-    }
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private val shopCampaignTabAdapter: ShopCampaignTabAdapter
         get() = adapter as ShopCampaignTabAdapter

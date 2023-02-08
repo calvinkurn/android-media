@@ -4,14 +4,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class ShopProduct {
-    @SerializedName("shop_lucky")
-    @Expose
-    var shopLucky: Long = 0
-
-    @SerializedName("shop_gold_status")
-    @Expose
-    var shopGoldStatus: Long = 0
-
     @SerializedName("shop_id")
     @Expose
     var shopId: String = ""
@@ -23,10 +15,6 @@ class ShopProduct {
     @SerializedName("labels")
     @Expose
     var labels: List<ShopProductLabel>? = null
-
-    @SerializedName("product_talk_count")
-    @Expose
-    var productTalkCount: String? = null
 
     @SerializedName("product_price")
     @Expose
@@ -48,10 +36,6 @@ class ShopProduct {
     @Expose
     var productUrl: String? = null
 
-    @SerializedName("shop_url")
-    @Expose
-    var shopUrl: String? = null
-
     @SerializedName("product_id")
     @Expose
     var productId: String? = null
@@ -63,10 +47,6 @@ class ShopProduct {
     @SerializedName("product_preorder")
     @Expose
     var productPreorder: String? = null
-
-    @SerializedName("shop_location")
-    @Expose
-    var shopLocation: String? = null
 
     @SerializedName("product_review_count")
     @Expose
