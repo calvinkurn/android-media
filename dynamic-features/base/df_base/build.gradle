@@ -109,6 +109,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.logisticseller)
     implementation projectOrAar(rootProject.ext.features.logisticaddaddress)
     implementation projectOrAar(rootProject.ext.features.manageaddress)
+    implementation projectOrAar(rootProject.ext.features.dilayanitokopedia)
 
     //Merchant
     implementation projectOrAar(rootProject.ext.features.shopOpen)
