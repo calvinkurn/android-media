@@ -717,7 +717,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     context = it,
                     voucher = null,
                     title = data.voucherName,
-                    isFromVoucherDetailPage = true,
+                    pageSource = VoucherDetailFragment::class.java.simpleName,
                     voucherStatus = voucherStatus
                 )
             moreMenuBottomSheet?.setOnMenuClickListener { menu ->

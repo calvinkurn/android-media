@@ -55,7 +55,8 @@ class GetVoucherListMapper @Inject constructor() {
                     value.id == it.targetBuyer
                 } ?: VoucherTargetBuyer.ALL_BUYER,
                 discountTypeFormatted = it.discountTypeFormatted,
-                productIds = it.toProductIds()
+                productIds = it.toProductIds(),
+                isParent = it.isParent
             )
         }
 
