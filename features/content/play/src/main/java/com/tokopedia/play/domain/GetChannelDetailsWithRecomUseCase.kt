@@ -139,6 +139,11 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                         copy_text_redirect_button
                         image_url
                     }
+                    explore_widget {
+                      group
+                      source_id
+                      source_type
+                    }
                     channel_archived_screen {
                       title
                       description

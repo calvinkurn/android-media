@@ -12,6 +12,7 @@ import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
+import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
@@ -102,7 +103,8 @@ class NewShopPageViewModel @Inject constructor(
         private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
         private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
         private val sharedPreferences: SharedPreferences,
-        private val dispatcherProvider: CoroutineDispatchers
+        private val dispatcherProvider: CoroutineDispatchers,
+        private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
 )
     : BaseViewModel(dispatcherProvider.main) {
 
@@ -597,6 +599,9 @@ class NewShopPageViewModel @Inject constructor(
             var broadcasterConfig: Broadcaster.Config = Broadcaster.Config()
             if (isMyShop(shopId = shopId)) {
                 broadcasterConfig = getShopBroadcasterConfig(shopId)
+                broadcasterConfig = broadcasterConfig.copy(
+                    shortVideoAllowed = broadcasterConfig.shortVideoAllowed && playShortsEntryPointRemoteConfig.isShowEntryPoint()
+                )
             }
             _shopSellerPLayWidgetData.postValue(Success(broadcasterConfig))
         }) {

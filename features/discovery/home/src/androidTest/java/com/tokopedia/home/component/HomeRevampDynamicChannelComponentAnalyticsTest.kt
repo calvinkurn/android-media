@@ -17,8 +17,8 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
@@ -140,6 +140,19 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = MixLeftDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 clickOnMixLeftSection(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT)
+        }
+    }
+
+    @Test
+    fun testComponentMixLeftPadding() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = MixLeftPaddingDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                clickOnMixLeftPaddingSection(viewHolder, i)
             }
         } validateAnalytics {
             addDebugEnd()

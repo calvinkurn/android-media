@@ -25,6 +25,8 @@ data class UserConsentCollectionDataModel(
         var notices: MutableList<NoticeDataModel> = mutableListOf(),
         @SerializedName("attributes")
         var attributes: AttributeDataModel = AttributeDataModel(),
+        @SerializedName("needConsent")
+        var needConsent: Boolean? = null
     ) {
         data class PurposeDataModel(
             @SerializedName("id")
@@ -42,13 +44,7 @@ data class UserConsentCollectionDataModel(
         ) {
             data class AttributeDataModel(
                 @SerializedName("uiName")
-                var uiName: String = "",
-                @SerializedName("uiDescription")
-                var uiDescription: String = "",
-                @SerializedName("alwaysMandatory")
-                var alwaysMandatory: String = "",
-                @SerializedName("personalDataType")
-                var personalDataType: List<String> = listOf()
+                var uiName: String = ""
             )
         }
 
@@ -66,16 +62,14 @@ data class UserConsentCollectionDataModel(
         )
 
         data class AttributeDataModel(
-            @SerializedName("collectionPointPurposeRequirement")
+            @SerializedName("collectionPointPurposeRequirement", alternate = ["requirementType"])
             var collectionPointPurposeRequirement: String = "",
-            @SerializedName("collectionPointStatementOnlyFlag")
+            @SerializedName("collectionPointStatementOnlyFlag", alternate = ["usingCheckbox"])
             var collectionPointStatementOnlyFlag: String = "",
             @SerializedName("policyNoticeType")
             var policyNoticeType: String = "",
-            @SerializedName("PolicyNoticeTnCPageID")
-            var policyNoticeTnCPageID: String = "",
-            @SerializedName("PolicyNoticePolicyPageID")
-            var policyNoticePolicyPageID: String = "",
+            @SerializedName("PolicyNoticeTnCPageID", alternate = ["tncPageID"])
+            var policyNoticeTnCPageID: String = ""
         )
     }
 }

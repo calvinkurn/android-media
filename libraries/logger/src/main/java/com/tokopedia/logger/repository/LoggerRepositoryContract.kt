@@ -7,6 +7,7 @@ interface LoggerRepositoryContract {
     suspend fun getCount(): Int
     suspend fun deleteEntry(timeStamp: Long)
     suspend fun deleteEntries(loggers: List<Logger>)
+    suspend fun deleteLog(logger: Logger)
     suspend fun deleteExpiredData()
 
     suspend fun sendLogToServer(queryLimits: List<Int>)
