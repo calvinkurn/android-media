@@ -306,7 +306,7 @@ private fun InputDay(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit, da
         placeholder = {
             NestTypography(text = stringResource(id = R.string.placeholder_day_reschedule_pick_up))
         },
-        trailingIcon = { DropDownIcon() }
+        trailingIcon = { DropDownIcon(onClick = { onOpenBottomSheet(RescheduleBottomSheetState.DAY) }) }
     )
 }
 
@@ -329,7 +329,13 @@ private fun InputTime(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit, t
         placeholder = {
             NestTypography(text = stringResource(id = R.string.placeholder_time_reschedule_pick_up))
         },
-        trailingIcon = { DropDownIcon() }
+        trailingIcon = {
+            DropDownIcon(onClick = {
+                onOpenBottomSheet(
+                    RescheduleBottomSheetState.TIME
+                )
+            })
+        }
     )
 }
 
@@ -345,7 +351,7 @@ private fun InputReason(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit,
             NestTypography(text = stringResource(id = R.string.label_reason_reschedule_pickup))
         },
         enabled = false,
-        trailingIcon = { DropDownIcon() }
+        trailingIcon = { DropDownIcon(onClick = { onOpenBottomSheet(RescheduleBottomSheetState.REASON) }) }
     )
 }
 
@@ -406,9 +412,9 @@ private fun Subtitle(): AnnotatedString {
 }
 
 @Composable
-fun DropDownIcon() {
+fun DropDownIcon(onClick: () -> Unit = {}) {
     IconButton(
-        onClick = {}
+        onClick = onClick
     ) {
         Icon(
             painter = painterResource(id = com.tokopedia.iconunify.R.drawable.iconunify_chevron_down),
