@@ -10,9 +10,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import java.util.*
 
 /**
@@ -113,7 +113,7 @@ interface HomeCategoryListener {
 
     fun getUserIdFromViewModel(): String
 
-    fun recommendationListOnCloseBuyAgain(id : String, position: Int)
+    fun recommendationListOnCloseBuyAgain(id: String, position: Int)
 
     fun getOneClickCheckoutHomeComponent(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int)
 
@@ -142,6 +142,4 @@ interface HomeCategoryListener {
     fun refreshBalanceWidget()
 
     fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView?)
-
-    fun styleAtf(): String
 }

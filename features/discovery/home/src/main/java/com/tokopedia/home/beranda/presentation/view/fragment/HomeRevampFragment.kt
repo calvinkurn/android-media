@@ -405,7 +405,6 @@ open class HomeRevampFragment :
     private var fragmentCurrentCacheState: Boolean = true
     private var fragmentCurrentVisitableCount: Int = -1
     private var fragmentCurrentScrollPosition: Int = -1
-    private var styleAtf = ""
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -540,15 +539,9 @@ open class HomeRevampFragment :
         }
     }
 
-    private fun getStyleAtf(): String {
-        return getAbTestPlatform().getString(RollenceKey.HOME_COMPONENT_ATF, RollenceKey.EXPERIMENT_VARIANT)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
         isUsingNewPullRefresh = isUseNewPullRefresh()
-        styleAtf = getStyleAtf()
-//        getHomeViewModel().atfStyle = styleAtf
         getHomeViewModel().initFlow()
         val view = inflater.inflate(
             if (isUsingNewPullRefresh) R.layout.fragment_home_revamp else R.layout.fragment_home_revamp_old_refresh,
@@ -2759,9 +2752,5 @@ open class HomeRevampFragment :
         view?.let {
             refreshLayout?.setContentChildViewPullRefresh(it)
         }
-    }
-
-    override fun styleAtf(): String {
-        return styleAtf
     }
 }
