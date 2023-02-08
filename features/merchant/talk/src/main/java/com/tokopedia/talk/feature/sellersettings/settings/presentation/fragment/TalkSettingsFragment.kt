@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -36,7 +37,11 @@ class TalkSettingsFragment : BaseDaggerFragment(), HasComponent<TalkSettingsComp
     }
 
     @Inject
-    lateinit var viewModel: TalkSettingsViewModel
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel by lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProvider(this, viewModelFactory)[TalkSettingsViewModel::class.java]
+    }
 
     private var navigation: String = ""
     private var talkSettingsTemplateOption: TalkSettingsOption? = null
