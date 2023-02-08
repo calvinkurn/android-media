@@ -4,7 +4,7 @@
     <string name="pdp_simulation_header_title">PayLater &amp; Cicilan</string>
     <string name="pdp_activation_header_title">Beli Pakai PayLater</string>
     <!-- PayLater Simulation Page -->
-    <string name="pay_later_simulation_supervised_text">Semua mitra penyedia terdaftar dan diawasi oleh</string>
+    <string name="pay_later_simulation_supervised_text">Semua mitra berizin dan diawasi oleh Otoritas Jasa Keuanganh</string>
 
     <!-- BottomSheet title-->
     <string name="pay_later_how_to_use">Cara menggunakan</string>
