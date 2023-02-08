@@ -195,6 +195,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initTetraDebugger();
         initCMDependencies();
         initDataStoreMigration();
+        initRefreshProfileWorker();
         initSeamlessLoginWorker();
         connectTokoChat(false);
         return true;
@@ -213,7 +214,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
     }
 
-    private void initDataStoreMigration() {
+    private void initRefreshProfileWorker() {
         if (userSession.isLoggedIn()) {
             RefreshProfileWorker.Companion.scheduleWorker(this);
         }

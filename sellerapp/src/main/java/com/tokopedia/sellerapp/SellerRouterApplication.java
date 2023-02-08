@@ -150,6 +150,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
         initCMPushNotification();
         initTetraDebugger();
         initSeamlessLoginWorker();
+        initRefreshProfileWorker();
         return true;
     }
 
@@ -160,10 +161,10 @@ public abstract class SellerRouterApplication extends MainApplication implements
         }
     }
 
-    private void initSeamlessLoginWorker() {
+    private void initRefreshProfileWorker() {
         UserSessionInterface userSession = new UserSession(context);
         if(userSession.isLoggedIn()) {
-            TemporaryTokenWorker.Companion.scheduleWorker(this);
+            RefreshProfileWorker.Companion.scheduleWorker(this);
         }
     }
 
