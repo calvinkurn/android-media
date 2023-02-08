@@ -57,7 +57,8 @@ class ReschedulePickupActivity : AppCompatActivity() {
                     onBottomSheetClosed = { viewModel.closeBottomSheetState() },
                     onOpenBottomSheet = { viewModel.openBottomSheetState(it) },
                     onCloseDialog = { onClickDialogButton(it) },
-                    onClickDialogButton = { onClickDialogButton(it) }
+                    onClickDialogButton = { onClickDialogButton(it) },
+                    onPressBack = { finish() }
                 )
             }
         }

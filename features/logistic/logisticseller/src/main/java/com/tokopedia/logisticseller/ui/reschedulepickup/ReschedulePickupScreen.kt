@@ -64,7 +64,8 @@ fun ReschedulePickupScreen(
     onBottomSheetClosed: () -> Unit,
     onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit,
     onClickDialogButton: (Boolean) -> Unit,
-    onCloseDialog: (Boolean) -> Unit
+    onCloseDialog: (Boolean) -> Unit,
+    onPressBack: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(
@@ -91,7 +92,7 @@ fun ReschedulePickupScreen(
         }
     }
 
-    Scaffold(topBar = { AppBar(title = stringResource(id = R.string.title_reschedule_pickup_activity)) }) {
+    Scaffold(topBar = { AppBar(title = stringResource(id = R.string.title_reschedule_pickup_activity), navigationClick = onPressBack) }) {
         ModalBottomSheetLayout(
             sheetShape = NestBottomSheetShape(),
             sheetState = sheetState,
