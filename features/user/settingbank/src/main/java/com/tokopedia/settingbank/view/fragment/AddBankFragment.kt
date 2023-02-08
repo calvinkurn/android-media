@@ -495,7 +495,6 @@ class AddBankFragment : BaseDaggerFragment() {
                 setDescription(description)
                 setPrimaryCTAText(getString(R.string.sbank_ya_benar))
                 setSecondaryCTAText(getString(R.string.sbank_batal))
-                dialogSecondaryCTA.buttonVariant = UnifyButton.Variant.GHOST
                 setPrimaryCTAClickListener {
                     bankSettingAnalytics.eventDialogConfirmAddAccountClick()
                     openPinVerification()
