@@ -470,17 +470,20 @@ class SummaryFragment :
     }
 
     private fun SmvcFragmentSummaryPreviewBinding.updateLayoutPreview(configuration: VoucherConfiguration) {
+        val parentProductIds = selectedProducts.map { it.parentProductId }.ifEmpty {
+            configuration.productIds
+        }
         cardPreview.setOnClickListener {
             DisplayVoucherBottomSheet
-                .newInstance(configuration)
+                .newInstance(configuration.copy(
+                    productIds = parentProductIds
+                ))
                 .show(childFragmentManager, "")
         }
         viewModel.previewImage(
             isCreateMode = false,
             voucherConfiguration = configuration,
-            parentProductIds = selectedProducts.map { it.parentProductId }.ifEmpty {
-                configuration.productIds
-            },
+            parentProductIds = parentProductIds,
             imageRatio = ImageRatio.SQUARE
         )
     }
