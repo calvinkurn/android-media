@@ -33,11 +33,9 @@ fun NestTextField(
             label = label,
             enabled = enabled,
             isError = isError,
-            //        supportingText = supportingText,
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = NestTheme.colors.GN._500,
                 errorBorderColor = NestTheme.colors.RN._500
-                //            errorSupportingTextColor = NestTheme.colors.RN._500
             ),
             shape = RoundedCornerShape(8.dp)
         )
