@@ -405,6 +405,8 @@ class AddEditProductDetailFragment :
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
         stopPerformanceMonitoring()
+
+        categoryChangeBottomSheet?.show(childFragmentManager)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
