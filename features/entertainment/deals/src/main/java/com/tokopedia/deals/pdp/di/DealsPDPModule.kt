@@ -39,12 +39,6 @@ class DealsPDPModule {
 
     @Provides
     @DealsPDPScope
-    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
-        return ChuckerInterceptor(context)
-    }
-
-    @Provides
-    @DealsPDPScope
     fun provideAuthInterceptors(
         @ApplicationContext context: Context,
         userSession: UserSessionInterface
@@ -57,8 +51,7 @@ class DealsPDPModule {
     fun provideInterceptors(
         tkpdAuthInterceptor: TkpdAuthInterceptor,
         fingerprintInterceptor: FingerprintInterceptor,
-        httpLoggingInterceptor: HttpLoggingInterceptor,
-        chuckerInterceptor: ChuckerInterceptor
+        httpLoggingInterceptor: HttpLoggingInterceptor
     ): MutableList<Interceptor> {
         val listInterceptor = mutableListOf<Interceptor>()
         listInterceptor.add(fingerprintInterceptor)
@@ -66,7 +59,6 @@ class DealsPDPModule {
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             listInterceptor.add(httpLoggingInterceptor)
-            listInterceptor.add(chuckerInterceptor)
         }
 
         return listInterceptor
