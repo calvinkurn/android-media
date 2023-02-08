@@ -985,7 +985,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             data = reData,
             userId = userSessionInterface.userId,
             shopId = viewModel.getVariantAggregatorData()?.simpleBasicInfo?.shopID ?: "",
-            pageSource = VariantPageSource.PDP_PAGESOURCE.source
+            pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
         )
         goToChooseAddress(Int.ZERO)
     }
