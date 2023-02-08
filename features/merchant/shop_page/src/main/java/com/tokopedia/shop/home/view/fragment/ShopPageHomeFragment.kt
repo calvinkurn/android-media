@@ -108,6 +108,7 @@ import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleL
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
 import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.shop.databinding.FragmentShopPageHomeBinding
+import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
@@ -1324,7 +1325,8 @@ open class ShopPageHomeFragment :
         }
     }
 
-    open fun setShopHomeWidgetLayoutData(data: ShopPageHomeWidgetLayoutUiModel) {
+    open fun setShopHomeWidgetLayoutData(dataWidgetLayoutUiModel: ShopPageHomeWidgetLayoutUiModel) {
+        val data: ShopPageHomeWidgetLayoutUiModel = filterNplWidgetLayoutDataIfDisabled(dataWidgetLayoutUiModel)
         initialLayoutData = data.listWidgetLayout.toMutableList()
         listWidgetLayout = initialLayoutData.toMutableList()
         shopPageHomeTracking.sendUserViewHomeTabWidgetTracker(
@@ -1344,6 +1346,20 @@ open class ShopPageHomeFragment :
             shopHomeAdapter.setHomeLayoutData(shopHomeWidgetContentData)
         } else {
             shopHomeAdapter.addProductGridListPlaceHolder()
+        }
+    }
+
+    private fun filterNplWidgetLayoutDataIfDisabled(
+        dataWidgetLayoutUiModel: ShopPageHomeWidgetLayoutUiModel
+    ): ShopPageHomeWidgetLayoutUiModel {
+        return if (!ShopPageRemoteConfigChecker.isEnableShopHomeNplWidget(context)) {
+            dataWidgetLayoutUiModel.copy(
+                listWidgetLayout = dataWidgetLayoutUiModel.listWidgetLayout.filter {
+                    it.widgetName != WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
+                }
+            )
+        } else {
+            dataWidgetLayoutUiModel
         }
     }
 
