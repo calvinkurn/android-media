@@ -12,7 +12,6 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.data.model.*
-import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestStatus
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
@@ -25,7 +24,6 @@ import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
-import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
 import com.tokopedia.shop.pageheader.domain.interactor.*
 import com.tokopedia.shop.pageheader.util.NewShopPageHeaderMapper
@@ -64,9 +62,6 @@ class NewShopPageViewModelTest {
 
     @RelaxedMockK
     lateinit var shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>
-
-    @RelaxedMockK
-    lateinit var getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>
 
     @RelaxedMockK
     lateinit var newGetShopPageP1DataUseCase: Lazy<NewGetShopPageP1DataUseCase>
@@ -124,7 +119,6 @@ class NewShopPageViewModelTest {
                 getBroadcasterShopConfigUseCase,
                 gqlGetShopInfobUseCaseCoreAndAssets,
                 shopQuestGeneralTrackerUseCase,
-                getShopPageP1DataUseCase,
                 newGetShopPageP1DataUseCase,
                 getShopProductListUseCase,
                 shopModerateRequestStatusUseCase,

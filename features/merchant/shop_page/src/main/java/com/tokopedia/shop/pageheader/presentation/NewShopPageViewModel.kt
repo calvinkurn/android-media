@@ -58,11 +58,9 @@ import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
-import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageHeaderLayoutUseCase
-import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.NewGetShopPageP1DataUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.ShopModerateRequestStatusUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.ShopRequestUnmoderateUseCase
@@ -93,7 +91,6 @@ class NewShopPageViewModel @Inject constructor(
         @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
         private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
         private val shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
-        private val getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>,
         private val newGetShopPageP1DataUseCase: Lazy<NewGetShopPageP1DataUseCase>,
         private val getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>,
         private val shopModerateRequestStatusUseCase: Lazy<ShopModerateRequestStatusUseCase>,
@@ -318,24 +315,6 @@ class NewShopPageViewModel @Inject constructor(
         return useCase.executeOnBackground()
     }
 
-    private suspend fun getShopP1Data(
-        shopId: String,
-        shopDomain: String,
-        isRefresh: Boolean,
-        extParam: String,
-        widgetUserAddressLocalData: LocalCacheModel
-    ): ShopPageHeaderP1 {
-        val useCase = getShopPageP1DataUseCase.get()
-        useCase.isFromCacheFirst = !isRefresh
-        useCase.params = GetShopPageP1DataUseCase.createParams(
-            shopId,
-            shopDomain,
-            extParam,
-            widgetUserAddressLocalData
-        )
-        return useCase.executeOnBackground()
-    }
-
     private suspend fun getNewShopP1Data(
         shopId: String,
         shopDomain: String,
@@ -345,11 +324,11 @@ class NewShopPageViewModel @Inject constructor(
     ): NewShopPageHeaderP1 {
         val useCase = newGetShopPageP1DataUseCase.get()
         useCase.isFromCacheFirst = !isRefresh
-        useCase.params = GetShopPageP1DataUseCase.createParams(
-            shopId,
-            shopDomain,
-            extParam,
-            widgetUserAddressLocalData
+        useCase.params = NewGetShopPageP1DataUseCase.createParams(
+            shopId = shopId,
+            shopDomain = shopDomain,
+            extParam = extParam,
+            widgetUserAddressLocalData = widgetUserAddressLocalData
         )
         return useCase.executeOnBackground()
     }
