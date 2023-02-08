@@ -181,10 +181,12 @@ class AddLogoToolUiComponent constructor(
             {},
             MediaBitmapEmptyTarget(
                 onReady = { loadedBitmap ->
-                    val croppedBitmap = cropCenterImage(loadedBitmap, ImageRatioType.RATIO_1_1)
+                    val finalBitmap =
+                        cropCenterImage(loadedBitmap, ImageRatioType.RATIO_1_1)?.first
+                            ?: loadedBitmap
 
                     shopAvatar.setImageBitmap(
-                        roundedBitmap(croppedBitmap?.first ?: loadedBitmap, isCircular = true)
+                        roundedBitmap(finalBitmap, isCircular = true)
                     )
                     isShopAvatarReady = true
                     isLogoChosen(shopAvatarUrl)
