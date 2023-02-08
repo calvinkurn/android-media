@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.topchat.chatsetting.di.ChatSettingComponent
 import com.tokopedia.topchat.chatsetting.di.ChatSettingModule
 import com.tokopedia.topchat.chatsetting.di.DaggerChatSettingComponent
@@ -53,6 +54,7 @@ class BubbleChatActivationActivity : BaseSimpleActivity(),
             title = toolbarTitle
         }
         super.onCreate(savedInstanceState)
+        setupBackground()
     }
 
     override fun onDestroy() {
@@ -77,6 +79,15 @@ class BubbleChatActivationActivity : BaseSimpleActivity(),
         } catch (ex: Exception) {
             null
         }
+    }
+
+    private fun setupBackground() {
+        window?.decorView?.setBackgroundColor(
+            MethodChecker.getColor(
+                this,
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
+            )
+        )
     }
 
     private fun getIsBubbleIntroFinished(): Boolean {

@@ -25,7 +25,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 212
+        const val SIZE_MAPPER = 214
     }
 
     override fun setup() {
@@ -1682,6 +1682,21 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check play detail appLink then should return tokopedia internal play detail in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://play/1234"
         val appLink = UriUtil.buildUri(ApplinkConst.PLAY_DETAIL, "1234")
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check play recom appLink then should return tokopedia internal play recom in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://play/channel_recom"
+        val appLink = UriUtil.buildUri(ApplinkConst.PLAY_RECOM)
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check play recom with sourceType appLink then should return tokopedia internal play recom with sourceType in customerapp`() {
+        val additionalParam = "?source_type=1"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://play/channel_recom$additionalParam"
+        val appLink = UriUtil.buildUri(ApplinkConst.PLAY_RECOM + additionalParam)
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 

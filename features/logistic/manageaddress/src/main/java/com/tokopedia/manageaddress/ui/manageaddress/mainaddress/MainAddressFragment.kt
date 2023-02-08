@@ -17,9 +17,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -434,8 +436,8 @@ class MainAddressFragment :
             val addressDataModel =
                 data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
             if (addressDataModel != null) {
-                setChosenAddressANA(addressDataModel)
                 showToaster(getString(R.string.add_address_success))
+                setChosenAddressANA(addressDataModel)
             } else {
                 performSearch(viewModel.savedQuery, null)
             }
@@ -815,9 +817,32 @@ class MainAddressFragment :
             }
             activity?.setResult(Activity.RESULT_OK, resultIntent)
             activity?.finish()
+        } else if (isFromCheckoutChangeAddress == true) {
+            val resultIntent = Intent().apply {
+                putExtra(ChooseAddressConstant.EXTRA_IS_FROM_ANA, true)
+                putExtra(
+                    ChooseAddressConstant.EXTRA_SELECTED_ADDRESS_DATA,
+                    addressDataModel.toChosenAddressModel()
+                )
+            }
+            activity?.setResult(CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS, resultIntent)
+            activity?.finish()
         } else {
             performSearch("", addressDataModel)
         }
+    }
+
+    private fun SaveAddressDataModel.toChosenAddressModel(): ChosenAddressModel {
+        return ChosenAddressModel(
+            addressId = this.id,
+            receiverName = this.receiverName,
+            addressName = this.addressName,
+            latitude = this.latitude,
+            longitude = this.longitude,
+            postalCode = this.postalCode,
+            districtId = this.districtId.toString().toIntSafely(),
+            cityId = this.cityId.toString().toIntSafely()
+        )
     }
 
     private fun getChosenAddrId(): Long {

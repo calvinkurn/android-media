@@ -5,7 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.media.R
 import com.tokopedia.media.picker.utils.permission.PermissionModel
-import com.tokopedia.media.common.utils.ParamCacheManager
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
 import io.mockk.every
@@ -21,7 +21,7 @@ import org.junit.runners.JUnit4
 class PermissionViewModelTest {
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val cacheManager = mockk<ParamCacheManager>(relaxed = true)
+    private val cacheManager = mockk<PickerCacheManager>(relaxed = true)
     private val permissionCodeName = mockk<Observer<List<String>>>(relaxed = true)
 
     private lateinit var viewModel: PermissionViewModel
