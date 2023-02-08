@@ -46,7 +46,6 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestS
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
@@ -941,7 +940,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                         if (it.banner.slides?.size ?: 0 >= MINIMUM_BANNER_TO_SHOW) {
                                             val channelFromResponse = it.banner
                                             atfData.content = gson.toJson(channelFromResponse)
-                                            if (atfStyle == RollenceKey.HOME_COMPONENT_ATF_1) {
+                                            if (HomeRollenceController.isUsingAtf1Variant()) {
                                                 atfData.status = AtfKey.STATUS_EMPTY
                                             } else {
                                                 atfData.status = AtfKey.STATUS_SUCCESS
