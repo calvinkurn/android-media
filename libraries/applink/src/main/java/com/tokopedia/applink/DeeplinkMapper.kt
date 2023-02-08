@@ -383,6 +383,11 @@ object DeeplinkMapper {
         DLP.startWith(ApplinkConst.SELLER_ORDER_DETAIL) { context, uri, deeplink, _ -> getRegisteredNavigationOrder(context, uri, deeplink) },
         DLP.startWith(ApplinkConst.LOGISTIC_SELLER_RESCHEDULE) { _, uri, _, _ -> DeeplinkMapperLogistic.getReschedulePickupDeeplink(uri) },
         DLP.startWith(ApplinkConst.SETTING_EDIT_ADDRESS) { _, _, deeplink, _ -> DeeplinkMapperLogistic.getEditAddressDeeplink(deeplink) },
+        DLP.startWith(ApplinkConst.PINPOINT_WEBVIEW) { _, _, deeplink, _ ->
+            DeeplinkMapperLogistic.getRegisteredNavigationPinpointWebview(
+                deeplink
+            )
+        },
         DLP(Host(ApplinkConst.TOPCHAT_HOST) or Host(ApplinkConst.TOPCHAT_OLD_HOST)) { _, uri, deeplink, _ -> getRegisteredNavigationTopChat(uri, deeplink) },
         DLP.startWith(ApplinkConst.TALK) { _, _, deeplink, _ -> getRegisteredNavigationTalk(deeplink) },
         DLP.startWith(ApplinkConst.EVENTS) { ctx, _, deeplink, _ -> getRegisteredNavigationEvents(deeplink, ctx) },

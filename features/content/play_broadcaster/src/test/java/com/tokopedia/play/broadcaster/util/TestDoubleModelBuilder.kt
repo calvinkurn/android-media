@@ -76,12 +76,14 @@ class TestDoubleModelBuilder {
         titleConfigStore: TitleConfigStore = buildTitleConfigStore(),
         broadcastScheduleConfigStore: BroadcastScheduleConfigStore = buildBroadcastScheduleConfigStore(),
         accountConfigStore: AccountConfigStore = buildAccountConfigStore(),
+        broadcastingConfigStore: BroadcastingConfigStore = buildBroadcastingConfigStore()
     ) = HydraConfigStoreImpl(
         channelConfigStore = channelConfigStore,
         productConfigStore = productConfigStore,
         titleConfigStore = titleConfigStore,
         broadcastScheduleConfigStore = broadcastScheduleConfigStore,
         accountConfigStore = accountConfigStore,
+        broadcastingConfigStore = broadcastingConfigStore,
     )
 
     fun buildChannelConfigStore(
@@ -95,6 +97,8 @@ class TestDoubleModelBuilder {
     fun buildBroadcastScheduleConfigStore() = BroadcastScheduleConfigStoreImpl()
 
     fun buildAccountConfigStore() = AccountConfigStoreImpl()
+
+    fun buildBroadcastingConfigStore() = BroadcastingConfigStoreImpl()
 
     /**
      * Real Impl

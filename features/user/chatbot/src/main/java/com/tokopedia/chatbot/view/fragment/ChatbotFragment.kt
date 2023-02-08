@@ -1,6 +1,8 @@
 package com.tokopedia.chatbot.view.fragment
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -12,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
@@ -104,6 +107,7 @@ import com.tokopedia.chatbot.data.seprator.ChatSepratorUiModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.databinding.FragmentChatbotBinding
+import com.tokopedia.chatbot.databinding.RetryUploadMediaBottomSheetLayoutBinding
 import com.tokopedia.chatbot.di.ChatbotModule
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
@@ -127,6 +131,7 @@ import com.tokopedia.chatbot.view.activity.ChatbotOnboardingActivity
 import com.tokopedia.chatbot.view.activity.ChatbotVideoActivity
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
+import com.tokopedia.chatbot.view.adapter.MediaRetryBottomSheetAdapter
 import com.tokopedia.chatbot.view.adapter.util.RecyclerViewScrollListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
@@ -137,6 +142,8 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.StickyActionButtonClickListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.VideoUploadListener
 import com.tokopedia.chatbot.view.attachmentmenu.ChatbotImageMenu
+import com.tokopedia.chatbot.view.bottomsheet.ChatbotReplyBottomSheet
+import com.tokopedia.chatbot.view.bottomsheet.ChatbotReplyBottomSheetAdapter
 import com.tokopedia.chatbot.view.customview.ChatbotFloatingInvoice
 import com.tokopedia.chatbot.view.customview.chatroom.BigReplyBox
 import com.tokopedia.chatbot.view.customview.chatroom.BigReplyBoxBottomSheet
@@ -150,8 +157,10 @@ import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
 import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
+import com.tokopedia.chatbot.view.uimodel.ChatbotReplyOptionsUiModel
 import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
 import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
+import com.tokopedia.chatbot.view.util.showToaster
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
@@ -212,6 +221,7 @@ class ChatbotFragment :
     ChatbotSendButtonListener,
     ChatbotFloatingInvoice.InvoiceListener,
     ReplyBoxClickListener,
+    ChatbotReplyBottomSheetAdapter.ReplyBubbleBottomSheetListener,
     ReplyBubbleBottomSheetAdapter.ReplyBubbleBottomSheetListener {
 
     val SNACK_BAR_TEXT_OK = "OK"
@@ -298,6 +308,7 @@ class ChatbotFragment :
         private const val ZERO_POSITION = 0
         private const val BUBBLE_NOT_FOUND = -2
         private const val DELAY_TO_SHOW_COACHMARK = 1000L
+        private const val COPY_TO_CLIPBOARD_LABEL = "Tokopedia-Chatbot"
     }
 
     override fun initInjector() {
@@ -1105,7 +1116,7 @@ class ChatbotFragment :
     override fun onSuccessSubmitChatCsat(msg: String) {
         view?.let {
             csatOptionsUiModel?.let { it -> getViewState()?.hideCsatOptionList(it) }
-            Toaster.build(it, msg, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, SNACK_BAR_TEXT_OK)
+            Toaster.build(it, msg, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, SNACK_BAR_TEXT_OK).show()
         }
     }
 
@@ -1687,15 +1698,60 @@ class ChatbotFragment :
         return senderNameForReply
     }
 
-    override fun showReplyOption(messageUiModel: MessageUiModel) {
-        if (replyBubbleEnabled) {
-            activity?.let {
-                replyBubbleBottomSheet = ChatbotReplyBubbleBottomSheet(messageUiModel, this)
-                replyBubbleBottomSheet?.show(
-                    childFragmentManager,
-                    context?.resources?.getString(R.string.chatbot_reply_bubble_bottomsheet_retry)
-                )
+    override fun showReplyOption(messageUiModel: MessageUiModel, messageBubble: TextView?) {
+        activity?.let {
+            replyBubbleBottomSheet = ChatbotReplyBottomSheet(messageUiModel, this, replyBubbleEnabled)
+            replyBubbleBottomSheet?.setOnMenuClickListener { menu ->
+                onClickReplyMenuListener(menu, messageUiModel, messageBubble)
             }
+            replyBubbleBottomSheet?.show(
+                childFragmentManager,
+                context?.resources?.getString(R.string.chatbot_reply_bubble_bottomsheet_retry)
+            )
+        }
+    }
+
+    private fun onClickReplyMenuListener(
+        menu: ChatbotReplyOptionsUiModel,
+        messageUiModel: MessageUiModel,
+        messageBubble: TextView?
+    ) {
+        replyBubbleBottomSheet?.dismiss()
+        when (menu) {
+            is ChatbotReplyOptionsUiModel.Reply -> {
+                sendReplyToSpecificChat(messageUiModel)
+            }
+            is ChatbotReplyOptionsUiModel.CopyToClipboard -> {
+                copyToClipBoard(messageBubble)
+            }
+        }
+    }
+
+    private fun sendReplyToSpecificChat(messageUiModel: MessageUiModel) {
+        senderNameForReply = messageUiModel.from
+        setGuidelineForReplyBubble(true)
+        replyBubbleContainer?.composeReplyData(
+            messageUiModel,
+            "",
+            true,
+            getUserNameForReplyBubble.getUserName(messageUiModel)
+        )
+    }
+
+    private fun copyToClipBoard(messageBubble: TextView?) {
+        activity?.let {
+            val clipboard = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+            val clip = ClipData.newPlainText(
+                COPY_TO_CLIPBOARD_LABEL,
+                messageBubble?.text.toString()
+            )
+            clipboard.setPrimaryClip(clip)
+            _viewBinding?.smallReplyBox?.showToaster(
+                context?.resources?.getString(
+                    R.string.chatbot_bottomsheet_copy_success_toaster
+                ).toBlankOrString()
+            )
         }
     }
 

@@ -48,12 +48,11 @@ object ChatbotConstant {
     }
 
     object AttachmentType {
-        const val OPEN_CSAT = "13"
-        const val UPDATE_TOOLBAR = "14"
-        const val CHAT_DIVIDER = "15"
-        const val TYPE_OPTION_LIST = "22"
+        const val TYPE_CSAT_VIEW = "13"
+        const val TYPE_CHAT_SEPARATOR = "15"
+        const val TYPE_HELPFULL_QUESTION = "22"
         const val TYPE_CSAT_OPTIONS = "23"
-        const val STICKY_BUTTON = "25"
+        const val TYPE_STICKED_BUTTON_ACTIONS = "25"
         const val TYPE_SECURE_IMAGE_UPLOAD = "26"
         const val TYPE_REPLY_BUBBLE = "28"
         const val TYPE_VIDEO_UPLOAD = "30"
@@ -88,8 +87,11 @@ object ChatbotConstant {
     }
 
     object NewRelic {
-        // New Relic Key For Logging
+        // New Relic Key For Logging GQL related errors
         const val KEY_CHATBOT_ERROR = "CHATBOT_ANDROID_ERROR"
+
+        // New Relic Key For Logging CSAT Options and Helpfull questions , attachment type 22 and 23
+        const val KEY_CSAT = "CHATBOT_CSAT_LOG"
 
         // Keys for each GQL
         const val KEY_SECURE_UPLOAD = "CHATBOT_SECURE_UPLOAD"
