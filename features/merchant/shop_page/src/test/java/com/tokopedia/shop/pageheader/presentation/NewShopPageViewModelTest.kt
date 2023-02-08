@@ -114,22 +114,22 @@ class NewShopPageViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         shopPageViewModel = NewShopPageViewModel(
-                userSessionInterface,
-                gqlGetShopInfoForHeaderUseCase,
-                getBroadcasterShopConfigUseCase,
-                gqlGetShopInfobUseCaseCoreAndAssets,
-                shopQuestGeneralTrackerUseCase,
-                newGetShopPageP1DataUseCase,
-                getShopProductListUseCase,
-                shopModerateRequestStatusUseCase,
-                shopRequestUnmoderateUseCase,
-                getShopPageHeaderLayoutUseCase,
-                getFollowStatusUseCase,
-                updateFollowStatusUseCase,
-                gqlGetShopOperationalHourStatusUseCase,
-                sharedPreferences,
-                testCoroutineDispatcherProvider,
-                playShortsEntryPointRemoteConfig,
+            userSessionInterface,
+            gqlGetShopInfoForHeaderUseCase,
+            getBroadcasterShopConfigUseCase,
+            gqlGetShopInfobUseCaseCoreAndAssets,
+            shopQuestGeneralTrackerUseCase,
+            newGetShopPageP1DataUseCase,
+            getShopProductListUseCase,
+            shopModerateRequestStatusUseCase,
+            shopRequestUnmoderateUseCase,
+            getShopPageHeaderLayoutUseCase,
+            getFollowStatusUseCase,
+            updateFollowStatusUseCase,
+            gqlGetShopOperationalHourStatusUseCase,
+            sharedPreferences,
+            testCoroutineDispatcherProvider,
+            playShortsEntryPointRemoteConfig
         )
     }
 
@@ -180,6 +180,41 @@ class NewShopPageViewModelTest {
             false,
             addressWidgetData,
             mockExtParam
+        )
+        coVerify { newGetShopPageP1DataUseCase.get().executeOnBackground() }
+        assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
+        assert(shopPageViewModel.productListData.data.size == 2)
+    }
+
+    @Test
+    fun `check whether new shopPageP1Data value is success when shopId same as user session shopId`() {
+        coEvery { userSessionInterface.shopId } returns SAMPLE_SHOP_ID
+        coEvery {
+            newGetShopPageP1DataUseCase.get().executeOnBackground()
+        } returns NewShopPageHeaderP1(
+            shopPageGetDynamicTabResponse = ShopPageGetDynamicTabResponse(
+                ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab(
+                    listOf(
+                        ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData()
+                    )
+                )
+            )
+        )
+        coEvery { getShopPageHeaderLayoutUseCase.get().executeOnBackground() } returns ShopPageHeaderLayoutResponse()
+        coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
+            data = listOf(ShopProduct(), ShopProduct())
+        )
+        shopPageViewModel.getNewShopPageTabData(
+            shopId = SAMPLE_SHOP_ID,
+            shopDomain = "shop domain",
+            page = 1,
+            itemPerPage = 10,
+            shopProductFilterParameter = ShopProductFilterParameter(),
+            keyword = "",
+            etalaseId = "",
+            isRefresh = false,
+            widgetUserAddressLocalData = addressWidgetData,
+            extParam = mockExtParam
         )
         coVerify { newGetShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
@@ -667,7 +702,7 @@ class NewShopPageViewModelTest {
         val mockStockQty = 11
         val mockShopId = "5423"
         coEvery {
-            affiliateCookieHelper.initCookie(any(),any(),any())
+            affiliateCookieHelper.initCookie(any(), any(), any())
         } returns Unit
         shopPageViewModel.createAffiliateCookieShopAtcProduct(
             mockUUID,
@@ -678,7 +713,7 @@ class NewShopPageViewModelTest {
             mockStockQty,
             mockShopId
         )
-        coVerify { affiliateCookieHelper.initCookie(any(),any(),any()) }
+        coVerify { affiliateCookieHelper.initCookie(any(), any(), any()) }
     }
 
     @Test
@@ -690,7 +725,7 @@ class NewShopPageViewModelTest {
         val mockStockQty = 11
         val mockShopId = "5423"
         coEvery {
-            affiliateCookieHelper.initCookie(any(),any(),any())
+            affiliateCookieHelper.initCookie(any(), any(), any())
         } throws Exception()
         shopPageViewModel.createAffiliateCookieShopAtcProduct(
             mockUUID,
@@ -701,7 +736,7 @@ class NewShopPageViewModelTest {
             mockStockQty,
             mockShopId
         )
-        coVerify { affiliateCookieHelper.initCookie(any(),any(),any()) }
+        coVerify { affiliateCookieHelper.initCookie(any(), any(), any()) }
     }
 
     @Test
