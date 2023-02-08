@@ -44,7 +44,7 @@ class ChooseAddressWidgetCallback(
     }
 
     override fun onChangeTextColor(): Int {
-        return if (HomeRollenceController.isUsingAtf1Variant()) {
+        return if (HomeRollenceController.isUsingAtf2Variant()) {
             com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
         } else {
             com.tokopedia.unifyprinciples.R.color.Unify_Static_White

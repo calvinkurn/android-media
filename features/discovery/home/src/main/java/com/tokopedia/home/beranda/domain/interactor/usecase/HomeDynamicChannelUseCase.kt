@@ -81,7 +81,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
     private val homeChooseAddressRepository: HomeChooseAddressRepository,
     private val userSessionInterface: UserSessionInterface,
     private val homeMissionWidgetRepository: HomeMissionWidgetRepository,
-    private val homeBalanceWidgetAtf1UseCase: HomeBalanceWidgetAtf1UseCase
+    private val homeBalanceWidgetAtf1UseCase: HomeBalanceWidgetAtf1UseCase,
+    private val homeBalanceWidgetAtf2UseCase: HomeBalanceWidgetAtf2UseCase
 ) {
 
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
@@ -92,6 +93,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     private var currentHeaderAtf1DataModel: HomeHeaderAtf1DataModel? = null
     private var previousHeaderAtf1DataModel: HomeHeaderAtf1DataModel? = null
+
+    private var currentHeaderAtf2DataModel: HomeHeaderAtf2DataModel? = null
+    private var previousHeaderAtf2DataModel: HomeHeaderAtf2DataModel? = null
 
     companion object {
         private const val TYPE_ATF_1 = "atf-1"
@@ -122,7 +126,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
     }
 
-    fun updateHeaderAtf1Data(
+    private fun updateHeaderAtf1Data(
         homeHeaderAtf1DataModel: HomeHeaderAtf1DataModel,
         homeDataModel: HomeDynamicChannelModel
     ) {
@@ -130,6 +134,20 @@ class HomeDynamicChannelUseCase @Inject constructor(
             if (model.needToShowUserWallet) {
                 homeDataModel.updateWidgetModel(
                     visitable = homeHeaderAtf1DataModel,
+                    position = index
+                ) {}
+            }
+        }
+    }
+
+    private fun updateHeaderAtf2Data(
+        homeHeaderAtf2DataModel: HomeHeaderAtf2DataModel,
+        homeDataModel: HomeDynamicChannelModel
+    ) {
+        findWidget<HomeHeaderAtf2DataModel>(homeDataModel) { model, index ->
+            if (model.needToShowUserWallet) {
+                homeDataModel.updateWidgetModel(
+                    visitable = homeHeaderAtf2DataModel,
                     position = index
                 ) {}
             }
@@ -216,6 +234,18 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         }
                         currentHeaderAtf1DataModel?.let {
                             updateHeaderAtf1Data(it, dynamicChannelPlainResponse)
+                            emit(dynamicChannelPlainResponse)
+                        }
+                    } else if (HomeRollenceController.isUsingAtf2Variant()) {
+                        if (currentHeaderAtf2DataModel == null) {
+                            currentHeaderAtf2DataModel =
+                                homeBalanceWidgetAtf2UseCase.onGetBalanceWidgetData(
+                                    previousHeaderAtf2DataModel
+                                )
+                            previousHeaderAtf2DataModel = currentHeaderAtf2DataModel
+                        }
+                        currentHeaderAtf2DataModel?.let {
+                            updateHeaderAtf2Data(it, dynamicChannelPlainResponse)
                             emit(dynamicChannelPlainResponse)
                         }
                     } else {
@@ -837,6 +867,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
             var isAtfSuccess = true
             if (HomeRollenceController.isUsingAtf1Variant()) {
                 currentHeaderAtf1DataModel = null
+            } else if (HomeRollenceController.isUsingAtf2Variant()) {
+                currentHeaderAtf2DataModel = null
             } else {
                 currentHeaderDataModel = null
             }
