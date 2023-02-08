@@ -15,7 +15,7 @@
     <string name="label_title_courier_reschedule_pick_up">Kurir</string>
     <string name="label_title_order_detail_reschedule_pick_up">Detail Pesanan</string>
     <string name="label_subtitle_reschedule_pick_up"><![CDATA[Cek info detail pengaturan ulang jadwal pick-up di sini.]]></string>
-    <string name="label_subtitle_reschedule_pick_up_annotate">Cek info detail pengaturan ulang jadwal pick-up </string>
+    <string name="label_subtitle_reschedule_pick_up_annotate">Cek info detail pengaturan ulang jadwal pick-up\u0020</string>
     <string name="label_app_link_subtitle_reschedule_pick_up_annotate">di sini.</string>
     <string name="title_reschedule_day_bottomsheet">Pilih Hari</string>
     <string name="template_success_reschedule_pickup">Kami akan melakukan request pick-up sesuai jadwal barumu. %1$s</string>
