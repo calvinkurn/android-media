@@ -1,16 +1,16 @@
-package com.tokopedia.play_common.view
+package com.tokopedia.content.common.ui.custom
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View.OnClickListener
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
+import com.tokopedia.content.common.databinding.BottomSheetHeaderBinding
 
 /**
  * @author by astidhiyaa on 02/12/22
  */
-class PlayHeaderView : ConstraintLayout {
+class ContentHeaderView : ConstraintLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
