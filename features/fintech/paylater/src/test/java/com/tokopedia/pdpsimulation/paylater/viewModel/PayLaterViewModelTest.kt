@@ -11,11 +11,7 @@ import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.common.domain.model.Pictures
 import com.tokopedia.pdpsimulation.common.domain.model.ShopDetail
 import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
-import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterAllData
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
-import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
-import com.tokopedia.pdpsimulation.paylater.domain.model.SupervisorUiModel
+import com.tokopedia.pdpsimulation.paylater.domain.model.*
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationV3UseCase
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterUiMapperUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -144,7 +140,11 @@ class PayLaterViewModelTest {
     @Test
     fun successPayLaterOptions()
     {
-        val payLaterGetSimulation = PayLaterGetSimulation(listOf(PayLaterAllData(1,"", "", listOf())))
+        val payLaterGetSimulation = PayLaterGetSimulation(
+            listOf(
+                PayLaterAllData(1,"", "", listOf(), Label(), "")
+            )
+        )
         val list = arrayListOf(SimulationUiModel(
                 1,
                 "",
@@ -154,12 +154,18 @@ class PayLaterViewModelTest {
         mockMapperResponse(list)
         coVerify(exactly = 0) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         coEvery {
-            payLaterSimulationData.getPayLaterSimulationDetails(any(), any(), 10.0, "0")
+            payLaterSimulationData.getPayLaterSimulationDetails(
+                any(),
+                any(),
+                10.0,
+                "0",
+                ""
+            )
         } coAnswers {
             firstArg<(PayLaterGetSimulation) -> Unit>().invoke(payLaterGetSimulation)
         }
 
-        viewModel.getPayLaterAvailableDetail(10.0, "0")
+        viewModel.getPayLaterAvailableDetail(10.0, "0", "")
         coVerify(exactly = 1) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Success).data, list)
     }
@@ -168,7 +174,11 @@ class PayLaterViewModelTest {
     @Test
     fun successPayLaterOptionsDataEmpty()
     {
-        val payLaterGetSimulation = PayLaterGetSimulation(listOf(PayLaterAllData(1,"", "", listOf())))
+        val payLaterGetSimulation = PayLaterGetSimulation(
+            listOf(
+                PayLaterAllData(1,"", "", listOf(), Label(), "")
+            )
+        )
         val list = arrayListOf(SimulationUiModel(
             1,
             "",
@@ -179,12 +189,18 @@ class PayLaterViewModelTest {
         coVerify(exactly = 0) {
             payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         coEvery {
-            payLaterSimulationData.getPayLaterSimulationDetails(any(), any(), 10.0, "0")
+            payLaterSimulationData.getPayLaterSimulationDetails(
+                any(),
+                any(),
+                10.0,
+                "0",
+                "",
+            )
         } coAnswers {
             firstArg<(PayLaterGetSimulation) -> Unit>().invoke(payLaterGetSimulation)
         }
 
-        viewModel.getPayLaterAvailableDetail(10.0, "0")
+        viewModel.getPayLaterAvailableDetail(10.0, "0", "")
         coVerify(exactly = 1) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Success).data, list)
     }
@@ -193,7 +209,11 @@ class PayLaterViewModelTest {
     @Test
     fun `successPayLaterOptions With Default Selected`()
     {
-        val payLaterGetSimulation = PayLaterGetSimulation(listOf(PayLaterAllData(1,"", "", listOf())))
+        val payLaterGetSimulation = PayLaterGetSimulation(
+            listOf(
+                PayLaterAllData(1,"", "", listOf(), Label(), "")
+            )
+        )
         val list = arrayListOf(SimulationUiModel(
             1,
             "",
@@ -203,12 +223,18 @@ class PayLaterViewModelTest {
         mockMapperResponse(list)
 
         coEvery {
-            payLaterSimulationData.getPayLaterSimulationDetails(any(), any(), 10.0, "0")
+            payLaterSimulationData.getPayLaterSimulationDetails(
+                any(),
+                any(),
+                10.0,
+                "0",
+                "",
+            )
         } coAnswers {
             firstArg<(PayLaterGetSimulation) -> Unit>().invoke(payLaterGetSimulation)
         }
 
-        viewModel.getPayLaterAvailableDetail(10.0, "0")
+        viewModel.getPayLaterAvailableDetail(10.0, "0", "")
         coVerify(exactly = 1) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Success).data, list)
     }
@@ -226,11 +252,17 @@ class PayLaterViewModelTest {
     fun failPayLaterOptions()
     {
         coEvery {
-            payLaterSimulationData.getPayLaterSimulationDetails(any(), any(), 0.0, "0")
+            payLaterSimulationData.getPayLaterSimulationDetails(
+                any(),
+                any(),
+                0.0,
+                "0",
+                "",
+            )
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.getPayLaterAvailableDetail(0.0, "0")
+        viewModel.getPayLaterAvailableDetail(0.0, "0", "")
         coVerify(exactly = 0) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Fail).throwable,mockThrowable)
     }

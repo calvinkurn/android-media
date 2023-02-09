@@ -171,11 +171,18 @@ class OccViewModelTest {
             null, listOf(),"",null,null,false)
         val basePayLaterOptimizedModel = PaylaterGetOptimizedModel(listOf(checkoutData), "")
         coEvery {
-            paylaterActivationUseCase.getPayLaterActivationDetail(any(), any(), 0.0, "", "")
+            paylaterActivationUseCase.getPayLaterActivationDetail(
+                any(),
+                any(),
+                0.0,
+                "",
+                "",
+                "",
+            )
         } coAnswers {
             firstArg<(PaylaterGetOptimizedModel) -> Unit>().invoke(basePayLaterOptimizedModel)
         }
-        viewModel.getOptimizedCheckoutDetail("", 0.0, "")
+        viewModel.getOptimizedCheckoutDetail("", 0.0, "", "")
         Assert.assertEquals(
                 (viewModel.payLaterActivationDetailLiveData.value as Success).data,
                 basePayLaterOptimizedModel
@@ -187,11 +194,18 @@ class OccViewModelTest {
     fun successPayLaterActivationConditionFail() {
         val basePayLaterOptimizedModel = PaylaterGetOptimizedModel(emptyList(), "")
         coEvery {
-            paylaterActivationUseCase.getPayLaterActivationDetail(any(), any(), 0.0, "", "")
+            paylaterActivationUseCase.getPayLaterActivationDetail(
+                any(),
+                any(),
+                0.0,
+                "",
+                "",
+                "",
+            )
         } coAnswers {
             firstArg<(PaylaterGetOptimizedModel) -> Unit>().invoke(basePayLaterOptimizedModel)
         }
-        viewModel.getOptimizedCheckoutDetail("", 0.0, "")
+        viewModel.getOptimizedCheckoutDetail("", 0.0, "", "")
         Assert.assertEquals(
             (viewModel.payLaterActivationDetailLiveData.value as Fail).throwable.message,
           "Empty State"
@@ -202,11 +216,18 @@ class OccViewModelTest {
     @Test
     fun failPayLaterActivation() {
         coEvery {
-            paylaterActivationUseCase.getPayLaterActivationDetail(any(), any(), 0.0, "", "")
+            paylaterActivationUseCase.getPayLaterActivationDetail(
+                any(),
+                any(),
+                0.0,
+                "",
+                "",
+                "",
+            )
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.getOptimizedCheckoutDetail("", 0.0, "")
+        viewModel.getOptimizedCheckoutDetail("", 0.0, "", "")
         Assert.assertEquals(
                 (viewModel.payLaterActivationDetailLiveData.value as Fail).throwable,
                 mockThrowable
