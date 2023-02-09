@@ -1,8 +1,6 @@
 package com.tokopedia.watch.listenerservice
 
-import android.annotation.SuppressLint
 import android.content.Intent
-import android.util.Log
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
@@ -30,22 +28,22 @@ import com.tokopedia.watch.orderlist.usecase.SomListGetAcceptBulkOrderStatusUseC
 import com.tokopedia.watch.ordersummary.model.SummaryDataModel
 import com.tokopedia.watch.ordersummary.usecase.GetSummaryUseCase
 import dagger.Lazy
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import rx.Subscriber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
+class DataLayerServiceListener : WearableListenerService(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
@@ -74,7 +72,6 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
     lateinit var userSession: Lazy<UserSession>
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -104,7 +101,6 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
                 }
             }
             MESSAGE_CLIENT_START_ORDER_ACTIVITY -> {
-
             }
             MESSAGE_CLIENT_APP_DETECTION -> {
                 messageClient.sendMessage(messageEvent.sourceNodeId, MESSAGE_CLIENT_APP_DETECTION, byteArrayOf())
@@ -123,7 +119,8 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
             GET_SUMMARY_PATH -> {
                 runBlocking {
                     getSummaryData()
-                }            }
+                }
+            }
             GET_ALL_DATA_PATH -> {
                 runBlocking {
                     getOrderList(ORDER_STATUS_NEW_ORDER)
@@ -162,7 +159,7 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
     }
 
     private fun acceptOrder(listOrderId: List<String>) {
-        launchCatchError(Dispatchers.IO,block = {
+        launchCatchError(Dispatchers.IO, block = {
             val doAcceptOrderResponse = doAcceptOrder(listOrderId)
             val acceptOrderStatusResponse = getAcceptOrderStatus(
                 doAcceptOrderResponse?.data?.batchId.orEmpty()
@@ -172,9 +169,9 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
                 getOrderListUseCase.get().createObservable(
                     RequestParams().apply {
                         putObject(GetOrderListUseCase.PARAM_STATUS_LIST, ORDER_STATUS_NEW_ORDER)
-                    },
+                    }
                 ).toBlocking().first()
-            }){
+            }) {
                 null
             }.await()
 
@@ -182,15 +179,15 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
                 getOrderListUseCase.get().createObservable(
                     RequestParams().apply {
                         putObject(GetOrderListUseCase.PARAM_STATUS_LIST, ORDER_STATUS_READY_TO_SHIP)
-                    },
+                    }
                 ).toBlocking().first()
-            }){
+            }) {
                 null
             }.await()
 
             val orderSummaryAsyncData = asyncCatchError(block = {
                 getSummaryUseCase.get().createObservable(RequestParams()).toBlocking().first()
-            }){
+            }) {
                 null
             }.await()
 
@@ -216,7 +213,7 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
                 ACCEPT_BULK_ORDER_PATH,
                 ""
             )
-        }){
+        }) {
         }
     }
 
@@ -267,12 +264,9 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
         getSummaryUseCase.get().executeSync(RequestParams(), getLoadSummaryDataSubscriber())
     }
 
-
-
     private fun getLoadOrderListDataSubscriber(): Subscriber<OrderListModel> {
-        return object: Subscriber<OrderListModel>() {
+        return object : Subscriber<OrderListModel>() {
             override fun onCompleted() {
-
             }
 
             override fun onError(e: Throwable?) {
@@ -290,12 +284,9 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
     private fun getLoadNotificationListDataSubscriber(): Subscriber<NotificationListModel> {
         return object : Subscriber<NotificationListModel>() {
             override fun onCompleted() {
-
             }
 
-            @SuppressLint("LongLogTag")
             override fun onError(e: Throwable?) {
-                Log.e(TAG,e?.message.orEmpty())
             }
 
             override fun onNext(notificationListModel: NotificationListModel) {
@@ -304,18 +295,15 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
                     Gson().toJson(notificationListModel)
                 )
             }
-
         }
     }
 
     private fun getLoadSummaryDataSubscriber(): Subscriber<SummaryDataModel> {
-        return object: Subscriber<SummaryDataModel>() {
+        return object : Subscriber<SummaryDataModel>() {
             override fun onCompleted() {
-
             }
 
             override fun onError(e: Throwable?) {
-
             }
 
             override fun onNext(summaryDataModel: SummaryDataModel) {
@@ -362,7 +350,7 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
         COMPANION_NOT_REACHABLE,
         COMPANION_NOT_INSTALLED;
 
-        fun getStringState() = when(this) {
+        fun getStringState() = when (this) {
             SYNC -> "sync"
             CONNECTED -> "connected"
             COMPANION_NOT_LOGIN -> "companion_not_login"
