@@ -92,12 +92,12 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
     }
 
     private fun obtainAttributes(attrs: AttributeSet?) {
-        val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.TokoNowQuantityEditorView)
+        val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.ProductCardCompactQuantityEditorView)
 
         try {
-            val quantityAttribute = styledAttrs.getInt(R.styleable.TokoNowQuantityEditorView_quantity, DEFAULT_NUMBER)
-            val maxAttribute = styledAttrs.getInt(R.styleable.TokoNowQuantityEditorView_maxQuantity, maxQuantity)
-            val minAttribute = styledAttrs.getInt(R.styleable.TokoNowQuantityEditorView_minQuantity, minQuantity)
+            val quantityAttribute = styledAttrs.getInt(R.styleable.ProductCardCompactQuantityEditorView_quantity, DEFAULT_NUMBER)
+            val maxAttribute = styledAttrs.getInt(R.styleable.ProductCardCompactQuantityEditorView_maxQuantity, maxQuantity)
+            val minAttribute = styledAttrs.getInt(R.styleable.ProductCardCompactQuantityEditorView_minQuantity, minQuantity)
 
             if (quantityAttribute != DEFAULT_NUMBER) setQuantity(quantityAttribute)
             if (maxAttribute != maxQuantity) maxQuantity = maxAttribute
@@ -141,7 +141,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         }
     }
 
-    private fun getEnabledColor(isEnabled: Boolean): Int = if (isEnabled) getResourceColor(R.color.tokopedianow_product_card_dms_button_stroke_collapsed_color) else getResourceColor(R.color.tokopedianow_product_card_dms_button_stroke_expanded_color)
+    private fun getEnabledColor(isEnabled: Boolean): Int = if (isEnabled) getResourceColor(R.color.product_card_compact_dms_button_stroke_collapsed_color) else getResourceColor(R.color.product_card_compact_dms_button_stroke_expanded_color)
 
     private fun getResourceColor(id: Int): Int = ContextCompat.getColor(context, id)
 

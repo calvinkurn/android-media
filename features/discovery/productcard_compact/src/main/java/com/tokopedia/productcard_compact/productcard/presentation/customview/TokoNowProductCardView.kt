@@ -325,7 +325,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
             val colorRes = if (progressBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
                 com.tokopedia.unifyprinciples.R.color.Unify_RN500
             } else {
-                R.color.tokopedianow_product_card_dms_progress_bar_label_text_color
+                R.color.product_card_compact_dms_progress_bar_label_text_color
             }
             setTextColor(
                 ContextCompat.getColor(
@@ -371,7 +371,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
             setProgressIcon(
                 icon = ContextCompat.getDrawable(
                     context,
-                    R.drawable.productcard_compact_ic_product_card_fire_filled
+                    R.drawable.product_card_compact_ic_product_card_fire_filled
                 ),
                 width = getDpFromDimen(
                     context = context,
@@ -437,7 +437,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
     ) {
         background = ContextCompat.getDrawable(
             context,
-            R.drawable.productcard_compact_bg_product_card_best_seller
+            R.drawable.product_card_compact_bg_product_card_best_seller
         )
         backgroundTintList = ColorStateList.valueOf(
             safeParseColor(
@@ -468,7 +468,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 setLabelType(
                     getHexColorFromIdColor(
                         context = context,
-                        idColor = R.color.tokopedianow_product_card_dms_status_label_background
+                        idColor = R.color.product_card_compact_dms_product_card_status_label_background
                     )
                 )
             }

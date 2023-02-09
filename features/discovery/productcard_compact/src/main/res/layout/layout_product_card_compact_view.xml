@@ -7,7 +7,7 @@
     android:focusable="false"
     android:focusableInTouchMode="true"
     android:paddingBottom="8dp"
-    android:background="@color/tokopedianow_card_dms_color">
+    android:background="@color/product_card_compact_dms_card_color">
 
     <com.tokopedia.productcard_compact.productcard.presentation.customview.ProductCardCompactQuantityEditorView
         android:id="@+id/quantity_editor"
@@ -172,8 +172,8 @@
         android:layout_width="10dp"
         android:layout_height="0dp"
         android:layout_marginStart="9dp"
-        app:icon_color_light_enable="@color/tokopedianow_product_card_dms_rating_color"
-        app:icon_color_night_enable="@color/tokopedianow_product_card_dms_rating_color"
+        app:icon_color_light_enable="@color/product_card_compact_dms_rating_color"
+        app:icon_color_night_enable="@color/product_card_compact_dms_rating_color"
         app:icon_name="STAR_FILLED"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/rating_typography"
@@ -226,7 +226,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:visibility="gone"
-        android:textColor="@color/tokopedianow_product_card_dms_progress_bar_label_text_color"
+        android:textColor="@color/product_card_compact_dms_progress_bar_label_text_color"
         app:layout_constraintEnd_toEndOf="@+id/progress_bar"
         app:layout_constraintStart_toStartOf="@+id/progress_bar"
         app:layout_constraintTop_toBottomOf="@+id/progress_bar"

@@ -131,7 +131,7 @@
             motion:layout_constraintStart_toStartOf="@id/sub_button">
             <CustomAttribute
                 motion:attributeName="textColor"
-                motion:customColorValue="@color/tokopedianow_quantity_editor_dms_edit_text_focus_text_color"/>
+                motion:customColorValue="@color/product_card_compact_dms_quantity_editor_dms_edit_text_focus_text_color"/>
         </Constraint>
         <Constraint
             motion:layout_constraintEnd_toEndOf="parent"
@@ -199,7 +199,7 @@
             android:layout_marginStart="8dp">
             <CustomAttribute
                 motion:attributeName="textColor"
-                motion:customColorValue="@color/tokopedianow_quantity_editor_dms_edit_text_not_focus_text_color"/>
+                motion:customColorValue="@color/product_card_compact_dms_quantity_editor_dms_edit_text_not_focus_text_color"/>
         </Constraint>
         <Constraint
             android:id="@+id/add_button"
