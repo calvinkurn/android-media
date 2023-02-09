@@ -17,6 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.content.common.comment.ui.ContentCommentBottomSheet
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -1015,6 +1016,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 when (event) {
                     is ProductCarouselUiComponent.Event -> onProductCarouselEvent(event)
                     is KebabIconUiComponent.Event -> onKebabIconEvent(event)
+                    is CommentIconUiComponent.Event -> onCommentIconEvent(event)
                 }
             }
         }
@@ -1917,6 +1919,14 @@ class PlayUserInteractionFragment @Inject constructor(
             }
             is EngagementUiModel.Game -> {
                 newAnalytic.impressActiveInteractive(shopId = playViewModel.partnerId.toString(), interactiveId = engagement.game.id, channelId = playViewModel.channelId)
+            }
+        }
+    }
+
+    private fun onCommentIconEvent(event: CommentIconUiComponent.Event) {
+        when (event) {
+            CommentIconUiComponent.Event.OnCommentClicked -> {
+                ContentCommentBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).show(childFragmentManager)
             }
         }
     }
