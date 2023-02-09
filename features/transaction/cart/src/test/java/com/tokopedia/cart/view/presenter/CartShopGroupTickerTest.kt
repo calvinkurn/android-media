@@ -14,7 +14,6 @@ import io.mockk.coVerify
 import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.ticker
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -33,6 +32,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
             isBundlingItem = false,
             bundleIds = emptyList()
         )
+
         fun unselectedProductWithoutBundle() = CartItemHolderData(
             productId = "222",
             cartId = "222",
@@ -40,6 +40,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
             isBundlingItem = false,
             bundleIds = emptyList()
         )
+
         fun selectedProductWithBundle() = CartItemHolderData(
             productId = "555",
             cartId = "555",
@@ -47,6 +48,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
             isBundlingItem = false,
             bundleIds = listOf("356", "467")
         )
+
         fun unselectedProductWithBundle() = CartItemHolderData(
             productId = "666",
             cartId = "666",
@@ -54,6 +56,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
             isBundlingItem = false,
             bundleIds = listOf("578", "689")
         )
+
         fun selectedBundleProduct() = CartItemHolderData(
             productId = "333",
             cartId = "333",
@@ -61,6 +64,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
             isBundlingItem = true,
             bundleIds = listOf("134", "245")
         )
+
         fun unselectedBundleProduct() = CartItemHolderData(
             productId = "444",
             cartId = "444",
