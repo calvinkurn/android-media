@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".comment.ui.ContentCommentBottomSheet">
+    android:layout_height="match_parent">
 
-    <TextView
+    <com.tokopedia.content.common.ui.custom.ContentHeaderView
+        android:id="@+id/comment_header"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="COba dl"/>
+        android:layout_height="wrap_content" />
 
-</FrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
