@@ -12,8 +12,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.productcard_compact.common.util.ChooseAddressWrapper
-import com.tokopedia.productcard_compact.common.util.LocalAddress
+import com.tokopedia.productcard_compact.common.helper.ChooseAddressWrapper
+import com.tokopedia.productcard_compact.common.helper.LocalAddress
+import com.tokopedia.productcard_compact.common.viewmodel.BaseCartViewModel
 import com.tokopedia.productcard_compact.similarproduct.domain.model.ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem
 import com.tokopedia.productcard_compact.similarproduct.domain.usecase.GetSimilarProductUseCase
 import com.tokopedia.productcard_compact.similarproduct.presentation.mapper.SimilarProductMapper.updateDeletedProductQuantity
@@ -32,7 +33,7 @@ class TokoNowSimilarProductViewModel @Inject constructor(
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     addressData: LocalAddress,
     dispatchers: CoroutineDispatchers
-) : MiniCartViewModel(
+) : BaseCartViewModel(
     addToCartUseCase,
     updateCartUseCase,
     deleteCartUseCase,

@@ -1,4 +1,4 @@
-package com.tokopedia.productcard_compact.similarproduct.presentation.viewmodel
+package com.tokopedia.productcard_compact.common.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,14 +18,14 @@ import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.productcard_compact.common.util.CoroutineUtil.launchWithDelay
-import com.tokopedia.productcard_compact.common.util.LocalAddress
+import com.tokopedia.productcard_compact.common.helper.LocalAddress
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 
-open class MiniCartViewModel(
+open class BaseCartViewModel(
     private val addToCartUseCase: AddToCartUseCase,
     private val updateCartUseCase: UpdateCartUseCase,
     private val deleteCartUseCase: DeleteCartUseCase,

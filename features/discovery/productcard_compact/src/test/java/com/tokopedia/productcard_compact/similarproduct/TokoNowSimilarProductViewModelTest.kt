@@ -10,8 +10,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.productcard_compact.common.util.ChooseAddressWrapper
-import com.tokopedia.productcard_compact.common.util.LocalAddress
+import com.tokopedia.productcard_compact.common.helper.ChooseAddressWrapper
+import com.tokopedia.productcard_compact.common.helper.LocalAddress
 import com.tokopedia.productcard_compact.similarproduct.domain.model.ProductRecommendationResponse
 import com.tokopedia.productcard_compact.similarproduct.domain.usecase.GetSimilarProductUseCase
 import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.SimilarProductUiModel

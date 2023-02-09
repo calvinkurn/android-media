@@ -1,4 +1,4 @@
-package com.tokopedia.productcard_compact.productcard.util
+package com.tokopedia.productcard_compact.productcard.helper
 
 import java.util.TimerTask
 

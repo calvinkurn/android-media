@@ -15,7 +15,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class MiniCartViewModelTest : MiniCartViewModelTestFixture() {
+class BaseCartViewModelTest : BaseCartViewModelTestFixture() {
     
     companion object {
         private const val CHANGE_QUANTITY_DELAY = 500L

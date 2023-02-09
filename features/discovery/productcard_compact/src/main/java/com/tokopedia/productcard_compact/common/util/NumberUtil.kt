@@ -1,6 +1,6 @@
 package com.tokopedia.productcard_compact.common.util
 
-object NumberFormatter {
+internal object NumberUtil {
     fun formatFloatToString(number: Float): String {
         val s = number.toString()
         return when {

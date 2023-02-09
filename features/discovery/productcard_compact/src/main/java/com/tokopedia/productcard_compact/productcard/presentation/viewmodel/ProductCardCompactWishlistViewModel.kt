@@ -13,7 +13,7 @@ import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class TokoNowWishlistViewModel @Inject constructor(
+class ProductCardCompactWishlistViewModel @Inject constructor(
     private val addToWishlistUseCase: AddToWishlistV2UseCase,
     private val removeFromWishlistUseCase: DeleteWishlistV2UseCase,
     private val userSession: UserSessionInterface,

@@ -11,7 +11,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class CommonModule {
+internal class CommonModule {
     @CommonScope
     @Provides
     fun provideContext(@ApplicationContext context: Context): Context {

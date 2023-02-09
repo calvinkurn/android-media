@@ -8,7 +8,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.productcard_compact.databinding.LayoutTokopedianowWishlistButtonViewBinding
-import com.tokopedia.productcard_compact.productcard.presentation.viewmodel.TokoNowWishlistViewModel
+import com.tokopedia.productcard_compact.productcard.presentation.viewmodel.ProductCardCompactWishlistViewModel
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -17,7 +17,7 @@ import com.tokopedia.productcard_compact.R
 import com.tokopedia.productcard_compact.common.di.component.DaggerCommonComponent
 import javax.inject.Inject
 
-class TokoNowWishlistButtonView @JvmOverloads constructor(
+class ProductCardCompactWishlistButtonView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : BaseCustomView(context, attrs) {
@@ -30,7 +30,7 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
     }
 
     @Inject
-    lateinit var viewModel: TokoNowWishlistViewModel
+    lateinit var viewModel: ProductCardCompactWishlistViewModel
 
     private var binding: LayoutTokopedianowWishlistButtonViewBinding
     private var mProductId: String = ""

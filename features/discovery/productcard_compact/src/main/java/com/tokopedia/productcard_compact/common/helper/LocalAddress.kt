@@ -1,4 +1,4 @@
-package com.tokopedia.productcard_compact.common.util
+package com.tokopedia.productcard_compact.common.helper
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext

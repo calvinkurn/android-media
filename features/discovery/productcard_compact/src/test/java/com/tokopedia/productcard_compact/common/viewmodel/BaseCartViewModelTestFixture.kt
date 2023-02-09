@@ -9,8 +9,7 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.productcard_compact.common.util.LocalAddress
-import com.tokopedia.productcard_compact.similarproduct.presentation.viewmodel.MiniCartViewModel
+import com.tokopedia.productcard_compact.common.helper.LocalAddress
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -23,7 +22,7 @@ import org.junit.Before
 import org.junit.Rule
 
 @ExperimentalCoroutinesApi
-open class MiniCartViewModelTestFixture {
+open class BaseCartViewModelTestFixture {
 
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
@@ -31,7 +30,7 @@ open class MiniCartViewModelTestFixture {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    protected lateinit var viewModel: MiniCartViewModel
+    protected lateinit var viewModel: BaseCartViewModel
 
     private lateinit var addToCartUseCase: AddToCartUseCase
     private lateinit var updateCartUseCase: UpdateCartUseCase
@@ -49,7 +48,7 @@ open class MiniCartViewModelTestFixture {
         addressData = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
 
-        viewModel = MiniCartViewModel(
+        viewModel = BaseCartViewModel(
             addToCartUseCase,
             updateCartUseCase,
             deleteCartUseCase,

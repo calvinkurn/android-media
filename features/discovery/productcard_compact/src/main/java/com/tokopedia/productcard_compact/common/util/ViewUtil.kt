@@ -8,7 +8,7 @@ import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 
-object ViewUtil {
+internal object ViewUtil {
     private const val FORMAT_HEX_COLOR = "#%06x"
     private const val COLOR_WHITE = 0xffffff
 

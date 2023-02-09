@@ -5,7 +5,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 
-object CoroutineUtil {
+internal object CoroutineUtil {
     fun CoroutineScope.launchWithDelay(
         block: () -> Unit,
         onError: (Throwable) -> Unit = {},

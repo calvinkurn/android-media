@@ -12,19 +12,19 @@ import androidx.core.view.ViewCompat
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard_compact.databinding.LayoutTokopedianowQuantityEditorViewBinding
-import com.tokopedia.productcard_compact.productcard.util.MotionLayoutTransitionImpl
+import com.tokopedia.productcard_compact.productcard.helper.MotionLayoutTransitionImpl
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.productcard_compact.R
-import com.tokopedia.productcard_compact.productcard.util.TextWatcherImpl
-import com.tokopedia.productcard_compact.productcard.util.TimerTaskImpl
+import com.tokopedia.productcard_compact.common.util.ContextUtil.getActivityFromContext
+import com.tokopedia.productcard_compact.productcard.helper.TextWatcherImpl
+import com.tokopedia.productcard_compact.productcard.helper.TimerTaskImpl
 import com.tokopedia.productcard_compact.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.productcard_compact.common.util.ViewUtil.setDimenAsTextSize
-import com.tokopedia.productcard_compact.common.util.getActivityFromContext
 import java.util.Timer
 import java.util.TimerTask
 
 @SuppressLint("ClickableViewAccessibility")
-class TokoNowQuantityEditorView @JvmOverloads constructor(
+class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : BaseCustomView(context, attrs) {

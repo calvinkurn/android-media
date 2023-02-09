@@ -1,6 +1,6 @@
 package com.tokopedia.productcard_compact.similarproduct.domain.mapper
 
-import com.tokopedia.productcard_compact.common.util.NumberFormatter
+import com.tokopedia.productcard_compact.common.util.NumberUtil
 import com.tokopedia.productcard_compact.similarproduct.domain.model.ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem
 import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.SimilarProductUiModel
 
@@ -23,7 +23,7 @@ object SimilarProductMapper {
                             priceFmt = price,
                             imageUrl = imageUrl,
                             slashedPrice = product.slashedPrice.orEmpty(),
-                            discountPercentage = NumberFormatter.formatFloatToString(product.discountPercentage),
+                            discountPercentage = NumberUtil.formatFloatToString(product.discountPercentage),
                             categoryId = product.departmentId.toString(),
                             categoryName = categoryName,
                             position = position

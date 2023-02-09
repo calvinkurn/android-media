@@ -513,7 +513,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
     }
 
     fun setWishlistButtonListener(
-        wishlistButtonListener: TokoNowWishlistButtonView.TokoNowWishlistButtonListener
+        wishlistButtonListener: ProductCardCompactWishlistButtonView.TokoNowWishlistButtonListener
     ) {
         binding.wishlistButton.setListener(wishlistButtonListener)
     }

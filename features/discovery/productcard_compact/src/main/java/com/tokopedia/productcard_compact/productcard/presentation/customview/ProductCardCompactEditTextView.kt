@@ -8,7 +8,7 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import com.tokopedia.unifyprinciples.Typography
 
-class TokoNowEditTextView constructor(
+internal class ProductCardCompactEditTextView constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : AppCompatEditText(context, attrs) {

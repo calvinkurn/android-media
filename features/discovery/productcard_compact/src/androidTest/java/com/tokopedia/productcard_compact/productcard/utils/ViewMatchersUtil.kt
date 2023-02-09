@@ -12,8 +12,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.GONE
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.productcard_compact.productcard.presentation.customview.TokoNowProductCardView
-import com.tokopedia.productcard_compact.productcard.presentation.customview.TokoNowQuantityEditorView
-import com.tokopedia.productcard_compact.productcard.presentation.customview.TokoNowWishlistButtonView
+import com.tokopedia.productcard_compact.productcard.presentation.customview.ProductCardCompactQuantityEditorView
+import com.tokopedia.productcard_compact.productcard.presentation.customview.ProductCardCompactWishlistButtonView
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.CoreMatchers.`is`
@@ -41,10 +41,10 @@ internal object ViewMatchersUtil {
         minOrder: Int,
         maxOrder: Int,
         orderQuantity: Int
-    ) = object : TypeSafeMatcher<TokoNowQuantityEditorView>() {
+    ) = object : TypeSafeMatcher<ProductCardCompactQuantityEditorView>() {
         override fun describeTo(description: Description) { /* nothing to do */ }
 
-        override fun matchesSafely(item: TokoNowQuantityEditorView): Boolean = isDisplayed().matches(item) &&
+        override fun matchesSafely(item: ProductCardCompactQuantityEditorView): Boolean = isDisplayed().matches(item) &&
             `is`(minOrder).matches(item.minQuantity) &&
             `is`(maxOrder).matches(item.maxQuantity) &&
             `is`(orderQuantity).matches(item.getQuantity())
@@ -73,10 +73,10 @@ internal object ViewMatchersUtil {
 
     fun isWishlistButtonDisplayed(
         hasBeenSelected: Boolean
-    ): Matcher<View?> = object : TypeSafeMatcher<TokoNowWishlistButtonView>() {
+    ): Matcher<View?> = object : TypeSafeMatcher<ProductCardCompactWishlistButtonView>() {
         override fun describeTo(description: Description) { /* nothing to do */ }
 
-        override fun matchesSafely(item: TokoNowWishlistButtonView): Boolean = isDisplayed().matches(item) && `is`(hasBeenSelected).matches(item.getValue())
+        override fun matchesSafely(item: ProductCardCompactWishlistButtonView): Boolean = isDisplayed().matches(item) && `is`(hasBeenSelected).matches(item.getValue())
     } as Matcher<View?>
 
     fun withComponentsInProductCardMatched(

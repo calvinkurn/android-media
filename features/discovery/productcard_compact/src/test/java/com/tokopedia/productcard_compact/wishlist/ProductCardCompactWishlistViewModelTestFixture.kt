@@ -1,7 +1,7 @@
 package com.tokopedia.productcard_compact.wishlist
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.productcard_compact.productcard.presentation.viewmodel.TokoNowWishlistViewModel
+import com.tokopedia.productcard_compact.productcard.presentation.viewmodel.ProductCardCompactWishlistViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
@@ -15,7 +15,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Rule
 
-abstract class TokoNowWishlistViewModelTestFixture {
+abstract class ProductCardCompactWishlistViewModelTestFixture {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -29,7 +29,7 @@ abstract class TokoNowWishlistViewModelTestFixture {
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
-    protected lateinit var viewModel : TokoNowWishlistViewModel
+    protected lateinit var viewModel : ProductCardCompactWishlistViewModel
 
     protected fun onAddToWishlist_thenReturn(response: Result<AddToWishlistV2Response.Data.WishlistAddV2>) {
         coEvery {
@@ -58,7 +58,7 @@ abstract class TokoNowWishlistViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = TokoNowWishlistViewModel(
+        viewModel = ProductCardCompactWishlistViewModel(
             addToWishlistUseCase,
             removeFromWishlistUseCase,
             userSession,

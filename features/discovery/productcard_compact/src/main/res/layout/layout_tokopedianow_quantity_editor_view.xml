@@ -47,7 +47,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.productcard_compact.productcard.presentation.customview.TokoNowEditTextView
+    <com.tokopedia.productcard_compact.productcard.presentation.customview.ProductCardCompactEditTextView
         android:id="@+id/edit_text"
         android:layout_width="wrap_content"
         android:layout_height="30dp"

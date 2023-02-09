@@ -9,7 +9,7 @@
     android:paddingBottom="8dp"
     android:background="@color/tokopedianow_card_dms_color">
 
-    <com.tokopedia.productcard_compact.productcard.presentation.customview.TokoNowQuantityEditorView
+    <com.tokopedia.productcard_compact.productcard.presentation.customview.ProductCardCompactQuantityEditorView
         android:id="@+id/quantity_editor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/image_filter_view" />
 
-    <com.tokopedia.productcard_compact.productcard.presentation.customview.TokoNowWishlistButtonView
+    <com.tokopedia.productcard_compact.productcard.presentation.customview.ProductCardCompactWishlistButtonView
         android:id="@+id/wishlist_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
