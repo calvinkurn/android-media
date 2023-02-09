@@ -17,8 +17,8 @@
     <string name="masukkan_kata_kunci_yang_sesuai_untuk_produkmu_secara_manual">Masukkan kata kunci yang sesuai untuk produkmu secara manual.</string>
     <string name="atur_biaya_iklan_manual">Atur biaya iklan manual</string>
     <string name="pasang_biaya_iklan_sesuai_dengan_rekomendasi">Pasang biaya iklan sesuai dengan rekomendasi.</string>
-    <string name="gunakan_iklan_manual">Buat Iklan Manual</string>
-    <string name="mulai_iklan_otomatis">Buat Iklan Otomatis</string>
+    <string name="gunakan_iklan_manual">Mulai Iklan Manual</string>
+    <string name="mulai_iklan_otomatis">Mulai Iklan Otomatis</string>
     <string name="urutkan">Urutkan</string>
     <string name="harga_terendah">Harga Terendah</string>
     <string name="harga_tertinggi">Harga Tertinggi</string>
@@ -109,14 +109,13 @@
     <string name="topads_create_onboarding_screen_desc2">Dengan TopAds, produkmu dapat menjangkau  lebih banyak calon pembeli dan berpotensi meningkatkan penjualan.</string>
     <string name="topads_create_onboarding_screen_title3">Beriklan tanpa ribet</string>
     <string name="topads_create_onboarding_screen_desc3">Cukup bayar sesuai hasil, produkmu akan diiklankan lebih efektif dan tepat sasaran. Lebih mudah beriklan hanya dengan 1x klik.</string>
-    <string name="iklan_otomatis_desc1">Maksimalkan jangkauan iklan dengan\n<b>pemilihan produk otomatis</b></string>
-    <string name="iklan_otomatis_desc2"><b>Kata kunci &amp; biaya iklan diatur</b> secara\nrutin oleh TopAds</string>
-    <string name="iklan_otomatis_desc3"><b>Atur anggaran harian</b> sendiri sesuai\ndengan kebutuhan beriklan</string>
+    <string name="iklan_otomatis_desc1">Produk dipilihkan secara rutin\n oleh TopAds</string>
+    <string name="iklan_otomatis_desc2">Kata kunci &amp; biaya iklan diatur secara rutin\n oleh TopAds</string>
+    <string name="iklan_otomatis_desc3">Kamu cukup atur anggaran harian saja</string>
 
-    <string name="iklan_manual_desc1"><b>Bebas pilih produk</b> yang ingin diiklankan</string>
-    <string name="iklan_manual_desc2">Bebas <b>pilih kata kunci &amp; atur biaya</b> iklan\nsesuai budget</string>
-    <string name="iklan_manual_desc3">Bebas atur <b>anggaran harian</b></string>
-    <string name="iklan_manual_desc4">Buat iklan lebih mudah karena bisa <b>Diatur\nSistem TopAds</b></string>
+    <string name="iklan_manual_desc1">Bebas pilih produk yang ingin diiklankan</string>
+    <string name="iklan_manual_desc2">Bebas pilih kata kunci &amp; atur biaya iklan</string>
+    <string name="iklan_manual_desc3">Bebas atur anggaran harian </string>
     <string name="autoads_selanjutnya">Selanjutnya</string>
 
     <!-- Manual Summary Page-->
@@ -153,7 +152,6 @@
     <string name="biaya_iklan_tip_1">Semakin tinggi biaya iklanmu, maka semakin \ntinggi posisi iklanmu di halaman pencarian.</string>
     <string name="biaya_iklan_tip_2">Pakai rekomendasi biaya agar dapat\n menyaingi iklan dari penjual lain.</string>
     <string name="biaya_iklan_tip_3">Biaya iklan hanya dikenakan jika ada calon \npembeli yang klik iklanmu.</string>
-    <string name="learn_more">Pelajari Selengkapnya</string>
 
 
     <string-array name="sort_product_list_array">
