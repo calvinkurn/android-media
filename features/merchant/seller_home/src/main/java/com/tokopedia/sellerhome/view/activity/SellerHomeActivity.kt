@@ -94,7 +94,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
         private const val NOTIFICATION_USER_SETTING_KEY = "isSellerSettingSent"
         private const val WEAR_POPUP_KEY = "isWearPopupShown"
-        private const val TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.tokopedia.sellerapp"
+        var TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.tokopedia.sellerapp"
     }
 
     @Inject
@@ -176,7 +176,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         super.onResume()
         homeViewModel.getNotifications()
         homeViewModel.getAdminInfo()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 && remoteConfig.isWatchAppCheckingEnabled()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             homeViewModel.checkIfWearHasCompanionApp()
         }
 
@@ -746,6 +746,12 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                             .addCategory(Intent.CATEGORY_BROWSABLE)
                             .setData(Uri.parse(TOKOPEDIA_MARKET_WEAR_APP))
                         homeViewModel.launchMarket(marketIntent)
+                        dialog.dismiss()
+                        Toast.makeText(
+                            this@SellerHomeActivity,
+                            resources.getString(R.string.wearos_toast_install),
+                            Toast.LENGTH_LONG
+                            )
                     }
                     setSecondaryCTAClickListener {
                         dialog.dismiss()
