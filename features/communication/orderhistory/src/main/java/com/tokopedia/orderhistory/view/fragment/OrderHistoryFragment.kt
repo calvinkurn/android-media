@@ -139,8 +139,8 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
 
     private fun getAtcBuyParam(product: Product): RequestParams {
         val addToCartRequestParams = AddToCartRequestParams(
-                productId = product.productId.toLong(),
-                shopId = product.shopId.toInt(),
+                productId = product.productId,
+                shopId = product.shopId,
                 quantity = product.minOrder,
                 atcFromExternalSource = AtcFromExternalSource.ATC_FROM_TOPCHAT
         )

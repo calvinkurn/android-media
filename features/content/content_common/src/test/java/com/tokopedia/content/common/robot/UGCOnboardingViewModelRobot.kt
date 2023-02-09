@@ -1,8 +1,6 @@
 package com.tokopedia.content.common.robot
 
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETE
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
 import com.tokopedia.content.common.onboarding.view.strategy.base.UGCOnboardingStrategy
 import com.tokopedia.content.common.onboarding.view.uimodel.action.UGCOnboardingAction
 import com.tokopedia.content.common.onboarding.view.uimodel.event.UGCOnboardingUiEvent
@@ -18,13 +16,11 @@ import java.io.Closeable
  * Created By : Jonathan Darwin on July 06, 2022
  */
 class UGCOnboardingViewModelRobot(
-    username: String = "",
     onboardingStrategy: UGCOnboardingStrategy,
     private val dispatcher: CoroutineTestDispatchers,
 ) : Closeable {
 
     val viewModel = UGCOnboardingViewModel(
-        onboardingType = if (username.isEmpty()) VALUE_ONBOARDING_TYPE_COMPLETE else VALUE_ONBOARDING_TYPE_TNC,
         onboardingStrategy = onboardingStrategy,
     )
 

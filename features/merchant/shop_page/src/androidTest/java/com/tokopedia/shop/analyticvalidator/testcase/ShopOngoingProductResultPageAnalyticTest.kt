@@ -45,7 +45,6 @@ class ShopOngoingProductResultPageAnalyticTest {
 
     @get:Rule
     var cassavaRule = CassavaTestRule()
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Before
     fun beforeTest() {

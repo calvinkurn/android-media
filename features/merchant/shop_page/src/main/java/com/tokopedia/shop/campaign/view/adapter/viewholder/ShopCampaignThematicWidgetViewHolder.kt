@@ -58,7 +58,6 @@ class ShopCampaignThematicWidgetViewHolder(
     private var dynamicHeaderCustomView: ShopCampaignDynamicHeaderCustomView? = null
     private var uiModel: ThematicWidgetUiModel? = null
     private var isFirstAttached: Boolean = true
-    private var trackerProductsModel = mutableListOf<ProductCardUiModel>()
 
     private val adapter by lazy {
         ProductCardAdapter(

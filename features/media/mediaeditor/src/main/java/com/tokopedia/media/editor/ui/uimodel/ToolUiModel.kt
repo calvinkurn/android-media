@@ -18,6 +18,7 @@ data class ToolUiModel(
             EditorToolType.ROTATE to R.string.editor_tool_rotate,
             EditorToolType.REMOVE_BACKGROUND to R.string.editor_tool_remove_background,
             EditorToolType.WATERMARK to R.string.editor_tool_watermark,
+            EditorToolType.ADD_LOGO to R.string.editor_tool_add_logo
         )
 
         private val icons = mapOf(
@@ -26,7 +27,8 @@ data class ToolUiModel(
             EditorToolType.CROP to IconUnify.CROP,
             EditorToolType.ROTATE to IconUnify.ROTATION,
             EditorToolType.REMOVE_BACKGROUND to IconUnify.BACKGROUND,
-            EditorToolType.WATERMARK to IconUnify.WALLET
+            EditorToolType.WATERMARK to IconUnify.WALLET,
+            EditorToolType.ADD_LOGO to IconUnify.STAMP
         )
 
         fun List<Int>.create() = map {

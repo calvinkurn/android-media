@@ -33,7 +33,8 @@ android {
                     pathSources + 'reading',
                     pathSources + 'gallery',
                     pathSources + 'common',
-                    pathSources + 'media'
+                    pathSources + 'media',
+                    pathSources + 'bulk_write_review'
             ]
         }
         androidTest {
@@ -91,6 +92,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
+    implementation rootProject.ext.miscDependencies.flexBoxLayout
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.viewModelKtx
 

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_activity_bulk_review">Kasih Ulasan Sekaligus</string>
+    <string name="tv_bulk_review_add_attachments">Foto/Video</string>
+    <string name="tv_bulk_review_write_review_message">Testimoni</string>
+    <string name="tv_bulk_review_anonymous">Sembunyikan namamu</string>
+    <string name="btn_bulk_review_send">Kirim (%d)</string>
+    <string name="tv_bulk_review_variant">Varian: %s</string>
+    <string name="bulk_review_remove_review_item_dialog_title">Hapus barang dari daftar ini?</string>
+    <string name="bulk_review_remove_review_item_dialog_description">Padahal kamu sudah isi ulasannya, lho. Tinggal selangkah lagi untuk kirim.</string>
+    <string name="bulk_review_remove_review_item_dialog_primary_cta_text">Hapus</string>
+    <string name="bulk_review_remove_review_item_dialog_secondary_cta_text">Batal</string>
+    <string name="bulk_review_cancel_review_submission_dialog_title">Kembali dan batalkan kirim ulasan?</string>
+    <string name="bulk_review_cancel_review_submission_dialog_description">Sebagian ulasan mungkin telah terkirim.</string>
+    <string name="bulk_review_cancel_review_submission_dialog_primary_cta_text">Kembali</string>
+    <string name="bulk_review_cancel_review_submission_dialog_secondary_cta_text">Tunggu, deh</string>
+    <string name="btn_bulk_review_bad_rating_category_cta_text">Terapkan</string>
+    <string name="bulk_review_bad_rating_category_bottom_sheet_title">Apa yang bikin kamu tidak puas?</string>
+    <string name="tv_bulk_review_bad_rating_category_change">Ubah</string>
+    <string name="toaster_bulk_review_bad_rating_category_reason_cannot_be_empty">Tulis alasanmu dulu, ya.</string>
+    <string name="tv_bulk_review_bad_rating_category_format">Kendala: %s</string>
+    <string name="hint_bulk_review_bad_rating_category_expanded_text_area">Harus ceritain lebih lengkap apa yang tidak memuaskan dan perlu ditingkatkan, ya.</string>
+    <string name="tv_bulk_review_submit_loader_title">Wuuush~ Toped meluncur mengirim ulasanmu</string>
+    <string name="tv_bulk_review_submit_loader_description">Tunggu sebentar, ya. Ulasan kamu sedang dikirim satu per satu.</string>
+    <string name="toaster_bulk_review_cannot_remove_review_item">Oops, kamu perlu min. %d barang supaya bisa lanjut kirim ulasan.</string>
+    <string name="toaster_bulk_review_success_remove_review_item">1 barang berhasil dihapus dari daftar.</string>
+    <string name="toaster_bulk_review_failed_submit_reviews">Ulasan tidak terkirim. Cek koneksi internet kamu &amp; coba lagi, ya</string>
+    <string name="toaster_bulk_review_success_submit_reviews_partially">Beberapa ulasan tidak terkirim. Cek koneksi internet kamu &amp; coba lagi, ya</string>
+    <string name="bulk_review_coach_mark_description">Biar gampang dan cepat, rating sudah diisiin buat kamu. Tapi kamu masih bisa ubah, kok. 👍</string>
+    <string name="bulk_review_submission_success_message">Terima kasih, %s. Ulasanmu akan membantu penjual &amp; calon pembeli lain!</string>
+</resources>

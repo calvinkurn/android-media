@@ -150,6 +150,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
                 type = it.type,
                 hasUsername = feedContentForm.hasUsername,
                 hasAcceptTnc = feedContentForm.hasAcceptTnc,
+                enable = feedContentForm.hasAcceptTnc,
             )
         }
 

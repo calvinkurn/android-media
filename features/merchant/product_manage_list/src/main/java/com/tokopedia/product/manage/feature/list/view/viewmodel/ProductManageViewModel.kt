@@ -30,6 +30,7 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.data.Get
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.countSelectedFilter
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.list.domain.GetShopManagerPopupsUseCase
+import com.tokopedia.product.manage.feature.list.domain.GetTickerUseCase
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.datasource.TickerStaticDataProvider
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
@@ -38,7 +39,6 @@ import com.tokopedia.product.manage.feature.list.view.model.*
 import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType.*
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
-import com.tokopedia.product.manage.feature.list.view.model.ShopStatusUIModel.Companion.mapperShopStatusResponse
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.multiedit.data.param.MenuParam
 import com.tokopedia.product.manage.feature.multiedit.data.param.ProductParam
@@ -93,8 +93,8 @@ class ProductManageViewModel @Inject constructor(
     private val clearUploadStatusUseCase: ClearUploadStatusUseCase,
     private val getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase,
     private val getStatusShop: GetStatusShopUseCase,
+    private val getTickerUseCase: GetTickerUseCase,
     private val tickerStaticDataProvider: TickerStaticDataProvider,
-    private val remoteConfig: FirebaseRemoteConfigImpl,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -397,14 +397,19 @@ class ProductManageViewModel @Inject constructor(
         })
     }
 
-    fun getTickerData(enableStockAvailable: Boolean= true) {
+    fun getTickerData() {
         val isMultiLocationShop = userSessionInterface.isMultiLocationShop
-        _tickerData.value =
-            tickerStaticDataProvider.getTickers(
+        launchCatchError(block = {
+            val result = withContext(dispatchers.io) {
+                getTickerUseCase.execute()
+            }
+            _tickerData.value = tickerStaticDataProvider.createTicker(
                 isMultiLocationShop,
-                _shopStatus.value?.shopStatus.orEmpty(),
-                enableStockAvailable
+                result.getTargetedTicker?.tickers.orEmpty()
             )
+        }, onError = {
+            _tickerData.value = tickerStaticDataProvider.createTicker(isMultiLocationShop)
+        })
     }
 
     fun getFiltersTab(withDelay: Boolean = false) {

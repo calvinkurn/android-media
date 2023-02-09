@@ -45,6 +45,6 @@ class TokopediaCareSection(private val context: Context?) : BasePrivacyCenterSec
 
     companion object {
         const val TAG = "TokopediaCareSection"
-        private const val PATH_TOKOPEDIA_CARE = "help?lang=id?isBack=true"
+        private const val PATH_TOKOPEDIA_CARE = "help/browse/t-0054-akun-saya"
     }
 }

@@ -9,6 +9,7 @@ import com.tokopedia.topads.common.data.response.Error
 import com.tokopedia.topads.common.data.response.TopadsDashboardDeposits
 import com.tokopedia.topads.common.domain.usecase.GetWhiteListedUserUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsTickerUseCase
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.IS_TOP_UP_CREDIT_NEW_UI
 import com.tokopedia.topads.dashboard.data.model.GetPersonalisedCopyResponse
@@ -46,6 +47,7 @@ class TopAdsDashboardViewModelTest {
     private lateinit var summaryStatisticsUseCase: TopAdsWidgetSummaryStatisticsUseCase
     private lateinit var recommendationStatisticsUseCase: TopadsRecommendationStatisticsUseCase
     private lateinit var topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase
+    private lateinit var topadsTickerUseCase: TopAdsTickerUseCase
     private lateinit var autoTopUpUSeCase: TopAdsAutoTopUpUSeCase
     private lateinit var topAdsGetSelectedTopUpTypeUseCase: TopAdsGetSelectedTopUpTypeUseCase
     private lateinit var whiteListedUserUseCase: GetWhiteListedUserUseCase
@@ -56,13 +58,19 @@ class TopAdsDashboardViewModelTest {
         summaryStatisticsUseCase = mockk(relaxed = true)
         recommendationStatisticsUseCase = mockk(relaxed = true)
         topAdsGetShopDepositUseCase = mockk(relaxed = true)
+        topadsTickerUseCase = mockk(relaxed = true)
         autoTopUpUSeCase = mockk(relaxed = true)
         topAdsGetSelectedTopUpTypeUseCase = mockk(relaxed = true)
         whiteListedUserUseCase = mockk(relaxed = true)
 
         viewModel = TopAdsDashboardViewModel(
-            summaryStatisticsUseCase, recommendationStatisticsUseCase, topAdsGetShopDepositUseCase,
-            autoTopUpUSeCase, topAdsGetSelectedTopUpTypeUseCase, whiteListedUserUseCase
+            summaryStatisticsUseCase,
+            recommendationStatisticsUseCase,
+            topAdsGetShopDepositUseCase,
+            topadsTickerUseCase,
+            autoTopUpUSeCase,
+            topAdsGetSelectedTopUpTypeUseCase,
+            whiteListedUserUseCase
         )
     }
 

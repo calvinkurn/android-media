@@ -1,18 +1,18 @@
 package com.tokopedia.play.broadcaster.error
 
-import com.tokopedia.play.broadcaster.BuildConfig
+import com.tokopedia.config.GlobalConfig
 
 /**
  * Created by jegul on 15/06/21
  */
 class ClientException(val errorCode: PlayErrorCode) : Exception(
-        buildString {
-            append(DEFAULT_ERR_MSG)
-            if (BuildConfig.DEBUG) {
-                append(" ")
-                append("(${errorCode.name})")
-            }
+    buildString {
+        append(DEFAULT_ERR_MSG)
+        if (GlobalConfig.DEBUG) {
+            append(" ")
+            append("(${errorCode.name})")
         }
+    }
 ) {
 
     companion object {
