@@ -43,7 +43,8 @@ data class Voucher(
     val tnc: String = "",
     val targetBuyer: VoucherTargetBuyer = VoucherTargetBuyer.ALL_BUYER,
     val discountTypeFormatted: String = "",
-    val productIds: List<ProductId> = listOf()
+    val productIds: List<ProductId> = listOf(),
+    val isParent: Boolean = false
 ) : Parcelable {
     fun isOngoingPromo() = status == VoucherStatus.ONGOING
     fun isUpComingPromo() = status == VoucherStatus.NOT_STARTED

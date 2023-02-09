@@ -62,6 +62,7 @@ class GetVoucherListUseCase @Inject constructor(
                         is_lock_to_product
                         total_child
                         target_buyer
+                        is_parent
                         product_ids {
                           parent_product_id
                           child_product_id

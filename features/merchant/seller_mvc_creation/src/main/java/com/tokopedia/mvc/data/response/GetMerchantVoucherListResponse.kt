@@ -82,7 +82,9 @@ data class MerchantVoucherModel(
     @SerializedName("target_buyer")
     val targetBuyer: Int = 0,
     @SerializedName("product_ids")
-    val productIds: List<ProductId> = listOf()
+    val productIds: List<ProductId> = listOf(),
+    @SerializedName("is_parent")
+    val isParent: Boolean = false
 ) {
     data class ProductId(
         @SerializedName("parent_product_id")
