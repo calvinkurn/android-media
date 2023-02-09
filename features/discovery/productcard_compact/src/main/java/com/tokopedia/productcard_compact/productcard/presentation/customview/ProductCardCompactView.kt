@@ -38,7 +38,7 @@ import com.tokopedia.productcard_compact.common.util.ViewUtil.safeParseColor
 import com.tokopedia.productcard_compact.databinding.LayoutProductCardCompactViewBinding
 import com.tokopedia.productcard_compact.similarproduct.presentation.activity.ProductCardCompactSimilarProductActivity
 
-class TokoNowProductCardView @JvmOverloads constructor(
+class ProductCardCompactView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : CardView(context, attrs) {

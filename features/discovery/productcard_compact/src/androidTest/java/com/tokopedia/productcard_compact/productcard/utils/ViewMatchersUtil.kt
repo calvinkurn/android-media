@@ -11,7 +11,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.GONE
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.productcard_compact.productcard.presentation.customview.TokoNowProductCardView
+import com.tokopedia.productcard_compact.productcard.presentation.customview.ProductCardCompactView
 import com.tokopedia.productcard_compact.productcard.presentation.customview.ProductCardCompactQuantityEditorView
 import com.tokopedia.productcard_compact.productcard.presentation.customview.ProductCardCompactWishlistButtonView
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -58,7 +58,7 @@ internal object ViewMatchersUtil {
         override fun describeTo(description: Description) { /* nothing to do */ }
 
         override fun matchesSafely(item: Typography): Boolean {
-            val maxLines = if (needToChangeMaxLinesName && promoLabelAvailable) TokoNowProductCardView.MAX_LINES_NEEDED_TO_CHANGE else TokoNowProductCardView.DEFAULT_MAX_LINES
+            val maxLines = if (needToChangeMaxLinesName && promoLabelAvailable) ProductCardCompactView.MAX_LINES_NEEDED_TO_CHANGE else ProductCardCompactView.DEFAULT_MAX_LINES
             return isDisplayed().matches(item) && withText(productName).matches(item) && `is`(maxLines).matches(item.maxLines)
         }
     } as Matcher<View?>
