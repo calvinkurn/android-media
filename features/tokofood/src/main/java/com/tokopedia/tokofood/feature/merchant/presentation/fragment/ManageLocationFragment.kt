@@ -35,7 +35,6 @@ import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
@@ -312,8 +311,6 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
     }
 
     private fun navigateToSetPinpoint() {
-        view?.let {
-            MapsAvailabilityHelper.onMapsAvailableState(it) {
                 val locationPass = LocationPass().apply {
                     latitude = TOTO_LATITUDE
                     longitude = TOTO_LONGITUDE
@@ -325,8 +322,7 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
                 }
                 intent.putExtras(bundle)
                 startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
-            }
-        }
+
     }
 
     private fun onResultFromAddAddress(resultCode: Int, data: Intent?) {

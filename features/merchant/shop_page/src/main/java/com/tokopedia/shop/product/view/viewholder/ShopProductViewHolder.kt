@@ -32,7 +32,6 @@ class ShopProductViewHolder(
     private val layoutType: Int,
     private val isShowTripleDot: Boolean
 ) : AbstractViewHolder<ShopProductUiModel>(itemView) {
-    private val totalReview: TextView? = null
     private val viewBinding: ItemShopNewproductSmallGridBinding? by viewBinding()
     private var productCard: ProductCardGridView? = null
 

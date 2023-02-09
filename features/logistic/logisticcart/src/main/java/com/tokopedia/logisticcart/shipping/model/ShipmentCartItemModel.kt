@@ -122,6 +122,9 @@ class ShipmentCartItemModel(
         var validationMetadata: String = "",
         var ratesValidationFlow: Boolean = false,
         var hasSentScheduleDeliveryAnalytics: Boolean = false,
+
+        // Multiple Order Plus Coachmark
+        var coachmarkPlus: CoachmarkPlusData = CoachmarkPlusData(),
 ) : Parcelable {
 
     val isCustomPinpointError: Boolean

@@ -1356,6 +1356,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             shipmentScheduleDeliveryMapData.getDonePublisher().onCompleted();
                                         }
                                     }
+                                    if (logisticDonePublisher != null) {
+                                        logisticDonePublisher.onCompleted();
+                                    }
+                                    if (logisticPromoDonePublisher != null) {
+                                        logisticPromoDonePublisher.onCompleted();
+                                    }
                                 }
 
                                 @Override
@@ -2303,11 +2309,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             );
         } else {
             if (ratesPublisher == null) {
-                logisticDonePublisher = PublishSubject.create();
                 ratesPublisher = PublishSubject.create();
                 compositeSubscription.add(
                         ratesPublisher
                                 .concatMap(shipmentGetCourierHolderData -> {
+                                    logisticDonePublisher = PublishSubject.create();
                                     if (shipmentCartItemModel.getRatesValidationFlow()) {
                                         ratesWithScheduleUseCase.execute(shipmentGetCourierHolderData.getRatesParam(), String.valueOf(shipmentGetCourierHolderData.getShipmentCartItemModel().getFulfillmentId()))
                                                 .map(shippingRecommendationData ->
@@ -2333,7 +2339,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                                 logisticDonePublisher
                                                         ));
                                     }
-
                                     return logisticDonePublisher;
                                 })
                                 .subscribe()
@@ -2827,11 +2832,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     )));
         } else {
             if (ratesPromoPublisher == null) {
-                logisticPromoDonePublisher = PublishSubject.create();
                 ratesPromoPublisher = PublishSubject.create();
                 compositeSubscription.add(
                         ratesPromoPublisher
                                 .concatMap(shipmentGetCourierHolderData -> {
+                                    logisticPromoDonePublisher = PublishSubject.create();
                                     ratesUseCase.execute(shipmentGetCourierHolderData.getRatesParam())
                                             .map(shippingRecommendationData ->
                                                     stateConverter.fillState(shippingRecommendationData, shipmentGetCourierHolderData.getShopShipmentList(),

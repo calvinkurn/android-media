@@ -1,6 +1,7 @@
 package com.tokopedia.privacycenter.di
 
 import android.content.Context
+import android.content.res.Resources
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
@@ -77,5 +78,11 @@ open class PrivacyCenterModule {
     @ActivityScope
     fun provideOneTrustApi(retrofit: Retrofit): OneTrustApi {
         return retrofit.create(OneTrustApi::class.java)
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideResources(@ApplicationContext context: Context): Resources {
+        return context.resources
     }
 }
