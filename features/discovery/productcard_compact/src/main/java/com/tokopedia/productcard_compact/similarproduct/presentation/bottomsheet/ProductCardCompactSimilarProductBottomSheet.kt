@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,7 +21,6 @@ import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.Pro
 import com.tokopedia.productcard_compact.similarproduct.presentation.viewholder.ProductCardCompactSimilarProductViewHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.productcard_compact.R
 import com.tokopedia.productcard_compact.databinding.BottomSheetProductCardCompactSimilarProductBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -55,11 +53,6 @@ class ProductCardCompactSimilarProductBottomSheet : BottomSheetUnify() {
                 productListener = productListener
             )
         )
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
 
     override fun onCreateView(

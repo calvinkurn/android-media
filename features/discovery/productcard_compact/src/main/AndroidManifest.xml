@@ -8,7 +8,7 @@
             android:exported="false"
             android:label="@string/title_tokopedia_now"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Translucent"
+            android:theme="@style/Theme.AppCompat.Transparent"
             android:windowSoftInputMode="adjustResize" />
     </application>
 
