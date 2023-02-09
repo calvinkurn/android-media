@@ -27,6 +27,7 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
@@ -142,6 +143,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             setInvisible(btnReloadShipping)
             setInvisible(iconReloadShipping)
             setInvisible(tickerShippingPromo)
+            loaderShipping.type = LoaderUnify.TYPE_RECT
             loaderShipping.visible()
         }
     }

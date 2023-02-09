@@ -11,9 +11,11 @@ import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.topads.common.data.model.ticker.TickerInfo
 import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
@@ -37,6 +39,7 @@ import com.tokopedia.topads.dashboard.view.sheet.SummaryInformationBottomSheet
 import com.tokopedia.topads.dashboard.viewmodel.TopAdsDashboardViewModel
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_topads_dashboard_beranda_base.*
@@ -337,18 +340,29 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
         topAdsDashboardViewModel.tickerLiveData.observe(viewLifecycleOwner) {
             if(it.status.errorCode == 0){
-                tickerTopAds.show()
-                tickerTopAds.setHtmlDescription(it.data.tickerInfo.tickerMessage)
-                tickerTopAds.tickerType = when (it.data.tickerInfo.tickerType) {
-                    TYPE_ERROR -> Ticker.TYPE_ERROR
-                    TYPE_INFO -> Ticker.TYPE_ANNOUNCEMENT
-                    TYPE_WARNING -> Ticker.TYPE_WARNING
-                    else -> Ticker.TYPE_ANNOUNCEMENT
-                }
+                showTickerTopads(it.data.tickerInfo)
             } else {
                 tickerTopAds.hide()
             }
         }
+    }
+
+    private fun showTickerTopads(tickerInfo: TickerInfo) {
+        tickerTopAds.show()
+        tickerTopAds.setHtmlDescription(tickerInfo.tickerMessage)
+        tickerTopAds.tickerType = when (tickerInfo.tickerType) {
+            TYPE_ERROR -> Ticker.TYPE_ERROR
+            TYPE_INFO -> Ticker.TYPE_ANNOUNCEMENT
+            TYPE_WARNING -> Ticker.TYPE_WARNING
+            else -> Ticker.TYPE_ANNOUNCEMENT
+        }
+        tickerTopAds.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                RouteManager.route(context, linkUrl.toString())
+            }
+
+            override fun onDismiss() {}
+        })
     }
 
     private fun setRecommendationProdukBerpostensi(item: RecommendationStatistics.Statistics.Data.ProductRecommendationStats) {
