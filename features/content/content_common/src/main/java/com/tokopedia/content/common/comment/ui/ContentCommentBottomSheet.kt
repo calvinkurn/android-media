@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.content.common.databinding.FragmentContentCommentBottomSheetBinding
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlin.math.roundToInt
 
 /**
  * @author by astidhiyaa on 09/02/23
@@ -15,6 +18,10 @@ class ContentCommentBottomSheet : BottomSheetUnify() {
     private val binding: FragmentContentCommentBottomSheetBinding
         get() = _binding!!
 
+    private val newHeight by lazyThreadSafetyNone {
+        (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -22,18 +29,25 @@ class ContentCommentBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupBottomSheet() {
-        _binding = FragmentContentCommentBottomSheetBinding.inflate(LayoutInflater.from(requireContext()))
+        _binding =
+            FragmentContentCommentBottomSheetBinding.inflate(LayoutInflater.from(requireContext()))
         setChild(binding.root)
 
         clearContentPadding = true
         isDragable = false
         showKnob = false
-        isFullpage = true
+        showHeader = false
     }
 
     fun show(fragmentManager: FragmentManager) {
-        if (!isVisible) return
-        show(fragmentManager, TAG)
+        if (isAdded) return
+        showNow(fragmentManager, TAG)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        binding.root.layoutParams.height = newHeight
     }
 
     override fun onDestroyView() {
@@ -43,6 +57,8 @@ class ContentCommentBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val TAG = "ContentCommentBottomSheet"
+
+        private const val HEIGHT_PERCENT = 0.8
 
         fun getOrCreate(
             fragmentManager: FragmentManager,
