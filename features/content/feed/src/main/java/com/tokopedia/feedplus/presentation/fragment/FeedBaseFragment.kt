@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -13,16 +14,31 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapter
+import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
+import javax.inject.Inject
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
  */
 class FeedBaseFragment : BaseDaggerFragment() {
-
     private var binding: FragmentFeedBaseBinding? = null
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private lateinit var feedMainViewModel: FeedMainViewModel
 
     private var adapter: FeedAdapter? = null
     private var linearLayoutManager: LinearLayoutManager? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        activity?.run {
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
+            feedMainViewModel = viewModelProvider[FeedMainViewModel::class.java]
+            feedMainViewModel.fetchFeedTabs()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,16 +70,16 @@ class FeedBaseFragment : BaseDaggerFragment() {
             it.rvFeedTabItemsContainer.adapter = adapter
 
             it.rvFeedTabItemsContainer.addOnScrollListener(object :
-                RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        linearLayoutManager?.let { lm ->
-                            val position = lm.findFirstVisibleItemPosition()
-                            onChangeTab(position)
+                    RecyclerView.OnScrollListener() {
+                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                            linearLayoutManager?.let { lm ->
+                                val position = lm.findFirstVisibleItemPosition()
+                                onChangeTab(position)
+                            }
                         }
                     }
-                }
-            })
+                })
 
             it.tyFeedForYouTab.setOnClickListener { _ ->
                 it.rvFeedTabItemsContainer.smoothScrollToPosition(TAB_FOR_YOU_INDEX)
