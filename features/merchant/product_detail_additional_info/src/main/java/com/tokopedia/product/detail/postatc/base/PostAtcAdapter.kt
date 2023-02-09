@@ -21,15 +21,22 @@ class PostAtcAdapter(
 
     fun updateRecommendation(uniqueId: Int, widget: RecommendationWidget) {
         val items = getItems()
-        items.firstOrNull { it.id == uniqueId }?.apply {
-            (this as RecommendationUiModel).widget = widget
-            notifyDataSetChanged()
+        val findIndex = items.indexOfFirst { it.id == uniqueId }
+        if (findIndex > -1) {
+            items.get(findIndex).apply {
+                (this as RecommendationUiModel).widget = widget
+                notifyItemChanged(findIndex)
+            }
         }
     }
 
     fun removeComponent(uniqueId: Int) {
-        getItems().firstOrNull { it.id == uniqueId }?.let {
-            removeItem(it)
+        val items = getItems()
+        val findIndex = items.indexOfFirst { it.id == uniqueId }
+        if (findIndex > -1) {
+            removeItemAt(findIndex)
+            notifyItemRemoved(findIndex)
         }
     }
 }
+

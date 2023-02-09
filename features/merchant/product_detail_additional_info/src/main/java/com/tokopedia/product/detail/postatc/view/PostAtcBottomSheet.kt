@@ -138,16 +138,18 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
          * Init Loading
          */
         adapter.addItem(LoadingUiModel())
-        adapter.notifyDataSetChanged()
+        adapter.notifyItemInserted(adapter.lastIndex)
 
         viewModel.fetchLayout(productId, cartId, layoutId, pageSource)
     }
 
     private val layoutsObserver = Observer<Result<List<PostAtcUiModel>>> { result ->
         result.doSuccessOrFail(success = {
-            adapter.clearAllItems()
-            adapter.addItems(it.data)
-            adapter.notifyDataSetChanged()
+            binding.postAtcRv.post {
+                adapter.clearAllItems()
+                adapter.addItems(it.data)
+                adapter.notifyItemRangeChanged(0, it.data.size)
+            }
         }, fail = {
             showError(it)
         })
@@ -158,7 +160,9 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         val uiModelId = result.first
         result.second.doSuccessOrFail(success = {
             val data = it.data
-            adapter.updateRecommendation(uiModelId, data)
+            binding.postAtcRv.post {
+                adapter.updateRecommendation(uiModelId, data)
+            }
         }, fail = {
             adapter.removeComponent(uiModelId)
         })
@@ -174,7 +178,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
         adapter.clearAllItems()
         adapter.addItem(ErrorUiModel(errorType = errorType))
-        adapter.notifyDataSetChanged()
+        adapter.notifyItemInserted(adapter.lastIndex)
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -198,8 +202,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
      * Listener Area - Start
      */
 
-    override fun goToAppLink(applink: String) {
-        RouteManager.route(context, applink)
+    override fun goToAppLink(appLink: String) {
+        RouteManager.route(context, appLink)
     }
 
     override fun goToProduct(productId: String) {
@@ -222,7 +226,9 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
     }
 
     override fun impressComponent(componentTrackData: ComponentTrackData) {
-
+        /**
+         * Currently No OP, will needed in future
+         */
     }
 
     override fun onClickLihatKeranjang(
@@ -237,16 +243,13 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         goToCart(cartId)
     }
 
-    override fun removeComponent(uniqueId: Int) {
+    override fun removeComponent(position: Int) {
         binding.postAtcRv.post {
-            adapter.removeComponent(uniqueId)
-            adapter.notifyDataSetChanged()
+            adapter.removeComponent(position)
         }
     }
 
     /**
      * Listener Area - End
      */
-
-
 }
