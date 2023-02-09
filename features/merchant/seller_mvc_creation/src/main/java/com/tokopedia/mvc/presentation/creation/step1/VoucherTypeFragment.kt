@@ -18,6 +18,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentCreationVoucherTypeBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
+import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneAction
@@ -36,7 +37,8 @@ class VoucherTypeFragment : BaseDaggerFragment() {
     companion object {
         fun newInstance(
             pageMode: PageMode,
-            voucherConfiguration: VoucherConfiguration
+            voucherConfiguration: VoucherConfiguration,
+            selectedProducts: List<SelectedProduct>
         ): VoucherTypeFragment {
             return VoucherTypeFragment().apply {
                 arguments = Bundle().apply {
@@ -44,6 +46,9 @@ class VoucherTypeFragment : BaseDaggerFragment() {
                     putParcelable(
                         BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION,
                         voucherConfiguration
+                    )
+                    putParcelableArrayList(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS,
+                        ArrayList(selectedProducts)
                     )
                 }
             }
@@ -71,6 +76,8 @@ class VoucherTypeFragment : BaseDaggerFragment() {
         arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration
             ?: VoucherConfiguration()
     }
+    private val selectedProducts by lazy {
+        arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty() }
 
     // tracker
     @Inject
@@ -318,7 +325,8 @@ class VoucherTypeFragment : BaseDaggerFragment() {
         context?.let { ctx ->
             SummaryActivity.start(
                 ctx,
-                currentVoucherConfiguration
+                currentVoucherConfiguration,
+                selectedProducts
             )
         }
     }

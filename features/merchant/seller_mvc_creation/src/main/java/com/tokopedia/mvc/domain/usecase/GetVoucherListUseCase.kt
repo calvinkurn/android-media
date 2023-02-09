@@ -35,6 +35,7 @@ class GetVoucherListUseCase @Inject constructor(
                       }
                       vouchers {
                         voucher_id
+                        parent_voucher_id
                         voucher_name
                         voucher_type
                         voucher_type_formatted

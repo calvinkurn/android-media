@@ -525,7 +525,7 @@ class MvcListFragment :
     }
 
     override fun onVoucherListMultiPeriodClicked(voucher: Voucher) {
-        viewModel.getVoucherListChild(voucher.id)
+        viewModel.getVoucherListChild(voucher.id, voucher.parentId)
     }
 
     override fun onVoucherListClicked(voucher: Voucher) {
