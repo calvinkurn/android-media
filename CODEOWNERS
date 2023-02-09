@@ -384,7 +384,7 @@
 /libraries/macrobenchmark/								@tokopedia/android-core-dev
 /libraries/universal_sharing/							@tokopedia/android-core-dev
 /libraries/sse/                                         @tokopedia/android-core-dev @tokopedia/android-minionlance-dev
-/libraries/data_explorer/                               @tokopedia/android-minionmark-dev
+/libraries/data_explorer/                               @tokopedia/android-core-dev
 
 /config/detekt/                                         @tokopedia/android-gatekeeper-linter
 /buildconfig/                                           @tokopedia/android-core-dev
