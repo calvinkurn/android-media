@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
-import com.tokopedia.feedplus.presentation.model.DummyModel
 import com.tokopedia.feedplus.presentation.model.FeedTabType
 
 /**
@@ -65,15 +64,15 @@ class FeedFragment : BaseDaggerFragment() {
             it.rvFeedPost.layoutManager = layoutManager
             it.rvFeedPost.adapter = adapter
 
-            adapter?.addElement(
-                listOf(
-                    DummyModel("Post 1 - ${feedType.value}"),
-                    DummyModel("Post 2 - ${feedType.value}"),
-                    DummyModel("Post 3 - ${feedType.value}"),
-                    DummyModel("Post 4 - ${feedType.value}"),
-                    DummyModel("Post 5 - ${feedType.value}"),
-                )
-            )
+//            adapter?.addElement(
+//                listOf(
+//                    DummyModel("Post 1 - ${feedType.value}"),
+//                    DummyModel("Post 2 - ${feedType.value}"),
+//                    DummyModel("Post 3 - ${feedType.value}"),
+//                    DummyModel("Post 4 - ${feedType.value}"),
+//                    DummyModel("Post 5 - ${feedType.value}"),
+//                )
+//            )
         }
     }
 

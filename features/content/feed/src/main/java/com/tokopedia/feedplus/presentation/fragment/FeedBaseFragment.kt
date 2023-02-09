@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
+import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapter
 
 /**
@@ -38,7 +39,7 @@ class FeedBaseFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-//        TODO("Not yet implemented")
+        FeedMainInjector.get(requireContext()).inject(this)
     }
 
     override fun getScreenName(): String = "Feed Fragment"
