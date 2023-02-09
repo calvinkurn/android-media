@@ -1088,6 +1088,38 @@ class ChatbotPresenterTest {
     }
 
     @Test
+    fun `handleAttachment When receiving attachment type 22`() {
+        val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_22)
+
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.NewMessage(
+                SocketResponse.getResponse(SocketResponse.ATTACHMENT_22)
+            )
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        presenter.handleAttachmentTypes(fullResponse, "4058088")
+
+        assertNotNull(socketJob)
+    }
+
+    @Test
+    fun `handleAttachment When receiving attachment type 23`() {
+        val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_23)
+
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.NewMessage(
+                SocketResponse.getResponse(SocketResponse.ATTACHMENT_23)
+            )
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        presenter.handleAttachmentTypes(fullResponse, "4058088")
+
+        assertNotNull(socketJob)
+    }
+
+    @Test
     fun `destroyWebSocket success`() {
         every {
             chatbotWebSocket.close()

@@ -1,8 +1,8 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation
 
-import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.response.Data
+import com.tokopedia.logisticaddaddress.domain.model.Address
 
 interface DiscomContract {
 
@@ -21,6 +21,8 @@ interface DiscomContract {
         fun loadData(query: String, page: Int)
         fun loadData(query: String, page: Int, token: Token)
         fun autoFill(lat: Double, long: Double)
+        fun setLocationAvailability(available: Boolean)
+        fun getLocationAvailability(): Boolean
     }
 
     interface Constant {
