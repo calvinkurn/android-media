@@ -334,9 +334,10 @@ fun NewOrderDetailFooter(
     NewOrderDetailSpacer(
         height = NEST_SPACING_LVL2
     )
-    NewOrderDetailActionButton(
-        text = stringResource(id = R.string.new_order_detail_open_on_cellphone)
-    )
+    //Next feature
+//    NewOrderDetailActionButton(
+//        text = stringResource(id = R.string.new_order_detail_open_on_cellphone)
+//    )
     NewOrderDetailSpacer(
         height = DP_18
     )
