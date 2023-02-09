@@ -842,7 +842,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             // Is normal shipping
             shippingWidget.renderNormalShippingCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
         }
-        showMultiplePlusOrderCoachmark(shipmentCartItemModel, shippingWidget);
+        showMultiplePlusOrderCoachmark(shipmentCartItemModel, shippingWidget.getContainerShippingExperience());
     }
 
     @Override
@@ -1037,7 +1037,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 }
             } else {
                 renderNoSelectedCourier(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, saveStateType);
-                showMultiplePlusOrderCoachmark(shipmentCartItemModel, shippingWidget);
+                showMultiplePlusOrderCoachmark(shipmentCartItemModel, shippingWidget.getLayoutStateNoSelectedShipping());
             }
         }
     }

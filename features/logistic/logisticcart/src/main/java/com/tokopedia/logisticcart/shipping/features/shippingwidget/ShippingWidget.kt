@@ -8,6 +8,7 @@ import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.animation.CycleInterpolator
+import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -42,6 +43,12 @@ class ShippingWidget : ConstraintLayout {
 
     private var binding: ItemShipmentShippingExperienceBinding? = null
     private var mListener: ShippingWidgetListener? = null
+
+    val layoutStateNoSelectedShipping: ConstraintLayout?
+        get() = binding?.layoutStateNoSelectedShipping
+
+    val containerShippingExperience: FrameLayout?
+        get() = binding?.containerShippingExperience
 
     init {
         binding =
@@ -102,6 +109,7 @@ class ShippingWidget : ConstraintLayout {
                         override fun onAnimationStart(animator: Animator) {
                             // no op
                         }
+
                         override fun onAnimationEnd(animator: Animator) {
                             shipmentCartItemModel.isTriggerShippingVibrationAnimation = false
                         }
@@ -109,6 +117,7 @@ class ShippingWidget : ConstraintLayout {
                         override fun onAnimationCancel(animator: Animator) {
                             // no op
                         }
+
                         override fun onAnimationRepeat(animator: Animator) {
                             // no op
                         }
