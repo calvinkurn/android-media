@@ -55,7 +55,7 @@ object RechargeRecommendationTracking : BaseTracking() {
     }
 
     private fun mapToPromotionTracker(model: RechargeRecommendationData): Promotion {
-        val productName = model.applink
+        val productName = model.iconURL
         return Promotion(
                 id = model.contentID,
                 creative = model.iconURL,
@@ -73,6 +73,6 @@ object RechargeRecommendationTracking : BaseTracking() {
 
     private fun getLabel(url: String, iconUrl: String): String {
         val ids = getIdsMap(url)
-        return String.format(LABEL_FORMAT, ids.first, ids.second, iconUrl)
+        return LABEL_FORMAT.format(ids.first, ids.second, iconUrl)
     }
 }
