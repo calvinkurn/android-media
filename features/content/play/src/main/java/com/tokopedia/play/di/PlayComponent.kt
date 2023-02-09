@@ -1,6 +1,7 @@
 package com.tokopedia.play.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.content.common.comment.di.ContentCommentModule
 import com.tokopedia.play.di.module.PlayRepositoryModule
 import com.tokopedia.play.view.activity.PlayActivity
 import dagger.Component
@@ -16,6 +17,7 @@ import dagger.Component
             PlayViewerFragmentModule::class,
             PlayBindModule::class,
             PlayRepositoryModule::class,
+            ContentCommentModule::class,
         ],
         dependencies = [BaseAppComponent::class]
 )

@@ -1,9 +1,10 @@
 package com.tokopedia.content.common.comment.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.comment.CommentUiModelMapper
 import com.tokopedia.content.common.comment.PageSource
-import com.tokopedia.content.common.comment.model.Comments
 import com.tokopedia.content.common.comment.model.PostComment
+import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
 import com.tokopedia.content.common.comment.usecase.DeleteCommentUseCase
 import com.tokopedia.content.common.comment.usecase.GetCommentsUseCase
 import com.tokopedia.content.common.comment.usecase.PostCommentUseCase
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class ContentCommentRepositoryImpl @Inject constructor(
     private val userSession: UserSession,
     private val dispatchers: CoroutineDispatchers,
+    private val mapper: CommentUiModelMapper,
     private val deleteCommentUseCase: DeleteCommentUseCase,
     private val postCommentUseCase: PostCommentUseCase,
     private val submitReportCommentUseCase: SubmitReportCommentUseCase,
@@ -70,12 +72,11 @@ class ContentCommentRepositoryImpl @Inject constructor(
         return@withContext response
     }
 
-    //temp -> map to ui model
-    override suspend fun getComments(source: PageSource, cursor: String): Comments =
+    override suspend fun getComments(source: PageSource, cursor: String): CommentWidgetUiModel =
         withContext(dispatchers.io) {
             val response = getCommentsUseCase.apply {
                 setRequestParams(GetCommentsUseCase.setParam(source, cursor))
             }.executeOnBackground()
-            return@withContext response
+            return@withContext mapper.mapComments(response)
         }
 }

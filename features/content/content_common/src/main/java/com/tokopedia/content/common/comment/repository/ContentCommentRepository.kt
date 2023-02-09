@@ -1,8 +1,8 @@
 package com.tokopedia.content.common.comment.repository
 
 import com.tokopedia.content.common.comment.PageSource
-import com.tokopedia.content.common.comment.model.Comments
 import com.tokopedia.content.common.comment.model.PostComment
+import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
 import com.tokopedia.content.common.comment.usecase.PostCommentUseCase
 
 /**
@@ -27,5 +27,5 @@ interface ContentCommentRepository {
     suspend fun getComments(
         source: PageSource,
         cursor: String,
-    ): Comments //temp -> map to ui model
+    ): CommentWidgetUiModel
 }

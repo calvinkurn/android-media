@@ -4,17 +4,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.content.common.databinding.FragmentContentCommentBottomSheetBinding
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlin.math.roundToInt
 import com.tokopedia.content.common.R
+import com.tokopedia.content.common.comment.ContentCommentViewModel
+import javax.inject.Inject
 
 /**
  * @author by astidhiyaa on 09/02/23
  */
-class ContentCommentBottomSheet : BottomSheetUnify() {
+class ContentCommentBottomSheet @Inject constructor(
+    private val viewModelFactory: ViewModelProvider.Factory,
+    ) : BottomSheetUnify() {
 
     private var _binding: FragmentContentCommentBottomSheetBinding? = null
     private val binding: FragmentContentCommentBottomSheetBinding
@@ -23,6 +29,8 @@ class ContentCommentBottomSheet : BottomSheetUnify() {
     private val newHeight by lazyThreadSafetyNone {
         (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
     }
+
+    private val viewModel by activityViewModels<ContentCommentViewModel> { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
