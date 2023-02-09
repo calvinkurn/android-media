@@ -93,7 +93,7 @@ class InboxContactUsViewModelTest {
         )
         viewModel.markOptionsFilterWithSelected(optionsSelected)
         val optionsState = viewModel.uiState.value
-        assertEquals(0, optionsState.offset)
+        assertEquals(1, optionsState.offset)
         assertEquals(0, optionsState.ticketItems.size)
         assertEquals(true, optionsState.isFilteredData)
     }
@@ -350,7 +350,7 @@ class InboxContactUsViewModelTest {
     fun `check restart paging`() {
         viewModel.restartPageOfList()
         val stateData = viewModel.uiState.value
-        assertEquals(stateData.offset, 0)
+        assertEquals(stateData.offset, 1)
     }
 
     private fun createTopBotResponse(
