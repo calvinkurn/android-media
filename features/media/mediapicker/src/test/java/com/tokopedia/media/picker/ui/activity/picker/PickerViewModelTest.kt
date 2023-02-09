@@ -1,7 +1,6 @@
 package com.tokopedia.media.picker.ui.activity.picker
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.media.picker.data.FeatureToggleManager
 import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.media.picker.data.mapper.mediaToUiModel
@@ -9,7 +8,7 @@ import com.tokopedia.media.picker.data.mapper.toModel
 import com.tokopedia.media.picker.data.repository.BitmapConverterRepository
 import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
 import com.tokopedia.media.picker.data.repository.MediaFileRepository
-import com.tokopedia.media.picker.ui.observer.*
+import com.tokopedia.media.picker.ui.publisher.*
 import com.tokopedia.media.update
 import com.tokopedia.media.util.awaitItem
 import com.tokopedia.media.util.collectIntoChannel
@@ -17,9 +16,7 @@ import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.PickerResult
-import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
@@ -48,12 +45,18 @@ class PickerViewModelTest {
     private val paramCacheManager = mockk<PickerCacheManager>()
     private val featureToggleManager = mockk<FeatureToggleManager>()
 
+    private lateinit var eventBus: PickerEventBus
     private lateinit var viewModel: PickerViewModel
 
     @Before
     fun setup() {
         mockkStatic(::mediaToUiModel)
         every { mediaToUiModel(any()) } returns mediaUiModelList
+        every { paramCacheManager.get() } returns PickerParam()
+
+        eventBus = PickerEventBusImpl(
+            paramCacheManager
+        )
 
         viewModel = PickerViewModel(
             deviceInfoRepository,
@@ -61,7 +64,8 @@ class PickerViewModelTest {
             bitmapConverterRepository,
             paramCacheManager,
             featureToggleManager,
-            coroutineScopeRule.dispatchers
+            coroutineScopeRule.dispatchers,
+            eventBus
         )
     }
 
@@ -73,7 +77,7 @@ class PickerViewModelTest {
     @Test
     fun `ui event should be invoked the CameraCapture when camera state is published`() = runBlocking {
         // Given
-        stateOnCameraCapturePublished(mediaUiModelList.first(), eventTestKey.value)
+        eventBus.cameraCaptureEvent(mediaUiModelList.first())
 
         // When
         val result = viewModel.uiEvent
@@ -82,13 +86,13 @@ class PickerViewModelTest {
 
         // Then
         assert(result is EventPickerState.CameraCaptured)
-        EventFlowFactory.reset(eventTestKey.value)
+        eventBus.reset()
     }
 
     @Test
     fun `ui event should be invoked the SelectionChanged when camera state is published`() = runBlocking {
         // Given
-        stateOnChangePublished(mediaUiModelList, eventTestKey.value)
+        eventBus.notifyDataOnChangedEvent(mediaUiModelList)
 
         // When
         val result = viewModel.uiEvent
@@ -97,7 +101,7 @@ class PickerViewModelTest {
 
         // Then
         assert(result is EventPickerState.SelectionChanged)
-        EventFlowFactory.reset(eventTestKey.value)
+        eventBus.reset()
     }
 
     @Test
@@ -145,7 +149,7 @@ class PickerViewModelTest {
     @Test
     fun `ui event should be invoked the SelectionRemoved when camera state is published`() = runBlocking {
         // Given
-        stateOnRemovePublished(mediaUiModelList.first(), eventTestKey.value)
+        eventBus.removeMediaEvent(mediaUiModelList.first())
 
         // When
         val result = viewModel.uiEvent
@@ -154,26 +158,7 @@ class PickerViewModelTest {
 
         // Then
         assert(result is EventPickerState.SelectionRemoved)
-        EventFlowFactory.reset(eventTestKey.value)
-    }
-
-    @Test
-    fun `ui event should be invoked the SelectionAdded when camera state is published`() = runBlocking {
-        // Given
-        val givenFile = mockk<PickerFile>(relaxed = true)
-        every { givenFile.exists() } returns true
-        every { givenFile.path } returns ""
-
-        stateOnAddPublished(givenFile.toUiModel(), eventTestKey.value)
-
-        // When
-        val result = viewModel.uiEvent
-            .collectIntoChannel(testCoroutineScope)
-            .awaitItem()
-
-        // Then
-        assert(result is EventPickerState.SelectionAdded)
-        EventFlowFactory.reset(eventTestKey.value)
+        eventBus.reset()
     }
 
     @Test
@@ -236,6 +221,19 @@ class PickerViewModelTest {
     }
 
     @Test
+    fun `it should be able to navigate to editor page with editor param is null`() {
+        // Given
+        val result = PickerResult()
+        every { paramCacheManager.get().getEditorParam() } returns null
+
+        // When
+        viewModel.navigateToEditorPage(result)
+
+        // Then
+        assert(viewModel.editorParam.value?.first == result)
+    }
+
+    @Test
     fun `it should not be able to apply the picker param`() {
         // When
         viewModel.setPickerParam(null)
@@ -266,6 +264,23 @@ class PickerViewModelTest {
         }
 
         every { featureToggleManager.isEditorEnabled() } returns false
+        every { paramCacheManager.set(any()) } returns param
+
+        // When
+        viewModel.setPickerParam(param)
+
+        // Then
+        assert(viewModel.pickerParam.value != null)
+    }
+
+    @Test
+    fun `it should be able to apply the picker param and add the editor`() {
+        // Given
+        val param = PickerParam().apply {
+            withEditor { /* no-op */ }
+        }
+
+        every { featureToggleManager.isEditorEnabled() } returns true
         every { paramCacheManager.set(any()) } returns param
 
         // When

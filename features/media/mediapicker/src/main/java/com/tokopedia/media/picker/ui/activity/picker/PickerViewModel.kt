@@ -7,19 +7,17 @@ import com.tokopedia.media.picker.data.mapper.mediaToUiModel
 import com.tokopedia.media.picker.data.repository.BitmapConverterRepository
 import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
 import com.tokopedia.media.picker.data.repository.MediaFileRepository
-import com.tokopedia.media.picker.utils.generateKey
+import com.tokopedia.media.picker.ui.publisher.PickerEventBus
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.cache.PickerCacheManager
-import com.tokopedia.picker.common.observer.EventFlowFactory
-import com.tokopedia.picker.common.observer.EventState
+import com.tokopedia.media.picker.ui.publisher.EventState
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.utils.isUrl
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 class PickerViewModel @Inject constructor(
@@ -28,7 +26,8 @@ class PickerViewModel @Inject constructor(
     private val bitmapConverter: BitmapConverterRepository,
     private val param: PickerCacheManager,
     private val featureToggle: FeatureToggleManager,
-    private val dispatchers: CoroutineDispatchers
+    private val dispatchers: CoroutineDispatchers,
+    private val eventBus: PickerEventBus
 ) : ViewModel() {
 
     private var _medias = MutableLiveData<List<MediaUiModel>>()
@@ -51,8 +50,8 @@ class PickerViewModel @Inject constructor(
 
     val uiEvent: Flow<EventState>
         get() {
-            return EventFlowFactory
-                .subscriber(viewModelScope, pickerParam.value?.generateKey() ?: "")
+            return eventBus
+                .subscriber(viewModelScope)
                 .flowOn(dispatchers.computation)
         }
 

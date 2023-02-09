@@ -30,13 +30,11 @@ import com.tokopedia.media.picker.ui.adapter.decoration.GridItemDecoration
 import com.tokopedia.media.picker.ui.adapter.viewholder.MediaGalleryViewHolder
 import com.tokopedia.media.picker.ui.component.AlbumSelectorUiComponent
 import com.tokopedia.media.picker.ui.component.MediaDrawerUiComponent
-import com.tokopedia.media.picker.ui.observer.observe
-import com.tokopedia.media.picker.ui.observer.stateOnAddPublished
-import com.tokopedia.media.picker.ui.observer.stateOnRemovePublished
+import com.tokopedia.media.picker.ui.publisher.PickerEventBus
+import com.tokopedia.media.picker.ui.publisher.observe
 import com.tokopedia.media.picker.utils.exceptionHandler
 import com.tokopedia.media.picker.utils.parcelable
 import com.tokopedia.picker.common.basecomponent.uiComponent
-import com.tokopedia.media.picker.utils.generateKey
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
@@ -45,6 +43,7 @@ open class GalleryFragment @Inject constructor(
     private var viewModelFactory: ViewModelProvider.Factory,
     private var param: PickerCacheManager,
     private var galleryAnalytics: GalleryAnalytics,
+    private val eventBus: PickerEventBus
 ) : BaseDaggerFragment(),
     MediaGalleryViewHolder.Listener,
     AlbumSelectorUiComponent.Listener {
@@ -64,7 +63,8 @@ open class GalleryFragment @Inject constructor(
         MediaDrawerUiComponent(
             parent = it,
             param = param,
-            analytics = galleryAnalytics
+            eventBus = eventBus,
+            analytics = galleryAnalytics,
         )
     }
 
@@ -157,10 +157,10 @@ open class GalleryFragment @Inject constructor(
             featureAdapter.addSelected(data, position)
 
             if (!isSelected) {
-                stateOnAddPublished(data, param.get().generateKey())
+                eventBus.addMediaEvent(data)
                 galleryAnalytics.selectGalleryItem()
             } else {
-                stateOnRemovePublished(data, param.get().generateKey())
+                eventBus.removeMediaEvent(data)
             }
         }
     }

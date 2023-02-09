@@ -28,11 +28,10 @@ import com.tokopedia.media.picker.ui.activity.picker.PickerActivityContract
 import com.tokopedia.media.picker.ui.activity.picker.PickerViewModel
 import com.tokopedia.media.picker.ui.component.CameraControllerComponent
 import com.tokopedia.media.picker.ui.component.CameraViewUiComponent
-import com.tokopedia.media.picker.ui.observer.observe
-import com.tokopedia.media.picker.ui.observer.stateOnCameraCapturePublished
+import com.tokopedia.media.picker.ui.publisher.PickerEventBus
+import com.tokopedia.media.picker.ui.publisher.observe
 import com.tokopedia.media.picker.ui.widget.LoaderDialogWidget
 import com.tokopedia.media.picker.utils.exceptionHandler
-import com.tokopedia.media.picker.utils.generateKey
 import com.tokopedia.media.picker.utils.wrapper.FlingGestureWrapper
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.uimodel.MediaUiModel
@@ -47,6 +46,7 @@ open class CameraFragment @Inject constructor(
     private var viewModelFactory: ViewModelProvider.Factory,
     private var param: PickerCacheManager,
     private var cameraAnalytics: CameraAnalytics,
+    private val eventBus: PickerEventBus
 ) : BaseDaggerFragment()
     , CameraControllerComponent.Listener
     , CameraViewUiComponent.Listener {
@@ -320,7 +320,7 @@ open class CameraFragment @Inject constructor(
 
     private fun onShowMediaThumbnail(element: MediaUiModel?) {
         if (element == null) return
-        stateOnCameraCapturePublished(element, param.get().generateKey())
+        eventBus.cameraCaptureEvent(element)
     }
 
     private fun setCameraFlashState() {

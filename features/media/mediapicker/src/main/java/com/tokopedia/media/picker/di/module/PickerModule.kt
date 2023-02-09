@@ -6,11 +6,17 @@ import com.tokopedia.media.picker.data.FeatureToggleManagerImpl
 import com.tokopedia.media.picker.data.MediaQueryDataSource
 import com.tokopedia.media.picker.data.MediaQueryDataSourceImpl
 import com.tokopedia.media.picker.data.repository.*
+import com.tokopedia.media.picker.ui.publisher.PickerEventBus
+import com.tokopedia.media.picker.ui.publisher.PickerEventBusImpl
 import dagger.Binds
 import dagger.Module
 
 @Module
 abstract class PickerModule {
+
+    @Binds
+    @ActivityScope
+    abstract fun providePickerEventBus(source: PickerEventBusImpl) : PickerEventBus
 
     @Binds
     @ActivityScope
