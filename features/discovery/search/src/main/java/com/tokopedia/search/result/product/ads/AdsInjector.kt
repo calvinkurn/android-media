@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.presenter.product
+package com.tokopedia.search.result.product.ads
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.filter.common.helper.isPostProcessingFilter

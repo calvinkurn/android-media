@@ -19,7 +19,6 @@ import javax.inject.Inject
 class BroadMatchPresenterDelegate @Inject constructor(
     private val broadMatchView: BroadMatchView,
     private val dynamicProductView: InspirationCarouselDynamicProductView,
-    private val viewUpdater: ViewUpdater,
     private val topAdsUrlHitter: TopAdsUrlHitter,
     private val classNameProvider: ClassNameProvider,
     private val applinkModifier: ApplinkModifier,
@@ -48,10 +47,10 @@ class BroadMatchPresenterDelegate @Inject constructor(
 
     private fun hasBroadMatch() = relatedDataView?.broadMatchDataViewList?.isNotEmpty() == true
 
-    fun showBroadMatchReplaceEmptySearch() {
-        viewUpdater.removeLoading()
-        viewUpdater.setItems(createBroadMatchToVisitableList())
-        viewUpdater.backToTop()
+    fun processBroadMatchReplaceEmptySearch(
+        action: (List<Visitable<*>>) -> Unit
+    ) {
+        action(createBroadMatchToVisitableList())
     }
 
     private fun createBroadMatchToVisitableList(): List<Visitable<*>> {
@@ -70,9 +69,12 @@ class BroadMatchPresenterDelegate @Inject constructor(
         }
     }
 
-    fun appendBroadMatchInEmptyLocalSearch(responseCode: String) {
+    fun processBroadMatchInEmptyLocalSearch(
+        responseCode: String,
+        action: (List<Visitable<*>>) -> Unit,
+    ) {
         if (isShowBroadMatchWithEmptyLocalSearch(responseCode)) {
-            viewUpdater.appendItems(createBroadMatchToVisitableList())
+            action(createBroadMatchToVisitableList())
         }
     }
 
