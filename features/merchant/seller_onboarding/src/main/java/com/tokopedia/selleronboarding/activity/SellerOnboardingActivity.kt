@@ -24,6 +24,7 @@ import com.tokopedia.selleronboarding.adapter.SobAdapter
 import com.tokopedia.selleronboarding.analytic.SellerOnboardingV2Analytic
 import com.tokopedia.selleronboarding.databinding.ActivitySobOnboardingBinding
 import com.tokopedia.selleronboarding.model.*
+import com.tokopedia.selleronboarding.utils.OnboardingConst
 import com.tokopedia.selleronboarding.utils.OnboardingUtils
 import timber.log.Timber
 import kotlin.math.abs
@@ -92,7 +93,9 @@ class SellerOnboardingActivity : BaseActivity() {
 
     private fun setPageBackground() {
         try {
-            binding?.backgroundSob?.setImageResource(R.drawable.bg_sob_thematic_ramadhan)
+            binding?.backgroundSob?.loadImage(OnboardingConst.ImageUrl.BG_THEMATIC_RAMADAN) {
+                setPlaceHolder(R.drawable.bg_sob_thematic_ramadhan)
+            }
         } catch (e: Resources.NotFoundException) {
             Timber.e(e)
         }
