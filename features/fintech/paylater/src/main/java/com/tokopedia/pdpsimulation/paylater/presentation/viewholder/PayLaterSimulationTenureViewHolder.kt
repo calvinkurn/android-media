@@ -90,8 +90,8 @@ class PayLaterSimulationTenureViewHolder(val view: View, val onTenureSelected: (
 
     private fun getLabelColor(label: SimulationUiModel.LabelUiModel): Int {
         return when (label.bgColor) {
-            "red" -> com.tokopedia.unifycomponents.R.color.GeneralLightRedText
-            else -> com.tokopedia.unifycomponents.R.color.GeneralLightRedText
+            "red" -> com.tokopedia.unifycomponents.R.color.Unify_RN500
+            else -> com.tokopedia.unifycomponents.R.color.Unify_RN500
         }
     }
 
