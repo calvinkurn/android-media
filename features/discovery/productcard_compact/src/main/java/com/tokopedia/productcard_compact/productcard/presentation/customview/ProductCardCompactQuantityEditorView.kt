@@ -194,7 +194,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
 
     private fun LayoutProductCardCompactQuantityEditorViewBinding.setupAddBtnLayout() {
         val size = context?.resources?.getDimensionPixelSize(
-            R.dimen.tokopedianow_product_card_add_button_size
+            R.dimen.product_card_compact_product_card_add_button_size
         ).orZero()
 
         val layoutParams = addButton.layoutParams
@@ -296,7 +296,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
 
     private fun LayoutProductCardCompactQuantityEditorViewBinding.collapseAnimation() {
         context.getActivityFromContext()?.runOnUiThread {
-            editText.setDimenAsTextSize(R.dimen.tokopedianow_quantity_editor_text_size_start_with_value)
+            editText.setDimenAsTextSize(R.dimen.product_card_compact_quantity_editor_text_size_start_with_value)
             editText.clearFocus()
             hideKeyboardFrom(context, editText)
             executeTimerAfterTextChanged = false
@@ -315,9 +315,9 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
 
     private fun LayoutProductCardCompactQuantityEditorViewBinding.setEditTextPadding() {
         editText.setPadding(
-            getDpFromDimen(context, R.dimen.tokopedianow_quantity_editor_padding_horizontal).toInt(),
+            getDpFromDimen(context, R.dimen.product_card_compact_quantity_editor_padding_horizontal).toInt(),
             DEFAULT_DP,
-            getDpFromDimen(context, R.dimen.tokopedianow_quantity_editor_padding_horizontal).toInt(),
+            getDpFromDimen(context, R.dimen.product_card_compact_quantity_editor_padding_horizontal).toInt(),
             DEFAULT_DP
         )
     }
@@ -326,7 +326,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         startId: Int,
         endId: Int
     ) {
-        editText.setDimenAsTextSize(R.dimen.tokopedianow_quantity_editor_text_size_end_with_value)
+        editText.setDimenAsTextSize(R.dimen.product_card_compact_quantity_editor_text_size_end_with_value)
         root.setTransition(startId, endId)
         root.transitionToEnd()
         setOnTouchListener(null)
@@ -352,7 +352,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         root.progress = NO_PROGRESS
 
         editText.apply {
-            setDimenAsTextSize(R.dimen.tokopedianow_quantity_editor_text_size_start_with_value)
+            setDimenAsTextSize(R.dimen.product_card_compact_quantity_editor_text_size_start_with_value)
             setText(counter.toString())
             clearFocus()
             setEditTextPadding()

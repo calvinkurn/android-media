@@ -5,7 +5,7 @@
     android:id="@+id/constraintLayout3"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:layoutDescription="@xml/layout_tokopedianow_quantity_editor_custom_view_scene">
+    app:layoutDescription="@xml/layout_product_card_compact_quantity_editor_custom_view_scene">
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/background"

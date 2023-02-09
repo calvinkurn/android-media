@@ -375,30 +375,30 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 ),
                 width = getDpFromDimen(
                     context = context,
-                    id = R.dimen.tokopedianow_product_card_progress_bar_width
+                    id = R.dimen.product_card_compact_product_card_progress_bar_width
                 ).toIntSafely(),
                 height = getDpFromDimen(
                     context = context,
-                    id = R.dimen.tokopedianow_product_card_progress_bar_height
+                    id = R.dimen.product_card_compact_product_card_progress_bar_height
                 ).toIntSafely()
             )
 
             setMargin(
                 getDpFromDimen(
                     context = context,
-                    id = R.dimen.tokopedianow_product_card_progress_bar_margin_start
+                    id = R.dimen.product_card_compact_product_card_progress_bar_margin_start
                 ).toIntSafely(),
                 getDpFromDimen(
                     context = context,
-                    id = R.dimen.tokopedianow_product_card_progress_bar_margin_top
+                    id = R.dimen.product_card_compact_product_card_progress_bar_margin_top
                 ).toIntSafely(),
                 getDpFromDimen(
                     context = context,
-                    id = R.dimen.tokopedianow_product_card_progress_bar_margin_end
+                    id = R.dimen.product_card_compact_product_card_progress_bar_margin_end
                 ).toIntSafely(),
                 getDpFromDimen(
                     context = context,
-                    id = R.dimen.tokopedianow_product_card_progress_bar_margin_bottom
+                    id = R.dimen.product_card_compact_product_card_progress_bar_margin_bottom
                 ).toIntSafely()
             )
         }
@@ -409,12 +409,12 @@ class TokoNowProductCardView @JvmOverloads constructor(
     ) {
         val widthRight = getDpFromDimen(
             context = context,
-            id = R.dimen.tokopedianow_product_card_similar_product_typography_width_right
+            id = R.dimen.product_card_compact_product_card_similar_product_typography_width_right
         ).toIntSafely()
 
         val heightBottom = getDpFromDimen(
             context = context,
-            id = R.dimen.tokopedianow_product_card_similar_product_typography_height_bottom
+            id = R.dimen.product_card_compact_product_card_similar_product_typography_height_bottom
         ).toIntSafely()
 
         drawable?.setBounds(

@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">productcard_compact</string>
-
     <string name="tokopedianow_product_card_similar_product">Pilihan Serupa</string>
     <string name="tokopedianow_product_card_percentage">%d%%</string>
     <string name="tokopedianow_product_card_wishlist_add_success">Barang berhasil disimpan di Wishlist. Kamu akan dapat notifikasi saat stok kembali.</string>

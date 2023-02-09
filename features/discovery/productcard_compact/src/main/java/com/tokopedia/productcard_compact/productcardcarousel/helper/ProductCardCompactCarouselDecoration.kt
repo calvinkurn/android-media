@@ -18,12 +18,12 @@ class ProductCardCompactCarouselDecoration(
     ) {
         val marginEndCorner = getDpFromDimen(
             context = context,
-            R.dimen.tokopedianow_product_card_margin_end_corner
+            R.dimen.product_card_compact_product_card_margin_end_corner
         ).toInt()
 
         val marginEnd = getDpFromDimen(
             context = context,
-            R.dimen.tokopedianow_product_card_margin_end
+            R.dimen.product_card_compact_product_card_margin_end
         ).toInt()
 
         val currentPosition = parent.getChildAdapterPosition(view)
