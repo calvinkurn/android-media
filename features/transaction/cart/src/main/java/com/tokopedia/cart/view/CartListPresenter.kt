@@ -146,10 +146,10 @@ class CartListPresenter @Inject constructor(
     private var hasPerformChecklistChange: Boolean = false
 
     // Store last validate use response from promo page
-    var lastValidateUseResponse: ValidateUsePromoRevampUiModel? = null
+    private var lastValidateUseResponse: ValidateUsePromoRevampUiModel? = null
 
     // Store last validate use response from cart page
-    var lastUpdateCartAndValidateUseResponse: UpdateAndValidateUseData? = null
+    private var lastUpdateCartAndValidateUseResponse: UpdateAndValidateUseData? = null
     var isLastApplyResponseStillValid = true
 
     // Store last validate use request
@@ -162,13 +162,13 @@ class CartListPresenter @Inject constructor(
     private var showChoosePromoWidget: Boolean = false
 
     // Store LCA data for bo affordability
-    var lca: LocalCacheModel? = null
+    private var lca: LocalCacheModel? = null
 
     // Store last cart shop group ticker cart string for debounce handling
-    var lastCartShopGroupTickerCartString: String = ""
+    private var lastCartShopGroupTickerCartString: String = ""
 
     // Cart shop ticker debounce job
-    var cartShopGroupTickerJob: Job? = null
+    private var cartShopGroupTickerJob: Job? = null
 
     companion object {
         private const val PERCENTAGE = 100.0f

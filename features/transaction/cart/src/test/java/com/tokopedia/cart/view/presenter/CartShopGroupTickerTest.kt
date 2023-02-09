@@ -4,6 +4,7 @@ import com.tokopedia.cart.data.model.request.CartShopGroupTickerAggregatorParam
 import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorData
 import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorResponse
 import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorTicker
+import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
@@ -15,8 +16,6 @@ import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.IOException
 
@@ -38,7 +37,9 @@ class CartShopGroupTickerTest : BaseCartTest() {
             cartId = "222",
             isSelected = false,
             isBundlingItem = false,
-            bundleIds = emptyList()
+            bundleIds = emptyList(),
+            quantity = 1,
+            productWeight = 1
         )
 
         fun selectedProductWithBundle() = CartItemHolderData(
@@ -46,7 +47,9 @@ class CartShopGroupTickerTest : BaseCartTest() {
             cartId = "555",
             isSelected = true,
             isBundlingItem = false,
-            bundleIds = listOf("356", "467")
+            bundleIds = listOf("356", "467"),
+            quantity = 1,
+            productWeight = 1
         )
 
         fun unselectedProductWithBundle() = CartItemHolderData(
@@ -54,7 +57,9 @@ class CartShopGroupTickerTest : BaseCartTest() {
             cartId = "666",
             isSelected = false,
             isBundlingItem = false,
-            bundleIds = listOf("578", "689")
+            bundleIds = listOf("578", "689"),
+            quantity = 1,
+            productWeight = 1
         )
 
         fun selectedBundleProduct() = CartItemHolderData(
@@ -62,7 +67,9 @@ class CartShopGroupTickerTest : BaseCartTest() {
             cartId = "333",
             isSelected = true,
             isBundlingItem = true,
-            bundleIds = listOf("134", "245")
+            bundleIds = listOf("134", "245"),
+            quantity = 1,
+            productWeight = 1
         )
 
         fun unselectedBundleProduct() = CartItemHolderData(
@@ -70,7 +77,9 @@ class CartShopGroupTickerTest : BaseCartTest() {
             cartId = "444",
             isSelected = false,
             isBundlingItem = true,
-            bundleIds = listOf("123", "234")
+            bundleIds = listOf("123", "234"),
+            quantity = 1,
+            productWeight = 1
         )
     }
 
@@ -79,16 +88,16 @@ class CartShopGroupTickerTest : BaseCartTest() {
         // GIVEN
         val cartString = "123-123-123"
         val cartShopHolderData = CartShopHolderData(
+            cartShopGroupTicker = CartShopGroupTickerData(
+                enableCartAggregator = false,
+                enableBoAffordability = false
+            ),
             cartString = cartString,
             maximumShippingWeight = 1000.0,
             maximumWeightWording = "overweight",
             isAllSelected = true,
             productUiModelList = arrayListOf(
-                CartItemHolderData(
-                    isSelected = true,
-                    quantity = 1,
-                    productWeight = 1
-                )
+                selectedProductWithBundle()
             )
         )
         val expectedCartShopHolderData = cartShopHolderData.copy()
@@ -100,6 +109,9 @@ class CartShopGroupTickerTest : BaseCartTest() {
         // THEN
         verify {
             expectedCartShopHolderData.cartShopGroupTicker = CartShopGroupTickerData(
+                enableCartAggregator = false,
+                enableBoAffordability = false,
+                enableBundleCrossSell = false,
                 state = CartShopGroupTickerState.EMPTY
             )
             view.updateCartShopGroupTicker(expectedCartShopHolderData)
@@ -555,8 +567,10 @@ class CartShopGroupTickerTest : BaseCartTest() {
     fun `WHEN cart aggregator disabled with valid product THEN bundle cross sell should be disabled`() {
         // GIVEN
         val cartShopHolderData = CartShopHolderData(
+            cartString = "123-123-123",
             cartShopGroupTicker = CartShopGroupTickerData(
-                enableCartAggregator = false
+                enableCartAggregator = false,
+                enableBoAffordability = false
             ),
             productUiModelList = arrayListOf(
                 unselectedProductWithoutBundle(),
@@ -566,20 +580,35 @@ class CartShopGroupTickerTest : BaseCartTest() {
                 selectedProductWithBundle()
             )
         )
+        val expectedCartShopHolderData = cartShopHolderData.copy()
 
         // WHEN
-        val enableBundleCrossSell = cartListPresenter.checkEnableBundleCrossSell(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
-        assertFalse(enableBundleCrossSell)
+        verify {
+            expectedCartShopHolderData.cartShopGroupTicker = CartShopGroupTickerData(
+                enableCartAggregator = false,
+                enableBoAffordability = false,
+                enableBundleCrossSell = false,
+                state = CartShopGroupTickerState.EMPTY
+            )
+            view.updateCartShopGroupTicker(expectedCartShopHolderData)
+        }
+        coVerify(inverse = true) {
+            cartShopGroupTickerAggregatorUseCase(any())
+        }
     }
 
     @Test
     fun `WHEN cart aggregator enabled with valid product THEN bundle cross sell should be enabled`() {
         // GIVEN
         val cartShopHolderData = CartShopHolderData(
+            cartString = "123-123-123",
             cartShopGroupTicker = CartShopGroupTickerData(
-                enableCartAggregator = true
+                enableCartAggregator = true,
+                enableBoAffordability = false
             ),
             productUiModelList = arrayListOf(
                 unselectedProductWithoutBundle(),
@@ -589,20 +618,50 @@ class CartShopGroupTickerTest : BaseCartTest() {
                 selectedProductWithBundle()
             )
         )
+        val tickerText = "tambah produk bundling"
+        val expectedCartShopHolderData = cartShopHolderData.copy()
+        coEvery {
+            cartShopGroupTickerAggregatorUseCase(any())
+        } returns CartShopGroupTickerAggregatorResponse(
+            CartShopGroupTickerAggregatorData(
+                minTransaction = 0L,
+                ticker = CartShopGroupTickerAggregatorTicker(
+                    text = tickerText
+                )
+            )
+        )
 
         // WHEN
-        val enableBundleCrossSell = cartListPresenter.checkEnableBundleCrossSell(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
-        assertTrue(enableBundleCrossSell)
+        verify {
+            expectedCartShopHolderData.cartShopGroupTicker = CartShopGroupTickerData(
+                enableCartAggregator = true,
+                enableBoAffordability = false,
+                enableBundleCrossSell = true,
+                state = CartShopGroupTickerState.SUCCESS_AFFORD,
+                tickerText = tickerText,
+                cartBundlingBottomSheetData = CartBundlingBottomSheetData(
+                    bundleIds = listOf("356", "467") // bundleIds for selectedProductWithBundle()
+                )
+            )
+            view.updateCartShopGroupTicker(expectedCartShopHolderData)
+        }
+        coVerify {
+            cartShopGroupTickerAggregatorUseCase(any())
+        }
     }
 
     @Test
     fun `WHEN cart aggregator enabled with selected bundle product THEN bundle cross sell should be disabled`() {
         // GIVEN
         val cartShopHolderData = CartShopHolderData(
+            cartString = "123-123-123",
             cartShopGroupTicker = CartShopGroupTickerData(
-                enableCartAggregator = true
+                enableCartAggregator = true,
+                enableBoAffordability = false
             ),
             productUiModelList = arrayListOf(
                 unselectedProductWithoutBundle(),
@@ -613,20 +672,35 @@ class CartShopGroupTickerTest : BaseCartTest() {
                 selectedBundleProduct()
             )
         )
+        val expectedCartShopHolderData = cartShopHolderData.copy()
 
         // WHEN
-        val enableBundleCrossSell = cartListPresenter.checkEnableBundleCrossSell(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
-        assertFalse(enableBundleCrossSell)
+        verify {
+            expectedCartShopHolderData.cartShopGroupTicker = CartShopGroupTickerData(
+                enableCartAggregator = true,
+                enableBoAffordability = false,
+                enableBundleCrossSell = false,
+                state = CartShopGroupTickerState.EMPTY
+            )
+            view.updateCartShopGroupTicker(expectedCartShopHolderData)
+        }
+        coVerify(inverse = true) {
+            cartShopGroupTickerAggregatorUseCase(any())
+        }
     }
 
     @Test
     fun `WHEN cart aggregator enabled with no selected product THEN bundle cross sell should be disabled`() {
         // GIVEN
         val cartShopHolderData = CartShopHolderData(
+            cartString = "123-123-123",
             cartShopGroupTicker = CartShopGroupTickerData(
-                enableCartAggregator = true
+                enableCartAggregator = true,
+                enableBoAffordability = false
             ),
             productUiModelList = arrayListOf(
                 unselectedProductWithoutBundle(),
@@ -634,11 +708,24 @@ class CartShopGroupTickerTest : BaseCartTest() {
                 unselectedBundleProduct()
             )
         )
+        val expectedCartShopHolderData = cartShopHolderData.copy()
 
         // WHEN
-        val enableBundleCrossSell = cartListPresenter.checkEnableBundleCrossSell(cartShopHolderData)
+        cartListPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
-        assertFalse(enableBundleCrossSell)
+        verify {
+            expectedCartShopHolderData.cartShopGroupTicker = CartShopGroupTickerData(
+                enableCartAggregator = true,
+                enableBoAffordability = false,
+                enableBundleCrossSell = false,
+                state = CartShopGroupTickerState.EMPTY
+            )
+            view.updateCartShopGroupTicker(expectedCartShopHolderData)
+        }
+        coVerify(inverse = true) {
+            cartShopGroupTickerAggregatorUseCase(any())
+        }
     }
 }
