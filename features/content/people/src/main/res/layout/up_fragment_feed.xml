@@ -21,7 +21,7 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingBottom="@dimen/feed_component_dp_1"
-            tools:listitem="@layout/up_item_user_post" />
+            tools:listitem="@layout/up_item_user_post_channel" />
 
         <include layout="@layout/up_shimmer_user_feed" />
 

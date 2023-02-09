@@ -14,6 +14,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.widget.large.PlayWidgetCardLargeChannelView
+import com.tokopedia.play.widget.ui.widget.large.PlayWidgetCardLargeTranscodeView
 
 open class UserPostBaseAdapter(
     callback: AdapterCallback,
@@ -23,7 +24,7 @@ open class UserPostBaseAdapter(
 
     var cursor: String = ""
 
-    inner class ViewHolder(view: View) : BaseVH(view) {
+    inner class ChannelViewHolder(view: View) : BaseVH(view) {
         internal var playWidgetLargeView: PlayWidgetCardLargeChannelView =
             view.findViewById(R.id.play_widget_large_view)
 
@@ -38,15 +39,42 @@ open class UserPostBaseAdapter(
         }
     }
 
+    inner class TranscodeViewHolder(view: View) : BaseVH(view) {
+        internal var transcodeView: PlayWidgetCardLargeTranscodeView =
+            view.findViewById(R.id.play_widget_large_transcode_view)
+
+        override fun bindView(item: PlayPostContentItem, position: Int) {
+            transcodeView.setData(UserProfileVideoMapper.map(item, ""))
+            /** TODO: handle listener */
+//            playWidgetLargeView.setListener()
+        }
+    }
+
     override fun getItemViewHolder(
         parent: ViewGroup,
         inflater: LayoutInflater,
         viewType: Int,
     ): BaseVH {
-        val itemView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.up_item_user_post, parent, false)
+        if(viewType == TYPE_TRANSCODE) {
+            val itemView = LayoutInflater.from(parent.context)
+                .inflate(R.layout.up_item_user_post_transcode, parent, false)
 
-        return ViewHolder(itemView)
+            return TranscodeViewHolder(itemView)
+        }
+
+        val itemView = LayoutInflater.from(parent.context)
+            .inflate(R.layout.up_item_user_post_channel, parent, false)
+
+        return ChannelViewHolder(itemView)
+    }
+
+    override fun getCustomItemViewType(position: Int): Int {
+        if(items[position].displayType == PlayWidgetChannelType.Transcoding.value ||
+            items[position].displayType == PlayWidgetChannelType.FailedTranscoding.value) {
+            return TYPE_TRANSCODE
+        }
+
+        return TYPE_CHANNEL
     }
 
     override fun loadData(currentPageIndex: Int, vararg args: String?) {
@@ -74,7 +102,7 @@ open class UserPostBaseAdapter(
         loadCompletedWithError()
     }
 
-    private fun setData(holder: ViewHolder, playPostContent: PlayPostContentItem) {
+    private fun setData(holder: ChannelViewHolder, playPostContent: PlayPostContentItem) {
         holder.playWidgetLargeView.setModel(UserProfileVideoMapper.map(playPostContent, ""))
         holder.playWidgetLargeView.setListener(this)
     }
@@ -141,6 +169,11 @@ open class UserPostBaseAdapter(
             item.channelId,
             reminderType.reminded,
         )
+    }
+
+    companion object {
+        private const val TYPE_CHANNEL = 0
+        private const val TYPE_TRANSCODE = 1
     }
 
     interface PlayWidgetCallback {
