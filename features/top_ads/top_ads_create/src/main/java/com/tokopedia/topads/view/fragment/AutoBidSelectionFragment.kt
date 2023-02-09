@@ -8,16 +8,19 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.UrlConstant
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
+import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
+import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
-import com.tokopedia.unifycomponents.CardUnify
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -35,14 +38,12 @@ class AutoBidSelectionFragment : BaseStepperFragment<CreateManualAdsStepperModel
     private lateinit var manualLayout: ConstraintLayout
     private lateinit var otomatisRadioBtn: RadioButtonUnify
     private lateinit var manualRadioBtn: RadioButtonUnify
+    private lateinit var tipBtn: FloatingButtonUnify
     private lateinit var otomatisLearMore: Typography
     private lateinit var manualLearMore: Typography
     private lateinit var otomatisTag: Typography
     private var tvToolTipText: Typography? = null
     private var imgTooltipIcon: ImageUnify? = null
-
-    private var cardAutomatic: CardUnify2? = null
-    private var cardManual: CardUnify2? = null
 
     var selected: Int = 0
 
@@ -68,10 +69,13 @@ class AutoBidSelectionFragment : BaseStepperFragment<CreateManualAdsStepperModel
         nextBtn = view.findViewById(com.tokopedia.topads.common.R.id.save_autobid)
         otomatisRadioBtn = view.findViewById(com.tokopedia.topads.common.R.id.radiobtn_otomatis)
         manualRadioBtn = view.findViewById(com.tokopedia.topads.common.R.id.radiobtn_manual)
+        otomatisLayout = view.findViewById(com.tokopedia.topads.common.R.id.atur_otomatis)
+        manualLayout = view.findViewById(com.tokopedia.topads.common.R.id.atur_manual)
+        tipBtn = view.findViewById(com.tokopedia.topads.common.R.id.tip_btn)
         manualLearMore = view.findViewById(com.tokopedia.topads.common.R.id.manual_learn_more)
         otomatisLearMore = view.findViewById(com.tokopedia.topads.common.R.id.otomatis_learn_more)
-        cardAutomatic = view.findViewById(com.tokopedia.topads.common.R.id.card_automatic)
-        cardManual = view.findViewById(com.tokopedia.topads.common.R.id.card_manual)
+        otomatisTag = view.findViewById(com.tokopedia.topads.common.R.id.otomatis_tag)
+
         manualRadioBtn.setOnCheckedChangeListener(null)
         otomatisRadioBtn.setOnCheckedChangeListener(null)
         return view
@@ -109,6 +113,7 @@ class AutoBidSelectionFragment : BaseStepperFragment<CreateManualAdsStepperModel
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        tipBtn.visibility = View.VISIBLE
         nextBtn.visibility = View.VISIBLE
         prepareView()
 
@@ -122,15 +127,47 @@ class AutoBidSelectionFragment : BaseStepperFragment<CreateManualAdsStepperModel
             gotoNextPage()
         }
 
-        setAutoBidChosen()
-    }
+        val tooltipView =
+            layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null)
+                .apply {
+                    tvToolTipText = this.findViewById(R.id.tooltip_text)
+                    tvToolTipText?.text =
+                        getString(com.tokopedia.topads.common.R.string.tip_autobid_selection)
 
-    private fun setAutoBidChosen() {
-        otomatisRadioBtn.isChecked = true
-        manualRadioBtn.isChecked = false
-        stepperModel?.autoBidState = AUTO_BID_STATE
-        setCardStateCondition(cardAutomatic, true)
-        setCardStateCondition(cardManual, false)
+                    imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+                    imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
+                }
+
+        tipBtn.addItem(tooltipView)
+        tipBtn.setOnClickListener {
+            val tipsList: ArrayList<TipsUiModel> = ArrayList()
+            tipsList.apply {
+                add(
+                    TipsUiRowModel(
+                        com.tokopedia.topads.common.R.string.autobid_selection_tip_1,
+                        R.drawable.topads_create_ic_checklist
+                    )
+                )
+                add(
+                    TipsUiRowModel(
+                        com.tokopedia.topads.common.R.string.autobid_selection_tip_2,
+                        R.drawable.topads_create_ic_checklist
+                    )
+                )
+                add(
+                    TipsUiRowModel(
+                        com.tokopedia.topads.common.R.string.autobid_selection_tip_3,
+                        R.drawable.topads_create_ic_checklist
+                    )
+                )
+            }
+            val tipsListSheet =
+                context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
+            tipsListSheet?.showHeader = true
+            tipsListSheet?.showKnob = false
+            tipsListSheet?.setTitle(getString(com.tokopedia.topads.common.R.string.tip_autobid_selection))
+            tipsListSheet?.show(childFragmentManager, "")
+        }
     }
 
     private fun handleClick() {
@@ -141,13 +178,13 @@ class AutoBidSelectionFragment : BaseStepperFragment<CreateManualAdsStepperModel
             openWebView(MANUAL_LEARN_MORE_LINK)
         }
 
-        cardManual?.setOnClickListener {
+        manualLayout.setOnClickListener {
             manualRadioBtn.isChecked = true
             otomatisRadioBtn.isChecked = false
             stepperModel?.autoBidState = ""
         }
 
-        cardAutomatic?.setOnClickListener {
+        otomatisLayout.setOnClickListener {
             otomatisRadioBtn.isChecked = true
             manualRadioBtn.isChecked = false
             stepperModel?.autoBidState = AUTO_BID_STATE
@@ -157,27 +194,13 @@ class AutoBidSelectionFragment : BaseStepperFragment<CreateManualAdsStepperModel
             if (isChecked) {
                 otomatisRadioBtn.isChecked = false
                 stepperModel?.autoBidState = ""
-                setCardStateCondition(cardAutomatic, false)
-                setCardStateCondition(cardManual, true)
             }
         }
         otomatisRadioBtn.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 manualRadioBtn.isChecked = false
                 stepperModel?.autoBidState = AUTO_BID_STATE
-                setCardStateCondition(cardAutomatic, true)
-                setCardStateCondition(cardManual, false)
             }
-        }
-    }
-
-    private fun setCardStateCondition(card: CardUnify2?, isActive: Boolean) {
-        if(isActive) {
-            card?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_GN50)
-            card?.cardType = CardUnify.TYPE_BORDER_ACTIVE
-        } else {
-            card?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
-            card?.cardType = CardUnify.TYPE_BORDER_DISABLED
         }
     }
 

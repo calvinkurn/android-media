@@ -153,8 +153,6 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
     private val bidInfoBottomSheet by lazy(LazyThreadSafetyMode.NONE) { BidInfoBottomSheet() }
 
-    private var descAutoAds: View? = null
-
     override fun getLayoutId(): Int {
         return R.layout.topads_dash_fragment_group_detail_view_layout
     }
@@ -368,23 +366,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             bidRecomendasi.toFloatOrZero()
         ) {
             loadData()
-            showToaster(isAutomatic)
         }
-    }
-
-    private fun showToaster(automatic: Boolean) {
-        val message = if(automatic) {
-            getString(com.tokopedia.topads.common.R.string.bid_state_changed_automatic_successful)
-        } else {
-            getString(com.tokopedia.topads.common.R.string.bid_state_changed_manual_successful)
-        }
-        Toaster.build(
-            findViewById(R.id.view_pager_frag),
-            message,
-            Snackbar.LENGTH_LONG,
-            Toaster.TYPE_NORMAL
-        ).show()
-
     }
 
     private fun onSaveClickedInManualBottomSheet(bidPencarian: String, bidRecomendasi: String) {
@@ -416,7 +398,6 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         dailyBudgetSpent = findViewById(R.id.daily_budget_spent)
         dailyBudget = findViewById(R.id.daily_budget)
         dailyBudgetProgressBar = findViewById(R.id.daily_budget_progress_bar)
-        descAutoAds = findViewById(R.id.desc_auto_ads_advantage)
     }
 
     private fun saveBidData(bid: String, bidType: String, dailyBudget: Int) {
@@ -506,7 +487,6 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             editRekomendasiBudget?.visibility = View.GONE
             budgetPerClick?.text = getString(com.tokopedia.topads.common.R.string.group_detail_bid_otomatis)
             budgetperclickRekomendasi?.text = getString(com.tokopedia.topads.common.R.string.group_detail_bid_otomatis)
-            descAutoAds?.hide()
         } else {
             switchAutoBidLayout?.switchToManual()
             editPancarianBudget?.visibility = View.VISIBLE
@@ -522,7 +502,6 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                 }
 
             }
-            descAutoAds?.show()
 
         }
         txtGroupName?.text = groupName
