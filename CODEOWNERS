@@ -248,7 +248,7 @@
 /features/communication/topchat/                        @tokopedia/android-minionkevin-dev
 /features/communication/tokochat/                       @tokopedia/android-minionkevin-dev
 /features/communication/tokochat_common/                @tokopedia/android-minionkevin-dev
-/features/tokochat_config_common/                       @tokopedia/android-minionkevin-dev
+/features/communication/tokochat_config_common/         @tokopedia/android-minionkevin-dev
 
 /features/communication/push-notification-common/       @tokopedia/android-minionyoda-dev
 
