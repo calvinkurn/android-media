@@ -16,13 +16,15 @@ sealed class VoucherCreationStepThreeEvent {
     object TapBackButton : VoucherCreationStepThreeEvent()
     data class ChoosePromoType(val promoType: PromoType) : VoucherCreationStepThreeEvent()
     data class ChooseBenefitType(val benefitType: BenefitType) : VoucherCreationStepThreeEvent()
-    data class OnInputNominalChanged(val nominal: String) : VoucherCreationStepThreeEvent()
-    data class OnInputPercentageChanged(val percentage: String) : VoucherCreationStepThreeEvent()
-    data class OnInputMaxDeductionChanged(val maxDeduction: String) :
+    data class OnInputNominalChanged(val nominal: Long) : VoucherCreationStepThreeEvent()
+    data class OnInputPercentageChanged(val percentage: Long) : VoucherCreationStepThreeEvent()
+    data class OnInputMaxDeductionChanged(val maxDeduction: Long) :
         VoucherCreationStepThreeEvent()
 
-    data class OnInputMinimumBuyChanged(val minimumBuy: String) : VoucherCreationStepThreeEvent()
-    data class OnInputQuotaChanged(val quota: String) : VoucherCreationStepThreeEvent()
+    data class OnInputMinimumBuyChanged(val minimumBuy: Long) : VoucherCreationStepThreeEvent()
+    data class OnInputQuotaChanged(val quota: Long) : VoucherCreationStepThreeEvent()
+
+    object ResetInput : VoucherCreationStepThreeEvent()
     data class ChooseTargetBuyer(val targetBuyer: VoucherTargetBuyer) :
         VoucherCreationStepThreeEvent()
 

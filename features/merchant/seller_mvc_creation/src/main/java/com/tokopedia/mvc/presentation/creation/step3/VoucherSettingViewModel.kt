@@ -5,8 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.kotlin.extensions.view.formatTo
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.*
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
@@ -41,23 +40,16 @@ class VoucherSettingViewModel @Inject constructor(
             }
             is VoucherCreationStepThreeEvent.ChoosePromoType -> handlePromoTypeSelection(event.promoType)
             is VoucherCreationStepThreeEvent.ChooseBenefitType -> handleBenefitTypeSelection(event.benefitType)
-            is VoucherCreationStepThreeEvent.OnInputNominalChanged -> handleNominalInputChanges(
-                event.nominal
-            )
-            is VoucherCreationStepThreeEvent.OnInputPercentageChanged -> handlePercentageInputChanges(
-                event.percentage
-            )
-            is VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged -> handleMaxDeductionInputChanges(
-                event.maxDeduction
-            )
-            is VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged -> handleMinimumBuyInputChanges(
-                event.minimumBuy
-            )
+            is VoucherCreationStepThreeEvent.OnInputNominalChanged -> handleNominalInputChanges(event.nominal)
+            is VoucherCreationStepThreeEvent.OnInputPercentageChanged -> handlePercentageInputChanges(event.percentage)
+            is VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged -> handleMaxDeductionInputChanges(event.maxDeduction)
+            is VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged -> handleMinimumBuyInputChanges(event.minimumBuy)
             is VoucherCreationStepThreeEvent.OnInputQuotaChanged -> handleQuotaInputChanges(event.quota)
             is VoucherCreationStepThreeEvent.ChooseTargetBuyer -> handleTargetBuyerSelection(event.targetBuyer)
             is VoucherCreationStepThreeEvent.HandleCoachMark -> handleCoachmark()
             is VoucherCreationStepThreeEvent.TapBackButton -> handleBackToPreviousStep()
             is VoucherCreationStepThreeEvent.NavigateToNextStep -> handleNavigateToNextStep()
+            is VoucherCreationStepThreeEvent.ResetInput -> handleInputReset()
         }
     }
 
@@ -104,6 +96,7 @@ class VoucherSettingViewModel @Inject constructor(
                 availableTargetBuyer = availableTargetBuyer
             )
         }
+        handleVoucherInputValidation()
     }
 
     private fun handleBenefitTypeSelection(benefitType: BenefitType) {
@@ -118,12 +111,12 @@ class VoucherSettingViewModel @Inject constructor(
         setSpendingEstimation()
     }
 
-    private fun handleNominalInputChanges(nominal: String) {
+    private fun handleNominalInputChanges(nominal: Long) {
         _uiState.update {
             it.copy(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
-                    benefitIdr = nominal.toLongOrZero()
+                    benefitIdr = nominal.orZero()
                 ),
                 fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.NOMINAL)
             )
@@ -132,12 +125,12 @@ class VoucherSettingViewModel @Inject constructor(
         setSpendingEstimation()
     }
 
-    private fun handlePercentageInputChanges(percentage: String) {
+    private fun handlePercentageInputChanges(percentage: Long) {
         _uiState.update {
             it.copy(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
-                    benefitPercent = percentage.toIntOrZero()
+                    benefitPercent = percentage.toInt().orZero()
                 ),
                 fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.PERCENTAGE)
             )
@@ -146,12 +139,12 @@ class VoucherSettingViewModel @Inject constructor(
         setSpendingEstimation()
     }
 
-    private fun handleMaxDeductionInputChanges(maxDeduction: String) {
+    private fun handleMaxDeductionInputChanges(maxDeduction: Long) {
         _uiState.update {
             it.copy(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
-                    benefitMax = maxDeduction.toLongOrZero()
+                    benefitMax = maxDeduction.orZero()
                 ),
                 fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.MAX_DEDUCTION)
             )
@@ -160,12 +153,12 @@ class VoucherSettingViewModel @Inject constructor(
         setSpendingEstimation()
     }
 
-    private fun handleMinimumBuyInputChanges(minimumBuy: String) {
+    private fun handleMinimumBuyInputChanges(minimumBuy: Long) {
         _uiState.update {
             it.copy(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
-                    minPurchase = minimumBuy.toLongOrZero()
+                    minPurchase = minimumBuy.orZero()
                 ),
                 fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.MINIMUM_BUY)
             )
@@ -173,12 +166,12 @@ class VoucherSettingViewModel @Inject constructor(
         handleVoucherInputValidation()
     }
 
-    private fun handleQuotaInputChanges(quota: String) {
+    private fun handleQuotaInputChanges(quota: Long) {
         _uiState.update {
             it.copy(
                 isLoading = false,
                 voucherConfiguration = it.voucherConfiguration.copy(
-                    quota = quota.toLongOrZero()
+                    quota = quota.orZero()
                 ),
                 fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.QUOTA)
             )
@@ -279,6 +272,21 @@ class VoucherSettingViewModel @Inject constructor(
             it.copy(
                 isLoading = false,
                 spendingEstimation = spendingEstimation
+            )
+        }
+    }
+
+    private fun handleInputReset() {
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                voucherConfiguration = it.voucherConfiguration.copy(
+                    benefitIdr = 0,
+                    benefitPercent = 0,
+                    benefitMax = 0,
+                    minPurchase = 0,
+                    quota = 0
+                )
             )
         }
     }

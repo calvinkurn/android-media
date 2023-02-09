@@ -922,7 +922,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
     private fun backToPreviousStep(currentVoucherConfiguration: VoucherConfiguration) {
         if (pageMode == PageMode.CREATE) {
             if (voucherConfiguration.isFinishedFillAllStep()) {
-                navigateToVoucherSummaryPage(currentVoucherConfiguration)
+                navigateToVoucherSummaryPage(voucherConfiguration)
             } else {
                 navigateToVoucherTypePage(currentVoucherConfiguration)
             }

@@ -399,7 +399,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     }
                 }
             }
-            if (data.isVps == TRUE || data.isSubsidy == TRUE) {
+            if (data.isVps == TRUE || data.isSubsidy == TRUE || data.isChild == TRUE) {
                 btnUbahKupon.invisible()
             }
             btnUbahKupon.setOnClickListener {
