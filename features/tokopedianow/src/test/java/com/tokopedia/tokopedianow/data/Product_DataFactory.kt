@@ -1,6 +1,6 @@
 package com.tokopedia.tokopedianow.data
 
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 
 fun createRepurchaseProductUiModel(

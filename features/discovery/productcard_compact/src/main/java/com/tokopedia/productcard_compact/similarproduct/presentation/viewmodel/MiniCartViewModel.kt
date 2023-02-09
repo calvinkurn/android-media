@@ -25,7 +25,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 
-open class BaseTokoNowViewModel(
+open class MiniCartViewModel(
     private val addToCartUseCase: AddToCartUseCase,
     private val updateCartUseCase: UpdateCartUseCase,
     private val deleteCartUseCase: DeleteCartUseCase,

@@ -5,8 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataView
@@ -132,8 +132,8 @@ fun verifyProductItemDataViewList(
 }
 
 private fun assertLabelGroupDataView(
-        labelGroupDataViewList: List<TokoNowProductCardViewUiModel.LabelGroup>,
-        labelGroupList: List<ProductLabelGroup>
+    labelGroupDataViewList: List<TokoNowProductCardViewUiModel.LabelGroup>,
+    labelGroupList: List<ProductLabelGroup>
 ) {
     assertThat(labelGroupDataViewList.size, shouldBe(labelGroupList.size))
 

@@ -32,7 +32,7 @@ class TokoNowSimilarProductViewModel @Inject constructor(
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     addressData: LocalAddress,
     dispatchers: CoroutineDispatchers
-) : BaseTokoNowViewModel(
+) : MiniCartViewModel(
     addToCartUseCase,
     updateCartUseCase,
     deleteCartUseCase,

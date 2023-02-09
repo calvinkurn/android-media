@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.similarproduct
+package com.tokopedia.productcard_compact.similarproduct
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -10,13 +10,13 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
-import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
-import com.tokopedia.tokopedianow.similarproduct.domain.model.ProductRecommendationResponse
-import com.tokopedia.tokopedianow.similarproduct.domain.usecase.GetSimilarProductUseCase
-import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
-import com.tokopedia.tokopedianow.similarproduct.viewmodel.TokoNowSimilarProductViewModel
-import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
+import com.tokopedia.productcard_compact.common.util.ChooseAddressWrapper
+import com.tokopedia.productcard_compact.common.util.LocalAddress
+import com.tokopedia.productcard_compact.similarproduct.domain.model.ProductRecommendationResponse
+import com.tokopedia.productcard_compact.similarproduct.domain.usecase.GetSimilarProductUseCase
+import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.SimilarProductUiModel
+import com.tokopedia.productcard_compact.similarproduct.presentation.viewmodel.TokoNowSimilarProductViewModel
+import com.tokopedia.productcard_compact.common.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.user.session.UserSessionInterface
@@ -38,7 +38,7 @@ class TokoNowSimilarProductViewModelTest {
     private lateinit var updateCartUseCase: UpdateCartUseCase
     private lateinit var deleteCartUseCase: DeleteCartUseCase
     private lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
-    private lateinit var addressData: TokoNowLocalAddress
+    private lateinit var addressData: LocalAddress
     private lateinit var userSession: UserSessionInterface
     private lateinit var getSimilarProductUseCase: GetSimilarProductUseCase
     private lateinit var chooseAddressWrapper: ChooseAddressWrapper

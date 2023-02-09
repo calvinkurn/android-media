@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.search.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.util.TestUtils.getParentPrivateField
 import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
