@@ -51,7 +51,7 @@
             android:textColor="@color/Unify_NN950"
             app:typographyType="display_1"
             app:typographyWeight="bold"
-            android:text="@string/tokopedianow_product_card_similar_product_error_description"/>
+            android:text="@string/product_card_compact_similar_product_bottom_sheet_error_description"/>
 
     </LinearLayout>
 

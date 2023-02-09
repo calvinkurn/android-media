@@ -73,7 +73,7 @@ class ProductCardCompactCarouselDynamicHeaderView @JvmOverloads constructor(
             if (subtitle.isNotBlank()) {
                 tpSubtitle?.text = subtitle
             } else {
-                tpSubtitle?.text = context.getString(R.string.tokopedianow_dynamic_header_subtitle_default_value)
+                tpSubtitle?.text = context.getString(R.string.product_card_compact_product_card_dynamic_header_subtitle_default_value)
             }
         }
     }
@@ -83,7 +83,7 @@ class ProductCardCompactCarouselDynamicHeaderView @JvmOverloads constructor(
             tpSeeAll?.text = if (ctaText.isNotBlank()) {
                 ctaText
             } else {
-                itemView?.context?.getString(R.string.tokopedianow_mix_left_carousel_widget_see_all)
+                itemView?.context?.getString(R.string.product_card_compact_product_card_see_all)
             }
             tpSeeAll?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             tpSeeAll?.setOnClickListener {

@@ -246,5 +246,7 @@
     <string name="error_referral_click_their_own_link">Kupon Belanja NOW! hanya bisa dipakai sama temanmu yang pengguna baru.</string>
     <string name="error_referrral_recurring_user">Yaah, kupon Belanja NOW! hanya berlaku khusus pengguna baru saja.</string>
 
-
+    <string name="tokopedianow_toaster_ok">Oke</string>
+    <string name="tokopedianow_toaster_retry">Coba Lagi</string>
+    <string name="tokopedianow_toaster_see">Lihat</string>
 </resources>

@@ -75,7 +75,7 @@ class ProductCardCompactSimilarProductViewHolder(
         binding?.labelDiscount?.apply {
             if (product.discountPercentage.isNotEmpty()) {
                 text = context.getString(
-                    R.string.tokopedianow_percentage_format,
+                    R.string.product_card_compact_similar_product_bottom_sheet_percentage_format,
                     product.discountPercentage
                 )
                 show()
@@ -88,11 +88,11 @@ class ProductCardCompactSimilarProductViewHolder(
     private fun renderProductButton(product: ProductCardCompactSimilarProductUiModel) {
         binding?.btnProductCta?.apply {
             if (product.stock == QUANTITY_ZERO) {
-                text = context.getString(R.string.tokopedianow_stock_empty_text)
+                text = context.getString(R.string.product_card_compact_similar_product_bottom_sheet_stock_empty_text)
                 buttonVariant = UnifyButton.Variant.FILLED
                 isEnabled = false
             } else {
-                text = context.getString(R.string.tokopedianow_add_to_cart_text)
+                text = context.getString(R.string.product_card_compact_add_to_cart)
                 buttonVariant = UnifyButton.Variant.GHOST
                 isEnabled = true
 

@@ -144,7 +144,7 @@ class ProductCardCompactSimilarProductFragment : Fragment(),
     }
 
     private fun setupBottomSheet() {
-        val title = getString(R.string.tokopedianow_recipe_similar_product_title)
+        val title = getString(R.string.product_card_compact_similar_product_bottom_sheet_title)
 
         bottomSheet = ProductCardCompactSimilarProductBottomSheet.newInstance().apply {
             productListener = this@ProductCardCompactSimilarProductFragment
@@ -223,7 +223,7 @@ class ProductCardCompactSimilarProductFragment : Fragment(),
 
     private fun onSuccessAddItemToCart(data: AddToCartDataModel) {
         val message = data.errorMessage.joinToString(separator = ", ")
-        showToaster(message = message, actionText = getString(R.string.tokopedianow_toaster_see), onClickAction = {bottomSheet?.openMiniCartBottomsheet(this)})
+        showToaster(message = message, actionText = getString(R.string.product_card_compact_see), onClickAction = {bottomSheet?.openMiniCartBottomsheet(this)})
         val position = productList.indexOfFirst {
             it.id == data.data.productId.toString()
         }
@@ -241,7 +241,7 @@ class ProductCardCompactSimilarProductFragment : Fragment(),
     }
 
     private fun onSuccessRemoveCartItem(data: Pair<String, String>) {
-        showToaster(message = data.second, actionText = getString(R.string.tokopedianow_toaster_ok), onClickAction = {})
+        showToaster(message = data.second, actionText = getString(R.string.product_card_compact_ok), onClickAction = {})
         val position = productList.indexOfFirst {
             it.id == data.first
         }

@@ -196,7 +196,7 @@
         android:paddingEnd="8dp"
         android:textColor="@color/Unify_GN500"
         android:visibility="gone"
-        android:text="@string/tokopedianow_product_card_similar_product"
+        android:text="@string/product_card_compact_product_card_similar_product_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

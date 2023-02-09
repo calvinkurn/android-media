@@ -82,15 +82,15 @@ class ProductCardCompactWishlistButtonView @JvmOverloads constructor(
                         listener?.onWishlistButtonClicked(
                             productId = mProductId,
                             isWishlistSelected = true,
-                            descriptionToaster = context.getString(R.string.tokopedianow_product_card_wishlist_add_success),
-                            ctaToaster = context.getString(R.string.tokopedianow_toaster_ok)
+                            descriptionToaster = context.getString(R.string.product_card_compact_product_card_wishlist_toaster_add_success),
+                            ctaToaster = context.getString(R.string.product_card_compact_ok)
                         )
                     } else {
                         listener?.onWishlistButtonClicked(
                             productId = mProductId,
                             isWishlistSelected = false,
-                            descriptionToaster = context.getString(R.string.tokopedianow_product_card_wishlist_add_fail),
-                            ctaToaster = context.getString(R.string.tokopedianow_toaster_retry),
+                            descriptionToaster = context.getString(R.string.product_card_compact_product_card_wishlist_toaster_add_fail),
+                            ctaToaster = context.getString(R.string.product_card_compact_retry),
                             type = Toaster.TYPE_ERROR,
                             ctaClickListener = {
                                 viewModel.addToWishlist(mProductId)
@@ -102,8 +102,8 @@ class ProductCardCompactWishlistButtonView @JvmOverloads constructor(
                     listener?.onWishlistButtonClicked(
                         productId = mProductId,
                         isWishlistSelected = false,
-                        descriptionToaster = context.getString(R.string.tokopedianow_product_card_wishlist_add_fail),
-                        ctaToaster = context.getString(R.string.tokopedianow_toaster_retry),
+                        descriptionToaster = context.getString(R.string.product_card_compact_product_card_wishlist_toaster_add_fail),
+                        ctaToaster = context.getString(R.string.product_card_compact_retry),
                         type = Toaster.TYPE_ERROR,
                         ctaClickListener = {
                             viewModel.addToWishlist(mProductId)
@@ -120,15 +120,15 @@ class ProductCardCompactWishlistButtonView @JvmOverloads constructor(
                         listener?.onWishlistButtonClicked(
                             productId = mProductId,
                             isWishlistSelected = false,
-                            descriptionToaster = context.getString(R.string.tokopedianow_product_card_wishlist_remove_success),
-                            ctaToaster = context.getString(R.string.tokopedianow_toaster_ok)
+                            descriptionToaster = context.getString(R.string.product_card_compact_product_card_wishlist_toaster_remove_success),
+                            ctaToaster = context.getString(R.string.product_card_compact_ok)
                         )
                     } else {
                         listener?.onWishlistButtonClicked(
                             productId = mProductId,
                             isWishlistSelected = true,
-                            descriptionToaster = context.getString(R.string.tokopedianow_product_card_wishlist_remove_fail),
-                            ctaToaster = context.getString(R.string.tokopedianow_toaster_retry),
+                            descriptionToaster = context.getString(R.string.product_card_compact_product_card_wishlist_toaster_remove_fail),
+                            ctaToaster = context.getString(R.string.product_card_compact_retry),
                             type = Toaster.TYPE_ERROR,
                             ctaClickListener = {
                                 viewModel.removeFromWishlist(mProductId)
@@ -140,8 +140,8 @@ class ProductCardCompactWishlistButtonView @JvmOverloads constructor(
                     listener?.onWishlistButtonClicked(
                         productId = mProductId,
                         isWishlistSelected = true,
-                        descriptionToaster = context.getString(R.string.tokopedianow_product_card_wishlist_remove_fail),
-                        ctaToaster = context.getString(R.string.tokopedianow_toaster_retry),
+                        descriptionToaster = context.getString(R.string.product_card_compact_product_card_wishlist_toaster_remove_fail),
+                        ctaToaster = context.getString(R.string.product_card_compact_retry),
                         type = Toaster.TYPE_ERROR,
                         ctaClickListener = {
                             viewModel.removeFromWishlist(mProductId)

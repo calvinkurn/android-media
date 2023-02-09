@@ -189,7 +189,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 promoLabel.text = if (discountInt.isZero()) {
                     if (discount.last() != PERCENTAGE_CHAR) "$discount${PERCENTAGE_CHAR}" else discount
                 } else {
-                    context.getString(R.string.tokopedianow_product_card_percentage, discountInt)
+                    context.getString(R.string.product_card_compact_product_card_percentage_format, discountInt)
                 }
                 promoLabel.adjustLabelType(LIGHT_RED)
             } else {
