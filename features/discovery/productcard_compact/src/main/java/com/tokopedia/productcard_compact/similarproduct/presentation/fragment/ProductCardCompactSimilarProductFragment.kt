@@ -21,7 +21,7 @@ import com.tokopedia.productcard_compact.similarproduct.presentation.activity.Pr
 import com.tokopedia.productcard_compact.similarproduct.presentation.bottomsheet.ProductCardCompactSimilarProductBottomSheet
 import com.tokopedia.productcard_compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
-import com.tokopedia.productcard_compact.similarproduct.presentation.viewholder.ProductCardCompactSimilarProductViewHolder
+import com.tokopedia.productcard_compact.similarproduct.presentation.viewholder.ProductCardCompactSimilarProductViewHolder.SimilarProductListener
 import com.tokopedia.productcard_compact.similarproduct.presentation.viewmodel.ProductCardCompactSimilarProductViewModel
 import com.tokopedia.productcard_compact.R
 import com.tokopedia.productcard_compact.common.di.component.DaggerCommonComponent
@@ -31,7 +31,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ProductCardCompactSimilarProductFragment : Fragment(), ProductCardCompactSimilarProductViewHolder.SimilarProductListener,
+class ProductCardCompactSimilarProductFragment : Fragment(),
+    SimilarProductListener,
     MiniCartWidgetListener {
 
     companion object {
@@ -63,7 +64,7 @@ class ProductCardCompactSimilarProductFragment : Fragment(), ProductCardCompactS
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_tokopedianow_base, container, false)
+        return inflater.inflate(R.layout.fragment_product_card_compact_base, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -13,7 +13,7 @@ import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.productcard_compact.R
-import com.tokopedia.productcard_compact.databinding.ItemTokopedianowRecipeProductBinding
+import com.tokopedia.productcard_compact.databinding.ItemProductCardCompactSimilarProductBinding
 
 class ProductCardCompactSimilarProductViewHolder(
     itemView: View,
@@ -22,10 +22,10 @@ class ProductCardCompactSimilarProductViewHolder(
 
     companion object{
         private const val QUANTITY_ZERO = 0
-        val LAYOUT = R.layout.item_tokopedianow_recipe_product
+        val LAYOUT = R.layout.item_product_card_compact_similar_product
     }
 
-    private var binding: ItemTokopedianowRecipeProductBinding? by viewBinding()
+    private var binding: ItemProductCardCompactSimilarProductBinding? by viewBinding()
 
     override fun bind(product: ProductCardCompactSimilarProductUiModel) {
         renderProductInfo(product)

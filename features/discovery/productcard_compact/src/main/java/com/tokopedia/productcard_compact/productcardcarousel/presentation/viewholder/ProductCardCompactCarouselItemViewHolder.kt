@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard_compact.R
-import com.tokopedia.productcard_compact.databinding.ItemTokopedianowProductCardCarouselBinding
+import com.tokopedia.productcard_compact.databinding.ItemProductCardCompactCarouselBinding
 import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -16,10 +16,10 @@ class ProductCardCompactCarouselItemViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokopedianow_product_card_carousel
+        val LAYOUT = R.layout.item_product_card_compact_carousel
     }
 
-    private var binding: ItemTokopedianowProductCardCarouselBinding? by viewBinding()
+    private var binding: ItemProductCardCompactCarouselBinding? by viewBinding()
 
     override fun bind(element: ProductCardCompactCarouselItemUiModel) {
         binding?.productCard?.apply {

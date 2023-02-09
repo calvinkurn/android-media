@@ -11,7 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.productcard_compact.databinding.LayoutTokopedianowQuantityEditorViewBinding
 import com.tokopedia.productcard_compact.productcard.helper.MotionLayoutTransitionImpl
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.productcard_compact.R
@@ -20,6 +19,7 @@ import com.tokopedia.productcard_compact.productcard.helper.TextWatcherImpl
 import com.tokopedia.productcard_compact.productcard.helper.TimerTaskImpl
 import com.tokopedia.productcard_compact.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.productcard_compact.common.util.ViewUtil.setDimenAsTextSize
+import com.tokopedia.productcard_compact.databinding.LayoutProductCardCompactQuantityEditorViewBinding
 import java.util.Timer
 import java.util.TimerTask
 
@@ -41,7 +41,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         private const val MIN_ALPHA = 0f
     }
 
-    private var binding: LayoutTokopedianowQuantityEditorViewBinding
+    private var binding: LayoutProductCardCompactQuantityEditorViewBinding
 
     private var timer: Timer? = null
     private var timerTaskChangingQuantity: TimerTask? = null
@@ -72,7 +72,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
     var onClickVariantListener: ((counter: Int) -> Unit)? = null
 
     init {
-        binding = LayoutTokopedianowQuantityEditorViewBinding.inflate(LayoutInflater.from(context), this, true).apply {
+        binding = LayoutProductCardCompactQuantityEditorViewBinding.inflate(LayoutInflater.from(context), this, true).apply {
             setupAddButton()
             setupSubButton()
             setupEditText()
@@ -145,7 +145,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
 
     private fun getResourceColor(id: Int): Int = ContextCompat.getColor(context, id)
 
-    private fun LayoutTokopedianowQuantityEditorViewBinding.safeRunBlock(block: () -> Unit) {
+    private fun LayoutProductCardCompactQuantityEditorViewBinding.safeRunBlock(block: () -> Unit) {
         if (ViewCompat.isLaidOut(root)) {
             block()
         } else {
@@ -153,7 +153,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowQuantityEditorViewBinding.onTransitionCompleted(
+    private fun LayoutProductCardCompactQuantityEditorViewBinding.onTransitionCompleted(
         currentState: Int?
     ) {
         executeTimerAfterTextChanged = false
@@ -171,7 +171,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowQuantityEditorViewBinding.setCounter() {
+    private fun LayoutProductCardCompactQuantityEditorViewBinding.setCounter() {
         val currentCounter = text.toIntOrZero()
         counter = if (currentCounter >= maxQuantity) {
             editText.setText(maxQuantity.toString())
@@ -192,7 +192,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowQuantityEditorViewBinding.setupAddBtnLayout() {
+    private fun LayoutProductCardCompactQuantityEditorViewBinding.setupAddBtnLayout() {
         val size = context?.resources?.getDimensionPixelSize(
             R.dimen.tokopedianow_product_card_add_button_size
         ).orZero()
@@ -205,7 +205,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         addButton.alpha = MAX_ALPHA
     }
 
-    private fun LayoutTokopedianowQuantityEditorViewBinding.setupAddButton() {
+    private fun LayoutProductCardCompactQuantityEditorViewBinding.setupAddButton() {
         addButton.setOnClickListener {
             if (isVariant) {
                 onClickVariantListener?.invoke(if (counter > minQuantity) counter else minQuantity)
@@ -215,7 +215,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowQuantityEditorViewBinding.onClickAddNonVariant() {
+    private fun LayoutProductCardCompactQuantityEditorViewBinding.onClickAddNonVariant() {
         executeTimerAfterTextChanged = false
         val currentState = root.currentState
         when {
@@ -241,7 +241,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         executeTimer()
     }
 
-    private fun LayoutTokopedianowQuantityEditorViewBinding.setupSubButton() {
+    private fun LayoutProductCardCompactQuantityEditorViewBinding.setupSubButton() {
         subButton.setOnClickListener {
             counter--
             if (counter < minQuantity) {
@@ -256,7 +256,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowQuantityEditorViewBinding.setupEditText() {
+    private fun LayoutProductCardCompactQuantityEditorViewBinding.setupEditText() {
         editText.onFocusChangedListener = { isFocused ->
             if (isFocused) {
                 executeTimerAfterTextChanged = false
@@ -294,7 +294,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowQuantityEditorViewBinding.collapseAnimation() {
+    private fun LayoutProductCardCompactQuantityEditorViewBinding.collapseAnimation() {
         context.getActivityFromContext()?.runOnUiThread {
             editText.setDimenAsTextSize(R.dimen.tokopedianow_quantity_editor_text_size_start_with_value)
             editText.clearFocus()
@@ -313,7 +313,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowQuantityEditorViewBinding.setEditTextPadding() {
+    private fun LayoutProductCardCompactQuantityEditorViewBinding.setEditTextPadding() {
         editText.setPadding(
             getDpFromDimen(context, R.dimen.tokopedianow_quantity_editor_padding_horizontal).toInt(),
             DEFAULT_DP,
@@ -322,7 +322,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         )
     }
 
-    private fun LayoutTokopedianowQuantityEditorViewBinding.expandAnimation(
+    private fun LayoutProductCardCompactQuantityEditorViewBinding.expandAnimation(
         startId: Int,
         endId: Int
     ) {
@@ -332,7 +332,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         setOnTouchListener(null)
     }
 
-    private fun LayoutTokopedianowQuantityEditorViewBinding.setStartTransition() {
+    private fun LayoutProductCardCompactQuantityEditorViewBinding.setStartTransition() {
         root.setTransition(
             R.id.start,
             R.id.end
@@ -344,7 +344,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         setupAddBtnLayout()
     }
 
-    private fun LayoutTokopedianowQuantityEditorViewBinding.setStartTransitionWithValue() {
+    private fun LayoutProductCardCompactQuantityEditorViewBinding.setStartTransitionWithValue() {
         root.setTransition(
             R.id.startWithValue,
             R.id.end

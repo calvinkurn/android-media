@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.productcard_compact.databinding.LayoutTokopedianowProductRecommendationViewBinding
 import com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselDynamicHeaderView
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
@@ -20,6 +19,7 @@ import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimode
 import com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView.TokoNowProductCardCarouselListener
 import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselHeaderUiModel
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
+import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductRecommendationViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

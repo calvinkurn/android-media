@@ -20,7 +20,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.productcard_compact.databinding.LayoutTokopedianowProductCardViewBinding
 import com.tokopedia.productcard_compact.productcard.presentation.uimodel.LIGHT_RED
 import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel.LabelGroup
 import com.tokopedia.productcard_compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
@@ -36,6 +35,7 @@ import com.tokopedia.productcard_compact.common.util.ViewUtil.doOnPreDraw
 import com.tokopedia.productcard_compact.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.productcard_compact.common.util.ViewUtil.getHexColorFromIdColor
 import com.tokopedia.productcard_compact.common.util.ViewUtil.safeParseColor
+import com.tokopedia.productcard_compact.databinding.LayoutProductCardCompactViewBinding
 import com.tokopedia.productcard_compact.similarproduct.presentation.activity.ProductCardCompactSimilarProductActivity
 
 class TokoNowProductCardView @JvmOverloads constructor(
@@ -56,17 +56,17 @@ class TokoNowProductCardView @JvmOverloads constructor(
     }
 
     private var productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null
-    private var binding: LayoutTokopedianowProductCardViewBinding
+    private var binding: LayoutProductCardCompactViewBinding
 
     init {
-        binding = LayoutTokopedianowProductCardViewBinding.inflate(
+        binding = LayoutProductCardCompactViewBinding.inflate(
             LayoutInflater.from(context),
             this,
             true
         )
     }
 
-    private fun LayoutTokopedianowProductCardViewBinding.setupUi(
+    private fun LayoutProductCardCompactViewBinding.setupUi(
         model: TokoNowProductCardViewUiModel
     ) {
         initImageFilterView(
@@ -129,7 +129,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         )
     }
 
-    private fun LayoutTokopedianowProductCardViewBinding.initImageFilterView(
+    private fun LayoutProductCardCompactViewBinding.initImageFilterView(
         imageUrl: String,
         brightness: Float
     ) {
@@ -137,7 +137,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         imageFilterView.brightness = brightness
     }
 
-    private fun LayoutTokopedianowProductCardViewBinding.initQuantityEditor(
+    private fun LayoutProductCardCompactViewBinding.initQuantityEditor(
         isVariant: Boolean,
         minOrder: Int,
         maxOrder: Int,
@@ -155,7 +155,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowProductCardViewBinding.initAssignedValueTypography(
+    private fun LayoutProductCardCompactViewBinding.initAssignedValueTypography(
         labelGroup: LabelGroup?
     ) {
         assignedValueTypography.showIfWithBlock(labelGroup != null) {
@@ -170,7 +170,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowProductCardViewBinding.initMainPriceTypography(
+    private fun LayoutProductCardCompactViewBinding.initMainPriceTypography(
         price: String
     ) {
         mainPriceTypography.showIfWithBlock(price.isNotBlank()) {
@@ -178,7 +178,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowProductCardViewBinding.initPromoLabel(
+    private fun LayoutProductCardCompactViewBinding.initPromoLabel(
         discount: String,
         discountInt: Int,
         labelGroup: LabelGroup?
@@ -201,7 +201,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowProductCardViewBinding.initSlashPriceTypography(
+    private fun LayoutProductCardCompactViewBinding.initSlashPriceTypography(
         slashPrice: String
     ) {
         slashPriceTypography.showIfWithBlock(slashPrice.isNotBlank()) {
@@ -210,7 +210,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowProductCardViewBinding.initProductNameTypography(
+    private fun LayoutProductCardCompactViewBinding.initProductNameTypography(
         name: String,
         needToChangeMaxLinesName: Boolean,
     ) {
@@ -224,7 +224,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowProductCardViewBinding.initRatingTypography(
+    private fun LayoutProductCardCompactViewBinding.initRatingTypography(
         rating: String,
         isFlashSale: Boolean,
         isNormal: Boolean
@@ -237,7 +237,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowProductCardViewBinding.initSimilarProductTypography(
+    private fun LayoutProductCardCompactViewBinding.initSimilarProductTypography(
         isOos: Boolean,
         isShown: Boolean,
         productId: String
@@ -260,7 +260,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowProductCardViewBinding.initWeight(
+    private fun LayoutProductCardCompactViewBinding.initWeight(
         labelGroup: LabelGroup?
     ) {
         categoryInfoTypography.showIfWithBlock(labelGroup != null) {
@@ -270,7 +270,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowProductCardViewBinding.initOosLabel(
+    private fun LayoutProductCardCompactViewBinding.initOosLabel(
         labelGroup: LabelGroup?,
         isOos: Boolean
     ) {
@@ -285,7 +285,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowProductCardViewBinding.initWishlistButton(
+    private fun LayoutProductCardCompactViewBinding.initWishlistButton(
         isOos: Boolean,
         isShown: Boolean,
         hasBeenWishlist: Boolean,
@@ -299,7 +299,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowProductCardViewBinding.initProgressBar(
+    private fun LayoutProductCardCompactViewBinding.initProgressBar(
         isFlashSale: Boolean,
         progressBarLabel: String,
         progressBarPercentage: Int
@@ -336,7 +336,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowProductCardViewBinding.adjustRatingPosition(isNormal: Boolean) {
+    private fun LayoutProductCardCompactViewBinding.adjustRatingPosition(isNormal: Boolean) {
         val constraintSet = ConstraintSet()
 
         constraintSet.clone(root)
@@ -371,7 +371,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
             setProgressIcon(
                 icon = ContextCompat.getDrawable(
                     context,
-                    R.drawable.tokopedianow_ic_product_card_fire_filled
+                    R.drawable.productcard_compact_ic_product_card_fire_filled
                 ),
                 width = getDpFromDimen(
                     context = context,
@@ -437,7 +437,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
     ) {
         background = ContextCompat.getDrawable(
             context,
-            R.drawable.tokopedianow_bg_product_card_best_seller
+            R.drawable.productcard_compact_bg_product_card_best_seller
         )
         backgroundTintList = ColorStateList.valueOf(
             safeParseColor(

@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.productcard_compact.databinding.LayoutTokopedianowWishlistButtonViewBinding
 import com.tokopedia.productcard_compact.productcard.presentation.viewmodel.ProductCardCompactWishlistViewModel
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.Toaster
@@ -15,6 +14,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.productcard_compact.R
 import com.tokopedia.productcard_compact.common.di.component.DaggerCommonComponent
+import com.tokopedia.productcard_compact.databinding.LayoutProductCardCompactWishlistButtonViewBinding
 import javax.inject.Inject
 
 class ProductCardCompactWishlistButtonView @JvmOverloads constructor(
@@ -32,21 +32,21 @@ class ProductCardCompactWishlistButtonView @JvmOverloads constructor(
     @Inject
     lateinit var viewModel: ProductCardCompactWishlistViewModel
 
-    private var binding: LayoutTokopedianowWishlistButtonViewBinding
+    private var binding: LayoutProductCardCompactWishlistButtonViewBinding
     private var mProductId: String = ""
     private var hasBeenSelected: Boolean? = null
     private var listener: TokoNowWishlistButtonListener? = null
 
     init {
         initInjector()
-        binding = LayoutTokopedianowWishlistButtonViewBinding.inflate(LayoutInflater.from(context),this, true).apply {
+        binding = LayoutProductCardCompactWishlistButtonViewBinding.inflate(LayoutInflater.from(context),this, true).apply {
             setupRingingAnimation()
         }
 
         observeLiveData()
     }
 
-    private fun LayoutTokopedianowWishlistButtonViewBinding.setupRingingAnimation() {
+    private fun LayoutProductCardCompactWishlistButtonViewBinding.setupRingingAnimation() {
         val ringingAnimation = ObjectAnimator.ofFloat(
             icon,
             View.ROTATION,

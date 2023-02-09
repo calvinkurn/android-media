@@ -34,7 +34,7 @@ class ProductCardCompactCarouselDynamicHeaderView @JvmOverloads constructor(
     private var tusCountDown: TimerUnifySingle? = null
 
     init {
-        val view = LayoutInflater.from(context).inflate(R.layout.layout_tokopedianow_dynamic_header_custom_view, this)
+        val view = LayoutInflater.from(context).inflate(R.layout.layout_product_card_compact_dynamic_header_custom_view, this)
         this.itemView = view
     }
 

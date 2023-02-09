@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.productcard_compact.similarproduct.presentation.fragment.ProductCardCompactSimilarProductFragment
 import com.tokopedia.productcard_compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.productcard_compact.R
-import com.tokopedia.productcard_compact.databinding.ActivityTokopedianowBaseBinding
+import com.tokopedia.productcard_compact.databinding.ActivityProductCardCompactBaseBinding
 
 class ProductCardCompactSimilarProductActivity: BaseActivity() {
 
@@ -26,11 +26,11 @@ class ProductCardCompactSimilarProductActivity: BaseActivity() {
         }
     }
 
-    private var binding : ActivityTokopedianowBaseBinding? = null
+    private var binding : ActivityProductCardCompactBaseBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityTokopedianowBaseBinding.inflate(layoutInflater)
+        binding = ActivityProductCardCompactBaseBinding.inflate(layoutInflater)
         setContentView(binding?.root)
         setOrientation()
 

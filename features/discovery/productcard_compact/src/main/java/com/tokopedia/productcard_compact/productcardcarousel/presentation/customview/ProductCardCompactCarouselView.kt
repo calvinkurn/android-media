@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.productcard_compact.databinding.LayoutTokopedianowProductCardCarouselViewBinding
+import com.tokopedia.productcard_compact.databinding.LayoutProductCardCompactCarouselViewBinding
 import com.tokopedia.productcard_compact.productcardcarousel.presentation.adapter.ProductCardCompactCarouselAdapter
 import com.tokopedia.productcard_compact.productcardcarousel.presentation.adapter.differ.ProductCardCompactCarouselDiffer
 import com.tokopedia.productcard_compact.productcardcarousel.presentation.adapter.typefactory.ProductCardCompactCarouselTypeFactoryImpl
@@ -39,12 +39,12 @@ class ProductCardCompactCarouselView @JvmOverloads constructor(
         )
     }
 
-    private var binding: LayoutTokopedianowProductCardCarouselViewBinding
+    private var binding: LayoutProductCardCompactCarouselViewBinding
     private var layoutManager: LinearLayoutManager = ProductCardCompactCarouselLinearLayoutManager(context)
     private var listener: TokoNowProductCardCarouselListener? = null
 
     init {
-        binding = LayoutTokopedianowProductCardCarouselViewBinding.inflate(
+        binding = LayoutProductCardCompactCarouselViewBinding.inflate(
             LayoutInflater.from(context),
             this,
             true

@@ -15,7 +15,6 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
-import com.tokopedia.productcard_compact.databinding.BottomsheetTokopedianowSimilarProductsBinding
 import com.tokopedia.productcard_compact.similarproduct.presentation.adapter.SimilarProductAdapter
 import com.tokopedia.productcard_compact.similarproduct.presentation.adapter.ProductCardCompactSimilarProductAdapterTypeFactory
 import com.tokopedia.productcard_compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
@@ -24,6 +23,7 @@ import com.tokopedia.productcard_compact.similarproduct.presentation.viewholder.
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.productcard_compact.R
+import com.tokopedia.productcard_compact.databinding.BottomSheetProductCardCompactSimilarProductBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class ProductCardCompactSimilarProductBottomSheet : BottomSheetUnify() {
@@ -47,7 +47,7 @@ class ProductCardCompactSimilarProductBottomSheet : BottomSheetUnify() {
 
     private var listener: ProductCardCompactSimilarProductTrackerListener? = null
 
-    private var binding by autoClearedNullable<BottomsheetTokopedianowSimilarProductsBinding>()
+    private var binding by autoClearedNullable<BottomSheetProductCardCompactSimilarProductBinding>()
 
     private val adapter by lazy {
         SimilarProductAdapter(
@@ -67,7 +67,7 @@ class ProductCardCompactSimilarProductBottomSheet : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = BottomsheetTokopedianowSimilarProductsBinding.inflate(LayoutInflater.from(context))
+        binding = BottomSheetProductCardCompactSimilarProductBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)
         configureBottomSheet()
         return super.onCreateView(inflater, container, savedInstanceState)
