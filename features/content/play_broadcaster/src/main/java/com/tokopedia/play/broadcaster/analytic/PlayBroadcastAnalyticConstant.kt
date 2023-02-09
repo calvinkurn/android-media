@@ -64,3 +64,8 @@ internal val KEY_TRACK_VIEW_EVENT: String
     } else {
         KEY_TRACK_VIEW_EVENT_MARKETPLACE
     }
+
+internal fun getTrackerId(trackerIdMA: String, trackerIdSA: String): String {
+    return if (GlobalConfig.isSellerApp()) trackerIdSA
+    else trackerIdMA
+}
