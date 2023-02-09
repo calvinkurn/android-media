@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -30,6 +31,8 @@ import com.tokopedia.logisticseller.ui.returntoshipper.viewmodel.ReturnToShipper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ReturnToShipperFragment : BaseDaggerFragment() {
@@ -87,16 +90,19 @@ class ReturnToShipperFragment : BaseDaggerFragment() {
                 is ReturnToShipperState.ShowRtsConfirmDialog -> openRTSConfirmationDialog(it.data)
                 is ReturnToShipperState.ShowRtsSuccessDialog -> showSuccessDialog()
                 is ReturnToShipperState.ShowRtsFailedDialog -> showFailedRtsDialog()
-                is ReturnToShipperState.ShowToaster -> {
-                    showToaster(it.errorMessage)
-                    viewModel.delayed(DELAY_SHOWING_TOASTER) {
-                        doFinishActivity(Activity.RESULT_FIRST_USER)
-                    }
-                }
+                is ReturnToShipperState.ShowToaster -> showToasterAndFinish(it.errorMessage)
                 is ReturnToShipperState.ShowLoading ->
                     binding?.loaderRts?.isVisible =
                         it.isShowLoading
             }
+        }
+    }
+
+    private fun showToasterAndFinish(errorMessage: String) {
+        showToaster(errorMessage)
+        viewLifecycleOwner.lifecycleScope.launch {
+            delay(DELAY_SHOWING_TOASTER)
+            doFinishActivity(Activity.RESULT_FIRST_USER)
         }
     }
 

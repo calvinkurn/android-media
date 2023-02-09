@@ -283,14 +283,4 @@ class ReturnToShipperViewModelTest {
             )
         }
     }
-
-    @Test
-    fun `verify function delayed is correctly`() {
-        var result: Boolean
-
-        viewModel.delayed(0) {
-            result = true
-            Assert.assertTrue(result)
-        }
-    }
 }

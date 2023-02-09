@@ -96,10 +96,4 @@ class ReturnToShipperViewModel @Inject constructor(
     private fun isActionConfirmation(action: String): Boolean =
         action == GeneralInfoRtsParam.ACTION_RTS_CONFIRMATION
 
-    fun delayed(timemillis: Long, run: () -> Unit) {
-        viewModelScope.launch {
-            delay(timemillis)
-            run.invoke()
-        }
-    }
 }
