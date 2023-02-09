@@ -49,7 +49,6 @@ class AffiliateEducationSeeAllFragment :
     private var educationVM: AffiliateEducationSeeAllViewModel? = null
     private var pageType: String? = null
     private var categoryId: String? = null
-    private var searchKeyword: String? = null
     private var page: String? = null
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private val seeAllAdapter by lazy {
@@ -75,13 +74,11 @@ class AffiliateEducationSeeAllFragment :
     companion object {
         private const val PARAM_PAGE_TYPE = "param_page_type"
         private const val PARAM_CATEGORY_ID = "param_category_id"
-        private const val SEARCH_KEYWORD = "search_keyword"
-        fun newInstance(pageType: String?, categoryID: String?, searchPage: String?): Fragment {
+        fun newInstance(pageType: String?, categoryID: String?): Fragment {
             return AffiliateEducationSeeAllFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_PAGE_TYPE, pageType)
                     putString(PARAM_CATEGORY_ID, categoryID)
-                    putString(SEARCH_KEYWORD, searchPage)
                 }
             }
         }
@@ -92,9 +89,7 @@ class AffiliateEducationSeeAllFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.affiliate_education_see_all_fragment, container, false)
-
-        return view
+        return inflater.inflate(R.layout.affiliate_education_see_all_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -102,15 +97,11 @@ class AffiliateEducationSeeAllFragment :
 
         pageType = arguments?.getString(PARAM_PAGE_TYPE)
         categoryId = arguments?.getString(PARAM_CATEGORY_ID)
-        searchKeyword = arguments?.getString(SEARCH_KEYWORD)
         page = when (pageType) {
             PAGE_EDUCATION_EVENT -> getString(R.string.affiliate_event)
             PAGE_EDUCATION_ARTICLE -> getString(R.string.affiliate_artikel)
             PAGE_EDUCATION_TUTORIAL -> getString(R.string.affiliate_tutorial)
             else -> getString(R.string.affiliate_artikel)
-        }
-        if(searchKeyword.isNullOrEmpty()){
-            educationVM?.fetchSearchData(PAGE_EDUCATION_ARTICLE, searchKeyword)
         }
         educationVM?.fetchSeeAllData(pageType, categoryId)
 

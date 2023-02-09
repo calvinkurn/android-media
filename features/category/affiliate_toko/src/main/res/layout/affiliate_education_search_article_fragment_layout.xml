@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tokopedia.affiliate.ui.activity.AffiliateEducationSeeAllActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_education_search_article_category_chip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingHorizontal="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:listitem="@layout/affiliate_item_performance_chip" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_total_items_education_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_education_search_article_category_chip"
+        app:typographyType="heading_5" />
+
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/eta_empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unifyEmptyStateImageUrl="https://images.tokopedia.net/img/Illustration.png"
+        app:unifyEmptyStateOrientation="horizontal"
+        app:unifyEmptyStateTitle="@string/affiliate_education_search_empty_state_title"
+        app:unifyEmptyStateDescription="@string/affiliate_education_search_empty_state_description"
+        app:layout_constraintTop_toBottomOf="@id/tv_total_items_education_search"
+        app:unifyEmptyStateType="page" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_latest_article_education_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/eta_empty_state"
+        app:typographyType="heading_5" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_education_search_article_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_latest_article_education_search"
+        tools:listitem="@layout/affiliate_education_see_all_item" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

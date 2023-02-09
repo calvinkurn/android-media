@@ -184,4 +184,9 @@
     <string name="affiliate_event_banner_content_description">event_banner</string>
     <string name="affiliate_education_social_content">education social banner</string>
     <string name="affiliate_education_tutorial_cover_title">Yuk pelajari tutorial biar jago promosi!</string>
+    <string name="affiliate_education_search_empty_state_title">Oops, kata kunci nggak ditemukan</string>
+    <string name="affiliate_education_search_empty_state_description">Cek kata kunci lain atau cek di bagian artikel dan event.</string>
+    <string name="affiliate_article_empty_state_heading">Cek artikel terbaru</string>
+    <string name="affiliate_event_empty_state_heading">Cek event terbaru</string>
+    <string name="affiliate_tutorial_empty_state_heading">Baca tutorial lainnya</string>
 </resources>

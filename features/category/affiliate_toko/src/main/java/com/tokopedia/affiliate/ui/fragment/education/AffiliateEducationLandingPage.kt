@@ -26,6 +26,7 @@ import com.tokopedia.affiliate.interfaces.AffiliateEducationLearnClickInterface
 import com.tokopedia.affiliate.interfaces.AffiliateEducationSocialCTAClickInterface
 import com.tokopedia.affiliate.interfaces.AffiliateEducationTopicTutorialClickInterface
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
+import com.tokopedia.affiliate.ui.activity.AffiliateEducationSearchActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateEducationSeeAllActivity
 import com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
 import com.tokopedia.affiliate.viewmodel.AffiliateEducationLandingViewModel
@@ -34,12 +35,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.searchbar.navigation_component.NavToolbar
-import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
-import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.SearchBarUnify
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
 import timber.log.Timber
 import java.util.*
@@ -101,15 +97,6 @@ class AffiliateEducationLandingPage :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setSearchListener(searchBar)
-//        view.findViewById<NavToolbar>(R.id.edukasi_navToolbar)?.run {
-//            viewLifecycleOwner.lifecycle.addObserver(this)
-//            setIcon(IconBuilder().addIcon(IconList.ID_NAV_GLOBAL) {})
-//            getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
-//                getString(R.string.affiliate_edukasi)
-//            setOnBackButtonClickListener {
-//                (activity as? AffiliateActivity)?.handleBackButton(false)
-//            }
-//        }
         eduViewModel?.getEducationPageData()?.observe(viewLifecycleOwner) {
             val adapter =
                 AffiliateAdapter(
@@ -139,8 +126,7 @@ class AffiliateEducationLandingPage :
             override fun onEditorAction(view: TextView?, actionId: Int, even: KeyEvent?): Boolean {
                 if(actionId == EditorInfo.IME_ACTION_SEARCH && !searchTextField.text.toString().isNullOrEmpty()) {
                     context?.let {
-                        startActivity(AffiliateEducationSeeAllActivity.createIntent(it,
-                            PAGE_EDUCATION_ARTICLE,  "", searchTextField.text.toString()))
+                        startActivity(AffiliateEducationSearchActivity.createIntent(it, searchTextField.text.toString()))
                     }
                     return true
                 }
@@ -155,7 +141,7 @@ class AffiliateEducationLandingPage :
 
     override fun onSeeMoreClick(pageType: String, categoryId: String) {
         context?.let {
-            startActivity(AffiliateEducationSeeAllActivity.createIntent(it, pageType, categoryId,null))
+            startActivity(AffiliateEducationSeeAllActivity.createIntent(it, pageType, categoryId))
         }
     }
 
@@ -195,7 +181,7 @@ class AffiliateEducationLandingPage :
 
     override fun onCardClick(pageType: String, categoryId: String) {
         context?.let {
-            startActivity(AffiliateEducationSeeAllActivity.createIntent(it, pageType, categoryId, null))
+            startActivity(AffiliateEducationSeeAllActivity.createIntent(it, pageType, categoryId))
         }
     }
 

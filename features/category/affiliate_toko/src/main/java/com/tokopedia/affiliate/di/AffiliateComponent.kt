@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateComponentActivity
+import com.tokopedia.affiliate.ui.activity.AffiliateEducationSearchActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateEducationSeeAllActivity
 import com.tokopedia.affiliate.ui.activity.AffiliatePromoSearchActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
@@ -16,6 +17,8 @@ import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetPromoCopyPaste
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePortfolioSocialMediaBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet
+import com.tokopedia.affiliate.ui.fragment.AffiliateEducationSearchArticleFragment
+import com.tokopedia.affiliate.ui.fragment.AffiliateEducationSearchFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
@@ -52,6 +55,8 @@ interface AffiliateComponent {
 
     fun injectPromoFragment(affiliatePromoFragment: AffiliatePromoFragment)
 
+    fun injectEducationSearchFragment(affiliateEducationSearchFragment: AffiliateEducationSearchFragment)
+
     fun injectHelpFragment(affiliateHelpFragment: AffiliateHelpFragment)
 
     fun injectPromotionBottomSheet(affiliatePromotionBottomSheet: AffiliatePromotionBottomSheet)
@@ -83,6 +88,10 @@ interface AffiliateComponent {
     )
 
     fun injectPromoSearchActivity(affiliatePromoSearchActivity: AffiliatePromoSearchActivity)
+
+    fun injectEducationSearchActivity(affiliateEducationSearchActivity: AffiliateEducationSearchActivity)
+
+    fun injectEducationSearchArticleFragment(affiliateEducationSearchArticleFragment : AffiliateEducationSearchArticleFragment)
 
     fun injectPromoSearchFragment(affiliatePromoSearchFragment: AffiliatePromoSearchFragment)
 
