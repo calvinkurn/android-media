@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard_compact.test.R
 import com.tokopedia.productcard_compact.productcard.presentation.adapter.ProductCardCompactProductCardAdapter
-import com.tokopedia.productcard_compact.productcard.presentation.decoration.LinearDecoration
+import com.tokopedia.productcard_compact.productcard.presentation.decoration.ProductCardCompactProductCardLinearDecoration
 import com.tokopedia.productcard_compact.productcard.helper.ProductCardCompactProductCardModelMatcherData.getProductCardModelMatcherData
 
 internal class ProductCardCompactProductCardLinearActivityTest: AppCompatActivity() {
@@ -19,7 +19,7 @@ internal class ProductCardCompactProductCardLinearActivityTest: AppCompatActivit
         rvProductCard.apply {
             adapter = ProductCardCompactProductCardAdapter(getProductCardModelMatcherData(isCarousel = true))
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            addItemDecoration(LinearDecoration())
+            addItemDecoration(ProductCardCompactProductCardLinearDecoration())
         }
     }
 

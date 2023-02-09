@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard_compact.test.R
 import com.tokopedia.productcard_compact.productcard.presentation.adapter.ProductCardCompactProductCardAdapter
-import com.tokopedia.productcard_compact.productcard.presentation.decoration.GridDecoration
+import com.tokopedia.productcard_compact.productcard.presentation.decoration.ProductCardCompactProductCardGridDecoration
 import com.tokopedia.productcard_compact.productcard.helper.ProductCardCompactProductCardModelMatcherData.getProductCardModelMatcherData
 
 internal class ProductCardCompactProductCardGridActivityTest: AppCompatActivity() {
@@ -23,7 +23,7 @@ internal class ProductCardCompactProductCardGridActivityTest: AppCompatActivity(
         rvProductCard.apply {
             adapter = ProductCardCompactProductCardAdapter(getProductCardModelMatcherData(isCarousel = false))
             layoutManager = GridLayoutManager(context, SPAN_COUNT)
-            addItemDecoration(GridDecoration())
+            addItemDecoration(ProductCardCompactProductCardGridDecoration())
         }
     }
 

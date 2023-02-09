@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.productcard_compact.productcard.utils.ViewUtil.getDpFromDimen
 
-internal class GridDecoration: RecyclerView.ItemDecoration() {
+internal class ProductCardCompactProductCardGridDecoration: RecyclerView.ItemDecoration() {
 
     companion object {
         const val INVALID_ITEM_POSITION = -1

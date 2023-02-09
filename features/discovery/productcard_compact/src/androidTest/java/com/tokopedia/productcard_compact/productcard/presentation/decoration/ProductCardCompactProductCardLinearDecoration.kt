@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.productcard_compact.productcard.utils.ViewUtil.getDpFromDimen
 
-internal class LinearDecoration: RecyclerView.ItemDecoration() {
+internal class ProductCardCompactProductCardLinearDecoration: RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(
         outRect: Rect,
