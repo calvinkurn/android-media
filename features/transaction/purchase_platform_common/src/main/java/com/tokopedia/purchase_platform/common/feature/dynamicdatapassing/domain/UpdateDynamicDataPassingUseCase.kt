@@ -9,7 +9,7 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.model.UpdateDynamicDataPassingUiModel
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
-import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.response.UpdateDynamicDataPassingResponse
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.response.UpdateDynamicDataResponse
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -19,7 +19,7 @@ class UpdateDynamicDataPassingUseCase @Inject constructor(
 
     private var params: Map<String, Any?>? = null
     private var isFireAndForget: Boolean = false
-    private var response: UpdateDynamicDataPassingResponse? = null
+    private var response: UpdateDynamicDataResponse? = null
 
     @GqlQuery(UPDATE_DYNAMIC_DATA_FIRE_AND_FORGET_MUTATION, queryFireAndForget)
     fun setParams(params: DynamicDataPassingParamRequest, isFireAndForget: Boolean) {
@@ -35,29 +35,29 @@ class UpdateDynamicDataPassingUseCase @Inject constructor(
 
         val requestFireAndForget = GraphqlRequest(
             UpdateDynamicDataFireAndForgetMutation(),
-            UpdateDynamicDataPassingResponse::class.java,
+            UpdateDynamicDataResponse::class.java,
             params
         )
 
         val request = GraphqlRequest(
             UpdateDynamicDataMutation(),
-            UpdateDynamicDataPassingResponse::class.java,
+            UpdateDynamicDataResponse::class.java,
             params
         )
 
         response = if (isFireAndForget) {
             graphqlRepository.response(listOf(requestFireAndForget))
-                .getSuccessData<UpdateDynamicDataPassingResponse>()
+                .getSuccessData<UpdateDynamicDataResponse>()
         } else {
             graphqlRepository.response(listOf(request))
-                .getSuccessData<UpdateDynamicDataPassingResponse>()
+                .getSuccessData<UpdateDynamicDataResponse>()
         }
 
-        if (response?.status == "OK") {
-            return UpdateDynamicDataPassingUiModel(response?.dynamicData ?: "")
+        if (response?.updateDynamicData?.status == "OK" && response?.updateDynamicData?.data?.dynamicData?.isNotEmpty() == true) {
+            return UpdateDynamicDataPassingUiModel(response?.updateDynamicData?.data?.dynamicData ?: "")
         } else {
-            if (response?.errorMessages?.isNotEmpty() == true) {
-                throw CartResponseErrorException(response?.errorMessages?.joinToString())
+            if (response?.updateDynamicData?.errorMessages?.isNotEmpty() == true) {
+                throw CartResponseErrorException(response?.updateDynamicData?.errorMessages?.joinToString())
             } else {
                 throw CartResponseErrorException(CartConstant.CART_ERROR_GLOBAL)
             }

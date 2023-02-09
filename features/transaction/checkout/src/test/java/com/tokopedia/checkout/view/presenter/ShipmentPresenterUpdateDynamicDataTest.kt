@@ -2,7 +2,6 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.*
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
@@ -105,7 +104,6 @@ class ShipmentPresenterUpdateDynamicDataTest {
     private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
     private var shipmentDataConverter = ShipmentDataConverter()
-    private var shipmentMapper = ShipmentMapper()
     private var updateDynamicDataParams = DynamicDataPassingParamRequest()
 
     private lateinit var presenter: ShipmentPresenter
