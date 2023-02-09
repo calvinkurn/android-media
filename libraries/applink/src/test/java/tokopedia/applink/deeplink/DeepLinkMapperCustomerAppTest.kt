@@ -451,6 +451,18 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check post atc appLink internal post atc`() {
+        val productId = "123"
+
+        val appLink = UriUtil.buildUri(ApplinkConst.POST_ATC, productId)
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/post-atc/$productId/"
+
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+        assertEqualsDeeplinkParameters(appLink, productId to null)
+    }
+
+    @Test
     fun `check product info appLink with no extras then should return internal product info`() {
         val productId = "890495024"
         val keyLayoutId = "layoutID"
