@@ -6,8 +6,9 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home_account.common.AndroidFileUtil
-import com.tokopedia.profilecompletion.addphone.INVALID_PHONE_NUMBER
-import com.tokopedia.profilecompletion.addphone.data.UserProfileValidate
+import com.tokopedia.profilecompletion.addphone.INVALID_UPDATE_PHONE_NUMBER
+import com.tokopedia.profilecompletion.addphone.INVALID_VALIDATE_PHONE_NUMBER
+import com.tokopedia.profilecompletion.addphone.data.AddPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
 import com.tokopedia.profilecompletion.biousername.BioUsernameInstrumentTest
 import com.tokopedia.profilecompletion.biousername.BioUsernameInstrumentTest.Companion.ERROR_MESSAGE_USERNAME
@@ -57,10 +58,17 @@ class GraphqlRepositoryStub : GraphqlRepository {
                                         SubmitBioUsername(status = true))), mapOf(), false)
                 }
                 it.contains("userProfileValidate") -> {
-                    if (param?.get("phone").toString() == INVALID_PHONE_NUMBER) {
+                    if (param?.get("phone").toString() == INVALID_VALIDATE_PHONE_NUMBER) {
                         GraphqlResponse(getResponse<UserValidatePojo>(R.raw.user_profile_validate_failed), mapOf(), false)
                     } else {
                         GraphqlResponse(getResponse<UserValidatePojo>(R.raw.user_profile_validate_success), mapOf(), false)
+                    }
+                }
+                it.contains("userProfileUpdate") -> {
+                    if (param?.get("phone").toString() == INVALID_UPDATE_PHONE_NUMBER) {
+                        GraphqlResponse(getResponse<AddPhonePojo>(R.raw.user_profile_update_failed), mapOf(), false)
+                    } else {
+                        GraphqlResponse(getResponse<AddPhonePojo>(R.raw.user_profile_update_success), mapOf(), false)
                     }
                 }
                 else -> GraphqlResponse(mapOf(), mapOf(), false)

@@ -1,6 +1,5 @@
 package com.tokopedia.profilecompletion.addphone.domain
 
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -9,7 +8,7 @@ import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
 import javax.inject.Inject
 
 class UserProfileValidateUseCase @Inject constructor(
-    @ApplicationContext private val repository: GraphqlRepository,
+    private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<String, UserValidatePojo>(dispatchers.io) {
 

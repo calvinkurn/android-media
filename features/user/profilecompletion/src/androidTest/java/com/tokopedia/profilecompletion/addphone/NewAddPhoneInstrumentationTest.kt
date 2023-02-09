@@ -1,8 +1,15 @@
 package com.tokopedia.profilecompletion.addphone
 
+import android.app.Activity
 import android.content.Intent
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.profilecompletion.addphone.view.activity.NewAddPhoneActivity
+import com.tokopedia.profilecompletion.common.helper.checkResultCode
+import com.tokopedia.profilecompletion.common.helper.respondWithFailed
+import com.tokopedia.profilecompletion.common.helper.respondWithOk
 import com.tokopedia.profilecompletion.common.stub.di.TestComponentActivityFactory
 import com.tokopedia.profilecompletion.di.ActivityComponentFactory
 import com.tokopedia.test.application.annotations.UiTest
@@ -63,6 +70,36 @@ class NewAddPhoneInstrumentationTest {
     fun input_invalid_phone_and_submit_then_error_is_displayed() {
         activityTestRule.launchActivity(Intent())
 
-        inputInvalidPhoneThenShowError()
+        inputInvalidValidatePhoneThenShowError()
     }
+
+    @Test
+    fun input_valid_phone_and_submit_then_error_update() {
+        activityTestRule.launchActivity(Intent())
+
+        intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithOk()
+
+        inputInvalidUpdatePhoneThenShowError()
+    }
+
+    @Test
+    fun input_valid_phone_and_submit_and_failed_otp_then_init_view_showing() {
+        activityTestRule.launchActivity(Intent())
+
+        intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithFailed()
+
+        inputValidUpdatePhoneThenSuccess()
+        isViewFailedOtpDisplayed()
+    }
+
+    @Test
+    fun input_valid_phone_and_submit_then_success_update() {
+        activityTestRule.launchActivity(Intent())
+
+        intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithOk()
+
+        inputValidUpdatePhoneThenSuccess()
+        checkResultCode(activityTestRule.activityResult, Activity.RESULT_OK)
+    }
+
 }

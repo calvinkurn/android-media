@@ -2,6 +2,7 @@ package com.tokopedia.profilecompletion.common.helper
 
 import android.app.Activity
 import android.app.Instrumentation
+import android.content.Intent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
@@ -17,6 +18,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.ActivityResultMatchers
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.OngoingStubbing
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
@@ -188,4 +190,22 @@ fun clickOnDisplayedView(resId: Int) {
 fun inputTextThenCloseKeyboard(inputType: Int, text: String) {
     Espresso.onView(ViewMatchers.withInputType(inputType))
         .perform(typeText(text), ViewActions.closeSoftKeyboard())
+}
+
+fun OngoingStubbing.respondWithOk() {
+    respondWith(
+        Instrumentation.ActivityResult(
+            Activity.RESULT_OK,
+            Intent()
+        )
+    )
+}
+
+fun OngoingStubbing.respondWithFailed() {
+    respondWith(
+        Instrumentation.ActivityResult(
+            Activity.RESULT_CANCELED,
+            Intent()
+        )
+    )
 }
