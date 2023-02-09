@@ -35,6 +35,7 @@ import com.tokopedia.play.animation.PlayFadeInAnimation
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeOutAnimation
 import com.tokopedia.play.channel.analytic.PlayChannelAnalyticManager
+import com.tokopedia.play.channel.ui.component.CommentIconUiComponent
 import com.tokopedia.play.channel.ui.component.KebabIconUiComponent
 import com.tokopedia.play.channel.ui.component.ProductCarouselUiComponent
 import com.tokopedia.play.databinding.FragmentPlayInteractionBinding
@@ -598,6 +599,16 @@ class PlayUserInteractionFragment @Inject constructor(
             components.add(
                 KebabIconUiComponent(
                     binding = kebabIconBinding,
+                    bus = eventBus,
+                )
+            )
+        }
+        
+        val commentIconBinding = binding.viewVodComment
+        if(commentIconBinding != null) {
+            components.add(
+                CommentIconUiComponent(
+                    binding = commentIconBinding,
                     bus = eventBus,
                 )
             )
