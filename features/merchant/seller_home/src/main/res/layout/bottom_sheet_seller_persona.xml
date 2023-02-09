@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_Background">
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerSahPersonaTitle"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/Unify_NN200"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSahPersonaSubTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/sah_seller_persona_bottom_sheet_sub_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dividerSahPersonaTitle"
+        app:typographyType="heading_4" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSahPersonaEntryPoint"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:adjustViewBounds="true"
+        android:minHeight="280dp"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSahPersonaSubTitle"
+        tools:src="@tools:sample/avatars" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerSahPersonaDescription"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/Unify_NN200"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgSahPersonaEntryPoint" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSahPersonaDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/sah_seller_persona_bottom_sheet_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dividerSahPersonaDescription"
+        app:typographyType="display_3" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSahPersonaBottomSheet"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/sah_i_understang"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSahPersonaDescription"
+        app:unifyButtonSize="medium" />
+</androidx.constraintlayout.widget.ConstraintLayout>

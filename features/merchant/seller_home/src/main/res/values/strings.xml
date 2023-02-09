@@ -238,9 +238,13 @@
     <string name="sah_new_seller_welcoming_coach_mark_description_3">Kamu bisa lihat daftar produk, balas chat, dan proses pesanan.</string>
     <string name="sah_new_seller_welcoming_coach_mark_title_4">Fitur lain yang tidak kalah penting</string>
     <string name="sah_new_seller_welcoming_coach_mark_description_4">Temukan fitur lainnya seperti Statistik, Iklan dan Promosi, Ulasan, Diskusi, Komplain di sini.</string>
+    <string name="sah_i_understang">Saya Mengerti</string>
 
     <!-- Wear Os -->
     <string name="wearos_install_popup_title">Install Wear App</string>
     <string name="wearos_install_popup_install">Install</string>
     <string name="wearos_install_popup_later">Not Now</string>
+    <string name="sah_seller_persona_bottom_sheet_sub_title">Kamu bisa cek tipe Seller-mu di menu Pengaturan Akun</string>
+    <string name="sah_seller_persona_bottom_sheet_description">Jawaban kuismu dipakai untuk menyesuaikan tampilan Home Tokopedia Seller kamu.</string>
+    <string name="sah_persona_bottom_sheet_title">Akses profil di pengaturan</string>
 </resources>
