@@ -1,13 +1,23 @@
-package com.tokopedia.media.picker.ui.adapter.utils
+package com.tokopedia.media.picker.ui.adapter.decoration
 
+import android.content.Context
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.media.R
 
 class GridItemDecoration(
-    private val spanCount: Int,
-    private val spacing: Int
+    context: Context,
+    private val spanCount: Int
 ) : RecyclerView.ItemDecoration() {
+
+    private var spacing = 0
+
+    init {
+        spacing = context.resources.getDimensionPixelSize(
+            R.dimen.picker_item_padding
+        )
+    }
 
     override fun getItemOffsets(
         outRect: Rect,

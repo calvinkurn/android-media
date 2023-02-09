@@ -22,7 +22,7 @@ import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.basecomponent.UiComponent
 import java.io.File
 
-class CameraViewComponent(
+class CameraViewUiComponent(
     private val param: PickerParam,
     private val listener: Listener,
     parent: ViewGroup,
