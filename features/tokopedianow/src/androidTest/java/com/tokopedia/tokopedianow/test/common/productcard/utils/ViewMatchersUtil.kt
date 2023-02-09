@@ -11,9 +11,9 @@ import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.GONE
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardView
-import com.tokopedia.tokopedianow.common.view.productcard.TokoNowQuantityEditorView
-import com.tokopedia.tokopedianow.common.view.productcard.TokoNowWishlistButtonView
+import com.tokopedia.productcard_compact.productcard.presentation.customview.TokoNowProductCardView
+import com.tokopedia.productcard_compact.productcard.presentation.customview.TokoNowQuantityEditorView
+import com.tokopedia.productcard_compact.productcard.presentation.customview.TokoNowWishlistButtonView
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.CoreMatchers.`is`

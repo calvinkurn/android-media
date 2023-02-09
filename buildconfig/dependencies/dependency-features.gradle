@@ -89,6 +89,7 @@ ext {
             topAdsSdk                       : ":features:discovery:topadssdk",
             productCard                     : ":features:discovery:productcard",
             productCardOptions              : ":features:discovery:productcard_options",
+            productCardCompact              : ":features:discovery:productcard_compact",
             carouselProductCard             : ":features:discovery:carousel_productcard",
             filter                          : ":features:discovery:filter",
             similarSearch                   : ":features:discovery:similarsearch",

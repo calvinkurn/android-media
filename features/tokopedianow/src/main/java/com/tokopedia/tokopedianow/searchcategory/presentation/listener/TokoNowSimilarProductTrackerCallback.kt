@@ -1,9 +1,9 @@
 package com.tokopedia.tokopedianow.searchcategory.presentation.listener
 
+import com.tokopedia.productcard_compact.similarproduct.presentation.listener.TokoNowSimilarProductTrackerListener
+import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.SimilarProductUiModel
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
-import com.tokopedia.tokopedianow.similarproduct.listener.TokoNowSimilarProductTrackerListener
-import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 
 class TokoNowSimilarProductTrackerCallback(
     private val isCategoryPage: Boolean

@@ -24,6 +24,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.NonVariant
+import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -37,12 +38,11 @@ import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuU
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemSeeAllUiModel
 import com.tokopedia.tokopedianow.data.createCategoryGridDataModel
 import com.tokopedia.tokopedianow.data.createCategoryGridListFirstFetch
@@ -796,7 +796,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
                         headerName = "Product Recommendation"
                     ),
-                    headerModel = TokoNowDynamicHeaderUiModel(
+                    headerModel = com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowDynamicHeaderUiModel(
                         title = "Product Recommendation"
                     )
                 ),
@@ -1416,7 +1416,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
                 headerName = "Lagi Diskon"
             ),
-            headerModel = TokoNowDynamicHeaderUiModel(
+            headerModel = com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowDynamicHeaderUiModel(
                 title = "Lagi Diskon"
             )
         )
@@ -1570,7 +1570,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
                 headerName = "Lagi Diskon"
             ),
-            headerModel = TokoNowDynamicHeaderUiModel(
+            headerModel = com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowDynamicHeaderUiModel(
                 title = "Lagi Diskon"
             )
         )
@@ -1670,7 +1670,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
                 headerName="Lagi Diskon"
             ),
-            headerModel = TokoNowDynamicHeaderUiModel(
+            headerModel = com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowDynamicHeaderUiModel(
                 title = "Lagi Diskon"
             )
         )
@@ -1822,7 +1822,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
                 headerName = "Lagi Diskon"
             ),
-            headerModel = TokoNowDynamicHeaderUiModel(
+            headerModel = com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowDynamicHeaderUiModel(
                 title = "Lagi Diskon"
             )
         )

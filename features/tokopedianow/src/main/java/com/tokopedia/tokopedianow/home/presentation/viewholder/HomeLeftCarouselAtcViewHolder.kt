@@ -11,7 +11,7 @@ import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.decoration.ProductCardCarouselDecoration
-import com.tokopedia.tokopedianow.common.util.CustomProductCardCarouselLinearLayoutManager
+import com.tokopedia.productcard_compact.productcardcarousel.util.CustomProductCardCarouselLinearLayoutManager
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener

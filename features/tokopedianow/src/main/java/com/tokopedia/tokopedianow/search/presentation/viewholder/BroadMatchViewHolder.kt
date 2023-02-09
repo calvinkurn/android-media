@@ -7,10 +7,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
-import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.TokoNowProductCardCarouselView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowBroadmatchBinding
 import com.tokopedia.tokopedianow.search.presentation.listener.BroadMatchListener
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView

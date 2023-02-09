@@ -4,12 +4,11 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
-import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
-import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.TokoNowProductCardCarouselView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductRecommendationBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -21,7 +20,7 @@ class HomeProductRecomViewHolder(
     private val rtrAnalytics: RealTimeRecommendationAnalytics? = null
 ) : AbstractViewHolder<HomeProductRecomUiModel>(itemView),
     TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener,
-    TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
+    com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
 
     companion object {
         @LayoutRes

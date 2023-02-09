@@ -7,10 +7,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.view.productcard.TokoNowWishlistButtonView
+import com.tokopedia.productcard_compact.productcard.presentation.customview.TokoNowWishlistButtonView
+import com.tokopedia.productcard_compact.similarproduct.presentation.listener.TokoNowSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductGridCardBinding
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
-import com.tokopedia.tokopedianow.similarproduct.listener.TokoNowSimilarProductTrackerListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RepurchaseProductViewHolder(

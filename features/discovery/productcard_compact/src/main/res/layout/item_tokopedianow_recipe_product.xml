@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="16dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgProduct"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/imgProduct"
+        app:layout_constraintTop_toTopOf="@id/imgProduct"
+        app:typographyType="display_3"
+        tools:text="Kacang Hijau Curah" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textWeight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/textName"
+        app:layout_constraintTop_toBottomOf="@id/textName"
+        app:typographyType="small"
+        tools:text="500 g" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelDiscount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:labelType="highlight_light_red"
+        app:layout_constraintBottom_toBottomOf="@id/textPrice"
+        app:layout_constraintEnd_toStartOf="@id/textSlashedPrice"
+        app:layout_constraintStart_toStartOf="@id/textName"
+        app:layout_constraintTop_toTopOf="@id/textPrice"
+        tools:text="50%"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textSlashedPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/textPrice"
+        app:layout_constraintStart_toEndOf="@id/labelDiscount"
+        app:layout_constraintTop_toTopOf="@id/textPrice"
+        app:layout_goneMarginStart="0dp"
+        app:typographyType="body_3"
+        tools:text="Rp20.000"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toEndOf="@id/textSlashedPrice"
+        app:layout_constraintTop_toBottomOf="@id/textWeight"
+        app:layout_goneMarginStart="0dp"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Rp80.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textSimilarProduct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/tokopedianow_similar_product_text"
+        android:textColor="@color/Unify_GN500"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/imageChevron"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imgProduct"
+        app:typographyType="paragraph_3"
+        tools:visibility="visible" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/imageChevron"
+        android:layout_width="15dp"
+        android:layout_height="28dp"
+        android:visibility="gone"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="2dp"
+        app:icon_color_light_enable="@color/Unify_G500"
+        app:icon_name="CHEVRON_RIGHT"
+        app:layout_constraintBottom_toBottomOf="@id/textSimilarProduct"
+        app:layout_constraintStart_toEndOf="@id/textSimilarProduct"
+        app:layout_constraintTop_toTopOf="@id/textSimilarProduct" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnProductCta"
+        android:layout_width="152dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/tokopedianow_add_to_cart_text"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imgProduct"
+        app:unifyButtonSize="small"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost"
+        tools:visibility="gone" />
+
+    <com.tokopedia.unifycomponents.QuantityEditorUnify
+        android:id="@+id/quantityEditor"
+        android:layout_width="112dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imgProduct"
+        tools:visibility="visible" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/btnDeleteCart"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginEnd="9dp"
+        android:visibility="gone"
+        app:icon_color_light_enable="@color/Unify_NN500"
+        app:icon_name="DELETE"
+        app:layout_constraintBottom_toBottomOf="@id/quantityEditor"
+        app:layout_constraintEnd_toStartOf="@id/quantityEditor"
+        app:layout_constraintTop_toTopOf="@id/quantityEditor"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="54dp"
+        app:layout_constraintTop_toBottomOf="@id/imgProduct" />
+</androidx.constraintlayout.widget.ConstraintLayout>

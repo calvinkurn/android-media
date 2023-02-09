@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.productcard_compact.similarproduct.presentation.listener.TokoNowSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryMenuTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowChooseAddressWidgetTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateNoResultTypeFactory
@@ -36,7 +37,6 @@ import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseE
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseLoadingViewHolder
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseProductViewHolder
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseSortFilterViewHolder
-import com.tokopedia.tokopedianow.similarproduct.listener.TokoNowSimilarProductTrackerListener
 
 class RepurchaseAdapterTypeFactory(
     private val tokoNowListener: TokoNowView? = null,

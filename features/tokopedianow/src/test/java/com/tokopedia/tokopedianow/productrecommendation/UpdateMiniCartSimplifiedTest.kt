@@ -6,7 +6,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.resetAllProductCardCarouselItemQuantities
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.util.TestUtils.getPrivateField
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Assert

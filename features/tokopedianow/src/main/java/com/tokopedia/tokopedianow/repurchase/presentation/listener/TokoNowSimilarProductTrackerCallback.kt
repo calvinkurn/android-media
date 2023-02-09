@@ -1,8 +1,8 @@
 package com.tokopedia.tokopedianow.repurchase.presentation.listener
 
+import com.tokopedia.productcard_compact.similarproduct.presentation.listener.TokoNowSimilarProductTrackerListener
+import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.SimilarProductUiModel
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics
-import com.tokopedia.tokopedianow.similarproduct.listener.TokoNowSimilarProductTrackerListener
-import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 
 class TokoNowSimilarProductTrackerCallback(
     private val analytics: RepurchaseAnalytics

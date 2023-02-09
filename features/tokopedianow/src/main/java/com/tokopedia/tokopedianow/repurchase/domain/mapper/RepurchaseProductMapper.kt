@@ -1,8 +1,9 @@
 package com.tokopedia.tokopedianow.repurchase.domain.mapper
 
+import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.ADDITIONAL_POSITION
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 
 object RepurchaseProductMapper {
@@ -25,7 +26,7 @@ object RepurchaseProductMapper {
         isVariant = product.parentProductId.isNotBlank() && product.parentProductId != "0",
         needToShowQuantityEditor = true,
         labelGroupList = product.labelGroup.map {
-            TokoNowProductCardViewUiModel.LabelGroup(
+            LabelGroup(
                 position = it.position,
                 type = it.type,
                 title = it.title,

@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">productcard_compact</string>
+
+    <string name="tokopedianow_product_card_similar_product">Pilihan Serupa</string>
+    <string name="tokopedianow_product_card_percentage">%d%%</string>
+    <string name="tokopedianow_product_card_wishlist_add_success">Barang berhasil disimpan di Wishlist. Kamu akan dapat notifikasi saat stok kembali.</string>
+    <string name="tokopedianow_product_card_wishlist_add_fail">Oops, barang gagal disimpan di Wishlist.</string>
+    <string name="tokopedianow_product_card_wishlist_remove_success">Barang sudah dihapus dari Wishlist.</string>
+    <string name="tokopedianow_product_card_wishlist_remove_fail">Oops, barang gagal dihapus dari Wishlist.</string>
+    <string name="tokopedianow_recipe_similar_product_title">Produk serupa</string>
+
+    <string name="tokopedianow_toaster_ok">Oke</string>
+    <string name="tokopedianow_toaster_retry">Coba Lagi</string>
+    <string name="tokopedianow_toaster_see">Lihat</string>
+
+    <string name="tokopedianow_percentage_format">%1$s %%</string>
+    <string name="tokopedianow_stock_empty_text">Stok Habis</string>
+    <string name="tokopedianow_add_to_cart_text">+ Keranjang</string>
+
+    <string name="tokopedianow_dynamic_header_subtitle_default_value">Berakhir dalam</string>
+    <string name="tokopedianow_mix_left_carousel_widget_see_all">Lihat Semua</string>
+
+    <string name="tokopedianow_product_card_similar_product_error_description">Tidak Ada Produk Serupa yang Tersedia</string>
+    <string name="tokopedianow_similar_product_text">Produk Serupa</string>
+
+    <string name="tokopedianow_content_description_quantity_editor_view_add">tombol tambah</string>
+    <string name="tokopedianow_content_description_quantity_editor_view_sub">tombol kurang</string>
+
+</resources>

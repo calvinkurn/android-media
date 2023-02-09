@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.searchcategory.domain.mapper
 
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel.LabelGroup
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel.LabelGroup
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView

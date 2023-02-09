@@ -1,17 +1,16 @@
 package com.tokopedia.tokopedianow.common.listener
 
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
-import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView.TokoNowProductRecommendationListener
-import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.TokoNowProductCardCarouselView
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 
 class TokoNowProductRecommendationCallback(
     private val viewModel: TokoNowProductRecommendationViewModel,
     private val listener: TokoNowProductRecommendationListener?
 ): TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener,
-    TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
+    com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
 
     override fun onProductCardClicked(
         position: Int,

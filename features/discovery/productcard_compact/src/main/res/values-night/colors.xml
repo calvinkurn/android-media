@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="tokopedianow_product_card_dms_progress_bar_label_text_color">#DCE4ED</color>
+    <color name="tokopedianow_card_dms_color">@color/cardunify_background</color>
+</resources>

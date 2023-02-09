@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/header_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="4dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tp_title"
+        android:layout_centerVertical="true"
+        android:lines="1"
+        android:ellipsize="end"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="Campaign Title Max.28"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="1dp"
+        android:ellipsize="end"
+        android:lines="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tp_title"
+        app:typographyType="display_3"
+        tools:text="Berakhir dalam" />
+
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+        android:id="@+id/tus_count_down"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="2dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/tp_subtitle"
+        app:layout_constraintStart_toEndOf="@+id/tp_subtitle"
+        app:layout_constraintTop_toTopOf="@+id/tp_subtitle"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_see_all"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="end"
+        android:lineSpacingExtra="3sp"
+        android:textColor="@color/Unify_G500"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_goneMarginLeft="16dp"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="Lihat Semua" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

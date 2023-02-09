@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="tokopedianow_product_card_dms_progress_bar_label_text_color">#808FA1</color>
+    <color name="tokopedianow_product_card_dms_button_stroke_collapsed_color">#03AC0E</color>
+    <color name="tokopedianow_product_card_dms_button_stroke_expanded_color">#BFC9D9</color>
+    <color name="tokopedianow_product_card_dms_status_label_background">#AD31353B</color>
+    <color name="tokopedianow_product_card_dms_button_background">#FFFFFF</color>
+    <color name="tokopedianow_product_card_dms_button_stroke_plus_minus_cursor_color">#00AA5B</color>
+    <color name="tokopedianow_product_card_dms_wishlist_button_icon_color">#2E3137</color>
+    <color name="tokopedianow_product_card_dms_rating_color">#FFC400</color>
+    <color name="tokopedianow_card_dms_color">@color/cardunify_background</color>
+    <color name="tokopedianow_quantity_editor_dms_edit_text_focus_text_color">#212121</color>
+    <color name="tokopedianow_quantity_editor_dms_edit_text_not_focus_text_color">#00AA5B</color>
+</resources>

@@ -40,7 +40,7 @@ import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserP
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
@@ -142,7 +142,7 @@ class TokoNowHomeViewModel @Inject constructor(
         private const val DEFAULT_HEADER_Y_COORDINATE = 0f
     }
 
-    val homeLayoutList: LiveData<Result<HomeLayoutListUiModel>>
+    val homeLayoutList: LiveData<com.tokopedia.usecase.coroutines.Result<HomeLayoutListUiModel>>
         get() = _homeLayoutList
     val keywordSearch: LiveData<SearchPlaceholder>
         get() = _keywordSearch

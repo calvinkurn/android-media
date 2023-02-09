@@ -6,6 +6,13 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_ADD_TO_CART_CATEGORY
+import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_CLICK_CLOSE_BOTTOMSHEET_CATEGORY
+import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_CLICK_PRODUCT_CATEGORY
+import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_CLICK_SIMILAR_PRODUCT_BUTTON_CATEGORY
+import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_VIEW_EMPTY_STATE_CATEGORY
+import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_VIEW_SIMILAR_PRODUCT_BOTTOMSHEET_CATEGORY
+import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.SimilarProductUiModel
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.ADD_QUANTITY_ON_BOTTOM_SHEET
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.APPLY_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_APPLY_FILTER
@@ -119,13 +126,6 @@ import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackin
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKO_NOW
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.USER_ID
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
-import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants
-import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_ADD_TO_CART_CATEGORY
-import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_CLICK_CLOSE_BOTTOMSHEET_CATEGORY
-import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_CLICK_PRODUCT_CATEGORY
-import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_VIEW_EMPTY_STATE_CATEGORY
-import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_VIEW_SIMILAR_PRODUCT_BOTTOMSHEET_CATEGORY
-import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
@@ -916,7 +916,7 @@ object CategoryTracking {
             userId = userId
         ).apply {
             putString(KEY_PRODUCT_ID, productIdTriggered)
-            putString(KEY_TRACKER_ID, TokonowSimilarProductConstants.TRACKER_ID_CLICK_SIMILAR_PRODUCT_BUTTON_CATEGORY)
+            putString(KEY_TRACKER_ID, TRACKER_ID_CLICK_SIMILAR_PRODUCT_BUTTON_CATEGORY)
         }
 
         sendEnhanceEcommerceEvent(

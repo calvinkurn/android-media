@@ -25,7 +25,7 @@ import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapp
 import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.NO_ORDER_QUANTITY
 import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.resetAllProductCardCarouselItemQuantities
 import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.updateProductCardCarouselItemQuantity
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
 import com.tokopedia.usecase.coroutines.Fail

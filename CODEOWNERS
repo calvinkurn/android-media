@@ -17,6 +17,7 @@
 /features/discovery/home_recom/                     	@tokopedia/android-miniondave-dev
 /features/discovery/recentview/                     	@tokopedia/android-miniondave-dev
 /features/discovery/productcard/                    	@tokopedia/android-miniondave-dev
+/features/discovery/productcard_compact/                @tokopedia/android-minionsolo-dev
 /features/discovery/shopwidget/                    	    @tokopedia/android-miniondave-dev
 /features/discovery/search/                         	@tokopedia/android-miniondave-dev
 /features/discovery/filter/                         	@tokopedia/android-miniondave-dev

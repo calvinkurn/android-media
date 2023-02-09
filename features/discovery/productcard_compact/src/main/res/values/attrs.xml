@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TokoNowQuantityEditorView">
+        <attr name="minQuantity" format="integer"/>
+        <attr name="maxQuantity" format="integer"/>
+        <attr name="quantity" format="integer"/>
+    </declare-styleable>
+</resources>

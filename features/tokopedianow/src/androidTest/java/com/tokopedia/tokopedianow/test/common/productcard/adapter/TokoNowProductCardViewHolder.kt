@@ -2,8 +2,8 @@ package com.tokopedia.tokopedianow.test.common.productcard.adapter
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
-import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardView
+import com.tokopedia.productcard_compact.productcard.presentation.customview.TokoNowProductCardView
+import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.test.R
 
 internal class TokoNowProductCardViewHolder(

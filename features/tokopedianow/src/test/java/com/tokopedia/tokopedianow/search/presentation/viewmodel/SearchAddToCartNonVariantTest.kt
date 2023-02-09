@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.search.presentation.viewmodel
 
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper

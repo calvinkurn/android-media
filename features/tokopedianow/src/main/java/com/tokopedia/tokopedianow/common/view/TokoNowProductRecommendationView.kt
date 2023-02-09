@@ -7,19 +7,19 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.productcard_compact.databinding.LayoutTokopedianowProductRecommendationViewBinding
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.TokoNowDynamicHeaderView
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState.LOADED
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState.LOADING
 import com.tokopedia.tokopedianow.common.listener.TokoNowProductRecommendationCallback
-import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
-import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
-import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
-import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductRecommendationViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -112,7 +112,7 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
      */
     fun setListener(
         productCardCarouselListener: TokoNowProductCardCarouselListener? = null,
-        headerCarouselListener: TokoNowDynamicHeaderListener? = null
+        headerCarouselListener: TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener? = null
     ) {
         binding.productCardCarousel.setListener(
             productCardCarouselListener = productCardCarouselListener,

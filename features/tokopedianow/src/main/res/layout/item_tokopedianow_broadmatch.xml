@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView
+    <com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.TokoNowProductCardCarouselView
         android:id="@+id/product_card_carousel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

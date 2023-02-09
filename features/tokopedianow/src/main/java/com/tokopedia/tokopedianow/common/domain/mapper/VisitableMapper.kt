@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.common.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
 
 object VisitableMapper {
     const val NO_ORDER_QUANTITY = 0
