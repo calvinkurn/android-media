@@ -159,7 +159,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             it,
             object : ProductTagViewComponent.Listener {
                 override fun impressProductTag(view: ProductTagViewComponent) {
-                    analytic.impressProductTag(parentViewModel.channelId)
+                    analytic.onImpressedProductCarousel()
                 }
 
                 override fun scrollProductTag(
@@ -902,8 +902,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         state: List<ProductTagSectionUiModel>
     ) {
         if (prevState == state) return
-
-        analytic.onImpressedProductCarousel()
 
         val sortedList = mutableListOf<ProductUiModel>()
         val newList = state.flatMap { tagSectionUiModel ->
