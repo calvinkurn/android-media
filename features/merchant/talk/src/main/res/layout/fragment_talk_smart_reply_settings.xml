@@ -10,6 +10,14 @@
         android:layout_height="wrap_content"
         android:paddingBottom="16dp">
 
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_talk_smart_reply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tickerShapeType="full"
+            app:tickerType="announcement" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/talk_smart_reply_header"
             android:layout_width="0dp"
@@ -21,7 +29,7 @@
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ticker_talk_smart_reply"
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
