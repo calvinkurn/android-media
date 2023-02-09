@@ -34,6 +34,7 @@ class InboxContactUsViewModel @Inject constructor(
         const val TICKET_ON_GIVE_RATE = 1
         const val TICKET_ON_CLOSE = 2
         const val ALL_OPTION_POSITION = 0
+        private const val FIRST_PAGE = 1
     }
 
     private var optionsFilter: List<InboxFilterSelection> = arrayListOf()
@@ -118,7 +119,7 @@ class InboxContactUsViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 ticketItems = arrayListOf(),
-                offset = 0
+                offset = FIRST_PAGE
             )
         }
     }
@@ -205,7 +206,7 @@ class InboxContactUsViewModel @Inject constructor(
 
     private fun restartStateTickets(isFilteredData: Boolean = false) {
         val ticketItems = arrayListOf<InboxTicketListResponse.Ticket.Data.TicketItem>()
-        val currentOffset = 0
+        val currentOffset = FIRST_PAGE
         _uiState.update {
             it.copy(
                 offset = currentOffset,

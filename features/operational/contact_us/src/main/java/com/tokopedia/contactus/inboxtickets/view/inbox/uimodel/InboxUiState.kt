@@ -7,7 +7,7 @@ data class InboxUiState(
     val welcomeMessage: String = "",
     val showChatBotWidget: Boolean = false,
     val unReadNotification: Boolean = false,
-    val offset: Int = 0,
+    val offset: Int = 1,
     val ticketItems: List<InboxTicketListResponse.Ticket.Data.TicketItem> = arrayListOf(),
     val isFilteredData: Boolean = false
 )

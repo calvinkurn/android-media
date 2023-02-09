@@ -120,6 +120,7 @@ class InboxContactUsFragment :
     override fun onResume() {
         super.onResume()
         showProgressBar()
+        resetPaging()
         viewModel.getTopBotStatus()
         viewModel.restartPageOfList()
         viewModel.getTicketItems()
