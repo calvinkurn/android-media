@@ -48,6 +48,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -75,6 +76,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     companion object {
         private const val FLOW_TIMEOUT_MILLIS = 5000L
+        private const val DELAY_FINISH_ORDER_RESULT = 2000L
         private const val PRODUCT_LIST_COLLAPSE_DEBOUNCE_TIME = 500L
     }
 
@@ -161,7 +163,10 @@ class BuyerOrderDetailViewModel @Inject constructor(
                 userId = userSession.get().userId,
                 action = getFinishOrderActionStatus()
             )
-            _finishOrderResult.value = (Success(finishOrderUseCase.get().execute(param)))
+            finishOrderUseCase.get().execute(param).let { result ->
+                delay(DELAY_FINISH_ORDER_RESULT)
+                _finishOrderResult.value = (Success(result))
+            }
         }, onError = {
                 _finishOrderResult.value = (Fail(it))
             })
