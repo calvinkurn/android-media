@@ -140,17 +140,35 @@ class PayLaterViewModelTest {
     @Test
     fun successPayLaterOptions()
     {
+        val labelText = "PROMO"
+        val labelTextColor = "white"
+        val labelBgColor = "red"
+        val label = Label(
+            labelText,
+            labelTextColor,
+            labelBgColor,
+        )
         val payLaterGetSimulation = PayLaterGetSimulation(
             listOf(
-                PayLaterAllData(1,"", "", listOf(), Label(), "")
+                PayLaterAllData(
+                    1,
+                    "",
+                    "",
+                    listOf(),
+                    label,
+                    "",
+                )
             )
         )
         val list = arrayListOf(SimulationUiModel(
-                1,
-                "",
-                "",
-                false,
-                arrayListOf(SupervisorUiModel)))
+            1,
+            "",
+            "",
+            false,
+            arrayListOf(SupervisorUiModel),
+            SimulationUiModel.LabelUiModel.create(label),
+            "",
+        ))
         mockMapperResponse(list)
         coVerify(exactly = 0) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         coEvery {
@@ -168,6 +186,26 @@ class PayLaterViewModelTest {
         viewModel.getPayLaterAvailableDetail(10.0, "0", "")
         coVerify(exactly = 1) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Success).data, list)
+        assertSimulationData(payLaterGetSimulation, list)
+    }
+
+    private fun assertSimulationData(
+        simulationData: PayLaterGetSimulation,
+        simulationUiModel: List<SimulationUiModel>,
+    ) {
+        simulationData.productList?.forEachIndexed { index, data ->
+            assert(data.tenure?.equals(simulationUiModel[index].tenure) ?: false)
+            assert(data.text?.equals(simulationUiModel[index].text) ?: false)
+            assert(data.smallText?.equals(simulationUiModel[index].smallText) ?: false)
+            assert(data.promoName?.equals(simulationUiModel[index].promoName) ?: false)
+            assertTenureLabel(data.label, simulationUiModel[index].label)
+        }
+    }
+
+    private fun assertTenureLabel(labelData: Label?, labelUiModel: SimulationUiModel.LabelUiModel?) {
+        assert(labelData?.text?.equals(labelUiModel?.text) ?: false)
+        assert(labelData?.textColor?.equals(labelUiModel?.textColor) ?: false)
+        assert(labelData?.bgColor?.equals(labelUiModel?.bgColor) ?: false)
     }
 
 
