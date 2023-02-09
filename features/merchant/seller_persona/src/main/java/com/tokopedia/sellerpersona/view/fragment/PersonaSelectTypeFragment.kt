@@ -9,10 +9,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerpersona.databinding.FragmentPersonaSelectTypeBinding
 import com.tokopedia.sellerpersona.view.adapter.PersonaTypeAdapter
 import com.tokopedia.sellerpersona.view.adapter.viewholder.PersonaTypeViewHolder
+import com.tokopedia.sellerpersona.view.model.PersonaTypeLoadingUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
 import com.tokopedia.sellerpersona.view.viewhelper.PersonaTypeItemDecoration
 import com.tokopedia.sellerpersona.view.viewmodel.SelectPersonaTypeViewModel
@@ -55,9 +58,9 @@ class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupRecyclerView()
         fetchPersonaList()
 
-        setupRecyclerView()
         observePersonaList()
         onApplyButtonClicked()
     }
@@ -91,6 +94,7 @@ class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>
 
     private fun observePersonaList() {
         viewLifecycleOwner.observe(viewModel.personaList) {
+            dismissLoadingState()
             when (it) {
                 is Success -> showPersonaList(it.data)
                 is Fail -> showErrorState(it.throwable)
@@ -99,18 +103,50 @@ class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>
     }
 
     private fun showPersonaList(data: List<PersonaUiModel>) {
-        binding?.rvSpSelectType?.post {
+        binding?.run {
             personaTypeAdapter.clearAllElements()
             personaTypeAdapter.addElement(data)
+            dividerSpSelectType.visible()
+            btnSpSelectType.visible()
         }
     }
 
     private fun showErrorState(throwable: Throwable) {
-
+        binding?.run {
+            dismissLoadingState()
+            dividerSpSelectType.visible()
+            btnSpSelectType.visible()
+            errorViewPersonaSelectType.visible()
+            errorViewPersonaSelectType.setOnActionClicked {
+                fetchPersonaList()
+            }
+        }
     }
 
     private fun fetchPersonaList() {
+        showLoadingState()
         viewModel.fetchPersonaList()
+    }
+
+    private fun showLoadingState() {
+        binding?.run {
+            btnSpSelectType.gone()
+            dividerSpSelectType.gone()
+            errorViewPersonaSelectType.gone()
+
+            val loadingItems = listOf(
+                PersonaTypeLoadingUiModel,
+                PersonaTypeLoadingUiModel,
+                PersonaTypeLoadingUiModel
+            )
+
+            personaTypeAdapter.clearAllElements()
+            personaTypeAdapter.addElement(loadingItems)
+        }
+    }
+
+    private fun dismissLoadingState() {
+        personaTypeAdapter.clearAllElements()
     }
 
     private fun setupRecyclerView() {

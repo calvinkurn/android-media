@@ -1,5 +1,6 @@
 package com.tokopedia.sellerpersona.view.adapter.factory
 
+import com.tokopedia.sellerpersona.view.model.PersonaTypeLoadingUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
 
 /**
@@ -9,4 +10,6 @@ import com.tokopedia.sellerpersona.view.model.PersonaUiModel
 interface PersonaTypeFactory {
 
     fun type(model: PersonaUiModel): Int
+
+    fun type(model: PersonaTypeLoadingUiModel): Int
 }
