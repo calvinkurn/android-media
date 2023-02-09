@@ -3,6 +3,7 @@ package com.tokopedia.sellerpersona.data.remote.usecase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerpersona.data.remote.model.PersonaStatusModel
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
@@ -21,16 +22,28 @@ class GetPersonaDataUseCase @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) {
 
+    companion object {
+        private const val ERROR_PERSONA_VALUE_IS_EMPTY = "Error : Persona status is empty"
+        private const val ERROR_PERSONA_LIST_IS_EMPTY = "Error : Persona list is empty"
+    }
+
     suspend fun execute(shopId: String, page: String): PersonaDataUiModel {
         return withContext(dispatchers.io) {
             try {
                 val personaStatusAsync = async { getPersonaStatusUseCase.execute(shopId, page) }
                 val personaListAsync = async { getPersonaListUseCase.execute() }
 
-                return@withContext getPersonaData(
-                    personaStatusAsync.await(),
-                    personaListAsync.await()
-                )
+                val personaStatus = personaStatusAsync.await()
+                val personaList = personaListAsync.await()
+
+                if (personaStatus.persona.isBlank()) {
+                    throw MessageErrorException(ERROR_PERSONA_VALUE_IS_EMPTY)
+                }
+                if (personaList.isEmpty()) {
+                    throw MessageErrorException(ERROR_PERSONA_LIST_IS_EMPTY)
+                }
+
+                return@withContext getPersonaData(personaStatus, personaList)
             } catch (e: Exception) {
                 throw e
             }

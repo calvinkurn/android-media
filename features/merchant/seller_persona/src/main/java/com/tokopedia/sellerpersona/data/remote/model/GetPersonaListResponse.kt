@@ -19,7 +19,7 @@ data class PersonaListDataModel(
 )
 
 data class PersonaListModel(
-    @SerializedName("name") val name: String = String.EMPTY,
+    @SerializedName("value") val value: String = String.EMPTY,
     @SerializedName("header") val header: PersonaItemHeaderModel = PersonaItemHeaderModel(),
     @SerializedName("body") val body: PersonaItemBodyModel = PersonaItemBodyModel()
 )

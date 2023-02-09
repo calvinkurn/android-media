@@ -25,6 +25,7 @@ import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
 import com.tokopedia.sellerpersona.view.viewmodel.PersonaResultViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -87,7 +88,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
             dismissLoadingButton()
             when (it) {
                 is Success -> setOnToggleSuccess(it.data)
-                is Fail -> handleError(it.throwable)
+                is Fail -> showToggleErrorMessage()
             }
         }
     }
@@ -119,32 +120,52 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
     }
 
     private fun showToggleErrorMessage() {
-
+        view?.run {
+            val dp64 = context.resources.getDimensionPixelSize(
+                com.tokopedia.unifyprinciples.R.dimen.layout_lvl7
+            )
+            Toaster.toasterCustomBottomHeight = dp64
+            Toaster.build(
+                rootView,
+                context.getString(R.string.sp_toaster_error_message),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                context.getString(R.string.sp_oke)
+            ).show()
+        }
     }
 
     private fun observePersonaData() {
         viewLifecycleOwner.observe(viewModel.personaData) {
+            dismissLoadingState()
             when (it) {
                 is Success -> {
                     this.personaData = it.data
                     showPersonaData(it.data)
                 }
-                is Fail -> handleError(it.throwable)
+                is Fail -> handleError()
             }
         }
     }
 
-    private fun handleError(throwable: Throwable) {
-
+    private fun handleError() {
+        binding?.run {
+            dismissLoadingState()
+            groupSpResultComponents.gone()
+            errorViewPersonaResult.visible()
+            errorViewPersonaResult.setOnActionClicked {
+                viewModel.fetchPersonaData()
+            }
+        }
     }
 
     private fun showPersonaData(data: PersonaDataUiModel) {
         binding?.run {
+            errorViewPersonaResult.gone()
             groupSpResultComponents.visible()
             isPersonaActive = data.personaStatus == PersonaStatus.ACTIVE
 
             setTextPersonaActiveStatus(isPersonaActive)
-            dismissLoadingState()
             setTipsVisibility(data.persona)
             setupSwitcher()
             setupApplyButton()
@@ -244,9 +265,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
     }
 
     private fun dismissLoadingState() {
-        binding?.run {
-            loaderSpResult.gone()
-        }
+        binding?.loaderSpResult?.gone()
     }
 
     private fun setupView() {

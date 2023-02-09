@@ -14,7 +14,7 @@ class PersonaListMapper @Inject constructor() {
     fun mapToUiModel(personaList: List<PersonaListModel>): List<PersonaUiModel> {
         return personaList.mapIndexed { i, it ->
             PersonaUiModel(
-                name = it.name,
+                name = it.value,
                 headerTitle = it.header.title,
                 headerSubTitle = it.header.subtitle,
                 avatarImage = it.header.image,
