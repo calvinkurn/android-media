@@ -1,7 +1,15 @@
 package com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets
 
 import com.tokopedia.dilayanitokopedia.home.domain.model.HomeLayoutResponse
-import com.tokopedia.home_component.model.*
+import com.tokopedia.home_component.model.ChannelBanner
+import com.tokopedia.home_component.model.ChannelBenefit
+import com.tokopedia.home_component.model.ChannelConfig
+import com.tokopedia.home_component.model.ChannelCtaData
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelHeader
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.LabelGroup
+import com.tokopedia.home_component.model.TrackingAttributionModel
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 
 object ChannelMapper {

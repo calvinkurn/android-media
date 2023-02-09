@@ -1,5 +1,6 @@
 package com.tokopedia.dilayanitokopedia.home.presentation.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,15 +16,14 @@ import com.tokopedia.unifycomponents.CardUnify
 class DtAnchorTabAdapter(private val listener: AnchorTabListener) :
     RecyclerView.Adapter<DtAnchorTabAdapter.DtAnchorTabViewHolder>() {
 
-    var listMenu = mutableListOf<AnchorTabUiModel>()
-
-    private var selectedMenu = 0
-
-    private var maximizeIcons = true
-
     interface AnchorTabListener {
         fun onMenuSelected(anchorTabUiModel: AnchorTabUiModel, position: Int)
     }
+
+    var listMenu = mutableListOf<AnchorTabUiModel>()
+
+    private var selectedMenu = 0
+    private var maximizeIcons = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DtAnchorTabViewHolder {
         val binding = DtItemAnchorTabsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -41,29 +41,42 @@ class DtAnchorTabAdapter(private val listener: AnchorTabListener) :
     fun updateList(data: List<AnchorTabUiModel>) {
         listMenu.clear()
         listMenu.addAll(data)
-        notifyDataSetChanged()
+        this.selectedMenu = 0
+        notifyItemRangeChangeAll()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun selectMenu(selectedMenu: AnchorTabUiModel) {
-        this.selectedMenu = listMenu.indexOf(selectedMenu)
+        val newSelected = listMenu.indexOf(selectedMenu)
+        this.selectedMenu = newSelected
+
+        // need to use this to handle the scroll anchor tab with select menu
         notifyDataSetChanged()
     }
 
     fun resetToFirst() {
         if (listMenu.isNotEmpty()) {
             this.selectedMenu = 0
-            notifyDataSetChanged()
+            notifyItemRangeChangeAll()
         }
     }
 
     fun setMaximizeIcons() {
-        maximizeIcons = true
-        notifyDataSetChanged()
+        if (!maximizeIcons) {
+            maximizeIcons = true
+            notifyItemRangeChangeAll()
+        }
     }
 
     fun setMinimizeIcons() {
-        maximizeIcons = false
-        notifyDataSetChanged()
+        if (maximizeIcons) {
+            maximizeIcons = false
+            notifyItemRangeChangeAll()
+        }
+    }
+
+    private fun notifyItemRangeChangeAll() {
+        notifyItemRangeChanged(0, itemCount - 1)
     }
 
     inner class DtAnchorTabViewHolder(
@@ -74,9 +87,7 @@ class DtAnchorTabAdapter(private val listener: AnchorTabListener) :
         fun bindData(data: AnchorTabUiModel, isMaximize: Boolean = false, isSelected: Boolean = false) {
             binding.anchorIcon.loadImage(data.imageUrl)
             binding.anchorText.text = data.title
-
             setIconVisibility(isMaximize)
-
             cardSelection(isSelected)
             setListener(data)
         }

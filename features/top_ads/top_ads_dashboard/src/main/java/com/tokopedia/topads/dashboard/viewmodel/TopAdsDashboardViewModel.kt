@@ -5,8 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.topads.common.data.model.ticker.TopAdsTickerResponse
 import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsTickerUseCase
 import com.tokopedia.topads.dashboard.data.model.beranda.RecommendationStatistics
 import com.tokopedia.topads.dashboard.data.model.beranda.TopAdsLatestReading
 import com.tokopedia.topads.dashboard.data.model.beranda.TopadsWidgetSummaryStatisticsModel
@@ -24,6 +26,7 @@ class TopAdsDashboardViewModel @Inject constructor(
     private val summaryStatisticsUseCase: TopAdsWidgetSummaryStatisticsUseCase,
     private val recommendationStatisticsUseCase: TopadsRecommendationStatisticsUseCase,
     private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
+    private val topAdsTickerUseCase: TopAdsTickerUseCase,
 ) : BaseViewModel(Dispatchers.Main) {
 
     private val _summaryStatisticsLiveData =
@@ -40,6 +43,11 @@ class TopAdsDashboardViewModel @Inject constructor(
     private val _latestReadingLiveData =
         MutableLiveData<Result<List<TopAdsLatestReading.TopAdsLatestReadingItem.Article>>>()
     val latestReadingLiveData: LiveData<Result<List<TopAdsLatestReading.TopAdsLatestReadingItem.Article>>> get() = _latestReadingLiveData
+
+    private val _tickerLiveData =
+        MutableLiveData<TopAdsTickerResponse>()
+    val tickerLiveData: LiveData<TopAdsTickerResponse> get() = _tickerLiveData
+
 
     fun fetchShopDeposit() {
         topAdsGetShopDepositUseCase.execute({
@@ -74,6 +82,16 @@ class TopAdsDashboardViewModel @Inject constructor(
                     Success(data.topadsWidgetSummaryStatistics.widgetSummaryStatistics)
         }, onError = {
             _summaryStatisticsLiveData.postValue(Fail(it))
+        })
+    }
+
+    fun getTopadsTicker() {
+        launchCatchError(block = {
+            val response = topAdsTickerUseCase.execute()
+            _tickerLiveData.postValue(response)
+
+        }, onError = {
+            it.printStackTrace()
         })
     }
 

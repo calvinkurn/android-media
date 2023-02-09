@@ -28,8 +28,11 @@ data class Data(
 )
 
 data class PlaceHolder(
+
     @Expose
+    @SerializedName("placeholder")
     var placeholder: String? = "",
+
     @SerializedName("keyword")
     @Expose
     var keyword: String? = ""

@@ -36,16 +36,13 @@ abstract class HomeFeedEndlessScrollListener(layoutManager: RecyclerView.LayoutM
         }
     }
 
-
-    protected fun init() {}
     fun setEndlessLayoutManagerListener(endlessLayoutManagerListener: EndlessLayoutManagerListener?) {
         this.endlessLayoutManagerListener = endlessLayoutManagerListener
     }
 
     private fun getLayoutManager(): RecyclerView.LayoutManager? {
-        return if (endlessLayoutManagerListener != null
-            && endlessLayoutManagerListener?.currentLayoutManager != null
-        ) endlessLayoutManagerListener?.currentLayoutManager else layoutManager
+        return if (endlessLayoutManagerListener != null && endlessLayoutManagerListener?.currentLayoutManager != null)
+            endlessLayoutManagerListener?.currentLayoutManager else layoutManager
     }
 
     private fun getLastVisibleItem(lastVisibleItemPositions: IntArray): Int {
@@ -66,7 +63,6 @@ abstract class HomeFeedEndlessScrollListener(layoutManager: RecyclerView.LayoutM
     }
 
     protected fun checkLoadMore(view: RecyclerView?, dx: Int, dy: Int) {
-
         // assume load more when going down or going right
         if (dy <= 0 && dx <= 0) {
             return
@@ -94,13 +90,11 @@ abstract class HomeFeedEndlessScrollListener(layoutManager: RecyclerView.LayoutM
         }
     }
 
-
     private fun loadMoreNextPage() {
         val totalItemCount = getLayoutManager()?.itemCount
         loading = true
         onLoadMore(currentPage + 1, totalItemCount ?: 0)
     }
-
 
     private fun resetState() {
         currentPage = STARTING_PAGE_INDEX

@@ -13,7 +13,7 @@ class HomeLoadingMoreModel : HomeVisitable {
     }
 
     override fun setTrackingData(trackingData: Map<String, Any>) {
-        //no-op
+        // no-op
     }
 
     override fun getTrackingData(): Map<String, Any>? {
@@ -25,7 +25,7 @@ class HomeLoadingMoreModel : HomeVisitable {
     }
 
     override fun setTrackingDataForCombination(`object`: List<Any>) {
-        //no-op
+        // no-op
     }
 
     override fun isTrackingCombined(): Boolean {
@@ -33,6 +33,7 @@ class HomeLoadingMoreModel : HomeVisitable {
     }
 
     override fun setTrackingCombined(isCombined: Boolean) {
+        // no-op
     }
 
     override fun isCache(): Boolean {

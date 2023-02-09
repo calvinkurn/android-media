@@ -20,7 +20,6 @@ class HomeBannerFeedViewHolder(itemView: View) : SmartAbstractViewHolder<BannerR
 
     private val bannerImageView: ImageView by lazy { itemView.findViewById<ImageView>(R.id.bannerImageView) }
 
-
     override fun bind(element: BannerRecommendationDataModel, listener: SmartListener) {
         bannerImageView.setOnClickListener {
             RouteManager.route(context, element.applink)
@@ -30,8 +29,8 @@ class HomeBannerFeedViewHolder(itemView: View) : SmartAbstractViewHolder<BannerR
             .asBitmap()
             .load(element.imageUrl)
             .dontAnimate()
-            .placeholder(R.drawable.loading_page)
-            .error(R.drawable.error_drawable)
+            .placeholder(R.drawable.dt_loading_page)
+            .error(R.drawable.dt_loading_page)
             .into(bannerImageView)
 
         bannerImageView.addOnImpressionListener(

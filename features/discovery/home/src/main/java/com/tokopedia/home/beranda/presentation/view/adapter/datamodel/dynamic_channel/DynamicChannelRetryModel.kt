@@ -10,6 +10,7 @@ class DynamicChannelRetryModel(var isLoading: Boolean) : HomeVisitable {
     }
 
     override fun setTrackingData(trackingData: Map<String, Any>) {
+
     }
 
     override fun getTrackingData(): Map<String, Any>? {
@@ -21,6 +22,7 @@ class DynamicChannelRetryModel(var isLoading: Boolean) : HomeVisitable {
     }
 
     override fun setTrackingDataForCombination(`object`: List<Any>) {
+
     }
 
     override fun isTrackingCombined(): Boolean {
@@ -28,6 +30,7 @@ class DynamicChannelRetryModel(var isLoading: Boolean) : HomeVisitable {
     }
 
     override fun setTrackingCombined(isCombined: Boolean) {
+
     }
 
     override fun isCache(): Boolean {

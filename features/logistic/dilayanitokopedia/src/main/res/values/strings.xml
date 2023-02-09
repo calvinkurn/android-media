@@ -10,4 +10,7 @@
     <string name="home_recommendation_empty_title">Tidak ada hasil</string>
     <string name="home_recommendation_empty_description">Produk tidak ada untuk kategori ini</string>
 
+    <string name="content_description_image_banner">Image Banner Dilayani Tokopedia</string>
+
+
 </resources>

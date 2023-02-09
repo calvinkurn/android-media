@@ -35,11 +35,22 @@ class DtHomeViewModel @Inject constructor(
         get() = _homeLayoutList
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
 
-    val menuList: LiveData<List<AnchorTabUiModel>>
-        get() = _menuList
-    private val _menuList = MutableLiveData<List<AnchorTabUiModel>>()
+    var menuList: List<AnchorTabUiModel>? = null
+
+    private val _anchorTabState = MutableLiveData<Result<List<AnchorTabUiModel>>>()
+    val anchorTabState: LiveData<Result<List<AnchorTabUiModel>>>
+        get() = _anchorTabState
 
     private val homeRecommendationDataModel = HomeRecommendationFeedDataModel()
+
+    val isOnLoading: Boolean
+        get() = homeLayoutList.value?.let {
+            if (it is Success) {
+                it.data.state == DtLayoutState.LOADING
+            } else {
+                false
+            }
+        } ?: false
 
     fun getHomeVisitableList(): List<Visitable<*>> {
         return homeLayoutItemList.mapNotNull { it.layout }
@@ -51,7 +62,7 @@ class DtHomeViewModel @Inject constructor(
 
     fun getAnchorTabByVisitablePosition(indexVisitable: Int): AnchorTabUiModel? {
         val getGroupId = homeLayoutItemList.getOrNull(indexVisitable)?.groupId
-        return menuList.value?.find { getGroupId == it.groupId }
+        return menuList?.find { getGroupId == it.groupId }
     }
 
     fun getHomeLayout(localCacheModel: LocalCacheModel) {
@@ -80,11 +91,17 @@ class DtHomeViewModel @Inject constructor(
      * anchor tab contain info and visitable of click to scroll
      */
     private fun getAnchorTabMenu(localCacheModel: LocalCacheModel) {
-        launchCatchError(block = {
-            val anchorTabResponse = getHomeAnchorTabUseCase.execute(localCacheModel)
-            val menuList = anchorTabResponse.mapMenuList()
-            _menuList.postValue(menuList)
-        }) {}
+        launchCatchError(
+            block = {
+                val anchorTabResponse = getHomeAnchorTabUseCase.execute(localCacheModel)
+                anchorTabResponse.mapMenuList().apply {
+                    menuList = this
+                    _anchorTabState.postValue(Success(this))
+                }
+            }
+        ) {
+            _anchorTabState.postValue(Fail(it))
+        }
     }
 
     private fun getRecommendationForYouNew() {

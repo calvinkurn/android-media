@@ -4,6 +4,7 @@ import android.Manifest.permission.POST_NOTIFICATIONS
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.config.GlobalConfig
@@ -15,7 +16,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
-class NotificationGeneralPromptBottomSheet: BottomSheetUnify() {
+class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
 
     private var binding: CmLayoutNotificationsGeneralPromptBinding? = null
 
@@ -25,6 +26,9 @@ class NotificationGeneralPromptBottomSheet: BottomSheetUnify() {
 
     private val activityName
         get() = activity?.javaClass?.simpleName ?: ""
+
+    private var lastTimeClicked: Long = 0
+    private val defaultInterval = 10000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,18 +57,19 @@ class NotificationGeneralPromptBottomSheet: BottomSheetUnify() {
     }
 
     private fun getResourcesConfig(): Triple<Int, Int, Int> =
-        if (GlobalConfig.isSellerApp())
+        if (GlobalConfig.isSellerApp()) {
             Triple(
                 R.drawable.cm_notifications_general_prompt_bottomsheet_sellerapp,
                 R.string.cm_notifications_general_prompt_sellerapp_title,
-                R.string.cm_notifications_general_prompt_sellerapp_description,
+                R.string.cm_notifications_general_prompt_sellerapp_description
             )
-        else
+        } else {
             Triple(
                 R.drawable.cm_notifications_general_prompt_bottomsheet_mainapp,
                 R.string.cm_notifications_general_prompt_mainapp_title,
-                R.string.cm_notifications_general_prompt_mainapp_description,
+                R.string.cm_notifications_general_prompt_mainapp_description
             )
+        }
 
     private fun sendEventImpression() {
         context?.let {
@@ -91,6 +96,11 @@ class NotificationGeneralPromptBottomSheet: BottomSheetUnify() {
     }
 
     private fun onTurnOnNotificationClick(ignored: View) {
+        val currentTime = SystemClock.elapsedRealtime()
+        if (currentTime - lastTimeClicked <= defaultInterval) {
+            return
+        }
+        lastTimeClicked = SystemClock.elapsedRealtime()
         sendEventClickCta()
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
@@ -101,7 +111,7 @@ class NotificationGeneralPromptBottomSheet: BottomSheetUnify() {
 
         requestPermissions(
             arrayOf(POST_NOTIFICATIONS),
-            POST_NOTIFICATIONS_REQUEST_CODE,
+            POST_NOTIFICATIONS_REQUEST_CODE
         )
     }
 
@@ -121,32 +131,34 @@ class NotificationGeneralPromptBottomSheet: BottomSheetUnify() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if (isPostNotificationPermissions(requestCode, permissions))
+        if (isPostNotificationPermissions(requestCode, permissions)) {
             sendEventPostNotificationPermissionResult(grantResults)
-
+        }
         dismiss()
     }
 
     private fun isPostNotificationPermissions(
         requestCode: Int,
-        permissions: Array<out String>,
-    ) = requestCode == POST_NOTIFICATIONS_REQUEST_CODE
-        && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-        && permissions.contains(POST_NOTIFICATIONS)
+        permissions: Array<out String>
+    ) = requestCode == POST_NOTIFICATIONS_REQUEST_CODE &&
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+        permissions.contains(POST_NOTIFICATIONS)
 
     private fun sendEventPostNotificationPermissionResult(grantResults: IntArray) {
         val context = context ?: return
 
-        if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED)
+        if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
             NotificationSettingsGtmEvents(userSession, context).sendActionAllowEvent(context)
-        else
+        } else {
             NotificationSettingsGtmEvents(userSession, context).sendActionNotAllowEvent(context)
+        }
     }
 
     override fun onDestroyView() {
         view?.let {
-            if (it is ViewGroup)
+            if (it is ViewGroup) {
                 it.removeAllViews()
+            }
         }
 
         binding = null

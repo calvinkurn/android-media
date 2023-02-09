@@ -14,7 +14,6 @@ import com.tokopedia.dilayanitokopedia.home.presentation.viewholder.recomendatio
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
-import com.tokopedia.home_component.listener.FeaturedShopListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.listener.MixTopComponentListener
@@ -52,7 +51,6 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
  */
 class DtHomeAdapterTypeFactory(
     private val homeRecommendationFeedListener: DtHomeCategoryListener,
-    private val featuredShopListener: FeaturedShopListener,
     private val bannerComponentListener: BannerComponentListener? = null,
     private val dynamicLegoBannerCallback: DynamicLegoBannerListener? = null,
     private val homeTopComponentListener: HomeComponentListener? = null,
@@ -107,8 +105,6 @@ class DtHomeAdapterTypeFactory(
             }
 
             MixLeftComponentViewHolder.LAYOUT -> MixLeftComponentViewHolder(view, homeLeftCarouselListener, null)
-
-            FeaturedShopViewHolder.LAYOUT -> FeaturedShopViewHolder(view, featuredShopListener, null)
 
             MixTopComponentViewHolder.LAYOUT -> MixTopComponentViewHolder(
                 view,

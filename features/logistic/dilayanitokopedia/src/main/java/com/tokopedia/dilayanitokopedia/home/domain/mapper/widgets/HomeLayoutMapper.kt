@@ -25,7 +25,6 @@ object HomeLayoutMapper {
         BANNER_CAROUSEL,
         MIX_TOP_CAROUSEL,
         MIX_LEFT_CAROUSEL,
-        FEATURED_SHOP,
 
         // Additional Loading
         LOADING_RECOMMENDATION_FEED

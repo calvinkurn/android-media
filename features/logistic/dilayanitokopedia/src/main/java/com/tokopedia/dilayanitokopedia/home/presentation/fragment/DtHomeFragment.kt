@@ -49,14 +49,13 @@ import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
 import com.tokopedia.dilayanitokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
-import com.tokopedia.home_component.listener.FeaturedShopListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.listener.MixTopComponentListener
-import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -86,7 +85,11 @@ import javax.inject.Inject
  * Dilayani Tokopedia  ( DT )
  * Created by irpan on 07/09/22.
  */
-class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener, PermissionListener {
+class DtHomeFragment :
+    Fragment(),
+    ShareBottomsheetListener,
+    ScreenShotListener,
+    PermissionListener {
 
     companion object {
         const val SOURCE = "dilayanitokopedia"
@@ -101,8 +104,10 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
         private const val SHARE_LINK_TITLE = "Dilayani Tokopedia | Tokopedia"
         private const val SHARE_LINK_URL = "https://www.tokopedia.com/dilayani-tokopedia"
-        private const val SHARE_LINK_THUMBNAIL_IMAGE = "https://images.tokopedia.net/img/QBrNqa/2023/1/12/b0a09eb3-7876-4a21-a9ba-4c532f500559.png"
-        private const val SHARE_LINK_OG_IMAGE = "https://images.tokopedia.net/img/QBrNqa/2023/1/12/b0a09eb3-7876-4a21-a9ba-4c532f500559.png"
+        private const val SHARE_LINK_THUMBNAIL_IMAGE =
+            "https://images.tokopedia.net/img/QBrNqa/2023/1/12/b0a09eb3-7876-4a21-a9ba-4c532f500559.png"
+        private const val SHARE_LINK_OG_IMAGE =
+            "https://images.tokopedia.net/img/QBrNqa/2023/1/12/b0a09eb3-7876-4a21-a9ba-4c532f500559.png"
         private const val SHARE_LINK_PAGE_NAME = "DilayaniTokopedia"
     }
 
@@ -145,7 +150,6 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         DtHomeAdapter(
             typeFactory = DtHomeAdapterTypeFactory(
                 homeRecommendationFeedListener = createRecommendationCallback(),
-                featuredShopListener = createFeatureShopCallback(),
                 bannerComponentListener = createSlideBannerCallback(),
                 homeTopComponentListener = createTopComponentCallback(),
                 homeTopCarouselListener = createTopCarouselCallback(),
@@ -172,7 +176,11 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             .inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentDtHomeBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -224,7 +232,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     }
 
     private fun initAnchorTabMenu() {
-        anchorTabLinearLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        anchorTabLinearLayoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         anchorTabAdapter = DtAnchorTabAdapter(anchorTabListener())
         binding?.headerCompHolder?.layoutManager = anchorTabLinearLayoutManager
         binding?.headerCompHolder?.adapter = anchorTabAdapter
@@ -240,7 +249,10 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 if (position != 0 && scrollPosition == 0) return
                 if (scrollPosition == -1) return
 
-                if (statusBarState == AnchorTabStatus.MAXIMIZE && scrollPosition != 0) {
+                /**
+                 * minimize when clicked anchor tab, exclude first position
+                 */
+                if (statusBarState == AnchorTabStatus.MAXIMIZE && scrollPosition != 1) {
                     setAnchorTabMinimize()
                 }
 
@@ -258,7 +270,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         activity?.let {
             statusBarBackground?.apply {
                 layoutParams?.height = ViewHelper.getStatusBarHeight(activity)
-                visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) View.INVISIBLE else View.VISIBLE
+                visibility =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) View.INVISIBLE else View.VISIBLE
             }
             setStatusBarAlpha()
         }
@@ -292,17 +305,30 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     }
 
     private fun setIconNewTopNavigation() {
-        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-            .addIcon(IconList.ID_SHARE, onClick = ::onClickShareButton, disableDefaultGtmTracker = true)
-            .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
-            .addIcon(IconList.ID_NAV_GLOBAL) {}
+        val icons =
+            IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                .addIcon(
+                    IconList.ID_SHARE,
+                    onClick = ::onClickShareButton,
+                    disableDefaultGtmTracker = true
+                )
+                .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
+                .addIcon(IconList.ID_NAV_GLOBAL) {}
         navToolbar?.setIcon(icons)
     }
 
     private fun setupTopNavigation() {
         navToolbar?.let { toolbar ->
             viewLifecycleOwner.lifecycle.addObserver(toolbar)
-            initHint(SearchPlaceholder(Data(null, context?.resources?.getString(R.string.dt_search_bar_hint).orEmpty(), "")))
+            initHint(
+                SearchPlaceholder(
+                    Data(
+                        null,
+                        context?.resources?.getString(R.string.dt_search_bar_hint).orEmpty(),
+                        ""
+                    )
+                )
+            )
             activity?.let {
                 toolbar.setupToolbarWithStatusBar(it)
                 toolbar.setToolbarTitle(getString(R.string.dt_home_title))
@@ -442,8 +468,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         initChooseAddressWidget()
         showHomeLayout(data)
         showHeaderBackground()
-        visibilityChooseAddress()
-        visibilityAnchorTab()
+        showChooseAddressView()
+        showAnchorTabView()
     }
 
     private fun updateAnchorTab(data: List<AnchorTabUiModel>) {
@@ -462,8 +488,11 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     }
 
     private fun observeMenuList() {
-        observe(viewModelDtHome.menuList) {
-            updateAnchorTab(it)
+        observe(viewModelDtHome.anchorTabState) {
+            when (it) {
+                is Success -> updateAnchorTab(it.data)
+                else -> showAnchorTabView(false)
+            }
         }
     }
 
@@ -503,6 +532,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     private fun onRefreshLayout() {
         rvLayoutManager?.setScrollEnabled(true)
         anchorTabAdapter?.resetToFirst()
+        smoothScrollAnchorTab(0)
+        setAnchorTabMaximize()
         updateCurrentPageLocalCacheModelData()
         refreshLayout()
     }
@@ -514,25 +545,17 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
         showHomeLayout(data)
         loadHeaderBackgroundLoading()
+        showChooseAddressView(false)
+        showAnchorTabView(false)
         showLayout()
-        visibilityChooseAddress(false)
-        visibilityAnchorTab(false)
     }
 
-    private fun visibilityChooseAddress(visible: Boolean = true) {
-        if (visible) {
-            binding?.chooseAddressWidget?.visible()
-        } else {
-            binding?.chooseAddressWidget?.gone()
-        }
+    private fun showChooseAddressView(isVisible: Boolean = true) {
+        binding?.groupLca?.isVisible = isVisible
     }
 
-    private fun visibilityAnchorTab(visible: Boolean = true) {
-        if (visible) {
-            binding?.headerCompHolder?.visible()
-        } else {
-            binding?.headerCompHolder?.gone()
-        }
+    private fun showAnchorTabView(isVisible: Boolean = true) {
+        binding?.groupAnchorTab?.isVisible = isVisible
     }
 
     private fun loadHeaderBackgroundLoading() {
@@ -578,7 +601,11 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     private fun createTopComponentCallback(): HomeComponentListener? {
         return object : HomeComponentListener {
-            override fun onChannelExpired(channelModel: ChannelModel, channelPosition: Int, visitable: Visitable<*>) {
+            override fun onChannelExpired(
+                channelModel: ChannelModel,
+                channelPosition: Int,
+                visitable: Visitable<*>
+            ) {
                 // no-op
             }
         }
@@ -616,74 +643,41 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         }
     }
 
-    private fun createFeatureShopCallback(): FeaturedShopListener {
-        return object : FeaturedShopListener {
-            override fun onSeeAllClicked(channelModel: ChannelModel, position: Int) {
-                // no-op
-            }
-
-            override fun onSeeAllBannerClicked(channelModel: ChannelModel, applink: String, position: Int) {
-                // no-op
-            }
-
-            override fun onFeaturedShopBannerBackgroundClicked(channel: ChannelModel) {
-                // no-op
-            }
-
-            override fun onFeaturedShopItemImpressed(
-                channelModel: ChannelModel,
-                channelGrid: ChannelGrid,
-                position: Int,
-                parentPosition: Int
-            ) {
-                // no-op
-            }
-
-            override fun onFeaturedShopItemClicked(
-                channelModel: ChannelModel,
-                channelGrid: ChannelGrid,
-                position: Int,
-                parentPosition: Int
-            ) {
-                // no-op
-            }
-        }
-    }
-
     private fun bindChooseAddressWidget() {
-        chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
-            override fun onLocalizingAddressUpdatedFromWidget() {
-                onRefreshLayout()
-            }
+        chooseAddressWidget?.bindChooseAddress(object :
+                ChooseAddressWidget.ChooseAddressWidgetListener {
+                override fun onLocalizingAddressUpdatedFromWidget() {
+                    onRefreshLayout()
+                }
 
-            override fun onLocalizingAddressServerDown() {
-                visibilityChooseAddress(false)
-            }
+                override fun onLocalizingAddressServerDown() {
+                    showChooseAddressView(false)
+                }
 
-            override fun onClickChooseAddressTokoNowTracker() {
-                // no-op
-            }
+                override fun onClickChooseAddressTokoNowTracker() {
+                    // no-op
+                }
 
-            override fun needToTrackTokoNow(): Boolean = false
+                override fun needToTrackTokoNow(): Boolean = false
 
-            override fun getLocalizingAddressHostFragment(): Fragment = this@DtHomeFragment
+                override fun getLocalizingAddressHostFragment(): Fragment = this@DtHomeFragment
 
-            override fun getLocalizingAddressHostSourceData(): String = SOURCE
+                override fun getLocalizingAddressHostSourceData(): String = SOURCE
 
-            override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE_TRACKING
+                override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE_TRACKING
 
-            override fun onLocalizingAddressUpdatedFromBackground() {
-                // no-op
-            }
+                override fun onLocalizingAddressUpdatedFromBackground() {
+                    // no-op
+                }
 
-            override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
-                visibilityChooseAddress(isRollOutUser)
-            }
+                override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
+                    showChooseAddressView(isRollOutUser)
+                }
 
-            override fun onLocalizingAddressLoginSuccess() {
-                // no-op
-            }
-        })
+                override fun onLocalizingAddressLoginSuccess() {
+                    // no-op
+                }
+            })
     }
 
     private fun showCoachMark() {
@@ -703,16 +697,18 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     }
 
     private fun getChooseAddressWidgetCoachMarkItem(): CoachMark2Item? {
-        val isNeedToShowCoachMark = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(requireContext())
+        val isNeedToShowCoachMark =
+            ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(requireContext())
         return if (isNeedToShowCoachMark == true && chooseAddressWidget?.isShown == true) {
             chooseAddressWidget?.let { chooseAddressWidget ->
-                context?.getString(R.string.dt_home_choose_address_widget_coachmark_title)?.let { title ->
-                    CoachMark2Item(
-                        chooseAddressWidget,
-                        title,
-                        getString(R.string.dt_home_choose_address_widget_coachmark_description)
-                    )
-                }
+                context?.getString(R.string.dt_home_choose_address_widget_coachmark_title)
+                    ?.let { title ->
+                        CoachMark2Item(
+                            chooseAddressWidget,
+                            title,
+                            getString(R.string.dt_home_choose_address_widget_coachmark_description)
+                        )
+                    }
             }
         } else {
             return null
@@ -726,7 +722,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 super.onScrolled(recyclerView, dx, dy)
 
                 /**
-                 *  maximize anchor when scroll up && reach top
+                 *  minimize when scroll down
                  */
                 if (dy >= 0) {
                     if (statusBarState == AnchorTabStatus.MAXIMIZE && recyclerView.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
@@ -745,12 +741,10 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 super.onScrollStateChanged(recyclerView, newState)
 
                 /**
-                 *  minimize anchor when scroll down
+                 *  maximize anchor when reach top
                  */
-                if (!recyclerView.canScrollVertically(-1)) {
-                    if (statusBarState == AnchorTabStatus.MINIMIZE) {
-                        setAnchorTabMaximize()
-                    }
+                if (!recyclerView.canScrollVertically(-1) && statusBarState == AnchorTabStatus.MINIMIZE && newState == 0) {
+                    setAnchorTabMaximize()
                 }
             }
         })
@@ -761,13 +755,13 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         val lastVisible = linearLayoutManager?.findLastVisibleItemPosition()
         val listIsRecommendationForYou = viewModelDtHome.isLastWidgetIsRecommendationForYou()
         val endHasBeenReached = (lastVisible?.plus(1) ?: 0) >= totalItemCount
-        if (totalItemCount > 0 && endHasBeenReached && listIsRecommendationForYou == true) {
+        if ((totalItemCount > 0 && endHasBeenReached && listIsRecommendationForYou == true) || viewModelDtHome.isOnLoading) {
             // you have reached to the bottom of your recycler view
-            binding?.headerCompHolder?.gone()
-            binding?.chooseAddressWidget?.gone()
+            showChooseAddressView(false)
+            showAnchorTabView(false)
         } else {
-            binding?.headerCompHolder?.visible()
-            binding?.chooseAddressWidget?.visible()
+            showChooseAddressView()
+            showAnchorTabView()
         }
     }
 
@@ -801,9 +795,11 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
          * get position from anchor tab using visitable
          * select and scroll tab anchor from pisition
          */
-        if (visiblePosition != null && visiblePosition != -1 && viewModelDtHome.getHomeVisitableList().isNotEmpty()) {
+        if (visiblePosition != null && visiblePosition != -1 && viewModelDtHome.getHomeVisitableList()
+            .isNotEmpty()
+        ) {
             val anchorTabUiModel = viewModelDtHome.getAnchorTabByVisitablePosition(visiblePosition)
-            val indexAnchorTab = viewModelDtHome.menuList.value?.indexOf(anchorTabUiModel)
+            val indexAnchorTab = viewModelDtHome.menuList?.indexOf(anchorTabUiModel)
 
             if (anchorTabUiModel != null && indexAnchorTab != null) {
                 smoothScrollAnchorTab(indexAnchorTab)
@@ -838,7 +834,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         anchorTabAdapter?.setMaximizeIcons()
 
         val transparentUnify = android.R.color.transparent
-        val transparentColor = ResourcesCompat.getColor(requireContext().resources, transparentUnify, null)
+        val transparentColor =
+            ResourcesCompat.getColor(requireContext().resources, transparentUnify, null)
         navToolbar?.setBackgroundColor(transparentColor)
         binding?.headerCompHolder?.setBackgroundColor(transparentColor)
         binding?.chooseAddressWidget?.setBackgroundColor(transparentColor)
@@ -895,7 +892,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 }
             override val homeMainToolbarHeight: Int
                 get() {
-                    var height = requireActivity().resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+                    var height =
+                        requireActivity().resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
                     context?.let { context ->
                         navToolbar?.let {
                             height = navToolbar?.height
