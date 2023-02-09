@@ -164,7 +164,7 @@
         <com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
             android:id="@+id/banner_background"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/shop_carousel_height"
             android:adjustViewBounds="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
