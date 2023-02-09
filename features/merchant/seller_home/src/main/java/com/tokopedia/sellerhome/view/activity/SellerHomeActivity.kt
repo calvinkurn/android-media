@@ -738,7 +738,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                 dialog.apply{
                     setTitle(resources.getString(R.string.wearos_install_popup_title))
-                    setDescription()
+                    setDescription(resources.getString(R.string.wearos_install_popup_description))
                     setPrimaryCTAText(resources.getString(R.string.wearos_install_popup_install))
                     setSecondaryCTAText(resources.getString(R.string.wearos_install_popup_later))
                     setPrimaryCTAClickListener {
