@@ -44,6 +44,8 @@
 /features/user/notif-troubleshooter/                    @tokopedia/android-miniondave-dev
 /features/user/settingnotif/                    		@tokopedia/android-miniondave-dev
 
+/features/watch/                                        @tokopedia/android-core-dev
+
 /features/common/app_common                             @tokopedia/android-core-dev
 /features/common/developer_options                  	@tokopedia/android-core-dev
 /features/common/nps                                	@tokopedia/android-core-dev
