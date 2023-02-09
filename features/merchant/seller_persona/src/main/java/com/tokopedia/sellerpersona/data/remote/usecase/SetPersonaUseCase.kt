@@ -3,7 +3,6 @@ package com.tokopedia.sellerpersona.data.remote.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerpersona.data.remote.model.QuestionnaireAnswerParam
 import com.tokopedia.sellerpersona.data.remote.model.SetPersonaResponse
@@ -27,19 +26,22 @@ class SetPersonaUseCase @Inject constructor(
 
     suspend fun execute(
         shopId: String,
+        persona: String,
         answers: List<QuestionnaireAnswerParam>
     ): SetUserPersonaDataModel {
-        setRequestParams(createParam(shopId, answers).parameters)
+        val param = createParam(shopId, persona, answers).parameters
+        setRequestParams(param)
         return executeOnBackground().setUserPersonaData
     }
 
     private fun createParam(
         shopId: String,
+        persona: String,
         answers: List<QuestionnaireAnswerParam>
     ): RequestParams {
         return RequestParams.create().apply {
             putLong(KEY_SHOP_ID, shopId.toLongOrZero())
-            putString(KEY_PERSONA, String.EMPTY)
+            putString(KEY_PERSONA, persona)
             putObject(KEY_QUESTIONNAIRE, answers)
         }
     }
@@ -48,7 +50,7 @@ class SetPersonaUseCase @Inject constructor(
 
         const val QUERY = """
             mutation setUserPersona(${'$'}shopID: Int!, ${'$'}persona: String!, ${'$'}questionnaire: [Questionnaire!]!) {
-              setUserPersona(shopID: ${'$'}shopId, persona: ${'$'}persona, questionnaire: ${'$'}questionnaire) {
+              setUserPersona(shopID: ${'$'}shopID, persona: ${'$'}persona, questionnaire: ${'$'}questionnaire) {
                 persona
                 error
                 errorMsg
