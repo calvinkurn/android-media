@@ -582,7 +582,11 @@ open class HomeRevampFragment :
 
                         override fun onSwitchToDarkToolbar() {
                             navToolbar?.hideShadow()
-                            requestStatusBarLight()
+                            if (HomeRollenceController.isUsingAtf2Variant()) {
+                                requestStatusBarDark()
+                            } else {
+                                requestStatusBarLight()
+                            }
                         }
 
                         override fun onSwitchToLightToolbar() {
@@ -592,7 +596,7 @@ open class HomeRevampFragment :
                         override fun onYposChanged(yOffset: Int) {
                         }
                     }
-                )
+                , isBackgroundColorDefaultColor = HomeRollenceController.isUsingAtf2Variant())
             )
             val icons = IconBuilder(
                 IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
