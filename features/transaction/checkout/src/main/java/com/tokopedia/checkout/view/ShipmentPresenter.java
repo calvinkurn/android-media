@@ -1356,12 +1356,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             shipmentScheduleDeliveryMapData.getDonePublisher().onCompleted();
                                         }
                                     }
-                                    if (logisticDonePublisher != null) {
-                                        logisticDonePublisher.onCompleted();
-                                    }
-                                    if (logisticPromoDonePublisher != null) {
-                                        logisticPromoDonePublisher.onCompleted();
-                                    }
                                 }
 
                                 @Override
