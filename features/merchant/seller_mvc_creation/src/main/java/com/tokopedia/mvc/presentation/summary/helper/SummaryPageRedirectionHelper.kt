@@ -91,13 +91,14 @@ class SummaryPageRedirectionHelper(
     fun redirectToVoucherTypePage(
         fragment: Fragment,
         configuration: VoucherConfiguration,
+        selectedProducts: List<SelectedProduct>,
         isAdding: Boolean
     ) {
         val context = fragment.context ?: return
         if (isAdding) {
-            VoucherTypeActivity.buildCreateModeIntent(context, configuration)
+            VoucherTypeActivity.buildCreateModeIntent(context, configuration, selectedProducts)
         } else {
-            val intent = VoucherTypeActivity.buildEditModeIntent(context, configuration)
+            val intent = VoucherTypeActivity.buildEditModeIntent(context, configuration, selectedProducts)
             fragment.startActivityForResult(intent, REQUEST_CODE_CHANGE_COUPON_TYPE)
         }
         sharedPreferencesUtil.setStepPageName(context, VoucherTypeActivity::class.java.name)
@@ -106,13 +107,14 @@ class SummaryPageRedirectionHelper(
     fun redirectToCouponInfoPage(
         fragment: Fragment,
         configuration: VoucherConfiguration,
+        selectedProducts: List<SelectedProduct>,
         isAdding: Boolean
     ) {
         val context = fragment.context ?: return
         if (isAdding) {
-            VoucherInformationActivity.buildCreateModeIntent(context, configuration)
+            VoucherInformationActivity.buildCreateModeIntent(context, configuration, selectedProducts)
         } else {
-            val intent = VoucherInformationActivity.buildEditModeIntent(context, configuration)
+            val intent = VoucherInformationActivity.buildEditModeIntent(context, configuration, selectedProducts)
             fragment.startActivity(intent)
         }
         sharedPreferencesUtil.setStepPageName(context, VoucherInformationActivity::class.java.name)
@@ -121,13 +123,14 @@ class SummaryPageRedirectionHelper(
     fun redirectToCouponConfigurationPage(
         fragment: Fragment,
         configuration: VoucherConfiguration,
+        selectedProducts: List<SelectedProduct>,
         isAdding: Boolean
     ) {
         val context = fragment.context ?: return
         if (isAdding) {
-            VoucherSettingActivity.buildCreateModeIntent(context, configuration)
+            VoucherSettingActivity.buildCreateModeIntent(context, configuration, selectedProducts)
         } else {
-            val intent = VoucherSettingActivity.buildEditModeIntent(context, configuration)
+            val intent = VoucherSettingActivity.buildEditModeIntent(context, configuration, selectedProducts)
             fragment.startActivity(intent)
         }
         sharedPreferencesUtil.setStepPageName(context, VoucherSettingActivity::class.java.name)

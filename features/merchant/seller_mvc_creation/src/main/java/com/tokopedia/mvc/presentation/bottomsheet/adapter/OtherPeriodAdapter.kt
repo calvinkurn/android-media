@@ -55,10 +55,10 @@ class OtherPeriodAdapter: RecyclerView.Adapter<OtherPeriodAdapter.ViewHolder>() 
 
         fun bind(item: Voucher) {
             val startDate = DateUtil.formatDate(
-                DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                DateUtil.YYYY_MM_DD_T_HH_MM_SS,
                 DateUtil.DEFAULT_VIEW_FORMAT, item.startTime)
             val finishDate = DateUtil.formatDate(
-                DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                DateUtil.YYYY_MM_DD_T_HH_MM_SS,
                 DateUtil.DEFAULT_VIEW_FORMAT, item.finishTime)
             with(binding) {
                 val context = root.context

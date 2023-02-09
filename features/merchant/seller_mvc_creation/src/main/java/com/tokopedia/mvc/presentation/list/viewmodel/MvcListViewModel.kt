@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mvc.domain.entity.ShareComponentMetaData
 import com.tokopedia.mvc.domain.entity.Voucher
@@ -139,12 +140,13 @@ class MvcListViewModel @Inject constructor(
         )
     }
 
-    fun getVoucherListChild(voucherId: Long) {
+    fun getVoucherListChild(voucherId: Long, parentId: Long) {
+        val cleanedParentId = parentId.takeIf { it.isMoreThanZero() } ?: voucherId
         launchCatchError(
             dispatchers.io,
             block = {
                 val result = getVoucherListChildUseCase.execute(
-                    voucherId,
+                    cleanedParentId,
                     arrayListOf(
                         VoucherStatus.NOT_STARTED,
                         VoucherStatus.ONGOING

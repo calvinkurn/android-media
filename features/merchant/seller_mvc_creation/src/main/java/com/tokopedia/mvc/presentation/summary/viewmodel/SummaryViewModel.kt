@@ -7,6 +7,7 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.mvc.R
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
@@ -16,12 +17,11 @@ import com.tokopedia.mvc.domain.usecase.GetCouponImagePreviewFacadeUseCase
 import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
 import com.tokopedia.mvc.util.formatTo
+import com.tokopedia.mvc.util.tracker.SummaryPageTracker
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
 import java.util.*
 import javax.inject.Inject
-import com.tokopedia.mvc.R
-import com.tokopedia.mvc.util.tracker.SummaryPageTracker
 
 class SummaryViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,

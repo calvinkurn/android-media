@@ -12,6 +12,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Voucher(
     val id: Long = 0,
+    val parentId: Long = 0,
     val name: String = "",
     val type: Int = 0,
     val typeFormatted: String = "",
