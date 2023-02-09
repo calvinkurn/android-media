@@ -243,6 +243,6 @@
     <string name="wearos_install_popup_description">Sekarang tersedia aplikasi Wear OS untuk seller, klik install untuk mencoba</string>
     <string name="wearos_install_popup_install">Install</string>
     <string name="wearos_install_popup_later">Nanti</string>
-    <string name="wearos_toast_install">Lanjutkan di perangkat Wear OS</string>
+    <string name="wearos_toast_install">Lanjutkan di perangkat Wear OS. Kamu juga bisa kunjungi Playstore via Wear OS untuk download Tokopedia</string>
     <string name="sah_toaster_download_message">File lagi di-download dan akan tersimpan di HP kamu.</string>
 </resources>

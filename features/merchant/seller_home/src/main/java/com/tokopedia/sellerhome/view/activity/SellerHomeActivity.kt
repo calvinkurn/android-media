@@ -94,7 +94,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
         private const val NOTIFICATION_USER_SETTING_KEY = "isSellerSettingSent"
         private const val WEAR_POPUP_KEY = "isWearPopupShown"
-        var TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.tokopedia.sellerapp"
+        private const val TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.tokopedia.sellerapp"
     }
 
     @Inject
@@ -176,7 +176,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         super.onResume()
         homeViewModel.getNotifications()
         homeViewModel.getAdminInfo()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 && remoteConfig.isWatchAppCheckingEnabled()) {
             homeViewModel.checkIfWearHasCompanionApp()
         }
 
@@ -733,7 +733,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     private fun observeWearDialog() {
         homeViewModel.shouldAskInstallCompanionApp.observe(this) {
             val isWearPopupShown: Boolean =
-                wearSharedPreference.getBoolean(WEAR_POPUP_KEY, true)
+                wearSharedPreference.getBoolean(WEAR_POPUP_KEY, false)
             if (it && !isWearPopupShown) {
                 val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                 dialog.apply{
@@ -751,7 +751,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                             this@SellerHomeActivity,
                             resources.getString(R.string.wearos_toast_install),
                             Toast.LENGTH_LONG
-                            )
+                            ).show()
                     }
                     setSecondaryCTAClickListener {
                         dialog.dismiss()
