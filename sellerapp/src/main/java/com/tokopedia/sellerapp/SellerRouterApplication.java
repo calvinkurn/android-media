@@ -164,7 +164,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
     private void initRefreshProfileWorker() {
         UserSessionInterface userSession = new UserSession(context);
         if(userSession.isLoggedIn()) {
-            RefreshProfileWorker.Companion.scheduleWorker(this);
+            RefreshProfileWorker.scheduleWorker(this);
         }
     }
 

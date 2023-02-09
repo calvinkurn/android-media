@@ -8,8 +8,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.sessioncommon.di.DaggerRefreshProfileComponent
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -39,14 +37,12 @@ class RefreshProfileWorker(appContext: Context, workerParams: WorkerParameters) 
     }
 
     override suspend fun doWork(): Result {
-        if(userSession.isLoggedIn ) {
-            if(isNeedRefresh()) {
-                withContext(Dispatchers.IO) {
-                    try {
-                        getUserInfoUseCase(Unit)
-                        saveRefreshTime(System.currentTimeMillis())
-                    } catch (ignored: Exception) {}
-                }
+        if (userSession.isLoggedIn) {
+            if (isNeedRefresh()) {
+                try {
+                    getUserInfoUseCase(Unit)
+                    saveRefreshTime(System.currentTimeMillis())
+                } catch (ignored: Exception) {}
             }
         }
         return Result.success()
@@ -73,12 +69,12 @@ class RefreshProfileWorker(appContext: Context, workerParams: WorkerParameters) 
                 val currentTime = System.currentTimeMillis()
                 val previousTime = getLatestRefreshTime()
                 // if the users never refresh their profile, always return true
-                if(previousTime == 0L) { return true }
+                if (previousTime == 0L) { return true }
                 // Need to convert the difference to MINUTE, because we use minute as the standard
                 val diff = TimeUnit.MILLISECONDS.toMinutes(currentTime - previousTime)
                 return (diff > interval)
             }
-        }catch (ignored: Exception){}
+        }catch (ignored: Exception) { }
         return false
     }
 
@@ -91,11 +87,14 @@ class RefreshProfileWorker(appContext: Context, workerParams: WorkerParameters) 
 
         private const val WORKER_NAME = "REFRESH_PROFILE_WORKER"
 
+        private const val INITIAL_DELAY = 3L
+
+        @JvmStatic
         fun scheduleWorker(appContext: Context) {
             try {
                 val worker = OneTimeWorkRequest
                     .Builder(RefreshProfileWorker::class.java)
-                    .setInitialDelay(1L, TimeUnit.SECONDS)
+                    .setInitialDelay(INITIAL_DELAY, TimeUnit.SECONDS)
                     .build()
 
                 WorkManager.getInstance(appContext).enqueueUniqueWork(

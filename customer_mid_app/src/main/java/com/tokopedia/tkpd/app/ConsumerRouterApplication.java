@@ -216,7 +216,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void initRefreshProfileWorker() {
         if (userSession.isLoggedIn()) {
-            RefreshProfileWorker.Companion.scheduleWorker(this);
+            RefreshProfileWorker.scheduleWorker(this);
         }
     }
 
