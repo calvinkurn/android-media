@@ -24,6 +24,8 @@ class DeleteCommentUseCase @Inject constructor(repo: GraphqlRepository) :
     companion object {
         private const val PARAM_COMMENT_ID = "commentID"
 
+        const val SUCCESS_VALUE = 1L
+
         fun setParam(commentId: String) = mapOf(PARAM_COMMENT_ID to commentId)
 
         const val QUERY_NAME = "DeleteCommentUseCaseQuery"
