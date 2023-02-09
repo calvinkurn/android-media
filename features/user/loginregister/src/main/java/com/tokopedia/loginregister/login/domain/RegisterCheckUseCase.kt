@@ -6,7 +6,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginregister.common.domain.query.MutationRegisterCheck
 import com.tokopedia.loginregister.login.di.LoginQueryConstant.PARAM_ID
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
-import com.tokopedia.sessioncommon.domain.query.LoginQueries
 import javax.inject.Inject
 
 /**

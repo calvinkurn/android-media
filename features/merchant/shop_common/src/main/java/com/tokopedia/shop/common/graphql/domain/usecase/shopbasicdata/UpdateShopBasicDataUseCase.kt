@@ -2,13 +2,10 @@ package com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataMutation
 import com.tokopedia.usecase.RequestParams
-import java.util.HashMap
 import javax.inject.Inject
 
 class UpdateShopBasicDataUseCase @Inject constructor(
