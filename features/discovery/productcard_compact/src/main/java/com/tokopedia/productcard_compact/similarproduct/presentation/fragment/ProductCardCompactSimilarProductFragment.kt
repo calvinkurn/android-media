@@ -17,43 +17,43 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
-import com.tokopedia.productcard_compact.similarproduct.presentation.activity.TokoNowSimilarProductActivity.Companion.EXTRA_SIMILAR_PRODUCT_ID
-import com.tokopedia.productcard_compact.similarproduct.presentation.bottomsheet.TokoNowSimilarProductBottomSheet
-import com.tokopedia.productcard_compact.similarproduct.presentation.listener.TokoNowSimilarProductTrackerListener
-import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.SimilarProductUiModel
-import com.tokopedia.productcard_compact.similarproduct.presentation.viewholder.SimilarProductViewHolder
-import com.tokopedia.productcard_compact.similarproduct.presentation.viewmodel.TokoNowSimilarProductViewModel
+import com.tokopedia.productcard_compact.similarproduct.presentation.activity.ProductCardCompactSimilarProductActivity.Companion.EXTRA_SIMILAR_PRODUCT_ID
+import com.tokopedia.productcard_compact.similarproduct.presentation.bottomsheet.ProductCardCompactSimilarProductBottomSheet
+import com.tokopedia.productcard_compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
+import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
+import com.tokopedia.productcard_compact.similarproduct.presentation.viewholder.ProductCardCompactSimilarProductViewHolder
+import com.tokopedia.productcard_compact.similarproduct.presentation.viewmodel.ProductCardCompactSimilarProductViewModel
 import com.tokopedia.productcard_compact.R
 import com.tokopedia.productcard_compact.common.di.component.DaggerCommonComponent
-import com.tokopedia.productcard_compact.similarproduct.domain.mapper.SimilarProductMapper
+import com.tokopedia.productcard_compact.similarproduct.domain.mapper.ProductRecommendationResponseMapper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.SimilarProductListener,
+class ProductCardCompactSimilarProductFragment : Fragment(), ProductCardCompactSimilarProductViewHolder.SimilarProductListener,
     MiniCartWidgetListener {
 
     companion object {
         private const val REQUEST_CODE_LOGIN = 101
         private const val QUANTITY_ZERO = 0
 
-        fun newInstance(productId: String?): TokoNowSimilarProductFragment {
-            return TokoNowSimilarProductFragment().apply {
+        fun newInstance(productId: String?): ProductCardCompactSimilarProductFragment {
+            return ProductCardCompactSimilarProductFragment().apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_SIMILAR_PRODUCT_ID, productId)
                 }
             }
         }
     }
-    private var listener: TokoNowSimilarProductTrackerListener? = null
+    private var listener: ProductCardCompactSimilarProductTrackerListener? = null
 
     @Inject
-    lateinit var viewModel : TokoNowSimilarProductViewModel
+    lateinit var viewModel : ProductCardCompactSimilarProductViewModel
 
-    private val productList = ArrayList<SimilarProductUiModel>()
+    private val productList = ArrayList<ProductCardCompactSimilarProductUiModel>()
 
-    private var bottomSheet: TokoNowSimilarProductBottomSheet? = null
+    private var bottomSheet: ProductCardCompactSimilarProductBottomSheet? = null
 
     private val productIdTriggered: String
         get() = arguments?.getString(EXTRA_SIMILAR_PRODUCT_ID, "").orEmpty()
@@ -110,7 +110,7 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
         }
     }
 
-    override fun onProductClicked(product: SimilarProductUiModel) {
+    override fun onProductClicked(product: ProductCardCompactSimilarProductUiModel) {
         goToProductDetailPage(product)
         listener?.trackClickProduct(
             userId = viewModel.userId,
@@ -120,7 +120,7 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
         )
     }
 
-    override fun onProductImpressed(product: SimilarProductUiModel) {
+    override fun onProductImpressed(product: ProductCardCompactSimilarProductUiModel) {
         listener?.trackImpressionBottomSheet(
             userId = viewModel.userId,
             warehouseId = viewModel.warehouseId,
@@ -138,15 +138,15 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
         viewModel.getMiniCart()
     }
 
-    private fun goToProductDetailPage(item: SimilarProductUiModel) {
+    private fun goToProductDetailPage(item: ProductCardCompactSimilarProductUiModel) {
         RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.id)
     }
 
     private fun setupBottomSheet() {
         val title = getString(R.string.tokopedianow_recipe_similar_product_title)
 
-        bottomSheet = TokoNowSimilarProductBottomSheet.newInstance().apply {
-            productListener = this@TokoNowSimilarProductFragment
+        bottomSheet = ProductCardCompactSimilarProductBottomSheet.newInstance().apply {
+            productListener = this@ProductCardCompactSimilarProductFragment
             items = emptyList()
             setTitle(title)
             triggerProductId = arguments?.getString(EXTRA_SIMILAR_PRODUCT_ID, "").toString()
@@ -170,7 +170,7 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
                 list?.forEachIndexed { index, recommendationItem ->
                     run {
                         recommendationItem?.let { recommendationItem ->
-                            SimilarProductMapper.mapToProductUiModel(
+                            ProductRecommendationResponseMapper.mapToProductUiModel(
                                 index,
                                 recommendationItem
                             )?.let { mappedProduct -> productList.add(mappedProduct) }
@@ -309,7 +309,7 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
             .inject(this)
     }
 
-    fun setListener(listener: TokoNowSimilarProductTrackerListener?){
+    fun setListener(listener: ProductCardCompactSimilarProductTrackerListener?){
         this.listener = listener
     }
 }

@@ -1,27 +1,27 @@
 package com.tokopedia.productcard_compact.similarproduct.presentation.listener
 
-import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.SimilarProductUiModel
+import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
 import java.io.Serializable
 
-interface TokoNowSimilarProductTrackerListener: Serializable {
+interface ProductCardCompactSimilarProductTrackerListener: Serializable {
     fun trackImpressionBottomSheet(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String
     )
 
     fun trackClickProduct(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String
     )
 
     fun trackClickAddToCart(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String,
         newQuantity: Int
     )

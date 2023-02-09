@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.productcard_compact.productcard.presentation.customview.ProductCardCompactWishlistButtonView
-import com.tokopedia.productcard_compact.similarproduct.presentation.listener.TokoNowSimilarProductTrackerListener
+import com.tokopedia.productcard_compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductGridCardBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -15,7 +15,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ProductItemViewHolder(
     itemView: View,
     private val listener: ProductItemListener,
-    private val similarProductTrackerListener: TokoNowSimilarProductTrackerListener,
+    private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener,
 ): AbstractViewHolder<ProductItemDataView>(itemView), ProductCardCompactWishlistButtonView.TokoNowWishlistButtonListener {
 
     companion object {
@@ -54,7 +54,7 @@ class ProductItemViewHolder(
                     productItemDataView = element
                 )
             }
-            setSimilarProductTrackerListener(similarProductTrackerListener)
+            setSimilarProductTrackerListener(productCardCompactSimilarProductTrackerListener)
         }
     }
 

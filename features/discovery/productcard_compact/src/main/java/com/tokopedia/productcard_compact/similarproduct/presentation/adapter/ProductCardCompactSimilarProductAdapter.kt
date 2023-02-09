@@ -6,10 +6,10 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 
 class SimilarProductAdapter(
-    typeFactory: SimilarProductAdapterTypeFactory
-) : BaseTokopediaNowListAdapter<Visitable<*>, SimilarProductAdapterTypeFactory>(
+    typeFactory: ProductCardCompactSimilarProductAdapterTypeFactory
+) : BaseTokopediaNowListAdapter<Visitable<*>, ProductCardCompactSimilarProductAdapterTypeFactory>(
     typeFactory,
-    SimilarProductDiffer()
+    ProductCardCompactSimilarProductDiffer()
 )
 
 open class BaseTokopediaNowListAdapter<T, F: AdapterTypeFactory>(

@@ -17,13 +17,13 @@ import com.tokopedia.productcard_compact.common.helper.LocalAddress
 import com.tokopedia.productcard_compact.common.viewmodel.BaseCartViewModel
 import com.tokopedia.productcard_compact.similarproduct.domain.model.ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem
 import com.tokopedia.productcard_compact.similarproduct.domain.usecase.GetSimilarProductUseCase
-import com.tokopedia.productcard_compact.similarproduct.presentation.mapper.SimilarProductMapper.updateDeletedProductQuantity
-import com.tokopedia.productcard_compact.similarproduct.presentation.mapper.SimilarProductMapper.updateProductQuantity
-import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.SimilarProductUiModel
+import com.tokopedia.productcard_compact.similarproduct.presentation.mapper.ProductCardCompactSimilarProductMapper.updateDeletedProductQuantity
+import com.tokopedia.productcard_compact.similarproduct.presentation.mapper.ProductCardCompactSimilarProductMapper.updateProductQuantity
+import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class TokoNowSimilarProductViewModel @Inject constructor(
+class ProductCardCompactSimilarProductViewModel @Inject constructor(
     private val getSimilarProductUseCase: GetSimilarProductUseCase,
     private val chooseAddressWrapper: ChooseAddressWrapper,
     private val userSession: UserSessionInterface,
@@ -95,7 +95,7 @@ class TokoNowSimilarProductViewModel @Inject constructor(
         return tokonowQueryParam
     }
 
-    fun onViewCreated(productList: List<SimilarProductUiModel>) {
+    fun onViewCreated(productList: List<ProductCardCompactSimilarProductUiModel>) {
         layoutItemList.addAll(productList)
 
         miniCartData?.let {

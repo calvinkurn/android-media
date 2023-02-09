@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name=".similarproduct.presentation.activity.TokoNowSimilarProductActivity"
+            android:name=".similarproduct.presentation.activity.ProductCardCompactSimilarProductActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
             android:screenOrientation="portrait"

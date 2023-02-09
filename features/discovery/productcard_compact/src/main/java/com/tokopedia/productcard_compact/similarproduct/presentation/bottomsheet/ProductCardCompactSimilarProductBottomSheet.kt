@@ -17,24 +17,24 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.productcard_compact.databinding.BottomsheetTokopedianowSimilarProductsBinding
 import com.tokopedia.productcard_compact.similarproduct.presentation.adapter.SimilarProductAdapter
-import com.tokopedia.productcard_compact.similarproduct.presentation.adapter.SimilarProductAdapterTypeFactory
-import com.tokopedia.productcard_compact.similarproduct.presentation.listener.TokoNowSimilarProductTrackerListener
-import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.SimilarProductUiModel
-import com.tokopedia.productcard_compact.similarproduct.presentation.viewholder.SimilarProductViewHolder
+import com.tokopedia.productcard_compact.similarproduct.presentation.adapter.ProductCardCompactSimilarProductAdapterTypeFactory
+import com.tokopedia.productcard_compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
+import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
+import com.tokopedia.productcard_compact.similarproduct.presentation.viewholder.ProductCardCompactSimilarProductViewHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.productcard_compact.R
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class TokoNowSimilarProductBottomSheet : BottomSheetUnify() {
+class ProductCardCompactSimilarProductBottomSheet : BottomSheetUnify() {
 
     companion object {
 
-        fun newInstance(): TokoNowSimilarProductBottomSheet {
-            return TokoNowSimilarProductBottomSheet()
+        fun newInstance(): ProductCardCompactSimilarProductBottomSheet {
+            return ProductCardCompactSimilarProductBottomSheet()
         }
 
-        private val TAG: String = TokoNowSimilarProductBottomSheet::class.java.simpleName
+        private val TAG: String = ProductCardCompactSimilarProductBottomSheet::class.java.simpleName
     }
 
     var triggerProductId = ""
@@ -43,15 +43,15 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify() {
             field = value
             submitList(value)
         }
-    var productListener: SimilarProductViewHolder.SimilarProductListener? = null
+    var productListener: ProductCardCompactSimilarProductViewHolder.SimilarProductListener? = null
 
-    private var listener: TokoNowSimilarProductTrackerListener? = null
+    private var listener: ProductCardCompactSimilarProductTrackerListener? = null
 
     private var binding by autoClearedNullable<BottomsheetTokopedianowSimilarProductsBinding>()
 
     private val adapter by lazy {
         SimilarProductAdapter(
-            SimilarProductAdapterTypeFactory(
+            ProductCardCompactSimilarProductAdapterTypeFactory(
                 productListener = productListener
             )
         )
@@ -95,7 +95,7 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify() {
 
     private fun setupRecyclerView() {
         binding?.recyclerView?.apply {
-            adapter = this@TokoNowSimilarProductBottomSheet.adapter
+            adapter = this@ProductCardCompactSimilarProductBottomSheet.adapter
             layoutManager = LinearLayoutManager(context)
         }
     }
@@ -160,13 +160,13 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify() {
     }
 
     fun changeQuantity(quantity:Int, position: Int){
-        val item = (items[position] as SimilarProductUiModel)
+        val item = (items[position] as ProductCardCompactSimilarProductUiModel)
         val newItems = items.toMutableList()
         newItems[position] = item.copy(quantity = quantity)
         items = newItems
     }
 
-    fun setListener(listener: TokoNowSimilarProductTrackerListener?){
+    fun setListener(listener: ProductCardCompactSimilarProductTrackerListener?){
         this.listener = listener
     }
 

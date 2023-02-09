@@ -4,10 +4,10 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.view.toUrlParams
 import com.tokopedia.productcard_compact.similarproduct.domain.model.ProductRecommendationResponse
-import com.tokopedia.productcard_compact.similarproduct.domain.query.SimilarProductQuery
-import com.tokopedia.productcard_compact.similarproduct.domain.query.SimilarProductQuery.PARAM_PRODUCT_IDS
-import com.tokopedia.productcard_compact.similarproduct.domain.query.SimilarProductQuery.PARAM_QUERY
-import com.tokopedia.productcard_compact.similarproduct.domain.query.SimilarProductQuery.PARAM_USER_ID
+import com.tokopedia.productcard_compact.similarproduct.domain.query.ProductRecommendationQuery
+import com.tokopedia.productcard_compact.similarproduct.domain.query.ProductRecommendationQuery.PARAM_PRODUCT_IDS
+import com.tokopedia.productcard_compact.similarproduct.domain.query.ProductRecommendationQuery.PARAM_QUERY
+import com.tokopedia.productcard_compact.similarproduct.domain.query.ProductRecommendationQuery.PARAM_USER_ID
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -34,7 +34,7 @@ class GetSimilarProductUseCase @Inject constructor(gqlRepository: GraphqlReposit
         queryParam: MutableMap<String, Any>
     ): ProductRecommendationResponse {
         graphql.apply {
-            setGraphqlQuery(SimilarProductQuery)
+            setGraphqlQuery(ProductRecommendationQuery)
             setTypeClass(ProductRecommendationResponse::class.java)
 
             setRequestParams(RequestParams.create().apply {

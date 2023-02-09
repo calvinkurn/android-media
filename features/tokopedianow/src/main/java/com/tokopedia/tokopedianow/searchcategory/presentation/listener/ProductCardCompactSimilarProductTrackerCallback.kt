@@ -1,17 +1,17 @@
 package com.tokopedia.tokopedianow.searchcategory.presentation.listener
 
-import com.tokopedia.productcard_compact.similarproduct.presentation.listener.TokoNowSimilarProductTrackerListener
-import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.SimilarProductUiModel
+import com.tokopedia.productcard_compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
+import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
 
-class TokoNowSimilarProductTrackerCallback(
+class ProductCardCompactSimilarProductTrackerCallback(
     private val isCategoryPage: Boolean
-): TokoNowSimilarProductTrackerListener {
+): ProductCardCompactSimilarProductTrackerListener {
     override fun trackImpressionBottomSheet(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String
     ) {
         if (isCategoryPage) {
@@ -34,7 +34,7 @@ class TokoNowSimilarProductTrackerCallback(
     override fun trackClickProduct(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String
     ) {
         if (isCategoryPage) {
@@ -57,7 +57,7 @@ class TokoNowSimilarProductTrackerCallback(
     override fun trackClickAddToCart(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String,
         newQuantity: Int
     ) {

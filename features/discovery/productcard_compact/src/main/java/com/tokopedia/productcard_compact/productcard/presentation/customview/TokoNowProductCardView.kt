@@ -23,7 +23,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard_compact.databinding.LayoutTokopedianowProductCardViewBinding
 import com.tokopedia.productcard_compact.productcard.presentation.uimodel.LIGHT_RED
 import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel.LabelGroup
-import com.tokopedia.productcard_compact.similarproduct.presentation.listener.TokoNowSimilarProductTrackerListener
+import com.tokopedia.productcard_compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -36,7 +36,7 @@ import com.tokopedia.productcard_compact.common.util.ViewUtil.doOnPreDraw
 import com.tokopedia.productcard_compact.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.productcard_compact.common.util.ViewUtil.getHexColorFromIdColor
 import com.tokopedia.productcard_compact.common.util.ViewUtil.safeParseColor
-import com.tokopedia.productcard_compact.similarproduct.presentation.activity.TokoNowSimilarProductActivity
+import com.tokopedia.productcard_compact.similarproduct.presentation.activity.ProductCardCompactSimilarProductActivity
 
 class TokoNowProductCardView @JvmOverloads constructor(
     context: Context,
@@ -55,7 +55,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         private const val PERCENTAGE_CHAR = '%'
     }
 
-    private var similarProductTrackerListener: TokoNowSimilarProductTrackerListener? = null
+    private var productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null
     private var binding: LayoutTokopedianowProductCardViewBinding
 
     init {
@@ -254,7 +254,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 )
             )
             setOnClickListener {
-                val intent = TokoNowSimilarProductActivity.createNewIntent(context, productId, similarProductTrackerListener)
+                val intent = ProductCardCompactSimilarProductActivity.createNewIntent(context, productId, productCardCompactSimilarProductTrackerListener)
                 context.startActivity(intent)
             }
         }
@@ -507,9 +507,9 @@ class TokoNowProductCardView @JvmOverloads constructor(
     }
 
     fun setSimilarProductTrackerListener(
-        similarProductTrackerListener: TokoNowSimilarProductTrackerListener?
+        productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener?
     ){
-        this.similarProductTrackerListener = similarProductTrackerListener
+        this.productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener
     }
 
     fun setWishlistButtonListener(

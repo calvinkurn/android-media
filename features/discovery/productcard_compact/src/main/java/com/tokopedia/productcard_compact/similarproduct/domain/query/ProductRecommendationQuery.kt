@@ -2,7 +2,7 @@ package com.tokopedia.productcard_compact.similarproduct.domain.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
-internal object SimilarProductQuery: GqlQueryInterface {
+internal object ProductRecommendationQuery: GqlQueryInterface {
 
     const val PARAM_USER_ID = "userID"
     const val PARAM_PRODUCT_IDS = "productIDs"

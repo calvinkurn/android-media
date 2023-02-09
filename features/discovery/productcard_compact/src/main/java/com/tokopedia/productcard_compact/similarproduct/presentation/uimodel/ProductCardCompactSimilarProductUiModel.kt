@@ -3,11 +3,11 @@ package com.tokopedia.productcard_compact.similarproduct.presentation.uimodel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard_compact.similarproduct.presentation.adapter.SimilarProductTypeFactory
+import com.tokopedia.productcard_compact.similarproduct.presentation.adapter.ProductCardCompactSimilarProductTypeFactory
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class SimilarProductUiModel(
+data class ProductCardCompactSimilarProductUiModel(
     val id: String,
     val shopId: String,
     val shopName: String,
@@ -21,16 +21,16 @@ data class SimilarProductUiModel(
     val imageUrl: String,
     val slashedPrice: String = "",
     val discountPercentage: String = "",
-    val similarProducts: List<SimilarProductUiModel> = emptyList(),
+    val similarProducts: List<ProductCardCompactSimilarProductUiModel> = emptyList(),
     val categoryId: String = "",
     val categoryName: String = "",
     val position: Int = 0
-) : Visitable<SimilarProductTypeFactory>, Parcelable {
+) : Visitable<ProductCardCompactSimilarProductTypeFactory>, Parcelable {
 
     val impressHolder
         get() = ImpressHolder()
 
-    override fun type(typeFactory: SimilarProductTypeFactory): Int {
+    override fun type(typeFactory: ProductCardCompactSimilarProductTypeFactory): Int {
         return typeFactory.type(this)
     }
 }

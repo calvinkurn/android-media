@@ -167,7 +167,7 @@ class TokoNowSearchFragment :
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
-            tokoNowSimilarProductTrackerListener = createSimilarProductCallback(false),
+            productCardCompactSimilarProductTrackerListener = createSimilarProductCallback(false),
             switcherWidgetListener = this,
             tokoNowEmptyStateNoResultListener = this,
             suggestionListener = this,

@@ -95,7 +95,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductIt
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationOocCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TokoNowSimilarProductTrackerCallback
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductCardCompactSimilarProductTrackerCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -1124,7 +1124,7 @@ abstract class BaseSearchCategoryFragment:
         },
     )
 
-    protected open fun createSimilarProductCallback(isCategoryPage: Boolean) : TokoNowSimilarProductTrackerCallback {
-        return TokoNowSimilarProductTrackerCallback(isCategoryPage)
+    protected open fun createSimilarProductCallback(isCategoryPage: Boolean) : ProductCardCompactSimilarProductTrackerCallback {
+        return ProductCardCompactSimilarProductTrackerCallback(isCategoryPage)
     }
 }

@@ -14,8 +14,8 @@ import com.tokopedia.productcard_compact.common.helper.ChooseAddressWrapper
 import com.tokopedia.productcard_compact.common.helper.LocalAddress
 import com.tokopedia.productcard_compact.similarproduct.domain.model.ProductRecommendationResponse
 import com.tokopedia.productcard_compact.similarproduct.domain.usecase.GetSimilarProductUseCase
-import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.SimilarProductUiModel
-import com.tokopedia.productcard_compact.similarproduct.presentation.viewmodel.TokoNowSimilarProductViewModel
+import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
+import com.tokopedia.productcard_compact.similarproduct.presentation.viewmodel.ProductCardCompactSimilarProductViewModel
 import com.tokopedia.productcard_compact.common.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.ext.verifyValueEquals
@@ -29,7 +29,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 
-class TokoNowSimilarProductViewModelTest {
+class ProductCardCompactSimilarProductViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -44,7 +44,7 @@ class TokoNowSimilarProductViewModelTest {
     private lateinit var chooseAddressWrapper: ChooseAddressWrapper
     private lateinit var chooseAddressData: LocalCacheModel
 
-    protected lateinit var viewModel: TokoNowSimilarProductViewModel
+    protected lateinit var viewModel: ProductCardCompactSimilarProductViewModel
 
     @Before
     fun setUp() {
@@ -58,7 +58,7 @@ class TokoNowSimilarProductViewModelTest {
         chooseAddressWrapper = mockk(relaxed = true)
         chooseAddressData = mockk(relaxed = true)
 
-        viewModel = TokoNowSimilarProductViewModel(
+        viewModel = ProductCardCompactSimilarProductViewModel(
             getSimilarProductUseCase,
             chooseAddressWrapper,
             userSession,
@@ -213,8 +213,8 @@ class TokoNowSimilarProductViewModelTest {
         viewModel.mockPrivateField("layoutItemList", null)
     }
 
-    private fun getSimilarProductUiModel(productId: String, quantity: Int): SimilarProductUiModel{
-        return SimilarProductUiModel(
+    private fun getSimilarProductUiModel(productId: String, quantity: Int): ProductCardCompactSimilarProductUiModel{
+        return ProductCardCompactSimilarProductUiModel(
             id = productId,
             shopId = "480552",
             shopName = "Raju Karyana Store",

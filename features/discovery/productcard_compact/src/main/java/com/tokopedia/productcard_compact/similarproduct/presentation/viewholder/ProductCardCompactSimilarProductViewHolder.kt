@@ -8,17 +8,17 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.SimilarProductUiModel
+import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.productcard_compact.R
 import com.tokopedia.productcard_compact.databinding.ItemTokopedianowRecipeProductBinding
 
-class SimilarProductViewHolder(
+class ProductCardCompactSimilarProductViewHolder(
     itemView: View,
     private val listener: SimilarProductListener?
-    ) : AbstractViewHolder<SimilarProductUiModel>(itemView) {
+    ) : AbstractViewHolder<ProductCardCompactSimilarProductUiModel>(itemView) {
 
     companion object{
         private const val QUANTITY_ZERO = 0
@@ -27,7 +27,7 @@ class SimilarProductViewHolder(
 
     private var binding: ItemTokopedianowRecipeProductBinding? by viewBinding()
 
-    override fun bind(product: SimilarProductUiModel) {
+    override fun bind(product: ProductCardCompactSimilarProductUiModel) {
         renderProductInfo(product)
         renderSlashedPrice(product)
         renderDiscountLabel(product)
@@ -38,7 +38,7 @@ class SimilarProductViewHolder(
         impressHolder(product)
     }
 
-    override fun bind(product: SimilarProductUiModel?, payloads: MutableList<Any>) {
+    override fun bind(product: ProductCardCompactSimilarProductUiModel?, payloads: MutableList<Any>) {
         if (payloads.firstOrNull() == true && product != null) {
             renderProductInfo(product)
             renderSlashedPrice(product)
@@ -50,7 +50,7 @@ class SimilarProductViewHolder(
         }
     }
 
-    private fun renderProductInfo(product: SimilarProductUiModel) {
+    private fun renderProductInfo(product: ProductCardCompactSimilarProductUiModel) {
         binding?.apply {
             textName.text = product.name
             textPrice.text = product.priceFmt
@@ -59,7 +59,7 @@ class SimilarProductViewHolder(
         }
     }
 
-    private fun renderSlashedPrice(product: SimilarProductUiModel) {
+    private fun renderSlashedPrice(product: ProductCardCompactSimilarProductUiModel) {
         binding?.textSlashedPrice?.apply {
             if (product.slashedPrice.isNotEmpty()) {
                 paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
@@ -71,7 +71,7 @@ class SimilarProductViewHolder(
         }
     }
 
-    private fun renderDiscountLabel(product: SimilarProductUiModel) {
+    private fun renderDiscountLabel(product: ProductCardCompactSimilarProductUiModel) {
         binding?.labelDiscount?.apply {
             if (product.discountPercentage.isNotEmpty()) {
                 text = context.getString(
@@ -85,7 +85,7 @@ class SimilarProductViewHolder(
         }
     }
 
-    private fun renderProductButton(product: SimilarProductUiModel) {
+    private fun renderProductButton(product: ProductCardCompactSimilarProductUiModel) {
         binding?.btnProductCta?.apply {
             if (product.stock == QUANTITY_ZERO) {
                 text = context.getString(R.string.tokopedianow_stock_empty_text)
@@ -107,7 +107,7 @@ class SimilarProductViewHolder(
         }
     }
 
-    private fun renderQuantityEditor(product: SimilarProductUiModel) {
+    private fun renderQuantityEditor(product: ProductCardCompactSimilarProductUiModel) {
         binding?.apply {
             val stock = product.stock
             val quantity = product.quantity
@@ -140,24 +140,24 @@ class SimilarProductViewHolder(
         }
     }
 
-    private fun renderDeleteBtn(product: SimilarProductUiModel) {
+    private fun renderDeleteBtn(product: ProductCardCompactSimilarProductUiModel) {
         binding?.btnDeleteCart?.setOnClickListener {
             listener?.deleteCartItem(product.id)
         }
     }
 
-    private fun setOnClickListener(product: SimilarProductUiModel) {
+    private fun setOnClickListener(product: ProductCardCompactSimilarProductUiModel) {
         binding?.root?.setOnClickListener {
             listener?.onProductClicked(product)
         }
     }
 
-    private fun onQuantityChanged(product: SimilarProductUiModel) {
+    private fun onQuantityChanged(product: ProductCardCompactSimilarProductUiModel) {
         val input = binding?.quantityEditor?.getValue().orZero()
         listener?.onQuantityChanged(product.id, product.shopId, input)
     }
 
-    private fun onEditorAction(product: SimilarProductUiModel) {
+    private fun onEditorAction(product: ProductCardCompactSimilarProductUiModel) {
         binding?.quantityEditor?.apply {
             val input = getValue()
             addButton.isEnabled = input < product.maxOrder
@@ -167,7 +167,7 @@ class SimilarProductViewHolder(
         }
     }
 
-    private fun impressHolder(product: SimilarProductUiModel) {
+    private fun impressHolder(product: ProductCardCompactSimilarProductUiModel) {
         itemView.addOnImpressionListener(product.impressHolder) {
             listener?.onProductImpressed(product)
         }
@@ -181,7 +181,7 @@ class SimilarProductViewHolder(
         fun deleteCartItem(productId: String)
         fun onQuantityChanged(productId: String, shopId: String, quantity: Int)
         fun addItemToCart(productId: String, shopId: String, quantity: Int)
-        fun onProductClicked(product: SimilarProductUiModel)
-        fun onProductImpressed(product: SimilarProductUiModel)
+        fun onProductClicked(product: ProductCardCompactSimilarProductUiModel)
+        fun onProductImpressed(product: ProductCardCompactSimilarProductUiModel)
     }
 }

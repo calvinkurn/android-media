@@ -4,13 +4,13 @@ import android.os.Bundle
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_ADD_TO_CART_REPURCHASE
-import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_CLICK_CLOSE_BOTTOMSHEET_REPURCHASE
-import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_CLICK_PRODUCT_REPURCHASE
-import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_CLICK_SIMILAR_PRODUCT_BUTTON_REPURCHASE
-import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_VIEW_EMPTY_STATE_REPURCHASE
-import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_VIEW_SIMILAR_PRODUCT_BOTTOMSHEET_REPURCHASE
-import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.SimilarProductUiModel
+import com.tokopedia.productcard_compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_ADD_TO_CART_REPURCHASE
+import com.tokopedia.productcard_compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_CLICK_CLOSE_BOTTOMSHEET_REPURCHASE
+import com.tokopedia.productcard_compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_CLICK_PRODUCT_REPURCHASE
+import com.tokopedia.productcard_compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_CLICK_SIMILAR_PRODUCT_BUTTON_REPURCHASE
+import com.tokopedia.productcard_compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_VIEW_EMPTY_STATE_REPURCHASE
+import com.tokopedia.productcard_compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_VIEW_SIMILAR_PRODUCT_BOTTOMSHEET_REPURCHASE
+import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_ADD_TO_WISHLIST
@@ -380,7 +380,7 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
     fun trackImpressionBottomSheet(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String
     ) {
         val items =  arrayListOf(
@@ -414,7 +414,7 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
     fun trackClickProduct(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String
     ) {
         val items = arrayListOf(
@@ -448,7 +448,7 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
     fun trackClickAddToCart(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String,
         newQuantity: Int
     ) {

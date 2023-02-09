@@ -2,17 +2,17 @@ package com.tokopedia.productcard_compact.similarproduct.domain.mapper
 
 import com.tokopedia.productcard_compact.common.util.NumberUtil
 import com.tokopedia.productcard_compact.similarproduct.domain.model.ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem
-import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.SimilarProductUiModel
+import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
 
-object SimilarProductMapper {
+object ProductRecommendationResponseMapper {
     private const val POSITION_OFFSET = 1
-    fun mapToProductUiModel(index: Int, product: RecommendationItem): SimilarProductUiModel? {
+    fun mapToProductUiModel(index: Int, product: RecommendationItem): ProductCardCompactSimilarProductUiModel? {
         val position = index + POSITION_OFFSET
         return product.stock?.let { stock ->
             product.price?.let { price ->
                 product.imageUrl?.let { imageUrl ->
                     product.categoryBreadcrumbs?.let { categoryName ->
-                        SimilarProductUiModel(
+                        ProductCardCompactSimilarProductUiModel(
                             id = product.id.toString(),
                             shopId = product.shop?.id.toString(),
                             shopName = product.shop?.name.toString(),

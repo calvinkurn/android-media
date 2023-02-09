@@ -3,7 +3,7 @@ package com.tokopedia.tokopedianow.search.presentation.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.productcard_compact.similarproduct.presentation.listener.TokoNowSimilarProductTrackerListener
+import com.tokopedia.productcard_compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
@@ -40,7 +40,7 @@ class SearchTypeFactoryImpl(
     quickFilterListener: QuickFilterListener,
     categoryFilterListener: CategoryFilterListener,
     productItemListener: ProductItemListener,
-    tokoNowSimilarProductTrackerListener: TokoNowSimilarProductTrackerListener,
+    productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener,
     switcherWidgetListener: SwitcherWidgetListener,
     tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     productRecommendationBindOocListener: TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener,
@@ -62,7 +62,7 @@ class SearchTypeFactoryImpl(
     switcherWidgetListener,
     tokoNowEmptyStateNoResultListener,
     feedbackWidgetListener,
-    tokoNowSimilarProductTrackerListener,
+    productCardCompactSimilarProductTrackerListener,
     productRecommendationBindOocListener,
     productRecommendationOocListener,
     productRecommendationListener

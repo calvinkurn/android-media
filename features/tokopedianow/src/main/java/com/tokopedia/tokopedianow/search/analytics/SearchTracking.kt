@@ -23,13 +23,13 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
-import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_ADD_TO_CART_SEARCH
-import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_CLICK_CLOSE_BOTTOMSHEET_SEARCH
-import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_CLICK_PRODUCT_SEARCH
-import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_CLICK_SIMILAR_PRODUCT_BUTTON_SEARCH
-import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_VIEW_EMPTY_STATE_SEARCH
-import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_VIEW_SIMILAR_PRODUCT_BOTTOMSHEET_SEARCH
-import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.SimilarProductUiModel
+import com.tokopedia.productcard_compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_ADD_TO_CART_SEARCH
+import com.tokopedia.productcard_compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_CLICK_CLOSE_BOTTOMSHEET_SEARCH
+import com.tokopedia.productcard_compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_CLICK_PRODUCT_SEARCH
+import com.tokopedia.productcard_compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_CLICK_SIMILAR_PRODUCT_BUTTON_SEARCH
+import com.tokopedia.productcard_compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_VIEW_EMPTY_STATE_SEARCH
+import com.tokopedia.productcard_compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_VIEW_SIMILAR_PRODUCT_BOTTOMSHEET_SEARCH
+import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
 import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_ADD_QUANTITY
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_APPLY_CATEGORY_FILTER
@@ -697,7 +697,7 @@ object SearchTracking {
     fun trackImpressionBottomSheet(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String
     ) {
         val items = arrayListOf(
@@ -731,7 +731,7 @@ object SearchTracking {
     fun trackClickProduct(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String
     ) {
         val items = arrayListOf(
@@ -765,7 +765,7 @@ object SearchTracking {
     fun trackClickAddToCart(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String,
         newQuantity: Int
     ) {

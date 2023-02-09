@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.productcard_compact.common.di.scope.CommonScope
 import com.tokopedia.productcard_compact.productcard.presentation.viewmodel.ProductCardCompactWishlistViewModel
-import com.tokopedia.productcard_compact.similarproduct.presentation.viewmodel.TokoNowSimilarProductViewModel
+import com.tokopedia.productcard_compact.similarproduct.presentation.viewmodel.ProductCardCompactSimilarProductViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -26,6 +26,6 @@ internal abstract class CommonViewModelModule {
     @Binds
     @CommonScope
     @IntoMap
-    @ViewModelKey(TokoNowSimilarProductViewModel::class)
-    internal abstract fun similarProductViewModel(viewModel: TokoNowSimilarProductViewModel): ViewModel
+    @ViewModelKey(ProductCardCompactSimilarProductViewModel::class)
+    internal abstract fun similarProductViewModel(viewModel: ProductCardCompactSimilarProductViewModel): ViewModel
 }

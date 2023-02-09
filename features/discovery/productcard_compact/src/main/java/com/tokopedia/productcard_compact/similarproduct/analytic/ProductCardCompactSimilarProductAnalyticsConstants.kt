@@ -1,6 +1,6 @@
 package com.tokopedia.productcard_compact.similarproduct.analytic
 
-object TokonowSimilarProductConstants {
+object ProductCardCompactSimilarProductAnalyticsConstants {
     const val TRACKER_ID_CLICK_SIMILAR_PRODUCT_BUTTON_SEARCH = "39574"
     const val TRACKER_ID_VIEW_SIMILAR_PRODUCT_BOTTOMSHEET_SEARCH = "39575"
     const val TRACKER_ID_CLICK_PRODUCT_SEARCH = "39576"
@@ -21,5 +21,4 @@ object TokonowSimilarProductConstants {
     const val TRACKER_ID_ADD_TO_CART_REPURCHASE = "39962"
     const val TRACKER_ID_CLICK_CLOSE_BOTTOMSHEET_REPURCHASE = "39963"
     const val TRACKER_ID_VIEW_EMPTY_STATE_REPURCHASE = "39964"
-
 }

@@ -1,16 +1,16 @@
 package com.tokopedia.tokopedianow.repurchase.presentation.listener
 
-import com.tokopedia.productcard_compact.similarproduct.presentation.listener.TokoNowSimilarProductTrackerListener
-import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.SimilarProductUiModel
+import com.tokopedia.productcard_compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
+import com.tokopedia.productcard_compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics
 
-class TokoNowSimilarProductTrackerCallback(
+class ProductCardCompactSimilarProductTrackerCallback(
     private val analytics: RepurchaseAnalytics
-): TokoNowSimilarProductTrackerListener {
+): ProductCardCompactSimilarProductTrackerListener {
     override fun trackImpressionBottomSheet(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String
     ) {
         analytics.trackImpressionBottomSheet(
@@ -24,7 +24,7 @@ class TokoNowSimilarProductTrackerCallback(
     override fun trackClickProduct(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String
     ) {
         analytics.trackClickProduct(
@@ -38,7 +38,7 @@ class TokoNowSimilarProductTrackerCallback(
     override fun trackClickAddToCart(
         userId: String,
         warehouseId: String,
-        similarProduct: SimilarProductUiModel,
+        similarProduct: ProductCardCompactSimilarProductUiModel,
         productIdTriggered: String,
         newQuantity: Int
     ) {
