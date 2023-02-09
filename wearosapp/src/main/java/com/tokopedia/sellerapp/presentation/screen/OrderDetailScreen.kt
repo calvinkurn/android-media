@@ -301,25 +301,25 @@ fun NewOrderDetailFooter(
     NewOrderDetailSpacer(
         height = NEST_SPACING_LVL2
     )
-    NewOrderDetailText(
-        modifier = Modifier
-            .height(
-                height = NEST_LAYOUT_LVL6
-            )
-            .fillMaxWidth()
-            .wrapContentSize(
-                align = Alignment.Center
-            )
-            .padding(
-                horizontal = NEST_LAYOUT_LVL3
-            ),
-        fontSize = NEST_FONT_SIZE_LVL3,
-        text = stringResource(id = R.string.new_order_detail_footer_title),
-        color = TextGrayColor,
-        lineHeight = SP_18,
-        weight = FONT_WEIGHT_700,
-    )
     if(orderType == DATAKEY_NEW_ORDER) {
+        NewOrderDetailText(
+            modifier = Modifier
+                .height(
+                    height = NEST_LAYOUT_LVL6
+                )
+                .fillMaxWidth()
+                .wrapContentSize(
+                    align = Alignment.Center
+                )
+                .padding(
+                    horizontal = NEST_LAYOUT_LVL3
+                ),
+            fontSize = NEST_FONT_SIZE_LVL3,
+            text = stringResource(id = R.string.new_order_detail_footer_title),
+            color = TextGrayColor,
+            lineHeight = SP_18,
+            weight = FONT_WEIGHT_700,
+        )
         NewOrderDetailActionButton(
             text = stringResource(id = R.string.new_order_detail_accept_order),
             onButtonClicked = {
