@@ -1,10 +1,10 @@
-package com.tokopedia.productcard_compact.productcard.utils
+package com.tokopedia.productcard_compact.productcard.helper
 
 import android.view.View
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.productcard_compact.productcard.presentation.model.TokoNowProductCardMatcherModel
+import com.tokopedia.productcard_compact.productcard.presentation.model.ProductCardCompactProductCardMatcherModel
 import com.tokopedia.productcard_compact.productcard.presentation.uimodel.LABEL_BEST_SELLER
 import com.tokopedia.productcard_compact.productcard.presentation.uimodel.LABEL_GIMMICK
 import com.tokopedia.productcard_compact.productcard.presentation.uimodel.LABEL_PRICE
@@ -24,10 +24,10 @@ import com.tokopedia.productcard_compact.productcard.utils.ViewMatchersUtil.isWi
 import com.tokopedia.productcard_compact.test.R
 import org.hamcrest.Matcher
 
-internal object TokoNowProductCardModelMatcherData {
+internal object ProductCardCompactProductCardModelMatcherData {
     private const val PRODUCT_IMAGE_URL = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg"
 
-    fun getProductCardModelMatcherData(isCarousel: Boolean): List<TokoNowProductCardMatcherModel> {
+    fun getProductCardModelMatcherData(isCarousel: Boolean): List<ProductCardCompactProductCardMatcherModel> {
         return listOf(
             getProduct(isCarousel = isCarousel),
             getProductWithDiscountIntType(isCarousel = isCarousel),
@@ -61,7 +61,7 @@ internal object TokoNowProductCardModelMatcherData {
         isWishlistShown: Boolean = false,
         isSimilarProductShown: Boolean = false,
         isCarousel: Boolean
-    ): TokoNowProductCardMatcherModel {
+    ): ProductCardCompactProductCardMatcherModel {
         val productCardModel = TokoNowProductCardViewUiModel(
             imageUrl = PRODUCT_IMAGE_URL,
             minOrder = minOrder,
@@ -156,19 +156,19 @@ internal object TokoNowProductCardModelMatcherData {
             )
         )
 
-        return TokoNowProductCardMatcherModel(
+        return ProductCardCompactProductCardMatcherModel(
             model = productCardModel,
             matchers = matchers + additionalMatchers
         )
     }
 
-    private fun getProductWithDiscountIntType(isCarousel: Boolean): TokoNowProductCardMatcherModel = getProduct(
+    private fun getProductWithDiscountIntType(isCarousel: Boolean): ProductCardCompactProductCardMatcherModel = getProduct(
         isCarousel = isCarousel,
         discountInt = 10,
         discount = String.EMPTY
     )
 
-    private fun getProductWithAssignedValueBestSeller(isCarousel: Boolean): TokoNowProductCardMatcherModel {
+    private fun getProductWithAssignedValueBestSeller(isCarousel: Boolean): ProductCardCompactProductCardMatcherModel {
         val labelGroupList = listOf(
             LabelGroup(
                 position = LABEL_BEST_SELLER,
@@ -199,7 +199,7 @@ internal object TokoNowProductCardModelMatcherData {
         )
     }
 
-    private fun getProductWithAssignedValueNewProduct(isCarousel: Boolean): TokoNowProductCardMatcherModel {
+    private fun getProductWithAssignedValueNewProduct(isCarousel: Boolean): ProductCardCompactProductCardMatcherModel {
         val labelGroupList = listOf(
             LabelGroup(
                 position = LABEL_GIMMICK,
@@ -230,7 +230,7 @@ internal object TokoNowProductCardModelMatcherData {
         )
     }
 
-    private fun getProductWithPriceLabel(isCarousel: Boolean): TokoNowProductCardMatcherModel {
+    private fun getProductWithPriceLabel(isCarousel: Boolean): ProductCardCompactProductCardMatcherModel {
         val labelGroupList = listOf(
             LabelGroup(
                 position = LABEL_PRICE,
@@ -280,7 +280,7 @@ internal object TokoNowProductCardModelMatcherData {
      * Out Of Stock (OOS) Product
      */
 
-    private fun getOosProductCard(isCarousel: Boolean) : TokoNowProductCardMatcherModel {
+    private fun getOosProductCard(isCarousel: Boolean) : ProductCardCompactProductCardMatcherModel {
         val labelGroupList = listOf(
             LabelGroup(
                 position = LABEL_STATUS,
@@ -299,7 +299,7 @@ internal object TokoNowProductCardModelMatcherData {
         )
     }
 
-    private fun getOosProductCardWithWishlistAndSimilarProduct(isCarousel: Boolean) : TokoNowProductCardMatcherModel {
+    private fun getOosProductCardWithWishlistAndSimilarProduct(isCarousel: Boolean) : ProductCardCompactProductCardMatcherModel {
         val labelGroupList = listOf(
             LabelGroup(
                 position = LABEL_STATUS,

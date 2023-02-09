@@ -9,11 +9,11 @@
         tools:replace="android:label">
 
         <activity
-            android:name="com.tokopedia.productcard_compact.productcard.presentation.activity.TokoNowProductCardLinearActivityTest"
+            android:name="com.tokopedia.productcard_compact.productcard.presentation.activity.ProductCardCompactProductCardLinearActivityTest"
             android:theme="@style/Theme.AppCompat"/>
 
         <activity
-            android:name="com.tokopedia.productcard_compact.productcard.presentation.activity.TokoNowProductCardGridActivityTest"
+            android:name="com.tokopedia.productcard_compact.productcard.presentation.activity.ProductCardCompactProductCardGridActivityTest"
             android:theme="@style/Theme.AppCompat"/>
 
     </application>

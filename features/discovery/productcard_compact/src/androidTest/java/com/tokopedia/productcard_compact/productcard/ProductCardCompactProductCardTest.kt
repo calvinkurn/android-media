@@ -9,25 +9,25 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
-import com.tokopedia.productcard_compact.productcard.presentation.adapter.TokoNowProductCardViewHolder
-import com.tokopedia.productcard_compact.productcard.presentation.model.TokoNowProductCardMatcherModel
-import com.tokopedia.productcard_compact.productcard.presentation.activity.TokoNowProductCardGridActivityTest
-import com.tokopedia.productcard_compact.productcard.presentation.activity.TokoNowProductCardLinearActivityTest
-import com.tokopedia.productcard_compact.productcard.utils.TokoNowProductCardModelMatcherData.getProductCardModelMatcherData
+import com.tokopedia.productcard_compact.productcard.presentation.adapter.ProductCardCompactProductCardViewHolder
+import com.tokopedia.productcard_compact.productcard.presentation.model.ProductCardCompactProductCardMatcherModel
+import com.tokopedia.productcard_compact.productcard.presentation.activity.ProductCardCompactProductCardGridActivityTest
+import com.tokopedia.productcard_compact.productcard.presentation.activity.ProductCardCompactProductCardLinearActivityTest
+import com.tokopedia.productcard_compact.productcard.helper.ProductCardCompactProductCardModelMatcherData.getProductCardModelMatcherData
 import com.tokopedia.productcard_compact.productcard.utils.ViewMatchersUtil.withComponentsInProductCardMatched
 import org.hamcrest.Matcher
 import com.tokopedia.productcard_compact.test.R
 import org.junit.Test
 
 @MediumTest
-internal class TokoNowProductCardTest {
+internal class ProductCardCompactProductCardTest {
 
     private lateinit var recyclerViewViewInteraction: ViewInteraction
-    private lateinit var matcherModels: List<TokoNowProductCardMatcherModel>
+    private lateinit var matcherModels: List<ProductCardCompactProductCardMatcherModel>
 
     @Test
     fun testProductCardLinear() {
-        startTestActivity(TokoNowProductCardLinearActivityTest::class.java.name)
+        startTestActivity(ProductCardCompactProductCardLinearActivityTest::class.java.name)
 
         recyclerViewViewInteraction = onView(withId(R.id.rv_product_card))
         matcherModels = getProductCardModelMatcherData(isCarousel = true)
@@ -37,7 +37,7 @@ internal class TokoNowProductCardTest {
 
     @Test
     fun testProductCardGrid() {
-        startTestActivity(TokoNowProductCardGridActivityTest::class.java.name)
+        startTestActivity(ProductCardCompactProductCardGridActivityTest::class.java.name)
 
         recyclerViewViewInteraction = onView(withId(R.id.rv_product_card))
         matcherModels = getProductCardModelMatcherData(isCarousel = false)
@@ -66,7 +66,7 @@ internal class TokoNowProductCardTest {
         position: Int,
         matchers: Map<Int, Matcher<View?>>
     ): ViewInteraction {
-        return perform(scrollToPosition<TokoNowProductCardViewHolder>(position))
+        return perform(scrollToPosition<ProductCardCompactProductCardViewHolder>(position))
             .check(
                 matches(
                     withComponentsInProductCardMatched(

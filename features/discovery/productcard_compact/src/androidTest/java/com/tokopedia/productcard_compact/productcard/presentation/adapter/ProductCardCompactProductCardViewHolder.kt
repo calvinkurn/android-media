@@ -6,7 +6,7 @@ import com.tokopedia.productcard_compact.productcard.presentation.customview.Tok
 import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
 import com.tokopedia.productcard_compact.test.R
 
-internal class TokoNowProductCardViewHolder(
+internal class ProductCardCompactProductCardViewHolder(
     itemView: View
 ): RecyclerView.ViewHolder(itemView) {
 

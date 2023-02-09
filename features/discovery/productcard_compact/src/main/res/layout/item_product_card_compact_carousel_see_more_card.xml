@@ -9,7 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_banner_mix_more"
-        android:background="@color/tokopedianow_card_dms_color"
+        android:background="@color/product_card_compact_dms_card_color"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

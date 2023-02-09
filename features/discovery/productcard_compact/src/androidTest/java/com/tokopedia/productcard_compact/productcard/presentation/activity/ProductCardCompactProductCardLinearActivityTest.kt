@@ -5,11 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard_compact.test.R
-import com.tokopedia.productcard_compact.productcard.presentation.adapter.TokoNowProductCardAdapter
+import com.tokopedia.productcard_compact.productcard.presentation.adapter.ProductCardCompactProductCardAdapter
 import com.tokopedia.productcard_compact.productcard.presentation.decoration.LinearDecoration
-import com.tokopedia.productcard_compact.productcard.utils.TokoNowProductCardModelMatcherData.getProductCardModelMatcherData
+import com.tokopedia.productcard_compact.productcard.helper.ProductCardCompactProductCardModelMatcherData.getProductCardModelMatcherData
 
-internal class TokoNowProductCardLinearActivityTest: AppCompatActivity() {
+internal class ProductCardCompactProductCardLinearActivityTest: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,7 +17,7 @@ internal class TokoNowProductCardLinearActivityTest: AppCompatActivity() {
 
         val rvProductCard = findViewById<RecyclerView>(R.id.rv_product_card)
         rvProductCard.apply {
-            adapter = TokoNowProductCardAdapter(getProductCardModelMatcherData(isCarousel = true))
+            adapter = ProductCardCompactProductCardAdapter(getProductCardModelMatcherData(isCarousel = true))
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             addItemDecoration(LinearDecoration())
         }
