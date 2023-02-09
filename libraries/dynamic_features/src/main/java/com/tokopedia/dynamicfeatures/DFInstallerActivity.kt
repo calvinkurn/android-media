@@ -33,6 +33,7 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
 import kotlinx.coroutines.*
+import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
@@ -444,6 +445,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         progressBar.max = totalBytesToDowload
         progressBar.progress = bytesDownloaded
         val progressText = String.format(
+            Locale.getDefault(),
             "%.2f KB / %.2f KB",
             (bytesDownloaded.toFloat() / CommonConstant.ONE_KB),
             totalBytesToDowload.toFloat() / CommonConstant.ONE_KB
