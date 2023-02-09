@@ -390,18 +390,6 @@ object DeeplinkMapperMerchant {
         return ApplinkConst.SellerApp.SELLER_MVC_INTRO == deeplink
     }
 
-    fun isSellerMvcListAppLink(deeplink: String): Boolean {
-        return ApplinkConst.SellerApp.SELLER_MVC_LIST == deeplink
-    }
-
-    fun isSellerMvcListActiveAppLink(deeplink: String): Boolean {
-        return ApplinkConst.SellerApp.SELLER_MVC_LIST_ACTIVE == deeplink
-    }
-
-    fun isSellerMvcListHistoryAppLink(deeplink: String): Boolean {
-        return ApplinkConst.SellerApp.SELLER_MVC_LIST_HISTORY == deeplink
-    }
-
     fun isSellerMvcCreate(deeplink: String): Boolean {
         val uriAppLink = Uri.parse(deeplink)
         return UriUtil.matchWithPattern(ApplinkConst.SellerApp.SELLER_MVC_CREATE, uriAppLink) != null
@@ -446,18 +434,6 @@ object DeeplinkMapperMerchant {
 
     fun getRegisteredNavigationForSellerMvcIntro(): String {
         return ApplinkConstInternalSellerapp.SELLER_MVC_INTRO
-    }
-
-    fun getRegisteredNavigationForSellerMvcList(): String {
-        return ApplinkConstInternalSellerapp.SELLER_MVC_LIST
-    }
-
-    fun getRegisteredNavigationForSellerMvcListActive(): String {
-        return ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ACTIVE
-    }
-
-    fun getRegisteredNavigationForSellerMvcListHistory(): String {
-        return ApplinkConstInternalSellerapp.SELLER_MVC_LIST_HISTORY
     }
 
     fun getRegisteredNavigationForSellerMvcCreate(deeplink: String): String {

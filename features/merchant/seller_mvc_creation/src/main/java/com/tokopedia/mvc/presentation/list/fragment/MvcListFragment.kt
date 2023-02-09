@@ -68,6 +68,7 @@ import com.tokopedia.mvc.presentation.download.DownloadVoucherImageBottomSheet
 import com.tokopedia.mvc.presentation.intro.MvcIntroActivity
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
+import com.tokopedia.mvc.presentation.list.constant.ApplinkFilterStatus
 import com.tokopedia.mvc.presentation.list.constant.PageState
 import com.tokopedia.mvc.presentation.list.dialog.CallTokopediaCareDialog
 import com.tokopedia.mvc.presentation.list.dialog.StopVoucherConfirmationDialog
@@ -82,6 +83,7 @@ import com.tokopedia.mvc.presentation.share.ShareComponentInstanceBuilder
 import com.tokopedia.mvc.presentation.share.ShareCopyWritingGenerator
 import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.SharingUtil
+import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.tracker.StopVoucherTracker
 import com.tokopedia.mvc.util.tracker.VoucherListActionTracker
 import com.tokopedia.mvc.util.tracker.VoucherListTracker
@@ -115,6 +117,12 @@ class MvcListFragment :
     companion object {
         private const val TOKOPEDIA_CARE_STRING_FORMAT = "%s?url=%s"
         private const val TOKOPEDIA_CARE_PATH = "help"
+        @JvmStatic
+        fun newInstance(statusFilter: String) = MvcListFragment().apply {
+            arguments = Bundle().apply {
+                putString(BundleConstant.BUNDLE_KEY_VOUCHER_FILTER, statusFilter)
+            }
+        }
     }
 
     private val filterList = ArrayList<SortFilterItem>()
@@ -129,6 +137,7 @@ class MvcListFragment :
     private var otherPeriodBottomSheet: OtherPeriodBottomSheet? = null
     private var eduCenterBottomSheet: EduCenterBottomSheet? = null
     private var stopVoucherDialog: StopVoucherConfirmationDialog? = null
+    private val statusFilter by lazy { arguments?.getString(BundleConstant.BUNDLE_KEY_VOUCHER_FILTER).orEmpty() }
 
     @Inject
     lateinit var shareCopyWritingGenerator: ShareCopyWritingGenerator
@@ -182,6 +191,7 @@ class MvcListFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
+        viewModel.setFilterStatus(ApplinkFilterStatus.getById(statusFilter))
         binding?.setupView()
         setEduCenterBottomSheet()
         setupStopConfirmationDialog()
