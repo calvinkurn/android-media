@@ -44,7 +44,7 @@ object UserProfileVideoMapper {
 
         val channelTypeTransitionPrev = ""
         val channelTypeTransitionNext = ""
-        val channelType = PlayWidgetChannelType.getByValue(item.airTime)
+        val channelType = PlayWidgetChannelType.getByValue(item.displayType)
         return PlayWidgetChannelUiModel(
             channelId = item.id,
             title = item.title,

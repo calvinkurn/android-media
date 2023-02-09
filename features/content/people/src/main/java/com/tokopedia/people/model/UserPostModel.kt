@@ -62,6 +62,8 @@ data class PlayPostContentItem(
     val configurations: PlayPostConfigurations = PlayPostConfigurations(),
     @SerializedName("partner")
     val partner: Partner = Partner(),
+    @SerializedName("display_type")
+    val displayType: String = "",
 ) : BaseItem()
 
 data class Partner(
