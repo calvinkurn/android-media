@@ -1,6 +1,7 @@
 package com.tokopedia.sellerpersona.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.sellerpersona.view.adapter.factory.OptionAdapterFactoryImpl
 import com.tokopedia.sellerpersona.view.adapter.viewholder.BaseOptionViewHolder
 import com.tokopedia.sellerpersona.view.model.BaseOptionUiModel
 

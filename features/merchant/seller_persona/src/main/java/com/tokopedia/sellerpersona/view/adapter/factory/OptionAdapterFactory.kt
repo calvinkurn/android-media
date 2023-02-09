@@ -1,4 +1,4 @@
-package com.tokopedia.sellerpersona.view.adapter
+package com.tokopedia.sellerpersona.view.adapter.factory
 
 import com.tokopedia.sellerpersona.view.model.BaseOptionUiModel
 

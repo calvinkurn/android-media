@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.sellerpersona.databinding.FragmentPersonaSelectTypeBinding
 import com.tokopedia.sellerpersona.view.adapter.PersonaTypeAdapter
+import com.tokopedia.sellerpersona.view.adapter.viewholder.PersonaTypeViewHolder
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
 import com.tokopedia.sellerpersona.view.viewhelper.PersonaTypeItemDecoration
 import com.tokopedia.sellerpersona.view.viewmodel.SelectPersonaTypeViewModel
@@ -25,7 +26,7 @@ import javax.inject.Inject
  */
 
 class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>(),
-    PersonaTypeAdapter.Listener {
+    PersonaTypeViewHolder.Listener {
 
     companion object {
         const val KEY_SELECTED_PERSONA = "key_selected_persona"
@@ -76,7 +77,7 @@ class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>
     override fun onItemClickListener(item: PersonaUiModel) {
         if (item.isSelected) {
             personaTypeAdapter.getItems().forEachIndexed { i, persona ->
-                if (item.name != persona.name) {
+                if (item.value != persona.value) {
                     persona.isSelected = false
                     try {
                         personaTypeAdapter.notifyItemChanged(i)
@@ -99,7 +100,8 @@ class PersonaSelectTypeFragment : BaseFragment<FragmentPersonaSelectTypeBinding>
 
     private fun showPersonaList(data: List<PersonaUiModel>) {
         binding?.rvSpSelectType?.post {
-            personaTypeAdapter.setItems(data)
+            personaTypeAdapter.clearAllElements()
+            personaTypeAdapter.addElement(data)
         }
     }
 

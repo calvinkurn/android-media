@@ -27,7 +27,7 @@
             android:id="@+id/groupSpResultComponents"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="visible"
+            android:visibility="gone"
             app:constraint_referenced_ids="imgSpResultBackdrop, imgSpResultAvatar, tvSpSelectManualType, btnSpRetryQuestionnaire, tvSpPersonaContentDescription, switchSpActivatePersona, tvSpLblActivatePersona, dividerSpResultBottom, rvSpResultInfoList, dividerSpResultTop, tvSpResultInfoTitle, tvSpSellerTypeNote, tvSpSellerType, tvSpLblSellerType, tvSpOwnerInfo, tvSpLblOwnerInfo, dividerSpResultMiddle" />
 
         <com.tokopedia.sellerpersona.view.customview.PersonaErrorView

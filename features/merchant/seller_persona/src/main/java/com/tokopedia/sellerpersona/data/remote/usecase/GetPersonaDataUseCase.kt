@@ -55,12 +55,12 @@ class GetPersonaDataUseCase @Inject constructor(
         personaList: List<PersonaUiModel>
     ): PersonaDataUiModel {
         val persona = personaList.firstOrNull {
-            it.name.equals(data.persona, true)
+            it.value.equals(data.persona, true)
         }
         return PersonaDataUiModel(
             persona = data.persona,
             personaStatus = getPersonaStatusType(data.status),
-            personaData = persona ?: PersonaUiModel(name = data.persona)
+            personaData = persona ?: PersonaUiModel(value = data.persona)
         )
     }
 

@@ -65,7 +65,7 @@ class PersonaResultViewModel @Inject constructor(
     fun setPersona(persona: PersonaUiModel) {
         launch(context = dispatchers.io) {
             val personaData = PersonaDataUiModel(
-                persona = persona.name,
+                persona = persona.value,
                 personaStatus = PersonaStatus.ACTIVE,
                 personaData = persona
             )

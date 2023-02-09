@@ -1,4 +1,4 @@
-package com.tokopedia.sellerpersona.view.adapter
+package com.tokopedia.sellerpersona.view.adapter.factory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable

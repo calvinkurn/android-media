@@ -65,8 +65,7 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
     }
 
     override fun bind(
-        layoutInflater: LayoutInflater,
-        container: ViewGroup?
+        layoutInflater: LayoutInflater, container: ViewGroup?
     ): FragmentPersonaQuestionnaireBinding {
         return FragmentPersonaQuestionnaireBinding.inflate(layoutInflater, container, false)
     }
@@ -101,9 +100,7 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
             }
 
             val dialog = DialogUnify(
-                it,
-                DialogUnify.HORIZONTAL_ACTION,
-                DialogUnify.NO_IMAGE
+                it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE
             )
             with(dialog) {
                 setTitle(it.getString(R.string.sp_poup_exit_title))
@@ -148,19 +145,17 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
             val animator = if (isGoToNext || isFirstPage) {
                 val start = getPercentValue(currentPosition.minus(Int.ONE), itemCount)
                 val end = getPercentValue(currentPosition, itemCount)
-                ObjectAnimator.ofInt(this, PROGRESS_ATTR_TAG, start, end)
-                    .apply {
-                        duration = PROGRESS_DURATION
-                        interpolator = progressBarInterpolator
-                    }
+                ObjectAnimator.ofInt(this, PROGRESS_ATTR_TAG, start, end).apply {
+                    duration = PROGRESS_DURATION
+                    interpolator = progressBarInterpolator
+                }
             } else {
                 val start = getPercentValue(currentPosition, itemCount)
                 val end = getPercentValue(currentPosition.plus(Int.ONE), itemCount)
-                ObjectAnimator.ofInt(this, PROGRESS_ATTR_TAG, end, start)
-                    .apply {
-                        duration = PROGRESS_DURATION
-                        interpolator = progressBarInterpolator
-                    }
+                ObjectAnimator.ofInt(this, PROGRESS_ATTR_TAG, end, start).apply {
+                    duration = PROGRESS_DURATION
+                    interpolator = progressBarInterpolator
+                }
             }
             animator.start()
         }
@@ -180,8 +175,7 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
             btnSpNext.setOnClickListener {
                 val currentPosition = binding?.vpSpQuestionnaire?.currentItem.orZero()
                 val isAlreadySelecting = pagerAdapter.getPages()
-                    .getOrNull(currentPosition)?.options?.any { it.isSelected }
-                    .orFalse()
+                    .getOrNull(currentPosition)?.options?.any { it.isSelected }.orFalse()
                 handleOnNextClicked(it, isAlreadySelecting)
             }
             btnSpPrev.setOnClickListener {
@@ -209,9 +203,9 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
 
     private fun moveToNextQuestion() {
         val currentPosition = binding?.vpSpQuestionnaire?.currentItem.orZero()
-        val isAlreadySelecting = pagerAdapter.getPages()
-            .getOrNull(currentPosition)?.options?.any { it.isSelected }
-            .orFalse()
+        val isAlreadySelecting =
+            pagerAdapter.getPages().getOrNull(currentPosition)?.options?.any { it.isSelected }
+                .orFalse()
         if (isAlreadySelecting) {
             binding?.vpSpQuestionnaire?.setCurrentItem(currentPosition.plus(Int.ONE), true)
         }
@@ -222,10 +216,8 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
             btnSpPrev.isEnabled = false
             btnSpNext.isLoading = true
             val answers = pagerAdapter.getPages().map { pager ->
-                QuestionnaireAnswerParam(
-                    id = pager.id.toLongOrZero(),
-                    answers = pager.options.orEmpty().filter { it.isSelected }.map { it.value }
-                )
+                QuestionnaireAnswerParam(id = pager.id.toLongOrZero(),
+                    answers = pager.options.orEmpty().filter { it.isSelected }.map { it.value })
             }
             viewModel.submitAnswer(answers)
             viewModel.setPersonaResult.observeOnce(viewLifecycleOwner) {
@@ -282,14 +274,13 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
 
     private fun showQuestionnaire(data: List<QuestionnairePagerUiModel>) {
         binding?.run {
+            pagerAdapter.setPages(data)
             errorViewSpQuestionnaire.gone()
             btnSpPrev.visible()
+            progressBarFramePersona.visible()
             btnSpNext.visible()
             vpSpQuestionnaire.visible()
             progressBarPersonaQuestionnaire.max = MAX_PROGRESS
-            vpSpQuestionnaire.post {
-                pagerAdapter.setPages(data)
-            }
         }
     }
 

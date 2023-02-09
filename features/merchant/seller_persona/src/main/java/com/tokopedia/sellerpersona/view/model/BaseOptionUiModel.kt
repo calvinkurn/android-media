@@ -2,7 +2,7 @@ package com.tokopedia.sellerpersona.view.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.sellerpersona.view.adapter.OptionAdapterFactory
+import com.tokopedia.sellerpersona.view.adapter.factory.OptionAdapterFactory
 
 /**
  * Created by @ilhamsuaib on 02/02/23.
