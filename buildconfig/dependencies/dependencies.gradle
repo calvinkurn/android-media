@@ -9,7 +9,7 @@ ext {
     kotlinVersion = "1.5.31"
 
     navigationVersion = "2.3.5"
-    lifeCycleVersion = "2.3.1"
+    lifeCycleVersion = "2.4.1"
     lifeCycleExtensionsVersion = "2.2.0"
     archCoreVersion = "2.1.0"
     workManagerVersion = "2.7.0"
@@ -106,7 +106,7 @@ ext {
     benchmarkTestVersion = '1.0.0'
     testCore = '1.4.0'
     fragmentTest = "1.4.1"
-    androidxFragment = '1.2.4'
+    androidxFragment = '1.4.1'
     debugToolsEnabled = true
 
     // Sort and categorize alphabetically by folder name
@@ -124,29 +124,29 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyIconsVersion = '1.0.23.2'
-    unifyPrinciplesVersion = '1.4.2'
-    unifyComponentsVersion = '1.2.20-rc01'
-    unifyCoachMarkVersion = '1.2.17.2'
-    unifyCalendarVersion = '1.2.1.2'
+    unifyIconsVersion = '1.0.24.1'
+    unifyPrinciplesVersion = '1.4.4'
+    unifyComponentsVersion = '1.2.25.2'
+    unifyCoachMarkVersion = '1.2.20'
+    unifyCalendarVersion = '1.2.3'
     unifyBannerVersion = '1.0.6.2'
     unifyDialogVersion = '1.0.14.2'
-    unifyLoaderDialogVersion = '1.0.2.2'
-    unifyDatePickerVersion = '1.1.1.2'
+    unifyLoaderDialogVersion = '1.0.4'
+    unifyDatePickerVersion = '1.1.2'
     unifyDateFilterVersion = '1.1.1.2'
     unifyPinVersion = '1.0.5'
-    unifyEmptyStateVersion = '1.0.13.2'
-    unifyGlobalErrorVersion = '1.0.18.2'
+    unifyEmptyStateVersion = '1.0.14'
+    unifyGlobalErrorVersion = '1.0.19'
     unifyHeaderVersion = '1.1.13'
     unifySortFilterVersion = '1.1.5'
     unifyIconNotificationVersion = '1.0.2.2'
     unifyCarouselVersion = '1.0.10.2'
-    unifyListVersion = '1.0.10.2'
+    unifyListVersion = '1.0.12'
     unifyAccordionVersion = '1.1.8'
     unifyTotalAmountVersion = '1.0.7.2'
     unifyExplorePromoVersion = '1.0.3.2'
     unifyImageGalleryVersion = '1.0.5.2'
-    unifyViewAllCardVersion = '1.0.6.2'
+    unifyViewAllCardVersion = '1.0.8'
 
     gradlePlugin = [
             crashlytics   : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
@@ -264,7 +264,6 @@ ext {
             protobuf              : "com.google.protobuf:protobuf-gradle-plugin:0.8.12",
             autopatchbase         : "com.tokopedia.patch:core:1.0.0",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
-            ucrop                 : "com.github.yalantis:ucrop:2.2.2",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",
             cameraView            : "com.otaliastudios:cameraview:2.7.2-fix-pixel",
             coroutineCore         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion",
@@ -357,8 +356,9 @@ ext {
             espressoIntents       : "androidx.test.espresso:espresso-intents:$espressoVersion",
             espressoContrib       : "androidx.test.espresso:espresso-contrib:$espressoVersion",
             espressoIdlingResource: "androidx.test.espresso:espresso-idling-resource:$espressoVersion",
+            okhttpIdlingResource  : "com.jakewharton.espresso:okhttp3-idling-resource:1.0.0",
             retrofitMock          : "com.squareup.retrofit2:retrofit-mock:$retrofitVersion",
-            retrofitMockWebser    : "com.squareup.okhttp3:mockwebserver:$okHttpVersion",
+            retrofitMockWebserver : "com.squareup.okhttp3:mockwebserver:$okHttpVersion",
             dexMaker              : 'com.google.dexmaker:dexmaker:1.2',
             dexMakerMockito       : 'com.linkedin.dexmaker:dexmaker-mockito:2.28.1',
             assertJ               : "org.assertj:assertj-core:1.7.1",
@@ -398,7 +398,8 @@ ext {
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.2",
             showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.6.1",
-            youtubePlayer   : "com.tokopedia.youtube:player:0.0.1"
+            youtubePlayer   : "com.tokopedia.youtube:player:0.0.1",
+            ucrop           : "com.tokopedia.ucrop:ucrop:2.2.2-fix-exif@aar",
     ]
 
     unifyDependencies = [

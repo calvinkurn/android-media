@@ -34,6 +34,8 @@
       "event": "view_item_list",
       "eventAction": "impression on product dynamic channel left carousel",
       "sessionIris": ".*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
       "items": [{
         "dimension83": "bebas ongkir|none / other",
         "item_id": ".*",
@@ -47,8 +49,9 @@
         "item_variant": ".*",
         "item_category": ".*"
       }],
-      "eventLabel": ".*",
-      "channelId": ".*"
+      "eventLabel": "",
+      "channelId": ".*",
+      "userId": ".*"
     },
     {
       "eventCategory": "homepage",

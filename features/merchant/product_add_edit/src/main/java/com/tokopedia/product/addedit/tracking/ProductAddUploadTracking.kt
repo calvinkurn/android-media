@@ -18,8 +18,6 @@ object ProductAddUploadTracking {
             } else {
                 "$TYPE_SERVER_TOME - $errorName"
             }
-
-            sendAddProductClickWithoutScreen(shopId, "click finish error", label)
         }
     }
 

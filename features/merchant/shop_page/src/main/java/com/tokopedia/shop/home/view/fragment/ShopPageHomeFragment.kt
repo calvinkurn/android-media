@@ -186,9 +186,6 @@ open class ShopPageHomeFragment :
         const val KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
         const val KEY_SHOP_REF = "SHOP_REF"
         private const val KEY_ENABLE_SHOP_DIRECT_PURCHASE = "ENABLE_SHOP_DIRECT_PURCHASE"
-        const val SPAN_COUNT = 2
-        const val SAVED_SHOP_SORT_ID = "saved_shop_sort_id"
-        const val SAVED_SHOP_SORT_NAME = "saved_shop_sort_name"
         const val SAVED_SHOP_PRODUCT_FILTER_PARAMETER = "SAVED_SHOP_PRODUCT_FILTER_PARAMETER"
         private const val QUERY_PARAM_EXT_PARAM = "extParam"
         private const val REQUEST_CODE_ETALASE = 206
@@ -255,7 +252,6 @@ open class ShopPageHomeFragment :
     var isThematicWidgetShown: Boolean = false
     var isEnableDirectPurchase: Boolean = false
     private var productListName: String = ""
-    private var decodeExtParam: String = ""
     private var sortId
         get() = shopProductFilterParameter?.getSortId().orEmpty()
         set(value) {
@@ -340,7 +336,6 @@ open class ShopPageHomeFragment :
     private var globalErrorShopPage: GlobalError? = null
     var listWidgetLayout = mutableListOf<ShopPageWidgetLayoutUiModel>()
     var initialLayoutData = mutableListOf<ShopPageWidgetLayoutUiModel>()
-    var isNeedScrollToTopAfterGetData = true
     val viewBinding: FragmentShopPageHomeBinding? by viewBinding()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -2622,20 +2617,22 @@ open class ShopPageHomeFragment :
         shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
         shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
-        shopPageHomeTracking.impressionProductPersonalizationReminder(
-            isOwner,
-            isLogin,
-            shopHomeProductViewModel?.name ?: "",
-            shopHomeProductViewModel?.id ?: "",
-            shopHomeProductViewModel?.displayedPrice ?: "",
-            shopHomeProductViewModel?.recommendationType ?: "",
-            viewModel?.userId.orEmpty(),
-            shopName,
-            ShopUtil.getActualPositionFromIndex(itemPosition),
-            shopHomeCarousellProductUiModel?.header?.title ?: "",
-            customDimensionShopPage,
-            shopHomeProductViewModel?.categoryBreadcrumbs ?: ""
-        )
+        if (!isOwner) { // Not sending impression tracker if seller is seeing the widget from his own shop
+            shopPageHomeTracking.impressionProductPersonalizationReminder(
+                isOwner,
+                isLogin,
+                shopHomeProductViewModel?.name ?: "",
+                shopHomeProductViewModel?.id ?: "",
+                shopHomeProductViewModel?.displayedPrice ?: "",
+                shopHomeProductViewModel?.recommendationType ?: "",
+                viewModel?.userId.orEmpty(),
+                shopName,
+                ShopUtil.getActualPositionFromIndex(itemPosition),
+                shopHomeCarousellProductUiModel?.header?.title ?: "",
+                customDimensionShopPage,
+                shopHomeProductViewModel?.categoryBreadcrumbs ?: ""
+            )
+        }
     }
 
     override fun onCarouselProductItemClicked(
@@ -2917,21 +2914,6 @@ open class ShopPageHomeFragment :
         shopPageHomeTracking.impressionPersonalizationTrendingWidget(shopId, userId)
     }
 
-    private fun onSuccessRemoveWishList(
-        shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
-        shopHomeProductViewModel: ShopHomeProductUiModel?
-    ) {
-        shopHomeProductViewModel?.let {
-            showToastSuccess(
-                message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
-                ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
-                ctaAction = {}
-            )
-            shopHomeAdapter.updateWishlistProduct(it.id ?: "", false)
-            trackClickWishlist(shopHomeCarousellProductUiModel, shopHomeProductViewModel, false)
-        }
-    }
-
     private fun trackClickWishlist(
         shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
         shopHomeProductViewModel: ShopHomeProductUiModel,
@@ -2972,27 +2954,6 @@ open class ShopPageHomeFragment :
         }
     }
 
-    private fun onErrorRemoveWishList(errorMessage: String?) {
-        NetworkErrorHelper.showCloseSnackbar(activity, errorMessage)
-    }
-
-    private fun onSuccessAddWishlist(
-        shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
-        shopHomeProductViewModel: ShopHomeProductUiModel?
-    ) {
-        shopHomeProductViewModel?.let {
-            showToastSuccess(
-                message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-                ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-                ctaAction = {
-                    goToWishlist()
-                }
-            )
-            shopHomeAdapter.updateWishlistProduct(it.id ?: "", true)
-            trackClickWishlist(shopHomeCarousellProductUiModel, shopHomeProductViewModel, true)
-        }
-    }
-
     override fun chooseProduct() {
         context?.let {
             RouteManager.route(it, ApplinkConst.PRODUCT_ADD)
@@ -3005,10 +2966,6 @@ open class ShopPageHomeFragment :
 
     private fun goToCart() {
         RouteManager.route(context, ApplinkConst.CART)
-    }
-
-    private fun onErrorAddWishlist(errorMessage: String?) {
-        NetworkErrorHelper.showCloseSnackbar(activity, errorMessage)
     }
 
     override fun onCarouselProductItemClickAddToCart(

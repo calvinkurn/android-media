@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -35,11 +34,11 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN
 import com.tokopedia.unifycomponents.UnifyButton.Variant.FILLED
 import com.tokopedia.unifycomponents.UnifyButton.Variant.GHOST
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.usercomponents.userconsent.common.UserConsentPayload
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
-import com.tokopedia.usercomponents.userconsent.ui.UserConsentActionListener
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
@@ -139,25 +138,30 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
 
     private fun loadUserConsent() {
         val consentParam = ConsentCollectionParam(
-            collectionId = KYCConstant.consentCollectionId,
-            version = KYCConstant.consentVersion
-        )
-        viewBinding?.layoutKycBenefit?.userConsentKyc?.load(
-            viewLifecycleOwner, this, consentParam, object : UserConsentActionListener {
-                override fun onCheckedChange(isChecked: Boolean) {
-                    analytics?.eventClickKycTnc(isChecked)
-                }
-
-                override fun onActionClicked(payload: UserConsentPayload, isDefaultTemplate: Boolean) {
-                    analytics?.eventClickOnNextOnBoarding()
-                    goToFormActivity()
-                }
-
-                override fun onFailed(throwable: Throwable) {
-                    Toast.makeText(context, throwable.message.orEmpty(), Toast.LENGTH_LONG).show()
-                }
+            collectionId = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+                KYCConstant.consentCollectionIdStaging
+            } else {
+                KYCConstant.consentCollectionIdProduction
             }
         )
+        viewBinding?.layoutKycBenefit?.userConsentKyc?.load(
+            viewLifecycleOwner, this, consentParam
+        )
+
+        viewBinding?.layoutKycBenefit?.kycBenefitBtn?.setOnClickListener {
+            analytics?.eventClickOnNextOnBoarding()
+            goToFormActivity()
+            viewBinding?.layoutKycBenefit?.userConsentKyc?.submitConsent()
+        }
+
+        viewBinding?.layoutKycBenefit?.userConsentKyc?.setOnCheckedChangeListener { isChecked ->
+            analytics?.eventClickKycTnc(isChecked)
+            viewBinding?.layoutKycBenefit?.kycBenefitBtn?.isEnabled = isChecked
+        }
+
+        viewBinding?.layoutKycBenefit?.userConsentKyc?.setOnFailedGetCollectionListener { throwable ->
+            Toast.makeText(context, throwable.message.orEmpty(), Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun getStatusInfo() {

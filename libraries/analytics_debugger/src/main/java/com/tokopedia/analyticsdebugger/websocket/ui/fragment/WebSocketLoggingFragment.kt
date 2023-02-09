@@ -16,8 +16,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.databinding.FragmentWebsocketLoggingBinding
 import com.tokopedia.analyticsdebugger.websocket.di.DaggerWebSocketLoggingComponent
+import com.tokopedia.analyticsdebugger.websocket.ui.activity.WebSocketLoggingActivity
 import com.tokopedia.analyticsdebugger.websocket.ui.adapter.WebSocketLogAdapter
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPageSource
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLog
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.action.WebSocketLoggingAction
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.event.WebSocketLoggingEvent
@@ -28,6 +31,7 @@ import com.tokopedia.analyticsdebugger.websocket.ui.viewmodel.WebSocketLoggingVi
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -35,39 +39,40 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on December 03, 2021
  */
-class WebSocketLoggingFragment: Fragment() {
+class WebSocketLoggingFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private lateinit var viewModel: WebSocketLoggingViewModel
+    private val binding: FragmentWebsocketLoggingBinding? by viewBinding()
 
-    private val adapter: WebSocketLogAdapter by lazy(LazyThreadSafetyMode.NONE) { WebSocketLogAdapter() }
-    private lateinit var layoutManager: LinearLayoutManager
+    private val adapter: WebSocketLogAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        WebSocketLogAdapter()
+    }
 
-    private val scrollListener = object: RecyclerView.OnScrollListener() {
+    private val viewModel: WebSocketLoggingViewModel by lazy {
+        ViewModelProvider(
+            this,
+            viewModelFactory
+        )[WebSocketLoggingViewModel::class.java]
+    }
+
+    private var layoutManager: LinearLayoutManager? = null
+
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
-            if(dy > 0) {
-                val totalItem = layoutManager.itemCount
-                val visibleItem = layoutManager.childCount
-                val pastVisibleItem = layoutManager.findFirstVisibleItemPosition()
+            if (dy > 0 && layoutManager != null) {
+                val totalItem = layoutManager!!.itemCount
+                val visibleItem = layoutManager!!.childCount
+                val pastVisibleItem = layoutManager!!.findFirstVisibleItemPosition()
 
-                if((visibleItem + pastVisibleItem) >= totalItem) {
+                if ((visibleItem + pastVisibleItem) >= totalItem) {
                     viewModel.submitAction(WebSocketLoggingAction.LoadNextPageAction)
                 }
             }
         }
     }
-
-    /**
-     * View Attribute
-     */
-    private lateinit var rvWebsocketLog: RecyclerView
-    private lateinit var etSearchWebSocketLog: SearchInputView
-    private lateinit var pbLoading: ProgressBar
-    private lateinit var swipeRefresh: SwipeRefreshLayout
-    private lateinit var chipGroup: ChipGroup
 
     /**
      * Lifecycle
@@ -81,7 +86,11 @@ class WebSocketLoggingFragment: Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        viewModel = ViewModelProvider(this, viewModelFactory).get(WebSocketLoggingViewModel::class.java)
+        val pageSource = requireArguments()
+            .getString(WebSocketLoggingActivity.EXTRA_PAGE_SOURCE)
+            .orEmpty()
+
+        viewModel.setPageSource(WebSocketLogPageSource.fromString(pageSource))
         viewModel.submitAction(WebSocketLoggingAction.InitPage)
     }
 
@@ -95,33 +104,27 @@ class WebSocketLoggingFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
+        initView()
         initObserver()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        rvWebsocketLog.removeOnScrollListener(scrollListener)
+        binding?.rvWebsocketLog?.removeOnScrollListener(scrollListener)
     }
 
     /**
      * Initialization
      */
-    private fun initView(view: View) {
-        rvWebsocketLog = view.findViewById(R.id.rv_websocket_log)
-        etSearchWebSocketLog = view.findViewById(R.id.et_websocket_log_search)
-        pbLoading = view.findViewById(R.id.pb_loading)
-        swipeRefresh = view.findViewById(R.id.swipe_refresh_web_socket_log)
-        chipGroup = view.findViewById(R.id.chip_group_websocket_log)
-
+    private fun initView() {
         layoutManager = LinearLayoutManager(context)
 
-        rvWebsocketLog.apply {
+        binding?.rvWebsocketLog?.apply {
             layoutManager = this@WebSocketLoggingFragment.layoutManager
             adapter = this@WebSocketLoggingFragment.adapter
         }
 
-        etSearchWebSocketLog.setListener(object : SearchInputView.Listener {
+        binding?.etWebsocketLogSearch?.setListener(object : SearchInputView.Listener {
             override fun onSearchSubmitted(text: String?) {
                 viewModel.submitAction(WebSocketLoggingAction.SearchLogAction(text.toString()))
             }
@@ -141,9 +144,9 @@ class WebSocketLoggingFragment: Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect {
-                when(it) {
+                when (it) {
                     is WebSocketLoggingEvent.ShowInfoEvent -> {
-                        when(it.uiString) {
+                        when (it.uiString) {
                             is UiString.Resource -> {
                                 Toast.makeText(requireContext(), getString(it.uiString.idRes), Toast.LENGTH_SHORT).show()
                             }
@@ -159,28 +162,26 @@ class WebSocketLoggingFragment: Fragment() {
             }
         }
 
-        rvWebsocketLog.addOnScrollListener(scrollListener)
+        binding?.rvWebsocketLog?.addOnScrollListener(scrollListener)
 
-        swipeRefresh.setOnRefreshListener {
-            viewModel.submitAction(WebSocketLoggingAction.SearchLogAction(etSearchWebSocketLog.searchText))
-            swipeRefresh.isRefreshing = false
+        binding?.swipeRefreshWebSocketLog?.setOnRefreshListener {
+            val action = binding?.etWebsocketLogSearch?.searchText.toString()
+            viewModel.submitAction(WebSocketLoggingAction.SearchLogAction(action))
+
+            binding?.swipeRefreshWebSocketLog?.isRefreshing = false
         }
 
         adapter.setOnClickListener {
-            val bundle = bundleOf(
-                WebSocketDetailLoggingFragment.EXTRA_TITLE to it.event,
-                WebSocketDetailLoggingFragment.EXTRA_DATE_TIME to it.dateTime,
-                WebSocketDetailLoggingFragment.EXTRA_CHANNEL_ID to it.generalInfo.channelId,
-                WebSocketDetailLoggingFragment.EXTRA_GC_TOKEN to it.generalInfo.gcToken,
-                WebSocketDetailLoggingFragment.EXTRA_MESSAGE to it.message,
-                WebSocketDetailLoggingFragment.EXTRA_WAREHOUSE_ID to it.generalInfo.warehouseId
-            )
-            findNavController().navigate(R.id.action_webSocketLoggingFragment_to_webSocketDetailLoggingFragment, bundle)
+            val direction = WebSocketLoggingFragmentDirections
+                .actionWebSocketLoggingFragmentToWebSocketDetailLoggingFragment(it)
+
+            findNavController().navigate(direction)
         }
 
-        chipGroup.setOnCheckedListener(object: ChipGroup.Listener {
+        binding?.chipGroupWebsocketLog?.setOnCheckedListener(object : ChipGroup.Listener {
             override fun onChecked(model: ChipModel) {
-                viewModel.submitAction(WebSocketLoggingAction.SelectSource(model.value, etSearchWebSocketLog.searchText))
+                val action = binding?.etWebsocketLogSearch?.searchText.toString()
+                viewModel.submitAction(WebSocketLoggingAction.SelectSource(model.value, action))
             }
         })
     }
@@ -193,12 +194,12 @@ class WebSocketLoggingFragment: Fragment() {
     }
 
     private fun updateLoading(loading: Boolean) {
-        if(loading) pbLoading.visible()
-        else pbLoading.hide()
+        if (loading) binding?.pbLoading?.visible()
+        else binding?.pbLoading?.hide()
     }
 
     private fun updateChip(chips: List<ChipModel>) {
-        chipGroup.setChips(chips)
+        binding?.chipGroupWebsocketLog?.setChips(chips)
     }
 
     /**

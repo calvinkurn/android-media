@@ -20,6 +20,7 @@ import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.CoachmarkPlusData;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData;
@@ -194,6 +195,9 @@ public class ShipmentDataConverter {
 
         UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
         List<GroupShop> groupShopList = cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop();
+
+        boolean isFirstPlusProductHasPassed = false;
+
         for (GroupShop groupShop : groupShopList) {
             ShipmentCartItemModel shipmentCartItemModel = new ShipmentCartItemModel();
             shipmentCartItemModel.setDropshipperDisable(cartShipmentAddressFormData.isDropshipperDisable());
@@ -226,6 +230,20 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setTokoNow(groupShop.getShop().isTokoNow());
             shipmentCartItemModel.setShopTickerTitle(groupShop.getShop().getShopTickerTitle());
             shipmentCartItemModel.setShopTicker(groupShop.getShop().getShopTicker());
+
+            if (shipmentCartItemModel.isFreeShippingPlus() && !isFirstPlusProductHasPassed) {
+                CoachmarkPlusData coachmarkPlusData = new CoachmarkPlusData(
+                    cartShipmentAddressFormData.getCoachmarkPlus().isShown(),
+                    cartShipmentAddressFormData.getCoachmarkPlus().getTitle(),
+                    cartShipmentAddressFormData.getCoachmarkPlus().getContent()
+                );
+                shipmentCartItemModel.setCoachmarkPlus(coachmarkPlusData);
+                isFirstPlusProductHasPassed = true;
+            }
+            else {
+                shipmentCartItemModel.setCoachmarkPlus(new CoachmarkPlusData());
+            }
+
             shipmentCartItemModels.add(shipmentCartItemModel);
         }
 
@@ -335,7 +353,7 @@ public class ShipmentDataConverter {
         cartItemModel.setShopName(groupShop.getShop().getShopName());
         cartItemModel.setImageUrl(product.getProductImageSrc200Square());
         cartItemModel.setCurrency(product.getProductPriceCurrency());
-        if (product.getProductWholesalePrice() != 0) {
+        if (product.getProductWholesalePrice() != 0.0) {
             cartItemModel.setPrice(product.getProductWholesalePrice());
             cartItemModel.setWholesalePrice(true);
         } else {

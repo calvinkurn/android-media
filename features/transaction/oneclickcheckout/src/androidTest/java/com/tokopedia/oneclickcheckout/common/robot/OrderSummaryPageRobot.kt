@@ -4,7 +4,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
@@ -1138,6 +1137,35 @@ class OrderSummaryPageRobot {
                 assertEquals(isEnable, view.findViewById<UnifyButton>(R.id.btn_pay).isEnabled)
             }
         }))
+    }
+
+    fun assertPaymentFeeErrorTicker(isVisible: Boolean) {
+        onView(withId(R.id.rv_order_summary_page)).perform(
+            actionOnHolderItem(
+                object :
+                    BaseMatcher<RecyclerView.ViewHolder?>() {
+                    override fun describeTo(description: Description?) {
+                        /* no-op */
+                    }
+
+                    override fun matches(item: Any?): Boolean {
+                        return item is OrderTotalPaymentCard
+                    }
+                },
+                object : ViewAction {
+                    override fun getConstraints(): Matcher<View>? = null
+
+                    override fun getDescription(): String = "assert ticker error payment fee enable"
+
+                    override fun perform(uiController: UiController?, view: View) {
+                        assertEquals(
+                            if (isVisible) View.VISIBLE else View.GONE,
+                            view.findViewById<Ticker>(R.id.ticker_payment_error).visibility
+                        )
+                    }
+                }
+            )
+        )
     }
 
     fun assertGlobalErrorVisible() {

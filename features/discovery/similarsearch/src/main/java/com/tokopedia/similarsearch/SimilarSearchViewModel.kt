@@ -4,13 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase.Companion.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.State
-import com.tokopedia.discovery.common.State.*
+import com.tokopedia.discovery.common.State.Error
+import com.tokopedia.discovery.common.State.Loading
+import com.tokopedia.discovery.common.State.Success
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -334,8 +336,8 @@ internal class SimilarSearchViewModel(
 
     private fun createAddToCartRequestParams(): AddToCartRequestParams {
         return AddToCartRequestParams(
-                productId = originalProduct.id.toLong(),
-                shopId = originalProduct.shop.id,
+                productId = originalProduct.id,
+                shopId = originalProduct.shop.id.toString(),
                 quantity = originalProduct.minOrder,
                 productName = originalProduct.name,
                 category = originalProduct.categoryName,

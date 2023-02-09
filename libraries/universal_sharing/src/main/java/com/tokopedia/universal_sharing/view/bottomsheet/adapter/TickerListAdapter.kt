@@ -19,7 +19,7 @@ class TickerListAdapter(private val onClick: (data: TickerShareModel) -> Unit) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TickerListAdapterViewHolder {
         return TickerListAdapterViewHolder(
             LayoutInflater.from(parent.context)
-            .inflate(com.tokopedia.universal_sharing.R.layout.item_ticker, parent, false)
+                .inflate(com.tokopedia.universal_sharing.R.layout.item_ticker, parent, false)
         )
     }
 
@@ -31,6 +31,7 @@ class TickerListAdapter(private val onClick: (data: TickerShareModel) -> Unit) :
 
         holder.itemView.setOnClickListener {
             onClick.invoke(data)
+            data.callback.invoke()
         }
     }
 

@@ -110,13 +110,6 @@ object ShopUtil {
         )
     }
 
-    fun joinStringWithDelimiter(vararg listString: String, delimiter: String): String {
-        val filteredListString = listString.filter {
-            it.isNotEmpty()
-        }
-        return TextUtils.join(delimiter, filteredListString)
-    }
-
     fun <E> MutableList<E>.setElement(index: Int, element: E) {
         if (index in 0 until size) {
             set(index, element)
