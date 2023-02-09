@@ -6,7 +6,6 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.product.estimasiongkir.data.RatesMapper
@@ -60,17 +59,9 @@ class RatesEstimationBoeViewModel @Inject constructor(
 
     private suspend fun getScheduledDeliveryRates(request: RatesEstimateRequest): ScheduledDeliveryRatesModel {
         return scheduledDeliveryRatesUseCase.execute(
-            origin = request.origin ?: "",
-            destination = request.destination,
-            warehouseId = request.warehouseId.toLongOrZero(),
-            weight = request.productWeight.toString(),
-            shopId = request.shopId.toLongOrZero(),
-            uniqueId = generateUniqueId(request),
-            productMetadata = request.productMetadata,
-            boMetadata = request.boMetadata,
-            orderValue = request.orderValue,
-            categoryId = request.categoryId,
-            forceRefresh = true
+            request,
+            generateUniqueId(request),
+            true
         )
     }
 

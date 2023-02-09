@@ -4,6 +4,8 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
 import com.tokopedia.product.estimasiongkir.data.model.ScheduledDeliveryRatesModel
 import com.tokopedia.product.estimasiongkir.di.RatesEstimationScope
 import javax.inject.Inject
@@ -19,30 +21,22 @@ class GetScheduledDeliveryRatesUseCase @Inject constructor(
     }
 
     suspend fun execute(
-        origin: String,
-        destination: String,
-        warehouseId: Long,
-        weight: String,
-        shopId: Long,
+        request: RatesEstimateRequest,
         uniqueId: String,
-        productMetadata: String,
-        boMetadata: String,
-        orderValue: Int,
-        categoryId: String,
         forceRefresh: Boolean
     ): ScheduledDeliveryRatesModel {
         setRequestParams(
             GetScheduledDeliveryRatesQuery.createParams(
-                origin = origin,
-                destination = destination,
-                warehouseId = warehouseId,
-                weight = weight,
-                shopId = shopId,
+                origin = request.origin ?: "",
+                destination = request.destination,
+                warehouseId = request.warehouseId.toLongOrZero(),
+                weight = request.productWeight.toString(),
+                shopId = request.shopId.toLongOrZero(),
                 uniqueId = uniqueId,
-                productMetadata = productMetadata,
-                boMetadata = boMetadata,
-                orderValue = orderValue,
-                categoryId = categoryId
+                productMetadata = request.productMetadata,
+                boMetadata = request.boMetadata,
+                orderValue = request.orderValue,
+                categoryId = request.categoryId
             )
         )
         setCacheStrategy(getCacheStrategy(forceRefresh))

@@ -201,5 +201,6 @@
 
     <string name="pdp_selly_time_format">&#160;• %s</string>
     <string name="pdp_selly_button_expand">Jadwal Lainnya</string>
+    <string name="pdp_selly_button_collapse">Jadwal Lainnya</string>
 
 </resources>
