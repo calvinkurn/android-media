@@ -10,18 +10,12 @@ class VoucherValidationPartialMapper @Inject constructor() {
     fun map(response: VoucherValidationPartialResponse): VoucherValidationResult {
         val data = response.voucherValidationPartial.data
         return VoucherValidationResult(
-            data.toAvailableMonth(),
             data.totalAvailableQuota,
             data.toValidationDate(),
             data.toValidationError(),
             data.toValidationProduct()
         )
     }
-
-    private fun VoucherValidationPartialResponse.VoucherValidationPartial.Data.toAvailableMonth(): List<VoucherValidationResult.AvailableMonth> {
-        return this.availableMonth.map { VoucherValidationResult.AvailableMonth(it.month, it.available) }
-    }
-
 
     private fun VoucherValidationPartialResponse.VoucherValidationPartial.Data.toValidationDate(): List<VoucherValidationResult.ValidationDate> {
         return this.validationDate.map {
@@ -57,14 +51,12 @@ class VoucherValidationPartialMapper @Inject constructor() {
             this.validationError.minPurchase,
             this.validationError.minPurchaseType,
             this.validationError.minimumTierLevel,
-            this.validationError.quota,
+            this.validationError.quota
         )
     }
 
-
     private fun VoucherValidationPartialResponse.VoucherValidationPartial.Data.toValidationProduct(): List<VoucherValidationResult.ValidationProduct> {
         return this.validationProduct.map {
-
             val variants = it.variant.map {
                 VoucherValidationResult.ValidationProduct.ProductVariant(
                     it.productId,
