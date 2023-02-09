@@ -8,7 +8,7 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import org.junit.Test
 
-class WishlistTest: ProductCardCompactWishlistViewModelTestFixture() {
+class ProductCardCompactWishlistViewModelTest: ProductCardCompactWishlistViewModelTestFixture() {
     @Test
     fun `while adding product to wishlist, the request should be success`() {
         val productId = "122121"
