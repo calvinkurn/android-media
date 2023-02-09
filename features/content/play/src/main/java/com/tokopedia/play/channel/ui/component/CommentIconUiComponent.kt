@@ -27,10 +27,9 @@ class CommentIconUiComponent(
     )
 
     override fun render(state: CachedState<PlayViewerNewUiState>) {
-        // ToDo: add comment counter value
         if (state.isAnyChanged({ it.channel }, { it.partner })) {
-            view.show(state.value.channel.channelInfo.channelType.isVod && state.value.partner.type != PartnerType.Tokopedia)
-            // view.setCounter("")
+            view.show(state.value.channel.channelInfo.channelType.isVod && state.value.partner.type != PartnerType.Tokopedia && state.value.channel.commentConfig.shouldShow)
+            view.setCounter(state.value.channel.commentConfig.total)
         }
     }
 

@@ -1083,6 +1083,7 @@ class PlayViewModel @AssistedInject constructor(
         updateLiveChannelChatHistory(channelData)
         updateChannelInfo(channelData)
         sendInitialLog()
+        updateCommentConfig()
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -2700,6 +2701,14 @@ class PlayViewModel @AssistedInject constructor(
                 playPreference.setFollowPopUp(streamerId)
             }
         }
+    }
+
+    private fun updateCommentConfig() {
+        if (!channelType.isVod) return
+        viewModelScope.launchCatchError(block = {
+            val response = repo.getCountComment(channelId)
+            _channelDetail.update { it.copy(commentConfig = response) }
+        }){}
     }
 
     private fun cancelJob(identifier: String) {

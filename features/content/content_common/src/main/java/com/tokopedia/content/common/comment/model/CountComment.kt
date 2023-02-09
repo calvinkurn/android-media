@@ -23,9 +23,9 @@ data class CountComment(
     )
 
     data class Data(
-        val contentId: String,
-        val count: String,
-        val countFmt: String,
-        val shouldShow: Boolean,
+        val contentId: String = "",
+        val count: String = "",
+        val countFmt: String = "",
+        val shouldShow: Boolean = false,
     )
 }
