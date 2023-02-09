@@ -703,6 +703,73 @@
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - exit archive page",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+",
+      "trackerId": "40355",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - to tokopedia play",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+",
+      "trackerId": "40354",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "openScreen",
+      "networkSpeed": ".*",
+      "clientId": ".*",
+      "isLoggedInStatus": "true|false",
+      "appsflyerId": ".*",
+      "shopId": ".*",
+      "screenName": "/group-chat-room/\\d+/archive delete channel",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "trackerId": "40353",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "theme": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - entry point voucher bottomsheet",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod)",
+      "trackerId": "40976",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "view_item",
+      "eventAction": "view - entry point voucher bottomsheet",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live/vod)",
+      "trackerId": "40973",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": "1",
+          "item_id": "\\d+",
+          "item_name": "voucher bottomsheet"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/container_bulk_review_expanded_text_area"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.tokopedia.unifycomponents.TextAreaUnify2
+            android:id="@+id/text_area_bulk_review_expanded"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="8dp"
+            android:scrollbars="vertical"
+            app:unify_text_field_input_type="text"
+            app:unify_text_field_label_static="true" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>

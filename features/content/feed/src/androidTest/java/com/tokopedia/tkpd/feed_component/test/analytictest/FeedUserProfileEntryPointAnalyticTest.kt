@@ -9,7 +9,9 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.tkpd.feed_component.helper.select
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tkpd.feed_component.builder.DynamicTabsModelBuilder
 import com.tokopedia.tkpd.feed_component.builder.WhitelistModelBuilder
 import com.tokopedia.tkpd.feed_component.const.DEFAULT_DELAY
@@ -54,6 +56,8 @@ class FeedUserProfileEntryPointAnalyticTest {
     /** Mock */
     private val mockRepo = mockk<FeedPlusRepository>(relaxed = true)
     private val mockUserSession = mockk<UserSessionInterface>(relaxed = true)
+    private val mockRemoteConfig = mockk<RemoteConfig>(relaxed = true)
+    private val mockContentCoachMarkManager = mockk<ContentCoachMarkManager>(relaxed = true)
 
     init {
         coEvery { mockRepo.getWhitelist() } returns whitelistResponse
@@ -66,7 +70,9 @@ class FeedUserProfileEntryPointAnalyticTest {
 
         daggerHelper.setupDagger(
             mockUserSession = mockUserSession,
-            mockRepo = mockRepo
+            mockRepo = mockRepo,
+            mockRemoteConfig = mockRemoteConfig,
+            mockContentCoachMarkManager = mockContentCoachMarkManager,
         )
     }
 

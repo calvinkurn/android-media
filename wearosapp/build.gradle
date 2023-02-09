@@ -94,6 +94,23 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion "1.0.4"
     }
+    // Specifies 4 flavor dimensions.
+    flavorDimensions "tier", "client"
+
+    productFlavors {
+        live {
+            dimension "tier"
+        }
+        staging {
+            dimension "tier"
+        }
+        dev {
+            dimension "client"
+        }
+        prod {
+            dimension "client"
+        }
+    }
     configurations.all {
         resolutionStrategy {
             force 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2'
@@ -147,6 +164,7 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     // Unit test
     testImplementation rootProject.ext.testDependencies.archCoreTesting

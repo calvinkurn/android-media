@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -34,8 +34,11 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN
 import com.tokopedia.unifycomponents.UnifyButton.Variant.FILLED
 import com.tokopedia.unifycomponents.UnifyButton.Variant.GHOST
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
@@ -109,6 +112,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
     }
 
     private fun initObserver(view: View) {
+        loadUserConsent()
         viewModel.userProjectInfo.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
@@ -132,8 +136,37 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun loadUserConsent() {
+        val consentParam = ConsentCollectionParam(
+            collectionId = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+                KYCConstant.consentCollectionIdStaging
+            } else {
+                KYCConstant.consentCollectionIdProduction
+            }
+        )
+        viewBinding?.layoutKycBenefit?.userConsentKyc?.load(
+            viewLifecycleOwner, this, consentParam
+        )
+
+        viewBinding?.layoutKycBenefit?.kycBenefitBtn?.setOnClickListener {
+            analytics?.eventClickOnNextOnBoarding()
+            goToFormActivity()
+            viewBinding?.layoutKycBenefit?.userConsentKyc?.submitConsent()
+        }
+
+        viewBinding?.layoutKycBenefit?.userConsentKyc?.setOnCheckedChangeListener { isChecked ->
+            analytics?.eventClickKycTnc(isChecked)
+            viewBinding?.layoutKycBenefit?.kycBenefitBtn?.isEnabled = isChecked
+        }
+
+        viewBinding?.layoutKycBenefit?.userConsentKyc?.setOnFailedGetCollectionListener { throwable ->
+            Toast.makeText(context, throwable.message.orEmpty(), Toast.LENGTH_LONG).show()
+        }
+    }
+
     private fun getStatusInfo() {
         showLoading()
+        loadUserConsent()
         viewModel.getUserProjectInfo(projectId)
     }
 
@@ -201,15 +234,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
         KycOnBoardingViewInflater.setupKycBenefitToolbar(activity)
         viewBinding?.mainView?.hide()
         viewBinding?.layoutKycBenefit?.root?.show()
-        KycOnBoardingViewInflater.setupKycBenefitView(requireActivity(), view, mainAction = {
-            analytics?.eventClickOnNextOnBoarding()
-            goToFormActivity()
-        }, closeButtonAction = {
+        KycOnBoardingViewInflater.setupKycBenefitView(requireActivity(), view, closeButtonAction = {
             activity?.onBackPressed()
-        }, onCheckedChanged = {
-            analytics?.eventClickKycTnc(it)
-        }, onTncClicked = {
-            analytics?.eventClickTermsSuccessPage()
         })
         analytics?.eventViewOnKYCOnBoarding()
     }

@@ -114,6 +114,9 @@ class ShipmentCartItemModel(
 
         // Flag for tracking
         var isHasShownCourierError: Boolean = false,
+
+        // Multiple Order Plus Coachmark
+        var coachmarkPlus: CoachmarkPlusData = CoachmarkPlusData(),
 ) : Parcelable {
 
     val isCustomPinpointError: Boolean

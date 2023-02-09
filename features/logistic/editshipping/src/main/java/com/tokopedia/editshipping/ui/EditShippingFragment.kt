@@ -16,19 +16,18 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.analytics.EditShippingAnalytics
-import com.tokopedia.editshipping.data.preference.GocarInstanCoachMarkSharePref
+import com.tokopedia.editshipping.data.preference.WhitelabelInstanCoachMarkSharePref
 import com.tokopedia.editshipping.domain.model.ValidateShippingModel
 import com.tokopedia.editshipping.domain.model.editshipping.Courier
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping
@@ -63,7 +62,6 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.popup_validation_bo.view.*
-import timber.log.Timber
 
 /**
  * Created by Kris on 2/19/2016.
@@ -74,6 +72,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     var fragmentShipingMainLayout: LinearLayout? = null
     var fragmentShippingHeader: ShippingHeaderLayout? = null
     var addressLayout: ShippingAddressLayout? = null
+    var scrollView: NestedScrollView? = null
     var submitButtonCreateShop: TextView? = null
     private var editShippingPresenter: EditShippingPresenter? = null
     private var mainProgressDialog: ProgressDialog? = null
@@ -84,7 +83,13 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     private var mapMode = 0
     private var cacheManager: SaveInstanceCacheManager? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    private var whitelabelCoachmark: CoachMark2? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val mainView = inflater.inflate(R.layout.fragment_shop_shipping, container, false)
         initiateVariables(mainView)
         hideAllView()
@@ -116,10 +121,15 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
             editShippingPresenter?.bindDataToViewOpenShop(editShippingPresenter?.openShopModel)
         } else if (editShippingPresenter?.shopModel != null) {
             editShippingPresenter?.bindDataToView(editShippingPresenter?.shopModel)
-        } else data
+        } else {
+            data
+        }
     }
 
     override fun onPause() {
+        whitelabelCoachmark?.dismissCoachMark()
+        whitelabelCoachmark = null
+
         super.onPause()
         if (bottomSheetValidation?.isVisible == true) {
             bottomSheetValidation?.dismiss()
@@ -147,12 +157,18 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         mainProgressDialog?.cancel()
         progressDialog = ProgressDialog(activity)
         editShippingPresenter = EditShippingPresenterImpl(this)
-        inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager =
+            activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         userSession = UserSession(activity)
-        fragmentShipingMainLayout = mainView.findViewById<View>(R.id.fragment_shipping_main_layout) as LinearLayout
-        fragmentShippingHeader = mainView.findViewById<View>(R.id.fragment_shipping_header) as  com.tokopedia.editshipping.ui.customview.ShippingHeaderLayout
-        addressLayout = mainView.findViewById<View>(R.id.shipping_address_layout) as com.tokopedia.editshipping.ui.customview.ShippingAddressLayout
-        submitButtonCreateShop = mainView.findViewById<View>(R.id.submit_button_create_shop) as TextView
+        fragmentShipingMainLayout =
+            mainView.findViewById<View>(R.id.fragment_shipping_main_layout) as LinearLayout
+        fragmentShippingHeader =
+            mainView.findViewById<View>(R.id.fragment_shipping_header) as com.tokopedia.editshipping.ui.customview.ShippingHeaderLayout
+        addressLayout =
+            mainView.findViewById<View>(R.id.shipping_address_layout) as com.tokopedia.editshipping.ui.customview.ShippingAddressLayout
+        submitButtonCreateShop =
+            mainView.findViewById<View>(R.id.submit_button_create_shop) as TextView
+        scrollView = mainView.findViewById(R.id.main_scroll)
         submitButtonCreateShop?.setOnClickListener { submitButtonOnClickListener() }
     }
 
@@ -227,8 +243,11 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     }
 
     override fun noServiceChosen() {
-        NetworkErrorHelper.showSnackbar(activity, activity
-                ?.getString(R.string.error_shipping_must_choose))
+        NetworkErrorHelper.showSnackbar(
+            activity,
+            activity
+                ?.getString(R.string.error_shipping_must_choose)
+        )
     }
 
     override fun finishLoading() {
@@ -244,7 +263,11 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         mainProgressDialog?.dismiss()
     }
 
-    override fun setLocationProvinceCityDistrict(Province: String?, City: String?, District: String?) {
+    override fun setLocationProvinceCityDistrict(
+        Province: String?,
+        City: String?,
+        District: String?
+    ) {
         fragmentShippingHeader?.updateLocationData(Province, City, District)
     }
 
@@ -268,7 +291,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     override fun openWebView(webResources: String?, courierIndex: Int) {
         progressDialog?.dismiss()
         val dialog: EditShippingWebViewDialog = EditShippingWebViewDialog
-                .openAdditionalOptionDialog(webResources, courierIndex)
+            .openAdditionalOptionDialog(webResources, courierIndex)
         if (fragmentManager?.findFragmentByTag("web_view_dialog") == null) {
             dialog.setTargetFragment(this, ADDITIONAL_OPTION_REQUEST_CODE)
             fragmentManager?.let { dialog.show(it, "web_view_dialog") }
@@ -276,29 +299,36 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     }
 
     override fun showErrorToast(error: String?) {
-        if(activity != null) {
+        if (activity != null) {
             progressDialog?.dismiss()
             Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onFragmentTimeout() {
-        NetworkErrorHelper.showEmptyState(activity, view, object : NetworkErrorHelper.RetryClickedListener {
-            override fun onRetryClicked() {
-                mainProgressDialog?.show()
-                if (mapMode == CREATE_SHOP_PAGE) editShippingPresenter?.fetchDataOpenShop() else editShippingPresenter?.fetchData()
+        NetworkErrorHelper.showEmptyState(
+            activity,
+            view,
+            object : NetworkErrorHelper.RetryClickedListener {
+                override fun onRetryClicked() {
+                    mainProgressDialog?.show()
+                    if (mapMode == CREATE_SHOP_PAGE) editShippingPresenter?.fetchDataOpenShop() else editShippingPresenter?.fetchData()
+                }
             }
-        })
+        )
     }
 
     override fun onFragmentNoConnection() {
-        NetworkErrorHelper.showEmptyState(activity, view,
-                getString(com.tokopedia.abstraction.R.string.msg_no_connection),
-                object : NetworkErrorHelper.RetryClickedListener {
-                    override fun onRetryClicked() {
-                        if (mapMode == CREATE_SHOP_PAGE) editShippingPresenter?.fetchDataOpenShop() else editShippingPresenter?.fetchData()
-                    }
-                })
+        NetworkErrorHelper.showEmptyState(
+            activity,
+            view,
+            getString(com.tokopedia.abstraction.R.string.msg_no_connection),
+            object : NetworkErrorHelper.RetryClickedListener {
+                override fun onRetryClicked() {
+                    if (mapMode == CREATE_SHOP_PAGE) editShippingPresenter?.fetchDataOpenShop() else editShippingPresenter?.fetchData()
+                }
+            }
+        )
         activity?.invalidateOptionsMenu()
     }
 
@@ -307,9 +337,14 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         fragmentShippingHeader?.visibility = View.VISIBLE
         addressLayout?.visibility = View.VISIBLE
         fragmentShipingMainLayout?.visibility = View.VISIBLE
-        if (arguments?.getInt(MAP_MODE) == CREATE_SHOP_PAGE) submitButtonCreateShop?.visibility = View.VISIBLE else if (arguments?.containsKey(RESUME_OPEN_SHOP_DATA_KEY) == true) {
+        if (arguments?.getInt(MAP_MODE) == CREATE_SHOP_PAGE) {
+            submitButtonCreateShop?.visibility =
+                View.VISIBLE
+        } else if (arguments?.containsKey(RESUME_OPEN_SHOP_DATA_KEY) == true) {
             submitButtonCreateShop?.visibility = View.VISIBLE
-        } else submitButtonCreateShop?.visibility = View.GONE
+        } else {
+            submitButtonCreateShop?.visibility = View.GONE
+        }
     }
 
     override fun showLoading() {
@@ -317,8 +352,10 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     }
 
     override fun openDataWebViewResources(courierIndex: Int) {
-        editShippingPresenter?.dataWebViewResource(courierIndex,
-                editShippingPresenter?.getCourierAdditionalOptionsURL(courierIndex))
+        editShippingPresenter?.dataWebViewResource(
+            courierIndex,
+            editShippingPresenter?.getCourierAdditionalOptionsURL(courierIndex)
+        )
     }
 
     override fun setServiceCondition(isChecked: Boolean, serviceIndex: Int, courierIndex: Int) {
@@ -343,20 +380,25 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 GET_DISTRICT_RECCOMENDATION_REQUEST_CODE -> {
-                    val address: DistrictRecommendationAddress? = data?.getParcelableExtra(RESULT_INTENT_DISTRICT_RECOMMENDATION)
+                    val address: DistrictRecommendationAddress? =
+                        data?.getParcelableExtra(RESULT_INTENT_DISTRICT_RECOMMENDATION)
                     editShippingPresenter?.setSelectedAddress(address)
                     fragmentShippingHeader?.initializeZipCodes()
                     fragmentShippingHeader?.updateLocationData(
-                            address?.provinceName,
-                            address?.cityName,
-                            address?.districtName)
+                        address?.provinceName,
+                        address?.cityName,
+                        address?.districtName
+                    )
                     changeLocationRequest(address?.districtId)
                 }
                 OPEN_MAP_CODE -> changeGoogleMapData(data)
                 ADDITIONAL_OPTION_REQUEST_CODE -> {
                     additionalOptionRequest(data)
-                    inputMethodManager?.hideSoftInputFromWindow(fragmentShipingMainLayout
-                            ?.windowToken, 0)
+                    inputMethodManager?.hideSoftInputFromWindow(
+                        fragmentShipingMainLayout
+                            ?.windowToken,
+                        0
+                    )
                 }
             }
         }
@@ -364,7 +406,10 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
     private fun changeLocationRequest(originId: Long?) {
         progressDialog?.show()
-        if (arguments?.getInt(MAP_MODE) == CREATE_SHOP_PAGE || arguments?.containsKey(RESUME_OPEN_SHOP_DATA_KEY) == true) {
+        if (arguments?.getInt(MAP_MODE) == CREATE_SHOP_PAGE || arguments?.containsKey(
+                RESUME_OPEN_SHOP_DATA_KEY
+            ) == true
+        ) {
             editShippingPresenter?.fetchDataByLocationOpenShop(originId.toString())
         } else {
             editShippingPresenter?.fetchDataByLocation(originId.toString())
@@ -377,8 +422,9 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
     private fun additionalOptionRequest(data: Intent?) {
         editShippingPresenter?.setCourierAdditionalOptionConfig(
-                data?.getIntExtra(MODIFIED_COURIER_INDEX_KEY, 0),
-                data?.getStringExtra(EDIT_SHIPPING_RESULT_KEY))
+            data?.getIntExtra(MODIFIED_COURIER_INDEX_KEY, 0),
+            data?.getStringExtra(EDIT_SHIPPING_RESULT_KEY)
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -403,8 +449,15 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         val fragmentHeader = fragmentShippingHeader?.isShown
         if (item.itemId == R.id.action_send) {
             if (fragmentHeader != null) {
-                editShippingPresenter?.getShopId()?.let { editShippingPresenter?.validateBo(it, editShippingPresenter?.getCompiledShippingId().toString()) }
-            } else showErrorToast(getString(R.string.dialog_on_process))
+                editShippingPresenter?.getShopId()?.let {
+                    editShippingPresenter?.validateBo(
+                        it,
+                        editShippingPresenter?.getCompiledShippingId().toString()
+                    )
+                }
+            } else {
+                showErrorToast(getString(R.string.dialog_on_process))
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -431,27 +484,19 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     }
 
     override fun openGeoLocation() {
-        val activity = activity ?: return
-        val availability = GoogleApiAvailability.getInstance()
-        val resultCode = availability.isGooglePlayServicesAvailable(activity)
-        if (ConnectionResult.SUCCESS == resultCode) {
-            val locationPass = LocationPass()
-            if (editShippingPresenter?.shopInformation?.shopLatitude?.isNotEmpty() ?: false
-                    && editShippingPresenter?.shopInformation?.shopLongitude?.isNotEmpty() ?: false) {
-                locationPass.latitude = editShippingPresenter?.shopInformation?.shopLatitude
-                locationPass.longitude = editShippingPresenter?.shopInformation?.shopLongitude
-                locationPass.generatedAddress = addressLayout?.googleMapAddressString
-            } else {
-                locationPass.districtName = editShippingPresenter?.shopInformation?.getDistrictName()
-                locationPass.cityName = editShippingPresenter?.shopInformation?.getCityName()
-            }
-            val intent = activity?.let { getGeoLocationActivityIntent(it, locationPass) }
-            startActivityForResult(intent, OPEN_MAP_CODE)
+        val locationPass = LocationPass()
+        if (editShippingPresenter?.shopInformation?.shopLatitude?.isNotEmpty() ?: false &&
+            editShippingPresenter?.shopInformation?.shopLongitude?.isNotEmpty() ?: false
+        ) {
+            locationPass.latitude = editShippingPresenter?.shopInformation?.shopLatitude
+            locationPass.longitude = editShippingPresenter?.shopInformation?.shopLongitude
+            locationPass.generatedAddress = addressLayout?.googleMapAddressString
         } else {
-            Timber.d("Google play services unavailable")
-            val dialog = availability.getErrorDialog(activity, resultCode, 0)
-            dialog?.show()
+            locationPass.districtName = editShippingPresenter?.shopInformation?.getDistrictName()
+            locationPass.cityName = editShippingPresenter?.shopInformation?.getCityName()
         }
+        val intent = activity?.let { getGeoLocationActivityIntent(it, locationPass) }
+        startActivityForResult(intent, OPEN_MAP_CODE)
     }
 
     override fun showInfoBottomSheet(information: String?, serviceName: String?) {
@@ -460,29 +505,94 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
     override fun refreshLocationViewListener(updatedShopInfo: ShopShipping?) {
         refreshView()
-        fragmentShippingHeader?.updateLocationData(updatedShopInfo?.provinceName,
-                updatedShopInfo?.cityName,
-                updatedShopInfo?.districtName)
+        fragmentShippingHeader?.updateLocationData(
+            updatedShopInfo?.provinceName,
+            updatedShopInfo?.cityName,
+            updatedShopInfo?.districtName
+        )
     }
 
     override fun refreshLocationViewListener(address: DistrictRecommendationAddress?) {
         refreshView()
-        
     }
 
-    override fun showCoachmarkGocarInstan(view: View) {
-        val sharedPref = GocarInstanCoachMarkSharePref(requireContext())
-        if (sharedPref.getCoachMarkState() == true) {
-            val coachMarkItem = ArrayList<CoachMark2Item>()
-            val coachMark = CoachMark2(requireContext())
-            coachMarkItem.add(
+    override fun showOnBoarding(whitelabelIndex: Int, normalServiceIndex: Int) {
+        context?.let {
+            val sharedPref = WhitelabelInstanCoachMarkSharePref(it)
+            if (sharedPref.getCoachMarkState() == true) {
+                if (whitelabelIndex != -1 || normalServiceIndex != -1) {
+                    val whitelabelView = fragmentShipingMainLayout?.getChildAt(whitelabelIndex)
+                    if (whitelabelView != null) {
+                        val normalServiceView =
+                            fragmentShipingMainLayout?.getChildAt(normalServiceIndex)
+
+                        val coachMarkItems =
+                            generateOnBoardingCoachMark(normalServiceView, whitelabelView)
+                        whitelabelCoachmark = CoachMark2(it).apply {
+                            setOnBoardingListener(coachMarkItems)
+                            setStateAfterOnBoardingShown(coachMarkItems, sharedPref)
+                            manualScroll(coachMarkItems)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun generateOnBoardingCoachMark(
+        normalService: View?,
+        whitelabelService: View
+    ): ArrayList<CoachMark2Item> {
+        val coachMarkItems = ArrayList<CoachMark2Item>()
+        normalService?.let { view ->
+            coachMarkItems.add(
                 CoachMark2Item(
                     view,
-                    getString(R.string.gocar_instan_title_coachmark),
-                    getString(R.string.gocar_instan_description_coachmark)
+                    getString(R.string.whitelabel_onboarding_title_coachmark),
+                    getString(R.string.whitelabel_onboarding_description_coachmark),
+                    CoachMark2.POSITION_TOP
                 )
             )
-            coachMark.showCoachMark(coachMarkItem, null)
+        }
+
+        whitelabelService.let { view ->
+            coachMarkItems.add(
+                CoachMark2Item(
+                    view,
+                    getString(R.string.whitelabel_instan_title_coachmark),
+                    getString(R.string.whitelabel_instan_description_coachmark),
+                    CoachMark2.POSITION_TOP
+                )
+            )
+        }
+        return coachMarkItems
+    }
+
+    private fun CoachMark2.setOnBoardingListener(coachMarkItems: ArrayList<CoachMark2Item>) {
+        this.setStepListener(object : CoachMark2.OnStepListener {
+            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                this@setOnBoardingListener.hideCoachMark()
+                manualScroll(coachMarkItems, currentIndex)
+            }
+        })
+    }
+
+    private fun CoachMark2.manualScroll(coachMarkItems: ArrayList<CoachMark2Item>, currentIndex: Int = 0) {
+        coachMarkItems.getOrNull(currentIndex)?.anchorView?.let { rv ->
+            scrollView?.smoothScrollTo(0, rv.top)
+            this.showCoachMark(coachMarkItems, null, currentIndex)
+        }
+    }
+
+    private fun CoachMark2.setStateAfterOnBoardingShown(
+        coachMarkItems: ArrayList<CoachMark2Item>,
+        sharedPref: WhitelabelInstanCoachMarkSharePref
+    ) {
+        if (coachMarkItems.size > 1) {
+            this.onFinishListener = {
+                sharedPref.setCoachMarkState(false)
+            }
+        } else if (coachMarkItems.isNotEmpty()) {
             sharedPref.setCoachMarkState(false)
         }
     }
@@ -492,50 +602,62 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         cacheManager?.onSave(outState)
         if (arguments?.getInt(MAP_MODE) == CREATE_SHOP_PAGE) {
             editShippingPresenter?.saveOpenShopModel()
-            cacheManager?.put(CURRENT_OPEN_SHOP_MODEL,
-                    editShippingPresenter?.openShopModel)
+            cacheManager?.put(
+                CURRENT_OPEN_SHOP_MODEL,
+                editShippingPresenter?.openShopModel
+            )
         } else {
-            cacheManager?.put(CURRENT_COURIER_MODEL,
-                    editShippingPresenter?.shopModel)
+            cacheManager?.put(
+                CURRENT_COURIER_MODEL,
+                editShippingPresenter?.shopModel
+            )
         }
     }
 
     private fun getDistrictRecommendationIntent(activity: Activity, token: Token?): Intent? {
-        val  intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS)
+        val intent = RouteManager.getIntent(
+            activity,
+            ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS
+        )
         intent.putExtra(ARGUMENT_DATA_TOKEN, token)
         return intent
     }
 
     private fun openPopupValidation(data: ValidateShippingModel) {
         bottomSheetValidation = BottomSheetUnify()
-        val viewBottomSheetValidation = View.inflate(activity, R.layout.popup_validation_bo, null).apply {
+        val viewBottomSheetValidation =
+            View.inflate(activity, R.layout.popup_validation_bo, null).apply {
+                ticker_validation_bo.tickerTitle =
+                    HtmlLinkHelper(context, data.data.tickerTitle).spannedString.toString()
+                ticker_validation_bo.setHtmlDescription(data.data.tickerContent)
+                ticker_validation_bo.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        val url = data.data.tickerContent.substringAfter("<a href='")
+                            .substringBefore("'>di sini</a>")
+                        val intent = RouteManager.getIntent(
+                            context,
+                            "${ApplinkConst.WEBVIEW}?titlebar=false&url=$url"
+                        )
+                        startActivity(intent)
+                    }
 
-            ticker_validation_bo.tickerTitle = HtmlLinkHelper(context, data.data.tickerTitle).spannedString.toString()
-            ticker_validation_bo.setHtmlDescription(data.data.tickerContent)
-            ticker_validation_bo.setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    val url = data.data.tickerContent.substringAfter("<a href='").substringBefore("'>di sini</a>")
-                    val intent = RouteManager.getIntent(context, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, url))
-                    startActivity(intent)
+                    override fun onDismiss() {
+                        // no-op
+                    }
+                })
+
+                point_one.text = HtmlLinkHelper(context, data.data.popupContent[0]).spannedString
+                point_two.text = HtmlLinkHelper(context, data.data.popupContent[1]).spannedString
+                point_three.text = HtmlLinkHelper(context, data.data.popupContent[2]).spannedString
+
+                btn_nonaktifkan.setOnClickListener {
+                    submitData()
+                    bottomSheetValidation?.dismiss()
                 }
-
-                override fun onDismiss() {
-                    //no-op
+                btn_aktifkan.setOnClickListener {
+                    bottomSheetValidation?.dismiss()
                 }
-            })
-
-            point_one.text = HtmlLinkHelper(context, data.data.popupContent[0]).spannedString
-            point_two.text = HtmlLinkHelper(context, data.data.popupContent[1]).spannedString
-            point_three.text = HtmlLinkHelper(context, data.data.popupContent[2]).spannedString
-
-            btn_nonaktifkan.setOnClickListener {
-                submitData()
-                bottomSheetValidation?.dismiss()
             }
-            btn_aktifkan.setOnClickListener {
-               bottomSheetValidation?.dismiss()
-            }
-        }
 
         bottomSheetValidation?.apply {
             setTitle(LABEL_VALIDATION_BO)
@@ -549,8 +671,11 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         }
     }
 
-    private fun getGeoLocationActivityIntent(activity: Activity, locationPass: LocationPass): Intent? {
-        val intent  = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+    private fun getGeoLocationActivityIntent(
+        activity: Activity,
+        locationPass: LocationPass
+    ): Intent? {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
         intent.apply {
             putExtra(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
             putExtra(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, false)
