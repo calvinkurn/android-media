@@ -408,23 +408,28 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
                 feedXCard
             )
         }
-        val textFollowAction = if (followers.transitionFollow || followers.isFollowed) {
-            context.getString(feedComponentR.string.kol_action_following_color)
+        if (!followers.transitionFollow && followers.isFollowed) {
+            this.authorFollowAction.hide()
         } else {
-            context.getString(feedComponentR.string.kol_action_follow_color)
-        }
+            val textFollowAction = if (followers.isFollowed) {
+                context.getString(feedComponentR.string.kol_action_following_color)
+            } else {
+                context.getString(feedComponentR.string.kol_action_follow_color)
+            }
 
-        this.authorFollowAction.text = MethodChecker.fromHtml(
-            "${context.getString(feedComponentR.string.feed_header_separator)}$textFollowAction"
+            this.authorFollowAction.text = MethodChecker.fromHtml(
+                "${context.getString(feedComponentR.string.feed_header_separator)}$textFollowAction"
 
-        )
-        this.authorFollowAction.setOnClickListener {
-            listener?.onFollowUnfollowClicked(
-                feedXCard,
-                positionInCdp
             )
+            this.authorFollowAction.setOnClickListener {
+                followers.transitionFollow = true
+                listener?.onFollowUnfollowClicked(
+                    feedXCard,
+                    positionInCdp
+                )
+            }
+            this.authorFollowAction.show()
         }
-        followers.transitionFollow = false
         //endregion
 
         authorAvatar.setOnClickListener {
