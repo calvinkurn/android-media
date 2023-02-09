@@ -33,7 +33,6 @@ class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
     var isSoldOut: Boolean = false
     var isShowFreeOngkir: Boolean = false
     var freeOngkirPromoIcon: String? = null
-    var isCarousel = false
     var etalaseId = ""
     var labelGroupList: List<LabelGroupUiModel> = listOf()
     var pdpViewCount: String = ""

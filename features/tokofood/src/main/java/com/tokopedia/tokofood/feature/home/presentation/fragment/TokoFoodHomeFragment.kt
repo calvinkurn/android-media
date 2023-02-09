@@ -48,7 +48,6 @@ import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -890,21 +889,17 @@ class TokoFoodHomeFragment :
         }
     }
     private fun navigateToSetPinpoint() {
-        view?.let {
-            MapsAvailabilityHelper.onMapsAvailableState(it) {
-                val locationPass = LocationPass().apply {
-                    latitude = TOTO_LATITUDE
-                    longitude = TOTO_LONGITUDE
-                }
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-                val bundle = Bundle().apply {
-                    putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-                    putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
-                }
-                intent.putExtras(bundle)
-                startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
-            }
+        val locationPass = LocationPass().apply {
+            latitude = TOTO_LATITUDE
+            longitude = TOTO_LONGITUDE
         }
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+        val bundle = Bundle().apply {
+            putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+            putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+        }
+        intent.putExtras(bundle)
+        startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
     }
 
     private fun onResultFromSetPinpoint(resultCode: Int, data: Intent?) {

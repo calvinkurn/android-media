@@ -7,6 +7,13 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
             status
             error_message
             data {
+              coachmark {
+                Plus {
+                    is_shown
+                    title
+                    content
+                }
+              }
               errors
               error_code
               kero_token

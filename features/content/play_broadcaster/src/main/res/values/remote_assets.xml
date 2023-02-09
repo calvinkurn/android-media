@@ -3,4 +3,5 @@
     <string name="img_search_product_empty">https://images.tokopedia.net/img/android/content/play/play_search_product_empty.png</string>
     <string name="ic_play_cover_circle_dash">https://images.tokopedia.net/img/android/content/play_broadcaster/dpi/play_cover_circle_dash.png</string>
     <string name="img_play_tag_not_found">https://images.tokopedia.net/img/android/content/play_broadcaster/play_tag_not_found.png</string>
+    <string name="img_shorts_account_not_eligible">https://images.tokopedia.net/img/android/content/play_shorts/img_shorts_account_not_eligible.png</string>
 </resources>

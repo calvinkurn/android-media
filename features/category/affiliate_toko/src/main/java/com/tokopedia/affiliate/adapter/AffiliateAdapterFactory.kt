@@ -54,6 +54,7 @@ import com.tokopedia.affiliate.ui.viewholder.AffiliateProductShimmerCardItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliatePromotionCardItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliatePromotionErrorCardItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliatePromotionShopItemVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateSSAShopItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateShareItemViewHolder
 import com.tokopedia.affiliate.ui.viewholder.AffiliateSharedProductCardsItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateStaggeredPromotionCardItemVH
@@ -92,6 +93,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateProductCardMetri
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionCardModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionErrorCardModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionShopModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSSAShopUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShareModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSharedProductCardsModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShimmerModel
@@ -165,10 +167,11 @@ class AffiliateAdapterFactory(
             AffiliateEducationTutorialRVVH.LAYOUT -> AffiliateEducationTutorialRVVH(parent, affiliateEducationTopicTutorialClickInterface)
             AffiliateEducationTutorialVH.LAYOUT -> AffiliateEducationTutorialVH(parent, affiliateEducationTopicTutorialClickInterface)
             AffiliateEducationSocialRVVH.LAYOUT -> AffiliateEducationSocialRVVH(parent, educationSocialCTAClickInterface)
-            AffiliateEducationSocialVH.LAYOUT -> AffiliateEducationSocialVH(parent,educationSocialCTAClickInterface)
+            AffiliateEducationSocialVH.LAYOUT -> AffiliateEducationSocialVH(parent, educationSocialCTAClickInterface)
             AffiliateEducationLearnVH.LAYOUT -> AffiliateEducationLearnVH(parent, affiliateEducationLearnClickInterface)
             AffiliateEducationSeeAllVH.LAYOUT -> AffiliateEducationSeeAllVH(parent, educationSeeAllCardClickInterface)
             AffiliateEduCategoryChipVH.LAYOUT -> AffiliateEduCategoryChipVH(parent, affiliateEduCategoryChipClick)
+            AffiliateSSAShopItemVH.LAYOUT -> AffiliateSSAShopItemVH(parent, productClickInterface)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -335,4 +338,7 @@ class AffiliateAdapterFactory(
 
     override fun type(viewModel: AffiliateEduCategoryChipModel): Int =
         AffiliateEduCategoryChipVH.LAYOUT
+
+    override fun type(viewModel: AffiliateSSAShopUiModel): Int =
+        AffiliateSSAShopItemVH.LAYOUT
 }

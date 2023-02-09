@@ -112,9 +112,7 @@
     <string name="product_detail_discussion_title">Diskusi Paling Membantu</string>
     <string name="product_detail_discussion_see_all">Lihat Semua (%d)</string>
     <string name="product_detail_discussion_no_answers">Bantu Jawab</string>
-    <string name="product_detail_discussion_empty_subtitle">Punya Pertanyaan?</string>
-    <string name="product_detail_discussion_empty_description">Tanya aja langsung tentang barang ini di Diskusi.</string>
-    <string name="product_detail_discussion_empty_button">Tanya Sekarang</string>
+    <string name="product_detail_discussion_empty_description">Tanya soal produk ini di Diskusi, yuk!</string>
     <string name="product_detail_discussion_total_answers">%d jawaban lainnya</string>
     <string name="product_detail_discussion_seller_label">Penjual</string>
     <string name="product_detail_discussion_local_load_title">Diskusi gagal ditampilkan</string>
