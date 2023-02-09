@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowDynamicHeaderUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselHeaderUiModel
 import com.tokopedia.productcard_compact.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -19,7 +19,7 @@ import com.tokopedia.unifyprinciples.Typography
 import java.util.Calendar
 import java.util.Date
 
-class TokoNowDynamicHeaderView @JvmOverloads constructor(
+class ProductCardCompactCarouselDynamicHeaderView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -39,7 +39,7 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(
     }
 
     private fun handleHeaderComponent(
-        model: TokoNowDynamicHeaderUiModel
+        model: ProductCardCompactCarouselHeaderUiModel
     ) {
         setupUi()
         handleTitle(model.title)
@@ -136,7 +136,7 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(
     }
 
     fun setModel(
-        model: TokoNowDynamicHeaderUiModel
+        model: ProductCardCompactCarouselHeaderUiModel
     ) {
         handleHeaderComponent(model)
     }

@@ -1,4 +1,4 @@
-package com.tokopedia.productcard_compact.productcardcarousel.util
+package com.tokopedia.productcard_compact.productcardcarousel.helper
 
 import android.content.Context
 import android.graphics.Rect
@@ -7,10 +7,9 @@ import com.tokopedia.productcard_compact.R
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard_compact.common.util.ViewUtil.getDpFromDimen
 
-class ProductCardCarouselDecoration(
+class ProductCardCompactCarouselDecoration(
     private val context: Context
 ): RecyclerView.ItemDecoration() {
-
     override fun getItemOffsets(
         outRect: Rect,
         view: View,

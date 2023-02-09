@@ -5,13 +5,13 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.productcard_compact.R
 import com.tokopedia.productcard_compact.databinding.ItemTokopedianowSeeMoreCardCarouselBinding
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class TokoNowSeeMoreCardCarouselViewHolder(
+class ProductCardCompactCarouselSeeMoreViewHolder(
     view: View,
     private val listener: TokoNowCarouselProductCardSeeMoreListener? = null
-) : AbstractViewHolder<TokoNowSeeMoreCardCarouselUiModel>(view){
+) : AbstractViewHolder<ProductCardCompactCarouselSeeMoreUiModel>(view){
 
     companion object {
         @LayoutRes
@@ -20,7 +20,7 @@ class TokoNowSeeMoreCardCarouselViewHolder(
 
     private val binding: ItemTokopedianowSeeMoreCardCarouselBinding? by viewBinding()
 
-    override fun bind(element: TokoNowSeeMoreCardCarouselUiModel) {
+    override fun bind(element: ProductCardCompactCarouselSeeMoreUiModel) {
         binding?.apply {
             backgroundBannerMixMore.setOnClickListener {
                 listener?.onProductCardSeeMoreClickListener(
@@ -37,7 +37,7 @@ class TokoNowSeeMoreCardCarouselViewHolder(
 
     interface TokoNowCarouselProductCardSeeMoreListener {
         fun onProductCardSeeMoreClickListener(
-            seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel
+            seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel
         )
     }
 }

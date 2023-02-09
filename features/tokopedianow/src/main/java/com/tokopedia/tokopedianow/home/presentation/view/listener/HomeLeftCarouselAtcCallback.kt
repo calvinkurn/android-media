@@ -7,8 +7,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowSeeMoreCardCarouselUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.viewholder.TokoNowSeeMoreCardCarouselViewHolder
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.viewholder.ProductCardCompactCarouselSeeMoreViewHolder
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcProductCardViewHolder
@@ -23,7 +23,7 @@ class HomeLeftCarouselAtcCallback(
     private val analytics: HomeAnalytics,
     private val startActivityForResult: (Intent, Int) -> Unit
 ) : HomeLeftCarouselAtcProductCardViewHolder.HomeLeftCarouselAtcProductCardListener,
-    TokoNowSeeMoreCardCarouselViewHolder.TokoNowCarouselProductCardSeeMoreListener,
+    ProductCardCompactCarouselSeeMoreViewHolder.TokoNowCarouselProductCardSeeMoreListener,
     HomeLeftCarouselAtcViewHolder.HomeLeftCarouselAtcListener {
 
     override fun onProductCardAddVariantClicked(
@@ -120,7 +120,7 @@ class HomeLeftCarouselAtcCallback(
         viewModel.removeLeftCarouselAtc(channelId)
     }
 
-    override fun onProductCardSeeMoreClickListener(seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel) {
+    override fun onProductCardSeeMoreClickListener(seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel) {
         openAppLink(seeMoreUiModel.appLink)
 
         analytics.trackClickViewAllLeftCarousel(

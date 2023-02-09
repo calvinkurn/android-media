@@ -2,6 +2,6 @@ package com.tokopedia.productcard_compact.productcardcarousel.presentation.adapt
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 
-interface TokoNowProductCardCarouselTypeFactory {
+interface ProductCardCompactCarouselTypeFactory {
     fun type(visitable: Visitable<*>): Int
 }

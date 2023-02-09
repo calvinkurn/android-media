@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.TokoNowDynamicHeaderView
+    <com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselDynamicHeaderView
         android:id="@+id/header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.TokoNowProductCardCarouselView
+    <com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView
         android:id="@+id/product_card_carousel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

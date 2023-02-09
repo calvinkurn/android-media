@@ -9,7 +9,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL_ATC
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.util.QueryParamUtil.getBooleanValue
 import com.tokopedia.tokopedianow.common.util.QueryParamUtil.getStringValue
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
@@ -66,7 +66,7 @@ object LeftCarouselMapper {
         // Add see more at the end of the list
         if(channelModel.channelHeader.applink.isNotEmpty()) {
             productList.add(
-                TokoNowSeeMoreCardCarouselUiModel(
+                ProductCardCompactCarouselSeeMoreUiModel(
                     id = channelModel.id,
                     headerName = channelModel.channelHeader.name,
                     appLink = channelModel.channelHeader.applink

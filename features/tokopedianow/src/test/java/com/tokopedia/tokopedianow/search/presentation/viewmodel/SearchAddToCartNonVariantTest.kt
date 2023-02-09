@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.search.presentation.viewmodel
 
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper
@@ -107,7 +107,7 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
         }
     }
 
-    private fun getBroadMatchItemForATC(productId: String): Pair<TokoNowProductCardCarouselItemUiModel, Int> {
+    private fun getBroadMatchItemForATC(productId: String): Pair<ProductCardCompactCarouselItemUiModel, Int> {
         val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
         val broadMatchDataView = visitableList.filterIsInstance<BroadMatchDataView>()
         val broadMatchItemList = broadMatchDataView.flatMap { it.broadMatchItemModelList }
@@ -118,7 +118,7 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
     }
 
     private fun `When add to cart broad match item`(
-        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
+        broadMatchItem: ProductCardCompactCarouselItemUiModel,
         quantity: Int,
         broadMatchIndex: Int,
     ) {
@@ -149,7 +149,7 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
     }
 
     private fun `Then assert broad match item quantity`(
-        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
+        broadMatchItem: ProductCardCompactCarouselItemUiModel,
         expectedQuantity: Int
     ) {
         assertThat(broadMatchItem.productCardModel.orderQuantity, shouldBe(expectedQuantity))
@@ -158,7 +158,7 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
     private fun `Then assert add to cart tracking broad match item`(
         quantity: Int,
         cartId: String,
-        item: TokoNowProductCardCarouselItemUiModel,
+        item: ProductCardCompactCarouselItemUiModel,
     ) {
         val addToCartEvent = tokoNowSearchViewModel.addToCartBroadMatchTrackingLiveData.value!!
 
@@ -245,7 +245,7 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
     private fun AddToCartNonVariantTestHelper.`Then assert update quantity broad match item`(
         updateQuantityParam: Int,
         cartIdParam: String,
-        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
+        broadMatchItem: ProductCardCompactCarouselItemUiModel,
         expectedErrorMessage: String = "",
         expectedProductQuantity: Int = updateQuantityParam,
         expectedRefreshMiniCartCount: Int = 2,

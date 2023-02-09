@@ -7,10 +7,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.TokoNowProductCardCarouselView
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowBroadmatchBinding
 import com.tokopedia.tokopedianow.search.presentation.listener.BroadMatchListener
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
@@ -20,7 +20,7 @@ class BroadMatchViewHolder(
     itemView: View,
     private val listener: BroadMatchListener
 ): AbstractViewHolder<BroadMatchDataView>(itemView),
-    TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener,
+    ProductCardCompactCarouselView.TokoNowProductCardCarouselListener,
     TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
 {
     companion object {
@@ -57,7 +57,7 @@ class BroadMatchViewHolder(
 
     private fun ItemTokopedianowBroadmatchBinding.setItems(
         items: List<Visitable<*>>,
-        seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null
+        seeMoreModel: ProductCardCompactCarouselSeeMoreUiModel? = null
     ) {
         productCardCarousel.bindItems(
             items = items,
@@ -76,7 +76,7 @@ class BroadMatchViewHolder(
     }
 
     private fun ItemTokopedianowBroadmatchBinding.setListener(
-        productCardCarouselListener: TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener,
+        productCardCarouselListener: ProductCardCompactCarouselView.TokoNowProductCardCarouselListener,
         headerCarouselListener: TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
     ) {
         productCardCarousel.setListener(
@@ -89,7 +89,7 @@ class BroadMatchViewHolder(
 
     override fun onProductCardClicked(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         listener.onBroadMatchItemClicked(
             broadMatchItemDataView = product,
@@ -99,7 +99,7 @@ class BroadMatchViewHolder(
 
     override fun onProductCardImpressed(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         listener.onBroadMatchItemImpressed(
             broadMatchItemDataView = product,
@@ -109,7 +109,7 @@ class BroadMatchViewHolder(
 
     override fun onProductCardQuantityChanged(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         quantity: Int
     ) {
         listener.onBroadMatchItemATCNonVariant(
@@ -119,7 +119,7 @@ class BroadMatchViewHolder(
         )
     }
 
-    override fun onSeeMoreClicked(seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel) {
+    override fun onSeeMoreClicked(seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel) {
         listener.onBroadMatchSeeAllClicked(
             title = seeMoreUiModel.headerName,
             appLink = seeMoreUiModel.appLink
@@ -137,6 +137,6 @@ class BroadMatchViewHolder(
 
     override fun onProductCardAddVariantClicked(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) { /* nothing to do */ }
 }

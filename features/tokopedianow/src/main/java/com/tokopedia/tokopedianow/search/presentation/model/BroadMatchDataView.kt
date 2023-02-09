@@ -2,14 +2,14 @@ package com.tokopedia.tokopedianow.search.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFactory
 
 data class BroadMatchDataView(
-    val seeMoreModel: TokoNowSeeMoreCardCarouselUiModel,
+    val seeMoreModel: ProductCardCompactCarouselSeeMoreUiModel,
     val headerModel: TokoNowDynamicHeaderUiModel,
-    val broadMatchItemModelList: List<TokoNowProductCardCarouselItemUiModel> = listOf(),
+    val broadMatchItemModelList: List<ProductCardCompactCarouselItemUiModel> = listOf(),
 ): Visitable<SearchTypeFactory> {
 
     override fun type(typeFactory: SearchTypeFactory?) =

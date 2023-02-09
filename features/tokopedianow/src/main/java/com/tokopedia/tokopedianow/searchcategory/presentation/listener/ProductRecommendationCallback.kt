@@ -15,8 +15,8 @@ import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Category.T
 import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_CATEGORY_ID
 import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_REF
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper.mapProductItemToRecommendationItem
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
@@ -77,7 +77,7 @@ data class ProductRecommendationCallback(
 
     override fun productCardClicked(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         isLogin: Boolean,
         userId: String
     ) {
@@ -97,7 +97,7 @@ data class ProductRecommendationCallback(
 
     override fun productCardImpressed(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         isLogin: Boolean,
         userId: String
     ) {
@@ -114,7 +114,7 @@ data class ProductRecommendationCallback(
     }
 
     override fun seeMoreClicked(
-        seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel
+        seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel
     ) {
         directToSeeMorePage(seeMoreUiModel.appLink)
     }

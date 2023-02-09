@@ -6,33 +6,33 @@ import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.productcard_compact.databinding.LayoutTokopedianowProductCardCarouselViewBinding
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.adapter.TokoNowProductCardCarouselAdapter
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.adapter.differ.TokoNowProductCardCarouselDiffer
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.adapter.typefactory.TokoNowProductCardCarouselTypeFactoryImpl
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowSeeMoreCardCarouselUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.util.CustomProductCardCarouselLinearLayoutManager
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.viewholder.TokoNowProductCardCarouselItemViewHolder
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.viewholder.TokoNowSeeMoreCardCarouselViewHolder
-import com.tokopedia.productcard_compact.productcardcarousel.util.ProductCardCarouselDecoration
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.adapter.ProductCardCompactCarouselAdapter
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.adapter.differ.ProductCardCompactCarouselDiffer
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.adapter.typefactory.ProductCardCompactCarouselTypeFactoryImpl
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.helper.ProductCardCompactCarouselLinearLayoutManager
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.viewholder.ProductCardCompactCarouselItemViewHolder
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.viewholder.ProductCardCompactCarouselSeeMoreViewHolder
+import com.tokopedia.productcard_compact.productcardcarousel.helper.ProductCardCompactCarouselDecoration
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-class TokoNowProductCardCarouselView @JvmOverloads constructor(
+class ProductCardCompactCarouselView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : BaseCustomView(context, attrs),
-    TokoNowProductCardCarouselItemViewHolder.TokoNowCarouselProductCardItemListener,
-    TokoNowSeeMoreCardCarouselViewHolder.TokoNowCarouselProductCardSeeMoreListener,
+    ProductCardCompactCarouselItemViewHolder.TokoNowCarouselProductCardItemListener,
+    ProductCardCompactCarouselSeeMoreViewHolder.TokoNowCarouselProductCardSeeMoreListener,
     CoroutineScope {
 
-    private val adapter: TokoNowProductCardCarouselAdapter by lazy {
-        TokoNowProductCardCarouselAdapter(
-            TokoNowProductCardCarouselDiffer(),
-            TokoNowProductCardCarouselTypeFactoryImpl(
+    private val adapter: ProductCardCompactCarouselAdapter by lazy {
+        ProductCardCompactCarouselAdapter(
+            ProductCardCompactCarouselDiffer(),
+            ProductCardCompactCarouselTypeFactoryImpl(
                 productCardCarouselItemListener = this,
                 productCardCarouselSeeMoreListener = this
             )
@@ -40,7 +40,7 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
     }
 
     private var binding: LayoutTokopedianowProductCardCarouselViewBinding
-    private var layoutManager: LinearLayoutManager = CustomProductCardCarouselLinearLayoutManager(context)
+    private var layoutManager: LinearLayoutManager = ProductCardCompactCarouselLinearLayoutManager(context)
     private var listener: TokoNowProductCardCarouselListener? = null
 
     init {
@@ -49,7 +49,7 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
             this,
             true
         ).apply {
-            root.addItemDecoration(ProductCardCarouselDecoration(context))
+            root.addItemDecoration(ProductCardCompactCarouselDecoration(context))
             root.layoutManager = layoutManager
             root.adapter = adapter
         }
@@ -59,7 +59,7 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
 
     override fun onProductCardAddVariantClicked(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         listener?.onProductCardAddVariantClicked(
             position = position,
@@ -69,7 +69,7 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
 
     override fun onProductCardQuantityChanged(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         quantity: Int
     ) {
         listener?.onProductCardQuantityChanged(
@@ -81,7 +81,7 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
 
     override fun onProductCardClicked(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         listener?.onProductCardClicked(
             position = position,
@@ -91,7 +91,7 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
 
     override fun onProductCardImpressed(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         listener?.onProductCardImpressed(
             position = position,
@@ -100,7 +100,7 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
     }
 
     override fun onProductCardSeeMoreClickListener(
-        seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel
+        seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel
     ) {
         listener?.onSeeMoreClicked(
             seeMoreUiModel = seeMoreUiModel
@@ -109,7 +109,7 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
 
     fun bindItems(
         items: List<Visitable<*>>,
-        seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null
+        seeMoreModel: ProductCardCompactCarouselSeeMoreUiModel? = null
     ) {
         if (seeMoreModel != null && seeMoreModel.appLink.isNotBlank()) {
             val newItems = items.toMutableList()
@@ -141,28 +141,27 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
     interface TokoNowProductCardCarouselListener {
         fun onProductCardClicked(
             position: Int,
-            product: TokoNowProductCardCarouselItemUiModel
+            product: ProductCardCompactCarouselItemUiModel
         )
         fun onProductCardImpressed(
             position: Int,
-            product: TokoNowProductCardCarouselItemUiModel
+            product: ProductCardCompactCarouselItemUiModel
         )
         fun onProductCardQuantityChanged(
             position: Int,
-            product: TokoNowProductCardCarouselItemUiModel,
+            product: ProductCardCompactCarouselItemUiModel,
             quantity: Int
         )
         fun onProductCardAddVariantClicked(
             position: Int,
-            product: TokoNowProductCardCarouselItemUiModel
+            product: ProductCardCompactCarouselItemUiModel
         )
         fun onSeeMoreClicked(
-            seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel
+            seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel
         )
     }
 
-
     interface TokoNowProductCardCarouseBasicListener: TokoNowProductCardCarouselListener {
-        override fun onSeeMoreClicked(seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel) {}
+        override fun onSeeMoreClicked(seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel) {}
     }
 }

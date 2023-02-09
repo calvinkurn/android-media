@@ -14,8 +14,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -56,7 +56,7 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
     protected val privateFieldMiniCartSimplifiedData = "mMiniCartSimplifiedData"
 
     protected val productModels = mutableListOf<Visitable<*>>(
-        TokoNowProductCardCarouselItemUiModel(
+        ProductCardCompactCarouselItemUiModel(
             productCardModel = TokoNowProductCardViewUiModel(
                 productId = "11111",
                 name = "product a",
@@ -69,7 +69,7 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
             shopId = "122212",
             parentId = "0"
         ),
-        TokoNowProductCardCarouselItemUiModel(
+        ProductCardCompactCarouselItemUiModel(
             productCardModel = TokoNowProductCardViewUiModel(
                 productId = "11112",
                 name = "product b",
@@ -82,7 +82,7 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
             shopId = "122212",
             parentId = "0"
         ),
-        TokoNowProductCardCarouselItemUiModel(
+        ProductCardCompactCarouselItemUiModel(
             productCardModel = TokoNowProductCardViewUiModel(
                 productId = "11113",
                 name = "product c",
@@ -95,7 +95,7 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
             shopId = "122212",
             parentId = "0"
         ),
-        TokoNowProductCardCarouselItemUiModel(
+        ProductCardCompactCarouselItemUiModel(
             productCardModel = TokoNowProductCardViewUiModel(
                 productId = "11114",
                 name = "product d",
@@ -108,7 +108,7 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
             shopId = "122212",
             parentId = "122231443"
         ),
-        TokoNowProductCardCarouselItemUiModel(
+        ProductCardCompactCarouselItemUiModel(
             productCardModel = TokoNowProductCardViewUiModel(
                 productId = "11115",
                 name = "product e",
@@ -121,7 +121,7 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
             shopId = "122212",
             parentId = "122231444"
         ),
-        TokoNowSeeMoreCardCarouselUiModel()
+        ProductCardCompactCarouselSeeMoreUiModel()
     )
 
     protected fun onGetRecommendation_thenReturn(response: List<RecommendationWidget>) {

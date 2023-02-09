@@ -4,7 +4,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 
 data class HomeRealTimeRecomUiModel(
     val channelId: String = "",
@@ -13,7 +13,7 @@ data class HomeRealTimeRecomUiModel(
     val productImageUrl: String = "",
     val warehouseId: String = "",
     val category: String = "",
-    val productList: List<TokoNowProductCardCarouselItemUiModel> = emptyList(),
+    val productList: List<ProductCardCompactCarouselItemUiModel> = emptyList(),
     val pageName: String = "",
     val enabled: Boolean = false,
     val widgetState: RealTimeRecomWidgetState = RealTimeRecomWidgetState.IDLE,

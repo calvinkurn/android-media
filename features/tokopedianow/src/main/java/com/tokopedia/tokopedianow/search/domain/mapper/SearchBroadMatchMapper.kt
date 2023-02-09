@@ -1,10 +1,10 @@
 package com.tokopedia.tokopedianow.search.domain.mapper
 
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
 import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel.LabelGroup
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
@@ -14,7 +14,7 @@ object SearchBroadMatchMapper {
         otherRelated: AceSearchProductModel.OtherRelated,
         cartService: CartService
     ) = BroadMatchDataView(
-            seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
+            seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
                   appLink = otherRelated.applink
             ),
             headerModel = TokoNowDynamicHeaderUiModel(
@@ -23,7 +23,7 @@ object SearchBroadMatchMapper {
             ),
             broadMatchItemModelList = otherRelated.productList
                 .map { otherRelatedProduct ->
-                    TokoNowProductCardCarouselItemUiModel(
+                    ProductCardCompactCarouselItemUiModel(
                         appLink = otherRelatedProduct.applink,
                         productCardModel = TokoNowProductCardViewUiModel (
                             productId = otherRelatedProduct.id,

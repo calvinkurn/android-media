@@ -3,14 +3,14 @@ package com.tokopedia.tokopedianow.home.domain.mapper
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelShop
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowDynamicHeaderUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselHeaderUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
 import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel.LabelGroup
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.util.QueryParamUtil.getBooleanValue
 import com.tokopedia.tokopedianow.common.util.QueryParamUtil.getStringValue
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
@@ -85,7 +85,7 @@ object ProductRecomMapper {
             id = channelModel.id,
             title = channelModel.channelHeader.name,
             productList = channelModel.channelGrids.map { channelGrid ->
-                TokoNowProductCardCarouselItemUiModel(
+                ProductCardCompactCarouselItemUiModel(
                     recomType = channelGrid.recommendationType,
                     pageName = channelModel.pageName,
                     productCardModel = mapChannelGridToProductCard(channelGrid, miniCartData),
@@ -98,12 +98,12 @@ object ProductRecomMapper {
                     categoryBreadcrumbs = channelGrid.categoryBreadcrumbs
                 )
             },
-            seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
+            seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
                 id = channelModel.channelHeader.id,
                 headerName = channelModel.channelHeader.name,
                 appLink = channelModel.channelHeader.applink
             ),
-            headerModel = TokoNowDynamicHeaderUiModel(
+            headerModel = ProductCardCompactCarouselHeaderUiModel(
                 title = channelModel.channelHeader.name,
                 subTitle = channelModel.channelHeader.subtitle,
                 ctaText = "",

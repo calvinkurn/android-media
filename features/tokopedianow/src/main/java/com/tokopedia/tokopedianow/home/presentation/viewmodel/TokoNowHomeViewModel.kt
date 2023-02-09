@@ -40,7 +40,7 @@ import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserP
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
@@ -1077,7 +1077,7 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun getPositionProductRecom(
-        recomItemList: List<TokoNowProductCardCarouselItemUiModel>,
+        recomItemList: List<ProductCardCompactCarouselItemUiModel>,
         productId: String
     ): Int {
         val product = recomItemList.first { it.productCardModel.productId == productId }

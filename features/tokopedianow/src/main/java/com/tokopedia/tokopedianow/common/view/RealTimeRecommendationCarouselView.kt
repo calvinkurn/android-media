@@ -13,8 +13,8 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.TokoNowProductCardCarouselView
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowRealTimeRecommendationBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel.RealTimeRecomWidgetState
@@ -25,7 +25,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr),
-    TokoNowProductCardCarouselView.TokoNowProductCardCarouseBasicListener {
+    ProductCardCompactCarouselView.TokoNowProductCardCarouseBasicListener {
 
     companion object {
         private const val FIRST_ITEM_POSITION = 0
@@ -198,20 +198,20 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
         analytics?.trackRefreshImpression(data.parentProductId)
     }
 
-    private fun trackProductImpression(position: Int, product: TokoNowProductCardCarouselItemUiModel) {
+    private fun trackProductImpression(position: Int, product: ProductCardCompactCarouselItemUiModel) {
         val headerName = getTitle(rtrData).orEmpty()
         val productId = rtrData?.parentProductId.orEmpty()
         analytics?.trackProductImpression(headerName, productId, product, position)
     }
 
-    private fun trackProductClick(position: Int, product: TokoNowProductCardCarouselItemUiModel) {
+    private fun trackProductClick(position: Int, product: ProductCardCompactCarouselItemUiModel) {
         val headerName = getTitle(rtrData).orEmpty()
         val productId = rtrData?.parentProductId.orEmpty()
         analytics?.trackProductClick(headerName, productId, product, position)
     }
 
 
-    private fun trackProductAddToCart(product: TokoNowProductCardCarouselItemUiModel, quantity: Int) {
+    private fun trackProductAddToCart(product: ProductCardCompactCarouselItemUiModel, quantity: Int) {
         val productId = rtrData?.parentProductId.orEmpty()
         analytics?.trackAddToCart(productId, product, quantity)
     }
@@ -223,7 +223,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
 
     override fun onProductCardClicked(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         listener?.onRecomProductCardClicked(position, product)
         trackProductClick(position, product)
@@ -231,14 +231,14 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
 
     override fun onProductCardImpressed(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         trackProductImpression(position, product)
     }
 
     override fun onProductCardQuantityChanged(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         quantity: Int
     ) {
         val channelId = rtrData?.channelId.orEmpty()
@@ -252,7 +252,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
 
     override fun onProductCardAddVariantClicked(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         listener?.onAddToCartProductVariantClick(position, product)
     }

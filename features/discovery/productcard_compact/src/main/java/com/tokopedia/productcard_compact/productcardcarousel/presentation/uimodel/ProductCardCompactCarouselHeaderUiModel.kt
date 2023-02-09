@@ -1,6 +1,6 @@
 package com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel
 
-data class TokoNowDynamicHeaderUiModel(
+data class ProductCardCompactCarouselHeaderUiModel(
     val title: String = "",
     val subTitle: String = "",
     val ctaText: String = "",

@@ -3,9 +3,9 @@ package com.tokopedia.productcard_compact.productcardcarousel.presentation.uimod
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.adapter.typefactory.TokoNowProductCardCarouselTypeFactory
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.adapter.typefactory.ProductCardCompactCarouselTypeFactory
 
-data class TokoNowProductCardCarouselItemUiModel(
+data class ProductCardCompactCarouselItemUiModel(
     /**
      * Optional params
      */
@@ -26,11 +26,11 @@ data class TokoNowProductCardCarouselItemUiModel(
      * Mandatory params
      */
     var productCardModel: TokoNowProductCardViewUiModel,
-): Visitable<TokoNowProductCardCarouselTypeFactory> {
+): Visitable<ProductCardCompactCarouselTypeFactory> {
 
     val impressHolder: ImpressHolder = ImpressHolder()
 
-    override fun type(typeFactory: TokoNowProductCardCarouselTypeFactory): Int {
+    override fun type(typeFactory: ProductCardCompactCarouselTypeFactory): Int {
         return typeFactory.type(this)
     }
 

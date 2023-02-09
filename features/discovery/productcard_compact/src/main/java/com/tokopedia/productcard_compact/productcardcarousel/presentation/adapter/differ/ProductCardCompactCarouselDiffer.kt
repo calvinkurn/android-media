@@ -2,11 +2,11 @@ package com.tokopedia.productcard_compact.productcardcarousel.presentation.adapt
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 
-class TokoNowProductCardCarouselDiffer : DiffUtil.ItemCallback<Visitable<*>>() {
+class ProductCardCompactCarouselDiffer : DiffUtil.ItemCallback<Visitable<*>>() {
     override fun areItemsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {
-        return if (oldItem is TokoNowProductCardCarouselItemUiModel && newItem is TokoNowProductCardCarouselItemUiModel) {
+        return if (oldItem is ProductCardCompactCarouselItemUiModel && newItem is ProductCardCompactCarouselItemUiModel) {
             oldItem.productCardModel.productId == newItem.productCardModel.productId
         } else {
             oldItem == newItem
@@ -18,7 +18,7 @@ class TokoNowProductCardCarouselDiffer : DiffUtil.ItemCallback<Visitable<*>>() {
     }
 
     override fun getChangePayload(oldItem: Visitable<*>, newItem: Visitable<*>): Any? {
-        return if (oldItem is TokoNowProductCardCarouselItemUiModel && newItem is TokoNowProductCardCarouselItemUiModel) {
+        return if (oldItem is ProductCardCompactCarouselItemUiModel && newItem is ProductCardCompactCarouselItemUiModel) {
             oldItem.productCardModel != newItem.productCardModel
         } else {
             super.getChangePayload(oldItem, newItem)

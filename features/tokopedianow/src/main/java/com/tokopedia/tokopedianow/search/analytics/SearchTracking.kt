@@ -22,7 +22,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_ADD_TO_CART_SEARCH
 import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_CLICK_CLOSE_BOTTOMSHEET_SEARCH
 import com.tokopedia.productcard_compact.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_CLICK_PRODUCT_SEARCH
@@ -503,7 +503,7 @@ object SearchTracking {
 
     fun sendBroadMatchImpressionEvent(
         trackingQueue: TrackingQueue,
-        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
+        broadMatchItemDataView: ProductCardCompactCarouselItemUiModel,
         keyword: String,
         userId: String,
         position: Int
@@ -527,7 +527,7 @@ object SearchTracking {
         trackingQueue.putEETracking(map)
     }
 
-    private fun TokoNowProductCardCarouselItemUiModel.getAsImpressionClickObjectDataLayer(position: Int): Any {
+    private fun ProductCardCompactCarouselItemUiModel.getAsImpressionClickObjectDataLayer(position: Int): Any {
         return getAsObjectDataLayerMap().also {
             it.putAll(DataLayer.mapOf(
                 "list", TOKONOW_BROAD_MATCH,
@@ -536,7 +536,7 @@ object SearchTracking {
         }
     }
 
-    private fun TokoNowProductCardCarouselItemUiModel.getAsObjectDataLayerMap(): MutableMap<String, Any> {
+    private fun ProductCardCompactCarouselItemUiModel.getAsObjectDataLayerMap(): MutableMap<String, Any> {
         return DataLayer.mapOf(
             "brand", SearchCategoryTrackingConst.Misc.NONE_OTHER,
             "category", SearchCategoryTrackingConst.Misc.NONE_OTHER,
@@ -548,7 +548,7 @@ object SearchTracking {
     }
 
     fun sendBroadMatchClickEvent(
-        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
+        broadMatchItemDataView: ProductCardCompactCarouselItemUiModel,
         keyword: String,
         userId: String,
         position: Int
@@ -588,7 +588,7 @@ object SearchTracking {
     }
 
     fun sendBroadMatchAddToCartEvent(
-        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
+        broadMatchItemDataView: ProductCardCompactCarouselItemUiModel,
         keyword: String,
         userId: String,
         quantity: Int,
@@ -614,7 +614,7 @@ object SearchTracking {
         )
     }
 
-    private fun TokoNowProductCardCarouselItemUiModel.getAsATCObjectDataLayer(quantity: Int): Any {
+    private fun ProductCardCompactCarouselItemUiModel.getAsATCObjectDataLayer(quantity: Int): Any {
         return getAsObjectDataLayerMap().also {
             it.putAll(DataLayer.mapOf(
                 "dimension40", TOKONOW_BROAD_MATCH,

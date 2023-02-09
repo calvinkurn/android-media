@@ -6,7 +6,7 @@ import com.tokopedia.cartcommon.data.response.deletecart.Data
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.tokopedianow.common.analytics.model.AddToCartDataTrackerModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
@@ -24,7 +24,7 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
         val cartId = "22122121"
         val success = 1
 
-        val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
+        val expectedProduct = productModels[position] as ProductCardCompactCarouselItemUiModel
         val shopId = expectedProduct.shopId
         val productId = expectedProduct.getProductId()
 
@@ -60,7 +60,7 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
         val position = 1
         val quantity = 2
 
-        val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
+        val expectedProduct = productModels[position] as ProductCardCompactCarouselItemUiModel
         val shopId = expectedProduct.shopId
 
         mockProductModels()
@@ -78,7 +78,7 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
         val quantity = 4
         val message = "success"
 
-        val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
+        val expectedProduct = productModels[position] as ProductCardCompactCarouselItemUiModel
         val shopId = expectedProduct.shopId
         val productId = expectedProduct.getProductId()
 
@@ -102,7 +102,7 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
         val position = 1
         val quantity = 2
 
-        val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
+        val expectedProduct = productModels[position] as ProductCardCompactCarouselItemUiModel
         val shopId = expectedProduct.shopId
         val productId = expectedProduct.getProductId()
 
@@ -124,7 +124,7 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
         val success = 1
         val message = "success"
 
-        val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
+        val expectedProduct = productModels[position] as ProductCardCompactCarouselItemUiModel
         val shopId = expectedProduct.shopId
         val productId = expectedProduct.getProductId()
 
@@ -152,7 +152,7 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
         val position = 0
         val quantity = 0
 
-        val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
+        val expectedProduct = productModels[position] as ProductCardCompactCarouselItemUiModel
         val shopId = expectedProduct.shopId
         val productId = expectedProduct.getProductId()
 
@@ -176,7 +176,7 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
         val position = 1
         val quantity = 0
 
-        val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
+        val expectedProduct = productModels[position] as ProductCardCompactCarouselItemUiModel
         val shopId = expectedProduct.shopId
 
         viewModel.mockPrivateField(

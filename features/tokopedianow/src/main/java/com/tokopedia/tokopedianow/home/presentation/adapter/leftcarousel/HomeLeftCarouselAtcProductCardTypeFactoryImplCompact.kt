@@ -4,21 +4,21 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.adapter.typefactory.TokoNowProductCardCarouselTypeFactory
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.adapter.typefactory.ProductCardCompactCarouselTypeFactory
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.viewholder.TokoNowSeeMoreCardCarouselViewHolder
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.viewholder.ProductCardCompactCarouselSeeMoreViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcProductCardViewHolder
 
-class HomeLeftCarouselAtcProductCardTypeFactoryImpl(
+class HomeLeftCarouselAtcProductCardTypeFactoryImplCompact(
     private val productCardListener: HomeLeftCarouselAtcProductCardViewHolder.HomeLeftCarouselAtcProductCardListener? = null,
-    private val productCardSeeMoreListener: TokoNowSeeMoreCardCarouselViewHolder.TokoNowCarouselProductCardSeeMoreListener? = null
-): HomeLeftCarouselAtcProductCardTypeFactory, TokoNowProductCardCarouselTypeFactory {
+    private val productCardSeeMoreListener: ProductCardCompactCarouselSeeMoreViewHolder.TokoNowCarouselProductCardSeeMoreListener? = null
+): HomeLeftCarouselAtcProductCardTypeFactory, ProductCardCompactCarouselTypeFactory {
 
     override fun type(visitable: Visitable<*>): Int {
         return when (visitable) {
             is HomeLeftCarouselAtcProductCardUiModel -> HomeLeftCarouselAtcProductCardViewHolder.LAYOUT
-            is TokoNowSeeMoreCardCarouselUiModel -> TokoNowSeeMoreCardCarouselViewHolder.LAYOUT
+            is ProductCardCompactCarouselSeeMoreUiModel -> ProductCardCompactCarouselSeeMoreViewHolder.LAYOUT
             else -> {
                 throw TypeNotSupportedException.create("Type not supported")
             }
@@ -28,7 +28,7 @@ class HomeLeftCarouselAtcProductCardTypeFactoryImpl(
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             HomeLeftCarouselAtcProductCardViewHolder.LAYOUT -> HomeLeftCarouselAtcProductCardViewHolder(view, productCardListener)
-            TokoNowSeeMoreCardCarouselViewHolder.LAYOUT -> TokoNowSeeMoreCardCarouselViewHolder(view, productCardSeeMoreListener)
+            ProductCardCompactCarouselSeeMoreViewHolder.LAYOUT -> ProductCardCompactCarouselSeeMoreViewHolder(view, productCardSeeMoreListener)
             else -> {
                 throw TypeNotSupportedException.create("Layout not supported")
             }

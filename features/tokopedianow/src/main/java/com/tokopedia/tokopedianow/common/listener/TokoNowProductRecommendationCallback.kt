@@ -1,20 +1,20 @@
 package com.tokopedia.tokopedianow.common.listener
 
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView.TokoNowProductRecommendationListener
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.TokoNowProductCardCarouselView
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 
 class TokoNowProductRecommendationCallback(
     private val viewModel: TokoNowProductRecommendationViewModel,
     private val listener: TokoNowProductRecommendationListener?
-): TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener,
-    com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
+): ProductCardCompactCarouselView.TokoNowProductCardCarouselListener,
+    com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselDynamicHeaderView.TokoNowDynamicHeaderListener {
 
     override fun onProductCardClicked(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         listener?.productCardClicked(
             position = position,
@@ -26,7 +26,7 @@ class TokoNowProductRecommendationCallback(
 
     override fun onProductCardImpressed(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         listener?.productCardImpressed(
             position = position,
@@ -38,7 +38,7 @@ class TokoNowProductRecommendationCallback(
 
     override fun onProductCardQuantityChanged(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         quantity: Int
     ) {
         if (!viewModel.isLogin) {
@@ -54,7 +54,7 @@ class TokoNowProductRecommendationCallback(
 
     override fun onProductCardAddVariantClicked(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         listener?.productCardAddVariantClicked(
             productId = product.productCardModel.productId,
@@ -62,7 +62,7 @@ class TokoNowProductRecommendationCallback(
         )
     }
 
-    override fun onSeeMoreClicked(seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel) {
+    override fun onSeeMoreClicked(seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel) {
         listener?.seeMoreClicked(seeMoreUiModel)
     }
 

@@ -20,7 +20,7 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.searchbar.data.HintData
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_CLICK_ATC_SRP_PRODUCT
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_CLICK_SRP_PRODUCT
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_IMPRESSION_SRP_PRODUCT
@@ -422,7 +422,7 @@ class TokoNowSearchFragment :
     override fun getRecyclerViewPool() = recycledViewPool
 
     override fun onBroadMatchItemImpressed(
-        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
+        broadMatchItemDataView: ProductCardCompactCarouselItemUiModel,
         broadMatchIndex: Int
     ) {
         val trackingQueue = trackingQueue ?: return
@@ -437,7 +437,7 @@ class TokoNowSearchFragment :
     }
 
     override fun onBroadMatchItemClicked(
-        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
+        broadMatchItemDataView: ProductCardCompactCarouselItemUiModel,
         broadMatchIndex: Int
     ) {
         SearchTracking.sendBroadMatchClickEvent(
@@ -450,7 +450,7 @@ class TokoNowSearchFragment :
     }
 
     override fun onBroadMatchItemATCNonVariant(
-        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
+        broadMatchItemDataView: ProductCardCompactCarouselItemUiModel,
         quantity: Int,
         broadMatchIndex: Int,
     ) {
@@ -458,7 +458,7 @@ class TokoNowSearchFragment :
     }
 
     private fun sendATCBroadMatchTrackingEvent(
-        atcTrackingData: Triple<Int, String, TokoNowProductCardCarouselItemUiModel>
+        atcTrackingData: Triple<Int, String, ProductCardCompactCarouselItemUiModel>
     ) {
         val (quantity, _, broadMatchItemDataView) = atcTrackingData
 

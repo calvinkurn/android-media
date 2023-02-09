@@ -6,13 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard_compact.R
 import com.tokopedia.productcard_compact.databinding.ItemTokopedianowProductCardCarouselBinding
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class TokoNowProductCardCarouselItemViewHolder(
+class ProductCardCompactCarouselItemViewHolder(
     view: View,
     private var listener: TokoNowCarouselProductCardItemListener? = null
-) : AbstractViewHolder<TokoNowProductCardCarouselItemUiModel>(view) {
+) : AbstractViewHolder<ProductCardCompactCarouselItemUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -21,7 +21,7 @@ class TokoNowProductCardCarouselItemViewHolder(
 
     private var binding: ItemTokopedianowProductCardCarouselBinding? by viewBinding()
 
-    override fun bind(element: TokoNowProductCardCarouselItemUiModel) {
+    override fun bind(element: ProductCardCompactCarouselItemUiModel) {
         binding?.productCard?.apply {
             setData(
                 model = element.productCardModel
@@ -54,7 +54,7 @@ class TokoNowProductCardCarouselItemViewHolder(
         }
     }
 
-    override fun bind(element: TokoNowProductCardCarouselItemUiModel?, payloads: MutableList<Any>) {
+    override fun bind(element: ProductCardCompactCarouselItemUiModel?, payloads: MutableList<Any>) {
         if (payloads.firstOrNull() == true && element != null) {
             binding?.productCard?.setData(
                 model = element.productCardModel
@@ -65,20 +65,20 @@ class TokoNowProductCardCarouselItemViewHolder(
     interface TokoNowCarouselProductCardItemListener {
         fun onProductCardAddVariantClicked(
             position: Int,
-            product: TokoNowProductCardCarouselItemUiModel
+            product: ProductCardCompactCarouselItemUiModel
         )
         fun onProductCardQuantityChanged(
             position: Int,
-            product: TokoNowProductCardCarouselItemUiModel,
+            product: ProductCardCompactCarouselItemUiModel,
             quantity: Int
         )
         fun onProductCardClicked(
             position: Int,
-            product: TokoNowProductCardCarouselItemUiModel
+            product: ProductCardCompactCarouselItemUiModel
         )
         fun onProductCardImpressed(
             position: Int,
-            product: TokoNowProductCardCarouselItemUiModel
+            product: ProductCardCompactCarouselItemUiModel
         )
     }
 }

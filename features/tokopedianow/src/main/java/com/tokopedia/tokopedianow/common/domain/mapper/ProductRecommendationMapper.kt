@@ -8,13 +8,13 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
 import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.TokoNowDynamicHeaderUiModel
+import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselHeaderUiModel
 
 object ProductRecommendationMapper {
     private fun mapRecommendationItemToProductCard(
@@ -50,7 +50,7 @@ object ProductRecommendationMapper {
         miniCartData: MiniCartSimplifiedData?
     ): TokoNowProductRecommendationViewUiModel {
         val productModels = recommendationWidget.recommendationItemList.map { item ->
-            TokoNowProductCardCarouselItemUiModel(
+            ProductCardCompactCarouselItemUiModel(
                 productCardModel = mapRecommendationItemToProductCard(
                     item = item,
                     miniCartData = miniCartData
@@ -64,11 +64,11 @@ object ProductRecommendationMapper {
                 pageName = recommendationWidget.pageName
             )
         }
-        val seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
+        val seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
             headerName = recommendationWidget.title,
             appLink = recommendationWidget.seeMoreAppLink
         )
-        val headerModel = TokoNowDynamicHeaderUiModel(
+        val headerModel = ProductCardCompactCarouselHeaderUiModel(
             title = recommendationWidget.title,
             subTitle = recommendationWidget.subtitle,
             ctaTextLink = recommendationWidget.seeMoreAppLink
@@ -80,7 +80,7 @@ object ProductRecommendationMapper {
         )
     }
 
-    fun mapProductItemToRecommendationItem(product: TokoNowProductCardCarouselItemUiModel): RecommendationItem {
+    fun mapProductItemToRecommendationItem(product: ProductCardCompactCarouselItemUiModel): RecommendationItem {
         return RecommendationItem(
             productId = product.productCardModel.productId.toLongOrZero(),
             imageUrl = product.productCardModel.imageUrl,
