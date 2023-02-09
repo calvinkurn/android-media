@@ -322,30 +322,22 @@ class UserConsentWidget : FrameLayout,
                     TNC_MANDATORY -> {
                         iconMandatoryInfo.hide()
                         checkboxPurposes.show()
-                        collection?.attributes?.statementWording?.apply {
-                            descriptionPurposes.text = userConsentDescription?.generateDescriptionSpannableText(this)
-                        }
+                        descriptionPurposes.text = userConsentDescription?.generateDefaultTemplateTnc(true, tncPage)
                     }
                     TNC_PRIVACY_MANDATORY -> {
                         iconMandatoryInfo.hide()
                         checkboxPurposes.show()
-                        collection?.attributes?.statementWording?.apply {
-                            descriptionPurposes.text = userConsentDescription?.generateDescriptionSpannableText(this)
-                        }
+                        descriptionPurposes.text = userConsentDescription?.generateDefaultTemplateTncPolicy(true, tncPage, privacyPage)
                     }
                     TNC_OPTIONAL -> {
                         iconMandatoryInfo.show()
                         checkboxPurposes.hide()
-                        collection?.attributes?.statementWording?.apply {
-                            descriptionPurposes.text = userConsentDescription?.generateDescriptionSpannableText(this)
-                        }
+                        descriptionPurposes.text = userConsentDescription?.generateDefaultTemplateTnc(false, tncPage)
                     }
                     TNC_PRIVACY_OPTIONAL -> {
                         iconMandatoryInfo.show()
                         checkboxPurposes.hide()
-                        collection?.attributes?.statementWording?.apply {
-                            descriptionPurposes.text = userConsentDescription?.generateDescriptionSpannableText(this)
-                        }
+                        descriptionPurposes.text = userConsentDescription?.generateDefaultTemplateTncPolicy(false, tncPage, privacyPage)
                     }
                     NONE -> {
                         showError(Throwable("default template not found"))

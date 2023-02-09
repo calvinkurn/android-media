@@ -5,6 +5,7 @@ import android.text.SpannableString
 import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usercomponents.userconsent.analytics.UserConsentAnalytics
 import com.tokopedia.usercomponents.userconsent.common.AttributesItem
 import com.tokopedia.usercomponents.userconsent.common.CollectionPointDataModel
@@ -84,6 +85,63 @@ class UserConsentDescription constructor(
         return spannable
     }
 
+    fun generateDefaultTemplateTnc(isMandatory: Boolean, tncPage: String = ""): SpannableString {
+        val message = if (isMandatory) {
+            delegate.textAgreementDefaultTncMandatory
+        } else {
+            delegate.textAgreementDefaultTncOptional
+        }
+
+        return SpannableString(String.format(message, delegate.textTermCondition)).apply {
+            setSpan(
+                createClickableSpannable {
+                    delegate.openWebview(
+                        tncPage.ifEmpty { DEFAULT_TNC_PAGE }
+                    )
+                },
+                this.indexOf(delegate.textTermCondition),
+                this.indexOf(delegate.textTermCondition) + delegate.textTermCondition.length,
+                0
+            )
+        }
+    }
+
+    fun generateDefaultTemplateTncPolicy(
+        isMandatory: Boolean,
+        tncPage: String = "",
+        policyPage: String = ""
+    ): SpannableString {
+        val message = if (isMandatory) {
+            delegate.textAgreementDefaultTncPolicyMandatory
+        } else {
+            delegate.textAgreementDefaultTncPolicyOptional
+        }
+
+        return SpannableString(String.format(message, delegate.textTermCondition, delegate.textPolicy)).apply {
+            setSpan(
+                createClickableSpannable {
+                    delegate.openWebview(
+                        tncPage.ifEmpty { DEFAULT_TNC_PAGE }
+                    )
+                },
+                this.indexOf(delegate.textTermCondition),
+                this.indexOf(delegate.textTermCondition) + delegate.textTermCondition.length,
+                0
+            )
+
+            setSpan(
+                createClickableSpannable {
+                    delegate.openWebview(
+                        policyPage.ifEmpty { DEFAULT_PRIVACY_PAGE }
+                    )
+                },
+                this.indexOf(delegate.textPolicy),
+                this.indexOf(delegate.textPolicy) + delegate.textPolicy.length,
+                0
+            )
+        }
+    }
+
     private fun createClickableSpannable(action: () -> Unit): ClickableSpan {
         return object : ClickableSpan() {
             override fun onClick(widget: View) {
@@ -99,5 +157,7 @@ class UserConsentDescription constructor(
     companion object {
         private const val KEY_TNC = "#tnc"
         private const val KEY_PRIVACY = "#privacy"
+        private val DEFAULT_TNC_PAGE = "${TokopediaUrl.getInstance().WEB}terms?lang=id"
+        private val DEFAULT_PRIVACY_PAGE = "${TokopediaUrl.getInstance().WEB}privacy?lang=id"
     }
 }
