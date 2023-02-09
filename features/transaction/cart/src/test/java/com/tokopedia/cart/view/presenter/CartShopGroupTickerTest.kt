@@ -16,6 +16,7 @@ import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Test
 import java.io.IOException
 
@@ -29,7 +30,9 @@ class CartShopGroupTickerTest : BaseCartTest() {
             cartId = "111",
             isSelected = true,
             isBundlingItem = false,
-            bundleIds = emptyList()
+            bundleIds = emptyList(),
+            quantity = 1,
+            productWeight = 1
         )
 
         fun unselectedProductWithoutBundle() = CartItemHolderData(
@@ -78,6 +81,26 @@ class CartShopGroupTickerTest : BaseCartTest() {
             isSelected = false,
             isBundlingItem = true,
             bundleIds = listOf("123", "234"),
+            quantity = 1,
+            productWeight = 1
+        )
+
+        fun selectedBundleProductWithoutBundleIds() = CartItemHolderData(
+            productId = "999",
+            cartId = "999",
+            isSelected = true,
+            isBundlingItem = true,
+            bundleIds = emptyList(),
+            quantity = 1,
+            productWeight = 1
+        )
+
+        fun unselectedBundleProductWithoutBundleIds() = CartItemHolderData(
+            productId = "998",
+            cartId = "998",
+            isSelected = false,
+            isBundlingItem = true,
+            bundleIds = emptyList(),
             quantity = 1,
             productWeight = 1
         )
@@ -576,8 +599,10 @@ class CartShopGroupTickerTest : BaseCartTest() {
                 unselectedProductWithoutBundle(),
                 unselectedProductWithBundle(),
                 unselectedBundleProduct(),
+                unselectedBundleProductWithoutBundleIds(),
                 selectedProductWithoutBundle(),
-                selectedProductWithBundle()
+                selectedProductWithBundle(),
+                selectedBundleProductWithoutBundleIds()
             )
         )
         val expectedCartShopHolderData = cartShopHolderData.copy()
@@ -614,8 +639,10 @@ class CartShopGroupTickerTest : BaseCartTest() {
                 unselectedProductWithoutBundle(),
                 unselectedProductWithBundle(),
                 unselectedBundleProduct(),
+                unselectedBundleProductWithoutBundleIds(),
                 selectedProductWithoutBundle(),
-                selectedProductWithBundle()
+                selectedProductWithBundle(),
+                selectedBundleProductWithoutBundleIds()
             )
         )
         val tickerText = "tambah produk bundling"
@@ -644,7 +671,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
                 state = CartShopGroupTickerState.SUCCESS_AFFORD,
                 tickerText = tickerText,
                 cartBundlingBottomSheetData = CartBundlingBottomSheetData(
-                    bundleIds = listOf("356", "467") // bundleIds for selectedProductWithBundle()
+                    bundleIds = listOf("356", "467")
                 )
             )
             view.updateCartShopGroupTicker(expectedCartShopHolderData)
@@ -667,6 +694,8 @@ class CartShopGroupTickerTest : BaseCartTest() {
                 unselectedProductWithoutBundle(),
                 unselectedProductWithBundle(),
                 unselectedBundleProduct(),
+                unselectedBundleProductWithoutBundleIds(),
+                selectedBundleProductWithoutBundleIds(),
                 selectedProductWithoutBundle(),
                 selectedProductWithBundle(),
                 selectedBundleProduct()
@@ -705,7 +734,8 @@ class CartShopGroupTickerTest : BaseCartTest() {
             productUiModelList = arrayListOf(
                 unselectedProductWithoutBundle(),
                 unselectedProductWithBundle(),
-                unselectedBundleProduct()
+                unselectedBundleProduct(),
+                unselectedBundleProductWithoutBundleIds()
             )
         )
         val expectedCartShopHolderData = cartShopHolderData.copy()
@@ -727,5 +757,23 @@ class CartShopGroupTickerTest : BaseCartTest() {
         coVerify(inverse = true) {
             cartShopGroupTickerAggregatorUseCase(any())
         }
+    }
+
+    @Test
+    fun `WHEN cart data product is empty THEN return false for bundle cross sell`() {
+        // Given
+        val cartShopHolderData = CartShopHolderData(
+            cartShopGroupTicker = CartShopGroupTickerData(
+                enableCartAggregator = true,
+                enableBoAffordability = true
+            ),
+            productUiModelList = arrayListOf()
+        )
+
+        // When
+        val enableBundleCrossSell = cartListPresenter.checkEnableBundleCrossSell(cartShopHolderData)
+
+        // Then
+        assertFalse(enableBundleCrossSell)
     }
 }
