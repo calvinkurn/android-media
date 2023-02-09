@@ -13,8 +13,8 @@ import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNo
 import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
 import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselHeaderUiModel
 
 object ProductRecommendationMapper {
     private fun mapRecommendationItemToProductCard(
@@ -68,7 +68,7 @@ object ProductRecommendationMapper {
             headerName = recommendationWidget.title,
             appLink = recommendationWidget.seeMoreAppLink
         )
-        val headerModel = ProductCardCompactCarouselHeaderUiModel(
+        val headerModel = TokoNowDynamicHeaderUiModel(
             title = recommendationWidget.title,
             subTitle = recommendationWidget.subtitle,
             ctaTextLink = recommendationWidget.seeMoreAppLink

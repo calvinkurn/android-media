@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselDynamicHeaderView
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState.LOADED
@@ -17,7 +16,7 @@ import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimode
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
 import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView.TokoNowProductCardCarouselListener
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselHeaderUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductRecommendationViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -90,7 +89,7 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
     fun bind(
         items: List<Visitable<*>> = listOf(),
         seeMoreModel: ProductCardCompactCarouselSeeMoreUiModel? = null,
-        header: ProductCardCompactCarouselHeaderUiModel? = null,
+        header: TokoNowDynamicHeaderUiModel? = null,
         state: TokoNowProductRecommendationState = LOADED
     ) {
         binding.productCardShimmering.root.showWithCondition(state == LOADING)
@@ -112,7 +111,7 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
      */
     fun setListener(
         productCardCarouselListener: TokoNowProductCardCarouselListener? = null,
-        headerCarouselListener: ProductCardCompactCarouselDynamicHeaderView.TokoNowDynamicHeaderListener? = null
+        headerCarouselListener: TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener? = null
     ) {
         binding.productCardCarousel.setListener(
             productCardCarouselListener = productCardCarouselListener,

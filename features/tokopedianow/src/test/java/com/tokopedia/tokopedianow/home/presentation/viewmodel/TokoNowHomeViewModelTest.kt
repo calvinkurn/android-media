@@ -42,6 +42,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemSeeAllUiModel
 import com.tokopedia.tokopedianow.data.createCategoryGridDataModel
 import com.tokopedia.tokopedianow.data.createCategoryGridListFirstFetch
@@ -795,7 +796,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
                         headerName = "Product Recommendation"
                     ),
-                    headerModel = com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselHeaderUiModel(
+                    headerModel = TokoNowDynamicHeaderUiModel(
                         title = "Product Recommendation"
                     )
                 ),
@@ -1415,7 +1416,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
                 headerName = "Lagi Diskon"
             ),
-            headerModel = com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselHeaderUiModel(
+            headerModel = TokoNowDynamicHeaderUiModel(
                 title = "Lagi Diskon"
             )
         )
@@ -1569,7 +1570,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
                 headerName = "Lagi Diskon"
             ),
-            headerModel = com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselHeaderUiModel(
+            headerModel = TokoNowDynamicHeaderUiModel(
                 title = "Lagi Diskon"
             )
         )
@@ -1669,7 +1670,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
                 headerName="Lagi Diskon"
             ),
-            headerModel = com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselHeaderUiModel(
+            headerModel = TokoNowDynamicHeaderUiModel(
                 title = "Lagi Diskon"
             )
         )
@@ -1821,7 +1822,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
                 headerName = "Lagi Diskon"
             ),
-            headerModel = com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselHeaderUiModel(
+            headerModel = TokoNowDynamicHeaderUiModel(
                 title = "Lagi Diskon"
             )
         )

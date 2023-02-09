@@ -2,10 +2,9 @@ package com.tokopedia.tokopedianow.common.model
 
 import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselHeaderUiModel
 
 data class TokoNowProductRecommendationViewUiModel(
-    val headerModel: ProductCardCompactCarouselHeaderUiModel,
+    val headerModel: TokoNowDynamicHeaderUiModel,
     val seeMoreModel: ProductCardCompactCarouselSeeMoreUiModel,
     val productModels: List<ProductCardCompactCarouselItemUiModel>
 )

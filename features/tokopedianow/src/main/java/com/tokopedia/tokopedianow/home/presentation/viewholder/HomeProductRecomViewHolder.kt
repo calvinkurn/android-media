@@ -9,6 +9,7 @@ import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimode
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView
+import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductRecommendationBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -20,7 +21,7 @@ class HomeProductRecomViewHolder(
     private val rtrAnalytics: RealTimeRecommendationAnalytics? = null
 ) : AbstractViewHolder<HomeProductRecomUiModel>(itemView),
     ProductCardCompactCarouselView.TokoNowProductCardCarouselListener,
-    com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselDynamicHeaderView.TokoNowDynamicHeaderListener {
+    TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
 
     companion object {
         @LayoutRes

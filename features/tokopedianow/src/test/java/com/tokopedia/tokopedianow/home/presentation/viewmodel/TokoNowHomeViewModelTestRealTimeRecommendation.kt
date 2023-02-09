@@ -11,6 +11,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationSt
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.home.domain.model.Grid
 import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
@@ -22,7 +23,6 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiM
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselHeaderUiModel
 import org.junit.Test
 
 class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestFixture() {
@@ -136,7 +136,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             appLink = "tokopedia://now"
         )
 
-        val headerUiModel = ProductCardCompactCarouselHeaderUiModel(
+        val headerUiModel = TokoNowDynamicHeaderUiModel(
             title = "Lagi Diskon",
             subTitle = "",
             ctaText = "",
@@ -310,7 +310,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             appLink = ""
         )
 
-        val headerUiModel = ProductCardCompactCarouselHeaderUiModel(
+        val headerUiModel = TokoNowDynamicHeaderUiModel(
             title = "Lagi Diskon",
             subTitle = "",
             ctaText = "",
@@ -467,7 +467,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             appLink = "tokopedia://now"
         )
 
-        val headerUiModel = ProductCardCompactCarouselHeaderUiModel(
+        val headerUiModel = TokoNowDynamicHeaderUiModel(
             title = "Lagi Diskon",
             subTitle = "",
             ctaText = "",
@@ -599,7 +599,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             appLink = "tokopedia://now"
         )
 
-        val headerUiModel = ProductCardCompactCarouselHeaderUiModel(
+        val headerUiModel = TokoNowDynamicHeaderUiModel(
             title = "Lagi Diskon",
             subTitle = "",
             ctaText = "",
@@ -772,7 +772,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             appLink = "tokopedia://now"
         )
 
-        val headerUiModel = ProductCardCompactCarouselHeaderUiModel(
+        val headerUiModel = TokoNowDynamicHeaderUiModel(
             title = "Lagi Diskon",
             subTitle = "",
             ctaText = "",

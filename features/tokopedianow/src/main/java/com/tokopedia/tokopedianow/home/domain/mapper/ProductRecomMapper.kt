@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.home.domain.mapper
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelShop
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselHeaderUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
@@ -11,6 +10,7 @@ import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimode
 import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
 import com.tokopedia.productcard_compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel.LabelGroup
 import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.util.QueryParamUtil.getBooleanValue
 import com.tokopedia.tokopedianow.common.util.QueryParamUtil.getStringValue
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
@@ -103,7 +103,7 @@ object ProductRecomMapper {
                 headerName = channelModel.channelHeader.name,
                 appLink = channelModel.channelHeader.applink
             ),
-            headerModel = ProductCardCompactCarouselHeaderUiModel(
+            headerModel = TokoNowDynamicHeaderUiModel(
                 title = channelModel.channelHeader.name,
                 subTitle = channelModel.channelHeader.subtitle,
                 ctaText = "",

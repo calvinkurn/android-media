@@ -4,13 +4,14 @@ import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimode
 import com.tokopedia.productcard_compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView.TokoNowProductRecommendationListener
 import com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView
+import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 
 class TokoNowProductRecommendationCallback(
     private val viewModel: TokoNowProductRecommendationViewModel,
     private val listener: TokoNowProductRecommendationListener?
 ): ProductCardCompactCarouselView.TokoNowProductCardCarouselListener,
-    com.tokopedia.productcard_compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselDynamicHeaderView.TokoNowDynamicHeaderListener {
+    TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
 
     override fun onProductCardClicked(
         position: Int,
