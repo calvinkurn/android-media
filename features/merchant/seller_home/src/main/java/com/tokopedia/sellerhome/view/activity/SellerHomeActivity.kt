@@ -94,7 +94,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
         private const val NOTIFICATION_USER_SETTING_KEY = "isSellerSettingSent"
         private const val WEAR_POPUP_KEY = "isWearPopupShown"
-        private const val TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.spotify.music"
+        private const val TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.tokopedia.sellerapp"
     }
 
     @Inject
@@ -738,6 +738,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                 dialog.apply{
                     setTitle(resources.getString(R.string.wearos_install_popup_title))
+                    setDescription()
                     setPrimaryCTAText(resources.getString(R.string.wearos_install_popup_install))
                     setSecondaryCTAText(resources.getString(R.string.wearos_install_popup_later))
                     setPrimaryCTAClickListener {
