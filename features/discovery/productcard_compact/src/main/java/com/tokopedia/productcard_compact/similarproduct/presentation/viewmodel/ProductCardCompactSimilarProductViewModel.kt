@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -42,6 +41,16 @@ class ProductCardCompactSimilarProductViewModel @Inject constructor(
     userSession,
     dispatchers
 ) {
+    private companion object {
+        const val USER_CITY_ID = "user_cityId"
+        const val USER_ADDRESS_ID = "user_addressId"
+        const val USER_DISTRICT_ID = "user_districtId"
+        const val USER_LAT = "user_lat"
+        const val USER_LONG = "user_long"
+        const val USER_POST_CODE = "user_postCode"
+        const val USER_WAREHOUSE_IDs = "warehouse_ids"
+    }
+
     private val _visitableItems = MutableLiveData<List<Visitable<*>>>()
     private val _similarProductList = MutableLiveData<List<RecommendationItem?>>()
     private val layoutItemList = mutableListOf<Visitable<*>>()
@@ -78,19 +87,19 @@ class ProductCardCompactSimilarProductViewModel @Inject constructor(
         warehouseId = chooseAddressData.warehouse_id
 
         if (chooseAddressData.city_id.isNotEmpty())
-            tokonowQueryParam[SearchApiConst.USER_CITY_ID] = chooseAddressData.city_id
+            tokonowQueryParam[USER_CITY_ID] = chooseAddressData.city_id
         if (chooseAddressData.address_id.isNotEmpty())
-            tokonowQueryParam[SearchApiConst.USER_ADDRESS_ID] = chooseAddressData.address_id
+            tokonowQueryParam[USER_ADDRESS_ID] = chooseAddressData.address_id
         if (chooseAddressData.district_id.isNotEmpty())
-            tokonowQueryParam[SearchApiConst.USER_DISTRICT_ID] = chooseAddressData.district_id
+            tokonowQueryParam[USER_DISTRICT_ID] = chooseAddressData.district_id
         if (chooseAddressData.lat.isNotEmpty())
-            tokonowQueryParam[SearchApiConst.USER_LAT] = chooseAddressData.lat
+            tokonowQueryParam[USER_LAT] = chooseAddressData.lat
         if (chooseAddressData.long.isNotEmpty())
-            tokonowQueryParam[SearchApiConst.USER_LONG] = chooseAddressData.long
+            tokonowQueryParam[USER_LONG] = chooseAddressData.long
         if (chooseAddressData.postal_code.isNotEmpty())
-            tokonowQueryParam[SearchApiConst.USER_POST_CODE] = chooseAddressData.postal_code
+            tokonowQueryParam[USER_POST_CODE] = chooseAddressData.postal_code
         if (chooseAddressData.warehouse_id.isNotEmpty())
-            tokonowQueryParam[SearchApiConst.USER_WAREHOUSE_IDs] = chooseAddressData.warehouse_id
+            tokonowQueryParam[USER_WAREHOUSE_IDs] = chooseAddressData.warehouse_id
 
         return tokonowQueryParam
     }
