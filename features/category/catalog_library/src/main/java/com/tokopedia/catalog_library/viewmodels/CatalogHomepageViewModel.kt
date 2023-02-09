@@ -59,7 +59,7 @@ class CatalogHomepageViewModel @Inject constructor(
             CatalogContainerDataModel(
                 CatalogLibraryConstant.CATALOG_CONTAINER_SPECIAL,
                 CatalogLibraryConstant.CATALOG_CONTAINER_SPECIAL,
-                "Kategori spesial buatmi",
+                CatalogLibraryConstant.CATALOG_HOME_HEADING_KATEGORI_SPECIAL,
                 getSpecialVisitableList(data.catalogCategorySpecial.catalogSpecialDataList),
                 RecyclerView.HORIZONTAL,
                 CatalogLibraryConstant.APP_LINK_KATEGORI,
