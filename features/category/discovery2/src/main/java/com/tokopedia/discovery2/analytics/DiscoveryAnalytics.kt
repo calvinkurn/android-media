@@ -1030,6 +1030,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             map[PAGE_DESTINATION] = sourceIdentifier
             map[PAGE_PATH] = removedDashPageIdentifier
             map[KEY_E_COMMERCE] = eCommerce
+            map[USER_ID] = userSession.userId
             trackingQueue.putEETracking(map as HashMap<String, Any>)
         }
     }
