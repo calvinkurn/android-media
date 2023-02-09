@@ -51,8 +51,9 @@ object RatesMapper {
         return productServiceData
     }
 
-    fun mapToVisitable(scheduledDeliveryRatesModel: ScheduledDeliveryRatesModel): ProductShippingVisitable {
-        val services = scheduledDeliveryRatesModel.deliveryServices.filter { !it.isHidden }.map { service ->
+    fun mapToVisitable(scheduledDeliveryRatesModel: ScheduledDeliveryRatesModel): List<ProductShippingVisitable> {
+        val services =
+            scheduledDeliveryRatesModel.deliveryServices.filter { !it.isHidden }.map { service ->
                 val products = service.deliveryProducts.filter { !it.isHidden }.map { product ->
                     Product(
                         scheduledTime = product.title,
@@ -74,7 +75,8 @@ object RatesMapper {
                     isAvailable = service.isAvailable
                 )
             }
-        return ProductShippingSellyDataModel(services = services)
+        return if (services.isEmpty()) emptyList()
+        else listOf(ProductShippingSellyDataModel(services = services))
     }
 
     private fun mapToServicesData(rates: RatesModel): MutableList<ProductShippingVisitable> {

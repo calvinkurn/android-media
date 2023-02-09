@@ -125,10 +125,10 @@ class ProductShippingSellyViewHolder(
         isExpandedProperty.set(!isExpanded)
 
         if (isExpanded) {
-            pdpSellyExpandableButton.text = "Jadwal Lainnya"
+            pdpSellyExpandableButton.text = getString(R.string.pdp_selly_button_expand)
             pdpSellyExpandableIcon.animate().rotation(0f).start()
         } else {
-            pdpSellyExpandableButton.text = "Tampilkan lebih sedikit"
+            pdpSellyExpandableButton.text = getString(R.string.pdp_selly_button_collapse)
             pdpSellyExpandableIcon.animate().rotation(180f).start()
         }
     }
