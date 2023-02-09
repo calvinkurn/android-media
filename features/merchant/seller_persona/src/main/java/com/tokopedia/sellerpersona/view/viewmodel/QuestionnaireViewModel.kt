@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.sellerpersona.data.remote.model.QuestionnaireAnswerParam
 import com.tokopedia.sellerpersona.data.remote.model.SetUserPersonaDataModel
 import com.tokopedia.sellerpersona.data.remote.usecase.GetPersonaQuestionnaireUseCase
@@ -48,7 +49,7 @@ class QuestionnaireViewModel @Inject constructor(
     fun submitAnswer(answers: List<QuestionnaireAnswerParam>) {
         launchCatchError(block = {
             val shopId = userSession.get().shopId
-            val response = setPersonaUseCase.get().execute(shopId, answers)
+            val response = setPersonaUseCase.get().execute(shopId, String.EMPTY, answers)
             _setPersonaResult.postValue(Success(response))
         }, onError = {
             _setPersonaResult.postValue(Fail(it))

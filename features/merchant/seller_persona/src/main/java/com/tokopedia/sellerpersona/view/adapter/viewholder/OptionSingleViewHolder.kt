@@ -34,9 +34,11 @@ class OptionSingleViewHolder(
             setBackground(element.isSelected)
             root.setOnClickListener {
                 val isSelected = element.isSelected
-                element.isSelected = !isSelected
-                setBackground(!isSelected)
-                listener.onOptionItemSelectedListener(element)
+                if (!isSelected) {
+                    element.isSelected = true
+                    setBackground(true)
+                    listener.onOptionItemSelectedListener(element)
+                }
             }
         }
     }

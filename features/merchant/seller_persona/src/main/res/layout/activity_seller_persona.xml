@@ -37,9 +37,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerSellerPersona" />
 
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/globalErrorSellerPersona"
-        android:layout_width="match_parent"
+    <com.tokopedia.sellerpersona.view.customview.PersonaErrorView
+        android:id="@+id/errorViewPersona"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:visibility="gone"

@@ -62,7 +62,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fetchPersonaList()
+        fetchPersonaList(savedInstanceState)
         setupView()
         observePersonaData()
         observePersonaToggleStatus()
@@ -229,9 +229,11 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
         }
     }
 
-    private fun fetchPersonaList() {
-        showLoadingState()
-        viewModel.fetchPersonaData()
+    private fun fetchPersonaList(savedInstanceState: Bundle?) {
+        if (savedInstanceState == null) {
+            showLoadingState()
+            viewModel.fetchPersonaData()
+        }
     }
 
     private fun showLoadingState() {

@@ -14,11 +14,13 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.data.remote.model.QuestionnaireAnswerParam
 import com.tokopedia.sellerpersona.data.remote.model.SetUserPersonaDataModel
@@ -26,6 +28,7 @@ import com.tokopedia.sellerpersona.databinding.FragmentPersonaQuestionnaireBindi
 import com.tokopedia.sellerpersona.view.adapter.QuestionnairePagerAdapter
 import com.tokopedia.sellerpersona.view.model.QuestionnairePagerUiModel
 import com.tokopedia.sellerpersona.view.viewmodel.QuestionnaireViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import timber.log.Timber
@@ -175,16 +178,26 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
     private fun setupView() {
         binding?.run {
             btnSpNext.setOnClickListener {
-                val lastSlideIndex = pagerAdapter.itemCount.minus(Int.ONE)
-                val isLastSlide = vpSpQuestionnaire.currentItem == lastSlideIndex
-                if (isLastSlide) {
-                    submitAnswer(it)
-                } else {
-                    moveToNextQuestion()
-                }
+                val currentPosition = binding?.vpSpQuestionnaire?.currentItem.orZero()
+                val isAlreadySelecting = pagerAdapter.getPages()
+                    .getOrNull(currentPosition)?.options?.any { it.isSelected }
+                    .orFalse()
+                handleOnNextClicked(it, isAlreadySelecting)
             }
             btnSpPrev.setOnClickListener {
                 moveToPreviousQuestion()
+            }
+        }
+    }
+
+    private fun handleOnNextClicked(view: View, isAlreadySelecting: Boolean) {
+        if (isAlreadySelecting) {
+            val lastSlideIndex = pagerAdapter.itemCount.minus(Int.ONE)
+            val isLastSlide = binding?.vpSpQuestionnaire?.currentItem == lastSlideIndex
+            if (isLastSlide) {
+                submitAnswer(view)
+            } else {
+                moveToNextQuestion()
             }
         }
     }
@@ -196,7 +209,12 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
 
     private fun moveToNextQuestion() {
         val currentPosition = binding?.vpSpQuestionnaire?.currentItem.orZero()
-        binding?.vpSpQuestionnaire?.setCurrentItem(currentPosition.plus(Int.ONE), true)
+        val isAlreadySelecting = pagerAdapter.getPages()
+            .getOrNull(currentPosition)?.options?.any { it.isSelected }
+            .orFalse()
+        if (isAlreadySelecting) {
+            binding?.vpSpQuestionnaire?.setCurrentItem(currentPosition.plus(Int.ONE), true)
+        }
     }
 
     private fun submitAnswer(view: View) {
@@ -215,11 +233,25 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
                 btnSpNext.isLoading = false
                 when (it) {
                     is Success -> onSuccessPersonaResult(it.data)
-                    is Fail -> {
-
-                    }
+                    is Fail -> showErrorToaster()
                 }
             }
+        }
+    }
+
+    private fun showErrorToaster() {
+        view?.run {
+            val dp64 = context.resources.getDimensionPixelSize(
+                com.tokopedia.unifyprinciples.R.dimen.layout_lvl7
+            )
+            Toaster.toasterCustomBottomHeight = dp64
+            Toaster.build(
+                rootView,
+                context.getString(R.string.sp_toaster_error_message),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                context.getString(R.string.sp_oke)
+            ).show()
         }
     }
 
@@ -227,7 +259,7 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
         if (!data.isError) {
             findNavController().navigate(R.id.actionQuestionnaireToResult)
         } else {
-            //show error toaster
+            showErrorToaster()
         }
     }
 
@@ -240,15 +272,20 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
 
     private fun observeQuestionnaire() {
         viewLifecycleOwner.observe(viewModel.questionnaire) {
+            binding?.loaderSellerPersona?.gone()
             when (it) {
                 is Success -> showQuestionnaire(it.data)
-                is Fail -> showErrorState(it.throwable)
+                is Fail -> showErrorState()
             }
         }
     }
 
     private fun showQuestionnaire(data: List<QuestionnairePagerUiModel>) {
         binding?.run {
+            errorViewSpQuestionnaire.gone()
+            btnSpPrev.visible()
+            btnSpNext.visible()
+            vpSpQuestionnaire.visible()
             progressBarPersonaQuestionnaire.max = MAX_PROGRESS
             vpSpQuestionnaire.post {
                 pagerAdapter.setPages(data)
@@ -256,11 +293,19 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
         }
     }
 
-    private fun showErrorState(throwable: Throwable) {
-        throwable.printStackTrace()
+    private fun showErrorState() {
+        binding?.run {
+            errorViewSpQuestionnaire.visible()
+            btnSpPrev.gone()
+            btnSpNext.gone()
+            errorViewSpQuestionnaire.setOnActionClicked {
+                viewModel.fetchQuestionnaire()
+            }
+        }
     }
 
     private fun fetchQuestionnaire() {
+        binding?.loaderSellerPersona?.visible()
         viewModel.fetchQuestionnaire()
     }
 }
