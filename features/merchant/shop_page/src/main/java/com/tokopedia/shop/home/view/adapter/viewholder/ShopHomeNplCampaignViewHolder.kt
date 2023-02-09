@@ -16,6 +16,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.shop.R
@@ -214,13 +215,6 @@ class ShopHomeNplCampaignViewHolder(
         }?.imageUrl.orEmpty()
         bannerBackground?.apply {
             try {
-                (layoutParams as? ConstraintLayout.LayoutParams)?.apply {
-                    dimensionRatio = if(model.data?.firstOrNull()?.productList?.isEmpty() == true)
-                        BANNER_IMAGE_RATION_EMPTY_PRODUCT
-                    else{
-                        null
-                    }
-                }
                 if (context.isValidGlideContext()) {
                     if (DeviceScreenInfo.isTablet(context)) {
                         setImageUrlTileMode(bannerUrl)
