@@ -2,6 +2,8 @@ package com.tokopedia.content.common.comment.adapter
 
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
+import com.tokopedia.content.common.databinding.ItemCommentEmptyBinding
+import com.tokopedia.content.common.databinding.ItemCommentShimmeringBinding
 import com.tokopedia.content.common.databinding.ItemContentCommentBinding
 import com.tokopedia.media.loader.loadImage
 
@@ -36,4 +38,12 @@ class CommentViewHolder {
             fun onLongClicked(item: CommentUiModel)
         }
     }
+
+    internal class Empty(
+        binding: ItemCommentEmptyBinding,
+    ) : BaseViewHolder(binding.root) {}
+
+    internal class Shimmering(
+        binding: ItemCommentShimmeringBinding,
+    ) : BaseViewHolder(binding.root) {}
 }

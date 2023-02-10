@@ -16,5 +16,6 @@ sealed interface CommentUiModel {
         val isExpanded: Boolean = false,
     ) : CommentUiModel
 
+    object Empty : CommentUiModel
     object Shimmer : CommentUiModel
 }

@@ -141,4 +141,6 @@
     <!-- Comment   -->
     <string name="content_comment_header">Komentar</string>
     <string name="content_comment_reply">Balas</string>
+    <string name="content_comment_empty_title">Belum ada komentar</string>
+    <string name="content_comment_empty_desc">Mulai percakapan dengan berikan komentar</string>
 </resources>

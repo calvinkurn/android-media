@@ -11,7 +11,9 @@ import javax.inject.Inject
 class CommentUiModelMapper @Inject constructor() {
     fun mapComments(comments: Comments) = CommentWidgetUiModel(
         cursor = comments.parent.lastCursor,
-        list = comments.parent.comments.map(::mapComment)
+        list = comments.parent.comments.map(::mapComment).ifEmpty {
+            listOf(CommentUiModel.Empty)
+        }
     )
 
     fun mapComment(comment: Comments.CommentData): CommentUiModel {
