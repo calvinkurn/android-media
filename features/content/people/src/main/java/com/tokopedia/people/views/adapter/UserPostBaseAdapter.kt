@@ -50,7 +50,7 @@ open class UserPostBaseAdapter(
                     view: View,
                     item: PlayWidgetChannelUiModel
                 ) {
-                    /** TODO: handle this */
+                    playWidgetCallback.onDeletePlayChannel(item)
                 }
             })
         }
@@ -187,5 +187,6 @@ open class UserPostBaseAdapter(
         fun updatePlayWidgetLatestData(channelId: String, totalView: String, isReminderSet: Boolean)
         fun onPlayWidgetLargeClick(appLink: String, channelID: String, isLive: Boolean, imageUrl: String, pos: Int)
         fun onImpressPlayWidgetData(item: PlayPostContentItem, isLive: Boolean, channelId: String, pos: Int)
+        fun onDeletePlayChannel(channel: PlayWidgetChannelUiModel)
     }
 }

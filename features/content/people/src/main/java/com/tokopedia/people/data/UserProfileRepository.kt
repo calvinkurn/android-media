@@ -11,6 +11,7 @@ import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 
 /**
  * Created By : Jonathan Darwin on June 28, 2022
@@ -67,4 +68,9 @@ interface UserProfileRepository {
     suspend fun blockUser(userId: String)
 
     suspend fun unblockUser(userId: String)
+
+    suspend fun deletePlayChannel(
+        channel: PlayWidgetChannelUiModel,
+        userId: String,
+    ): String
 }

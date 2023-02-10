@@ -25,6 +25,9 @@ import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play_common.domain.UpdateChannelUseCase
+import com.tokopedia.play_common.types.PlayChannelStatusType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -51,6 +54,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val getUserProfileTabUseCase: GetUserProfileTabUseCase,
     private val getUserProfileFeedPostsUseCase: GetUserProfileFeedPostsUseCase,
     private val postBlockUserUseCase: PostBlockUserUseCase,
+    private val updateChannelUseCase: UpdateChannelUseCase,
 ) : UserProfileRepository {
 
     override suspend fun getProfile(username: String): ProfileUiModel {
@@ -187,6 +191,16 @@ class UserProfileRepositoryImpl @Inject constructor(
     override suspend fun unblockUser(userId: String) = withContext(dispatcher.io) {
         val response = postBlockUserUseCase.execute(userId, false)
         if (!response.data.success) error("Failed to unblock user $userId")
+    }
+
+    override suspend fun deletePlayChannel(
+        channel: PlayWidgetChannelUiModel,
+        userId: String
+    ) = withContext(dispatcher.io) {
+        updateChannelUseCase.setQueryParams(
+            UpdateChannelUseCase.createUpdateStatusRequest(channel.channelId, userId, PlayChannelStatusType.Deleted)
+        )
+        updateChannelUseCase.executeOnBackground().id
     }
 
     companion object {

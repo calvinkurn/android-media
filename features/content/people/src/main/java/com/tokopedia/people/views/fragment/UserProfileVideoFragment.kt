@@ -44,6 +44,7 @@ import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.REQUEST
 import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -157,6 +158,16 @@ class UserProfileVideoFragment @Inject constructor(
                                 fetchPlayVideo(viewModel.profileUserID)
                             }
                         }
+                    }
+                    is UserProfileUiEvent.ErrorDeleteChannel -> {
+                        val message = when (event.throwable) {
+                            is UnknownHostException, is SocketTimeoutException -> {
+                                requireContext().getString(R.string.up_error_local_error)
+                            }
+                            else -> event.throwable.message ?: getDefaultErrorMessage()
+                        }
+
+                        view?.showErrorToast(message)
                     }
                 }
             }
@@ -279,6 +290,10 @@ class UserProfileVideoFragment @Inject constructor(
                 pos,
             )
         }
+    }
+
+    override fun onDeletePlayChannel(channel: PlayWidgetChannelUiModel) {
+        viewModel.submitAction(UserProfileAction.DeletePlayChannel(channel))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

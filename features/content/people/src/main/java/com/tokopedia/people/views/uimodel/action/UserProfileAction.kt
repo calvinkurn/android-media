@@ -1,5 +1,7 @@
 package com.tokopedia.people.views.uimodel.action
 
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+
 /**
  * Created By : Jonathan Darwin on June 28, 2022
  */
@@ -29,4 +31,6 @@ sealed interface UserProfileAction {
 
     object BlockUser : UserProfileAction
     object UnblockUser : UserProfileAction
+
+    data class DeletePlayChannel(val channel: PlayWidgetChannelUiModel) : UserProfileAction
 }

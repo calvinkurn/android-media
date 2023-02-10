@@ -3,6 +3,7 @@ package com.tokopedia.people.viewmodels
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.content.common.producttag.util.extension.combine
+import com.tokopedia.content.common.producttag.util.extension.setValue
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Follow
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.UnFollow
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
@@ -20,6 +21,7 @@ import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.people.views.uimodel.saved.SavedReminderData
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -150,6 +152,7 @@ class UserProfileViewModel @AssistedInject constructor(
             )
             UserProfileAction.BlockUser -> handleBlockUser()
             UserProfileAction.UnblockUser -> handleUnblockUser()
+            is UserProfileAction.DeletePlayChannel -> handleDeletePlayChannel(action.channel)
         }
     }
 
@@ -404,6 +407,28 @@ class UserProfileViewModel @AssistedInject constructor(
     private fun handleRemoveShopRecomItem(itemID: Long) {
         _shopRecom.update { data ->
             data.copy(items = data.items.filterNot { it.id == itemID })
+        }
+    }
+
+    private fun handleDeletePlayChannel(channel: PlayWidgetChannelUiModel) {
+        launchCatchError(block = {
+            val channelId = repo.deletePlayChannel(channel, _profileInfo.value.userID)
+
+            _videoPostContent.update {
+                it.copy(
+                    playGetContentSlot = it.playGetContentSlot.copy(
+                        data = it.playGetContentSlot.data.map { playPostContent ->
+                            playPostContent.copy(
+                                items = playPostContent.items.filter { item ->
+                                    item.id != channelId
+                                }
+                            )
+                        }
+                    )
+                )
+            }
+        }) {
+            _uiEvent.emit(UserProfileUiEvent.ErrorDeleteChannel(it))
         }
     }
 
