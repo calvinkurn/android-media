@@ -2563,4 +2563,11 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         tokochatRollenceEnabler("")
         assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
     }
+
+    @Test
+    fun `check topchat settings bubble activation applink`() {
+        val deepLink = ApplinkConst.TOPCHAT_BUBBLE_ACTIVATION
+        val expectedDeepLink = ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION
+        assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
+    }
 }
