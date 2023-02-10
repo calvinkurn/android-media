@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tkpd.remoteresourcerequest.view.ImageDensityType
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.Constant.EmptyStateTexts.EMPTY_IMAGE
 import com.tokopedia.discovery2.Constant.EmptyStateTexts.FILTER_EMPTY_IMAGE
 import com.tokopedia.discovery2.R
@@ -45,7 +46,18 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
                 verticalView.hide()
                 horizontalTitle.text = it.title
                 horizontalDecription.text = it.description
-                if (it.isFilterState) {
+                if(it.isRedirectionState){
+                    horizontalButton.show()
+                    horizontalButton.text = it.buttonText
+                    horizontalButton.setOnClickListener { _ ->
+                        if(!it.buttonApplink.isNullOrEmpty()) {
+                            RouteManager.route(itemView.context, it.buttonApplink)
+                        }
+                    }
+                    horizontalImageView.loadRemoteImageDrawable("rac",it.imageURL ?: FILTER_EMPTY_IMAGE)
+                    return@let
+                }
+                else if (it.isFilterState) {
                     horizontalButton.show()
                     horizontalButton.setOnClickListener {
                         emptyStateViewModel.handleEmptyStateReset()
@@ -66,7 +78,18 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
         verticalView.show()
         verticalTitle.text = emptyStateModel.title
         verticalDecription.text = emptyStateModel.description
-        if (emptyStateModel.isFilterState) {
+        if(emptyStateModel.isRedirectionState){
+            verticalButton.show()
+            verticalButton.text = emptyStateModel.buttonText
+            verticalImageView.loadRemoteImageDrawable("rac",  emptyStateModel.imageURL ?: FILTER_EMPTY_IMAGE)
+            verticalButton.setOnClickListener { _ ->
+                if(!emptyStateModel.buttonApplink.isNullOrEmpty()) {
+                    RouteManager.route(itemView.context, emptyStateModel.buttonApplink)
+                }
+            }
+            return
+        }
+        else if (emptyStateModel.isFilterState) {
             verticalButton.show()
             verticalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE,  ImageDensityType.SUPPORT_SINGLE_DPI)
             verticalButton.setOnClickListener {

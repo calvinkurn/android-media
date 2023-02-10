@@ -4,6 +4,7 @@ import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.data.ComponentAdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataResponse
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT
@@ -15,14 +16,14 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), ProductCardsRepository {
-    override suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): Pair<ArrayList<ComponentsItem>,String?>{
+    override suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): Pair<ArrayList<ComponentsItem>, ComponentAdditionalInfo?>{
         val response = (getGQLData(GQL_COMPONENT,
                 DataResponse::class.java, Utils.getComponentsGQLParams(componentId, pageEndPoint, Utils.getQueryString(queryParamterMap)), GQL_COMPONENT_QUERY_NAME) as DataResponse)
 
         val componentData = response.data.component?.data
         val componentProperties = response.data.component?.properties
         val creativeName = response.data.component?.creativeName ?: ""
-        val nextPage = response.data.component?.compAdditionalInfo?.nextPage
+        val additionalInfo = response.data.component?.compAdditionalInfo
         val componentItem  = getComponent(componentId, pageEndPoint)
         val componentsListSize = componentItem?.getComponentsItem()?.size ?: 0
         val list = withContext(Dispatchers.Default) {
@@ -51,6 +52,6 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
 
             }
         }
-        return Pair(list,nextPage)
+        return Pair(list,additionalInfo)
     }
 }
