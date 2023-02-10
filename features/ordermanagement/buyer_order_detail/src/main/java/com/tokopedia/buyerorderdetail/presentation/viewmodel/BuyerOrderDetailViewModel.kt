@@ -20,6 +20,7 @@ import com.tokopedia.buyerorderdetail.domain.usecases.GetBuyerOrderDetailDataUse
 import com.tokopedia.buyerorderdetail.presentation.mapper.ActionButtonsUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.AddToCartParamsMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.BuyerOrderDetailUiStateMapper
+import com.tokopedia.buyerorderdetail.presentation.mapper.EpharmacyInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderInsuranceUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderResolutionTicketStatusUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderStatusUiStateMapper
@@ -28,11 +29,13 @@ import com.tokopedia.buyerorderdetail.presentation.mapper.PaymentInfoUiStateMapp
 import com.tokopedia.buyerorderdetail.presentation.mapper.ProductListUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ShipmentInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.EpharmacyInfoUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
@@ -54,6 +57,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
@@ -125,6 +129,13 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private val orderInsuranceUiState = buyerOrderDetailDataRequestState.mapLatest(
         ::mapOrderInsuranceUiState
     ).toStateFlow(OrderInsuranceUiState.Loading)
+    private val epharmacyInfoUiState = buyerOrderDetailDataRequestState.mapLatest(
+        ::mapEpharmacyInfoUiState
+    ).catch { t ->
+        //There is a case that additional_info returning null from backend, so make this default yet
+        //it will be hide in the section
+        emit(EpharmacyInfoUiState.HasData.Showing(EpharmacyInfoUiModel()))
+    }.toStateFlow(EpharmacyInfoUiState.Loading)
 
     val buyerOrderDetailUiState: StateFlow<BuyerOrderDetailUiState> = combine(
         actionButtonsUiState,
@@ -135,6 +146,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
         pGRecommendationWidgetUiState,
         orderResolutionTicketStatusUiState,
         orderInsuranceUiState,
+        epharmacyInfoUiState,
         ::mapBuyerOrderDetailUiState
     ).toStateFlow(BuyerOrderDetailUiState.FullscreenLoading)
 
@@ -359,6 +371,15 @@ class BuyerOrderDetailViewModel @Inject constructor(
         )
     }
 
+    private fun mapEpharmacyInfoUiState(
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
+    ): EpharmacyInfoUiState {
+        return EpharmacyInfoUiStateMapper.map(
+            getBuyerOrderDetailDataRequestState,
+            epharmacyInfoUiState.value
+        )
+    }
+
     private fun mapProductListUiState(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
@@ -418,7 +439,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
         shipmentInfoUiState: ShipmentInfoUiState,
         pgRecommendationWidgetUiState: PGRecommendationWidgetUiState,
         orderResolutionTicketStatusUiState: OrderResolutionTicketStatusUiState,
-        orderInsuranceUiState: OrderInsuranceUiState
+        orderInsuranceUiState: OrderInsuranceUiState,
+        epharmacyInfoUiState: EpharmacyInfoUiState
     ): BuyerOrderDetailUiState {
         return BuyerOrderDetailUiStateMapper.map(
             actionButtonsUiState,
@@ -428,7 +450,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
             shipmentInfoUiState,
             pgRecommendationWidgetUiState,
             orderResolutionTicketStatusUiState,
-            orderInsuranceUiState
+            orderInsuranceUiState,
+            epharmacyInfoUiState
         )
     }
 
