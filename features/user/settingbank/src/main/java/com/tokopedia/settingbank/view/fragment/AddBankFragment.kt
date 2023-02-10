@@ -345,9 +345,7 @@ class AddBankFragment : BaseDaggerFragment() {
             groupAccountNameAuto.gone()
             textAreaBankAccountHolderName.visible()
             textAreaBankAccountHolderName.requestFocus()
-            textAreaBankAccountHolderName.editText.setText(
-                if (data.successCode == SUCCESS_CODE_428) "" else data.accountName
-            )
+            textAreaBankAccountHolderName.editText.setText("")
             showManualAccountNameError(
                 data.message,
                 if (data.successCode == SUCCESS_CODE_428) false else null,
