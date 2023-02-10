@@ -100,9 +100,11 @@ class ShopHomeFlashSaleViewHolder(
         val defaultTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         val defaultSubTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         val defaultCtaColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        val defaultInformationIconColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
         flashSaleCampaignNameView?.setTextColor(defaultTitleColor)
         timerDescriptionView?.setTextColor(defaultSubTitleColor)
         ctaSeeAllView?.setTextColor(defaultCtaColor)
+        tncInfoIconView?.setColorFilter(defaultInformationIconColor)
         timerView?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
         val flashSaleItem = element.data?.firstOrNull()
         setupFlashSaleBackgroundView(
@@ -118,6 +120,7 @@ class ShopHomeFlashSaleViewHolder(
         flashSaleCampaignNameView?.setTextColor(festivityTextColor)
         timerDescriptionView?.setTextColor(festivityTextColor)
         ctaSeeAllView?.setTextColor(festivityTextColor)
+        tncInfoIconView?.setColorFilter(festivityTextColor)
         timerView?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
         singleBackGroundView?.hide()
         doubleBackGroundView?.hide()

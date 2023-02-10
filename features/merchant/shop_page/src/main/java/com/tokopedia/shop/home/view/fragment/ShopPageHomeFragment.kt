@@ -6,6 +6,10 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Shader
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -24,6 +28,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -549,13 +556,32 @@ open class ShopPageHomeFragment :
         imageBackgroundPattern?.apply {
             if (homeTabBackgroundPatternImage.isNotEmpty()) {
                 show()
-                loadImage(homeTabBackgroundPatternImage){
-                    setPlaceHolder(-1)
-                    setErrorDrawable(-1)
-                }
+                loadBackgroundPatternImage()
             } else {
                 hide()
             }
+        }
+    }
+
+    private fun loadBackgroundPatternImage() {
+        context?.let {
+            Glide.with(this)
+                .asBitmap()
+                .load(homeTabBackgroundPatternImage)
+                .into(object : CustomTarget<Bitmap?>() {
+                    override fun onLoadCleared(placeholder: Drawable?) {}
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap?>?
+                    ) {
+                        val bitmapDrawable = BitmapDrawable(
+                            it.resources,
+                            resource
+                        )
+                        bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT)
+                        imageBackgroundPattern?.setImageDrawable(bitmapDrawable)
+                    }
+                })
         }
     }
 
@@ -3775,7 +3801,16 @@ open class ShopPageHomeFragment :
 
     fun setHomeTabBackgroundPatternImage(backgroundPatternImage: String) {
 //        this.homeTabBackgroundPatternImage = backgroundPatternImage
-        this.homeTabBackgroundPatternImage = "https://lh5.googleusercontent.com/asDRxKClmQFn3HdBLxkZ2Q6LW8bn8biZulsgv-AIRsoJe85gb7Xi90sLr4qkX_CsU3s=w2400"
+//        non tablet
+//        this.homeTabBackgroundPatternImage = "https://lh5.googleusercontent.com/asDRxKClmQFn3HdBLxkZ2Q6LW8bn8biZulsgv-AIRsoJe85gb7Xi90sLr4qkX_CsU3s=w2400"
+        //tablet
+//        this.homeTabBackgroundPatternImage = "https://lh6.googleusercontent.com/-r1OyDvBasFkOclJ08PK3ILNyqDrQWti7bt2P8riTOAlAmd-Wwp10yYsLgYMSJsgkyk=w2400"
+        //tablet new extended
+//        this.homeTabBackgroundPatternImage = "https://lh4.googleusercontent.com/ftRRHuKUj5kOm-bu3Ls9tRmAKLJ7XFyDf5F33DHvEcMCTQevg2udXn2mF7LoofUOJis=w2400"
+        //repeatable
+//        this.homeTabBackgroundPatternImage = "https://lh4.googleusercontent.com/g4JzjDSTAkkE2udW7WFbhymtAqP4GDnK3XVxpQJnxnViJsF2_PWt6pBAYioHNEaJHaQ=w2400"
+        //repeatable full non transparent
+        this.homeTabBackgroundPatternImage = "https://lh3.googleusercontent.com/G0o_oK3BinP9tqT03KINY3mFwlTAZLWFYYEdRo3DgSd9ebxl5cdniQnFRzeOR4knvPQ=w2400"
     }
 
     fun setHomeTabLottieUrl(lottieUrl: String){
