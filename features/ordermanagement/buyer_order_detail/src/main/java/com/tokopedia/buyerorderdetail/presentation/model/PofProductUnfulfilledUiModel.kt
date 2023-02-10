@@ -18,6 +18,6 @@ data class PofProductUnfulfilledUiModel(
     }
 
     companion object {
-        const val MINIMUM_PRODUCT_UNFULFILLED = 1L
+        const val MINIMUM_PRODUCT_UNFULFILLED = 0L
     }
 }
