@@ -2,9 +2,14 @@ package com.tokopedia.cart.data.model.response.cartshoptickeraggregator
 
 import com.google.gson.annotations.SerializedName
 
+data class CartShopGroupTickerAggregatorGqlResponse(
+    @SerializedName("cart_shop_group_ticker_aggregator")
+    val cartShopGroupTickerAggregator: CartShopGroupTickerAggregatorResponse = CartShopGroupTickerAggregatorResponse()
+)
+
 data class CartShopGroupTickerAggregatorResponse(
     @SerializedName("data")
-    val data: CartShopGroupTickerAggregatorData = CartShopGroupTickerAggregatorData(),
+    val data: CartShopGroupTickerAggregatorData = CartShopGroupTickerAggregatorData()
 )
 
 data class CartShopGroupTickerAggregatorData(
@@ -13,7 +18,7 @@ data class CartShopGroupTickerAggregatorData(
     @SerializedName("ticker")
     val ticker: CartShopGroupTickerAggregatorTicker = CartShopGroupTickerAggregatorTicker(),
     @SerializedName("bundle_bottomsheet")
-    val bundleBottomSheet: CartShopGroupTickerAggregatorBundleBottomSheet = CartShopGroupTickerAggregatorBundleBottomSheet(),
+    val bundleBottomSheet: CartShopGroupTickerAggregatorBundleBottomSheet = CartShopGroupTickerAggregatorBundleBottomSheet()
 )
 
 data class CartShopGroupTickerAggregatorTicker(
@@ -24,7 +29,7 @@ data class CartShopGroupTickerAggregatorTicker(
     @SerializedName("applink")
     val applink: String = "",
     @SerializedName("action")
-    val action: String = "",
+    val action: String = ""
 )
 
 data class CartShopGroupTickerAggregatorTickerIcon(
@@ -35,7 +40,7 @@ data class CartShopGroupTickerAggregatorTickerIcon(
     @SerializedName("right_icon")
     val rightIcon: String = "",
     @SerializedName("right_icon_dark")
-    val rightIconDark: String = "",
+    val rightIconDark: String = ""
 )
 
 data class CartShopGroupTickerAggregatorBundleBottomSheet(
@@ -44,5 +49,5 @@ data class CartShopGroupTickerAggregatorBundleBottomSheet(
     @SerializedName("description")
     val description: String = "",
     @SerializedName("bottom_ticker")
-    val bottomTicker: String = "",
+    val bottomTicker: String = ""
 )

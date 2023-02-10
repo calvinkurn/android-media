@@ -2035,31 +2035,32 @@ class CartListPresenter @Inject constructor(
                     isTokoNow = cartShopHolderData.isTokoNow
                 )
                 val response = cartShopGroupTickerAggregatorUseCase(cartAggregatorParam)
+                    .cartShopGroupTickerAggregator.data
                 cartShopHolderData.cartShopGroupTicker.cartIds =
                     shopProductList.joinToString(",") { it.cartId }
-                cartShopHolderData.cartShopGroupTicker.tickerText = response.data.ticker.text
-                cartShopHolderData.cartShopGroupTicker.leftIcon = response.data.ticker.icon.leftIcon
+                cartShopHolderData.cartShopGroupTicker.tickerText = response.ticker.text
+                cartShopHolderData.cartShopGroupTicker.leftIcon = response.ticker.icon.leftIcon
                 cartShopHolderData.cartShopGroupTicker.leftIconDark =
-                    response.data.ticker.icon.leftIconDark
+                    response.ticker.icon.leftIconDark
                 cartShopHolderData.cartShopGroupTicker.rightIcon =
-                    response.data.ticker.icon.rightIcon
+                    response.ticker.icon.rightIcon
                 cartShopHolderData.cartShopGroupTicker.rightIconDark =
-                    response.data.ticker.icon.rightIconDark
-                cartShopHolderData.cartShopGroupTicker.applink = response.data.ticker.applink
-                cartShopHolderData.cartShopGroupTicker.action = response.data.ticker.action
+                    response.ticker.icon.rightIconDark
+                cartShopHolderData.cartShopGroupTicker.applink = response.ticker.applink
+                cartShopHolderData.cartShopGroupTicker.action = response.ticker.action
                 cartShopHolderData.cartShopGroupTicker.cartBundlingBottomSheetData =
                     CartBundlingBottomSheetData(
-                        title = response.data.bundleBottomSheet.title,
-                        description = response.data.bundleBottomSheet.description,
-                        bottomTicker = response.data.bundleBottomSheet.bottomTicker,
+                        title = response.bundleBottomSheet.title,
+                        description = response.bundleBottomSheet.description,
+                        bottomTicker = response.bundleBottomSheet.bottomTicker,
                         bundleIds = cartShopHolderData.productUiModelList
                             .filter { it.isSelected }.flatMap { it.bundleIds }
                     )
                 cartShopHolderData.cartShopGroupTicker.hasSeenTicker = false
-                if (response.data.ticker.text.isBlank()) {
+                if (response.ticker.text.isBlank()) {
                     cartShopHolderData.cartShopGroupTicker.state =
                         CartShopGroupTickerState.EMPTY
-                } else if (subtotalPrice >= response.data.minTransaction) {
+                } else if (subtotalPrice >= response.minTransaction) {
                     cartShopHolderData.cartShopGroupTicker.state =
                         CartShopGroupTickerState.SUCCESS_AFFORD
                 } else {

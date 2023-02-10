@@ -3,7 +3,7 @@ package com.tokopedia.cart.domain.usecase
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cart.data.model.request.CartShopGroupTickerAggregatorParam
-import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorResponse
+import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorGqlResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -14,7 +14,7 @@ import javax.inject.Inject
 class CartShopGroupTickerAggregatorUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<CartShopGroupTickerAggregatorParam, CartShopGroupTickerAggregatorResponse>(
+) : CoroutineUseCase<CartShopGroupTickerAggregatorParam, CartShopGroupTickerAggregatorGqlResponse>(
     dispatchers.io
 ) {
 
@@ -22,8 +22,11 @@ class CartShopGroupTickerAggregatorUseCase @Inject constructor(
         return QUERY
     }
 
-    override suspend fun execute(params: CartShopGroupTickerAggregatorParam): CartShopGroupTickerAggregatorResponse {
-        return graphqlRepository.request(CartShopGroupTickerAggregatorQuery(), mapOf("params" to params.toMap()))
+    override suspend fun execute(params: CartShopGroupTickerAggregatorParam): CartShopGroupTickerAggregatorGqlResponse {
+        return graphqlRepository.request(
+            CartShopGroupTickerAggregatorQuery(),
+            mapOf("params" to params.toMap())
+        )
     }
 
     companion object {
