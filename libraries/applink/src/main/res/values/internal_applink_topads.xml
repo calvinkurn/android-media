@@ -30,6 +30,6 @@
     <string name="path_topads_headline_ads_detail" translatable="false">/headline-ad-detail</string>
     <string name="path_topads_on_boarding" translatable="false">/topads-onboarding</string>
     <string name="path_topads_click_tracker_link" translatable="false">/promo/v1/clicks/.*</string>
-
+    <string name="path_topads_mp_ads_creation">/mp-ad-creation</string>
 
 </resources>
