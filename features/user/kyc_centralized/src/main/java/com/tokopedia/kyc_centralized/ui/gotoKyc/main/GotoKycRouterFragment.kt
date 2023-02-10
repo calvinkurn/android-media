@@ -9,7 +9,7 @@ import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class RouterFragment : BaseDaggerFragment() {
+class GotoKycRouterFragment : BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<FragmentGotoKycLoaderBinding>()
 
@@ -29,6 +29,6 @@ class RouterFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        private val SCREEN_NAME = RouterFragment::class.java.simpleName
+        private val SCREEN_NAME = GotoKycRouterFragment::class.java.simpleName
     }
 }
