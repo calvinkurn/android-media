@@ -2,10 +2,6 @@ package com.tokopedia.user.session.datastore
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.tokopedia.user.session.datastore.DataStorePreference.Companion.SHARED_PREFERENCE_AB_TEST_PLATFORM
-import com.tokopedia.user.session.datastore.DataStorePreference.Companion.USER_SESSION_AB_TEST_KEY
-import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
-import okhttp3.internal.cache2.Relay.Companion.edit
 import javax.inject.Inject
 
 open class DataStorePreference @Inject constructor(private val context: Context) {

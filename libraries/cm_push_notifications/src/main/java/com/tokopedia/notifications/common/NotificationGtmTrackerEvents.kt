@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.notifications.common.CMConstant.GtmTrackerEvents
 import com.tokopedia.track.TrackApp
@@ -157,15 +158,17 @@ class NotificationSettingsGtmEvents constructor(
         } else {
             sharedPreference.getInt(FREQ_KEY_GENERAL_PROMPT, 0)
         }
+
+        val adsId = DeviceInfo.getAdsId(context)
         val eventLabel =
-            "$frequency - $userId - ${userSession.adsId} - ${IrisSession(context).getSessionId()}"
+            "$frequency - $userId - adsId - ${IrisSession(context).getSessionId()}"
         val map = TrackAppUtils.gtmData(
             event,
             eventCategory,
             eventAction,
             eventLabel
         )
-        map[GtmTrackerEvents.KEY_DEVICE_ID] = userSession.adsId
+        map[GtmTrackerEvents.KEY_DEVICE_ID] = adsId
         map[GtmTrackerEvents.KEY_TRACKER_ID] = trackerId
         map[GtmTrackerEvents.KEY_BUSINESS_UNIT] = GtmTrackerEvents.VALUE_BUSINESS_UNIT
         map[GtmTrackerEvents.KEY_CURRENT_SITE] = GtmTrackerEvents.VALUE_CURRENT_SITE
