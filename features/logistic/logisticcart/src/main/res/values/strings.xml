@@ -66,4 +66,7 @@
 
     <string name="checkout_whitelabel_otdg_url"><![CDATA[<a href="%1$s">%2$s</a>]]></string>
     <string name="checkout_whitelabel_desc_otdg_url"><![CDATA[%1$s & <a href="%2$s">%3$s</a>]]></string>
+
+    <string name="checkout_error_shipping_title">Pengiriman tidak tersedia</string>
+    <string name="checkout_error_shipping_description">Atur ulang pesananmu di keranjang, ya.</string>
 </resources>

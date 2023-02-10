@@ -131,10 +131,6 @@
     <string name="checkout_epharmacy_reminder_prescription_dialog_negative_button">Keluar</string>
     <string name="checkout_epharmacy_coachmark_title">Pesanan obat kerasmu butuh resep</string>
     <string name="checkout_epharmacy_coachmark_description">Yuk, upload resepmu. Kalau belum punya, chat dokter buat dapetin resep digital juga bisa~</string>
-
-    <string name="checkout_error_shipping_title">Pengiriman tidak tersedia</string>
-    <string name="checkout_error_shipping_description">Atur ulang pesananmu di keranjang, ya.</string>
-
     <string name="checkout_error_unblocking_message">Yaah, ada %1d barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain.</string>
     <string name="checkout_ticker_lihat_cta_suffix" formatted="false">&lt;a href=\"scroll\"&gt;Lihat&lt;\/a&gt;</string>
 </resources>
