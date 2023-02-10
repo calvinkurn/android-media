@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.network.utils.ErrorHandler
 
 class TokoChatPushNotifCallbackUseCase(
     private val repository: GraphqlRepository,
@@ -21,7 +22,12 @@ class TokoChatPushNotifCallbackUseCase(
     """.trimIndent()
 
     override suspend fun execute(params: Param) {
-        return repository.request(graphqlQuery(), params)
+        try {
+            return repository.request(graphqlQuery(), params)
+        } catch (error: Throwable) {
+            ErrorHandler.Companion.getErrorMessage(context = null, e = error)
+            return
+        }
     }
 
     data class Param(
