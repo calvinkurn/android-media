@@ -173,5 +173,5 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 }
 
-apply from: '../jacoco_task.gradle'
+apply from: 'jacoco_wearos_task.gradle'
 apply from: '../sonar_config.gradle'

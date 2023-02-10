@@ -1,0 +1,79 @@
+apply from: "$rootProject.projectDir/buildconfig/jacoco.gradle"
+
+def javaFileExecute = [
+        '**/*ViewModel.*',
+        '**/*ViewModel$*$**.*',
+        '**/*Presenter.*',
+        '**/*Presenter$**.*'
+]
+def kotlinFileExecute = [
+        '**/*ViewModel.*',
+        '**/*ViewModel$*$**.*',
+        '**/*Presenter.*',
+        '**/*Presenter$*$**.*'
+]
+
+def javaClasses = fileTree(dir: "$project.buildDir/intermediates/javac/debug/classes", includes: javaFileExecute)
+def kotlinClasses = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", includes: kotlinFileExecute)
+def javaSrc = "$project.projectDir/src/main/java"
+def kotlinSrc = "$project.projectDir/src/main/kotlin"
+def executionDataFiles = fileTree(dir: project.buildDir, includes: ['jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'])
+
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testLiveProdDebugUnitTest']) {
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+        csv.enabled = true
+        xml.destination file("${rootProject.buildDir}/reports/jacocoTestReport-${project.name}.xml")
+        html.destination file("${buildDir}/reports/jacoco")
+        csv.destination file("${buildDir}/reports/jacocoTestReport.csv")
+    }
+
+    sourceDirectories.setFrom([javaSrc, kotlinSrc])
+    classDirectories.setFrom([javaClasses, kotlinClasses])
+    executionData.setFrom(executionDataFiles)
+}
+
+task customJacocoTestCoverageVerification(type: JacocoCoverageVerification, dependsOn: 'jacocoTestReport') {
+
+    sourceDirectories.setFrom([javaSrc, kotlinSrc])
+    classDirectories.setFrom([javaClasses, kotlinClasses])
+    executionData.setFrom(executionDataFiles)
+
+    violationRules {
+        setFailOnViolation(true)
+
+        rule {
+            element = 'PACKAGE'
+
+            limit {
+                value = 'COVEREDRATIO'
+                counter = 'BRANCH'
+                minimum = 0
+            }
+        }
+
+        rule {
+            element = 'PACKAGE'
+
+            limit {
+                value = 'COVEREDRATIO'
+                counter = 'INSTRUCTION'
+                minimum = 0
+            }
+        }
+
+        rule {
+            element = 'PACKAGE'
+            includes = ['com.androidjacoco.sample.*.presenter']
+            enabled = true
+
+            limit {
+                counter = 'CLASS'
+                value = 'MISSEDCOUNT'
+                maximum = 0
+            }
+        }
+    }
+}

@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetNotificationUseCase @Inject constructor(
+open class GetNotificationUseCase @Inject constructor(
     private val notificationRepository: NotificationRepository
 ) {
     fun getNotificationList(): Flow<List<NotificationModel>> {

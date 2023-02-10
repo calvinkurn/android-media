@@ -3,6 +3,7 @@ package com.tokopedia.sellerapp.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.android.gms.wearable.CapabilityClient
 import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
+import com.tokopedia.sellerapp.domain.interactor.GetNotificationUseCase
 import com.tokopedia.sellerapp.domain.interactor.GetSummaryUseCase
 import com.tokopedia.sellerapp.domain.interactor.OrderUseCase
 import com.tokopedia.sellerapp.presentation.viewmodel.data.FakeOrderUseCase
@@ -27,6 +28,8 @@ abstract class SharedViewModelFixture {
     lateinit var capabilityClient: CapabilityClient
     @RelaxedMockK
     lateinit var clientMessageDatasource: ClientMessageDatasource
+    @RelaxedMockK
+    lateinit var getNotificationUseCase: GetNotificationUseCase
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
@@ -41,7 +44,8 @@ abstract class SharedViewModelFixture {
             orderUseCase = orderUseCase,
             getSummaryUseCase = getSummaryUseCase,
             capabilityClient = capabilityClient,
-            clientMessageDatasource = clientMessageDatasource
+            clientMessageDatasource = clientMessageDatasource,
+            getNotificationUseCase = getNotificationUseCase
         )
     }
 }
