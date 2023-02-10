@@ -123,22 +123,10 @@ fun NavGraphBuilder.appNotInstalledScreenComposable(
     }
 }
 
-fun NavGraphBuilder.connectionFailedScreenComposable(
-    sharedViewModel: SharedViewModel,
-) {
+fun NavGraphBuilder.connectionFailedScreenComposable() {
     composable(
         route = ScreenConstant.CONNECTION_FAILED_SCREEN
-    ) {
-        val message = sharedViewModel.currentState.value.data?.let {
-            it.getState().getMessageBasedOnState()
-        } ?: ""
-
-        ConnectionFailureScreen(
-            mutableStateOf(message),
-            mutableStateOf("Retry"),
-            mutableStateOf({})
-        )
-    }
+    ) { /* nothing to do */ }
 }
 
 fun NavGraphBuilder.acceptOrderScreenComposable(
