@@ -21,6 +21,7 @@ import com.tokopedia.logisticcart.databinding.ItemShipmentShippingOccBinding
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
@@ -80,6 +81,7 @@ class ShippingOccWidget : ConstraintLayout {
             setInvisible(btnReloadShipping)
             setInvisible(iconReloadShipping)
             setInvisible(tickerShippingPromo)
+            loaderShipping.type = LoaderUnify.TYPE_RECT
             loaderShipping.visible()
         }
     }
