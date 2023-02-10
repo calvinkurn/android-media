@@ -2937,6 +2937,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public PublishSubject<Boolean> getLogisticDonePublisher() {
         return logisticDonePublisher;
     }
+    
+    public void setLogisticDonePublisher(PublishSubject<Boolean> logisticDonePublisher) {
+        this.logisticDonePublisher = logisticDonePublisher;
+    }
+
+    public void setLogisticPromoDonePublisher(PublishSubject<Boolean> logisticPromoDonePublisher) {
+        this.logisticPromoDonePublisher = logisticPromoDonePublisher;
+    }
 
     private ShipmentScheduleDeliveryMapData getScheduleDeliveryMapData(String cartString) {
         if (scheduleDeliveryMapData != null) {

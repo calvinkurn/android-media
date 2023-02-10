@@ -446,6 +446,108 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     }
 
     @Test
+    fun validateUseErrorFromScheduleDelivery_ShouldCompletePublisher() {
+        // Given
+        val errorMessage = "error"
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(Throwable(errorMessage))
+        val cartString = "123"
+        val testSubscriber = TestSubscriber.create<Boolean>()
+        val donePublisher = PublishSubject.create<Boolean>()
+        donePublisher.subscribe(testSubscriber)
+        val shipmentScheduleDeliveryMapData = ShipmentScheduleDeliveryMapData(
+            donePublisher,
+            shouldStopInClearCache = false,
+            shouldStopInValidateUsePromo = true
+        )
+        presenter.setScheduleDeliveryMapData(cartString, shipmentScheduleDeliveryMapData)
+
+        // When
+        val cartPosition = 0
+        presenter.doValidateUseLogisticPromo(cartPosition, cartString, ValidateUsePromoRequest(), "", true)
+
+        // Then
+        verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
+            view.showToastError(any())
+            view.resetCourier(cartPosition)
+        }
+        testSubscriber.assertCompleted()
+    }
+
+    @Test
+    fun validateUseSuccessFromGetShippingRates_ShouldCompletePublisher() {
+        // Given
+        val promoUiModel = PromoUiModel(
+            globalSuccess = true,
+            voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
+            )
+        )
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+            ValidateUsePromoRevampUiModel(
+                status = "OK",
+                errorCode = "200",
+                promoUiModel = promoUiModel
+            )
+        )
+        val cartString = "123"
+        val testSubscriber = TestSubscriber.create<Boolean>()
+        val logisticDonePublisher = PublishSubject.create<Boolean>()
+        presenter.logisticDonePublisher = logisticDonePublisher
+        logisticDonePublisher.subscribe(testSubscriber)
+
+        val promoTestSubscriber = TestSubscriber.create<Boolean>()
+        val logisticPromoDonePublisher = PublishSubject.create<Boolean>()
+        presenter.setLogisticPromoDonePublisher(logisticPromoDonePublisher)
+        logisticPromoDonePublisher.subscribe(promoTestSubscriber)
+
+        // When
+        val cartPosition = 0
+        presenter.doValidateUseLogisticPromo(cartPosition, cartString, ValidateUsePromoRequest(), "", true)
+
+        // Then
+        verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
+            view.updateButtonPromoCheckout(promoUiModel, true)
+        }
+        testSubscriber.assertCompleted()
+        promoTestSubscriber.assertCompleted()
+    }
+
+    @Test
+    fun validateUseErrorFromGetShippingRates_ShouldCompletePublisher() {
+        // Given
+        val errorMessage = "error"
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(Throwable(errorMessage))
+        val cartString = "123"
+        val testSubscriber = TestSubscriber.create<Boolean>()
+        val logisticDonePublisher = PublishSubject.create<Boolean>()
+        presenter.logisticDonePublisher = logisticDonePublisher
+        logisticDonePublisher.subscribe(testSubscriber)
+
+        val promoTestSubscriber = TestSubscriber.create<Boolean>()
+        val logisticPromoDonePublisher = PublishSubject.create<Boolean>()
+        presenter.setLogisticPromoDonePublisher(logisticPromoDonePublisher)
+        logisticPromoDonePublisher.subscribe(promoTestSubscriber)
+
+        // When
+        val cartPosition = 0
+        presenter.doValidateUseLogisticPromo(cartPosition, cartString, ValidateUsePromoRequest(), "", true)
+
+        // Then
+        verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
+            view.showToastError(any())
+            view.resetCourier(cartPosition)
+        }
+        testSubscriber.assertCompleted()
+        promoTestSubscriber.assertCompleted()
+    }
+
+    @Test
     fun `WHEN validate use with detached view THEN should do nothing`() {
         // Given
         val cartPosition = 1

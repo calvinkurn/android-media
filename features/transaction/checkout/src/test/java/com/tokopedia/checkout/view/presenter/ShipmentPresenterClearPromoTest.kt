@@ -841,4 +841,38 @@ class ShipmentPresenterClearPromoTest {
         }
         testSubscriber.assertCompleted()
     }
+
+    @Test
+    fun `WHEN clear BBO promo failed from schedule delivery THEN should complete publisher`() {
+        // Given
+        val errorMessage = "error"
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.error(
+            Throwable(errorMessage)
+        )
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
+        val testSubscriber = TestSubscriber.create<Boolean>()
+        val donePublisher = PublishSubject.create<Boolean>()
+        donePublisher.subscribe(testSubscriber)
+        val shipmentScheduleDeliveryMapData = ShipmentScheduleDeliveryMapData(
+            donePublisher,
+            shouldStopInClearCache = true,
+            shouldStopInValidateUsePromo = false
+        )
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartString = "123",
+            shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
+            cartItemModels = listOf(CartItemModel())
+        )
+        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartString, shipmentScheduleDeliveryMapData)
+
+        // When
+        presenter.cancelAutoApplyPromoStackLogistic(
+            0,
+            "code",
+            shipmentCartItemModel
+        )
+
+        // Then
+        testSubscriber.assertCompleted()
+    }
 }
