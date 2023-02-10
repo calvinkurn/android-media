@@ -309,6 +309,13 @@ object ProductListUiStateMapper {
         )
     }
 
+    /**
+     * Map the response into various UI models which will be placed on the product list view section.
+     * You should know that this section have expand-collapse functionality. Therefore if you're
+     * going to add a new type of UI models to be placed on the product list view section. You should
+     * handle the mapping based on whether the product list is collapsed or expanded based on the
+     * collapseProductList value.
+     */
     private fun mapProductListUiModel(
         details: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details?,
         bundleIcon: String,
@@ -320,6 +327,13 @@ object ProductListUiStateMapper {
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean
     ): ProductListUiModel {
+        /**
+         * Map product bundle response into UI model and limit the number of mapped items based on
+         * MAX_PRODUCT_WHEN_COLLAPSED. The numOfRemovedProductBundle is indicating the number of
+         * unmapped product bundle which will be used on the toggle view to show remaining hidden product
+         * when the product list view is collapsed. The productBundlingList contains the UI models
+         * which limited by the MAX_PRODUCT_WHEN_COLLAPSED.
+         */
         val (numOfRemovedProductBundle, productBundlingList) = mapProductBundle(
             details?.bundles,
             bundleIcon,
@@ -330,6 +344,15 @@ object ProductListUiStateMapper {
             collapseProductList,
             MAX_PRODUCT_WHEN_COLLAPSED
         )
+
+        /**
+         * Map non-bundled product response into UI model and limit the number of items based on
+         * MAX_PRODUCT_WHEN_COLLAPSED minus the number of mapped product bundle.
+         * The numOfRemovedNonProductBundle is indicating the number of unmapped non-bundled product
+         * which will be used on the toggle view to show remaining hidden product when the product list
+         * view is collapsed. The nonProductBundlingList contains the non-bundled product UI models which
+         * limited by the MAX_PRODUCT_WHEN_COLLAPSED minus the number of mapped product bundle.
+         */
         val (numOfRemovedNonProductBundle, nonProductBundlingList) = details?.let {
             mapProductList(
                 details = it,
@@ -341,6 +364,15 @@ object ProductListUiStateMapper {
                 remainingSlot = MAX_PRODUCT_WHEN_COLLAPSED - productBundlingList.size
             )
         } ?: (Int.ZERO to emptyList())
+
+        /**
+         * Map order-level addons response into UI model and limit the number of items based on
+         * MAX_PRODUCT_WHEN_COLLAPSED minus the number of mapped bundled and non-bundled product.
+         * The numOfRemovedAddOn is indicating the number of unmapped order-level addons which will
+         * be used on the toggle view to show remaining hidden product when the product list view is
+         * collapsed. The addOnList contains the order-level addons UI models which
+         * limited by the MAX_PRODUCT_WHEN_COLLAPSED minus the number of mapped bundled and non-bundled product.
+         */
         val (numOfRemovedAddOn, addOnList) = getAddonsSectionOrderLevel(
             addonInfo = addonInfo,
             collapseProductList = collapseProductList,
@@ -396,6 +428,13 @@ object ProductListUiStateMapper {
         collapseProductList: Boolean,
         remainingSlot: Int
     ): Pair<Int, List<ProductListUiModel.ProductUiModel>> {
+        /**
+         * Reduce the non-bundle response items to be mapped based on the remaining slot on the product
+         * list view when collapsed (Ex: if there is 5 non-bundle on the response and the product list view
+         * can only contains 1 more non-bundle, then only map 1 non-bundle response).
+         * The numOfRemovedNonBundles indicate the number of unmapped non-bundle response.
+         * The reducedNonBundles contains the non-bundle response which will be mapped into UI model.
+         */
         val (numOfRemovedNonBundles, reducedNonBundles) = details.nonBundles?.run {
             if (collapseProductList) {
                 (size - remainingSlot).coerceAtLeast(Int.ZERO) to take(remainingSlot)
@@ -428,6 +467,13 @@ object ProductListUiStateMapper {
         collapseProductList: Boolean,
         remainingSlot: Int
     ): Pair<Int, List<ProductListUiModel.ProductBundlingUiModel>> {
+        /**
+         * Reduce the bundle response items to be mapped based on the remaining slot on the product
+         * list view when collapsed (Ex: if there is 5 product bundle on the response and the product list view
+         * can only contains 1 more product bundle, then only map 1 product bundle response).
+         * The numOfRemovedBundleDetail indicate the number of unmapped product bundle response.
+         * The reducedBundleDetail contains the product bundle response which will be mapped into UI model.
+         */
         val (numOfRemovedBundleDetail, reducedBundleDetail) = bundleDetail?.run {
             if (collapseProductList) {
                 (size - remainingSlot).coerceAtLeast(Int.ZERO) to take(remainingSlot)
