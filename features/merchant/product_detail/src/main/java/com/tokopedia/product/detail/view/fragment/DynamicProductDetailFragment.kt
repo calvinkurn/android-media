@@ -302,7 +302,6 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.coroutines.flow.collect
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
@@ -680,8 +679,8 @@ open class DynamicProductDetailFragment :
     private fun observeOneTimeMethod() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.oneTimeMethodState.collect {
-                when(it.event) {
-                    is OneTimeMethodEvent.ImpressRestriction ->  {
+                when (it.event) {
+                    is OneTimeMethodEvent.ImpressRestriction -> {
                         ProductTrackingCommon.Restriction.impressLocationRestriction(
                             trackingQueue = trackingQueue,
                             data = it.event.reData,
@@ -698,7 +697,7 @@ open class DynamicProductDetailFragment :
                         )
                     }
                     else -> {
-                        //noop
+                        // noop
                     }
                 }
             }
