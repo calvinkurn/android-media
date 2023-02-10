@@ -20,9 +20,11 @@ import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
 import com.tokopedia.buyerorderdetail.domain.usecases.FinishOrderUseCase
 import com.tokopedia.buyerorderdetail.domain.usecases.GetBuyerOrderDetailDataUseCase
 import com.tokopedia.buyerorderdetail.presentation.mapper.ActionButtonsUiStateMapper
+import com.tokopedia.buyerorderdetail.presentation.mapper.EpharmacyInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderStatusUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ProductListUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
@@ -128,6 +130,14 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         )
     )
 
+    val additionalEpharmacyData =
+        GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BomAdditionalData(
+            GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BomAdditionalData.EpharmacyData(
+                consultationName = "halodoc",
+                consultationDoctorName = "yusuf hendrawan"
+            )
+        )
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
@@ -141,10 +151,12 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         )
 
         every { userSession.userId } returns userId
+        mockkObject(EpharmacyInfoUiStateMapper)
     }
 
     @After
     fun cleanup() {
+        unmockkAll()
         viewModel.viewModelScope.coroutineContext.cancelChildren()
         unmockkAll()
     }
@@ -152,6 +164,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
     fun createSuccessGetBuyerOrderDetailDataResult(
         getBuyerOrderDetailResult: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail = mockk(relaxed = true) {
             every { getPodInfo() } returns null
+            every { additionalData } returns additionalEpharmacyData
         },
         getOrderResolutionResult: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData = mockk(relaxed = true),
         getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true),
@@ -334,6 +347,15 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         }
         rule.runBlockingTest { block(uiStates) }
         uiStateCollectorJob.cancel()
+    }
+
+    fun EpharmacyInfoUiModel.isEmptyData(): Boolean {
+        return this.consultationDate.isEmpty() &&
+                this.consultationDoctorName.isEmpty() &&
+                this.consultationExpiryDate.isEmpty() &&
+                this.consultationPatientName.isEmpty() &&
+                this.consultationName.isEmpty() &&
+                this.consultationPrescriptionNumber.isEmpty()
     }
 
     fun isProductListCollapsed(): Boolean {

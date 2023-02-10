@@ -2,6 +2,7 @@ package com.tokopedia.buyerorderdetail.presentation.viewmodel
 
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataParams
+import com.tokopedia.buyerorderdetail.presentation.mapper.EpharmacyInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
@@ -72,10 +73,12 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             var uiStateBeforeSuccessReloading: BuyerOrderDetailUiState? = null
             createSuccessGetBuyerOrderDetailDataResult()
 
+            // assert first initial bom page opened
             assertTrue(uiStates.last() is BuyerOrderDetailUiState.FullscreenLoading)
 
             getBuyerOrderDetailData()
 
+            // assert data showing after initial first data is completed
             assertTrue(uiStates.last() is BuyerOrderDetailUiState.HasData.Showing)
 
             // reload
@@ -85,7 +88,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
             getBuyerOrderDetailData()
 
+            // assert data is pull refresh state after swipe refresh and data not complete yet
             assertTrue(uiStateBeforeSuccessReloading is BuyerOrderDetailUiState.HasData.PullRefreshLoading)
+            // assert last state should showing after success pull refresh
             assertTrue(uiStates.last() is BuyerOrderDetailUiState.HasData.Showing)
         }
 
@@ -428,6 +433,23 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
             assertTrue(viewModel.getSecondaryActionButtons().isEmpty())
         }
+
+    @Test
+    fun `EpharmacyInfoUiState should catch error when EpharmacyInfoUiStateMapper throwing crash`() = runCollectingUiState {
+        createSuccessGetBuyerOrderDetailDataResult()
+
+        every { EpharmacyInfoUiStateMapper.map(any(), any()) } throws Throwable("Error")
+
+        viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, false)
+
+        //if error happen in ephar mapper, return empty data so the section not showing
+        assertTrue(it.last() is BuyerOrderDetailUiState.HasData.Showing)
+        assertTrue(
+            (it.last() as BuyerOrderDetailUiState.HasData.Showing)
+                .epharmacyInfoUiState.data
+                .isEmptyData()
+        )
+    }
 
     @Test
     fun `getProducts should return list of products when UI state is Showing`() =
