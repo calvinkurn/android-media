@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginHorizontal="8dp"
-                app:srcCompat="@drawable/ic_separator" />
+                app:srcCompat="@drawable/ic_bundle_shop_info_separator" />
 
             <com.tokopedia.unifycomponents.Label
                 android:id="@+id/label_preorder"
