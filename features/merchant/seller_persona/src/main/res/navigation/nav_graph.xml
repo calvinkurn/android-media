@@ -40,6 +40,7 @@
         <action
             android:id="@+id/actionQuestionnaireToResult"
             app:destination="@id/resultFragment"
+            app:launchSingleTop="true"
             app:popUpTo="@id/questionnaireFragment"
             app:popUpToInclusive="true" />
     </fragment>

@@ -35,4 +35,6 @@
     <string name="sp_toaster_error_message">Oops, perubahan gagal disimpan. Coba lagi, ya.</string>
     <string name="sp_common_global_error_title">Oops, informasi gagal ditampilkan</string>
     <string name="sp_reload">Muat Ulang</string>
+    <string name="sp_wait_a_second">Tunggu sebentar, ya</string>
+    <string name="sp_quiz_loading_result_desc">Hasilnya akan muncul sebentar lagi</string>
 </resources>

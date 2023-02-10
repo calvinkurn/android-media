@@ -46,7 +46,6 @@ class PersonaErrorView(context: Context, attrs: AttributeSet) : LinearLayout(con
                 height = imgHeight.toInt()
             }
 
-            setType(GlobalError.PAGE_NOT_FOUND)
             (errorAction as? UnifyButton)?.buttonSize = UnifyButton.Size.SMALL
             errorAction.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
             errorAction.text = context.getString(R.string.sp_reload)

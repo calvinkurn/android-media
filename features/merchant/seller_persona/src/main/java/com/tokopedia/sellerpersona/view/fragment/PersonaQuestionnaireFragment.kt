@@ -176,7 +176,7 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
                 val currentPosition = binding?.vpSpQuestionnaire?.currentItem.orZero()
                 val isAlreadySelecting = pagerAdapter.getPages()
                     .getOrNull(currentPosition)?.options?.any { it.isSelected }.orFalse()
-                handleOnNextClicked(it, isAlreadySelecting)
+                handleOnNextClicked(isAlreadySelecting)
             }
             btnSpPrev.setOnClickListener {
                 moveToPreviousQuestion()
@@ -184,12 +184,12 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
         }
     }
 
-    private fun handleOnNextClicked(view: View, isAlreadySelecting: Boolean) {
+    private fun handleOnNextClicked(isAlreadySelecting: Boolean) {
         if (isAlreadySelecting) {
             val lastSlideIndex = pagerAdapter.itemCount.minus(Int.ONE)
             val isLastSlide = binding?.vpSpQuestionnaire?.currentItem == lastSlideIndex
             if (isLastSlide) {
-                submitAnswer(view)
+                submitAnswer()
             } else {
                 moveToNextQuestion()
             }
@@ -211,23 +211,49 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
         }
     }
 
-    private fun submitAnswer(view: View) {
+    private fun submitAnswer() {
         binding?.run {
-            btnSpPrev.isEnabled = false
-            btnSpNext.isLoading = true
             val answers = pagerAdapter.getPages().map { pager ->
-                QuestionnaireAnswerParam(id = pager.id.toLongOrZero(),
-                    answers = pager.options.orEmpty().filter { it.isSelected }.map { it.value })
+                QuestionnaireAnswerParam(
+                    id = pager.id.toLongOrZero(),
+                    answers = pager.options.orEmpty().filter { it.isSelected }.map { it.value }
+                )
             }
+            showSubmitQuizLoadingState()
             viewModel.submitAnswer(answers)
             viewModel.setPersonaResult.observeOnce(viewLifecycleOwner) {
-                btnSpPrev.isEnabled = true
-                btnSpNext.isLoading = false
                 when (it) {
                     is Success -> onSuccessPersonaResult(it.data)
-                    is Fail -> showErrorToaster()
+                    is Fail -> {
+                        dismissSubmitQuizLoadingState()
+                        showErrorToaster()
+                    }
                 }
             }
+        }
+    }
+
+    private fun showSubmitQuizLoadingState() {
+        binding?.run {
+            loaderSellerPersona.visible()
+            tvSpQuizLoadingTitle.visible()
+            tvSpQuizLoadingDesc.visible()
+            btnSpNext.gone()
+            btnSpPrev.gone()
+            vpSpQuestionnaire.gone()
+            progressBarFramePersona.gone()
+        }
+    }
+
+    private fun dismissSubmitQuizLoadingState() {
+        binding?.run {
+            loaderSellerPersona.gone()
+            tvSpQuizLoadingTitle.gone()
+            tvSpQuizLoadingDesc.gone()
+            btnSpNext.visible()
+            btnSpPrev.visible()
+            vpSpQuestionnaire.visible()
+            progressBarFramePersona.visible()
         }
     }
 
@@ -251,6 +277,7 @@ class PersonaQuestionnaireFragment : BaseFragment<FragmentPersonaQuestionnaireBi
         if (!data.isError) {
             findNavController().navigate(R.id.actionQuestionnaireToResult)
         } else {
+            dismissSubmitQuizLoadingState()
             showErrorToaster()
         }
     }
