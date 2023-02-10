@@ -2,32 +2,34 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:padding="@dimen/content_common_space_8"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_comment_photo"
         android:layout_width="@dimen/layout_lvl4"
         android:layout_height="@dimen/layout_lvl4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_type="circle"
         tools:srcCompat="@drawable/bg_seller_tnc_point_grey" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_comment_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constrainedWidth="true"
         android:layout_marginStart="@dimen/content_common_space_8"
         android:layout_marginEnd="@dimen/content_common_space_8"
-        app:layout_constraintEnd_toStartOf="@+id/iv_comment_likes"
+        android:layout_marginBottom="2dp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@id/tv_comment_time"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/iv_comment_photo"
         app:layout_constraintTop_toTopOf="@+id/iv_comment_photo"
-        app:layout_constraintBottom_toTopOf="@id/tv_comment_time"
-        android:layout_marginBottom="2dp"
         tools:text="Glorianna Comment CommentCommentComment CommentComment" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -43,20 +45,6 @@
         tools:text="4 hari yang lalu" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_comment_likes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/content_common_space_16"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_comment_time"
-        app:layout_constraintStart_toEndOf="@+id/tv_comment_time"
-        app:layout_constraintTop_toBottomOf="@+id/tv_comment_content"
-        app:typographyType="display_3"
-        app:typographyWeight="bold"
-        tools:text="123 likes" />
-
-    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_comment_reply"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,21 +52,12 @@
         android:text="@string/content_comment_reply"
         android:textColor="@color/Unify_NN600"
         app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_comment_likes"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_comment_time"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/tv_comment_likes"
-        app:layout_constraintTop_toTopOf="@+id/tv_comment_likes"
+        app:layout_constraintStart_toEndOf="@+id/tv_comment_time"
+        app:layout_constraintTop_toTopOf="@+id/tv_comment_time"
         app:typographyType="display_3"
         app:typographyWeight="bold" />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/iv_comment_likes"
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl2"
-        app:icon_name="THUMB"
-        android:layout_marginEnd="@dimen/content_common_space_8"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_comment_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_comment_content" />
 </androidx.constraintlayout.widget.ConstraintLayout>
