@@ -13,14 +13,14 @@ class TokoChatPushNotifCallbackUseCase(
 
     override fun graphqlQuery(): String = """
         mutation tokochatPushCallback($$PARAM_TOKOCHAT_PN_ID: String!, $$PARAM_TIMESTAMP: String!) {
-            tokochatPushCallback(${'$'}$PARAM_TOKOCHAT_PN_ID: ${'$'}$PARAM_TOKOCHAT_PN_ID, ${'$'}$PARAM_TIMESTAMP: ${'$'}$PARAM_TIMESTAMP) {
+            tokochatPushCallback($PARAM_TOKOCHAT_PN_ID: $$PARAM_TOKOCHAT_PN_ID, $PARAM_TIMESTAMP: $$PARAM_TIMESTAMP) {
                     success
                 }
         }
     """.trimIndent()
 
     override suspend fun execute(params: Param) {
-        repository.request<Unit, String>(graphqlQuery(), Unit)
+        return repository.request(graphqlQuery(), params)
     }
 
     data class Param(
