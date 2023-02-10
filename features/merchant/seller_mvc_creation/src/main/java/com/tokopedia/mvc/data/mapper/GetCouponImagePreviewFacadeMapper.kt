@@ -240,6 +240,8 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
             promoType == PromoType.FREE_SHIPPING -> benefitIdr
             promoType == PromoType.CASHBACK && benefitType == BenefitType.NOMINAL -> benefitIdr
             promoType == PromoType.CASHBACK && benefitType == BenefitType.PERCENTAGE -> benefitMax
+            promoType == PromoType.DISCOUNT && benefitType == BenefitType.NOMINAL -> benefitIdr
+            promoType == PromoType.DISCOUNT && benefitType == BenefitType.PERCENTAGE -> benefitMax
             else -> benefitIdr
         }
 
