@@ -330,9 +330,6 @@ class AddBankFragment : BaseDaggerFragment() {
         groupAccountNameAuto.gone()
         textAreaBankAccountHolderName.visible()
         textAreaBankAccountHolderName.requestFocus()
-        if (data.accountName.isNotEmpty())
-            textAreaBankAccountHolderName.editText.setText(data.accountName)
-
         showManualAccountNameError(data.message)
     }
 
