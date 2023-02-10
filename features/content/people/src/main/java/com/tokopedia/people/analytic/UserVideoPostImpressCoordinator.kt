@@ -1,17 +1,17 @@
 package com.tokopedia.people.analytic
 
-import com.tokopedia.people.model.PlayPostContentItem
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import javax.inject.Inject
 
 class UserVideoPostImpressCoordinator @Inject constructor() {
 
-    private val mDataImpress = mutableListOf<PlayPostContentItem>()
+    private val mDataImpress = mutableListOf<PlayWidgetChannelUiModel>()
 
     fun initiateDataImpress(
-        dataImpress: PlayPostContentItem,
-        callback: (dataImpress: PlayPostContentItem) -> Unit,
+        dataImpress: PlayWidgetChannelUiModel,
+        callback: (dataImpress: PlayWidgetChannelUiModel) -> Unit,
     ) {
-        val findShopRecom = mDataImpress.filter { it.id == dataImpress.id }
+        val findShopRecom = mDataImpress.filter { it.channelId == dataImpress.channelId }
         if (!findShopRecom.isNullOrEmpty()) return
         callback.invoke(dataImpress)
         mDataImpress.add(dataImpress)

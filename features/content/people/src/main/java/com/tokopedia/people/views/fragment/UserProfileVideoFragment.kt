@@ -1,6 +1,5 @@
 package com.tokopedia.people.views.fragment
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -16,25 +15,17 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.library.baseadapter.AdapterCallback
-import com.tokopedia.people.ErrorMessage
-import com.tokopedia.people.Loading
 import com.tokopedia.people.R
-import com.tokopedia.people.Success
 import com.tokopedia.people.analytic.UserVideoPostImpressCoordinator
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentVideoBinding
-import com.tokopedia.people.model.PlayPostContentItem
-import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
-import com.tokopedia.people.views.activity.UserProfileActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.PlayVideoAdapter
-import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.LOADING
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_CONTENT
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_EMPTY
@@ -62,7 +53,7 @@ class UserProfileVideoFragment @Inject constructor(
     private val userSession: UserSessionInterface,
     private val userProfileTracker: UserProfileTracker,
     private val impressCoordinator: UserVideoPostImpressCoordinator,
-) : TkpdBaseV4Fragment(), AdapterCallback, UserPostBaseAdapter.PlayWidgetCallback {
+) : TkpdBaseV4Fragment() {
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         GridLayoutManager(activity, GRID_SPAN_COUNT)
@@ -121,7 +112,16 @@ class UserProfileVideoFragment @Inject constructor(
                     channelId: String,
                     pos: Int
                 ) {
-                    /** TODO: handle this later */
+                    impressCoordinator.initiateDataImpress(channel) {
+                        userProfileTracker.impressionVideo(
+                            viewModel.profileUserID,
+                            viewModel.isSelfProfile,
+                            isLive,
+                            channelId,
+                            channel.video.coverUrl,
+                            pos,
+                        )
+                    }
                 }
             },
             transcodeWidgetListener = object : PlayVideoViewHolder.Transcode.Listener {
@@ -134,12 +134,6 @@ class UserProfileVideoFragment @Inject constructor(
             }
         )
     }
-
-//    private val mAdapter: UserPostBaseAdapter by lazy(LazyThreadSafetyMode.NONE) {
-//        UserPostBaseAdapter(this, this) { cursor ->
-//            submitAction(UserProfileAction.LoadPlayVideo(cursor))
-//        }
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -157,7 +151,6 @@ class UserProfileVideoFragment @Inject constructor(
         setupPlayVideo()
 
         submitAction(UserProfileAction.LoadPlayVideo(isRefresh = true))
-//        fetchPlayVideo(viewModel.profileUserID)
     }
 
     override fun onPause() {
@@ -168,12 +161,6 @@ class UserProfileVideoFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun fetchPlayVideo(userId: String) {
-//        mAdapter.resetAdapter()
-//        mAdapter.cursor = ""
-//        mAdapter.startDataLoading(userId)
     }
 
     private fun getSpanSizeLookUp(): GridLayoutManager.SpanSizeLookup {
@@ -216,7 +203,6 @@ class UserProfileVideoFragment @Inject constructor(
                             globalErrorVideo.refreshBtn?.setOnClickListener {
                                 userVideoContainer.displayedChild = PAGE_LOADING
                                 submitAction(UserProfileAction.LoadPlayVideo(isRefresh = true))
-//                                fetchPlayVideo(viewModel.profileUserID)
                             }
                         }
                     }
@@ -255,6 +241,15 @@ class UserProfileVideoFragment @Inject constructor(
                 binding.userVideoContainer.displayedChild = PAGE_LOADING
             }
             UserPlayVideoUiModel.Status.Success -> {
+                if(curr.items.isEmpty()) {
+                    if (viewModel.isSelfProfile) emptyPostSelf()
+                    else emptyPostVisitor()
+
+                    binding.userVideoContainer.displayedChild = PAGE_EMPTY
+
+                    return
+                }
+
                 val mappedList = curr.items.map {
                     if(it.channelType == PlayWidgetChannelType.Transcoding || it.channelType == PlayWidgetChannelType.FailedTranscoding) {
                         PlayVideoAdapter.Model.Transcode(it)
@@ -265,9 +260,7 @@ class UserProfileVideoFragment @Inject constructor(
                 }
 
                 val finalList = if(curr.nextCursor.isEmpty()) mappedList else mappedList + listOf(PlayVideoAdapter.Model.Loading)
-
                 mAdapter.setItemsAndAnimateChanges(finalList)
-
                 binding.userVideoContainer.displayedChild = PAGE_CONTENT
             }
             else -> {}
@@ -288,8 +281,8 @@ class UserProfileVideoFragment @Inject constructor(
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when(mAdapter.getItem(position)) {
-                    is PlayVideoAdapter.Model.Loading -> 2
-                    else -> 1
+                    is PlayVideoAdapter.Model.Loading -> LOADING_SPAN
+                    else -> DATA_SPAN
                 }
             }
         }
@@ -314,84 +307,6 @@ class UserProfileVideoFragment @Inject constructor(
     private fun emptyPostVisitor() {
         binding.emptyVideo.textErrorEmptyTitle.text = getString(R.string.up_empty_post_on_visitor)
         binding.emptyVideo.textErrorEmptyDesc.hide()
-    }
-
-    override fun onRetryPageLoad(pageNumber: Int) {
-    }
-
-    override fun onEmptyList(rawObject: Any?) {
-        if (viewModel.isSelfProfile) emptyPostSelf()
-        else emptyPostVisitor()
-        binding.userVideoContainer.displayedChild = PAGE_EMPTY
-    }
-
-    override fun onStartFirstPageLoad() {
-        binding.userVideoContainer.displayedChild = PAGE_LOADING
-    }
-
-    override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-        binding.userVideoContainer.displayedChild = PAGE_CONTENT
-    }
-
-    override fun onStartPageLoad(pageNumber: Int) {
-    }
-
-    override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
-    }
-
-    override fun onError(pageNumber: Int) {
-    }
-
-    override fun updatePostReminderStatus(channelId: String, isActive: Boolean, pos: Int) {
-//        submitAction(UserProfileAction.SaveReminderActivityResult(channelId, pos, isActive))
-//
-//        if (userSession.isLoggedIn.not()) {
-//            startActivityForResult(
-//                RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-//                REQUEST_CODE_LOGIN_TO_SET_REMINDER,
-//            )
-//        } else {
-//            submitAction(UserProfileAction.ClickUpdateReminder(false))
-//        }
-    }
-
-    override fun updatePlayWidgetLatestData(
-        channelId: String,
-        totalView: String,
-        isReminderSet: Boolean,
-    ) {
-        /** TODO: check this */
-//        mAdapter.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
-    }
-
-    override fun onPlayWidgetLargeClick(appLink: String, channelID: String, isLive: Boolean, imageUrl: String, pos: Int) {
-        userProfileTracker.clickVideo(
-            viewModel.profileUserID,
-            viewModel.isSelfProfile,
-            isLive,
-            channelID,
-            imageUrl,
-            pos,
-        )
-        val intent = RouteManager.getIntent(context, appLink)
-        startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
-    }
-
-    override fun onImpressPlayWidgetData(item: PlayPostContentItem, isLive: Boolean, channelId: String, pos: Int) {
-        impressCoordinator.initiateDataImpress(item) {
-            userProfileTracker.impressionVideo(
-                viewModel.profileUserID,
-                viewModel.isSelfProfile,
-                isLive,
-                channelId,
-                it.coverUrl,
-                pos,
-            )
-        }
-    }
-
-    override fun onDeletePlayChannel(channel: PlayWidgetChannelUiModel) {
-        viewModel.submitAction(UserProfileAction.DeletePlayChannel(channel))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
