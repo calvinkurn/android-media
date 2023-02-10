@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.analytics
 
 import android.app.Activity
 import android.app.Instrumentation
+import android.content.Intent
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +22,11 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
+import com.tokopedia.product.detail.common.view.ItemVariantChipViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
 import com.tokopedia.product.detail.util.ProductDetailIdlingResource
@@ -77,16 +82,13 @@ class ProductDetailActivityTest {
             override fun getName(): String = "variantFinish"
 
             override fun idleState(): Boolean {
-                val fragment =
-                    activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
+                val fragment = activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
                 val variantPosition = fragment.productAdapter?.currentList?.indexOfFirst {
                     it is ProductSingleVariantDataModel
                 } ?: return false
 
-                val variantVh = fragment.getRecyclerView()
-                    ?.findViewHolderForAdapterPosition(variantPosition) as? ProductSingleVariantViewHolder
-                val vhContainer =
-                    variantVh?.view?.findViewById<RecyclerView>(R.id.rv_single_variant)
+                val variantVh = fragment.getRecyclerView()?.findViewHolderForAdapterPosition(variantPosition) as? ProductSingleVariantViewHolder
+                val vhContainer = variantVh?.view?.findViewById<RecyclerView>(R.id.rv_single_variant)
 
                 return vhContainer?.findViewHolderForAdapterPosition(0) != null
             }
@@ -118,7 +120,7 @@ class ProductDetailActivityTest {
     fun validateClickBuyIsLogin() {
         actionTest {
             fakeLogin()
-            clickVariantTest()
+            selectVariantFromVbs()
             clickBuyNow()
         } assertTest {
             assertIsLoggedIn(true)
@@ -132,7 +134,7 @@ class ProductDetailActivityTest {
     fun validateClickAddToCartIsLogin() {
         actionTest {
             fakeLogin()
-            clickVariantTest()
+            selectVariantFromVbs()
             clickAddToCart()
         } assertTest {
             assertIsLoggedIn(true)
@@ -151,7 +153,7 @@ class ProductDetailActivityTest {
         actionTest {
             clearLogin()
             Thread.sleep(500L)
-            clickVariantTest()
+            selectVariantFromVbs()
             clickBuyNow()
         } assertTest {
             assertIsLoggedIn(false)
@@ -166,7 +168,7 @@ class ProductDetailActivityTest {
         actionTest {
             clearLogin()
             Thread.sleep(500L)
-            clickVariantTest()
+            selectVariantFromVbs()
             clickAddToCart()
         } assertTest {
             assertIsLoggedIn(false)
@@ -179,6 +181,7 @@ class ProductDetailActivityTest {
     @Test
     fun validateClickTabDiscussion() {
         actionTest {
+            clearLogin()
             fakeLogin()
             clickTabDiscussion()
         } assertTest {
@@ -287,32 +290,6 @@ class ProductDetailActivityTest {
         return addToCartBottomSheet?.isVisible
     }
 
-    private fun clickVariantTest() {
-        onView(withId(R.id.rv_pdp)).perform(
-            RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
-                hasDescendant(allOf(withId(R.id.rv_single_variant))),
-                scrollTo()
-            )
-        )
-        val viewInteraction = onView(
-            allOf(withId(R.id.rv_single_variant))
-        ).check(
-            matches(isDisplayed())
-        )
-        viewInteraction.perform(
-            RecyclerViewActions.actionOnItemAtPosition<ProductSingleVariantViewHolder>(
-                0,
-                clickChildViewWithId(R.id.atc_variant_chip)
-            )
-        )
-        viewInteraction.perform(
-            RecyclerViewActions.actionOnItemAtPosition<ProductSingleVariantViewHolder>(
-                1,
-                clickChildViewWithId(R.id.atc_variant_chip)
-            )
-        )
-    }
-
     private fun waitForTrackerSent() {
         Thread.sleep(500L)
     }
@@ -325,15 +302,60 @@ class ProductDetailActivityTest {
         InstrumentationAuthHelper.clearUserSession()
     }
 
-    private fun intendingIntent() {
+    private fun intendingIntent(resultData: Intent? = null) {
         Intents.intending(IntentMatchers.anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, resultData))
     }
 
     private fun assertIsLoggedIn(actualIsLoggedIn: Boolean) {
         val userSession = UserSession(targetContext)
         Assert.assertEquals(userSession.isLoggedIn, actualIsLoggedIn)
     }
+
+    private fun selectVariantFromVbs() {
+        clickChipVariantTest()
+        intentForResultVbs()
+    }
+
+    private fun clickChipVariantTest() {
+        onView(withId(R.id.rv_pdp)).perform(
+            RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                hasDescendant(allOf(withId(R.id.rv_single_variant))),
+                scrollTo()
+            )
+        )
+        val viewInteraction = onView(
+            allOf(withId(R.id.rv_single_variant))
+        ).check(
+            matches(isDisplayed())
+        )
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<ItemVariantChipViewHolder>(
+                0,
+                clickChildViewWithId(R.id.atc_variant_chip)
+            )
+        )
+    }
+
+    private fun intentForResultVbs() {
+        val cacheManager = SaveInstanceCacheManager(targetContext, true)
+        val variant = mockProductVariantResult()
+        cacheManager.put(AtcVariantHelper.PDP_PARCEL_KEY_RESULT, variant)
+
+        val resultIntent = Intent().apply {
+            putExtra(AtcVariantHelper.ATC_VARIANT_CACHE_ID, cacheManager.id)
+        }
+        intendingIntent(resultData = resultIntent)
+    }
+
+    private fun mockProductVariantResult() = ProductVariantResult(
+        parentProductId = "1994427767",
+        mapOfSelectedVariantOption = mutableMapOf(
+            "37068973" to "128374176",
+            "37068974" to "128374179"
+        ),
+        selectedProductId = "1994427769"
+    )
 
     companion object {
         const val PRODUCT_ID = "1994427767"
