@@ -120,12 +120,14 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun getPlayVideo(username: String, cursor: String): UserPlayVideoUiModel {
         return withContext(dispatcher.io) {
-            return@withContext playVodUseCase.executeOnBackground(
+            val response = playVodUseCase.executeOnBackground(
                 group = VAL_FEEDS_PROFILE,
                 cursor = cursor,
                 sourceType = VAL_SOURCE_BUYER,
                 sourceId = username,
             )
+
+            mapper.mapPlayVideo(response)
         }
     }
 
