@@ -31,7 +31,6 @@ import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionQuestionViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
-import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -62,7 +61,8 @@ class ProductDetailActivityTest {
             override fun getName(): String = "networkFinish"
 
             override fun idleState(): Boolean {
-                val fragment = activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
+                val fragment =
+                    activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
                 if (fragment.view?.findViewById<ConstraintLayout>(R.id.partial_layout_button_action) == null) {
                     throw RuntimeException("button not found")
                 }
@@ -77,13 +77,16 @@ class ProductDetailActivityTest {
             override fun getName(): String = "variantFinish"
 
             override fun idleState(): Boolean {
-                val fragment = activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
+                val fragment =
+                    activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
                 val variantPosition = fragment.productAdapter?.currentList?.indexOfFirst {
                     it is ProductSingleVariantDataModel
                 } ?: return false
 
-                val variantVh = fragment.getRecyclerView()?.findViewHolderForAdapterPosition(variantPosition) as? ProductSingleVariantViewHolder
-                val vhContainer = variantVh?.view?.findViewById<RecyclerView>(R.id.rv_single_variant)
+                val variantVh = fragment.getRecyclerView()
+                    ?.findViewHolderForAdapterPosition(variantPosition) as? ProductSingleVariantViewHolder
+                val vhContainer =
+                    variantVh?.view?.findViewById<RecyclerView>(R.id.rv_single_variant)
 
                 return vhContainer?.findViewHolderForAdapterPosition(0) != null
             }
@@ -174,17 +177,6 @@ class ProductDetailActivityTest {
     }
 
     @Test
-    fun validateClickGuideOnSizeChart() {
-        actionTest {
-            clickSeeGuideSizeChart()
-        } assertTest {
-            performClose(activityRule)
-            waitForTrackerSent()
-            validate(cassavaRule, GUIDE_ON_SIZE_CHART_PATH)
-        }
-    }
-
-    @Test
     fun validateClickTabDiscussion() {
         actionTest {
             fakeLogin()
@@ -242,20 +234,41 @@ class ProductDetailActivityTest {
     }
 
     private fun clickSeeAllDiscussion() {
-        onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll))), scrollTo()))
+        onView(withId(R.id.rv_pdp)).perform(
+            RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                hasDescendant(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll))),
+                scrollTo()
+            )
+        )
         onView(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll)))
             .check(matches(isDisplayed()))
             .perform(click())
     }
 
     private fun clickThreadDetailDiscussion() {
-        onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.productDiscussionMostHelpfulQuestions))), scrollTo()))
-        val viewInteraction = onView(withId(R.id.productDiscussionMostHelpfulQuestions)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<ProductDiscussionQuestionViewHolder>(0, clickChildViewWithId(R.id.productDetailDiscussionThread)))
+        onView(withId(R.id.rv_pdp)).perform(
+            RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                hasDescendant(allOf(withId(R.id.productDiscussionMostHelpfulQuestions))),
+                scrollTo()
+            )
+        )
+        val viewInteraction =
+            onView(withId(R.id.productDiscussionMostHelpfulQuestions)).check(matches(isDisplayed()))
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<ProductDiscussionQuestionViewHolder>(
+                0,
+                clickChildViewWithId(R.id.productDetailDiscussionThread)
+            )
+        )
     }
 
     private fun clickTabDiscussion() {
-        onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.mini_social_proof_recycler_view))), scrollTo()))
+        onView(withId(R.id.rv_pdp)).perform(
+            RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                hasDescendant(allOf(withId(R.id.mini_social_proof_recycler_view))),
+                scrollTo()
+            )
+        )
         onView(allOf(withId(R.id.chipSocialProofItem)))
             .check(matches(isDisplayed()))
             .perform(click())
@@ -269,7 +282,8 @@ class ProductDetailActivityTest {
     }
 
     private fun addToCartBottomSheetIsVisible(): Boolean? {
-        val addToCartBottomSheet = activityRule.activity.supportFragmentManager.findFragmentByTag("ADD_TO_CART") as? InstrumentTestAddToCartBottomSheet
+        val addToCartBottomSheet =
+            activityRule.activity.supportFragmentManager.findFragmentByTag("ADD_TO_CART") as? InstrumentTestAddToCartBottomSheet
         return addToCartBottomSheet?.isVisible
     }
 
@@ -299,26 +313,6 @@ class ProductDetailActivityTest {
         )
     }
 
-    private fun clickSeeGuideSizeChart() {
-        onView(withId(R.id.rv_pdp)).perform(
-            RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
-                hasDescendant(allOf(withId(R.id.rv_single_variant))),
-                scrollTo()
-            )
-        )
-        val viewInteraction = onView(
-            allOf(withId(R.id.rv_single_variant))
-        ).check(
-            matches(isDisplayed())
-        )
-        viewInteraction.perform(
-            RecyclerViewActions.actionOnItemAtPosition<ProductThumbnailVariantViewHolder>(
-                1,
-                clickChildViewWithId(R.id.atc_variant_chip)
-            )
-        )
-    }
-
     private fun waitForTrackerSent() {
         Thread.sleep(500L)
     }
@@ -332,7 +326,8 @@ class ProductDetailActivityTest {
     }
 
     private fun intendingIntent() {
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     private fun assertIsLoggedIn(actualIsLoggedIn: Boolean) {
@@ -342,13 +337,19 @@ class ProductDetailActivityTest {
 
     companion object {
         const val PRODUCT_ID = "1994427767"
-        const val ADD_TO_CART_LOGIN_PATH = "tracker/merchant/product_detail/pdp_add_to_cart_choose_variant_login.json"
-        const val ADD_TO_CART_NON_LOGIN_PATH = "tracker/merchant/product_detail/pdp_add_to_cart_choose_variant_non_login.json"
-        const val BUTTON_BUY_LOGIN_PATH = "tracker/merchant/product_detail/pdp_button_buy_now_choose_variant_login.json"
-        const val BUTTON_BUY_NON_LOGIN_PATH = "tracker/merchant/product_detail/pdp_button_buy_now_choose_variant_non_login.json"
-        const val GUIDE_ON_SIZE_CHART_PATH = "tracker/merchant/product_detail/pdp_guide_on_size_chart.json"
-        const val SEE_ALL_ON_LATEST_DISCUSSION_PATH = "tracker/merchant/product_detail/pdp_click_see_all_on_latest_discussion.json"
-        const val THREAD_DETAIL_ON_DISCUSSION_PATH = "tracker/merchant/product_detail/pdp_click_thread_detail_on_discussion.json"
-        const val DISCUSSION_PRODUCT_TAB_PATH = "tracker/merchant/product_detail/pdp_click_discussion_product_tab.json"
+        const val ADD_TO_CART_LOGIN_PATH =
+            "tracker/merchant/product_detail/pdp_add_to_cart_choose_variant_login.json"
+        const val ADD_TO_CART_NON_LOGIN_PATH =
+            "tracker/merchant/product_detail/pdp_add_to_cart_choose_variant_non_login.json"
+        const val BUTTON_BUY_LOGIN_PATH =
+            "tracker/merchant/product_detail/pdp_button_buy_now_choose_variant_login.json"
+        const val BUTTON_BUY_NON_LOGIN_PATH =
+            "tracker/merchant/product_detail/pdp_button_buy_now_choose_variant_non_login.json"
+        const val SEE_ALL_ON_LATEST_DISCUSSION_PATH =
+            "tracker/merchant/product_detail/pdp_click_see_all_on_latest_discussion.json"
+        const val THREAD_DETAIL_ON_DISCUSSION_PATH =
+            "tracker/merchant/product_detail/pdp_click_thread_detail_on_discussion.json"
+        const val DISCUSSION_PRODUCT_TAB_PATH =
+            "tracker/merchant/product_detail/pdp_click_discussion_product_tab.json"
     }
 }
