@@ -22,7 +22,7 @@
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:singleLine="true"
-            android:textColor="#de000000"
+            android:textColor="@color/dms_cm_collapsed_title"
             android:textSize="15sp" />
 
         <TextView
@@ -32,7 +32,7 @@
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:singleLine="true"
-            android:textColor="@color/secondary_text_default_material_light"
+            android:textColor="@color/dms_secondary_text_default_material_light"
             android:textSize="@dimen/cm_sp_13" />
 
     </LinearLayout>

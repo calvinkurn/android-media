@@ -4,11 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
@@ -39,6 +41,7 @@ open class ProfileFollowersAdapter(
 
     inner class ViewHolder(view: View) : BaseVH(view) {
         internal var imgProfile: ImageUnify = view.findViewById(R.id.img_profile_image)
+        internal var imgBadge: ImageUnify = view.findViewById(R.id.img_badge)
         internal var btnAction: UnifyButton = view.findViewById(R.id.btn_action_follow)
         internal var textName: TextView = view.findViewById(R.id.text_display_name)
         internal var textUsername: TextView = view.findViewById(R.id.text_user_name)
@@ -47,6 +50,26 @@ open class ProfileFollowersAdapter(
         override fun bindView(item: ProfileFollowerV2, position: Int) {
             setData(this, item, position)
         }
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val visibleItemCount = recyclerView.layoutManager?.childCount.orZero()
+                val totalItemCount = recyclerView.layoutManager?.itemCount.orZero()
+                val firstVisibleItemPosition =
+                    (recyclerView.layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition().orZero()
+                if (!isLoading && !isLastPage) {
+                    if (visibleItemCount + firstVisibleItemPosition >= totalItemCount
+                        && firstVisibleItemPosition >= 0
+                    ) {
+                        startDataLoading("")
+                    }
+                }
+            }
+        })
     }
 
     override fun getItemViewHolder(
@@ -62,11 +85,7 @@ open class ProfileFollowersAdapter(
 
     override fun loadData(pageNumber: Int, vararg args: String?) {
         super.loadData(pageNumber, *args)
-        if (args == null || args.isEmpty()) {
-            return
-        }
-
-        args[0]?.let { viewModel.getFollowers(it, cursor, PAGE_COUNT) }
+        viewModel.getFollowers(cursor, PAGE_COUNT)
     }
 
     fun onSuccess(data: ProfileFollowerListBase) {
@@ -92,6 +111,15 @@ open class ProfileFollowersAdapter(
         val itemContext = holder.itemView.context
         holder.imgProfile.setImageUrl(item.profile.imageCover)
         holder.textName.text = item.profile.name
+
+        val badgeUrl = item.profile.badges.getOrNull(BADGE_URL_IDX).orEmpty()
+        if(badgeUrl.isNotEmpty()) {
+            holder.imgBadge.show()
+            holder.imgBadge.setImageUrl(badgeUrl)
+        }
+        else {
+            holder.imgBadge.hide()
+        }
 
         if (item.profile.username.isNotBlank()) {
             holder.textUsername.show()
@@ -209,6 +237,8 @@ open class ProfileFollowersAdapter(
     }
 
     companion object {
-        const val PAGE_COUNT = 20
+        const val PAGE_COUNT = 10
+
+        private const val BADGE_URL_IDX = 1
     }
 }

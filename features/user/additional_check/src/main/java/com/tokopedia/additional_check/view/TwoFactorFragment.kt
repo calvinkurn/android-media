@@ -219,13 +219,13 @@ class TwoFactorFragment: BaseDaggerFragment() {
     }
 
     companion object {
-        private const val ROLLENCE_IMPROVE_2FA = "2fa_phone_improve"
+        private const val ROLLENCE_IMPROVE_2FA = "2fa_phone_improve_2"
         const val RESULT_POJO_KEY = "modelKey"
         const val IS_FROM_2FA = "is_from_2fa_checker"
 
-        private const val PIN_ONBOARDING_IMG = "https://ecs7.tokopedia.net/android/user/image_pin_two_factor.png"
-        private const val PHONE_ONBOARDING_IMG = "https://ecs7.tokopedia.net/android/user/image_phone_two_factor.png"
-        private const val PIN_SUCCESS_IMG = "https://ecs7.tokopedia.net/android/user/image_pin_success_two_factor.png"
+        private const val PIN_ONBOARDING_IMG = "https://images.tokopedia.net/android/user/image_pin_two_factor.png"
+        private const val PHONE_ONBOARDING_IMG = "https://images.tokopedia.net/android/user/image_phone_two_factor.png"
+        private const val PIN_SUCCESS_IMG = "https://images.tokopedia.net/android/user/image_pin_success_two_factor.png"
 
         fun newInstance(bundle: Bundle?): Fragment{
             return TwoFactorFragment().apply {

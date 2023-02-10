@@ -5,14 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:padding="@dimen/spacing_lvl4"
+    android:padding="16dp"
     android:background="?selectableItemBackground"
     tools:layout_height="@dimen/sah_new_other_shop_secondary_info_height">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_sah_new_other_shop_free_shipping"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/layout_lvl3"
+        android:layout_height="24dp"
         android:adjustViewBounds="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -23,7 +23,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_sah_new_other_free_shipping"
         android:layout_width="@dimen/sah_new_other_item_shop_shimmer_width"
-        android:layout_height="@dimen/layout_lvl2"
+        android:layout_height="16dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

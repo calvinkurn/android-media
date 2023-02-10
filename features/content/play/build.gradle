@@ -60,6 +60,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation projectOrAar(rootProject.ext.features.playCommon)
+    implementation projectOrAar(rootProject.ext.features.contentCommon)
     implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.variantCommon)
@@ -67,10 +68,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
+    implementation projectOrAar(rootProject.ext.features.playWidget)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
-    
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
@@ -83,7 +84,7 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation (rootProject.ext.firebase.crashlytics) {
+    implementation(rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
 
@@ -93,6 +94,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.miscDependencies.dynamicAnimation
 
     implementation rootProject.ext.networkDependencies.glide
 
@@ -115,6 +117,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayerCastExt
+    implementation rootProject.ext.playServicesDependencies.cast
 
     androidTestImplementation rootProject.ext.testDependencies.fragmentTest
 
@@ -129,7 +132,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
 
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
 
     androidTestImplementation rootProject.ext.miscDependencies.dagger
@@ -140,7 +143,7 @@ project.ext {
     artifactId = 'play'
     groupId = 'com.tokopedia.content'
     versionName = "0.0.2"
-    artifactName ="play-release"
+    artifactName = "play-release"
 }
 
 apply from: '../../../publish_local.gradle'

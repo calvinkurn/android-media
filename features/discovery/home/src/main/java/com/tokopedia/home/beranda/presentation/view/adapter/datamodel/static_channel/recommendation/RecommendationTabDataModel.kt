@@ -2,18 +2,22 @@ package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_ch
 
 import com.tokopedia.analyticconstant.DataLayer
 
-class RecommendationTabDataModel(val id: String,
-                                 val name: String,
-                                 val imageUrl: String,
-                                 val position: Int) {
+class RecommendationTabDataModel(
+    val id: String,
+    val name: String,
+    val imageUrl: String,
+    val position: Int,
+    val sourceType: String = ""
+) {
 
     fun convertFeedTabModelToDataObject(): Any {
         return DataLayer.mapOf(
-                DATA_ID, id,
-                DATA_NAME, String.format(DATA_VALUE_NAME, name),
-                DATA_POSITION, position.toString(),
-                DATA_CREATIVE, name,
-                DATA_CREATIVE_URL, imageUrl)
+            DATA_ID, id,
+            DATA_NAME, String.format(DATA_VALUE_NAME, name),
+            DATA_POSITION, position.toString(),
+            DATA_CREATIVE, name,
+            DATA_CREATIVE_URL, imageUrl
+        )
     }
 
     companion object {

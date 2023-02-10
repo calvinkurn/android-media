@@ -16,7 +16,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmProStatusInfo"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
         android:text="@string/pm_check_pm_pro_status_info"

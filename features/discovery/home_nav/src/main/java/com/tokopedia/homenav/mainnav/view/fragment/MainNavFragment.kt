@@ -21,9 +21,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation.SOURCE_ACCOUNT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.utils.toDpInt
-import com.tokopedia.homenav.MePageRollenceController
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
@@ -61,7 +61,6 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
@@ -103,7 +102,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     private var pageSource = ""
 
-    //for coachmark purpose
+    // for coachmark purpose
     private var isOngoingShowOnboarding = false
 
     override fun getScreenName(): String {
@@ -111,23 +110,21 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun initInjector() {
-        val baseNavComponent
-                = DaggerBaseNavComponent.builder()
+        val baseNavComponent =
+            DaggerBaseNavComponent.builder()
                 .baseAppComponent((requireActivity().applicationContext as BaseMainApplication).baseAppComponent)
                 .build() as DaggerBaseNavComponent
 
         DaggerMainNavComponent.builder()
-                .baseNavComponent(baseNavComponent)
-                .build()
-                .inject(this)
+            .baseNavComponent(baseNavComponent)
+            .build()
+            .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        MePageRollenceController.fetchMePageRollenceValue()
-        val rollence = MePageRollenceController.isMePageUsingRollenceVariant()
-        viewModel.setIsMePageUsingRollenceVariant(rollence)
+        viewModel.setInitialState()
 
         pageSource = args.StringMainNavArgsSourceKey
         viewModel.setPageSource(pageSource)
@@ -149,9 +146,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = view.findViewById(R.id.recycler_view)
-        if (recyclerView.itemDecorationCount == 0)
+        if (recyclerView.itemDecorationCount == 0) {
             recyclerView.addItemDecoration(MainNavSpacingDecoration(12f.toDpInt()))
-        recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+        }
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val offset = recyclerView.computeVerticalScrollOffset()
@@ -177,27 +175,38 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        observeCategoryListData()
-        viewModel.mainNavLiveData.observe(viewLifecycleOwner, Observer {
-            populateAdapterData(it)
-        })
-
-        viewModel.allProcessFinished.observe(viewLifecycleOwner, Observer {
-        })
-
-        viewModel.networkProcessLiveData.observe(viewLifecycleOwner, Observer { isFinished->
-            if (!isFinished) {
-                getNavPerformanceCallback()?.startNetworkRequestPerformanceMonitoring()
-            } else {
-                getNavPerformanceCallback()?.stopNetworkRequestPerformanceMonitoring()
+        viewModel.mainNavLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                populateAdapterData(it)
             }
-        })
+        )
 
-        viewModel.profileDataLiveData.observe(viewLifecycleOwner, Observer { accountHeaderModel ->
-            context?.let { ctx ->
-                setProfileCacheFromAccountModel(ctx, accountHeaderModel)
+        viewModel.allProcessFinished.observe(
+            viewLifecycleOwner,
+            Observer {
             }
-        })
+        )
+
+        viewModel.networkProcessLiveData.observe(
+            viewLifecycleOwner,
+            Observer { isFinished ->
+                if (!isFinished) {
+                    getNavPerformanceCallback()?.startNetworkRequestPerformanceMonitoring()
+                } else {
+                    getNavPerformanceCallback()?.stopNetworkRequestPerformanceMonitoring()
+                }
+            }
+        )
+
+        viewModel.profileDataLiveData.observe(
+            viewLifecycleOwner,
+            Observer { accountHeaderModel ->
+                context?.let { ctx ->
+                    setProfileCacheFromAccountModel(ctx, accountHeaderModel)
+                }
+            }
+        )
     }
 
     override fun onPause() {
@@ -260,14 +269,20 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
         view?.let {
             hitClickTrackingBasedOnId(homeNavMenuDataModel)
-            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
-                if(homeNavMenuDataModel.applink.isNotEmpty()){
-                    if (!handleClickFromPageSource(homeNavMenuDataModel)) {
+            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER ||
+                homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON ||
+                homeNavMenuDataModel.sectionId == MainNavConst.Section.ACTIVITY
+            ) {
+                if (homeNavMenuDataModel.applink.isNotEmpty()) {
+                    if (!handleClickFromPageSource(homeNavMenuDataModel.applink)) {
                         RouteManager.route(context, homeNavMenuDataModel.applink)
                     }
                 } else {
-                    NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
-                            bundleOf("title" to homeNavMenuDataModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuDataModel))
+                    NavigationRouter.MainNavRouter.navigateTo(
+                        it,
+                        NavigationRouter.PAGE_CATEGORY,
+                        bundleOf("title" to homeNavMenuDataModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuDataModel)
+                    )
                 }
                 TrackingBuSection.onClickBusinessUnitItem(homeNavMenuDataModel.itemTitle, userSession.userId)
             } else {
@@ -276,30 +291,30 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         }
     }
 
-    private fun handleClickFromPageSource(homeNavMenuDataModel: HomeNavMenuDataModel): Boolean {
-        if (validateTargetMenu(homeNavMenuDataModel)) {
+    private fun handleClickFromPageSource(applink: String): Boolean {
+        if (validateTargetMenu(applink)) {
             activity?.onBackPressed()
             return true
         }
         return false
     }
 
-    private fun validateTargetMenu(homeNavMenuDataModel: HomeNavMenuDataModel): Boolean {
-        return validateHomeUohPage(homeNavMenuDataModel) || validateHomeWishlistPage(homeNavMenuDataModel)
+    private fun validateTargetMenu(applink: String): Boolean {
+        return validateHomeUohPage(applink) || validateHomeWishlistPage(applink)
     }
 
-    private fun validateHomeUohPage(homeNavMenuDataModel: HomeNavMenuDataModel) =
-        homeNavMenuDataModel.id == ID_ALL_TRANSACTION && pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_UOH
+    private fun validateHomeUohPage(applink: String) =
+        applink == ApplinkConst.PURCHASE_ORDER && pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_UOH
 
-    private fun validateHomeWishlistPage(homeNavMenuDataModel: HomeNavMenuDataModel) =
-        homeNavMenuDataModel.id == ID_WISHLIST_MENU &&
+    private fun validateHomeWishlistPage(applink: String) =
+        applink == ApplinkConst.WISHLIST &&
             (
                 pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_COLLECTION ||
-                pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2
-            )
+                    pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2
+                )
 
     private fun hitClickTrackingBasedOnId(homeNavMenuDataModel: HomeNavMenuDataModel) {
-        when(homeNavMenuDataModel.id) {
+        when (homeNavMenuDataModel.id) {
             ID_ALL_TRANSACTION -> TrackingTransactionSection.clickOnAllTransaction(userSession.userId)
             ID_TICKET -> TrackingTransactionSection.clickOnTicket(userSession.userId)
             ID_REVIEW -> TrackingTransactionSection.clickOnReview(userSession.userId)
@@ -311,7 +326,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onMenuImpression(homeNavMenuDataModel: HomeNavMenuDataModel) {
-
     }
 
     override fun getUserId(): String {
@@ -327,21 +341,24 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onTitleClicked(homeNavTitleDataModel: HomeNavTitleDataModel) {
-        when(homeNavTitleDataModel.identifier){
-            ClientMenuGenerator.IDENTIFIER_TITLE_ORDER_HISTORY -> sendTrackingAllTransaction()
+        when (homeNavTitleDataModel.identifier) {
+            ClientMenuGenerator.IDENTIFIER_TITLE_ORDER_HISTORY -> TrackingTransactionSection.getClickViewAllTransaction()
             ClientMenuGenerator.IDENTIFIER_TITLE_WISHLIST -> TrackingTransactionSection.clickOnWishlistViewAll()
             ClientMenuGenerator.IDENTIFIER_TITLE_FAVORITE_SHOP -> TrackingTransactionSection.clickOnFavoriteShopViewAll()
+            ClientMenuGenerator.IDENTIFIER_TITLE_REVIEW -> TrackingTransactionSection.clickOnReviewViewAll()
         }
-        RouteManager.route(context, homeNavTitleDataModel.applink)
+        if (!handleClickFromPageSource(homeNavTitleDataModel.applink)) {
+            RouteManager.route(context, homeNavTitleDataModel.applink)
+        }
     }
 
     override fun onErrorWishlistClicked() {
         viewModel.refreshWishlistData()
     }
 
-    override fun onWishlistItemClicked(wishlistModel: NavWishlistModel, position: Int) {
+    override fun onWishlistCollectionClicked(wishlistModel: NavWishlistModel, position: Int) {
         TrackingTransactionSection.clickOnWishlistItem(getUserId(), wishlistModel, position)
-        goToPDP(wishlistModel.productId, position)
+        RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL, wishlistModel.id)
     }
 
     override fun onErrorFavoriteShopClicked() {
@@ -363,6 +380,31 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         startActivityForResult(intent, REQUEST_REVIEW_PRODUCT)
     }
 
+    override fun onErrorReviewClicked() {
+        viewModel.refreshReviewData()
+    }
+
+    override fun onViewAllTransactionClicked(trackingLabel: String?) {
+        trackingLabel?.run {
+            TrackingTransactionSection.clickOnOrderStatus(
+                getUserId(),
+                trackingLabel
+            )
+        } ?: TrackingTransactionSection.getClickViewAllTransaction()
+        val applink = ApplinkConst.PURCHASE_ORDER
+        if (!handleClickFromPageSource(applink)) {
+            RouteManager.route(context, applink)
+        }
+    }
+
+    override fun onViewAllWishlistClicked() {
+        TrackingTransactionSection.clickOnWishlistViewAll()
+        val applink = ApplinkConst.WISHLIST
+        if (!handleClickFromPageSource(applink)) {
+            RouteManager.route(context, applink)
+        }
+    }
+
     private fun getNavPerformanceCallback(): PageLoadTimePerformanceInterface? {
         context?.let {
             return (it as? HomeNavPerformanceInterface)?.getNavPerformanceInterface()
@@ -370,36 +412,30 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         return null
     }
 
-    private fun observeCategoryListData(){
-        onRefresh()
-        viewModel.businessListLiveData.observe(viewLifecycleOwner, Observer {
-            if(it is Fail){
-
-            }
-        })
-    }
-
     private fun initAdapter() {
-        val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession(), object : TokopediaPlusListener {
-            override fun isShown(
-                isShown: Boolean,
-                pageSource: String,
-                tokopediaPlusDataModel: TokopediaPlusDataModel
-            ) {
+        val mainNavFactory = MainNavTypeFactoryImpl(
+            this,
+            getUserSession(),
+            object : TokopediaPlusListener {
+                override fun isShown(
+                    isShown: Boolean,
+                    pageSource: String,
+                    tokopediaPlusDataModel: TokopediaPlusDataModel
+                ) {
+                }
 
-            }
+                override fun onClick(
+                    pageSource: String,
+                    tokopediaPlusDataModel: TokopediaPlusDataModel
+                ) {
+                    TrackingProfileSection.onClickTokopediaPlus(tokopediaPlusDataModel.isSubscriber)
+                }
 
-            override fun onClick(
-                pageSource: String,
-                tokopediaPlusDataModel: TokopediaPlusDataModel
-            ) {
-                TrackingProfileSection.onClickTokopediaPlus(tokopediaPlusDataModel.isSubscriber)
+                override fun onRetry() {
+                    viewModel.refreshTokopediaPlusData()
+                }
             }
-
-            override fun onRetry() {
-                viewModel.refreshTokopediaPlusData()
-            }
-        })
+        )
         adapter = MainNavListAdapter(mainNavFactory)
 
         activity?.let {
@@ -432,15 +468,14 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         }
     }
 
-    private fun getUserSession() : UserSessionInterface{
-        if(!::userSession.isInitialized){
+    private fun getUserSession(): UserSessionInterface {
+        if (!::userSession.isInitialized) {
             activity?.let {
                 userSession = UserSession(it)
             }
         }
         return userSession
     }
-
 
     private fun haveUserLogoutData(): Boolean {
         val name = getSharedPreference().getString(AccountHeaderDataModel.KEY_USER_NAME, "") ?: ""
@@ -464,12 +499,12 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 }
 
 data class CoachmarkRecyclerViewConfig(
-        val items: ArrayList<CoachMark2Item>,
-        val configs: ArrayList<CoachmarkItemReyclerViewConfig>,
-        val onFinish: () -> Unit
+    val items: ArrayList<CoachMark2Item>,
+    val configs: ArrayList<CoachmarkItemReyclerViewConfig>,
+    val onFinish: () -> Unit
 )
 
 data class CoachmarkItemReyclerViewConfig(
-        val scrollToPosition: Int,
-        val targetPosition: Int?
+    val scrollToPosition: Int,
+    val targetPosition: Int?
 )

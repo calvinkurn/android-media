@@ -1,7 +1,7 @@
 package com.tokopedia.feedplus.view.adapter.viewholder.carouselplaycard
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardModel
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 
 /**
@@ -9,13 +9,13 @@ import com.tokopedia.play.widget.PlayWidgetViewHolder
  */
 class CarouselPlayCardViewHolder(
         private val playWidgetViewHolder: PlayWidgetViewHolder
-) : AbstractViewHolder<CarouselPlayCardViewModel>(playWidgetViewHolder.itemView) {
+) : AbstractViewHolder<CarouselPlayCardModel>(playWidgetViewHolder.itemView) {
 
-    override fun bind(element: CarouselPlayCardViewModel) {
+    override fun bind(element: CarouselPlayCardModel) {
         playWidgetViewHolder.bind(element.playWidgetState, this)
     }
 
-    override fun bind(element: CarouselPlayCardViewModel, payloads: MutableList<Any>) {
+    override fun bind(element: CarouselPlayCardModel, payloads: MutableList<Any>) {
         bind(element)
     }
 

@@ -1,16 +1,33 @@
 package com.tokopedia.play.view.uimodel
 
-import androidx.annotation.DrawableRes
+import android.graphics.drawable.Drawable
 import androidx.annotation.StringRes
+import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.play.analytic.TrackingField
+import com.tokopedia.play.R
 import com.tokopedia.play.view.type.PlayMoreActionType
 
 /**
  * Created by jegul on 10/12/19
  */
 data class PlayMoreActionUiModel(
-        val type: PlayMoreActionType,
-        @DrawableRes val iconRes: Int,
-        @StringRes val subtitleRes: Int,
-        val isIconAvailable: Boolean,
-        val onClick: (PlayMoreActionUiModel) -> Unit
-)
+    val type: PlayMoreActionType,
+    val icon: Drawable?,
+    @StringRes val subtitleRes: Int,
+    val onClick: (PlayMoreActionUiModel) -> Unit,
+    val priority: Int,
+    val onImpress: () -> Unit,
+    @TrackingField val impressHolder: ImpressHolder = ImpressHolder(),
+) {
+    companion object {
+        val Empty : PlayMoreActionUiModel
+        get () = PlayMoreActionUiModel(
+            type = PlayMoreActionType.PiP,
+            icon = null,
+            subtitleRes = R.string.play_product_empty_title,
+            onClick = {},
+            priority = -1,
+            onImpress = {},
+        )
+    }
+}

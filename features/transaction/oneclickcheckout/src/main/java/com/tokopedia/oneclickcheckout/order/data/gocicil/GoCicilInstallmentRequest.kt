@@ -24,7 +24,7 @@ class GoCicilInstallmentRequest(
     private val destinationAddress
         get() = JsonObject().apply {
             addProperty(ORDER_METADATA_DEST_ADDRESS_ADDRESS, address.addressStreet)
-            addProperty(ORDER_METADATA_DEST_ADDRESS_STATE, address.addressStreet)
+            addProperty(ORDER_METADATA_DEST_ADDRESS_STATE, address.provinceName)
             addProperty(ORDER_METADATA_DEST_ADDRESS_CITY, address.cityName)
             addProperty(ORDER_METADATA_DEST_ADDRESS_COUNTRY, address.country)
             addProperty(ORDER_METADATA_DEST_ADDRESS_POSTAL_CODE, address.postalCode)
@@ -34,7 +34,7 @@ class GoCicilInstallmentRequest(
         get() = JsonArray().apply {
             products.forEach { product ->
                 add(JsonObject().apply {
-                    addProperty(ORDER_METADATA_PRODUCT_DATA_ID, product.productId.toString())
+                    addProperty(ORDER_METADATA_PRODUCT_DATA_ID, product.productId)
                     addProperty(ORDER_METADATA_PRODUCT_DATA_PRICE, product.productPrice)
                     addProperty(ORDER_METADATA_PRODUCT_DATA_QUANTITY, product.orderQuantity)
                     add(ORDER_METADATA_PRODUCT_DATA_CATEGORY, JsonObject().apply {

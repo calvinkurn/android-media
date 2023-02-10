@@ -37,6 +37,7 @@ import com.tokopedia.product.manage.data.createShopOwnerAccess
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.list.data.model.FeaturedProductResponseModel
+import com.tokopedia.product.manage.feature.list.data.model.GetTargetedTickerResponse
 import com.tokopedia.product.manage.feature.list.data.model.GoldManageFeaturedProductV2
 import com.tokopedia.product.manage.feature.list.data.model.Header
 import com.tokopedia.product.manage.feature.list.data.repository.MockedUploadStatusRepository
@@ -78,7 +79,7 @@ import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditPro
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult.Result
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
-import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_TICKER_NOTIFY_ME
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_STOCK_AVAILABLE
 import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse.Data
@@ -920,12 +921,19 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 ShopLocationResponse("1", MAIN_LOCATION),
                 ShopLocationResponse("2", OTHER_LOCATION)
             )
+
+            val tickerResponse = GetTargetedTickerResponse(
+                GetTargetedTickerResponse.GetTargetedTicker(
+                    listOf(mockk())
+                )
+            )
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenReturn(productListData)
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
             onGetStatusShop_thenReturn(StatusInfo("3", "", "", ""))
-            onGetTickerData_thenReturn(listOf(mockk()))
-            onGetIsShowNotifyMeTicker(true)
+            onGetTickerList_thenReturn(tickerResponse)
+            onGetTickerData_thenReturn(listOf(mockk()), tickerResponse)
+            onGetIsShowStockAvailableTicker(true)
 
             viewModel.getProductManageAccess()
             viewModel.getTickerData()
@@ -957,11 +965,18 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 ShopLocationResponse("1", MAIN_LOCATION),
                 ShopLocationResponse("2", OTHER_LOCATION)
             )
+            val tickerResponse = GetTargetedTickerResponse(
+                GetTargetedTickerResponse.GetTargetedTicker(
+                    listOf(mockk())
+                )
+            )
+
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenReturn(productListData)
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
-            onGetTickerData_thenReturn(listOf(mockk()))
-            onGetIsShowNotifyMeTicker(true)
+            onGetTickerList_thenReturn(tickerResponse)
+            onGetTickerData_thenReturn(listOf(mockk()), tickerResponse)
+            onGetIsShowStockAvailableTicker(true)
 
             viewModel.getTickerData()
             viewModel.getProductList(shopId)
@@ -996,10 +1011,14 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 ShopLocationResponse("1", MAIN_LOCATION),
                 ShopLocationResponse("2", OTHER_LOCATION)
             )
+            val tickerResponse = GetTargetedTickerResponse(
+                null
+            )
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenReturn(productListData)
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
-            onGetTickerData_thenReturn(emptyList())
+            onGetTickerList_thenReturn(tickerResponse)
+            onGetTickerData_thenReturn(emptyList(), tickerResponse)
 
             viewModel.getTickerData()
             viewModel.getProductList(shopId, paramsProductList)
@@ -1030,11 +1049,16 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 ShopLocationResponse("1", MAIN_LOCATION),
                 ShopLocationResponse("2", OTHER_LOCATION)
             )
+            val tickerResponse = GetTargetedTickerResponse(
+                GetTargetedTickerResponse.GetTargetedTicker(
+                    listOf(mockk())
+                )
+            )
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenReturn(productListData)
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
-            onGetTickerData_thenReturn(emptyList())
-
+            onGetTickerList_thenReturn(tickerResponse)
+            onGetTickerData_thenReturn(emptyList(), tickerResponse)
             viewModel.getTickerData()
             viewModel.getProductList(shopId)
             viewModel.hideTicker()
@@ -1048,7 +1072,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     @Test
     fun `given non-empty ticker data and non success product list when showStockTicker should not set showStockTicker TRUE`() {
         runBlocking {
-            onGetTickerData_thenReturn(listOf(mockk()))
+            onGetTickerData_thenReturn(listOf(mockk()), mockk())
 
             viewModel.getTickerData()
             viewModel.showTicker()
@@ -1080,10 +1104,10 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 ShopLocationResponse("2", OTHER_LOCATION)
             )
             onGetWarehouseId_thenReturn(locationList)
-            onGetIsShowNotifyMeTicker(true)
+            onGetIsShowStockAvailableTicker(true)
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
             onGetProductList_thenReturn(productListData)
-            onGetTickerData_thenReturn(listOf(mockk()))
+            onGetTickerData_thenReturn(listOf(mockk()), mockk())
             viewModel.getTickerData()
             viewModel.getProductList(shopId, filterOptions = paramsProductList)
 
@@ -2204,41 +2228,6 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `given productId when promo top ads clicked should set live data with top ads page`() {
-        val productId = "1"
-
-        testOnClickPromoTopAds(
-            productId = productId,
-            adsCategory = MANUAL_ADS,
-            expectedPage = TopAdsPage.ManualAds(productId)
-        )
-
-        testOnClickPromoTopAds(
-            productId = productId,
-            adsCategory = AUTO_ADS,
-            expectedPage = TopAdsPage.AutoAds(productId)
-        )
-
-        testOnClickPromoTopAds(
-            productId = productId,
-            adsCategory = UNKNOWN_ADS,
-            expectedPage = TopAdsPage.OnBoarding(productId)
-        )
-    }
-
-    @Test
-    fun `given topAdsInfo NULL when promo top ads clicked should set live data with onboarding page`() {
-        val productId = "1"
-
-        viewModel.onPromoTopAdsClicked(productId)
-
-        val expectedPage = TopAdsPage.OnBoarding(productId)
-
-        viewModel.onClickPromoTopAds
-            .verifyValueEquals(expectedPage)
-    }
-
-    @Test
     fun `given user is shop owner when get product manage access should set live data with owner access`() {
         onGetIsShopOwner_thenReturn(isShopOwner = true)
 
@@ -2444,12 +2433,25 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
     @Test
     fun `when getTickerData should set tickerData`() {
-        val tickerData = listOf<TickerData>(mockk())
-        onGetTickerData_thenReturn(tickerData)
+        runBlocking {
+            val tickerData = listOf<TickerData>(mockk())
 
-        viewModel.getTickerData()
+            val tickerResponse = GetTargetedTickerResponse(
+                GetTargetedTickerResponse.GetTargetedTicker(
+                    listOf(mockk())
+                )
+            )
+            onGetIsMultiLocationShop_thenReturn(true)
+            onGetTickerList_thenReturn(
+              tickerResponse
+            )
+            onGetTickerData_thenReturn(tickerData, tickerResponse)
 
-        verifyTickerDataEquals(tickerData)
+            viewModel.getTickerData()
+
+            verifyTickerDataEquals(tickerData)
+        }
+
     }
 
     @Test
@@ -2507,7 +2509,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val statusInfo = StatusInfo("3", "", "", "")
             onGetStatusShop_thenReturn(statusInfo)
             onGetIsShopOwner_thenReturn(isShopOwner = true)
-            onGetTickerData_thenReturn(listOf(mockk()))
+            onGetTickerData_thenReturn(listOf(mockk()), mockk())
             viewModel.getProductManageAccess()
             viewModel.getProductList(shopId, paramsProductList)
             viewModel.getTickerData()
@@ -2566,8 +2568,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             clearUploadStatusUseCase,
             getMaxStockThresholdUseCase,
             getStatusShopUseCase,
+            getTickerUseCase,
             tickerStaticDataProvider,
-            remoteConfigImpl,
             CoroutineTestDispatchersProvider
         )
 
@@ -2614,8 +2616,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             clearUploadStatusUseCase,
             getMaxStockThresholdUseCase,
             getStatusShopUseCase,
+            getTickerUseCase,
             tickerStaticDataProvider,
-            remoteConfigImpl,
             CoroutineTestDispatchersProvider
         )
 
@@ -2656,8 +2658,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             clearUploadStatusUseCase,
             getMaxStockThresholdUseCase,
             getStatusShopUseCase,
+            getTickerUseCase,
             tickerStaticDataProvider,
-            remoteConfigImpl,
             CoroutineTestDispatchersProvider
         )
 
@@ -2679,24 +2681,6 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
         viewModel.productManageAccess
             .verifySuccessEquals(expectedResult)
-    }
-
-    private fun testOnClickPromoTopAds(
-        productId: String,
-        adsCategory: Int,
-        expectedPage: TopAdsPage
-    ) {
-        val topAdsData = ShopInfoTopAds(Data(category = adsCategory))
-        val response = ShopInfoTopAdsResponse(topAdsData)
-
-        onGetShopInfoTopAds_thenReturn(response)
-
-        viewModel.getTopAdsInfo()
-        viewModel.onPromoTopAdsClicked(productId)
-
-
-        viewModel.onClickPromoTopAds
-            .verifyValueEquals(expectedPage)
     }
 
     private fun testGetTopAdsInfo(
@@ -2779,6 +2763,10 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
     private suspend fun onGetProductList_thenReturn(productListData: ProductListData) {
         coEvery { getProductListUseCase.execute(any()) } returns productListData
+    }
+
+    private suspend fun onGetTickerList_thenReturn(response: GetTargetedTickerResponse) {
+        coEvery { getTickerUseCase.execute() } returns response
     }
 
     private suspend fun onGetStatusShop_thenReturn(statusInfo: StatusInfo) {
@@ -2879,15 +2867,21 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         } returns locationList
     }
 
-    private fun onGetTickerData_thenReturn(tickerData: List<TickerData>) {
+    private fun onGetTickerData_thenReturn(
+        tickerData: List<TickerData>,
+        tickerResponse: GetTargetedTickerResponse
+    ) {
         every {
-            tickerStaticDataProvider.getTickers(any(), any(), any())
+            tickerStaticDataProvider.createTicker(
+                true,
+                tickerResponse.getTargetedTicker?.tickers.orEmpty()
+            )
         } returns tickerData
     }
 
-    private fun onGetIsShowNotifyMeTicker(isShow: Boolean) {
+    private fun onGetIsShowStockAvailableTicker(isShow: Boolean) {
         every {
-            remoteConfigImpl.getBoolean(ENABLE_TICKER_NOTIFY_ME)
+            remoteConfigImpl.getBoolean(ENABLE_STOCK_AVAILABLE)
         } returns isShow
     }
 

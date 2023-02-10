@@ -635,6 +635,12 @@
         <package android:name="xyz.duit.saku" />
         <package android:name="xyz.rupiah.sigap.pinjol" />
         <package android:name="zone.bytesreverser.xposeddeviceidmaskerpro" />
+        <package android:name="com.instagram.android"/>
+        <package android:name="com.facebook.katana"/>
+        <package android:name="com.whatsapp"/>
+        <package android:name="jp.naver.line.android"/>
+        <package android:name="com.twitter.android"/>
+        <package android:name="org.telegram.messenger"/>
     </queries>
     <application
         android:name=".SellerMainApplication"
@@ -661,15 +667,14 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
-        <activity
-            android:name=".FallbackActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3.PlainGreen"></activity>
         <activity
             android:screenOrientation="portrait"
             android:name="com.tokopedia.shop.open.view.activity.ShopOpenMandatoryActivity" />

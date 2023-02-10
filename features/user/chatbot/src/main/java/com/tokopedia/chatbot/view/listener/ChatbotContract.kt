@@ -58,8 +58,6 @@ interface ChatbotContract {
 
         fun uploadUsingSecureUpload(data: Intent)
 
-        fun uploadUsingOldMechanism(data: Intent)
-
         fun sendInvoiceForArticle()
 
         fun onSuccessGetTickerData(tickerData: TickerData)
@@ -74,11 +72,15 @@ interface ChatbotContract {
 
         fun onSuccessSendRating(pojo: SendRatingPojo, rating: Int, element: ChatRatingUiModel)
 
-        fun sessionChangeStateHandler(state : Boolean)
+        fun sessionChangeStateHandler(state: Boolean)
 
-        fun videoUploadEligibilityHandler(state : Boolean)
+        fun videoUploadEligibilityHandler(state: Boolean)
 
-        fun onVideoUploadChangeView(uiModel : VideoUploadUiModel)
+        fun onVideoUploadChangeView(uiModel: VideoUploadUiModel)
+
+        fun setBigReplyBoxTitle(text: String, placeholder: String)
+
+        fun hideReplyBox()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -102,8 +104,10 @@ interface ChatbotContract {
 
         fun sendRating(messageId: String, rating: Int, element: ChatRatingUiModel)
 
-        fun submitCsatRating(messageId: String,
-                             inputItem: InputItem)
+        fun submitCsatRating(
+            messageId: String,
+            inputItem: InputItem
+        )
 
         fun showTickerData(messageId: String)
 
@@ -116,19 +120,14 @@ interface ChatbotContract {
 
         fun sendReadEvent(messageId: String)
 
-        fun uploadImages(
-            it: ImageUploadUiModel,
-            messageId: String,
-            opponentId: String,
-            onError: (Throwable, ImageUploadUiModel) -> Unit
-        )
-
         fun destroyWebSocket()
 
-        fun hitGqlforOptionList(messageId : String, selectedValue: Int, model: HelpFullQuestionsUiModel?)
+        fun hitGqlforOptionList(messageId: String, selectedValue: Int, model: HelpFullQuestionsUiModel?)
 
-        fun submitChatCsat(messageId : String,
-                           input: ChipSubmitChatCsatInput)
+        fun submitChatCsat(
+            messageId: String,
+            input: ChipSubmitChatCsatInput
+        )
 
         fun cancelImageUpload()
 
@@ -161,7 +160,7 @@ interface ChatbotContract {
 
         fun cancelVideoUpload(file: String, sourceId: String, onError: (Throwable) -> Unit)
 
-        fun checkUploadVideoEligibility(msgId : String)
+        fun checkUploadVideoEligibility(msgId: String)
 
         fun sendMessage(
             messageId: String,

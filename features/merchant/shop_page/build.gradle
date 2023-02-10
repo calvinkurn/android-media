@@ -71,10 +71,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.features.shopPageWidget)
+    implementation projectOrAar(rootProject.ext.features.productServiceWidget)
+    implementation projectOrAar(rootProject.ext.features.contentCommon)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation projectOrAar(rootProject.ext.libraries.youtubeutil)
-    implementation projectOrAar(rootProject.ext.libraries.videoplayer)
 
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
 
@@ -155,7 +156,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
 }
 
 project.ext {

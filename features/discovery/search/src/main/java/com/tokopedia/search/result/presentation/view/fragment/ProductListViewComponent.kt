@@ -24,14 +24,18 @@ import com.tokopedia.search.result.presentation.presenter.product.ProductListPre
 import com.tokopedia.search.result.product.banned.BannedProductsViewModule
 import com.tokopedia.search.result.product.broadmatch.BroadMatchModule
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressViewModule
+import com.tokopedia.search.result.product.cpm.TopAdsHeadlineModule
+import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterModule
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselModule
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcModule
+import com.tokopedia.search.result.product.lastfilter.LastFilterModule
 import com.tokopedia.search.result.product.pagination.PaginationModule
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
 import com.tokopedia.search.result.product.safesearch.SafeSearchModule
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationModule
 import com.tokopedia.search.result.product.ticker.TickerModule
 import com.tokopedia.search.result.product.video.VideoModule
+import com.tokopedia.search.result.product.wishlist.WishlistModule
 import com.tokopedia.search.utils.ProductionSchedulersProviderModule
 import com.tokopedia.search.utils.applinkmodifier.SearchApplinkModifierModule
 import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule
@@ -49,6 +53,7 @@ import dagger.Component
     GetLocalSearchRecommendationUseCaseModule::class,
     SearchOnBoardingLocalCacheModule::class,
     TopAdsUrlHitterModule::class,
+    TopAdsHeadlineModule::class,
     ProductionSchedulersProviderModule::class,
     GetInspirationCarouselChipsProductUseCaseModule::class,
     SaveLastFilterUseCaseModule::class,
@@ -73,6 +78,9 @@ import dagger.Component
     VideoModule::class,
     TickerModule::class,
     SafeSearchModule::class,
+    WishlistModule::class,
+    LastFilterModule::class,
+    BottomSheetFilterModule::class,
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {
 

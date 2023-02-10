@@ -3,6 +3,8 @@ package com.tokopedia.affiliate.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.affiliate.viewmodel.AffiliateDatePickerBottomSheetViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateEducationLandingViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateEducationSeeAllViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateHomeViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateLoginViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePortfolioViewModel
@@ -12,6 +14,7 @@ import com.tokopedia.affiliate.viewmodel.AffiliatePromotionHistoryViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateRecommendedProductViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateRecyclerViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateRegistrationSharedViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateSSAShopViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateTermsAndConditionViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateTransactionDetailViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
@@ -27,7 +30,9 @@ abstract class AffiliateVMModule {
 
     @AffiliateScope
     @Binds
-    internal abstract fun bindViewModelFactory(viewModelProviderFactory: ViewModelProviderFactory): ViewModelProvider.Factory
+    internal abstract fun bindViewModelFactory(
+        viewModelProviderFactory: ViewModelProviderFactory
+    ): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
@@ -57,13 +62,16 @@ abstract class AffiliateVMModule {
     @IntoMap
     @AffiliateScope
     @ViewModelKey(AffiliateRecommendedProductViewModel::class)
-    internal abstract fun affiliateRecommendedProductViewModel(viewModel: AffiliateRecommendedProductViewModel): ViewModel
+    internal abstract fun affiliateRecommendedProductViewModel(
+        viewModel: AffiliateRecommendedProductViewModel
+    ): ViewModel
 
     @Binds
     @IntoMap
     @AffiliateScope
     @ViewModelKey(AffiliateLoginViewModel::class)
     internal abstract fun affiliateLoginViewModel(viewModel: AffiliateLoginViewModel): ViewModel
+
     @Binds
     @IntoMap
     @AffiliateScope
@@ -117,5 +125,23 @@ abstract class AffiliateVMModule {
     @AffiliateScope
     @ViewModelKey(AffiliateRegistrationSharedViewModel::class)
     internal abstract fun affiliateRegistrationViewModel(viewModel: AffiliateRegistrationSharedViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @AffiliateScope
+    @ViewModelKey(AffiliateEducationLandingViewModel::class)
+    internal abstract fun affiliateEducationLandingViewModel(viewModel: AffiliateEducationLandingViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @AffiliateScope
+    @ViewModelKey(AffiliateEducationSeeAllViewModel::class)
+    internal abstract fun affiliateEducationSeeAllViewModel(viewModel: AffiliateEducationSeeAllViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @AffiliateScope
+    @ViewModelKey(AffiliateSSAShopViewModel::class)
+    internal abstract fun affiliateSSAShopViewModel(viewModel: AffiliateSSAShopViewModel): ViewModel
 
 }

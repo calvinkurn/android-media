@@ -56,6 +56,72 @@
       "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - x username",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "40052",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - username field",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "40053",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - tnc box",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "40054",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - lanjut",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "40055",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - x ineligible",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "40057",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - oke mengerti",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - (seller|user)",
+      "trackerId": "40058",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }

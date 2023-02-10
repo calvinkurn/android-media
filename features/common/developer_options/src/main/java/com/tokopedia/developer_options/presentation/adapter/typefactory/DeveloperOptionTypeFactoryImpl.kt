@@ -47,6 +47,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ViewAnalyticsLogUiModel): Int = ViewAnalyticsLogViewHolder.LAYOUT
     override fun type(uiModel: ViewIrisLogUiModel): Int = ViewIrisLogViewHolder.LAYOUT
     override fun type(uiModel: LeakCanaryUiModel): Int = LeakCanaryViewHolder.LAYOUT
+    override fun type(uiModel: StrictModeLeakPublisherUiModel): Int = StrictModeLeakPublisherViewHolder.LAYOUT
     override fun type(uiModel: RemoteConfigEditorUiModel): Int = RemoteConfigEditorViewHolder.LAYOUT
     override fun type(uiModel: RouteManagerUiModel): Int = RouteManagerViewHolder.LAYOUT
     override fun type(uiModel: LoggingToServerUiModel): Int = LoggingToServerViewHolder.LAYOUT
@@ -68,6 +69,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ConvertResourceIdUiModel): Int = ConvertResourceIdViewHolder.LAYOUT
     override fun type(uiModel: ForceLogoutUiModel): Int = ForceLogoutViewHolder.LAYOUT
     override fun type(uiModel: ViewHanselPatchUiModel): Int = ViewHanselPatchViewHolder.LAYOUT
+    override fun type(uiModel: TopchatWebSocketLoggingUiModel): Int = TopchatWebSocketLoggingViewHolder.LAYOUT
     override fun type(uiModel: DevOptsAuthorizationUiModel): Int = DevOptsAuthorizationViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -99,6 +101,7 @@ class DeveloperOptionTypeFactoryImpl(
             ViewAnalyticsLogViewHolder.LAYOUT -> ViewAnalyticsLogViewHolder(view)
             ViewIrisLogViewHolder.LAYOUT -> ViewIrisLogViewHolder(view)
             LeakCanaryViewHolder.LAYOUT -> LeakCanaryViewHolder(view)
+            StrictModeLeakPublisherViewHolder.LAYOUT -> StrictModeLeakPublisherViewHolder(view)
             RemoteConfigEditorViewHolder.LAYOUT -> RemoteConfigEditorViewHolder(view)
             RouteManagerViewHolder.LAYOUT -> RouteManagerViewHolder(view)
             LoggingToServerViewHolder.LAYOUT -> LoggingToServerViewHolder(view)
@@ -119,6 +122,7 @@ class DeveloperOptionTypeFactoryImpl(
             TypographySwitcherViewHolder.LAYOUT -> TypographySwitcherViewHolder(view)
             ConvertResourceIdViewHolder.LAYOUT -> ConvertResourceIdViewHolder(view)
             ViewHanselPatchViewHolder.LAYOUT -> ViewHanselPatchViewHolder(view)
+            TopchatWebSocketLoggingViewHolder.LAYOUT -> TopchatWebSocketLoggingViewHolder(view)
             DevOptsAuthorizationViewHolder.LAYOUT -> DevOptsAuthorizationViewHolder(view, authorizeListener)
             else -> super.createViewHolder(view, type)
         }

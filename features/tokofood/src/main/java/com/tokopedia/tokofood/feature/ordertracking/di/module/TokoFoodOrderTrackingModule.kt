@@ -2,6 +2,7 @@ package com.tokopedia.tokofood.feature.ordertracking.di.module
 
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
+import com.tokochat.tokochat_config_common.repository.TokoChatRepository
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -10,6 +11,7 @@ import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.ITokoFoodOrder
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.ITokoFoodOrderLiveTrackingMapper
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.TokoFoodOrderCompletedMapperSection
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.TokoFoodOrderLiveTrackingMapperSection
+import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.TokoChatConfigGroupBookingUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -41,5 +43,13 @@ class TokoFoodOrderTrackingModule {
     @Provides
     fun provideTokoFoodOrderCompletedMapper(): ITokoFoodOrderCompletedMapper {
         return TokoFoodOrderCompletedMapperSection()
+    }
+
+    @TokoFoodOrderTrackingScope
+    @Provides
+    fun provideTokoChatConfigMutationProfileUseCase(
+        repository: TokoChatRepository
+    ): TokoChatConfigGroupBookingUseCase {
+        return TokoChatConfigGroupBookingUseCase(repository)
     }
 }

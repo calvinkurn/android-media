@@ -10,15 +10,16 @@ import com.tokopedia.play.broadcaster.domain.model.Config
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
 import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.config.GetBroadcastingConfigurationUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
+import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -27,6 +28,7 @@ import javax.inject.Inject
  * Created by jegul on 01/10/21
  */
 class PlayBroadcastChannelRepositoryImpl @Inject constructor(
+    private val getBroadcastingConfig: GetBroadcastingConfigurationUseCase,
     private val getConfigurationUseCase: GetConfigurationUseCase,
     private val createChannelUseCase: CreateChannelUseCase,
     private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
@@ -34,19 +36,35 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
     private val mapper: PlayBroadcastMapper,
     private val dispatchers: CoroutineDispatchers,
     private val getWhiteListNewUseCase: GetWhiteListNewUseCase,
-): PlayBroadcastChannelRepository {
+) : PlayBroadcastChannelRepository {
 
-    override suspend fun getAccountList(): List<ContentAccountUiModel> = withContext(dispatchers.io) {
-        val response = getWhiteListNewUseCase.execute(type = WHITELIST_ENTRY_POINT)
-
-        return@withContext mapper.mapAuthorList(response)
+    override suspend fun getBroadcastingConfig(
+        authorID: String,
+        authorType: String
+    ): BroadcastingConfigUiModel = withContext(dispatchers.io) {
+        val request = getBroadcastingConfig.execute(authorID, authorType)
+        return@withContext mapper.mapBroadcastingConfig(request)
     }
 
-    override suspend fun getChannelConfiguration(authorId: String, authorType: String): ConfigurationUiModel = withContext(dispatchers.io) {
+    override suspend fun getAccountList(): List<ContentAccountUiModel> =
+        withContext(dispatchers.io) {
+            val response = getWhiteListNewUseCase.execute(type = WHITELIST_ENTRY_POINT)
+
+            return@withContext mapper.mapAuthorList(response)
+        }
+
+    override suspend fun getChannelConfiguration(
+        authorId: String,
+        authorType: String
+    ): ConfigurationUiModel = withContext(dispatchers.io) {
         val response = getConfigurationUseCase.execute(authorId = authorId, authorType = authorType)
 
         return@withContext mapper.mapConfiguration(mapConfiguration(response.authorConfig.config)
-            .copy(streamAllowed = response.authorConfig.streamAllowed, tnc = response.authorConfig.tnc)
+            .copy(
+                streamAllowed = response.authorConfig.streamAllowed,
+                shortVideoAllowed = response.authorConfig.shortVideoAllowed,
+                tnc = response.authorConfig.tnc
+            )
         )
     }
 
@@ -62,13 +80,18 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
         val response = createChannelUseCase.apply {
             params = CreateChannelUseCase.createParams(
                 authorId = authorId,
-                authorType = authorType
+                authorType = authorType,
+                type = CreateChannelUseCase.Type.Livestream,
             )
         }.executeOnBackground()
         return@withContext response.id
     }
 
-    override suspend fun updateChannelStatus(authorId: String, channelId: String, status: PlayChannelStatusType): String = withContext(dispatchers.io) {
+    override suspend fun updateChannelStatus(
+        authorId: String,
+        channelId: String,
+        status: PlayChannelStatusType
+    ): String = withContext(dispatchers.io) {
         val response = updateChannelUseCase.apply {
             setQueryParams(
                 UpdateChannelUseCase.createUpdateStatusRequest(

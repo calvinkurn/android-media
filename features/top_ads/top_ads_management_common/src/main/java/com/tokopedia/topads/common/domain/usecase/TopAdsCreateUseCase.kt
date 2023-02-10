@@ -6,8 +6,6 @@ import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.common.network.domain.RestRequestUseCase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.data.model.response.DataResponse
@@ -20,6 +18,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_EDIT
 import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_REMOVE
 import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_TYPE
 import com.tokopedia.topads.common.data.internal.ParamObject.ACTIVE
+import com.tokopedia.topads.common.data.internal.ParamObject.AUTO_BID_STATE
 import com.tokopedia.topads.common.data.internal.ParamObject.BID_TYPE
 import com.tokopedia.topads.common.data.internal.ParamObject.BUDGET_LIMITED
 import com.tokopedia.topads.common.data.internal.ParamObject.DAILY_BUDGET
@@ -44,11 +43,8 @@ import com.tokopedia.topads.common.data.internal.ParamObject.PUBLISHED
 import com.tokopedia.topads.common.data.internal.ParamObject.STRATEGIES
 import com.tokopedia.topads.common.data.raw.MANAGE_GROUP
 import com.tokopedia.topads.common.data.response.*
-import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import rx.Subscriber
-import java.lang.reflect.Type
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -78,7 +74,9 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
     }
 
     fun createRequestParamActionDelete(
-        source: String, groupIdParam: String, keywordIds: List<String>,
+        source: String,
+        groupIdParam: String,
+        keywordIds: List<String>
     ): RequestParams {
         return TopadsManagePromoGroupProductInput().apply {
             shopID = userSession.shopId
@@ -87,56 +85,85 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             this.groupInput = null
             keywordOperation =
                 keywordIds.map { id ->
-                    KeywordEditInput(ACTION_DELETE,
-                        KeywordEditInput.Keyword(id, null, null, null, null, null))
+                    KeywordEditInput(
+                        ACTION_DELETE,
+                        KeywordEditInput.Keyword(id, null, null, null, null, null)
+                    )
                 }
         }.convertToRequestParam()
     }
 
     fun createRequestParamMoveGroup(
-        groupID: String, source: String, productIds: List<String>, productAction: String,
+        groupID: String,
+        source: String,
+        productIds: List<String>,
+        productAction: String
     ): RequestParams {
         return TopadsManagePromoGroupProductInput().apply {
             shopID = userSession.shopId
             this.groupID = groupID
             this.source = source
-            groupInput = GroupEditInput(ACTION_EDIT, GroupEditInput.Group(
-                null, productIds.map { productId ->
-                    GroupEditInput.Group.AdOperationsItem(
-                        GroupEditInput.Group.AdOperationsItem.Ad(productId),
-                        productAction
-                    )
-                }, null, null, null, null, null, null
-            ))
+            groupInput = GroupEditInput(
+                ACTION_EDIT,
+                GroupEditInput.Group(
+                    null,
+                    productIds.map { productId ->
+                        GroupEditInput.Group.AdOperationsItem(
+                            GroupEditInput.Group.AdOperationsItem.Ad(productId),
+                            productAction
+                        )
+                    },
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                )
+            )
             keywordOperation = null
         }.convertToRequestParam()
     }
 
     fun createRequestParamActionCreate(
-        productIds: List<String>, currentGroupName: String, priceBid: Double,
+        productIds: List<String>,
+        currentGroupName: String,
+        priceBid: Double,
         suggestedBidValue: Double,
+        dailyBudgetValue: Double? = null,
+        sourceValue: String? = null
     ): RequestParams {
         return TopadsManagePromoGroupProductInput().apply {
             shopID = userSession.shopId
-            source = ParamObject.PARAM_SOURCE_RECOM
             groupInput?.group = GroupEditInput.Group().also { group ->
                 group.adOperations = productIds.map { productId ->
                     GroupEditInput.Group.AdOperationsItem(
-                        GroupEditInput.Group.AdOperationsItem.Ad(productId), action = ACTION_ADD
+                        GroupEditInput.Group.AdOperationsItem.Ad(productId),
+                        action = ACTION_ADD
                     )
                 }
                 group.name = currentGroupName
-                group.status = PUBLISHED
+                if (dailyBudgetValue == null) {
+                    group.status = PUBLISHED
+                } else {
+                    group.dailyBudget = dailyBudgetValue
+                    group.strategies = arrayListOf(AUTO_BID_STATE)
+                }
+                source = sourceValue ?: ParamObject.PARAM_SOURCE_RECOM
                 groupInput?.action = ACTION_CREATE
                 group.bidSettings = listOf(
                     GroupEditInput.Group.TopadsGroupBidSetting(PRODUCT_SEARCH, priceBid.toFloat()),
                     GroupEditInput.Group.TopadsGroupBidSetting(PRODUCT_BROWSE, priceBid.toFloat())
                 )
                 group.suggestionBidSettings = listOf(
-                    GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_SEARCH,
-                        suggestedBidValue.toFloat()),
-                    GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_BROWSE,
-                        suggestedBidValue.toFloat()),
+                    GroupEditInput.Group.TopadsSuggestionBidSetting(
+                        PRODUCT_SEARCH,
+                        suggestedBidValue.toFloat()
+                    ),
+                    GroupEditInput.Group.TopadsSuggestionBidSetting(
+                        PRODUCT_BROWSE,
+                        suggestedBidValue.toFloat()
+                    )
                 )
             }
             keywordOperation = null
@@ -145,7 +172,9 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
 
     fun createRequestParamEditBudgetInsight(
         adOperationList: MutableList<GroupEditInput.Group.AdOperationsItem>?,
-        priceBid: Float?, dailyBudgetValue: Double?, groupId: String
+        priceBid: Float?,
+        dailyBudgetValue: Double?,
+        groupId: String
     ): RequestParams {
         return TopadsManagePromoGroupProductInput(
             shopID = userSession.shopId,
@@ -154,36 +183,41 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             groupInput = GroupEditInput(
                 action = ParamObject.PARAM_EDIT_OPTION,
                 group = GroupEditInput.Group(
-                    name = null, status = null, type = null,
+                    name = null,
+                    status = null,
+                    type = null,
                     bidSettings = listOf(
                         GroupEditInput.Group.TopadsGroupBidSetting(PRODUCT_SEARCH, priceBid),
                         GroupEditInput.Group.TopadsGroupBidSetting(PRODUCT_BROWSE, priceBid)
                     ),
                     dailyBudget = dailyBudgetValue,
                     adOperations = adOperationList
-                ),
+                )
             ),
             keywordOperation = null
         ).convertToRequestParam()
     }
 
     fun setParam(
-        source: String?, dataProduct: Bundle,
-        dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>,
+        source: String?,
+        dataProduct: Bundle,
+        dataKeyword: HashMap<String, Any?>,
+        dataGroup: HashMap<String, Any?>,
         status: String? = null
     ): RequestParams {
-
         val param = RequestParams.create()
         val variable: HashMap<String, Any> = HashMap()
         variable[INPUT] =
-            convertToParam(source, dataProduct, dataKeyword, dataGroup,status)
+            convertToParam(source, dataProduct, dataKeyword, dataGroup, status)
         param.putAll(variable)
         return param
     }
 
     private fun convertToParam(
-        source: String?, dataProduct: Bundle,
-        dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>,
+        source: String?,
+        dataProduct: Bundle,
+        dataKeyword: HashMap<String, Any?>,
+        dataGroup: HashMap<String, Any?>,
         status: String? = null
     ): TopadsManagePromoGroupProductInput {
         var strategy = dataKeyword[STRATEGIES] as ArrayList<String>?
@@ -198,7 +232,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             strategy = dataGroup[STRATEGIES] as ArrayList<String>?
         }
         val dailyBudgetGroup = dataGroup[DAILY_BUDGET]?.toString()?.toDouble()
-        val groupId = dataGroup[GROUPID] as? Int
+        val groupId = dataGroup[GROUPID]
         val isNameEdited = dataGroup[NAME_EDIT] as? Boolean
         val isBudgetLimited = dataGroup[BUDGET_LIMITED] as? Boolean
         val dataAddProduct =
@@ -210,7 +244,6 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
                 "deletedProducts"
             )
 
-
         val keywordsPositiveCreate = dataKeyword[POSITIVE_CREATE] as? MutableList<KeySharedModel>
         val keywordsPositiveDelete = dataKeyword[POSITIVE_DELETE] as? MutableList<KeySharedModel>
         val keywordsNegCreate =
@@ -219,12 +252,13 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             dataKeyword[NEGATIVE_KEYWORDS_DELETED] as? MutableList<GetKeywordResponse.KeywordsItem>
         val keywordsPostiveEdit = dataKeyword[POSITIVE_EDIT] as? MutableList<KeySharedModel>
 
-        //always
+        // always
         val input = TopadsManagePromoGroupProductInput()
         val groupInput = input.groupInput
         val group = groupInput?.group
-        if (groupId != null)
+        if (groupId != null) {
             input.groupID = groupId.toString()
+        }
         input.shopID = userSession.shopId
         if (source != null) {
             input.source = source
@@ -246,8 +280,9 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             dataKeyword[ParamObject.SUGGESTION_BID_SETTINGS] as? List<GroupEditInput.Group.TopadsSuggestionBidSetting>?
         if (isBudgetLimited == false) {
             group?.dailyBudget = 0.0
-        } else
+        } else {
             group?.dailyBudget = dailyBudgetGroup
+        }
         val bidSettingsList: MutableList<GroupEditInput.Group.TopadsGroupBidSetting> =
             mutableListOf()
         bidtypeData?.forEach {
@@ -288,7 +323,6 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             keywordEditInput.keyword = keyword
             keywordEditInput.action = ACTION_EDIT
             keywordList.add(keywordEditInput)
-
         }
         keywordsPositiveDelete?.forEach { posKey ->
             val keywordEditInput = KeywordEditInput()
@@ -355,14 +389,16 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
 
         input.groupInput = groupInput
         input.groupInput?.group = group
-        if (productList.isNullOrEmpty())
+        if (productList.isNullOrEmpty()) {
             input.groupInput?.group?.adOperations = null
-        else
+        } else {
             input.groupInput?.group?.adOperations = productList
-        if (keywordList.isNullOrEmpty())
+        }
+        if (keywordList.isNullOrEmpty()) {
             input.keywordOperation = null
-        else
+        } else {
             input.keywordOperation = keywordList
+        }
         return input
     }
 

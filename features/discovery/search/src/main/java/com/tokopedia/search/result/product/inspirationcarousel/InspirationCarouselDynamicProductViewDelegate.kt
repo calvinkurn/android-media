@@ -5,14 +5,13 @@ import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchItemDataView
-import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
+import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import javax.inject.Inject
 
 @SearchScope
 class InspirationCarouselDynamicProductViewDelegate @Inject constructor(
-    private val inspirationCarouselTrackingUnification: InspirationCarouselTrackingUnification,
     private val trackingQueue: TrackingQueue,
     searchParameterProvider: SearchParameterProvider,
     queryKeyProvider: QueryKeyProvider,
@@ -31,7 +30,7 @@ class InspirationCarouselDynamicProductViewDelegate @Inject constructor(
             getSearchParameter()
         )
 
-        inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data)
+        InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
     }
 
     override fun trackDynamicProductCarouselClick(
@@ -44,7 +43,7 @@ class InspirationCarouselDynamicProductViewDelegate @Inject constructor(
             getSearchParameter()
         )
 
-        inspirationCarouselTrackingUnification.trackCarouselClick(data)
+        InspirationCarouselTracking.trackCarouselClick(data)
     }
 
     override fun trackEventClickSeeMoreDynamicProductCarousel(
@@ -52,7 +51,7 @@ class InspirationCarouselDynamicProductViewDelegate @Inject constructor(
         type: String,
         inspirationCarouselOption: InspirationCarouselDataView.Option
     ) {
-        inspirationCarouselTrackingUnification.trackCarouselClickSeeAll(
+        InspirationCarouselTracking.trackCarouselClickSeeAll(
             queryKey,
             inspirationCarouselOption,
         )

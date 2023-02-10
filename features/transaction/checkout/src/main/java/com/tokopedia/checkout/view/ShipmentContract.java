@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
-import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
@@ -23,6 +22,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
+import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
@@ -35,7 +35,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionUiModel;
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult;
@@ -53,6 +53,8 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerA
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import rx.subjects.PublishSubject;
 
 /**
  * @author Irfan Khoirul on 24/04/18.
@@ -179,8 +181,6 @@ public interface ShipmentContract {
 
         void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier);
 
-        void updatePrescriptionIds(List<GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription> prescriptions);
-
         void onNeedUpdateViewItem(int position);
 
         void renderUnapplyBoIncompleteShipment(List<String> unappliedBoPromoUniqueIds);
@@ -192,6 +192,12 @@ public interface ShipmentContract {
 
         ShipmentDetailData getShipmentDetailData(ShipmentCartItemModel shipmentCartItemModel,
                                                  RecipientAddressModel recipientAddressModel);
+
+        void showPrescriptionReminderDialog(UploadPrescriptionUiModel uploadPrescriptionUiModel);
+
+        void updateUploadPrescription(UploadPrescriptionUiModel uploadPrescriptionUiModel);
+
+        void showCoachMarkEpharmacy(UploadPrescriptionUiModel epharmacyGroupIds);
     }
 
     interface AnalyticsActionListener {
@@ -260,6 +266,8 @@ public interface ShipmentContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
+
+        PublishSubject<Boolean> getLogisticDonePublisher();
 
         void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
                                             boolean isTradeIn, boolean skipUpdateOnboardingState,
@@ -370,11 +378,15 @@ public interface ShipmentContract {
 
         boolean isIneligiblePromoDialogEnabled();
 
-        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId, ArrayList<String> prescriptionIds);
+        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId);
 
         void releaseBooking();
 
-        void fetchPrescriptionIds(boolean isUploadPrescriptionNeeded, String checkoutId);
+        void fetchEpharmacyData();
+
+        void setPrescriptionIds(ArrayList<String> prescriptionIds);
+
+        void setMiniConsultationResult(ArrayList<EPharmacyMiniConsultationResult> results);
 
         void setLastApplyData(LastApplyUiModel lastApplyData);
 
@@ -428,6 +440,8 @@ public interface ShipmentContract {
                           String cornerId, String deviceId, String leasingId, boolean isPlusSelected);
 
         void clearAllBoOnTemporaryUpsell();
+
+        boolean validatePrescriptionOnBackPressed();
     }
 
 }

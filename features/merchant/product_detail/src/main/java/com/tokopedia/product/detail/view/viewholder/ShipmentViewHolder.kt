@@ -154,14 +154,15 @@ class ShipmentViewHolder(
         element: ProductShipmentDataModel,
         rates: P2RatesEstimateData
     ) = with(viewMain) {
-        val destination = if (element.localDestination.isEmpty()) rates.destination
-        else context.getString(R.string.pdp_shipping_to_builder, element.localDestination)
+        val destination = rates.destination
         pdpShipmentDestination.showIfWithBlock(destination.isNotEmpty()) {
             text = destination.renderHtmlBold(
                 context = context,
                 boldColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600
             )
         }
+
+        pdpShipmentLine.showWithCondition(destination.isNotEmpty())
 
         val estimation = rates.etaText
         pdpShipmentEstimation.showIfWithBlock(estimation.isNotEmpty()) {
@@ -257,6 +258,7 @@ class ShipmentViewHolder(
             pdpShipmentCourierArrow.hide()
             pdpShipmentCourierLabel2.hide()
             pdpShipmentRatesError.hide()
+            pdpShipmentTitleStrike.hide()
         }
     }
 

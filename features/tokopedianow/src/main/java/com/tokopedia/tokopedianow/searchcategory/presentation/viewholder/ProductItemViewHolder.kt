@@ -3,23 +3,20 @@ package com.tokopedia.tokopedianow.searchcategory.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.productcard.ATCNonVariantListener
-import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.view.productcard.TokoNowWishlistButtonView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductGridCardBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.mapper.mapToLabelGroup
-import com.tokopedia.tokopedianow.searchcategory.presentation.mapper.mapToLabelGroupVariant
-import com.tokopedia.tokopedianow.searchcategory.presentation.mapper.mapToNonVariant
-import com.tokopedia.tokopedianow.searchcategory.presentation.mapper.mapToVariant
+import com.tokopedia.tokopedianow.similarproduct.listener.TokoNowSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductItemViewHolder(
-        itemView: View,
-        private val productItemListener: ProductItemListener,
-): AbstractViewHolder<ProductItemDataView>(itemView) {
+    itemView: View,
+    private val listener: ProductItemListener,
+    private val similarProductTrackerListener: TokoNowSimilarProductTrackerListener,
+): AbstractViewHolder<ProductItemDataView>(itemView), TokoNowWishlistButtonView.TokoNowWishlistButtonListener {
 
     companion object {
         @LayoutRes
@@ -28,48 +25,62 @@ class ProductItemViewHolder(
 
     private var binding: ItemTokopedianowProductGridCardBinding? by viewBinding()
 
-    override fun bind(element: ProductItemDataView?) {
-        element ?: return
-
-        binding?.tokoNowGridProductCard?.apply {
-            setProductModel(
-                ProductCardModel(
-                    productImageUrl = element.imageUrl300,
-                    productName = element.name,
-                    formattedPrice = element.price,
-                    slashedPrice = element.originalPrice,
-                    discountPercentage = element.discountPercentageString,
-                    countSoldRating = element.ratingAverage,
-                    labelGroupList = element.labelGroupDataViewList.mapToLabelGroup(),
-                    labelGroupVariantList = element.labelGroupVariantDataViewList.mapToLabelGroupVariant(),
-                    variant = element.variantATC?.mapToVariant(),
-                    nonVariant = element.nonVariantATC?.mapToNonVariant(),
-                )
+    override fun bind(element: ProductItemDataView) {
+        binding?.productCard?.apply {
+            setData(
+                model = element.productCardModel
             )
-
-            setImageProductViewHintListener(element, object: ViewHintListener {
-                override fun onViewHint() {
-                    productItemListener.onProductImpressed(element)
-                }
-            })
-
             setOnClickListener {
-                productItemListener.onProductClick(element)
+                listener.onProductClick(
+                    productItemDataView = element
+                )
             }
-
-            setAddVariantClickListener {
-                productItemListener.onProductChooseVariantClicked(element)
+            setOnClickQuantityEditorListener { quantity ->
+                listener.onProductNonVariantQuantityChanged(
+                    productItemDataView = element,
+                    quantity = quantity
+                )
             }
-
-            setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
-                override fun onQuantityChanged(quantity: Int) {
-                    productItemListener.onProductNonVariantQuantityChanged(element, quantity)
-                }
-            })
+            setOnClickQuantityEditorVariantListener {
+                listener.onProductChooseVariantClicked(
+                    productItemDataView = element
+                )
+            }
+            setWishlistButtonListener(
+                wishlistButtonListener = this@ProductItemViewHolder
+            )
+            addOnImpressionListener(element) {
+                listener.onProductImpressed(
+                    productItemDataView = element
+                )
+            }
+            setSimilarProductTrackerListener(similarProductTrackerListener)
         }
     }
 
-    override fun onViewRecycled() {
-        binding?.tokoNowGridProductCard?.recycle()
+    override fun bind(element: ProductItemDataView?, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() == true && element != null) {
+            binding?.productCard?.setData(
+                model = element.productCardModel
+            )
+        }
+    }
+
+    override fun onWishlistButtonClicked(
+        productId: String,
+        isWishlistSelected: Boolean,
+        descriptionToaster: String,
+        ctaToaster: String,
+        type: Int,
+        ctaClickListener: (() -> Unit)?
+    ) {
+        listener.onWishlistButtonClicked(
+            productId = productId,
+            isWishlistSelected = isWishlistSelected,
+            descriptionToaster = descriptionToaster,
+            ctaToaster = ctaToaster,
+            type = type,
+            ctaClickListener = ctaClickListener
+        )
     }
 }

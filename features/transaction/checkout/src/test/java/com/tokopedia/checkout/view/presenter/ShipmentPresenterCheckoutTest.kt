@@ -16,7 +16,6 @@ import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.domain.model.checkout.Prompt
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
@@ -29,6 +28,7 @@ import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
+import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.fingerprint.util.FingerPrintUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -42,7 +42,8 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnProductItemModel
@@ -132,6 +133,9 @@ class ShipmentPresenterCheckoutTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
+    @MockK
+    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
+
     @MockK(relaxed = true)
     private lateinit var view: ShipmentContract.View
 
@@ -148,13 +152,29 @@ class ShipmentPresenterCheckoutTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-            compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
-            editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
-            getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-            ratesStatesConverter, shippingCourierConverter,
-            shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-            checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-            validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase
+            compositeSubscription,
+            checkoutUseCase,
+            getShipmentAddressFormV3UseCase,
+            editAddressUseCase,
+            changeShippingAddressGqlUseCase,
+            saveShipmentStateGqlUseCase,
+            getRatesUseCase,
+            getRatesApiUseCase,
+            clearCacheAutoApplyStackUseCase,
+            ratesStatesConverter,
+            shippingCourierConverter,
+            shipmentAnalyticsActionListener,
+            userSessionInterface,
+            analyticsPurchaseProtection,
+            checkoutAnalytics,
+            shipmentDataConverter,
+            releaseBookingUseCase,
+            prescriptionIdsUseCase,
+            epharmacyUseCase,
+            validateUsePromoRevampUseCase,
+            gson,
+            TestSchedulers,
+            eligibleForAddressUseCase
         )
         presenter.attachView(view)
     }
@@ -230,7 +250,7 @@ class ShipmentPresenterCheckoutTest {
 
         val mockContext = mockk<Activity>()
         val errorMessage = "error"
-        every { mockContext.getString(R.string.default_request_error_unknown_short) } returns errorMessage
+        every { mockContext.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short) } returns errorMessage
         every { mockContext.getString(R.string.message_error_checkout_empty) } returns errorMessage
         every { view.activityContext } returns mockContext
 
@@ -378,7 +398,7 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.promos?.isNotEmpty() == true)
@@ -394,7 +414,7 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 1, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 1, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.isDonation == 1)
@@ -414,7 +434,7 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.egoldData?.isEgold == true)
@@ -436,7 +456,7 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.cornerData?.isTokopediaCorner == true)
@@ -451,7 +471,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         val deviceId = "12345"
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // When
         val checkoutParams =
@@ -470,7 +490,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         val deviceId = "12345"
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // When
         val checkoutParams =
@@ -489,7 +509,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         val deviceId = "12345"
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         val mockContext = mockk<Activity>()
         mockkObject(FingerPrintUtil)
@@ -529,7 +549,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         val deviceId = "12345"
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         val mockContext = mockk<Activity>()
         mockkObject(FingerPrintUtil)
@@ -980,7 +1000,7 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, listCrossSellModel, "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, listCrossSellModel, "")
 
         // Then
         assert(checkoutRequest.crossSell?.listItem?.isNotEmpty() == true)
@@ -1047,12 +1067,12 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.crossSell!!.listItem.isNotEmpty())
         assertEquals(
-            CrossSellItemRequestModel(1, 100, "upsell", 2),
+            CrossSellItemRequestModel(1, 100.0, "upsell", 2),
             checkoutRequest.crossSell!!.listItem[0]
         )
     }
@@ -1116,7 +1136,7 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.crossSell!!.listItem.isEmpty())
@@ -1181,7 +1201,7 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.crossSell!!.listItem.isEmpty())
@@ -1246,7 +1266,7 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.crossSell!!.listItem.isEmpty())
@@ -1265,7 +1285,7 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.featureType == FEATURE_TYPE_TOKONOW_PRODUCT)

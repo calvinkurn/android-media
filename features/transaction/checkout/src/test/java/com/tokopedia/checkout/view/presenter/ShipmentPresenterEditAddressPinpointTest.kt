@@ -2,10 +2,15 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
@@ -16,6 +21,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
@@ -91,6 +97,9 @@ class ShipmentPresenterEditAddressPinpointTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
+    @MockK
+    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private lateinit var presenter: ShipmentPresenter
@@ -101,13 +110,30 @@ class ShipmentPresenterEditAddressPinpointTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-                compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
-                editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
-                getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-                ratesStatesConverter, shippingCourierConverter,
-                shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-                validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
+            compositeSubscription,
+            checkoutUseCase,
+            getShipmentAddressFormV3UseCase,
+            editAddressUseCase,
+            changeShippingAddressGqlUseCase,
+            saveShipmentStateGqlUseCase,
+            getRatesUseCase,
+            getRatesApiUseCase,
+            clearCacheAutoApplyStackUseCase,
+            ratesStatesConverter,
+            shippingCourierConverter,
+            shipmentAnalyticsActionListener,
+            userSessionInterface,
+            analyticsPurchaseProtection,
+            checkoutAnalytics,
+            shipmentDataConverter,
+            releaseBookingUseCase,
+            prescriptionIdsUseCase,
+            epharmacyUseCase,
+            validateUsePromoRevampUseCase,
+            gson,
+            TestSchedulers,
+            eligibleForAddressUseCase
+        )
         presenter.attachView(view)
     }
 
@@ -129,13 +155,15 @@ class ShipmentPresenterEditAddressPinpointTest {
         val latitude = "123"
         val longitude = "456"
 
-        every { editAddressUseCase.createObservable(any()) } returns Observable.just("""
+        every { editAddressUseCase.createObservable(any()) } returns Observable.just(
+            """
             {
                 "data": {
                     "is_success": 1
                 }
             }
-        """.trimIndent())
+            """.trimIndent()
+        )
 
         // When
         presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), LocationPass())
@@ -171,14 +199,16 @@ class ShipmentPresenterEditAddressPinpointTest {
 
         val errorMessage = "error"
 
-        every { editAddressUseCase.createObservable(any()) } returns Observable.just("""
+        every { editAddressUseCase.createObservable(any()) } returns Observable.just(
+            """
             {
                 "data": {
                     "is_success": 0
                 },
                 "message_error": ["$errorMessage"]
             }
-        """.trimIndent())
+            """.trimIndent()
+        )
 
         // When
         presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), locationPass)
@@ -214,16 +244,20 @@ class ShipmentPresenterEditAddressPinpointTest {
 
         val errorMessage = "error"
 
-        every { editAddressUseCase.createObservable(any()) } returns Observable.just("""
+        every { editAddressUseCase.createObservable(any()) } returns Observable.just(
+            """
             {
                 "data": {
                     "is_success": 0
                 },
                 "message_error": []
             }
-        """.trimIndent())
+            """.trimIndent()
+        )
 
-        every { view.activityContext.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown) } returns errorMessage
+        every {
+            view.activityContext.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+        } returns errorMessage
 
         // When
         presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), locationPass)

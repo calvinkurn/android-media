@@ -3,17 +3,17 @@ package com.tokopedia.shop.home.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.UserNotLoginException
-import com.tokopedia.shop.home.domain.GetShopHomeMerchantCampaignTncUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
-import com.tokopedia.shop.home.view.model.ShopHomeCampaignNplTncUiModel
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
 import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
+import com.tokopedia.shop.home.domain.GetShopHomeMerchantCampaignTncUseCase
+import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.view.model.ShopHomeCampaignNplTncUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -25,7 +25,7 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val getMerchantCampaignTncUseCase: GetShopHomeMerchantCampaignTncUseCase,
     private val updateFollowStatusUseCase: UpdateFollowStatusUseCase,
-    private val getFollowStatusUseCase: GetFollowStatusUseCase,
+    private val getFollowStatusUseCase: GetFollowStatusUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
 
     val userSessionShopId: String
@@ -54,23 +54,23 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
             val tncDataAsync = asyncCatchError(dispatcherProvider.io, block = {
                 getTncResponse(campaignId)
             }, onError = {
-                _campaignTncLiveData.postValue(Fail(it))
-                null
-            })
+                    _campaignTncLiveData.postValue(Fail(it))
+                    null
+                })
 
             val shopFollowStatusAsync = asyncCatchError(dispatcherProvider.io, block = {
                 getFollowStatus(shopId).takeIf { !isOwner }
             }, onError = {
-                _campaignTncLiveData.postValue(Fail(it))
-                null
-            })
+                    _campaignTncLiveData.postValue(Fail(it))
+                    null
+                })
 
             val tncData = tncDataAsync.await()
             val shopFollowStatus = shopFollowStatusAsync.await()
-            tncData?.let{
+            tncData?.let {
                 _campaignTncLiveData.postValue(Success(it))
             }
-            shopFollowStatus?.let{
+            shopFollowStatus?.let {
                 _campaignFollowStatusLiveData.postValue(Success(it))
             }
         }) {
@@ -78,7 +78,7 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
         }
     }
 
-   private suspend fun getFollowStatus(shopId: String): FollowStatus? {
+    private suspend fun getFollowStatus(shopId: String): FollowStatus? {
         getFollowStatusUseCase.params = GetFollowStatusUseCase.createParams(shopId, GetFollowStatusUseCase.SOURCE_NPL_TNC)
         return getFollowStatusUseCase.executeOnBackground().followStatus
     }
@@ -86,7 +86,7 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
     private suspend fun getTncResponse(campaignId: String): ShopHomeCampaignNplTncUiModel {
         getMerchantCampaignTncUseCase.params = GetShopHomeMerchantCampaignTncUseCase.createParams(campaignId)
         return ShopPageHomeMapper.mapToShopHomeCampaignNplTncUiModel(
-                getMerchantCampaignTncUseCase.executeOnBackground()
+            getMerchantCampaignTncUseCase.executeOnBackground()
         )
     }
 
@@ -100,7 +100,7 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
             updateFollowStatusUseCase.params = UpdateFollowStatusUseCase.createParams(shopId, action, UpdateFollowStatusUseCase.SOURCE_NPL_TNC)
             _followUnfollowShopLiveData.postValue(Success(updateFollowStatusUseCase.executeOnBackground()))
         }, onError = {
-            _followUnfollowShopLiveData.postValue(Fail(it))
-        })
+                _followUnfollowShopLiveData.postValue(Fail(it))
+            })
     }
 }

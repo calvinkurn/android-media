@@ -23,6 +23,7 @@ class BuyerOrderDetailTrackerValidationTest600 : BuyerOrderDetailTrackerValidati
             testClickShopName(activityRule.activity)
             testClickProduct(activityRule.activity)
             testClickCopyAWB(activityRule.activity)
+            testScrollToBottom(activityRule.activity)
             testClickPrimaryActionButtonOnFinishOrderConfirmationBottomSheet(
                 activityRule.activity,
                 true

@@ -4,8 +4,8 @@ import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
+import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 
 /**
  * Created by nathan on 2/6/18.
@@ -33,7 +33,6 @@ class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
     var isSoldOut: Boolean = false
     var isShowFreeOngkir: Boolean = false
     var freeOngkirPromoIcon: String? = null
-    var isCarousel = false
     var etalaseId = ""
     var labelGroupList: List<LabelGroupUiModel> = listOf()
     var pdpViewCount: String = ""
@@ -117,5 +116,4 @@ class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
         private val LABEL_PERCENTAGE = "%"
         const val THRESHOLD_VIEW_COUNT = 1000
     }
-
 }

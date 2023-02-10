@@ -34,21 +34,27 @@ abstract class ChatbotMessageUnifyViewHolder(
 
     override fun bind(message: MessageUiModel) {
         verifyReplyTime(message)
-        ChatbotMessageViewHolderBinder.bindChatMessage(message.message, customChatLayout, movementMethod, message.isSender)
+        ChatbotMessageViewHolderBinder.bindChatMessage(
+            message.message,
+            customChatLayout,
+            movementMethod,
+            message.isSender
+        )
         ChatbotMessageViewHolderBinder.bindHour(message.replyTime, customChatLayout)
         setHeaderDate(message)
         bindReplyBubbleListener()
+
         customChatLayout?.fxChat?.setOnLongClickListener {
             replyBubbleListener.showReplyOption(message)
             return@setOnLongClickListener true
         }
         customChatLayout?.fxChat?.message?.setOnLongClickListener {
-            replyBubbleListener.showReplyOption(message)
+            replyBubbleListener.showReplyOption(message, customChatLayout?.fxChat?.message)
             return@setOnLongClickListener true
         }
     }
 
-    protected fun verifyReplyTime(chat: MessageUiModel) {
+    private fun verifyReplyTime(chat: MessageUiModel) {
         try {
             if (chat.replyTime.toLongOrZero() / MILISECONDS < START_YEAR) {
                 chat.replyTime = (chat.replyTime.toLongOrZero() * MILISECONDS).toString()

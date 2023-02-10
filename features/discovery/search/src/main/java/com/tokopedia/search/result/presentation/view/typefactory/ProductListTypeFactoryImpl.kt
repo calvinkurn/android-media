@@ -19,7 +19,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.S
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridProductItemViewHolder
 import com.tokopedia.search.result.product.broadmatch.BroadMatchViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ChooseAddressViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCarouselViewHolder
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ListProductItemViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationTitleViewHolder
@@ -29,11 +29,12 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.product.suggestion.SuggestionViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TickerViewHolder
 import com.tokopedia.search.result.product.broadmatch.BroadMatchListener
-import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.product.suggestion.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
-import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
+import com.tokopedia.search.result.product.ads.AdsLowOrganicTitleDataView
+import com.tokopedia.search.result.product.ads.AdsLowOrganicTitleViewHolder
+import com.tokopedia.search.result.product.tdn.TopAdsImageViewListener
 import com.tokopedia.search.result.product.banned.BannedProductsEmptySearchDataView
 import com.tokopedia.search.result.product.banned.BannedProductsEmptySearchViewHolder
 import com.tokopedia.search.result.product.banner.BannerDataView
@@ -57,6 +58,7 @@ import com.tokopedia.search.result.product.inspirationbundle.InspirationBundleLi
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundleDataView
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundleViewHolder
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselListener
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcListener
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcViewHolder
@@ -229,6 +231,9 @@ class ProductListTypeFactoryImpl(
     override fun type(inspirationListAtcDataView: InspirationListAtcDataView): Int =
         InspirationListAtcViewHolder.LAYOUT
 
+    override fun type(adsLowOrganicTitleDataView: AdsLowOrganicTitleDataView): Int =
+        AdsLowOrganicTitleViewHolder.LAYOUT
+
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
@@ -290,6 +295,8 @@ class ProductListTypeFactoryImpl(
             )
             InspirationListAtcViewHolder.LAYOUT ->
                 InspirationListAtcViewHolder(view, inspirationListAtcListener, recycledViewPool)
+            AdsLowOrganicTitleViewHolder.LAYOUT ->
+                AdsLowOrganicTitleViewHolder(view)
 
             else -> super.createViewHolder(view, type)
         }

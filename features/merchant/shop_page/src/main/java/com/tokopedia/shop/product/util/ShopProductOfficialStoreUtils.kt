@@ -2,15 +2,13 @@ package com.tokopedia.shop.product.util
 
 import android.app.Activity
 import android.net.Uri
-import com.tokopedia.shop.product.view.activity.SimpleWebViewActivity.Companion.createIntent
-import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
-import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
+import com.tokopedia.shop.product.view.activity.SimpleWebViewActivity.Companion.createIntent
 import timber.log.Timber
-import com.tokopedia.shop.product.view.activity.SimpleWebViewActivity
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 import java.util.HashMap
@@ -59,8 +57,17 @@ object ShopProductOfficialStoreUtils {
                     }
                     // Pointing specific page on apps will be break the page
                     page = params[URL_QUERY_PAGE]
-                    activity.startActivity(ShopProductListResultActivity.createIntent(activity, shopId, keyword, id,
-                            "", params[URL_QUERY_SORT], ""))
+                    activity.startActivity(
+                        ShopProductListResultActivity.createIntent(
+                            activity,
+                            shopId,
+                            keyword,
+                            id,
+                            "",
+                            params[URL_QUERY_SORT],
+                            ""
+                        )
+                    )
                 }
                 URL_PATH_PRODUCT -> {
                     val productId = uri.lastPathSegment
@@ -73,8 +80,17 @@ object ShopProductOfficialStoreUtils {
                     }
                     // Pointing specific page on apps will be break the page
                     page = uri.lastPathSegment
-                    activity.startActivity(ShopProductListResultActivity.createIntent(activity, shopId, keyword,
-                            null, "", params.get(URL_QUERY_SORT), ""))
+                    activity.startActivity(
+                        ShopProductListResultActivity.createIntent(
+                            activity,
+                            shopId,
+                            keyword,
+                            null,
+                            "",
+                            params.get(URL_QUERY_SORT),
+                            ""
+                        )
+                    )
                 }
             }
         } else {
@@ -84,8 +100,17 @@ object ShopProductOfficialStoreUtils {
                 keyword = params[URL_QUERY_KEYWORD].orEmpty()
             }
             page = params[URL_QUERY_PAGE]
-            activity.startActivity(ShopProductListResultActivity.createIntent(activity, shopId, keyword,
-                    null, "", params[URL_QUERY_SORT], ""))
+            activity.startActivity(
+                ShopProductListResultActivity.createIntent(
+                    activity,
+                    shopId,
+                    keyword,
+                    null,
+                    "",
+                    params[URL_QUERY_SORT],
+                    ""
+                )
+            )
         }
     }
 
@@ -100,12 +125,6 @@ object ShopProductOfficialStoreUtils {
             }
         }
         return params
-    }
-
-    fun getLogInUrl(url: String, fcmTokenId: String?, uid: String?): String {
-        return if (!url.contains(SEAMLESS)) {
-            URLGenerator.generateURLSessionLogin(encodeUrl(url), fcmTokenId, uid)
-        } else url
     }
 
     private fun encodeUrl(url: String): String {

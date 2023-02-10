@@ -54,6 +54,7 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePayme
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.ResultRates
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -63,6 +64,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
+import com.tokopedia.purchase_platform.common.utils.isBlankOrZero
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.Job
@@ -110,6 +112,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     val eligibleForAnaRevamp = OccMutableLiveData<OccState<OrderEnableAddressFeature>>(OccState.Loading)
 
+    val uploadPrescriptionUiModel: OccMutableLiveData<UploadPrescriptionUiModel> = OccMutableLiveData(UploadPrescriptionUiModel())
+
     private var getCartJob: Job? = null
     private var debounceJob: Job? = null
     private var finalUpdateJob: Job? = null
@@ -118,7 +122,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private var hasSentViewOspEe = false
 
     fun getShopId(): String {
-        return orderCart.shop.shopId.toString()
+        return orderCart.shop.shopId
     }
 
     fun getActivationData(): OrderPaymentWalletActionData {
@@ -133,7 +137,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private fun isInvalidAddressState(profile: OrderProfile, addressState: AddressState): Boolean {
-        return profile.address.addressId <= 0 && addressState.errorCode != AddressState.ERROR_CODE_OPEN_ANA
+        return profile.address.addressId.isBlankOrZero() && addressState.errorCode != AddressState.ERROR_CODE_OPEN_ANA
     }
 
     fun getOccCart(source: String, uiMessage: OccUIMessage? = null,
@@ -178,6 +182,20 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             } else {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             }
+            if (result.imageUpload.showImageUpload) {
+                var prescriptionIds = cartProcessor.getPrescriptionId(result.imageUpload.checkoutId)
+                uploadPrescriptionUiModel.value = uploadPrescriptionUiModel.value.copy(
+                    showImageUpload = result.imageUpload.showImageUpload,
+                    uploadImageText = result.imageUpload.text,
+                    leftIconUrl = result.imageUpload.leftIconUrl,
+                    checkoutId = result.imageUpload.checkoutId,
+                    prescriptionIds = prescriptionIds.prescriptionIds,
+                    uploadedImageCount = prescriptionIds.prescriptionIds.size,
+                    isError = false,
+                    frontEndValidation = result.imageUpload.frontEndValidation,
+                    isOcc = true,
+                )
+            }
         }
     }
 
@@ -206,7 +224,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return OrderSummaryPageEnhanceECommerce().apply {
             for (orderProduct in products) {
                 setName(orderProduct.productName)
-                setId(orderProduct.productId.toString())
+                setId(orderProduct.productId)
                 setPrice(orderProduct.productPrice.toString())
                 setBrand(null)
                 setCategory(orderProduct.category)
@@ -215,18 +233,18 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 setListName(orderProduct.productTrackerData.trackerListName)
                 setAttribution(orderProduct.productTrackerData.attribution)
                 setDiscountedPrice(orderProduct.isSlashPrice)
-                setWarehouseId(orderShop.value.warehouseId.toString())
+                setWarehouseId(orderShop.value.warehouseId)
                 setProductWeight(orderProduct.weight.toString())
                 setPromoCode(promoCodes)
                 setPromoDetails("")
                 setProductType(orderProduct.freeShippingName)
                 setCartId(orderProduct.cartId)
-                setBuyerAddressId(orderProfile.value.address.addressId.toString())
+                setBuyerAddressId(orderProfile.value.address.addressId)
                 setSpid(orderShipment.value.getRealShipperProductId().toString())
                 setCodFlag(false)
                 setCornerFlag(false)
                 setIsFullfilment(orderShop.value.isFulfillment)
-                setShopIdDimension(orderShop.value.shopId.toString())
+                setShopIdDimension(orderShop.value.shopId)
                 setShopNameDimension(orderShop.value.shopName)
                 setShopTypeDimension(orderShop.value.isOfficial, orderShop.value.isGold)
                 setCategoryId(orderProduct.categoryId)
@@ -581,7 +599,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun setInsuranceCheck(checked: Boolean) {
         if (orderShipment.value.getRealShipperProductId() > 0 && orderShipment.value.insurance.isCheckInsurance != checked) {
             orderShipment.value.insurance.isCheckInsurance = checked
-            orderShipment.value.insurance.isFirstLoad = false
             calculateTotal()
         }
     }
@@ -855,9 +872,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 adjustGoCicilFee()
             }
         } else {
-            launch(executorDispatchers.immediate) {
-                calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
-                        validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
+            dynamicPaymentFeeJob?.cancel()
+            dynamicPaymentFeeJob = launch(executorDispatchers.immediate) {
+                adjustPaymentFee()
             }
         }
     }
@@ -893,6 +910,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun finalUpdate(onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
         if (orderTotal.value.buttonState == OccButtonState.NORMAL && orderPromo.value.state == OccButtonState.NORMAL && !orderShipment.value.isLoading) {
+            if (uploadPrescriptionUiModel.value.showImageUpload == true &&
+                (uploadPrescriptionUiModel.value.uploadedImageCount ?: 0) < 1 &&
+                uploadPrescriptionUiModel.value.frontEndValidation
+            ) {
+                uploadPrescriptionUiModel.value =
+                    uploadPrescriptionUiModel.value.copy(isError = true)
+                return
+            }
             globalEvent.value = OccGlobalEvent.Loading
             val shop = orderShop.value
             if (orderProfile.value.isValidProfile && orderShipment.value.getRealShipperProductId() > 0) {
@@ -938,8 +963,19 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun doCheckout(products: List<OrderProduct>, shop: OrderShop, profile: OrderProfile, onSuccessCheckout: (CheckoutOccResult) -> Unit) {
         launch(executorDispatchers.immediate) {
-            val (checkoutOccResult, globalEventResult) = checkoutProcessor.doCheckout(validateUsePromoRevampUiModel, orderCart, products, shop, profile,
-                    orderShipment.value, orderPayment.value, orderTotal.value, userSession.userId, generateOspEeBody(emptyList()))
+            val (checkoutOccResult, globalEventResult) = checkoutProcessor.doCheckout(
+                validateUsePromoRevampUiModel,
+                orderCart,
+                products,
+                shop,
+                profile,
+                orderShipment.value,
+                orderPayment.value,
+                orderTotal.value,
+                userSession.userId,
+                generateOspEeBody(emptyList()),
+                uploadPrescriptionUiModel.value.prescriptionIds
+            )
             if (checkoutOccResult != null) {
                 onSuccessCheckout(checkoutOccResult)
             } else if (globalEventResult != null) {
@@ -960,9 +996,29 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
+    fun checkUserEligibilityForAnaRevamp(token: Token? = null) {
+        eligibleForAddressUseCase.eligibleForAddressFeature(
+            {
+                eligibleForAnaRevamp.value = OccState.Success(OrderEnableAddressFeature(it, token))
+            },
+            {
+                eligibleForAnaRevamp.value = OccState.Failed(Failure(it))
+            },
+            AddressConstant.ANA_REVAMP_FEATURE_ID
+        )
+    }
+
     private suspend fun adjustCCAdminFee() {
         val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value,
                 validateUsePromoRevampUiModel, orderPayment.value)
+        val dynamicPaymentFee = paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost)
+        val newOrderPayment = orderPayment.value
+        orderPayment.value = newOrderPayment.copy(dynamicPaymentFees = dynamicPaymentFee)
+        if (dynamicPaymentFee == null) {
+            calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
+                validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
+            return
+        }
         val installmentTermList = paymentProcessor.get().getCreditCardAdminFee(orderPayment.value.creditCard, userSession.userId,
                 orderCost, orderCart)
         if (installmentTermList == null) {
@@ -980,18 +1036,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
     }
 
-    fun checkUserEligibilityForAnaRevamp(token: Token? = null) {
-        eligibleForAddressUseCase.eligibleForAddressFeature(
-                {
-                    eligibleForAnaRevamp.value = OccState.Success(OrderEnableAddressFeature(it, token))
-                },
-                {
-                    eligibleForAnaRevamp.value = OccState.Failed(Failure(it))
-                },
-                AddressConstant.ANA_REVAMP_FEATURE_ID
-        )
-    }
-
     private suspend fun adjustGoCicilFee() {
         val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value,
                 validateUsePromoRevampUiModel, orderPayment.value)
@@ -999,6 +1043,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (payment.minimumAmount <= orderCost.totalPriceWithoutPaymentFees
                 && orderCost.totalPriceWithoutPaymentFees <= payment.maximumAmount
                 && orderCost.totalPriceWithoutPaymentFees <= payment.walletAmount) {
+            val dynamicPaymentFee = paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost)
+            val newOrderPayment = orderPayment.value
+            orderPayment.value = newOrderPayment.copy(dynamicPaymentFees = dynamicPaymentFee)
+            if (dynamicPaymentFee == null) {
+                calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
+                    validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
+                return
+            }
             val result = paymentProcessor.get().getGopayAdminFee(payment, userSession.userId, orderCost, orderCart, orderProfile.value)
             if (result != null) {
                 chooseInstallment(result.first, result.second, !result.third)
@@ -1011,6 +1063,16 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
         calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
                 validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
+    }
+
+    private suspend fun adjustPaymentFee() {
+        val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value,
+            validateUsePromoRevampUiModel, orderPayment.value)
+        val dynamicPaymentFee = paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost)
+        val newOrderPayment = orderPayment.value
+        orderPayment.value = newOrderPayment.copy(dynamicPaymentFees = dynamicPaymentFee)
+        calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
+            validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
     }
 
     fun updateAddOn(saveAddOnStateResult: SaveAddOnStateResult) {
@@ -1028,7 +1090,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 orderTotal.value = orderTotal.value.copy(
                         orderCost = orderTotal.value.orderCost.copy(
                                 hasAddOn = true,
-                                addOnPrice = addOnResult.addOnData.firstOrNull()?.addOnPrice?.toDouble()
+                                addOnPrice = addOnResult.addOnData.firstOrNull()?.addOnPrice
                                         ?: 0.0
                         )
                 )
@@ -1039,7 +1101,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 orderTotal.value = orderTotal.value.copy(
                         orderCost = orderTotal.value.orderCost.copy(
                                 hasAddOn = true,
-                                addOnPrice = addOnResult.addOnData.firstOrNull()?.addOnPrice?.toDouble()
+                                addOnPrice = addOnResult.addOnData.firstOrNull()?.addOnPrice
                                         ?: 0.0
                         )
                 )
@@ -1065,6 +1127,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 orderCost = orderTotal.value.orderCost.copy(
                         hasAddOn = false
                 )
+        )
+    }
+
+    fun updatePrescriptionIds(it: ArrayList<String>) {
+        uploadPrescriptionUiModel.value = uploadPrescriptionUiModel.value.copy(
+            prescriptionIds = it,
+            uploadedImageCount = it.size,
+            isError = false,
         )
     }
 

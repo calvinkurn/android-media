@@ -5,13 +5,13 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/spacing_lvl3"
+    android:layout_marginTop="8dp"
     android:orientation="vertical">
     
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl3"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:layout_height="8dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginStart="@dimen/dp_minus12"
         android:layout_marginEnd="@dimen/dp_minus12"/>
 
@@ -19,7 +19,7 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_lvl3"
+        android:layout_margin="8dp"
         app:typographyWeight="bold"
         app:typographyType="body_1"
         tools:text="@string/shop_product_search_title_empty_state"/>

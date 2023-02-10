@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
@@ -75,7 +76,6 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
-import com.tokopedia.oneclickcheckout.order.view.bottomsheet.PurchaseProtectionInfoBottomsheet
 import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
@@ -92,6 +92,7 @@ import com.tokopedia.oneclickcheckout.payment.creditcard.installment.CreditCardI
 import com.tokopedia.oneclickcheckout.payment.installment.GoCicilInstallmentDetailBottomSheet
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import com.tokopedia.oneclickcheckout.payment.topup.view.PaymentTopUpWebViewActivity
+import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
 import com.tokopedia.purchase_platform.common.constant.ARGS_BBO_PROMO_CODES
 import com.tokopedia.purchase_platform.common.constant.ARGS_CLEAR_PROMO_RESULT
 import com.tokopedia.purchase_platform.common.constant.ARGS_FINISH_ERROR
@@ -105,6 +106,9 @@ import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_OCC
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
@@ -115,6 +119,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomSheet
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
+import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -134,6 +139,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var orderSummaryAnalytics: OrderSummaryAnalytics
+
+    @Inject
+    lateinit var ePharmacyAnalytics: EPharmacyAnalytics
 
     @Inject
     lateinit var userSession: Lazy<UserSessionInterface>
@@ -159,7 +167,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     private var shouldDismissProgressDialog: Boolean = false
 
     // Last saved PPP state based on productId
-    private val lastPurchaseProtectionCheckStates: HashMap<Long, Int> = HashMap()
+    private val lastPurchaseProtectionCheckStates: HashMap<String, Int> = HashMap()
 
     private var source: String = SOURCE_OTHERS
     private var tenor: Int = 0
@@ -205,6 +213,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             REQUEST_CODE_LINK_ACCOUNT -> onResultFromLinkAccount(resultCode, data)
             REQUEST_CODE_WALLET_ACTIVATION -> refresh()
             REQUEST_CODE_ADD_ON -> onResultFromAddOn(resultCode, data)
+            REQUEST_CODE_UPLOAD_PRESCRIPTION -> onResultFromUploadPrescription(data)
         }
     }
 
@@ -362,11 +371,25 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun initViews() {
         context?.let {
-            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            activity?.window?.decorView?.setBackgroundColor(
+                ContextCompat.getColor(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                )
+            )
         }
-        adapter = OrderSummaryPageAdapter(orderSummaryAnalytics, getOrderShopCardListener(), getOrderProductCardListener(), getOrderPreferenceCardListener(),
-                getOrderInsuranceCardListener(), getOrderPromoCardListener(), getOrderTotalPaymentCardListener())
-        binding.rvOrderSummaryPage.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        adapter = OrderSummaryPageAdapter(
+            orderSummaryAnalytics,
+            getOrderShopCardListener(),
+            getOrderProductCardListener(),
+            getOrderPreferenceCardListener(),
+            getOrderInsuranceCardListener(),
+            getOrderPromoCardListener(),
+            getUploadPrescriptionListener(),
+            getOrderTotalPaymentCardListener()
+        )
+        binding.rvOrderSummaryPage.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.rvOrderSummaryPage.adapter = adapter
         binding.rvOrderSummaryPage.itemAnimator = null
     }
@@ -393,6 +416,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         observeGlobalEvent()
 
         observeEligibilityForAnaRevamp()
+
+        observeUploadPrescription()
 
         // first load
         if (viewModel.orderProducts.value.isEmpty()) {
@@ -458,6 +483,40 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 adapter.notifyItemChanged(OrderSummaryPageAdapter.shopIndex)
             }
         }
+    }
+
+    private fun observeUploadPrescription() {
+            viewModel.uploadPrescriptionUiModel.observe(viewLifecycleOwner) {
+                if (it.isError && it.frontEndValidation) {
+                    binding.rvOrderSummaryPage.smoothScrollToPosition(adapter.uploadPrescriptionIndex)
+                    view?.let { v ->
+                        Toaster.build(
+                            v,
+                            getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_not_found),
+                            Toaster.LENGTH_LONG,
+                            Toaster.TYPE_ERROR
+                        ).show()
+                    }
+                }
+                if ((it.uploadedImageCount ?: 0) > 0) {
+                    it.uploadImageText = requireActivity().getString(
+                        com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_prescription_attached_title_text
+                    )
+                    it.descriptionText = requireActivity().getString(
+                        com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_prescription_count_text,
+                        it.uploadedImageCount
+                    )
+                    it.isError = false
+                }
+                adapter.uploadPrescription = it
+                if (binding.rvOrderSummaryPage.isComputingLayout) {
+                    binding.rvOrderSummaryPage.post {
+                        adapter.notifyItemChanged(adapter.uploadPrescriptionIndex)
+                    }
+                } else {
+                    adapter.notifyItemChanged(adapter.uploadPrescriptionIndex)
+                }
+            }
     }
 
     private fun observeOrderProducts() {
@@ -762,7 +821,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         Toaster.build(v, it.message).show()
                     }
                 }
-
                 is OccGlobalEvent.PopUp -> {
                     showPopUpDialog(it.popUp)
                 }
@@ -825,7 +883,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private fun updateLocalCacheAddressData(addressModel: OrderProfileAddress) {
-        if (addressModel.addressId > 0) {
+        if (addressModel.addressId.isNotBlankOrZero()) {
             activity?.let {
                 val localCache = ChooseAddressUtils.getLocalizingAddressData(it)
                 val newTokoNowData = addressModel.tokoNow
@@ -834,9 +892,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         || localCache.address_id.isEmpty() || localCache.address_id == "0") {
                     ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                             context = it,
-                            addressId = addressModel.addressId.toString(),
-                            cityId = addressModel.cityId.toString(),
-                            districtId = addressModel.districtId.toString(),
+                            addressId = addressModel.addressId,
+                            cityId = addressModel.cityId,
+                            districtId = addressModel.districtId,
                             lat = addressModel.latitude,
                             long = addressModel.longitude,
                             label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
@@ -1293,11 +1351,16 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
 
         override fun onPurchaseProtectionInfoClicked(url: String, categoryId: String, protectionPricePerProduct: Int, protectionTitle: String) {
-            PurchaseProtectionInfoBottomsheet(url,userSession.get()).show(this@OrderSummaryPageFragment)
             orderSummaryAnalytics.eventPPClickTooltip(userSession.get().userId, categoryId, protectionPricePerProduct, protectionTitle)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalFintech.INSURANCE_INFO)
+            intent.putExtra(
+                ApplinkConstInternalFintech.PARAM_INSURANCE_INFO_URL,
+                url
+            )
+            startActivity(intent)
         }
 
-        override fun onPurchaseProtectionCheckedChange(isChecked: Boolean, productId: Long) {
+        override fun onPurchaseProtectionCheckedChange(isChecked: Boolean, productId: String) {
             lastPurchaseProtectionCheckStates[productId] = if (isChecked) {
                 PurchaseProtectionPlanData.STATE_TICKED
             } else {
@@ -1306,7 +1369,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             viewModel.calculateTotal()
         }
 
-        override fun getLastPurchaseProtectionCheckState(productId: Long): Int {
+        override fun getLastPurchaseProtectionCheckState(productId: String): Int {
             return lastPurchaseProtectionCheckStates[productId]
                     ?: PurchaseProtectionPlanData.STATE_EMPTY
         }
@@ -1396,7 +1459,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             val currentGatewayCode = profile.payment.gatewayCode
             orderSummaryAnalytics.eventClickArrowToChangePaymentOption(currentGatewayCode, userSession.get().userId)
             val intent = Intent(context, PaymentListingActivity::class.java).apply {
-                putExtra(PaymentListingActivity.EXTRA_ADDRESS_ID, profile.address.addressId.toString())
+                putExtra(PaymentListingActivity.EXTRA_ADDRESS_ID, profile.address.addressId)
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_PROFILE, payment.creditCard.additionalData.profileCode)
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_MERCHANT, payment.creditCard.additionalData.merchantCode)
                 val orderCost = viewModel.orderTotal.value.orderCost
@@ -1578,6 +1641,58 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun getUploadPrescriptionListener(): UploadPrescriptionListener {
+        return object : UploadPrescriptionListener {
+            override fun uploadPrescriptionAction(
+                uploadPrescriptionUiModel: UploadPrescriptionUiModel,
+                buttonText: String,
+                buttonNotes: String
+            ) {
+                ePharmacyAnalytics.sendPrescriptionWidgetClick(uploadPrescriptionUiModel.checkoutId)
+                val uploadPrescriptionIntent = RouteManager.getIntent(
+                    context,
+                    UploadPrescriptionViewHolder.EPharmacyAppLink
+                )
+                uploadPrescriptionIntent.putExtra(
+                    EXTRA_CHECKOUT_ID_STRING,
+                    uploadPrescriptionUiModel.checkoutId
+                )
+                uploadPrescriptionIntent.putExtra(
+                    EXTRA_SOURCE_STRING,
+                    SOURCE_OCC
+                )
+                startActivityForResult(
+                    uploadPrescriptionIntent,
+                    REQUEST_CODE_UPLOAD_PRESCRIPTION
+                )
+            }
+        }
+    }
+
+    private fun onResultFromUploadPrescription(data: Intent?) {
+        if (data != null &&
+            data.extras != null &&
+            data.extras!!.containsKey(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA) &&
+            activity != null
+        ) {
+            val prescriptions = data.extras!!.getStringArrayList(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA)
+            prescriptions?.let {
+                if (it.isNotEmpty()) {
+                    viewModel.updatePrescriptionIds(it)
+                    view?.let { v ->
+                        Toaster.build(
+                            v,
+                            getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_text),
+                            Toaster.LENGTH_LONG,
+                            Toaster.TYPE_NORMAL,
+                            getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok)
+                        ).show()
+                    }
+                }
+            }
+        }
+    }
+
     private fun getOrderTotalPaymentCardListener(): OrderTotalPaymentCard.OrderTotalPaymentCardListener {
         return object : OrderTotalPaymentCard.OrderTotalPaymentCardListener {
             override fun onOrderDetailClicked(orderCost: OrderCost) {
@@ -1587,6 +1702,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
             override fun onPayClicked() {
                 viewModel.finalUpdate(onSuccessCheckout(), false)
+            }
+
+            override fun onRefreshPaymentClicked() {
+                viewModel.calculateTotal()
             }
         }
     }
@@ -1614,6 +1733,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         const val REQUEST_CODE_ADD_ON = 24
 
+        const val REQUEST_CODE_UPLOAD_PRESCRIPTION = 25
+
         const val QUERY_PRODUCT_ID = "product_id"
         const val QUERY_SOURCE = "source"
         const val QUERY_GATEWAY_CODE = "gateway_code"
@@ -1623,10 +1744,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         private const val SOURCE_OTHERS = "others"
         private const val SOURCE_PDP = "pdp"
+        private const val SOURCE_OCC = "occ"
         private const val SOURCE_MINICART = "minicart"
         private const val SOURCE_FINTECH = "fintech"
 
         private const val SAVE_HAS_DONE_ATC = "has_done_atc"
+
+        private const val EXTRA_CHECKOUT_ID_STRING = "extra_checkout_id_string"
+        private const val EXTRA_SOURCE_STRING = "source"
+        private const val KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids"
 
         @JvmStatic
         fun newInstance(productId: String?, gatewayCode: String?,

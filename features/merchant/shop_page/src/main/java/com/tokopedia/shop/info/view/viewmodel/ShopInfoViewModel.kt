@@ -6,14 +6,15 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.UserNotLoginException
+import com.tokopedia.shop.common.constant.ShopPartnerFsFullfillmentServiceTypeDef
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.domain.GetMessageIdChatUseCase
-import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
 import com.tokopedia.shop.common.domain.GetShopReputationUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_INFO_SOURCE
 import com.tokopedia.shop.common.graphql.data.shopinfo.ChatExistingChat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
+import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
 import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -23,17 +24,18 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ShopInfoViewModel @Inject constructor(private val userSessionInterface: UserSessionInterface,
-                                            private val getShopNoteUseCase: GetShopNoteUseCase,
-                                            private val getShopInfoUseCase: GQLGetShopInfoUseCase,
-                                            private val getShopReputationUseCase: GetShopReputationUseCase,
-                                            private val getMessageIdChatUseCase : GetMessageIdChatUseCase,
-                                            private val coroutineDispatcherProvider: CoroutineDispatchers
-): BaseViewModel(coroutineDispatcherProvider.main){
+class ShopInfoViewModel @Inject constructor(
+    private val userSessionInterface: UserSessionInterface,
+    private val getShopNoteUseCase: GetShopNoteUseCase,
+    private val getShopInfoUseCase: GQLGetShopInfoUseCase,
+    private val getShopReputationUseCase: GetShopReputationUseCase,
+    private val getMessageIdChatUseCase: GetMessageIdChatUseCase,
+    private val coroutineDispatcherProvider: CoroutineDispatchers
+) : BaseViewModel(coroutineDispatcherProvider.main) {
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
-    fun userId() : String = userSessionInterface.userId
-    private fun isUserLogin() : Boolean = userSessionInterface.isLoggedIn
+    fun userId(): String = userSessionInterface.userId
+    private fun isUserLogin(): Boolean = userSessionInterface.isLoggedIn
 
     val shopNotesResp = MutableLiveData<Result<List<ShopNoteUiModel>>>()
     val shopInfo = MutableLiveData<ShopInfoData>()
@@ -42,13 +44,13 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
 
     fun getShopInfo(shopId: String) {
         launchCatchError(block = {
-            coroutineScope{
+            coroutineScope {
                 val getShopInfo = withContext(coroutineDispatcherProvider.io) {
                     val shopIdParams = listOf(shopId.toIntOrZero())
 
                     getShopInfoUseCase.isFromCacheFirst = false
                     getShopInfoUseCase.params = GQLGetShopInfoUseCase
-                            .createParams(shopIdParams, source = SHOP_INFO_SOURCE)
+                        .createParams(shopIdParams, source = SHOP_INFO_SOURCE)
 
                     getShopInfoUseCase.executeOnBackground()
                 }
@@ -56,7 +58,7 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
                 val shopInfoData = getShopInfo.mapToShopInfoData()
                 shopInfo.postValue(shopInfoData)
             }
-        }){}
+        }) {}
     }
 
     fun getShopNotes(shopId: String) {
@@ -65,19 +67,21 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
                 val shopNotes = withContext(coroutineDispatcherProvider.io) {
                     getShopNoteUseCase.params = GetShopNoteUseCase.createParams(shopId)
                     getShopNoteUseCase.isFromCacheFirst = false
-                    Success(getShopNoteUseCase.executeOnBackground().map {
-                        ShopNoteUiModel().apply {
-                            shopNoteId = it.id?.toLongOrNull() ?: 0
-                            title = it.title
-                            position = it.position.toLong()
-                            url = it.url
-                            lastUpdate = it.updateTime
+                    Success(
+                        getShopNoteUseCase.executeOnBackground().map {
+                            ShopNoteUiModel().apply {
+                                shopNoteId = it.id?.toLongOrNull() ?: 0
+                                title = it.title
+                                position = it.position.toLong()
+                                url = it.url
+                                lastUpdate = it.updateTime
+                            }
                         }
-                    })
+                    )
                 }
                 shopNotesResp.postValue(shopNotes)
             }
-        }){
+        }) {
             shopNotesResp.postValue(Fail(it))
         }
     }
@@ -108,9 +112,10 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
         }
     }
 
+    fun isShouldShowLicenseForDrugSeller(isGoApotik: Boolean, fsType: Int): Boolean = isGoApotik || fsType == ShopPartnerFsFullfillmentServiceTypeDef.EPHARMACY
+
     private suspend fun getMessageId(shopId: String): ChatExistingChat {
         getMessageIdChatUseCase.params = GetMessageIdChatUseCase.createParams(shopId)
         return getMessageIdChatUseCase.executeOnBackground()
     }
-
 }

@@ -5,31 +5,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-  <ImageView
-      android:layout_width="match_parent"
-      android:layout_height="4dp"
-      android:src="@drawable/top_shadow_gradient"
-      android:contentDescription="@string/contact_us_reply_button_gradient"/>
-
     <LinearLayout
-        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="60dp">
+        android:layout_height="60dp"
+        android:background="@color/Unify_NN0">
 
-      <com.tokopedia.unifyprinciples.Typography
-          android:id="@+id/tv_reply_button"
-          android:layout_width="match_parent"
-          android:layout_height="40dp"
-          android:layout_marginRight="16dp"
-          android:layout_marginLeft="16dp"
-          android:layout_gravity="center"
-          android:background="@drawable/bg_button_state"
-          android:gravity="center"
-          android:text="@string/balas"
-          android:textColor="@color/white"
-          app:typographyType="display_2"
-          app:typographyWeight="bold"
-          />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_reply_button"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/bg_button_state"
+            android:gravity="center"
+            android:text="@string/balas"
+            android:textColor="@color/Unify_NN0"
+            app:typographyWeight="bold"
+            app:typographyType="display_2" />
 
     </LinearLayout>
 

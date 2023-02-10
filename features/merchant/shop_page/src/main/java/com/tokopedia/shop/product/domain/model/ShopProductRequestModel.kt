@@ -8,25 +8,17 @@ import java.util.*
 /**
  * Created by nathan on 2/15/18.
  */
-class ShopProductRequestModel(val shopId: String, // Additional param for query attribute
-                              val isShopClosed: Boolean, val isOfficialStore: Boolean, val page: Int, var isUseAce: Boolean,
-                              val perPage: Int) {
+class ShopProductRequestModel(
+    val shopId: String, // Additional param for query attribute
+    val isShopClosed: Boolean,
+    val page: Int,
+    var isUseAce: Boolean,
+    val perPage: Int
+) {
     var keyword: String? = null
     private var etalaseId = ""
     var orderBy = 0
     var wholesale = 0
-
-    fun getEtalaseId(): String {
-        return etalaseId
-    }
-
-    fun setEtalaseId(etalaseId: String?) {
-        if (etalaseId == null) {
-            this.etalaseId = ""
-        } else {
-            this.etalaseId = etalaseId
-        }
-    }
 
     val hashMap: HashMap<String, String?>
         get() {

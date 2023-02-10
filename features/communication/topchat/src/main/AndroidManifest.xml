@@ -85,7 +85,10 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize"
             android:launchMode="singleTop"
-            android:exported="false">
+            android:exported="false"
+            android:allowEmbedded="true"
+            android:documentLaunchMode="always"
+            android:resizeableActivity="true">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -100,8 +103,38 @@
         </activity>
         <activity
             android:name=".chatroom.view.activity.TopchatReportWebViewActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_chat_report"
+                    android:scheme="@string/internal_scheme" />
+
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".chatsetting.view.activity.BubbleChatActivationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_chat_bubble_activation"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".chatroom.service.NotificationChatService"

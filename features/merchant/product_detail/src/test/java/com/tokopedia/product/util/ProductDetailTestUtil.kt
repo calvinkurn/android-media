@@ -19,7 +19,6 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
-
 /**
  * Created by Yehezkiel on 01/04/20
  */
@@ -53,10 +52,16 @@ object ProductDetailTestUtil {
         return mapIntoModel(mockData.data ?: PdpGetLayout())
     }
 
+    fun getMockPdpLayoutMiniVariant(): ProductDetailDataModel {
+        val mockData: ProductDetailLayout = createMockGraphqlSuccessResponse(GetPdpLayoutUseCaseTest.GQL_GET_PDP_LAYOUT_MINI_VARIANT_JSON, ProductDetailLayout::class.java)
+        return mapIntoModel(mockData.data ?: PdpGetLayout())
+    }
+
     fun <T> createMockGraphqlSuccessResponse(jsonLocation: String, typeOfClass: Type): T {
         return CommonUtils.fromJson(
-                getJsonFromFile(jsonLocation),
-                typeOfClass) as T
+            getJsonFromFile(jsonLocation),
+            typeOfClass
+        ) as T
     }
 
     private fun mapP2DataIntoUiData(responseData: ProductInfoP2Data): ProductInfoP2UiData {
@@ -88,6 +93,7 @@ object ProductDetailTestUtil {
             p2UiData.rating = rating
             p2UiData.ticker = ticker
             p2UiData.shopFinishRate = responseData.shopFinishRate.finishRate
+            p2UiData.arInfo = arInfo
         }
         return p2UiData
     }
@@ -105,37 +111,37 @@ object ProductDetailTestUtil {
 
     fun generateNotifyMeMock(): Map<String, ProductUpcomingData> {
         return mapOf(
-                "518076293" to ProductUpcomingData(
-                        campaignId = "123",
-                        campaignType = "campaigntype",
-                        campaignTypeName = "campaignTypeName",
-                        startDate = "startdate",
-                        endDate = "enddate",
-                        notifyMe = false,
-                        productId = "518076293",
-                        ribbonCopy = "ribboncopy",
-                        upcomingType = "upcomingtype",
-                        bgColorUpcoming = "bgcolorupcoming"
-                ),
-                "518076286" to ProductUpcomingData(
-                        campaignId = "123",
-                        campaignType = "campaigntype",
-                        campaignTypeName = "campaignTypeName",
-                        startDate = "startdate",
-                        endDate = "enddate",
-                        notifyMe = true,
-                        productId = "518076286",
-                        ribbonCopy = "ribboncopy",
-                        upcomingType = "upcomingtype",
-                        bgColorUpcoming = "bgcolorupcoming"
-                )
+            "518076293" to ProductUpcomingData(
+                campaignId = "123",
+                campaignType = "campaigntype",
+                campaignTypeName = "campaignTypeName",
+                startDate = "startdate",
+                endDate = "enddate",
+                notifyMe = false,
+                productId = "518076293",
+                ribbonCopy = "ribboncopy",
+                upcomingType = "upcomingtype",
+                bgColorUpcoming = "bgcolorupcoming"
+            ),
+            "518076286" to ProductUpcomingData(
+                campaignId = "123",
+                campaignType = "campaigntype",
+                campaignTypeName = "campaignTypeName",
+                startDate = "startdate",
+                endDate = "enddate",
+                notifyMe = true,
+                productId = "518076286",
+                ribbonCopy = "ribboncopy",
+                upcomingType = "upcomingtype",
+                bgColorUpcoming = "bgcolorupcoming"
+            )
         )
     }
 }
 
 fun <T> LiveData<T>.getOrAwaitValue(
-        time: Long = 2,
-        timeUnit: TimeUnit = TimeUnit.SECONDS
+    time: Long = 2,
+    timeUnit: TimeUnit = TimeUnit.SECONDS
 ): T {
     var data: T? = null
     val latch = CountDownLatch(1)
@@ -157,6 +163,3 @@ fun <T> LiveData<T>.getOrAwaitValue(
     @Suppress("UNCHECKED_CAST")
     return data as T
 }
-
-
-

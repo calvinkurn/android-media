@@ -9,7 +9,6 @@
         android:id="@+id/loading_image_view"
         android:layout_width="match_parent"
         android:layout_height="220dp"
-        android:background="@color/Unify_N0"
         android:gravity="center"
         app:layout_constraintVertical_chainStyle="packed"
         android:paddingTop="40dp"

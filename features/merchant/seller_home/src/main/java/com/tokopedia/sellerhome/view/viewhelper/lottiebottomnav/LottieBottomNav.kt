@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -254,11 +255,11 @@ class LottieBottomNav : LinearLayout {
             imageContainer.addView(iconPlaceholder)
 
             icon.addAnimatorListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(p0: Animator?) {
+                override fun onAnimationRepeat(p0: Animator) {
 
                 }
 
-                override fun onAnimationEnd(p0: Animator?) {
+                override fun onAnimationEnd(p0: Animator) {
                     if (selectedItem != index) {
                         val bottomMenuSelected = bottomMenu
                         val iconSelected = icon
@@ -288,11 +289,11 @@ class LottieBottomNav : LinearLayout {
                     iconPlaceholder.visibility = View.VISIBLE
                 }
 
-                override fun onAnimationCancel(p0: Animator?) {
+                override fun onAnimationCancel(p0: Animator) {
 
                 }
 
-                override fun onAnimationStart(p0: Animator?) {
+                override fun onAnimationStart(p0: Animator) {
                     icon.visibility = View.VISIBLE
                     iconPlaceholder.visibility = View.INVISIBLE
                 }
@@ -349,9 +350,9 @@ class LottieBottomNav : LinearLayout {
     }
 
     private fun handleItemClicked(index: Int, bottomMenu: BottomMenu) {
-        // invoke listener
         Handler(Looper.getMainLooper()).post {
-            if (listener?.menuClicked(index, bottomMenu.id) == true) {
+            if (selectedItem != index) {
+                listener?.menuClicked(index, bottomMenu.id).orTrue()
                 changeColor(index)
                 selectedItem = index
             }

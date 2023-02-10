@@ -1,14 +1,14 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.os.Bundle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
@@ -23,10 +23,12 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocketMapper
+import com.tokopedia.play.broadcaster.data.type.PlaySocketType
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
@@ -65,7 +67,7 @@ import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.LeadeboardType
@@ -85,28 +87,28 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.supervisorScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.getAndUpdate
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -129,7 +131,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val interactiveMapper: PlayInteractiveMapper,
     private val repo: PlayBroadcastRepository,
     private val logger: PlayLogger,
-    private val broadcastTimer: PlayBroadcastTimer,
+    private val broadcastTimer: PlayBroadcastTimer
 ) : ViewModel() {
 
     @AssistedFactory
@@ -139,6 +141,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     val channelId: String
         get() = hydraConfigStore.getChannelId()
+
     val channelTitle: String
         get() {
             return when (val titleModel = mDataStore.getSetupDataStore().getTitle()) {
@@ -146,6 +149,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 else -> ""
             }
         }
+
+    val maxProduct: Int
+        get() = hydraConfigStore.getMaxProduct()
 
     val remainingDurationInMillis: Long
         get() = broadcastTimer.remainingDuration
@@ -215,7 +221,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         MutableStateFlow<QuizFormStateUiModel>(QuizFormStateUiModel.Nothing)
     private val _quizIsNeedToUpdateUI = MutableStateFlow(true)
 
-    private val _interactive = MutableStateFlow<InteractiveUiModel>(InteractiveUiModel.Unknown)
+    private val _interactive = MutableStateFlow<GameUiModel>(GameUiModel.Unknown)
     private val _interactiveConfig = MutableStateFlow(InteractiveConfigUiModel.empty())
     private val _interactiveSetup = MutableStateFlow(InteractiveSetupUiModel.Empty)
 
@@ -223,7 +229,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val _accountStateInfo = MutableStateFlow(AccountStateInfo())
     var warningInfoType: WarningType = WarningType.UNKNOWN
-    var tncList: List<TermsAndConditionUiModel> = emptyList()
+    val tncList = mutableListOf<TermsAndConditionUiModel>()
 
     private val _accountListState = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
 
@@ -235,21 +241,28 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     val isAllowChangeAccount: Boolean
         get() = if (GlobalConfig.isSellerApp()) false else _accountListState.value.size > 1
 
+    val selectedAccount: ContentAccountUiModel
+        get() = _selectedAccount.value
+
     val authorId: String
         get() = _selectedAccount.value.id
 
     val authorName: String
         get() = _selectedAccount.value.name
 
-    private val authorType: String
+    val authorType: String
         get() = _selectedAccount.value.type
+
+    val isShortVideoAllowed: Boolean
+        get() = _configInfo.value?.shortVideoAllowed.orFalse()
 
     private val _channelUiState = _configInfo
         .filterNotNull()
         .map {
             PlayChannelUiState(
-                canStream = it.streamAllowed,
-                tnc = it.tnc,
+                streamAllowed = it.streamAllowed,
+                shortVideoAllowed = it.shortVideoAllowed,
+                tnc = it.tnc
             )
         }
 
@@ -269,21 +282,24 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     @Suppress("MagicNumber")
     private val _quizFormUiState = combine(
-        _quizFormData, _quizFormState, _quizIsNeedToUpdateUI,
+        _quizFormData,
+        _quizFormState,
+        _quizIsNeedToUpdateUI
     ) { quizFormData, quizFormState, quizIsNeedToUpdateUI ->
         QuizFormUiState(
             quizFormData = quizFormData,
             quizFormState = quizFormState,
-            isNeedToUpdateUI = quizIsNeedToUpdateUI,
+            isNeedToUpdateUI = quizIsNeedToUpdateUI
         )
     }
 
     private val _quizBottomSheetUiState = combine(
-        _quizDetailState, _quizChoiceDetailState
+        _quizDetailState,
+        _quizChoiceDetailState
     ) { quizDetailState, quizChoiceDetailState ->
         QuizBottomSheetUiState(
             quizDetailState = quizDetailState,
-            quizChoiceDetailState = quizChoiceDetailState,
+            quizChoiceDetailState = quizChoiceDetailState
         )
     }
 
@@ -301,7 +317,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _onboarding,
         _quizBottomSheetUiState,
         _selectedAccount,
-        _accountStateInfo,
+        _accountStateInfo
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -323,7 +339,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             schedule = schedule,
             isExiting = isExiting,
             quizForm = quizForm,
-            interactive = interactive,
+            game = interactive,
             interactiveConfig = interactiveConfig,
             interactiveSetup = interactiveSetup,
             quizDetail = quizDetail,
@@ -335,7 +351,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(UI_STATE_STOP_TIMEOUT),
-        PlayBroadcastUiState.Empty,
+        PlayBroadcastUiState.Empty
     )
 
     private val _uiEvent = MutableSharedFlow<PlayBroadcastEvent>(extraBufferCapacity = 100)
@@ -360,12 +376,19 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         viewModelScope.launch(dispatcher.computation) {
             getCurrentSetupDataStore().getObservableTitle().collectLatest {
-                if (it is PlayTitleUiModel.HasTitle) handle[KEY_TITLE] = it.title
-                else handle.remove(KEY_TITLE)
+                if (it is PlayTitleUiModel.HasTitle) {
+                    handle[KEY_TITLE] = it.title
+                } else {
+                    handle.remove(KEY_TITLE)
+                }
             }
         }
 
         _observableChatList.value = mutableListOf()
+    }
+
+    fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {
+        return mDataStore.getSetupDataStore()
     }
 
     fun saveState(outState: Bundle) {
@@ -386,11 +409,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     fun isLiveStreamEnded() = isLiveStreamEnded
 
-    override fun onCleared() {
-        super.onCleared()
-        viewModelScope.cancel()
-    }
-
     fun submitAction(event: PlayBroadcastAction) {
         when (event) {
             PlayBroadcastAction.EditPinnedMessage -> handleEditPinnedMessage()
@@ -400,8 +418,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
-            is PlayBroadcastAction.GetAccountList -> handleGetAccountList(event.selectedType)
-            is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount()
+            is PlayBroadcastAction.GetConfiguration -> handleGetConfiguration(event.selectedType)
+            is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount(event.needLoading)
+            is PlayBroadcastAction.SuccessOnBoardingUGC -> handleSuccessOnBoardingUGC()
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
@@ -425,7 +444,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayBroadcastAction.GiveawayUpcomingEnded -> handleGiveawayUpcomingEnded()
             PlayBroadcastAction.GiveawayOngoingEnded -> handleGiveawayOngoingEnded()
             is PlayBroadcastAction.CreateGiveaway -> handleCreateGiveaway(
-                event.title, event.durationInMs
+                event.title,
+                event.durationInMs
             )
             is PlayBroadcastAction.ClickOngoingWidget -> handleClickOngoingWidget()
             PlayBroadcastAction.ClickBackOnChoiceDetail -> handleBackClickOnChoiceDetail()
@@ -437,13 +457,44 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {
-        return mDataStore.getSetupDataStore()
+    private fun handleGetConfiguration(selectedType: String) {
+        viewModelScope.launchCatchError(block = {
+            getFeedCheckWhitelist(selectedType)
+            getBroadcastingConfig()
+            getBroadcasterAuthorConfig(_selectedAccount.value)
+        }, onError = {
+            _observableConfigInfo.value = NetworkResult.Fail(it) {
+                this.handleGetConfiguration(selectedType)
+            }
+        })
     }
 
-    private fun getConfiguration(selectedAccount: ContentAccountUiModel) {
-        viewModelScope.launchCatchError(block = {
+    private suspend fun getFeedCheckWhitelist(selectedType: String) {
+        _accountStateInfo.value = AccountStateInfo()
+        _observableConfigInfo.value = NetworkResult.Loading
 
+        val accountList = repo.getAccountList()
+        _accountListState.value = accountList
+
+        if (accountList.isNotEmpty()) {
+            updateSelectedAccount(
+                getSelectedAccount(
+                    selectedType = selectedType,
+                    cacheSelectedType = sharedPref.getLastSelectedAccountType(),
+                    accountList = accountList
+                )
+            )
+        } else throw Throwable()
+    }
+
+    private suspend fun getBroadcastingConfig() {
+        val request = repo.getBroadcastingConfig(authorId, authorType)
+        hydraConfigStore.saveBroadcastingConfig(request)
+        _uiEvent.emit(PlayBroadcastEvent.InitializeBroadcaster(hydraConfigStore.getBroadcastingConfig()))
+    }
+
+    private fun getBroadcasterAuthorConfig(selectedAccount: ContentAccountUiModel) {
+        viewModelScope.launchCatchError(block = {
             val currConfigInfo = _configInfo.value
             val configUiModel = repo.getChannelConfiguration(selectedAccount.id, selectedAccount.type)
             setChannelId(configUiModel.channelId)
@@ -468,10 +519,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             if (configUiModel.channelStatus == ChannelStatus.Unknown) createChannel()
 
             // get channel when channel status is paused
-            if (configUiModel.channelStatus == ChannelStatus.Pause
+            if (configUiModel.channelStatus == ChannelStatus.Pause ||
                 // also when complete draft is true
-                || configUiModel.channelStatus == ChannelStatus.CompleteDraft
-                || configUiModel.channelStatus == ChannelStatus.Draft
+                configUiModel.channelStatus == ChannelStatus.CompleteDraft ||
+                configUiModel.channelStatus == ChannelStatus.Draft
             ) {
                 val deferredChannel = asyncCatchError(block = {
                     getChannelById(configUiModel.channelId)
@@ -503,7 +554,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             updateSelectedAccount(selectedAccount)
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
         }) {
-            _observableConfigInfo.value = NetworkResult.Fail(it) { getConfiguration(selectedAccount) }
+            _observableConfigInfo.value = NetworkResult.Fail(it) { getBroadcasterAuthorConfig(selectedAccount) }
         }
     }
 
@@ -533,7 +584,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val channelInfo = playBroadcastMapper.mapChannelInfo(channel)
             _observableChannelInfo.value = NetworkResult.Success(channelInfo)
 
-            logger.logChannelStatus(channelInfo.status)
+            logChannelStatus(channelInfo.status)
 
             setChannelId(channelInfo.channelId)
             setChannelTitle(channelInfo.title)
@@ -570,8 +621,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     fun sendLogs() {
         try {
             logger.sendAll(channelId)
-        } catch (ignored: IllegalStateException) {
-        }
+        } catch (e: Exception) { }
     }
 
     private fun setActiveInteractiveTitle(title: String) {
@@ -606,33 +656,33 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val currentInteractive = repo.getCurrentInteractive(channelId)
             handleActiveInteractiveFromNetwork(currentInteractive)
         } catch (e: Throwable) {
-            _interactive.value = InteractiveUiModel.Unknown
+            _interactive.value = GameUiModel.Unknown
         }
     }
 
-    private fun handleActiveInteractiveFromNetwork(interactive: InteractiveUiModel) {
-        setInteractiveId(interactive.id)
-        setActiveInteractiveTitle(interactive.title)
-        when (interactive) {
-            is InteractiveUiModel.Giveaway -> setupGiveaway(interactive)
-            is InteractiveUiModel.Quiz -> setupQuiz(interactive)
+    private fun handleActiveInteractiveFromNetwork(game: GameUiModel) {
+        setInteractiveId(game.id)
+        setActiveInteractiveTitle(game.title)
+        when (game) {
+            is GameUiModel.Giveaway -> setupGiveaway(game)
+            is GameUiModel.Quiz -> setupQuiz(game)
             else -> {}
         }
     }
 
-    private fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway) {
+    private fun setupGiveaway(giveaway: GameUiModel.Giveaway) {
         _interactive.value = giveaway
         when (giveaway.status) {
-            InteractiveUiModel.Giveaway.Status.Finished -> displayGameResultWidgetIfHasLeaderBoard()
-            InteractiveUiModel.Giveaway.Status.Unknown -> stopInteractive()
+            GameUiModel.Giveaway.Status.Finished -> displayGameResultWidgetIfHasLeaderBoard()
+            GameUiModel.Giveaway.Status.Unknown -> stopInteractive()
         }
     }
 
-    private fun setupQuiz(quiz: InteractiveUiModel.Quiz) {
+    private fun setupQuiz(quiz: GameUiModel.Quiz) {
         _interactive.value = quiz
         when (quiz.status) {
-            InteractiveUiModel.Quiz.Status.Finished -> displayGameResultWidgetIfHasLeaderBoard()
-            InteractiveUiModel.Quiz.Status.Unknown -> stopInteractive()
+            GameUiModel.Quiz.Status.Finished -> displayGameResultWidgetIfHasLeaderBoard()
+            GameUiModel.Quiz.Status.Unknown -> stopInteractive()
         }
     }
 
@@ -681,10 +731,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     ) {
         when (response) {
             is WebSocketAction.NewMessage -> handleWebSocketMessage(response.message)
-            is WebSocketAction.Closed -> if (response.reason is WebSocketClosedReason.Error) connectWebSocket(
-                channelId,
-                socketCredential
-            )
+            is WebSocketAction.Closed -> if (response.reason is WebSocketClosedReason.Error) {
+                connectWebSocket(
+                    channelId,
+                    socketCredential
+                )
+            }
         }
     }
 
@@ -698,9 +750,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is TotalView -> _observableTotalView.value = playBroadcastMapper.mapTotalView(result)
             is TotalLike -> _observableTotalLike.value = playBroadcastMapper.mapTotalLike(result)
             is LiveDuration -> {
-                // TODO: need to change this validation, instead of remaining changes this to currDuration == maxDuration
-                if (result.remaining <= 0) logger.logSocketType(result)
                 restartLiveDuration(result)
+                if (result.duration >= result.maxDuration) logSocket(result)
             }
             is SectionedProductTagSocketResponse -> {
                 setSelectedProduct(productMapper.mapSectionedProduct(result))
@@ -708,18 +759,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is Chat -> retrieveNewChat(playBroadcastMapper.mapIncomingChat(result))
             is Freeze -> {
                 val eventUiModel =
-                        playBroadcastMapper.mapFreezeEvent(result, _observableEvent.value)
+                    playBroadcastMapper.mapFreezeEvent(result, _observableEvent.value)
                 if (eventUiModel.freeze) {
                     _observableEvent.value = eventUiModel
-                    logger.logSocketType(result)
+                    logSocket(result)
                 }
             }
             is Banned -> {
                 val eventUiModel =
-                        playBroadcastMapper.mapBannedEvent(result, _observableEvent.value)
+                    playBroadcastMapper.mapBannedEvent(result, _observableEvent.value)
                 if (eventUiModel.banned) {
                     _observableEvent.value = eventUiModel
-                    logger.logSocketType(result)
+                    logSocket(result)
                 }
             }
             is GiveawayResponse -> {
@@ -795,7 +846,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 config = ScheduleConfigUiModel(
                     maxDate = scheduleConfigModel.maximum,
                     minDate = scheduleConfigModel.minimum,
-                    defaultDate = scheduleConfigModel.default,
+                    defaultDate = scheduleConfigModel.default
                 ),
                 canSchedule = repo.canSchedule()
             )
@@ -825,7 +876,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val quizDetailUiModel = repo.getInteractiveQuizDetail(interactiveId)
             _quizDetailState.value = QuizDetailStateUiModel.Success(
-                    playBroadcastMapper.mapQuizDetailToLeaderBoard(quizDetailUiModel, endTimeInteractive)
+                playBroadcastMapper.mapQuizDetailToLeaderBoard(quizDetailUiModel, endTimeInteractive)
             )
         }) {
             _quizDetailState.value =
@@ -838,7 +889,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         index: Int,
         cursor: String = "",
         interactiveId: String,
-        interactiveTitle: String,
+        interactiveTitle: String
     ) {
         val oldParticipant = when (val state = _quizChoiceDetailState.value) {
             is QuizChoiceDetailStateUiModel.Success -> {
@@ -869,7 +920,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 choiceId,
                 index,
                 interactiveId,
-                interactiveTitle,
+                interactiveTitle
             )
         }
     }
@@ -878,7 +929,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _quizDetailState.value = QuizDetailStateUiModel.Loading
         viewModelScope.launchCatchError(block = {
             val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId, allowChat).map {
-                if(it is LeaderboardGameUiModel.Header && it.leaderBoardType == LeadeboardType.Quiz && (_interactive.value as? InteractiveUiModel.Quiz)?.status is InteractiveUiModel.Quiz.Status.Ongoing && it.id == _interactive.value.id) it.copy(endsIn = endTimeInteractive)
+                if(it is LeaderboardGameUiModel.Header && it.leaderBoardType == LeadeboardType.Quiz && (_interactive.value as? GameUiModel.Quiz)?.status is GameUiModel.Quiz.Status.Ongoing && it.id == _interactive.value.id) it.copy(endsIn = endTimeInteractive)
                 else it
             }
             _quizDetailState.value = QuizDetailStateUiModel.Success(leaderboardSlots)
@@ -890,8 +941,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val endTimeInteractive: Calendar? get() {
         return when (val interactive = _interactive.value){
-            is InteractiveUiModel.Quiz -> return when (val status = interactive.status){
-                is InteractiveUiModel.Quiz.Status.Ongoing -> {
+            is GameUiModel.Quiz -> return when (val status = interactive.status){
+                is GameUiModel.Quiz.Status.Ongoing -> {
                     status.endTime
                 }
                 else -> null
@@ -903,8 +954,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun displayGameResultWidgetIfHasLeaderBoard() {
         viewModelScope.launchCatchError(dispatcher.io, block = {
             val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId, false).map {
-                if(it is LeaderboardGameUiModel.Header && it.leaderBoardType == LeadeboardType.Quiz && it.id == _interactive.value.id) it.copy(endsIn = endTimeInteractive)
-                else it
+                if (it is LeaderboardGameUiModel.Header && it.leaderBoardType == LeadeboardType.Quiz && it.id == _interactive.value.id) {
+                    it.copy(endsIn = endTimeInteractive)
+                } else {
+                    it
+                }
             }
             if (leaderboardSlots.isNotEmpty()) {
                 _uiEvent.emit(PlayBroadcastEvent.ShowInteractiveGameResultWidget(sharedPref.isFirstGameResult()))
@@ -967,7 +1021,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _schedule.update {
                 it.copy(
                     schedule = repo.updateSchedule(channelId, selectedDate),
-                    state = NetworkState.Success,
+                    state = NetworkState.Success
                 )
             }
             _uiEvent.emit(
@@ -989,7 +1043,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _schedule.update {
                 it.copy(
                     schedule = repo.updateSchedule(channelId, null),
-                    state = NetworkState.Success,
+                    state = NetworkState.Success
                 )
             }
             _uiEvent.emit(PlayBroadcastEvent.DeleteScheduleSuccess)
@@ -1011,7 +1065,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
             GameType.Quiz -> {
                 /**
-                 * TODO("Quiz to also use [_interactiveSetup], because only 1 interactive can be active at a time")
+                 * TODO("Quiz to also use [_interactiveSetup], because only 1 game can be active at a time")
                  */
                 _quizFormState.setValue { next() }
             }
@@ -1076,12 +1130,14 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         needUpdateQuizForm(true) {
             _quizFormData.setValue {
-                copy(options = options.map {
-                    it.copy(
-                        isSelected = it.order == order,
-                        isFocus = it.order == order,
-                    )
-                })
+                copy(
+                    options = options.map {
+                        it.copy(
+                            isSelected = it.order == order,
+                            isFocus = it.order == order
+                        )
+                    }
+                )
             }
         }
     }
@@ -1108,7 +1164,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 channelId = channelId,
                 question = quizData.title,
                 runningTime = durationInSecond,
-                choices = quizData.options.map { playBroadcastMapper.mapQuizOptionToChoice(it) },
+                choices = quizData.options.map { playBroadcastMapper.mapQuizOptionToChoice(it) }
             )
 
             handleActiveInteractive()
@@ -1128,79 +1184,80 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     /**
-     * When pre-start finished, interactive should be played (e.g. TapTap)
+     * When pre-start finished, game should be played (e.g. TapTap)
      */
     private fun handleGiveawayUpcomingEnded() {
         viewModelScope.launchCatchError(dispatcher.computation, block = {
             _interactive.update {
                 val currentGiveaway =
-                    it as? InteractiveUiModel.Giveaway ?: error("Interactive is not giveaway")
+                    it as? GameUiModel.Giveaway ?: error("Interactive is not giveaway")
                 val upcomingStatus =
-                    currentGiveaway.status as? InteractiveUiModel.Giveaway.Status.Upcoming
+                    currentGiveaway.status as? GameUiModel.Giveaway.Status.Upcoming
                         ?: error("Giveaway status is not upcoming")
 
                 val interactive = it.copy(
-                    status = InteractiveUiModel.Giveaway.Status.Ongoing(
+                    status = GameUiModel.Giveaway.Status.Ongoing(
                         endTime = upcomingStatus.endTime
                     )
                 )
                 interactive
             }
-
         }) {
-            _interactive.value = InteractiveUiModel.Unknown
+            _interactive.value = GameUiModel.Unknown
         }
     }
 
     private fun handleGiveawayOngoingEnded() {
         viewModelScope.launchCatchError(dispatcher.computation, block = {
             val interactive = _interactive.getAndUpdate {
-                if (it !is InteractiveUiModel.Giveaway) error("Interactive is not giveaway")
+                if (it !is GameUiModel.Giveaway) error("Interactive is not giveaway")
                 val newInteractive = it.copy(
-                    status = InteractiveUiModel.Giveaway.Status.Finished
+                    status = GameUiModel.Giveaway.Status.Finished
                 )
                 newInteractive
             }
             setActiveInteractiveTitle("")
             setInteractiveId("")
-            if (interactive.waitingDuration > 0)
+            if (interactive.waitingDuration > 0) {
                 delay(interactive.waitingDuration)
-            else
+            } else {
                 delay(INTERACTIVE_GQL_LEADERBOARD_DELAY)
+            }
             displayGameResultWidgetIfHasLeaderBoard()
-            _interactive.value = InteractiveUiModel.Unknown
+            _interactive.value = GameUiModel.Unknown
         }) {
-            _interactive.value = InteractiveUiModel.Unknown
+            _interactive.value = GameUiModel.Unknown
         }
     }
 
     private fun handleQuizEnded() {
         viewModelScope.launchCatchError(dispatcher.computation, block = {
             val interactive = _interactive.getAndUpdate {
-                if (it !is InteractiveUiModel.Quiz) error("Interactive is not quiz")
+                if (it !is GameUiModel.Quiz) error("Interactive is not quiz")
                 val interactive = it.copy(
-                    status = InteractiveUiModel.Quiz.Status.Finished
+                    status = GameUiModel.Quiz.Status.Finished
                 )
                 interactive
             }
             setActiveInteractiveTitle("")
             setInteractiveId("")
-            if (interactive.waitingDuration > 0)
+            if (interactive.waitingDuration > 0) {
                 delay(interactive.waitingDuration)
-            else
+            } else {
                 delay(INTERACTIVE_GQL_LEADERBOARD_DELAY)
+            }
             displayGameResultWidgetIfHasLeaderBoard()
-            _interactive.value = InteractiveUiModel.Unknown
+            _interactive.value = GameUiModel.Unknown
         }) {
-            _interactive.value = InteractiveUiModel.Unknown
+            _interactive.value = GameUiModel.Unknown
         }
     }
 
-    private fun stopInteractive(){
+    private fun stopInteractive() {
         setActiveInteractiveTitle("")
         setInteractiveId("")
         displayGameResultWidgetIfHasLeaderBoard()
-        _interactive.value = InteractiveUiModel.Unknown
+        _interactive.value = GameUiModel.Unknown
     }
 
     private fun handleChoiceDetail(choice: QuizChoicesUiModel) {
@@ -1221,7 +1278,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                         index = state.dataUiModel.choice.index,
                         cursor = state.dataUiModel.cursor,
                         interactiveId = state.dataUiModel.choice.interactiveId,
-                        interactiveTitle = state.dataUiModel.choice.interactiveTitle,
+                        interactiveTitle = state.dataUiModel.choice.interactiveTitle
                     )
                 }
             }
@@ -1230,7 +1287,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleCreateGiveaway(
         title: String,
-        durationInMs: Long,
+        durationInMs: Long
     ) {
         _interactiveSetup.update {
             it.copy(isSubmitting = true)
@@ -1249,7 +1306,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _interactiveSetup.update {
                 it.copy(
                     type = GameType.Unknown,
-                    isSubmitting = false,
+                    isSubmitting = false
                 )
             }
             _uiEvent.emit(PlayBroadcastEvent.CreateInteractive.Success(session.durationInMs))
@@ -1268,7 +1325,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleClickOngoingWidget() {
         viewModelScope.launchCatchError(dispatcher.io, block = {
-            if (uiState.value.interactive is InteractiveUiModel.Quiz) {
+            if (uiState.value.game is GameUiModel.Quiz) {
                 _uiEvent.emit(PlayBroadcastEvent.ShowQuizDetailBottomSheet)
             }
         }) { err ->
@@ -1297,12 +1354,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Empty
         when (val state = _quizDetailState.value) {
             is QuizDetailStateUiModel.Error -> {
-                if (state.isQuizDetail)
+                if (state.isQuizDetail) {
                     getQuizDetailData()
-                else
+                } else {
                     getLeaderboardWithSlots(state.allowChat)
+                }
             }
-
         }
     }
 
@@ -1313,7 +1370,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     choiceId = state.choiceId,
                     index = state.index,
                     interactiveId = state.interactiveId,
-                    interactiveTitle = state.interactiveTitle,
+                    interactiveTitle = state.interactiveTitle
                 )
             }
         }
@@ -1331,7 +1388,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val initialOptions = List(quizConfig.minChoicesCount) {
                 QuizFormDataUiModel.Option(
                     order = it,
-                    isMandatory = true,
+                    isMandatory = true
                 )
             }
             val selectedInitialDurationIfFound =
@@ -1355,20 +1412,20 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         val quizConfig = _interactiveConfig.value.quizConfig
         val quizFormData = _quizFormData.value
 
-        val newTitle = if(!isStateEditable) quizFormData.title.trim() else quizFormData.title
+        val newTitle = if (!isStateEditable) quizFormData.title.trim() else quizFormData.title
 
         val options = quizFormData.options.toMutableList()
         val newOptions = if (isStateEditable) {
             options.setupAutoAddField(quizConfig)
         } else {
             options.removeUnusedField()
-                    .trim()
+                .trim()
         }.setupEditable(isStateEditable)
 
         _quizFormData.update {
             it.copy(
                 title = newTitle,
-                options = newOptions,
+                options = newOptions
             )
         }
     }
@@ -1396,6 +1453,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleBroadcastStateChanged(state: PlayBroadcasterState) {
+        logPusherState(state)
         when(state) {
             is PlayBroadcasterState.Started -> handleBroadcasterStart()
             is PlayBroadcasterState.Resume -> handleBroadcasterResume(state.startedBefore, state.shouldContinue)
@@ -1421,6 +1479,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             getPinnedMessage()
             getInteractiveConfig()
         }) {
+            logger.logBroadcastError(it)
             _uiEvent.emit(PlayBroadcastEvent.ShowError(it) {
                 handleBroadcasterStart()
             })
@@ -1434,7 +1493,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             } else {
                 if (startedBefore && broadcastTimer.isPastPauseDuration) {
                     _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
-                } else doResumeBroadcaster(shouldContinue)
+                } else {
+                    doResumeBroadcaster(shouldContinue)
+                }
             }
         }
     }
@@ -1443,15 +1504,19 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             _uiEvent.emit(PlayBroadcastEvent.ShowLoading)
             val channelInfo = getChannelInfo()
-            if (channelInfo.status == ChannelStatus.Pause
-                || channelInfo.status == ChannelStatus.Live) {
+            if (channelInfo.status == ChannelStatus.Pause ||
+                channelInfo.status == ChannelStatus.Live
+            ) {
                 if (!shouldContinue) {
                     _uiEvent.emit(PlayBroadcastEvent.ShowResumeLiveDialog)
                 } else {
                     _uiEvent.emit(PlayBroadcastEvent.BroadcastReady(channelInfo.ingestUrl))
                 }
-            } else _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
+            } else {
+                _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
+            }
         }) {
+            logger.logBroadcastError(it)
             _uiEvent.emit(PlayBroadcastEvent.ShowError(it) {
                 doResumeBroadcaster(shouldContinue)
             })
@@ -1462,11 +1527,14 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val channelInfo = getChannelInfo()
             if (channelInfo.status.isPause || channelInfo.status.isLive) {
-                    if (channelInfo.status.isPause) updateChannelStatus(PlayChannelStatusType.Live)
+                if (channelInfo.status.isPause) updateChannelStatus(PlayChannelStatusType.Live)
                 _uiEvent.emit(PlayBroadcastEvent.BroadcastRecovered)
                 updateCurrentInteractiveStatus()
-            } else _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
+            } else {
+                _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
+            }
         }) {
+            logger.logBroadcastError(it)
             _uiEvent.emit(PlayBroadcastEvent.ShowError(it) {
                 handleBroadcasterRecovered()
             })
@@ -1484,46 +1552,26 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             broadcastTimer.pause()
             updateChannelStatus(PlayChannelStatusType.Pause)
-        }) {}
+        }) {
+            logger.logBroadcastError(it)
+        }
     }
 
     private fun handleBroadcasterStop() {
         viewModelScope.launchCatchError(block = {
             closeWebSocket()
             updateChannelStatus(PlayChannelStatusType.Stop)
-        }) {}
+        }) {
+            logger.logBroadcastError(it)
+        }
 
         mIsBroadcastStopped = true
-    }
-
-    private fun handleGetAccountList(selectedType: String = TYPE_UNKNOWN) {
-        viewModelScope.launchCatchError(block = {
-            _accountStateInfo.value = AccountStateInfo()
-            _observableConfigInfo.value = NetworkResult.Loading
-
-            val accountList = repo.getAccountList()
-
-            _accountListState.value = accountList
-
-            if (accountList.isNotEmpty()) {
-                updateSelectedAccount(
-                    getSelectedAccount(
-                        selectedType = selectedType,
-                        cacheSelectedType = sharedPref.getLastSelectedAccount(),
-                        accountList = accountList
-                    )
-                )
-                getConfiguration(_selectedAccount.value)
-            } else throw Throwable()
-        }, onError = {
-            _observableConfigInfo.value = NetworkResult.Fail(it) { this.handleGetAccountList(selectedType) }
-        })
     }
 
     private fun getSelectedAccount(
         selectedType: String,
         cacheSelectedType: String,
-        accountList: List<ContentAccountUiModel>,
+        accountList: List<ContentAccountUiModel>
     ): ContentAccountUiModel {
         return accountList.firstOrNull {
             it.type == when {
@@ -1539,15 +1587,23 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         val sellerAccount = accountList.firstOrNull { it.type == TYPE_SHOP }
         val nonSellerAccount = accountList.firstOrNull { it.type == TYPE_USER }
         return if (sellerAccount != null) {
-            if (sellerAccount.hasAcceptTnc) sellerAccount
-            else if (nonSellerAccount != null) {
-                if (nonSellerAccount.hasUsername && nonSellerAccount.hasAcceptTnc) nonSellerAccount
-                else sellerAccount
-            } else sellerAccount
-        } else nonSellerAccount ?: ContentAccountUiModel.Empty
+            if (sellerAccount.enable) {
+                sellerAccount
+            } else if (nonSellerAccount != null) {
+                if (nonSellerAccount.hasUsername && nonSellerAccount.enable) {
+                    nonSellerAccount
+                } else {
+                    sellerAccount
+                }
+            } else {
+                sellerAccount
+            }
+        } else {
+            nonSellerAccount ?: ContentAccountUiModel.Empty
+        }
     }
 
-    private fun handleSwitchAccount(needLoading: Boolean = true) {
+    private fun handleSwitchAccount(needLoading: Boolean) {
         if (needLoading) _observableConfigInfo.value = NetworkResult.Loading
 
         val currentSelected = switchAccount(
@@ -1556,7 +1612,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 else -> TYPE_SHOP
             }
         )
-        getConfiguration(currentSelected)
+        getBroadcasterAuthorConfig(currentSelected)
     }
 
     private fun switchAccount(selectedType: String): ContentAccountUiModel {
@@ -1565,7 +1621,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun isAccountEligible(
         configUiModel: ConfigurationUiModel,
-        selectedAccount: ContentAccountUiModel,
+        selectedAccount: ContentAccountUiModel
     ): Boolean {
         return when {
             configUiModel.channelStatus == ChannelStatus.Live -> {
@@ -1575,32 +1631,36 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 _accountStateInfo.update {
                     AccountStateInfo(
                         type = AccountStateInfoType.Live,
-                        selectedAccount = selectedAccount,
+                        selectedAccount = selectedAccount
                     )
                 }
                 false
             }
-            selectedAccount.isUser && !selectedAccount.hasUsername -> {
+            selectedAccount.isUser && !selectedAccount.hasAcceptTnc -> {
                 if (isFirstOpen && isAllowChangeAccount) return false
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
                     AccountStateInfo(
-                        type = AccountStateInfoType.NoUsername,
-                        selectedAccount = selectedAccount,
+                        type = if(selectedAccount.hasUsername) AccountStateInfoType.NotAcceptTNC else AccountStateInfoType.NoUsername,
+                        selectedAccount = selectedAccount
                     )
                 }
                 false
             }
-            !selectedAccount.hasAcceptTnc -> {
+            !selectedAccount.enable -> {
                 if (isFirstOpen && isAllowChangeAccount) return false
+
+                /** Use the same logic as iOS */
+                tncList.clear()
+                tncList.addAll(configUiModel.tnc)
+
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
                     AccountStateInfo(
-                        type = AccountStateInfoType.NotAcceptTNC,
-                        selectedAccount = selectedAccount,
+                        type = AccountStateInfoType.NotWhitelisted,
+                        selectedAccount = selectedAccount
                     )
                 }
-                if (selectedAccount.isShop) tncList = configUiModel.tnc
                 false
             }
             else -> true
@@ -1609,8 +1669,19 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun updateSelectedAccount(selectedAccount: ContentAccountUiModel) {
         _selectedAccount.update { selectedAccount }
-        sharedPref.setLastSelectedAccount(selectedAccount.type)
+        sharedPref.setLastSelectedAccountType(selectedAccount.type)
         hydraConfigStore.setAuthor(selectedAccount)
+    }
+
+    private fun handleSuccessOnBoardingUGC() {
+        viewModelScope.launchCatchError(block = {
+            getFeedCheckWhitelist(TYPE_USER)
+            getBroadcasterAuthorConfig(_selectedAccount.value)
+        }, onError = {
+            _observableConfigInfo.value = NetworkResult.Fail(it) {
+                this.handleGetConfiguration(TYPE_USER)
+            }
+        })
     }
 
     /**
@@ -1645,41 +1716,47 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     fun getBeforeLiveCountDownDuration(): Int {
         val configInfo = _observableConfigInfo.value
-        return if (configInfo is NetworkResult.Success) configInfo.data.countDown.toInt()
-        else DEFAULT_BEFORE_LIVE_COUNT_DOWN
+        return if (configInfo is NetworkResult.Success) {
+            configInfo.data.countDown.toInt()
+        } else {
+            DEFAULT_BEFORE_LIVE_COUNT_DOWN
+        }
     }
 
-    fun getShopIconUrl(): String = userSession.shopAvatar
+    fun getAuthorImage(): String = hydraConfigStore.getAuthor().iconUrl
 
-    fun getShopName(): String = userSession.shopName
-
-    private fun handleClickPin(product: ProductUiModel){
+    private fun handleClickPin(product: ProductUiModel) {
         viewModelScope.launchCatchError(block = {
-            product.updatePinProduct(isLoading = true)
+            product.updatePinProduct(isLoading = true, needToUpdate = false)
             val result = repo.setPinProduct(channelId, product)
-            if(result)
+            if (result) {
                 product.updatePinProduct(isLoading = false, needToUpdate = true)
+            }
         }){
-            product.updatePinProduct(isLoading = false)
+            product.updatePinProduct(isLoading = false, needToUpdate = false)
             _uiEvent.emit(PlayBroadcastEvent.FailPinUnPinProduct(it, product.pinStatus.isPinned))
         }
     }
 
-    private fun ProductUiModel.updatePinProduct(isLoading: Boolean = false, needToUpdate: Boolean = false) {
+    private fun ProductUiModel.updatePinProduct(isLoading: Boolean, needToUpdate: Boolean) {
         _productSectionList.update { sectionList ->
             sectionList.map { sectionUiModel ->
-                sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
-                sectionUiModel.products.map { prod ->
-                    if (prod.id == this.id)
-                        prod.copy(
-                            pinStatus = this.pinStatus.copy(
-                                isLoading = isLoading,
-                                isPinned = if (needToUpdate) this.pinStatus.isPinned.switch() else this.pinStatus.isPinned
+                sectionUiModel.copy(
+                    campaignStatus = sectionUiModel.campaignStatus,
+                    products =
+                    sectionUiModel.products.map { prod ->
+                        if (prod.id == this.id) {
+                            prod.copy(
+                                pinStatus = this.pinStatus.copy(
+                                    isLoading = isLoading,
+                                    isPinned = if (needToUpdate) this.pinStatus.isPinned.switch() else this.pinStatus.isPinned
+                                )
                             )
-                        )
-                    else
-                        prod
-                })
+                        } else {
+                            prod
+                        }
+                    }
+                )
             }
         }
     }
@@ -1690,6 +1767,21 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     fun stopTimer() {
         broadcastTimer.stop()
+    }
+
+    /**
+     * Logger
+     */
+    private fun logChannelStatus(status: ChannelStatus) {
+        logger.logChannelStatus(status)
+    }
+
+    private fun logPusherState(state: PlayBroadcasterState) {
+        logger.logPusherState(state)
+    }
+
+    private fun logSocket(type: PlaySocketType) {
+        logger.logSocketType(type)
     }
 
     fun sendBroadcasterLog(metric: BroadcasterMetric) {

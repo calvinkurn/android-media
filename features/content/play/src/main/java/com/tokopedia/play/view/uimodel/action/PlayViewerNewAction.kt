@@ -1,7 +1,9 @@
 package com.tokopedia.play.view.uimodel.action
 
+import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -30,6 +32,10 @@ sealed class PlayViewerNewAction {
         val isProductFeatured: Boolean = false,
     ) : PlayViewerNewAction()
     data class AtcProduct(
+        val product: PlayProductUiModel.Product,
+        val isProductFeatured: Boolean = false,
+    ) : PlayViewerNewAction()
+    data class OCCProduct(
         val product: PlayProductUiModel.Product,
         val isProductFeatured: Boolean = false,
     ) : PlayViewerNewAction()
@@ -85,6 +91,8 @@ data class BuyProductAction(val sectionInfo: ProductSectionUiModel.Section, val 
 data class BuyProductVariantAction(val id: String, val sectionInfo: ProductSectionUiModel.Section) : PlayViewerNewAction()
 data class AtcProductAction(val sectionInfo: ProductSectionUiModel.Section, val product: PlayProductUiModel.Product) : PlayViewerNewAction()
 data class AtcProductVariantAction(val id: String, val sectionInfo: ProductSectionUiModel.Section) : PlayViewerNewAction()
+data class OCCProductAction(val sectionInfo: ProductSectionUiModel.Section, val product: PlayProductUiModel.Product) : PlayViewerNewAction()
+data class OCCProductVariantAction(val id: String, val sectionInfo: ProductSectionUiModel.Section) : PlayViewerNewAction()
 data class SelectVariantOptionAction(val option: VariantOptionWithAttribute) : PlayViewerNewAction()
 
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()
@@ -96,3 +104,17 @@ data class OpenFooterUserReport(val appLink: String): PlayViewerNewAction()
 data class SendUpcomingReminder(val section: ProductSectionUiModel.Section): PlayViewerNewAction()
 
 data class SendWarehouseId(val id: String, val isOOC: Boolean) : PlayViewerNewAction()
+
+object DismissFollowPopUp : PlayViewerNewAction()
+object OpenCart: PlayViewerNewAction()
+
+/**
+ * Explore Widget
+ */
+object FetchWidgets: PlayViewerNewAction()
+data class ClickChipWidget(val item: ChipWidgetUiModel) : PlayViewerNewAction()
+object NextPageWidgets : PlayViewerNewAction()
+object RefreshWidget : PlayViewerNewAction()
+data class UpdateReminder(val channelId : String, val reminderType: PlayWidgetReminderType) : PlayViewerNewAction()
+object DismissExploreWidget : PlayViewerNewAction()
+object EmptyPageWidget : PlayViewerNewAction()

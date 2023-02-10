@@ -47,7 +47,6 @@
     <string name="label_no_courier_bottomsheet_title">Pengiriman</string>
     <string name="label_no_courier_bottomsheet_button">Saya Mengerti</string>
     <string name="error_dropshipper">Fitur dropshipper tidak dapat digunakan ketika menggunakan Proteksi Produk</string>
-    <string name="title_activity_checkout_webview">Proteksi Produk</string>
     <string name="emas_checkout_title">Bulatkan Tagihan dengan Nabung Emas</string>
     <string name="checkout_module_message_cart_error">Terjadi kendala pada pesanan Anda, lihat di bawah untuk info lebih lengkap.</string>
     <string name="ppp_more">Pelajari</string>
@@ -75,7 +74,7 @@
     <string name="message_error_courier_not_selected">Pilih pengiriman dulu yuk sebelum lanjut bayar.</string>
     <string name="message_error_multiple_courier_not_selected">Pilih pengiriman untuk %d pesananmu dulu yuk sebelum lanjut bayar.</string>
     <string name="message_error_dropshipper_empty">Pastikan Anda telah melengkapi informasi tambahan.</string>
-    <string name="message_error_prescription_not_found">Oops, kamu perlu upload resep dulu.</string>
+    <string name="message_error_prescription_not_found">Kamu punya pesanan obat keras yang butuh resep dokter. Segera lengkapi, ya!</string>
     <string name="label_otdg_tnc"><![CDATA[S&K Berlaku]]></string>
     <string name="label_choose_shipping">Pilih Pengiriman</string>
     <string name="label_check">Cek</string>
@@ -138,4 +137,18 @@
     <string name="checkout_label_set_pinpoint_description">Pengiriman &amp; estimasi tiba akan tampil di sini.</string>
     <string name="checkout_label_set_pinpoint_action">Atur</string>
     <string name="checkout_failed_auto_apply_bo_message">Bebas ongkir gagal diaplikasikan, silahkan coba lagi</string>
+    <string name="checkout_whitelabel_otdg_url"><![CDATA[<a href="%1$s">%2$s</a>]]></string>
+    <string name="checkout_whitelabel_desc_otdg_url"><![CDATA[%1$s & <a href="%2$s">%3$s</a>]]></string>
+    <string name="checkout_epharmacy_reminder_prescription_dialog_title">Yakin mau keluar dari halaman ini?</string>
+    <string name="checkout_epharmacy_reminder_prescription_dialog_description">Resep digital akan tersedia 1x24 jam selama kamu tidak mengubah jumlah obat kerasnya.</string>
+    <string name="checkout_epharmacy_reminder_prescription_dialog_positive_button">Lanjut Bayar</string>
+    <string name="checkout_epharmacy_reminder_prescription_dialog_negative_button">Keluar</string>
+    <string name="checkout_epharmacy_coachmark_title">Pesanan obat kerasmu butuh resep</string>
+    <string name="checkout_epharmacy_coachmark_description">Yuk, upload resepmu. Kalau belum punya, chat dokter buat dapetin resep digital juga bisa~</string>
+
+    <string name="checkout_error_shipping_title">Pengiriman tidak tersedia</string>
+    <string name="checkout_error_shipping_description">Atur ulang pesananmu di keranjang, ya.</string>
+
+    <string name="checkout_error_unblocking_message">Yaah, ada %1d barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain.</string>
+    <string name="checkout_ticker_lihat_cta_suffix" formatted="false">&lt;a href=\"scroll\"&gt;Lihat&lt;\/a&gt;</string>
 </resources>

@@ -1,17 +1,18 @@
 package com.tokopedia.media.editor.utils
 
+import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
+import androidx.core.content.ContextCompat
 import com.tokopedia.media.editor.R
-import com.tokopedia.media.editor.analytics.REMOVE_BG_TYPE_GREY
-import com.tokopedia.media.editor.analytics.REMOVE_BG_TYPE_ORI
-import com.tokopedia.media.editor.analytics.REMOVE_BG_TYPE_WHITE
-import com.tokopedia.media.editor.analytics.WATERMARK_TYPE_CENTER
-import com.tokopedia.media.editor.analytics.WATERMARK_TYPE_DIAGONAL
+import com.tokopedia.media.editor.analytics.*
 import com.tokopedia.media.editor.data.repository.WatermarkType
+import com.tokopedia.media.editor.ui.component.AddLogoToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -34,6 +35,11 @@ fun getUCropTempResultPath(): Uri {
     if (!dir.exists()) dir.mkdir()
 
     return Uri.fromFile(File("${folderPath}/uCrop_temp_result.png"))
+}
+
+fun isGranted(context: Context, permission: String): Boolean {
+    return ContextCompat.checkSelfPermission(context, permission) ==
+        PackageManager.PERMISSION_GRANTED
 }
 
 //formula to determine brightness 0.299 * r + 0.0f + 0.587 * g + 0.0f + 0.114 * b + 0.0f
@@ -75,27 +81,19 @@ fun Bitmap.isDark(): Boolean {
     }
 }
 
-fun getToolEditorText(editorToolType: Int): Int {
-    return when (editorToolType) {
-        EditorToolType.BRIGHTNESS -> R.string.editor_tool_brightness
-        EditorToolType.CONTRAST -> R.string.editor_tool_contrast
-        EditorToolType.WATERMARK -> R.string.editor_tool_watermark
-        EditorToolType.ROTATE -> R.string.editor_tool_rotate
-        EditorToolType.CROP -> R.string.editor_tool_crop
-        else -> R.string.editor_tool_remove_background
-    }
-}
-
 fun cropCenterImage(
     sourceBitmap: Bitmap?,
-    autoCropRatio: Float
+    cropRaw: ImageRatioType
 ): Pair<Bitmap, EditorCropRotateUiModel>? {
     sourceBitmap?.let { bitmap ->
+        // ratio height to width (to get height value)
+        val autoCropRatio = cropRaw.getRatioY().toFloat() / cropRaw.getRatioX()
+
         val bitmapWidth = bitmap.width
         val bitmapHeight = bitmap.height
 
         // if source image is already have ratio target then skip crop
-        if (bitmapWidth.toFloat() / bitmapHeight == autoCropRatio) {
+        if (bitmapWidth.toFloat() / bitmapHeight == cropRaw.getRatio()) {
             return null
         }
 
@@ -131,34 +129,10 @@ fun cropCenterImage(
             isCrop = true
             this.isAutoCrop = true
             croppedSourceWidth = bitmap.width
+            cropRatio = cropRaw.ratio
         }
 
         return Pair(bitmapResult, cropDetail)
     }
     return null
-}
-
-// for analytics purpose
-fun cropRatioToText(ratio: Pair<Int, Int>): String {
-    return if (ratio.first != 0) {
-        "${ratio.first}:${ratio.second}"
-    } else {
-        ""
-    }
-}
-
-fun removeBackgroundToText(removeBackgroundType: Int?): String {
-    return when (removeBackgroundType) {
-        EditorDetailUiModel.REMOVE_BG_TYPE_GRAY -> REMOVE_BG_TYPE_GREY
-        EditorDetailUiModel.REMOVE_BG_TYPE_WHITE -> REMOVE_BG_TYPE_WHITE
-        else -> REMOVE_BG_TYPE_ORI
-    }
-}
-
-fun watermarkToText(watermarkType: Int?): String {
-    return when (watermarkType) {
-        WatermarkType.Center.value -> WATERMARK_TYPE_CENTER
-        WatermarkType.Diagonal.value -> WATERMARK_TYPE_DIAGONAL
-        else -> ""
-    }
 }

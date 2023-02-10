@@ -4,10 +4,15 @@ import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateRequestData
 import com.tokopedia.checkout.domain.model.saveshipmentstate.SaveShipmentStateData
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
@@ -20,6 +25,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
@@ -98,6 +104,9 @@ class ShipmentPresenterSaveShipmentStateTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
+    @MockK
+    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private lateinit var presenter: ShipmentPresenter
@@ -108,13 +117,30 @@ class ShipmentPresenterSaveShipmentStateTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-                compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
-                editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
-                getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-                ratesStatesConverter, shippingCourierConverter,
-                shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-                validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
+            compositeSubscription,
+            checkoutUseCase,
+            getShipmentAddressFormV3UseCase,
+            editAddressUseCase,
+            changeShippingAddressGqlUseCase,
+            saveShipmentStateGqlUseCase,
+            getRatesUseCase,
+            getRatesApiUseCase,
+            clearCacheAutoApplyStackUseCase,
+            ratesStatesConverter,
+            shippingCourierConverter,
+            shipmentAnalyticsActionListener,
+            userSessionInterface,
+            analyticsPurchaseProtection,
+            checkoutAnalytics,
+            shipmentDataConverter,
+            releaseBookingUseCase,
+            prescriptionIdsUseCase,
+            epharmacyUseCase,
+            validateUsePromoRevampUseCase,
+            gson,
+            TestSchedulers,
+            eligibleForAddressUseCase
+        )
         presenter.attachView(view)
     }
 
@@ -123,17 +149,21 @@ class ShipmentPresenterSaveShipmentStateTest {
         // Given
         every { view.isTradeInByDropOff } returns false
 
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel().apply {
-                productId = 1
-            })
-            selectedShipmentDetailData = ShipmentDetailData().apply {
-                selectedCourier = CourierItemData().apply {
-                    shipperId = 1
-                    shipperProductId = 2
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(
+                    CartItemModel().apply {
+                        productId = 1
+                    }
+                )
+                selectedShipmentDetailData = ShipmentDetailData().apply {
+                    selectedCourier = CourierItemData().apply {
+                        shipperId = 1
+                        shipperProductId = 2
+                    }
                 }
             }
-        })
+        )
 
         val addressId = "123"
         presenter.recipientAddressModel = RecipientAddressModel().apply {
@@ -141,19 +171,24 @@ class ShipmentPresenterSaveShipmentStateTest {
         }
 
         val capturedRequestParam = CapturingSlot<RequestParams>()
-        every { saveShipmentStateGqlUseCase.createObservable(capture(capturedRequestParam)) } returns Observable.just(SaveShipmentStateData())
+        every { saveShipmentStateGqlUseCase.createObservable(capture(capturedRequestParam)) } returns Observable.just(
+            SaveShipmentStateData()
+        )
 
         // When
         presenter.processSaveShipmentState()
 
         // Then
-        val params = capturedRequestParam.captured.getObject(SaveShipmentStateGqlUseCase.PARAM_CART_DATA_OBJECT) as HashMap<String, Any>
-        val saveShipmentDataArray = params[SaveShipmentStateGqlUseCase.PARAM_CARTS] as List<ShipmentStateRequestData>
+        val params =
+            capturedRequestParam.captured
+                .getObject(SaveShipmentStateGqlUseCase.PARAM_CART_DATA_OBJECT) as HashMap<String, Any>
+        val saveShipmentDataArray =
+            params[SaveShipmentStateGqlUseCase.PARAM_CARTS] as List<ShipmentStateRequestData>
 
         assertEquals(1, saveShipmentDataArray.size)
 
         val data = saveShipmentDataArray.first()
-        assertEquals(addressId.toInt(), data.addressId)
+        assertEquals(addressId, data.addressId)
 
         val shopProductDataList = data.shopProductDataList
         assertEquals(1, shopProductDataList?.size ?: 0)
@@ -166,19 +201,23 @@ class ShipmentPresenterSaveShipmentStateTest {
         // Given
         every { view.isTradeInByDropOff } returns false
 
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel().apply {
-                productId = 1
-                isPreOrder = true
-                preOrderDurationDay = 2
-            })
-            selectedShipmentDetailData = ShipmentDetailData().apply {
-                selectedCourier = CourierItemData().apply {
-                    shipperId = 1
-                    shipperProductId = 2
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(
+                    CartItemModel().apply {
+                        productId = 1
+                        isPreOrder = true
+                        preOrderDurationDay = 2
+                    }
+                )
+                selectedShipmentDetailData = ShipmentDetailData().apply {
+                    selectedCourier = CourierItemData().apply {
+                        shipperId = 1
+                        shipperProductId = 2
+                    }
                 }
             }
-        })
+        )
 
         val addressId = "123"
         presenter.recipientAddressModel = RecipientAddressModel().apply {
@@ -186,19 +225,24 @@ class ShipmentPresenterSaveShipmentStateTest {
         }
 
         val capturedRequestParam = CapturingSlot<RequestParams>()
-        every { saveShipmentStateGqlUseCase.createObservable(capture(capturedRequestParam)) } returns Observable.just(SaveShipmentStateData())
+        every { saveShipmentStateGqlUseCase.createObservable(capture(capturedRequestParam)) } returns Observable.just(
+            SaveShipmentStateData()
+        )
 
         // When
         presenter.processSaveShipmentState()
 
         // Then
-        val params = capturedRequestParam.captured.getObject(SaveShipmentStateGqlUseCase.PARAM_CART_DATA_OBJECT) as HashMap<String, Any>
-        val saveShipmentDataArray = params[SaveShipmentStateGqlUseCase.PARAM_CARTS] as List<ShipmentStateRequestData>
+        val params =
+            capturedRequestParam.captured
+                .getObject(SaveShipmentStateGqlUseCase.PARAM_CART_DATA_OBJECT) as HashMap<String, Any>
+        val saveShipmentDataArray =
+            params[SaveShipmentStateGqlUseCase.PARAM_CARTS] as List<ShipmentStateRequestData>
 
         assertEquals(1, saveShipmentDataArray.size)
 
         val data = saveShipmentDataArray.first()
-        assertEquals(addressId.toInt(), data.addressId)
+        assertEquals(addressId, data.addressId)
 
         val shopProductDataList = data.shopProductDataList
         assertEquals(1, shopProductDataList?.size ?: 0)
@@ -211,19 +255,23 @@ class ShipmentPresenterSaveShipmentStateTest {
         // Given
         every { view.isTradeInByDropOff } returns true
 
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel().apply {
-                productId = 1
-                isPreOrder = true
-                preOrderDurationDay = 2
-            })
-            selectedShipmentDetailData = ShipmentDetailData().apply {
-                selectedCourierTradeInDropOff = CourierItemData().apply {
-                    shipperId = 1
-                    shipperProductId = 2
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(
+                    CartItemModel().apply {
+                        productId = 1
+                        isPreOrder = true
+                        preOrderDurationDay = 2
+                    }
+                )
+                selectedShipmentDetailData = ShipmentDetailData().apply {
+                    selectedCourierTradeInDropOff = CourierItemData().apply {
+                        shipperId = 1
+                        shipperProductId = 2
+                    }
                 }
             }
-        })
+        )
 
         val addressId = "123"
         presenter.recipientAddressModel = RecipientAddressModel().apply {
@@ -231,19 +279,24 @@ class ShipmentPresenterSaveShipmentStateTest {
         }
 
         val capturedRequestParam = CapturingSlot<RequestParams>()
-        every { saveShipmentStateGqlUseCase.createObservable(capture(capturedRequestParam)) } returns Observable.just(SaveShipmentStateData())
+        every { saveShipmentStateGqlUseCase.createObservable(capture(capturedRequestParam)) } returns Observable.just(
+            SaveShipmentStateData()
+        )
 
         // When
         presenter.processSaveShipmentState()
 
         // Then
-        val params = capturedRequestParam.captured.getObject(SaveShipmentStateGqlUseCase.PARAM_CART_DATA_OBJECT) as HashMap<String, Any>
-        val saveShipmentDataArray = params[SaveShipmentStateGqlUseCase.PARAM_CARTS] as List<ShipmentStateRequestData>
+        val params =
+            capturedRequestParam.captured
+                .getObject(SaveShipmentStateGqlUseCase.PARAM_CART_DATA_OBJECT) as HashMap<String, Any>
+        val saveShipmentDataArray =
+            params[SaveShipmentStateGqlUseCase.PARAM_CARTS] as List<ShipmentStateRequestData>
 
         assertEquals(1, saveShipmentDataArray.size)
 
         val data = saveShipmentDataArray.first()
-        assertEquals(addressId.toInt(), data.addressId)
+        assertEquals(addressId, data.addressId)
 
         val shopProductDataList = data.shopProductDataList
         assertEquals(1, shopProductDataList?.size ?: 0)
@@ -257,9 +310,11 @@ class ShipmentPresenterSaveShipmentStateTest {
         every { view.isTradeInByDropOff } returns false
 
         val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel().apply {
-                productId = 1
-            })
+            cartItemModels = listOf(
+                CartItemModel().apply {
+                    productId = 1
+                }
+            )
             selectedShipmentDetailData = ShipmentDetailData().apply {
                 selectedCourier = CourierItemData().apply {
                     shipperId = 1
@@ -274,19 +329,24 @@ class ShipmentPresenterSaveShipmentStateTest {
         }
 
         val capturedRequestParam = CapturingSlot<RequestParams>()
-        every { saveShipmentStateGqlUseCase.createObservable(capture(capturedRequestParam)) } returns Observable.just(SaveShipmentStateData())
+        every { saveShipmentStateGqlUseCase.createObservable(capture(capturedRequestParam)) } returns Observable.just(
+            SaveShipmentStateData()
+        )
 
         // When
         presenter.processSaveShipmentState(shipmentCartItemModel)
 
         // Then
-        val params = capturedRequestParam.captured.getObject(SaveShipmentStateGqlUseCase.PARAM_CART_DATA_OBJECT) as HashMap<String, Any>
-        val saveShipmentDataArray = params[SaveShipmentStateGqlUseCase.PARAM_CARTS] as List<ShipmentStateRequestData>
+        val params =
+            capturedRequestParam.captured
+                .getObject(SaveShipmentStateGqlUseCase.PARAM_CART_DATA_OBJECT) as HashMap<String, Any>
+        val saveShipmentDataArray =
+            params[SaveShipmentStateGqlUseCase.PARAM_CARTS] as List<ShipmentStateRequestData>
 
         assertEquals(1, saveShipmentDataArray.size)
 
         val data = saveShipmentDataArray.first()
-        assertEquals(addressId.toInt(), data.addressId)
+        assertEquals(addressId, data.addressId)
 
         val shopProductDataList = data.shopProductDataList
         assertEquals(1, shopProductDataList?.size ?: 0)
@@ -300,9 +360,11 @@ class ShipmentPresenterSaveShipmentStateTest {
         every { view.isTradeInByDropOff } returns false
 
         val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel().apply {
-                productId = 1
-            })
+            cartItemModels = listOf(
+                CartItemModel().apply {
+                    productId = 1
+                }
+            )
             selectedShipmentDetailData = ShipmentDetailData()
         }
 
@@ -312,7 +374,9 @@ class ShipmentPresenterSaveShipmentStateTest {
         }
 
         val capturedRequestParam = CapturingSlot<RequestParams>()
-        every { saveShipmentStateGqlUseCase.createObservable(capture(capturedRequestParam)) } returns Observable.just(SaveShipmentStateData())
+        every { saveShipmentStateGqlUseCase.createObservable(capture(capturedRequestParam)) } returns Observable.just(
+            SaveShipmentStateData()
+        )
 
         // When
         presenter.processSaveShipmentState(shipmentCartItemModel)

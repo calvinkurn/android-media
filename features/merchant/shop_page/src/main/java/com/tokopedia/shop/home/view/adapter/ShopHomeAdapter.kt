@@ -33,10 +33,10 @@ import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
  * Created by rizqiaryansa on 2020-02-21.
  */
 open class ShopHomeAdapter(
-        private val shopHomeAdapterTypeFactory: AdapterTypeFactory
+    private val shopHomeAdapterTypeFactory: AdapterTypeFactory
 ) : BaseListAdapter<Visitable<*>, AdapterTypeFactory>(shopHomeAdapterTypeFactory),
-        DataEndlessScrollListener.OnDataEndlessScrollListener,
-        StickySingleHeaderView.OnStickySingleHeaderAdapter {
+    DataEndlessScrollListener.OnDataEndlessScrollListener,
+    StickySingleHeaderView.OnStickySingleHeaderAdapter {
 
     companion object {
         private const val INVALID_INDEX = -1
@@ -56,10 +56,6 @@ open class ShopHomeAdapter(
         get() = visitables.indexOfFirst {
             it.javaClass == ShopHomeProductEtalaseTitleUiModel::class.java
         }.takeIf { it != -1 } ?: 0
-    private val shopProductEtalaseListPosition: Int
-        get() = visitables.indexOfFirst {
-            it.javaClass == ShopProductSortFilterUiModel::class.java
-        }.takeIf { it != -1 } ?: 0
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
@@ -78,10 +74,12 @@ open class ShopHomeAdapter(
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
         val layoutParams = holder.itemView.layoutParams
         if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
-            layoutParams.isFullSpan = !(getItemViewType(position) == ShopHomeProductViewHolder.LAYOUT ||
+            layoutParams.isFullSpan = !(
+                getItemViewType(position) == ShopHomeProductViewHolder.LAYOUT ||
                     getItemViewType(position) == ShopHomeProductItemBigGridViewHolder.LAYOUT ||
                     getItemViewType(position) == ShopHomeProductItemListViewHolder.LAYOUT ||
-                    getItemViewType(position) == LoadingMoreViewHolder.LAYOUT)
+                    getItemViewType(position) == LoadingMoreViewHolder.LAYOUT
+                )
         }
         super.onBindViewHolder(holder, position)
     }
@@ -108,7 +106,7 @@ open class ShopHomeAdapter(
 
     fun setEtalaseTitleData() {
         val newList = getNewVisitableItems()
-        if(newList.filterIsInstance(ShopHomeProductEtalaseTitleUiModel::class.java).isEmpty()) {
+        if (newList.filterIsInstance(ShopHomeProductEtalaseTitleUiModel::class.java).isEmpty()) {
             val etalaseTitleUiModel = ShopHomeProductEtalaseTitleUiModel(ALL_PRODUCT_STRING, "")
             newList.add(etalaseTitleUiModel)
             submitList(newList)
@@ -117,7 +115,7 @@ open class ShopHomeAdapter(
 
     fun setSortFilterData(shopProductSortFilterUiModel: ShopProductSortFilterUiModel) {
         val newList = getNewVisitableItems()
-        if(newList.filterIsInstance(ShopProductSortFilterUiModel::class.java).isEmpty()) {
+        if (newList.filterIsInstance(ShopProductSortFilterUiModel::class.java).isEmpty()) {
             newList.add(shopProductSortFilterUiModel)
             submitList(newList)
         }
@@ -126,13 +124,15 @@ open class ShopHomeAdapter(
     fun setHomeLayoutData(data: List<Visitable<*>>) {
         val newList = getNewVisitableItems()
         newList.clear()
-        newList.addAll(data.onEach {
-            if (it is BaseShopHomeWidgetUiModel) {
-                it.widgetState = WidgetState.PLACEHOLDER
-            } else if (it is ThematicWidgetUiModel) {
-                it.widgetState = WidgetState.PLACEHOLDER
+        newList.addAll(
+            data.onEach {
+                if (it is BaseShopHomeWidgetUiModel) {
+                    it.widgetState = WidgetState.PLACEHOLDER
+                } else if (it is ThematicWidgetUiModel) {
+                    it.widgetState = WidgetState.PLACEHOLDER
+                }
             }
-        })
+        )
         newList.add(ProductGridListPlaceholderUiModel(WidgetState.PLACEHOLDER))
         submitList(newList)
     }
@@ -146,12 +146,12 @@ open class ShopHomeAdapter(
     fun setHomeYouTubeData(widgetId: String, data: YoutubeVideoDetailModel) {
         val newList = getNewVisitableItems()
         newList.filterIsInstance<ShopHomeDisplayWidgetUiModel>()
-                .find {
-                    it.widgetId == widgetId
-                }?.let {
-                    it.data?.firstOrNull()?.youTubeVideoDetail = data
-                    it.isNewData = true
-                }
+            .find {
+                it.widgetId == widgetId
+            }?.let {
+                it.data?.firstOrNull()?.youTubeVideoDetail = data
+                it.isNewData = true
+            }
         submitList(newList)
     }
 
@@ -159,7 +159,7 @@ open class ShopHomeAdapter(
         val newList = getNewVisitableItems()
         newList.indexOfFirst { it is ShopHomeVoucherUiModel }.let { index ->
             if (index >= 0) {
-                if((shopHomeVoucherUiModel.data == null && !shopHomeVoucherUiModel.isError) || shopHomeVoucherUiModel.data?.isShown == false){
+                if ((shopHomeVoucherUiModel.data == null && !shopHomeVoucherUiModel.isError) || shopHomeVoucherUiModel.data?.isShown == false) {
                     newList.removeAt(index)
                 } else {
                     shopHomeVoucherUiModel.widgetState = WidgetState.FINISH
@@ -295,7 +295,7 @@ open class ShopHomeAdapter(
     fun changeSelectedSortFilter(sortId: String, sortName: String) {
         val newList = getNewVisitableItems()
         val shopProductSortFilterUiViewModel = newList
-                .filterIsInstance<ShopProductSortFilterUiModel>().firstOrNull()
+            .filterIsInstance<ShopProductSortFilterUiModel>().firstOrNull()
         shopProductSortFilterUiViewModel?.apply {
             selectedSortId = sortId
             selectedSortName = sortName
@@ -303,11 +303,10 @@ open class ShopHomeAdapter(
         submitList(newList)
     }
 
-
     fun changeSortFilterIndicatorCounter(filterIndicatorCounter: Int) {
         val newList = getNewVisitableItems()
         val shopProductSortFilterUiViewModel = newList
-                .filterIsInstance<ShopProductSortFilterUiModel>().firstOrNull()
+            .filterIsInstance<ShopProductSortFilterUiModel>().firstOrNull()
         shopProductSortFilterUiViewModel?.apply {
             this.filterIndicatorCounter = filterIndicatorCounter
         }
@@ -345,14 +344,14 @@ open class ShopHomeAdapter(
     }
 
     fun updateRemindMeStatusCampaignNplWidgetData(
-            campaignId: String,
-            isRemindMe: Boolean? = null,
-            isClickRemindMe: Boolean = false
+        campaignId: String,
+        isRemindMe: Boolean? = null,
+        isClickRemindMe: Boolean = false
     ) {
         val newList = getNewVisitableItems()
-        newList.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().onEach{nplCampaignUiModel ->
+        newList.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().onEach { nplCampaignUiModel ->
             nplCampaignUiModel.data?.firstOrNull { it.campaignId == campaignId }?.let {
-                isRemindMe?.let{ isRemindMe ->
+                isRemindMe?.let { isRemindMe ->
                     it.isRemindMe = isRemindMe
                     if (isClickRemindMe) {
                         if (isRemindMe)
@@ -374,9 +373,9 @@ open class ShopHomeAdapter(
         isClickRemindMe: Boolean = false
     ) {
         val newList = getNewVisitableItems()
-        newList.filterIsInstance<ShopHomeFlashSaleUiModel>().onEach{flashSaleCampaignUiModel ->
+        newList.filterIsInstance<ShopHomeFlashSaleUiModel>().onEach { flashSaleCampaignUiModel ->
             flashSaleCampaignUiModel.data?.firstOrNull { it.campaignId == campaignId }?.let {
-                isRemindMe?.let{ isRemindMe ->
+                isRemindMe?.let { isRemindMe ->
                     it.isRemindMe = isRemindMe
                     if (isClickRemindMe) {
                         if (isRemindMe)
@@ -394,7 +393,7 @@ open class ShopHomeAdapter(
     fun removeWidget(model: Visitable<*>) {
         val newList = getNewVisitableItems()
         val modelIndex = newList.indexOf(model)
-        if(modelIndex != INVALID_INDEX){
+        if (modelIndex != INVALID_INDEX) {
             newList.remove(model)
             submitList(newList)
         }
@@ -402,7 +401,7 @@ open class ShopHomeAdapter(
 
     fun showNplRemindMeLoading(campaignId: String) {
         val newList = getNewVisitableItems()
-        newList.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().onEach{nplCampaignUiModel ->
+        newList.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().onEach { nplCampaignUiModel ->
             nplCampaignUiModel.data?.firstOrNull { it.campaignId == campaignId }?.let {
                 it.showRemindMeLoading = true
                 nplCampaignUiModel.isNewData = true
@@ -437,14 +436,14 @@ open class ShopHomeAdapter(
         val newList = getNewVisitableItems()
         val gridSectionModel = newList.filterIsInstance<ShopHomeProductChangeGridSectionUiModel>().firstOrNull()
         if (gridSectionModel == null) {
-            if(!isProductListEmpty) {
+            if (!isProductListEmpty) {
                 newList.add(ShopHomeProductChangeGridSectionUiModel(totalProductData, gridType))
             }
         } else {
             gridSectionModel.apply {
-                if(isProductListEmpty){
+                if (isProductListEmpty) {
                     newList.remove(this)
-                }else{
+                } else {
                     this.totalProduct = totalProductData
                 }
             }
@@ -489,7 +488,7 @@ open class ShopHomeAdapter(
         val newList = getNewVisitableItems()
         listWidgetContentData.onEach { widgetContentData ->
             newList.filterIsInstance<Visitable<*>>().indexOfFirst {
-                when(it) {
+                when (it) {
                     is BaseShopHomeWidgetUiModel -> {
                         widgetContentData.key.first == it.widgetId
                     }
@@ -500,7 +499,7 @@ open class ShopHomeAdapter(
                         false
                     }
                 }
-            }.let{ position ->
+            }.let { position ->
                 if (position >= 0 && position < newList.size) {
                     when (widgetContentData.value) {
                         null -> {
@@ -526,7 +525,7 @@ open class ShopHomeAdapter(
     fun updateShopHomeWidgetStateToLoading(listWidgetLayout: MutableList<ShopPageWidgetLayoutUiModel>) {
         listWidgetLayout.onEach { widgetLayout ->
             visitables.filterIsInstance<Visitable<*>>().firstOrNull {
-                when(it) {
+                when (it) {
                     is BaseShopHomeWidgetUiModel -> {
                         widgetLayout.widgetId == it.widgetId
                     }
@@ -537,8 +536,8 @@ open class ShopHomeAdapter(
                         false
                     }
                 }
-            }?.let{
-                when(it) {
+            }?.let {
+                when (it) {
                     is BaseShopHomeWidgetUiModel -> {
                         it.widgetState = WidgetState.LOADING
                     }
@@ -552,7 +551,7 @@ open class ShopHomeAdapter(
 
     fun isLoadNextHomeWidgetData(position: Int): Boolean {
         return visitables.filterIsInstance<BaseShopHomeWidgetUiModel>().getOrNull(position)?.widgetState == WidgetState.PLACEHOLDER ||
-                visitables.filterIsInstance<ThematicWidgetUiModel>().getOrNull(position)?.widgetState == WidgetState.PLACEHOLDER
+            visitables.filterIsInstance<ThematicWidgetUiModel>().getOrNull(position)?.widgetState == WidgetState.PLACEHOLDER
     }
 
     fun isLoadProductGridListData(position: Int): Boolean {
@@ -583,7 +582,7 @@ open class ShopHomeAdapter(
 
     fun isLoadFirstWidgetContentData(): Boolean {
         return visitables.filterIsInstance<Visitable<*>>().none {
-            when(it) {
+            when (it) {
                 is BaseShopHomeWidgetUiModel -> it.widgetState == WidgetState.LOADING || it.widgetState == WidgetState.FINISH
                 is ThematicWidgetUiModel -> it.widgetState == WidgetState.LOADING || it.widgetState == WidgetState.FINISH
                 else -> false
@@ -603,7 +602,7 @@ open class ShopHomeAdapter(
         val newList = getNewVisitableItems()
         listShopWidgetLayout.onEach { shopWidgetLayout ->
             newList.filterIsInstance<Visitable<*>>().indexOfFirst {
-                when(it) {
+                when (it) {
                     is BaseShopHomeWidgetUiModel -> {
                         shopWidgetLayout.widgetId == it.widgetId
                     }
@@ -629,14 +628,14 @@ open class ShopHomeAdapter(
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()
         newList.forEach {
-            when(it) {
+            when (it) {
                 is BaseShopHomeWidgetUiModel -> it.isNewData = false
                 is ThematicWidgetUiModel -> it.isNewData = false
             }
         }
         visitables.addAll(newList)
         diffResult.dispatchUpdatesTo(this)
-        currentRecyclerViewState?.let{
+        currentRecyclerViewState?.let {
             recyclerView?.layoutManager?.onRestoreInstanceState(it)
         }
     }

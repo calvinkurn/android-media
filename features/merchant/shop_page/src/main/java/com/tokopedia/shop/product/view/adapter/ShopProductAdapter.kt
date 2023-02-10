@@ -31,7 +31,6 @@ import com.tokopedia.shop.product.view.viewholder.*
 import com.tokopedia.shop.product.view.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
 
-
 class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductAdapterTypeFactory) : BaseListAdapter<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(shopProductAdapterTypeFactory, null), DataEndlessScrollListener.OnDataEndlessScrollListener, StickySingleHeaderView.OnStickySingleHeaderAdapter {
 
     init {
@@ -100,12 +99,14 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
         if (holder.itemView.layoutParams is StaggeredGridLayoutManager.LayoutParams) {
             val staggeredLayoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
-            staggeredLayoutParams.isFullSpan = !(getItemViewType(position) == ShopProductViewHolder.GRID_LAYOUT ||
+            staggeredLayoutParams.isFullSpan = !(
+                getItemViewType(position) == ShopProductViewHolder.GRID_LAYOUT ||
                     getItemViewType(position) == ShopProductItemBigGridViewHolder.LAYOUT ||
                     getItemViewType(position) == ShopProductItemListViewHolder.LAYOUT ||
                     getItemViewType(position) == ShopProductAddViewHolder.LAYOUT ||
                     getItemViewType(position) == ShopProductSellerAllEtalaseEmptyViewHolder.LAYOUT ||
-                    getItemViewType(position) == LoadingMoreViewHolder.LAYOUT)
+                    getItemViewType(position) == LoadingMoreViewHolder.LAYOUT
+                )
         }
         super.onBindViewHolder(holder, position)
     }
@@ -162,7 +163,6 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         mapDataModel()
     }
 
-
     override fun showLoading() {
         if (!isLoading) {
             if (isShowLoadingMore) {
@@ -170,7 +170,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             } else {
                 visitables.add(loadingModel)
             }
-            notifyInsertedItem(visitables.size -1)
+            notifyInsertedItem(visitables.size - 1)
         }
     }
 
@@ -439,31 +439,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         mapDataModel()
     }
 
-    fun addEmptyStateData(productList: List<ShopProductUiModel>) {
-        if(productList.isNotEmpty()) {
-            if (visitables.getOrNull(lastIndex) !is ShopProductEmptySearchUiModel) {
-                visitables.add(ShopProductEmptySearchUiModel())
-                notifyInsertedItem(lastIndex)
-            }
-            if (visitables.getOrNull(lastIndex) !is ShopProductTitleEmptyUiModel) {
-                visitables.add(ShopProductTitleEmptyUiModel())
-                notifyInsertedItem(lastIndex)
-            }
-            if(visitables.getOrNull(lastIndex) !is ShopProductUiModel) {
-                val lastIndex = visitables.size
-                visitables.addAll(productList)
-                notifyItemRangeInserted(lastIndex, productList.size)
-            }
-        } else {
-            if (visitables.getOrNull(lastIndex) !is ShopProductEmptySearchUiModel) {
-                visitables.add(ShopProductEmptySearchUiModel())
-                notifyInsertedItem(lastIndex)
-            }
-        }
-    }
-
-    fun changeProductCardGridType(gridType: ShopProductViewGridType){
-        shopProductAdapterTypeFactory.productCardType =  gridType
+    fun changeProductCardGridType(gridType: ShopProductViewGridType) {
+        shopProductAdapterTypeFactory.productCardType = gridType
         setLayoutManagerSpanCount()
         recyclerView?.requestLayout()
     }
@@ -512,7 +489,6 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     private fun setmapDataModel(mutableMapDataModelPosition: MutableMap<String, Visitable<*>>) {
         this.mapOfDataModel = mutableMapDataModelPosition
     }
-
 
     private fun notifyChangedItem(position: Int) {
         recyclerView?.isComputingLayout?.let {
@@ -564,7 +540,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         }
     }
 
-    private fun notifyChangedDataSet(){
+    private fun notifyChangedDataSet() {
         Handler().post {
             notifyDataSetChanged()
         }
@@ -577,30 +553,30 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     private fun getListWithoutProductCardDataAndLoadingModel(): List<Visitable<*>> {
         return visitables.filter {
             it::class.java != ShopProductUiModel::class.java &&
-                    it::class.java != ShopProductAddUiModel::class.java &&
-                    it::class.java != ShopSellerEmptyProductAllEtalaseUiModel::class.java &&
-                    it::class.java != ShopEmptyProductUiModel::class.java &&
-                    it::class.java != ShopProductEtalaseTitleUiModel::class.java &&
-                    it::class.java != ShopProductChangeGridSectionUiModel::class.java &&
-                    it::class.java != LoadingMoreModel::class.java &&
-                    it::class.java != LoadingModel::class.java
+                it::class.java != ShopProductAddUiModel::class.java &&
+                it::class.java != ShopSellerEmptyProductAllEtalaseUiModel::class.java &&
+                it::class.java != ShopEmptyProductUiModel::class.java &&
+                it::class.java != ShopProductEtalaseTitleUiModel::class.java &&
+                it::class.java != ShopProductChangeGridSectionUiModel::class.java &&
+                it::class.java != LoadingMoreModel::class.java &&
+                it::class.java != LoadingModel::class.java
         }
     }
 
     fun updateShopPageProductChangeGridSectionIcon(isProductListEmpty: Boolean, totalProductData: Int, gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID) {
         val gridSectionModel = visitables.filterIsInstance<ShopProductChangeGridSectionUiModel>().firstOrNull()
         if (gridSectionModel == null) {
-            if(!isProductListEmpty) {
+            if (!isProductListEmpty) {
                 visitables.add(getListWithoutProductCardDataAndLoadingModel().size, ShopProductChangeGridSectionUiModel(totalProductData, gridType))
                 notifyChangedDataSet()
             }
         } else {
             gridSectionModel.apply {
                 val index = visitables.indexOf(this)
-                if(isProductListEmpty){
+                if (isProductListEmpty) {
                     visitables.remove(this)
                     notifyRemovedItem(index)
-                }else{
+                } else {
                     this.totalProduct = totalProductData
                     notifyChangedItem(index)
                 }
@@ -637,21 +613,21 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     }
 
     fun clearShopPageProductResultEmptyState() {
-        visitables.firstOrNull{
+        visitables.firstOrNull {
             it is ShopProductEmptySearchUiModel
         }?.let {
             val position = visitables.indexOf(it)
             visitables.removeAt(position)
             notifyRemovedItem(position)
         }
-        visitables.firstOrNull{
+        visitables.firstOrNull {
             it is ShopProductEmptyShowcaseUiModel
         }?.let {
             val position = visitables.indexOf(it)
             visitables.removeAt(position)
             notifyRemovedItem(position)
         }
-        visitables.firstOrNull{
+        visitables.firstOrNull {
             it is ShopProductTitleEmptyUiModel
         }?.let {
             val position = visitables.indexOf(it)
@@ -660,8 +636,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         }
     }
 
-    fun clearShopPageChangeGridSection(){
-        visitables.firstOrNull{
+    fun clearShopPageChangeGridSection() {
+        visitables.firstOrNull {
             it is ShopProductChangeGridSectionUiModel
         }?.let {
             val position = visitables.indexOf(it)
@@ -673,8 +649,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     fun updateProductTabWidget(productTabWidget: MutableList<Visitable<*>>?) {
         visitables = productTabWidget
         visitables.forEachIndexed { index, visitable ->
-            if(visitable is ShopProductUiModel){
-                if(visitable.isNewData){
+            if (visitable is ShopProductUiModel) {
+                if (visitable.isNewData) {
                     notifyChangedItem(index)
                 }
             }

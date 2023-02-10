@@ -50,7 +50,7 @@
                     android:id="@+id/tv_stock"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_R500"
+                    android:textColor="@color/Unify_RN500"
                     android:layout_alignParentTop="true"
                     android:visibility="gone"
                     tools:visibility="visible"
@@ -86,7 +86,7 @@
                         android:paddingTop="2dp"
                         android:paddingRight="5dp"
                         android:paddingBottom="2dp"
-                        android:textColor="@color/Unify_R500"
+                        android:textColor="@color/Unify_RN500"
                         android:textSize="12sp"
                         tools:text="20%" />
 
@@ -184,7 +184,7 @@
                         android:background="@drawable/cm_background_buy"
                         android:gravity="center"
                         android:layout_toEndOf="@+id/btn_icon"
-                        android:textColor="@color/white"
+                        android:textColor="@color/Unify_Static_White"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         tools:text="Beli Sekarang" />

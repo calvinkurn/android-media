@@ -183,7 +183,7 @@ class PlayViewModelRobot(
     }
 
     fun showVariantBottomSheet(bottomSheetHeight: Int = 50, action: ProductAction = ProductAction.Buy, product: PlayProductUiModel.Product = productTagBuilder.buildProductLine()) {
-        viewModel.onShowVariantSheet(bottomSheetHeight, action = action, product = product)
+        viewModel.onShowVariantSheet(bottomSheetHeight)
     }
 
     fun hideVariantBottomSheet() {

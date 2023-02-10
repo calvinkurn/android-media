@@ -64,7 +64,8 @@ object TopChatAnalyticsKt {
                 init {
                     add(itemBundle)
                 }
-            })
+            }
+        )
         eventDataLayer.putString(PRODUCT_ID, element.productId)
         eventDataLayer.putString(USER_ID, userId)
 
@@ -80,7 +81,9 @@ object TopChatAnalyticsKt {
     private fun <T> getValueOrEmpty(value: List<T>): String {
         return if (value.isEmpty()) {
             EE_VALUE_NONE_OTHER
-        } else value.toString()
+        } else {
+            value.toString()
+        }
     }
 
     fun eventTapAndHoldBubbleChat(replyId: String) {
@@ -340,13 +343,28 @@ object TopChatAnalyticsKt {
         blastId: String,
         statusBundle: String,
         bundleId: String,
+        bundleType: String,
+        bundleItems: List<BundleItem>,
         shopId: String,
         userId: String
     ) {
+        val listItemBundles = getItemBundle(
+            bundleItems = bundleItems,
+            bundleId = bundleId,
+            bundleType = bundleType,
+            source = "broadcast",
+            hasQuantityValue = false,
+            shopId = "",
+            shopName = "",
+            hasShopTypeValue = false,
+            hasProductCategoryId = false,
+            hasIndex = true
+        )
+
         val eventDataLayer = Bundle()
 
-        eventDataLayer.putString(TrackAppUtils.EVENT, Event.VIEW_COMMUNICATION_IRIS)
-        eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.VIEW_BUNDLE_CART_CHATROOM)
+        eventDataLayer.putString(TrackAppUtils.EVENT, VIEW_ITEM_LIST)
+        eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.VIEW_BUNDLE_CARD_CHATROOM)
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
         eventDataLayer.putString(
             TrackAppUtils.EVENT_LABEL,
@@ -358,6 +376,11 @@ object TopChatAnalyticsKt {
 
         eventDataLayer.putString(USER_ID, userId)
         eventDataLayer.putString(SHOP_ID, shopId)
+
+        eventDataLayer.putParcelableArrayList(
+            AddToCartExternalAnalytics.EE_VALUE_ITEMS,
+            listItemBundles
+        )
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             Event.VIEW_COMMUNICATION_IRIS,
@@ -422,7 +445,6 @@ object TopChatAnalyticsKt {
         shopName: String,
         userId: String
     ) {
-
         val listItemBundles = getItemBundle(
             bundleItems,
             bundleId,
@@ -605,12 +627,15 @@ object TopChatAnalyticsKt {
         replyChatRate: String,
         targetReplyChatRate: String,
         replyChatSpeed: String,
-        targetReplyChatSpeed: String,
+        targetReplyChatSpeed: String
     ) {
         val label = generateOperationalInsightLabel(
-            shopId, stateReport,
-            replyChatRate, targetReplyChatRate,
-            replyChatSpeed, targetReplyChatSpeed
+            shopId,
+            stateReport,
+            replyChatRate,
+            targetReplyChatRate,
+            replyChatSpeed,
+            targetReplyChatSpeed
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(
@@ -632,12 +657,15 @@ object TopChatAnalyticsKt {
         replyChatRate: String,
         targetReplyChatRate: String,
         replyChatSpeed: String,
-        targetReplyChatSpeed: String,
+        targetReplyChatSpeed: String
     ) {
         val label = generateOperationalInsightLabel(
-            shopId, stateReport,
-            replyChatRate, targetReplyChatRate,
-            replyChatSpeed, targetReplyChatSpeed
+            shopId,
+            stateReport,
+            replyChatRate,
+            targetReplyChatRate,
+            replyChatSpeed,
+            targetReplyChatSpeed
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(
@@ -662,9 +690,12 @@ object TopChatAnalyticsKt {
         targetReplyChatSpeed: String
     ) {
         val label = generateOperationalInsightLabel(
-            shopId, stateReport,
-            replyChatRate, targetReplyChatRate,
-            replyChatSpeed, targetReplyChatSpeed
+            shopId,
+            stateReport,
+            replyChatRate,
+            targetReplyChatRate,
+            replyChatSpeed,
+            targetReplyChatSpeed
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(
@@ -750,6 +781,324 @@ object TopChatAnalyticsKt {
         )
     }
 
+    /*
+    * Bubbles Tracker
+    */
+    fun eventViewReadMsgFromBubble(lastReplyId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.READ_FROM_BUBBLE_CHAT_ROOM,
+                label = lastReplyId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37516
+            )
+        )
+    }
+
+    fun clickAddAttachmentFromBubble(shopId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_ADD_ATTACHMENT_BUTTON,
+                label = shopId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37517
+            )
+        )
+    }
+
+    fun clickVoucherFromBubble(shopId: String, voucherId: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_VOUCHER,
+                label = "$shopId - $voucherId",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37518
+            )
+        )
+    }
+
+    fun clickAddAttachmentVoucherFromBubble(shopId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_ADD_ATTACHMENT_VOUCHER,
+                label = shopId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37519
+            )
+        )
+    }
+
+    fun clickAddAttachmentProductFromBubble(shopId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_ADD_ATTACHMENT_PRODUCT,
+                label = shopId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37520
+            )
+        )
+    }
+
+    fun clickAddAttachmentImageFromBubble(shopId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_ADD_ATTACHMENT_IMAGE,
+                label = shopId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37521
+            )
+        )
+    }
+
+    fun clickAddAttachmentInvoiceFromBubble(shopId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_ADD_ATTACHMENT_INVOICE,
+                label = shopId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37522
+            )
+        )
+    }
+
+    fun clickChangeStockFromBubble(productId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_CHANGE_STOCK_CTA,
+                label = productId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37523
+            )
+        )
+    }
+
+    fun clickSaveStockFromBubble(productId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_SAVE_STOCK,
+                label = productId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37692
+            )
+        )
+    }
+
+    fun clickLongHoldMessageFromBubble(replyId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_LONG_HOLD_SELECTED_MESSAGE,
+                label = replyId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37693
+            )
+        )
+    }
+
+    fun clickReplySelectedMessageFromBubble(replyId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_REPLY_SELECTED_MESSAGE,
+                label = replyId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37698
+            )
+        )
+    }
+
+    fun clickDeleteSelectedMessageFromBubble(replyId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_DELETE_SELECTED_MESSAGE,
+                label = replyId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37699
+            )
+        )
+    }
+
+    fun clickCopySelectedMessageFromBubble(replyId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_COPY_SELECTED_MESSAGE,
+                label = replyId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37700
+            )
+        )
+    }
+
+    fun clickConfirmDeleteSelectedMessageFromBubble(replyId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_CONFIRM_DELETE_SELECTED_MESSAGE,
+                label = replyId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37701
+            )
+        )
+    }
+
+    fun eventClickHeaderMenuBubble(shopId: String?) {
+        val bubbleEvent = createBubbleEvent(
+            Event.CLICK_COMMUNICATION,
+            Bubbles.BUBBLE_CHAT_DETAIL,
+            Bubbles.CLICK_HEADER_THREE_BULLETS,
+            shopId!!,
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_37704
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
+    fun eventClickHeaderMenuItemBubble(clickedMenuTitle: String?) {
+        val bubbleEvent = createBubbleEvent(
+            Event.CLICK_COMMUNICATION,
+            Bubbles.BUBBLE_CHAT_DETAIL,
+            Bubbles.CLICK_SETTINGS_MENU_CHOICES,
+            clickedMenuTitle!!,
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_37705
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
+    fun eventClickBubbleChat(shopId: String, userId: String, messageId: String) {
+        val eventLabel = "$shopId - $messageId - $userId"
+        val bubbleEvent = createBubbleEvent(
+            Event.CLICK_COMMUNICATION,
+            Bubbles.BUBBLE_CHAT_DETAIL,
+            Bubbles.CLICK_NEW_NOTIFICATION_BUBBLE_CHAT,
+            eventLabel,
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_37707
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
+    fun eventDismissBubbleChat(shopId: String, userId: String, messageId: String) {
+        val eventLabel = "$shopId - $messageId - $userId"
+        val bubbleEvent = createBubbleEvent(
+            Event.CLICK_COMMUNICATION,
+            Bubbles.BUBBLE_CHAT_DETAIL,
+            Bubbles.CLICK_DISMISS_NEW_NOTIFICATION_BUBBLE_CHAT,
+            eventLabel,
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_37708
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
+    fun eventClickStickerBubble() {
+        val bubbleEvent = createBubbleEvent(
+            Event.CLICK_COMMUNICATION,
+            Bubbles.BUBBLE_CHAT_DETAIL,
+            Bubbles.CLICK_ADD_STICKER,
+            "",
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_38044
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
+    fun eventImpressionBubbleChatRecommendationTicker(shopId: String) {
+        val bubbleEvent = createBubbleEvent(
+            Event.VIEW_COMMUNICATION_IRIS,
+            Category.INBOX_CHAT,
+            Bubbles.IMPRESSION_ON_BUBBLE_CHAT_RECOMMENDATION_TICKER,
+            shopId,
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_40953
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
+    fun eventClickBubbleChatRecommendationTicker(shopId: String) {
+        val bubbleEvent = createBubbleEvent(
+            Event.CLICK_COMMUNICATION,
+            Category.INBOX_CHAT,
+            Bubbles.CLICK_ON_BUBBLE_CHAT_RECOMMENDATION_TICKER,
+            shopId,
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_40954
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
+    fun eventImpressionBubbleChatIntroduction(shopId: String) {
+        val bubbleEvent = createBubbleEvent(
+            Event.VIEW_COMMUNICATION_IRIS,
+            Category.CHAT_SETTINGS,
+            Bubbles.IMPRESSION_OF_SELLER_BUBBLE_INTRODUCTION_PAGE,
+            shopId,
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_40956
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
+    fun eventClickBubbleHelpPage(shopId: String) {
+        val bubbleEvent = createBubbleEvent(
+            Event.CLICK_COMMUNICATION,
+            Category.CHAT_SETTINGS,
+            Bubbles.CLICK_ON_DIRECTION_TO_HELP_PAGE,
+            shopId,
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_40957
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
     private fun createGeneralEvent(
         event: String,
         category: String,
@@ -791,6 +1140,26 @@ object TopChatAnalyticsKt {
         }
     }
 
+    private fun createBubbleEvent(
+        event: String,
+        category: String,
+        action: String,
+        label: String,
+        businessUnit: String,
+        currentSite: String,
+        trackerId: String
+    ): Map<String?, Any?>? {
+        return mutableMapOf(
+            TrackAppUtils.EVENT to event,
+            TrackAppUtils.EVENT_CATEGORY to category,
+            TrackAppUtils.EVENT_ACTION to action,
+            TrackAppUtils.EVENT_LABEL to label,
+            KEY_BUSINESS_UNIT to businessUnit,
+            KEY_CURRENT_SITE to currentSite,
+            TRACKER_ID to trackerId
+        )
+    }
+
     object Event {
         const val CHAT_DETAIL = "clickChatDetail"
         const val CLICK_COMMUNICATION = "clickCommunication"
@@ -801,6 +1170,60 @@ object TopChatAnalyticsKt {
         const val CHAT_DETAIL = "chat detail"
         const val INBOX_CHAT = "inbox-chat"
         const val PUSH_NOTIF_CHAT = "push notification chat"
+        const val CHAT_SETTINGS = "chat settings"
+    }
+
+    object Bubbles {
+        const val BUBBLE_CHAT_DETAIL = "bubble chat detail"
+
+        const val READ_FROM_BUBBLE_CHAT_ROOM = "read from bubble chatroom"
+        const val CLICK_ADD_ATTACHMENT_BUTTON = "click add attachment button"
+        const val CLICK_VOUCHER = "click voucher"
+        const val CLICK_ADD_ATTACHMENT_VOUCHER = "click add attachment - voucher"
+        const val CLICK_ADD_ATTACHMENT_PRODUCT = "click add attachment - product"
+        const val CLICK_ADD_ATTACHMENT_IMAGE = "click add attachment - image"
+        const val CLICK_ADD_ATTACHMENT_INVOICE = "click add attachment - invoice"
+        const val CLICK_CHANGE_STOCK_CTA = "click ubah stok CTA"
+        const val CLICK_SAVE_STOCK = "click simpan stok"
+        const val CLICK_LONG_HOLD_SELECTED_MESSAGE = "long hold on selected message"
+        const val CLICK_REPLY_SELECTED_MESSAGE = "click reply on selected message"
+        const val CLICK_DELETE_SELECTED_MESSAGE = "click delete on selected message"
+        const val CLICK_COPY_SELECTED_MESSAGE = "click salin on selected message"
+        const val CLICK_CONFIRM_DELETE_SELECTED_MESSAGE = "click confirm delete selected message"
+        const val CLICK_HEADER_THREE_BULLETS = "click header three bullets"
+        const val CLICK_SETTINGS_MENU_CHOICES = "click settings menu choices"
+        const val CLICK_NEW_NOTIFICATION_BUBBLE_CHAT = "click on new notification bubble chat"
+        const val CLICK_DISMISS_NEW_NOTIFICATION_BUBBLE_CHAT = "click dismiss new notification bubble chat"
+        const val CLICK_ADD_STICKER = "click add sticker"
+        const val IMPRESSION_ON_BUBBLE_CHAT_RECOMMENDATION_TICKER = "impression on bubble chat recommendation ticker"
+        const val CLICK_ON_BUBBLE_CHAT_RECOMMENDATION_TICKER = "click on bubble chat recommendation ticker"
+        const val IMPRESSION_OF_SELLER_BUBBLE_INTRODUCTION_PAGE = "impression of seller bubble introduction page"
+        const val CLICK_ON_DIRECTION_TO_HELP_PAGE = "click on direction to help page"
+
+        // tracker ID
+        const val TRACKER_ID_37516 = "37516"
+        const val TRACKER_ID_37517 = "37517"
+        const val TRACKER_ID_37518 = "37518"
+        const val TRACKER_ID_37519 = "37519"
+        const val TRACKER_ID_37520 = "37520"
+        const val TRACKER_ID_37521 = "37521"
+        const val TRACKER_ID_37522 = "37522"
+        const val TRACKER_ID_37523 = "37523"
+        const val TRACKER_ID_37692 = "37692"
+        const val TRACKER_ID_37693 = "37693"
+        const val TRACKER_ID_37698 = "37698"
+        const val TRACKER_ID_37699 = "37699"
+        const val TRACKER_ID_37700 = "37700"
+        const val TRACKER_ID_37701 = "37701"
+        const val TRACKER_ID_37704 = "37704"
+        const val TRACKER_ID_37705 = "37705"
+        const val TRACKER_ID_37707 = "37707"
+        const val TRACKER_ID_37708 = "37708"
+        const val TRACKER_ID_38044 = "38044"
+        const val TRACKER_ID_40953 = "40953"
+        const val TRACKER_ID_40954 = "40954"
+        const val TRACKER_ID_40956 = "40956"
+        const val TRACKER_ID_40957 = "40957"
     }
 
     object Action {
@@ -818,7 +1241,7 @@ object TopChatAnalyticsKt {
         const val CLICK_BUNDLING_PRODUCT_CTA = "click on bundling product card"
         const val SELLER_IMPRESS_REPORT_TICKER = "seller impress on report ticker"
         const val CLICK_SEND_MSG_ON_NOTIF = "click sent msg on notifpush"
-        const val VIEW_BUNDLE_CART_CHATROOM = "view on bundle card in chatroom"
+        const val VIEW_BUNDLE_CARD_CHATROOM = "view on bundle card in chatroom"
         const val CLICK_PRODUCT_BUNDLE = "click on product attachment on bundle card"
         const val CLICK_ADD_TO_CART_BUNDLE = "click on add to cart from bundle card"
         const val SELLER_CLICK_REPORT_TICKER = "seller click on report ticker"
@@ -839,31 +1262,31 @@ object TopChatAnalyticsKt {
     // default value
     private const val EE_VALUE_NONE_OTHER = "none / other"
 
-    //Event Name
+    // Event Name
     private const val ATC = "add_to_cart"
     private const val VIEW_ITEM_LIST = "view_item_list"
     private const val SELECT_CONTENT = "select_content"
 
-    //Event Category
+    // Event Category
     private const val EVENT_CATEGORY_CHAT = "chat"
 
-    //Event Action
+    // Event Action
     private const val CLICK_OCC = "click - Beli Langsung on chat"
 
-    //Event Label
+    // Event Label
     private const val OCC_LABEL = "fitur : OCC"
 
-    //Other
+    // Other
     private const val CURRENT_SITE = "topchat"
     private const val COMMUNICATION_MEDIA = "Communication & Media"
     private const val CURRENT_SITE_TOKOPEDIA = "tokopediamarketplace"
     private const val COMMUNICATION = "communication"
 
-    //General Keys
+    // General Keys
     private const val KEY_BUSINESS_UNIT = "businessUnit"
     private const val KEY_CURRENT_SITE = "currentSite"
 
-    //OCC Product Keys
+    // OCC Product Keys
     private const val CATEGORY_ID = "category_id"
     private const val DIMENSION_10 = "dimension10"
     private const val DIMENSION_12 = "dimension12"

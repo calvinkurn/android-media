@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -27,6 +28,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResColor
@@ -88,7 +90,11 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         private const val NAVIGATION_OTHER_MENU_POSITION = 4
         private const val NAVIGATION_HOME_MENU_POSITION = 0
         private const val TRACKER_PREF_NAME = "NotificationUserSettings"
+        private const val WEAR_PREF_NAME = "WearPopupSharedPref"
+
         private const val NOTIFICATION_USER_SETTING_KEY = "isSellerSettingSent"
+        private const val WEAR_POPUP_KEY = "isWearPopupShown"
+        private const val TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.spotify.music"
     }
 
     @Inject
@@ -124,6 +130,9 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     private val sharedPreference: SharedPreferences by lazy {
         applicationContext.getSharedPreferences(TRACKER_PREF_NAME, MODE_PRIVATE)
     }
+    private val wearSharedPreference: SharedPreferences by lazy {
+        applicationContext.getSharedPreferences(WEAR_PREF_NAME, MODE_PRIVATE)
+    }
 
     override var loadTimeMonitoringListener: LoadTimeMonitoringListener? = null
 
@@ -154,6 +163,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         fetchSellerAppWidget()
         setupSellerHomeInsetListener()
         sendNotificationUserSetting()
+        observeWearDialog()
     }
 
     override fun getComponent(): HomeDashboardComponent {
@@ -166,6 +176,9 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         super.onResume()
         homeViewModel.getNotifications()
         homeViewModel.getAdminInfo()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 && remoteConfig.isWatchAppCheckingEnabled()) {
+            homeViewModel.checkIfWearHasCompanionApp()
+        }
 
         if (!userSession.isLoggedIn) {
             RouteManager.route(this, ApplinkConstInternalSellerapp.WELCOME)
@@ -384,13 +397,16 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             userSession,
             navigationHomeMenuView
         )
-        setNavigationOtherMenuView()
+        setNavigationView()
     }
 
-    private fun setNavigationOtherMenuView() {
-        val navigationOtherMenuView =
-            binding?.sahBottomNav?.getMenuViewByIndex(NAVIGATION_OTHER_MENU_POSITION)
-        navigator?.getHomeFragment()?.setNavigationOtherMenuView(navigationOtherMenuView)
+    private fun setNavigationView() {
+        val navigationOtherMenuView = binding
+            ?.sahBottomNav?.getMenuViewByIndex(NAVIGATION_OTHER_MENU_POSITION)
+        navigator?.getHomeFragment()?.setNavigationNavigationView(
+            navigationView = binding?.sahBottomNav,
+            otherMenuView = navigationOtherMenuView
+        )
     }
 
     private fun setupShadow() {
@@ -712,5 +728,33 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 .isNullOrBlank()
 
         UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
+    }
+
+    private fun observeWearDialog() {
+        homeViewModel.shouldAskInstallCompanionApp.observe(this) {
+            val isWearPopupShown: Boolean =
+                wearSharedPreference.getBoolean(WEAR_POPUP_KEY, true)
+            if (it && !isWearPopupShown) {
+                val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+                dialog.apply{
+                    setTitle(resources.getString(R.string.wearos_install_popup_title))
+                    setPrimaryCTAText(resources.getString(R.string.wearos_install_popup_install))
+                    setSecondaryCTAText(resources.getString(R.string.wearos_install_popup_later))
+                    setPrimaryCTAClickListener {
+                        val marketIntent = Intent(Intent.ACTION_VIEW)
+                            .addCategory(Intent.CATEGORY_BROWSABLE)
+                            .setData(Uri.parse(TOKOPEDIA_MARKET_WEAR_APP))
+                        homeViewModel.launchMarket(marketIntent)
+                    }
+                    setSecondaryCTAClickListener {
+                        dialog.dismiss()
+                    }
+                }
+                dialog.show()
+                wearSharedPreference.edit()
+                    .putBoolean(WEAR_POPUP_KEY, true)
+                    .apply()
+            }
+        }
     }
 }

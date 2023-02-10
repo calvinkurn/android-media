@@ -10,36 +10,35 @@ import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaTabLayoutListener
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
-import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.user.session.UserSessionInterface
 
 class FakeTopChatViewStateImpl(
-        view: View,
-        typingListener: TypingListener,
-        sendListener: SendButtonListener,
-        templateListener: ChatTemplateListener,
-        imagePickerListener: ImagePickerListener,
-        attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
-        stickerMenuListener: ChatMenuStickerView.StickerMenuListener,
-        headerMenuListener: HeaderMenuListener,
-        chatTextAreaTabLayoutListener: ChatTextAreaTabLayoutListener,
-        toolbar: Toolbar,
-        analytics: TopChatAnalytics,
+    view: View,
+    typingListener: TypingListener,
+    sendListener: SendButtonListener,
+    templateListener: ChatTemplateListener,
+    attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
+    stickerMenuListener: ChatMenuStickerView.StickerMenuListener,
+    headerMenuListener: HeaderMenuListener,
+    chatTextAreaTabLayoutListener: ChatTextAreaTabLayoutListener,
+    toolbar: Toolbar,
+    analytics: TopChatAnalytics,
+    userSession: UserSessionInterface
 ) : TopChatViewStateImpl(
-        view,
-        typingListener,
-        sendListener,
-        templateListener,
-        imagePickerListener,
-        attachmentMenuListener,
-        stickerMenuListener,
-        headerMenuListener,
-        chatTextAreaTabLayoutListener,
-        toolbar,
-        analytics) {
-
+    view,
+    typingListener,
+    sendListener,
+    templateListener,
+    attachmentMenuListener,
+    stickerMenuListener,
+    headerMenuListener,
+    chatTextAreaTabLayoutListener,
+    toolbar,
+    analytics, userSession
+) {
 
     override fun showHeaderMenuBottomSheet(
         chatroomViewModel: ChatroomViewModel,

@@ -36,6 +36,7 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: ViewAnalyticsLogUiModel): Int
     fun type(uiModel: ViewIrisLogUiModel): Int
     fun type(uiModel: LeakCanaryUiModel): Int
+    fun type(uiModel: StrictModeLeakPublisherUiModel): Int
     fun type(uiModel: RemoteConfigEditorUiModel): Int
     fun type(uiModel: RouteManagerUiModel): Int
     fun type(uiModel: LoggingToServerUiModel): Int
@@ -56,5 +57,6 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: TypographySwitchUiModel): Int
     fun type(uiModel: ConvertResourceIdUiModel): Int
     fun type(uiModel: ViewHanselPatchUiModel): Int
+    fun type(uiModel: TopchatWebSocketLoggingUiModel): Int
     fun type(uiModel: DevOptsAuthorizationUiModel): Int
 }

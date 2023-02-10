@@ -73,6 +73,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.linker)
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -153,7 +154,7 @@ dependencies {
     }
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestUtil rootProject.ext.testDependencies.orchestrator
 
     androidTestImplementation projectOrAar(rootProject.ext.libraries.utils)

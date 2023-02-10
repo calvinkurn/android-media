@@ -7,11 +7,18 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SEL
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICE_SEND
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_SEND
+import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.Reply
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CHAT_SEPARATOR
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CSAT_OPTIONS
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CSAT_VIEW
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_HELPFULL_QUESTION
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_STICKED_BUTTON_ACTIONS
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
+import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
@@ -28,10 +35,6 @@ import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonPojo
 import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonUiModel
 import com.tokopedia.chatbot.data.uploadsecure.ChatbotVideoUploadAttributes
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
-import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_CHAT_SEPRATOR
-import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_CSAT_VIEW
-import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_OPTION_LIST
-import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_STICKY_BUTTON
 import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.chatdivider.ChatDividerResponse
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
@@ -46,34 +49,43 @@ import javax.inject.Inject
  */
 open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatMapper() {
 
-    object Companion {
-        const val SHOW_TEXT = "show"
-        const val TYPE_CHAT_SEPRATOR = "15"
-        const val TYPE_OPTION_LIST = "22"
-        const val TYPE_CSAT_OPTIONS = "23"
-        const val TYPE_STICKY_BUTTON = "25"
-        const val TYPE_CSAT_VIEW = "13"
-    }
-
     override fun mapAttachment(
         chatItemPojoByDateByTime: Reply,
         attachmentIds: List<String>
     ): Visitable<*> {
-        return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
+        return when (chatItemPojoByDateByTime.attachment.type.toString()) {
             TYPE_QUICK_REPLY -> convertToQuickReply(chatItemPojoByDateByTime)
             TYPE_QUICK_REPLY_SEND -> convertToMessageViewModel(chatItemPojoByDateByTime)
             TYPE_CHAT_BALLOON_ACTION -> convertToBalloonAction(chatItemPojoByDateByTime)
             TYPE_INVOICES_SELECTION -> convertToInvoicesSelection(chatItemPojoByDateByTime)
-            TYPE_CHAT_SEPRATOR -> convertToChatSeprator(chatItemPojoByDateByTime)
-            TYPE_OPTION_LIST -> convertToHelpQuestionViewModel(chatItemPojoByDateByTime)
+            TYPE_CHAT_SEPARATOR -> convertToChatSeprator(chatItemPojoByDateByTime)
+            TYPE_HELPFULL_QUESTION -> convertToHelpQuestionViewModel(chatItemPojoByDateByTime)
             TYPE_CSAT_OPTIONS -> convertToCsatOptionsViewModel(chatItemPojoByDateByTime)
-            TYPE_STICKY_BUTTON -> convertToStickyButtonActionsViewModel(chatItemPojoByDateByTime)
+            TYPE_STICKED_BUTTON_ACTIONS -> convertToStickyButtonActionsViewModel(chatItemPojoByDateByTime)
             TYPE_CSAT_VIEW -> convertToMessageViewModel(chatItemPojoByDateByTime)
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
             TYPE_INVOICE_SEND -> convertToInvoiceSentUiModel(chatItemPojoByDateByTime, attachmentIds)
             TYPE_VIDEO_UPLOAD -> convertToVideoUpload(chatItemPojoByDateByTime)
+            DYNAMIC_ATTACHMENT -> convertToDynamicAttachmentFallback(chatItemPojoByDateByTime)
             else -> super.mapAttachment(chatItemPojoByDateByTime, attachmentIds)
         }
+    }
+
+    /**
+     * We are using Dynamic Attachment with content_codes like 100,101 [As of now]. In future more will
+     * get added. If the user doesn't have the updated version to receive new content_code, we will
+     * show message to update the app
+     * */
+    private fun convertToDynamicAttachmentFallback(chatItemPojoByDateByTime: Reply): Visitable<*> {
+        var fallbackMessage = ""
+        chatItemPojoByDateByTime.attachment.fallback.let {
+            fallbackMessage = it.message
+        }
+        return FallbackAttachmentUiModel.Builder()
+            .withResponseFromGQL(chatItemPojoByDateByTime)
+            .withMsg(fallbackMessage)
+            .withAttachment(chatItemPojoByDateByTime.attachment)
+            .build()
     }
 
     private fun convertToInvoiceSentUiModel(pojo: Reply, attachmentIds: List<String>): AttachInvoiceSentUiModel {
@@ -298,7 +310,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
     }
 
     private fun convertToVideoUpload(chatItemPojoByDateByTime: Reply):
-            VideoUploadUiModel {
+        VideoUploadUiModel {
         val pojoAttribute = gson.fromJson<ChatbotVideoUploadAttributes>(
             chatItemPojoByDateByTime.attachment.attributes,
             ChatbotVideoUploadAttributes::class.java
@@ -309,5 +321,4 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             .withVideoUrl(pojoAttribute.videoUrl)
             .build()
     }
-
 }

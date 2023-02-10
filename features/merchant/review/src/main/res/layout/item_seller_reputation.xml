@@ -15,9 +15,9 @@
         android:layout_toStartOf="@+id/tv_score"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/spacing_lvl4"
-        android:paddingRight="@dimen/spacing_lvl4"
-        android:paddingBottom="@dimen/spacing_lvl4"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
         android:orientation="vertical">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -33,7 +33,7 @@
             android:id="@+id/tv_note"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginTop="4dp"
             android:background="@android:drawable/list_selector_background"
             android:gravity="center_vertical"
             android:textColor="@color/Unify_N700_68"
@@ -44,7 +44,7 @@
             android:id="@+id/tv_invoice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginTop="4dp"
             android:background="@android:drawable/list_selector_background"
             android:gravity="center_vertical"
             android:textColor="@color/Unify_N700_32"
@@ -64,14 +64,14 @@
         android:background="@android:drawable/list_selector_background"
         android:gravity="end|center_vertical"
         android:textColor="@color/Unify_N700_68"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginEnd="16dp"
         app:typographyType="heading_3"
         app:typographyWeight="reguler"
         tools:text="0" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl1"
+        android:layout_height="2dp"
         android:layout_below="@id/ly_reputation_group"/>
 
 </RelativeLayout>

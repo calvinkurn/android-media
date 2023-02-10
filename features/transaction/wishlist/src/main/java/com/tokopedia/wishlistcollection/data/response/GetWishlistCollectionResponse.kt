@@ -99,7 +99,7 @@ data class GetWishlistCollectionResponse(
 						val actions: List<Action> = emptyList(),
 
                         @SerializedName("indicator")
-                        val indicator: Indicator = Indicator(),
+                        val indicator: Indicator = Indicator()
 					) {
                         data class Indicator(
                             @SerializedName("title")
