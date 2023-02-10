@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 
 class TokoChatPushNotifCallbackUseCase(
@@ -29,7 +30,7 @@ class TokoChatPushNotifCallbackUseCase(
 
         @SerializedName("timestamp")
         val timestamp: String = ""
-    )
+    ) : GqlParam
 
     companion object {
         private const val PARAM_TOKOCHAT_PN_ID = "tokochatPNId"
