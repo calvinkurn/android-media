@@ -93,9 +93,7 @@ class SellerOnboardingActivity : BaseActivity() {
 
     private fun setPageBackground() {
         try {
-            binding?.backgroundSob?.loadImage(OnboardingConst.ImageUrl.BG_THEMATIC_RAMADAN) {
-                setPlaceHolder(R.drawable.bg_sob_thematic_ramadhan)
-            }
+            binding?.backgroundSob?.loadImage(OnboardingConst.ImageUrl.BG_THEMATIC_RAMADAN)
         } catch (e: Resources.NotFoundException) {
             Timber.e(e)
         }

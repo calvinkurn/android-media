@@ -60,7 +60,8 @@ class OtherMenuViewHolder(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner?,
     private val userSession: UserSessionInterface,
-    private var listener: Listener
+    private var listener: Listener,
+    private val isNewSeller: Boolean
 ) : LifecycleObserver {
 
     companion object {
@@ -472,7 +473,8 @@ class OtherMenuViewHolder(
         otherMenuHeader?.setBackgroundResource(headerBackgroundResource)
     }
 
-    fun updateShopStatusNewSellerBackground() {
+    private fun setShopStatusNewSellerBackground() {
+
         val imageResourceId: Int = when {
             userSession.isShopOfficialStore -> {
                 R.drawable.bg_sah_new_other_curved_header_os
@@ -496,7 +498,11 @@ class OtherMenuViewHolder(
     private fun setHeaderValues() {
         setShopAvatar()
         setShopName()
-        setShopStatus()
+        if (isNewSeller) {
+            setShopStatusNewSellerBackground()
+        } else {
+            setShopStatus()
+        }
     }
 
     private fun setInitialBalanceInfoLoading() {

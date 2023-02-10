@@ -214,7 +214,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
-            viewHolder = OtherMenuViewHolder(view, it, this, userSession, this)
+            val isNewSeller = (activity as? SellerHomeActivity)?.isNewSeller == true
+            viewHolder = OtherMenuViewHolder(view, it, this, userSession, this, isNewSeller)
         }
         viewHolder?.setInitialLayouts()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -658,7 +659,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         observe(viewModel.shopPeriodType) {
             when (it) {
                 is Success -> {
-                    updateShopStatusNewSellerBackground(it.data.isNewSeller)
                     setTrackerPerformanceMenu(it.data.isNewSeller)
                 }
                 is Fail -> {}
@@ -711,12 +711,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     private fun observeIsShowTageCentralizePromo() {
         viewModel.isShowTagCentralizePromo.observe(viewLifecycleOwner) {
             viewHolder?.setCentralizePromoTag(it)
-        }
-    }
-
-    private fun updateShopStatusNewSellerBackground(isNewSeller: Boolean) {
-        if (isNewSeller) {
-            viewHolder?.updateShopStatusNewSellerBackground()
         }
     }
 

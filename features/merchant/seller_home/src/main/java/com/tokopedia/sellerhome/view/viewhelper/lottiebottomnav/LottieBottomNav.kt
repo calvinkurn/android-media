@@ -453,30 +453,6 @@ class LottieBottomNav : LinearLayout {
         invalidate()
     }
 
-    fun updateHomeIcon(newHomeMenu: BottomMenu) {
-        val homeIconIndex = this.menu.indexOfFirst { it.id == R.id.menu_home }
-
-        if (homeIconIndex >= Int.ZERO) {
-            this.menu.getOrNull(homeIconIndex)?.let {
-                if (it.imageName == newHomeMenu.imageName) return
-
-                this.menu[homeIconIndex] = newHomeMenu
-
-                itemCount = this.menu.size
-                this.selectedItem = null
-
-                removeAllViews()
-
-                resizeContainer()
-                setupMenuItems()
-
-                setSelected(homeIconIndex)
-
-                invalidate()
-            }
-        }
-    }
-
     fun setMenuClickListener(listener: IBottomClickListener) {
         this.listener = listener
     }

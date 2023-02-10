@@ -10,17 +10,24 @@ import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.NodeClient
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.device.info.DeviceInfo.await
+import com.tokopedia.gm.common.domain.interactor.GetShopCreatedInfoUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetShopStateInfoUseCase
 import com.tokopedia.sellerhome.domain.usecase.SellerAdminUseCase
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
 import com.tokopedia.sellerhome.view.model.ShopInfoUiModel
+import com.tokopedia.sellerhome.view.model.ShopStateInfoUiModel
 import com.tokopedia.sessioncommon.data.admin.AdminRoleType
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import kotlinx.coroutines.*
 import kotlinx.coroutines.guava.await
 import javax.inject.Inject
@@ -30,22 +37,25 @@ import javax.inject.Inject
  */
 
 class SellerHomeActivityViewModel @Inject constructor(
-        private val userSession: UserSessionInterface,
-        private val getNotificationUseCase: GetNotificationUseCase,
-        private val getSopInfoUseCase: GetShopInfoUseCase,
-        private val sellerAdminUseCase: SellerAdminUseCase,
-        private val authorizeChatAccessUseCase: AuthorizeAccessUseCase,
-        private val authorizeOrderAccessUseCase: AuthorizeAccessUseCase,
-        private val capabilityClient: CapabilityClient,
-        private val nodeClient: NodeClient,
-        private val remoteActivityHelper: RemoteActivityHelper,
-        dispatcher: CoroutineDispatchers
+    private val userSession: UserSessionInterface,
+    private val getNotificationUseCase: GetNotificationUseCase,
+    private val getSopInfoUseCase: GetShopInfoUseCase,
+    private val sellerAdminUseCase: SellerAdminUseCase,
+    private val authorizeChatAccessUseCase: AuthorizeAccessUseCase,
+    private val authorizeOrderAccessUseCase: AuthorizeAccessUseCase,
+    private val getShopStateInfoUseCase: GetShopStateInfoUseCase,
+    private val capabilityClient: CapabilityClient,
+    private val nodeClient: NodeClient,
+    private val remoteActivityHelper: RemoteActivityHelper,
+    dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
 
     companion object {
         private const val SOURCE = "stuart_seller_home"
 
         private const val CAPABILITY_WEAR_APP = "verify_remote_tokopedia_wear_app"
+        private const val SELLER_HOME_PAGE_NAME = "seller-home"
+        private const val SELLER_INFO_STATE_KEY = "shopStateChanged"
     }
 
     private val _notifications = MutableLiveData<Result<NotificationUiModel>>()
@@ -56,6 +66,10 @@ class SellerHomeActivityViewModel @Inject constructor(
     private val _shopInfo = MutableLiveData<Result<ShopInfoUiModel>>()
     val shopInfo: LiveData<Result<ShopInfoUiModel>>
         get() = _shopInfo
+
+    private val _shopStateInfo = MutableLiveData<Result<ShopStateInfoUiModel>>()
+    val shopStateInfo: LiveData<Result<ShopStateInfoUiModel>>
+        get() = _shopStateInfo
 
     private val _isRoleEligible = MutableLiveData<Result<Boolean>>()
     val isRoleEligible: LiveData<Result<Boolean>>
@@ -109,6 +123,14 @@ class SellerHomeActivityViewModel @Inject constructor(
                 isShopOwner || !isLocationAdmin
             }
         }
+    }
+
+    fun getShopStateInfo() = executeCall(_shopStateInfo) {
+        getShopStateInfoUseCase.executeInBackground(
+            shopId = userSession.shopId,
+            dataKey = SELLER_INFO_STATE_KEY,
+            pageSource = SELLER_HOME_PAGE_NAME
+        )
     }
 
     fun checkIfWearHasCompanionApp() {

@@ -1123,6 +1123,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         setupEmptyState()
         setRecyclerViewLayoutAnimation()
+
+        isNewSellerState = (activity as? SellerHomeActivity)?.isNewSeller == true
         setViewBackground(isNewSellerState)
     }
 
@@ -2767,7 +2769,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         } else if (shouldGetShopStateInfo) {
             getShopStateInfoIfEligible()
         }
-        (activity as? SellerHomeActivity)?.updateHomeThematicIcon(isNewSellerState)
     }
 
     private fun getShopStateInfoIfEligible() {
