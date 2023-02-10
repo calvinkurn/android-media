@@ -654,47 +654,46 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             boolean availableCheckout = true;
             int errorPosition = DEFAULT_ERROR_POSITION;
             Object errorSelectedShipmentData = null;
+            boolean isPrescriptionFrontEndValidationError = false;
             for (int i = 0; i < shipmentDataList.size(); i++) {
                 Object shipmentData = shipmentDataList.get(i);
                 if (shipmentData instanceof ShipmentCartItemModel) {
-                    if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData() != null &&
-                            ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getUseDropshipper() != null &&
-                            ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getUseDropshipper()) {
-                        if (TextUtils.isEmpty(((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getDropshipperName()) ||
-                                TextUtils.isEmpty(((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getDropshipperPhone()) ||
-                                !((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().isDropshipperNameValid() ||
-                                !((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().isDropshipperPhoneValid()) {
+                    ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentData;
+                    if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
+                            shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper() != null &&
+                            shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper()) {
+                        if (TextUtils.isEmpty(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName()) ||
+                                TextUtils.isEmpty(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone()) ||
+                                !shipmentCartItemModel.getSelectedShipmentDetailData().isDropshipperNameValid() ||
+                                !shipmentCartItemModel.getSelectedShipmentDetailData().isDropshipperPhoneValid()) {
                             availableCheckout = false;
                             errorPosition = i;
                             errorSelectedShipmentData = shipmentData;
+                            break;
+                        }
+                    }
+                    if (uploadPrescriptionUiModel != null && uploadPrescriptionUiModel.getShowImageUpload() &&
+                            uploadPrescriptionUiModel.getFrontEndValidation() &&
+                            shipmentCartItemModel.getHasEthicalProducts() && !shipmentCartItemModel.isError()) {
+                        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                            if (!cartItemModel.isError() && cartItemModel.getEthicalDrugDataModel().getNeedPrescription()) {
+                                boolean prescriptionIdsEmpty = shipmentCartItemModel.getPrescriptionIds().isEmpty();
+                                boolean consultationEmpty = (TextUtils.isEmpty(shipmentCartItemModel.getTokoConsultationId()) ||
+                                        TextUtils.isEmpty(shipmentCartItemModel.getPartnerConsultationId()) ||
+                                        shipmentCartItemModel.getTokoConsultationId().equals("0") ||
+                                        shipmentCartItemModel.getPartnerConsultationId().equals("0") ||
+                                        TextUtils.isEmpty(shipmentCartItemModel.getConsultationDataString()));
+                                if (prescriptionIdsEmpty && consultationEmpty) {
+                                    isPrescriptionFrontEndValidationError = true;
+                                    availableCheckout = false;
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
             }
-
-            boolean isPrescriptionFrontEndValidationError = false;
-            if (availableCheckout) {
-                for (int i = 0; i < shipmentDataList.size(); i++) {
-                    Object shipmentData = shipmentDataList.get(i);
-                    if (shipmentData instanceof UploadPrescriptionUiModel) {
-                        if (((UploadPrescriptionUiModel) shipmentData).getFrontEndValidation()
-                                && ((UploadPrescriptionUiModel) shipmentData).getUploadedImageCount() != null
-                                && ((UploadPrescriptionUiModel) shipmentData).getUploadedImageCount() == 0) {
-                            isPrescriptionFrontEndValidationError = true;
-                            errorPosition = i;
-                            errorSelectedShipmentData = shipmentData;
-                        } else {
-                            isPrescriptionFrontEndValidationError = false;
-                        }
-                    }
-                }
-            }
-
-            if (isPrescriptionFrontEndValidationError) {
-                shipmentAdapterActionListener.onCheckoutValidationResult(false, null, errorPosition);
-            } else {
-                shipmentAdapterActionListener.onCheckoutValidationResult(availableCheckout, errorSelectedShipmentData, errorPosition);
-            }
+            shipmentAdapterActionListener.onCheckoutValidationResult(availableCheckout, errorSelectedShipmentData, errorPosition, isPrescriptionFrontEndValidationError);
         } else {
             int errorPosition = 0;
             if (shipmentCartItemModelList != null && shipmentDataList != null) {
@@ -706,7 +705,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                 }
             }
-            shipmentAdapterActionListener.onCheckoutValidationResult(false, null, errorPosition);
+            shipmentAdapterActionListener.onCheckoutValidationResult(false, null, errorPosition, false);
         }
     }
 

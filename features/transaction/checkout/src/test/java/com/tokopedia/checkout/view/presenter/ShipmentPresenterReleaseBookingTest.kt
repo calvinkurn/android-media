@@ -4,10 +4,15 @@ import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.data.model.response.ReleaseBookingResponse
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
@@ -97,6 +102,9 @@ class ShipmentPresenterReleaseBookingTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
+    @MockK
+    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
     private var shipmentMapper = ShipmentMapper()
 
@@ -126,6 +134,7 @@ class ShipmentPresenterReleaseBookingTest {
             shipmentDataConverter,
             releaseBookingUseCase,
             prescriptionIdsUseCase,
+            epharmacyUseCase,
             validateUsePromoRevampUseCase,
             gson,
             TestSchedulers,
@@ -138,18 +147,22 @@ class ShipmentPresenterReleaseBookingTest {
     @Test
     fun `WHEN release booking THEN should hit release booking use case with first productId`() {
         // Given
-        every { releaseBookingUseCase.execute(any()) } returns Observable.just(ReleaseBookingResponse())
+        every { releaseBookingUseCase.execute(any()) } returns Observable.just(
+            ReleaseBookingResponse()
+        )
         val productId = 300L
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel(
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
                 cartItemModels = listOf(
-                        CartItemModel(
-                                productId = productId
-                        ),
-                        CartItemModel(
-                                productId = productId + 1
-                        )
+                    CartItemModel(
+                        productId = productId
+                    ),
+                    CartItemModel(
+                        productId = productId + 1
+                    )
                 )
-        ))
+            )
+        )
 
         // When
         presenter.releaseBooking()
@@ -161,7 +174,9 @@ class ShipmentPresenterReleaseBookingTest {
     @Test
     fun `GIVEN no cart item WHEN release booking THEN should not hit release booking use case`() {
         // Given
-        every { releaseBookingUseCase.execute(any()) } returns Observable.just(ReleaseBookingResponse())
+        every { releaseBookingUseCase.execute(any()) } returns Observable.just(
+            ReleaseBookingResponse()
+        )
         presenter.shipmentCartItemModelList = emptyList()
 
         // When

@@ -4,11 +4,16 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
+import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
@@ -123,6 +128,9 @@ class ShipmentPresenterValidateUseFinalTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
+    @MockK
+    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private lateinit var presenter: ShipmentPresenter
@@ -151,6 +159,7 @@ class ShipmentPresenterValidateUseFinalTest {
             shipmentDataConverter,
             releaseBookingUseCase,
             prescriptionIdsUseCase,
+            epharmacyUseCase,
             validateUsePromoRevampUseCase,
             gson,
             TestSchedulers,
@@ -164,16 +173,19 @@ class ShipmentPresenterValidateUseFinalTest {
     fun `WHEN validate use success THEN should update promo button`() {
         // Given
         val promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
+            voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(
+                    type = "logistic",
+                    messageUiModel = MessageUiModel(state = "green")
                 )
+            )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
-                ValidateUsePromoRevampUiModel(
-                        status = "OK",
-                        errorCode = "200",
-                        promoUiModel = promoUiModel
-                )
+            ValidateUsePromoRevampUiModel(
+                status = "OK",
+                errorCode = "200",
+                promoUiModel = promoUiModel
+            )
         )
 
         // When
@@ -190,21 +202,24 @@ class ShipmentPresenterValidateUseFinalTest {
         // Given
         val message = "error"
         val promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
-                ),
-                additionalInfoUiModel = AdditionalInfoUiModel(
-                        errorDetailUiModel = ErrorDetailUiModel(
-                                message = message
-                        )
+            voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(
+                    type = "logistic",
+                    messageUiModel = MessageUiModel(state = "green")
                 )
+            ),
+            additionalInfoUiModel = AdditionalInfoUiModel(
+                errorDetailUiModel = ErrorDetailUiModel(
+                    message = message
+                )
+            )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
-                ValidateUsePromoRevampUiModel(
-                        status = "OK",
-                        errorCode = "200",
-                        promoUiModel = promoUiModel
-                )
+            ValidateUsePromoRevampUiModel(
+                status = "OK",
+                errorCode = "200",
+                promoUiModel = promoUiModel
+            )
         )
 
         // When
@@ -229,20 +244,20 @@ class ShipmentPresenterValidateUseFinalTest {
             add(shipmentCartItemModel)
         }
         val promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                        PromoCheckoutVoucherOrdersItemUiModel(
-                                type = "logistic",
-                                messageUiModel = MessageUiModel(state = "red", text = message),
-                                uniqueId = tmpCartString
-                        )
+            voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(
+                    type = "logistic",
+                    messageUiModel = MessageUiModel(state = "red", text = message),
+                    uniqueId = tmpCartString
                 )
+            )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
-                ValidateUsePromoRevampUiModel(
-                        status = "OK",
-                        errorCode = "200",
-                        promoUiModel = promoUiModel
-                )
+            ValidateUsePromoRevampUiModel(
+                status = "OK",
+                errorCode = "200",
+                promoUiModel = promoUiModel
+            )
         )
 
         // When
@@ -267,19 +282,20 @@ class ShipmentPresenterValidateUseFinalTest {
         }
         val message = "error"
         val promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                        PromoCheckoutVoucherOrdersItemUiModel(
-                                type = "logistic",
-                                messageUiModel = MessageUiModel(state = "red", text = message),
-                                uniqueId = tmpCartString)
+            voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(
+                    type = "logistic",
+                    messageUiModel = MessageUiModel(state = "red", text = message),
+                    uniqueId = tmpCartString
                 )
+            )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
-                ValidateUsePromoRevampUiModel(
-                        status = "OK",
-                        errorCode = "200",
-                        promoUiModel = promoUiModel
-                )
+            ValidateUsePromoRevampUiModel(
+                status = "OK",
+                errorCode = "200",
+                promoUiModel = promoUiModel
+            )
         )
 
         // When
@@ -300,17 +316,23 @@ class ShipmentPresenterValidateUseFinalTest {
         val tickerMessage = "ticker message"
         val tickerStatusCode = "1"
         val promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
-                ),
-                tickerInfoUiModel = TickerInfoUiModel(statusCode = tickerStatusCode.toInt(), message = tickerMessage)
+            voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(
+                    type = "logistic",
+                    messageUiModel = MessageUiModel(state = "green")
+                )
+            ),
+            tickerInfoUiModel = TickerInfoUiModel(
+                statusCode = tickerStatusCode.toInt(),
+                message = tickerMessage
+            )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
-                ValidateUsePromoRevampUiModel(
-                        status = "OK",
-                        errorCode = "200",
-                        promoUiModel = promoUiModel
-                )
+            ValidateUsePromoRevampUiModel(
+                status = "OK",
+                errorCode = "200",
+                promoUiModel = promoUiModel
+            )
         )
 
         // When
@@ -318,8 +340,10 @@ class ShipmentPresenterValidateUseFinalTest {
 
         // Then
         verify {
-            view.updateTickerAnnouncementMessage();
-            shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerStatusCode);
+            view.updateTickerAnnouncementMessage()
+            shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
+                tickerStatusCode
+            )
             view.updateButtonPromoCheckout(promoUiModel, false)
         }
     }
@@ -327,21 +351,28 @@ class ShipmentPresenterValidateUseFinalTest {
     @Test
     fun `WHEN validate use success with ticker data and current ticker exist THEN should update promo button and update ticker`() {
         // Given
-        presenter.tickerAnnouncementHolderData = TickerAnnouncementHolderData(id = "0", message = "")
+        presenter.tickerAnnouncementHolderData =
+            TickerAnnouncementHolderData(id = "0", message = "")
         val tickerMessage = "ticker message"
         val tickerStatusCode = "1"
         val promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
-                ),
-                tickerInfoUiModel = TickerInfoUiModel(statusCode = tickerStatusCode.toInt(), message = tickerMessage)
+            voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(
+                    type = "logistic",
+                    messageUiModel = MessageUiModel(state = "green")
+                )
+            ),
+            tickerInfoUiModel = TickerInfoUiModel(
+                statusCode = tickerStatusCode.toInt(),
+                message = tickerMessage
+            )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
-                ValidateUsePromoRevampUiModel(
-                        status = "OK",
-                        errorCode = "200",
-                        promoUiModel = promoUiModel
-                )
+            ValidateUsePromoRevampUiModel(
+                status = "OK",
+                errorCode = "200",
+                promoUiModel = promoUiModel
+            )
         )
 
         // When
@@ -349,8 +380,10 @@ class ShipmentPresenterValidateUseFinalTest {
 
         // Then
         verify {
-            view.updateTickerAnnouncementMessage();
-            shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerStatusCode);
+            view.updateTickerAnnouncementMessage()
+            shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
+                tickerStatusCode
+            )
             view.updateButtonPromoCheckout(promoUiModel, false)
         }
     }
@@ -361,29 +394,36 @@ class ShipmentPresenterValidateUseFinalTest {
         val lastSelectedCourierOrderIndex = 1
         val cartString = "123-abc"
         val promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
-                ),
-                additionalInfoUiModel = AdditionalInfoUiModel(
-                        promoSpIds = ArrayList<PromoSpIdUiModel>().apply {
-                            add(
-                                    PromoSpIdUiModel(
-                                            uniqueId = cartString
-                                    )
-                            )
-                        }
+            voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(
+                    type = "logistic",
+                    messageUiModel = MessageUiModel(state = "green")
                 )
+            ),
+            additionalInfoUiModel = AdditionalInfoUiModel(
+                promoSpIds = ArrayList<PromoSpIdUiModel>().apply {
+                    add(
+                        PromoSpIdUiModel(
+                            uniqueId = cartString
+                        )
+                    )
+                }
+            )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
-                ValidateUsePromoRevampUiModel(
-                        status = "OK",
-                        errorCode = "200",
-                        promoUiModel = promoUiModel
-                )
+            ValidateUsePromoRevampUiModel(
+                status = "OK",
+                errorCode = "200",
+                promoUiModel = promoUiModel
+            )
         )
 
         // When
-        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), lastSelectedCourierOrderIndex, cartString)
+        presenter.checkPromoCheckoutFinalShipment(
+            ValidateUsePromoRequest(),
+            lastSelectedCourierOrderIndex,
+            cartString
+        )
 
         // Then
         verify {
@@ -398,28 +438,35 @@ class ShipmentPresenterValidateUseFinalTest {
         val lastSelectedCourierOrderIndex = 1
         val cartString = "123-abc"
         val promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
-                ),
-                additionalInfoUiModel = AdditionalInfoUiModel(
-                        promoSpIds = ArrayList<PromoSpIdUiModel>().apply {
-                            add(
-                                    PromoSpIdUiModel(
-                                            uniqueId = "other cartString"
-                                    )
-                            )
-                        }
+            voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(
+                    type = "logistic",
+                    messageUiModel = MessageUiModel(state = "green")
                 )
+            ),
+            additionalInfoUiModel = AdditionalInfoUiModel(
+                promoSpIds = ArrayList<PromoSpIdUiModel>().apply {
+                    add(
+                        PromoSpIdUiModel(
+                            uniqueId = "other cartString"
+                        )
+                    )
+                }
+            )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
-                ValidateUsePromoRevampUiModel(
-                        status = "OK",
-                        promoUiModel = promoUiModel
-                )
+            ValidateUsePromoRevampUiModel(
+                status = "OK",
+                promoUiModel = promoUiModel
+            )
         )
 
         // When
-        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), lastSelectedCourierOrderIndex, cartString)
+        presenter.checkPromoCheckoutFinalShipment(
+            ValidateUsePromoRequest(),
+            lastSelectedCourierOrderIndex,
+            cartString
+        )
 
         // Then
         verify(inverse = true) {
@@ -431,32 +478,37 @@ class ShipmentPresenterValidateUseFinalTest {
     fun `WHEN validate use success and clashing THEN should update promo button and reload rates`() {
         // Given
         val promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
-                ),
-                clashingInfoDetailUiModel = ClashingInfoDetailUiModel(
-                        clashMessage = "clash message",
-                        clashReason = "clash reason",
-                        options = ArrayList<PromoClashOptionUiModel>().apply {
-                            add(
-                                    PromoClashOptionUiModel(
-                                            voucherOrders = ArrayList<PromoClashVoucherOrdersUiModel>().apply {
-                                                add(PromoClashVoucherOrdersUiModel(code = "123"))
-                                            }
-                                    )
-                            )
-                        }
+            voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(
+                    type = "logistic",
+                    messageUiModel = MessageUiModel(state = "green")
                 )
+            ),
+            clashingInfoDetailUiModel = ClashingInfoDetailUiModel(
+                clashMessage = "clash message",
+                clashReason = "clash reason",
+                options = ArrayList<PromoClashOptionUiModel>().apply {
+                    add(
+                        PromoClashOptionUiModel(
+                            voucherOrders = ArrayList<PromoClashVoucherOrdersUiModel>().apply {
+                                add(PromoClashVoucherOrdersUiModel(code = "123"))
+                            }
+                        )
+                    )
+                }
+            )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
-                ValidateUsePromoRevampUiModel(
-                        status = "OK",
-                        errorCode = "200",
-                        promoUiModel = promoUiModel
-                )
+            ValidateUsePromoRevampUiModel(
+                status = "OK",
+                errorCode = "200",
+                promoUiModel = promoUiModel
+            )
         )
         every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+            ClearPromoUiModel()
+        )
 
         // When
         presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
@@ -464,8 +516,8 @@ class ShipmentPresenterValidateUseFinalTest {
         // Then
         verifySequence {
             view.updateButtonPromoCheckout(promoUiModel, false)
-            view.showLoading();
-            view.setHasRunningApiCall(true);
+            view.showLoading()
+            view.setHasRunningApiCall(true)
             view.hideLoading()
             view.setHasRunningApiCall(false)
             view.showToastNormal("Ada perubahan pada promo yang kamu pakai")
@@ -477,11 +529,11 @@ class ShipmentPresenterValidateUseFinalTest {
         // Given
         val message = "error"
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
-                ValidateUsePromoRevampUiModel(
-                        status = "ERROR",
-                        message = listOf(message),
-                        promoUiModel = PromoUiModel()
-                )
+            ValidateUsePromoRevampUiModel(
+                status = "ERROR",
+                message = listOf(message),
+                promoUiModel = PromoUiModel()
+            )
         )
 
         // When
@@ -499,11 +551,11 @@ class ShipmentPresenterValidateUseFinalTest {
     fun `WHEN validate use status get error but no error message THEN should show toaster with default error message`() {
         // Given
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
-                ValidateUsePromoRevampUiModel(
-                        status = "ERROR",
-                        message = emptyList(),
-                        promoUiModel = PromoUiModel()
-                )
+            ValidateUsePromoRevampUiModel(
+                status = "ERROR",
+                message = emptyList(),
+                promoUiModel = PromoUiModel()
+            )
         )
 
         // When
@@ -521,7 +573,9 @@ class ShipmentPresenterValidateUseFinalTest {
     fun `WHEN validate use status get exception THEN should render error`() {
         // Given
         val message = "error"
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(ResponseErrorException())
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
+            ResponseErrorException()
+        )
 
         // When
         presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
@@ -539,16 +593,20 @@ class ShipmentPresenterValidateUseFinalTest {
         val validateUsePromoRequest = ValidateUsePromoRequest().apply {
             codes = mutableListOf("a", "b")
             orders = mutableListOf(
-                    OrdersItem().apply {
-                        codes = mutableListOf("c")
-                    }
+                OrdersItem().apply {
+                    codes = mutableListOf("c")
+                }
             )
         }
         presenter.setLatValidateUseRequest(validateUsePromoRequest)
         val message = "error"
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(AkamaiErrorException(message))
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
+            AkamaiErrorException(message)
+        )
         every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+            ClearPromoUiModel()
+        )
 
         // When
         presenter.checkPromoCheckoutFinalShipment(validateUsePromoRequest, 0, "")
@@ -561,7 +619,10 @@ class ShipmentPresenterValidateUseFinalTest {
             view.doResetButtonPromoCheckout()
         }
 
-        assertEquals(ValidateUsePromoRequest(orders = listOf(OrdersItem())), presenter.lastValidateUseRequest)
+        assertEquals(
+            ValidateUsePromoRequest(orders = listOf(OrdersItem())),
+            presenter.lastValidateUseRequest
+        )
     }
 
     @Test

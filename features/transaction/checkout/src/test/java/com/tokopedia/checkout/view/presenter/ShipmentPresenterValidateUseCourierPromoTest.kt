@@ -13,6 +13,7 @@ import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
@@ -111,6 +112,9 @@ class ShipmentPresenterValidateUseCourierPromoTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
+    @MockK
+    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private lateinit var presenter: ShipmentPresenter
@@ -139,6 +143,7 @@ class ShipmentPresenterValidateUseCourierPromoTest {
             shipmentDataConverter,
             releaseBookingUseCase,
             prescriptionIdsUseCase,
+            epharmacyUseCase,
             validateUsePromoRevampUseCase,
             gson,
             TestSchedulers,
@@ -152,18 +157,23 @@ class ShipmentPresenterValidateUseCourierPromoTest {
     fun `WHEN validate use success THEN should render promo from courier`() {
         // Given
         val validateUseModel = ValidateUsePromoRevampUiModel(
-                status = "OK",
-                errorCode = "200",
-                promoUiModel = PromoUiModel(
-                        globalSuccess = true,
-                        voucherOrderUiModels = listOf(
-                                PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
-                        )
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = PromoUiModel(
+                globalSuccess = true,
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        type = "logistic",
+                        messageUiModel = MessageUiModel(state = "green")
+                    )
                 )
+            )
         )
         val position = 0
         val noToast = true
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(validateUseModel)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+            validateUseModel
+        )
 
         // When
         presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
@@ -180,14 +190,18 @@ class ShipmentPresenterValidateUseCourierPromoTest {
         val errorMessage = "error"
         val cartString = "cart123"
         val validateUseModel = ValidateUsePromoRevampUiModel(
-                status = "OK",
-                errorCode = "200",
-                promoUiModel = PromoUiModel(
-                        globalSuccess = true,
-                        voucherOrderUiModels = listOf(
-                                PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString, messageUiModel = MessageUiModel(state = "red", text = errorMessage))
-                        )
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = PromoUiModel(
+                globalSuccess = true,
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        type = "logistic",
+                        uniqueId = cartString,
+                        messageUiModel = MessageUiModel(state = "red", text = errorMessage)
+                    )
                 )
+            )
         )
         val position = 0
         val noToast = true
@@ -196,7 +210,9 @@ class ShipmentPresenterValidateUseCourierPromoTest {
             this.cartString = cartString
         }
         presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(validateUseModel)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+            validateUseModel
+        )
         every { view.generateValidateUsePromoRequest() } returns ValidateUsePromoRequest()
 
         // When
@@ -216,12 +232,14 @@ class ShipmentPresenterValidateUseCourierPromoTest {
         // Given
         val errorMessage = "error"
         val validateUseModel = ValidateUsePromoRevampUiModel(
-                status = "ERROR",
-                message = listOf(errorMessage)
+            status = "ERROR",
+            message = listOf(errorMessage)
         )
         val position = 0
         val noToast = true
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(validateUseModel)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+            validateUseModel
+        )
 
         // When
         presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
@@ -236,12 +254,14 @@ class ShipmentPresenterValidateUseCourierPromoTest {
     fun `WHEN validate use failed without error message THEN should render default error message`() {
         // Given
         val validateUseModel = ValidateUsePromoRevampUiModel(
-                status = "ERROR",
-                message = emptyList()
+            status = "ERROR",
+            message = emptyList()
         )
         val position = 0
         val noToast = true
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(validateUseModel)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+            validateUseModel
+        )
 
         // When
         presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
@@ -264,7 +284,9 @@ class ShipmentPresenterValidateUseCourierPromoTest {
         mockkObject(ErrorHandler.Companion)
         every { view.activityContext } returns mockContext
         every { ErrorHandler.Companion.getErrorMessage(any(), any(), any()) } returns errorMessage
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(exception)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
+            exception
+        )
 
         // When
         presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
@@ -283,7 +305,9 @@ class ShipmentPresenterValidateUseCourierPromoTest {
         val noToast = true
 
         val exception = AkamaiErrorException(errorMessage)
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(exception)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
+            exception
+        )
         every { view.generateValidateUsePromoRequest() } returns ValidateUsePromoRequest()
 
         // When
@@ -298,5 +322,4 @@ class ShipmentPresenterValidateUseCourierPromoTest {
             view.doResetButtonPromoCheckout()
         }
     }
-
 }

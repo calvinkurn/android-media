@@ -23,6 +23,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
+import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
@@ -35,7 +36,6 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse;
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
@@ -182,8 +182,6 @@ public interface ShipmentContract {
 
         void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier);
 
-        void updatePrescriptionIds(List<GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription> prescriptions);
-
         void onNeedUpdateViewItem(int position);
 
         void renderUnapplyBoIncompleteShipment(List<String> unappliedBoPromoUniqueIds);
@@ -195,6 +193,12 @@ public interface ShipmentContract {
 
         ShipmentDetailData getShipmentDetailData(ShipmentCartItemModel shipmentCartItemModel,
                                                  RecipientAddressModel recipientAddressModel);
+
+        void showPrescriptionReminderDialog(UploadPrescriptionUiModel uploadPrescriptionUiModel);
+
+        void updateUploadPrescription(UploadPrescriptionUiModel uploadPrescriptionUiModel);
+
+        void showCoachMarkEpharmacy(UploadPrescriptionUiModel epharmacyGroupIds);
     }
 
     interface AnalyticsActionListener {
@@ -377,11 +381,15 @@ public interface ShipmentContract {
 
         boolean isIneligiblePromoDialogEnabled();
 
-        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId, ArrayList<String> prescriptionIds);
+        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId);
 
         void releaseBooking();
 
-        void fetchPrescriptionIds(boolean isUploadPrescriptionNeeded, String checkoutId);
+        void fetchEpharmacyData();
+
+        void setPrescriptionIds(ArrayList<String> prescriptionIds);
+
+        void setMiniConsultationResult(ArrayList<EPharmacyMiniConsultationResult> results);
 
         void setLastApplyData(LastApplyUiModel lastApplyData);
 
@@ -435,6 +443,8 @@ public interface ShipmentContract {
                           String cornerId, String deviceId, String leasingId, boolean isPlusSelected);
 
         void clearAllBoOnTemporaryUpsell();
+
+        boolean validatePrescriptionOnBackPressed();
     }
 
 }

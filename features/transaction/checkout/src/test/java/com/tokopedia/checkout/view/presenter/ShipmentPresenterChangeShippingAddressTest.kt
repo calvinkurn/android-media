@@ -12,6 +12,7 @@ import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -98,6 +99,9 @@ class ShipmentPresenterChangeShippingAddressTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
+    @MockK
+    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
+
     @MockK(relaxed = true)
     private lateinit var view: ShipmentContract.View
 
@@ -132,6 +136,7 @@ class ShipmentPresenterChangeShippingAddressTest {
             shipmentDataConverter,
             releaseBookingUseCase,
             prescriptionIdsUseCase,
+            epharmacyUseCase,
             validateUsePromoRevampUseCase,
             gson,
             TestSchedulers,
@@ -150,24 +155,33 @@ class ShipmentPresenterChangeShippingAddressTest {
         }
         presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
             add(
-                    ShipmentCartItemModel().apply {
-                        cartItemModels = ArrayList<CartItemModel>().apply {
-                            add(
-                                    CartItemModel().apply {
-                                        quantity = 1
-                                        productId = 1
-                                        noteToSeller = "note"
-                                        cartId = 123
-                                    }
-                            )
-                        }
+                ShipmentCartItemModel().apply {
+                    cartItemModels = ArrayList<CartItemModel>().apply {
+                        add(
+                            CartItemModel().apply {
+                                quantity = 1
+                                productId = 1
+                                noteToSeller = "note"
+                                cartId = 123
+                            }
+                        )
                     }
+                }
             )
         }
-        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(SetShippingAddressData(isSuccess = true))
+        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(
+            SetShippingAddressData(isSuccess = true)
+        )
 
         // When
-        presenter.changeShippingAddress(recipientAddressModel, chosenAddress, false, false, true, true)
+        presenter.changeShippingAddress(
+            recipientAddressModel,
+            chosenAddress,
+            false,
+            false,
+            true,
+            true
+        )
 
         // Then
         verifySequence {
@@ -185,10 +199,19 @@ class ShipmentPresenterChangeShippingAddressTest {
     fun changeShippingAddressFailed_ShouldShowError() {
         // Given
         val chosenAddress = ChosenAddressModel(addressId = 123)
-        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(SetShippingAddressData(isSuccess = false))
+        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(
+            SetShippingAddressData(isSuccess = false)
+        )
 
         // When
-        presenter.changeShippingAddress(RecipientAddressModel(), chosenAddress, false, false, true, true)
+        presenter.changeShippingAddress(
+            RecipientAddressModel(),
+            chosenAddress,
+            false,
+            false,
+            true,
+            true
+        )
 
         // Then
         verifySequence {
@@ -206,10 +229,19 @@ class ShipmentPresenterChangeShippingAddressTest {
     fun changeShippingAddressError_ShouldShowError() {
         // Given
         val chosenAddress = ChosenAddressModel(addressId = 123)
-        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.error(Throwable())
+        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.error(
+            Throwable()
+        )
 
         // When
-        presenter.changeShippingAddress(RecipientAddressModel(), chosenAddress, false, false, true, true)
+        presenter.changeShippingAddress(
+            RecipientAddressModel(),
+            chosenAddress,
+            false,
+            false,
+            true,
+            true
+        )
 
         // Then
         verifySequence {
@@ -235,24 +267,33 @@ class ShipmentPresenterChangeShippingAddressTest {
         }
         presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
             add(
-                    ShipmentCartItemModel().apply {
-                        cartItemModels = ArrayList<CartItemModel>().apply {
-                            add(
-                                    CartItemModel().apply {
-                                        quantity = 1
-                                        productId = 1
-                                        noteToSeller = "note"
-                                        cartId = 123
-                                    }
-                            )
-                        }
+                ShipmentCartItemModel().apply {
+                    cartItemModels = ArrayList<CartItemModel>().apply {
+                        add(
+                            CartItemModel().apply {
+                                quantity = 1
+                                productId = 1
+                                noteToSeller = "note"
+                                cartId = 123
+                            }
+                        )
                     }
+                }
             )
         }
-        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(SetShippingAddressData(isSuccess = true))
+        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(
+            SetShippingAddressData(isSuccess = true)
+        )
 
         // When
-        presenter.changeShippingAddress(recipientAddressModel, chosenAddress, false, true, true, true)
+        presenter.changeShippingAddress(
+            recipientAddressModel,
+            chosenAddress,
+            false,
+            true,
+            true,
+            true
+        )
 
         // Then
         verifySequence {
@@ -273,10 +314,19 @@ class ShipmentPresenterChangeShippingAddressTest {
         val errorMessages = ArrayList<String>().apply {
             add("Error Message")
         }
-        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(SetShippingAddressData(isSuccess = false, messages = errorMessages))
+        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(
+            SetShippingAddressData(isSuccess = false, messages = errorMessages)
+        )
 
         // When
-        presenter.changeShippingAddress(RecipientAddressModel(), chosenAddress, false, false, true, true)
+        presenter.changeShippingAddress(
+            RecipientAddressModel(),
+            chosenAddress,
+            false,
+            false,
+            true,
+            true
+        )
 
         // Then
         verifySequence {
@@ -293,10 +343,19 @@ class ShipmentPresenterChangeShippingAddressTest {
     fun `WHEN change shipping address get akamai error THEN should show error message`() {
         // Given
         val chosenAddress = ChosenAddressModel(addressId = 123)
-        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.error(AkamaiErrorException("error"))
+        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.error(
+            AkamaiErrorException("error")
+        )
 
         // When
-        presenter.changeShippingAddress(RecipientAddressModel(), chosenAddress, false, false, true, true)
+        presenter.changeShippingAddress(
+            RecipientAddressModel(),
+            chosenAddress,
+            false,
+            false,
+            true,
+            true
+        )
 
         // Then
         verifySequence {
@@ -308,5 +367,4 @@ class ShipmentPresenterChangeShippingAddressTest {
             view.renderChangeAddressFailed(any())
         }
     }
-
 }
