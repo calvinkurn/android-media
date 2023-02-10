@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.content.common.comment.ContentCommentFactory
 import com.tokopedia.content.common.databinding.FragmentContentCommentBottomSheetBinding
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -14,6 +15,9 @@ import kotlin.math.roundToInt
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.comment.ContentCommentViewModel
 import com.tokopedia.content.common.comment.PageSource
+import com.tokopedia.content.common.comment.adapter.CommentAdapter
+import com.tokopedia.content.common.comment.adapter.CommentViewHolder
+import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import javax.inject.Inject
 
 /**
@@ -21,7 +25,7 @@ import javax.inject.Inject
  */
 class ContentCommentBottomSheet @Inject constructor(
     factory: ContentCommentFactory.Creator,
-) : BottomSheetUnify() {
+) : BottomSheetUnify(), CommentViewHolder.Item.Listener {
 
     private var _binding: FragmentContentCommentBottomSheetBinding? = null
     private val binding: FragmentContentCommentBottomSheetBinding
@@ -33,8 +37,20 @@ class ContentCommentBottomSheet @Inject constructor(
 
     private var mSource: EntrySource? = null
 
-    private val viewModel : ContentCommentViewModel by activityViewModels{
+    private val viewModel: ContentCommentViewModel by activityViewModels {
         factory.create(this, mSource?.getPageSource() ?: PageSource.Unknown)
+    }
+
+    private val commentAdapter by lazyThreadSafetyNone {
+        CommentAdapter(this)
+    }
+
+    private val scrollListener by lazyThreadSafetyNone {
+        object : EndlessRecyclerViewScrollListener(binding.rvComment.layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                //TODO("Not yet implemented")
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +82,8 @@ class ContentCommentBottomSheet @Inject constructor(
         binding.commentHeader.closeListener = View.OnClickListener {
             dismiss()
         }
+        binding.rvComment.adapter = commentAdapter
+        binding.rvComment.addOnScrollListener(scrollListener)
     }
 
     fun setEntrySource(source: EntrySource?) {
@@ -75,6 +93,14 @@ class ContentCommentBottomSheet @Inject constructor(
     fun show(fragmentManager: FragmentManager) {
         if (isAdded) return
         showNow(fragmentManager, TAG)
+    }
+
+    override fun onReplyClicked(item: CommentUiModel) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun onLongClicked(item: CommentUiModel) {
+        //TODO("Not yet implemented")
     }
 
     override fun dismiss() {

@@ -140,4 +140,5 @@
 
     <!-- Comment   -->
     <string name="content_comment_header">Komentar</string>
+    <string name="content_comment_reply">Balas</string>
 </resources>

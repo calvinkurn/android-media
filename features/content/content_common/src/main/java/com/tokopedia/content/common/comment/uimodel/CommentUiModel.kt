@@ -8,6 +8,8 @@ sealed interface CommentUiModel {
     data class Item(
         val id: String,
         val username: String,
+        val content: String,
+        val createdTime: String, //format in map
         val photo: String,
         val repliesCount: String,
         val appLink: String,

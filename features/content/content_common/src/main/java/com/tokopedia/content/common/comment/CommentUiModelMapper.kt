@@ -21,7 +21,9 @@ class CommentUiModelMapper @Inject constructor() {
             username = username,
             photo = comment.photo,
             repliesCount = comment.repliesCount,
-            appLink = comment.id
+            appLink = comment.id,
+            content = comment.comment,
+            createdTime = comment.createdTime,
         )
     }
 }
