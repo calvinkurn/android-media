@@ -582,9 +582,7 @@ open class TopChatRoomActivity :
         if (remoteConfig == null) {
             remoteConfig = FirebaseRemoteConfigImpl(this)
         }
-//        return remoteConfig?.getBoolean(Constant.TOPCHAT_ALLOWED_FLEX_MODE, true) ?: true
-        var result = false
-        return result
+        return remoteConfig?.getBoolean(Constant.TOPCHAT_ALLOWED_FLEX_MODE, true) ?: true
     }
 
     private fun isTableTop(foldFeature: FoldingFeature?) =
