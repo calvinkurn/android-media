@@ -45,18 +45,18 @@ class PostCommentUseCase @Inject constructor(repo: GraphqlRepository) :
         const val QUERY_NAME = "PostCommentUseCaseQuery"
         const val QUERY = """
             mutation postComment(
-            ${"$${PARAM_ID}"}: String!, 
-            ${"$${PARAM_CONTENT_TYPE}"}: String!,
-            ${"$${PARAM_COMMENT_PARENT_ID}"}: String!,
-            ${"$${PARAM_COMMENTER_TYPE}"}: Int!,            
-            ${"$${PARAM_COMMENT}"}: String!
+            ${"$$PARAM_ID"}: String!, 
+            ${"$$PARAM_CONTENT_TYPE"}: String!,
+            ${"$$PARAM_COMMENT_PARENT_ID"}: String!,
+            ${"$$PARAM_COMMENTER_TYPE"}: Int!,            
+            ${"$$PARAM_COMMENT"}: String!
             ){
               feedsCommentPostComment(
-                  ${PARAM_ID}: ${"$${PARAM_ID}"},
-                  ${PARAM_CONTENT_TYPE}: ${"$${PARAM_CONTENT_TYPE}"},
-                  ${PARAM_COMMENT_PARENT_ID}: ${"$${PARAM_COMMENT_PARENT_ID}"},
-                  ${PARAM_COMMENTER_TYPE}: ${"$${PARAM_COMMENTER_TYPE}"},
-                  ${PARAM_COMMENT}: ${"$${PARAM_COMMENT}"}
+                  $PARAM_ID: ${"$$PARAM_ID"},
+                  $PARAM_CONTENT_TYPE: ${"$$PARAM_CONTENT_TYPE"},
+                  $PARAM_COMMENT_PARENT_ID: ${"$$PARAM_COMMENT_PARENT_ID"},
+                  $PARAM_COMMENTER_TYPE: ${"$$PARAM_COMMENTER_TYPE"},
+                  $PARAM_COMMENT: ${"$$PARAM_COMMENT"}
               ) {
                 data {
                   commentID

@@ -42,16 +42,16 @@ class SubmitReportCommentUseCase @Inject constructor(repo: GraphqlRepository) :
         const val QUERY_NAME = "SubmitReportCommentUseCaseQuery"
         const val QUERY = """
             mutation commentReport (
-            ${"$${PARAM_ID}"}: String!,
-            ${"$${PARAM_REPORT_TYPE}"}: String!,
-            ${"$${PARAM_REASON}"}: String!,
-            ${"$${PARAM_REASON_DETAIL}"}: String!
+            ${"$$PARAM_ID"}: String!,
+            ${"$$PARAM_REPORT_TYPE"}: String!,
+            ${"$$PARAM_REASON"}: String!,
+            ${"$$PARAM_REASON_DETAIL"}: String!
             ){
               feedsComplaintSubmitReport(
-               ${PARAM_ID}: ${"$${PARAM_ID}"},
-               ${PARAM_REPORT_TYPE}: ${"$${PARAM_REPORT_TYPE}"},
-               ${PARAM_REASON}: ${"$${PARAM_REASON}"},
-               ${PARAM_REASON_DETAIL}: ${"$${PARAM_REASON_DETAIL}"},
+               $PARAM_ID: ${"$$PARAM_ID"},
+               $PARAM_REPORT_TYPE: ${"$$PARAM_REPORT_TYPE"},
+               $PARAM_REASON: ${"$$PARAM_REASON"},
+               $PARAM_REASON_DETAIL: ${"$$PARAM_REASON_DETAIL"},
               ) {
                 success
               }

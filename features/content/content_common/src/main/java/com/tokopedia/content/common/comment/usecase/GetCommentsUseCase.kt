@@ -41,18 +41,17 @@ class GetCommentsUseCase @Inject constructor(repo: GraphqlRepository) :
 
         const val QUERY_NAME = "GetCommentsUseCaseQuery"
         const val QUERY = """
-           {
               query getComments(
-               ${"$${PARAM_ID}"}: String!, 
-               ${"$${PARAM_CONTENT_TYPE}"}: String!,
-               ${"$${PARAM_CURSOR}"}: String!,
-               ${"$${PARAM_LIMIT}"}: Int!
+               ${"$$PARAM_ID"}: String!, 
+               ${"$$PARAM_CONTENT_TYPE"}: String!,
+               ${"$$PARAM_CURSOR"}: String!,
+               ${"$$PARAM_LIMIT"}: Int!
               ){
                   feedsCommentGetComments(
-                   ${PARAM_ID}: ${"$${PARAM_ID}"},
-                   ${PARAM_CONTENT_TYPE}: ${"$${PARAM_CONTENT_TYPE}"},
-                   ${PARAM_CURSOR}: ${"$${PARAM_CURSOR}"},
-                   ${PARAM_LIMIT}: ${"$${PARAM_LIMIT}"}
+                   $PARAM_ID: ${"$$PARAM_ID"},
+                   $PARAM_CONTENT_TYPE: ${"$$PARAM_CONTENT_TYPE"},
+                   $PARAM_CURSOR: ${"$$PARAM_CURSOR"},
+                   $PARAM_LIMIT: ${"$$PARAM_LIMIT"}
                   ) {
                     comments {
                       id
@@ -85,7 +84,6 @@ class GetCommentsUseCase @Inject constructor(repo: GraphqlRepository) :
                     error
                   }
                 }
-              }
         """
     }
 }

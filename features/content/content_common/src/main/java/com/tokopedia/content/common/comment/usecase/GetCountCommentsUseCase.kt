@@ -2,6 +2,9 @@ package com.tokopedia.content.common.comment.usecase
 
 import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.model.CountComment
+import com.tokopedia.content.common.producttag.domain.usecase.FeedAceSearchShopUseCase
+import com.tokopedia.content.common.producttag.domain.usecase.GetShopInfoByIDUseCase
+import com.tokopedia.content.common.producttag.domain.usecase.GetSortFilterUseCase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -35,15 +38,8 @@ class GetCountCommentsUseCase @Inject constructor(repo: GraphqlRepository) :
 
         const val QUERY_NAME = "GetCountCommentsUseCaseQuery"
         const val QUERY = """
-           {
-              query getCountComment(
-               ${"$${PARAM_ID}"}: [String]!, 
-               ${"$${PARAM_CONTENT_TYPE}"}: String!
-              ){
-                  feedsCommentCountComments(
-                    ${PARAM_ID}: ${"$${PARAM_ID}"},
-                    ${PARAM_CONTENT_TYPE}: ${"$${PARAM_CONTENT_TYPE}"}
-                    ) {
+           query getCountComment(${"$$PARAM_ID"}: [String!]!, ${"$$PARAM_CONTENT_TYPE"}: String!){
+                  feedsCommentCountComments($PARAM_ID: ${"$$PARAM_ID"}, $PARAM_CONTENT_TYPE: ${"$$PARAM_CONTENT_TYPE"}) {
                         data {
                           countCommentsData {
                             contentID
@@ -55,7 +51,6 @@ class GetCountCommentsUseCase @Inject constructor(repo: GraphqlRepository) :
                     error
                   }
                 }
-              }
-        """
+           """
     }
 }

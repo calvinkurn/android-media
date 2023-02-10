@@ -30,8 +30,8 @@ class DeleteCommentUseCase @Inject constructor(repo: GraphqlRepository) :
 
         const val QUERY_NAME = "DeleteCommentUseCaseQuery"
         const val QUERY = """
-            mutation deleteComment (${"$${PARAM_COMMENT_ID}"}: String!){
-	            feedsCommentDeleteComment(${PARAM_COMMENT_ID}: ${"$${PARAM_COMMENT_ID}"}){
+            mutation deleteComment (${"$$PARAM_COMMENT_ID"}: String!){
+	            feedsCommentDeleteComment($PARAM_COMMENT_ID: ${"$$PARAM_COMMENT_ID"}){
                     data{
                       success
                     }
