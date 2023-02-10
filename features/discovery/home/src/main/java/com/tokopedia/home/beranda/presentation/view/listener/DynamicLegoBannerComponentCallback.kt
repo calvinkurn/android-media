@@ -2,17 +2,14 @@ package com.tokopedia.home.beranda.presentation.view.listener
 
 import android.content.Context
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.home.analytics.HomePageTracking
-import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import java.util.HashMap
 
-class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategoryListener: HomeCategoryListener): DynamicLegoBannerListener {
+class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategoryListener: HomeCategoryListener, val userId: String): DynamicLegoBannerListener {
     override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {
         LegoBannerTracking.sendLegoBannerSixClickViewAll(channelModel, channelModel.id, homeCategoryListener.userId)
         RouteManager.route(context,
@@ -35,21 +32,21 @@ class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategory
     }
 
     override fun onClickGridSixImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        LegoBannerTracking.sendLegoBannerSixClick(channelModel, channelGrid, position)
+        LegoBannerTracking.sendLegoBannerSixClick(channelModel, channelGrid, position, userId)
         RouteManager.route(context,
                 if (channelGrid.applink.isNotEmpty())
                     channelGrid.applink else channelGrid.url)
     }
 
     override fun onClickGridFourImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        LegoBannerTracking.sendLegoBannerFourClick(channelModel, channelGrid, position)
+        LegoBannerTracking.sendLegoBannerFourClick(channelModel, channelGrid, position, userId)
         RouteManager.route(context,
                 if (channelGrid.applink.isNotEmpty())
                     channelGrid.applink else channelGrid.url)
     }
 
     override fun onClickGridThreeImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        LegoBannerTracking.sendLegoBannerThreeClick(channelModel, channelGrid, position)
+        LegoBannerTracking.sendLegoBannerThreeClick(channelModel, channelGrid, position, userId)
         RouteManager.route(context,
                 if (channelGrid.applink.isNotEmpty())
                     channelGrid.applink else channelGrid.url)
@@ -70,7 +67,7 @@ class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategory
     override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {
         homeCategoryListener.putEEToIris(
                 LegoBannerTracking.getLegoBannerSixImageImpression(
-                        channelModel, parentPosition, isToIris = true
+                        channelModel, parentPosition, isToIris = true, userId
                 ) as HashMap<String, Any>
         )
     }
@@ -78,7 +75,7 @@ class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategory
     override fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int) {
         homeCategoryListener.putEEToIris(
                 LegoBannerTracking.getLegoBannerFourImageImpression(
-                        channelModel, parentPosition, true
+                        channelModel, parentPosition, true, userId
                 ) as HashMap<String, Any>
         )
     }
@@ -86,7 +83,7 @@ class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategory
     override fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int) {
         homeCategoryListener.putEEToIris(
                 LegoBannerTracking.getLegoBannerThreeImageImpression(
-                        channelModel, parentPosition, true
+                        channelModel, parentPosition, true, userId
                 ) as HashMap<String, Any>
         )
     }

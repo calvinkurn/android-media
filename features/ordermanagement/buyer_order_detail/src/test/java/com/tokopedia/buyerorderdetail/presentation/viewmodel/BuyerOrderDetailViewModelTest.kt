@@ -138,9 +138,11 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         }
 
         createSuccessGetBuyerOrderDetailDataResult()
+        createSuccessFinishOrderResult()
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
             viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, false)
             viewModel.finishOrder()
+            advanceTimeBy(2000L)
 
             assertTrue(viewModel.finishOrderResult.value is Success)
         }
@@ -158,6 +160,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
             viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, false)
             viewModel.finishOrder()
+            advanceTimeBy(2000L)
 
             assertTrue(viewModel.finishOrderResult.value is Success)
         }
@@ -217,11 +220,11 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             createSuccessATCResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 viewModel.getBuyerOrderDetailData(
-                orderId = orderId,
-                paymentId = paymentId,
-                cart = cart,
-                shouldCheckCache = false
-            )
+                    orderId = orderId,
+                    paymentId = paymentId,
+                    cart = cart,
+                    shouldCheckCache = false
+                )
                 viewModel.addSingleToCart(product)
 
                 val result = viewModel.singleAtcResult.value
@@ -242,11 +245,11 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             createFailedATCResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 viewModel.getBuyerOrderDetailData(
-                orderId = orderId,
-                paymentId = paymentId,
-                cart = cart,
-                shouldCheckCache = false
-            )
+                    orderId = orderId,
+                    paymentId = paymentId,
+                    cart = cart,
+                    shouldCheckCache = false
+                )
                 viewModel.addSingleToCart(product)
 
                 val result = viewModel.singleAtcResult.value
@@ -268,11 +271,11 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             createSuccessATCResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 viewModel.getBuyerOrderDetailData(
-                orderId = orderId,
-                paymentId = paymentId,
-                cart = cart,
-                shouldCheckCache = false
-            )
+                    orderId = orderId,
+                    paymentId = paymentId,
+                    cart = cart,
+                    shouldCheckCache = false
+                )
                 viewModel.addMultipleToCart()
 
                 coVerify(exactly = 1) { atcUseCase.execute(userId, "", atcExpectedParams) }

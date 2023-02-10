@@ -1,0 +1,85 @@
+[
+  {
+    "data": {
+      "getInstallmentInfo": {
+        "success": true,
+        "data": {
+          "installment_options": [
+            {
+              "installment_term": 2,
+              "option_id": "test2",
+              "installment_period": "months",
+              "first_installment_time": "28 Februari 2022",
+              "est_installment_end": "28 April 2022",
+              "first_due_message": "Jatuh tempo pertama 6 Hari lagi",
+              "principal_amount": 2020100,
+              "interest_amount": 111106,
+              "fee_amount": 1500,
+              "total_amount": 2132706,
+              "installment_amount_per_period": 1066353,
+              "label_type": "",
+              "label_message": "",
+              "is_active": true,
+              "description": "Termasuk biaya cicilan 2,75%",
+              "is_recommended": false
+            },
+            {
+              "installment_term": 3,
+              "option_id": "test3",
+              "installment_period": "months",
+              "first_installment_time": "28 Februari 2022",
+              "est_installment_end": "28 Mei 2022",
+              "first_due_message": "Jatuh tempo pertama 6 Hari lagi",
+              "principal_amount": 2020100,
+              "interest_amount": 0,
+              "fee_amount": 1500,
+              "total_amount": 2021600,
+              "installment_amount_per_period": 673867,
+              "label_type": "promo",
+              "label_message": "",
+              "is_active": true,
+              "description": "Biaya Cicilan 0%",
+              "is_recommended": true
+            },
+            {
+              "installment_term": 6,
+              "option_id": "test6",
+              "installment_period": "months",
+              "first_installment_time": "28 Februari 2022",
+              "est_installment_end": "28 Agustus 2022",
+              "first_due_message": "Jatuh tempo pertama 6 Hari lagi",
+              "principal_amount": 2020100,
+              "interest_amount": 333318,
+              "fee_amount": 1500,
+              "total_amount": 2354918,
+              "installment_amount_per_period": 392487,
+              "label_type": "",
+              "label_message": "",
+              "is_active": true,
+              "description": "Termasuk biaya cicilan 2,75%",
+              "is_recommended": false
+            },
+            {
+              "installment_term": 12,
+              "option_id": "test12",
+              "installment_period": "months",
+              "first_installment_time": "28 Februari 2022",
+              "est_installment_end": "28 Februari 2023",
+              "first_due_message": "Jatuh tempo pertama 6 Hari lagi",
+              "principal_amount": 2020100,
+              "interest_amount": 666636,
+              "fee_amount": 1500,
+              "total_amount": 2688236,
+              "installment_amount_per_period": 224020,
+              "label_type": "",
+              "label_message": "",
+              "is_active": true,
+              "description": "Termasuk biaya cicilan 2,75%",
+              "is_recommended": false
+            }
+          ]
+        }
+      }
+    }
+  }
+]

@@ -45,6 +45,7 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -115,13 +116,13 @@ abstract class BuyerOrderDetailViewModelTestFixture {
 
     val atcExpectedParams = arrayListOf(
         AddToCartMultiParam(
-            productId = product.productId.toLong(),
+            productId = product.productId,
             productName = product.productName,
-            productPrice = product.price.toLong(),
+            productPrice = product.price,
             qty = product.quantity,
             notes = product.productNote,
-            shopId = shopId.toInt(),
-            custId = userId.toInt()
+            shopId = shopId,
+            custId = userId
         )
     )
 
@@ -161,7 +162,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             every { additionalData } returns additionalEpharmacyData
         },
         getOrderResolutionResult: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData = mockk(relaxed = true),
-        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true),
+        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true)
     ) {
         coEvery {
             getBuyerOrderDetailDataUseCase(any())
@@ -328,13 +329,13 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         }
     }
 
-    fun runCollectingUiState(block: (List<BuyerOrderDetailUiState>) -> Unit) {
+    fun runCollectingUiState(block: suspend TestCoroutineScope.(List<BuyerOrderDetailUiState>) -> Unit) {
         val uiStates = mutableListOf<BuyerOrderDetailUiState>()
         val scope = CoroutineScope(rule.dispatchers.coroutineDispatcher)
         val uiStateCollectorJob = scope.launch {
             viewModel.buyerOrderDetailUiState.toList(uiStates)
         }
-        block(uiStates)
+        rule.runBlockingTest { block(uiStates) }
         uiStateCollectorJob.cancel()
     }
 

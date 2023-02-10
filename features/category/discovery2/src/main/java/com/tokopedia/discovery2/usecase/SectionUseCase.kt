@@ -3,8 +3,10 @@ package com.tokopedia.discovery2.usecase
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.Utils.Companion.RPC_FILTER_KEY
 import com.tokopedia.discovery2.datamapper.getCartData
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.datamapper.getMapWithRpc
 import com.tokopedia.discovery2.datamapper.getMapWithoutRpc
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.repository.section.SectionRepository
@@ -18,12 +20,16 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
     suspend fun getChildComponents(componentId: String, pageEndPoint: String): Boolean {
         val component = getComponent(componentId, pageEndPoint)
         val paramWithoutRpc = getMapWithoutRpc(pageEndPoint)
+        val paramWithRpc = getMapWithRpc(pageEndPoint)
         if (component?.noOfPagesLoaded == 1) return false
         component?.let {
             val components = sectionRepository.getComponents(
-                pageEndPoint, it.sectionId, getQueryFilterString(
+                pageEndPoint,
+                it.sectionId,
+                getQueryFilterString(
                     it.userAddressData,
-                    paramWithoutRpc
+                    paramWithoutRpc,
+                    paramWithRpc
                 )
             )
             withContext(Dispatchers.IO) {
@@ -89,11 +95,12 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
                         comp.setComponentsItem(productListData, component.tabName)
                         comp.noOfPagesLoaded = 1
                         if (productListData?.isNotEmpty() == true) {
-                            if (comp.properties?.tokonowATCActive == true)
+                            if (comp.properties?.tokonowATCActive == true) {
                                 Utils.updateProductAddedInCart(
                                     productListData,
                                     getCartData(pageEndPoint)
                                 )
+                            }
                             comp.pageLoadedCounter = 2
                             comp.verticalProductFailState = false
                             comp.showVerticalLoader = true
@@ -101,10 +108,9 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
                             comp.showVerticalLoader = false
                         }
                     }
-
                 }
             }
-            it.setComponentsItem(components,component.tabName)
+            it.setComponentsItem(components, component.tabName)
             it.noOfPagesLoaded = 1
             it.verticalProductFailState = false
             return true
@@ -112,13 +118,21 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
         return false
     }
 
-    private fun getQueryFilterString(userAddressData: LocalCacheModel?, queryParameterMapWithoutRpc: Map<String, String>?): String {
+    private fun getQueryFilterString(
+        userAddressData: LocalCacheModel?,
+        queryParameterMapWithoutRpc: Map<String, String>?,
+        queryParameterMapWithRpc: Map<String, String>?
+    ): String {
         val queryParameterMap = mutableMapOf<String, Any>()
         queryParameterMap.putAll(Utils.addAddressQueryMapWithWareHouse(userAddressData))
         queryParameterMapWithoutRpc?.let {
             queryParameterMap.putAll(it)
         }
+        queryParameterMapWithRpc?.let {
+            for (entry in it) {
+                queryParameterMap[RPC_FILTER_KEY + entry.key] = entry.value
+            }
+        }
         return Utils.getQueryString(queryParameterMap)
     }
-
 }
