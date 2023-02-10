@@ -40,6 +40,7 @@ import com.tokopedia.test.application.espresso_component.CommonActions.clickChil
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.user.session.UserSession
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.core.AllOf.allOf
 import org.junit.*
 import org.junit.runner.RunWith
@@ -98,7 +99,6 @@ class ProductDetailActivityTest {
     @Before
     fun setup() {
         setupGraphqlMockResponse(ProductDetailMockResponse())
-        clearLogin()
 
         fakeLogin()
         val intent = ProductDetailActivity.createIntent(targetContext, PRODUCT_ID)
@@ -295,11 +295,11 @@ class ProductDetailActivityTest {
     }
 
     private fun fakeLogin() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        InstrumentationAuthHelper.login()
     }
 
     private fun clearLogin() {
-        InstrumentationAuthHelper.clearUserSession()
+        InstrumentationAuthHelper.logout()
     }
 
     private fun intendingIntent(resultData: Intent? = null) {

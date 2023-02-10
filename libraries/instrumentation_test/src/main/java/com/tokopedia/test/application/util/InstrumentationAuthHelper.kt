@@ -201,4 +201,25 @@ object InstrumentationAuthHelper {
     fun getHash(userId: String): String {
         return AuthHelper.getMD5Hash(userId + "~" + DataSource.MOCK_DEVICE_ID)
     }
+
+    fun login() {
+        val user = UserSession(InstrumentationRegistry.getInstrumentation().targetContext)
+        user.setLoginSession(
+            true,
+            "123",
+            "yehez",
+            "123",
+            true,
+            "asd",
+            "yehezkiel@tokopedia.com",
+            true,
+            "082242497515"
+        )
+    }
+
+    fun logout() {
+        val user = UserSession(InstrumentationRegistry.getInstrumentation().targetContext)
+        user.clearToken()
+        user.logoutSession()
+    }
 }
