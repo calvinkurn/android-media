@@ -324,6 +324,7 @@
     <string name="smvc_summary_page_success_change_data_message">%s berhasil diubah</string>
     <string name="smvc_summary_page_loading_dialog">Kupon lagi dibuat</string>
     <string name="smvc_summary_page_loading_dialog_desc">Mohon menunggu, ya</string>
+    <string name="smvc_summary_page_duplicating_message">Informasi kupon %s berhasil diduplikat. Cek lagi sebelum buat kupon, ya.</string>
 
     <!--Voucher Creation Step One-->
     <string name="smvc_kupon_toko_label">Kupon Toko</string>

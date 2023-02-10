@@ -234,6 +234,7 @@ class SummaryFragment :
                 layoutSetting.updatePageData(it)
                 layoutProducts.updateProductData(it)
                 layoutInfo.updatePageInfo(it)
+                showDuplicateToaster(it.voucherName)
             }
         }
         viewModel.enableCouponTypeChange.observe(viewLifecycleOwner) {
@@ -518,6 +519,18 @@ class SummaryFragment :
             activity?.finish()
         }
         bottomSheet.show(childFragmentManager)
+    }
+
+    private fun SmvcFragmentSummaryBinding.showDuplicateToaster(voucherName: String) {
+        if (enableDuplicateVoucher) {
+            Toaster.build(
+                root,
+                getString(R.string.smvc_summary_page_duplicating_message, voucherName),
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_NORMAL,
+                context?.getString(R.string.smvc_ok).toString()
+            ).show()
+        }
     }
 
     private fun onMultiPeriodClicked(configuration: VoucherConfiguration) {
