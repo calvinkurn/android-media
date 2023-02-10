@@ -14,6 +14,7 @@ class DevOptLoginSession(private val context: Context) {
         private const val LOGIN_SESSION_SHARED_PREF = "dev_opt_login_session"
         private const val KEY_PASSWORD = "password_hash"
         private const val KEY_LAST_UPDATED = "last_updated"
+        private const val KEY_IS_LOGGED_IN = "is_logged_in"
 
         private const val SESSION_EXPIRED_DAYS = 7 // 1 week
         private const val DEV_OPT_IV = "developeropt1234"
@@ -30,6 +31,7 @@ class DevOptLoginSession(private val context: Context) {
     fun setPassword(password: String) {
         sharedPrefEditor.putString(KEY_PASSWORD, EncoderDecoder.Encrypt(password, DEV_OPT_IV)).apply()
         sharedPrefEditor.putLong(KEY_LAST_UPDATED, System.currentTimeMillis()).apply()
+        sharedPrefEditor.putBoolean(KEY_IS_LOGGED_IN, true).apply()
     }
 
     fun clear() {
