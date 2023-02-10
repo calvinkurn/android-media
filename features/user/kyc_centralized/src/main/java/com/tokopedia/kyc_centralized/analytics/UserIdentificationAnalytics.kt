@@ -210,7 +210,8 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
         return if (
                 projectID == KYCConstant.HOME_CREDIT_PROJECT_ID ||
                 projectID == KYCConstant.CO_BRAND_PROJECT_ID ||
-                projectID == KYCConstant.GO_CICIL_PROJECT_ID
+                projectID == KYCConstant.GO_CICIL_PROJECT_ID ||
+                projectID == KYCConstant.OFFICIAL_STORE_PROJECT_ID
         ) {
             TYPE_ALA_CARTE
         } else {
