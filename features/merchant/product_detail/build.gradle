@@ -146,6 +146,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.lottie
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     testImplementation rootProject.ext.testDependencies.assertJ
 
     androidTestImplementation rootProject.ext.miscDependencies.dagger
