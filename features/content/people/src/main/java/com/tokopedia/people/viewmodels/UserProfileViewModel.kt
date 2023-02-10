@@ -223,7 +223,7 @@ class UserProfileViewModel @AssistedInject constructor(
                 }
 
                 val cursor = if(isRefresh) "" else currVideoPostModel.nextCursor
-                val result = repo.getPlayVideo(profileUserID, cursor)
+                val result = repo.getPlayVideo(profileUserID, cursor, isSelfProfile)
 
                 _videoPostContent.update {
                     it.copy(

@@ -43,6 +43,7 @@ interface UserProfileRepository {
     suspend fun getPlayVideo(
         username: String,
         cursor: String,
+        isSelfProfile: Boolean,
     ): UserPlayVideoUiModel
 
     suspend fun getShopRecom(cursor: String): ShopRecomUiModel

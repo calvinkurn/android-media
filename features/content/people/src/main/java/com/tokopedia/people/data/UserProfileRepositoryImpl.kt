@@ -118,12 +118,12 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getPlayVideo(username: String, cursor: String): UserPlayVideoUiModel {
+    override suspend fun getPlayVideo(username: String, cursor: String, isSelfProfile: Boolean): UserPlayVideoUiModel {
         return withContext(dispatcher.io) {
             val response = playVodUseCase.executeOnBackground(
-                group = VAL_FEEDS_PROFILE,
+                group = if(isSelfProfile) VAL_FEEDS_ADMIN else  VAL_FEEDS_PROFILE,
                 cursor = cursor,
-                sourceType = VAL_SOURCE_BUYER,
+                sourceType = if(isSelfProfile) VAL_SOURCE_BUYER_ADMIN else VAL_SOURCE_BUYER,
                 sourceId = username,
             )
 
@@ -208,6 +208,8 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     companion object {
         private const val VAL_FEEDS_PROFILE = "feeds-profile"
+        private const val VAL_FEEDS_ADMIN = "feeds-admin"
         private const val VAL_SOURCE_BUYER = "buyer"
+        private const val VAL_SOURCE_BUYER_ADMIN = "buyer-admin"
     }
 }
