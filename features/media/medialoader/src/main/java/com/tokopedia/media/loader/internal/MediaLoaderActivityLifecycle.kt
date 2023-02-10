@@ -12,7 +12,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.MEDIA_QUA
 import com.tokopedia.dev_monitoring_tools.session.SessionDataUsageLogger
 import com.tokopedia.device.info.DeviceConnectionInfo.getConnectionType
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.media.common.R
+import com.tokopedia.media.loader.R
 import com.tokopedia.media.loader.data.HIGH_QUALITY
 import com.tokopedia.unifycomponents.Toaster
 import java.util.concurrent.TimeUnit
