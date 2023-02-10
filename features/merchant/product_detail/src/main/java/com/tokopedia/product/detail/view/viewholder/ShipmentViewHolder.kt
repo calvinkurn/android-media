@@ -288,6 +288,7 @@ class ShipmentViewHolder(
             pdpShipmentCourierArrow.hide()
             pdpShipmentCourierLabel2.hide()
             pdpShipmentRatesError.hide()
+            pdpShipmentTitleStrike.hide()
             pdpShipmentTicker.hide()
         }
     }
