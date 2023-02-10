@@ -62,4 +62,7 @@ object ApplinkConstInternalTopAds {
 
     const val TOPADS_NEGATIVE_KEYWORD_EDIT = "${INTERNAL_TOPADS}/edit-ads-negative-keyword"
 
+    //Mp AdCreation
+    const val TOPADS_MP_ADS_CREATION = "${INTERNAL_TOPADS}/mp-ad-creation?product_id={id}"
+
 }

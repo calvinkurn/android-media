@@ -1,42 +1,63 @@
 package com.tokopedia.analyticsdebugger.websocket.domain.usecase
 
-import com.tokopedia.analyticsdebugger.websocket.data.local.entity.WebSocketLogEntity
-import com.tokopedia.analyticsdebugger.websocket.domain.repository.WebSocketLogRespository
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogGeneralInfoUiModel
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
-import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analyticsdebugger.websocket.data.local.entity.PlayWebSocketLogEntity
+import com.tokopedia.analyticsdebugger.websocket.data.local.entity.TopchatWebSocketLogEntity
+import com.tokopedia.analyticsdebugger.websocket.domain.param.InsertWebSocketLogParam
+import com.tokopedia.analyticsdebugger.websocket.domain.repository.PlayWebSocketLogRepository
+import com.tokopedia.analyticsdebugger.websocket.domain.repository.TopchatWebSocketLogRepository
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPageSource
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on December 01, 2021
  */
 class InsertWebSocketLogUseCase @Inject constructor(
-    private val webSocketLogRespository: WebSocketLogRespository,
-): UseCase<Unit>()  {
+    private val playWebSocketLogRepository: PlayWebSocketLogRepository,
+    private val topchatWebSocketLogRepository: TopchatWebSocketLogRepository,
+    dispatchers: CoroutineDispatchers
+) : CoroutineUseCase<InsertWebSocketLogParam, Unit>(dispatchers.io) {
 
-    private var param: WebSocketLogUiModel? = null
+    override suspend fun execute(params: InsertWebSocketLogParam) {
+        when(params.pageSource) {
+            WebSocketLogPageSource.PLAY -> playInsertWebSocketLog(params)
+            WebSocketLogPageSource.TOPCHAT -> topchatInsertWebSocketLog(params)
+            else -> Unit
+        }
+    }
 
-    fun setParam(event: String, message: String, generalInfo: WebSocketLogGeneralInfoUiModel) {
-        param = WebSocketLogUiModel(
-            event = event,
-            generalInfo = generalInfo,
-            message = message,
-            dateTime = "",
+    private suspend fun playInsertWebSocketLog(param: InsertWebSocketLogParam) {
+        if (param.info.play == null) return
+
+        playWebSocketLogRepository.insert(
+            PlayWebSocketLogEntity(
+                source = param.info.play.source,
+                channelId = param.info.play.channelId,
+                gcToken = param.info.play.gcToken,
+                event = param.info.event,
+                message = param.info.message,
+                timestamp = System.currentTimeMillis(),
+                warehouseId = param.info.play.warehouseId,
+            )
         )
     }
 
-    override suspend fun executeOnBackground() {
-        param?.let {
-            val request = WebSocketLogEntity(
-                source = it.generalInfo.source,
-                channelId = it.generalInfo.channelId,
-                gcToken = it.generalInfo.gcToken,
-                event = it.event,
-                message = it.message,
-                timestamp = System.currentTimeMillis(),
-                warehouseId = it.generalInfo.warehouseId,
+    private suspend fun topchatInsertWebSocketLog(param: InsertWebSocketLogParam) {
+        if (param.info.topchat == null) return
+
+        topchatWebSocketLogRepository.insert(
+            TopchatWebSocketLogEntity(
+                source = param.info.topchat.source,
+                code = param.info.topchat.code,
+                messageId = param.info.topchat.messageId,
+                header = param.info.topchat.header,
+                event = param.info.event,
+                message = param.info.message,
+                timestamp = System.currentTimeMillis()
             )
-            webSocketLogRespository.insert(request)
-        }
+        )
     }
+
+    override fun graphqlQuery() = "" // No-op
 }

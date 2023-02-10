@@ -290,8 +290,6 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_SHOP_DISCOUNT = "android_enable_shop_discount";
 
-    public static final String ENABLE_SHOP_DYNAMIC_TAB = "android_enable_shop_dynamic_tab";
-
     public static final String ENABLE_CURSOR_EMBRACE_LOGGING = "android_newrelic_cursor_out_of_bound";
     public static final String HOME_DC_USE_QUERY_V2 = "android_home_dc_use_query_v2";
 
@@ -314,4 +312,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_WEBVIEW_PRINT_JS_INTERFACE = "android_enable_webview_print_jsinterface";
 
     public static final String SELLER_HOME_ENABLE_WATCH_APP_CHECKING = "android_sellerapp_home_enable_watch_app_checking";
+
+    public static final String ENABLE_CHATBOT_CSAT_NEW_FLOW = "android_chatbot_csat_experiment";
 }

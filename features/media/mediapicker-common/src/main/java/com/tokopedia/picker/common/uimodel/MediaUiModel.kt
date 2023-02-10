@@ -9,6 +9,7 @@ import kotlinx.parcelize.Parcelize
 open class MediaUiModel(
     val id: Long = 0L,
     val file: PickerFile? = null,
+    val videoLength: Int = 0,
     val uri: Uri? = null,
 
     /*
