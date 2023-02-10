@@ -181,16 +181,18 @@ class InboxContactUsFragment :
             }
 
             is InboxUiEffect.LoadNextPageSuccess -> {
-                if (uiEffect.isFirstPage) {
-                    showFilter()
-                    toggleEmptyLayout(View.GONE)
-                    mAdapter.clear()
-                    mAdapter.addAll(uiEffect.currentPageItems)
-                    hideProgressBar()
-                    showList()
-                } else {
-                    notifyLoadResult(uiEffect.isHasNext)
-                    mAdapter.addAll(uiEffect.currentPageItems)
+                when {
+                    uiEffect.isFirstPage && !uiEffect.isHasNext -> {
+                        loadDataIntoRecyclerView(uiEffect)
+                        notifyLoadResult(uiEffect.isHasNext)
+                    }
+                    uiEffect.isFirstPage -> {
+                        loadDataIntoRecyclerView(uiEffect)
+                    }
+                    else -> {
+                        notifyLoadResult(uiEffect.isHasNext)
+                        mAdapter.addAll(uiEffect.currentPageItems)
+                    }
                 }
             }
             is InboxUiEffect.FetchInboxError -> {
@@ -201,6 +203,15 @@ class InboxContactUsFragment :
                 )
             }
         }
+    }
+
+    private fun loadDataIntoRecyclerView(data : InboxUiEffect.LoadNextPageSuccess){
+        showFilter()
+        toggleEmptyLayout(View.GONE)
+        mAdapter.clear()
+        mAdapter.addAll(data.currentPageItems)
+        hideProgressBar()
+        showList()
     }
 
     private fun View?.showToasterErrorWithCta(errorMessage: String, ctaText: String) {
